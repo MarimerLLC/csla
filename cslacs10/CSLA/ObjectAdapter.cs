@@ -168,29 +168,28 @@ namespace CSLA.Data
 
     void ScanIList(IList ds)
     {
-      object obj = null;
       if(ds.Count > 0)
       {
         // retrieve the first item from the list
-        obj = ds[0];
-      }
+        object obj = ds[0];
 
-      if(obj is ValueType && obj.GetType().IsPrimitive)
-      {
-        // the value is a primitive value type
-        _columns.Add("Value");
-      }
-      else
-      {
-        if(obj is string)
+        if(obj is ValueType && obj.GetType().IsPrimitive)
         {
-          // the value is a simple string
-          _columns.Add("Text");
+          // the value is a primitive value type
+          _columns.Add("Value");
         }
         else
         {
-          // we have a complex Structure or object
-          ScanObject(obj);
+          if(obj is string)
+          {
+            // the value is a simple string
+            _columns.Add("Text");
+          }
+          else
+          {
+            // we have a complex Structure or object
+            ScanObject(obj);
+          }
         }
       }
     }

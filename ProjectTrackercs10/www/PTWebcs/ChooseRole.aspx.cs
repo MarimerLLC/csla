@@ -72,24 +72,32 @@ namespace PTWebcs
         }
         else
         {
-          // we are dealing with a ResourceAssignment
-
-          // check security
-          if(!User.IsInRole("Supervisor") &&
-            !User.IsInRole("ProjectManager"))
+          if((string)Session["Source"] == "ResourceEdit.aspx")
           {
-            // they should not be here
-            SendUserBack();
+            // we are dealing with a ResourceAssignment
+
+            // check security
+            if(!User.IsInRole("Supervisor") &&
+              !User.IsInRole("ProjectManager"))
+            {
+              // they should not be here
+              SendUserBack();
+            }
+
+  	    ResourceAssignment obj = 
+              (ResourceAssignment)Session["ResourceAssignment"];
+            lblLabel.Text = "Project";
+            lblValue.Text = obj.ProjectName;
+
+            // TODO: this line only works in 1.1, so is replaced with next line for 1.0
+            //lstRoles.SelectedValue = obj.Role
+            SelectItem(lstRoles, obj.Role);
           }
-
-          ResourceAssignment obj = 
-            (ResourceAssignment)Session["ResourceAssignment"];
-          lblLabel.Text = "Project";
-          lblValue.Text = obj.ProjectName;
-
-          // TODO: this line only works in 1.1, so is replaced with next line for 1.0
-          //lstRoles.SelectedValue = obj.Role
-          SelectItem(lstRoles, obj.Role);
+          else
+	  {
+            // we came from an invalid location
+	    Response.Redirect("Default.aspx");
+	  }
         }
       }
     }

@@ -9,6 +9,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTService", "http://localho
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTBatch", "PTBatch\PTBatch.vbproj", "{C602DB86-251D-4588-B756-9E6A2B885421}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTClient", "PTClient\PTClient\PTClient.vbproj", "{D3482478-57EB-4070-8A91-4EDC64DD7BB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -37,6 +39,10 @@ Global
 		{C602DB86-251D-4588-B756-9E6A2B885421}.Debug.Build.0 = Debug|.NET
 		{C602DB86-251D-4588-B756-9E6A2B885421}.Release.ActiveCfg = Release|.NET
 		{C602DB86-251D-4588-B756-9E6A2B885421}.Release.Build.0 = Release|.NET
+		{D3482478-57EB-4070-8A91-4EDC64DD7BB2}.Debug.ActiveCfg = Debug|.NET
+		{D3482478-57EB-4070-8A91-4EDC64DD7BB2}.Debug.Build.0 = Debug|.NET
+		{D3482478-57EB-4070-8A91-4EDC64DD7BB2}.Release.ActiveCfg = Release|.NET
+		{D3482478-57EB-4070-8A91-4EDC64DD7BB2}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
 		Item:1 = license.txt

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://ws.lhotka.net/PTService/ProjectTracker" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://ws.lhotka.net/PTService/ProjectTracker" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://tempuri.org/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://tempuri.org/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
-    <s:schema elementFormDefault="qualified" targetNamespace="http://ws.lhotka.net/PTService/ProjectTracker">
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
       <s:element name="GetProjectList">
         <s:complexType />
       </s:element>
@@ -51,7 +51,7 @@
       <s:element name="GetProject">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -65,7 +65,7 @@
       <s:element name="UpdateProject">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="1" maxOccurs="1" name="Data" type="s0:ProjectInfo" />
+            <s:element minOccurs="1" maxOccurs="1" name="data" type="s0:ProjectInfo" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -79,7 +79,7 @@
       <s:element name="DeleteProject">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="ProjectID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="projectID" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -124,7 +124,7 @@
       <s:element name="GetResource">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="ID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -138,7 +138,7 @@
       <s:element name="UpdateResource">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="1" maxOccurs="1" name="Data" type="s0:ResourceInfo" />
+            <s:element minOccurs="1" maxOccurs="1" name="data" type="s0:ResourceInfo" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -148,7 +148,7 @@
       <s:element name="DeleteResource">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="ResourceID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="resourceID" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -274,7 +274,7 @@
   <binding name="ProjectTrackerSoap" type="s0:ProjectTrackerSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
     <operation name="GetProjectList">
-      <soap:operation soapAction="http://ws.lhotka.net/PTService/ProjectTracker/GetProjectList" style="document" />
+      <soap:operation soapAction="http://tempuri.org/GetProjectList" style="document" />
       <input>
         <soap:body use="literal" />
         <soap:header message="s0:GetProjectListCSLACredentials" part="CSLACredentials" use="literal" />
@@ -284,7 +284,7 @@
       </output>
     </operation>
     <operation name="GetProject">
-      <soap:operation soapAction="http://ws.lhotka.net/PTService/ProjectTracker/GetProject" style="document" />
+      <soap:operation soapAction="http://tempuri.org/GetProject" style="document" />
       <input>
         <soap:body use="literal" />
         <soap:header message="s0:GetProjectCSLACredentials" part="CSLACredentials" use="literal" />
@@ -294,7 +294,7 @@
       </output>
     </operation>
     <operation name="UpdateProject">
-      <soap:operation soapAction="http://ws.lhotka.net/PTService/ProjectTracker/UpdateProject" style="document" />
+      <soap:operation soapAction="http://tempuri.org/UpdateProject" style="document" />
       <input>
         <soap:body use="literal" />
         <soap:header message="s0:UpdateProjectCSLACredentials" part="CSLACredentials" use="literal" />
@@ -304,7 +304,7 @@
       </output>
     </operation>
     <operation name="DeleteProject">
-      <soap:operation soapAction="http://ws.lhotka.net/PTService/ProjectTracker/DeleteProject" style="document" />
+      <soap:operation soapAction="http://tempuri.org/DeleteProject" style="document" />
       <input>
         <soap:body use="literal" />
         <soap:header message="s0:DeleteProjectCSLACredentials" part="CSLACredentials" use="literal" />
@@ -314,7 +314,7 @@
       </output>
     </operation>
     <operation name="GetResourceList">
-      <soap:operation soapAction="http://ws.lhotka.net/PTService/ProjectTracker/GetResourceList" style="document" />
+      <soap:operation soapAction="http://tempuri.org/GetResourceList" style="document" />
       <input>
         <soap:body use="literal" />
         <soap:header message="s0:GetResourceListCSLACredentials" part="CSLACredentials" use="literal" />
@@ -324,7 +324,7 @@
       </output>
     </operation>
     <operation name="GetResource">
-      <soap:operation soapAction="http://ws.lhotka.net/PTService/ProjectTracker/GetResource" style="document" />
+      <soap:operation soapAction="http://tempuri.org/GetResource" style="document" />
       <input>
         <soap:body use="literal" />
         <soap:header message="s0:GetResourceCSLACredentials" part="CSLACredentials" use="literal" />
@@ -334,7 +334,7 @@
       </output>
     </operation>
     <operation name="UpdateResource">
-      <soap:operation soapAction="http://ws.lhotka.net/PTService/ProjectTracker/UpdateResource" style="document" />
+      <soap:operation soapAction="http://tempuri.org/UpdateResource" style="document" />
       <input>
         <soap:body use="literal" />
         <soap:header message="s0:UpdateResourceCSLACredentials" part="CSLACredentials" use="literal" />
@@ -344,7 +344,7 @@
       </output>
     </operation>
     <operation name="DeleteResource">
-      <soap:operation soapAction="http://ws.lhotka.net/PTService/ProjectTracker/DeleteResource" style="document" />
+      <soap:operation soapAction="http://tempuri.org/DeleteResource" style="document" />
       <input>
         <soap:body use="literal" />
         <soap:header message="s0:DeleteResourceCSLACredentials" part="CSLACredentials" use="literal" />
@@ -356,7 +356,7 @@
   </binding>
   <service name="ProjectTracker">
     <port name="ProjectTrackerSoap" binding="s0:ProjectTrackerSoap">
-      <soap:address location="http://localhost/PTService/ProjectTracker.asmx" />
+      <soap:address location="http://localhost/PTServicecs/ProjectTracker.asmx" />
     </port>
   </service>
 </definitions>

@@ -1,8 +1,8 @@
 <VisualStudioProject>
     <VisualBasic
         ProjectType = "Local"
-        ProductVersion = "7.10.2346"
-        SchemaVersion = "2.0"
+        ProductVersion = "7.0.9466"
+        SchemaVersion = "1.0"
         ProjectGuid = "{D3482478-57EB-4070-8A91-4EDC64DD7BB2}"
     >
         <Build>
@@ -134,7 +134,7 @@
                 />
                 <Folder
                     RelPath = "Web References\PTService\"
-                    WebReferenceUrl = "http://localhost/PTService/ProjectTracker.asmx"
+                    WebReferenceUrl = "http://localhost/PTServicecs/ProjectTracker.asmx"
                     UrlBehavior = "Static"
                 />
                 <Folder

@@ -11,6 +11,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   Inherits CSLA.Core.SortableCollectionBase
 
   Implements ICloneable
+  Implements Serialization.ISerializationNotification
 
   ''' <summary>
   ''' Creates a new ReadOnlyCollectionBase object.
@@ -78,12 +79,18 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' </summary>
   ''' <returns>A new object containing the exact data of the original object.</returns>
   Public Function Clone() As Object Implements ICloneable.Clone
+
     Dim buffer As New MemoryStream()
     Dim formatter As New BinaryFormatter()
 
+    Serialization.SerializationNotification.OnSerializing(Me)
     formatter.Serialize(buffer, Me)
+    Serialization.SerializationNotification.OnSerialized(Me)
     buffer.Position = 0
-    Return formatter.Deserialize(buffer)
+    Dim temp As Object = formatter.Deserialize(buffer)
+    Serialization.SerializationNotification.OnDeserialized(temp)
+    Return temp
+
   End Function
 
 #End Region
@@ -125,6 +132,48 @@ Public MustInherit Class ReadOnlyCollectionBase
   Protected Function DB(ByVal DatabaseName As String) As String
     Return ConfigurationSettings.AppSettings("DB:" & DatabaseName)
   End Function
+
+#End Region
+
+#Region " ISerializationNotification "
+
+  ''' <summary>
+  ''' This method is called on a newly deserialized object
+  ''' after deserialization is complete.
+  ''' </summary>
+  Protected Overridable Sub Deserialized() _
+    Implements CSLA.Serialization.ISerializationNotification.Deserialized
+
+    Dim child As Serialization.ISerializationNotification
+    For Each child In list
+      child.Deserialized()
+    Next
+  End Sub
+
+  ''' <summary>
+  ''' This method is called on the original instance of the
+  ''' object after it has been serialized.
+  ''' </summary>
+  Protected Overridable Sub Serialized() _
+    Implements CSLA.Serialization.ISerializationNotification.Serialized
+
+    Dim child As Serialization.ISerializationNotification
+    For Each child In list
+      child.Serialized()
+    Next
+  End Sub
+
+  ''' <summary>
+  ''' This method is called before an object is serialized.
+  ''' </summary>
+  Protected Overridable Sub Serializing() _
+    Implements CSLA.Serialization.ISerializationNotification.Serializing
+
+    Dim child As Serialization.ISerializationNotification
+    For Each child In list
+      child.Serializing()
+    Next
+  End Sub
 
 #End Region
 

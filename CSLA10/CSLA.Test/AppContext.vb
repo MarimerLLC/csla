@@ -9,7 +9,7 @@ Public Class AppContext
 
     ApplicationContext.Clear()
 
-    Dim root As root = root.GetRoot("testing")
+    Dim root As SimpleRoot = SimpleRoot.GetSimpleRoot("simple")
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("CSLA.ClientContext")
@@ -79,5 +79,41 @@ Public Class AppContext
     Assert.AreEqual("global context data", Session("globalcontext"), "Third")
 
   End Sub
+
+  <Test()> _
+  Public Sub DataPortalEvents()
+    Session.Clear()
+
+    ApplicationContext.Clear()
+
+    ApplicationContext.GlobalContext("global") = "global"
+
+    AddHandler DataPortal.OnDataPortalInvoke, AddressOf OnDataPortalInvoke
+    AddHandler DataPortal.OnDataPortalInvokeComplete, AddressOf OnDataPortalInvokeComplete
+
+    Dim root As root = root.GetRoot("testing")
+
+    RemoveHandler DataPortal.OnDataPortalInvoke, AddressOf OnDataPortalInvoke
+    RemoveHandler DataPortal.OnDataPortalInvokeComplete, AddressOf OnDataPortalInvokeComplete
+
+    Assert.AreEqual("global", Session("ClientInvoke"), "Client invoke incorrect")
+    Assert.AreEqual("global", Session("ClientInvokeComplete"), "Client invoke complete incorrect")
+    Assert.AreEqual("global", Session("dpinvoke"), "Server invoke incorrect")
+    Assert.AreEqual("global", Session("dpinvokecomplete"), "Server invoke complete incorrect")
+
+  End Sub
+
+  Private Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+
+    Session("ClientInvoke") = ApplicationContext.GlobalContext("global")
+
+  End Sub
+
+  Private Sub OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+
+    Session("ClientInvokeComplete") = ApplicationContext.GlobalContext("global")
+
+  End Sub
+
 
 End Class

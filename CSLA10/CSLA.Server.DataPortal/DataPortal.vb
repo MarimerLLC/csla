@@ -30,8 +30,15 @@ Namespace Server
       ' create an instance of the business object
       Dim obj As Object = CreateBusinessObject(Criteria)
 
+      ' tell the business object we're about to make a DataPortal_xyz call
+      CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
+
       ' tell the business object to fetch its data
       CallMethod(obj, "DataPortal_Create", Criteria)
+
+      ' tell the business object the DataPortal_xyz call is complete
+      CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
+
       ' return the populated business object as a result
       If context.IsRemotePortal Then
         Serialization.SerializationNotification.OnSerializing(obj)
@@ -56,8 +63,14 @@ Namespace Server
       ' create an instance of the business object
       Dim obj As Object = CreateBusinessObject(Criteria)
 
+      ' tell the business object we're about to make a DataPortal_xyz call
+      CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
+
       ' tell the business object to fetch its data
       CallMethod(obj, "DataPortal_Fetch", Criteria)
+
+      ' tell the business object the DataPortal_xyz call is complete
+      CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
 
       ' return the populated business object as a result
       If context.IsRemotePortal Then
@@ -84,8 +97,14 @@ Namespace Server
         Serialization.SerializationNotification.OnDeserialized(obj)
       End If
 
+      ' tell the business object we're about to make a DataPortal_xyz call
+      CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
+
       ' tell the business object to update itself
       CallMethod(obj, "DataPortal_Update")
+
+      ' tell the business object the DataPortal_xyz call is complete
+      CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
 
       If context.IsRemotePortal Then
         Serialization.SerializationNotification.OnSerializing(obj)
@@ -109,8 +128,14 @@ Namespace Server
       ' create an instance of the business object
       Dim obj As Object = CreateBusinessObject(Criteria)
 
+      ' tell the business object we're about to make a DataPortal_xyz call
+      CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
+
       ' tell the business object to delete itself
       CallMethod(obj, "DataPortal_Delete", Criteria)
+
+      ' tell the business object the DataPortal_xyz call is complete
+      CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
 
       Dim result As New DataPortalResult
       ClearContext(context)

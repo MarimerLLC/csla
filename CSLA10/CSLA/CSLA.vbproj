@@ -137,6 +137,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "CommandBase.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DataPortal.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

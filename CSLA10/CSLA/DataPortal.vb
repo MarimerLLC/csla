@@ -24,7 +24,7 @@ Public Class DataPortal
   ''' Raised by DataPortal after the requested 
   ''' server-side DataPortal method call is complete.
   ''' </summary>
-  Public Shared Event DataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Public Shared Event OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
 #End Region
 
@@ -61,7 +61,7 @@ Public Class DataPortal
       Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
 
-    RaiseEvent DataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
     Return result.ReturnObject
 
@@ -97,7 +97,7 @@ Public Class DataPortal
       Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
 
-    RaiseEvent DataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
     Return result.ReturnObject
 
@@ -144,7 +144,7 @@ Public Class DataPortal
       Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
 
-    RaiseEvent DataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
     Return result.ReturnObject
 
@@ -178,7 +178,7 @@ Public Class DataPortal
       RestoreContext(result)
     End If
 
-    RaiseEvent DataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
   End Sub
 
@@ -341,25 +341,5 @@ Public Class DataPortal
   End Sub
 
 #End Region
-
-End Class
-
-
-''' <summary>
-''' Provides information about the DataPortal 
-''' call.
-''' </summary>
-Public Class DataPortalEventArgs
-  Inherits EventArgs
-
-  ''' <summary>
-  ''' The DataPortalContext object passed to the
-  ''' server-side DataPortal.
-  ''' </summary>
-  Public DataPortalContext As Server.DataPortalContext
-
-  Public Sub New(ByVal dataPortalContext As Server.DataPortalContext)
-    Me.DataPortalContext = dataPortalContext
-  End Sub
 
 End Class

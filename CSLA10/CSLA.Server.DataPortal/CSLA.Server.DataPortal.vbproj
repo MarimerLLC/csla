@@ -112,6 +112,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DataPortalEventArgs.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DataPortalResult.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

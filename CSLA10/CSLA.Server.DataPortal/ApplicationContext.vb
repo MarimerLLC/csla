@@ -63,19 +63,19 @@ Public Class ApplicationContext
     End Get
   End Property
 
-  Friend Shared Function GetClientContext() As Object
+  Friend Shared Function GetClientContext() As HybridDictionary
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("CSLA.ClientContext")
-    Return Thread.GetData(slot)
+    Return CType(Thread.GetData(slot), HybridDictionary)
 
   End Function
 
-  Friend Shared Function GetGlobalContext() As Object
+  Friend Shared Function GetGlobalContext() As HybridDictionary
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("CSLA.GlobalContext")
-    Return Thread.GetData(slot)
+    Return CType(Thread.GetData(slot), HybridDictionary)
 
   End Function
 

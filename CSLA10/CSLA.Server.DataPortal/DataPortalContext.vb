@@ -1,5 +1,6 @@
 Imports System.Security.Principal
 Imports System.Threading
+Imports System.Collections.Specialized
 
 ''' <summary>
 ''' 
@@ -22,8 +23,8 @@ Namespace Server
 
     Private mPrincipal As IPrincipal
     Private mRemotePortal As Boolean
-    Private mClientContext As Object
-    Private mGlobalContext As Object
+    Private mClientContext As HybridDictionary
+    Private mGlobalContext As HybridDictionary
 
     ''' <summary>
     ''' The current <see cref="T:CSLA.Security.BusinessPrincipal" />
@@ -45,13 +46,13 @@ Namespace Server
       End Get
     End Property
 
-    Friend ReadOnly Property ClientContext() As Object
+    Friend ReadOnly Property ClientContext() As HybridDictionary
       Get
         Return mClientContext
       End Get
     End Property
 
-    Friend ReadOnly Property GlobalContext() As Object
+    Friend ReadOnly Property GlobalContext() As HybridDictionary
       Get
         Return mGlobalContext
       End Get

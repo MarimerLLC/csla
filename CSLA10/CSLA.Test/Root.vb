@@ -46,7 +46,9 @@ Public Class Root
   End Class
 
   Public Shared Function NewRoot() As Root
-    Return DirectCast(DataPortal.Create(New Criteria()), Root)
+    Dim crit As Criteria = New Criteria
+    Dim result As Object = DataPortal.Create(crit)
+    Return DirectCast(result, Root)
   End Function
 
   Public Shared Function GetRoot(ByVal Data As String) As Root
@@ -118,6 +120,18 @@ Public Class Root
   Protected Overrides Sub Serializing()
     MyBase.Serializing()
     Session.Add("Serializing", "root Serializing")
+  End Sub
+
+  Protected Overrides Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+
+    Session("dpinvoke") = ApplicationContext.GlobalContext("global")
+
+  End Sub
+
+  Protected Overrides Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+
+    Session("dpinvokecomplete") = ApplicationContext.GlobalContext("global")
+
   End Sub
 
 End Class

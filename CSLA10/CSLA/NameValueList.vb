@@ -148,6 +148,24 @@ Public MustInherit Class NameValueList
   End Sub
 
   ''' <summary>
+  ''' Called by the server-side DataPortal prior to calling the 
+  ''' requested DataPortal_xyz method.
+  ''' </summary>
+  ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+
+  End Sub
+
+  ''' <summary>
+  ''' Called by the server-side DataPortal after calling the 
+  ''' requested DataPortal_xyz method.
+  ''' </summary>
+  ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+
+  End Sub
+
+  ''' <summary>
   ''' Returns the specified database connection string from the application
   ''' configuration file.
   ''' </summary>
@@ -177,7 +195,7 @@ Public MustInherit Class NameValueList
   Protected Sub SimpleFetch(ByVal DataBaseName As String, ByVal TableName As String, ByVal NameColumn As String, ByVal ValueColumn As String)
 
     Dim cn As New SqlConnection(DB(DataBaseName))
-    Dim cm As New SqlCommand()
+    Dim cm As New SqlCommand
 
     cn.Open()
     Try

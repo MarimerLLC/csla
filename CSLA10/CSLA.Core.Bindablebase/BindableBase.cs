@@ -20,23 +20,17 @@ namespace CSLA.Core
     {
       add
       {
-        if (value.Target != null) 
-        {
-          if (value.Target.GetType().IsSerializable)
-            _serializableHandlers = (EventHandler)Delegate.Combine(_serializableHandlers, value);
-          else
-            _nonSerializableHandlers = (EventHandler)Delegate.Combine(_nonSerializableHandlers, value);
-        }
+        if (value.Method.IsPublic && (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic))
+          _serializableHandlers = (EventHandler)Delegate.Combine(_serializableHandlers, value);
+        else
+          _nonSerializableHandlers = (EventHandler)Delegate.Combine(_nonSerializableHandlers, value);
       }
       remove
       {
-        if (value.Target != null) 
-        {
-          if (value.Target.GetType().IsSerializable)
-            _serializableHandlers = (EventHandler)Delegate.Remove(_serializableHandlers, value);
-          else
-            _nonSerializableHandlers = (EventHandler)Delegate.Remove(_nonSerializableHandlers, value);
-        }
+        if (value.Method.IsPublic && (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic))
+          _serializableHandlers = (EventHandler)Delegate.Remove(_serializableHandlers, value);
+        else
+          _nonSerializableHandlers = (EventHandler)Delegate.Remove(_nonSerializableHandlers, value);
       }
     }
 

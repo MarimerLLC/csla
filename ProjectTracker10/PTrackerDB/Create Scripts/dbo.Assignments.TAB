@@ -1,0 +1,16 @@
+﻿if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Assignments]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[Assignments]
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Assignments]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+ BEGIN
+CREATE TABLE [dbo].[Assignments] (
+	[ProjectID] [uniqueidentifier] NOT NULL ,
+	[ResourceID] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[Assigned] [datetime] NOT NULL ,
+	[Role] [int] NOT NULL 
+) ON [PRIMARY]
+END
+
+GO
+

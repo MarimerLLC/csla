@@ -1,0 +1,21 @@
+﻿ALTER TABLE [dbo].[Assignments] ADD 
+	CONSTRAINT [FK_Assignements_Resources] FOREIGN KEY 
+	(
+		[ResourceID]
+	) REFERENCES [dbo].[Resources] (
+		[ID]
+	),
+	CONSTRAINT [FK_Assignements_Roles] FOREIGN KEY 
+	(
+		[Role]
+	) REFERENCES [dbo].[Roles] (
+		[ID]
+	),
+	CONSTRAINT [FK_Assignments_Projects] FOREIGN KEY 
+	(
+		[ProjectID]
+	) REFERENCES [dbo].[Projects] (
+		[ID]
+	)
+GO
+

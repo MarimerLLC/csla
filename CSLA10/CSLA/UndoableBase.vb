@@ -291,25 +291,40 @@ Namespace Core
                 ' this is a child collection, cascade the call
                 Debug.Indent()
                 Debug.WriteLine("COLLECTION " & fieldName)
-                CType(field.GetValue(Me), BusinessCollectionBase).DumpState()
+                If Not field.GetValue(Me) Is Nothing Then
+                  CType(field.GetValue(Me), BusinessCollectionBase).DumpState()
+                Else
+                  Debug.WriteLine("<Nothing>")
+                End If
                 Debug.Unindent()
 
               ElseIf TypeInheritsFrom(field.FieldType, BusinessType) Then
                 ' this is a child object, cascade the call
                 Debug.Indent()
                 Debug.WriteLine("CHILD OBJECT " & fieldName)
-                CType(field.GetValue(Me), BusinessBase).DumpState()
+                If Not field.GetValue(Me) Is Nothing Then
+                  CType(field.GetValue(Me), BusinessBase).DumpState()
+                Else
+                  Debug.WriteLine("<Nothing>")
+                End If
                 Debug.Unindent()
 
               Else
                 ' this is a normal field, simply trap the value
-                Debug.WriteLine(fieldName & ": " & field.GetValue(Me).ToString)
-
+                If Not field.GetValue(Me) Is Nothing Then
+                  Debug.WriteLine(fieldName & ": " & field.GetValue(Me).ToString)
+                Else
+                  Debug.WriteLine(fieldName & ": <Nothing>")
+                End If
               End If
 
             Else
               ' field is not undoable
-              Debug.WriteLine("<NotUndoable()> " & fieldName & ": " & field.GetValue(Me).ToString)
+              If Not field.GetValue(Me) Is Nothing Then
+                Debug.WriteLine("<NotUndoable()> " & fieldName & ": " & field.GetValue(Me).ToString)
+              Else
+                Debug.WriteLine("<NotUndoable()> " & fieldName & ": <Nothing>")
+              End If
             End If
 
           End If

@@ -17,18 +17,6 @@ namespace PTWin
     /// </summary>
     private System.ComponentModel.Container components = null;
 
-    public ResourceSelect()
-    {
-      //
-      // Required for Windows Form Designer support
-      //
-      InitializeComponent();
-
-      //
-      // TODO: Add any constructor code after InitializeComponent call
-      //
-    }
-
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
@@ -103,7 +91,6 @@ namespace PTWin
                                                                   this.dvDisplay});
       this.Name = "ResourceSelect";
       this.Text = "ResourceSelect";
-      this.Load += new System.EventHandler(this.ResourceSelect_Load);
       this.ResumeLayout(false);
 
     }
@@ -115,22 +102,24 @@ namespace PTWin
 
     string _result = string.Empty;
 
-    public string Result
+    public ResourceSelect(string title)
     {
-      get
-      {
-        return _result;
-      }
-    }
-
-    private void ResourceSelect_Load(object sender, System.EventArgs e)
-    {
+      InitializeComponent();
+      Text = title;
       ResourceList list = ResourceList.GetResourceList();
       dvDisplay.AutoDiscover = false;
       dvDisplay.Columns.Add("ID", 0);
       dvDisplay.Columns.Add("Name", dvDisplay.Width);
       dvDisplay.DataSource = list;
       dvDisplay.Focus();
+    }
+
+    public string Result
+    {
+      get
+      {
+        return _result;
+      }
     }
 
     private void btnOK_Click(object sender, System.EventArgs e)

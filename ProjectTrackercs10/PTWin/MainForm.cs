@@ -317,8 +317,7 @@ namespace PTWin
     {
       Login dlg = new Login();
 
-      dlg.ShowDialog(this);
-      if(dlg.LoginOK)
+      if(dlg.ShowDialog(this) == DialogResult.OK)
       {
         Cursor = Cursors.WaitCursor;
         Status("Verifying user...");
@@ -394,17 +393,15 @@ namespace PTWin
     private void mnuProjectNew_Click(object sender, System.EventArgs e)
     {
       Cursor.Current = Cursors.WaitCursor;
-      ProjectEdit frm = new ProjectEdit();
+      ProjectEdit frm = new ProjectEdit(Project.NewProject());
       frm.MdiParent = this;
-      frm.Project = Project.NewProject();
       Cursor.Current = Cursors.Default;
       frm.Show();
     }
 
     private void mnuProjectEdit_Click(object sender, System.EventArgs e)
     {
-      ProjectSelect dlg = new ProjectSelect();
-      dlg.Text = "Edit Project";
+      ProjectSelect dlg = new ProjectSelect("Edit Project");
       dlg.ShowDialog(this);
 
       string result = dlg.Result;
@@ -415,9 +412,8 @@ namespace PTWin
           Guid id = new Guid(result);
           Project obj = Project.GetProject(id);
 
-          ProjectEdit frm = new ProjectEdit();
+          ProjectEdit frm = new ProjectEdit(obj);
           frm.MdiParent = this;
-          frm.Project = obj;
           Cursor.Current = Cursors.Default;
           frm.Show();
         }
@@ -431,8 +427,7 @@ namespace PTWin
 
     private void mnuProjectRemove_Click(object sender, System.EventArgs e)
     {
-      ProjectSelect dlg = new ProjectSelect();
-      dlg.Text = "Remove Project";
+      ProjectSelect dlg = new ProjectSelect("Remove Project");
       dlg.ShowDialog(this);
 
       string result = dlg.Result;
@@ -475,9 +470,8 @@ namespace PTWin
       {
         Cursor.Current = Cursors.WaitCursor;
         Resource obj = Resource.NewResource(id);
-        ResourceEdit frm = new ResourceEdit();
+        ResourceEdit frm = new ResourceEdit(obj);
         frm.MdiParent = this;
-        frm.Resource = obj;
         Cursor.Current = Cursors.Default;
         frm.Show();
       }
@@ -485,8 +479,7 @@ namespace PTWin
 
     private void mnuResourceEdit_Click(object sender, System.EventArgs e)
     {
-      ResourceSelect dlg = new ResourceSelect();
-      dlg.Text = "Edit Resource";
+      ResourceSelect dlg = new ResourceSelect("Edit Resource");
       dlg.ShowDialog(this);
 
       string result = dlg.Result;
@@ -495,9 +488,8 @@ namespace PTWin
         {
           Cursor.Current = Cursors.WaitCursor;
           Resource obj = Resource.GetResource(result);
-          ResourceEdit frm = new ResourceEdit();
+          ResourceEdit frm = new ResourceEdit(obj);
           frm.MdiParent = this;
-          frm.Resource = obj;
           Cursor.Current = Cursors.Default;
           frm.Show();
         }
@@ -512,8 +504,7 @@ namespace PTWin
 
     private void mnuResourceRemove_Click(object sender, System.EventArgs e)
     {
-      ResourceSelect dlg = new ResourceSelect();
-      dlg.Text = "Remove Resource";
+      ResourceSelect dlg = new ResourceSelect("Remove Resource");
       dlg.ShowDialog(this);
 
       string result = dlg.Result;
@@ -563,8 +554,7 @@ namespace PTWin
 
     private void mnuProjectList_Click(object sender, System.EventArgs e)
     {
-    ProjectSelect dlg = new ProjectSelect();
-    dlg.Text = "Project List";
+    ProjectSelect dlg = new ProjectSelect("Project List");
     dlg.ShowDialog(this);
 
     string result = dlg.Result;

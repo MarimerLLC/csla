@@ -113,6 +113,7 @@ namespace PTWin
       // btnLogin
       // 
       this.btnLogin.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+      this.btnLogin.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.btnLogin.Enabled = false;
       this.btnLogin.Location = new System.Drawing.Point(376, 112);
       this.btnLogin.Name = "btnLogin";
@@ -155,13 +156,11 @@ namespace PTWin
 
     string _username = string.Empty;
     string _password = string.Empty;
-    bool _login;
 
     private void btnLogin_Click(object sender, System.EventArgs e)
     {
       _username = txtUsername.Text;
       _password = txtPassword.Text;
-      _login = true;
       Close();
     }
 
@@ -169,7 +168,6 @@ namespace PTWin
     {
       _username = string.Empty;
       _password = string.Empty;
-      _login = false;
       Close();
     }
 
@@ -189,17 +187,9 @@ namespace PTWin
       }
     }
 
-    public bool LoginOK
-    {
-      get
-      {
-        return _login;
-      }
-    }
-
     private void txtUsername_TextChanged(object sender, System.EventArgs e)
     {
-      btnLogin.Enabled = (txtUsername.Text.Length > 0);
+      btnLogin.Enabled = (txtUsername.Text.Trim().Length > 0);
     }
 	}
 }

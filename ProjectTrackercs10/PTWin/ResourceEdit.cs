@@ -18,18 +18,6 @@ namespace PTWin
     /// </summary>
     private System.ComponentModel.Container components = null;
 
-    public ResourceEdit()
-    {
-      //
-      // Required for Windows Form Designer support
-      //
-      InitializeComponent();
-
-      //
-      // TODO: Add any constructor code after InitializeComponent call
-      //
-    }
-
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
@@ -252,7 +240,6 @@ namespace PTWin
       this.Name = "ResourceEdit";
       this.Text = "ResourceEdit";
       this.Closing += new System.ComponentModel.CancelEventHandler(this.ResourceEdit_Closing);
-      this.Load += new System.EventHandler(this.ResourceEdit_Load);
       this.GroupBox1.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -292,15 +279,17 @@ namespace PTWin
       }
     }
 
-    private void ResourceEdit_Load(object sender, System.EventArgs e)
+    public ResourceEdit(Resource resource)
     {
+      InitializeComponent();
+      _resource = resource;
       this.Text = "Resource " + _resource.LastName + ", " + _resource.FirstName;
 
       foreach(string role in Assignment.Roles)
       {
-        mnuRoles.MenuItems.Add(Assignment.Roles[role]);
-        mnuRoles.MenuItems[mnuRoles.MenuItems.Count - 1].Click += 
-          new System.EventHandler(mnuRoles_Click);
+        MenuItem item = new MenuItem(Assignment.Roles[role]);
+        mnuRoles.MenuItems.Add(item);
+        item.Click += new System.EventHandler(mnuRoles_Click);
       }
 
       if(Thread.CurrentPrincipal.IsInRole("ProjectManager") ||
@@ -348,7 +337,6 @@ namespace PTWin
 
     private void btnCancel_Click(object sender, System.EventArgs e)
     {
-      _resource.CancelEdit();
       Close();
     }
 
@@ -377,8 +365,7 @@ namespace PTWin
 
     private void btnAssignProject_Click(object sender, System.EventArgs e)
     {
-      ProjectSelect dlg = new ProjectSelect();
-      dlg.Text = "Assign to project";
+      ProjectSelect dlg = new ProjectSelect("Assign to project");
       dlg.ShowDialog(this);
       string result = dlg.Result;
 
@@ -439,9 +426,8 @@ namespace PTWin
     {
       Guid id = new Guid(dvProjects.SelectedItems[0].Text);
       Cursor.Current = Cursors.WaitCursor;
-      ProjectEdit frm = new ProjectEdit();
+      ProjectEdit frm = new ProjectEdit(Project.GetProject(id));
       frm.MdiParent = this.MdiParent;
-      frm.Project = Project.GetProject(id);
       Cursor.Current = Cursors.Default;
       frm.Show();
     }

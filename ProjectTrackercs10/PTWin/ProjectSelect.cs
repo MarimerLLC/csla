@@ -20,18 +20,6 @@ namespace PTWin
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
-		public ProjectSelect()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
-
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
-
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -106,7 +94,6 @@ namespace PTWin
                                                                   this.dvDisplay});
       this.Name = "ProjectSelect";
       this.Text = "ProjectSelect";
-      this.Load += new System.EventHandler(this.ProjectSelect_Load);
       this.ResumeLayout(false);
 
     }
@@ -114,8 +101,10 @@ namespace PTWin
 
     string result = string.Empty;
 
-    private void ProjectSelect_Load(object sender, System.EventArgs e)
+    public ProjectSelect(string title)
     {
+      InitializeComponent();
+      Text = title;
       ProjectTracker.Library.ProjectList list = 
         ProjectTracker.Library.ProjectList.GetProjectList();
       dvDisplay.AutoDiscover = false;

@@ -37,18 +37,6 @@ namespace PTWin
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
-		public ProjectEdit()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
-
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
-
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -271,7 +259,6 @@ namespace PTWin
       this.Name = "ProjectEdit";
       this.Text = "ProjectEdit";
       this.Closing += new System.ComponentModel.CancelEventHandler(this.ProjectEdit_Closing);
-      this.Load += new System.EventHandler(this.ProjectEdit_Load);
       this.groupBox1.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -279,6 +266,36 @@ namespace PTWin
 		#endregion
 
     Project _project;
+
+    public ProjectEdit(Project project)
+    {
+      InitializeComponent();
+
+      _project = project;
+      this.Text = "Project " + _project.Name;
+
+      foreach(string role in Assignment.Roles)
+      {
+        MenuItem item = new MenuItem(Assignment.Roles[role]);
+        mnuRoles.MenuItems.Add(item);
+        item.Click += new System.EventHandler(this.mnuRoles_Click);
+      }
+
+      if(Thread.CurrentPrincipal.IsInRole("ProjectManager"))
+      {
+        // only project managers can save a project
+        _project.BeginEdit();
+        btnAddResource.Enabled = true;
+        btnRemoveResource.Enabled = true;
+      }
+      else
+      {
+        btnAddResource.Enabled = false;
+        btnRemoveResource.Enabled = false;
+      }
+
+      DataBind();
+    }
 
     public Project Project
     {
@@ -312,35 +329,7 @@ namespace PTWin
 
     private void btnCancel_Click(object sender, System.EventArgs e)
     {
-      _project.CancelEdit();
       Close();
-    }
-
-    private void ProjectEdit_Load(object sender, System.EventArgs e)
-    {
-      this.Text = "Project " + _project.Name;
-
-      foreach(string role in Assignment.Roles)
-      {
-        mnuRoles.MenuItems.Add(Assignment.Roles[role]);
-        this.mnuRoles.MenuItems[mnuRoles.MenuItems.Count - 1].Click += 
-          new System.EventHandler(this.mnuRoles_Click);
-      }
-
-      if(Thread.CurrentPrincipal.IsInRole("ProjectManager"))
-      {
-        // only project managers can save a project
-        _project.BeginEdit();
-        btnAddResource.Enabled = true;
-        btnRemoveResource.Enabled = true;
-      }
-      else
-      {
-        btnAddResource.Enabled = false;
-        btnRemoveResource.Enabled = false;
-      }
-
-      DataBind();
     }
 
     void DataBind()
@@ -383,8 +372,7 @@ namespace PTWin
 
     private void btnAddResource_Click(object sender, System.EventArgs e)
     {
-      ResourceSelect dlg = new ResourceSelect();
-      dlg.Text = "Assign resource";
+      ResourceSelect dlg = new ResourceSelect("Assign resource");
       dlg.ShowDialog(this);
       string id = dlg.Result;
 
@@ -429,9 +417,8 @@ namespace PTWin
     {
       string id = dvResources.SelectedItems[0].Text;
       Cursor.Current = Cursors.WaitCursor;
-      ResourceEdit frm = new ResourceEdit();
+      ResourceEdit frm = new ResourceEdit(Resource.GetResource(id));
       frm.MdiParent = this.MdiParent;
-      frm.Resource = Resource.GetResource(id);
       Cursor.Current = Cursors.Default;
       frm.Show();
     }

@@ -55,6 +55,40 @@ Public Class Basics
   End Sub
 
   <Test()> _
+  Public Sub AddRemoveCancelChild()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.BeginEdit()
+    root.Children.Add("1")
+    Dim child As child = root.Children.Item(0)
+    root.BeginEdit()
+    root.Children.Remove(root.Children.Item(0))
+    Assert.IsTrue(root.Children.ContainsDeleted(child), "Child object not in deleted list")
+    Assert.IsTrue(child.IsDeleted, "Child object not marked for deletion")
+    root.CancelEdit()
+    Assert.AreEqual(1, root.Children.Count, "Child was not restored")
+    Assert.IsFalse(root.Children.ContainsDeleted(child), "Child object still in deleted list")
+    Assert.IsFalse(child.IsDeleted, "Child object still marked for deletion")
+    root.CancelEdit()
+    Assert.AreEqual(0, root.Children.Count, "Child is not gone")
+  End Sub
+
+  <Test()> _
+  Public Sub AddEditCancelChild()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.BeginEdit()
+    root.Children.Add("1")
+    root.BeginEdit()
+    root.Children.Item(0).Data = 42
+    Assert.AreEqual("42", root.Children.Item(0).Data, "Child value wasn't set")
+    root.CancelEdit()
+    Assert.AreEqual("1", root.Children.Item(0).Data, "Child value wasn't reset")
+    root.CancelEdit()
+    Assert.AreEqual(0, root.Children.Count, "Child is not gone")
+  End Sub
+
+  <Test()> _
   Public Sub CloneGraph()
     Session.Clear()
     Dim root As root = root.NewRoot
@@ -74,7 +108,7 @@ Public Class Basics
   <Test()> _
   Public Sub ClearChildList()
     Session.Clear()
-    Dim root As Root = root.NewRoot
+    Dim root As root = root.NewRoot
     root.Children.Add("A")
     root.Children.Add("B")
     root.Children.Add("C")
@@ -85,7 +119,7 @@ Public Class Basics
   <Test()> _
   Public Sub NestedAddAcceptChild()
     Session.Clear()
-    Dim root As Root = root.NewRoot
+    Dim root As root = root.NewRoot
     root.BeginEdit()
     root.Children.Add("A")
     root.BeginEdit()
@@ -101,7 +135,7 @@ Public Class Basics
   <Test()> _
   Public Sub NestedAddDeleteAcceptChild()
     Session.Clear()
-    Dim root As Root = root.NewRoot
+    Dim root As root = root.NewRoot
     root.BeginEdit()
     root.Children.Add("A")
     root.BeginEdit()

@@ -244,7 +244,7 @@ namespace CSLA
         _editLevel = 0;
 
       // Cancel edit on all current items
-      for(int index = List.Count - 1; index > 0; index--)
+      for(int index = List.Count - 1; index >= 0; index--)
       {
         child = (BusinessBase)List[index];
         child.UndoChanges();
@@ -254,7 +254,7 @@ namespace CSLA
       }
 
       // cancel edit on all deleted items
-      for(int index = deletedList.Count - 1; index > 0; index--)
+      for(int index = deletedList.Count - 1; index >= 0; index--)
       {
         child = (BusinessBase)deletedList[index];
         child.UndoChanges();
@@ -284,7 +284,7 @@ namespace CSLA
       }
 
       // cascade the call to all deleted child objects
-      for(int index = deletedList.Count - 1; index > 0; index--)
+      for(int index = deletedList.Count - 1; index >= 0; index--)
       {
         BusinessBase child = (BusinessBase)deletedList[index];
         child.AcceptChanges();

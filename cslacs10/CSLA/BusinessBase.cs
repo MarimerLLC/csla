@@ -466,7 +466,7 @@ namespace CSLA
     /// called, if needed, when your object is serialized by
     /// the DataPortal or by the Clone method.
     /// </remarks>
-    protected virtual void AddBusinessRules()
+    protected internal virtual void AddBusinessRules()
     {
     }
 

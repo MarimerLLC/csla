@@ -481,7 +481,7 @@ Public MustInherit Class BusinessBase
   ''' called, if needed, when your object is serialized by
   ''' the DataPortal or by the Clone method.
   ''' </remarks>
-  Protected Overridable Sub AddBusinessRules()
+  Protected Friend Overridable Sub AddBusinessRules()
 
   End Sub
 

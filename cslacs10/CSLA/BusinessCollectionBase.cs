@@ -195,6 +195,11 @@ namespace CSLA
                                 "CancelEdit is not valid on a child object");
 
       UndoChanges();
+
+      foreach(BusinessBase child in List)
+        child.AddBusinessRules();
+      foreach(BusinessBase child in deletedList)
+        child.AddBusinessRules();
     }
 
     /// <summary>

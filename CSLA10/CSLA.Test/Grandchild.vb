@@ -52,4 +52,19 @@ Public Class Grandchild
     End If
   End Sub
 
+  Protected Overrides Sub Deserialized()
+    MyBase.Deserialized()
+    Session.Add("GCDeserialized", "GC Deserialized")
+  End Sub
+
+  Protected Overrides Sub Serialized()
+    MyBase.Serialized()
+    Session.Add("GCSerialized", "GC Serialized")
+  End Sub
+
+  Protected Overrides Sub Serializing()
+    MyBase.Serializing()
+    Session.Add("GCSerializing", "GC Serializing")
+  End Sub
+
 End Class

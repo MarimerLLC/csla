@@ -23,6 +23,7 @@ Public MustInherit Class BusinessCollectionBase
   Inherits CSLA.Core.SortableCollectionBase
 
   Implements ICloneable
+  Implements Serialization.ISerializationNotification
 
 #Region " Contains "
 
@@ -602,6 +603,48 @@ Public MustInherit Class BusinessCollectionBase
     Next
     Debug.Unindent()
 
+  End Sub
+
+#End Region
+
+#Region " ISerializationNotification "
+
+  ''' <summary>
+  ''' This method is called on a newly deserialized object
+  ''' after deserialization is complete.
+  ''' </summary>
+  Protected Overridable Sub Deserialized() _
+    Implements CSLA.Serialization.ISerializationNotification.Deserialized
+
+    Dim child As Serialization.ISerializationNotification
+    For Each child In list
+      child.Deserialized()
+    Next
+  End Sub
+
+  ''' <summary>
+  ''' This method is called on the original instance of the
+  ''' object after it has been serialized.
+  ''' </summary>
+  Protected Overridable Sub Serialized() _
+    Implements CSLA.Serialization.ISerializationNotification.Serialized
+
+    Dim child As Serialization.ISerializationNotification
+    For Each child In list
+      child.Serialized()
+    Next
+  End Sub
+
+  ''' <summary>
+  ''' This method is called before an object is serialized.
+  ''' </summary>
+  Protected Overridable Sub Serializing() _
+    Implements CSLA.Serialization.ISerializationNotification.Serializing
+
+    Dim child As Serialization.ISerializationNotification
+    For Each child In list
+      child.Serializing()
+    Next
   End Sub
 
 #End Region

@@ -2,202 +2,221 @@ Imports System.Reflection
 Imports System.Security.Principal
 Imports System.Configuration
 
-''' <summary>
-''' Implements the server-side DataPortal as discussed
-''' in Chapter 5.
-''' </summary>
-Public Class DataPortal
-  Inherits MarshalByRefObject
+Namespace Server
+
+  ''' <summary>
+  ''' Implements the server-side DataPortal as discussed
+  ''' in Chapter 5.
+  ''' </summary>
+  Public Class DataPortal
+    Inherits MarshalByRefObject
 
 #Region " Data Access "
 
-  ''' <summary>
-  ''' Called by the client-side DataPortal to create a new object.
-  ''' </summary>
-  ''' <param name="Criteria">Object-specific criteria.</param>
-  ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
-  ''' <returns>A populated business object.</returns>
-  Public Function Create(ByVal Criteria As Object, ByVal Principal As Object) As Object
+    ''' <summary>
+    ''' Called by the client-side DataPortal to create a new object.
+    ''' </summary>
+    ''' <param name="Criteria">Object-specific criteria.</param>
+    ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
+    ''' <returns>A populated business object.</returns>
+    Public Function Create(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
 
-    SetPrincipal(Principal)
+      SetPrincipal(context.Principal)
 
-    ' create an instance of the business object
-    Dim obj As Object = CreateBusinessObject(Criteria)
+      ' create an instance of the business object
+      Dim obj As Object = CreateBusinessObject(Criteria)
 
-    ' tell the business object to fetch its data
-    CallMethod(obj, "DataPortal_Create", Criteria)
-    ' return the populated business object as a result
-    Return obj
+      ' tell the business object to fetch its data
+      CallMethod(obj, "DataPortal_Create", Criteria)
+      ' return the populated business object as a result
+      If context.IsRemotePortal Then
+        Serialization.SerializationNotification.OnSerializing(obj)
+      End If
+      Return obj
 
-  End Function
+    End Function
 
-  ''' <summary>
-  ''' Called by the client-side DataProtal to retrieve an object.
-  ''' </summary>
-  ''' <param name="Criteria">Object-specific criteria.</param>
-  ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
-  ''' <returns>A populated business object.</returns>
-  Public Function Fetch(ByVal Criteria As Object, ByVal Principal As Object) As Object
-    SetPrincipal(Principal)
+    ''' <summary>
+    ''' Called by the client-side DataProtal to retrieve an object.
+    ''' </summary>
+    ''' <param name="Criteria">Object-specific criteria.</param>
+    ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
+    ''' <returns>A populated business object.</returns>
+    Public Function Fetch(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
+      SetPrincipal(context.Principal)
 
-    ' create an instance of the business object
-    Dim obj As Object = CreateBusinessObject(Criteria)
+      ' create an instance of the business object
+      Dim obj As Object = CreateBusinessObject(Criteria)
 
-    ' tell the business object to fetch its data
-    CallMethod(obj, "DataPortal_Fetch", Criteria)
+      ' tell the business object to fetch its data
+      CallMethod(obj, "DataPortal_Fetch", Criteria)
 
-    ' return the populated business object as a result
-    Return obj
+      ' return the populated business object as a result
+      If context.IsRemotePortal Then
+        Serialization.SerializationNotification.OnSerializing(obj)
+      End If
+      Return obj
 
-  End Function
+    End Function
 
-  ''' <summary>
-  ''' Called by the client-side DataPortal to update an object.
-  ''' </summary>
-  ''' <param name="obj">A reference to the object being updated.</param>
-  ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
-  ''' <returns>A reference to the newly updated object.</returns>
-  Public Function Update(ByVal obj As Object, ByVal Principal As Object) As Object
+    ''' <summary>
+    ''' Called by the client-side DataPortal to update an object.
+    ''' </summary>
+    ''' <param name="obj">A reference to the object being updated.</param>
+    ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
+    ''' <returns>A reference to the newly updated object.</returns>
+    Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As Object
 
-    SetPrincipal(Principal)
+      SetPrincipal(context.Principal)
 
-    ' tell the business object to update itself
-    CallMethod(obj, "DataPortal_Update")
-    Return obj
+      If context.IsRemotePortal Then
+        Serialization.SerializationNotification.OnDeserialized(obj)
+      End If
 
-  End Function
+      ' tell the business object to update itself
+      CallMethod(obj, "DataPortal_Update")
 
-  ''' <summary>
-  ''' Called by the client-side DataPortal to delete an object.
-  ''' </summary>
-  ''' <param name="Criteria">Object-specific criteria.</param>
-  ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
-  Public Sub Delete(ByVal Criteria As Object, ByVal Principal As Object)
+      If context.IsRemotePortal Then
+        Serialization.SerializationNotification.OnSerializing(obj)
+      End If
+      Return obj
 
-    SetPrincipal(Principal)
+    End Function
 
-    ' create an instance of the business object
-    Dim obj As Object = CreateBusinessObject(Criteria)
+    ''' <summary>
+    ''' Called by the client-side DataPortal to delete an object.
+    ''' </summary>
+    ''' <param name="Criteria">Object-specific criteria.</param>
+    ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
+    Public Sub Delete(ByVal Criteria As Object, ByVal context As DataPortalContext)
 
-    ' tell the business object to delete itself
-    CallMethod(obj, "DataPortal_Delete", Criteria)
+      SetPrincipal(context.Principal)
 
-  End Sub
+      ' create an instance of the business object
+      Dim obj As Object = CreateBusinessObject(Criteria)
+
+      ' tell the business object to delete itself
+      CallMethod(obj, "DataPortal_Delete", Criteria)
+
+    End Sub
 
 #End Region
 
 #Region " Security "
 
-  Private Function AUTHENTICATION() As String
+    Private Function AUTHENTICATION() As String
 
-    Return ConfigurationSettings.AppSettings("Authentication")
+      Return ConfigurationSettings.AppSettings("Authentication")
 
-  End Function
+    End Function
 
-  Private Sub SetPrincipal(ByVal Principal As Object)
-    Dim objPrincipal As IPrincipal
-    Dim objIdentity As IIdentity
+    Private Sub SetPrincipal(ByVal Principal As Object)
+      Dim objPrincipal As IPrincipal
+      Dim objIdentity As IIdentity
 
-    If AUTHENTICATION() = "Windows" Then
-      ' When using integrated security, Principal must be Nothing 
-      If Principal Is Nothing Then
-        ' Set .NET to use integrated security 
-        AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal)
-        Exit Sub
-
-      Else
-        Throw New Security.SecurityException( _
-          "No principal object should be passed to DataPortal when using Windows integrated security")
-      End If
-    End If
-
-    ' We expect the Principal to be of the type BusinessPrincipal, but we can't enforce 
-    ' that since it causes a circular reference with the business library. 
-    ' Instead we must use type Object for the parameter, so here we do a check 
-    ' on the type of the parameter. 
-    objPrincipal = CType(Principal, IPrincipal)
-    If Not (objPrincipal Is Nothing) Then
-      objIdentity = objPrincipal.Identity
-      If Not (objIdentity Is Nothing) Then
-        If objIdentity.AuthenticationType = "CSLA" Then
-          ' See if our current principal is different from the caller's principal 
-          If Not ReferenceEquals(Principal, _
-              System.Threading.Thread.CurrentPrincipal) Then
-
-            ' The caller had a different principal, so change ours to match the 
-            ' caller's, so all our objects use the caller's security. 
-            System.Threading.Thread.CurrentPrincipal = CType(Principal, _
-              IPrincipal)
-          End If
+      If AUTHENTICATION() = "Windows" Then
+        ' When using integrated security, Principal must be Nothing 
+        If Principal Is Nothing Then
+          ' Set .NET to use integrated security 
+          AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal)
+          Exit Sub
 
         Else
           Throw New Security.SecurityException( _
-            "Principal must be of type BusinessPrincipal, not " & Principal.ToString())
+            "No principal object should be passed to DataPortal when using Windows integrated security")
         End If
-
       End If
 
-    Else
-      Throw New Security.SecurityException( _
-        "Principal must be of type BusinessPrincipal, not Nothing")
-    End If
+      ' We expect the Principal to be of the type BusinessPrincipal, but we can't enforce 
+      ' that since it causes a circular reference with the business library. 
+      ' Instead we must use type Object for the parameter, so here we do a check 
+      ' on the type of the parameter. 
+      objPrincipal = CType(Principal, IPrincipal)
+      If Not (objPrincipal Is Nothing) Then
+        objIdentity = objPrincipal.Identity
+        If Not (objIdentity Is Nothing) Then
+          If objIdentity.AuthenticationType = "CSLA" Then
+            ' See if our current principal is different from the caller's principal 
+            If Not ReferenceEquals(Principal, _
+                System.Threading.Thread.CurrentPrincipal) Then
 
-  End Sub
+              ' The caller had a different principal, so change ours to match the 
+              ' caller's, so all our objects use the caller's security. 
+              System.Threading.Thread.CurrentPrincipal = CType(Principal, _
+                IPrincipal)
+            End If
+
+          Else
+            Throw New Security.SecurityException( _
+              "Principal must be of type BusinessPrincipal, not " & Principal.ToString())
+          End If
+
+        End If
+
+      Else
+        Throw New Security.SecurityException( _
+          "Principal must be of type BusinessPrincipal, not Nothing")
+      End If
+
+    End Sub
 
 #End Region
 
 #Region " Creating the business object "
 
-  Private Function CreateBusinessObject(ByVal Criteria As Object) As Object
+    Private Function CreateBusinessObject(ByVal Criteria As Object) As Object
 
-    Dim businessType As Type
+      Dim businessType As Type
 
-    If Criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
-      ' get the type of the actual business object
-      ' from CriteriaBase (using the new scheme)
-      businessType = CType(Criteria, CriteriaBase).ObjectType
+      If Criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
+        ' get the type of the actual business object
+        ' from CriteriaBase (using the new scheme)
+        businessType = CType(Criteria, CriteriaBase).ObjectType
 
-    Else
-      ' get the type of the actual business object
-      ' based on the nested class scheme in the book
-      businessType = Criteria.GetType.DeclaringType
-    End If
+      Else
+        ' get the type of the actual business object
+        ' based on the nested class scheme in the book
+        businessType = Criteria.GetType.DeclaringType
+      End If
 
-    ' create an instance of the business object
-    Return Activator.CreateInstance(businessType, True)
+      ' create an instance of the business object
+      Return Activator.CreateInstance(businessType, True)
 
-  End Function
+    End Function
 
 #End Region
 
 #Region " Calling a method "
 
-  Private Function CallMethod(ByVal obj As Object, ByVal method As String, ByVal ParamArray params() As Object) As Object
+    Private Function CallMethod(ByVal obj As Object, ByVal method As String, ByVal ParamArray params() As Object) As Object
 
-    ' call a private method on the object
-    Dim info As MethodInfo = GetMethod(obj.GetType, method)
-    Dim result As Object
+      ' call a private method on the object
+      Dim info As MethodInfo = GetMethod(obj.GetType, method)
+      Dim result As Object
 
-    Try
-      result = info.Invoke(obj, params)
+      Try
+        result = info.Invoke(obj, params)
 
-    Catch e As Exception
-      Throw e.InnerException
-    End Try
-    Return result
+      Catch e As Exception
+        Throw e.InnerException
+      End Try
+      Return result
 
-  End Function
+    End Function
 
-  Private Function GetMethod(ByVal ObjectType As Type, ByVal method As String) As MethodInfo
+    Private Function GetMethod(ByVal ObjectType As Type, ByVal method As String) As MethodInfo
 
-    Return ObjectType.GetMethod(method, _
-      BindingFlags.FlattenHierarchy Or _
-      BindingFlags.Instance Or _
-      BindingFlags.Public Or _
-      BindingFlags.NonPublic)
+      Return ObjectType.GetMethod(method, _
+        BindingFlags.FlattenHierarchy Or _
+        BindingFlags.Instance Or _
+        BindingFlags.Public Or _
+        BindingFlags.NonPublic)
 
-  End Function
+    End Function
 
 #End Region
 
-End Class
+  End Class
+
+End Namespace
+

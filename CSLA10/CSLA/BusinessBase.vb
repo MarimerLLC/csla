@@ -1,4 +1,5 @@
 Imports System.IO
+Imports System.Reflection
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.ComponentModel
 Imports System.Configuration
@@ -24,6 +25,7 @@ Public MustInherit Class BusinessBase
   Implements IEditableObject
   Implements ICloneable
   Implements IDataErrorInfo
+  Implements Serialization.ISerializationNotification
 
 #Region " IsNew, IsDeleted, IsDirty "
 
@@ -425,9 +427,14 @@ Public MustInherit Class BusinessBase
     Dim buffer As New MemoryStream()
     Dim formatter As New BinaryFormatter()
 
+    Serialization.SerializationNotification.OnSerializing(Me)
     formatter.Serialize(buffer, Me)
+    Serialization.SerializationNotification.OnSerialized(Me)
     buffer.Position = 0
-    Return formatter.Deserialize(buffer)
+    Dim temp As Object = formatter.Deserialize(buffer)
+    Serialization.SerializationNotification.OnDeserialized(temp)
+    Return temp
+
   End Function
 
 #End Region
@@ -436,6 +443,10 @@ Public MustInherit Class BusinessBase
 
   ' keep a list of broken rules
   Private mBrokenRules As New BrokenRules()
+
+  Protected Overridable Sub AddBusinessRules()
+
+  End Sub
 
   ''' <summary>
   ''' Returns True if the object is currently valid, False if the
@@ -621,6 +632,98 @@ Public MustInherit Class BusinessBase
       End If
     End Get
   End Property
+
+#End Region
+
+#Region " ISerializationNotification "
+
+  ''' <summary>
+  ''' This method is called on a newly deserialized object
+  ''' after deserialization is complete.
+  ''' </summary>
+  Protected Overridable Sub Deserialized() _
+    Implements CSLA.Serialization.ISerializationNotification.Deserialized
+
+    AddBusinessRules()
+
+    ' now cascade the call to all child objects/collections
+    Dim fields() As FieldInfo
+    Dim field As FieldInfo
+
+    ' get the list of fields in this type
+    fields = Me.GetType.GetFields( _
+                            BindingFlags.NonPublic Or _
+                            BindingFlags.Instance Or _
+                            BindingFlags.Public)
+
+    For Each field In fields
+      If Not field.FieldType.IsValueType Then
+        ' it's a ref type, so check for ISerializationNotification
+        Dim value As Object = field.GetValue(Me)
+        If TypeOf value Is Serialization.ISerializationNotification Then
+          DirectCast(value, Serialization.ISerializationNotification).Deserialized()
+        End If
+      End If
+    Next
+
+  End Sub
+
+  ''' <summary>
+  ''' This method is called on the original instance of the
+  ''' object after it has been serialized.
+  ''' </summary>
+  Protected Overridable Sub Serialized() _
+    Implements CSLA.Serialization.ISerializationNotification.Serialized
+
+    ' cascade the call to all child objects/collections
+    Dim fields() As FieldInfo
+    Dim field As FieldInfo
+
+    ' get the list of fields in this type
+    fields = Me.GetType.GetFields( _
+                            BindingFlags.NonPublic Or _
+                            BindingFlags.Instance Or _
+                            BindingFlags.Public)
+
+    For Each field In fields
+      If Not field.FieldType.IsValueType Then
+        ' it's a ref type, so check for ISerializationNotification
+        Dim value As Object = field.GetValue(Me)
+        If TypeOf value Is Serialization.ISerializationNotification Then
+          DirectCast(value, Serialization.ISerializationNotification).Serialized()
+        End If
+      End If
+    Next
+
+  End Sub
+
+  ''' <summary>
+  ''' This method is called before an object is serialized.
+  ''' </summary>
+  Protected Overridable Sub Serializing() _
+    Implements CSLA.Serialization.ISerializationNotification.Serializing
+
+    ' cascade the call to all child objects/collections
+    Dim fields() As FieldInfo
+    Dim field As FieldInfo
+
+    ' get the list of fields in this type
+    fields = Me.GetType.GetFields( _
+                            BindingFlags.NonPublic Or _
+                            BindingFlags.Instance Or _
+                            BindingFlags.Public)
+
+    For Each field In fields
+      If Not field.FieldType.IsValueType Then
+        ' it's a ref type, so check for ISerializationNotification
+        Dim value As Object = field.GetValue(Me)
+        If TypeOf value Is Serialization.ISerializationNotification Then
+          DirectCast(value, Serialization.ISerializationNotification).Serializing()
+        End If
+      End If
+    Next
+
+  End Sub
 
 #End Region
 

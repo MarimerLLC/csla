@@ -98,4 +98,19 @@ Public Class Root
     Session.Add("Root", "Deleted")
   End Sub
 
+  Protected Overrides Sub Deserialized()
+    MyBase.Deserialized()
+    Session.Add("Deserialized", "root Deserialized")
+  End Sub
+
+  Protected Overrides Sub Serialized()
+    MyBase.Serialized()
+    Session.Add("Serialized", "root Serialized")
+  End Sub
+
+  Protected Overrides Sub Serializing()
+    MyBase.Serializing()
+    Session.Add("Serializing", "root Serializing")
+  End Sub
+
 End Class

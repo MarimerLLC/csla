@@ -11,6 +11,7 @@ Imports System.Configuration
 Public Class DataPortal
   Private Shared mPortal As Server.DataPortal
   Private Shared mServicedPortal As Server.ServicedDataPortal.DataPortal
+  Private Shared mPortalRemote As Boolean = False
 
 #Region " Data Access methods "
 
@@ -22,11 +23,23 @@ Public Class DataPortal
   ''' <param name="Criteria">Object-specific criteria.</param>
   ''' <returns>A new object, populated with default values.</returns>
   Public Shared Function Create(ByVal Criteria As Object) As Object
+
+    Dim obj As Object
+
     If IsTransactionalMethod(GetMethod(GetObjectType(Criteria), "DataPortal_Create")) Then
-      Return ServicedPortal.Create(Criteria, GetPrincipal)
+      obj = ServicedPortal.Create(Criteria, _
+        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
+
     Else
-      Return Portal.Create(Criteria, GetPrincipal)
+      obj = Portal.Create(Criteria, _
+        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
     End If
+
+    If mPortalRemote Then
+      Serialization.SerializationNotification.OnDeserialized(obj)
+    End If
+    Return obj
+
   End Function
 
   ''' <summary>
@@ -36,11 +49,23 @@ Public Class DataPortal
   ''' <param name="Criteria">Object-specific criteria.</param>
   ''' <returns>An object populated with values from the database.</returns>
   Public Shared Function Fetch(ByVal Criteria As Object) As Object
+
+    Dim obj As Object
+
     If IsTransactionalMethod(GetMethod(GetObjectType(Criteria), "DataPortal_Fetch")) Then
-      Return ServicedPortal.Fetch(Criteria, GetPrincipal)
+      obj = ServicedPortal.Fetch(Criteria, _
+        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
+
     Else
-      Return Portal.Fetch(Criteria, GetPrincipal)
+      obj = Portal.Fetch(Criteria, _
+        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
     End If
+
+    If mPortalRemote Then
+      Serialization.SerializationNotification.OnDeserialized(obj)
+    End If
+    Return obj
+
   End Function
 
   ''' <summary>
@@ -56,11 +81,26 @@ Public Class DataPortal
   ''' <param name="obj">A reference to the business object to be updated.</param>
   ''' <returns>A reference to the updated business object.</returns>
   Public Shared Function Update(ByVal obj As Object) As Object
+
+    Dim updated As Object
+
+    If mPortalRemote Then Serialization.SerializationNotification.OnSerializing(obj)
+
     If IsTransactionalMethod(GetMethod(obj.GetType, "DataPortal_Update")) Then
-      Return ServicedPortal.Update(obj, GetPrincipal)
+      updated = ServicedPortal.Update(obj, _
+        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
+
     Else
-      Return Portal.Update(obj, GetPrincipal)
+      updated = Portal.Update(obj, _
+        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
     End If
+
+    If mPortalRemote Then
+      Serialization.SerializationNotification.OnSerialized(obj)
+      Serialization.SerializationNotification.OnDeserialized(updated)
+    End If
+    Return updated
+
   End Function
 
   ''' <summary>
@@ -69,11 +109,16 @@ Public Class DataPortal
   ''' </summary>
   ''' <param name="Criteria">Object-specific criteria.</param>
   Public Shared Sub Delete(ByVal Criteria As Object)
+
     If IsTransactionalMethod(GetMethod(GetObjectType(Criteria), "DataPortal_Delete")) Then
-      ServicedPortal.Delete(Criteria, GetPrincipal)
+      ServicedPortal.Delete(Criteria, _
+        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
+
     Else
-      Portal.Delete(Criteria, GetPrincipal)
+      Portal.Delete(Criteria, _
+        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
     End If
+
   End Sub
 
 #End Region
@@ -82,14 +127,14 @@ Public Class DataPortal
 
   Private Shared Function Portal() As Server.DataPortal
     If mPortal Is Nothing Then
-      mPortal = New Server.DataPortal
+      mPortal = New Server.DataPortal()
     End If
     Return mPortal
   End Function
 
   Private Shared Function ServicedPortal() As Server.ServicedDataPortal.DataPortal
     If mServicedPortal Is Nothing Then
-      mServicedPortal = New Server.ServicedDataPortal.DataPortal
+      mServicedPortal = New Server.ServicedDataPortal.DataPortal()
     End If
     Return mServicedPortal
   End Function
@@ -140,10 +185,10 @@ Public Class DataPortal
 
   Private Shared Function GetObjectType(ByVal criteria As Object) As Type
 
-    If criteria.GetType.IsSubclassOf(GetType(Server.CriteriaBase)) Then
+    If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
       ' get the type of the actual business object
       ' from CriteriaBase (using the new scheme)
-      Return CType(criteria, Server.CriteriaBase).ObjectType
+      Return CType(criteria, CriteriaBase).ObjectType
 
     Else
       ' get the type of the actual business object
@@ -156,6 +201,7 @@ Public Class DataPortal
   Shared Sub New()
     ' see if we need to configure remoting at all
     If Len(PORTAL_SERVER) > 0 OrElse Len(SERVICED_PORTAL_SERVER) > 0 Then
+      mPortalRemote = True
       ' create and register our custom HTTP channel
       ' that uses the binary formatter
       Dim properties As New Hashtable()

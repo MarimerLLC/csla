@@ -20,8 +20,8 @@
                 OptionCompare = "Binary"
                 OptionExplicit = "On"
                 OptionStrict = "Off"
-                RootNamespace = "CSLA.Server"
-                StartupObject = "CSLA.Server.(None)"
+                RootNamespace = "CSLA"
+                StartupObject = "CSLA.(None)"
             >
                 <Config
                     Name = "Debug"
@@ -92,6 +92,16 @@
                 />
                 <File
                     RelPath = "DataPortal.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DataPortalContext.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ISerializationNotification.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

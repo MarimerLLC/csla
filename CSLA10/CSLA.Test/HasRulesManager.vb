@@ -1,5 +1,6 @@
 Imports CSLA.BrokenRules
 
+<Serializable()> _
 Public Class HasRulesManager
   Inherits BusinessBase
 
@@ -17,6 +18,15 @@ Public Class HasRulesManager
       End If
     End Set
   End Property
+
+  Protected Overrides Sub AddBusinessRules()
+    With BrokenRules
+      .SetTargetObject(Me)
+      .AddRule(AddressOf NameRequired, "Name")
+      .AddRule(AddressOf NameLength, "Name", New MaxLengthArgs(10))
+      .CheckRules()
+    End With
+  End Sub
 
   <Description("{0} required")> _
   Private Function NameRequired(ByVal target As Object, ByVal e As RuleArgs) As Boolean
@@ -56,9 +66,7 @@ Public Class HasRulesManager
 
   Private Sub New()
     ' prevent direct creation
-    BrokenRules.AddRule(AddressOf NameRequired, "Name")
-    BrokenRules.AddRule(AddressOf NameLength, "Name", New MaxLengthArgs(10))
-    BrokenRules.CheckRules()
+    AddBusinessRules()
   End Sub
 
   Protected Overrides Sub DataPortal_Create(ByVal Criteria As Object)
@@ -96,5 +104,6 @@ Public Class HasRulesManager
     ' we would delete here
     Session.Add("HasRulesManager", "Deleted")
   End Sub
+
 
 End Class

@@ -82,6 +82,14 @@ Public Class Basics
     Assert.AreEqual(1, child.GrandChildren.Count)
     Assert.AreEqual("1", child.GrandChildren(0).Data)
 
+    Assert.AreEqual("root Deserialized", CStr(Session("Deserialized")))
+    Assert.AreEqual("root Serialized", CStr(Session("Serialized")))
+    Assert.AreEqual("root Serializing", CStr(Session("Serializing")))
+
+    Assert.AreEqual("GC Deserialized", CStr(Session("GCDeserialized")))
+    Assert.AreEqual("GC Serialized", CStr(Session("GCSerialized")))
+    Assert.AreEqual("GC Serializing", CStr(Session("GCSerializing")))
+
   End Sub
 
 End Class

@@ -19,7 +19,7 @@ Public Class GenRootBase
 
   <Serializable()> _
   Private Class Criteria
-    Inherits Server.CriteriaBase
+    Inherits CriteriaBase
 
     Public Data As String
 

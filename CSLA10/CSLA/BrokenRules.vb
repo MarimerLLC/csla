@@ -1,3 +1,5 @@
+Imports System.Collections.Specialized
+
 ''' <summary>
 ''' Tracks the business rules broken within a business object.
 ''' </summary>
@@ -140,7 +142,6 @@ Public Class BrokenRules
     ''' </para>
     ''' </remarks>
     ''' <param name="Property">The name of the property affected by the rule.</param>
-    ''' <returns></returns>
     Public ReadOnly Property RuleForProperty(ByVal [Property] As String) As Rule
       Get
         Dim item As Rule
@@ -228,7 +229,468 @@ Public Class BrokenRules
 
 #End Region
 
-  Private mRules As New RulesCollection()
+  Private mBrokenRules As New RulesCollection()
+  <NonSerialized(), NotUndoable()> _
+  Private mTarget As Object
+
+#Region " Rule Manager "
+
+  Public Sub SetTargetObject(ByVal target As Object)
+    mTarget = target
+  End Sub
+
+#Region " RuleHandler delegate "
+
+  ''' <summary>
+  ''' Delegate that defines the method signature for all rule handler methods.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' When implementing a rule handler, you must conform to the method signature
+  ''' defined by this delegate. You should also apply the Description attribute
+  ''' to your method to provide a meaningful description for your rule.
+  ''' </para><para>
+  ''' The method implementing the rule must return True if the data is valid and
+  ''' return False if the data is invalid.
+  ''' </para>
+  ''' </remarks>
+  Public Delegate Function RuleHandler(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+
+#End Region
+
+#Region " RuleArgs class "
+
+  Public Class RuleArgs
+    Private mPropertyName As String
+
+    Public ReadOnly Property PropertyName() As String
+      Get
+        Return mPropertyName
+      End Get
+    End Property
+
+    Public Sub New()
+
+    End Sub
+
+    Public Sub New(ByVal propertyName As String)
+      mPropertyName = propertyName
+    End Sub
+
+#Region " Empty "
+
+    Private Shared mEmptyArgs As New RuleArgs()
+
+    ''' <summary>
+    ''' Returns an empty RuleArgs object.
+    ''' </summary>
+    Public Shared ReadOnly Property Empty() As RuleArgs
+      Get
+        Return mEmptyArgs
+      End Get
+    End Property
+
+#End Region
+
+  End Class
+
+#End Region
+
+#Region " Description attribute "
+
+  ''' <summary>
+  ''' Defines the description of a business rule.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' The description in this attribute is used by BusinessRules
+  ''' as information that is provided to the UI or other consumer
+  ''' about which rules are broken. These descriptions are intended
+  ''' for end-user display.
+  ''' </para><para>
+  ''' The description value is a .NET format string, and it can include
+  ''' the following tokens in addition to literal text:
+  ''' </para><para>
+  ''' {0} - the RuleName value
+  ''' </para><para>
+  ''' {1} - the PropertyName value
+  ''' </para><para>
+  ''' {2} - the full type name of the target object
+  ''' </para><para>
+  ''' {3} - the ToString value of the target object
+  ''' </para><para>
+  ''' You can use these tokens in your description string and the
+  ''' appropriate values will be substituted for the tokens at
+  ''' runtime.
+  ''' </para>
+  ''' </remarks>
+  <AttributeUsage(AttributeTargets.Method)> _
+  Public Class DescriptionAttribute
+    Inherits Attribute
+
+    Private mText As String = ""
+
+    ''' <summary>
+    ''' Initializes the attribute with a description.
+    ''' </summary>
+    Public Sub New(ByVal description As String)
+      mText = description
+    End Sub
+
+    ''' <summary>
+    ''' Returns the description value of the attribute.
+    ''' </summary>
+    Public Overrides Function ToString() As String
+      Return mText
+    End Function
+
+  End Class
+
+#End Region
+
+#Region " RuleMethod Class "
+
+  ''' <summary>
+  ''' Tracks all information for a rule.
+  ''' </summary>
+  Private Class RuleMethod
+    Private mHandler As RuleHandler
+    Private mTarget As Object
+    Private mRuleName As String
+    Private mArgs As RuleArgs
+    Private mDescription As String
+
+    ''' <summary>
+    ''' Returns the name of the method implementing the rule
+    ''' and the property, field or column name to which the
+    ''' rule applies.
+    ''' </summary>
+    Public Overrides Function ToString() As String
+      If RuleArgs.PropertyName Is Nothing Then
+        Return mHandler.Method.Name
+
+      Else
+        Return mHandler.Method.Name & "!" & RuleArgs.PropertyName
+      End If
+    End Function
+
+    ''' <summary>
+    ''' Returns the delegate to the method implementing the rule.
+    ''' </summary>
+    Public ReadOnly Property Handler() As RuleHandler
+      Get
+        Return mHandler
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns the user-friendly name of the rule.
+    ''' </summary>
+    Public ReadOnly Property RuleName() As String
+      Get
+        Return mRuleName
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns the name of the field, property or column
+    ''' to which the rule applies.
+    ''' </summary>
+    Public ReadOnly Property RuleArgs() As RuleArgs
+      Get
+        Return mArgs
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns the formatted description of the rule.
+    ''' </summary>
+    Public ReadOnly Property Description() As String
+      Get
+        Return String.Format(mDescription, RuleName, RuleArgs.PropertyName, TypeName(mTarget), mTarget.ToString)
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Retrieves the description text from the Description
+    ''' attribute on a RuleHandler method.
+    ''' </summary>
+    Private Function GetDescription(ByVal handler As RuleHandler) As String
+
+      Dim attrib() As Object = handler.Method.GetCustomAttributes(GetType(DescriptionAttribute), False)
+      If attrib.Length > 0 Then
+        Return attrib(0).ToString
+
+      Else
+        Return "{2}.{0}:<no description>"
+      End If
+
+    End Function
+
+    ''' <summary>
+    ''' Creates and initializes the rule.
+    ''' </summary>
+    ''' <param name="handler">The address of the method implementing the rule.</param>
+    ''' <param name="ruleName">The user-friendly name of the rule.</param>
+    ''' <param name="ruleArgs">A RuleArgs object containing data related to the rule.</param>
+    Public Sub New(ByVal target As Object, ByVal handler As RuleHandler, ByVal ruleName As String, ByVal ruleArgs As RuleArgs)
+
+      mTarget = target
+      mHandler = handler
+      mDescription = GetDescription(handler)
+      mRuleName = ruleName
+      mArgs = ruleArgs
+
+    End Sub
+
+    ''' <summary>
+    ''' Creates and initializes the rule.
+    ''' </summary>
+    ''' <param name="handler">The address of the method implementing the rule.</param>
+    ''' <param name="ruleName">The user-friendly name of the rule.</param>
+    ''' <param name="propertyName">The field, property or column to which the rule applies.</param>
+    Public Sub New(ByVal handler As RuleHandler, ByVal ruleName As String, ByVal propertyName As String)
+
+      mHandler = handler
+      mDescription = GetDescription(handler)
+      mRuleName = ruleName
+      mArgs = New RuleArgs(propertyName)
+
+    End Sub
+
+    ''' <summary>
+    ''' Invokes the rule to validate the data.
+    ''' </summary>
+    ''' <returns>True if the data is valid, False if the data is invalid.</returns>
+    Public Function Invoke() As Boolean
+      Return mHandler.Invoke(mTarget, mArgs)
+    End Function
+
+  End Class
+
+#End Region
+
+#Region " RulesList property "
+
+  <NonSerialized(), NotUndoable()> _
+  Private mRulesList As HybridDictionary
+
+  Private ReadOnly Property RulesList() As HybridDictionary
+    Get
+      If mRulesList Is Nothing Then
+        mRulesList = New HybridDictionary()
+      End If
+      Return mRulesList
+    End Get
+  End Property
+
+#End Region
+
+#Region " Adding Rules "
+
+  ''' <summary>
+  ''' Returns the ArrayList containing rules for a rule name. If
+  ''' no ArrayList exists one is created and returned.
+  ''' </summary>
+  Private Function GetRulesForName(ByVal ruleName As String) As ArrayList
+
+    ' get the ArrayList (if any) from the Hashtable
+    Dim list As ArrayList = CType(RulesList.Item(ruleName), ArrayList)
+    If list Is Nothing Then
+      ' there is no list for this name - create one
+      list = New ArrayList()
+      RulesList.Add(ruleName, list)
+    End If
+    Return list
+
+  End Function
+
+  ''' <summary>
+  ''' Adds a rule to the list of rules to be enforced.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' A rule is implemented by a method which conforms to the 
+  ''' method signature defined by the RuleHandler delegate.
+  ''' </para><para>
+  ''' The ruleName is used to group all the rules that apply
+  ''' to a specific field, property or concept. All rules applying
+  ''' to the field or property should have the same rule name. When
+  ''' rules are checked, they can be checked globally or for a 
+  ''' specific ruleName.
+  ''' </para><para>
+  ''' The propertyName may be used by the method that implements the rule
+  ''' in order to retrieve the value to be validated. If the rule
+  ''' implementation is inside the target object then it probably has
+  ''' direct access to all data. However, if the rule implementation
+  ''' is outside the target object then it will need to use reflection
+  ''' or CallByName to dynamically invoke this property to retrieve
+  ''' the value to be validated.
+  ''' </para>
+  ''' </remarks>
+  ''' <param name="handler">The method that implements the rule.</param>
+  ''' <param name="ruleName">
+  ''' A user-friendly identifier for the field/property 
+  ''' to which the rule applies.
+  ''' </param>
+  Public Sub AddRule(ByVal handler As RuleHandler, ByVal ruleName As String)
+
+    ' get the ArrayList (if any) from the Hashtable
+    Dim list As ArrayList = GetRulesForName(ruleName)
+
+    ' we have the list, add our new rule
+    list.Add(New RuleMethod(mTarget, handler, ruleName, RuleArgs.Empty))
+
+  End Sub
+
+  ''' <summary>
+  ''' Adds a rule to the list of rules to be enforced.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' A rule is implemented by a method which conforms to the 
+  ''' method signature defined by the RuleHandler delegate.
+  ''' </para><para>
+  ''' The ruleName is used to group all the rules that apply
+  ''' to a specific field, property or concept. All rules applying
+  ''' to the field or property should have the same rule name. When
+  ''' rules are checked, they can be checked globally or for a 
+  ''' specific ruleName.
+  ''' </para>
+  ''' </remarks>
+  ''' <param name="handler">The method that implements the rule.</param>
+  ''' <param name="ruleName">
+  ''' A user-friendly identifier for the field/property 
+  ''' to which the rule applies.
+  ''' </param>
+  ''' <param name="ruleArgs">A RuleArgs object containing data
+  ''' to be passed to the method implementing the rule.</param>
+  Public Sub AddRule(ByVal handler As RuleHandler, ByVal ruleName As String, ByVal ruleArgs As RuleArgs)
+
+    ' get the ArrayList (if any) from the Hashtable
+    Dim list As ArrayList = GetRulesForName(ruleName)
+
+    ' we have the list, add our new rule
+    list.Add(New RuleMethod(mTarget, handler, ruleName, ruleArgs))
+
+  End Sub
+
+  ''' <summary>
+  ''' Adds a rule to the list of rules to be enforced.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' A rule is implemented by a method which conforms to the 
+  ''' method signature defined by the RuleHandler delegate.
+  ''' </para><para>
+  ''' The ruleName is used to group all the rules that apply
+  ''' to a specific field, property or concept. All rules applying
+  ''' to the field or property should have the same rule name. When
+  ''' rules are checked, they can be checked globally or for a 
+  ''' specific ruleName.
+  ''' </para><para>
+  ''' The propertyName may be used by the method that implements the rule
+  ''' in order to retrieve the value to be validated. If the rule
+  ''' implementation is inside the target object then it probably has
+  ''' direct access to all data. However, if the rule implementation
+  ''' is outside the target object then it will need to use reflection
+  ''' or CallByName to dynamically invoke this property to retrieve
+  ''' the value to be validated.
+  ''' </para>
+  ''' </remarks>
+  ''' <param name="handler">The method that implements the rule.</param>
+  ''' <param name="ruleName">
+  ''' A user-friendly identifier for the field/property 
+  ''' to which the rule applies.
+  ''' </param>
+  ''' <param name="propertyName">
+  ''' The property name on the target object where the rule implementation can retrieve
+  ''' the value to be validated.
+  ''' </param>
+  Public Sub AddRule(ByVal handler As RuleHandler, ByVal ruleName As String, ByVal propertyName As String)
+
+    ' get the ArrayList (if any) from the Hashtable
+    Dim list As ArrayList = GetRulesForName(ruleName)
+
+    ' we have the list, add our new rule
+    list.Add(New RuleMethod(handler, ruleName, propertyName))
+
+  End Sub
+
+#End Region
+
+#Region " Checking Rules "
+
+  ''' <summary>
+  ''' Checks all the rules for a specific ruleName.
+  ''' </summary>
+  ''' <param name="ruleName">The ruleName to be validated.</param>
+  Public Sub CheckRules(ByVal ruleName As String)
+    Dim list As ArrayList
+
+    ' get the list of rules to check
+    list = CType(RulesList.Item(ruleName), ArrayList)
+    If list Is Nothing Then Exit Sub
+
+    ' now check the rules
+    Dim rule As RuleMethod
+    For Each rule In list
+      If rule.Invoke() Then
+        UnBreakRule(rule)
+      Else
+        BreakRule(rule)
+      End If
+    Next
+
+  End Sub
+
+  ''' <summary>
+  ''' Checks all the rules for a target object.
+  ''' </summary>
+  Public Sub CheckRules()
+
+    ' get the rules for each rule name
+    Dim de As DictionaryEntry
+    For Each de In RulesList
+
+      Dim list As ArrayList
+
+      list = CType(de.Value, ArrayList)
+
+      ' now check the rules
+      Dim rule As RuleMethod
+      For Each rule In list
+        If rule.Invoke() Then
+          UnBreakRule(rule)
+        Else
+          BreakRule(rule)
+        End If
+      Next
+    Next
+
+  End Sub
+
+  Private Sub UnBreakRule(ByVal rule As RuleMethod)
+    If rule.RuleArgs.PropertyName Is Nothing Then
+      Assert(rule.ToString, "", False)
+    Else
+      Assert(rule.ToString, "", rule.RuleArgs.PropertyName, False)
+    End If
+  End Sub
+
+  Private Sub BreakRule(ByVal rule As RuleMethod)
+    If rule.RuleArgs.PropertyName Is Nothing Then
+      Assert(rule.ToString, rule.Description, True)
+    Else
+      Assert(rule.ToString, rule.Description, rule.RuleArgs.PropertyName, True)
+    End If
+  End Sub
+
+#End Region
+
+#End Region ' Rule Manager
+
+#Region " Assert methods "
 
   ''' <summary>
   ''' This method is called by business logic within a business class to
@@ -245,9 +707,9 @@ Public Class BrokenRules
   ''' <param name="IsBroken">True if the value is broken, False if it is not broken.</param>
   Public Sub Assert(ByVal Rule As String, ByVal Description As String, ByVal IsBroken As Boolean)
     If IsBroken Then
-      mRules.Add(Rule, Description)
+      mBrokenRules.Add(Rule, Description)
     Else
-      mRules.Remove(Rule)
+      mBrokenRules.Remove(Rule)
     End If
   End Sub
 
@@ -267,11 +729,15 @@ Public Class BrokenRules
   ''' <param name="IsBroken">True if the value is broken, False if it is not broken.</param>
   Public Sub Assert(ByVal Rule As String, ByVal Description As String, ByVal [Property] As String, ByVal IsBroken As Boolean)
     If IsBroken Then
-      mRules.Add(Rule, Description, [Property])
+      mBrokenRules.Add(Rule, Description, [Property])
     Else
-      mRules.Remove(Rule)
+      mBrokenRules.Remove(Rule)
     End If
   End Sub
+
+#End Region
+
+#Region " Status retrieval "
 
   ''' <summary>
   ''' Returns a value indicating whether there are any broken rules
@@ -282,7 +748,7 @@ Public Class BrokenRules
   ''' <returns>A value indicating whether any rules are broken.</returns>
   Public ReadOnly Property IsValid() As Boolean
     Get
-      Return mRules.Count = 0
+      Return mBrokenRules.Count = 0
     End Get
   End Property
 
@@ -293,7 +759,7 @@ Public Class BrokenRules
   ''' <param name="Rule">The name of the rule to check.</param>
   ''' <returns>A value indicating whether the rule is currently broken.</returns>
   Public Function IsBroken(ByVal Rule As String) As Boolean
-    Return mRules.Contains(Rule)
+    Return mBrokenRules.Contains(Rule)
   End Function
 
   ''' <summary>
@@ -309,7 +775,7 @@ Public Class BrokenRules
   ''' </remarks>
   ''' <returns>A reference to the collection of broken rules.</returns>
   Public Function GetBrokenRules() As RulesCollection
-    Return mRules
+    Return mBrokenRules
   End Function
 
   ''' <summary>
@@ -322,7 +788,7 @@ Public Class BrokenRules
     Dim item As Rule
     Dim first As Boolean = True
 
-    For Each item In mRules
+    For Each item In mBrokenRules
       If first Then
         first = False
       Else
@@ -332,5 +798,7 @@ Public Class BrokenRules
     Next
     Return obj.ToString
   End Function
+
+#End Region
 
 End Class

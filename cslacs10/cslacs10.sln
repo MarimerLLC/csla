@@ -1,0 +1,61 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLA", "CSLA\CSLA.csproj", "{0DE2C2FB-907E-4AFF-9E8F-8AD61F771B75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLA.BatchQueue", "CSLA.BatchQueue\CSLA.BatchQueue.csproj", "{8B61ED6A-E4C6-4583-A192-C82704F80F7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLA.Core.BindableBase", "CSLA.Core.BindableBase\CSLA.Core.BindableBase.csproj", "{8658B2B5-4200-4B54-8190-304818ED70F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLA.Server.DataPortal", "CSLA.Server.DataPortal\CSLA.Server.DataPortal.csproj", "{86CE1F38-3C6F-4AA4-B047-631E9119DA7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLA.Server.ServicedDataPortal", "CSLA.Server.ServicedDataPortal\CSLA.Server.ServicedDataPortal.csproj", "{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRun", "NetRun\NetRun.csproj", "{A104A0BB-EB88-45C4-BCD0-27F0767C8448}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPortalcs", "http://localhost/DataPortalcs/DataPortalcs.csproj", "{2443FEF2-CC87-4A91-9C98-CF5669762288}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{0DE2C2FB-907E-4AFF-9E8F-8AD61F771B75}.Debug.ActiveCfg = Debug|.NET
+		{0DE2C2FB-907E-4AFF-9E8F-8AD61F771B75}.Debug.Build.0 = Debug|.NET
+		{0DE2C2FB-907E-4AFF-9E8F-8AD61F771B75}.Release.ActiveCfg = Release|.NET
+		{0DE2C2FB-907E-4AFF-9E8F-8AD61F771B75}.Release.Build.0 = Release|.NET
+		{8B61ED6A-E4C6-4583-A192-C82704F80F7C}.Debug.ActiveCfg = Debug|.NET
+		{8B61ED6A-E4C6-4583-A192-C82704F80F7C}.Debug.Build.0 = Debug|.NET
+		{8B61ED6A-E4C6-4583-A192-C82704F80F7C}.Release.ActiveCfg = Release|.NET
+		{8B61ED6A-E4C6-4583-A192-C82704F80F7C}.Release.Build.0 = Release|.NET
+		{8658B2B5-4200-4B54-8190-304818ED70F3}.Debug.ActiveCfg = Debug|.NET
+		{8658B2B5-4200-4B54-8190-304818ED70F3}.Debug.Build.0 = Debug|.NET
+		{8658B2B5-4200-4B54-8190-304818ED70F3}.Release.ActiveCfg = Release|.NET
+		{8658B2B5-4200-4B54-8190-304818ED70F3}.Release.Build.0 = Release|.NET
+		{86CE1F38-3C6F-4AA4-B047-631E9119DA7D}.Debug.ActiveCfg = Debug|.NET
+		{86CE1F38-3C6F-4AA4-B047-631E9119DA7D}.Debug.Build.0 = Debug|.NET
+		{86CE1F38-3C6F-4AA4-B047-631E9119DA7D}.Release.ActiveCfg = Release|.NET
+		{86CE1F38-3C6F-4AA4-B047-631E9119DA7D}.Release.Build.0 = Release|.NET
+		{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}.Debug.ActiveCfg = Debug|.NET
+		{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}.Debug.Build.0 = Debug|.NET
+		{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}.Release.ActiveCfg = Release|.NET
+		{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}.Release.Build.0 = Release|.NET
+		{A104A0BB-EB88-45C4-BCD0-27F0767C8448}.Debug.ActiveCfg = Debug|.NET
+		{A104A0BB-EB88-45C4-BCD0-27F0767C8448}.Debug.Build.0 = Debug|.NET
+		{A104A0BB-EB88-45C4-BCD0-27F0767C8448}.Release.ActiveCfg = Release|.NET
+		{A104A0BB-EB88-45C4-BCD0-27F0767C8448}.Release.Build.0 = Release|.NET
+		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Debug.ActiveCfg = Debug|.NET
+		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Debug.Build.0 = Debug|.NET
+		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Release.ActiveCfg = Release|.NET
+		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+		Item:1 = license.txt
+		Item:2 = readme.txt
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

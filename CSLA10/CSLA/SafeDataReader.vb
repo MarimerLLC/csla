@@ -13,8 +13,7 @@ Namespace Data
 
     Implements IDataReader
 
-    Private mDataReader As IDataReader
-    Private mIndex As Integer = -1
+    Protected mDataReader As IDataReader
 
     ''' <summary>
     ''' Initializes the SafeDataReader object to use data from
@@ -46,8 +45,8 @@ Namespace Data
     ''' Returns "" for null.
     ''' </remarks>
     Public Function GetString(ByVal Name As String) As String
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetString(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetString(index)
     End Function
 
     ''' <summary>
@@ -71,8 +70,8 @@ Namespace Data
     ''' Returns Nothing for null.
     ''' </remarks>
     Public Function GetValue(ByVal Name As String) As Object
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetValue(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetValue(index)
     End Function
 
     ''' <summary>
@@ -96,8 +95,8 @@ Namespace Data
     ''' Returns 0 for null.
     ''' </remarks>
     Public Function GetInt32(ByVal Name As String) As Integer
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetInt32(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetInt32(index)
     End Function
 
     ''' <summary>
@@ -121,8 +120,8 @@ Namespace Data
     ''' Returns 0 for null.
     ''' </remarks>
     Public Function GetDouble(ByVal Name As String) As Double
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetDouble(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetDouble(index)
     End Function
 
     ''' <summary>
@@ -170,8 +169,8 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">The column number within the datareader.</param>
     Public Function GetSmartDate(ByVal Name As String) As SmartDate
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetSmartDate(mIndex, True)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetSmartDate(index, True)
     End Function
 
     ''' <summary>
@@ -185,8 +184,8 @@ Namespace Data
     ''' <param name="i">The column number within the datareader.</param>
     ''' <param name="MinIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
     Public Function GetSmartDate(ByVal Name As String, ByVal MinIsEmpty As Boolean) As SmartDate
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetSmartDate(mIndex, MinIsEmpty)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetSmartDate(index, MinIsEmpty)
     End Function
 
     ''' <summary>
@@ -204,8 +203,8 @@ Namespace Data
     ''' Gets a Guid value from the datareader.
     ''' </summary>
     Public Function GetGuid(ByVal Name As String) As Guid
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetGuid(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetGuid(index)
     End Function
 
     ''' <summary>
@@ -269,8 +268,8 @@ Namespace Data
     ''' Gets a boolean value from the datareader.
     ''' </summary>
     Public Function GetBoolean(ByVal Name As String) As Boolean
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetBoolean(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetBoolean(index)
     End Function
 
     ''' <summary>
@@ -288,8 +287,8 @@ Namespace Data
     ''' Gets a byte value from the datareader.
     ''' </summary>
     Public Function GetByte(ByVal Name As String) As Byte
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetByte(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetByte(index)
     End Function
 
     ''' <summary>
@@ -307,8 +306,8 @@ Namespace Data
     ''' Invokes the GetBytes method of the underlying datareader.
     ''' </summary>
     Public Function GetBytes(ByVal Name As String, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetBytes(mIndex, fieldOffset, buffer, bufferoffset, length)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetBytes(index, fieldOffset, buffer, bufferoffset, length)
     End Function
 
     ''' <summary>
@@ -328,8 +327,8 @@ Namespace Data
     ''' Gets a char value from the datareader.
     ''' </summary>
     Public Function GetChar(ByVal Name As String) As Char
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetChar(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetChar(index)
     End Function
 
     ''' <summary>
@@ -347,8 +346,8 @@ Namespace Data
     ''' Invokes the GetChars method of the underlying datareader.
     ''' </summary>
     Public Function GetChars(ByVal Name As String, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetChars(mIndex, fieldoffset, buffer, bufferoffset, length)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetChars(index, fieldoffset, buffer, bufferoffset, length)
     End Function
 
     ''' <summary>
@@ -362,8 +361,8 @@ Namespace Data
     ''' Invokes the GetData method of the underlying datareader.
     ''' </summary>
     Public Function GetData(ByVal Name As String) As System.Data.IDataReader
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetData(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetData(index)
     End Function
 
     ''' <summary>
@@ -377,8 +376,8 @@ Namespace Data
     ''' Invokes the GetDataTypeName method of the underlying datareader.
     ''' </summary>
     Public Function GetDataTypeName(ByVal Name As String) As String
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetDataTypeName(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetDataTypeName(index)
     End Function
 
     ''' <summary>
@@ -396,8 +395,8 @@ Namespace Data
     ''' Gets a date value from the datareader.
     ''' </summary>
     Public Function GetDateTime(ByVal Name As String) As Date
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetDateTime(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetDateTime(index)
     End Function
 
     ''' <summary>
@@ -415,8 +414,8 @@ Namespace Data
     ''' Gets a decimal value from the datareader.
     ''' </summary>
     Public Function GetDecimal(ByVal Name As String) As Decimal
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetDecimal(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetDecimal(index)
     End Function
 
     ''' <summary>
@@ -430,8 +429,8 @@ Namespace Data
     ''' Invokes the GetFieldType method of the underlying datareader.
     ''' </summary>
     Public Function GetFieldType(ByVal Name As String) As System.Type
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetFieldType(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetFieldType(index)
     End Function
 
     ''' <summary>
@@ -449,8 +448,8 @@ Namespace Data
     ''' Gets a Single value from the datareader.
     ''' </summary>
     Public Function GetFloat(ByVal Name As String) As Single
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetFloat(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetFloat(index)
     End Function
 
     ''' <summary>
@@ -468,8 +467,8 @@ Namespace Data
     ''' Gets a Short value from the datareader.
     ''' </summary>
     Public Function GetInt16(ByVal Name As String) As Short
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetInt16(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetInt16(index)
     End Function
 
     ''' <summary>
@@ -487,8 +486,8 @@ Namespace Data
     ''' Gets a Long value from the datareader.
     ''' </summary>
     Public Function GetInt64(ByVal Name As String) As Long
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.GetInt64(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.GetInt64(index)
     End Function
 
     ''' <summary>
@@ -539,8 +538,8 @@ Namespace Data
     ''' Invokes the IsDBNull method of the underlying datareader.
     ''' </summary>
     Public Function IsDBNull(ByVal Name As String) As Boolean
-      mIndex = Me.GetOrdinal(Name)
-      Return Me.IsDBNull(mIndex)
+      Dim index As Integer = Me.GetOrdinal(Name)
+      Return Me.IsDBNull(index)
     End Function
 
     ''' <summary>

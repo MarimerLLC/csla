@@ -12,11 +12,11 @@ namespace CSLA.Security
   /// </summary>
   [Serializable()]
   public class BusinessIdentity : ReadOnlyBase, IIdentity
-	{
+  {
     string _username = string.Empty;
     ArrayList _roles = new ArrayList();
 
-#region IIdentity
+    #region IIdentity
 
     /// <summary>
     /// Implements the IsAuthenticated property defined by IIdentity.
@@ -40,7 +40,7 @@ namespace CSLA.Security
       }
     }
 
-        /// <summary>
+    /// <summary>
     /// Implements the Name property defined by IIdentity.
     /// </summary>
     string IIdentity.Name
@@ -51,18 +51,20 @@ namespace CSLA.Security
       }
     }
 
-#endregion
+    #endregion
 
     internal bool IsInRole(string role)
     {
       return _roles.Contains(role);
     }
 
-#region Create and Load
+    #region Create and Load
 
-    internal static BusinessIdentity LoadIdentity(string userName, string password)
+    internal static BusinessIdentity LoadIdentity(
+                              string userName, string password)
     {
-      return (BusinessIdentity)DataPortal.Fetch(new Criteria(userName, password));
+      return (BusinessIdentity)DataPortal.Fetch(
+        new Criteria(userName, password));
     }
 
     [Serializable()]
@@ -71,7 +73,7 @@ namespace CSLA.Security
       public string Username;
       public string Password;
 
-      public Criteria(string username, string password)
+      private Criteria(string username, string password)
       {
         Username = username;
         Password = password;
@@ -80,14 +82,14 @@ namespace CSLA.Security
 
     private BusinessIdentity() {} // prevent direct creation
 
-#endregion
+    #endregion
 
-#region Data access
+    #region Data access
 
     /// <summary>
     /// Retrieves the identity data for a specific user.
     /// </summary>
-    protected override void DataPortal_Fetch(Object criteria)
+    protected override void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)criteria;
 
@@ -128,7 +130,7 @@ namespace CSLA.Security
       }
     }
 
-#endregion
+    #endregion
 
-	}
+  }
 }

@@ -66,7 +66,7 @@ namespace CSLA.Core
             if(!NotUndoableField(field))
             {
               // the field is undoable, so it needs to be processed
-              Object value = field.GetValue(this);
+              object value = field.GetValue(this);
 
               if(TypeInheritsFrom(field.FieldType, CollectionType))
               {
@@ -152,7 +152,7 @@ namespace CSLA.Core
               if(!NotUndoableField(field))
               {
                 // the field is undoable, so restore its value
-                Object value = field.GetValue(this);
+                object value = field.GetValue(this);
 
                 if(TypeInheritsFrom(field.FieldType, CollectionType))
                 {
@@ -224,7 +224,7 @@ namespace CSLA.Core
               // see if the field is undoable or not
               if(!NotUndoableField(field))
               {
-                Object value = field.GetValue(this);
+                object value = field.GetValue(this);
 
                 // the field is undoable so see if it is a collection
                 if(TypeInheritsFrom(field.FieldType, CollectionType))

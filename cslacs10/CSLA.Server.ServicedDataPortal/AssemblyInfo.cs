@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.EnterpriseServices;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -56,3 +57,9 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile(@"h:\rdl\mykey.snk")]
 [assembly: AssemblyKeyName("")]
+
+// EnterpriseServices settings
+[assembly: ApplicationActivation(ActivationOption.Library)]
+[assembly: ApplicationName("CSLA DataPortal")]
+[assembly: Description("CSLA .NET data portal")]
+[assembly: ApplicationAccessControl(true)]

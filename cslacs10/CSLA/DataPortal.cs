@@ -17,8 +17,7 @@ namespace CSLA
     static Server.DataPortal _Portal;
     static Server.ServicedDataPortal.DataPortal _ServicedPortal;
 
-
-#region Data Access methods
+    #region Data Access methods
 
     /// <summary>
     /// Called by a factory method in a business class to create 
@@ -27,10 +26,10 @@ namespace CSLA
     /// </summary>
     /// <param name="Criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    static public Object Create(Object criteria)
+    static public object Create(object criteria)
     {
-      if(IsTransactionalMethod(
-        GetMethod(criteria.GetType().DeclaringType, "DataPortal_Create")))
+      if(IsTransactionalMethod(GetMethod(
+                      criteria.GetType().DeclaringType, "DataPortal_Create")))
         return ServicedPortal.Create(criteria, GetPrincipal());
       else
         return Portal.Create(criteria, GetPrincipal());
@@ -42,9 +41,10 @@ namespace CSLA
     /// </summary>
     /// <param name="Criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    static public Object Fetch(Object criteria)
+    static public object Fetch(object criteria)
     {
-      if(IsTransactionalMethod(GetMethod(criteria.GetType().DeclaringType, "DataPortal_Fetch")))
+      if(IsTransactionalMethod(GetMethod(
+                      criteria.GetType().DeclaringType, "DataPortal_Fetch")))
         return ServicedPortal.Fetch(criteria, GetPrincipal());
       else
         return Portal.Fetch(criteria, GetPrincipal());
@@ -62,7 +62,7 @@ namespace CSLA
     /// </remarks>
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <returns>A reference to the updated business object.</returns>
-    static public Object Update(Object obj)
+    static public object Update(object obj)
     {
       if(IsTransactionalMethod(GetMethod(obj.GetType(), "DataPortal_Update")))
         return ServicedPortal.Update(obj, GetPrincipal());
@@ -75,17 +75,18 @@ namespace CSLA
     /// immediate deletion of a specific object from the database.
     /// </summary>
     /// <param name="Criteria">Object-specific criteria.</param>
-    static public void Delete(Object criteria)
+    static public void Delete(object criteria)
     {
-      if(IsTransactionalMethod(GetMethod(criteria.GetType().DeclaringType, "DataPortal_Delete")))
+      if(IsTransactionalMethod(GetMethod(
+                      criteria.GetType().DeclaringType, "DataPortal_Delete")))
         ServicedPortal.Delete(criteria, GetPrincipal());
       else
         Portal.Delete(criteria, GetPrincipal());
     }
 
-#endregion
+    #endregion
 
-#region Server-side DataPortal
+    #region Server-side DataPortal
 
     static private Server.DataPortal Portal
     {
@@ -131,9 +132,9 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
-#region Security
+    #region Security
 
     static private string AUTHENTICATION()
     {
@@ -154,9 +155,9 @@ namespace CSLA
         return System.Threading.Thread.CurrentPrincipal;
     }
 
-#endregion
+    #endregion
 
-#region Helper methods
+    #region Helper methods
 
     static private bool IsTransactionalMethod(MethodInfo method)
     {
@@ -188,7 +189,8 @@ namespace CSLA
           properties["useDefaultCredentials"] = true;
         }
 
-        BinaryClientFormatterSinkProvider formatter = new BinaryClientFormatterSinkProvider();
+        BinaryClientFormatterSinkProvider formatter = 
+                                        new BinaryClientFormatterSinkProvider();
 
         HttpChannel channel = new HttpChannel(properties, formatter, null);
 
@@ -211,7 +213,7 @@ namespace CSLA
 
     }
 
-#endregion
+    #endregion
 
   }
 }

@@ -430,7 +430,7 @@ namespace CSLA
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
-    public Object Clone()
+    public object Clone()
     {
 
       MemoryStream buffer = new MemoryStream();
@@ -511,7 +511,7 @@ namespace CSLA
 
     #endregion
 
-#region Data Access
+    #region Data Access
 
     /// <summary>
     /// Saves the object to the database.
@@ -567,7 +567,7 @@ namespace CSLA
     /// values from the database.
     /// </summary>
     /// <param name="criteria">An object containing criteria values.</param>
-    virtual protected void DataPortal_Create(Object criteria)
+    virtual protected void DataPortal_Create(object criteria)
     {
       throw new NotSupportedException("Invalid operation - create not allowed");
     }
@@ -578,7 +578,7 @@ namespace CSLA
     /// </summary>
     /// <param name="criteria">
     /// An object containing criteria values to identify the object.</param>
-    virtual protected void DataPortal_Fetch(Object criteria)
+    virtual protected void DataPortal_Fetch(object criteria)
     {
       throw new NotSupportedException("Invalid operation - fetch not allowed");
     }
@@ -597,7 +597,7 @@ namespace CSLA
     /// </summary>
     /// <param name="criteria">
     /// An object containing criteria values to identify the object.</param>
-    virtual protected void DataPortal_Delete(Object criteria)
+    virtual protected void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException("Invalid operation - delete not allowed");
     }
@@ -622,7 +622,7 @@ namespace CSLA
         return val;
     }
 
-#endregion
+    #endregion
 
   }
 }

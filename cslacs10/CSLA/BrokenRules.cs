@@ -153,19 +153,19 @@ namespace CSLA
           throw new NotSupportedException("Clear is an invalid operation");
       }
 
-      protected override void OnInsert(int index, Object val)
+      protected override void OnInsert(int index, object val)
       {
         if(!_legal)
           throw new NotSupportedException("Insert is an invalid operation");
       }
 
-      protected override void OnRemove(int index, Object val)
+      protected override void OnRemove(int index, object val)
       {
         if(!_legal)
           throw new NotSupportedException("Remove is an invalid operation");
       }
 
-      protected override void OnSet(int index, Object oldValue, Object newValue)
+      protected override void OnSet(int index, object oldValue, object newValue)
       {
         if(!_legal)
           throw new NotSupportedException(

@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPortalcs", "http://loca
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.Test", "CSLA.Test\CSLA.Test.vbproj", "{F5CBD9E2-6E2A-469F-B81E-EAF3A1B9F758}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{29A17C50-EBD8-44B9-B939-22970D55A6A9}"
-EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -57,10 +55,6 @@ Global
 		{F5CBD9E2-6E2A-469F-B81E-EAF3A1B9F758}.Debug.Build.0 = Debug|.NET
 		{F5CBD9E2-6E2A-469F-B81E-EAF3A1B9F758}.Release.ActiveCfg = Release|.NET
 		{F5CBD9E2-6E2A-469F-B81E-EAF3A1B9F758}.Release.Build.0 = Release|.NET
-		{29A17C50-EBD8-44B9-B939-22970D55A6A9}.Debug.ActiveCfg = Debug|.NET
-		{29A17C50-EBD8-44B9-B939-22970D55A6A9}.Debug.Build.0 = Debug|.NET
-		{29A17C50-EBD8-44B9-B939-22970D55A6A9}.Release.ActiveCfg = Release|.NET
-		{29A17C50-EBD8-44B9-B939-22970D55A6A9}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
 		Item:1 = license.txt

@@ -10,10 +10,10 @@ namespace CSLA.Security
   /// </summary>
   [Serializable()]
   public class BusinessPrincipal : IPrincipal
-	{
+  {
     BusinessIdentity _identity;
 
-#region IPrincipal
+    #region IPrincipal
 
     /// <summary>
     /// Implements the Identity property defined by IPrincipal.
@@ -34,9 +34,9 @@ namespace CSLA.Security
       return _identity.IsInRole(role);
     }
 
-#endregion
+    #endregion
 
-#region Login process
+    #region Login process
 
     /// <summary>
     /// Initiates a login process using custom CSLA .NET security.
@@ -59,13 +59,9 @@ namespace CSLA.Security
     private BusinessPrincipal(string username, string password)
     {
       AppDomain currentdomain = Thread.GetDomain();
-
       currentdomain.SetPrincipalPolicy(PrincipalPolicy.UnauthenticatedPrincipal);
 
-
       IPrincipal oldPrincipal = Thread.CurrentPrincipal;
-
-
       Thread.CurrentPrincipal = this;
 
       try
@@ -85,7 +81,7 @@ namespace CSLA.Security
       _identity = BusinessIdentity.LoadIdentity(username, password);
     }
 
-#endregion
+    #endregion
 
-	}
+  }
 }

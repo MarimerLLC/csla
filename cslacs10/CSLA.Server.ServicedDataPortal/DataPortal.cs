@@ -15,7 +15,7 @@ namespace CSLA.Server.ServicedDataPortal
     /// a COM+ transaction.
     /// </summary>
     [AutoComplete(true)]
-    public Object Create(Object criteria, Object principal)
+    public object Create(object criteria, object principal)
     {
       CSLA.Server.DataPortal portal = new CSLA.Server.DataPortal();
       return portal.Create(criteria, principal);
@@ -26,7 +26,7 @@ namespace CSLA.Server.ServicedDataPortal
     /// a COM+ transaction.
     /// </summary>
     [AutoComplete(true)]
-    public Object Fetch(Object criteria, Object principal)
+    public object Fetch(object criteria, object principal)
     {
       CSLA.Server.DataPortal portal = new CSLA.Server.DataPortal();
       return portal.Fetch(criteria, principal);
@@ -37,7 +37,7 @@ namespace CSLA.Server.ServicedDataPortal
     /// a COM+ transaction.
     /// </summary>
     [AutoComplete(true)]
-    public Object Update(Object obj, Object principal)
+    public object Update(object obj, object principal)
     {
       CSLA.Server.DataPortal portal = new CSLA.Server.DataPortal();
       return portal.Update(obj, principal);
@@ -48,7 +48,7 @@ namespace CSLA.Server.ServicedDataPortal
     /// a COM+ transaction.
     /// </summary>
     [AutoComplete(true)]
-    public void Delete(Object criteria, Object principal)
+    public void Delete(object criteria, object principal)
     {
       CSLA.Server.DataPortal portal = new CSLA.Server.DataPortal();
       portal.Delete(criteria, principal);

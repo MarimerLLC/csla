@@ -12,7 +12,7 @@ namespace CSLA.Server
   public class DataPortal : MarshalByRefObject
   {
 
-#region Data Access
+    #region Data Access
 
     /// <summary>
     /// Called by the client-side DataPortal to create a new object.
@@ -21,12 +21,12 @@ namespace CSLA.Server
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
     /// <returns>A populated business object.</returns>
-    public Object Create(Object criteria, Object principal)
+    public object Create(object criteria, object principal)
     {
       SetPrincipal(principal);
 
       // create an instance of the business object
-      Object obj = CreateBusinessObject(criteria);
+      object obj = CreateBusinessObject(criteria);
 
       // tell the business object to fetch its data
       CallMethod(obj, "DataPortal_Create", criteria);
@@ -41,12 +41,12 @@ namespace CSLA.Server
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
     /// <returns>A populated business object.</returns>
-    public Object Fetch(Object criteria, Object principal)
+    public object Fetch(object criteria, object principal)
     {
       SetPrincipal(principal);
 
       // create an instance of the business object
-      Object obj = CreateBusinessObject(criteria);
+      object obj = CreateBusinessObject(criteria);
 
       // tell the business object to fetch its data
       CallMethod(obj, "DataPortal_Fetch", criteria);
@@ -62,7 +62,7 @@ namespace CSLA.Server
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
     /// <returns>A reference to the newly updated object.</returns>
-    public Object Update(Object obj, Object principal)
+    public object Update(object obj, object principal)
     {
       SetPrincipal(principal);
 
@@ -77,20 +77,20 @@ namespace CSLA.Server
     /// <param name="Criteria">Object-specific criteria.</param>
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
-    public void Delete(Object criteria, Object principal)
+    public void Delete(object criteria, object principal)
     {
       SetPrincipal(principal);
 
       // create an instance of the business object
-      Object obj = CreateBusinessObject(criteria);
+      object obj = CreateBusinessObject(criteria);
 
       // tell the business object to delete itself
       CallMethod(obj, "DataPortal_Delete", criteria);
     }
 
-#endregion
+    #endregion
 
-#region Security
+    #region Security
 
     private string AUTHENTICATION()
     {
@@ -101,7 +101,7 @@ namespace CSLA.Server
         return val;
     }
 
-    private void SetPrincipal(Object principal)
+    private void SetPrincipal(object principal)
     {
       if(AUTHENTICATION() == "Windows")
       {
@@ -109,7 +109,8 @@ namespace CSLA.Server
         // and we need to set our policy to use the Windows principal
         if(principal == null)
         {
-          AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+          AppDomain.CurrentDomain.SetPrincipalPolicy(
+            PrincipalPolicy.WindowsPrincipal);
           return;
         }
         else
@@ -120,7 +121,7 @@ namespace CSLA.Server
 
       // we expect Principal to be of type BusinessPrincipal, but
       // we can't enforce that since it causes a circular reference
-      // with the business library so instead we must use type Object
+      // with the business library so instead we must use type object
       // for the parameter, so here we do a check on the type of the
       // parameter
       if(principal.ToString() == "CSLA.Security.BusinessPrincipal")
@@ -136,14 +137,15 @@ namespace CSLA.Server
       }
       else
         throw new System.Security.SecurityException(
-          "Principal must be of type BusinessPrincipal, not " + principal.ToString());
+          "Principal must be of type BusinessPrincipal, not " + 
+          principal.ToString());
     }
 
-#endregion
+    #endregion
 
-#region Creating the business object
+    #region Creating the business object
 
-    private Object CreateBusinessObject(Object criteria)
+    private object CreateBusinessObject(object criteria)
     {
       // get the type of the actual business object
       Type businessType = criteria.GetType().DeclaringType;
@@ -151,16 +153,15 @@ namespace CSLA.Server
       return Activator.CreateInstance(businessType, true);
     }
 
-#endregion
+    #endregion
 
-#region Calling a method
+    #region Calling a method
 
-    Object CallMethod(Object obj, string method, params Object[] p)
+    object CallMethod(object obj, string method, params object[] p)
     {
       // call a private method on the object
-      //Dim t As Type = obj.GetType
       MethodInfo info = GetMethod(obj.GetType(), method);
-      Object result;
+      object result;
 
       try
       {
@@ -168,7 +169,7 @@ namespace CSLA.Server
       }
       catch(System.Exception e)
       {
-        throw e.GetBaseException();
+        throw e.InnerException();
       }
       return result;
     }
@@ -181,7 +182,7 @@ namespace CSLA.Server
         BindingFlags.NonPublic);
     }
 
-#endregion
+    #endregion
 
   }
 }

@@ -20,17 +20,17 @@ namespace CSLA
   /// objects.
   /// </remarks>
   [Serializable()]
-  abstract public class NameValueList : NameObjectCollectionBase, ICloneable
+  abstract public class NameValueList : 
+    NameObjectCollectionBase, ICloneable
   {
-#region ICloneable
+    #region ICloneable
 
     /// <summary>
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
-    public Object Clone()
+    public object Clone()
     {
-
       MemoryStream buffer = new MemoryStream();
       BinaryFormatter formatter = new BinaryFormatter();
 
@@ -39,9 +39,9 @@ namespace CSLA
       return formatter.Deserialize(buffer);
     }
 
-#endregion
+    #endregion
 
-#region Collection methods
+    #region Collection methods
 
     /// <summary>
     /// Returns a value from the list.
@@ -99,9 +99,9 @@ namespace CSLA
       throw new ApplicationException("No matching item in collection");
     }
 
-#endregion
+    #endregion
 
-#region Create and Load
+    #region Create and Load
 
     protected NameValueList()
     {
@@ -114,11 +114,11 @@ namespace CSLA
       // we have nothing to serialize
     }
 
-#endregion
+    #endregion
 
-#region Data Access
+    #region Data Access
 
-    private void DataPortal_Create(Object criteria)
+    private void DataPortal_Create(object criteria)
     {
       throw new NotSupportedException("Invalid operation - create not allowed");
     }
@@ -135,7 +135,7 @@ namespace CSLA
     /// </remarks>
     /// <param name="Criteria">An object containing criteria values to identify the object.
     /// </param>
-    virtual protected void DataPortal_Fetch(Object criteria)
+    virtual protected void DataPortal_Fetch(object criteria)
     {
       throw new NotSupportedException("Invalid operation - fetch not allowed");
     }
@@ -145,7 +145,7 @@ namespace CSLA
       throw new NotSupportedException("Invalid operation - update not allowed");
     }
 
-    private void DataPortal_Delete(Object criteria)
+    private void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException("Invalid operation - delete not allowed");
     }
@@ -200,7 +200,7 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
   }
 }

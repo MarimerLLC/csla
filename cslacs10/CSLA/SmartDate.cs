@@ -196,7 +196,7 @@ namespace CSLA
     /// SmartDate object so it remains considered as an empty date value.
     /// </para>
     /// </remarks>
-    public Object DBValue
+    public object DBValue
     {
       get
       {
@@ -366,7 +366,7 @@ namespace CSLA
 //    /// <returns>
 //    /// A value indicating if the comparison date is less 
 //    /// than, equal to or greater than this date.</returns>
-//    int IComparable.CompareTo(Object date)
+//    int IComparable.CompareTo(object date)
 //    {
 //      if(date.GetType() == typeof(SmartDate))
 //        return CompareTo((SmartDate)date);

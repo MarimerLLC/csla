@@ -41,7 +41,7 @@ namespace CSLA.Data
     /// <remarks>
     /// Returns Nothing for null.
     /// </remarks>
-    public Object GetValue(int i)
+    public object GetValue(int i)
     {
       if(_dataReader.IsDBNull(i))
         return null;
@@ -336,7 +336,7 @@ namespace CSLA.Data
     /// <summary>
     /// Invokes the GetValues method of the underlying datareader.
     /// </summary>
-    public int GetValues(Object[] values)
+    public int GetValues(object[] values)
     {
       return _dataReader.GetValues(values);
     }
@@ -366,13 +366,11 @@ namespace CSLA.Data
     /// <remarks>
     /// Returns Nothing if the value is null.
     /// </remarks>
-    public Object this [string name]
+    public object this [string name]
     {
-      // Default Public Overloads ReadOnly Property Item(ByVal name As String)
-      // As Object Implements System.Data.IDataRecord.Item
       get
       {
-        Object val = _dataReader[name];
+        object val = _dataReader[name];
         if(DBNull.Value.Equals(val))
           return null;
         else
@@ -386,10 +384,8 @@ namespace CSLA.Data
     /// <remarks>
     /// Returns Nothing if the value is null.
     /// </remarks>
-    public Object this [int i]
+    public object this [int i]
     {
-      //    Default Public Overloads ReadOnly Property Item(int i) 
-      //    As Object Implements System.Data.IDataRecord.Item
       get
       {
         if(_dataReader.IsDBNull(i))

@@ -14,5 +14,5 @@ namespace CSLA
   /// </remarks>
   [AttributeUsage(AttributeTargets.Method)]
   public class TransactionalAttribute : Attribute
-	{}
+  {}
 }

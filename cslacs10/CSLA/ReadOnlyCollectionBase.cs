@@ -31,7 +31,7 @@ namespace CSLA
     /// Prevents insertion of new items into the collection when the
     /// collection is locked.
     /// </summary>
-    protected override void OnInsert(int index, Object val)
+    protected override void OnInsert(int index, object val)
     {
       if(locked)
         throw new NotSupportedException(
@@ -42,7 +42,7 @@ namespace CSLA
     /// Prevents removal of items from the collection when the
     /// collection is locked.
     /// </summary>
-    protected override void OnRemove(int index, Object val)
+    protected override void OnRemove(int index, object val)
     {
       if(locked)
         throw new NotSupportedException(
@@ -64,7 +64,7 @@ namespace CSLA
     /// Prevents changing an item reference when the 
     /// collection is locked.
     /// </summary>
-    protected override void OnSet(int index, Object oldValue, Object newValue)
+    protected override void OnSet(int index, object oldValue, object newValue)
     {
       if(locked)
         throw new NotSupportedException(
@@ -79,7 +79,7 @@ namespace CSLA
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
-    public Object Clone()
+    public object Clone()
     {
 
       MemoryStream buffer = new MemoryStream();
@@ -92,9 +92,9 @@ namespace CSLA
 
     #endregion
 
-#region Data Access
+    #region Data Access
 
-    private void DataPortal_Create(Object criteria)
+    private void DataPortal_Create(object criteria)
     {
       throw new NotSupportedException("Invalid operation - create not allowed");
     }
@@ -105,7 +105,7 @@ namespace CSLA
     /// </summary>
     /// <param name="criteria">
     /// An object containing criteria values to identify the object.</param>
-    virtual protected void DataPortal_Fetch(Object criteria)
+    virtual protected void DataPortal_Fetch(object criteria)
     {
       throw new NotSupportedException("Invalid operation - fetch not allowed");
     }
@@ -115,7 +115,7 @@ namespace CSLA
       throw new NotSupportedException("Invalid operation - update not allowed");
     }
 
-    private void DataPortal_Delete(Object criteria)
+    private void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException("Invalid operation - delete not allowed");
     }
@@ -140,7 +140,7 @@ namespace CSLA
         return val;
     }
 
-#endregion
+    #endregion
 
 	}
 }

@@ -71,6 +71,7 @@ namespace CSLA.Core
                   // this is a child collection, cascade the call
                   BusinessCollectionBase tmp = (BusinessCollectionBase)value;
                   tmp.CopyState();
+                  Serialization.SerializationNotification.OnSerializing(tmp);
                 }
               }
               else
@@ -83,6 +84,7 @@ namespace CSLA.Core
                     // this is a child object, cascade the call
                     BusinessBase tmp = (BusinessBase)value;
                     tmp.CopyState();
+                    Serialization.SerializationNotification.OnSerializing(tmp);
                   }
                 }
                 else
@@ -174,6 +176,7 @@ namespace CSLA.Core
                   {
                     // this is a child collection, cascade the call
                     BusinessCollectionBase tmp = (BusinessCollectionBase)value;
+                    Serialization.SerializationNotification.OnDeserialized(tmp);
                     tmp.UndoChanges();
                   }
                 }
@@ -186,6 +189,7 @@ namespace CSLA.Core
                     {
                       // this is a child object, cascade the call
                       BusinessBase tmp = (BusinessBase)value;
+                      Serialization.SerializationNotification.OnDeserialized(tmp);
                       tmp.UndoChanges();
                     }
                   }

@@ -67,38 +67,4 @@ Public Class Child
     End If
   End Sub
 
-#Region " System.Object Overrides "
-
-  Public Overrides Function ToString() As String
-    Return mData.ToString
-  End Function
-
-  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
-    If TypeOf objA Is Child AndAlso TypeOf objB Is Child Then
-      Return DirectCast(objA, Child).Equals(DirectCast(objB, Child))
-
-    Else
-      Return False
-    End If
-  End Function
-
-  Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
-    If TypeOf obj Is Child Then
-      Return Equals(DirectCast(obj, Child))
-
-    Else
-      Return False
-    End If
-  End Function
-
-  Public Overloads Function Equals(ByVal obj As Child) As Boolean
-    Return mData.Equals(obj.Data)
-  End Function
-
-  Public Overrides Function GetHashCode() As Integer
-    Return mData.GetHashCode
-  End Function
-
-#End Region
-
 End Class

@@ -17,7 +17,7 @@ Public Class Grandchildren
   End Sub
 
   Friend Shared Function NewGrandChildren() As Grandchildren
-    Return New Grandchildren()
+    Return New Grandchildren
   End Function
 
   Friend Shared Function GetGrandChildren(ByVal dr As IDataReader) As Grandchildren

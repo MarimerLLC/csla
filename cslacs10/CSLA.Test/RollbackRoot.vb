@@ -45,7 +45,7 @@ Public Class RollbackRoot
   End Class
 
   Public Shared Function NewRoot() As RollbackRoot
-    Return DirectCast(DataPortal.Create(New Criteria()), RollbackRoot)
+    Return DirectCast(DataPortal.Create(New Criteria), RollbackRoot)
   End Function
 
   Public Shared Function GetRoot(ByVal Data As String) As RollbackRoot
@@ -108,6 +108,21 @@ Public Class RollbackRoot
   Protected Overrides Sub DataPortal_Delete(ByVal Criteria As Object)
     ' we would delete here
     Session.Add("Root", "Deleted")
+  End Sub
+
+  Protected Overrides Sub Deserialized()
+    MyBase.Deserialized()
+    Session.Add("Deserialized", "root Deserialized")
+  End Sub
+
+  Protected Overrides Sub Serialized()
+    MyBase.Serialized()
+    Session.Add("Serialized", "root Serialized")
+  End Sub
+
+  Protected Overrides Sub Serializing()
+    MyBase.Serializing()
+    Session.Add("Serializing", "root Serializing")
   End Sub
 
 End Class

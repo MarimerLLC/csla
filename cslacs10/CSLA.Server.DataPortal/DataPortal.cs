@@ -178,7 +178,7 @@ namespace CSLA.Server
       }
       catch(Exception ex)
       {
-        DataPortalResult result = new DataPortalResult(obj);
+        DataPortalResult result = new DataPortalResult();
         ClearContext(context);
         throw new DataPortalException("DataPortal.Delete " + Strings.GetResourceString("FailedOnServer"), ex, result);
       }

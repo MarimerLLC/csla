@@ -112,6 +112,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "AppContext.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "AssemblyInfo.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -139,6 +144,11 @@
                 <File
                     RelPath = "CSLA.Test.config"
                     BuildAction = "None"
+                />
+                <File
+                    RelPath = "ExceptionRoot.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
                 />
                 <File
                     RelPath = "GenRoot.vb"
@@ -202,6 +212,11 @@
                 />
                 <File
                     RelPath = "RulesManager.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SimpleRoot.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

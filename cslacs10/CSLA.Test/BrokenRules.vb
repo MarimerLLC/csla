@@ -6,7 +6,7 @@ Public Class BrokenRules
     Session.Clear()
     Dim root As HasRules = HasRules.NewHasRules
     Assert.AreEqual(root.IsValid, False)
-    Assert.AreEqual(root.BrokenRulesCollection.Count, 1)
+    Assert.AreEqual(root.GetBrokenRulesCollection.Count, 1)
   End Sub
 
 End Class

@@ -46,7 +46,9 @@ Public Class Root
   End Class
 
   Public Shared Function NewRoot() As Root
-    Return DirectCast(DataPortal.Create(New Criteria), Root)
+    Dim crit As Criteria = New Criteria
+    Dim result As Object = DataPortal.Create(crit)
+    Return DirectCast(result, Root)
   End Function
 
   Public Shared Function GetRoot(ByVal Data As String) As Root
@@ -76,6 +78,13 @@ Public Class Root
   End Sub
 
   Protected Overrides Sub DataPortal_Update()
+
+    Session.Add("clientcontext", ApplicationContext.ClientContext.Item("clientcontext"))
+
+    Session.Add("globalcontext", ApplicationContext.GlobalContext.Item("globalcontext"))
+    ApplicationContext.GlobalContext.Remove("globalcontext")
+    ApplicationContext.GlobalContext.Item("globalcontext") = "new global value"
+
     If IsDeleted Then
       ' we would delete here
       Session.Add("Root", "Deleted")
@@ -113,38 +122,16 @@ Public Class Root
     Session.Add("Serializing", "root Serializing")
   End Sub
 
-#Region " System.Object Overrides "
+  Protected Overrides Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
-  Public Overrides Function ToString() As String
-    Return mData.ToString
-  End Function
+    Session("dpinvoke") = ApplicationContext.GlobalContext("global")
 
-  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
-    If TypeOf objA Is Root AndAlso TypeOf objB Is Root Then
-      Return DirectCast(objA, Root).Equals(DirectCast(objB, Root))
+  End Sub
 
-    Else
-      Return False
-    End If
-  End Function
+  Protected Overrides Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
-  Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
-    If TypeOf obj Is Root Then
-      Return Equals(DirectCast(obj, Root))
+    Session("dpinvokecomplete") = ApplicationContext.GlobalContext("global")
 
-    Else
-      Return False
-    End If
-  End Function
-
-  Public Overloads Function Equals(ByVal obj As Root) As Boolean
-    Return mData.Equals(obj.Data)
-  End Function
-
-  Public Overrides Function GetHashCode() As Integer
-    Return mData.GetHashCode
-  End Function
-
-#End Region
+  End Sub
 
 End Class

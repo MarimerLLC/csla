@@ -262,6 +262,12 @@ Public Class DataPortal
       Dim properties As New Hashtable()
       properties("name") = "HttpBinary"
 
+      If AUTHENTICATION() = "Windows" Then
+        ' make sure we pass the user's Windows credentials
+        ' to the server
+        properties("useDefaultCredentials") = True
+      End If
+
       Dim formatter As New BinaryClientFormatterSinkProvider()
 
       Dim channel As New HttpChannel(properties, formatter, Nothing)

@@ -21,8 +21,6 @@ namespace ProjectTracker.Library
     {
       get
       {
-                                                                              
-
         foreach(ProjectResource r in List)
         {
           if(r.ResourceID == resourceID)
@@ -72,7 +70,6 @@ namespace ProjectTracker.Library
 
     #endregion
 
-
     #region Contains
 
     public bool Contains(ProjectResource assignment) 
@@ -83,7 +80,7 @@ namespace ProjectTracker.Library
       return false;
     }
 
-    public bool ContainsDeleted(                                                                                                                                                                  ProjectResource assignment)
+    public bool ContainsDeleted(ProjectResource assignment)
     {
       foreach(ProjectResource child in deletedList)
         if(child.Equals(assignment))
@@ -109,7 +106,7 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Static Methods
 
     internal static ProjectResources NewProjectResources() 
     {

@@ -8,7 +8,7 @@ namespace ProjectTracker.Library
 {
   [Serializable()]
   public class ResourceList : ReadOnlyCollectionBase
-	{
+  {
     #region Data Structure
 
     [Serializable()]
@@ -75,7 +75,7 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Static Methods
 
     public static ResourceList EmptyList()
     {
@@ -84,7 +84,7 @@ namespace ProjectTracker.Library
 
     public static ResourceList GetResourceList() 
     {
-        return (ResourceList)DataPortal.Fetch(new Criteria());
+      return (ResourceList)DataPortal.Fetch(new Criteria());
     }
 
     #endregion
@@ -92,7 +92,7 @@ namespace ProjectTracker.Library
     #region Criteria 
 
     [Serializable()]
-    private class Criteria
+      private class Criteria
     {
       // no criteria - we retrieve all resources
     }
@@ -146,5 +146,5 @@ namespace ProjectTracker.Library
 
     #endregion
 
-	}
+  }
 }

@@ -72,7 +72,7 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Static Methods
 
     internal static ResourceAssignment NewResourceAssignment(Project project, string role) 
     {
@@ -112,7 +112,6 @@ namespace ProjectTracker.Library
     private ResourceAssignment()
     {
       // prevent direct creation of this object
-      MarkAsChild();
     }
 
     #endregion

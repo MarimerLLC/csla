@@ -122,15 +122,15 @@ namespace ProjectTracker.Library
 
     #endregion
 
-
     #region Shared Methods
 
     // create new object
     public static Resource NewResource(string id)
     {
       if(!Thread.CurrentPrincipal.IsInRole("Supervisor") && 
-         !Thread.CurrentPrincipal.IsInRole("ProjectManager"))
-        throw new System.Security.SecurityException("User not authorized to add a resource");
+        !Thread.CurrentPrincipal.IsInRole("ProjectManager"))
+        throw new System.Security.SecurityException(
+          "User not authorized to add a resource");
       return new Resource(id);
     }
 
@@ -138,11 +138,11 @@ namespace ProjectTracker.Library
     public static void DeleteResource(string id)
     {
       if(!Thread.CurrentPrincipal.IsInRole("Supervisor") && 
-         !Thread.CurrentPrincipal.IsInRole("ProjectManager") && 
-         !Thread.CurrentPrincipal.IsInRole("Administrator"))
+        !Thread.CurrentPrincipal.IsInRole("ProjectManager") && 
+        !Thread.CurrentPrincipal.IsInRole("Administrator"))
         throw new System.Security.SecurityException(
           "User not authorized to remove a resource");
-        DataPortal.Delete(new Criteria(id));
+      DataPortal.Delete(new Criteria(id));
     }
 
     // load existing object
@@ -176,7 +176,7 @@ namespace ProjectTracker.Library
 
     private Resource(string id)
     {
-      _ID = ID;
+      _ID = id;
     }
 
     private Resource()
@@ -189,7 +189,7 @@ namespace ProjectTracker.Library
     #region Criteria
 
     [Serializable()]
-    private class Criteria
+      private class Criteria
     {
       public string ID;
 
@@ -283,7 +283,8 @@ namespace ProjectTracker.Library
           }
           // reset our status to be a new object
           MarkNew();
-        }                                                                                              else
+        }                                                                                              
+        else
         {
           // we're not being deleted, so insert or update
           if(this.IsNew)
@@ -337,7 +338,7 @@ namespace ProjectTracker.Library
         cm.CommandText = "deleteResource";
         cm.Parameters.Add("@ID", crit.ID);
         cm.ExecuteNonQuery();
-                                                                                                       tr.Commit();
+        tr.Commit();
       }                                                                                              catch
       {
         tr.Rollback();
@@ -351,5 +352,5 @@ namespace ProjectTracker.Library
 
     #endregion
 
-                                                                                   }
+  }
 }

@@ -10,7 +10,7 @@ namespace ProjectTracker.Library
     protected SmartDate _Assigned = new SmartDate(DateTime.Now);
     protected int _Role = 0;
 
-#region Business Properties and Methods
+    #region Business Properties and Methods
 
     public string Assigned
     {
@@ -36,9 +36,9 @@ namespace ProjectTracker.Library
       }
     }
 
-#endregion
+    #endregion
   
-#region Roles List
+    #region Roles List
 
     private static RoleList _Roles;
 
@@ -64,17 +64,16 @@ namespace ProjectTracker.Library
       }
     }
 
-#endregion
+    #endregion
 
-#region Constructors
+    #region Constructors
 
-                                         
     protected Assignment()
     {
       MarkAsChild();
     }
 
-#endregion
+    #endregion
 
   }
 }

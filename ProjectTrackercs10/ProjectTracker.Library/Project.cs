@@ -16,7 +16,8 @@ namespace ProjectTracker.Library
     SmartDate _Ended = new SmartDate();
     string _Description = string.Empty;
 
-    ProjectResources _Resources = ProjectResources.NewProjectResources();
+    ProjectResources _Resources = 
+      ProjectResources.NewProjectResources();
 
     #region Business Properties and Methods
 
@@ -40,7 +41,8 @@ namespace ProjectTracker.Library
         {
           _Name = value;
           BrokenRules.Assert("NameLen", "Name too long", (value.Length > 50));
-          BrokenRules.Assert("NameRequired", "Project name required", (value.Length == 0));
+          BrokenRules.Assert("NameRequired", "Project name required", 
+            (value.Length == 0));
           MarkDirty();
         }
       }
@@ -139,7 +141,6 @@ namespace ProjectTracker.Library
 
     #endregion
 
-
     #region System.Object Overrides
 
     public override string ToString()
@@ -175,13 +176,14 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Static Methods
 
     // create new object
     public static Project NewProject()
     {
       if(!Thread.CurrentPrincipal.IsInRole("ProjectManager"))
-        throw new System.Security.SecurityException("User not authorized to add a project");
+        throw new System.Security.SecurityException(
+          "User not authorized to add a project");
       return (Project)DataPortal.Create(new Criteria(Guid.Empty));
     }
 
@@ -196,7 +198,8 @@ namespace ProjectTracker.Library
     {
       if(!Thread.CurrentPrincipal.IsInRole("ProjectManager") && 
         !Thread.CurrentPrincipal.IsInRole("Administrator"))
-        throw new System.Security.SecurityException("User not authorized to remove a project");
+        throw new System.Security.SecurityException(
+          "User not authorized to remove a project");
       DataPortal.Delete(new Criteria(id));
     }
 
@@ -222,7 +225,6 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
 
     #region Constructors
 
@@ -342,7 +344,6 @@ namespace ProjectTracker.Library
           {
             // we're not new, so update
             cm.CommandText = "updateProject";
-
           }
 
           cm.Parameters.Add("@ID", _ID.ToString());

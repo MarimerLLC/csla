@@ -82,19 +82,22 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Static Methods
 
-    internal static ProjectResource NewProjectResource(Resource resource, string role)
+    internal static ProjectResource NewProjectResource(
+      Resource resource, string role)
     {
       return new ProjectResource(resource, role);
     }
 
-    internal static ProjectResource NewProjectResource(string resourceID, string role)
+    internal static ProjectResource NewProjectResource(
+      string resourceID, string role)
     {
       return new ProjectResource(Resource.GetResource(resourceID), role);
     }
 
-    internal static ProjectResource NewProjectResource(string resourceID)
+    internal static ProjectResource NewProjectResource(
+      string resourceID)
     {
       return new ProjectResource(Resource.GetResource(resourceID), DefaultRole);
     }

@@ -8,7 +8,7 @@ namespace ProjectTracker.Library
 {
   [Serializable()]
   public class ProjectList : ReadOnlyCollectionBase
-	{
+  {
     #region Data Structure
 
     [Serializable()]
@@ -76,7 +76,7 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Static Methods
 
     public static ProjectList GetProjectList()
     {
@@ -88,7 +88,7 @@ namespace ProjectTracker.Library
     #region Criteria
 
     [Serializable()]
-    public class Criteria
+      public class Criteria
     {
       // no criteria - we retrieve all projects
     }
@@ -142,5 +142,5 @@ namespace ProjectTracker.Library
 
     #endregion
 
-	}
+  }
 }

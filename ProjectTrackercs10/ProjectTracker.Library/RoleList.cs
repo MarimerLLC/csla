@@ -4,8 +4,8 @@ using CSLA;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-	public class RoleList : NameValueList
-	{
+  public class RoleList : NameValueList
+  {
 
     #region Shared Methods
 
@@ -18,10 +18,10 @@ namespace ProjectTracker.Library
 
     #region Constructors
 
-		private RoleList()
-		{
-			// prevent direct creation
-		}
+    private RoleList()
+    {
+      // prevent direct creation
+    }
 
     // this constructor overload is required because
     // the base class (NameObjectCollectionBase) implements
@@ -36,7 +36,7 @@ namespace ProjectTracker.Library
     #region Criteria
 
     [Serializable()]
-    private class Criteria
+      private class Criteria
     {
       // add criteria here
     }
@@ -52,5 +52,5 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-	}
+  }
 }

@@ -126,8 +126,12 @@ Public Class DataPortal
 #Region " Helper methods "
 
   Private Shared Function IsTransactionalMethod(ByVal Method As MethodInfo) As Boolean
-    Dim attrib() As Object = Method.GetCustomAttributes(GetType(TransactionalAttribute), True)
-    Return (UBound(attrib) > -1)
+
+    Return Attribute.IsDefined(Method, GetType(TransactionalAttribute))
+
+    'Dim attrib() As Object = Method.GetCustomAttributes(GetType(TransactionalAttribute), True)
+    'Return (UBound(attrib) > -1)
+
   End Function
 
   Private Shared Function GetMethod(ByVal ObjectType As Type, ByVal method As String) As MethodInfo

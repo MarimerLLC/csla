@@ -1,26 +1,32 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA", "CSLA\CSLA.vbproj", "{1B9A38BB-461A-47A4-AD72-099C694138A0}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLA.Core.Bindablebase", "CSLA.Core.Bindablebase\CSLA.Core.Bindablebase.csproj", "{C2392355-12A9-4197-A1D3-603C390B1E62}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.Server.DataPortal", "CSLA.Server.DataPortal\CSLA.Server.DataPortal.vbproj", "{80828E2C-E9FB-4E73-A27C-7F9CDB96FCDE}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.Server.ServicedDataPortal", "CSLA.Server.ServicedDataPortal\CSLA.Server.ServicedDataPortal.vbproj", "{AD60DF60-2D14-4403-B5A8-41D4E06AB7AD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.BatchQueue", "CSLA.BatchQueue\CSLA.BatchQueue.vbproj", "{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NetRun", "NetRun\NetRun.vbproj", "{24FFD3D5-D449-403F-88F3-04D9E17422A6}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DataPortal", "http://localhost/DataPortal/DataPortal.vbproj", "{968FE8A0-051C-4F4A-9805-F1907566828D}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.Test", "CSLA.Test\CSLA.Test.vbproj", "{D455F360-5347-4136-A825-64FFD41F9787}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
+		Debug = Debug
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{1B9A38BB-461A-47A4-AD72-099C694138A0}.Debug.ActiveCfg = Debug|.NET
@@ -43,22 +49,16 @@ Global
 		{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}.Debug.Build.0 = Debug|.NET
 		{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}.Release.ActiveCfg = Release|.NET
 		{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}.Release.Build.0 = Release|.NET
-		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Debug.ActiveCfg = Debug|.NET
-		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Debug.Build.0 = Debug|.NET
-		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Release.ActiveCfg = Release|.NET
-		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Release.Build.0 = Release|.NET
 		{968FE8A0-051C-4F4A-9805-F1907566828D}.Debug.ActiveCfg = Debug|.NET
 		{968FE8A0-051C-4F4A-9805-F1907566828D}.Debug.Build.0 = Debug|.NET
 		{968FE8A0-051C-4F4A-9805-F1907566828D}.Release.ActiveCfg = Release|.NET
 		{968FE8A0-051C-4F4A-9805-F1907566828D}.Release.Build.0 = Release|.NET
-		{D455F360-5347-4136-A825-64FFD41F9787}.Debug.ActiveCfg = Debug|.NET
-		{D455F360-5347-4136-A825-64FFD41F9787}.Debug.Build.0 = Debug|.NET
-		{D455F360-5347-4136-A825-64FFD41F9787}.Release.ActiveCfg = Release|.NET
-		{D455F360-5347-4136-A825-64FFD41F9787}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
-		Item:1 = license.txt
-		Item:2 = readme.txt
+		license.txt = license.txt
+		readme.txt = readme.txt
+		VersionInfo.cs = VersionInfo.cs
+		VersionInfo.vb = VersionInfo.vb
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

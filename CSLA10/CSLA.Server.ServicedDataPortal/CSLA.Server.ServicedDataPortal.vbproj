@@ -1,8 +1,8 @@
 <VisualStudioProject>
     <VisualBasic
         ProjectType = "Local"
-        ProductVersion = "7.0.9466"
-        SchemaVersion = "1.0"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
         ProjectGuid = "{AD60DF60-2D14-4403-B5A8-41D4E06AB7AD}"
     >
         <Build>
@@ -19,7 +19,7 @@
                 OutputType = "Library"
                 OptionCompare = "Binary"
                 OptionExplicit = "On"
-                OptionStrict = "Off"
+                OptionStrict = "On"
                 RootNamespace = "CSLA.Server.ServicedDataPortal"
                 StartupObject = ""
             >
@@ -97,6 +97,12 @@
                 />
                 <File
                     RelPath = "DataPortal.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "VersionInfo.vb"
+                    Link = "..\VersionInfo.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

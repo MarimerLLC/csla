@@ -13,9 +13,9 @@ Public Class DataPortal
   ''' a COM+ transaction.
   ''' </summary>
   <AutoComplete(True)> _
-  Public Function Create(ByVal Criteria As Object, ByVal Principal As Object) As Object
-    Dim portal As New CSLA.Server.DataPortal()
-    Return portal.Create(Criteria, Principal)
+  Public Function Create(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
+    Dim portal As New CSLA.Server.DataPortal
+    Return portal.Create(Criteria, context)
   End Function
 
   ''' <summary>
@@ -23,9 +23,9 @@ Public Class DataPortal
   ''' a COM+ transaction.
   ''' </summary>
   <AutoComplete(True)> _
-  Public Function Fetch(ByVal Criteria As Object, ByVal Principal As Object) As Object
-    Dim portal As New CSLA.Server.DataPortal()
-    Return portal.Fetch(Criteria, Principal)
+  Public Function Fetch(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
+    Dim portal As New CSLA.Server.DataPortal
+    Return portal.Fetch(Criteria, context)
   End Function
 
   ''' <summary>
@@ -33,9 +33,9 @@ Public Class DataPortal
   ''' a COM+ transaction.
   ''' </summary>
   <AutoComplete(True)> _
-  Public Function Update(ByVal obj As Object, ByVal Principal As Object) As Object
-    Dim portal As New CSLA.Server.DataPortal()
-    Return portal.Update(obj, Principal)
+  Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As Object
+    Dim portal As New CSLA.Server.DataPortal
+    Return portal.Update(obj, context)
   End Function
 
   ''' <summary>
@@ -43,9 +43,9 @@ Public Class DataPortal
   ''' a COM+ transaction.
   ''' </summary>
   <AutoComplete(True)> _
-  Public Sub Delete(ByVal Criteria As Object, ByVal Principal As Object)
-    Dim portal As New CSLA.Server.DataPortal()
-    portal.Delete(Criteria, Principal)
+  Public Sub Delete(ByVal Criteria As Object, ByVal context As DataPortalContext)
+    Dim portal As New CSLA.Server.DataPortal
+    portal.Delete(Criteria, context)
   End Sub
 
 End Class

@@ -1,8 +1,8 @@
 <VisualStudioProject>
     <VisualBasic
         ProjectType = "Local"
-        ProductVersion = "7.0.9466"
-        SchemaVersion = "1.0"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
         ProjectGuid = "{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}"
     >
         <Build>
@@ -137,6 +137,12 @@
                 />
                 <File
                     RelPath = "IBatchEntry.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "VersionInfo.vb"
+                    Link = "..\VersionInfo.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

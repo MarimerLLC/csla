@@ -1,8 +1,8 @@
 <VisualStudioProject>
     <VisualBasic
         ProjectType = "Local"
-        ProductVersion = "7.0.9466"
-        SchemaVersion = "1.0"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
         ProjectGuid = "{80828E2C-E9FB-4E73-A27C-7F9CDB96FCDE}"
     >
         <Build>
@@ -102,6 +102,12 @@
                 />
                 <File
                     RelPath = "ISerializationNotification.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "VersionInfo.vb"
+                    Link = "..\VersionInfo.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

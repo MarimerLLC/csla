@@ -517,6 +517,17 @@ Public MustInherit Class BusinessBase
   End Function
 
   ''' <summary>
+  ''' Provides access to the readonly collection of broken business rules
+  ''' for this object.
+  ''' </summary>
+  ''' <returns>A <see cref="T:CSLA.BrokenRules.RulesCollection" /> object.</returns>
+  Public Overridable ReadOnly Property BrokenRulesCollection() As BrokenRules.RulesCollection
+    Get
+      Return mBrokenRules.GetBrokenRules
+    End Get
+  End Property
+
+  ''' <summary>
   ''' Provides access to a text representation of all the descriptions of
   ''' the currently broken business rules for this object.
   ''' </summary>
@@ -524,6 +535,17 @@ Public MustInherit Class BusinessBase
   Public Overridable Function GetBrokenRulesString() As String
     Return mBrokenRules.ToString
   End Function
+
+  ''' <summary>
+  ''' Provides access to a text representation of all the descriptions of
+  ''' the currently broken business rules for this object.
+  ''' </summary>
+  ''' <returns>Text containing the descriptions of the broken business rules.</returns>
+  Public Overridable ReadOnly Property BrokenRulesString() As String
+    Get
+      Return mBrokenRules.ToString
+    End Get
+  End Property
 
   ''' <summary>
   ''' Provides access to the broken rules functionality.

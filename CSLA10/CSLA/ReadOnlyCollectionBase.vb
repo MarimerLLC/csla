@@ -28,14 +28,14 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' Indicates that the collection is locked, so insert, remove
   ''' and change operations are disallowed.
   ''' </summary>
-  Protected Locked As Boolean = True
+  Protected locked As Boolean = True
 
   ''' <summary>
   ''' Prevents insertion of new items into the collection when the
   ''' collection is locked.
   ''' </summary>
   Protected Overrides Sub OnInsert(ByVal index As Integer, ByVal value As Object)
-    If Not ActivelySorting AndAlso Locked Then
+    If Not ActivelySorting AndAlso locked Then
       Throw New NotSupportedException(GetResourceString("NoInsertReadOnlyException"))
     End If
   End Sub
@@ -45,7 +45,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' collection is locked.
   ''' </summary>
   Protected Overrides Sub OnRemove(ByVal index As Integer, ByVal value As Object)
-    If Not ActivelySorting AndAlso Locked Then
+    If Not ActivelySorting AndAlso locked Then
       Throw New NotSupportedException(GetResourceString("NoRemoveReadOnlyException"))
     End If
   End Sub
@@ -55,7 +55,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' collection is locked.
   ''' </summary>
   Protected Overrides Sub OnClear()
-    If Not ActivelySorting AndAlso Locked Then
+    If Not ActivelySorting AndAlso locked Then
       Throw New NotSupportedException(GetResourceString("NoClearReadOnlyException"))
     End If
   End Sub
@@ -65,7 +65,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' collection is locked.
   ''' </summary>
   Protected Overrides Sub OnSet(ByVal index As Integer, ByVal oldValue As Object, ByVal newValue As Object)
-    If Not ActivelySorting AndAlso Locked Then
+    If Not ActivelySorting AndAlso locked Then
       Throw New NotSupportedException(GetResourceString("NoChangeReadOnlyException"))
     End If
   End Sub
@@ -80,8 +80,8 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' <returns>A new object containing the exact data of the original object.</returns>
   Public Function Clone() As Object Implements ICloneable.Clone
 
-    Dim buffer As New MemoryStream()
-    Dim formatter As New BinaryFormatter()
+    Dim buffer As New MemoryStream
+    Dim formatter As New BinaryFormatter
 
     Serialization.SerializationNotification.OnSerializing(Me)
     formatter.Serialize(buffer, Me)

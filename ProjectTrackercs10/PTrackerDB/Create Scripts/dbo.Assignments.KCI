@@ -1,0 +1,8 @@
+﻿ALTER TABLE [dbo].[Assignments] WITH NOCHECK ADD 
+	CONSTRAINT [PK_Assignements] PRIMARY KEY  CLUSTERED 
+	(
+		[ProjectID],
+		[ResourceID]
+	)  ON [PRIMARY] 
+GO
+

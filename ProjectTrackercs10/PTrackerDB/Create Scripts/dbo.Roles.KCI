@@ -1,0 +1,7 @@
+﻿ALTER TABLE [dbo].[Roles] WITH NOCHECK ADD 
+	CONSTRAINT [PK_Roles] PRIMARY KEY  CLUSTERED 
+	(
+		[ID]
+	)  ON [PRIMARY] 
+GO
+

@@ -3,7 +3,7 @@ using System;
 namespace CSLA.Templates
 {
   [Serializable()]
-  public class EditableRoot : BusinessBase
+  public class EditableRoot : BusinessBase, IDisposable
   {
     // Declare variables here to contain object state
 
@@ -120,5 +120,9 @@ namespace CSLA.Templates
 
     #endregion
 
+
+    public void Dispose()
+    {
+    }
   }
 }

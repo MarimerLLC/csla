@@ -73,24 +73,29 @@
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
                 />
                 <Reference
-                    Name = "CSLA"
-                    Project = "{0DE2C2FB-907E-4AFF-9E8F-8AD61F771B75}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                    Name = "CSLA.Server.ServicedDataPortal"
+                    AssemblyName = "CSLA.Server.ServicedDataPortal"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                />
+                <Reference
+                    Name = "CSLA.BatchQueue"
+                    AssemblyName = "CSLA.BatchQueue"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.BatchQueue.dll"
                 />
                 <Reference
                     Name = "CSLA.Core.BindableBase"
-                    Project = "{8658B2B5-4200-4B54-8190-304818ED70F3}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                    AssemblyName = "CSLA.Core.BindableBase"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.Core.BindableBase.dll"
+                />
+                <Reference
+                    Name = "CSLA"
+                    AssemblyName = "CSLA"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.dll"
                 />
                 <Reference
                     Name = "CSLA.Server.DataPortal"
-                    Project = "{86CE1F38-3C6F-4AA4-B047-631E9119DA7D}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    Project = "{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                    AssemblyName = "CSLA.Server.DataPortal"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.Server.DataPortal.dll"
                 />
             </References>
         </Build>

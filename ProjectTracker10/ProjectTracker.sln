@@ -1,22 +1,32 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ProjectTracker.Library", "ProjectTracker.Library\ProjectTracker.Library.vbproj", "{DB46B4CB-4541-4090-8FDE-E4172FC7AF20}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTWin", "PTWin\PTWin.vbproj", "{DD40179D-B9FA-40EC-9BE3-B9FB3E284DD4}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTWeb", "http://localhost/PTWeb/PTWeb.vbproj", "{FDD075FA-F219-4F58-84C6-57DB39D21F59}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTService", "http://localhost/PTService/PTService.vbproj", "{33224EFD-1346-4860-8725-C6DD4F807609}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTBatch", "PTBatch\PTBatch.vbproj", "{C602DB86-251D-4588-B756-9E6A2B885421}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTClient", "PTClient\PTClient\PTClient.vbproj", "{D3482478-57EB-4070-8A91-4EDC64DD7BB2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
+		Debug = Debug
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{DB46B4CB-4541-4090-8FDE-E4172FC7AF20}.Debug.ActiveCfg = Debug|.NET
@@ -45,8 +55,9 @@ Global
 		{D3482478-57EB-4070-8A91-4EDC64DD7BB2}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
-		Item:1 = license.txt
-		Item:2 = readme.txt
+		license.txt = license.txt
+		readme.txt = readme.txt
+		VersionInfo.vb = VersionInfo.vb
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

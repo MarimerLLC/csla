@@ -1,8 +1,8 @@
 <VisualStudioProject>
     <VisualBasic
         ProjectType = "Local"
-        ProductVersion = "7.0.9466"
-        SchemaVersion = "1.0"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
         ProjectGuid = "{DB46B4CB-4541-4090-8FDE-E4172FC7AF20}"
     >
         <Build>
@@ -70,6 +70,11 @@
                     AssemblyName = "System.Xml"
                 />
                 <Reference
+                    Name = "CSLA.Server.ServicedDataPortal"
+                    AssemblyName = "CSLA.Server.ServicedDataPortal"
+                    HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.ServicedDataPortal.dll"
+                />
+                <Reference
                     Name = "CSLA.BatchQueue"
                     AssemblyName = "CSLA.BatchQueue"
                     HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.BatchQueue.dll"
@@ -88,11 +93,6 @@
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
                     HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.DataPortal.dll"
-                />
-                <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.ServicedDataPortal.dll"
                 />
             </References>
             <Imports>
@@ -159,6 +159,12 @@
                 />
                 <File
                     RelPath = "RoleList.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "VersionInfo.vb"
+                    Link = "..\VersionInfo.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

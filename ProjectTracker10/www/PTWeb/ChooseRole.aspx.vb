@@ -48,8 +48,8 @@ Public Class ChooseRole
         lblValue.Text = obj.FirstName & " " & obj.LastName
 
         ' TODO: this line only works in 1.1, so is replaced with next line for 1.0
-        'lstRoles.SelectedValue = obj.Role
-        SelectItem(lstRoles, obj.Role)
+        lstRoles.SelectedValue = obj.Role
+        'SelectItem(lstRoles, obj.Role)
 
       Else
         ' we are dealing with a ResourceAssignment
@@ -66,8 +66,8 @@ Public Class ChooseRole
         lblValue.Text = obj.ProjectName
 
         ' TODO: this line only works in 1.1, so is replaced with next line for 1.0
-        'lstRoles.SelectedValue = obj.Role
-        SelectItem(lstRoles, obj.Role)
+        lstRoles.SelectedValue = obj.Role
+        'SelectItem(lstRoles, obj.Role)
 
       End If
     End If
@@ -82,16 +82,16 @@ Public Class ChooseRole
       Dim obj As ProjectResource = Session("ProjectResource")
 
       ' TODO: this line only works in 1.1, so is replaced with next line for 1.0
-      'obj.Role = lstRoles.SelectedValue
-      obj.Role = lstRoles.SelectedItem.Value
+      obj.Role = lstRoles.SelectedValue
+      'obj.Role = lstRoles.SelectedItem.Value
 
     Else
       ' we are dealing with a ResourceAssignment
       Dim obj As ResourceAssignment = Session("ResourceAssignment")
 
       ' TODO: this line only works in 1.1, so is replaced with next line for 1.0
-      'obj.Role = lstRoles.SelectedValue
-      obj.Role = lstRoles.SelectedItem.Value
+      obj.Role = lstRoles.SelectedValue
+      'obj.Role = lstRoles.SelectedItem.Value
 
     End If
     SendUserBack()
@@ -113,20 +113,21 @@ Public Class ChooseRole
 
   End Sub
 
-  Private Sub SelectItem(ByVal lst As System.Web.UI.WebControls.ListBox, _
-    ByVal item As String)
+  ' TODO: uncomment this function for .NET 1.0
+  'Private Sub SelectItem(ByVal lst As System.Web.UI.WebControls.ListBox, _
+  '  ByVal item As String)
 
-    Dim index As Integer = 0
-    Dim entry As ListItem
+  '  Dim index As Integer = 0
+  '  Dim entry As ListItem
 
-    For Each entry In lst.Items
-      If entry.Value = item Then
-        lst.SelectedIndex = index
-        Return
-      End If
-      index += 1
-    Next
+  '  For Each entry In lst.Items
+  '    If entry.Value = item Then
+  '      lst.SelectedIndex = index
+  '      Return
+  '    End If
+  '    index += 1
+  '  Next
 
-  End Sub
+  'End Sub
 
 End Class

@@ -16,18 +16,18 @@ namespace ProjectTracker.Library
     {
       // this has private members, public properties because
       // ASP.NET can't databind to public members of a structure...
-      private Guid _ID;
-      private string _Name;
+      private Guid _id;
+      private string _name;
 
       public Guid ID
       {
         get
         {
-          return _ID;
+          return _id;
         }
         set
         {
-          _ID = value;
+          _id = value;
         }
       }
 
@@ -35,18 +35,18 @@ namespace ProjectTracker.Library
       {
         get
         {
-          return _Name;
+          return _name;
         }
         set
         {
-          _Name = value;
+          _name = value;
         }
       }
 
 
       public bool Equals(ProjectInfo info)
       {
-        return _ID.Equals(info.ID);
+        return _id.Equals(info.ID);
       }
     }
 
@@ -108,37 +108,27 @@ namespace ProjectTracker.Library
 
     protected override void DataPortal_Fetch(object criteria)
     {
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      SqlCommand cm = new SqlCommand();
-
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        cm.Connection = cn;
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "getProjects";
-
-        SafeDataReader dr = new SafeDataReader(cm.ExecuteReader());
-        try
+        cn.Open();
+        using(SqlCommand cm = cn.CreateCommand())
         {
-          locked = false;
-          while(dr.Read())
+          cm.CommandType = CommandType.StoredProcedure;
+          cm.CommandText = "getProjects";
+
+          using(SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
           {
-            ProjectInfo info = new ProjectInfo();
-            info.ID = dr.GetGuid(0);
-            info.Name = dr.GetString(1);
-            List.Add(info);
+            locked = false;
+            while(dr.Read())
+            {
+              ProjectInfo info = new ProjectInfo();
+              info.ID = dr.GetGuid(0);
+              info.Name = dr.GetString(1);
+              List.Add(info);
+            }
+            locked = true;
           }
         }
-        finally
-        {
-          locked = true;
-          dr.Close();
-        }
-      }
-      finally
-      {
-        cn.Close();
       }
     }
 

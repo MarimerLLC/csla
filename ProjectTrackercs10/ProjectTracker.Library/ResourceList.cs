@@ -16,18 +16,18 @@ namespace ProjectTracker.Library
     {
       // this has private members, public properties because
       // ASP.NET can't databind to public members of a structure...
-      private string _ID;
-      private string _Name;
+      private string _id;
+      private string _name;
 
       public string ID
       {
         get
         {
-          return _ID;
+          return _id;
         }
         set
         {
-          _ID = value;
+          _id = value;
         }
       }
 
@@ -35,17 +35,17 @@ namespace ProjectTracker.Library
       {
         get
         {
-          return _Name;
+          return _name;
         }
         set
         {
-          _Name = value;
+          _name = value;
         }
       }
 
       public bool Equals(ResourceInfo info)
       {
-        return _ID == info.ID;
+        return _id == info.ID;
       }
     }
 
@@ -112,37 +112,27 @@ namespace ProjectTracker.Library
 
     protected override void DataPortal_Fetch(object criteria)
     {
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      SqlCommand cm = new SqlCommand();
-
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        cm.Connection = cn;
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "getResources";
-
-        SafeDataReader dr = new SafeDataReader(cm.ExecuteReader());
-        try
+        cn.Open();
+        using(SqlCommand cm = cn.CreateCommand())
         {
-          locked = false;
-          while(dr.Read())
+          cm.CommandType = CommandType.StoredProcedure;
+          cm.CommandText = "getResources";
+
+          using(SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
           {
-            ResourceInfo info = new ResourceInfo();
-            info.ID = dr.GetString(0);
-            info.Name = dr.GetString(1) + ", " + dr.GetString(2);
-            List.Add(info);
+            locked = false;
+            while(dr.Read())
+            {
+              ResourceInfo info = new ResourceInfo();
+              info.ID = dr.GetString(0);
+              info.Name = dr.GetString(1) + ", " + dr.GetString(2);
+              List.Add(info);
+            }
+            locked = true;
           }
         }
-        finally
-        {
-          locked = true;
-          dr.Close();
-        }
-      }
-      finally
-      {
-        cn.Close();
       }
     }
 

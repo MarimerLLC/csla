@@ -28,6 +28,7 @@ namespace ProjectTracker.Library
       }
       set
       {
+        if(value == null) value = string.Empty;
         if(Role != value)
         {
           _role = Convert.ToInt32(Roles.Key(value));

@@ -60,12 +60,7 @@ namespace ProjectTracker.Library
 
     public void Remove(string resourceID)
     {
-      foreach(ProjectResource r in List)
-        if(r.ResourceID == resourceID)
-        {
-          Remove(r);
-          break;
-        }
+      Remove(this[resourceID]);
     }
 
     #endregion

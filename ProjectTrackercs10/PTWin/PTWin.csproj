@@ -98,6 +98,31 @@
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
+                    Name = "CrystalDecisions.Shared"
+                    AssemblyName = "CrystalDecisions.Shared"
+                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.Shared.dll"
+                />
+                <Reference
+                    Name = "CrystalDecisions.ReportSource"
+                    AssemblyName = "CrystalDecisions.ReportSource"
+                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.ReportSource.dll"
+                />
+                <Reference
+                    Name = "CrystalDecisions.CrystalReports.Engine"
+                    AssemblyName = "CrystalDecisions.CrystalReports.Engine"
+                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.CrystalReports.Engine.dll"
+                />
+                <Reference
+                    Name = "crystaldecisions.windows.forms"
+                    AssemblyName = "CrystalDecisions.Windows.Forms"
+                    HintPath = "..\..\..\windows\assembly\gac\crystaldecisions.windows.forms\9.1.3300.0__692fbea5521e1304\crystaldecisions.windows.forms.dll"
+                />
+                <Reference
+                    Name = "System.Web.Services"
+                    AssemblyName = "System.Web.Services"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Web.Services.dll"
+                />
+                <Reference
                     Name = "CSLA.Server.ServicedDataPortal"
                     AssemblyName = "CSLA.Server.ServicedDataPortal"
                     HintPath = "..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
@@ -121,31 +146,6 @@
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
                     HintPath = "..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Server.DataPortal.dll"
-                />
-                <Reference
-                    Name = "CrystalDecisions.Shared"
-                    AssemblyName = "CrystalDecisions.Shared"
-                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.Shared.dll"
-                />
-                <Reference
-                    Name = "CrystalDecisions.ReportSource"
-                    AssemblyName = "CrystalDecisions.ReportSource"
-                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.ReportSource.dll"
-                />
-                <Reference
-                    Name = "CrystalDecisions.CrystalReports.Engine"
-                    AssemblyName = "CrystalDecisions.CrystalReports.Engine"
-                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.CrystalReports.Engine.dll"
-                />
-                <Reference
-                    Name = "crystaldecisions.windows.forms"
-                    AssemblyName = "crystaldecisions.windows.forms"
-                    HintPath = "..\..\..\windows\assembly\gac\crystaldecisions.windows.forms\9.1.3300.0__692fbea5521e1304\crystaldecisions.windows.forms.dll"
-                />
-                <Reference
-                    Name = "System.Web.Services"
-                    AssemblyName = "System.Web.Services"
-                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Web.Services.dll"
                 />
             </References>
         </Build>

@@ -10,13 +10,13 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class Project : BusinessBase 
   {
-    Guid _ID = Guid.NewGuid();
-    string _Name = string.Empty;
-    SmartDate _Started = new SmartDate(false);
-    SmartDate _Ended = new SmartDate();
-    string _Description = string.Empty;
+    Guid _id = Guid.NewGuid();
+    string _name = string.Empty;
+    SmartDate _started = new SmartDate(false);
+    SmartDate _ended = new SmartDate();
+    string _description = string.Empty;
 
-    ProjectResources _Resources = 
+    ProjectResources _resources = 
       ProjectResources.NewProjectResources();
 
     #region Business Properties and Methods
@@ -25,7 +25,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _ID;
+        return _id;
       }
     }
 
@@ -33,13 +33,14 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _Name;
+        return _name;
       }
       set
       {
-        if(_Name != value)
+        if(value == null) value = string.Empty;
+        if(_name != value)
         {
-          _Name = value;
+          _name = value;
           BrokenRules.Assert("NameLen", "Name too long", (value.Length > 50));
           BrokenRules.Assert("NameRequired", "Project name required", 
             (value.Length == 0));
@@ -52,20 +53,21 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _Started.Text;
+        return _started.Text;
       }
       set
       {
-        if(_Started.Text != value)
+        if(value == null) value = string.Empty;
+        if(_started.Text != value)
         {
-          _Started.Text = value;
-          if(_Ended.IsEmpty)
+          _started.Text = value;
+          if(_ended.IsEmpty)
             BrokenRules.Assert("DateCol", "", false);
           
           else
             BrokenRules.Assert("DateCol", 
               "Start date must be prior to end date", 
-              _Started.CompareTo(_Ended) > 0);
+              _started.CompareTo(_ended) > 0);
           MarkDirty();
         }
       }
@@ -75,24 +77,25 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _Ended.Text;
+        return _ended.Text;
       }
       set
       {
-        if(_Ended.Text != value)
+        if(value == null) value = string.Empty;
+        if(_ended.Text != value)
         {
-          _Ended.Text = value;
-          if(_Ended.IsEmpty)
+          _ended.Text = value;
+          if(_ended.IsEmpty)
             BrokenRules.Assert("DateCol", "", false);
           else
           {
-            if(_Started.IsEmpty)
+            if(_started.IsEmpty)
               BrokenRules.Assert("DateCol", 
                 "Ended date must be later than started date", true);
             else
               BrokenRules.Assert("DateCol", 
                 "Ended date must be later than started date", 
-                _Ended.CompareTo(_Started) < 0);
+                _ended.CompareTo(_started) < 0);
           }
           MarkDirty();
         }
@@ -103,13 +106,14 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _Description;
+        return _description;
       }
       set
       {
-        if(_Description != value)
+        if(value == null) value = string.Empty;
+        if(_description != value)
         {
-          _Description = value;
+          _description = value;
           MarkDirty();
         }
       }
@@ -119,7 +123,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _Resources;
+        return _resources;
       }
     }
 
@@ -127,7 +131,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return base.IsValid && _Resources.IsValid;
+        return base.IsValid && _resources.IsValid;
       }
     }
 
@@ -135,7 +139,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return base.IsDirty || _Resources.IsDirty;
+        return base.IsDirty || _resources.IsDirty;
       }
     }
 
@@ -145,7 +149,7 @@ namespace ProjectTracker.Library
 
     public override string ToString()
     {
-      return _ID.ToString();
+      return _id.ToString();
     }
 
     public new static bool Equals(object objA, object objB)
@@ -166,12 +170,12 @@ namespace ProjectTracker.Library
 
     public bool Equals(Project project)
     {
-      return _ID.Equals(project.ID);
+      return _id.Equals(project.ID);
     }
 
     public override int GetHashCode()
     {
-      return _ID.GetHashCode();
+      return _id.GetHashCode();
     }
 
     #endregion
@@ -207,7 +211,8 @@ namespace ProjectTracker.Library
     {
       if(IsDeleted)
       {
-        System.Security.Principal.IIdentity user = Thread.CurrentPrincipal.Identity;
+        System.Security.Principal.IIdentity user = 
+          Thread.CurrentPrincipal.Identity;
         bool b = user.IsAuthenticated;
         if(!Thread.CurrentPrincipal.IsInRole("ProjectManager") && 
           !Thread.CurrentPrincipal.IsInRole("Administrator"))
@@ -258,8 +263,8 @@ namespace ProjectTracker.Library
     // called by DataPortal so we can set defaults as needed
     protected override void DataPortal_Create(object criteria)
     {
-      Criteria crit = (Criteria)criteria;
-      _ID = Guid.NewGuid();
+      // for this object the criteria can be ignored on creation
+      _id = Guid.NewGuid();
       Started = DateTime.Today.ToShortDateString();
       Name = String.Empty;
     }
@@ -269,40 +274,30 @@ namespace ProjectTracker.Library
     {
       // retrieve data from db
       Criteria crit = (Criteria)criteria;
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      SqlCommand cm = new SqlCommand();
-
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        cm.Connection = cn;
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "getProject";
-        cm.Parameters.Add("@ID", crit.ID);
-
-        SafeDataReader dr = new SafeDataReader(cm.ExecuteReader());
-        try
+        cn.Open();
+        using(SqlCommand cm = cn.CreateCommand())
         {
-          dr.Read();
-          _ID = dr.GetGuid(0);
-          _Name = dr.GetString(1);
-          _Started = dr.GetSmartDate(2, _Started.EmptyIsMin);
-          _Ended = dr.GetSmartDate(3, _Ended.EmptyIsMin);
-          _Description = dr.GetString(4);
+          cm.CommandType = CommandType.StoredProcedure;
+          cm.CommandText = "getProject";
+          cm.Parameters.Add("@ID", crit.ID);
 
-          // load child objects
-          dr.NextResult();
-          _Resources = ProjectResources.GetProjectResources(dr);
+          using(SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
+          {
+            dr.Read();
+            _id = dr.GetGuid(0);
+            _name = dr.GetString(1);
+            _started = dr.GetSmartDate(2, _started.EmptyIsMin);
+            _ended = dr.GetSmartDate(3, _ended.EmptyIsMin);
+            _description = dr.GetString(4);
+
+            // load child objects
+            dr.NextResult();
+            _resources = ProjectResources.GetProjectResources(dr);
+          }
+          MarkOld();
         }
-        finally
-        {
-          dr.Close();
-        }
-        MarkOld();
-      }
-      finally
-      {
-        cn.Close();
       }
     }
 
@@ -311,83 +306,71 @@ namespace ProjectTracker.Library
     protected override void DataPortal_Update()
     {
       // save data into db
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      SqlCommand cm = new SqlCommand();
-
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        cm.Connection = cn;
-        cm.CommandType = CommandType.StoredProcedure;
-        if(this.IsDeleted)
+        cn.Open();
+        using(SqlCommand cm = cn.CreateCommand())
         {
-          // we're being deleted
-          if(!this.IsNew)
+          cm.CommandType = CommandType.StoredProcedure;
+          if(this.IsDeleted)
           {
-            // we're not new, so get rid of our data
-            cm.CommandText = "deleteProject";
-            cm.Parameters.Add("@ID", _ID.ToString());
-            cm.ExecuteNonQuery();
-          }
-          // reset our status to be a new object
-          MarkNew();
-        }
-        else
-        {
-          // we're not being deleted, so insert or update
-          if(this.IsNew)
-          {
-            // we're new, so insert
-            cm.CommandText = "addProject";
+            // we're being deleted
+            if(!this.IsNew)
+            {
+              // we're not new, so get rid of our data
+              cm.CommandText = "deleteProject";
+              cm.Parameters.Add("@ID", _id.ToString());
+              cm.ExecuteNonQuery();
+            }
+            // reset our status to be a new object
+            MarkNew();
           }
           else
           {
-            // we're not new, so update
-            cm.CommandText = "updateProject";
+            // we're not being deleted, so insert or update
+            if(this.IsNew)
+            {
+              // we're new, so insert
+              cm.CommandText = "addProject";
+            }
+            else
+            {
+              // we're not new, so update
+              cm.CommandText = "updateProject";
+            }
+
+            cm.Parameters.Add("@ID", _id.ToString());
+            cm.Parameters.Add("@Name", _name);
+            cm.Parameters.Add("@Started", _started.DBValue);
+            cm.Parameters.Add("@Ended", _ended.DBValue);
+            cm.Parameters.Add("@Description", _description);
+
+            cm.ExecuteNonQuery();
+
+            // make sure we're marked as an old object
+            MarkOld();
           }
-
-          cm.Parameters.Add("@ID", _ID.ToString());
-          cm.Parameters.Add("@Name", _Name);
-          cm.Parameters.Add("@Started", _Started.DBValue);
-          cm.Parameters.Add("@Ended", _Ended.DBValue);
-          cm.Parameters.Add("@Description", _Description);
-
-          cm.ExecuteNonQuery();
-
-          // make sure we're marked as an old object
-          MarkOld();
         }
-
-      }
-      finally
-      {
-        cn.Close();
       }
 
       // update child objects
-      _Resources.Update(this);
+      _resources.Update(this);
     }
 
     [Transactional()]
     protected override void DataPortal_Delete(object criteria)
     {
       Criteria crit = (Criteria)criteria;
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      SqlCommand cm = new SqlCommand();
-
-      cn.Open();
-
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        cm.Connection = cn;
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "deleteProject";
-        cm.Parameters.Add("@ID", crit.ID.ToString());
-        cm.ExecuteNonQuery();
-      }
-      finally
-      {
-        cn.Close();
+        cn.Open();
+        using(SqlCommand cm = cn.CreateCommand())
+        {
+          cm.CommandType = CommandType.StoredProcedure;
+          cm.CommandText = "deleteProject";
+          cm.Parameters.Add("@ID", crit.ID.ToString());
+          cm.ExecuteNonQuery();
+        }
       }
     }
 

@@ -10,11 +10,11 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class Resource : BusinessBase
   {
-    string _ID = string.Empty;
-    string _LastName = string.Empty;
-    string _FirstName = string.Empty;
+    string _id = string.Empty;
+    string _lastName = string.Empty;
+    string _firstName = string.Empty;
 
-    ResourceAssignments _Assignments = ResourceAssignments.NewResourceAssignments();
+    ResourceAssignments _assignments = ResourceAssignments.NewResourceAssignments();
 
     #region Business Properties and Methods
 
@@ -22,7 +22,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _ID;
+        return _id;
       }
     }
 
@@ -30,13 +30,14 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _LastName;
+        return _lastName;
       }
       set
       {
-        if(_LastName != value)
+        if(value == null) value = string.Empty;
+        if(_lastName != value)
         {
-          _LastName = value;
+          _lastName = value;
           BrokenRules.Assert("LNameReq", "Value required", value.Length == 0);
           BrokenRules.Assert("LNameLen", "Value too long", value.Length > 50);
           MarkDirty();
@@ -48,13 +49,14 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _FirstName;
+        return _firstName;
       }
       set
       {
-        if(_FirstName != value)
+        if(value == null) value = string.Empty;
+        if(_firstName != value)
         {
-          _FirstName = value;
+          _firstName = value;
           BrokenRules.Assert("FNameLen", "Value too long", value.Length > 50);
           MarkDirty();
         }
@@ -65,7 +67,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _Assignments;
+        return _assignments;
       }
     }
 
@@ -73,7 +75,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return base.IsValid && _Assignments.IsValid;
+        return base.IsValid && _assignments.IsValid;
       }
     }
 
@@ -81,7 +83,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return base.IsDirty || _Assignments.IsDirty;
+        return base.IsDirty || _assignments.IsDirty;
       }
     }
 
@@ -91,7 +93,7 @@ namespace ProjectTracker.Library
 
     public override string ToString()
     {
-      return _ID;
+      return _id;
     }
 
     public new static bool Equals(object objA, object objB)
@@ -112,12 +114,12 @@ namespace ProjectTracker.Library
 
     public bool Equals(Resource resource)
     {
-      return _ID == resource.ID;
+      return _id == resource.ID;
     }
 
     public override int GetHashCode()
     {
-      return _ID.GetHashCode();
+      return _id.GetHashCode();
     }
 
     #endregion
@@ -176,7 +178,7 @@ namespace ProjectTracker.Library
 
     private Resource(string id)
     {
-      _ID = id;
+      _id = id;
     }
 
     private Resource()
@@ -207,41 +209,33 @@ namespace ProjectTracker.Library
     protected override void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)criteria;
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      SqlCommand cm = new SqlCommand();
-      SqlTransaction tr;
-
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        tr = cn.BeginTransaction(IsolationLevel.ReadCommitted);
+        cn.Open();
+        SqlTransaction tr = 
+          cn.BeginTransaction(IsolationLevel.ReadCommitted);
         try
         {
-          cm.Connection = cn;
-          cm.Transaction = tr;
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "getResource";
-          cm.Parameters.Add("@ID", crit.ID);
-
-          SafeDataReader dr = new SafeDataReader(cm.ExecuteReader());
-          try
+          using(SqlCommand cm = cn.CreateCommand())
           {
-            dr.Read();
-            _ID = dr.GetString(0);
-            _LastName = dr.GetString(1);
-            _FirstName = dr.GetString(2);
+            cm.Transaction = tr;
+            cm.CommandType = CommandType.StoredProcedure;
+            cm.CommandText = "getResource";
+            cm.Parameters.Add("@ID", crit.ID);
 
-            // load child objects
-            dr.NextResult();
-            _Assignments = ResourceAssignments.GetResourceAssignments(dr);
-          }
-          finally
-          {
-            dr.Close();
-          }
+            using(SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
+            {
+              dr.Read();
+              _id = dr.GetString(0);
+              _lastName = dr.GetString(1);
+              _firstName = dr.GetString(2);
 
+              // load child objects
+              dr.NextResult();
+              _assignments = ResourceAssignments.GetResourceAssignments(dr);
+            }
+          }
           MarkOld();
-
           tr.Commit();
         }
         catch
@@ -250,103 +244,93 @@ namespace ProjectTracker.Library
           throw;
         }
       }
-      finally
-      {
-        cn.Close();
-      }
     }
 
     // called by DataPortal to delete/add/update data into the database
     protected override void DataPortal_Update()
     {
       // save data into db
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      SqlCommand cm = new SqlCommand();
-      SqlTransaction tr = null;
-
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        tr = cn.BeginTransaction(IsolationLevel.Serializable);
-        cm.Connection = cn;
-        cm.Transaction = tr;
-        cm.CommandType = CommandType.StoredProcedure;
-        if(this.IsDeleted)
+        cn.Open();
+        SqlTransaction tr = cn.BeginTransaction(IsolationLevel.Serializable);
+        try
         {
-          // we're being deleted
-          if(!this.IsNew)
+          using(SqlCommand cm = cn.CreateCommand())
           {
-            // we're not new, so get rid of our data
-            cm.CommandText = "deleteResource";
-            cm.Parameters.Add("@ID", _ID);
-            cm.ExecuteNonQuery();
-          }
-          // reset our status to be a new object
-          MarkNew();
-        }                                                                                              
-        else
-        {
-          // we're not being deleted, so insert or update
-          if(this.IsNew)
-          {
-            // we're new, so insert
-            cm.CommandText = "addResource";
-          }
-          else
-          {                                                                                                // we're not new, so update
-            cm.CommandText = "updateResource";
-          }
-          cm.Parameters.Add("@ID", _ID);
-          cm.Parameters.Add("@LastName", _LastName);
-          cm.Parameters.Add("@FirstName", _FirstName);
-          cm.ExecuteNonQuery();
+            cm.Transaction = tr;
+            cm.CommandType = CommandType.StoredProcedure;
+            if(this.IsDeleted)
+            {
+              // we're being deleted
+              if(!this.IsNew)
+              {
+                // we're not new, so get rid of our data
+                cm.CommandText = "deleteResource";
+                cm.Parameters.Add("@ID", _id);
+                cm.ExecuteNonQuery();
+              }
+              // reset our status to be a new object
+              MarkNew();
+            }                                                                                              
+            else
+            {
+              // we're not being deleted, so insert or update
+              if(this.IsNew)
+              {
+                // we're new, so insert
+                cm.CommandText = "addResource";
+              }
+              else
+              {                                                                                                // we're not new, so update
+                cm.CommandText = "updateResource";
+              }
+              cm.Parameters.Add("@ID", _id);
+              cm.Parameters.Add("@LastName", _lastName);
+              cm.Parameters.Add("@FirstName", _firstName);
+              cm.ExecuteNonQuery();
 
-          // update child objects
-          _Assignments.Update(tr, this);
+              // update child objects
+              _assignments.Update(tr, this);
 
-          // make sure we're marked as an old object
-          MarkOld();
+              // make sure we're marked as an old object
+              MarkOld();
+            }
+          }
+          tr.Commit();
         }
-
-        tr.Commit();
-      }
-      catch
-      {
-        tr.Rollback();
-        throw;
-      }
-      finally
-      {
-        cn.Close();
+        catch
+        {
+          tr.Rollback();
+          throw;
+        }
       }
     }
 
     protected override void DataPortal_Delete(object criteria)
     {
       Criteria crit = (Criteria)criteria;
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      SqlCommand cm = new SqlCommand();
-      SqlTransaction tr = null;
-
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        tr = cn.BeginTransaction(IsolationLevel.Serializable);
-        cm.Connection = cn;
-        cm.Transaction = tr;
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "deleteResource";
-        cm.Parameters.Add("@ID", crit.ID);
-        cm.ExecuteNonQuery();
-        tr.Commit();
-      }                                                                                              catch
-      {
-        tr.Rollback();
-        throw;
-      }
-      finally
-      {
-        cn.Close();
+        cn.Open();
+        SqlTransaction tr = cn.BeginTransaction(IsolationLevel.Serializable);
+        try
+        {
+          using(SqlCommand cm = cn.CreateCommand())
+          {
+            cm.Transaction = tr;
+            cm.CommandType = CommandType.StoredProcedure;
+            cm.CommandText = "deleteResource";
+            cm.Parameters.Add("@ID", crit.ID);
+            cm.ExecuteNonQuery();
+            tr.Commit();
+          }
+        }
+        catch
+        {
+          tr.Rollback();
+          throw;
+        }
       }
     }
 

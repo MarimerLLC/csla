@@ -134,45 +134,46 @@ namespace ProjectTracker.Library
         return;
 
       // do the update 
-      SqlCommand cm = new SqlCommand();
-      cm.Connection = tr.Connection;
-      cm.Transaction = tr;
-      cm.CommandType = CommandType.StoredProcedure;
-
-      if(this.IsDeleted)
+      using(SqlCommand cm = tr.Connection.CreateCommand())
       {
-        if(!this.IsNew)
-        {
-          // we're not new, so delete
-          cm.CommandText = "deleteAssignment";
-          cm.Parameters.Add("@ProjectID", _projectID);
-          cm.Parameters.Add("@ResourceID", resource.ID);
+        cm.Transaction = tr;
+        cm.CommandType = CommandType.StoredProcedure;
 
-          cm.ExecuteNonQuery();
-
-          MarkNew();
-        }
-      }
-      else
-      {
-        // we are either adding or updating
-        if(this.IsNew)
+        if(this.IsDeleted)
         {
-          // we're new, so insert
-          cm.CommandText = "addAssignment";
+          if(!this.IsNew)
+          {
+            // we're not new, so delete
+            cm.CommandText = "deleteAssignment";
+            cm.Parameters.Add("@ProjectID", _projectID);
+            cm.Parameters.Add("@ResourceID", resource.ID);
+
+            cm.ExecuteNonQuery();
+
+            MarkNew();
+          }
         }
         else
         {
-          // we're not new, so update
-          cm.CommandText = "updateAssignment";
-        }
-        cm.Parameters.Add("@ProjectID", _projectID);
-        cm.Parameters.Add("@ResourceID", resource.ID);
-        cm.Parameters.Add("@Assigned", _assigned.DBValue);
-        cm.Parameters.Add("@Role", _role);
-        cm.ExecuteNonQuery();
+          // we are either adding or updating
+          if(this.IsNew)
+          {
+            // we're new, so insert
+            cm.CommandText = "addAssignment";
+          }
+          else
+          {
+            // we're not new, so update
+            cm.CommandText = "updateAssignment";
+          }
+          cm.Parameters.Add("@ProjectID", _projectID);
+          cm.Parameters.Add("@ResourceID", resource.ID);
+          cm.Parameters.Add("@Assigned", _assigned.DBValue);
+          cm.Parameters.Add("@Role", _role);
+          cm.ExecuteNonQuery();
 
-        MarkOld();
+          MarkOld();
+        }
       }
     }
 

@@ -93,13 +93,15 @@ namespace ProjectTracker.Library
     internal static ProjectResource NewProjectResource(
       string resourceID, string role)
     {
-      return new ProjectResource(Resource.GetResource(resourceID), role);
+      return ProjectResource.NewProjectResource(
+        Resource.GetResource(resourceID), role);
     }
 
     internal static ProjectResource NewProjectResource(
       string resourceID)
     {
-      return new ProjectResource(Resource.GetResource(resourceID), DefaultRole);
+      return ProjectResource.NewProjectResource(
+        Resource.GetResource(resourceID), DefaultRole);
     }
 
     internal static ProjectResource GetProjectResource(SafeDataReader dr) 
@@ -148,54 +150,49 @@ namespace ProjectTracker.Library
         return;
 
       // do the update 
-      SqlConnection cn = new SqlConnection(DB("PTracker"));
-      cn.Open();
-
-      try
+      using(SqlConnection cn = new SqlConnection(DB("PTracker")))
       {
-        SqlCommand cm = new SqlCommand();
-        cm.Connection = cn;
-        cm.CommandType = CommandType.StoredProcedure;
-        if(this.IsDeleted)
+        cn.Open();
+        using(SqlCommand cm = cn.CreateCommand())
         {
-          if(!this.IsNew)
+          cm.CommandType = CommandType.StoredProcedure;
+          if(this.IsDeleted)
           {
-            // we're not new, so delete
-            cm.CommandText = "deleteAssignment";
-            cm.Parameters.Add("@ProjectID", project.ID);
-            cm.Parameters.Add("@ResourceID", _resourceID);
+            if(!this.IsNew)
+            {
+              // we're not new, so delete
+              cm.CommandText = "deleteAssignment";
+              cm.Parameters.Add("@ProjectID", project.ID);
+              cm.Parameters.Add("@ResourceID", _resourceID);
 
-            cm.ExecuteNonQuery();
+              cm.ExecuteNonQuery();
 
-            MarkNew();
-          }
-        }
-        else
-        {
-          // we are either adding or updating
-          if(this.IsNew)
-          {
-            // we're new, so insert
-            cm.CommandText = "addAssignment";
+              MarkNew();
+            }
           }
           else
           {
-            // we're not new, so update
-            cm.CommandText = "updateAssignment";
+            // we are either adding or updating
+            if(this.IsNew)
+            {
+              // we're new, so insert
+              cm.CommandText = "addAssignment";
+            }
+            else
+            {
+              // we're not new, so update
+              cm.CommandText = "updateAssignment";
+            }
+            cm.Parameters.Add("@ProjectID", project.ID);
+            cm.Parameters.Add("@ResourceID", _resourceID);
+            cm.Parameters.Add("@Assigned", _assigned.DBValue);
+            cm.Parameters.Add("@Role", _role);
+
+            cm.ExecuteNonQuery();
+
+            MarkOld();
           }
-          cm.Parameters.Add("@ProjectID", project.ID);
-          cm.Parameters.Add("@ResourceID", _resourceID);
-          cm.Parameters.Add("@Assigned", _assigned.DBValue);
-          cm.Parameters.Add("@Role", _role);
-
-          cm.ExecuteNonQuery();
-
-          MarkOld();
         }
-      }
-      finally
-      {
-        cn.Close();
       }
     }
 

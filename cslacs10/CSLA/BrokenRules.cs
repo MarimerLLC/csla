@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using CSLA.Resources;
 
 namespace CSLA
 {
@@ -216,26 +217,26 @@ namespace CSLA
       protected override void OnClear()
       {
         if(!_validToEdit)
-          throw new NotSupportedException("Clear is an invalid operation");
+          throw new NotSupportedException(Strings.GetResourceString("ClearInvalidException"));
       }
 
       protected override void OnInsert(int index, object val)
       {
         if(!_validToEdit)
-          throw new NotSupportedException("Insert is an invalid operation");
+          throw new NotSupportedException(Strings.GetResourceString("InsertInvalidException"));
       }
 
       protected override void OnRemove(int index, object val)
       {
         if(!_validToEdit)
-          throw new NotSupportedException("Remove is an invalid operation");
+          throw new NotSupportedException(Strings.GetResourceString("RemoveInvalidException"));
       }
 
       protected override void OnSet(int index, object oldValue, object newValue)
       {
         if(!_validToEdit)
           throw new NotSupportedException(
-            "Changing an element is an invalid operation");
+            Strings.GetResourceString("ChangeInvalidException"));
       }
     }
 

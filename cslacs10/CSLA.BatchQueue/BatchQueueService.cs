@@ -8,6 +8,7 @@ using System.Runtime.Remoting.Channels.Tcp;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using CSLA;
+using CSLA.Resources;
 
 namespace CSLA.BatchQueue.Server
 {
@@ -107,11 +108,11 @@ namespace CSLA.BatchQueue.Server
 
       System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-      sb.AppendFormat("Batch queue processor started\n");
-      sb.AppendFormat("Name: {0}\n", Name);
-      sb.AppendFormat("Port: {0}\n", PORT);
-      sb.AppendFormat("Queue: {0}\n", QUEUE_NAME);
-      sb.AppendFormat("Max jobs: {0}\n", MAX_ENTRIES);
+      sb.AppendFormat("{0}\n", Strings.GetResourceString("BatchQueueProcStarted"));
+      sb.AppendFormat("{0}{1}\n", Strings.GetResourceString("BatchQueueProcName"), Name);
+      sb.AppendFormat("{0}{1}\n", Strings.GetResourceString("BatchQueueProcPort"), PORT);
+      sb.AppendFormat("{0}{1}\n", Strings.GetResourceString("BatchQueueProcQueue"), QUEUE_NAME);
+      sb.AppendFormat("{0}{1}\n", Strings.GetResourceString("BatchQueueProcMaxJobs"), MAX_ENTRIES);
       System.Diagnostics.EventLog.WriteEntry(Name, sb.ToString(), 
         System.Diagnostics.EventLogEntryType.Information);
     }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
+using CSLA.Resources;
 
 namespace CSLA
 {
@@ -206,7 +207,7 @@ namespace CSLA
     internal void SetParent(BusinessCollectionBase parent)
     {
       if(!IsChild)
-        throw new Exception("Parent value can only be set for child objects");
+        throw new Exception(Strings.GetResourceString("ParentSetException"));
       _parent = parent;
     }
 
@@ -392,9 +393,7 @@ namespace CSLA
     public void Delete()
     {
       if(this.IsChild)
-        throw new NotSupportedException(
-          "Can not directly mark a child object for deletion " +
-          "- use its parent collection");
+        throw new NotSupportedException(Strings.GetResourceString("ChildDeleteException"));
 
       MarkDeleted();
     }
@@ -404,8 +403,7 @@ namespace CSLA
     internal void DeleteChild()
     {
       if(!this.IsChild)
-        throw new NotSupportedException("Invalid for root objects " +
-          "- use Delete instead");
+        throw new NotSupportedException(Strings.GetResourceString("NoDeleteRootException"));
     
       MarkDeleted();
     }
@@ -604,13 +602,13 @@ namespace CSLA
     virtual public BusinessBase Save()
     {
       if(IsChild)
-        throw new NotSupportedException("Can not directly save a child object");
+        throw new NotSupportedException(Strings.GetResourceString("CreateNotSupportedException"));
 
       if(EditLevel > 0)
-        throw new ApplicationException("Object is still being edited and can not be saved");
+        throw new ApplicationException(Strings.GetResourceString("NoSaveEditingException"));
 
       if(!IsValid)
-        throw new ValidationException("Object is not valid and can not be saved");
+        throw new ValidationException(Strings.GetResourceString("NoSaveInvalidException"));
 
       if(IsDirty)
         return (BusinessBase)DataPortal.Update(this);
@@ -625,7 +623,7 @@ namespace CSLA
     /// <param name="criteria">An object containing criteria values.</param>
     virtual protected void DataPortal_Create(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - create not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("CreateNotSupportedException"));
     }
 
     /// <summary>
@@ -636,7 +634,7 @@ namespace CSLA
     /// An object containing criteria values to identify the object.</param>
     virtual protected void DataPortal_Fetch(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - fetch not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("FetchNotSupportedException"));
     }
 
     /// <summary>
@@ -645,7 +643,7 @@ namespace CSLA
     /// </summary>
     virtual protected void DataPortal_Update()
     {
-      throw new NotSupportedException("Invalid operation - update not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("UpdateNotSupportedException"));
     }
 
     /// <summary>
@@ -655,7 +653,25 @@ namespace CSLA
     /// An object containing criteria values to identify the object.</param>
     virtual protected void DataPortal_Delete(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - delete not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("DeleteNotSupportedException"));
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal prior to calling the 
+    /// requested DataPortal_xyz method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal after calling the 
+    /// requested DataPortal_xyz method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
     }
 
     /// <summary>

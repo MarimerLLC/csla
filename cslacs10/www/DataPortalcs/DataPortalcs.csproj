@@ -84,6 +84,11 @@
                     Project = "{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "CSLA.Resources"
+                    Project = "{641CFC76-02E2-4125-A129-4D4ADE2B400E}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
             </References>
         </Build>
         <Files>

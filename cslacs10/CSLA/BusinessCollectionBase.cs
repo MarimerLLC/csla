@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using CSLA.Resources;
 
 namespace CSLA
 {
@@ -169,8 +170,7 @@ namespace CSLA
     public void BeginEdit()
     {
       if(this.IsChild)
-        throw new NotSupportedException(
-                                "BeginEdit is not valid on a child object");
+        throw new NotSupportedException(Strings.GetResourceString("NoBeginEditChildException"));
 
       CopyState();
     }
@@ -191,8 +191,7 @@ namespace CSLA
     public void CancelEdit()
     {
       if(this.IsChild)
-        throw new NotSupportedException(
-                                "CancelEdit is not valid on a child object");
+        throw new NotSupportedException(Strings.GetResourceString("NoCancelEditChildException"));
 
       UndoChanges();
 
@@ -217,8 +216,7 @@ namespace CSLA
     public void ApplyEdit()
     {
       if(this.IsChild)
-        throw new NotSupportedException(
-                                "ApplyEdit is not valid on a child object");
+        throw new NotSupportedException(Strings.GetResourceString("NoApplyEditChildException"));
 
       AcceptChanges();
     }
@@ -538,13 +536,13 @@ namespace CSLA
     virtual public BusinessCollectionBase Save()
     {
       if(this.IsChild)
-        throw new NotSupportedException("Can not directly save a child object");
+        throw new NotSupportedException(Strings.GetResourceString("NoSaveChildException"));
 
       if(_editLevel > 0)
-        throw new Exception("Object is still being edited and can not be saved");
+        throw new Exception(Strings.GetResourceString("NoSaveEditingException"));
 
       if(!IsValid)
-        throw new Exception("Object is not valid and can not be saved");
+        throw new Exception(Strings.GetResourceString("NoSaveInvalidException"));
 
       if(IsDirty)
         return (BusinessCollectionBase)DataPortal.Update(this);
@@ -559,7 +557,7 @@ namespace CSLA
     /// <param name="criteria">An object containing criteria values.</param>
     virtual protected void DataPortal_Create(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - create not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("CreateNotSupportedException"));
     }
 
     /// <summary>
@@ -570,7 +568,7 @@ namespace CSLA
     /// An object containing criteria values to identify the object.</param>
     virtual protected void DataPortal_Fetch(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - fetch not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("FetchNotSupportedException"));
     }
 
     /// <summary>
@@ -579,7 +577,7 @@ namespace CSLA
     /// </summary>
     virtual protected void DataPortal_Update()
     {
-      throw new NotSupportedException("Invalid operation - update not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("UpdateNotSupportedException"));
     }
 
     /// <summary>
@@ -589,7 +587,25 @@ namespace CSLA
     /// An object containing criteria values to identify the object.</param>
     virtual protected void DataPortal_Delete(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - delete not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("DeleteNotSupportedException"));
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal prior to calling the 
+    /// requested DataPortal_xyz method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal after calling the 
+    /// requested DataPortal_xyz method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
     }
 
     /// <summary>

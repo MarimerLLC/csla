@@ -3,6 +3,7 @@ using System.Collections;
 using System.Security.Principal;
 using System.Data;
 using System.Data.SqlClient;
+using CSLA.Resources;
 
 namespace CSLA.Security
 {
@@ -95,15 +96,15 @@ namespace CSLA.Security
 
       _roles.Clear();
 
-      using(SqlConnection cn = new SqlConnection(DB("Security")))
+      using(SqlConnection cn = new SqlConnection(DB(Strings.GetResourceString("SecurityDataBase"))))
       {
         cn.Open();
         using(SqlCommand cm = cn.CreateCommand())
         {
-          cm.CommandText = "Login";
+          cm.CommandText = Strings.GetResourceString("SecurityStoredProcedure");
           cm.CommandType = CommandType.StoredProcedure;
-          cm.Parameters.Add("@user", crit.Username);
-          cm.Parameters.Add("@pw", crit.Password);
+          cm.Parameters.Add(Strings.GetResourceString("SecurityUserParam"), crit.Username);
+          cm.Parameters.Add(Strings.GetResourceString("SecurityPasswordParam"), crit.Password);
           using(SqlDataReader dr = cm.ExecuteReader())
           {
             if(dr.Read())

@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using CSLA.Resources;
 
 namespace CSLA
 {
@@ -95,7 +96,7 @@ namespace CSLA
           return keyName;
 
       // we didn't find a match - throw an exception
-      throw new ApplicationException("No matching item in collection");
+      throw new ApplicationException(Strings.GetResourceString("NoMatchException"));
     }
 
     #endregion
@@ -119,7 +120,7 @@ namespace CSLA
 
     private void DataPortal_Create(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - create not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("CreateNotSupportedException"));
     }
 
     /// <summary>
@@ -136,17 +137,35 @@ namespace CSLA
     /// </param>
     virtual protected void DataPortal_Fetch(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - fetch not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("FetchNotSupportedException"));
     }
 
     private void DataPortal_Update()
     {
-      throw new NotSupportedException("Invalid operation - update not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("UpdateNotSupportedException"));
     }
 
     private void DataPortal_Delete(object criteria)
     {
-      throw new NotSupportedException("Invalid operation - delete not allowed");
+      throw new NotSupportedException(Strings.GetResourceString("DeleteNotSupportedException"));
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal prior to calling the 
+    /// requested DataPortal_xyz method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal after calling the 
+    /// requested DataPortal_xyz method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
     }
 
     protected string DB(string databaseName)

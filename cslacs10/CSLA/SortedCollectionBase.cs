@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
+using CSLA.Resources;
 
 /// <summary>
 ///
@@ -199,7 +200,7 @@ namespace CSLA.Core
     protected override void IBindingList_ApplySort(System.ComponentModel.PropertyDescriptor property, System.ComponentModel.ListSortDirection direction)
     {
       if(!AllowSort)
-        throw new NotSupportedException("Sorting is not supported by this collection.");
+        throw new NotSupportedException(Strings.GetResourceString("SortingNotSupportedException"));
 
       _sortProperty = property;
       _sortPropertyName = _sortProperty.Name;
@@ -319,7 +320,7 @@ namespace CSLA.Core
     protected override void IBindingList_RemoveSort()
     {
       if(!AllowSort)
-        throw new NotSupportedException("Sorting is not supported by this collection.");
+        throw new NotSupportedException(Strings.GetResourceString("SortingNotSupportedException"));
 
       if(_isSorted)
       {
@@ -385,7 +386,7 @@ namespace CSLA.Core
     protected override int IBindingList_Find(PropertyDescriptor property, object key)
     {
       if(!AllowFind)
-        throw new NotSupportedException("Searching is not supported by this collection.");
+        throw new NotSupportedException(Strings.GetResourceString("SearchingNotSupportedException"));
 
       object tmp;
       string prop = property.Name;

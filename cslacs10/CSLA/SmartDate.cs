@@ -1,4 +1,5 @@
 using System;
+using CSLA.Resources;
 
 namespace CSLA
 {
@@ -288,27 +289,33 @@ namespace CSLA
       }                                                                                          
       else
       {
-        switch(date.ToLower())
+        string ldate = date.ToLower();
+        if(ldate==Strings.GetResourceString("SmartDateToday") ||
+          ldate==Strings.GetResourceString("SmartDateT") ||
+          ldate==".")
+          return DateTime.Now;
+        else
         {
-          case "today" :
-          case "t" :
-          {
-            return DateTime.Now;
-          }
-          case "yesterday" :
-          case "y" :
-          case "-" :
+          if(ldate==Strings.GetResourceString("SmartDateYesterday") ||
+            ldate==Strings.GetResourceString("SmartDateY") ||
+            ldate=="-")
           {
             return DateTime.Now.AddDays(-1);
           }
-          case "tomorrow" :
-          case "tom" :
-          case "+" :
+          else
           {
-            return DateTime.Now.AddDays(1);
+            if(ldate==Strings.GetResourceString("SmartDateTomorrow") ||
+              ldate==Strings.GetResourceString("SmartDateTom") ||
+              ldate=="+")
+            {
+              return DateTime.Now.AddDays(1);
+            }
+            else
+            {
+              return DateTime.Parse(date);
+            }
           }
         }
-        return DateTime.Parse(date);
       }
     }
 
@@ -451,7 +458,7 @@ namespace CSLA
       if(value is SmartDate)
         return CompareTo((SmartDate)value);
       else
-        throw new ArgumentException("Value is not a SmartDate");
+        throw new ArgumentException(Strings.GetResourceString("ValueNotSmartDateException"));
     }
 
     /// <summary>

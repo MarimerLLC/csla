@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Collections;
 using System.Reflection;
 using System.Runtime.Remoting;
@@ -39,8 +40,11 @@ namespace CSLA
           criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
 
       if(_portalRemote & !forceLocal)
+      {
+        RestoreContext(obj);
         Serialization.SerializationNotification.OnDeserialized(obj);
-      return obj;
+      }
+      return ((Server.DataPortalResult)obj).ReturnObject;
     }
 
     /// <summary>
@@ -64,8 +68,11 @@ namespace CSLA
           criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
 
       if(_portalRemote & !forceLocal)
+      {
+        RestoreContext(obj);
         Serialization.SerializationNotification.OnDeserialized(obj);
-      return obj;
+      }
+      return ((Server.DataPortalResult)obj).ReturnObject;
     }
 
     /// <summary>
@@ -99,10 +106,11 @@ namespace CSLA
 
       if(_portalRemote & !forceLocal)
       {
+        RestoreContext(updated);
         Serialization.SerializationNotification.OnSerialized(obj);
         Serialization.SerializationNotification.OnDeserialized(updated);
       }
-      return updated;
+      return ((Server.DataPortalResult)updated).ReturnObject;
     }
 
     /// <summary>
@@ -112,16 +120,21 @@ namespace CSLA
     /// <param name="Criteria">Object-specific criteria.</param>
     static public void Delete(object criteria)
     {
+      object obj;
+
       MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Delete");
 
       bool forceLocal = RunLocal(method);
 
       if(IsTransactionalMethod(method))
-        ServicedPortal(forceLocal).Delete(
+        obj = ServicedPortal(forceLocal).Delete(
           criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
       else
-        Portal(forceLocal).Delete(
+        obj = Portal(forceLocal).Delete(
           criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
+
+      if(_portalRemote & !forceLocal)
+        RestoreContext(obj);
     }
 
     #endregion
@@ -211,6 +224,12 @@ namespace CSLA
     #endregion
 
     #region Helper methods
+
+    private static void RestoreContext(object result)
+    {
+      System.LocalDataStoreSlot slot = Thread.GetNamedDataSlot("CSLA.GlobalContext");
+      Thread.SetData(slot, ((Server.DataPortalResult)result).GlobalContext);
+    }
 
     static private bool IsTransactionalMethod(MethodInfo method)
     {

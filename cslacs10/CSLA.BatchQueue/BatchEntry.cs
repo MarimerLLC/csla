@@ -2,6 +2,7 @@ using System;
 using System.Security.Principal;
 using System.Diagnostics;
 using CSLA;
+using CSLA.Resources;
 
 namespace CSLA.BatchQueue.Server
 {
@@ -100,9 +101,9 @@ namespace CSLA.BatchQueue.Server
           _worker.Execute(_state);
 
           System.Text.StringBuilder sb = new System.Text.StringBuilder();
-          sb.AppendFormat("Batch job completed\n");
-          sb.AppendFormat("Batch job: {0}\n", this.ToString());
-          sb.AppendFormat("Job object: {0}\n", (object)_worker.ToString());
+          sb.AppendFormat("{0}\n", Strings.GetResourceString("BatchQueueJobCompleted"));
+          sb.AppendFormat("{0}{1}\n", Strings.GetResourceString("BatchQueueJobPrefix"), this.ToString());
+          sb.AppendFormat("{0}{1}\n", Strings.GetResourceString("BatchQueueJobObjectPrefix"), (object)_worker.ToString());
 
           System.Diagnostics.EventLog.WriteEntry(
             BatchQueueService.Name, sb.ToString(), EventLogEntryType.Information);
@@ -110,9 +111,9 @@ namespace CSLA.BatchQueue.Server
         catch(Exception ex)
         {
           System.Text.StringBuilder sb = new System.Text.StringBuilder();
-          sb.AppendFormat("Batch job failed due to execution error\n");
-          sb.AppendFormat("Batch job: {0}\n", this.ToString());
-          sb.AppendFormat("Job object: {0}\n", (object)_worker.ToString());
+          sb.AppendFormat("{0}\n", Strings.GetResourceString("BatchQueueJobFailed"));
+          sb.AppendFormat("{0}{1}\n", Strings.GetResourceString("BatchQueueJobPrefix"), this.ToString());
+          sb.AppendFormat("{0}{1}\n", Strings.GetResourceString("BatchQueueJobObjectPrefix"), (object)_worker.ToString());
           sb.Append(ex.ToString());
 
           System.Diagnostics.EventLog.WriteEntry(
@@ -202,7 +203,7 @@ namespace CSLA.BatchQueue.Server
         }
         else
         {
-          throw new System.Security.SecurityException("No principal object should be passed to DataPortal when using Windows integrated security");
+          throw new System.Security.SecurityException(Strings.GetResourceString("NoPrincipalAllowedException"));
         }
       }
 
@@ -225,7 +226,7 @@ namespace CSLA.BatchQueue.Server
       }
       else
       {
-        throw new System.Security.SecurityException("Principal must be of type BusinessPrincipal, not " + Principal.ToString());
+        throw new System.Security.SecurityException(Strings.GetResourceString("BusinessPrincipalException") + Principal.ToString());
       }
     }
 

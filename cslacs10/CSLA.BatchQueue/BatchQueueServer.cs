@@ -2,6 +2,7 @@ using System;
 using System.Security.Principal;
 using CSLA;
 using CSLA.Security;
+using CSLA.Resources;
 
 namespace CSLA.BatchQueue.Server
 {
@@ -70,7 +71,7 @@ namespace CSLA.BatchQueue.Server
           return;
         }
         else
-          throw new System.Security.SecurityException("No principal object should be passed to DataPortal when using Windows integrated security");
+          throw new System.Security.SecurityException(Strings.GetResourceString("NoPrincipalAllowedException"));
       }
 
       // we expect Principal to be of type BusinessPrincipal, but
@@ -91,7 +92,7 @@ namespace CSLA.BatchQueue.Server
         }
       }
       else
-        throw new System.Security.SecurityException("Principal must be of type BusinessPrincipal, not " + principal.ToString());
+        throw new System.Security.SecurityException(Strings.GetResourceString("BusinessPrincipalException") + principal.ToString());
     }
 
 

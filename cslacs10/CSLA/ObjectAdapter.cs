@@ -3,6 +3,7 @@ using System.Data;
 using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
+using CSLA.Resources;
 
 namespace CSLA.Data
 {
@@ -261,7 +262,7 @@ namespace CSLA.Data
                 {
                   // no field exists either, throw an exception
                   throw new System.Data.DataException(
-                    "No such value exists: " + fieldName);
+                    Strings.GetResourceString("NoSuchValueExistsException") + fieldName);
                 }
                 else
                 {
@@ -278,7 +279,7 @@ namespace CSLA.Data
             catch(Exception ex)
             {
               throw new System.Data.DataException(
-                "Error reading value: " + fieldName, ex);
+                Strings.GetResourceString("ErrorReadingValueException") + fieldName, ex);
             }
           }
         }

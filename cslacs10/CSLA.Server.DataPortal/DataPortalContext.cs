@@ -1,5 +1,7 @@
 using System;
 using System.Security.Principal;
+using System.Threading;
+using System.Collections.Specialized;
 
 /// <summary>
 /// 
@@ -22,6 +24,8 @@ namespace CSLA.Server
   {
     IPrincipal _principal;
     bool _remotePortal;
+    HybridDictionary _clientContext;
+    HybridDictionary _globalContext;
 
     /// <summary>
     /// The current <see cref="T:CSLA.Security.BusinessPrincipal" />
@@ -47,14 +51,35 @@ namespace CSLA.Server
       }
     }
 
+    internal HybridDictionary ClientContext
+    {
+      get
+      {
+        return _clientContext;
+      }
+    }
+
+    internal HybridDictionary GlobalContext
+    {
+      get
+      {
+        return _globalContext;
+      }
+    }
+
     /// <summary>
     /// Creates a new DataPortalContext object.
     /// </summary>
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     public DataPortalContext(bool isRemotePortal)
     {
-      _principal = null;
-      _remotePortal = isRemotePortal;
+      if(isRemotePortal)
+      {
+        _principal = null;
+        _remotePortal = isRemotePortal;
+        _clientContext = CSLA.ApplicationContext.GetClientContext();
+        _globalContext = CSLA.ApplicationContext.GetGlobalContext();
+      }
     }
 
     /// <summary>
@@ -64,8 +89,13 @@ namespace CSLA.Server
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     public DataPortalContext(IPrincipal principal, bool isRemotePortal)
     {
-      _principal = principal;
-      _remotePortal = isRemotePortal;
+      if(isRemotePortal)
+      {
+        _principal = principal;
+        _remotePortal = isRemotePortal;
+        _clientContext = CSLA.ApplicationContext.GetClientContext();
+        _globalContext = CSLA.ApplicationContext.GetGlobalContext();
+      }
     }
   }
 }

@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Specialized;
 using System.Reflection;
 using System.Security.Principal;
 using CSLA;
+using CSLA.Resources;
 
 namespace CSLA.Server
 {
@@ -23,17 +25,38 @@ namespace CSLA.Server
     /// <returns>A populated business object.</returns>
     public object Create(object criteria, DataPortalContext context)
     {
-      SetPrincipal(context.Principal);
+      object obj = null;
 
-      // create an instance of the business object
-      object obj = CreateBusinessObject(criteria);
+      try
+      {
+        SetContext(context);
 
-      // tell the business object to fetch its data
-      CallMethod(obj, "DataPortal_Create", criteria);
-      // return the populated business object as a result
-      if(context.IsRemotePortal)
-        Serialization.SerializationNotification.OnSerializing(obj);
-      return obj;
+        // create an instance of the business object
+        obj = CreateBusinessObject(criteria);
+
+        // tell the business object we're about to make a DataPortal_xyz call
+        CallMethod(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+
+        // tell the business object to fetch its data
+        CallMethod(obj, "DataPortal_Create", criteria);
+
+        // tell the business object the DataPortal_xyz call is complete
+        CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+
+        // return the populated business object as a result
+        if(context.IsRemotePortal)
+          Serialization.SerializationNotification.OnSerializing(obj);
+
+        DataPortalResult result = new DataPortalResult(obj);
+        ClearContext(context);
+        return result;
+      }
+      catch(Exception ex)
+      {
+        DataPortalResult result = new DataPortalResult(obj);
+        ClearContext(context);
+        throw new DataPortalException("DataPortal.Create " + Strings.GetResourceString("FailedOnServer"), ex, result);
+      }
     }
 
     /// <summary>
@@ -45,18 +68,38 @@ namespace CSLA.Server
     /// <returns>A populated business object.</returns>
     public object Fetch(object criteria, DataPortalContext context)
     {
-      SetPrincipal(context.Principal);
+      object obj = null;
 
-      // create an instance of the business object
-      object obj = CreateBusinessObject(criteria);
+      try
+      {
+        SetContext(context);
 
-      // tell the business object to fetch its data
-      CallMethod(obj, "DataPortal_Fetch", criteria);
+        // create an instance of the business object
+        obj = CreateBusinessObject(criteria);
 
-      // return the populated business object as a result
-      if(context.IsRemotePortal)
-        Serialization.SerializationNotification.OnSerializing(obj);
-      return obj;
+        // tell the business object we're about to make a DataPortal_xyz call
+        CallMethod(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+
+        // tell the business object to fetch its data
+        CallMethod(obj, "DataPortal_Fetch", criteria);
+
+        // tell the business object the DataPortal_xyz call is complete
+        CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+
+        // return the populated business object as a result
+        if(context.IsRemotePortal)
+          Serialization.SerializationNotification.OnSerializing(obj);
+
+        DataPortalResult result = new DataPortalResult(obj);
+        ClearContext(context);
+        return result;
+      }
+      catch(Exception ex)
+      {
+        DataPortalResult result = new DataPortalResult(obj);
+        ClearContext(context);
+        throw new DataPortalException("DataPortal.Fetch " + Strings.GetResourceString("FailedOnServer"), ex, result);
+      }
     }
 
     /// <summary>
@@ -68,17 +111,35 @@ namespace CSLA.Server
     /// <returns>A reference to the newly updated object.</returns>
     public object Update(object obj, DataPortalContext context)
     {
-      SetPrincipal(context.Principal);
+      try
+      {
+        SetContext(context);
 
-      if(context.IsRemotePortal)
-        Serialization.SerializationNotification.OnDeserialized(obj);
+        if(context.IsRemotePortal)
+          Serialization.SerializationNotification.OnDeserialized(obj);
 
-      // tell the business object to update itself
-      CallMethod(obj, "DataPortal_Update");
+        // tell the business object we're about to make a DataPortal_xyz call
+        CallMethod(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
 
-      if(context.IsRemotePortal)
-        Serialization.SerializationNotification.OnSerializing(obj);
-      return obj;
+        // tell the business object to update itself
+        CallMethod(obj, "DataPortal_Update");
+
+        // tell the business object the DataPortal_xyz call is complete
+        CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+
+        if(context.IsRemotePortal)
+          Serialization.SerializationNotification.OnSerializing(obj);
+
+        DataPortalResult result = new DataPortalResult(obj);
+        ClearContext(context);
+        return result;
+      }
+      catch(Exception ex)
+      {
+        DataPortalResult result = new DataPortalResult(obj);
+        ClearContext(context);
+        throw new DataPortalException("DataPortal.Update " + Strings.GetResourceString("FailedOnServer"), ex, result);
+      }
     }
 
     /// <summary>
@@ -87,15 +148,40 @@ namespace CSLA.Server
     /// <param name="Criteria">Object-specific criteria.</param>
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
-    public void Delete(object criteria, DataPortalContext context)
+    public object Delete(object criteria, DataPortalContext context)
     {
-      SetPrincipal(context.Principal);
+      object obj = null;
 
-      // create an instance of the business object
-      object obj = CreateBusinessObject(criteria);
+      try
+      {
+        SetContext(context);
 
-      // tell the business object to delete itself
-      CallMethod(obj, "DataPortal_Delete", criteria);
+        // create an instance of the business object
+        obj = CreateBusinessObject(criteria);
+
+        // tell the business object we're about to make a DataPortal_xyz call
+        CallMethod(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+
+        // tell the business object to fetch its data
+        CallMethod(obj, "DataPortal_Delete", criteria);
+
+        // tell the business object the DataPortal_xyz call is complete
+        CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+
+        // return the populated business object as a result
+        if(context.IsRemotePortal)
+          Serialization.SerializationNotification.OnSerializing(obj);
+
+        DataPortalResult result = new DataPortalResult(obj);
+        ClearContext(context);
+        return result;
+      }
+      catch(Exception ex)
+      {
+        DataPortalResult result = new DataPortalResult(obj);
+        ClearContext(context);
+        throw new DataPortalException("DataPortal.Delete " + Strings.GetResourceString("FailedOnServer"), ex, result);
+      }
     }
 
     #endregion
@@ -110,13 +196,22 @@ namespace CSLA.Server
       }
     }
 
-    private void SetPrincipal(object principal)
+    private void SetContext(DataPortalContext context)
     {
+      // if the dataportal is not remote then
+      // do nothing
+      if(!context.IsRemotePortal) 
+        return;
+
+      // set the app context to the value we got from
+      // the client
+      CSLA.ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
+
       if(AUTHENTICATION == "Windows")
       {
         // when using integrated security, Principal must be Nothing
         // and we need to set our policy to use the Windows principal
-        if(principal == null)
+        if(context.Principal == null)
         {
           AppDomain.CurrentDomain.SetPrincipalPolicy(
             PrincipalPolicy.WindowsPrincipal);
@@ -124,8 +219,7 @@ namespace CSLA.Server
         }
         else
           throw new System.Security.SecurityException(
-            "No principal object should be passed to DataPortal " + 
-            "when using Windows integrated security");
+            Strings.GetResourceString("NoPrincipalAllowedException"));
       }
       else
       {
@@ -138,7 +232,7 @@ namespace CSLA.Server
       // with the business library so instead we must use type object
       // for the parameter, so here we do a check on the type of the
       // parameter
-      IPrincipal _principal = (IPrincipal)principal;
+      IPrincipal _principal = (IPrincipal)context.Principal;
       if(_principal != null)
       {
         IIdentity _identity = _principal.Identity;
@@ -147,7 +241,7 @@ namespace CSLA.Server
           if(_identity.AuthenticationType == "CSLA")
           {
             // See if our current principal is different from the caller's principal 
-            if(!ReferenceEquals(principal, System.Threading.Thread.CurrentPrincipal))
+            if(!ReferenceEquals(context.Principal, System.Threading.Thread.CurrentPrincipal))
             {
               // The caller had a different principal, so change ours to match the 
               // caller's, so all our objects use the caller's security. 
@@ -156,12 +250,22 @@ namespace CSLA.Server
           }
           else
             throw new System.Security.SecurityException(
-              "Principal must be of type BusinessPrincipal, not " + principal.ToString());
+              Strings.GetResourceString("BusinessPrincipalException") + _principal.ToString());
         }
       }
       else
         throw new System.Security.SecurityException(
-          "Principal must be of type BusinessPrincipal, not null");
+          Strings.GetResourceString("BusinessPrincipalException") + " null");
+    }
+
+    private void ClearContext(DataPortalContext context)
+    {
+      // if the dataportal is not remote then
+      // do nothing
+      if(!context.IsRemotePortal)
+        return;
+
+      ApplicationContext.Clear();
     }
 
     #endregion
@@ -205,7 +309,7 @@ namespace CSLA.Server
       }
       catch(System.Exception e)
       {
-        throw e.InnerException;
+        throw new CallMethodException(info.Name + " method call failed", e.InnerException);
       }
       return result;
     }

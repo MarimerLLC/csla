@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using CSLA.Resources;
 
 namespace CSLA.Core 
 {
@@ -133,7 +134,7 @@ namespace CSLA.Core
       if(AllowNew)
         return OnAddNew(); 
       else
-        throw new InvalidOperationException("Adding items not allowed");
+        throw new InvalidOperationException(Strings.GetResourceString("AddItemException"));
     }
 
     bool IBindingList.AllowEdit { get { return AllowEdit; } }

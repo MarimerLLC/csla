@@ -48,10 +48,10 @@ namespace CSLA.Server.ServicedDataPortal
     /// a COM+ transaction.
     /// </summary>
     [AutoComplete(true)]
-    public void Delete(object criteria, DataPortalContext context)
+    public object Delete(object criteria, DataPortalContext context)
     {
       CSLA.Server.DataPortal portal = new CSLA.Server.DataPortal();
-      portal.Delete(criteria, context);
+      return portal.Delete(criteria, context);
     }
   }
 }

@@ -86,6 +86,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "CriteriaBase.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DataPortal.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -1,4 +1,5 @@
 Imports System.Security.Principal
+Imports System.Threading
 
 ''' <summary>
 ''' 
@@ -21,6 +22,7 @@ Namespace Server
 
     Private mPrincipal As IPrincipal
     Private mRemotePortal As Boolean
+    Private mContext As Object
 
     ''' <summary>
     ''' The current <see cref="T:CSLA.Security.BusinessPrincipal" />
@@ -42,13 +44,22 @@ Namespace Server
       End Get
     End Property
 
+    Friend ReadOnly Property ApplicationContext() As Object
+      Get
+        Return mContext
+      End Get
+    End Property
+
     ''' <summary>
     ''' Creates a new DataPortalContext object.
     ''' </summary>
     ''' <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     Public Sub New(ByVal isRemotePortal As Boolean)
+
       mPrincipal = Nothing
       mRemotePortal = isRemotePortal
+      mContext = CSLA.ApplicationContext.GetContext
+
     End Sub
 
     ''' <summary>
@@ -57,8 +68,11 @@ Namespace Server
     ''' <param name="principal">The current Principal object.</param>
     ''' <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     Public Sub New(ByVal principal As IPrincipal, ByVal isRemotePortal As Boolean)
+
       mPrincipal = principal
       mRemotePortal = isRemotePortal
+      mContext = CSLA.ApplicationContext.GetContext
+
     End Sub
 
   End Class

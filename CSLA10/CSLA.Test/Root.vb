@@ -76,6 +76,9 @@ Public Class Root
   End Sub
 
   Protected Overrides Sub DataPortal_Update()
+
+    Session.Add("context1", ApplicationContext.Current.Item("context1"))
+
     If IsDeleted Then
       ' we would delete here
       Session.Add("Root", "Deleted")

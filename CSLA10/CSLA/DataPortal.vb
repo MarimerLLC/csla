@@ -159,7 +159,7 @@ Public Class DataPortal
     Else
       ' return local instance
       If mPortal Is Nothing Then
-        mPortal = New Server.DataPortal()
+        mPortal = New Server.DataPortal
       End If
       Return mPortal
     End If
@@ -181,7 +181,7 @@ Public Class DataPortal
     Else
       ' return local instance
       If mServicedPortal Is Nothing Then
-        mServicedPortal = New Server.ServicedDataPortal.DataPortal()
+        mServicedPortal = New Server.ServicedDataPortal.DataPortal
       End If
       Return mServicedPortal
     End If
@@ -259,7 +259,7 @@ Public Class DataPortal
       mPortalRemote = True
       ' create and register our custom HTTP channel
       ' that uses the binary formatter
-      Dim properties As New Hashtable()
+      Dim properties As New Hashtable
       properties("name") = "HttpBinary"
 
       If AUTHENTICATION() = "Windows" Then
@@ -268,7 +268,7 @@ Public Class DataPortal
         properties("useDefaultCredentials") = True
       End If
 
-      Dim formatter As New BinaryClientFormatterSinkProvider()
+      Dim formatter As New BinaryClientFormatterSinkProvider
 
       Dim channel As New HttpChannel(properties, formatter, Nothing)
 

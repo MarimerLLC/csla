@@ -24,7 +24,7 @@ Namespace Server
     ''' <returns>A populated business object.</returns>
     Public Function Create(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
 
-      SetPrincipal(context.Principal)
+      SetContext(context)
 
       ' create an instance of the business object
       Dim obj As Object = CreateBusinessObject(Criteria)
@@ -35,6 +35,9 @@ Namespace Server
       If context.IsRemotePortal Then
         Serialization.SerializationNotification.OnSerializing(obj)
       End If
+
+      ClearContext(context)
+
       Return obj
 
     End Function
@@ -46,7 +49,8 @@ Namespace Server
     ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
     ''' <returns>A populated business object.</returns>
     Public Function Fetch(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
-      SetPrincipal(context.Principal)
+
+      SetContext(context)
 
       ' create an instance of the business object
       Dim obj As Object = CreateBusinessObject(Criteria)
@@ -58,6 +62,9 @@ Namespace Server
       If context.IsRemotePortal Then
         Serialization.SerializationNotification.OnSerializing(obj)
       End If
+
+      ClearContext(context)
+
       Return obj
 
     End Function
@@ -70,7 +77,7 @@ Namespace Server
     ''' <returns>A reference to the newly updated object.</returns>
     Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As Object
 
-      SetPrincipal(context.Principal)
+      SetContext(context)
 
       If context.IsRemotePortal Then
         Serialization.SerializationNotification.OnDeserialized(obj)
@@ -82,6 +89,9 @@ Namespace Server
       If context.IsRemotePortal Then
         Serialization.SerializationNotification.OnSerializing(obj)
       End If
+
+      ClearContext(context)
+
       Return obj
 
     End Function
@@ -93,13 +103,15 @@ Namespace Server
     ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
     Public Sub Delete(ByVal Criteria As Object, ByVal context As DataPortalContext)
 
-      SetPrincipal(context.Principal)
+      SetContext(context)
 
       ' create an instance of the business object
       Dim obj As Object = CreateBusinessObject(Criteria)
 
       ' tell the business object to delete itself
       CallMethod(obj, "DataPortal_Delete", Criteria)
+
+      ClearContext(context)
 
     End Sub
 
@@ -113,13 +125,23 @@ Namespace Server
 
     End Function
 
-    Private Sub SetPrincipal(ByVal Principal As Object)
+    Private Sub SetContext(ByVal context As DataPortalContext)
+
+      ' if the dataportal is not remote then
+      ' do nothing
+      If Not context.IsRemotePortal Then Exit Sub
+
       Dim objPrincipal As IPrincipal
       Dim objIdentity As IIdentity
 
+      ' set the app context to the value we got from the
+      ' client
+      CSLA.ApplicationContext.SetContext( _
+        CType(context.ApplicationContext, Specialized.NameValueCollection))
+
       If AUTHENTICATION() = "Windows" Then
         ' When using integrated security, Principal must be Nothing 
-        If Principal Is Nothing Then
+        If context.Principal Is Nothing Then
           ' Set .NET to use integrated security 
           AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal)
           Exit Sub
@@ -134,24 +156,23 @@ Namespace Server
       ' that since it causes a circular reference with the business library. 
       ' Instead we must use type Object for the parameter, so here we do a check 
       ' on the type of the parameter. 
-      objPrincipal = CType(Principal, IPrincipal)
+      objPrincipal = context.Principal
       If Not (objPrincipal Is Nothing) Then
         objIdentity = objPrincipal.Identity
         If Not (objIdentity Is Nothing) Then
           If objIdentity.AuthenticationType = "CSLA" Then
             ' See if our current principal is different from the caller's principal 
-            If Not ReferenceEquals(Principal, _
+            If Not ReferenceEquals(context.Principal, _
                 System.Threading.Thread.CurrentPrincipal) Then
 
               ' The caller had a different principal, so change ours to match the 
               ' caller's, so all our objects use the caller's security. 
-              System.Threading.Thread.CurrentPrincipal = CType(Principal, _
-                IPrincipal)
+              System.Threading.Thread.CurrentPrincipal = context.Principal
             End If
 
           Else
             Throw New Security.SecurityException( _
-              "Principal must be of type BusinessPrincipal, not " & Principal.ToString())
+              "Principal must be of type BusinessPrincipal, not " & CType(context.Principal, Object).ToString())
           End If
 
         End If
@@ -160,6 +181,16 @@ Namespace Server
         Throw New Security.SecurityException( _
           "Principal must be of type BusinessPrincipal, not Nothing")
       End If
+
+    End Sub
+
+    Private Sub ClearContext(ByVal context As DataPortalContext)
+
+      ' if the dataportal is not remote then
+      ' do nothing
+      If Not context.IsRemotePortal Then Exit Sub
+
+      ApplicationContext.ClearContext()
 
     End Sub
 

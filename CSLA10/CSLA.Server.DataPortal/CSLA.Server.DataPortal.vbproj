@@ -19,7 +19,7 @@
                 OutputType = "Library"
                 OptionCompare = "Binary"
                 OptionExplicit = "On"
-                OptionStrict = "Off"
+                OptionStrict = "On"
                 RootNamespace = "CSLA"
                 StartupObject = "CSLA.(None)"
             >
@@ -80,6 +80,11 @@
         </Build>
         <Files>
             <Include>
+                <File
+                    RelPath = "ApplicationContext.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
                 <File
                     RelPath = "AssemblyInfo.vb"
                     SubType = "Code"

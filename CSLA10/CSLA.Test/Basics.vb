@@ -67,4 +67,21 @@ Public Class Basics
     Assert.AreEqual(0, child.GrandChildren.Count)
   End Sub
 
+  <Test()> _
+  Public Sub CloneGraph()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.Children.Add("1")
+    Dim child As child = root.Children(0)
+    child.GrandChildren.Add("1")
+    Assert.AreEqual(1, child.GrandChildren.Count)
+    Assert.AreEqual("1", child.GrandChildren(0).Data)
+
+    Dim clone As root = DirectCast(root.Clone, root)
+    child = clone.Children(0)
+    Assert.AreEqual(1, child.GrandChildren.Count)
+    Assert.AreEqual("1", child.GrandChildren(0).Data)
+
+  End Sub
+
 End Class

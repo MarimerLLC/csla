@@ -608,7 +608,7 @@ namespace CSLA
     /// of the application configuration file. The database name should be
     /// prefixed with 'DB:'. For instance, <c>DB:mydatabase</c>.
     /// </remarks>
-    /// <param name="DatabaseName">Name of the database.</param>
+    /// <param name="databaseName">Name of the database.</param>
     /// <returns>A database connection string.</returns>
     protected string DB(string databaseName)
     {

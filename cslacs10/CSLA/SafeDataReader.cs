@@ -9,7 +9,7 @@ namespace CSLA.Data
   /// </summary>
   public class SafeDataReader : IDataReader
   {
-    IDataReader _dataReader;
+    protected IDataReader _dataReader;
 
     /// <summary>
     /// Initializes the SafeDataReader object to use data from

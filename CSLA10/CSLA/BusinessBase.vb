@@ -348,7 +348,7 @@ Public MustInherit Class BusinessBase
   <NotUndoable()> _
   Private mIsChild As Boolean = False
 
-  Friend ReadOnly Property IsChild() As Boolean
+  Protected Friend ReadOnly Property IsChild() As Boolean
     Get
       Return mIsChild
     End Get

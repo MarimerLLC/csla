@@ -16,6 +16,27 @@ namespace CSLA
   {
     static bool _portalRemote = false;
 
+    #region DataPortal events
+
+    /// <summary>
+    /// Delegate used by the OnDataPortalInvoke
+    /// and OnDataPortalInvokeComplete events.
+    /// </summary>
+    public delegate void DataPortalInvokeDelegate(DataPortalEventArgs e);
+
+    /// <summary>
+    /// Raised by DataPortal prior to calling the 
+    /// requested server-side DataPortal method.
+    /// </summary>
+    public static event DataPortalInvokeDelegate OnDataPortalInvoke;
+    /// <summary>
+    /// Raised by DataPortal after the requested 
+    /// server-side DataPortal method call is complete.
+    /// </summary>
+    public static event DataPortalInvokeDelegate OnDataPortalInvokeComplete;
+
+    #endregion
+
     #region Data Access methods
 
     /// <summary>
@@ -27,24 +48,42 @@ namespace CSLA
     /// <returns>A new object, populated with default values.</returns>
     static public object Create(object criteria)
     {
-      object obj;
+      Server.DataPortalResult result;
+
       MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Create");
 
       bool forceLocal = RunLocal(method);
+      bool isRemotePortal = _portalRemote && !forceLocal;
+      Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), isRemotePortal);
 
-      if(IsTransactionalMethod(method))
-        obj = ServicedPortal(forceLocal).Create(
-          criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
-      else
-        obj = Portal(forceLocal).Create(
-          criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
+      if(OnDataPortalInvoke != null)
+        OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
-      if(_portalRemote & !forceLocal)
+      try
       {
-        RestoreContext(obj);
-        Serialization.SerializationNotification.OnDeserialized(obj);
+        if(IsTransactionalMethod(method))
+          result = (Server.DataPortalResult)ServicedPortal(forceLocal).Create(criteria, dpContext);
+        else
+          result = (Server.DataPortalResult)Portal(forceLocal).Create(criteria, dpContext);
       }
-      return ((Server.DataPortalResult)obj).ReturnObject;
+      catch(Server.DataPortalException ex)
+      {
+        result = ex.Result;
+        if(isRemotePortal)
+          RestoreContext(result);
+        throw new DataPortalException("DataPortal.Create " + Resources.Strings.GetResourceString("Failed"), ex.InnerException, result.ReturnObject);
+      }
+
+      if(isRemotePortal)
+      {
+        RestoreContext(result);
+        Serialization.SerializationNotification.OnDeserialized(result.ReturnObject);
+      }
+
+      if(OnDataPortalInvokeComplete != null)
+        OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+
+      return result.ReturnObject;
     }
 
     /// <summary>
@@ -55,24 +94,42 @@ namespace CSLA
     /// <returns>An object populated with values from the database.</returns>
     static public object Fetch(object criteria)
     {
-      object obj;
+      Server.DataPortalResult result;
+
       MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Fetch");
 
       bool forceLocal = RunLocal(method);
+      bool isRemotePortal = _portalRemote && !forceLocal;
+      Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), isRemotePortal);
 
-      if(IsTransactionalMethod(method))
-        obj = ServicedPortal(forceLocal).Fetch(
-          criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
-      else
-        obj = Portal(forceLocal).Fetch(
-          criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
+      if(OnDataPortalInvoke != null)
+        OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
-      if(_portalRemote & !forceLocal)
+      try
       {
-        RestoreContext(obj);
-        Serialization.SerializationNotification.OnDeserialized(obj);
+        if(IsTransactionalMethod(method))
+          result = (Server.DataPortalResult)ServicedPortal(forceLocal).Fetch(criteria, dpContext);
+        else
+          result = (Server.DataPortalResult)Portal(forceLocal).Fetch(criteria, dpContext);
       }
-      return ((Server.DataPortalResult)obj).ReturnObject;
+      catch(Server.DataPortalException ex)
+      {
+        result = ex.Result;
+        if(isRemotePortal)
+          RestoreContext(result);
+        throw new DataPortalException("DataPortal.Fetch " + Resources.Strings.GetResourceString("Failed"), ex.InnerException, result.ReturnObject);
+      }
+
+      if(isRemotePortal)
+      {
+        RestoreContext(result);
+        Serialization.SerializationNotification.OnDeserialized(result.ReturnObject);
+      }
+
+      if(OnDataPortalInvokeComplete != null)
+        OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+
+      return result.ReturnObject;
     }
 
     /// <summary>
@@ -89,28 +146,46 @@ namespace CSLA
     /// <returns>A reference to the updated business object.</returns>
     static public object Update(object obj)
     {
-      object updated;
+      Server.DataPortalResult result;
+
       MethodInfo method = GetMethod(obj.GetType(), "DataPortal_Update");
 
       bool forceLocal = RunLocal(method);
+      bool isRemotePortal = _portalRemote && !forceLocal;
+      Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), isRemotePortal);
 
-      if(_portalRemote & !forceLocal)
+      if(OnDataPortalInvoke != null)
+        OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+
+      if(isRemotePortal)
         Serialization.SerializationNotification.OnSerializing(obj);
 
-      if(IsTransactionalMethod(method))
-        updated = ServicedPortal(forceLocal).Update(
-          obj, new Server.DataPortalContext(GetPrincipal(), _portalRemote));
-      else
-        updated = Portal(forceLocal).Update(
-          obj, new Server.DataPortalContext(GetPrincipal(), _portalRemote));
-
-      if(_portalRemote & !forceLocal)
+      try
       {
-        RestoreContext(updated);
-        Serialization.SerializationNotification.OnSerialized(obj);
-        Serialization.SerializationNotification.OnDeserialized(updated);
+        if(IsTransactionalMethod(method))
+          result = (Server.DataPortalResult)ServicedPortal(forceLocal).Update(obj, dpContext);
+        else
+          result = (Server.DataPortalResult)Portal(forceLocal).Update(obj, dpContext);
       }
-      return ((Server.DataPortalResult)updated).ReturnObject;
+      catch(Server.DataPortalException ex)
+      {
+        result = ex.Result;
+        if(isRemotePortal)
+          RestoreContext(result);
+        throw new DataPortalException("DataPortal.Update " + Resources.Strings.GetResourceString("Failed"), ex.InnerException, result.ReturnObject);
+      }
+
+      if(isRemotePortal)
+      {
+        RestoreContext(result);
+        Serialization.SerializationNotification.OnSerialized(obj);
+        Serialization.SerializationNotification.OnDeserialized(result.ReturnObject);
+      }
+
+      if(OnDataPortalInvokeComplete != null)
+        OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+
+      return result.ReturnObject;
     }
 
     /// <summary>
@@ -120,21 +195,37 @@ namespace CSLA
     /// <param name="Criteria">Object-specific criteria.</param>
     static public void Delete(object criteria)
     {
-      object obj;
+      Server.DataPortalResult result;
 
       MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Delete");
 
       bool forceLocal = RunLocal(method);
+      bool isRemotePortal = _portalRemote && !forceLocal;
+      Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), isRemotePortal);
 
-      if(IsTransactionalMethod(method))
-        obj = ServicedPortal(forceLocal).Delete(
-          criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
-      else
-        obj = Portal(forceLocal).Delete(
-          criteria, new Server.DataPortalContext(GetPrincipal(), _portalRemote & !forceLocal));
+      if(OnDataPortalInvoke != null)
+        OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
-      if(_portalRemote & !forceLocal)
-        RestoreContext(obj);
+      try
+      {
+        if(IsTransactionalMethod(method))
+          result = (Server.DataPortalResult)ServicedPortal(forceLocal).Delete(criteria, dpContext);
+        else
+          result = (Server.DataPortalResult)Portal(forceLocal).Delete(criteria, dpContext);
+      }
+      catch(Server.DataPortalException ex)
+      {
+        result = ex.Result;
+        if(isRemotePortal)
+          RestoreContext(result);
+        throw new DataPortalException("DataPortal.Delete " + Resources.Strings.GetResourceString("Failed"), ex.InnerException, result.ReturnObject);
+      }
+
+      if(isRemotePortal)
+        RestoreContext(result);
+
+      if(OnDataPortalInvokeComplete != null)
+        OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
     }
 
     #endregion

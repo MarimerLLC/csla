@@ -145,19 +145,19 @@ Namespace Core
     ''' <summary>
     ''' Contains code to compare SortData structures
     ''' </summary>
+    ''' <remarks>
+    ''' This performs a case sensitive comparison. If you want a case insensitive
+    ''' comparison, change the code to use CaseInsensitiveComparer.Default instead.
+    ''' </remarks>
     Private Class SortDataCompare
       Implements IComparer
 
       Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements System.Collections.IComparer.Compare
-        Dim item1 As SortData = CType(x, SortData)
-        Dim item2 As SortData = CType(y, SortData)
-        If item1.Key = item2.Key Then
-          Return 0
-        ElseIf item1.Key > item2.Key Then
-          Return 1
-        Else
-          Return -1
-        End If
+        Dim item1 As SortData = DirectCast(x, SortData)
+        Dim item2 As SortData = DirectCast(y, SortData)
+
+        Return Comparer.Default.Compare(item1.Key, item2.Key)
+
       End Function
     End Class
 
@@ -211,7 +211,7 @@ Namespace Core
           Else ' direction = ListSortDirection.Descending
             Dim item As SortData
             For count = sortList.Count - 1 To 0 Step -1
-              item = sortList(count)
+              item = DirectCast(sortList(count), SortData)
               list.Add(item.value)
             Next
           End If

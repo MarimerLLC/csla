@@ -1,6 +1,6 @@
 using System;
 
-namespace CSLA.Server.DataPortal
+namespace CSLA.Server
 {
 	/// <summary>
 	/// Summary description for DataPortal.

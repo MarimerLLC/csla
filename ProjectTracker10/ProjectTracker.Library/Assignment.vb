@@ -33,12 +33,15 @@ Public MustInherit Class Assignment
 
   Private Shared mRoles As RoleList
 
-  Shared Sub New()
-    mRoles = RoleList.GetList()
-  End Sub
+  'Shared Sub New()
+  '  mRoles = RoleList.GetList()
+  'End Sub
 
   Public Shared ReadOnly Property Roles() As RoleList
     Get
+      If mRoles Is Nothing Then
+        mRoles = RoleList.GetList
+      End If
       Return mRoles
     End Get
   End Property

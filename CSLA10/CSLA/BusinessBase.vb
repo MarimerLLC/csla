@@ -98,12 +98,17 @@ Public MustInherit Class BusinessBase
   ''' as being dirty and ensures that it is not marked for deletion.
   ''' </summary>
   ''' <remarks>
+  ''' <para>
   ''' Newly created objects are marked new by default. You should call
   ''' this method in the implementation of DataPortal_Update when the
   ''' object is deleted (due to being marked for deletion) to indicate
   ''' that the object no longer reflects data in the database.
+  ''' </para><para>
+  ''' If you override this method, make sure to call the base
+  ''' implementation after executing your new code.
+  ''' </para>
   ''' </remarks>
-  Protected Sub MarkNew()
+  Protected Overridable Sub MarkNew()
     mIsNew = True
     mIsDeleted = False
     MarkDirty()
@@ -122,9 +127,12 @@ Public MustInherit Class BusinessBase
   ''' You should call this method in the implementation of 
   ''' DataPortal_Update to indicate that a new object has been successfully
   ''' inserted into the database.
+  ''' </para><para>
+  ''' If you override this method, make sure to call the base
+  ''' implementation after executing your new code.
   ''' </para>
   ''' </remarks>
-  Protected Sub MarkOld()
+  Protected Overridable Sub MarkOld()
     mIsNew = False
     MarkClean()
   End Sub

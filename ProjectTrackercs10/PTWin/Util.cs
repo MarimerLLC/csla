@@ -17,7 +17,7 @@ namespace PTWin
     {
       Binding bd;
 
-      for(int index = control.DataBindings.Count - 1; (index == 0); index--)
+      for(int index = control.DataBindings.Count - 1; index >= 0; index--)
       {
         bd = control.DataBindings[index];
         if(bd.PropertyName == propertyName)

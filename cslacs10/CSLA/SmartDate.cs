@@ -144,7 +144,10 @@ namespace CSLA
       }
       set
       {
-        _date = StringToDate(value, _emptyIsMin);
+        if(value == null)
+          _date = StringToDate(string.Empty, _emptyIsMin);
+        else
+          _date = StringToDate(value, _emptyIsMin);
       }
     }
 

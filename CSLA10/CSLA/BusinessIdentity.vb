@@ -90,15 +90,15 @@ Namespace Security
 
       mRoles.Clear()
 
-      Dim cn As New SqlConnection(db("Security"))
+      Dim cn As New SqlConnection(db(GetResourceString("SecurityDataBase")))
       Dim cm As New SqlCommand()
       cn.Open()
       Try
         cm.Connection = cn
-        cm.CommandText = "Login"
+        cm.CommandText = GetResourceString("SecurityStoredProcedure")
         cm.CommandType = CommandType.StoredProcedure
-        cm.Parameters.Add("@user", crit.Username)
-        cm.Parameters.Add("@pw", crit.Password)
+        cm.Parameters.Add(GetResourceString("SecurityUserParam"), crit.Username)
+        cm.Parameters.Add(GetResourceString("SecurityPasswordParam"), crit.Password)
         Dim dr As SqlDataReader = cm.ExecuteReader()
         Try
           If dr.Read() Then

@@ -91,11 +91,11 @@ Namespace Server
 
           Dim sb As New Text.StringBuilder()
           With sb
-            .Append("Batch job completed")
+            .Append(GetResourceString("BatchQueueJobCompleted"))
             .Append(vbCrLf)
-            .AppendFormat("Batch job: {0}", Me.ToString)
+            .AppendFormat("{0} {1}", GetResourceString("BatchQueueJobPrefix"), Me.ToString)
             .Append(vbCrLf)
-            .AppendFormat("Job object: {0}", CType(mWorker, Object).ToString)
+            .AppendFormat("{0} {1}", GetResourceString("BatchQueueJobObjectPrefix"), CType(mWorker, Object).ToString)
             .Append(vbCrLf)
           End With
 
@@ -105,11 +105,11 @@ Namespace Server
         Catch ex As Exception
           Dim sb As New Text.StringBuilder()
           With sb
-            .Append("Batch job failed due to execution error")
+            .Append(GetResourceString("BatchQueueJobFailed"))
             .Append(vbCrLf)
-            .AppendFormat("Batch job: {0}", Me.ToString)
+            .AppendFormat("{0} {1}", GetResourceString("BatchQueueJobPrefix"), Me.ToString)
             .Append(vbCrLf)
-            .AppendFormat("Job object: {0}", CType(mWorker, Object).ToString)
+            .AppendFormat("{0} {1}", GetResourceString("BatchQueueJobObjectPrefix"), CType(mWorker, Object).ToString)
             .Append(vbCrLf)
             .Append(ex.ToString)
           End With
@@ -193,7 +193,7 @@ Namespace Server
           Exit Sub
 
         Else
-          Throw New System.Security.SecurityException("No principal object should be passed to DataPortal when using Windows integrated security")
+          Throw New System.Security.SecurityException(GetResourceString("NoPrincipalAllowedException"))
         End If
       End If
 
@@ -213,7 +213,7 @@ Namespace Server
         End If
 
       Else
-        Throw New System.Security.SecurityException("Principal must be of type BusinessPrincipal, not " & Principal.ToString)
+        Throw New System.Security.SecurityException(GetResourceString("BusinessPrincipalException") & " " & Principal.ToString)
       End If
 
     End Sub

@@ -101,15 +101,15 @@ Namespace Server
 
       Dim sb As New Text.StringBuilder()
 
-      sb.Append("Batch queue processor started")
+      sb.Append(GetResourceString("BatchQueueProcStarted"))
       sb.Append(vbCrLf)
-      sb.AppendFormat("Name: {0}", Name)
+      sb.AppendFormat("{0} {1}", GetResourceString("BatchQueueProcName"), Name)
       sb.Append(vbCrLf)
-      sb.AppendFormat("Port: {0}", PORT)
+      sb.AppendFormat("{0} {1}", GetResourceString("BatchQueueProcPort"), PORT)
       sb.Append(vbCrLf)
-      sb.AppendFormat("Queue: {0}", QUEUE_NAME)
+      sb.AppendFormat("{0} {1}", GetResourceString("BatchQueueProcQueue"), QUEUE_NAME)
       sb.Append(vbCrLf)
-      sb.AppendFormat("Max jobs: {0}", MAX_ENTRIES)
+      sb.AppendFormat("{0} {1}", GetResourceString("BatchQueueProcMaxJobs"), MAX_ENTRIES)
       sb.Append(vbCrLf)
       System.Diagnostics.EventLog.WriteEntry( _
         Name, sb.ToString, EventLogEntryType.Information)

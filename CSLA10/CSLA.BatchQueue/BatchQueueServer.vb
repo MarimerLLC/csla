@@ -71,7 +71,7 @@ Namespace Server
           Exit Sub
 
         Else
-          Throw New System.Security.SecurityException("No principal object should be passed to DataPortal when using Windows integrated security")
+          Throw New System.Security.SecurityException(GetResourceString("NoPrincipalAllowedException"))
         End If
       End If
 
@@ -91,7 +91,7 @@ Namespace Server
         End If
 
       Else
-        Throw New System.Security.SecurityException("Principal must be of type BusinessPrincipal, not " & Principal.ToString)
+        Throw New System.Security.SecurityException(GetResourceString("BusinessPrincipalException") & " " & Principal.ToString)
       End If
 
     End Sub

@@ -171,7 +171,7 @@ Namespace Core
     Protected Overrides Sub IBindingList_ApplySort(ByVal [property] As System.ComponentModel.PropertyDescriptor, ByVal direction As System.ComponentModel.ListSortDirection)
 
       If Not AllowSort Then
-        Throw New NotSupportedException("Sorting is not supported by this collection.")
+        Throw New NotSupportedException(GetResourceString("SortingNotSupportedException"))
       End If
 
       mSortProperty = [property]
@@ -245,7 +245,7 @@ Namespace Core
     Protected Overrides Sub IBindingList_RemoveSort()
 
       If Not AllowSort Then
-        Throw New NotSupportedException("Sorting is not supported by this collection.")
+        Throw New NotSupportedException(GetResourceString("SortingNotSupportedException"))
       End If
 
       If mIsSorted Then
@@ -314,7 +314,7 @@ Namespace Core
     Protected Overrides Function IBindingList_Find(ByVal [property] As PropertyDescriptor, ByVal key As Object) As Integer
 
       If Not AllowFind Then
-        Throw New NotSupportedException("Searching is not supported by this collection.")
+        Throw New NotSupportedException(GetResourceString("SearchingNotSupportedException"))
       End If
 
       Dim index As Integer

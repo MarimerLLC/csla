@@ -213,7 +213,7 @@ Public MustInherit Class BusinessBase
   Friend Sub SetParent(ByVal parent As BusinessCollectionBase)
 
     If Not IsChild Then
-      Throw New Exception("Parent value can only be set for child objects")
+      Throw New Exception(GetResourceString("ParentSetException"))
     End If
     mParent = parent
 
@@ -400,7 +400,7 @@ Public MustInherit Class BusinessBase
   ''' </remarks>
   Public Sub Delete()
     If Me.IsChild Then
-      Throw New NotSupportedException("Can not directly mark a child object for deletion - use its parent collection")
+      Throw New NotSupportedException(GetResourceString("ChildDeleteException"))
     End If
 
     MarkDeleted()
@@ -411,7 +411,7 @@ Public MustInherit Class BusinessBase
   ' (Friend scope)
   Friend Sub DeleteChild()
     If Not Me.IsChild Then
-      Throw New NotSupportedException("Invalid for root objects - use Delete instead")
+      Throw New NotSupportedException(GetResourceString("NoDeleteRootException"))
     End If
 
     MarkDeleted()
@@ -599,15 +599,15 @@ Public MustInherit Class BusinessBase
   ''' <returns>A new object containing the saved values.</returns>
   Public Overridable Function Save() As BusinessBase
     If Me.IsChild Then
-      Throw New NotSupportedException("Can not directly save a child object")
+      Throw New NotSupportedException(GetResourceString("NoSaveChildException"))
     End If
 
     If EditLevel > 0 Then
-      Throw New ApplicationException("Object is still being edited and can not be saved")
+      Throw New ApplicationException(GetResourceString("NoSaveEditingException"))
     End If
 
     If Not IsValid Then
-      Throw New ValidationException("Object is not valid and can not be saved")
+      Throw New ValidationException(GetResourceString("NoSaveInvalidException"))
     End If
 
     If IsDirty Then
@@ -624,7 +624,7 @@ Public MustInherit Class BusinessBase
   ''' </summary>
   ''' <param name="Criteria">An object containing criteria values.</param>
   Protected Overridable Sub DataPortal_Create(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - create not allowed")
+    Throw New NotSupportedException(GetResourceString("CreateNotSupportedException"))
   End Sub
 
   ''' <summary>
@@ -633,7 +633,7 @@ Public MustInherit Class BusinessBase
   ''' </summary>
   ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
   Protected Overridable Sub DataPortal_Fetch(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - fetch not allowed")
+    Throw New NotSupportedException(GetResourceString("FetchNotSupportedException"))
   End Sub
 
   ''' <summary>
@@ -641,7 +641,7 @@ Public MustInherit Class BusinessBase
   ''' object.
   ''' </summary>
   Protected Overridable Sub DataPortal_Update()
-    Throw New NotSupportedException("Invalid operation - update not allowed")
+    Throw New NotSupportedException(GetResourceString("UpdateNotSupportedException"))
   End Sub
 
   ''' <summary>
@@ -649,7 +649,7 @@ Public MustInherit Class BusinessBase
   ''' </summary>
   ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
   Protected Overridable Sub DataPortal_Delete(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - delete not allowed")
+    Throw New NotSupportedException(GetResourceString("DeleteNotSupportedException"))
   End Sub
 
   ''' <summary>

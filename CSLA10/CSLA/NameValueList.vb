@@ -93,7 +93,7 @@ Public MustInherit Class NameValueList
         End If
       Next
       ' we didn't find a match - throw an exception
-      Throw New ApplicationException("No matching item in collection")
+      Throw New ApplicationException(GetResourceString("NoMatchException"))
     End Get
   End Property
 
@@ -121,7 +121,7 @@ Public MustInherit Class NameValueList
 #Region " Data Access "
 
   Private Sub DataPortal_Create(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - create not allowed")
+    Throw New NotSupportedException(GetResourceString("CreateNotSupportedException"))
   End Sub
 
   ''' <summary>
@@ -136,15 +136,15 @@ Public MustInherit Class NameValueList
   ''' </remarks>
   ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
   Protected Overridable Sub DataPortal_Fetch(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - fetch not allowed")
+    Throw New NotSupportedException(GetResourceString("FetchNotSupportedException"))
   End Sub
 
   Private Sub DataPortal_Update()
-    Throw New NotSupportedException("Invalid operation - update not allowed")
+    Throw New NotSupportedException(GetResourceString("UpdateNotSupportedException"))
   End Sub
 
   Private Sub DataPortal_Delete(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - delete not allowed")
+    Throw New NotSupportedException(GetResourceString("DeleteNotSupportedException"))
   End Sub
 
   ''' <summary>

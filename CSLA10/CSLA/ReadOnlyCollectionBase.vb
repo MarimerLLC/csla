@@ -36,7 +36,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' </summary>
   Protected Overrides Sub OnInsert(ByVal index As Integer, ByVal value As Object)
     If Not ActivelySorting AndAlso Locked Then
-      Throw New NotSupportedException("Insert is invalid for a read-only collection")
+      Throw New NotSupportedException(GetResourceString("NoInsertReadOnlyException"))
     End If
   End Sub
 
@@ -46,7 +46,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' </summary>
   Protected Overrides Sub OnRemove(ByVal index As Integer, ByVal value As Object)
     If Not ActivelySorting AndAlso Locked Then
-      Throw New NotSupportedException("Remove is invalid for a read-only collection")
+      Throw New NotSupportedException(GetResourceString("NoRemoveReadOnlyException"))
     End If
   End Sub
 
@@ -56,7 +56,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' </summary>
   Protected Overrides Sub OnClear()
     If Not ActivelySorting AndAlso Locked Then
-      Throw New NotSupportedException("Clear is invalid for a read-only collection")
+      Throw New NotSupportedException(GetResourceString("NoClearReadOnlyException"))
     End If
   End Sub
 
@@ -66,7 +66,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' </summary>
   Protected Overrides Sub OnSet(ByVal index As Integer, ByVal oldValue As Object, ByVal newValue As Object)
     If Not ActivelySorting AndAlso Locked Then
-      Throw New NotSupportedException("Items can not be changed in a read-only collection")
+      Throw New NotSupportedException(GetResourceString("NoChangeReadOnlyException"))
     End If
   End Sub
 
@@ -98,7 +98,7 @@ Public MustInherit Class ReadOnlyCollectionBase
 #Region " Data Access "
 
   Private Sub DataPortal_Create(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - create not allowed")
+    Throw New NotSupportedException(GetResourceString("CreateNotSupportedException"))
   End Sub
 
   ''' <summary>
@@ -107,15 +107,15 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' </summary>
   ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
   Protected Overridable Sub DataPortal_Fetch(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - fetch not allowed")
+    Throw New NotSupportedException(GetResourceString("FetchNotSupportedException"))
   End Sub
 
   Private Sub DataPortal_Update()
-    Throw New NotSupportedException("Invalid operation - update not allowed")
+    Throw New NotSupportedException(GetResourceString("UpdateNotSupportedException"))
   End Sub
 
   Private Sub DataPortal_Delete(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - delete not allowed")
+    Throw New NotSupportedException(GetResourceString("DeleteNotSupportedException"))
   End Sub
 
   ''' <summary>

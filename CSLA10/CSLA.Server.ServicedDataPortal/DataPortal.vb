@@ -43,9 +43,9 @@ Public Class DataPortal
   ''' a COM+ transaction.
   ''' </summary>
   <AutoComplete(True)> _
-  Public Sub Delete(ByVal Criteria As Object, ByVal context As DataPortalContext)
+  Public Function Delete(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
     Dim portal As New CSLA.Server.DataPortal
-    portal.Delete(Criteria, context)
-  End Sub
+    Return portal.Delete(Criteria, context)
+  End Function
 
 End Class

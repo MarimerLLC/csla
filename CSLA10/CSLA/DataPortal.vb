@@ -1,3 +1,4 @@
+Imports System.Threading
 Imports System.Reflection
 Imports System.Runtime.Remoting
 Imports System.Runtime.Remoting.Channels
@@ -37,10 +38,12 @@ Public Class DataPortal
         New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
     End If
 
+
     If mPortalRemote AndAlso Not forceLocal Then
+      RestoreContext(obj)
       Serialization.SerializationNotification.OnDeserialized(obj)
     End If
-    Return obj
+    Return CType(obj, Server.DataPortalResult).ReturnObject
 
   End Function
 
@@ -68,9 +71,10 @@ Public Class DataPortal
     End If
 
     If mPortalRemote AndAlso Not forceLocal Then
+      RestoreContext(obj)
       Serialization.SerializationNotification.OnDeserialized(obj)
     End If
-    Return obj
+    Return CType(obj, Server.DataPortalResult).ReturnObject
 
   End Function
 
@@ -108,10 +112,11 @@ Public Class DataPortal
     End If
 
     If mPortalRemote AndAlso Not forceLocal Then
+      RestoreContext(updated)
       Serialization.SerializationNotification.OnSerialized(obj)
       Serialization.SerializationNotification.OnDeserialized(updated)
     End If
-    Return updated
+    Return CType(updated, Server.DataPortalResult).ReturnObject
 
   End Function
 
@@ -122,17 +127,23 @@ Public Class DataPortal
   ''' <param name="Criteria">Object-specific criteria.</param>
   Public Shared Sub Delete(ByVal Criteria As Object)
 
+    Dim obj As Object
+
     Dim method As MethodInfo = GetMethod(GetObjectType(Criteria), "DataPortal_Delete")
 
     Dim forceLocal As Boolean = RunLocal(method)
 
     If IsTransactionalMethod(method) Then
-      ServicedPortal(forceLocal).Delete(Criteria, _
+      obj = ServicedPortal(forceLocal).Delete(Criteria, _
         New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
 
     Else
-      Portal(forceLocal).Delete(Criteria, _
+      obj = Portal(forceLocal).Delete(Criteria, _
         New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
+    End If
+
+    If mPortalRemote AndAlso Not forceLocal Then
+      RestoreContext(obj)
     End If
 
   End Sub
@@ -218,6 +229,14 @@ Public Class DataPortal
 #End Region
 
 #Region " Helper methods "
+
+  Private Shared Sub RestoreContext(ByVal result As Object)
+
+    Dim slot As System.LocalDataStoreSlot = _
+      Thread.GetNamedDataSlot("CSLA.GlobalContext")
+    Threading.Thread.SetData(slot, CType(result, Server.DataPortalResult).GlobalContext)
+
+  End Sub
 
   Private Shared Function IsTransactionalMethod(ByVal Method As MethodInfo) As Boolean
 

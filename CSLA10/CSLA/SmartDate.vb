@@ -324,17 +324,17 @@ Public NotInheritable Class SmartDate
 
     Else
       Select Case LCase(Trim(Value))
-        Case "t", "today", "."
+        Case GetResourceString("SmartDateT"), GetResourceString("SmartDateToday"), "."
           Return Now
 
-        Case "y", "yesterday", "-"
+        Case GetResourceString("SmartDateY"), GetResourceString("SmartDateYesterday"), "-"
           Return DateAdd(DateInterval.Day, -1, Now)
 
-        Case "tom", "tomorrow", "+"
+        Case GetResourceString("SmartDateTom"), GetResourceString("SmartDateTomorrow"), "+"
           Return DateAdd(DateInterval.Day, 1, Now)
 
         Case Else
-          Throw New ArgumentException("String value can not be converted to a date")
+          Throw New ArgumentException(GetResourceString("StringToDateException"))
       End Select
     End If
   End Function
@@ -417,7 +417,7 @@ Public NotInheritable Class SmartDate
       Return CompareTo(DirectCast(Value, SmartDate))
 
     Else
-      Throw New ArgumentException("Value is not a SmartDate")
+      Throw New ArgumentException(GetResourceString("ValueNotSmartDateException"))
     End If
 
   End Function
@@ -429,7 +429,7 @@ Public NotInheritable Class SmartDate
   ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
   Public Function CompareTo(ByVal Value As String) As Integer
     If Not IsDate(Value) Then
-      Throw New ArgumentException("Value must be a valid date")
+      Throw New ArgumentException(GetResourceString("InvalidDateException"))
 
     Else
       Return mDate.CompareTo(CDate(Value))

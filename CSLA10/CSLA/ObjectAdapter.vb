@@ -250,7 +250,7 @@ Namespace Data
             If field Is Nothing Then
               ' no field exists either, throw an exception
               Throw New System.Data.DataException( _
-                          "No such value exists: " & FieldName)
+                GetResourceString("NoSuchValueExistsException") & " " & FieldName)
 
             Else
               ' got a field, return its value
@@ -264,7 +264,7 @@ Namespace Data
 
         Catch ex As Exception
           Throw New System.Data.DataException( _
-                      "Error reading value: " & FieldName, ex)
+            GetResourceString("ErrorReadingValueException") & " " & FieldName, ex)
         End Try
       End If
     End Function

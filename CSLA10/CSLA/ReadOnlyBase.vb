@@ -44,7 +44,7 @@ Public MustInherit Class ReadOnlyBase
 #Region " Data Access "
 
   Private Sub DataPortal_Create(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - create not allowed")
+    Throw New NotSupportedException(GetResourceString("CreateNotSupportedException"))
   End Sub
 
   ''' <summary>
@@ -53,15 +53,15 @@ Public MustInherit Class ReadOnlyBase
   ''' </summary>
   ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
   Protected Overridable Sub DataPortal_Fetch(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - fetch not allowed")
+    Throw New NotSupportedException(GetResourceString("FetchNotSupportedException"))
   End Sub
 
   Private Sub DataPortal_Update()
-    Throw New NotSupportedException("Invalid operation - update not allowed")
+    Throw New NotSupportedException(GetResourceString("UpdateNotSupportedException"))
   End Sub
 
   Private Sub DataPortal_Delete(ByVal Criteria As Object)
-    Throw New NotSupportedException("Invalid operation - delete not allowed")
+    Throw New NotSupportedException(GetResourceString("DeleteNotSupportedException"))
   End Sub
 
   ''' <summary>

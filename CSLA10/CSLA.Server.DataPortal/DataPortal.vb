@@ -1,6 +1,7 @@
 Imports System.Reflection
 Imports System.Security.Principal
 Imports System.Configuration
+Imports System.Collections.Specialized
 
 ''' <summary>
 ''' 
@@ -38,7 +39,7 @@ Namespace Server
 
       ClearContext(context)
 
-      Return obj
+      Return New DataPortalResult(obj)
 
     End Function
 
@@ -65,7 +66,7 @@ Namespace Server
 
       ClearContext(context)
 
-      Return obj
+      Return New DataPortalResult(obj)
 
     End Function
 
@@ -92,7 +93,7 @@ Namespace Server
 
       ClearContext(context)
 
-      Return obj
+      Return New DataPortalResult(obj)
 
     End Function
 
@@ -101,7 +102,7 @@ Namespace Server
     ''' </summary>
     ''' <param name="Criteria">Object-specific criteria.</param>
     ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
-    Public Sub Delete(ByVal Criteria As Object, ByVal context As DataPortalContext)
+    Public Function Delete(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
 
       SetContext(context)
 
@@ -113,7 +114,9 @@ Namespace Server
 
       ClearContext(context)
 
-    End Sub
+      Return New DataPortalResult
+
+    End Function
 
 #End Region
 
@@ -137,7 +140,8 @@ Namespace Server
       ' set the app context to the value we got from the
       ' client
       CSLA.ApplicationContext.SetContext( _
-        CType(context.ApplicationContext, Specialized.NameValueCollection))
+        CType(context.ClientContext, NameValueCollection), _
+        CType(context.GlobalContext, NameValueCollection))
 
       If AUTHENTICATION() = "Windows" Then
         ' When using integrated security, Principal must be Nothing 
@@ -148,7 +152,7 @@ Namespace Server
 
         Else
           Throw New Security.SecurityException( _
-            "No principal object should be passed to DataPortal when using Windows integrated security")
+            GetResourceString("NoPrincipalAllowedException"))
         End If
       End If
 
@@ -172,14 +176,14 @@ Namespace Server
 
           Else
             Throw New Security.SecurityException( _
-              "Principal must be of type BusinessPrincipal, not " & CType(context.Principal, Object).ToString())
+              GetResourceString("BusinessPrincipalException") & " " & CType(context.Principal, Object).ToString())
           End If
 
         End If
 
       Else
         Throw New Security.SecurityException( _
-          "Principal must be of type BusinessPrincipal, not Nothing")
+          GetResourceString("BusinessPrincipalException") & " Nothing")
       End If
 
     End Sub

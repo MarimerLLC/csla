@@ -22,7 +22,8 @@ Namespace Server
 
     Private mPrincipal As IPrincipal
     Private mRemotePortal As Boolean
-    Private mContext As Object
+    Private mClientContext As Object
+    Private mGlobalContext As Object
 
     ''' <summary>
     ''' The current <see cref="T:CSLA.Security.BusinessPrincipal" />
@@ -44,9 +45,15 @@ Namespace Server
       End Get
     End Property
 
-    Friend ReadOnly Property ApplicationContext() As Object
+    Friend ReadOnly Property ClientContext() As Object
       Get
-        Return mContext
+        Return mClientContext
+      End Get
+    End Property
+
+    Friend ReadOnly Property GlobalContext() As Object
+      Get
+        Return mGlobalContext
       End Get
     End Property
 
@@ -56,9 +63,12 @@ Namespace Server
     ''' <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     Public Sub New(ByVal isRemotePortal As Boolean)
 
-      mPrincipal = Nothing
-      mRemotePortal = isRemotePortal
-      mContext = CSLA.ApplicationContext.GetContext
+      If isRemotePortal Then
+        mPrincipal = Nothing
+        mRemotePortal = isRemotePortal
+        mClientContext = CSLA.ApplicationContext.GetClientContext
+        mGlobalContext = CSLA.ApplicationContext.GetGlobalContext
+      End If
 
     End Sub
 
@@ -69,9 +79,12 @@ Namespace Server
     ''' <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     Public Sub New(ByVal principal As IPrincipal, ByVal isRemotePortal As Boolean)
 
-      mPrincipal = principal
-      mRemotePortal = isRemotePortal
-      mContext = CSLA.ApplicationContext.GetContext
+      If isRemotePortal Then
+        mPrincipal = principal
+        mRemotePortal = isRemotePortal
+        mClientContext = CSLA.ApplicationContext.GetClientContext
+        mGlobalContext = CSLA.ApplicationContext.GetGlobalContext
+      End If
 
     End Sub
 

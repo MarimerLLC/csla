@@ -206,7 +206,7 @@ Public Class BrokenRules
     ''' </summary>
     Protected Overrides Sub OnClear()
       If Not mLegal Then
-        Throw New NotSupportedException("Clear is an invalid operation")
+        Throw New NotSupportedException(GetResourceString("ClearInvalidException"))
       End If
     End Sub
 
@@ -215,7 +215,7 @@ Public Class BrokenRules
     ''' </summary>
     Protected Overrides Sub OnInsert(ByVal index As Integer, ByVal value As Object)
       If Not mLegal Then
-        Throw New NotSupportedException("Insert is an invalid operation")
+        Throw New NotSupportedException(GetResourceString("InsertInvalidException"))
       End If
     End Sub
 
@@ -224,7 +224,7 @@ Public Class BrokenRules
     ''' </summary>
     Protected Overrides Sub OnRemove(ByVal index As Integer, ByVal value As Object)
       If Not mLegal Then
-        Throw New NotSupportedException("Remove is an invalid operation")
+        Throw New NotSupportedException(GetResourceString("RemoveInvalidException"))
       End If
     End Sub
 
@@ -234,7 +234,7 @@ Public Class BrokenRules
     Protected Overrides Sub OnSet(ByVal index As Integer, _
         ByVal oldValue As Object, ByVal newValue As Object)
       If Not mLegal Then
-        Throw New NotSupportedException("Changing an element is an invalid operation")
+        Throw New NotSupportedException(GetResourceString("ChangeInvalidException"))
       End If
     End Sub
   End Class

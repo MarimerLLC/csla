@@ -1,116 +1,107 @@
 <VisualStudioProject>
-    <CSHARP
+    <VisualBasic
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{C2392355-12A9-4197-A1D3-603C390B1E62}"
+        ProjectGuid = "{0322FCB8-3DB3-4BDB-948D-CA43192CD6FF}"
     >
         <Build>
             <Settings
                 ApplicationIcon = ""
                 AssemblyKeyContainerName = ""
-                AssemblyName = "CSLA.Core.Bindablebase"
+                AssemblyName = "CSLA.Resources"
                 AssemblyOriginatorKeyFile = ""
+                AssemblyOriginatorKeyMode = "None"
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
                 DefaultTargetSchema = "IE50"
                 DelaySign = "false"
                 OutputType = "Library"
-                PreBuildEvent = ""
-                PostBuildEvent = ""
-                RootNamespace = "CSLA.Core.Bindablebase"
-                RunPostBuildEvent = "OnBuildSuccess"
+                OptionCompare = "Binary"
+                OptionExplicit = "On"
+                OptionStrict = "On"
+                RootNamespace = "CSLA.Resources"
                 StartupObject = ""
             >
                 <Config
                     Name = "Debug"
-                    AllowUnsafeBlocks = "false"
                     BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE"
-                    DocumentationFile = "CSLA.Core.BindableBase.xml"
+                    DefineConstants = ""
+                    DefineDebug = "true"
+                    DefineTrace = "true"
                     DebugSymbols = "true"
-                    FileAlignment = "4096"
                     IncrementalBuild = "true"
-                    NoStdLib = "false"
-                    NoWarn = ""
                     Optimize = "false"
-                    OutputPath = "bin\Debug\"
+                    OutputPath = "bin\"
                     RegisterForComInterop = "false"
                     RemoveIntegerChecks = "false"
                     TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
+                    WarningLevel = "1"
                 />
                 <Config
                     Name = "Release"
-                    AllowUnsafeBlocks = "false"
                     BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = "TRACE"
-                    DocumentationFile = ""
+                    DefineConstants = ""
+                    DefineDebug = "false"
+                    DefineTrace = "true"
                     DebugSymbols = "false"
-                    FileAlignment = "4096"
                     IncrementalBuild = "false"
-                    NoStdLib = "false"
-                    NoWarn = ""
                     Optimize = "true"
-                    OutputPath = "bin\Release\"
+                    OutputPath = "bin\"
                     RegisterForComInterop = "false"
                     RemoveIntegerChecks = "false"
                     TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
+                    WarningLevel = "1"
                 />
             </Settings>
             <References>
                 <Reference
                     Name = "System"
                     AssemblyName = "System"
-                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll"
                 />
                 <Reference
                     Name = "System.Data"
                     AssemblyName = "System.Data"
-                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll"
                 />
                 <Reference
                     Name = "System.XML"
                     AssemblyName = "System.Xml"
-                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
-                />
-                <Reference
-                    Name = "CSLA.Resources"
-                    Project = "{0322FCB8-3DB3-4BDB-948D-CA43192CD6FF}"
-                    Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
                 />
             </References>
+            <Imports>
+                <Import Namespace = "Microsoft.VisualBasic" />
+                <Import Namespace = "System" />
+                <Import Namespace = "System.Collections" />
+                <Import Namespace = "System.Data" />
+                <Import Namespace = "System.Diagnostics" />
+            </Imports>
         </Build>
         <Files>
             <Include>
                 <File
-                    RelPath = "AssemblyInfo.cs"
+                    RelPath = "AssemblyInfo.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "BindableBase.cs"
+                    RelPath = "Strings.resx"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Strings.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "BindableCollectionBase.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "VersionInfo.cs"
-                    Link = "..\VersionInfo.cs"
+                    RelPath = "VersionInfo.vb"
+                    Link = "..\VersionInfo.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
             </Include>
         </Files>
-    </CSHARP>
+    </VisualBasic>
 </VisualStudioProject>
 

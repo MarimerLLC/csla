@@ -12,9 +12,6 @@ using ProjectTracker.Library;
 
 namespace PTWebcs
 {
-	/// <summary>
-	/// Summary description for Projects.
-	/// </summary>
 	public class Projects : System.Web.UI.Page
 	{
     protected System.Web.UI.WebControls.DataGrid dgProjects;
@@ -57,7 +54,8 @@ namespace PTWebcs
         HttpContext.Current.User.IsInRole("Administrator");
     }
 
-    private void dgProjects_SelectedIndexChanged(object sender, System.EventArgs e)
+    private void dgProjects_SelectedIndexChanged(object sender, 
+      System.EventArgs e)
     {
       Guid id = new Guid(dgProjects.SelectedItem.Cells[0].Text);
       Session["Project"] = Project.GetProject(id);
@@ -74,7 +72,8 @@ namespace PTWebcs
       DataBind();
     }
 
-    private void btnNewProject_Click(object sender, System.EventArgs e)
+    private void btnNewProject_Click(object sender, 
+      System.EventArgs e)
     {
       Session["Project"] = Project.NewProject();
       Response.Redirect("ProjectEdit.aspx");

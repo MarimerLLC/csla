@@ -12,9 +12,6 @@ using ProjectTracker.Library;
 
 namespace PTWebcs
 {
-	/// <summary>
-	/// Summary description for AssignResource.
-	/// </summary>
 	public class AssignResource : System.Web.UI.Page
 	{
     protected System.Web.UI.WebControls.Button btnCancel;
@@ -69,7 +66,8 @@ namespace PTWebcs
       Response.Redirect("ProjectEdit.aspx");
     }
 
-    private void dgResources_SelectedIndexChanged(object sender, System.EventArgs e)
+    private void dgResources_SelectedIndexChanged(
+      object sender, System.EventArgs e)
     {
       Project project = (Project)Session["Project"];
       string id = dgResources.SelectedItem.Cells[0].Text;

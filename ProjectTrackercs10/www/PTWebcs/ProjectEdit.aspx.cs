@@ -12,9 +12,6 @@ using ProjectTracker.Library;
 
 namespace PTWebcs
 {
-	/// <summary>
-	/// Summary description for ProjectEdit.
-	/// </summary>
 	public class ProjectEdit : System.Web.UI.Page
 	{
     protected System.Web.UI.WebControls.Button btnCancel;
@@ -139,7 +136,8 @@ namespace PTWebcs
       Response.Redirect("Projects.aspx");
     }
 
-    private void dgResources_SelectedIndexChanged(object sender, System.EventArgs e)
+    private void dgResources_SelectedIndexChanged(
+      object sender, System.EventArgs e)
     {
       // check security
       if(User.IsInRole("ProjectManager"))

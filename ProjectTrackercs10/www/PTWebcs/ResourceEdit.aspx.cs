@@ -12,9 +12,6 @@ using ProjectTracker.Library;
 
 namespace PTWebcs
 {
-	/// <summary>
-	/// Summary description for ResourceEdit.
-	/// </summary>
 	public class ResourceEdit : System.Web.UI.Page
 	{
     protected System.Web.UI.WebControls.Button btnCancel;
@@ -149,7 +146,8 @@ namespace PTWebcs
       }
     }
 
-    private void dgProjects_SelectedIndexChanged(object sender, System.EventArgs e)
+    private void dgProjects_SelectedIndexChanged(
+      object sender, System.EventArgs e)
     {
       // check security
       if(User.IsInRole("Supervisor") ||

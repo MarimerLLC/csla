@@ -12,11 +12,8 @@ using ProjectTracker.Library;
 
 namespace PTWebcs
 {
-	/// <summary>
-	/// Summary description for ChooseRole.
-	/// </summary>
-	public class ChooseRole : System.Web.UI.Page
-	{
+  public class ChooseRole : System.Web.UI.Page
+  {
     protected System.Web.UI.WebControls.Button btnCancel;
     protected System.Web.UI.WebControls.Button btnUpdate;
     protected System.Web.UI.WebControls.ListBox lstRoles;
@@ -24,21 +21,21 @@ namespace PTWebcs
     protected System.Web.UI.WebControls.Label lblLabel;
 
 		#region Web Form Designer generated code
-		override protected void OnInit(EventArgs e)
-		{
-			//
-			// CODEGEN: This call is required by the ASP.NET Web Form Designer.
-			//
-			InitializeComponent();
-			base.OnInit(e);
-		}
+    override protected void OnInit(EventArgs e)
+    {
+      //
+      // CODEGEN: This call is required by the ASP.NET Web Form Designer.
+      //
+      InitializeComponent();
+      base.OnInit(e);
+    }
 		
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{    
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {    
       this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
       this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
       this.Load += new System.EventHandler(this.Page_Load);
@@ -64,13 +61,14 @@ namespace PTWebcs
             SendUserBack();
           }
 
-          ProjectResource obj = (ProjectResource)Session["ProjectResource"];
+          ProjectResource obj = 
+            (ProjectResource)Session["ProjectResource"];
           lblLabel.Text = "Resource";
           lblValue.Text = obj.FirstName + " " + obj.LastName;
 
           // TODO: this line only works in 1.1, so is replaced with next line for 1.0
           //lstRoles.SelectedValue = obj.Role
-          lstRoles.SelectedItem.Value = obj.Role;
+          SelectItem(lstRoles, obj.Role);
         }
         else
         {
@@ -84,13 +82,14 @@ namespace PTWebcs
             SendUserBack();
           }
 
-          ResourceAssignment obj = (ResourceAssignment)Session["ResourceAssignment"];
+          ResourceAssignment obj = 
+            (ResourceAssignment)Session["ResourceAssignment"];
           lblLabel.Text = "Project";
           lblValue.Text = obj.ProjectName;
 
           // TODO: this line only works in 1.1, so is replaced with next line for 1.0
           //lstRoles.SelectedValue = obj.Role
-          lstRoles.SelectedItem.Value = obj.Role;
+          SelectItem(lstRoles, obj.Role);
         }
       }
     }
@@ -109,7 +108,8 @@ namespace PTWebcs
       else
       {
         // we are dealing with a ResourceAssignment
-        ResourceAssignment obj = (ResourceAssignment)Session["ResourceAssignment"];
+        ResourceAssignment obj = 
+          (ResourceAssignment)Session["ResourceAssignment"];
 
         // TODO: this line only works in 1.1, so is replaced with next line for 1.0
         //obj.Role = lstRoles.SelectedValue
@@ -128,6 +128,21 @@ namespace PTWebcs
       string src = (string)Session["Source"];
       Session.Remove("Source");
       Response.Redirect(src);
+    }
+
+    private void SelectItem(System.Web.UI.WebControls.ListBox lst, string item)
+    {
+      int index = 0;
+
+      foreach(ListItem entry in lst.Items)
+      {
+        if(entry.Value == item)
+        {
+          lst.SelectedIndex = index;
+          return;
+        }
+        index++;
+      }
     }
   }
 }

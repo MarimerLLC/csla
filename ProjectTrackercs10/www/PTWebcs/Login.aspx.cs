@@ -64,7 +64,7 @@ namespace PTWebcs
       if(Thread.CurrentPrincipal.Identity.IsAuthenticated)
       {
         Session["CSLA-Principal"] = Thread.CurrentPrincipal;
-        HttpContext.Current.User = (IPrincipal)Session["CSLA-Principal"];
+        HttpContext.Current.User = Thread.CurrentPrincipal;
 
         // redirect to the page the user requested
         System.Web.Security.FormsAuthentication.RedirectFromLoginPage(

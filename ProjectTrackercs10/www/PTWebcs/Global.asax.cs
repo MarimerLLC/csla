@@ -24,7 +24,7 @@ namespace PTWebcs
       if(Session["CSLA-Principal"] != null)
       {
         Thread.CurrentPrincipal = (IPrincipal)Session["CSLA-Principal"];
-        HttpContext.Current.User = (IPrincipal)Session["CSLA-Principal"];
+        HttpContext.Current.User = Thread.CurrentPrincipal;
       }
       else
       {

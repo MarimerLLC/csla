@@ -12,9 +12,6 @@ using ProjectTracker.Library;
 
 namespace PTWebcs
 {
-	/// <summary>
-	/// Summary description for Resources.
-	/// </summary>
 	public class Resources : System.Web.UI.Page
 	{
     protected System.Web.UI.WebControls.DataGrid dgResources;
@@ -60,7 +57,8 @@ namespace PTWebcs
         User.IsInRole("Administrator");
     }
 
-    private void dgResources_SelectedIndexChanged(object sender, System.EventArgs e)
+    private void dgResources_SelectedIndexChanged(
+      object sender, System.EventArgs e)
     {
       string id = dgResources.SelectedItem.Cells[0].Text;
       Session["Resource"] = Resource.GetResource(id);

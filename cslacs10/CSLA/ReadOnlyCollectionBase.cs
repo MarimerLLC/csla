@@ -10,7 +10,7 @@ namespace CSLA
 	/// </summary>
   [Serializable()]
   abstract public class ReadOnlyCollectionBase : 
-      CSLA.Core.BindableCollectionBase, ICloneable,
+      CSLA.Core.SortableCollectionBase, ICloneable,
       Serialization.ISerializationNotification
   {
     public ReadOnlyCollectionBase()

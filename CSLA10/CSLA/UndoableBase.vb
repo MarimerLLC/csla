@@ -259,6 +259,8 @@ Namespace Core
 
 #End Region
 
+#Region " DumpState "
+
     Public Sub DumpState()
 
       Dim currentType As Type = Me.GetType
@@ -318,6 +320,8 @@ Namespace Core
       Loop Until currentType Is UndoableType
 
     End Sub
+
+#End Region
 
   End Class
 

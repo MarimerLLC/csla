@@ -586,4 +586,24 @@ Public MustInherit Class BusinessCollectionBase
 
 #End Region
 
+#Region " DumpState "
+
+  Friend Sub DumpState()
+    Dim Child As BusinessBase
+
+    Debug.WriteLine("BusinessCollectionBase!Count:" & list.Count)
+    Debug.WriteLine("BusinessCollectionBase!DeletedCount:" & deletedList.Count)
+    Debug.WriteLine("BusinessCollectionBase!mIsChild:" & mIsChild)
+    Debug.WriteLine("BusinessCollectionBase!mEditLevel:" & mEditLevel)
+    Debug.Indent()
+
+    For Each Child In list
+      Child.DumpState()
+    Next
+    Debug.Unindent()
+
+  End Sub
+
+#End Region
+
 End Class

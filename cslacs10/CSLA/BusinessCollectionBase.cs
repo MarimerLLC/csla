@@ -414,9 +414,7 @@ namespace CSLA
     /// </summary>
     protected override void OnClear()
     {
-      // when an object is 'removed' it is really
-      // being deleted, so do the deletion work
-      // for all the objects in the list
+      // remove all the items from the list
       while(List.Count > 0)
         List.RemoveAt(0);
       base.OnClear();

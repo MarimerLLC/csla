@@ -120,6 +120,48 @@ Namespace Core
 #Region " ApplySort "
 
     ''' <summary>
+    ''' Structure to store temporary data for sorting.
+    ''' </summary>
+    Private Structure SortData
+      Private mKey As Object
+      Public Value As Object
+
+      Public Sub New(ByVal Key As Object, ByVal Value As Object)
+        mKey = Key
+        Me.Value = Value
+      End Sub
+
+      Public ReadOnly Property Key() As Object
+        Get
+          If IsNumeric(mKey) OrElse TypeOf mKey Is String Then
+            Return mKey
+          Else
+            Return mKey.ToString
+          End If
+        End Get
+      End Property
+    End Structure
+
+    ''' <summary>
+    ''' Contains code to compare SortData structures
+    ''' </summary>
+    Private Class SortDataCompare
+      Implements IComparer
+
+      Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements System.Collections.IComparer.Compare
+        Dim item1 As SortData = CType(x, SortData)
+        Dim item2 As SortData = CType(y, SortData)
+        If item1.Key = item2.Key Then
+          Return 0
+        ElseIf item1.Key > item2.Key Then
+          Return 1
+        Else
+          Return -1
+        End If
+      End Function
+    End Class
+
+    ''' <summary>
     ''' Applies a sort to the collection.
     ''' </summary>
     ''' <remarks>
@@ -152,22 +194,25 @@ Namespace Core
           mActivelySorting = True
 
           ' copy the key/value pairs into a sorted list
-          Dim sortList As New SortedList()
-          For Count = 0 To list.Count - 1
-            sortList.Add(CallByName(list.Item(Count), mSortPropertyName, CallType.Get), list.Item(Count))
+          Dim sortList As New ArrayList()
+          For count = 0 To list.Count - 1
+            sortList.Add(New SortData(CallByName(list.Item(count), mSortPropertyName, CallType.Get), list.Item(count)))
           Next
+          sortList.Sort(New SortDataCompare())
 
           list.Clear()
 
           If direction = ListSortDirection.Ascending Then
-            Dim item As DictionaryEntry
+            Dim item As SortData
             For Each item In sortList
               list.Add(item.Value)
             Next
 
           Else ' direction = ListSortDirection.Descending
-            For Count = sortList.Count - 1 To 0 Step -1
-              list.Add(sortList.GetByIndex(Count))
+            Dim item As SortData
+            For count = sortList.Count - 1 To 0 Step -1
+              item = sortList(count)
+              list.Add(item.value)
             Next
           End If
 

@@ -76,8 +76,8 @@ namespace PTWebcs
       Guid id = new Guid(dgProjects.SelectedItem.Cells[0].Text);
 
       // TODO: this line only works in 1.1, so is replaced with next line for 1.0
-      //resource.Assignments.AssignTo(id, lstRoles.SelectedValue)
-      resource.Assignments.AssignTo(id, lstRoles.SelectedItem.Value);
+      resource.Assignments.AssignTo(id, lstRoles.SelectedValue);
+      //resource.Assignments.AssignTo(id, lstRoles.SelectedItem.Value);
 
       Response.Redirect("ResourceEdit.aspx");
     }

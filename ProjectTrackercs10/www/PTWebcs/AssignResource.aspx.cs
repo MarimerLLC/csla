@@ -73,8 +73,8 @@ namespace PTWebcs
       string id = dgResources.SelectedItem.Cells[0].Text;
 
       // TODO: this line only works in 1.1, so is replaced with next line for 1.0
-      //project.Resources.Assign(id, lstRoles.SelectedValue)
-      project.Resources.Assign(id, lstRoles.SelectedItem.Value);
+      project.Resources.Assign(id, lstRoles.SelectedValue);
+      //project.Resources.Assign(id, lstRoles.SelectedItem.Value);
 
       Response.Redirect("ProjectEdit.aspx");
     }

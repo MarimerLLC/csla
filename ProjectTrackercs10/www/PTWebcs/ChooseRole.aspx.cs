@@ -67,8 +67,8 @@ namespace PTWebcs
           lblValue.Text = obj.FirstName + " " + obj.LastName;
 
           // TODO: this line only works in 1.1, so is replaced with next line for 1.0
-          //lstRoles.SelectedValue = obj.Role
-          SelectItem(lstRoles, obj.Role);
+          lstRoles.SelectedValue = obj.Role;
+          //SelectItem(lstRoles, obj.Role);
         }
         else
         {
@@ -90,8 +90,8 @@ namespace PTWebcs
             lblValue.Text = obj.ProjectName;
 
             // TODO: this line only works in 1.1, so is replaced with next line for 1.0
-            //lstRoles.SelectedValue = obj.Role
-            SelectItem(lstRoles, obj.Role);
+            lstRoles.SelectedValue = obj.Role;
+            //SelectItem(lstRoles, obj.Role);
           }
           else
 	  {
@@ -110,8 +110,8 @@ namespace PTWebcs
         ProjectResource obj = (ProjectResource)Session["ProjectResource"];
 
         // TODO: this line only works in 1.1, so is replaced with next line for 1.0
-        //obj.Role = lstRoles.SelectedValue
-        obj.Role = lstRoles.SelectedItem.Value;
+        obj.Role = lstRoles.SelectedValue;
+        //obj.Role = lstRoles.SelectedItem.Value;
       }
       else
       {
@@ -120,8 +120,8 @@ namespace PTWebcs
           (ResourceAssignment)Session["ResourceAssignment"];
 
         // TODO: this line only works in 1.1, so is replaced with next line for 1.0
-        //obj.Role = lstRoles.SelectedValue
-        obj.Role = lstRoles.SelectedItem.Value;
+        obj.Role = lstRoles.SelectedValue;
+        //obj.Role = lstRoles.SelectedItem.Value;
       }
       SendUserBack();
     }
@@ -138,19 +138,20 @@ namespace PTWebcs
       Response.Redirect(src);
     }
 
-    private void SelectItem(System.Web.UI.WebControls.ListBox lst, string item)
-    {
-      int index = 0;
-
-      foreach(ListItem entry in lst.Items)
-      {
-        if(entry.Value == item)
-        {
-          lst.SelectedIndex = index;
-          return;
-        }
-        index++;
-      }
-    }
+//    TODO: uncomment this method for .NET 1.0
+//    private void SelectItem(System.Web.UI.WebControls.ListBox lst, string item)
+//    {
+//      int index = 0;
+//
+//      foreach(ListItem entry in lst.Items)
+//      {
+//        if(entry.Value == item)
+//        {
+//          lst.SelectedIndex = index;
+//          return;
+//        }
+//        index++;
+//      }
+//    }
   }
 }

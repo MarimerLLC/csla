@@ -190,6 +190,32 @@ namespace CSLA
 
     #endregion
 
+    #region IsSavable
+
+    /// <summary>
+    /// Returns True if this object is both dirty and valid.
+    /// </summary>
+    /// <remarks>
+    /// An object is considered dirty (changed) if 
+    /// <see cref="P:CSLA.BusinessBase.IsDirty" /> returns True. It is
+    /// considered valid if <see cref="P:CSLA.BusinessBase.IsValid" /> 
+    /// returns True. The IsSavable property is
+    /// a combination of these two properties. It is provided specifically to
+    /// enable easy binding to a Save or OK button on a form so that button
+    /// can automatically enable/disable as the object's state changes between
+    /// being savable and not savable. 
+    /// </remarks>
+    /// <returns>A value indicating if this object is new.</returns>
+    public virtual bool IsSavable
+    {
+      get
+      {
+        return IsDirty && IsValid;
+      }
+    }
+
+    #endregion
+
     #region IEditableObject
 
     [NotUndoable(), NonSerialized()]

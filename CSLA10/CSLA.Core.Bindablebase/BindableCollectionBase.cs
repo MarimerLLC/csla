@@ -63,20 +63,41 @@ namespace CSLA.Core
 
 		#region ListChanged event
 
-		/// <summary>
+    [NonSerialized]
+    ListChangedEventHandler _nonSerializableHandlers;
+    ListChangedEventHandler _serializableHandlers;
+    
+    /// <summary>
 		/// Declares a serialization-safe ListChanged event.
 		/// </summary>
-		[field: NonSerialized]
-		public event System.ComponentModel.ListChangedEventHandler ListChanged;
+    public event ListChangedEventHandler ListChanged
+    {
+      add
+      {
+        if (value.Target.GetType().IsSerializable)
+          _serializableHandlers = (ListChangedEventHandler)Delegate.Combine(_serializableHandlers, value);
+        else
+          _nonSerializableHandlers = (ListChangedEventHandler)Delegate.Combine(_nonSerializableHandlers, value);
+      }
+      remove
+      {
+        if (value.Target.GetType().IsSerializable)
+          _serializableHandlers = (ListChangedEventHandler)Delegate.Remove(_serializableHandlers, value);
+        else
+          _nonSerializableHandlers = (ListChangedEventHandler)Delegate.Remove(_nonSerializableHandlers, value);
+      }
+    }
     
 		/// <summary>
 		/// Call this method to raise the ListChanged event.
 		/// </summary>
 		virtual protected void OnListChanged(System.ComponentModel.ListChangedEventArgs e)
 		{
-			if (ListChanged != null)
-				ListChanged(this, e);
-		}
+      if (_nonSerializableHandlers != null)
+        _nonSerializableHandlers(this, e);
+      if (_serializableHandlers != null)
+        _serializableHandlers(this, e);
+    }
 
 		#endregion
 

@@ -10,7 +10,7 @@ namespace CSLA
   /// See Chapter 5 for a full discussion of the need for this
   /// data type and the design choices behind it.
   /// </remarks>
-  abstract public class SmartDate : IComparable
+  sealed public class SmartDate : IComparable
   {
     DateTime _date;
     bool _emptyIsMin;

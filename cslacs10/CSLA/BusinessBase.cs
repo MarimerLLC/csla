@@ -427,7 +427,7 @@ namespace CSLA
   /// Creates a clone of the object.
   /// </summary>
   /// <returns>A new object containing the exact data of the original object.</returns>
-  Object ICloneable.Clone()
+  public Object Clone()
 {
 
   MemoryStream buffer = new MemoryStream();
@@ -612,7 +612,11 @@ namespace CSLA
     /// <returns>A database connection string.</returns>
     protected string DB(string databaseName)
     {
-      return ConfigurationSettings.AppSettings["DB:" + databaseName];
+      string val = ConfigurationSettings.AppSettings["DB:" + databaseName];
+      if(val == null)
+        return string.Empty;
+      else
+        return val;
     }
 
 #endregion

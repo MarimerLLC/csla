@@ -88,7 +88,7 @@ namespace CSLA
     /// to the user.
     /// </remarks>
     [Serializable()]
-      public class RulesCollection : CSLA.Core.BindableCollectionBase
+    public class RulesCollection : CSLA.Core.BindableCollectionBase
     {
       bool _legal = false;
 

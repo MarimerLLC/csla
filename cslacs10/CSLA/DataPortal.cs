@@ -29,7 +29,8 @@ namespace CSLA
     /// <returns>A new object, populated with default values.</returns>
     static public Object Create(Object criteria)
     {
-      if(IsTransactionalMethod(GetMethod(criteria.GetType().DeclaringType, "DataPortal_Create")))
+      if(IsTransactionalMethod(
+        GetMethod(criteria.GetType().DeclaringType, "DataPortal_Create")))
         return ServicedPortal.Create(criteria, GetPrincipal());
       else
         return Portal.Create(criteria, GetPrincipal());
@@ -110,7 +111,11 @@ namespace CSLA
     {
       get
       {
-        return ConfigurationSettings.AppSettings["PortalServer"];
+        string val = ConfigurationSettings.AppSettings["PortalServer"];
+        if(val == null)
+          return string.Empty;
+        else
+          return val;
       }
     }
 
@@ -118,7 +123,11 @@ namespace CSLA
     {
       get
       {
-        return ConfigurationSettings.AppSettings["ServicedPortalServer"];
+        string val = ConfigurationSettings.AppSettings["ServicedPortalServer"];
+        if(val == null)
+          return string.Empty;
+        else
+          return val;
       }
     }
 
@@ -128,7 +137,11 @@ namespace CSLA
 
     static private string AUTHENTICATION()
     {
-      return ConfigurationSettings.AppSettings["Authentication"];
+      string val = ConfigurationSettings.AppSettings["Authentication"];
+      if(val == null)
+        return string.Empty;
+      else
+        return val;
     }
 
     static private System.Security.Principal.IPrincipal GetPrincipal()

@@ -172,6 +172,30 @@ Public MustInherit Class BusinessBase
 
 #End Region
 
+#Region " IsSavable "
+
+  ''' <summary>
+  ''' Returns True if this object is both dirty and valid.
+  ''' </summary>
+  ''' <remarks>
+  ''' An object is considered dirty (changed) if 
+  ''' <see cref="P:CSLA.BusinessBase.IsDirty" /> returns True. It is
+  ''' considered valid if <see cref="P:CSLA.BusinessBase.IsValid" /> 
+  ''' returns True. The IsSavable property is
+  ''' a combination of these two properties. It is provided specifically to
+  ''' enable easy binding to a Save or OK button on a form so that button
+  ''' can automatically enable/disable as the object's state changes between
+  ''' being savable and not savable. 
+  ''' </remarks>
+  ''' <returns>A value indicating if this object is new.</returns>
+  Public ReadOnly Property IsSavable() As Boolean
+    Get
+      Return IsDirty AndAlso IsValid
+    End Get
+  End Property
+
+#End Region
+
 #Region " IEditableObject "
 
   <NotUndoable()> _
@@ -444,6 +468,18 @@ Public MustInherit Class BusinessBase
   ' keep a list of broken rules
   Private mBrokenRules As New BrokenRules()
 
+  ''' <summary>
+  ''' Override this method in your business class to
+  ''' be notified when you need to set up business
+  ''' rules.
+  ''' </summary>
+  ''' <remarks>
+  ''' You should call AddBusinessRules from your object's
+  ''' constructor methods so the rules are set up when
+  ''' your object is created. This method will be automatically
+  ''' called, if needed, when your object is serialized by
+  ''' the DataPortal or by the Clone method.
+  ''' </remarks>
   Protected Overridable Sub AddBusinessRules()
 
   End Sub

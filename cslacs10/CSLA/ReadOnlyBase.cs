@@ -14,6 +14,7 @@ namespace CSLA
   /// deleting. Any business classes derived from this base class
   /// should only implement readonly properties.
   /// </remarks>
+  [Serializable()]
   abstract public class ReadOnlyBase : ICloneable
   {
     #region ICloneable

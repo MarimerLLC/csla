@@ -252,6 +252,7 @@ namespace CSLA
       // see if we need to configure remoting at all
       if(PORTAL_SERVER.Length > 0 || SERVICED_PORTAL_SERVER.Length > 0)
       {
+        _portalRemote = true;
         // create and register our custom HTTP channel
         // that uses the binary formatter
         Hashtable properties = new Hashtable();

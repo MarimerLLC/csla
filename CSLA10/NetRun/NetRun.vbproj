@@ -105,6 +105,12 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
+                <File
+                    RelPath = "VersionInfo.vb"
+                    Link = "..\VersionInfo.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
             </Include>
         </Files>
         <UserProperties GenerateXMLDocForProject = "FALSE" />

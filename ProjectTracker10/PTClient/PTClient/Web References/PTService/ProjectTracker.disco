@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="http://localhost/PTService/ProjectTracker.asmx?wsdl" docRef="http://localhost/PTService/ProjectTracker.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="http://localhost/PTService/ProjectTracker.asmx" xmlns:q1="http://ws.lhotka.net/PTService/ProjectTracker" binding="q1:ProjectTrackerSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>

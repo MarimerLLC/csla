@@ -1,0 +1,18 @@
+﻿if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_Assignements_Roles]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE [dbo].[Assignements] DROP CONSTRAINT FK_Assignements_Roles
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Roles]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table [dbo].[Roles]
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Roles]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+ BEGIN
+CREATE TABLE [dbo].[Roles] (
+	[ID] [int] NOT NULL ,
+	[Name] [varchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL 
+) ON [PRIMARY]
+END
+
+GO
+

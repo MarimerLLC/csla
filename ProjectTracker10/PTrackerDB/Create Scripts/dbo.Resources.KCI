@@ -1,0 +1,7 @@
+﻿ALTER TABLE [dbo].[Resources] WITH NOCHECK ADD 
+	CONSTRAINT [PK_Resources] PRIMARY KEY  CLUSTERED 
+	(
+		[ID]
+	)  ON [PRIMARY] 
+GO
+

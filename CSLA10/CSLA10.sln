@@ -11,6 +11,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.BatchQueue", "CSLA.Bat
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NetRun", "NetRun\NetRun.vbproj", "{24FFD3D5-D449-403F-88F3-04D9E17422A6}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DataPortal", "http://localhost/DataPortal/DataPortal.vbproj", "{968FE8A0-051C-4F4A-9805-F1907566828D}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -43,6 +45,10 @@ Global
 		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Debug.Build.0 = Debug|.NET
 		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Release.ActiveCfg = Release|.NET
 		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Release.Build.0 = Release|.NET
+		{968FE8A0-051C-4F4A-9805-F1907566828D}.Debug.ActiveCfg = Debug|.NET
+		{968FE8A0-051C-4F4A-9805-F1907566828D}.Debug.Build.0 = Debug|.NET
+		{968FE8A0-051C-4F4A-9805-F1907566828D}.Release.ActiveCfg = Release|.NET
+		{968FE8A0-051C-4F4A-9805-F1907566828D}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

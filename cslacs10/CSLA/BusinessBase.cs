@@ -182,7 +182,7 @@ namespace CSLA
 
     #region IEditableObject
 
-    [NotUndoable()]
+    [NotUndoable(), NonSerialized()]
     BusinessCollectionBase _parent;
     [NotUndoable()]
     bool _bindingEdit = false;

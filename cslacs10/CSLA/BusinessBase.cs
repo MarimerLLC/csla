@@ -364,7 +364,7 @@ namespace CSLA
     [NotUndoable()]
     bool _isChild = false;
 
-    internal bool IsChild
+    protected internal bool IsChild
     {
       get
       {

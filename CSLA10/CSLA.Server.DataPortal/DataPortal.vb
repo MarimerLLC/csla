@@ -38,18 +38,14 @@ Public Class DataPortal
   ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
   ''' <returns>A populated business object.</returns>
   Public Function Fetch(ByVal Criteria As Object, ByVal Principal As Object) As Object
-    EventLog.WriteEntry("PTracker", "Enter fetch")
     SetPrincipal(Principal)
 
-    EventLog.WriteEntry("PTracker", "Security set")
     ' create an instance of the business object
     Dim obj As Object = CreateBusinessObject(Criteria)
 
-    EventLog.WriteEntry("PTracker", "Object created")
     ' tell the business object to fetch its data
     CallMethod(obj, "DataPortal_Fetch", Criteria)
 
-    EventLog.WriteEntry("PTracker", "DataPortal_Fetch complete")
     ' return the populated business object as a result
     Return obj
 

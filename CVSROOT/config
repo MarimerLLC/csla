@@ -5,7 +5,7 @@
 #LockDir=/var/lock/cvs
 
 # Use a CVS Lock server (overrides LockDir setting).
-#LockServer=localhost:2402
+LockServer=localhost:2402
 
 # Set `TopLevelAdmin' to `yes' to create a CVS directory at the top
 # level of the new working directory when using the `cvs checkout'

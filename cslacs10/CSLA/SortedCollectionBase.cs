@@ -35,7 +35,7 @@ namespace CSLA.Core
     [NotUndoable()]
     private PropertyDescriptor _sortProperty;
     [NotUndoable()]
-    private string _sortPropertyName;
+    private string _sortPropertyName = string.Empty;
     [NotUndoable()]
     private ListSortDirection _listSortDirection = ListSortDirection.Ascending;
     [NotUndoable()]

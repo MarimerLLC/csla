@@ -261,6 +261,10 @@ Namespace Core
 
 #Region " DumpState "
 
+    ''' <summary>
+    ''' Writes the object's field data into the debugger
+    ''' output window in VS.NET.
+    ''' </summary>
     Public Sub DumpState()
 
       Dim currentType As Type = Me.GetType

@@ -29,7 +29,7 @@ Namespace Data
     ''' Gets a string value from the datareader.
     ''' </summary>
     ''' <remarks>
-    ''' Returns "" for null.
+    ''' Returns empty string for null.
     ''' </remarks>
     Public Function GetString(ByVal i As Integer) As String Implements IDataReader.GetString
       If mDataReader.IsDBNull(i) Then

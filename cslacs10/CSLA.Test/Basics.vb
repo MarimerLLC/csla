@@ -72,9 +72,9 @@ Public Class Basics
   End Sub
 
   <Test()> _
-  Public Sub ClearList()
+  Public Sub ClearChildList()
     Session.Clear()
-    Dim root As root = root.NewRoot
+    Dim root As Root = root.NewRoot
     root.Children.Add("A")
     root.Children.Add("B")
     root.Children.Add("C")
@@ -83,9 +83,9 @@ Public Class Basics
   End Sub
 
   <Test()> _
-  Public Sub Gavin1()
+  Public Sub NestedAddAcceptChild()
     Session.Clear()
-    Dim root As root = root.NewRoot
+    Dim root As Root = root.NewRoot
     root.BeginEdit()
     root.Children.Add("A")
     root.BeginEdit()
@@ -99,15 +99,16 @@ Public Class Basics
   End Sub
 
   <Test()> _
-  Public Sub JayeshNazre()
+  Public Sub NestedAddDeleteAcceptChild()
     Session.Clear()
-    Dim root As root = root.NewRoot
+    Dim root As Root = root.NewRoot
     root.BeginEdit()
     root.Children.Add("A")
     root.BeginEdit()
     root.Children.Add("B")
     root.BeginEdit()
     root.Children.Add("C")
+    Dim childC As Child = root.Children.Item(2)
     root.Children.Remove(root.Children.Item(0))
     root.Children.Remove(root.Children.Item(0))
     root.Children.Remove(root.Children.Item(0))
@@ -115,6 +116,7 @@ Public Class Basics
     root.ApplyEdit()
     root.ApplyEdit()
     Assert.AreEqual(0, root.Children.Count)
+    Assert.AreEqual(False, root.Children.ContainsDeleted(childC))
   End Sub
 
 End Class

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Configuration;
 
 namespace CSLA
 {
@@ -285,12 +284,16 @@ namespace CSLA
       }
 
       // cascade the call to all deleted child objects
-      foreach(BusinessBase child in deletedList)
+      for(int index = deletedList.Count - 1; index > 0; index--)
       {
+        BusinessBase child = (BusinessBase)deletedList[index];
         child.AcceptChanges();
-        // if item is below its point of addition, lower point of addition
+        // if item is below its point of addition, remove
         if(child.EditLevelAdded > _EditLevel)
-          child.EditLevelAdded = _EditLevel;
+          deletedList.Remove(child);
+//        // if item is below its point of addition, lower point of addition
+//        if(child.EditLevelAdded > _EditLevel)
+//          child.EditLevelAdded = _EditLevel;
       }
     }
 
@@ -587,11 +590,7 @@ namespace CSLA
     /// <returns>A database connection string.</returns>
     protected string DB(string databaseName)
     {
-      string val = ConfigurationSettings.AppSettings["DB:" + databaseName];
-      if(val == null)
-        return string.Empty;
-      else
-        return val;
+      return ConfigurationSettings.AppSettings["DB:" + databaseName];
     }
 
     #endregion

@@ -60,22 +60,31 @@ Namespace Core
                                 BindingFlags.Public)
 
         For Each field In fields
+          ' make sure we process only our variables
           If field.DeclaringType Is currentType Then
             ' see if this field is marked as not undoable
             If Not NotUndoableField(field) Then
               ' the field is undoable, so it needs to be processed
+              Dim value As Object = field.GetValue(Me)
+
               If TypeInheritsFrom(field.FieldType, CollectionType) Then
-                ' this is a child collection, cascade the call
-                CType(field.GetValue(Me), BusinessCollectionBase).CopyState()
+                ' make sure the variable has a value
+                If Not value Is Nothing Then
+                  ' this is a child collection, cascade the call
+                  CType(value, BusinessCollectionBase).CopyState()
+                End If
 
               ElseIf TypeInheritsFrom(field.FieldType, BusinessType) Then
-                ' this is a child object, cascade the call
-                CType(field.GetValue(Me), BusinessBase).CopyState()
+                ' make sure the variable has a value
+                If Not value Is Nothing Then
+                  ' this is a child object, cascade the call
+                  CType(value, BusinessBase).CopyState()
+                End If
 
               Else
                 ' this is a normal field, simply trap the value
                 fieldName = field.DeclaringType.Name & "!" & field.Name
-                state.Add(fieldName, field.GetValue(Me))
+                state.Add(fieldName, value)
 
               End If
 
@@ -219,11 +228,13 @@ Namespace Core
 
     Private Function NotUndoableField(ByVal Field As FieldInfo) As Boolean
 
-      ' get a list of all NotUndoableAttributes for this field
-      Dim attribs() As Object = _
-        Field.GetCustomAttributes(GetType(NotUndoableAttribute), True)
-      ' return True if any NotUndoableAttributes exist on this field
-      Return (UBound(attribs) > -1)
+      Return Attribute.IsDefined(Field, GetType(NotUndoableAttribute))
+
+      '' get a list of all NotUndoableAttributes for this field
+      'Dim attribs() As Object = _
+      '  Field.GetCustomAttributes(GetType(NotUndoableAttribute), True)
+      '' return True if any NotUndoableAttributes exist on this field
+      'Return (UBound(attribs) > -1)
 
     End Function
 

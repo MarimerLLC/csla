@@ -8,7 +8,7 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("CSLA .NET")> 
+<Assembly: AssemblyTitle("CSLA.BatchQueue")> 
 <Assembly: AssemblyDescription("CSLA .NET framework")> 
 <Assembly: AssemblyCompany("Rockford Lhotka")> 
 <Assembly: AssemblyProduct("Expert One-on-One VB.NET Business Objects")> 
@@ -17,7 +17,7 @@ Imports System.Runtime.InteropServices
 <Assembly: CLSCompliant(True)> 
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("C3F68BA4-2214-40F5-AB36-AC39903057B9")> 
+<Assembly: Guid("EC45E25E-E411-4477-95FE-1F10004502E0")> 
 
 ' Version information for an assembly consists of the following four values:
 '

@@ -7,6 +7,10 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.Server.DataPortal", "C
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.Server.ServicedDataPortal", "CSLA.Server.ServicedDataPortal\CSLA.Server.ServicedDataPortal.vbproj", "{AD60DF60-2D14-4403-B5A8-41D4E06AB7AD}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.BatchQueue", "CSLA.BatchQueue\CSLA.BatchQueue.vbproj", "{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NetRun", "NetRun\NetRun.vbproj", "{24FFD3D5-D449-403F-88F3-04D9E17422A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -31,6 +35,14 @@ Global
 		{AD60DF60-2D14-4403-B5A8-41D4E06AB7AD}.Debug.Build.0 = Debug|.NET
 		{AD60DF60-2D14-4403-B5A8-41D4E06AB7AD}.Release.ActiveCfg = Release|.NET
 		{AD60DF60-2D14-4403-B5A8-41D4E06AB7AD}.Release.Build.0 = Release|.NET
+		{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}.Debug.ActiveCfg = Debug|.NET
+		{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}.Debug.Build.0 = Debug|.NET
+		{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}.Release.ActiveCfg = Release|.NET
+		{F8E2709C-E0DE-4253-9A1A-59F4F59B0EBD}.Release.Build.0 = Release|.NET
+		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Debug.ActiveCfg = Debug|.NET
+		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Debug.Build.0 = Debug|.NET
+		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Release.ActiveCfg = Release|.NET
+		{24FFD3D5-D449-403F-88F3-04D9E17422A6}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

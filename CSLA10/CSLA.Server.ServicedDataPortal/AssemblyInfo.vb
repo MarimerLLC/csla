@@ -9,11 +9,11 @@ Imports System.EnterpriseServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("")> 
-<Assembly: AssemblyCopyright("")> 
+<Assembly: AssemblyTitle("CSLA.Server.ServicedDataPortal")> 
+<Assembly: AssemblyDescription("CSLA .NET framework")> 
+<Assembly: AssemblyCompany("Rockford Lhotka")> 
+<Assembly: AssemblyProduct("Expert One-on-One VB.NET Business Objects")> 
+<Assembly: AssemblyCopyright("Copyright 2003 Rockford Lhotka. All rights reserved.")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: CLSCompliant(True)> 
 

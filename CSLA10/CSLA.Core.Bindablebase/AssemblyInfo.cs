@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("CSLA.Core.BindableBase")]
+[assembly: AssemblyDescription("CSLA .NET framework")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("Rockford Lhotka")]
+[assembly: AssemblyProduct("Expert One-on-One VB.NET Business Objects")]
+[assembly: AssemblyCopyright("Copyright 2003 Rockford Lhotka. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 

@@ -81,7 +81,7 @@ Public NotInheritable Class SmartDate
   ''' </para><para>
   ''' When the date value is retrieved via this property, the text
   ''' is formatted by using the format specified by the 
-  ''' <see cref="FormatString" /> property. The default is the
+  ''' <see cref="P:CSLA.SmartDate.FormatString" /> property. The default is the
   ''' "Short Date" format.
   ''' </para>
   ''' </remarks>

@@ -4,9 +4,12 @@
         <assembly location="C:\Visual Studio Projects\csla10\CSLA\bin\CSLA.dll" documentation="C:\Visual Studio Projects\csla10\CSLA\bin\CSLA.xml" />
         <assembly location="C:\Visual Studio Projects\csla10\CSLA.Server.DataPortal\bin\CSLA.Server.DataPortal.dll" documentation="C:\Visual Studio Projects\csla10\CSLA.Server.DataPortal\bin\CSLA.Server.DataPortal.xml" />
         <assembly location="C:\Visual Studio Projects\csla10\CSLA.Server.ServicedDataPortal\bin\CSLA.Server.ServicedDataPortal.dll" documentation="C:\Visual Studio Projects\csla10\CSLA.Server.ServicedDataPortal\bin\CSLA.Server.ServicedDataPortal.xml" />
+        <assembly location="C:\Visual Studio Projects\csla10\CSLA.BatchQueue\bin\CSLA.BatchQueue.dll" documentation="C:\Visual Studio Projects\csla10\CSLA.BatchQueue\bin\CSLA.BatchQueue.xml" />
     </assemblies>
     <namespaces>
         <namespace name="CSLA"></namespace>
+        <namespace name="CSLA.BatchQueue"></namespace>
+        <namespace name="CSLA.BatchQueue.Server"></namespace>
         <namespace name="CSLA.Core"></namespace>
         <namespace name="CSLA.Data"></namespace>
         <namespace name="CSLA.Security"></namespace>

@@ -1,4 +1,3 @@
-Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -8,16 +7,16 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("CSLA .NET")> 
-<Assembly: AssemblyDescription("CSLA .NET framework")> 
+<Assembly: AssemblyTitle("NetRun")> 
+<Assembly: AssemblyDescription("No-touch deployment utility")> 
 <Assembly: AssemblyCompany("Rockford Lhotka")> 
-<Assembly: AssemblyProduct("Expert One-on-One VB.NET Business Objects")> 
+<Assembly: AssemblyProduct("NetRun")> 
 <Assembly: AssemblyCopyright("Copyright 2003 Rockford Lhotka. All rights reserved.")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: CLSCompliant(True)> 
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("C3F68BA4-2214-40F5-AB36-AC39903057B9")> 
+<Assembly: Guid("65567A5E-28FC-48E1-B027-F79552E755A9")> 
 
 ' Version information for an assembly consists of the following four values:
 '

@@ -400,7 +400,7 @@ Public MustInherit Class BusinessBase
   ''' </summary>
   ''' <remarks>
   ''' This property is used within your business logic so you can
-  ''' easily call the <see cref="M:CSLA.BrokenRules.Assert" /> 
+  ''' easily call the <see cref="M:CSLA.BrokenRules.Assert(System.String,System.String,System.Boolean)" /> 
   ''' method to mark rules as broken and unbroken.
   ''' </remarks>
   Protected ReadOnly Property BrokenRules() As BrokenRules

@@ -1,6 +1,6 @@
 ''' <summary>
 ''' Base type from which Criteria classes can be
-''' derived in a business class.
+''' derived in a business class. 
 ''' </summary>
 <Serializable()> _
 Public MustInherit Class CriteriaBase

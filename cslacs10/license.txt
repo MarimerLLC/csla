@@ -1,8 +1,8 @@
 LICENSE AND WARRANTY
 
 The CSLA .NET framework is part of 'Expert One-on-One Visual Basic .NET 
-Business Objects', a copyrighted work. As such the code is covered under 
-the copyright of the book. 
+Business Objects' and 'Expert One-on-One C# Business Objects', copyrighted 
+works. As such the code is covered under the copyright of the books.
 
 You can use this Software for any noncommercial purpose, including 
 distributing derivative works. You can use this Software for any 

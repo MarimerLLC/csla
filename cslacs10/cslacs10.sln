@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLA.Server.DataPortal", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSLA.Server.ServicedDataPortal", "CSLA.Server.ServicedDataPortal\CSLA.Server.ServicedDataPortal.csproj", "{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPortalcs", "http://localhost/DataPortalcs/DataPortalcs.csproj", "{2443FEF2-CC87-4A91-9C98-CF5669762288}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -37,6 +39,10 @@ Global
 		{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}.Debug.Build.0 = Debug|.NET
 		{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}.Release.ActiveCfg = Release|.NET
 		{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}.Release.Build.0 = Release|.NET
+		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Debug.ActiveCfg = Debug|.NET
+		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Debug.Build.0 = Debug|.NET
+		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Release.ActiveCfg = Release|.NET
+		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
 		Item:1 = license.txt

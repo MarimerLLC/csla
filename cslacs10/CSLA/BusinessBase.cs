@@ -102,12 +102,17 @@ namespace CSLA
     /// as being dirty and ensures that it is not marked for deletion.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Newly created objects are marked new by default. You should call
     /// this method in the implementation of DataPortal_Update when the
     /// object is deleted (due to being marked for deletion) to indicate
     /// that the object no longer reflects data in the database.
+    /// </para><para>
+    /// If you override this method, make sure to call the base
+    /// implementation after executing your new code.
+    /// </para>
     /// </remarks>
-    protected void MarkNew()
+    protected virtual void MarkNew()
     {
       _isNew = true;
       _isDeleted = false;
@@ -127,9 +132,12 @@ namespace CSLA
     /// You should call this method in the implementation of 
     /// DataPortal_Update to indicate that a new object has been successfully
     /// inserted into the database.
+    /// </para><para>
+    /// If you override this method, make sure to call the base
+    /// implementation after executing your new code.
     /// </para>
     /// </remarks>
-    protected void MarkOld()
+    protected virtual void MarkOld()
     {
       _isNew = false;
       MarkClean();

@@ -66,7 +66,8 @@ namespace PTServicecs
       BusinessPrincipal.Login(
         Credentials.Username, Credentials.Password);
 
-      System.Security.Principal.IPrincipal principal =                                        Thread.CurrentPrincipal;
+      System.Security.Principal.IPrincipal principal =
+        Thread.CurrentPrincipal;
 
       if(principal.Identity.IsAuthenticated)
       {
@@ -170,8 +171,8 @@ namespace PTServicecs
       return info;
     }
 
-    [WebMethod(Description=
-       "Add or update a project (only provide the ID field for an update operation)")]
+    [WebMethod(Description="Add or update a project " +
+      "(only provide the ID field for an update operation)")]
     [SoapHeader("Credentials")]
     public string UpdateProject(ProjectInfo data)
     {

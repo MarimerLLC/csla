@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://tempuri.org/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://tempuri.org/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetProjectList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetProjectListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectListResult" type="s0:ArrayOfProjectInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfProjectInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectInfo" type="s0:ProjectInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ProjectInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Started" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ended" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Resources" type="s0:ArrayOfProjectResourceInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfProjectResourceInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectResourceInfo" type="s0:ProjectResourceInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ProjectResourceInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ResourceID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FirstName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="LastName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assigned" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Role" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CSLACredentials" type="s0:CSLACredentials" />
+      <s:complexType name="CSLACredentials">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Username" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetProjectResult" type="s0:ProjectInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="data" type="s0:ProjectInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateProjectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateProjectResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="projectID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteProjectResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetResourceList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetResourceListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResourceListResult" type="s0:ArrayOfResourceInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfResourceInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ResourceInfo" type="s0:ResourceInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ResourceInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assignments" type="s0:ArrayOfResourceAssignmentInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfResourceAssignmentInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ResourceAssignmentInfo" type="s0:ResourceAssignmentInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ResourceAssignmentInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ProjectID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assigned" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Role" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetResource">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResourceResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetResourceResult" type="s0:ResourceInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateResource">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="data" type="s0:ResourceInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateResourceResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="DeleteResource">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="resourceID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteResourceResponse">
+        <s:complexType />
+      </s:element>
+    </s:schema>
+  </types>
+  <message name="GetProjectListSoapIn">
+    <part name="parameters" element="s0:GetProjectList" />
+  </message>
+  <message name="GetProjectListSoapOut">
+    <part name="parameters" element="s0:GetProjectListResponse" />
+  </message>
+  <message name="GetProjectListCSLACredentials">
+    <part name="CSLACredentials" element="s0:CSLACredentials" />
+  </message>
+  <message name="GetProjectSoapIn">
+    <part name="parameters" element="s0:GetProject" />
+  </message>
+  <message name="GetProjectSoapOut">
+    <part name="parameters" element="s0:GetProjectResponse" />
+  </message>
+  <message name="GetProjectCSLACredentials">
+    <part name="CSLACredentials" element="s0:CSLACredentials" />
+  </message>
+  <message name="UpdateProjectSoapIn">
+    <part name="parameters" element="s0:UpdateProject" />
+  </message>
+  <message name="UpdateProjectSoapOut">
+    <part name="parameters" element="s0:UpdateProjectResponse" />
+  </message>
+  <message name="UpdateProjectCSLACredentials">
+    <part name="CSLACredentials" element="s0:CSLACredentials" />
+  </message>
+  <message name="DeleteProjectSoapIn">
+    <part name="parameters" element="s0:DeleteProject" />
+  </message>
+  <message name="DeleteProjectSoapOut">
+    <part name="parameters" element="s0:DeleteProjectResponse" />
+  </message>
+  <message name="DeleteProjectCSLACredentials">
+    <part name="CSLACredentials" element="s0:CSLACredentials" />
+  </message>
+  <message name="GetResourceListSoapIn">
+    <part name="parameters" element="s0:GetResourceList" />
+  </message>
+  <message name="GetResourceListSoapOut">
+    <part name="parameters" element="s0:GetResourceListResponse" />
+  </message>
+  <message name="GetResourceListCSLACredentials">
+    <part name="CSLACredentials" element="s0:CSLACredentials" />
+  </message>
+  <message name="GetResourceSoapIn">
+    <part name="parameters" element="s0:GetResource" />
+  </message>
+  <message name="GetResourceSoapOut">
+    <part name="parameters" element="s0:GetResourceResponse" />
+  </message>
+  <message name="GetResourceCSLACredentials">
+    <part name="CSLACredentials" element="s0:CSLACredentials" />
+  </message>
+  <message name="UpdateResourceSoapIn">
+    <part name="parameters" element="s0:UpdateResource" />
+  </message>
+  <message name="UpdateResourceSoapOut">
+    <part name="parameters" element="s0:UpdateResourceResponse" />
+  </message>
+  <message name="UpdateResourceCSLACredentials">
+    <part name="CSLACredentials" element="s0:CSLACredentials" />
+  </message>
+  <message name="DeleteResourceSoapIn">
+    <part name="parameters" element="s0:DeleteResource" />
+  </message>
+  <message name="DeleteResourceSoapOut">
+    <part name="parameters" element="s0:DeleteResourceResponse" />
+  </message>
+  <message name="DeleteResourceCSLACredentials">
+    <part name="CSLACredentials" element="s0:CSLACredentials" />
+  </message>
+  <portType name="ProjectTrackerSoap">
+    <operation name="GetProjectList">
+      <documentation>Get a list of projects</documentation>
+      <input message="s0:GetProjectListSoapIn" />
+      <output message="s0:GetProjectListSoapOut" />
+    </operation>
+    <operation name="GetProject">
+      <documentation>Get detailed data for a specific project</documentation>
+      <input message="s0:GetProjectSoapIn" />
+      <output message="s0:GetProjectSoapOut" />
+    </operation>
+    <operation name="UpdateProject">
+      <documentation>Add or update a project (only provide the ID field for an update operation)</documentation>
+      <input message="s0:UpdateProjectSoapIn" />
+      <output message="s0:UpdateProjectSoapOut" />
+    </operation>
+    <operation name="DeleteProject">
+      <documentation>Remove a project from the system</documentation>
+      <input message="s0:DeleteProjectSoapIn" />
+      <output message="s0:DeleteProjectSoapOut" />
+    </operation>
+    <operation name="GetResourceList">
+      <documentation>Get a list of resources</documentation>
+      <input message="s0:GetResourceListSoapIn" />
+      <output message="s0:GetResourceListSoapOut" />
+    </operation>
+    <operation name="GetResource">
+      <documentation>Get details for a specific resource</documentation>
+      <input message="s0:GetResourceSoapIn" />
+      <output message="s0:GetResourceSoapOut" />
+    </operation>
+    <operation name="UpdateResource">
+      <documentation>Add or update a resource</documentation>
+      <input message="s0:UpdateResourceSoapIn" />
+      <output message="s0:UpdateResourceSoapOut" />
+    </operation>
+    <operation name="DeleteResource">
+      <documentation>Remove a resource from the system</documentation>
+      <input message="s0:DeleteResourceSoapIn" />
+      <output message="s0:DeleteResourceSoapOut" />
+    </operation>
+  </portType>
+  <binding name="ProjectTrackerSoap" type="s0:ProjectTrackerSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+    <operation name="GetProjectList">
+      <soap:operation soapAction="http://tempuri.org/GetProjectList" style="document" />
+      <input>
+        <soap:body use="literal" />
+        <soap:header message="s0:GetProjectListCSLACredentials" part="CSLACredentials" use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetProject">
+      <soap:operation soapAction="http://tempuri.org/GetProject" style="document" />
+      <input>
+        <soap:body use="literal" />
+        <soap:header message="s0:GetProjectCSLACredentials" part="CSLACredentials" use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="UpdateProject">
+      <soap:operation soapAction="http://tempuri.org/UpdateProject" style="document" />
+      <input>
+        <soap:body use="literal" />
+        <soap:header message="s0:UpdateProjectCSLACredentials" part="CSLACredentials" use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="DeleteProject">
+      <soap:operation soapAction="http://tempuri.org/DeleteProject" style="document" />
+      <input>
+        <soap:body use="literal" />
+        <soap:header message="s0:DeleteProjectCSLACredentials" part="CSLACredentials" use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetResourceList">
+      <soap:operation soapAction="http://tempuri.org/GetResourceList" style="document" />
+      <input>
+        <soap:body use="literal" />
+        <soap:header message="s0:GetResourceListCSLACredentials" part="CSLACredentials" use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetResource">
+      <soap:operation soapAction="http://tempuri.org/GetResource" style="document" />
+      <input>
+        <soap:body use="literal" />
+        <soap:header message="s0:GetResourceCSLACredentials" part="CSLACredentials" use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="UpdateResource">
+      <soap:operation soapAction="http://tempuri.org/UpdateResource" style="document" />
+      <input>
+        <soap:body use="literal" />
+        <soap:header message="s0:UpdateResourceCSLACredentials" part="CSLACredentials" use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="DeleteResource">
+      <soap:operation soapAction="http://tempuri.org/DeleteResource" style="document" />
+      <input>
+        <soap:body use="literal" />
+        <soap:header message="s0:DeleteResourceCSLACredentials" part="CSLACredentials" use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="ProjectTracker">
+    <port name="ProjectTrackerSoap" binding="s0:ProjectTrackerSoap">
+      <soap:address location="http://localhost/ptservicecs/projecttracker.asmx" />
+    </port>
+  </service>
+</definitions>

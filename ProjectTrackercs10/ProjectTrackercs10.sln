@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWebcs", "http://localhost
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTServicecs", "http://localhost/PTServicecs/PTServicecs.csproj", "{942A03A5-534F-4F69-91DC-627240D346CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTClient", "PTClient\PTClient.csproj", "{1EFF9EC0-10AA-4698-9357-1882941C034E}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -43,6 +45,10 @@ Global
 		{942A03A5-534F-4F69-91DC-627240D346CA}.Debug.Build.0 = Debug|.NET
 		{942A03A5-534F-4F69-91DC-627240D346CA}.Release.ActiveCfg = Release|.NET
 		{942A03A5-534F-4F69-91DC-627240D346CA}.Release.Build.0 = Release|.NET
+		{1EFF9EC0-10AA-4698-9357-1882941C034E}.Debug.ActiveCfg = Debug|.NET
+		{1EFF9EC0-10AA-4698-9357-1882941C034E}.Debug.Build.0 = Debug|.NET
+		{1EFF9EC0-10AA-4698-9357-1882941C034E}.Release.ActiveCfg = Release|.NET
+		{1EFF9EC0-10AA-4698-9357-1882941C034E}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

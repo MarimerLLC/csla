@@ -229,7 +229,7 @@ namespace CSLA.Data
         {
           // this is a primitive value type
           if(obj == null)
-            return string.Empty();
+            return string.Empty;
           else
             return obj.ToString();
         }
@@ -239,7 +239,7 @@ namespace CSLA.Data
           {
             // this is a simple string
             if(obj == null)
-              return string.Empty();
+              return string.Empty;
             else
               return obj.ToString();
           }

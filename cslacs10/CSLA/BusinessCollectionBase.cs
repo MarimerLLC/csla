@@ -223,7 +223,7 @@ namespace CSLA
     internal void CopyState()
     {
       // we are going a level deeper in editing
-      _EditLevel += 1;
+      _editLevel += 1;
 
       // cascade the call to all child objects
       foreach(BusinessBase child in List)
@@ -239,9 +239,9 @@ namespace CSLA
       BusinessBase child;
 
       // we are coming up one edit level
-      _EditLevel -= 1;
-      if(_EditLevel < 0)
-        _EditLevel = 0;
+      _editLevel -= 1;
+      if(_editLevel < 0)
+        _editLevel = 0;
 
       // Cancel edit on all current items
       for(int index = List.Count - 1; index > 0; index--)
@@ -249,7 +249,7 @@ namespace CSLA
         child = (BusinessBase)List[index];
         child.UndoChanges();
         // if item is below its point of addition, remove
-        if(child.EditLevelAdded > _EditLevel)
+        if(child.EditLevelAdded > _editLevel)
           List.Remove(child);
       }
 
@@ -259,7 +259,7 @@ namespace CSLA
         child = (BusinessBase)deletedList[index];
         child.UndoChanges();
         // if item is below its point of addition, remove
-        if(child.EditLevelAdded > _EditLevel)
+        if(child.EditLevelAdded > _editLevel)
           deletedList.Remove(child);
         // if item is no longer deleted move back to main list
         if(!child.IsDeleted)
@@ -270,17 +270,17 @@ namespace CSLA
     internal void AcceptChanges()
     {
       // we are coming up one edit level
-      _EditLevel -= 1;
-      if(_EditLevel < 0)
-        _EditLevel = 0;
+      _editLevel -= 1;
+      if(_editLevel < 0)
+        _editLevel = 0;
 
       // cascade the call to all child objects
       foreach(BusinessBase child in List)
       {
         child.AcceptChanges();
         // if item is below its point of addition, lower point of addition
-        if(child.EditLevelAdded > _EditLevel)
-          child.EditLevelAdded = _EditLevel;
+        if(child.EditLevelAdded > _editLevel)
+          child.EditLevelAdded = _editLevel;
       }
 
       // cascade the call to all deleted child objects
@@ -289,11 +289,11 @@ namespace CSLA
         BusinessBase child = (BusinessBase)deletedList[index];
         child.AcceptChanges();
         // if item is below its point of addition, remove
-        if(child.EditLevelAdded > _EditLevel)
+        if(child.EditLevelAdded > _editLevel)
           deletedList.Remove(child);
 //        // if item is below its point of addition, lower point of addition
-//        if(child.EditLevelAdded > _EditLevel)
-//          child.EditLevelAdded = _EditLevel;
+//        if(child.EditLevelAdded > _editLevel)
+//          child.EditLevelAdded = _editLevel;
       }
     }
 
@@ -394,7 +394,7 @@ namespace CSLA
       // when an object is inserted we assume it is
       // a new object and so the edit level when it was
       // added must be set
-      ((BusinessBase)val).EditLevelAdded = _EditLevel;
+      ((BusinessBase)val).EditLevelAdded = _editLevel;
       ((BusinessBase)val).SetParent(this);
       base.OnInsert(index, val);
     }
@@ -428,7 +428,7 @@ namespace CSLA
     #region Edit level tracking
 
     // keep track of how many edit levels we have
-    int _EditLevel;
+    int _editLevel;
 
     #endregion
 
@@ -525,7 +525,7 @@ namespace CSLA
       if(this.IsChild)
         throw new NotSupportedException("Can not directly save a child object");
 
-      if(_EditLevel > 0)
+      if(_editLevel > 0)
         throw new Exception("Object is still being edited and can not be saved");
 
       if(!IsValid)

@@ -267,7 +267,7 @@ namespace CSLA.BatchQueue.Server
 
     internal static void Dequeue(BatchEntryInfo entry)
     {
-      string msgID;
+      string msgID = null;
 
       string label = entry.ToString();
       MessageEnumerator en = _queue.GetMessageEnumerator();

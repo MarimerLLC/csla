@@ -25,6 +25,8 @@ Public Class Launcher
       mAppDir = GetAppDirectory(mAppURL)
       mAppName = GetAppName(mAppURL)
 
+      ' TODO: MAKE SURE TO TIGHTEN SECURITY BEFORE USING!!!!
+      ' see http://www.lhotka.net/Articles.aspx?id=2f5a8115-b425-4aa1-bae2-b8f80766ecb3
       SetSecurity()
 
       ' load the assembly into our AppDomain

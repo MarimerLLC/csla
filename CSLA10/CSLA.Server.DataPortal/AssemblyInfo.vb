@@ -29,7 +29,8 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("1.1.*")> 
+<Assembly: AssemblyVersion("1.3.*")> 
 
+' TODO: update this to point to your key
 ' strong name
 <Assembly: AssemblyKeyFile("h:\rdl\mykey.snk")> 

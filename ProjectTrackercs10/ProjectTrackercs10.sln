@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPortalcs", "http://loca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWebcs", "http://localhost/PTWebcs/PTWebcs.csproj", "{188CC3E2-9F8A-4358-9654-4333697C01B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTServicecs", "http://localhost/PTServicecs/PTServicecs.csproj", "{942A03A5-534F-4F69-91DC-627240D346CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -37,6 +39,10 @@ Global
 		{188CC3E2-9F8A-4358-9654-4333697C01B9}.Debug.Build.0 = Debug|.NET
 		{188CC3E2-9F8A-4358-9654-4333697C01B9}.Release.ActiveCfg = Release|.NET
 		{188CC3E2-9F8A-4358-9654-4333697C01B9}.Release.Build.0 = Release|.NET
+		{942A03A5-534F-4F69-91DC-627240D346CA}.Debug.ActiveCfg = Debug|.NET
+		{942A03A5-534F-4F69-91DC-627240D346CA}.Debug.Build.0 = Debug|.NET
+		{942A03A5-534F-4F69-91DC-627240D346CA}.Release.ActiveCfg = Release|.NET
+		{942A03A5-534F-4F69-91DC-627240D346CA}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

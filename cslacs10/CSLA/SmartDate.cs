@@ -342,12 +342,27 @@ namespace CSLA
       return date1.Date > date2.Date;
     }
 
+    static public bool operator > (SmartDate date1, DateTime date2)
+    {
+      return date1.Date > date2;
+    }
+
     static public bool operator < (SmartDate date1, SmartDate date2)
     {
       return date1.Date < date2.Date;
     }
 
+    static public bool operator < (SmartDate date1, DateTime date2)
+    {
+      return date1.Date < date2;
+    }
+
     static public bool operator == (SmartDate date1, SmartDate date2)
+    {
+      return date1.Equals(date2);
+    }
+
+    static public bool operator == (SmartDate date1, DateTime date2)
     {
       return date1.Equals(date2);
     }
@@ -357,9 +372,27 @@ namespace CSLA
       return !date1.Equals(date2);
     }
 
+    static public bool operator != (SmartDate date1, DateTime date2)
+    {
+      return !date1.Equals(date2);
+    }
+
+    static public bool operator + (SmartDate d, TimeSpan t)
+    {
+      return d + t;
+    }
+
+    static public bool operator - (SmartDate d, TimeSpan t)
+    {
+      return d - t;
+    }
+
     public override bool Equals(object o)
     {
-      return _date.Equals(((SmartDate)o).Date);
+      if(o is DateTime)
+        return _date.Equals((DateTime)o);
+      else
+        return _date.Equals(((SmartDate)o).Date);
     }
 
     public override int GetHashCode()

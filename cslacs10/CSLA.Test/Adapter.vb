@@ -3,6 +3,9 @@ Public Class Adapter
 
   <Test()> _
   Public Sub FillDataTable()
+
+    Session.Clear()
+
     Dim obj As Root = Root.NewRoot
     obj.Children.Add("A")
     obj.Children.Add("B")

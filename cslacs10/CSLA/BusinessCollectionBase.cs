@@ -416,7 +416,7 @@ namespace CSLA
     {
       // remove all the items from the list
       while(List.Count > 0)
-        List.RemoveAt(0);
+        List.RemoveAt(List.Count - 1);
       base.OnClear();
     }
 

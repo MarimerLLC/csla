@@ -232,7 +232,7 @@ namespace CSLA
     /// display of the broken rules at all times.
     /// </remarks>
     /// <returns>A reference to the collection of broken rules.</returns>
-    public RulesCollection GetBrokenRules
+    public RulesCollection BrokenRulesCollection
     {
       get
       {

@@ -72,6 +72,33 @@ Public Class Basics
   End Sub
 
   <Test()> _
+  Public Sub ClearList()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.Children.Add("A")
+    root.Children.Add("B")
+    root.Children.Add("C")
+    root.Children.Clear()
+    Assert.AreEqual(0, root.Children.Count)
+  End Sub
+
+  <Test()> _
+  Public Sub Gavin1()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.BeginEdit()
+    root.Children.Add("A")
+    root.BeginEdit()
+    root.Children.Add("B")
+    root.BeginEdit()
+    root.Children.Add("C")
+    root.ApplyEdit()
+    root.ApplyEdit()
+    root.ApplyEdit()
+    Assert.AreEqual(3, root.Children.Count)
+  End Sub
+
+  <Test()> _
   Public Sub JayeshNazre()
     Session.Clear()
     Dim root As root = root.NewRoot

@@ -477,11 +477,11 @@ namespace CSLA
     /// for this object.
     /// </summary>
     /// <returns>A <see cref="T:CSLA.BrokenRules.RulesCollection" /> object.</returns>
-    public BrokenRules.RulesCollection GetBrokenRulesCollection
+    public BrokenRules.RulesCollection BrokenRulesCollection
     {
       get
       {
-        return _brokenRules.GetBrokenRules;
+        return _brokenRules.BrokenRulesCollection;
       }
     }
 
@@ -490,7 +490,7 @@ namespace CSLA
     /// the currently broken business rules for this object.
     /// </summary>
     /// <returns>Text containing the descriptions of the broken business rules.</returns>
-    public string GetBrokenRulesString
+    public string BrokenRulesString
     {
       get
       {

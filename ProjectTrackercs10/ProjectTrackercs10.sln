@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Library", "ProjectTracker.Library\ProjectTracker.Library.csproj", "{A2C9385D-33CC-4C9A-93DF-4AED7710445D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWin", "PTWin\PTWin.csproj", "{957E816C-4BFD-45D5-90FC-CC163EA222B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{A2C9385D-33CC-4C9A-93DF-4AED7710445D}.Debug.ActiveCfg = Debug|.NET
+		{A2C9385D-33CC-4C9A-93DF-4AED7710445D}.Debug.Build.0 = Debug|.NET
+		{A2C9385D-33CC-4C9A-93DF-4AED7710445D}.Release.ActiveCfg = Release|.NET
+		{A2C9385D-33CC-4C9A-93DF-4AED7710445D}.Release.Build.0 = Release|.NET
+		{957E816C-4BFD-45D5-90FC-CC163EA222B2}.Debug.ActiveCfg = Debug|.NET
+		{957E816C-4BFD-45D5-90FC-CC163EA222B2}.Debug.Build.0 = Debug|.NET
+		{957E816C-4BFD-45D5-90FC-CC163EA222B2}.Release.ActiveCfg = Release|.NET
+		{957E816C-4BFD-45D5-90FC-CC163EA222B2}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

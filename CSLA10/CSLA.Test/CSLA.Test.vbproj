@@ -221,6 +221,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Serialization.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "SimpleRoot.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

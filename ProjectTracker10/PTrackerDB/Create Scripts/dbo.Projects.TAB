@@ -1,5 +1,5 @@
-﻿if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_Assignements_Projects]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
-ALTER TABLE [dbo].[Assignements] DROP CONSTRAINT FK_Assignements_Projects
+﻿if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[FK_Assignments_Projects]') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE [dbo].[Assignments] DROP CONSTRAINT FK_Assignments_Projects
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Projects]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)

@@ -1,4 +1,4 @@
-﻿SET QUOTED_IDENTIFIER ON 
+﻿SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
 GO
@@ -18,9 +18,8 @@ AS
 
 	SELECT resourceid,lastname,firstname,assigned,role 
 	FROM Resources,Assignments 
-	WHERE ProjectID='" & Criteria.ID.ToString & "' AND ResourceID=ID
-	RETURN 
-
+	WHERE ProjectID=@ID AND ResourceID=ID
+	RETURN
 GO
 SET QUOTED_IDENTIFIER OFF 
 GO

@@ -232,11 +232,12 @@ namespace CSLA.Core
                 }
               }
             }
-          currentType = currentType.BaseType;
           }
-        } while(currentType != UndoableType);
+          currentType = currentType.BaseType;
+        } 
+        while(currentType != UndoableType);
       }
-   }
+    }
 
     #region Helper Functions
 

@@ -10,6 +10,7 @@ namespace CSLA
   /// See Chapter 5 for a full discussion of the need for this
   /// data type and the design choices behind it.
   /// </remarks>
+  [Serializable()]
   sealed public class SmartDate : IComparable
   {
     DateTime _date;
@@ -96,7 +97,7 @@ namespace CSLA
 
 #region Text Support
 
-    string _format = "d";
+    string _format = "{0:d}";
 
     /// <summary>
     /// Gets or sets the format string used to format a date
@@ -325,7 +326,7 @@ namespace CSLA
         if(!emptyIsMin && (date == DateTime.MaxValue))
         return string.Empty;
       else
-        return string.Format(formatString,date);
+        return string.Format(formatString, date);
     }
 
 #endregion

@@ -187,7 +187,7 @@ namespace CSLA
         try
         {
           while(dr.Read())
-            Add((string)dr.GetValue(0), (string)dr.GetValue(1));
+            Add(dr.GetValue(0).ToString(), dr.GetValue(1).ToString());
         }
         finally
         {

@@ -164,50 +164,28 @@ Public NotInheritable Class SmartDate
   End Function
 
   ''' <summary>
-  ''' Returns True if the objects are equal.
-  ''' </summary>
-  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
-    If TypeOf objA Is SmartDate AndAlso TypeOf objB Is SmartDate Then
-      Return DirectCast(objA, SmartDate).Equals(DirectCast(objB, SmartDate))
-    Else
-      Return False
-    End If
-  End Function
-
-  ''' <summary>
   ''' Returns True if the object is equal to this SmartDate.
   ''' </summary>
   Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
+
     If TypeOf obj Is SmartDate Then
-      Return Me.Equals(DirectCast(obj, SmartDate))
+      Dim tmp As SmartDate = DirectCast(obj, SmartDate)
+      If Me.IsEmpty AndAlso tmp.IsEmpty Then
+        Return True
+      Else
+        Return mDate.Equals(tmp.Date)
+      End If
+
     ElseIf TypeOf obj Is Date Then
-      Return Me.Equals(DirectCast(obj, Date))
+      Return mDate.Equals(DirectCast(obj, Date))
+
     ElseIf TypeOf obj Is String Then
-      Return Me.Equals(CStr(obj))
+      Return Me.CompareTo(CStr(obj)) = 0
+
     Else
       Return False
     End If
-  End Function
 
-  ''' <summary>
-  ''' Returns True if the SmartDate is equal to this SmartDate.
-  ''' </summary>
-  Public Overloads Function Equals(ByVal obj As SmartDate) As Boolean
-    Return Me.CompareTo(obj) = 0
-  End Function
-
-  ''' <summary>
-  ''' Returns True if the date is equal to this SmartDate.
-  ''' </summary>
-  Public Overloads Function Equals(ByVal obj As Date) As Boolean
-    Return Me.CompareTo(obj) = 0
-  End Function
-
-  ''' <summary>
-  ''' Returns True if the text (as a date) is equal to this SmartDate.
-  ''' </summary>
-  Public Overloads Function Equals(ByVal obj As String) As Boolean
-    Return Me.CompareTo(obj) = 0
   End Function
 
   ''' <summary>
@@ -450,21 +428,33 @@ Public NotInheritable Class SmartDate
   ''' Adds a TimeSpan onto the object.
   ''' </summary>
   Public Function Add(ByVal Value As TimeSpan) As Date
-    Return mDate.Add(Value)
+    If IsEmpty Then
+      Return mDate
+    Else
+      Return mDate.Add(Value)
+    End If
   End Function
 
   ''' <summary>
   ''' Subtracts a TimeSpan from the object.
   ''' </summary>
   Public Function Subtract(ByVal Value As TimeSpan) As Date
-    Return mDate.Subtract(Value)
+    If IsEmpty Then
+      Return mDate
+    Else
+      Return mDate.Subtract(Value)
+    End If
   End Function
 
   ''' <summary>
   ''' Subtracts a Date from the object.
   ''' </summary>
   Public Function Subtract(ByVal Value As Date) As TimeSpan
-    Return mDate.Subtract(Value)
+    If IsEmpty Then
+      Return TimeSpan.Zero
+    Else
+      Return mDate.Subtract(Value)
+    End If
   End Function
 
 #End Region

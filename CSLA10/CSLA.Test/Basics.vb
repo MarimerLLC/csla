@@ -92,4 +92,52 @@ Public Class Basics
 
   End Sub
 
+  <Test()> _
+  Public Sub ClearChildList()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.Children.Add("A")
+    root.Children.Add("B")
+    root.Children.Add("C")
+    root.Children.Clear()
+    Assert.AreEqual(0, root.Children.Count)
+  End Sub
+
+  <Test()> _
+  Public Sub NestedAddAcceptChild()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.BeginEdit()
+    root.Children.Add("A")
+    root.BeginEdit()
+    root.Children.Add("B")
+    root.BeginEdit()
+    root.Children.Add("C")
+    root.ApplyEdit()
+    root.ApplyEdit()
+    root.ApplyEdit()
+    Assert.AreEqual(3, root.Children.Count)
+  End Sub
+
+  <Test()> _
+  Public Sub NestedAddDeleteAcceptChild()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.BeginEdit()
+    root.Children.Add("A")
+    root.BeginEdit()
+    root.Children.Add("B")
+    root.BeginEdit()
+    root.Children.Add("C")
+    Dim childC As Child = root.Children.Item(2)
+    root.Children.Remove(root.Children.Item(0))
+    root.Children.Remove(root.Children.Item(0))
+    root.Children.Remove(root.Children.Item(0))
+    root.ApplyEdit()
+    root.ApplyEdit()
+    root.ApplyEdit()
+    Assert.AreEqual(0, root.Children.Count)
+    Assert.AreEqual(False, root.Children.ContainsDeleted(childC))
+  End Sub
+
 End Class

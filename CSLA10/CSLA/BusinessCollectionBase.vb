@@ -276,6 +276,7 @@ Public MustInherit Class BusinessCollectionBase
 
   Friend Sub AcceptChanges()
     Dim Child As BusinessBase
+    Dim Index As Integer
 
     ' we are coming up one edit level
     mEditLevel -= 1
@@ -289,10 +290,14 @@ Public MustInherit Class BusinessCollectionBase
     Next
 
     ' cascade the call to all deleted child objects
-    For Each Child In deletedList
+    'For Each Child In deletedList
+    For Index = deletedList.Count - 1 To 0 Step -1
+      Child = deletedList.Item(Index)
       Child.AcceptChanges()
-      ' if item is below its point of addition, lower point of addition
-      If Child.EditLevelAdded > mEditLevel Then Child.EditLevelAdded = mEditLevel
+      '' if item is below its point of addition, lower point of addition
+      'If Child.EditLevelAdded > mEditLevel Then Child.EditLevelAdded = mEditLevel
+      ' if item is below its point of addition, remove
+      If Child.EditLevelAdded > mEditLevel Then deletedList.Remove(Child)
     Next
   End Sub
 

@@ -257,7 +257,7 @@ namespace CSLA
       // cancel edit on all deleted items
       for(int index = deletedList.Count - 1; index > 0; index--)
       {
-        child = deletedList[index];
+        child = (BusinessBase)deletedList[index];
         child.UndoChanges();
         // if item is below its point of addition, remove
         if(child.EditLevelAdded > _EditLevel)

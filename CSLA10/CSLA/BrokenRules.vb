@@ -430,6 +430,7 @@ Public Class BrokenRules
     ''' <summary>
     ''' Creates and initializes the rule.
     ''' </summary>
+    ''' <param name="target">Reference to the object containing the data to validate.</param>
     ''' <param name="handler">The address of the method implementing the rule.</param>
     ''' <param name="ruleName">The user-friendly name of the rule.</param>
     ''' <param name="ruleArgs">A RuleArgs object containing data related to the rule.</param>
@@ -446,11 +447,13 @@ Public Class BrokenRules
     ''' <summary>
     ''' Creates and initializes the rule.
     ''' </summary>
+    ''' <param name="target">Reference to the object containing the data to validate.</param>
     ''' <param name="handler">The address of the method implementing the rule.</param>
     ''' <param name="ruleName">The user-friendly name of the rule.</param>
     ''' <param name="propertyName">The field, property or column to which the rule applies.</param>
-    Public Sub New(ByVal handler As RuleHandler, ByVal ruleName As String, ByVal propertyName As String)
+    Public Sub New(ByVal target As Object, ByVal handler As RuleHandler, ByVal ruleName As String, ByVal propertyName As String)
 
+      mTarget = target
       mHandler = handler
       mDescription = GetDescription(handler)
       mRuleName = ruleName

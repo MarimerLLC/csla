@@ -150,7 +150,7 @@ Namespace Data
     ''' <summary>
     ''' Returns the FieldCount property from the datareader.
     ''' </summary>
-    Public ReadOnly Property FieldCount() As Integer Implements System.Data.IDataRecord.FieldCount
+    Public ReadOnly Property FieldCount() As Integer Implements System.Data.IDataReader.FieldCount
       Get
         Return mDataReader.FieldCount
       End Get
@@ -159,7 +159,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a boolean value from the datareader.
     ''' </summary>
-    Public Function GetBoolean(ByVal i As Integer) As Boolean Implements System.Data.IDataRecord.GetBoolean
+    Public Function GetBoolean(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.GetBoolean
       If mDataReader.IsDBNull(i) Then
         Return False
       Else
@@ -170,7 +170,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a byte value from the datareader.
     ''' </summary>
-    Public Function GetByte(ByVal i As Integer) As Byte Implements System.Data.IDataRecord.GetByte
+    Public Function GetByte(ByVal i As Integer) As Byte Implements System.Data.IDataReader.GetByte
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -181,7 +181,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetBytes method of the underlying datareader.
     ''' </summary>
-    Public Function GetBytes(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataRecord.GetBytes
+    Public Function GetBytes(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetBytes
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -192,7 +192,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a char value from the datareader.
     ''' </summary>
-    Public Function GetChar(ByVal i As Integer) As Char Implements System.Data.IDataRecord.GetChar
+    Public Function GetChar(ByVal i As Integer) As Char Implements System.Data.IDataReader.GetChar
       If mDataReader.IsDBNull(i) Then
         Return Char.MinValue
       Else
@@ -203,7 +203,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetChars method of the underlying datareader.
     ''' </summary>
-    Public Function GetChars(ByVal i As Integer, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataRecord.GetChars
+    Public Function GetChars(ByVal i As Integer, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetChars
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -214,21 +214,21 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetData method of the underlying datareader.
     ''' </summary>
-    Public Function GetData(ByVal i As Integer) As System.Data.IDataReader Implements System.Data.IDataRecord.GetData
+    Public Function GetData(ByVal i As Integer) As System.Data.IDataReader Implements System.Data.IDataReader.GetData
       Return mDataReader.GetData(i)
     End Function
 
     ''' <summary>
     ''' Invokes the GetDataTypeName method of the underlying datareader.
     ''' </summary>
-    Public Function GetDataTypeName(ByVal i As Integer) As String Implements System.Data.IDataRecord.GetDataTypeName
+    Public Function GetDataTypeName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetDataTypeName
       Return mDataReader.GetDataTypeName(i)
     End Function
 
     ''' <summary>
     ''' Gets a date value from the datareader.
     ''' </summary>
-    Public Function GetDateTime(ByVal i As Integer) As Date Implements System.Data.IDataRecord.GetDateTime
+    Public Function GetDateTime(ByVal i As Integer) As Date Implements System.Data.IDataReader.GetDateTime
       If mDataReader.IsDBNull(i) Then
         Return Date.MinValue
       Else
@@ -239,7 +239,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a decimal value from the datareader.
     ''' </summary>
-    Public Function GetDecimal(ByVal i As Integer) As Decimal Implements System.Data.IDataRecord.GetDecimal
+    Public Function GetDecimal(ByVal i As Integer) As Decimal Implements System.Data.IDataReader.GetDecimal
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -250,14 +250,14 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetFieldType method of the underlying datareader.
     ''' </summary>
-    Public Function GetFieldType(ByVal i As Integer) As System.Type Implements System.Data.IDataRecord.GetFieldType
+    Public Function GetFieldType(ByVal i As Integer) As System.Type Implements System.Data.IDataReader.GetFieldType
       Return mDataReader.GetFieldType(i)
     End Function
 
     ''' <summary>
     ''' Gets a Single value from the datareader.
     ''' </summary>
-    Public Function GetFloat(ByVal i As Integer) As Single Implements System.Data.IDataRecord.GetFloat
+    Public Function GetFloat(ByVal i As Integer) As Single Implements System.Data.IDataReader.GetFloat
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -268,7 +268,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a Short value from the datareader.
     ''' </summary>
-    Public Function GetInt16(ByVal i As Integer) As Short Implements System.Data.IDataRecord.GetInt16
+    Public Function GetInt16(ByVal i As Integer) As Short Implements System.Data.IDataReader.GetInt16
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -279,7 +279,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a Long value from the datareader.
     ''' </summary>
-    Public Function GetInt64(ByVal i As Integer) As Long Implements System.Data.IDataRecord.GetInt64
+    Public Function GetInt64(ByVal i As Integer) As Long Implements System.Data.IDataReader.GetInt64
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -290,14 +290,14 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetName method of the underlying datareader.
     ''' </summary>
-    Public Function GetName(ByVal i As Integer) As String Implements System.Data.IDataRecord.GetName
+    Public Function GetName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetName
       Return mDataReader.GetName(i)
     End Function
 
     ''' <summary>
     ''' Gets an ordinal value from the datareader.
     ''' </summary>
-    Public Function GetOrdinal(ByVal name As String) As Integer Implements System.Data.IDataRecord.GetOrdinal
+    Public Function GetOrdinal(ByVal name As String) As Integer Implements System.Data.IDataReader.GetOrdinal
       Return mDataReader.GetOrdinal(name)
     End Function
 
@@ -311,7 +311,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetValues method of the underlying datareader.
     ''' </summary>
-    Public Function GetValues(ByVal values() As Object) As Integer Implements System.Data.IDataRecord.GetValues
+    Public Function GetValues(ByVal values() As Object) As Integer Implements System.Data.IDataReader.GetValues
       Return mDataReader.GetValues(values)
     End Function
 
@@ -327,7 +327,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the IsDBNull method of the underlying datareader.
     ''' </summary>
-    Public Function IsDBNull(ByVal i As Integer) As Boolean Implements System.Data.IDataRecord.IsDBNull
+    Public Function IsDBNull(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.IsDBNull
       Return mDataReader.IsDBNull(i)
     End Function
 
@@ -337,7 +337,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns Nothing if the value is null.
     ''' </remarks>
-    Default Public Overloads ReadOnly Property Item(ByVal name As String) As Object Implements System.Data.IDataRecord.Item
+    Default Public Overloads ReadOnly Property Item(ByVal name As String) As Object Implements System.Data.IDataReader.Item
       Get
         Dim value As Object = mDataReader.Item(name)
         If DBNull.Value.Equals(value) Then
@@ -354,7 +354,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns Nothing if the value is null.
     ''' </remarks>
-    Default Public Overloads ReadOnly Property Item(ByVal i As Integer) As Object Implements System.Data.IDataRecord.Item
+    Default Public Overloads ReadOnly Property Item(ByVal i As Integer) As Object Implements System.Data.IDataReader.Item
       Get
         If mDataReader.IsDBNull(i) Then
           Return Nothing

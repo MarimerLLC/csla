@@ -268,8 +268,23 @@ Public NotInheritable Class SmartDate
         Return Date.MaxValue
       End If
 
-    Else
+    ElseIf IsDate(Value) Then
       Return CDate(Value)
+
+    Else
+      Select Case LCase(Trim(Value))
+        Case "t", "today", "."
+          Return Now
+
+        Case "y", "yesterday", "-"
+          Return DateAdd(DateInterval.Day, -1, Now)
+
+        Case "tom", "tomorrow", "+"
+          Return DateAdd(DateInterval.Day, 1, Now)
+
+        Case Else
+          Throw New ArgumentException("String value can not be converted to a date")
+      End Select
     End If
   End Function
 

@@ -27,6 +27,7 @@ Public Class Resource
     Set(ByVal Value As String)
       If mLastName <> Value Then
         mLastName = Value
+        BrokenRules.Assert("LNameReq", "Value required", Len(Value) = 0)
         BrokenRules.Assert("LNameLen", "Value too long", Len(Value) > 50)
         MarkDirty()
       End If

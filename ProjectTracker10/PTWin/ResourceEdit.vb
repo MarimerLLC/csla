@@ -50,40 +50,40 @@ Public Class ResourceEdit
   Friend WithEvents mnuRoles As System.Windows.Forms.ContextMenu
   Friend WithEvents chkIsDirty As System.Windows.Forms.CheckBox
   <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-    Me.btnCancel = New System.Windows.Forms.Button
-    Me.btnSave = New System.Windows.Forms.Button
-    Me.txtID = New System.Windows.Forms.TextBox
-    Me.Label5 = New System.Windows.Forms.Label
-    Me.txtFirstname = New System.Windows.Forms.TextBox
-    Me.Label2 = New System.Windows.Forms.Label
-    Me.txtLastname = New System.Windows.Forms.TextBox
-    Me.Label1 = New System.Windows.Forms.Label
-    Me.GroupBox1 = New System.Windows.Forms.GroupBox
-    Me.dvProjects = New PTWin.DataListView
-    Me.mnuRoles = New System.Windows.Forms.ContextMenu
-    Me.btnRemoveProject = New System.Windows.Forms.Button
-    Me.btnAssignProject = New System.Windows.Forms.Button
-    Me.colProjectID = New System.Windows.Forms.DataGridTextBoxColumn
-    Me.colName = New System.Windows.Forms.DataGridTextBoxColumn
-    Me.colAssigned = New System.Windows.Forms.DataGridTextBoxColumn
-    Me.colRole = New System.Windows.Forms.DataGridTextBoxColumn
-    Me.chkIsDirty = New System.Windows.Forms.CheckBox
+    Me.btnCancel = New System.Windows.Forms.Button()
+    Me.btnSave = New System.Windows.Forms.Button()
+    Me.txtID = New System.Windows.Forms.TextBox()
+    Me.Label5 = New System.Windows.Forms.Label()
+    Me.txtFirstname = New System.Windows.Forms.TextBox()
+    Me.Label2 = New System.Windows.Forms.Label()
+    Me.txtLastname = New System.Windows.Forms.TextBox()
+    Me.Label1 = New System.Windows.Forms.Label()
+    Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+    Me.dvProjects = New PTWin.DataListView()
+    Me.mnuRoles = New System.Windows.Forms.ContextMenu()
+    Me.btnRemoveProject = New System.Windows.Forms.Button()
+    Me.btnAssignProject = New System.Windows.Forms.Button()
+    Me.colProjectID = New System.Windows.Forms.DataGridTextBoxColumn()
+    Me.colName = New System.Windows.Forms.DataGridTextBoxColumn()
+    Me.colAssigned = New System.Windows.Forms.DataGridTextBoxColumn()
+    Me.colRole = New System.Windows.Forms.DataGridTextBoxColumn()
+    Me.chkIsDirty = New System.Windows.Forms.CheckBox()
     Me.GroupBox1.SuspendLayout()
     Me.SuspendLayout()
     '
     'btnCancel
     '
-    Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.btnCancel.Anchor = (System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right)
     Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-    Me.btnCancel.Location = New System.Drawing.Point(616, 40)
+    Me.btnCancel.Location = New System.Drawing.Point(568, 40)
     Me.btnCancel.Name = "btnCancel"
     Me.btnCancel.TabIndex = 8
     Me.btnCancel.Text = "&Cancel"
     '
     'btnSave
     '
-    Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.btnSave.Location = New System.Drawing.Point(616, 8)
+    Me.btnSave.Anchor = (System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right)
+    Me.btnSave.Location = New System.Drawing.Point(568, 8)
     Me.btnSave.Name = "btnSave"
     Me.btnSave.TabIndex = 7
     Me.btnSave.Text = "&Save"
@@ -93,7 +93,6 @@ Public Class ResourceEdit
     Me.txtID.Location = New System.Drawing.Point(88, 8)
     Me.txtID.Name = "txtID"
     Me.txtID.ReadOnly = True
-    Me.txtID.Size = New System.Drawing.Size(96, 20)
     Me.txtID.TabIndex = 1
     Me.txtID.TabStop = False
     Me.txtID.Text = ""
@@ -107,11 +106,11 @@ Public Class ResourceEdit
     '
     'txtFirstname
     '
-    Me.txtFirstname.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtFirstname.Anchor = ((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                Or System.Windows.Forms.AnchorStyles.Right)
     Me.txtFirstname.Location = New System.Drawing.Point(88, 40)
     Me.txtFirstname.Name = "txtFirstname"
-    Me.txtFirstname.Size = New System.Drawing.Size(512, 20)
+    Me.txtFirstname.Size = New System.Drawing.Size(464, 20)
     Me.txtFirstname.TabIndex = 3
     Me.txtFirstname.Text = ""
     '
@@ -124,11 +123,11 @@ Public Class ResourceEdit
     '
     'txtLastname
     '
-    Me.txtLastname.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtLastname.Anchor = ((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                Or System.Windows.Forms.AnchorStyles.Right)
     Me.txtLastname.Location = New System.Drawing.Point(88, 72)
     Me.txtLastname.Name = "txtLastname"
-    Me.txtLastname.Size = New System.Drawing.Size(512, 20)
+    Me.txtLastname.Size = New System.Drawing.Size(464, 20)
     Me.txtLastname.TabIndex = 5
     Me.txtLastname.Text = ""
     '
@@ -141,24 +140,22 @@ Public Class ResourceEdit
     '
     'GroupBox1
     '
-    Me.GroupBox1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+    Me.GroupBox1.Anchor = (((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                 Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.GroupBox1.Controls.Add(Me.dvProjects)
-    Me.GroupBox1.Controls.Add(Me.btnRemoveProject)
-    Me.GroupBox1.Controls.Add(Me.btnAssignProject)
+                Or System.Windows.Forms.AnchorStyles.Right)
+    Me.GroupBox1.Controls.AddRange(New System.Windows.Forms.Control() {Me.dvProjects, Me.btnRemoveProject, Me.btnAssignProject})
     Me.GroupBox1.Location = New System.Drawing.Point(8, 104)
     Me.GroupBox1.Name = "GroupBox1"
-    Me.GroupBox1.Size = New System.Drawing.Size(688, 192)
+    Me.GroupBox1.Size = New System.Drawing.Size(632, 208)
     Me.GroupBox1.TabIndex = 6
     Me.GroupBox1.TabStop = False
     Me.GroupBox1.Text = "Assigned to"
     '
     'dvProjects
     '
-    Me.dvProjects.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+    Me.dvProjects.Anchor = (((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                 Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+                Or System.Windows.Forms.AnchorStyles.Right)
     Me.dvProjects.AutoDiscover = False
     Me.dvProjects.ContextMenu = Me.mnuRoles
     Me.dvProjects.DataSource = Nothing
@@ -167,22 +164,22 @@ Public Class ResourceEdit
     Me.dvProjects.Location = New System.Drawing.Point(16, 24)
     Me.dvProjects.MultiSelect = False
     Me.dvProjects.Name = "dvProjects"
-    Me.dvProjects.Size = New System.Drawing.Size(576, 160)
+    Me.dvProjects.Size = New System.Drawing.Size(512, 168)
     Me.dvProjects.TabIndex = 0
     Me.dvProjects.View = System.Windows.Forms.View.Details
     '
     'btnRemoveProject
     '
-    Me.btnRemoveProject.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.btnRemoveProject.Location = New System.Drawing.Point(600, 56)
+    Me.btnRemoveProject.Anchor = (System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right)
+    Me.btnRemoveProject.Location = New System.Drawing.Point(544, 56)
     Me.btnRemoveProject.Name = "btnRemoveProject"
     Me.btnRemoveProject.TabIndex = 2
     Me.btnRemoveProject.Text = "&Remove"
     '
     'btnAssignProject
     '
-    Me.btnAssignProject.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.btnAssignProject.Location = New System.Drawing.Point(600, 24)
+    Me.btnAssignProject.Anchor = (System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right)
+    Me.btnAssignProject.Location = New System.Drawing.Point(544, 24)
     Me.btnAssignProject.Name = "btnAssignProject"
     Me.btnAssignProject.TabIndex = 1
     Me.btnAssignProject.Text = "&Assign to"
@@ -223,9 +220,9 @@ Public Class ResourceEdit
     '
     'chkIsDirty
     '
-    Me.chkIsDirty.Location = New System.Drawing.Point(-368, 136)
+    Me.chkIsDirty.Location = New System.Drawing.Point(536, 8)
     Me.chkIsDirty.Name = "chkIsDirty"
-    Me.chkIsDirty.Size = New System.Drawing.Size(105, 24)
+    Me.chkIsDirty.Size = New System.Drawing.Size(0, 0)
     Me.chkIsDirty.TabIndex = 24
     Me.chkIsDirty.Text = "CheckBox1"
     '
@@ -234,17 +231,8 @@ Public Class ResourceEdit
     Me.AcceptButton = Me.btnSave
     Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
     Me.CancelButton = Me.btnCancel
-    Me.ClientSize = New System.Drawing.Size(704, 301)
-    Me.Controls.Add(Me.chkIsDirty)
-    Me.Controls.Add(Me.GroupBox1)
-    Me.Controls.Add(Me.txtID)
-    Me.Controls.Add(Me.txtFirstname)
-    Me.Controls.Add(Me.txtLastname)
-    Me.Controls.Add(Me.Label5)
-    Me.Controls.Add(Me.Label2)
-    Me.Controls.Add(Me.Label1)
-    Me.Controls.Add(Me.btnCancel)
-    Me.Controls.Add(Me.btnSave)
+    Me.ClientSize = New System.Drawing.Size(656, 326)
+    Me.Controls.AddRange(New System.Windows.Forms.Control() {Me.chkIsDirty, Me.GroupBox1, Me.txtID, Me.txtFirstname, Me.txtLastname, Me.Label5, Me.Label2, Me.Label1, Me.btnCancel, Me.btnSave})
     Me.Name = "ResourceEdit"
     Me.Text = "ResourceEdit"
     Me.GroupBox1.ResumeLayout(False)

@@ -38,64 +38,64 @@ Public Class Login
   Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
   <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
     Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(Login))
-    Me.Label1 = New System.Windows.Forms.Label
-    Me.txtUsername = New System.Windows.Forms.TextBox
-    Me.Label2 = New System.Windows.Forms.Label
-    Me.txtPassword = New System.Windows.Forms.TextBox
-    Me.btnLogin = New System.Windows.Forms.Button
-    Me.btnCancel = New System.Windows.Forms.Button
-    Me.PictureBox1 = New System.Windows.Forms.PictureBox
+    Me.Label1 = New System.Windows.Forms.Label()
+    Me.txtUsername = New System.Windows.Forms.TextBox()
+    Me.Label2 = New System.Windows.Forms.Label()
+    Me.txtPassword = New System.Windows.Forms.TextBox()
+    Me.btnLogin = New System.Windows.Forms.Button()
+    Me.btnCancel = New System.Windows.Forms.Button()
+    Me.PictureBox1 = New System.Windows.Forms.PictureBox()
     Me.SuspendLayout()
     '
     'Label1
     '
-    Me.Label1.Location = New System.Drawing.Point(176, 72)
+    Me.Label1.Location = New System.Drawing.Point(280, 40)
     Me.Label1.Name = "Label1"
     Me.Label1.TabIndex = 0
     Me.Label1.Text = "Username"
     '
     'txtUsername
     '
-    Me.txtUsername.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtUsername.Location = New System.Drawing.Point(248, 72)
+    Me.txtUsername.Anchor = ((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                Or System.Windows.Forms.AnchorStyles.Right)
+    Me.txtUsername.Location = New System.Drawing.Point(352, 40)
     Me.txtUsername.Name = "txtUsername"
-    Me.txtUsername.Size = New System.Drawing.Size(112, 20)
+    Me.txtUsername.Size = New System.Drawing.Size(168, 20)
     Me.txtUsername.TabIndex = 1
     Me.txtUsername.Text = ""
     '
     'Label2
     '
-    Me.Label2.Location = New System.Drawing.Point(176, 104)
+    Me.Label2.Location = New System.Drawing.Point(280, 72)
     Me.Label2.Name = "Label2"
     Me.Label2.TabIndex = 2
     Me.Label2.Text = "Password"
     '
     'txtPassword
     '
-    Me.txtPassword.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtPassword.Location = New System.Drawing.Point(248, 104)
+    Me.txtPassword.Anchor = ((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+                Or System.Windows.Forms.AnchorStyles.Right)
+    Me.txtPassword.Location = New System.Drawing.Point(352, 72)
     Me.txtPassword.Name = "txtPassword"
     Me.txtPassword.PasswordChar = Microsoft.VisualBasic.ChrW(42)
-    Me.txtPassword.Size = New System.Drawing.Size(112, 20)
+    Me.txtPassword.Size = New System.Drawing.Size(168, 20)
     Me.txtPassword.TabIndex = 3
     Me.txtPassword.Text = ""
     '
     'btnLogin
     '
-    Me.btnLogin.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.btnLogin.Anchor = (System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right)
     Me.btnLogin.Enabled = False
-    Me.btnLogin.Location = New System.Drawing.Point(376, 72)
+    Me.btnLogin.Location = New System.Drawing.Point(352, 112)
     Me.btnLogin.Name = "btnLogin"
     Me.btnLogin.TabIndex = 4
     Me.btnLogin.Text = "Login"
     '
     'btnCancel
     '
-    Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.btnCancel.Anchor = (System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right)
     Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-    Me.btnCancel.Location = New System.Drawing.Point(376, 104)
+    Me.btnCancel.Location = New System.Drawing.Point(440, 112)
     Me.btnCancel.Name = "btnCancel"
     Me.btnCancel.TabIndex = 5
     Me.btnCancel.Text = "Cancel"
@@ -103,11 +103,10 @@ Public Class Login
     'PictureBox1
     '
     Me.PictureBox1.Dock = System.Windows.Forms.DockStyle.Left
-    Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-    Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
+    Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Bitmap)
     Me.PictureBox1.Name = "PictureBox1"
-    Me.PictureBox1.Size = New System.Drawing.Size(168, 198)
-    Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+    Me.PictureBox1.Size = New System.Drawing.Size(264, 176)
+    Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
     Me.PictureBox1.TabIndex = 6
     Me.PictureBox1.TabStop = False
     '
@@ -116,15 +115,9 @@ Public Class Login
     Me.AcceptButton = Me.btnLogin
     Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
     Me.CancelButton = Me.btnCancel
-    Me.ClientSize = New System.Drawing.Size(472, 198)
+    Me.ClientSize = New System.Drawing.Size(538, 176)
     Me.ControlBox = False
-    Me.Controls.Add(Me.PictureBox1)
-    Me.Controls.Add(Me.btnCancel)
-    Me.Controls.Add(Me.btnLogin)
-    Me.Controls.Add(Me.txtPassword)
-    Me.Controls.Add(Me.txtUsername)
-    Me.Controls.Add(Me.Label2)
-    Me.Controls.Add(Me.Label1)
+    Me.Controls.AddRange(New System.Windows.Forms.Control() {Me.PictureBox1, Me.btnCancel, Me.btnLogin, Me.txtPassword, Me.txtUsername, Me.Label2, Me.Label1})
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
     Me.MaximizeBox = False
     Me.MinimizeBox = False

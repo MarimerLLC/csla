@@ -8,11 +8,11 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("")> 
-<Assembly: AssemblyDescription("")> 
+<Assembly: AssemblyTitle("Project Tracker Object Library")> 
+<Assembly: AssemblyDescription("Project Tracker sample app")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("")> 
-<Assembly: AssemblyCopyright("")> 
+<Assembly: AssemblyProduct("Project Tracker")> 
+<Assembly: AssemblyCopyright("Copyright 2003 Rockford Lhotka")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: CLSCompliant(True)> 
 

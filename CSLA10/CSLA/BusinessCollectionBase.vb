@@ -416,8 +416,7 @@ Public MustInherit Class BusinessCollectionBase
       ' being deleted, so do the deletion work
       ' for all the objects in the list
       While list.Count > 0
-        list.RemoveAt(0)
-        'DeleteChild(CType(list(0), BusinessBase))
+        list.RemoveAt(list.Count - 1)
       End While
       MyBase.OnClear()
     End If

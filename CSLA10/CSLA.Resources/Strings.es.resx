@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -40,100 +40,100 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" type="System.String">
-    <value>Clear no es una operacin v�lida</value>
+    <value>Excepcion de limpieza invalida (clear)</value>
   </data>
   <data name="InsertInvalidException" type="System.String">
-    <value>Insert no es una operaci�n v�lida</value>
+    <value>Excepcion de insercion invalida (insert)</value>
   </data>
   <data name="RemoveInvalidException" type="System.String">
-    <value>Remove no es una operaci�n v�lida</value>
+    <value>Excepcion de remocion invalida (remove)</value>
   </data>
   <data name="ChangeInvalidException" type="System.String">
-    <value>Cambiar un elemento no es una operaci�n v�lida</value>
+    <value>Excepcion de cambio invalido (change)</value>
   </data>
   <data name="ParentSetException" type="System.String">
-    <value>El valor "padre" solo puede ser fijado para objetos "hijos"</value>
+    <value>Excepcion al establecer el objeto padre</value>
   </data>
   <data name="ChildDeleteException" type="System.String">
-    <value>No puede marcar directamente un objeto "hijo" para borrar - use su colecci�n "padre"</value>
+    <value>Excepcion al eliminar un objeto hijo</value>
   </data>
   <data name="NoDeleteRootException" type="System.String">
-    <value>Inv�lido para objetos ra�z - en su lugar use Delete</value>
+    <value>Excepcion de borrado de raiz no permitido</value>
   </data>
   <data name="NoSaveChildException" type="System.String">
-    <value>No puede guardar directamente un objeto "hijo"</value>
+    <value>Excepcion de grabado de hijo no permitido</value>
   </data>
   <data name="NoSaveEditingException" type="System.String">
-    <value>El objeto est� siendo editado por lo que no puede ser guardado</value>
+    <value>Excepcion de grabado durante edicion no permitido</value>
   </data>
   <data name="NoSaveInvalidException" type="System.String">
-    <value>El objeto no es v�lido y no puede ser guardado</value>
+    <value>Excepcion de grabado de objeto invalido no permitido</value>
   </data>
   <data name="CreateNotSupportedException" type="System.String">
-    <value>Operaci�n inv�lida - crear (create) no est� permitido</value>
+    <value>Excepcion de creacion no soportada</value>
   </data>
   <data name="FetchNotSupportedException" type="System.String">
-    <value>Operaci�n inv�lida - lectura (fetch) no permitida</value>
+    <value>Excepcion de lectura no soportada</value>
   </data>
   <data name="UpdateNotSupportedException" type="System.String">
-    <value>Operaci�n inv�lida - actualizaci�n (update) no permitida</value>
+    <value>Excepcion de actualizacion no soportada</value>
   </data>
   <data name="DeleteNotSupportedException" type="System.String">
-    <value>Operaci�n inv�lida - borrar (delete) no est� permitido</value>
+    <value>Excepcion de borrado no soportado</value>
   </data>
   <data name="NoBeginEditChildException" type="System.String">
-    <value>BeginEdit no es v�lido en un objeto "hijo"</value>
+    <value>Excepcion de inicio de edicion en hijo no permitido</value>
   </data>
   <data name="NoCancelEditChildException" type="System.String">
-    <value>CancelEdit no es v�lido en un objeto "hijo"</value>
+    <value>Excepcion de cancelacion de edicion en hijo no permitida</value>
   </data>
   <data name="NoApplyEditChildException" type="System.String">
-    <value>ApplyEdit no es v�lido en un objeto "hijo"</value>
+    <value>Excepcion de guardado de la edicion en hijo no permitido</value>
   </data>
   <data name="NoSuchValueExistsException" type="System.String">
-    <value>Este valor no existe:</value>
+    <value>Excepcion de valor como tal no existe</value>
   </data>
   <data name="ErrorReadingValueException" type="System.String">
-    <value>Error leyendo el valor:</value>
+    <value>Excepcion de error al leer el valor</value>
   </data>
   <data name="NoInsertReadOnlyException" type="System.String">
-    <value>Insert es inv�lido para colecciones de solo-lectura</value>
+    <value>Excepcion de insercion en solo lectura no permitida</value>
   </data>
   <data name="NoRemoveReadOnlyException" type="System.String">
-    <value>Remove es inv�lido para colecciones de solo-lectura</value>
+    <value>Excepcion de remocion en solo lectura no permitida</value>
   </data>
   <data name="NoClearReadOnlyException" type="System.String">
-    <value>Clear es inv�lido para colecciones de solo-lectura</value>
+    <value>Excepcion de limpieza en solo lectura no permitida</value>
   </data>
   <data name="NoChangeReadOnlyException" type="System.String">
-    <value>Objetos no se pueden cambiar en una colecci�n de solo-lectura</value>
+    <value>Excepcion de cambio en solo lectura no permitida</value>
   </data>
   <data name="StringToDateException" type="System.String">
-    <value>La cadena de valores (string) no puede ser convertida en fecha</value>
+    <value>Excepcion de conversion de cadena de caracteres a fecha</value>
   </data>
   <data name="ValueNotSmartDateException" type="System.String">
-    <value>El valor no es un SmartDate (fecha inteligente)</value>
+    <value>Excepcion de valor no es de tipo SmartDate</value>
   </data>
   <data name="InvalidDateException" type="System.String">
-    <value>El valor debe ser una fecha v�lida</value>
+    <value>Excepcion de fecha invalida</value>
   </data>
   <data name="SortingNotSupportedException" type="System.String">
-    <value>Esta colecci�n no soporta la organizaci�n</value>
+    <value>Excepcion de ordenamiento no soportado</value>
   </data>
   <data name="SearchingNotSupportedException" type="System.String">
-    <value>Esta colecci�n no soporta la b�squeda</value>
+    <value>Excepcion de busqueda no soportada</value>
   </data>
   <data name="AddItemException" type="System.String">
-    <value>Adicionar objetos no est� permitido</value>
+    <value>Excepcion de agregado de elementos</value>
   </data>
   <data name="NoPrincipalAllowedException" type="System.String">
-    <value>Ning�n objeto principal debe ser pasado a DataPortal cuando se est� usando la seguridad integrada de Windows</value>
+    <value>Excepcion de Principal no permitido</value>
   </data>
   <data name="BusinessPrincipalException" type="System.String">
-    <value>Principal debe ser del tipo BusinessPrincipal, no</value>
+    <value>Excepcion en BusinessPrincipal</value>
   </data>
   <data name="NoMatchException" type="System.String">
-    <value>No hay objetos que se correspondan en esta colecci�n</value>
+    <value>Excepcion de correspondencia no encontrada</value>
   </data>
   <data name="SecurityDataBase" type="System.String">
     <value>Security</value>
@@ -163,34 +163,34 @@
     <value>m</value>
   </data>
   <data name="SmartDateTomorrow" type="System.String">
-    <value>ma�ana</value>
+    <value>manana</value>
   </data>
   <data name="BatchQueueJobCompleted" type="System.String">
-    <value>Tarea batch completa</value>
+    <value>Cola de Tareas por lotes completada</value>
   </data>
   <data name="BatchQueueJobPrefix" type="System.String">
-    <value>Tarea batch:</value>
+    <value>Prefijo de Cola de Tareas por lotes</value>
   </data>
   <data name="BatchQueueJobObjectPrefix" type="System.String">
-    <value>Objeto tarea:</value>
+    <value>Prefijo de objeto de Cola de tareas por lotes</value>
   </data>
   <data name="BatchQueueJobFailed" type="System.String">
-    <value>La tarea batch fall� por un error de ejecuci�n</value>
+    <value>La cola de tareas por lotes ha fallado</value>
   </data>
   <data name="BatchQueueProcStarted" type="System.String">
-    <value>Procesador de colas batch iniciado</value>
+    <value>Procesador de colas por lotes iniciado</value>
   </data>
   <data name="BatchQueueProcName" type="System.String">
-    <value>Nombre:</value>
+    <value>Nombre del procesador de colas por lotes:</value>
   </data>
   <data name="BatchQueueProcPort" type="System.String">
-    <value>Puerto:</value>
+    <value>Puerto del procesador de colas por lotes:</value>
   </data>
   <data name="BatchQueueProcQueue" type="System.String">
     <value>Cola:</value>
   </data>
   <data name="BatchQueueProcMaxJobs" type="System.String">
-    <value>L�mite de tareas:</value>
+    <value>Numero maximo de trabajos por cola por lotes</value>
   </data>
   <data name="Failed" type="System.String">
     <value>Fallo</value>

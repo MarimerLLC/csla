@@ -198,6 +198,10 @@ Public Class Project
 
 #Region " Data Access "
 
+  'Protected Overrides Function Save() As BusinessBase
+
+  'End Function
+
   ' called by DataPortal so we can set defaults as needed
   Protected Overrides Sub DataPortal_Create(ByVal Criteria As Object)
     Dim crit As Criteria = CType(Criteria, Criteria)
@@ -211,7 +215,7 @@ Public Class Project
     ' retrieve data from db
     Dim crit As Criteria = CType(Criteria, Criteria)
     Dim cn As New SqlConnection(db("PTracker"))
-    Dim cm As New SqlCommand
+    Dim cm As New SqlCommand()
 
     cn.Open()
     Try
@@ -253,7 +257,7 @@ Public Class Project
   Protected Overrides Sub DataPortal_Update()
     ' save data into db
     Dim cn As New SqlConnection(db("PTracker"))
-    Dim cm As New SqlCommand
+    Dim cm As New SqlCommand()
 
     cn.Open()
     Try
@@ -310,7 +314,7 @@ Public Class Project
   Protected Overrides Sub DataPortal_Delete(ByVal Criteria As Object)
     Dim crit As Criteria = CType(Criteria, Criteria)
     Dim cn As New SqlConnection(db("PTracker"))
-    Dim cm As New SqlCommand
+    Dim cm As New SqlCommand()
 
     cn.Open()
 

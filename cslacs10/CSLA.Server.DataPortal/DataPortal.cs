@@ -133,10 +133,10 @@ namespace CSLA.Server
           // security
           System.Threading.Thread.CurrentPrincipal = (IPrincipal)principal;
         }
-        else
-          throw new System.Security.SecurityException(
-            "Principal must be of type BusinessPrincipal, not " + principal.ToString());
       }
+      else
+        throw new System.Security.SecurityException(
+          "Principal must be of type BusinessPrincipal, not " + principal.ToString());
     }
 
 #endregion

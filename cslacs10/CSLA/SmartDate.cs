@@ -43,6 +43,34 @@ namespace CSLA
     /// <summary>
     /// Creates a new SmartDate object.
     /// </summary>
+    /// <remarks>
+    /// An empty date will be treated as the smallest
+    /// possible date.
+    /// </remarks>
+    /// <param name="date">The initial value of the object.</param>
+    public SmartDate(DateTime date)
+    {
+      _emptyIsMin = false;
+      _date = date;
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
+    /// <remarks>
+    /// An empty date will be treated as the smallest
+    /// possible date.
+    /// </remarks>
+    /// <param name="date">The initial value of the object.</param>
+    public SmartDate(string date)
+    {
+      _emptyIsMin = false;
+      this.Text = date;
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
     /// <param name="date">The initial value of the object.</param>
     /// <param name="emptyIsMin">
     /// Indicates whether an empty date is the min or max date value.</param>

@@ -11,6 +11,7 @@ using System.Web.UI.HtmlControls;
 using CSLA.Security;
 using System.Threading;
 using System.Security.Principal;
+using System.Web.Security;
 
 namespace PTWebcs
 {
@@ -67,7 +68,7 @@ namespace PTWebcs
         HttpContext.Current.User = Thread.CurrentPrincipal;
 
         // redirect to the page the user requested
-        System.Web.Security.FormsAuthentication.RedirectFromLoginPage(
+        FormsAuthentication.RedirectFromLoginPage(
           userName, false);
       }
     }

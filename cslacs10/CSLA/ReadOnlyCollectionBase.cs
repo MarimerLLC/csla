@@ -155,8 +155,9 @@ namespace CSLA
     /// </summary>
     protected virtual void Deserialized()
     {
-      foreach(Serialization.ISerializationNotification child in List)
-        child.Deserialized();
+      foreach(object child in List)
+        if (child is Serialization.ISerializationNotification)
+          ((Serialization.ISerializationNotification)child).Deserialized();
     }
 
     void Serialization.ISerializationNotification.Serialized()
@@ -170,8 +171,9 @@ namespace CSLA
     /// </summary>
     protected virtual void Serialized()
     {
-      foreach(Serialization.ISerializationNotification child in List)
-        child.Serialized();
+      foreach(object child in List)
+        if (child is Serialization.ISerializationNotification)
+          ((Serialization.ISerializationNotification)child).Serialized();
     }
 
     void Serialization.ISerializationNotification.Serializing()
@@ -184,8 +186,9 @@ namespace CSLA
     /// </summary>
     protected virtual void Serializing()
     {
-      foreach(Serialization.ISerializationNotification child in List)
-        child.Serializing();
+      foreach(object child in List)
+        if (child is Serialization.ISerializationNotification)
+          ((Serialization.ISerializationNotification)child).Serializing();
     }
 
     #endregion

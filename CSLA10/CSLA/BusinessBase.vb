@@ -198,7 +198,7 @@ Public MustInherit Class BusinessBase
 
 #Region " IEditableObject "
 
-  <NotUndoable()> _
+  <NotUndoable(), NonSerialized()> _
   Private mParent As BusinessCollectionBase
   <NotUndoable()> _
   Private mBindingEdit As Boolean = False

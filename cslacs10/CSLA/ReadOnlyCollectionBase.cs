@@ -8,7 +8,9 @@ namespace CSLA
 	/// <summary>
 	/// Summary description for ReadOnlyCollectionBase.
 	/// </summary>
-	abstract public class ReadOnlyCollectionBase : CSLA.Core.BindableCollectionBase, ICloneable
+  [Serializable()]
+  abstract public class ReadOnlyCollectionBase : 
+      CSLA.Core.BindableCollectionBase, ICloneable
 	{
     public ReadOnlyCollectionBase()
     {
@@ -17,7 +19,7 @@ namespace CSLA
       AllowRemove = false;
     }
 
-#region Remove, Clear, Set
+    #region Remove, Clear, Set
 
     /// <summary>
     /// Indicates that the collection is locked, so insert, remove
@@ -32,7 +34,8 @@ namespace CSLA
     protected override void OnInsert(int index, Object val)
     {
       if(locked)
-        throw new NotSupportedException("Insert is invalid for a read-only collection");
+        throw new NotSupportedException(
+              "Insert is invalid for a read-only collection");
     }
 
     /// <summary>
@@ -42,7 +45,8 @@ namespace CSLA
     protected override void OnRemove(int index, Object val)
     {
       if(locked)
-        throw new NotSupportedException("Remove is invalid for a read-only collection");
+        throw new NotSupportedException(
+              "Remove is invalid for a read-only collection");
     }
 
     /// <summary>
@@ -52,7 +56,8 @@ namespace CSLA
     protected override void OnClear()
     {
       if(locked)
-        throw new NotSupportedException("Clear is invalid for a read-only collection");
+        throw new NotSupportedException(
+              "Clear is invalid for a read-only collection");
     }
 
     /// <summary>
@@ -62,12 +67,13 @@ namespace CSLA
     protected override void OnSet(int index, Object oldValue, Object newValue)
     {
       if(locked)
-        throw new NotSupportedException("Items can not be changed in a read-only collection");
+        throw new NotSupportedException(
+              "Items can not be changed in a read-only collection");
     }
 
-#endregion
+    #endregion
 
-#region ICloneable
+    #region ICloneable
 
     /// <summary>
     /// Creates a clone of the object.
@@ -84,7 +90,7 @@ namespace CSLA
       return formatter.Deserialize(buffer);
     }
 
-#endregion
+    #endregion
 
 #region Data Access
 

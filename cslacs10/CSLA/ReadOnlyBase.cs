@@ -16,7 +16,7 @@ namespace CSLA
   /// </remarks>
   abstract public class ReadOnlyBase : ICloneable
   {
-#region ICloneable
+    #region ICloneable
 
     /// <summary>
     /// Creates a clone of the object.
@@ -33,7 +33,7 @@ namespace CSLA
       return formatter.Deserialize(buffer);
     }
 
-#endregion
+    #endregion
 
 #region Data Access
 

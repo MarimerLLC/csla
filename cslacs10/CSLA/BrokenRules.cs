@@ -8,7 +8,7 @@ namespace CSLA
   [Serializable()]
   public class BrokenRules
 	{
-#region Rule structure
+    #region Rule structure
 
     /// <summary>
     /// Stores details about a specific broken business rule.
@@ -74,9 +74,9 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
-#region RulesCollection
+    #region RulesCollection
 
     /// <summary>
     /// A collection of currently broken rules.
@@ -168,11 +168,12 @@ namespace CSLA
       protected override void OnSet(int index, Object oldValue, Object newValue)
       {
         if(!_legal)
-          throw new NotSupportedException("Changing an element is an invalid operation");
+          throw new NotSupportedException(
+                                  "Changing an element is an invalid operation");
       }
     }
 
-#endregion
+    #endregion
     
     RulesCollection _rules = new RulesCollection();
 

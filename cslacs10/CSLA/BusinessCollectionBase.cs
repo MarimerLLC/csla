@@ -23,9 +23,10 @@ namespace CSLA
   /// </para>
   /// </remarks>
   [Serializable()]
-  abstract public class BusinessCollectionBase : CSLA.Core.BindableCollectionBase, ICloneable
+  abstract public class BusinessCollectionBase : CSLA.Core.BindableCollectionBase, 
+                                                 ICloneable
   {
-#region Contains
+    #region Contains
 
     /// <summary>
     /// Used to see if the collection contains a specific child object.
@@ -61,9 +62,9 @@ namespace CSLA
       return false;
     }
 
-#endregion
+    #endregion
 
-#region IsDirty, IsValid
+    #region IsDirty, IsValid
 
     /// <summary>
     /// Returns True if this object's data has been changed.
@@ -140,9 +141,9 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
     
-#region Begin/Cancel/ApplyEdit
+    #region Begin/Cancel/ApplyEdit
 
     /// <summary>
     /// Starts a nested edit on the object.
@@ -167,7 +168,8 @@ namespace CSLA
     public void BeginEdit()
     {
       if(this.IsChild)
-        throw new NotSupportedException("BeginEdit is not valid on a child object");
+        throw new NotSupportedException(
+                                "BeginEdit is not valid on a child object");
 
       CopyState();
     }
@@ -188,7 +190,8 @@ namespace CSLA
     public void CancelEdit()
     {
       if(this.IsChild)
-        throw new NotSupportedException("CancelEdit is not valid on a child object");
+        throw new NotSupportedException(
+                                "CancelEdit is not valid on a child object");
 
       UndoChanges();
     }
@@ -208,14 +211,15 @@ namespace CSLA
     public void ApplyEdit()
     {
       if(this.IsChild)
-        throw new NotSupportedException("ApplyEdit is not valid on a child object");
+        throw new NotSupportedException(
+                                "ApplyEdit is not valid on a child object");
 
       AcceptChanges();
     }
 
-#endregion
+    #endregion
 
-#region N-level undo
+    #region N-level undo
 
     internal void CopyState()
     {
@@ -290,9 +294,9 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
-#region Delete and Undelete child
+    #region Delete and Undelete child
 
     private void DeleteChild(BusinessBase child)
     {
@@ -316,9 +320,9 @@ namespace CSLA
       deletedList.Remove(child);
     }
 
-#endregion
+    #endregion
 
-#region DeletedCollection
+    #region DeletedCollection
 
     /// <summary>
     /// A collection containing all child objects marked
@@ -365,9 +369,9 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
-#region Insert, Remove, Clear
+    #region Insert, Remove, Clear
 
     /// <summary>
     /// This method is called by a child object when it
@@ -418,16 +422,16 @@ namespace CSLA
       base.OnClear();
     }
 
-#endregion
+    #endregion
 
-#region Edit level tracking
+    #region Edit level tracking
 
     // keep track of how many edit levels we have
     int _EditLevel;
 
-#endregion
+    #endregion
 
-#region IsChild
+    #region IsChild
 
     bool _IsChild = false;
 
@@ -465,9 +469,9 @@ namespace CSLA
       _IsChild = true;
     }
 
-#endregion
+    #endregion
 
-#region ICloneable
+    #region ICloneable
 
     /// <summary>
     /// Creates a clone of the object.
@@ -484,7 +488,7 @@ namespace CSLA
       return formatter.Deserialize(buffer);
     }
 
-#endregion
+    #endregion
 
 #region Data Access
 

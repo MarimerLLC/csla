@@ -21,9 +21,10 @@ namespace CSLA
   /// </para>
   /// </remarks>
   [Serializable()]
-  abstract public class BusinessBase : Core.UndoableBase, IEditableObject, ICloneable
+  abstract public class BusinessBase : Core.UndoableBase, 
+                                       IEditableObject, ICloneable
   {
-#region IsNew, IsDeleted, IsDirty
+    #region IsNew, IsDeleted, IsDirty
 
     // keep track of whether we are new, deleted or dirty
     bool _isNew = true;
@@ -177,9 +178,9 @@ namespace CSLA
       OnIsDirtyChanged();
     }
 
-#endregion
+    #endregion
 
-#region IEditableObject
+    #region IEditableObject
 
     [NotUndoable()]
     BusinessCollectionBase _parent;
@@ -258,9 +259,9 @@ namespace CSLA
         ApplyEdit();
     }
 
-#endregion
+    #endregion
 
-#region Begin/Cancel/ApplyEdit
+    #region Begin/Cancel/ApplyEdit
 
     /// <summary>
     /// Starts a nested edit on the object.
@@ -318,9 +319,9 @@ namespace CSLA
       AcceptChanges();
     }
 
-#endregion
+    #endregion
 
-#region IsChild
+    #region IsChild
 
     [NotUndoable()]
     bool _isChild = false;
@@ -355,9 +356,9 @@ namespace CSLA
       _isChild = true;
     }
 
-#endregion
+    #endregion
 
-#region Delete
+    #region Delete
 
     /// <summary>
     /// Marks the object for deletion. The object will be deleted as part of the
@@ -381,7 +382,8 @@ namespace CSLA
     {
       if(this.IsChild)
         throw new NotSupportedException(
-          "Can not directly mark a child object for deletion - use its parent collection");
+          "Can not directly mark a child object for deletion " +
+          "- use its parent collection");
 
       MarkDeleted();
     }
@@ -391,14 +393,15 @@ namespace CSLA
     internal void DeleteChild()
     {
       if(!this.IsChild)
-        throw new NotSupportedException("Invalid for root objects - use Delete instead");
+        throw new NotSupportedException("Invalid for root objects " +
+          "- use Delete instead");
     
       MarkDeleted();
     }
 
 #endregion
 
-#region Edit Level Tracking (child only)
+    #region Edit Level Tracking (child only)
 
     // we need to keep track of the edit
     // level when we were added so if the user
@@ -419,28 +422,28 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
-#region ICloneable
+    #region ICloneable
 
-  /// <summary>
-  /// Creates a clone of the object.
-  /// </summary>
-  /// <returns>A new object containing the exact data of the original object.</returns>
-  public Object Clone()
-{
+    /// <summary>
+    /// Creates a clone of the object.
+    /// </summary>
+    /// <returns>A new object containing the exact data of the original object.</returns>
+    public Object Clone()
+    {
 
-  MemoryStream buffer = new MemoryStream();
-  BinaryFormatter formatter = new BinaryFormatter();
+      MemoryStream buffer = new MemoryStream();
+      BinaryFormatter formatter = new BinaryFormatter();
 
-  formatter.Serialize(buffer, this);
-  buffer.Position = 0;
-  return formatter.Deserialize(buffer);
-}
+      formatter.Serialize(buffer, this);
+      buffer.Position = 0;
+      return formatter.Deserialize(buffer);
+    }
 
-#endregion
+    #endregion
 
-#region BrokenRules, IsValid
+    #region BrokenRules, IsValid
 
     // keep a list of broken rules
     BrokenRules _brokenRules = new BrokenRules();
@@ -506,7 +509,7 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
 #region Data Access
 

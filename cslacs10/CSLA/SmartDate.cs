@@ -11,12 +11,12 @@ namespace CSLA
   /// data type and the design choices behind it.
   /// </remarks>
   [Serializable()]
-  sealed public class SmartDate : IComparable
+  sealed public class SmartDate //: IComparable
   {
     DateTime _date;
     bool _emptyIsMin;
 
-#region Constructors
+    #region Constructors
 
     /// <summary>
     /// Creates a new SmartDate object.
@@ -93,9 +93,9 @@ namespace CSLA
       this.Text = date;
     }
 
-#endregion
+    #endregion
 
-#region Text Support
+    #region Text Support
 
     string _format = "{0:d}";
 
@@ -156,9 +156,9 @@ namespace CSLA
       return this.Text;
     }
 
-#endregion
+    #endregion
 
-#region Date Support
+    #region Date Support
 
     /// <summary>
     /// Gets or sets the date value.
@@ -175,9 +175,9 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
-#region DBValue
+    #region DBValue
 
     /// <summary>
     /// Gets a database-friendly version of the date value.
@@ -207,9 +207,9 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
-#region Empty Dates
+    #region Empty Dates
 
     /// <summary>
     /// Indicates whether this object contains an empty date.
@@ -244,9 +244,9 @@ namespace CSLA
       }
     }
 
-#endregion
+    #endregion
 
-#region Conversion Functions
+    #region Conversion Functions
 
     /// <summary>
     /// Converts a text date representation into a Date value.
@@ -318,7 +318,8 @@ namespace CSLA
     /// <param name="emptyIsMin">
     /// Indicates whether an empty date is the min or max date value.</param>
     /// <returns>Text representation of the date value.</returns>
-    static public string DateToString(DateTime date, string formatString, bool emptyIsMin)
+    static public string DateToString(DateTime date, string formatString, 
+                                      bool emptyIsMin)
     {
       if(emptyIsMin && (date == DateTime.MinValue))
         return string.Empty;
@@ -329,9 +330,9 @@ namespace CSLA
         return string.Format(formatString, date);
     }
 
-#endregion
+    #endregion
 
-#region Manipulation Functions
+    #region Manipulation Functions
 
     /// <summary>
     /// Compares one SmartDate to another.
@@ -353,25 +354,25 @@ namespace CSLA
         return _date.CompareTo(date.Date);
     }
 
-    /// <summary>
-    /// Compares one SmartDate to another.
-    /// </summary>
-    /// <remarks>
-    /// This method works the same as the CompareTo method
-    /// on the Date datetype, with the exception that it
-    /// understands the concept of empty date values.
-    /// </remarks>
-    /// <param name="Value">The date to which we are being compared.</param>
-    /// <returns>
-    /// A value indicating if the comparison date is less 
-    /// than, equal to or greater than this date.</returns>
-    int IComparable.CompareTo(Object date)
-    {
-      if(date.GetType() == typeof(SmartDate))
-        return CompareTo((SmartDate)date);
-      else
-        throw new ArgumentException("Value is not a SmartDate");
-    }
+//    /// <summary>
+//    /// Compares one SmartDate to another.
+//    /// </summary>
+//    /// <remarks>
+//    /// This method works the same as the CompareTo method
+//    /// on the Date datetype, with the exception that it
+//    /// understands the concept of empty date values.
+//    /// </remarks>
+//    /// <param name="Value">The date to which we are being compared.</param>
+//    /// <returns>
+//    /// A value indicating if the comparison date is less 
+//    /// than, equal to or greater than this date.</returns>
+//    int IComparable.CompareTo(Object date)
+//    {
+//      if(date.GetType() == typeof(SmartDate))
+//        return CompareTo((SmartDate)date);
+//      else
+//        throw new ArgumentException("Value is not a SmartDate");
+//    }
 
     /// <summary>
     /// Adds a TimeSpan onto the object.
@@ -389,8 +390,6 @@ namespace CSLA
       _date.Subtract(span);
     }
 
-#endregion
-
-
+    #endregion
   }
 }

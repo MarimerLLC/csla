@@ -134,8 +134,19 @@ Public Class DataPortal
 
   Private Function CreateBusinessObject(ByVal Criteria As Object) As Object
 
-    ' get the type of the actual business object
-    Dim businessType As Type = Criteria.GetType.DeclaringType
+    Dim businessType As Type
+
+    If Criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
+      ' get the type of the actual business object
+      ' from CriteriaBase (using the new scheme)
+      businessType = CType(Criteria, CriteriaBase).ObjectType
+
+    Else
+      ' get the type of the actual business object
+      ' based on the nested class scheme in the book
+      businessType = Criteria.GetType.DeclaringType
+    End If
+
     ' create an instance of the business object
     Return Activator.CreateInstance(businessType, True)
 

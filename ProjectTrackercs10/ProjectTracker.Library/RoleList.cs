@@ -43,7 +43,6 @@ namespace ProjectTracker.Library
 
     #endregion
 
-
     #region Data Access
 
     // called by DataPortal to load data from the database

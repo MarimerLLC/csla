@@ -126,7 +126,7 @@ namespace ProjectTracker.Library
             ProjectInfo info = new ProjectInfo();
             info.ID = dr.GetGuid(0);
             info.Name = dr.GetString(1);
-            List.Add(info);
+            base.InnerList.Add(info);
           }
         }
         finally

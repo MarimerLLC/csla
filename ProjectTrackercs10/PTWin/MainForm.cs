@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Threading;
 using System.Security.Principal;
+using System.Configuration;
 using CSLA.Security;
+using ProjectTracker.Library;
 
 namespace PTWin
 {
@@ -239,10 +241,30 @@ namespace PTWin
       Application.Run(new MainForm());
     }
 
+    #region Load and Exit
+
+    private void MainForm_Load(object sender, System.EventArgs e)
+    {
+      _Main = this;
+
+      if(ConfigurationSettings.AppSettings["Authentication"] == "Windows")
+      {
+        mnuFileLogin.Visible = false;
+        AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+        EnableMenus();
+      }
+      else
+        DoLogin();
+    }
+
     private void mnuFileExit_Click(object sender, System.EventArgs e)
     {
       Close();
     }
+
+    #endregion
+
+    #region Login/Logout/Authorization
 
     private void mnuFileLogin_Click(object sender, System.EventArgs e)
     {
@@ -251,37 +273,7 @@ namespace PTWin
 
     private void mnuFileLogout_Click(object sender, System.EventArgs e)
     {
-    
-    }
-
-    private void mnuProjectNew_Click(object sender, System.EventArgs e)
-    {
-    
-    }
-
-    private void mnuProjectEdit_Click(object sender, System.EventArgs e)
-    {
-    
-    }
-
-    private void mnuProjectRemove_Click(object sender, System.EventArgs e)
-    {
-    
-    }
-
-    private void mnuResourceNew_Click(object sender, System.EventArgs e)
-    {
-    
-    }
-
-    private void mnuResourceEdit_Click(object sender, System.EventArgs e)
-    {
-    
-    }
-
-    private void mnuResourceRemove_Click(object sender, System.EventArgs e)
-    {
-    
+      DoLogout();
     }
 
     void DoLogin()
@@ -315,7 +307,7 @@ namespace PTWin
       // reset to an unauthorized principal
       Thread.CurrentPrincipal = 
         new GenericPrincipal(
-          new GenericIdentity(""), new string[] {});
+        new GenericIdentity(""), new string[] {});
       //mnuAction.Enabled = False
       //mnuReport.Enabled = False
       //mnuBatch.Enabled = False
@@ -329,23 +321,25 @@ namespace PTWin
 
       pnlUser.Text = user.Identity.Name;
 
-//      mnuAction.Enabled = user.Identity.IsAuthenticated;
-//      mnuReport.Enabled = user.Identity.IsAuthenticated;
-//      mnuBatch.Enabled = user.Identity.IsAuthenticated;
+      //      mnuAction.Enabled = user.Identity.IsAuthenticated;
+      //      mnuReport.Enabled = user.Identity.IsAuthenticated;
+      //      mnuBatch.Enabled = user.Identity.IsAuthenticated;
 
       mnuProjectNew.Enabled = user.IsInRole("ProjectManager");
 
       mnuProjectRemove.Enabled = user.IsInRole("ProjectManager") || 
-                                  user.IsInRole("Administrator");
+        user.IsInRole("Administrator");
 
       mnuResourceNew.Enabled = user.IsInRole("ProjectManager") || 
-                                user.IsInRole("Supervisor");
+        user.IsInRole("Supervisor");
 
-        mnuResourceRemove.Enabled = user.IsInRole("ProjectManager") || 
-                                      user.IsInRole("Supervisor") ||
-                                      user.IsInRole("Administrator");
+      mnuResourceRemove.Enabled = user.IsInRole("ProjectManager") || 
+        user.IsInRole("Supervisor") ||
+        user.IsInRole("Administrator");
 
     }
+
+    #endregion
 
     #region Status
 
@@ -358,10 +352,101 @@ namespace PTWin
 
     #endregion
 
-    private void MainForm_Load(object sender, System.EventArgs e)
+    #region Projects
+
+    private void mnuProjectNew_Click(object sender, System.EventArgs e)
     {
-      _Main = this;
+      Cursor.Current = Cursors.WaitCursor;
+      ProjectEdit frm = new ProjectEdit();
+      frm.MdiParent = this;
+      frm.Project = Project.NewProject();
+      Cursor.Current = Cursors.Default;
+      frm.Show();
     }
+
+    private void mnuProjectEdit_Click(object sender, System.EventArgs e)
+    {
+      ProjectSelect dlg = new ProjectSelect();
+      dlg.Text = "Edit Project";
+      dlg.ShowDialog(this);
+
+      string result = dlg.Result;
+      if(result.Length > 0)
+        try
+        {
+          Cursor.Current = Cursors.WaitCursor;
+          Guid id = new Guid(result);
+          Project obj = Project.GetProject(id);
+
+          ProjectEdit frm = new ProjectEdit();
+          frm.MdiParent = this;
+          frm.Project = obj;
+          Cursor.Current = Cursors.Default;
+          frm.Show();
+        }
+        catch(Exception ex)
+        {
+          Cursor.Current = Cursors.Default;
+          MessageBox.Show("Error loading project\n" + ex.ToString(),
+            "Edit Project", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    private void mnuProjectRemove_Click(object sender, System.EventArgs e)
+    {
+      ProjectSelect dlg = new ProjectSelect();
+      dlg.Text = "Remove Project";
+      dlg.ShowDialog(this);
+
+      string result = dlg.Result;
+      if(result.Length > 0)
+        if(MessageBox.Show("Remove project " + result,
+                            "Remove Project",MessageBoxButtons.YesNo, 
+                            MessageBoxIcon.Question) == DialogResult.Yes)
+          try
+          {
+            Cursor.Current = Cursors.WaitCursor;
+            pnlStatus.Text = "Deleting project...";
+
+            Guid id = new Guid(result);
+            Project.DeleteProject(id);
+
+            Cursor.Current = Cursors.Default;
+            MessageBox.Show("Project deleted",
+              "Project Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          }
+          catch(Exception ex)
+          {
+            Cursor.Current = Cursors.Default;
+            MessageBox.Show("Error deleting project\n" + ex.ToString(),
+              "Edit Project", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          }
+          finally
+          {
+            pnlStatus.Text = string.Empty;
+          }
+    }
+
+    #endregion
+
+    #region Resources
+
+    private void mnuResourceNew_Click(object sender, System.EventArgs e)
+    {
+    
+    }
+
+    private void mnuResourceEdit_Click(object sender, System.EventArgs e)
+    {
+    
+    }
+
+    private void mnuResourceRemove_Click(object sender, System.EventArgs e)
+    {
+    
+    }
+
+    #endregion
 
 	}
 }

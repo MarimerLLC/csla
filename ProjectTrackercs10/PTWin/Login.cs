@@ -66,7 +66,7 @@ namespace PTWin
       // 
       // label1
       // 
-      this.label1.Location = new System.Drawing.Point(280, 88);
+      this.label1.Location = new System.Drawing.Point(280, 40);
       this.label1.Name = "label1";
       this.label1.TabIndex = 0;
       this.label1.Text = "Username";
@@ -75,7 +75,7 @@ namespace PTWin
       // 
       this.txtUsername.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         | System.Windows.Forms.AnchorStyles.Right);
-      this.txtUsername.Location = new System.Drawing.Point(352, 88);
+      this.txtUsername.Location = new System.Drawing.Point(352, 40);
       this.txtUsername.Name = "txtUsername";
       this.txtUsername.Size = new System.Drawing.Size(184, 20);
       this.txtUsername.TabIndex = 1;
@@ -84,7 +84,7 @@ namespace PTWin
       // 
       // label2
       // 
-      this.label2.Location = new System.Drawing.Point(280, 120);
+      this.label2.Location = new System.Drawing.Point(280, 72);
       this.label2.Name = "label2";
       this.label2.TabIndex = 2;
       this.label2.Text = "Password";
@@ -93,8 +93,9 @@ namespace PTWin
       // 
       this.txtPassword.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         | System.Windows.Forms.AnchorStyles.Right);
-      this.txtPassword.Location = new System.Drawing.Point(352, 120);
+      this.txtPassword.Location = new System.Drawing.Point(352, 72);
       this.txtPassword.Name = "txtPassword";
+      this.txtPassword.PasswordChar = '*';
       this.txtPassword.Size = new System.Drawing.Size(184, 20);
       this.txtPassword.TabIndex = 3;
       this.txtPassword.Text = "";
@@ -104,7 +105,7 @@ namespace PTWin
       this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Left;
       this.pictureBox1.Image = ((System.Drawing.Bitmap)(resources.GetObject("pictureBox1.Image")));
       this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(266, 246);
+      this.pictureBox1.Size = new System.Drawing.Size(266, 176);
       this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
       this.pictureBox1.TabIndex = 4;
       this.pictureBox1.TabStop = false;
@@ -113,7 +114,7 @@ namespace PTWin
       // 
       this.btnLogin.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
       this.btnLogin.Enabled = false;
-      this.btnLogin.Location = new System.Drawing.Point(376, 160);
+      this.btnLogin.Location = new System.Drawing.Point(376, 112);
       this.btnLogin.Name = "btnLogin";
       this.btnLogin.TabIndex = 5;
       this.btnLogin.Text = "&Login";
@@ -123,7 +124,7 @@ namespace PTWin
       // 
       this.btnCancel.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
       this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnCancel.Location = new System.Drawing.Point(464, 160);
+      this.btnCancel.Location = new System.Drawing.Point(464, 112);
       this.btnCancel.Name = "btnCancel";
       this.btnCancel.TabIndex = 6;
       this.btnCancel.Text = "Cancel";
@@ -134,7 +135,7 @@ namespace PTWin
       this.AcceptButton = this.btnLogin;
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
       this.CancelButton = this.btnCancel;
-      this.ClientSize = new System.Drawing.Size(544, 246);
+      this.ClientSize = new System.Drawing.Size(544, 176);
       this.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                   this.btnCancel,
                                                                   this.btnLogin,
@@ -145,6 +146,7 @@ namespace PTWin
                                                                   this.label1});
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Name = "Login";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Login";
       this.ResumeLayout(false);
 

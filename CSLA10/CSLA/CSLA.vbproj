@@ -19,7 +19,7 @@
                 OutputType = "Library"
                 OptionCompare = "Binary"
                 OptionExplicit = "On"
-                OptionStrict = "Off"
+                OptionStrict = "On"
                 RootNamespace = "CSLA"
                 StartupObject = ""
             >

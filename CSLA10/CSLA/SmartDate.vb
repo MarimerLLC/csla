@@ -8,6 +8,9 @@
 ''' </remarks>
 <Serializable()> _
 Public NotInheritable Class SmartDate
+
+  Implements IComparable
+
   Private mDate As Date
   Private mEmptyIsMin As Boolean
 
@@ -255,6 +258,28 @@ Public NotInheritable Class SmartDate
     Else
       Return mDate.CompareTo(Value.Date)
     End If
+  End Function
+
+  ''' <summary>
+  ''' Compares one SmartDate to another.
+  ''' </summary>
+  ''' <remarks>
+  ''' This method works the same as the CompareTo method
+  ''' on the Date datetype, with the exception that it
+  ''' understands the concept of empty date values.
+  ''' </remarks>
+  ''' <param name="Value">The date to which we are being compared.</param>
+  ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
+  Public Function CompareTo(ByVal Value As Object) As Integer _
+      Implements IComparable.CompareTo
+
+    If TypeOf Value Is SmartDate Then
+      Return CompareTo(DirectCast(Value, SmartDate))
+
+    Else
+      Throw New ArgumentException("Value is not a SmartDate")
+    End If
+
   End Function
 
   ''' <summary>

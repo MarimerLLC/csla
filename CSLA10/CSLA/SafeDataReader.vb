@@ -129,18 +129,16 @@ Namespace Data
     ''' Gets a <see cref="T:CSLA.SmartDate" /> from the datareader.
     ''' </summary>
     ''' <remarks>
-    ''' A null is converted into either the min or max possible date
-    ''' depending on the MinIsEmpty parameter. See Chapter 5 for more
-    ''' details on the SmartDate class.
+    ''' A null is converted into the min possible date
+    ''' See Chapter 5 for more details on the SmartDate class.
     ''' </remarks>
     ''' <param name="i">The column number within the datareader.</param>
-    ''' <param name="MinIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
-    Public Function GetSmartDate(ByVal i As Integer, Optional ByVal MinIsEmpty As Boolean = True) As SmartDate
+    Public Function GetSmartDate(ByVal i As Integer) As SmartDate
       If mDataReader.IsDBNull(i) Then
-        Return New SmartDate(MinIsEmpty)
+        Return New SmartDate(True)
 
       Else
-        Return New SmartDate(mDataReader.GetDateTime(i), MinIsEmpty)
+        Return New SmartDate(mDataReader.GetDateTime(i), True)
       End If
     End Function
 
@@ -154,7 +152,39 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">The column number within the datareader.</param>
     ''' <param name="MinIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
-    Public Function GetSmartDate(ByVal Name As String, Optional ByVal MinIsEmpty As Boolean = True) As SmartDate
+    Public Function GetSmartDate(ByVal i As Integer, ByVal MinIsEmpty As Boolean) As SmartDate
+      If mDataReader.IsDBNull(i) Then
+        Return New SmartDate(MinIsEmpty)
+
+      Else
+        Return New SmartDate(mDataReader.GetDateTime(i), MinIsEmpty)
+      End If
+    End Function
+
+    ''' <summary>
+    ''' Gets a <see cref="T:CSLA.SmartDate" /> from the datareader.
+    ''' </summary>
+    ''' <remarks>
+    ''' A null is converted into min possible date
+    ''' See Chapter 5 for more details on the SmartDate class.
+    ''' </remarks>
+    ''' <param name="i">The column number within the datareader.</param>
+    Public Function GetSmartDate(ByVal Name As String) As SmartDate
+      mIndex = Me.GetOrdinal(Name)
+      Return Me.GetSmartDate(mIndex, True)
+    End Function
+
+    ''' <summary>
+    ''' Gets a <see cref="T:CSLA.SmartDate" /> from the datareader.
+    ''' </summary>
+    ''' <remarks>
+    ''' A null is converted into either the min or max possible date
+    ''' depending on the MinIsEmpty parameter. See Chapter 5 for more
+    ''' details on the SmartDate class.
+    ''' </remarks>
+    ''' <param name="i">The column number within the datareader.</param>
+    ''' <param name="MinIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
+    Public Function GetSmartDate(ByVal Name As String, ByVal MinIsEmpty As Boolean) As SmartDate
       mIndex = Me.GetOrdinal(Name)
       Return Me.GetSmartDate(mIndex, MinIsEmpty)
     End Function

@@ -29,10 +29,10 @@ Public Class Project
     Set(ByVal Value As String)
       If mName <> Value Then
         mName = Value
-        MarkDirty()
         BrokenRules.Assert("NameLen", "Name too long", Len(Value) > 50)
         BrokenRules.Assert("NameRequired", "Project name required", _
                            Len(Value) = 0)
+        MarkDirty()
       End If
     End Set
   End Property
@@ -44,7 +44,6 @@ Public Class Project
     Set(ByVal Value As String)
       If mStarted.Text <> Value Then
         mStarted.Text = Value
-        MarkDirty()
         If mEnded.IsEmpty Then
           BrokenRules.Assert("DateCol", "", False)
         Else
@@ -52,6 +51,7 @@ Public Class Project
                              "Start date must be prior to end date", _
                              mStarted.CompareTo(mEnded) > 0)
         End If
+        MarkDirty()
       End If
     End Set
   End Property
@@ -63,7 +63,6 @@ Public Class Project
     Set(ByVal Value As String)
       If mEnded.Text <> Value Then
         mEnded.Text = Value
-        MarkDirty()
         If mEnded.IsEmpty Then
           BrokenRules.Assert("DateCol", "", False)
         Else
@@ -77,6 +76,7 @@ Public Class Project
                               mEnded.CompareTo(mStarted) < 0)
           End If
         End If
+        MarkDirty()
       End If
     End Set
   End Property

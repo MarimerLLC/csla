@@ -27,8 +27,8 @@ Public Class Resource
     Set(ByVal Value As String)
       If mLastName <> Value Then
         mLastName = Value
-        MarkDirty()
         BrokenRules.Assert("LNameLen", "Value too long", Len(Value) > 50)
+        MarkDirty()
       End If
     End Set
   End Property
@@ -40,8 +40,8 @@ Public Class Resource
     Set(ByVal Value As String)
       If mFirstName <> Value Then
         mFirstName = Value
-        MarkDirty()
         BrokenRules.Assert("FNameLen", "Value too long", Len(Value) > 50)
+        MarkDirty()
       End If
     End Set
   End Property

@@ -188,7 +188,7 @@ Public MustInherit Class BusinessBase
   ''' being savable and not savable. 
   ''' </remarks>
   ''' <returns>A value indicating if this object is new.</returns>
-  Public ReadOnly Property IsSavable() As Boolean
+  Public Overridable ReadOnly Property IsSavable() As Boolean
     Get
       Return IsDirty AndAlso IsValid
     End Get

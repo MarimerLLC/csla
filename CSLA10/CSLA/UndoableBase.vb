@@ -92,11 +92,21 @@ Namespace Core
 
       Loop Until currentType Is GetType(UndoableBase)
 
+      ' tell child objects they're about to be serialized
+      For Each child As Object In state
+        Serialization.SerializationNotification.OnSerializing(child)
+      Next
+
       ' serialize the state and stack it
-      Dim buffer As New MemoryStream()
-      Dim formatter As New BinaryFormatter()
+      Dim buffer As New MemoryStream
+      Dim formatter As New BinaryFormatter
       formatter.Serialize(buffer, state)
       mStateStack.Push(buffer.ToArray)
+
+      ' tell child objects they've been serialized
+      For Each child As Object In state
+        Serialization.SerializationNotification.OnSerialized(child)
+      Next
 
     End Sub
 
@@ -119,6 +129,11 @@ Namespace Core
         buffer.Position = 0
         Dim formatter As New BinaryFormatter()
         Dim state As Hashtable = CType(formatter.Deserialize(buffer), Hashtable)
+
+        ' tell child objects they've been deserialized
+        For Each child As Object In state
+          Serialization.SerializationNotification.OnDeserialized(child)
+        Next
 
         Dim currentType As Type = Me.GetType
         Dim fields() As FieldInfo

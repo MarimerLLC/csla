@@ -98,11 +98,23 @@ namespace CSLA.Core
         currentType = currentType.BaseType;
       } while(currentType != typeof(UndoableBase));
 
+      // tell child objects they're about to be serialized
+      foreach(object child in state)
+      {
+        Serialization.SerializationNotification.OnSerializing(child);
+      }
+
       // serialize the state and stack it
       MemoryStream buffer = new MemoryStream();
       BinaryFormatter formatter = new BinaryFormatter();
       formatter.Serialize(buffer, state);
       _stateStack.Push(buffer.ToArray());
+
+      // tell child objects they've been serialized
+      foreach(object child in state)
+      {
+        Serialization.SerializationNotification.OnSerialized(child);
+      }
     }
 
     /// <summary>
@@ -126,6 +138,12 @@ namespace CSLA.Core
         buffer.Position = 0;
         BinaryFormatter formatter = new BinaryFormatter();
         Hashtable state = (Hashtable)(formatter.Deserialize(buffer));
+
+        // tell child objects they've been deserialized
+        foreach(object child in state)
+        {
+          Serialization.SerializationNotification.OnDeserialized(child);
+        }
 
         Type currentType = this.GetType();
         FieldInfo[] fields;

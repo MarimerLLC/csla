@@ -181,6 +181,12 @@ namespace CSLA
         // that uses the binary formatter
         Hashtable properties = new Hashtable();
         properties["name"] = "HttpBinary";
+        if(AUTHENTICATION() == "Windows")
+        {
+          // make sure we pass the user's Windows credentials
+          // to the server
+          properties["useDefaultCredentials"] = true;
+        }
 
         BinaryClientFormatterSinkProvider formatter = new BinaryClientFormatterSinkProvider();
 

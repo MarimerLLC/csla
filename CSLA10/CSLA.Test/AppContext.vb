@@ -115,5 +115,103 @@ Public Class AppContext
 
   End Sub
 
+  <Test()> _
+  Public Sub FailCreateContext()
+    Session.Clear()
+
+    ApplicationContext.Clear()
+
+    Dim root As ExceptionRoot
+    Try
+      root = ExceptionRoot.NewExceptionRoot()
+      Assert.Fail("Exception didn't occur")
+
+    Catch ex As DataPortalException
+      root = CType(ex.BusinessObject, ExceptionRoot)
+      Assert.AreEqual("Fail create", ex.GetBaseException.Message, "Base exception message incorrect")
+      Assert.AreEqual("DataPortal.Create failed", ex.Message, "Exception message incorrect")
+    End Try
+
+    Assert.AreEqual("<new>", root.Data, "Business object not returned")
+    Assert.AreEqual("create", ApplicationContext.GlobalContext.Item("create"), "GlobalContext not preserved")
+
+  End Sub
+
+  <Test()> _
+  Public Sub FailFetchContext()
+    Session.Clear()
+
+    ApplicationContext.Clear()
+
+    Dim root As ExceptionRoot
+    Try
+      root = ExceptionRoot.GetExceptionRoot("fail")
+      Assert.Fail("Exception didn't occur")
+
+    Catch ex As DataPortalException
+      root = CType(ex.BusinessObject, ExceptionRoot)
+      Assert.AreEqual("Fail fetch", ex.GetBaseException.Message, "Base exception message incorrect")
+      Assert.AreEqual("DataPortal.Fetch failed", ex.Message, "Exception message incorrect")
+    End Try
+
+    Assert.AreEqual("fail", root.Data, "Business object not returned")
+    Assert.AreEqual("create", ApplicationContext.GlobalContext.Item("create"), "GlobalContext not preserved")
+
+  End Sub
+
+  <Test()> _
+  Public Sub FailUpdateContext()
+    Session.Clear()
+
+    ApplicationContext.Clear()
+
+    Dim root As ExceptionRoot
+    Try
+      root = ExceptionRoot.NewExceptionRoot()
+      Assert.Fail("Exception didn't occur")
+
+    Catch ex As DataPortalException
+      root = CType(ex.BusinessObject, ExceptionRoot)
+      Assert.AreEqual("Fail create", ex.GetBaseException.Message, "Base exception message incorrect")
+      Assert.AreEqual("DataPortal.Create failed", ex.Message, "Exception message incorrect")
+    End Try
+
+    root.Data = "boom"
+    Try
+      root = CType(root.Save, ExceptionRoot)
+      Assert.Fail("Exception didn't occur")
+
+    Catch ex As DataPortalException
+      root = CType(ex.BusinessObject, ExceptionRoot)
+      Assert.AreEqual("Fail update", ex.GetBaseException.Message, "Base exception message incorrect")
+      Assert.AreEqual("DataPortal.Update failed", ex.Message, "Exception message incorrect")
+    End Try
+
+    Assert.AreEqual("boom", root.Data, "Business object not returned")
+    Assert.AreEqual("create", ApplicationContext.GlobalContext.Item("create"), "GlobalContext not preserved")
+
+  End Sub
+
+  <Test()> _
+Public Sub FailDeleteContext()
+    Session.Clear()
+
+    ApplicationContext.Clear()
+
+    Dim root As ExceptionRoot
+    Try
+      ExceptionRoot.DeleteExceptionRoot("fail")
+      Assert.Fail("Exception didn't occur")
+
+    Catch ex As DataPortalException
+      root = CType(ex.BusinessObject, ExceptionRoot)
+      Assert.AreEqual("Fail delete", ex.GetBaseException.Message, "Base exception message incorrect")
+      Assert.AreEqual("DataPortal.Delete failed", ex.Message, "Exception message incorrect")
+    End Try
+
+    Assert.IsNull(root, "Business object returned")
+    Assert.AreEqual("create", ApplicationContext.GlobalContext.Item("create"), "GlobalContext not preserved")
+
+  End Sub
 
 End Class

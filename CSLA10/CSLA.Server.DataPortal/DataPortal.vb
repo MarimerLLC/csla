@@ -25,28 +25,37 @@ Namespace Server
     ''' <returns>A populated business object.</returns>
     Public Function Create(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
 
-      SetContext(context)
+      Dim obj As Object
 
-      ' create an instance of the business object
-      Dim obj As Object = CreateBusinessObject(Criteria)
+      Try
+        SetContext(context)
 
-      ' tell the business object we're about to make a DataPortal_xyz call
-      CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
+        ' create an instance of the business object
+        obj = CreateBusinessObject(Criteria)
 
-      ' tell the business object to fetch its data
-      CallMethod(obj, "DataPortal_Create", Criteria)
+        ' tell the business object we're about to make a DataPortal_xyz call
+        CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
 
-      ' tell the business object the DataPortal_xyz call is complete
-      CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
+        ' tell the business object to fetch its data
+        CallMethod(obj, "DataPortal_Create", Criteria)
 
-      ' return the populated business object as a result
-      If context.IsRemotePortal Then
-        Serialization.SerializationNotification.OnSerializing(obj)
-      End If
+        ' tell the business object the DataPortal_xyz call is complete
+        CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
 
-      Dim result As New DataPortalResult(obj)
-      ClearContext(context)
-      Return result
+        ' return the populated business object as a result
+        If context.IsRemotePortal Then
+          Serialization.SerializationNotification.OnSerializing(obj)
+        End If
+
+        Dim result As New DataPortalResult(obj)
+        ClearContext(context)
+        Return result
+
+      Catch ex As Exception
+        Dim result As New DataPortalResult(obj)
+        ClearContext(context)
+        Throw New DataPortalException("DataPortal.Create " & GetResourceString("FailedOnServer"), ex, result)
+      End Try
 
     End Function
 
@@ -58,28 +67,37 @@ Namespace Server
     ''' <returns>A populated business object.</returns>
     Public Function Fetch(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
 
-      SetContext(context)
+      Dim obj As Object
 
-      ' create an instance of the business object
-      Dim obj As Object = CreateBusinessObject(Criteria)
+      Try
+        SetContext(context)
 
-      ' tell the business object we're about to make a DataPortal_xyz call
-      CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
+        ' create an instance of the business object
+        obj = CreateBusinessObject(Criteria)
 
-      ' tell the business object to fetch its data
-      CallMethod(obj, "DataPortal_Fetch", Criteria)
+        ' tell the business object we're about to make a DataPortal_xyz call
+        CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
 
-      ' tell the business object the DataPortal_xyz call is complete
-      CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
+        ' tell the business object to fetch its data
+        CallMethod(obj, "DataPortal_Fetch", Criteria)
 
-      ' return the populated business object as a result
-      If context.IsRemotePortal Then
-        Serialization.SerializationNotification.OnSerializing(obj)
-      End If
+        ' tell the business object the DataPortal_xyz call is complete
+        CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
 
-      Dim result As New DataPortalResult(obj)
-      ClearContext(context)
-      Return result
+        ' return the populated business object as a result
+        If context.IsRemotePortal Then
+          Serialization.SerializationNotification.OnSerializing(obj)
+        End If
+
+        Dim result As New DataPortalResult(obj)
+        ClearContext(context)
+        Return result
+
+      Catch ex As Exception
+        Dim result As New DataPortalResult(obj)
+        ClearContext(context)
+        Throw New DataPortalException("DataPortal.Fetch " & GetResourceString("FailedOnServer"), ex, result)
+      End Try
 
     End Function
 
@@ -91,28 +109,35 @@ Namespace Server
     ''' <returns>A reference to the newly updated object.</returns>
     Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As Object
 
-      SetContext(context)
+      Try
+        SetContext(context)
 
-      If context.IsRemotePortal Then
-        Serialization.SerializationNotification.OnDeserialized(obj)
-      End If
+        If context.IsRemotePortal Then
+          Serialization.SerializationNotification.OnDeserialized(obj)
+        End If
 
-      ' tell the business object we're about to make a DataPortal_xyz call
-      CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
+        ' tell the business object we're about to make a DataPortal_xyz call
+        CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
 
-      ' tell the business object to update itself
-      CallMethod(obj, "DataPortal_Update")
+        ' tell the business object to update itself
+        CallMethod(obj, "DataPortal_Update")
 
-      ' tell the business object the DataPortal_xyz call is complete
-      CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
+        ' tell the business object the DataPortal_xyz call is complete
+        CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
 
-      If context.IsRemotePortal Then
-        Serialization.SerializationNotification.OnSerializing(obj)
-      End If
+        If context.IsRemotePortal Then
+          Serialization.SerializationNotification.OnSerializing(obj)
+        End If
 
-      Dim result As New DataPortalResult(obj)
-      ClearContext(context)
-      Return result
+        Dim result As New DataPortalResult(obj)
+        ClearContext(context)
+        Return result
+
+      Catch ex As Exception
+        Dim result As New DataPortalResult(obj)
+        ClearContext(context)
+        Throw New DataPortalException("DataPortal.Update " & GetResourceString("FailedOnServer"), ex, result)
+      End Try
 
     End Function
 
@@ -123,23 +148,32 @@ Namespace Server
     ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
     Public Function Delete(ByVal Criteria As Object, ByVal context As DataPortalContext) As Object
 
-      SetContext(context)
+      Dim obj As Object
 
-      ' create an instance of the business object
-      Dim obj As Object = CreateBusinessObject(Criteria)
+      Try
+        SetContext(context)
 
-      ' tell the business object we're about to make a DataPortal_xyz call
-      CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
+        ' create an instance of the business object
+        obj = CreateBusinessObject(Criteria)
 
-      ' tell the business object to delete itself
-      CallMethod(obj, "DataPortal_Delete", Criteria)
+        ' tell the business object we're about to make a DataPortal_xyz call
+        CallMethod(obj, "DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context))
 
-      ' tell the business object the DataPortal_xyz call is complete
-      CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
+        ' tell the business object to delete itself
+        CallMethod(obj, "DataPortal_Delete", Criteria)
 
-      Dim result As New DataPortalResult
-      ClearContext(context)
-      Return result
+        ' tell the business object the DataPortal_xyz call is complete
+        CallMethod(obj, "DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context))
+
+        Dim result As New DataPortalResult
+        ClearContext(context)
+        Return result
+
+      Catch ex As Exception
+        Dim result As New DataPortalResult
+        ClearContext(context)
+        Throw New DataPortalException("DataPortal.Delete " & GetResourceString("FailedOnServer"), ex, result)
+      End Try
 
     End Function
 
@@ -259,7 +293,7 @@ Namespace Server
         result = info.Invoke(obj, params)
 
       Catch e As Exception
-        Throw e.InnerException
+        Throw New CallMethodException(info.Name & " method call failed", e.InnerException)
       End Try
       Return result
 

@@ -49,12 +49,21 @@ Public Class DataPortal
 
     RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
-    If IsTransactionalMethod(method) Then
-      result = CType(ServicedPortal(forceLocal).Create(Criteria, dpContext), Server.DataPortalResult)
+    Try
+      If IsTransactionalMethod(method) Then
+        result = CType(ServicedPortal(forceLocal).Create(Criteria, dpContext), Server.DataPortalResult)
 
-    Else
-      result = CType(Portal(forceLocal).Create(Criteria, dpContext), Server.DataPortalResult)
-    End If
+      Else
+        result = CType(Portal(forceLocal).Create(Criteria, dpContext), Server.DataPortalResult)
+      End If
+
+    Catch ex As Server.DataPortalException
+      result = ex.Result
+      If isRemotePortal Then
+        RestoreContext(result)
+      End If
+      Throw New DataPortalException("DataPortal.Create " & GetResourceString("Failed"), ex.InnerException, result.ReturnObject)
+    End Try
 
     If isRemotePortal Then
       RestoreContext(result)
@@ -85,12 +94,21 @@ Public Class DataPortal
 
     RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
-    If IsTransactionalMethod(method) Then
-      result = CType(ServicedPortal(forceLocal).Fetch(Criteria, dpContext), Server.DataPortalResult)
+    Try
+      If IsTransactionalMethod(method) Then
+        result = CType(ServicedPortal(forceLocal).Fetch(Criteria, dpContext), Server.DataPortalResult)
 
-    Else
-      result = CType(Portal(forceLocal).Fetch(Criteria, dpContext), Server.DataPortalResult)
-    End If
+      Else
+        result = CType(Portal(forceLocal).Fetch(Criteria, dpContext), Server.DataPortalResult)
+      End If
+
+    Catch ex As Server.DataPortalException
+      result = ex.Result
+      If isRemotePortal Then
+        RestoreContext(result)
+      End If
+      Throw New DataPortalException("DataPortal.Fetch " & GetResourceString("Failed"), ex.InnerException, result.ReturnObject)
+    End Try
 
     If isRemotePortal Then
       RestoreContext(result)
@@ -131,12 +149,21 @@ Public Class DataPortal
       Serialization.SerializationNotification.OnSerializing(obj)
     End If
 
-    If IsTransactionalMethod(method) Then
-      result = CType(ServicedPortal(forceLocal).Update(obj, dpContext), Server.DataPortalResult)
+    Try
+      If IsTransactionalMethod(method) Then
+        result = CType(ServicedPortal(forceLocal).Update(obj, dpContext), Server.DataPortalResult)
 
-    Else
-      result = CType(Portal(forceLocal).Update(obj, dpContext), Server.DataPortalResult)
-    End If
+      Else
+        result = CType(Portal(forceLocal).Update(obj, dpContext), Server.DataPortalResult)
+      End If
+
+    Catch ex As Server.DataPortalException
+      result = ex.Result
+      If isRemotePortal Then
+        RestoreContext(result)
+      End If
+      Throw New DataPortalException("DataPortal.Update " & GetResourceString("Failed"), ex.InnerException, result.ReturnObject)
+    End Try
 
     If isRemotePortal Then
       RestoreContext(result)
@@ -167,12 +194,21 @@ Public Class DataPortal
 
     RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
-    If IsTransactionalMethod(method) Then
-      result = CType(ServicedPortal(forceLocal).Delete(Criteria, dpContext), Server.DataPortalResult)
+    Try
+      If IsTransactionalMethod(method) Then
+        result = CType(ServicedPortal(forceLocal).Delete(Criteria, dpContext), Server.DataPortalResult)
 
-    Else
-      result = CType(Portal(forceLocal).Delete(Criteria, dpContext), Server.DataPortalResult)
-    End If
+      Else
+        result = CType(Portal(forceLocal).Delete(Criteria, dpContext), Server.DataPortalResult)
+      End If
+
+    Catch ex As Server.DataPortalException
+      result = ex.Result
+      If isRemotePortal Then
+        RestoreContext(result)
+      End If
+      Throw New DataPortalException("DataPortal.Delete " & GetResourceString("Failed"), ex.InnerException, result.ReturnObject)
+    End Try
 
     If isRemotePortal Then
       RestoreContext(result)

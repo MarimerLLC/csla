@@ -151,6 +151,11 @@
                     BuildAction = "None"
                 />
                 <File
+                    RelPath = "ExceptionRoot.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "GenRoot.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

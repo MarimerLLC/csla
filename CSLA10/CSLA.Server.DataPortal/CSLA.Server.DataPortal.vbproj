@@ -97,6 +97,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "CallMethodException.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "CriteriaBase.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -113,6 +118,11 @@
                 />
                 <File
                     RelPath = "DataPortalEventArgs.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DataPortalException.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -130,6 +130,10 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Strings.da.resx"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "VersionInfo.cs"
                     Link = "..\VersionInfo.cs"
                     BuildAction = "Compile"

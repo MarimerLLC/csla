@@ -25,11 +25,7 @@ Public NotInheritable Class SmartDate
   ''' </remarks>
   Public Sub New()
     mEmptyIsMin = True
-    If mEmptyIsMin Then
-      mDate = Date.MinValue
-    Else
-      mDate = Date.MaxValue
-    End If
+    mDate = Date.MinValue
   End Sub
 
   ''' <summary>

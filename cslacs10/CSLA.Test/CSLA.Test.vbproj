@@ -1,8 +1,8 @@
 <VisualStudioProject>
     <VisualBasic
         ProjectType = "Local"
-        ProductVersion = "7.0.9466"
-        SchemaVersion = "1.0"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
         ProjectGuid = "{F5CBD9E2-6E2A-469F-B81E-EAF3A1B9F758}"
     >
         <Build>
@@ -137,6 +137,20 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "CSLA.Test.config"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "GenRoot.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "GenRootBase.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Global.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -157,7 +171,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "HasRulesManager.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IO.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "MaxLengthArgs.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -173,6 +197,11 @@
                 />
                 <File
                     RelPath = "Root.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "RulesManager.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

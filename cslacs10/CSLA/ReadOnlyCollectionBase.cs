@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace CSLA
@@ -9,8 +10,9 @@ namespace CSLA
 	/// </summary>
   [Serializable()]
   abstract public class ReadOnlyCollectionBase : 
-      CSLA.Core.BindableCollectionBase, ICloneable
-	{
+      CSLA.Core.BindableCollectionBase, ICloneable,
+      Serialization.ISerializationNotification
+  {
     public ReadOnlyCollectionBase()
     {
       AllowEdit = false;
@@ -80,13 +82,16 @@ namespace CSLA
     /// <returns>A new object containing the exact data of the original object.</returns>
     public object Clone()
     {
-
       MemoryStream buffer = new MemoryStream();
       BinaryFormatter formatter = new BinaryFormatter();
 
+      Serialization.SerializationNotification.OnSerializing(this);
       formatter.Serialize(buffer, this);
+      Serialization.SerializationNotification.OnSerialized(this);
       buffer.Position = 0;
-      return formatter.Deserialize(buffer);
+      object temp = formatter.Deserialize(buffer);
+      Serialization.SerializationNotification.OnDeserialized(temp);
+      return temp;
     }
 
     #endregion
@@ -133,6 +138,54 @@ namespace CSLA
     protected string DB(string databaseName)
     {
       return ConfigurationSettings.AppSettings["DB:" + databaseName];
+    }
+
+    #endregion
+
+    #region ISerializationNotification
+
+    void Serialization.ISerializationNotification.Deserialized()
+    {
+      Deserialized();
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    protected virtual void Deserialized()
+    {
+      foreach(Serialization.ISerializationNotification child in List)
+        child.Deserialized();
+    }
+
+    void Serialization.ISerializationNotification.Serialized()
+    {
+      Serialized();
+    }
+
+    /// <summary>
+    /// This method is called on the original instance of the
+    /// object after it has been serialized.
+    /// </summary>
+    protected virtual void Serialized()
+    {
+      foreach(Serialization.ISerializationNotification child in List)
+        child.Serialized();
+    }
+
+    void Serialization.ISerializationNotification.Serializing()
+    {
+      Serializing();
+    }
+
+    /// <summary>
+    /// This method is called before an object is serialized.
+    /// </summary>
+    protected virtual void Serializing()
+    {
+      foreach(Serialization.ISerializationNotification child in List)
+        child.Serializing();
     }
 
     #endregion

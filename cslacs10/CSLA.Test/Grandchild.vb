@@ -17,13 +17,13 @@ Public Class Grandchild
   End Property
 
   Friend Shared Function NewGrandChild(ByVal Data As String) As Grandchild
-    Dim obj As New Grandchild()
+    Dim obj As New Grandchild
     obj.mData = Data
     Return obj
   End Function
 
   Friend Shared Function GetGrandChild(ByVal dr As IDataReader) As Grandchild
-    Dim obj As New Grandchild()
+    Dim obj As New Grandchild
     obj.Fetch(dr)
     Return obj
   End Function
@@ -50,6 +50,21 @@ Public Class Grandchild
       End If
       MarkOld()
     End If
+  End Sub
+
+  Protected Overrides Sub Deserialized()
+    MyBase.Deserialized()
+    Session.Add("GCDeserialized", "GC Deserialized")
+  End Sub
+
+  Protected Overrides Sub Serialized()
+    MyBase.Serialized()
+    Session.Add("GCSerialized", "GC Serialized")
+  End Sub
+
+  Protected Overrides Sub Serializing()
+    MyBase.Serializing()
+    Session.Add("GCSerializing", "GC Serializing")
   End Sub
 
 End Class

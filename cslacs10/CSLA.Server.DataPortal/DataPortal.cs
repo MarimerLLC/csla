@@ -21,9 +21,9 @@ namespace CSLA.Server
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
     /// <returns>A populated business object.</returns>
-    public object Create(object criteria, object principal)
+    public object Create(object criteria, DataPortalContext context)
     {
-      SetPrincipal(principal);
+      SetPrincipal(context.Principal);
 
       // create an instance of the business object
       object obj = CreateBusinessObject(criteria);
@@ -31,6 +31,8 @@ namespace CSLA.Server
       // tell the business object to fetch its data
       CallMethod(obj, "DataPortal_Create", criteria);
       // return the populated business object as a result
+      if(context.IsRemotePortal)
+        Serialization.SerializationNotification.OnSerializing(obj);
       return obj;
     }
 
@@ -41,9 +43,9 @@ namespace CSLA.Server
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
     /// <returns>A populated business object.</returns>
-    public object Fetch(object criteria, object principal)
+    public object Fetch(object criteria, DataPortalContext context)
     {
-      SetPrincipal(principal);
+      SetPrincipal(context.Principal);
 
       // create an instance of the business object
       object obj = CreateBusinessObject(criteria);
@@ -52,6 +54,8 @@ namespace CSLA.Server
       CallMethod(obj, "DataPortal_Fetch", criteria);
 
       // return the populated business object as a result
+      if(context.IsRemotePortal)
+        Serialization.SerializationNotification.OnSerializing(obj);
       return obj;
     }
 
@@ -62,12 +66,18 @@ namespace CSLA.Server
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
     /// <returns>A reference to the newly updated object.</returns>
-    public object Update(object obj, object principal)
+    public object Update(object obj, DataPortalContext context)
     {
-      SetPrincipal(principal);
+      SetPrincipal(context.Principal);
+
+      if(context.IsRemotePortal)
+        Serialization.SerializationNotification.OnDeserialized(obj);
 
       // tell the business object to update itself
       CallMethod(obj, "DataPortal_Update");
+
+      if(context.IsRemotePortal)
+        Serialization.SerializationNotification.OnSerializing(obj);
       return obj;
     }
 
@@ -77,9 +87,9 @@ namespace CSLA.Server
     /// <param name="Criteria">Object-specific criteria.</param>
     /// <param name="Principal">The user's principal object (if using CSLA .NET security).
     /// </param>
-    public void Delete(object criteria, object principal)
+    public void Delete(object criteria, DataPortalContext context)
     {
-      SetPrincipal(principal);
+      SetPrincipal(context.Principal);
 
       // create an instance of the business object
       object obj = CreateBusinessObject(criteria);
@@ -128,21 +138,30 @@ namespace CSLA.Server
       // with the business library so instead we must use type object
       // for the parameter, so here we do a check on the type of the
       // parameter
-      if(principal.ToString() == "CSLA.Security.BusinessPrincipal")
+      IPrincipal _principal = (IPrincipal)principal;
+      if(_principal != null)
       {
-        // see if our current principal is
-        // different from the caller's principal
-        if(!ReferenceEquals(principal, System.Threading.Thread.CurrentPrincipal))
-        {                                                                                                // the caller had a different principal, so change ours to
-          // match the caller's so all our objects use the caller's
-          // security
-          System.Threading.Thread.CurrentPrincipal = (IPrincipal)principal;
+        IIdentity _identity = _principal.Identity;
+        if(_identity != null)
+        {
+          if(_identity.AuthenticationType == "CSLA")
+          {
+            // See if our current principal is different from the caller's principal 
+            if(!ReferenceEquals(principal, System.Threading.Thread.CurrentPrincipal))
+            {
+              // The caller had a different principal, so change ours to match the 
+              // caller's, so all our objects use the caller's security. 
+              System.Threading.Thread.CurrentPrincipal = _principal;
+            }
+          }
+          else
+            throw new System.Security.SecurityException(
+              "Principal must be of type BusinessPrincipal, not " + principal.ToString());
         }
       }
       else
         throw new System.Security.SecurityException(
-          "Principal must be of type BusinessPrincipal, not " + 
-          principal.ToString());
+          "Principal must be of type BusinessPrincipal, not null");
     }
 
     #endregion
@@ -151,8 +170,21 @@ namespace CSLA.Server
 
     private object CreateBusinessObject(object criteria)
     {
-      // get the type of the actual business object
-      Type businessType = criteria.GetType().DeclaringType;
+      Type businessType;
+
+      if(criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
+      {
+        // get the type of the actual business object
+        // from CriteriaBase (using the new scheme)
+        businessType = ((CriteriaBase)criteria).ObjectType;
+      }
+      else
+      {
+        // get the type of the actual business object
+        // based on the nested class scheme in the book
+        businessType = criteria.GetType().DeclaringType;
+      }
+
       // create an instance of the business object
       return Activator.CreateInstance(businessType, true);
     }
@@ -180,7 +212,8 @@ namespace CSLA.Server
 
     MethodInfo GetMethod(Type objectType, string method)
     {
-      return objectType.GetMethod(method,                                                              BindingFlags.FlattenHierarchy |
+      return objectType.GetMethod(method,
+        BindingFlags.FlattenHierarchy |
         BindingFlags.Instance |
         BindingFlags.Public |
         BindingFlags.NonPublic);

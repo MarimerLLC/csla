@@ -11,7 +11,7 @@ namespace CSLA
   /// data type and the design choices behind it.
   /// </remarks>
   [Serializable()]
-  sealed public class SmartDate //: IComparable
+  sealed public class SmartDate : IComparable
   {
     DateTime _date;
     bool _emptyIsMin;
@@ -287,7 +287,29 @@ namespace CSLA
           return DateTime.MaxValue;
       }                                                                                          
       else
+      {
+        switch(date.ToLower())
+        {
+          case "today" :
+          case "t" :
+          {
+            return DateTime.Now;
+          }
+          case "yesterday" :
+          case "y" :
+          case "-" :
+          {
+            return DateTime.Now.AddDays(-1);
+          }
+          case "tomorrow" :
+          case "tom" :
+          case "+" :
+          {
+            return DateTime.Now.AddDays(1);
+          }
+        }
         return DateTime.Parse(date);
+      }
     }
 
     /// <summary>
@@ -424,25 +446,13 @@ namespace CSLA
         return _date.CompareTo(date.Date);
     }
 
-//    /// <summary>
-//    /// Compares one SmartDate to another.
-//    /// </summary>
-//    /// <remarks>
-//    /// This method works the same as the CompareTo method
-//    /// on the Date datetype, with the exception that it
-//    /// understands the concept of empty date values.
-//    /// </remarks>
-//    /// <param name="Value">The date to which we are being compared.</param>
-//    /// <returns>
-//    /// A value indicating if the comparison date is less 
-//    /// than, equal to or greater than this date.</returns>
-//    int IComparable.CompareTo(object date)
-//    {
-//      if(date.GetType() == typeof(SmartDate))
-//        return CompareTo((SmartDate)date);
-//      else
-//        throw new ArgumentException("Value is not a SmartDate");
-//    }
+    int IComparable.CompareTo(object value)
+    {
+      if(value is SmartDate)
+        return CompareTo((SmartDate)value);
+      else
+        throw new ArgumentException("Value is not a SmartDate");
+    }
 
     /// <summary>
     /// Adds a TimeSpan onto the object.

@@ -17,7 +17,7 @@ Public Class Children
   End Sub
 
   Friend Shared Function NewChildren() As Children
-    Return New Children()
+    Return New Children
   End Function
 
   Friend Shared Function GetChildren(ByVal dr As IDataReader) As Children

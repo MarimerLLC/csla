@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace CSLA
@@ -14,7 +15,8 @@ namespace CSLA
   /// should only implement readonly properties.
   /// </remarks>
   [Serializable()]
-  abstract public class ReadOnlyBase : ICloneable
+  abstract public class ReadOnlyBase : ICloneable,
+                                       Serialization.ISerializationNotification
   {
     #region ICloneable
 
@@ -24,13 +26,16 @@ namespace CSLA
     /// <returns>A new object containing the exact data of the original object.</returns>
     public object Clone()
     {
-
       MemoryStream buffer = new MemoryStream();
       BinaryFormatter formatter = new BinaryFormatter();
 
+      Serialization.SerializationNotification.OnSerializing(this);
       formatter.Serialize(buffer, this);
+      Serialization.SerializationNotification.OnSerialized(this);
       buffer.Position = 0;
-      return formatter.Deserialize(buffer);
+      object temp = formatter.Deserialize(buffer);
+      Serialization.SerializationNotification.OnDeserialized(temp);
+      return temp;
     }
 
     #endregion
@@ -77,6 +82,90 @@ namespace CSLA
     protected string DB(string databaseName)
     {
       return ConfigurationSettings.AppSettings["DB:" + databaseName];
+    }
+
+    #endregion
+
+    #region ISerializationNotification
+
+    void Serialization.ISerializationNotification.Deserialized()
+    {
+      Deserialized();
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    protected virtual void Deserialized()
+    {
+      // now cascade the call to all child objects/collections
+      FieldInfo [] fields;
+
+      // get the list of fields in this type
+      fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+      foreach(FieldInfo field in fields)
+        if(!field.FieldType.IsValueType && !Attribute.IsDefined(field, typeof(NotUndoableAttribute)))
+        {
+          // it's a ref type, so check for ISerializationNotification
+          object value = field.GetValue(this);
+          if(value is Serialization.ISerializationNotification)
+            ((Serialization.ISerializationNotification)value).Deserialized();
+        }
+    }
+
+    void Serialization.ISerializationNotification.Serialized()
+    {
+      Serialized();
+    }
+
+    /// <summary>
+    /// This method is called on the original instance of the
+    /// object after it has been serialized.
+    /// </summary>
+    protected virtual void Serialized()
+    {
+      // cascade the call to all child objects/collections
+      FieldInfo [] fields;
+
+      // get the list of fields in this type
+      fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+      foreach(FieldInfo field in fields)
+        if(!field.FieldType.IsValueType && !Attribute.IsDefined(field, typeof(NotUndoableAttribute)))
+        {
+          // it's a ref type, so check for ISerializationNotification
+          object value = field.GetValue(this);
+          if(value is Serialization.ISerializationNotification)
+            ((Serialization.ISerializationNotification)value).Serialized();
+        }
+    }
+
+    void Serialization.ISerializationNotification.Serializing()
+    {
+      Serializing();
+    }
+
+    /// <summary>
+    /// This method is called before an object is serialized.
+    /// </summary>
+    protected virtual void Serializing()
+    {
+      // cascade the call to all child objects/collections
+      FieldInfo [] fields;
+
+      // get the list of fields in this type
+      fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+      foreach(FieldInfo field in fields)
+        if(!field.FieldType.IsValueType && !Attribute.IsDefined(field, typeof(NotUndoableAttribute)))
+        {
+          // it's a ref type, so check for ISerializationNotification
+          object value = field.GetValue(this);
+          if(value is Serialization.ISerializationNotification)
+            ((Serialization.ISerializationNotification)value).Serializing();
+        }
     }
 
     #endregion

@@ -2,6 +2,19 @@
 Public Class Basics
 
   <Test()> _
+  Public Sub CreateGetRoot()
+    Session.Clear()
+    Dim root As GenRoot
+    root = GenRoot.NewRoot
+    Assert.IsNotNull(root)
+    Assert.AreEqual("<new>", root.Data)
+    Assert.AreEqual("Created", Session("GenRoot"))
+    Assert.AreEqual(True, root.IsNew)
+    Assert.AreEqual(False, root.IsDeleted)
+    Assert.AreEqual(True, root.IsDirty)
+  End Sub
+
+  <Test()> _
   Public Sub CreateRoot()
     Session.Clear()
     Dim root As root
@@ -55,40 +68,6 @@ Public Class Basics
   End Sub
 
   <Test()> _
-  Public Sub AddRemoveCancelChild()
-    Session.Clear()
-    Dim root As root = root.NewRoot
-    root.BeginEdit()
-    root.Children.Add("1")
-    Dim child As child = root.Children.Item(0)
-    root.BeginEdit()
-    root.Children.Remove(root.Children.Item(0))
-    Assert.IsTrue(root.Children.ContainsDeleted(child), "Child object not in deleted list")
-    Assert.IsTrue(child.IsDeleted, "Child object not marked for deletion")
-    root.CancelEdit()
-    Assert.AreEqual(1, root.Children.Count, "Child was not restored")
-    Assert.IsFalse(root.Children.ContainsDeleted(child), "Child object still in deleted list")
-    Assert.IsFalse(child.IsDeleted, "Child object still marked for deletion")
-    root.CancelEdit()
-    Assert.AreEqual(0, root.Children.Count, "Child is not gone")
-  End Sub
-
-  <Test()> _
-  Public Sub AddEditCancelChild()
-    Session.Clear()
-    Dim root As root = root.NewRoot
-    root.BeginEdit()
-    root.Children.Add("1")
-    root.BeginEdit()
-    root.Children.Item(0).Data = 42
-    Assert.AreEqual("42", root.Children.Item(0).Data, "Child value wasn't set")
-    root.CancelEdit()
-    Assert.AreEqual("1", root.Children.Item(0).Data, "Child value wasn't reset")
-    root.CancelEdit()
-    Assert.AreEqual(0, root.Children.Count, "Child is not gone")
-  End Sub
-
-  <Test()> _
   Public Sub CloneGraph()
     Session.Clear()
     Dim root As root = root.NewRoot
@@ -102,6 +81,14 @@ Public Class Basics
     child = clone.Children(0)
     Assert.AreEqual(1, child.GrandChildren.Count)
     Assert.AreEqual("1", child.GrandChildren(0).Data)
+
+    Assert.AreEqual("root Deserialized", CStr(Session("Deserialized")))
+    Assert.AreEqual("root Serialized", CStr(Session("Serialized")))
+    Assert.AreEqual("root Serializing", CStr(Session("Serializing")))
+
+    Assert.AreEqual("GC Deserialized", CStr(Session("GCDeserialized")))
+    Assert.AreEqual("GC Serialized", CStr(Session("GCSerialized")))
+    Assert.AreEqual("GC Serializing", CStr(Session("GCSerializing")))
 
   End Sub
 

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
 
@@ -21,7 +22,8 @@ namespace CSLA
   /// </remarks>
   [Serializable()]
   abstract public class BusinessBase : Core.UndoableBase, 
-                                       IEditableObject, ICloneable
+    IEditableObject, ICloneable,
+    IDataErrorInfo, Serialization.ISerializationNotification
   {
     #region IsNew, IsDeleted, IsDirty
 
@@ -300,6 +302,8 @@ namespace CSLA
     {
       _bindingEdit = false;
       UndoChanges();
+      AddBusinessRules();
+      OnIsDirtyChanged();
     }
 
     /// <summary>
@@ -398,7 +402,7 @@ namespace CSLA
       MarkDeleted();
     }
 
-#endregion
+    #endregion
 
     #region Edit Level Tracking (child only)
 
@@ -431,13 +435,16 @@ namespace CSLA
     /// <returns>A new object containing the exact data of the original object.</returns>
     public object Clone()
     {
-
       MemoryStream buffer = new MemoryStream();
       BinaryFormatter formatter = new BinaryFormatter();
 
+      Serialization.SerializationNotification.OnSerializing(this);
       formatter.Serialize(buffer, this);
+      Serialization.SerializationNotification.OnSerialized(this);
       buffer.Position = 0;
-      return formatter.Deserialize(buffer);
+      object temp = formatter.Deserialize(buffer);
+      Serialization.SerializationNotification.OnDeserialized(temp);
+      return temp;
     }
 
     #endregion
@@ -446,6 +453,22 @@ namespace CSLA
 
     // keep a list of broken rules
     BrokenRules _brokenRules = new BrokenRules();
+
+    /// <summary>
+    /// Override this method in your business class to
+    /// be notified when you need to set up business
+    /// rules.
+    /// </summary>
+    /// <remarks>
+    /// You should call AddBusinessRules from your object's
+                                                            /// constructor methods so the rules are set up when
+    /// your object is created. This method will be automatically
+    /// called, if needed, when your object is serialized by
+    /// the DataPortal or by the Clone method.
+    /// </remarks>
+    protected virtual void AddBusinessRules()
+    {
+    }
 
     /// <summary>
     /// Returns True if the object is currently valid, False if the
@@ -476,12 +499,32 @@ namespace CSLA
     /// for this object.
     /// </summary>
     /// <returns>A <see cref="T:CSLA.BrokenRules.RulesCollection" /> object.</returns>
+    public virtual BrokenRules.RulesCollection GetBrokenRulesCollection() 
+    {
+      return _brokenRules.BrokenRulesCollection;
+    }
+
+    /// <summary>
+    /// Provides access to the readonly collection of broken business rules
+    /// for this object.
+    /// </summary>
+    /// <returns>A <see cref="T:CSLA.BrokenRules.RulesCollection" /> object.</returns>
     public BrokenRules.RulesCollection BrokenRulesCollection
     {
       get
       {
         return _brokenRules.BrokenRulesCollection;
       }
+    }
+
+    /// <summary>
+    /// Provides access to a text representation of all the descriptions of
+    /// the currently broken business rules for this object.
+    /// </summary>
+    /// <returns>Text containing the descriptions of the broken business rules.</returns>
+    public virtual string GetBrokenRulesString()
+    {
+      return _brokenRules.ToString();
     }
 
     /// <summary>
@@ -556,10 +599,10 @@ namespace CSLA
         throw new NotSupportedException("Can not directly save a child object");
 
       if(EditLevel > 0)
-        throw new Exception("Object is still being edited and can not be saved");
+        throw new ApplicationException("Object is still being edited and can not be saved");
 
       if(!IsValid)
-        throw new Exception("Object is not valid and can not be saved");
+        throw new ValidationException("Object is not valid and can not be saved");
 
       if(IsDirty)
         return (BusinessBase)DataPortal.Update(this);
@@ -621,6 +664,123 @@ namespace CSLA
     protected string DB(string databaseName)
     {
       return ConfigurationSettings.AppSettings["DB:" + databaseName];
+    }
+
+    #endregion
+
+    #region IDataErrorInfo
+
+    string IDataErrorInfo.Error
+    {
+      get
+      {
+        if(!IsValid)
+        {
+          if(BrokenRules.BrokenRulesCollection.Count == 1)
+            return BrokenRules.BrokenRulesCollection[0].Description;
+          else
+            return BrokenRules.ToString();
+        }
+        else
+          return string.Empty;
+      }
+    }
+
+    string IDataErrorInfo.this [string columnName]
+    {
+      get
+      {
+        if(!IsValid)
+          return BrokenRules.BrokenRulesCollection.RuleForProperty(columnName).Description;
+        else
+          return string.Empty;
+      }
+    }
+
+    #endregion
+
+    #region ISerializationNotification
+
+    void Serialization.ISerializationNotification.Deserialized()
+    {
+      Deserialized();
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    protected virtual void Deserialized()
+    {
+      AddBusinessRules();
+
+      // now cascade the call to all child objects/collections
+      FieldInfo [] fields;
+
+      // get the list of fields in this type
+      fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+      foreach(FieldInfo field in fields)
+        if(!field.FieldType.IsValueType && !Attribute.IsDefined(field, typeof(NotUndoableAttribute)))
+        {
+          // it's a ref type, so check for ISerializationNotification
+          object value = field.GetValue(this);
+          if(value is Serialization.ISerializationNotification)
+            ((Serialization.ISerializationNotification)value).Deserialized();
+        }
+    }
+
+    void Serialization.ISerializationNotification.Serialized()
+    {
+      Serialized();
+    }
+
+    /// <summary>
+    /// This method is called on the original instance of the
+    /// object after it has been serialized.
+    /// </summary>
+    protected virtual void Serialized()
+    {
+      // cascade the call to all child objects/collections
+      FieldInfo [] fields;
+
+      // get the list of fields in this type
+      fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+      foreach(FieldInfo field in fields)
+        if(!field.FieldType.IsValueType && !Attribute.IsDefined(field, typeof(NotUndoableAttribute)))
+        {
+          // it's a ref type, so check for ISerializationNotification
+          object value = field.GetValue(this);
+          if(value is Serialization.ISerializationNotification)
+            ((Serialization.ISerializationNotification)value).Serialized();
+        }
+    }
+
+    void Serialization.ISerializationNotification.Serializing()
+    {
+      Serializing();
+    }
+
+    /// <summary>
+    /// This method is called before an object is serialized.
+    /// </summary>
+    protected virtual void Serializing()
+    {
+      // cascade the call to all child objects/collections
+      FieldInfo [] fields;
+
+      // get the list of fields in this type
+      fields = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+      foreach(FieldInfo field in fields)
+        if(!field.FieldType.IsValueType && !Attribute.IsDefined(field, typeof(NotUndoableAttribute)))
+        {
+          // it's a ref type, so check for ISerializationNotification
+          object value = field.GetValue(this);
+          if(value is Serialization.ISerializationNotification)
+            ((Serialization.ISerializationNotification)value).Serializing();
+        }
     }
 
     #endregion

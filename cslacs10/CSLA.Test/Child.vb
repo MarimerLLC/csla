@@ -5,7 +5,7 @@ Public Class Child
   Private mData As String = ""
   Private mGuid As Guid = Guid.NewGuid
 
-  Private mChildren As Grandchildren = Grandchildren.NewGrandChildren
+  Private mChildren As GrandChildren = GrandChildren.NewGrandChildren
 
   Public Property Data() As String
     Get
@@ -32,13 +32,13 @@ Public Class Child
   End Property
 
   Friend Shared Function NewChild(ByVal Data As String) As Child
-    Dim obj As New Child()
+    Dim obj As New Child
     obj.mData = Data
     Return obj
   End Function
 
   Friend Shared Function GetChild(ByVal dr As IDataReader) As Child
-    Dim obj As New Child()
+    Dim obj As New Child
     obj.Fetch(dr)
     Return obj
   End Function

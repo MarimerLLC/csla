@@ -90,9 +90,9 @@ namespace CSLA.BatchQueue.Server
         BinaryServerFormatterSinkProvider svFormatter = 
           new BinaryServerFormatterSinkProvider();
 
-        //TODO: uncomment the following line for .NET 1.1
-        //svFormatter.TypeFilterLevel = 
-        //  System.Runtime.Serialization.Formatters.TypeFilterLevel.Full;
+        //TODO: comment the following line for .NET 1.0
+        svFormatter.TypeFilterLevel = 
+          System.Runtime.Serialization.Formatters.TypeFilterLevel.Full;
 
         _channel = new TcpServerChannel(properties, svFormatter);
         ChannelServices.RegisterChannel(_channel);

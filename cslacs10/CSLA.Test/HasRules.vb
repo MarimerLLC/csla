@@ -31,7 +31,7 @@ Public Class HasRules
   End Class
 
   Public Shared Function NewHasRules() As HasRules
-    Return DirectCast(DataPortal.Create(New Criteria()), HasRules)
+    Return DirectCast(DataPortal.Create(New Criteria), HasRules)
   End Function
 
   Public Shared Function GetHasRules(ByVal Name As String) As HasRules

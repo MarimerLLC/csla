@@ -1,10 +1,8 @@
 <Serializable()> _
-Public Class Root
+Public Class GenRootBase
   Inherits BusinessBase
 
   Private mData As String = ""
-
-  Private mChildren As Children = Children.NewChildren
 
   Public Property Data() As String
     Get
@@ -18,39 +16,30 @@ Public Class Root
     End Set
   End Property
 
-  Public ReadOnly Property Children() As Children
-    Get
-      Return mChildren
-    End Get
-  End Property
-
-  Public Overrides ReadOnly Property IsDirty() As Boolean
-    Get
-      Return MyBase.IsDirty OrElse mChildren.IsDirty
-    End Get
-  End Property
-
-
 
   <Serializable()> _
   Private Class Criteria
+    Inherits CriteriaBase
+
     Public Data As String
 
     Public Sub New()
+      MyBase.New(GetType(GenRoot))
       Data = "<new>"
     End Sub
 
     Public Sub New(ByVal Data As String)
+      MyBase.New(GetType(GenRoot))
       Me.Data = Data
     End Sub
   End Class
 
-  Public Shared Function NewRoot() As Root
-    Return DirectCast(DataPortal.Create(New Criteria), Root)
+  Public Shared Function NewRoot() As GenRoot
+    Return DirectCast(DataPortal.Create(New Criteria), GenRoot)
   End Function
 
-  Public Shared Function GetRoot(ByVal Data As String) As Root
-    Return DirectCast(DataPortal.Fetch(New Criteria(Data)), Root)
+  Public Shared Function GetRoot(ByVal Data As String) As GenRoot
+    Return DirectCast(DataPortal.Fetch(New Criteria(Data)), GenRoot)
   End Function
 
   Public Shared Sub DeleteRoot(ByVal Data As String)
@@ -58,36 +47,36 @@ Public Class Root
   End Sub
 
 
-  Private Sub New()
+  Protected Sub New()
     ' prevent direct creation
   End Sub
 
   Protected Overrides Sub DataPortal_Create(ByVal Criteria As Object)
     Dim crit As Criteria = DirectCast(Criteria, Criteria)
     mData = crit.Data
-    Session.Add("Root", "Created")
+    Session.Add("GenRoot", "Created")
   End Sub
 
   Protected Overrides Sub DataPortal_Fetch(ByVal Criteria As Object)
     Dim crit As Criteria = DirectCast(Criteria, Criteria)
     mData = crit.Data
     MarkOld()
-    Session.Add("Root", "Fetched")
+    Session.Add("GenRoot", "Fetched")
   End Sub
 
   Protected Overrides Sub DataPortal_Update()
     If IsDeleted Then
       ' we would delete here
-      Session.Add("Root", "Deleted")
+      Session.Add("GenRoot", "Deleted")
       MarkNew()
     Else
       If IsNew Then
         ' we would insert here
-        Session.Add("Root", "Inserted")
+        Session.Add("GenRoot", "Inserted")
 
       Else
         ' we would update here
-        Session.Add("Root", "Updated")
+        Session.Add("GenRoot", "Updated")
       End If
       MarkOld()
     End If
@@ -95,22 +84,7 @@ Public Class Root
 
   Protected Overrides Sub DataPortal_Delete(ByVal Criteria As Object)
     ' we would delete here
-    Session.Add("Root", "Deleted")
-  End Sub
-
-  Protected Overrides Sub Deserialized()
-    MyBase.Deserialized()
-    Session.Add("Deserialized", "root Deserialized")
-  End Sub
-
-  Protected Overrides Sub Serialized()
-    MyBase.Serialized()
-    Session.Add("Serialized", "root Serialized")
-  End Sub
-
-  Protected Overrides Sub Serializing()
-    MyBase.Serializing()
-    Session.Add("Serializing", "root Serializing")
+    Session.Add("GenRoot", "Deleted")
   End Sub
 
 End Class

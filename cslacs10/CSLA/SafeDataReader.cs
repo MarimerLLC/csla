@@ -27,6 +27,11 @@ namespace CSLA.Data
     /// <remarks>
     /// Returns "" for null.
     /// </remarks>
+    public string GetString(string name)
+    {
+      return GetString(_dataReader.GetOrdinal(name));
+    }
+
     public string GetString(int i)
     {
       if( _dataReader.IsDBNull(i))
@@ -35,12 +40,18 @@ namespace CSLA.Data
         return _dataReader.GetString(i);
     }
 
+
     /// <summary>
     /// Gets a value of type <see cref="System.Object" /> from the datareader.
     /// </summary>
     /// <remarks>
     /// Returns Nothing for null.
     /// </remarks>
+    public object GetValue(string name)
+    {
+      return GetValue(_dataReader.GetOrdinal(name));
+    }
+
     public object GetValue(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -55,6 +66,11 @@ namespace CSLA.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
+    public int GetInt32(string name)
+    {
+      return GetInt32(_dataReader.GetOrdinal(name));
+    }
+
     public int GetInt32(int i)
     {                                             
       if(_dataReader.IsDBNull(i))
@@ -69,6 +85,11 @@ namespace CSLA.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
+    public double GetDouble(string name)
+    {
+      return GetDouble(_dataReader.GetOrdinal(name));
+    }
+
     public double GetDouble(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -86,6 +107,11 @@ namespace CSLA.Data
     /// details on the SmartDate class.
     /// </remarks>
     /// <param name="i">The column number within the datareader.</param>
+    public CSLA.SmartDate GetSmartDate(string name)
+    {
+      return GetSmartDate(_dataReader.GetOrdinal(name));
+    }
+
     public CSLA.SmartDate GetSmartDate(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -106,6 +132,11 @@ namespace CSLA.Data
     /// <param name="i">The column number within the datareader.</param>
     /// <param name="MinIsEmpty">A flag indicating whether the min 
     /// or max value of a data means an empty date.</param>
+    public CSLA.SmartDate GetSmartDate(string name, bool minIsEmpty)
+    {
+      return GetSmartDate(_dataReader.GetOrdinal(name), minIsEmpty);
+    }
+
     public CSLA.SmartDate GetSmartDate(int i, bool minIsEmpty)
     {
       if(_dataReader.IsDBNull(i))
@@ -118,6 +149,11 @@ namespace CSLA.Data
     /// <summary>
     /// Gets a Guid value from the datareader.
     /// </summary>
+    public System.Guid GetGuid(string name)
+    {
+      return GetGuid(_dataReader.GetOrdinal(name));
+    }
+
     public System.Guid GetGuid(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -172,9 +208,14 @@ namespace CSLA.Data
       }
     }
 
-                                                                                                   /// <summary>
+    /// <summary>
     /// Gets a boolean value from the datareader.
     /// </summary>
+    public bool GetBoolean(string name)
+    {
+      return GetBoolean(_dataReader.GetOrdinal(name));
+    }
+
     public bool GetBoolean(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -183,9 +224,14 @@ namespace CSLA.Data
         return _dataReader.GetBoolean(i);
     }
 
-                                                                                                   /// <summary>
+    /// <summary>
     /// Gets a byte value from the datareader.
     /// </summary>
+    public byte GetByte(string name)
+    {
+      return GetByte(_dataReader.GetOrdinal(name));
+    }
+
     public byte GetByte(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -197,6 +243,12 @@ namespace CSLA.Data
     /// <summary>
     /// Invokes the GetBytes method of the underlying datareader.
     /// </summary>
+    public Int64 GetBytes(string name, Int64 fieldOffset, 
+      byte[] buffer, int bufferoffset , int length)
+    {
+      return GetBytes(_dataReader.GetOrdinal(name), fieldOffset, buffer, bufferoffset, length);
+    }
+    
     public Int64 GetBytes(int i, Int64 fieldOffset, 
       byte[] buffer, int bufferoffset , int length)
     {
@@ -209,6 +261,11 @@ namespace CSLA.Data
     /// <summary>
     /// Gets a char value from the datareader.
     /// </summary>
+    public char GetChar(string name)
+    {
+      return GetChar(_dataReader.GetOrdinal(name));
+    }
+
     public char GetChar(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -217,9 +274,15 @@ namespace CSLA.Data
         return _dataReader.GetChar(i);
     }
 
-                                                                                                   /// <summary>
+    /// <summary>
     /// Invokes the GetChars method of the underlying datareader.
     /// </summary>
+    public Int64 GetChars(string name, Int64 fieldoffset, 
+      char[] buffer, int bufferoffset, int length)
+    {
+      return GetChars(_dataReader.GetOrdinal(name), fieldoffset, buffer, bufferoffset, length);
+    }
+    
     public Int64 GetChars(int i, Int64 fieldoffset, 
       char[] buffer, int bufferoffset, int length)
     {
@@ -232,6 +295,11 @@ namespace CSLA.Data
     /// <summary>
     /// Invokes the GetData method of the underlying datareader.
     /// </summary>
+    public IDataReader GetData(string name)
+    {
+      return GetData(_dataReader.GetOrdinal(name));
+    }
+
     public IDataReader GetData(int i)
     {
       return _dataReader.GetData(i);
@@ -240,6 +308,11 @@ namespace CSLA.Data
     /// <summary>
     /// Invokes the GetDataTypeName method of the underlying datareader.
     /// </summary>
+    public string GetDataTypeName(string name)
+    {
+      return GetDataTypeName(_dataReader.GetOrdinal(name));
+    }
+
     public string GetDataTypeName(int i)
     {
       return _dataReader.GetDataTypeName(i);
@@ -248,6 +321,11 @@ namespace CSLA.Data
     /// <summary>
     /// Gets a date value from the datareader.
     /// </summary>
+    public DateTime GetDateTime(string name)
+    {
+      return GetDateTime(_dataReader.GetOrdinal(name));
+    }
+
     public DateTime GetDateTime(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -256,9 +334,14 @@ namespace CSLA.Data
         return _dataReader.GetDateTime(i);
     }
 
-                                                                                                   /// <summary>
+    /// <summary>
     /// Gets a decimal value from the datareader.
     /// </summary>
+    public decimal GetDecimal(string name)
+    {
+      return GetDecimal(_dataReader.GetOrdinal(name));
+    }
+
     public decimal GetDecimal(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -270,6 +353,11 @@ namespace CSLA.Data
     /// <summary>
     /// Invokes the GetFieldType method of the underlying datareader.
     /// </summary>
+    public Type GetFieldType(string name)
+    {
+      return GetFieldType(_dataReader.GetOrdinal(name));
+    }
+
     public Type GetFieldType(int i)
     {
       return _dataReader.GetFieldType(i);
@@ -278,6 +366,11 @@ namespace CSLA.Data
     /// <summary>
     /// Gets a Single value from the datareader.
     /// </summary>
+    public float GetFloat(string name)
+    {
+      return GetFloat(_dataReader.GetOrdinal(name));
+    }
+
     public float GetFloat(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -289,6 +382,11 @@ namespace CSLA.Data
     /// <summary>
     /// Gets a Short value from the datareader.
     /// </summary>
+    public short GetInt16(string name)
+    {
+      return GetInt16(_dataReader.GetOrdinal(name));
+    }
+
     public short GetInt16(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -300,6 +398,11 @@ namespace CSLA.Data
     /// <summary>
     /// Gets a Long value from the datareader.
     /// </summary>
+    public Int64 GetInt64(string name)
+    {
+      return GetInt64(_dataReader.GetOrdinal(name));
+    }
+
     public Int64 GetInt64(int i)
     {
       if(_dataReader.IsDBNull(i))
@@ -352,7 +455,7 @@ namespace CSLA.Data
       }
     }
 
-                                                                                                   /// <summary>
+    /// <summary>
     /// Invokes the IsDBNull method of the underlying datareader.
     /// </summary>
     public bool IsDBNull(int i)
@@ -394,7 +497,7 @@ namespace CSLA.Data
           return _dataReader[i];
       }
     }
-                                                                                                   /// <summary>
+    /// <summary>
     /// Returns the RecordsAffected property value from the underlying datareader.
     /// </summary>
     public int RecordsAffected
@@ -405,7 +508,7 @@ namespace CSLA.Data
       }
     }
 
-#region IDisposable
+    #region IDisposable
     
     /// <summary>
     /// Calls the Dispose method on the underlying datareader.
@@ -415,7 +518,7 @@ namespace CSLA.Data
       _dataReader.Dispose();
     }
 
-#endregion
+    #endregion
 
   }
 }

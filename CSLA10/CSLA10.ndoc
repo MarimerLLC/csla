@@ -62,7 +62,7 @@
         </documenter>
         <documenter name="MSDN">
             <property name="OutputDirectory" value=".\doc\" />
-            <property name="HtmlHelpName" value="Documentation" />
+            <property name="HtmlHelpName" value="CSLA .NET" />
             <property name="IncludeFavorites" value="False" />
             <property name="Title" value="CSLA .NET" />
             <property name="SplitTOCs" value="False" />
@@ -82,7 +82,7 @@
             <property name="DocumentPrivates" value="False" />
             <property name="DocumentEmptyNamespaces" value="False" />
             <property name="IncludeAssemblyVersion" value="False" />
-            <property name="CopyrightText" value="Copyright Rockford Lhotka 2003" />
+            <property name="CopyrightText" value="Copyright 2003 Rockford Lhotka. All rights reserved." />
             <property name="CopyrightHref" value="" />
             <property name="SkipNamespacesWithoutSummaries" value="False" />
             <property name="AutoPropertyBackerSummaries" value="False" />

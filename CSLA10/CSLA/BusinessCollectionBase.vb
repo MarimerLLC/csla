@@ -2,6 +2,22 @@ Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Configuration
 
+''' <summary>
+''' This is the base class from which most business collection
+''' objects will be derived.
+''' </summary>
+''' <remarks>
+''' <para>
+''' To create a collection of business objects, inherit from this 
+''' class. The business objects contained in this collection must
+''' inherit from <see cref="T:CSLA.BusinessBase" />, and the objects
+''' must be marked as child objects.
+''' </para><para>
+''' Please refer to 'Expert One-on-One VB.NET Business Objects' for
+''' full details on the use of this base class to create business
+''' collections.
+''' </para>
+''' </remarks>
 <Serializable()> _
 Public MustInherit Class BusinessCollectionBase
   Inherits CSLA.Core.BindableCollectionBase
@@ -10,10 +26,31 @@ Public MustInherit Class BusinessCollectionBase
 
 #Region " Contains "
 
+  ''' <summary>
+  ''' Used to see if the collection contains a specific child object.
+  ''' </summary>
+  ''' <remarks>
+  ''' Only the 'active' list of child objects is checked. 
+  ''' Business collections also contain deleted objects, which are
+  ''' not checked by this call.
+  ''' </remarks>
+  ''' <param name="Item">A reference to the object.</param>
+  ''' <returns>True if the collection contains the object.</returns>
   Public Function Contains(ByVal Item As BusinessBase) As Boolean
     Return list.Contains(Item)
   End Function
 
+  ''' <summary>
+  ''' Used to see if the collection contains a reference to a
+  ''' child object that is marked for deletion.
+  ''' </summary>
+  ''' <remarks>
+  ''' This scans the list of child objects that have been marked
+  ''' for deletion. If this object is in that list, the method
+  ''' returns True.
+  ''' </remarks>
+  ''' <param name="Item">A reference to the object.</param>
+  ''' <returns>True if the collection contains the object.</returns>
   Public Function ContainsDeleted(ByVal Item As BusinessBase) As Boolean
     Dim element As BusinessBase
 
@@ -29,6 +66,28 @@ Public MustInherit Class BusinessCollectionBase
 
 #Region " IsDirty, IsValid "
 
+  ''' <summary>
+  ''' Returns True if this object's data has been changed.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' When an object's data is changed, CSLA .NET makes note of that change
+  ''' and considers the object to be 'dirty' or changed. This value is used to
+  ''' optimize data updates, since an unchanged object does not need to be
+  ''' updated into the database. All new objects are considered dirty. All objects
+  ''' marked for deletion are considered dirty.
+  ''' </para><para>
+  ''' Once an object's data has been saved to the database (inserted or updated)
+  ''' the dirty flag is cleared and the object is considered unchanged. Objects
+  ''' newly loaded from the database are also considered unchanged.
+  ''' </para>
+  ''' <para>
+  ''' If any child object within the collection is dirty then the collection
+  ''' is considered to be dirty. If all child objects are unchanged, then the
+  ''' collection is not dirty.
+  ''' </para>
+  ''' </remarks>
+  ''' <returns>A value indicating if this object's data has been changed.</returns>
   Public ReadOnly Property IsDirty() As Boolean
     Get
       ' any deletions make us dirty
@@ -46,6 +105,27 @@ Public MustInherit Class BusinessCollectionBase
     End Get
   End Property
 
+  ''' <summary>
+  ''' Returns True if the object is currently valid, False if the
+  ''' object has broken rules or is otherwise invalid.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' By default this property relies on the underling <see cref="T:CSLA.BrokenRules" />
+  ''' object to track whether any business rules are currently broken for this object.
+  ''' </para><para>
+  ''' You can override this property to provide more sophisticated
+  ''' implementations of the behavior. For instance, you should always override
+  ''' this method if your object has child objects, since the validity of this object
+  ''' is affected by the validity of all child objects.
+  ''' </para>
+  ''' <para>
+  ''' If any child object within the collection is invalid then the collection
+  ''' is considered to be invalid. If all child objects are valid, then the
+  ''' collection is valid.
+  ''' </para>
+  ''' </remarks>
+  ''' <returns>A value indicating if the object is currently valid.</returns>
   Public ReadOnly Property IsValid() As Boolean
     Get
       ' run through all the child objects
@@ -64,6 +144,26 @@ Public MustInherit Class BusinessCollectionBase
 
 #Region " Begin/Cancel/ApplyEdit "
 
+  ''' <summary>
+  ''' Starts a nested edit on the object.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' When this method is called the object takes a snapshot of
+  ''' its current state (the values of its variables). This snapshot
+  ''' can be restored by calling <see cref="M:CSLA.BusinessBase.CancelEdit" />
+  ''' or committed by calling <see cref="M:CSLA.BusinessBase.ApplyEdit" />.
+  ''' </para><para>
+  ''' This is a nested operation. Each call to BeginEdit adds a new
+  ''' snapshot of the object's state to a stack. You should ensure that 
+  ''' for each call to BeginEdit there is a corresponding call to either 
+  ''' CancelEdit or ApplyEdit to remove that snapshot from the stack.
+  ''' </para><para>
+  ''' See Chapters 2 and 4 for details on n-level undo and state stacking.
+  ''' </para><para>
+  ''' This method triggers the copying of all child object states.
+  ''' </para>
+  ''' </remarks>
   Public Sub BeginEdit()
     If Me.IsChild Then
       Throw New _
@@ -73,6 +173,19 @@ Public MustInherit Class BusinessCollectionBase
     CopyState()
   End Sub
 
+  ''' <summary>
+  ''' Cancels the current edit process, restoring the object's state to
+  ''' its previous values.
+  ''' </summary>
+  ''' <remarks>
+  ''' Calling this method causes the most recently taken snapshot of the 
+  ''' object's state to be restored. This resets the object's values
+  ''' to the point of the last <see cref="M:CSLA.BusinessCollectionBase.BeginEdit" />
+  ''' call.
+  ''' <para>
+  ''' This method triggers an undo in all child objects.
+  ''' </para>
+  ''' </remarks>
   Public Sub CancelEdit()
     If Me.IsChild Then
       Throw New _
@@ -82,6 +195,18 @@ Public MustInherit Class BusinessCollectionBase
     UndoChanges()
   End Sub
 
+  ''' <summary>
+  ''' Commits the current edit process.
+  ''' </summary>
+  ''' <remarks>
+  ''' Calling this method causes the most recently taken snapshot of the 
+  ''' object's state to be discarded, thus committing any changes made
+  ''' to the object's state since the last 
+  ''' <see cref="M:CSLA.BusinessCollectionBase.BeginEdit" /> call.
+  ''' <para>
+  ''' This method triggers an ApplyEdit in all child objects.
+  ''' </para>
+  ''' </remarks>
   Public Sub ApplyEdit()
     If Me.IsChild Then
       Throw New _
@@ -189,23 +314,41 @@ Public MustInherit Class BusinessCollectionBase
 
 #Region " DeletedCollection "
 
-  ' here's the list of deleted child objects
-  Protected deletedList As New DeletedCollection
+  ''' <summary>
+  ''' A collection containing all child objects marked
+  ''' for deletion.
+  ''' </summary>
+  Protected deletedList As New DeletedCollection()
 
-  ' this is a simple collection to store all of
-  ' the child objects that get deleted
+  ''' <summary>
+  ''' Defines a strongly-typed collection to store all
+  ''' child objects marked for deletion.
+  ''' </summary>
   <Serializable()> _
   Protected Class DeletedCollection
     Inherits CollectionBase
 
+    ''' <summary>
+    ''' Adds a child object to the collection.
+    ''' </summary>
+    ''' <param name="Child">The child object to be added.</param>
     Public Sub Add(ByVal Child As BusinessBase)
       list.Add(Child)
     End Sub
 
+    ''' <summary>
+    ''' Removes a child object from the collection.
+    ''' </summary>
+    ''' <param name="Child">The child object to be removed.</param>
     Public Sub Remove(ByVal Child As BusinessBase)
       list.Remove(Child)
     End Sub
 
+    ''' <summary>
+    ''' Returns a reference to a child object in the collection.
+    ''' </summary>
+    ''' <param name="index">The positional index of the item in the collection.</param>
+    ''' <returns>The specified child object.</returns>
     Default Public ReadOnly Property Item(ByVal index As Integer) As BusinessBase
       Get
         Return CType(list.Item(index), BusinessBase)
@@ -217,6 +360,9 @@ Public MustInherit Class BusinessCollectionBase
 
 #Region " Insert, Remove, Clear "
 
+  ''' <summary>
+  ''' Sets the edit level of the child object as it is added.
+  ''' </summary>
   Protected Overrides Sub OnInsert(ByVal index As Integer, ByVal value As Object)
     ' when an object is inserted we assume it is
     ' a new object and so the edit level when it was
@@ -224,12 +370,20 @@ Public MustInherit Class BusinessCollectionBase
     CType(value, BusinessBase).EditLevelAdded = mEditLevel
   End Sub
 
+  ''' <summary>
+  ''' Marks the child object for deletion and moves it to
+  ''' the collection of deleted objects.
+  ''' </summary>
   Protected Overrides Sub OnRemove(ByVal index As Integer, ByVal value As Object)
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
     DeleteChild(CType(value, BusinessBase))
   End Sub
 
+  ''' <summary>
+  ''' Marks all child objects for deletion and moves them
+  ''' to the collection of deleted objects.
+  ''' </summary>
   Protected Overrides Sub OnClear()
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
@@ -252,12 +406,33 @@ Public MustInherit Class BusinessCollectionBase
 
   Private mIsChild As Boolean = False
 
+  ''' <summary>
+  ''' Indicates whether this collection object is a child object.
+  ''' </summary>
+  ''' <returns>True if this is a child object.</returns>
   Protected ReadOnly Property IsChild() As Boolean
     Get
       Return mIsChild
     End Get
   End Property
 
+  ''' <summary>
+  ''' Marks the object as being a child object.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' By default all business objects are 'parent' objects. This means
+  ''' that they can be directly retrieved and updated into the database.
+  ''' </para><para>
+  ''' We often also need child objects. These are objects which are contained
+  ''' within other objects. For instance, a parent Invoice object will contain
+  ''' child LineItem objects.
+  ''' </para><para>
+  ''' To create a child object, the MarkAsChild method must be called as the
+  ''' object is created. Please see Chapter 7 for details on the use of the
+  ''' MarkAsChild method.
+  ''' </para>
+  ''' </remarks>
   Protected Sub MarkAsChild()
     mIsChild = True
   End Sub
@@ -266,12 +441,13 @@ Public MustInherit Class BusinessCollectionBase
 
 #Region " Clone "
 
-  ' all business objects _must_ be serializable
-  ' and thus can be cloned - this just clinches
-  ' the deal
+  ''' <summary>
+  ''' Creates a clone of the object.
+  ''' </summary>
+  ''' <returns>A new object containing the exact data of the original object.</returns>
   Public Function Clone() As Object Implements ICloneable.Clone
-    Dim buffer As New MemoryStream
-    Dim formatter As New BinaryFormatter
+    Dim buffer As New MemoryStream()
+    Dim formatter As New BinaryFormatter()
 
     formatter.Serialize(buffer, Me)
     buffer.Position = 0
@@ -282,7 +458,33 @@ Public MustInherit Class BusinessCollectionBase
 
 #Region " Data Access "
 
-  ' add/save object
+  ''' <summary>
+  ''' Saves the object to the database.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' Calling this method starts the save operation, causing the all child
+  ''' objects to be inserted, updated or deleted within the database based on the
+  ''' each object's current state.
+  ''' </para><para>
+  ''' All this is contingent on <see cref="P:CSLA.BusinessCollectionBase.IsDirty" />. If
+  ''' this value is False, no data operation occurs. It is also contingent on
+  ''' <see cref="P:CSLA.BusinessCollectionBase.IsValid" />. If this value is False an
+  ''' exception will be thrown to indicate that the UI attempted to save an
+  ''' invalid object.
+  ''' </para><para>
+  ''' It is important to note that this method returns a new version of the
+  ''' business collection that contains any data updated during the save operation.
+  ''' You MUST update all object references to use this new version of the
+  ''' business collection in order to have access to the correct object data.
+  ''' </para><para>
+  ''' You can override this method to add your own custom behaviors to the save
+  ''' operation. For instance, you may add some security checks to make sure
+  ''' the user can save the object. If all security checks pass, you would then
+  ''' invoke the base Save method via <c>MyBase.Save()</c>.
+  ''' </para>
+  ''' </remarks>
+  ''' <returns>A new object containing the saved values.</returns>
   Public Overridable Function Save() As BusinessCollectionBase
     If Me.IsChild Then
       Throw New NotSupportedException("Can not directly save a child object")
@@ -304,22 +506,51 @@ Public MustInherit Class BusinessCollectionBase
 
   End Function
 
+  ''' <summary>
+  ''' Override this method to load a new business object with default
+  ''' values from the database.
+  ''' </summary>
+  ''' <param name="Criteria">An object containing criteria values.</param>
   Protected Overridable Sub DataPortal_Create(ByVal Criteria As Object)
     Throw New NotSupportedException("Invalid operation - create not allowed")
   End Sub
 
+  ''' <summary>
+  ''' Override this method to allow retrieval of an existing business
+  ''' object based on data in the database.
+  ''' </summary>
+  ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
   Protected Overridable Sub DataPortal_Fetch(ByVal Criteria As Object)
     Throw New NotSupportedException("Invalid operation - fetch not allowed")
   End Sub
 
+  ''' <summary>
+  ''' Override this method to allow insert, update or deletion of a business
+  ''' object.
+  ''' </summary>
   Protected Overridable Sub DataPortal_Update()
     Throw New NotSupportedException("Invalid operation - update not allowed")
   End Sub
 
+  ''' <summary>
+  ''' Override this method to allow immediate deletion of a business object.
+  ''' </summary>
+  ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
   Protected Overridable Sub DataPortal_Delete(ByVal Criteria As Object)
     Throw New NotSupportedException("Invalid operation - delete not allowed")
   End Sub
 
+  ''' <summary>
+  ''' Returns the specified database connection string from the application
+  ''' configuration file.
+  ''' </summary>
+  ''' <remarks>
+  ''' The database connection string must be in the <c>appSettings</c> section
+  ''' of the application configuration file. The database name should be
+  ''' prefixed with 'DB:'. For instance, <c>DB:mydatabase</c>.
+  ''' </remarks>
+  ''' <param name="DatabaseName">Name of the database.</param>
+  ''' <returns>A database connection string.</returns>
   Protected Function DB(ByVal DatabaseName As String) As String
     Return ConfigurationSettings.AppSettings("DB:" & DatabaseName)
   End Function

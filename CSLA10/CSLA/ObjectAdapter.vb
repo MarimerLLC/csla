@@ -1,12 +1,29 @@
 Imports System.ComponentModel
 Imports System.Reflection
 
+''' <summary>
+''' 
+''' </summary>
 Namespace Data
 
+  ''' <summary>
+  ''' An ObjectAdapter is used to convert data in an object 
+  ''' or collection into a DataTable.
+  ''' </summary>
   Public Class ObjectAdapter
 
     Private mColumns As New ArrayList
 
+    ''' <summary>
+    ''' Fills the DataSet with data from an object or collection.
+    ''' </summary>
+    ''' <remarks>
+    ''' The name of the DataTable being filled is will be the class name of
+    ''' the object acting as the data source. The
+    ''' DataTable will be inserted if it doesn't already exist in the DataSet.
+    ''' </remarks>
+    ''' <param name="ds">A reference to the DataSet to be filled.</param>
+    ''' <param name="source">A reference to the object or collection acting as a data source.</param>
     Public Sub Fill(ByVal ds As DataSet, ByVal source As Object)
 
       Dim className As String
@@ -16,6 +33,16 @@ Namespace Data
 
     End Sub
 
+    ''' <summary>
+    ''' Fills the DataSet with data from an object or collection.
+    ''' </summary>
+    ''' <remarks>
+    ''' The name of the DataTable being filled is specified as a parameter. The
+    ''' DataTable will be inserted if it doesn't already exist in the DataSet.
+    ''' </remarks>
+    ''' <param name="ds">A reference to the DataSet to be filled.</param>
+    ''' <param name="TableName"></param>
+    ''' <param name="source">A reference to the object or collection acting as a data source.</param>
     Public Sub Fill(ByVal ds As DataSet, _
       ByVal TableName As String, ByVal source As Object)
 
@@ -37,6 +64,11 @@ Namespace Data
 
     End Sub
 
+    ''' <summary>
+    ''' Fills a DataTable with data values from an object or collection.
+    ''' </summary>
+    ''' <param name="dt">A reference to the DataTable to be filled.</param>
+    ''' <param name="source">A reference to the object or collection acting as a data source.</param>
     Public Sub Fill(ByVal dt As DataTable, ByVal source As Object)
 
       AutoDiscover(source)

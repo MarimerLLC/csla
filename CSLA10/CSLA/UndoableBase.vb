@@ -5,8 +5,19 @@ Imports System.IO
 Imports System.Runtime.Serialization
 Imports System.Runtime.Serialization.Formatters.Binary
 
+''' <summary>
+''' 
+''' </summary>
 Namespace Core
 
+  ''' <summary>
+  ''' Implements n-level undo capabilities.
+  ''' </summary>
+  ''' <remarks>
+  ''' You should not directly derive from this class. Your
+  ''' business classes should derive from
+  ''' <see cref="CSLA.BusinessBase" />.
+  ''' </remarks>
   <Serializable()> _
   Public MustInherit Class UndoableBase
     Inherits CSLA.Core.BindableBase
@@ -20,16 +31,23 @@ Namespace Core
     Private Shared BusinessType As Type = GetType(BusinessBase)
     Private Shared CollectionType As Type = GetType(BusinessCollectionBase)
 
+    ''' <summary>
+    ''' Returns the current edit level of the object.
+    ''' </summary>
     Protected ReadOnly Property EditLevel() As Integer
       Get
         Return mStateStack.Count
       End Get
     End Property
 
+    ''' <summary>
+    ''' Copies the state of the object and places the copy
+    ''' onto the state stack.
+    ''' </summary>
     Protected Friend Sub CopyState()
 
       Dim currentType As Type = Me.GetType
-      Dim state As New Hashtable
+      Dim state As New Hashtable()
       Dim fields() As FieldInfo
       Dim field As FieldInfo
       Dim fieldName As String
@@ -71,17 +89,23 @@ Namespace Core
       Loop Until currentType Is UndoableType
 
       ' serialize the state and stack it
-      Dim buffer As New MemoryStream
-      Dim formatter As New BinaryFormatter
+      Dim buffer As New MemoryStream()
+      Dim formatter As New BinaryFormatter()
       formatter.Serialize(buffer, state)
       mStateStack.Push(buffer.ToArray)
 
     End Sub
 
-    ' restore the state of the object to its
-    ' previous value by taking the data out of 
-    ' the stack and restoring it into the fields
-    ' of the object
+    ''' <summary>
+    ''' Restores the object's state to the most recently
+    ''' copied values from the state stack.
+    ''' </summary>
+    ''' <remarks>
+    ''' Restores the state of the object to its
+    ''' previous value by taking the data out of 
+    ''' the stack and restoring it into the fields
+    ''' of the object.
+    ''' </remarks>
     Protected Friend Sub UndoChanges()
       ' if we are a child object we might be asked to
       ' undo below the level where we stacked states,
@@ -89,7 +113,7 @@ Namespace Core
       If EditLevel > 0 Then
         Dim buffer As New MemoryStream(CType(mStateStack.Pop(), Byte()))
         buffer.Position = 0
-        Dim formatter As New BinaryFormatter
+        Dim formatter As New BinaryFormatter()
         Dim state As Hashtable = CType(formatter.Deserialize(buffer), Hashtable)
 
         Dim currentType As Type = Me.GetType
@@ -139,6 +163,15 @@ Namespace Core
 
     End Sub
 
+    ''' <summary>
+    ''' Accepts any changes made to the object since the last
+    ''' state copy was made.
+    ''' </summary>
+    ''' <remarks>
+    ''' The most recent state copy is removed from the state
+    ''' stack and discarded, thus committing any changes made
+    ''' to the object's state.
+    ''' </remarks>
     Protected Friend Sub AcceptChanges()
       If EditLevel > 0 Then
         mStateStack.Pop()
@@ -218,7 +251,7 @@ Namespace Core
     Public Sub DumpState()
 
       Dim currentType As Type = Me.GetType
-      Dim state As New Hashtable
+      Dim state As New Hashtable()
       Dim field As FieldInfo
       Dim fieldName As String
 

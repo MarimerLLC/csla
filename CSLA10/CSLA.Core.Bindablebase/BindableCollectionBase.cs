@@ -13,13 +13,35 @@ namespace CSLA.Core
   [Serializable]
   public abstract class BindableCollectionBase : CollectionBase, IBindingList 
   {
+		/// <summary>
+		/// Set this to True to allow data binding to add new
+		/// child objects to the collection.
+		/// </summary>
+		/// <remarks>
+		/// If you set this to True, you must also override the OnAddNew
+		/// method. You must also set AllowEdit to True.
+		/// </remarks>
     protected bool AllowNew = false;
+		/// <summary>
+		/// Set this to True to allow data binding to do in-place
+		/// editing of child objects in a grid control.
+		/// </summary>
     protected bool AllowEdit = false;
+		/// <summary>
+		/// Set this to True to allow data binding to automatically
+		/// remove child objects from the collection.
+		/// </summary>
     protected bool AllowRemove = false;
 
+		/// <summary>
+		/// Declares a serialization-safe ListChanged event.
+		/// </summary>
     [field: NonSerialized]
     public event System.ComponentModel.ListChangedEventHandler ListChanged;
     
+		/// <summary>
+		/// Call this method to raise the ListChanged event.
+		/// </summary>
     virtual protected void OnListChanged(System.ComponentModel.ListChangedEventArgs e)
     {
       if (ListChanged != null)
@@ -42,6 +64,11 @@ namespace CSLA.Core
     bool IBindingList.SupportsSearching { get { return false; } }
     bool IBindingList.SupportsSorting { get { return false; } }
 
+		/// <summary>
+		/// Override this method to allow data binding to automatically
+		/// add new child objects to a collection.
+		/// </summary>
+		/// <returns></returns>
     virtual protected object OnAddNew() { return null; }
 
 		override protected void OnInsertComplete(int index, object value)

@@ -1,8 +1,15 @@
 Imports System.Security.Principal
 Imports System.Threading
 
+''' <summary>
+''' 
+''' </summary>
 Namespace Security
 
+  ''' <summary>
+  ''' Implements a custom Principal class that is used by
+  ''' CSLA .NET for table-based security.
+  ''' </summary>
   <Serializable()> _
   Public Class BusinessPrincipal
     Implements IPrincipal
@@ -11,6 +18,9 @@ Namespace Security
 
 #Region " IPrincipal "
 
+    ''' <summary>
+    ''' Implements the Identity property defined by IPrincipal.
+    ''' </summary>
     Public ReadOnly Property Identity() As IIdentity _
         Implements IPrincipal.Identity
       Get
@@ -18,6 +28,9 @@ Namespace Security
       End Get
     End Property
 
+    ''' <summary>
+    ''' Implements the IsInRole property defined by IPrincipal.
+    ''' </summary>
     Public Function IsInRole(ByVal Role As String) As Boolean _
         Implements IPrincipal.IsInRole
 
@@ -29,6 +42,19 @@ Namespace Security
 
 #Region " Login process "
 
+    ''' <summary>
+    ''' Initiates a login process using custom CSLA .NET security.
+    ''' </summary>
+    ''' <remarks>
+    ''' As described in the book, this invokes a login process using
+    ''' a table-based authentication scheme and a list of roles in
+    ''' the database tables. By replacing the code in
+    ''' <see cref="T:CSLA.Security.BusinessIdentity" /> you can easily
+    ''' adapt this scheme to authenticate the user against any database
+    ''' or other scheme.
+    ''' </remarks>
+    ''' <param name="Username">The user's username.</param>
+    ''' <param name="Password">The user's password.</param>
     Public Shared Sub Login(ByVal Username As String, ByVal Password As String)
       Dim p As New BusinessPrincipal(Username, Password)
     End Sub

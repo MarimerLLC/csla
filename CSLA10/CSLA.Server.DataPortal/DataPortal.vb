@@ -2,11 +2,21 @@ Imports System.Reflection
 Imports System.Security.Principal
 Imports System.Configuration
 
+''' <summary>
+''' Implements the server-side DataPortal as discussed
+''' in Chapter 5.
+''' </summary>
 Public Class DataPortal
   Inherits MarshalByRefObject
 
 #Region " Data Access "
 
+  ''' <summary>
+  ''' Called by the client-side DataPortal to create a new object.
+  ''' </summary>
+  ''' <param name="Criteria">Object-specific criteria.</param>
+  ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
+  ''' <returns>A populated business object.</returns>
   Public Function Create(ByVal Criteria As Object, ByVal Principal As Object) As Object
 
     SetPrincipal(Principal)
@@ -21,6 +31,12 @@ Public Class DataPortal
 
   End Function
 
+  ''' <summary>
+  ''' Called by the client-side DataProtal to retrieve an object.
+  ''' </summary>
+  ''' <param name="Criteria">Object-specific criteria.</param>
+  ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
+  ''' <returns>A populated business object.</returns>
   Public Function Fetch(ByVal Criteria As Object, ByVal Principal As Object) As Object
     EventLog.WriteEntry("PTracker", "Enter fetch")
     SetPrincipal(Principal)
@@ -39,6 +55,12 @@ Public Class DataPortal
 
   End Function
 
+  ''' <summary>
+  ''' Called by the client-side DataPortal to update an object.
+  ''' </summary>
+  ''' <param name="obj">A reference to the object being updated.</param>
+  ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
+  ''' <returns>A reference to the newly updated object.</returns>
   Public Function Update(ByVal obj As Object, ByVal Principal As Object) As Object
 
     SetPrincipal(Principal)
@@ -49,6 +71,11 @@ Public Class DataPortal
 
   End Function
 
+  ''' <summary>
+  ''' Called by the client-side DataPortal to delete an object.
+  ''' </summary>
+  ''' <param name="Criteria">Object-specific criteria.</param>
+  ''' <param name="Principal">The user's principal object (if using CSLA .NET security).</param>
   Public Sub Delete(ByVal Criteria As Object, ByVal Principal As Object)
 
     SetPrincipal(Principal)

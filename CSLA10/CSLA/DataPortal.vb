@@ -4,12 +4,23 @@ Imports System.Runtime.Remoting.Channels
 Imports System.Runtime.Remoting.Channels.Http
 Imports System.Configuration
 
+''' <summary>
+''' This is the client-side DataPortal as described in
+''' Chapter 5.
+''' </summary>
 Public Class DataPortal
   Private Shared mPortal As Server.DataPortal
   Private Shared mServicedPortal As Server.ServicedDataPortal.DataPortal
 
 #Region " Data Access methods "
 
+  ''' <summary>
+  ''' Called by a factory method in a business class to create 
+  ''' a new object, which is loaded with default
+  ''' values from the database.
+  ''' </summary>
+  ''' <param name="Criteria">Object-specific criteria.</param>
+  ''' <returns>A new object, populated with default values.</returns>
   Public Shared Function Create(ByVal Criteria As Object) As Object
     If IsTransactionalMethod(GetMethod(Criteria.GetType.DeclaringType, "DataPortal_Create")) Then
       Return ServicedPortal.Create(Criteria, GetPrincipal)
@@ -18,6 +29,12 @@ Public Class DataPortal
     End If
   End Function
 
+  ''' <summary>
+  ''' Called by a factory method in a business class to retrieve
+  ''' an object, which is loaded with values from the database.
+  ''' </summary>
+  ''' <param name="Criteria">Object-specific criteria.</param>
+  ''' <returns>An object populated with values from the database.</returns>
   Public Shared Function Fetch(ByVal Criteria As Object) As Object
     If IsTransactionalMethod(GetMethod(Criteria.GetType.DeclaringType, "DataPortal_Fetch")) Then
       Return ServicedPortal.Fetch(Criteria, GetPrincipal)
@@ -26,6 +43,18 @@ Public Class DataPortal
     End If
   End Function
 
+  ''' <summary>
+  ''' Called by the <see cref="M:CSLA.BusinessBase.Save" /> method to
+  ''' insert, update or delete an object in the database.
+  ''' </summary>
+  ''' <remarks>
+  ''' Note that this method returns a reference to the updated business object.
+  ''' If the server-side DataPortal is running remotely, this will be a new and
+  ''' different object from the original, and all object references MUST be updated
+  ''' to use this new object.
+  ''' </remarks>
+  ''' <param name="obj">A reference to the business object to be updated.</param>
+  ''' <returns>A reference to the updated business object.</returns>
   Public Shared Function Update(ByVal obj As Object) As Object
     If IsTransactionalMethod(GetMethod(obj.GetType, "DataPortal_Update")) Then
       Return ServicedPortal.Update(obj, GetPrincipal)
@@ -34,6 +63,11 @@ Public Class DataPortal
     End If
   End Function
 
+  ''' <summary>
+  ''' Called by a <c>Shared</c> method in the business class to cause
+  ''' immediate deletion of a specific object from the database.
+  ''' </summary>
+  ''' <param name="Criteria">Object-specific criteria.</param>
   Public Shared Sub Delete(ByVal Criteria As Object)
     If IsTransactionalMethod(GetMethod(Criteria.GetType.DeclaringType, "DataPortal_Delete")) Then
       ServicedPortal.Delete(Criteria, GetPrincipal)

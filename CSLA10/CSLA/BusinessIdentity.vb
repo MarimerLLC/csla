@@ -1,8 +1,15 @@
 Imports System.Security.Principal
 Imports System.Data.SqlClient
 
+''' <summary>
+''' 
+''' </summary>
 Namespace Security
 
+  ''' <summary>
+  ''' Implements a custom Identity class that supports
+  ''' CSLA .NET data access via the DataPortal.
+  ''' </summary>
   <Serializable()> _
   Public Class BusinessIdentity
     Inherits ReadOnlyBase
@@ -14,6 +21,9 @@ Namespace Security
 
 #Region " IIdentity "
 
+    ''' <summary>
+    ''' Implements the IsAuthenticated property defined by IIdentity.
+    ''' </summary>
     Public ReadOnly Property IsAuthenticated() As Boolean _
         Implements IIdentity.IsAuthenticated
       Get
@@ -21,6 +31,9 @@ Namespace Security
       End Get
     End Property
 
+    ''' <summary>
+    ''' Implements the AuthenticationType property defined by IIdentity.
+    ''' </summary>
     Public ReadOnly Property AuthenticationType() As String _
         Implements IIdentity.AuthenticationType
       Get
@@ -28,6 +41,9 @@ Namespace Security
       End Get
     End Property
 
+    ''' <summary>
+    ''' Implements the Name property defined by IIdentity.
+    ''' </summary>
     Public ReadOnly Property Name() As String _
         Implements IIdentity.Name
       Get
@@ -48,7 +64,7 @@ Namespace Security
     End Function
 
     <Serializable()> _
-    Public Class Criteria
+    Private Class Criteria
       Public Username As String
       Public Password As String
 
@@ -66,13 +82,16 @@ Namespace Security
 
 #Region " Data access "
 
+    ''' <summary>
+    ''' Retrieves the identity data for a specific user.
+    ''' </summary>
     Protected Overrides Sub DataPortal_Fetch(ByVal Criteria As Object)
       Dim crit As Criteria = CType(Criteria, Criteria)
 
       mRoles.Clear()
 
       Dim cn As New SqlConnection(db("Security"))
-      Dim cm As New SqlCommand
+      Dim cm As New SqlCommand()
       cn.Open()
       Try
         cm.Connection = cn

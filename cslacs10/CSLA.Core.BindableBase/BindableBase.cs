@@ -1,17 +1,27 @@
 using System;
 
-namespace CSLA.Core.BindableBase
+namespace CSLA.Core 
 {
-	/// <summary>
-	/// Summary description for BindableBase.
-	/// </summary>
-	public class BindableBase
-	{
-		public BindableBase()
-		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
-	}
+  /// <summary>
+  /// This base class declares the IsDirtyChanged event
+  /// to be NonSerialized so serialization will work.
+  /// </summary>
+  [Serializable()]
+  public abstract class BindableBase
+  {
+    /// <summary>
+    /// Declares a serialization-safe IsDirtyChanged event.
+    /// </summary>
+    [field: NonSerialized]
+    public event EventHandler IsDirtyChanged;
+
+    /// <summary>
+    /// Call this method to raise the IsDirtyChanged event.
+    /// </summary>
+    virtual protected void OnIsDirtyChanged()
+    {
+      if (IsDirtyChanged != null)
+        IsDirtyChanged(this, EventArgs.Empty);
+    }
+  }
 }

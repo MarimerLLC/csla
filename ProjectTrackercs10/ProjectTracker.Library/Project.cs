@@ -204,6 +204,8 @@ namespace ProjectTracker.Library
     {
       if(IsDeleted)
       {
+        System.Security.Principal.IIdentity user = Thread.CurrentPrincipal.Identity;
+        bool b = user.IsAuthenticated;
         if(!Thread.CurrentPrincipal.IsInRole("ProjectManager") && 
           !Thread.CurrentPrincipal.IsInRole("Administrator"))
           throw new System.Security.SecurityException(

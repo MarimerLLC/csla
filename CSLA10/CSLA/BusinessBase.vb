@@ -297,6 +297,7 @@ Public MustInherit Class BusinessBase
   Public Sub CancelEdit()
     mBindingEdit = False
     UndoChanges()
+    OnIsDirtyChanged()
   End Sub
 
   ''' <summary>

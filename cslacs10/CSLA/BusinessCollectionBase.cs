@@ -404,12 +404,15 @@ namespace CSLA
     /// </summary>
     protected override void OnInsert(int index, object val)
     {
-      // when an object is inserted we assume it is
-      // a new object and so the edit level when it was
-      // added must be set
-      ((BusinessBase)val).EditLevelAdded = _editLevel;
-      ((BusinessBase)val).SetParent(this);
-      base.OnInsert(index, val);
+      if (!ActivelySorting)
+      {
+        // when an object is inserted we assume it is
+        // a new object and so the edit level when it was
+        // added must be set
+        ((BusinessBase)val).EditLevelAdded = _editLevel;
+        ((BusinessBase)val).SetParent(this);
+        base.OnInsert(index, val);
+      }
     }
 
     /// <summary>
@@ -418,10 +421,13 @@ namespace CSLA
     /// </summary>
     protected override void OnRemove(int index, object val)
     {
-      // when an object is 'removed' it is really
-      // being deleted, so do the deletion work
-      DeleteChild((BusinessBase)val);
-      base.OnRemove(index, val);
+      if (!ActivelySorting)
+      {
+        // when an object is 'removed' it is really
+        // being deleted, so do the deletion work
+        DeleteChild((BusinessBase)val);
+        base.OnRemove(index, val);
+      }
     }
 
     /// <summary>
@@ -430,10 +436,13 @@ namespace CSLA
     /// </summary>
     protected override void OnClear()
     {
-      // remove all the items from the list
-      while(List.Count > 0)
-        List.RemoveAt(List.Count - 1);
-      base.OnClear();
+      if (!ActivelySorting)
+      {
+        // remove all the items from the list
+        while(List.Count > 0)
+          List.RemoveAt(List.Count - 1);
+        base.OnClear();
+      }
     }
 
     #endregion
@@ -447,6 +456,7 @@ namespace CSLA
 
     #region IsChild
 
+    [NotUndoable()]
     bool _IsChild = false;
 
     /// <summary>

@@ -188,7 +188,12 @@ Public MustInherit Class NameValueList
         Dim dr As New Data.SafeDataReader(.ExecuteReader)
         Try
           While dr.Read()
-            Add(CStr(dr.GetValue(0)), CStr(dr.GetValue(1)))
+            If dr.IsDBNull(1) Then
+              Add(CStr(dr.GetValue(0)), "")
+
+            Else
+              Add(CStr(dr.GetValue(0)), CStr(dr.GetValue(1)))
+            End If
           End While
 
         Finally

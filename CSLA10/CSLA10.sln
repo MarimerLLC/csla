@@ -56,6 +56,10 @@ Global
 		{D455F360-5347-4136-A825-64FFD41F9787}.Release.ActiveCfg = Release|.NET
 		{D455F360-5347-4136-A825-64FFD41F9787}.Release.Build.0 = Release|.NET
 	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+		Item:1 = license.txt
+		Item:2 = readme.txt
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
 	GlobalSection(ExtensibilityAddIns) = postSolution

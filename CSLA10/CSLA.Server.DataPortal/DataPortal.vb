@@ -139,9 +139,7 @@ Namespace Server
 
       ' set the app context to the value we got from the
       ' client
-      CSLA.ApplicationContext.SetContext( _
-        CType(context.ClientContext, NameValueCollection), _
-        CType(context.GlobalContext, NameValueCollection))
+      CSLA.ApplicationContext.SetContext(context.ClientContext, context.GlobalContext)
 
       If AUTHENTICATION() = "Windows" Then
         ' When using integrated security, Principal must be Nothing 
@@ -194,7 +192,7 @@ Namespace Server
       ' do nothing
       If Not context.IsRemotePortal Then Exit Sub
 
-      ApplicationContext.ClearContext()
+      ApplicationContext.Clear()
 
     End Sub
 

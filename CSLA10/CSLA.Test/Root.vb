@@ -77,7 +77,11 @@ Public Class Root
 
   Protected Overrides Sub DataPortal_Update()
 
-    Session.Add("context1", ApplicationContext.Current.Item("context1"))
+    Session.Add("clientcontext", ApplicationContext.ClientContext.Item("clientcontext"))
+
+    Session.Add("globalcontext", ApplicationContext.GlobalContext.Item("globalcontext"))
+    ApplicationContext.GlobalContext.Remove("globalcontext")
+    ApplicationContext.GlobalContext.Item("globalcontext") = "new global value"
 
     If IsDeleted Then
       ' we would delete here

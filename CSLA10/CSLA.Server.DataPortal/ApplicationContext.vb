@@ -13,7 +13,7 @@ Public Class ApplicationContext
   ''' </summary>
   ''' <remarks>
   ''' <para>
-  ''' The return value is a NameValueCollection. If one does
+  ''' The return value is a HybridDictionary. If one does
   ''' not already exist, and empty one is created and returned.
   ''' </para><para>
   ''' Note that data in this context is transferred from
@@ -21,14 +21,14 @@ Public Class ApplicationContext
   ''' the server to the client.
   ''' <para>
   ''' </remarks>
-  Public Shared ReadOnly Property ClientContext() As NameValueCollection
+  Public Shared ReadOnly Property ClientContext() As HybridDictionary
     Get
       Dim slot As System.LocalDataStoreSlot = _
         Thread.GetNamedDataSlot("CSLA.ClientContext")
-      Dim ctx As NameValueCollection = _
-        CType(Thread.GetData(slot), NameValueCollection)
+      Dim ctx As HybridDictionary = _
+        CType(Thread.GetData(slot), HybridDictionary)
       If ctx Is Nothing Then
-        ctx = New NameValueCollection
+        ctx = New HybridDictionary
         Threading.Thread.SetData(slot, ctx)
       End If
       Return ctx
@@ -41,7 +41,7 @@ Public Class ApplicationContext
   ''' </summary>
   ''' <remarks>
   ''' <para>
-  ''' The return value is a NameValueCollection. If one does
+  ''' The return value is a HybridDictionary. If one does
   ''' not already exist, and empty one is created and returned.
   ''' </para><para>
   ''' Note that data in this context is transferred to and from
@@ -49,14 +49,14 @@ Public Class ApplicationContext
   ''' will be transferred bi-directionally across the network.
   ''' <para>
   ''' </remarks>
-  Public Shared ReadOnly Property GlobalContext() As NameValueCollection
+  Public Shared ReadOnly Property GlobalContext() As HybridDictionary
     Get
       Dim slot As System.LocalDataStoreSlot = _
         Thread.GetNamedDataSlot("CSLA.GlobalContext")
-      Dim ctx As NameValueCollection = _
-        CType(Thread.GetData(slot), NameValueCollection)
+      Dim ctx As HybridDictionary = _
+        CType(Thread.GetData(slot), HybridDictionary)
       If ctx Is Nothing Then
-        ctx = New NameValueCollection
+        ctx = New HybridDictionary
         Threading.Thread.SetData(slot, ctx)
       End If
       Return ctx
@@ -79,7 +79,7 @@ Public Class ApplicationContext
 
   End Function
 
-  Friend Shared Sub SetContext(ByVal clientContext As NameValueCollection, ByVal globalContext As NameValueCollection)
+  Friend Shared Sub SetContext(ByVal clientContext As Object, ByVal globalContext As Object)
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("CSLA.ClientContext")
@@ -90,7 +90,7 @@ Public Class ApplicationContext
 
   End Sub
 
-  Friend Shared Sub ClearContext()
+  Public Shared Sub Clear()
 
     Thread.FreeNamedDataSlot("CSLA.ClientContext")
     Thread.FreeNamedDataSlot("CSLA.GlobalContext")

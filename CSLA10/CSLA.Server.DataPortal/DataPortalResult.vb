@@ -16,14 +16,14 @@ Namespace Server
 
     Public Sub New()
 
-      GlobalContext = ApplicationContext.GlobalContext
+      GlobalContext = ApplicationContext.GetGlobalContext
 
     End Sub
 
     Public Sub New(ByVal returnObject As Object)
 
       Me.ReturnObject = returnObject
-      GlobalContext = ApplicationContext.GlobalContext
+      GlobalContext = ApplicationContext.GetGlobalContext
 
     End Sub
   End Class

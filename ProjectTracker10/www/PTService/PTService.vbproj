@@ -83,24 +83,29 @@
                     Package = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}"
                 />
                 <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\..\csla10\CSLA\bin\CSLA.Server.ServicedDataPortal.dll"
+                    Name = "CSLA.BatchQueue"
+                    AssemblyName = "CSLA.BatchQueue"
+                    HintPath = "..\..\..\csla10\CSLA.BatchQueue\bin\CSLA.BatchQueue.dll"
                 />
                 <Reference
                     Name = "CSLA.Core.Bindablebase"
                     AssemblyName = "CSLA.Core.Bindablebase"
-                    HintPath = "..\..\..\csla10\CSLA\bin\CSLA.Core.Bindablebase.dll"
+                    HintPath = "..\..\..\csla10\CSLA.BatchQueue\bin\CSLA.Core.Bindablebase.dll"
                 />
                 <Reference
                     Name = "CSLA"
                     AssemblyName = "CSLA"
-                    HintPath = "..\..\..\csla10\CSLA\bin\CSLA.dll"
+                    HintPath = "..\..\..\csla10\CSLA.BatchQueue\bin\CSLA.dll"
                 />
                 <Reference
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
-                    HintPath = "..\..\..\csla10\CSLA\bin\CSLA.Server.DataPortal.dll"
+                    HintPath = "..\..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.DataPortal.dll"
+                />
+                <Reference
+                    Name = "CSLA.Server.ServicedDataPortal"
+                    AssemblyName = "CSLA.Server.ServicedDataPortal"
+                    HintPath = "..\..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.ServicedDataPortal.dll"
                 />
             </References>
             <Imports>

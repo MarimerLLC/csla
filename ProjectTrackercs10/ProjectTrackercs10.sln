@@ -7,6 +7,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "MSDN.DataListView", "MSDN.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPortalcs", "http://localhost/DataPortalcs/DataPortalcs.csproj", "{2443FEF2-CC87-4A91-9C98-CF5669762288}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWebcs", "http://localhost/PTWebcs/PTWebcs.csproj", "{188CC3E2-9F8A-4358-9654-4333697C01B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -31,6 +33,10 @@ Global
 		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Debug.Build.0 = Debug|.NET
 		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Release.ActiveCfg = Release|.NET
 		{2443FEF2-CC87-4A91-9C98-CF5669762288}.Release.Build.0 = Release|.NET
+		{188CC3E2-9F8A-4358-9654-4333697C01B9}.Debug.ActiveCfg = Debug|.NET
+		{188CC3E2-9F8A-4358-9654-4333697C01B9}.Debug.Build.0 = Debug|.NET
+		{188CC3E2-9F8A-4358-9654-4333697C01B9}.Release.ActiveCfg = Release|.NET
+		{188CC3E2-9F8A-4358-9654-4333697C01B9}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

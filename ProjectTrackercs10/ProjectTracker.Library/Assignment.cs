@@ -43,15 +43,17 @@ namespace ProjectTracker.Library
 
     private static RoleList _roles;
 
-    static Assignment()
-    {
-      _roles = RoleList.GetList();
-    }
+//    static Assignment()
+//    {
+//      _roles = RoleList.GetList();
+//    }
 
     public static RoleList Roles
     {
       get
       {
+        if(_roles == null)
+          _roles = RoleList.GetList();
         return _roles;
       }
     }

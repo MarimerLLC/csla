@@ -161,6 +161,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "RunLocalAttribute.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "SafeDataReader.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

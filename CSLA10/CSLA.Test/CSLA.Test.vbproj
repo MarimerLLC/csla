@@ -186,6 +186,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Rollback.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "RollbackRoot.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Root.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

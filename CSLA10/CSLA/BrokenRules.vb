@@ -292,6 +292,7 @@ Public Class BrokenRules
   ''' </summary>
   Public Class RuleArgs
     Private mPropertyName As String
+    Private mDescription As String
 
     ''' <summary>
     ''' The (optional) name of the property to be validated.
@@ -300,6 +301,46 @@ Public Class BrokenRules
       Get
         Return mPropertyName
       End Get
+    End Property
+
+    ''' <summary>
+    ''' Set by the rule handler method to describe the broken
+    ''' rule.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' If the rule handler sets this property, this value will override
+    ''' any description attribute value associated with the rule handler
+    ''' method.
+    ''' </para><para>
+    ''' The description string returned via this property 
+    ''' is provided to the UI or other consumer
+    ''' about which rules are broken. These descriptions are intended
+    ''' for end-user display.
+    ''' </para><para>
+    ''' The description value is a .NET format string, and it can include
+    ''' the following tokens in addition to literal text:
+    ''' </para><para>
+    ''' {0} - the RuleName value
+    ''' </para><para>
+    ''' {1} - the PropertyName value
+    ''' </para><para>
+    ''' {2} - the full type name of the target object
+    ''' </para><para>
+    ''' {3} - the ToString value of the target object
+    ''' </para><para>
+    ''' You can use these tokens in your description string and the
+    ''' appropriate values will be substituted for the tokens at
+    ''' runtime.
+    ''' </para>
+    ''' </remarks>
+    Public Property Description() As String
+      Get
+        Return mDescription
+      End Get
+      Set(ByVal Value As String)
+        mDescription = Value
+      End Set
     End Property
 
     ''' <summary>
@@ -362,6 +403,11 @@ Public Class BrokenRules
   ''' You can use these tokens in your description string and the
   ''' appropriate values will be substituted for the tokens at
   ''' runtime.
+  ''' </para><para>
+  ''' Instead of using this attribute, a rule handler method can
+  ''' set the Description property of the RuleArgs parameter to
+  ''' a description string. That approach can provide a more dynamic
+  ''' way to generate descriptions of broken rules.
   ''' </para>
   ''' </remarks>
   <AttributeUsage(AttributeTargets.Method)> _
@@ -447,7 +493,12 @@ Public Class BrokenRules
     ''' </summary>
     Public ReadOnly Property Description() As String
       Get
-        Return String.Format(mDescription, RuleName, RuleArgs.PropertyName, TypeName(mTarget), mTarget.ToString)
+        If Len(mArgs.Description) > 0 Then
+          Return String.Format(mArgs.Description, RuleName, RuleArgs.PropertyName, TypeName(mTarget), mTarget.ToString)
+
+        Else
+          Return String.Format(mDescription, RuleName, RuleArgs.PropertyName, TypeName(mTarget), mTarget.ToString)
+        End If
       End Get
     End Property
 

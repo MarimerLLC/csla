@@ -35,7 +35,13 @@ Public Class HasRulesManager
 
   <Description("{0} too long")> _
   Private Function NameLength(ByVal target As Object, ByVal e As RuleArgs) As Boolean
-    Return Len(mName) <= DirectCast(e, MaxLengthArgs).MaxLength
+    If Len(mName) <= DirectCast(e, MaxLengthArgs).MaxLength Then
+      Return True
+
+    Else
+      e.Description = "The value for {0} is too long"
+      Return False
+    End If
   End Function
 
   <Serializable()> _

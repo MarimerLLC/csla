@@ -13,6 +13,21 @@ Public Class DataPortal
 
   Private Shared mPortalRemote As Boolean = False
 
+#Region " DataPortal events "
+
+  ''' <summary>
+  ''' Raised by DataPortal prior to calling the 
+  ''' requested server-side DataPortal method.
+  ''' </summary>
+  Public Shared Event OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  ''' <summary>
+  ''' Raised by DataPortal after the requested 
+  ''' server-side DataPortal method call is complete.
+  ''' </summary>
+  Public Shared Event DataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+
+#End Region
+
 #Region " Data Access methods "
 
   ''' <summary>
@@ -32,6 +47,8 @@ Public Class DataPortal
     Dim isRemotePortal As Boolean = mPortalRemote AndAlso Not forceLocal
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, isRemotePortal)
 
+    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+
     If IsTransactionalMethod(method) Then
       result = CType(ServicedPortal(forceLocal).Create(Criteria, dpContext), Server.DataPortalResult)
 
@@ -43,6 +60,9 @@ Public Class DataPortal
       RestoreContext(result)
       Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
+
+    RaiseEvent DataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+
     Return result.ReturnObject
 
   End Function
@@ -63,6 +83,8 @@ Public Class DataPortal
     Dim isRemotePortal As Boolean = mPortalRemote AndAlso Not forceLocal
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, isRemotePortal)
 
+    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+
     If IsTransactionalMethod(method) Then
       result = CType(ServicedPortal(forceLocal).Fetch(Criteria, dpContext), Server.DataPortalResult)
 
@@ -74,6 +96,9 @@ Public Class DataPortal
       RestoreContext(result)
       Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
+
+    RaiseEvent DataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+
     Return result.ReturnObject
 
   End Function
@@ -100,6 +125,8 @@ Public Class DataPortal
     Dim isRemotePortal As Boolean = mPortalRemote AndAlso Not forceLocal
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, isRemotePortal)
 
+    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+
     If isRemotePortal Then
       Serialization.SerializationNotification.OnSerializing(obj)
     End If
@@ -116,6 +143,9 @@ Public Class DataPortal
       Serialization.SerializationNotification.OnSerialized(obj)
       Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
+
+    RaiseEvent DataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+
     Return result.ReturnObject
 
   End Function
@@ -135,6 +165,8 @@ Public Class DataPortal
     Dim isRemotePortal As Boolean = mPortalRemote AndAlso Not forceLocal
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, isRemotePortal)
 
+    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+
     If IsTransactionalMethod(method) Then
       result = CType(ServicedPortal(forceLocal).Delete(Criteria, dpContext), Server.DataPortalResult)
 
@@ -145,6 +177,8 @@ Public Class DataPortal
     If isRemotePortal Then
       RestoreContext(result)
     End If
+
+    RaiseEvent DataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
   End Sub
 
@@ -307,5 +341,25 @@ Public Class DataPortal
   End Sub
 
 #End Region
+
+End Class
+
+
+''' <summary>
+''' Provides information about the DataPortal 
+''' call.
+''' </summary>
+Public Class DataPortalEventArgs
+  Inherits EventArgs
+
+  ''' <summary>
+  ''' The DataPortalContext object passed to the
+  ''' server-side DataPortal.
+  ''' </summary>
+  Public DataPortalContext As Server.DataPortalContext
+
+  Public Sub New(ByVal dataPortalContext As Server.DataPortalContext)
+    Me.DataPortalContext = dataPortalContext
+  End Sub
 
 End Class

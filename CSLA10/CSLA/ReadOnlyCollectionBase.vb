@@ -12,6 +12,9 @@ Public MustInherit Class ReadOnlyCollectionBase
 
   Implements ICloneable
 
+  ''' <summary>
+  ''' Creates a new ReadOnlyCollectionBase object.
+  ''' </summary>
   Public Sub New()
     AllowEdit = False
     AllowNew = False

@@ -4,6 +4,10 @@
 ''' </summary>
 <Serializable()> _
 Public MustInherit Class CriteriaBase
+  ''' <summary>
+  ''' Type of the business object to be instantiated by
+  ''' the server-side DataPortal. 
+  ''' </summary>
   Public ObjectType As Type
 
   ''' <summary>

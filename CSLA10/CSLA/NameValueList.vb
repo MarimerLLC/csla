@@ -99,10 +99,16 @@ Public MustInherit Class NameValueList
 
 #Region " Create and Load "
 
+  ''' <summary>
+  ''' Creates a new NameValueList.
+  ''' </summary>
   Protected Sub New()
     ' prevent public creation
   End Sub
 
+  ''' <summary>
+  ''' Creates a new NameValueList.
+  ''' </summary>
   Protected Sub New(ByVal info As SerializationInfo, _
       ByVal context As StreamingContext)
     MyBase.New(info, context)

@@ -201,24 +201,36 @@ Public Class BrokenRules
       Return False
     End Function
 
+    ''' <summary>
+    ''' Prevents clearing the collection.
+    ''' </summary>
     Protected Overrides Sub OnClear()
       If Not mLegal Then
         Throw New NotSupportedException("Clear is an invalid operation")
       End If
     End Sub
 
+    ''' <summary>
+    ''' Prevents insertion of items into the collection.
+    ''' </summary>
     Protected Overrides Sub OnInsert(ByVal index As Integer, ByVal value As Object)
       If Not mLegal Then
         Throw New NotSupportedException("Insert is an invalid operation")
       End If
     End Sub
 
+    ''' <summary>
+    ''' Prevents removal of items from the collection.
+    ''' </summary>
     Protected Overrides Sub OnRemove(ByVal index As Integer, ByVal value As Object)
       If Not mLegal Then
         Throw New NotSupportedException("Remove is an invalid operation")
       End If
     End Sub
 
+    ''' <summary>
+    ''' Prevents changing items in the collection.
+    ''' </summary>
     Protected Overrides Sub OnSet(ByVal index As Integer, _
         ByVal oldValue As Object, ByVal newValue As Object)
       If Not mLegal Then
@@ -235,6 +247,20 @@ Public Class BrokenRules
 
 #Region " Rule Manager "
 
+  ''' <summary>
+  ''' Sets the target object so the Rules Manager functionality
+  ''' has a reference to the object containing the data to
+  ''' be validated.
+  ''' </summary>
+  ''' <remarks>
+  ''' The object here is typically your business object. In your
+  ''' business class you'll implement a method to set up your
+  ''' business rules. As you do so, you need to call this method
+  ''' to give BrokenRules a reference to your business object
+  ''' so it has access to your object's data.
+  ''' </remarks>
+  ''' <param name="target">A reference to the object containing
+  ''' the data to be validated.</param>
   Public Sub SetTargetObject(ByVal target As Object)
     mTarget = target
   End Sub
@@ -260,19 +286,33 @@ Public Class BrokenRules
 
 #Region " RuleArgs class "
 
+  ''' <summary>
+  ''' Object providing extra information to methods that
+  ''' implement business rules.
+  ''' </summary>
   Public Class RuleArgs
     Private mPropertyName As String
 
+    ''' <summary>
+    ''' The (optional) name of the property to be validated.
+    ''' </summary>
     Public ReadOnly Property PropertyName() As String
       Get
         Return mPropertyName
       End Get
     End Property
 
+    ''' <summary>
+    ''' Creates an instance of RuleArgs.
+    ''' </summary>
     Public Sub New()
 
     End Sub
 
+    ''' <summary>
+    ''' Creates an instance of RuleArgs.
+    ''' </summary>
+    ''' <param name="propertyName">The name of the property to be validated.</param>
     Public Sub New(ByVal propertyName As String)
       mPropertyName = propertyName
     End Sub
@@ -616,7 +656,7 @@ Public Class BrokenRules
     Dim list As ArrayList = GetRulesForName(ruleName)
 
     ' we have the list, add our new rule
-    list.Add(New RuleMethod(handler, ruleName, propertyName))
+    list.Add(New RuleMethod(mTarget, handler, ruleName, propertyName))
 
   End Sub
 

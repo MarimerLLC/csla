@@ -152,19 +152,29 @@ namespace CSLA.Core
               if(!NotUndoableField(field))
               {
                 // the field is undoable, so restore its value
+                Object value = field.GetValue(this);
+
                 if(TypeInheritsFrom(field.FieldType, CollectionType))
                 {
-                  // this is a child collection, cascade the call
-                  BusinessCollectionBase tmp = (BusinessCollectionBase)field.GetValue(this);
-                  tmp.UndoChanges();
+                  // make sure the variable has a value
+                  if(!(value == null))
+                  {
+                    // this is a child collection, cascade the call
+                    BusinessCollectionBase tmp = (BusinessCollectionBase)value;
+                    tmp.UndoChanges();
+                  }
                 }
                 else
                 {
                   if(TypeInheritsFrom(field.FieldType, BusinessType))
                   {
-                    // this is a child object, cascade the call
-                    BusinessBase tmp = (BusinessBase)field.GetValue(this);
-                    tmp.UndoChanges();
+                    // make sure the variable has a value
+                    if(!(value == null))
+                    {
+                      // this is a child object, cascade the call
+                      BusinessBase tmp = (BusinessBase)value;
+                      tmp.UndoChanges();
+                    }
                   }
                   else
                   {
@@ -214,20 +224,30 @@ namespace CSLA.Core
               // see if the field is undoable or not
               if(!NotUndoableField(field))
               {
+                Object value = field.GetValue(this);
+
                 // the field is undoable so see if it is a collection
                 if(TypeInheritsFrom(field.FieldType, CollectionType))
                 {
-                  // it is a collection so cascade the call
-                  BusinessCollectionBase tmp = (BusinessCollectionBase)field.GetValue(this);
-                  tmp.AcceptChanges();
+                  // make sure the variable has a value
+                  if(!(value == null))
+                  {
+                    // it is a collection so cascade the call
+                    BusinessCollectionBase tmp = (BusinessCollectionBase)value;
+                    tmp.AcceptChanges();
+                  }
                 }
                 else
                 {
                   if(TypeInheritsFrom(field.FieldType, BusinessType))
                   {
-                    // it is a child object so cascade the call
-                    BusinessBase tmp = (BusinessBase)field.GetValue(this);
-                    tmp.AcceptChanges();
+                    // make sure the variable has a value
+                    if(!(value == null))
+                    {
+                      // it is a child object so cascade the call
+                      BusinessBase tmp = (BusinessBase)value;
+                      tmp.AcceptChanges();
+                    }
                   }
                 }
               }

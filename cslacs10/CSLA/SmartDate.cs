@@ -406,22 +406,36 @@ namespace CSLA
       return !Equals(date1, date2);
     }
 
-    static public bool operator + (SmartDate d, TimeSpan t)
+    static public SmartDate operator + (SmartDate d, TimeSpan t)
     {
-      return d + t;
+      if (d.IsEmpty)
+        return d;
+      else
+        return new SmartDate(d.Date + t, d.EmptyIsMin);
     }
 
-    static public bool operator - (SmartDate d, TimeSpan t)
+    static public SmartDate operator - (SmartDate d, TimeSpan t)
     {
-      return d - t;
+      if (d.IsEmpty)
+        return d;
+      else
+        return new SmartDate(d.Date - t, d.EmptyIsMin);
     }
 
     public override bool Equals(object o)
     {
-      if(o is DateTime)
+      if (o is SmartDate)
+      {
+        SmartDate tmp = o as SmartDate;
+        if (this.IsEmpty && tmp.IsEmpty)
+          return true;
+        else
+          return _date.Equals(((SmartDate)o).Date);
+      }
+      else if(o is DateTime)
         return _date.Equals((DateTime)o);
       else
-        return _date.Equals(((SmartDate)o).Date);
+        return false;
     }
 
     public override int GetHashCode()

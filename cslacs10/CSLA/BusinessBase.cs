@@ -628,7 +628,7 @@ namespace CSLA
     virtual public BusinessBase Save()
     {
       if(IsChild)
-        throw new NotSupportedException(Strings.GetResourceString("CreateNotSupportedException"));
+        throw new NotSupportedException(Strings.GetResourceString("NoSaveChildException"));
 
       if(EditLevel > 0)
         throw new ApplicationException(Strings.GetResourceString("NoSaveEditingException"));

@@ -293,6 +293,7 @@ Public Class ProjectEdit
       Cursor.Current = Cursors.WaitCursor
       mProject.ApplyEdit()
       mProject = mProject.Save
+      DataBind()
       Cursor.Current = Cursors.Default
 
     Catch ex As Exception

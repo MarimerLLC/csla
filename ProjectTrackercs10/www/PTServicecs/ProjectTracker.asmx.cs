@@ -51,15 +51,16 @@ namespace PTServicecs
 
     public class CSLACredentials : SoapHeader
     {
-      public string Username = string.Empty;
-      public string Password = string.Empty;
+      public string Username;
+      public string Password;
     }
 
     public CSLACredentials Credentials = new CSLACredentials();
 
     public void Login()
     {
-      if(Credentials.Username.Length == 0)
+      if(Credentials.Username == null ||
+          Credentials.Username.Length == 0)
         throw new System.Security.SecurityException(
           "Valid credentials not provided");
 

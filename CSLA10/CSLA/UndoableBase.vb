@@ -143,21 +143,28 @@ Namespace Core
               ' see if the field is undoable or not
               If Not NotUndoableField(field) Then
                 ' the field is undoable, so restore its value
+                Dim value As Object = field.GetValue(Me)
 
                 If TypeInheritsFrom(field.FieldType, CollectionType) Then
-                  ' this is a child collection, cascade the call
-                  CType(field.GetValue(Me), BusinessCollectionBase).UndoChanges()
+                  ' make sure the variable has a value
+                  If Not value Is Nothing Then
+                    ' this is a child collection, cascade the call
+                    CType(value, BusinessCollectionBase).UndoChanges()
+                  End If
 
                 ElseIf TypeInheritsFrom(field.FieldType, BusinessType) Then
-                  ' this is a child object, cascade the call
-                  CType(field.GetValue(Me), BusinessBase).UndoChanges()
+                  ' make sure the variable has a value
+                  If Not value Is Nothing Then
+                    ' this is a child object, cascade the call
+                    CType(value, BusinessBase).UndoChanges()
+                  End If
 
-                Else
-                  ' this is a regular field, restore its value
-                  fieldName = field.DeclaringType.Name & "!" & field.Name
-                  field.SetValue(Me, state.Item(fieldName))
+                  Else
+                    ' this is a regular field, restore its value
+                    fieldName = field.DeclaringType.Name & "!" & field.Name
+                    field.SetValue(Me, state.Item(fieldName))
 
-                End If
+                  End If
 
               End If
 
@@ -202,14 +209,21 @@ Namespace Core
               ' see if the field is undoable or not
               If Not NotUndoableField(field) Then
                 ' the field is undoable so see if it is a collection
+                Dim value As Object = field.GetValue(Me)
+
                 If TypeInheritsFrom(field.FieldType, CollectionType) Then
-                  ' it is a collection so cascade the call
-                  CType(field.GetValue(Me), BusinessCollectionBase).AcceptChanges()
+                  ' make sure the variable has a value
+                  If Not value Is Nothing Then
+                    ' it is a collection so cascade the call
+                    CType(value, BusinessCollectionBase).AcceptChanges()
+                  End If
 
                 ElseIf TypeInheritsFrom(field.FieldType, BusinessType) Then
-                  ' it is a child object so cascade the call
-                  CType(field.GetValue(Me), BusinessBase).AcceptChanges()
-
+                  ' make sure the variable has a value
+                  If Not value Is Nothing Then
+                    ' it is a child object so cascade the call
+                    CType(value, BusinessBase).AcceptChanges()
+                  End If
                 End If
 
               End If

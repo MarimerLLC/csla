@@ -73,7 +73,7 @@ namespace CSLA.Security
       public string Username;
       public string Password;
 
-      private Criteria(string username, string password)
+      public Criteria(string username, string password)
       {
         Username = username;
         Password = password;

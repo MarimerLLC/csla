@@ -84,6 +84,8 @@ Public Class Basics
   Public Sub CloneGraph()
     Session.Clear()
     Dim root As root = root.NewRoot
+    Dim form As New FormSimulator(root)
+    Dim listener As New SerializableListener(root)
     root.Children.Add("1")
     Dim child As child = root.Children(0)
     child.GrandChildren.Add("1")
@@ -153,4 +155,31 @@ Public Class Basics
     Assert.AreEqual(False, root.Children.ContainsDeleted(childC))
   End Sub
 
+End Class
+
+Public Class FormSimulator
+
+  Private WithEvents obj As BusinessBase
+
+  Public Sub New(ByVal obj As BusinessBase)
+    Me.obj = obj
+  End Sub
+
+  Private Sub obj_IsDirtyChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles obj.IsDirtyChanged
+
+  End Sub
+End Class
+
+<Serializable()> _
+Public Class SerializableListener
+
+  Private WithEvents obj As BusinessBase
+
+  Public Sub New(ByVal obj As BusinessBase)
+    Me.obj = obj
+  End Sub
+
+  Public Sub obj_IsDirtyChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles obj.IsDirtyChanged
+
+  End Sub
 End Class

@@ -27,8 +27,6 @@ Namespace Core
   Public Class SortableCollectionBase
     Inherits BindableCollectionBase
 
-#Region " Properties "
-
     <NotUndoable()> _
     Private mIsSorted As Boolean = False
     <NonSerialized(), NotUndoable()> _
@@ -42,6 +40,8 @@ Namespace Core
     <NotUndoable()> _
     Private mActivelySorting As Boolean = False
 
+#Region " Properties "
+
     ''' <summary>
     ''' Indicates whether the collection is in the process of
     ''' being sorted at this time.
@@ -49,18 +49,6 @@ Namespace Core
     Protected ReadOnly Property ActivelySorting() As Boolean
       Get
         Return mActivelySorting
-      End Get
-    End Property
-
-    ''' <summary>
-    ''' Only creates the unsorted list on demand.
-    ''' </summary>
-    Private ReadOnly Property UnsortedList() As ArrayList
-      Get
-        If mUnsortedList Is Nothing Then
-          mUnsortedList = New ArrayList()
-        End If
-        Return mUnsortedList
       End Get
     End Property
 
@@ -139,11 +127,6 @@ Namespace Core
     ''' intended for use by code in your business class.
     ''' </remarks>
     Protected Overrides Sub IBindingList_ApplySort(ByVal [property] As System.ComponentModel.PropertyDescriptor, ByVal direction As System.ComponentModel.ListSortDirection)
-      Dim holdList As ArrayList
-      Dim count As Integer
-      Dim total As Integer
-      Dim temp() As Object
-      Dim tempObject As Object
 
       If Not AllowSort Then
         Throw New NotSupportedException("Sorting is not supported by this collection.")
@@ -153,51 +136,38 @@ Namespace Core
       mSortPropertyName = mSortProperty.Name
       mListSortDirection = direction
 
+      If Not mIsSorted AndAlso list.Count > 0 Then
+        ' this is our first time sorting so
+        ' make sure to store the original order
+        mUnsortedList = New ArrayList()
+        Dim item As Object
+        For Each item In list
+          mUnsortedList.Add(item)
+        Next
+      End If
+
       If list.Count > 1 Then
         Try
+          Dim count As Integer
           mActivelySorting = True
-          holdList = New System.Collections.ArrayList()
-          For Each tempObject In list
-            holdList.Add(tempObject)
+
+          ' copy the key/value pairs into a sorted list
+          Dim sortList As New SortedList()
+          For Count = 0 To list.Count - 1
+            sortList.Add(CallByName(list.Item(Count), mSortPropertyName, CallType.Get), list.Item(Count))
           Next
 
-          ReDim temp(list.Count - 1)
-          For count = 0 To list.Count - 1
-            temp(count) = CallByName(list.Item(count), mSortPropertyName, CallType.Get)
-          Next
-
-          Array.Sort(temp)
-
-          'Ok, rearrang the list.  Do not use clear.  Does not like that in sort for
-          'some reason in the sort.  This works fine
-          total = list.Count - 1
-          For count = total To 0 Step -1
-            tempObject = list.Item(count)
-            list.Remove(tempObject)
-          Next
+          list.Clear()
 
           If direction = ListSortDirection.Ascending Then
-            For count = 0 To UBound(temp)
-              For Each tempObject In holdList
-
-                If CallByName(tempObject, mSortPropertyName, CallType.Get).Equals(temp(count)) Then 'Hey, we have a winner, sort this one
-                  holdList.Remove(tempObject)
-                  Exit For
-                End If
-              Next
-              list.Add(tempObject)
+            Dim item As DictionaryEntry
+            For Each item In sortList
+              list.Add(item.Value)
             Next
 
-          Else ' sort decending
-            For count = UBound(temp) To 0 Step -1
-              For Each tempObject In holdList
-
-                If CallByName(tempObject, mSortPropertyName, CallType.Get).Equals(temp(count)) Then 'Hey, we have a winner, sort this one
-                  holdList.Remove(tempObject)
-                  Exit For
-                End If
-              Next
-              list.Add(tempObject)
+          Else ' direction = ListSortDirection.Descending
+            For Count = sortList.Count - 1 To 0 Step -1
+              list.Add(sortList.GetByIndex(Count))
             Next
           End If
 
@@ -228,35 +198,30 @@ Namespace Core
     ''' intended for use by code in your business class.
     ''' </remarks>
     Protected Overrides Sub IBindingList_RemoveSort()
-      Dim count As Integer
-      Dim total As Integer
-      Dim listItem As Object
 
       If Not AllowSort Then
         Throw New NotSupportedException("Sorting is not supported by this collection.")
       End If
 
-      'Return the list to its unsorted state
-      'Ok, rearrange the list.  Do not use clear.  Does not like that in sort for
-      'some reason in the sort.  This works fine
-      mActivelySorting = True
-      total = list.Count - 1
-      For count = total To 0 Step -1
-        listItem = list.Item(count)
-        list.Remove(listItem)
-      Next
+      If mIsSorted Then
+        mActivelySorting = True
 
-      For Each listItem In UnsortedList
-        list.Add(listItem)
-      Next
+        'Return the list to its unsorted state
+        list.Clear()
 
-      mUnsortedList = Nothing
+        Dim item As Object
+        For Each item In mUnsortedList
+          list.Add(item)
+        Next
 
-      mIsSorted = False
-      mSortProperty = Nothing
-      mSortPropertyName = ""
-      mListSortDirection = ListSortDirection.Ascending
-      mActivelySorting = False
+        mUnsortedList = Nothing
+
+        mIsSorted = False
+        mSortProperty = Nothing
+        mSortPropertyName = ""
+        mListSortDirection = ListSortDirection.Ascending
+        mActivelySorting = False
+      End If
 
     End Sub
 
@@ -268,8 +233,8 @@ Namespace Core
     ''' Ensures that any sort is maintained as a new item is inserted.
     ''' </summary>
     Protected Overrides Sub OnInsertComplete(ByVal index As Integer, ByVal value As Object)
-      If AllowSort AndAlso Not ActivelySorting Then
-        UnsortedList.Add(value)
+      If mIsSorted AndAlso Not ActivelySorting Then
+        mUnsortedList.Add(value)
       End If
       MyBase.OnInsertComplete(index, value)
     End Sub
@@ -278,8 +243,8 @@ Namespace Core
     ''' Ensures that any sort is maintained as the list is cleared.
     ''' </summary>
     Protected Overrides Sub OnClearComplete()
-      If AllowSort AndAlso Not ActivelySorting Then
-        UnsortedList.Clear()
+      If mIsSorted AndAlso Not ActivelySorting Then
+        mUnsortedList.Clear()
       End If
       MyBase.OnClearComplete()
     End Sub
@@ -288,8 +253,8 @@ Namespace Core
     ''' Ensures that any sort is maintained as an item is removed.
     ''' </summary>
     Protected Overrides Sub OnRemoveComplete(ByVal index As Integer, ByVal value As Object)
-      If AllowSort AndAlso Not ActivelySorting Then
-        UnsortedList.Remove(value)
+      If mIsSorted AndAlso Not ActivelySorting Then
+        mUnsortedList.Remove(value)
       End If
       MyBase.OnRemoveComplete(index, value)
     End Sub

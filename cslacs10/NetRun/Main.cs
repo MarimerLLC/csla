@@ -5,13 +5,11 @@ namespace NetRun
 	/// <summary>
 	/// Summary description for Main.
 	/// </summary>
-	public class Main
+	public class AppMain
 	{
-		public Main()
-		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
+    [STAThread]
+    static void Main(string[] args)
+    {
+    }
 	}
 }

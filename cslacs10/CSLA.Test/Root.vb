@@ -30,7 +30,15 @@ Public Class Root
     End Get
   End Property
 
+  Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
 
+    If obj Is Nothing OrElse Not TypeOf obj Is Root Then
+      Return False
+    End If
+
+    Return Data = CType(obj, Root).Data
+
+  End Function
 
   <Serializable()> _
   Private Class Criteria

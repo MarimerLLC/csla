@@ -155,6 +155,57 @@ Public Class Basics
     Assert.AreEqual(False, root.Children.ContainsDeleted(childC))
   End Sub
 
+  <Test()> _
+  Public Sub BasicEquality()
+
+    Session.Clear()
+    Dim r1 As Root = Root.NewRoot
+    r1.Data = "abc"
+    Assert.AreEqual(True, r1.Equals(r1), "Objects should be equal on instance compare")
+    Assert.AreEqual(True, Equals(r1, r1), "Objects should be equal on static compare")
+
+    Session.Clear()
+    Dim r2 As Root = Root.NewRoot
+    r2.Data = "xyz"
+    Assert.AreEqual(False, r1.Equals(r2), "Objects should not be equal")
+    Assert.AreEqual(False, Equals(r1, r2), "Objects should not be equal")
+
+    Assert.AreEqual(False, r1.Equals(Nothing), "Objects should not be equal")
+    Assert.AreEqual(False, Equals(r1, Nothing), "Objects should not be equal")
+    Assert.AreEqual(False, Equals(Nothing, r2), "Objects should not be equal")
+
+  End Sub
+
+  <Test()> _
+  Public Sub ChildEquality()
+
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.Children.Add("abc")
+    root.Children.Add("xyz")
+    root.Children.Add("123")
+    Dim c1 As Child = root.Children(0)
+    Dim c2 As Child = root.Children(1)
+    Dim c3 As Child = root.Children(2)
+    root.Children.Remove(c3)
+
+    Assert.AreEqual(True, c1.Equals(c1), "Objects should be equal")
+    Assert.AreEqual(True, Equals(c1, c1), "Objects should be equal")
+
+    Assert.AreEqual(False, c1.Equals(c2), "Objects should not be equal")
+    Assert.AreEqual(False, Equals(c1, c2), "Objects should not be equal")
+
+    Assert.AreEqual(False, c1.Equals(Nothing), "Objects should not be equal")
+    Assert.AreEqual(False, Equals(c1, Nothing), "Objects should not be equal")
+    Assert.AreEqual(False, Equals(Nothing, c2), "Objects should not be equal")
+
+    Assert.AreEqual(True, root.Children.Contains(c1), "Collection should contain c1")
+    Assert.AreEqual(True, root.Children.Contains(c2), "Collection should contain c2")
+    Assert.AreEqual(False, root.Children.Contains(c3), "Collection should not contain c3")
+    Assert.AreEqual(True, root.Children.ContainsDeleted(c3), "Deleted collection should contain c3")
+
+  End Sub
+
 End Class
 
 Public Class FormSimulator

@@ -19,6 +19,16 @@ Public Class Child
     End Set
   End Property
 
+  Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
+
+    If obj Is Nothing OrElse Not TypeOf obj Is Child Then
+      Return False
+    End If
+
+    Return mData = CType(obj, Child).Data
+
+  End Function
+
   Public ReadOnly Property Guid() As Guid
     Get
       Return mGuid

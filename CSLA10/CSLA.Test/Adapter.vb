@@ -3,15 +3,17 @@ Public Class Adapter
 
   <Test()> _
   Public Sub FillDataTable()
+
     Session.Clear()
+
     Dim obj As Root = Root.NewRoot
     obj.Children.Add("A")
     obj.Children.Add("B")
     obj.Children.Add("C")
 
-    Dim da As New CSLA.Data.ObjectAdapter()
+    Dim da As New CSLA.Data.ObjectAdapter
 
-    Dim ds As New DataSet()
+    Dim ds As New DataSet
     da.Fill(ds, obj.Children)
 
     Assert.AreEqual("Data", ds.Tables(0).Columns("Data").Caption, "Column caption incorrect")

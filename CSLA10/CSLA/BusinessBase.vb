@@ -511,7 +511,7 @@ Public MustInherit Class BusinessBase
   ''' for this object.
   ''' </summary>
   ''' <returns>A <see cref="T:CSLA.BrokenRules.RulesCollection" /> object.</returns>
-  Public Function GetBrokenRulesCollection() As BrokenRules.RulesCollection
+  Public Overridable Function GetBrokenRulesCollection() As BrokenRules.RulesCollection
     Return mBrokenRules.GetBrokenRules
   End Function
 
@@ -520,7 +520,7 @@ Public MustInherit Class BusinessBase
   ''' the currently broken business rules for this object.
   ''' </summary>
   ''' <returns>Text containing the descriptions of the broken business rules.</returns>
-  Public Function GetBrokenRulesString() As String
+  Public Overridable Function GetBrokenRulesString() As String
     Return mBrokenRules.ToString
   End Function
 

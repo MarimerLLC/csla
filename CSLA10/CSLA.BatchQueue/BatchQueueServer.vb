@@ -80,7 +80,7 @@ Namespace Server
       ' with the business library so instead we must use type Object
       ' for the parameter, so here we do a check on the type of the
       ' parameter
-      If Principal.ToString = "CSLA.Security.BusinessPrincipal" Then
+      If CType(Principal, IPrincipal).Identity.AuthenticationType = "CSLA" Then
         ' see if our current principal is
         ' different from the caller's principal
         If Not ReferenceEquals(Principal, System.Threading.Thread.CurrentPrincipal) Then

@@ -78,7 +78,7 @@ namespace CSLA.BatchQueue.Server
       // with the business library so instead we must use type Object
       // for the parameter, so here we do a check on the type of the
       // parameter
-      if(principal.ToString() == "CSLA.Security.BusinessPrincipal")
+      if(((IPrincipal)principal).Identity.AuthenticationType == "CSLA")
       {
         // see if our current principal is
         // different from the caller's principal

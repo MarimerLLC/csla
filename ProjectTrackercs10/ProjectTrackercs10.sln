@@ -13,6 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTServicecs", "http://local
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTClient", "PTClient\PTClient.csproj", "{1EFF9EC0-10AA-4698-9357-1882941C034E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTBatch", "PTBatch\PTBatch.csproj", "{1644B6C3-8AA4-41AE-BF03-9630FA9008C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatchQueueTest", "..\cslacs10\BatchQueueTest\BatchQueueTest.csproj", "{5559A0C3-74B2-4B9E-A816-8B105AB54757}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatchQueue", "..\cslacs10\BatchQueue\BatchQueue.csproj", "{6738A65A-3B32-43E3-AED5-D44D5C4FB11E}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -49,6 +55,22 @@ Global
 		{1EFF9EC0-10AA-4698-9357-1882941C034E}.Debug.Build.0 = Debug|.NET
 		{1EFF9EC0-10AA-4698-9357-1882941C034E}.Release.ActiveCfg = Release|.NET
 		{1EFF9EC0-10AA-4698-9357-1882941C034E}.Release.Build.0 = Release|.NET
+		{1644B6C3-8AA4-41AE-BF03-9630FA9008C3}.Debug.ActiveCfg = Debug|.NET
+		{1644B6C3-8AA4-41AE-BF03-9630FA9008C3}.Debug.Build.0 = Debug|.NET
+		{1644B6C3-8AA4-41AE-BF03-9630FA9008C3}.Release.ActiveCfg = Release|.NET
+		{1644B6C3-8AA4-41AE-BF03-9630FA9008C3}.Release.Build.0 = Release|.NET
+		{5559A0C3-74B2-4B9E-A816-8B105AB54757}.Debug.ActiveCfg = Debug|.NET
+		{5559A0C3-74B2-4B9E-A816-8B105AB54757}.Debug.Build.0 = Debug|.NET
+		{5559A0C3-74B2-4B9E-A816-8B105AB54757}.Release.ActiveCfg = Release|.NET
+		{5559A0C3-74B2-4B9E-A816-8B105AB54757}.Release.Build.0 = Release|.NET
+		{6738A65A-3B32-43E3-AED5-D44D5C4FB11E}.Debug.ActiveCfg = Debug|.NET
+		{6738A65A-3B32-43E3-AED5-D44D5C4FB11E}.Debug.Build.0 = Debug|.NET
+		{6738A65A-3B32-43E3-AED5-D44D5C4FB11E}.Release.ActiveCfg = Release|.NET
+		{6738A65A-3B32-43E3-AED5-D44D5C4FB11E}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+		Item:1 = ..\cslacs10\license.txt
+		Item:2 = ..\ProjectTracker10\readme.txt
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

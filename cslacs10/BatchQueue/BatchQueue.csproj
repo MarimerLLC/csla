@@ -3,20 +3,20 @@
         ProjectType = "Local"
         ProductVersion = "7.0.9466"
         SchemaVersion = "1.0"
-        ProjectGuid = "{8B61ED6A-E4C6-4583-A192-C82704F80F7C}"
+        ProjectGuid = "{6738A65A-3B32-43E3-AED5-D44D5C4FB11E}"
     >
         <Build>
             <Settings
                 ApplicationIcon = ""
                 AssemblyKeyContainerName = ""
-                AssemblyName = "CSLA.BatchQueue"
+                AssemblyName = "BatchQueue"
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
                 DefaultTargetSchema = "IE50"
                 DelaySign = "false"
-                OutputType = "Library"
-                RootNamespace = "CSLA.BatchQueue"
+                OutputType = "WinExe"
+                RootNamespace = "BatchQueue"
                 StartupObject = ""
             >
                 <Config
@@ -68,88 +68,81 @@
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll"
                 />
                 <Reference
+                    Name = "System.ServiceProcess"
+                    AssemblyName = "System.ServiceProcess"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.ServiceProcess.dll"
+                />
+                <Reference
                     Name = "System.XML"
                     AssemblyName = "System.Xml"
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
                 />
                 <Reference
+                    Name = "System.Management"
+                    AssemblyName = "System.Management"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Management.dll"
+                />
+                <Reference
+                    Name = "System.Configuration.Install"
+                    AssemblyName = "System.Configuration.Install"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Configuration.Install.dll"
+                />
+                <Reference
                     Name = "CSLA"
-                    Project = "{0DE2C2FB-907E-4AFF-9E8F-8AD61F771B75}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                    AssemblyName = "CSLA"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.dll"
+                />
+                <Reference
+                    Name = "CSLA.BatchQueue"
+                    AssemblyName = "CSLA.BatchQueue"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.BatchQueue.dll"
                 />
                 <Reference
                     Name = "CSLA.Core.BindableBase"
-                    Project = "{8658B2B5-4200-4B54-8190-304818ED70F3}"
+                    AssemblyName = "CSLA.Core.BindableBase"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.Core.BindableBase.dll"
+                />
+                <Reference
+                    Name = "ProjectTracker.Library"
+                    Project = "{A2C9385D-33CC-4C9A-93DF-4AED7710445D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "CSLA.Server.DataPortal"
-                    Project = "{86CE1F38-3C6F-4AA4-B047-631E9119DA7D}"
+                    Name = "PTBatch"
+                    Project = "{1644B6C3-8AA4-41AE-BF03-9630FA9008C3}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    Project = "{0C49FFFF-B81A-4266-ABAC-0325A098CA0D}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "System.Messaging"
-                    AssemblyName = "System.Messaging"
-                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Messaging.dll"
-                />
-                <Reference
-                    Name = "System.Runtime.Remoting"
-                    AssemblyName = "System.Runtime.Remoting"
-                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Runtime.Remoting.dll"
                 />
             </References>
         </Build>
         <Files>
             <Include>
                 <File
+                    RelPath = "App.config"
+                    BuildAction = "None"
+                />
+                <File
                     RelPath = "AssemblyInfo.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "BatchEntries.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "BatchEntry.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "BatchEntryInfo.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "BatchJobRequest.cs"
-                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "BatchQueue.cs"
-                    SubType = "Code"
+                    SubType = "Component"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "BatchQueueServer.cs"
-                    SubType = "Code"
+                    RelPath = "BatchQueue.resx"
+                    DependentUpon = "BatchQueue.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "BatchQueueInstaller.cs"
+                    SubType = "Component"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "BatchQueueService.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IBatchEntry.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
+                    RelPath = "BatchQueueInstaller.resx"
+                    DependentUpon = "BatchQueueInstaller.cs"
+                    BuildAction = "EmbeddedResource"
                 />
             </Include>
         </Files>

@@ -100,22 +100,52 @@
                 <Reference
                     Name = "CSLA.Server.ServicedDataPortal"
                     AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                    HintPath = "..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                />
+                <Reference
+                    Name = "CSLA.BatchQueue"
+                    AssemblyName = "CSLA.BatchQueue"
+                    HintPath = "..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.BatchQueue.dll"
                 />
                 <Reference
                     Name = "CSLA.Core.BindableBase"
                     AssemblyName = "CSLA.Core.BindableBase"
-                    HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Core.BindableBase.dll"
+                    HintPath = "..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Core.BindableBase.dll"
                 />
                 <Reference
                     Name = "CSLA"
                     AssemblyName = "CSLA"
-                    HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.dll"
+                    HintPath = "..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.dll"
                 />
                 <Reference
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
-                    HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.DataPortal.dll"
+                    HintPath = "..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Server.DataPortal.dll"
+                />
+                <Reference
+                    Name = "CrystalDecisions.Shared"
+                    AssemblyName = "CrystalDecisions.Shared"
+                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.Shared.dll"
+                />
+                <Reference
+                    Name = "CrystalDecisions.ReportSource"
+                    AssemblyName = "CrystalDecisions.ReportSource"
+                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.ReportSource.dll"
+                />
+                <Reference
+                    Name = "CrystalDecisions.CrystalReports.Engine"
+                    AssemblyName = "CrystalDecisions.CrystalReports.Engine"
+                    HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.0\Managed\CrystalDecisions.CrystalReports.Engine.dll"
+                />
+                <Reference
+                    Name = "crystaldecisions.windows.forms"
+                    AssemblyName = "crystaldecisions.windows.forms"
+                    HintPath = "..\..\..\windows\assembly\gac\crystaldecisions.windows.forms\9.1.3300.0__692fbea5521e1304\crystaldecisions.windows.forms.dll"
+                />
+                <Reference
+                    Name = "System.Web.Services"
+                    AssemblyName = "System.Web.Services"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Web.Services.dll"
                 />
             </References>
         </Build>
@@ -174,6 +204,49 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "ProjectList.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ProjectList.resx"
+                    DependentUpon = "ProjectList.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "ProjectReport.rpt"
+                    BuildAction = "EmbeddedResource"
+                    Generator = "CrystalDecisions.VSShell.CodeGen.ReportCodeGenerator"
+                    LastGenOutput = "ProjectReport.cs"
+                />
+                <File
+                    RelPath = "ProjectReport.cs"
+                    DependentUpon = "ProjectReport.rpt"
+                    SubType = "Component"
+                    BuildAction = "Compile"
+                    DesignTime = "True"
+                    AutoGen = "True"
+                />
+                <File
+                    RelPath = "Projects.xsd"
+                    BuildAction = "Content"
+                    Generator = "MSDataSetGenerator"
+                    LastGenOutput = "Projects.cs"
+                />
+                <File
+                    RelPath = "Projects.cs"
+                    DependentUpon = "Projects.xsd"
+                    SubType = "code"
+                    BuildAction = "Compile"
+                    DesignTime = "True"
+                    AutoGen = "True"
+                />
+                <File
+                    RelPath = "Projects.xsx"
+                    DependentUpon = "Projects.xsd"
+                    BuildAction = "None"
+                />
+                <File
                     RelPath = "ProjectSelect.cs"
                     SubType = "Form"
                     BuildAction = "Compile"
@@ -210,6 +283,9 @@
                 />
             </Include>
         </Files>
+        <StartupServices>
+            <Service ID = "{CF845C55-C321-4742-B673-E6212D061ED9}" />
+        </StartupServices>
     </CSHARP>
 </VisualStudioProject>
 

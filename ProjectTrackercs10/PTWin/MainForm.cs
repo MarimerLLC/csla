@@ -34,6 +34,10 @@ namespace PTWin
     private System.Windows.Forms.StatusBar statusBar1;
     private System.Windows.Forms.StatusBarPanel pnlStatus;
     private System.Windows.Forms.StatusBarPanel pnlUser;
+    private System.Windows.Forms.MenuItem menuItem3;
+    private System.Windows.Forms.MenuItem mnuProjectUpdate;
+    private System.Windows.Forms.MenuItem menuItem4;
+    private System.Windows.Forms.MenuItem mnuProjectList;
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -88,9 +92,13 @@ namespace PTWin
       this.mnuResourceNew = new System.Windows.Forms.MenuItem();
       this.mnuResourceEdit = new System.Windows.Forms.MenuItem();
       this.mnuResourceRemove = new System.Windows.Forms.MenuItem();
+      this.menuItem3 = new System.Windows.Forms.MenuItem();
+      this.mnuProjectUpdate = new System.Windows.Forms.MenuItem();
       this.statusBar1 = new System.Windows.Forms.StatusBar();
       this.pnlStatus = new System.Windows.Forms.StatusBarPanel();
       this.pnlUser = new System.Windows.Forms.StatusBarPanel();
+      this.menuItem4 = new System.Windows.Forms.MenuItem();
+      this.mnuProjectList = new System.Windows.Forms.MenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.pnlStatus)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pnlUser)).BeginInit();
       this.SuspendLayout();
@@ -99,7 +107,9 @@ namespace PTWin
       // 
       this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                               this.menuItem1,
-                                                                              this.menuItem2});
+                                                                              this.menuItem2,
+                                                                              this.menuItem4,
+                                                                              this.menuItem3});
       // 
       // menuItem1
       // 
@@ -196,6 +206,19 @@ namespace PTWin
       this.mnuResourceRemove.Text = "&Remove";
       this.mnuResourceRemove.Click += new System.EventHandler(this.mnuResourceRemove_Click);
       // 
+      // menuItem3
+      // 
+      this.menuItem3.Index = 3;
+      this.menuItem3.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                              this.mnuProjectUpdate});
+      this.menuItem3.Text = "&Batch";
+      // 
+      // mnuProjectUpdate
+      // 
+      this.mnuProjectUpdate.Index = 0;
+      this.mnuProjectUpdate.Text = "&Project update";
+      this.mnuProjectUpdate.Click += new System.EventHandler(this.mnuProjectUpdate_Click);
+      // 
       // statusBar1
       // 
       this.statusBar1.Location = new System.Drawing.Point(0, 244);
@@ -212,6 +235,19 @@ namespace PTWin
       // 
       this.pnlStatus.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
       this.pnlStatus.Width = 700;
+      // 
+      // menuItem4
+      // 
+      this.menuItem4.Index = 2;
+      this.menuItem4.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                              this.mnuProjectList});
+      this.menuItem4.Text = "&Reports";
+      // 
+      // mnuProjectList
+      // 
+      this.mnuProjectList.Index = 0;
+      this.mnuProjectList.Text = "&Project list";
+      this.mnuProjectList.Click += new System.EventHandler(this.mnuProjectList_Click);
       // 
       // MainForm
       // 
@@ -505,6 +541,58 @@ namespace PTWin
           {
             pnlStatus.Text = string.Empty;
           }
+      }
+    }
+
+    #endregion
+
+    #region Batch
+
+    private void mnuProjectUpdate_Click(object sender, 
+      System.EventArgs e)
+    {
+      CSLA.BatchQueue.BatchQueue batch = 
+        new CSLA.BatchQueue.BatchQueue();
+      batch.Submit(new CSLA.BatchQueue.BatchJobRequest(
+        "PTBatch.ProjectJob", "PTBatch"));
+    }
+
+    #endregion
+
+    #region Reports
+
+    private void mnuProjectList_Click(object sender, System.EventArgs e)
+    {
+    ProjectSelect dlg = new ProjectSelect();
+    dlg.Text = "Project List";
+    dlg.ShowDialog(this);
+
+    string result = dlg.Result;
+      if(result.Length > 0)
+      {
+        try
+        {
+          Cursor.Current = Cursors.WaitCursor;
+          Guid id = new Guid(result);
+          Project obj = Project.GetProject(id);
+
+          ProjectList frm = new ProjectList();
+          frm.MdiParent = this;
+          frm.WindowState = FormWindowState.Maximized;
+          frm.Project = obj;
+          Cursor.Current = Cursors.Default;
+          frm.Show();
+        }
+        catch(Exception ex)
+        {
+          Cursor.Current = Cursors.Default;
+          System.Text.StringBuilder sb = new System.Text.StringBuilder();
+          sb.AppendFormat("Error generating report\n");
+          sb.Append(ex.ToString());
+          MessageBox.Show(sb.ToString(), 
+            "Reporting Error", MessageBoxButtons.OK, 
+            MessageBoxIcon.Exclamation);
+        }
       }
     }
 

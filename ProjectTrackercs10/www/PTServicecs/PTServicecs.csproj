@@ -90,22 +90,27 @@
                 <Reference
                     Name = "CSLA.Server.ServicedDataPortal"
                     AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                />
+                <Reference
+                    Name = "CSLA.BatchQueue"
+                    AssemblyName = "CSLA.BatchQueue"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.BatchQueue.dll"
                 />
                 <Reference
                     Name = "CSLA.Core.BindableBase"
                     AssemblyName = "CSLA.Core.BindableBase"
-                    HintPath = "..\..\..\cslacs10\CSLA\bin\Debug\CSLA.Core.BindableBase.dll"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Core.BindableBase.dll"
                 />
                 <Reference
                     Name = "CSLA"
                     AssemblyName = "CSLA"
-                    HintPath = "..\..\..\cslacs10\CSLA\bin\Debug\CSLA.dll"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.dll"
                 />
                 <Reference
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
-                    HintPath = "..\..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.DataPortal.dll"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Server.DataPortal.dll"
                 />
             </References>
         </Build>

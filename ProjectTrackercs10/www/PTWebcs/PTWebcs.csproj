@@ -83,29 +83,34 @@
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
                 />
                 <Reference
+                    Name = "ProjectTracker.Library"
+                    Project = "{A2C9385D-33CC-4C9A-93DF-4AED7710445D}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
                     Name = "CSLA.Server.ServicedDataPortal"
                     AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                />
+                <Reference
+                    Name = "CSLA.BatchQueue"
+                    AssemblyName = "CSLA.BatchQueue"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.BatchQueue.dll"
                 />
                 <Reference
                     Name = "CSLA.Core.BindableBase"
                     AssemblyName = "CSLA.Core.BindableBase"
-                    HintPath = "..\..\..\cslacs10\CSLA\bin\Debug\CSLA.Core.BindableBase.dll"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Core.BindableBase.dll"
                 />
                 <Reference
                     Name = "CSLA"
                     AssemblyName = "CSLA"
-                    HintPath = "..\..\..\cslacs10\CSLA\bin\Debug\CSLA.dll"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.dll"
                 />
                 <Reference
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
-                    HintPath = "..\..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.DataPortal.dll"
-                />
-                <Reference
-                    Name = "ProjectTracker.Library"
-                    Project = "{A2C9385D-33CC-4C9A-93DF-4AED7710445D}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                    HintPath = "..\..\..\cslacs10\CSLA.BatchQueue\bin\Debug\CSLA.Server.DataPortal.dll"
                 />
             </References>
         </Build>

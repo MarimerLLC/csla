@@ -116,7 +116,8 @@ namespace PTWin
 
     private void ProjectSelect_Load(object sender, System.EventArgs e)
     {
-      ProjectList list = ProjectList.GetProjectList();
+      ProjectTracker.Library.ProjectList list = 
+        ProjectTracker.Library.ProjectList.GetProjectList();
       dvDisplay.AutoDiscover = false;
       dvDisplay.Columns.Add("ID", "ID", 0);
       dvDisplay.Columns.Add("Project name", "Name", dvDisplay.Width);

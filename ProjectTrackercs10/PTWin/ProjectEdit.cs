@@ -360,7 +360,7 @@ namespace PTWin
       Util.BindField(txtEnded, "Text", _project, "Ended");
       Util.BindField(txtDescription, "Text", _project, "Description");
       
-      lstRules.DataSource = _project.GetBrokenRulesCollection();
+      lstRules.DataSource = _project.GetBrokenRulesCollection;
       lstRules.DisplayMember = "Description";
 
       dvResources.SuspendLayout();

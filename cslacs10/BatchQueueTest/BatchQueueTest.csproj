@@ -1,22 +1,22 @@
 <VisualStudioProject>
     <CSHARP
-        ProjectType = "Web"
+        ProjectType = "Local"
         ProductVersion = "7.0.9466"
         SchemaVersion = "1.0"
-        ProjectGuid = "{2443FEF2-CC87-4A91-9C98-CF5669762288}"
+        ProjectGuid = "{5559A0C3-74B2-4B9E-A816-8B105AB54757}"
     >
         <Build>
             <Settings
-                ApplicationIcon = ""
+                ApplicationIcon = "App.ico"
                 AssemblyKeyContainerName = ""
-                AssemblyName = "DataPortalcs"
+                AssemblyName = "BatchQueueTest"
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
                 DefaultTargetSchema = "IE50"
                 DelaySign = "false"
-                OutputType = "Library"
-                RootNamespace = "DataPortalcs"
+                OutputType = "Exe"
+                RootNamespace = "BatchQueueTest"
                 StartupObject = ""
             >
                 <Config
@@ -31,7 +31,7 @@
                     FileAlignment = "4096"
                     IncrementalBuild = "true"
                     Optimize = "false"
-                    OutputPath = "bin\"
+                    OutputPath = "bin\Debug\"
                     RegisterForComInterop = "false"
                     RemoveIntegerChecks = "false"
                     TreatWarningsAsErrors = "false"
@@ -49,7 +49,7 @@
                     FileAlignment = "4096"
                     IncrementalBuild = "false"
                     Optimize = "true"
-                    OutputPath = "bin\"
+                    OutputPath = "bin\Release\"
                     RegisterForComInterop = "false"
                     RemoveIntegerChecks = "false"
                     TreatWarningsAsErrors = "false"
@@ -58,42 +58,66 @@
             </Settings>
             <References>
                 <Reference
+                    Name = "System"
+                    AssemblyName = "System"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll"
+                />
+                <Reference
+                    Name = "System.Data"
+                    AssemblyName = "System.Data"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll"
+                />
+                <Reference
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                    HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
+                />
+                <Reference
+                    Name = "CSLA.Core.BindableBase"
+                    AssemblyName = "CSLA.Core.BindableBase"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.Core.BindableBase.dll"
+                />
+                <Reference
+                    Name = "CSLA"
+                    AssemblyName = "CSLA"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.dll"
+                />
+                <Reference
+                    Name = "CSLA.BatchQueue"
+                    AssemblyName = "CSLA.BatchQueue"
+                    HintPath = "..\CSLA.BatchQueue\bin\Debug\CSLA.BatchQueue.dll"
+                />
+                <Reference
                     Name = "ProjectTracker.Library"
                     Project = "{A2C9385D-33CC-4C9A-93DF-4AED7710445D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\CSLA.BatchQueue\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
-                />
-                <Reference
-                    Name = "CSLA.BatchQueue"
-                    AssemblyName = "CSLA.BatchQueue"
-                    HintPath = "..\..\CSLA.BatchQueue\bin\Debug\CSLA.BatchQueue.dll"
-                />
-                <Reference
-                    Name = "CSLA.Core.BindableBase"
-                    AssemblyName = "CSLA.Core.BindableBase"
-                    HintPath = "..\..\CSLA.BatchQueue\bin\Debug\CSLA.Core.BindableBase.dll"
-                />
-                <Reference
-                    Name = "CSLA"
-                    AssemblyName = "CSLA"
-                    HintPath = "..\..\CSLA.BatchQueue\bin\Debug\CSLA.dll"
-                />
-                <Reference
-                    Name = "CSLA.Server.DataPortal"
-                    AssemblyName = "CSLA.Server.DataPortal"
-                    HintPath = "..\..\CSLA.BatchQueue\bin\Debug\CSLA.Server.DataPortal.dll"
+                    Name = "PTBatch"
+                    Project = "{1644B6C3-8AA4-41AE-BF03-9630FA9008C3}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
         </Build>
         <Files>
             <Include>
                 <File
-                    RelPath = "Web.config"
+                    RelPath = "App.config"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "App.ico"
                     BuildAction = "Content"
+                />
+                <File
+                    RelPath = "AssemblyInfo.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Class1.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
                 />
             </Include>
         </Files>

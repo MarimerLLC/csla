@@ -1,0 +1,9 @@
+﻿ALTER TABLE [dbo].[Roles] ADD 
+	CONSTRAINT [FK_Roles_Users] FOREIGN KEY 
+	(
+		[Username]
+	) REFERENCES [dbo].[Users] (
+		[Username]
+	) ON DELETE CASCADE  ON UPDATE CASCADE 
+GO
+

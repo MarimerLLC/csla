@@ -1,0 +1,11 @@
+﻿ALTER TABLE [dbo].[Roles] WITH NOCHECK ADD 
+	CONSTRAINT [PK_Roles] PRIMARY KEY  CLUSTERED 
+	(
+		[Username],
+		[Role]
+	)  ON [PRIMARY] 
+GO
+
+ CREATE  INDEX [IX_Roles] ON [dbo].[Roles]([Username]) ON [PRIMARY]
+GO
+

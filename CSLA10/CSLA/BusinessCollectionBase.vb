@@ -37,7 +37,16 @@ Public MustInherit Class BusinessCollectionBase
   ''' <param name="Item">A reference to the object.</param>
   ''' <returns>True if the collection contains the object.</returns>
   Public Function Contains(ByVal Item As BusinessBase) As Boolean
-    Return list.Contains(Item)
+    'Return list.Contains(Item)
+    Dim element As BusinessBase
+
+    For Each element In list
+      If element.Equals(Item) Then
+        Return True
+      End If
+    Next
+    Return False
+
   End Function
 
   ''' <summary>

@@ -34,6 +34,24 @@ Public Class ResourceAssignment
     Return mProjectName
   End Function
 
+  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
+    If TypeOf objA Is ResourceAssignment AndAlso TypeOf objB Is ResourceAssignment Then
+      Return DirectCast(objA, ResourceAssignment).Equals(DirectCast(objB, ResourceAssignment))
+
+    Else
+      Return False
+    End If
+  End Function
+
+  Public Overloads Overrides Function Equals(ByVal ResourceAssignment As Object) As Boolean
+    If TypeOf ResourceAssignment Is ResourceAssignment Then
+      Return Equals(DirectCast(ResourceAssignment, ResourceAssignment))
+
+    Else
+      Return False
+    End If
+  End Function
+
   Public Overloads Function Equals(ByVal Assignment As ResourceAssignment) As Boolean
     Return mProjectID.Equals(Assignment.ProjectID)
   End Function

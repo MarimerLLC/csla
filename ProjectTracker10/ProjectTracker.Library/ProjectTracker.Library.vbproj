@@ -70,24 +70,24 @@
                     AssemblyName = "System.Xml"
                 />
                 <Reference
+                    Name = "CSLA.Server.ServicedDataPortal"
+                    AssemblyName = "CSLA.Server.ServicedDataPortal"
+                    HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.ServicedDataPortal.dll"
+                />
+                <Reference
                     Name = "CSLA.Core.Bindablebase"
                     AssemblyName = "CSLA.Core.Bindablebase"
-                    HintPath = "..\..\csla10\CSLA\bin\CSLA.Core.Bindablebase.dll"
+                    HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Core.Bindablebase.dll"
                 />
                 <Reference
                     Name = "CSLA"
                     AssemblyName = "CSLA"
-                    HintPath = "..\..\csla10\CSLA\bin\CSLA.dll"
+                    HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.dll"
                 />
                 <Reference
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
-                    HintPath = "..\..\csla10\CSLA\bin\CSLA.Server.DataPortal.dll"
-                />
-                <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\csla10\CSLA\bin\CSLA.Server.ServicedDataPortal.dll"
+                    HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.DataPortal.dll"
                 />
             </References>
             <Imports>
@@ -154,11 +154,6 @@
                 />
                 <File
                     RelPath = "RoleList.vb"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Test.vb"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

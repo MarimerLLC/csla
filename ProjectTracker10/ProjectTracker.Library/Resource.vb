@@ -72,6 +72,24 @@ Public Class Resource
     Return mID
   End Function
 
+  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
+    If TypeOf objA Is Resource AndAlso TypeOf objB Is Resource Then
+      Return DirectCast(objA, Resource).Equals(DirectCast(objB, Resource))
+
+    Else
+      Return False
+    End If
+  End Function
+
+  Public Overloads Overrides Function Equals(ByVal Resource As Object) As Boolean
+    If TypeOf Resource Is Resource Then
+      Return Equals(DirectCast(Resource, Resource))
+
+    Else
+      Return False
+    End If
+  End Function
+
   Public Overloads Function Equals(ByVal Resource As Resource) As Boolean
     Return (mID = Resource.ID)
   End Function

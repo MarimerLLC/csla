@@ -41,6 +41,24 @@ Public Class ProjectResource
     Return mLastName & ", " & mFirstName
   End Function
 
+  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
+    If TypeOf objA Is ProjectResource AndAlso TypeOf objB Is ProjectResource Then
+      Return DirectCast(objA, ProjectResource).Equals(DirectCast(objB, ProjectResource))
+
+    Else
+      Return False
+    End If
+  End Function
+
+  Public Overloads Overrides Function Equals(ByVal ProjectResource As Object) As Boolean
+    If TypeOf ProjectResource Is ProjectResource Then
+      Return Equals(DirectCast(ProjectResource, ProjectResource))
+
+    Else
+      Return False
+    End If
+  End Function
+
   Public Overloads Function Equals(ByVal Assignment As ProjectResource) _
       As Boolean
 

@@ -7,8 +7,8 @@ namespace ProjectTracker.Library
   [Serializable()]
   public abstract class Assignment : BusinessBase
   {
-    protected SmartDate _Assigned = new SmartDate(DateTime.Now);
-    protected int _Role = 0;
+    protected SmartDate _assigned = new SmartDate(DateTime.Now);
+    protected int _role = 0;
 
     #region Business Properties and Methods
 
@@ -16,7 +16,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _Assigned.Text;
+        return _assigned.Text;
       }
     }
 
@@ -24,13 +24,13 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return Roles[_Role.ToString()];
+        return Roles[_role.ToString()];
       }
       set
       {
         if(Role != value)
         {
-          _Role = Convert.ToInt32(Roles.Key(value));
+          _role = Convert.ToInt32(Roles.Key(value));
           MarkDirty();
         }
       }
@@ -40,18 +40,18 @@ namespace ProjectTracker.Library
   
     #region Roles List
 
-    private static RoleList _Roles;
+    private static RoleList _roles;
 
     static Assignment()
     {
-      _Roles = RoleList.GetList();
+      _roles = RoleList.GetList();
     }
 
     public static RoleList Roles
     {
       get
       {
-        return _Roles;
+        return _roles;
       }
     }
 

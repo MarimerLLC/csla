@@ -204,19 +204,19 @@ namespace PTWin
                                                                                   this.pnlStatus,
                                                                                   this.pnlUser});
       this.statusBar1.ShowPanels = true;
-      this.statusBar1.Size = new System.Drawing.Size(292, 22);
+      this.statusBar1.Size = new System.Drawing.Size(816, 22);
       this.statusBar1.TabIndex = 1;
       this.statusBar1.Text = "statusBar1";
       // 
       // pnlStatus
       // 
       this.pnlStatus.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
-      this.pnlStatus.Width = 176;
+      this.pnlStatus.Width = 700;
       // 
       // MainForm
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-      this.ClientSize = new System.Drawing.Size(292, 266);
+      this.ClientSize = new System.Drawing.Size(816, 266);
       this.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                   this.statusBar1});
       this.IsMdiContainer = true;
@@ -245,12 +245,13 @@ namespace PTWin
 
     private void MainForm_Load(object sender, System.EventArgs e)
     {
-      _Main = this;
+      _main = this;
 
       if(ConfigurationSettings.AppSettings["Authentication"] == "Windows")
       {
         mnuFileLogin.Visible = false;
-        AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+        AppDomain.CurrentDomain.SetPrincipalPolicy(
+          PrincipalPolicy.WindowsPrincipal);
         EnableMenus();
       }
       else
@@ -311,6 +312,7 @@ namespace PTWin
       //mnuAction.Enabled = False
       //mnuReport.Enabled = False
       //mnuBatch.Enabled = False
+      pnlUser.Text = string.Empty;
       EnableMenus();
     }
 
@@ -336,18 +338,17 @@ namespace PTWin
       mnuResourceRemove.Enabled = user.IsInRole("ProjectManager") || 
         user.IsInRole("Supervisor") ||
         user.IsInRole("Administrator");
-
     }
 
     #endregion
 
     #region Status
 
-    static MainForm _Main;
+    static MainForm _main;
 
     public static void Status(string text)
     {
-      _Main.pnlStatus.Text = text;
+      _main.pnlStatus.Text = text;
     }
 
     #endregion
@@ -433,17 +434,78 @@ namespace PTWin
 
     private void mnuResourceNew_Click(object sender, System.EventArgs e)
     {
-    
+      string id = InputBox.GetInput("Resource ID", "New resource");
+      if(id.Length > 0)
+      {
+        Cursor.Current = Cursors.WaitCursor;
+        Resource obj = Resource.NewResource(id);
+        ResourceEdit frm = new ResourceEdit();
+        frm.MdiParent = this;
+        frm.Resource = obj;
+        Cursor.Current = Cursors.Default;
+        frm.Show();
+      }
     }
 
     private void mnuResourceEdit_Click(object sender, System.EventArgs e)
     {
-    
+      ResourceSelect dlg = new ResourceSelect();
+      dlg.Text = "Edit Resource";
+      dlg.ShowDialog(this);
+
+      string result = dlg.Result;
+      if(result.Length > 0)
+        try
+        {
+          Cursor.Current = Cursors.WaitCursor;
+          Resource obj = Resource.GetResource(result);
+          ResourceEdit frm = new ResourceEdit();
+          frm.MdiParent = this;
+          frm.Resource = obj;
+          Cursor.Current = Cursors.Default;
+          frm.Show();
+        }
+        catch(Exception ex)
+        {
+          Cursor.Current = Cursors.Default;
+          string msg = string.Format(
+            "Error loading resource\n{0}", ex.ToString());
+          MessageBox.Show(msg);
+        }
     }
 
     private void mnuResourceRemove_Click(object sender, System.EventArgs e)
     {
-    
+      ResourceSelect dlg = new ResourceSelect();
+      dlg.Text = "Remove Resource";
+      dlg.ShowDialog(this);
+
+      string result = dlg.Result;
+      if(result.Length > 0)
+      {
+        if(MessageBox.Show(this, "Remove resource " + result, 
+          "Remove resource", MessageBoxButtons.YesNo) == DialogResult.Yes)
+          try
+          {
+            Cursor.Current = Cursors.WaitCursor;
+            pnlStatus.Text = "Removing resource...";
+
+            Resource.DeleteResource(result);
+            Cursor.Current = Cursors.Default;
+            MessageBox.Show(this, "Resource deleted");
+          }
+          catch(Exception ex)
+          {
+            Cursor.Current = Cursors.Default;
+            string msg = string.Format(
+              "Error deleting resource\n{0}", ex.ToString());
+            MessageBox.Show(this, msg);
+          }
+          finally
+          {
+            pnlStatus.Text = string.Empty;
+          }
+      }
     }
 
     #endregion

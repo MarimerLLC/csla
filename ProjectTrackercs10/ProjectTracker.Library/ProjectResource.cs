@@ -9,9 +9,9 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectResource : Assignment
   {
-    string _ResourceID = string.Empty;
-    string _LastName = string.Empty;
-    string _FirstName = string.Empty;
+    string _resourceID = string.Empty;
+    string _lastName = string.Empty;
+    string _firstName = string.Empty;
 
     #region Business Properties and Methods
 
@@ -19,7 +19,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _ResourceID;
+        return _resourceID;
       }
     }
 
@@ -27,7 +27,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _LastName;
+        return _lastName;
       }
     }
 
@@ -35,13 +35,13 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _FirstName;
+        return _firstName;
       }
     }
 
     public Resource GetResource()
     {
-      return Resource.GetResource(_ResourceID);
+      return Resource.GetResource(_resourceID);
     }
 
     #endregion
@@ -50,7 +50,7 @@ namespace ProjectTracker.Library
 
     public override string ToString()
     {
-      return _LastName + ", " + _FirstName;
+      return _lastName + ", " + _firstName;
     }
 
     public new static bool Equals(object objA, object objB)
@@ -72,12 +72,12 @@ namespace ProjectTracker.Library
 
     public bool Equals(ProjectResource assignment)
     {
-      return _ResourceID == assignment.ResourceID;
+      return _resourceID == assignment.ResourceID;
     }
 
     public override int GetHashCode()
     {
-      return _ResourceID.GetHashCode();
+      return _resourceID.GetHashCode();
     }
 
     #endregion
@@ -115,11 +115,11 @@ namespace ProjectTracker.Library
 
     private ProjectResource(Resource resource, string role)
     {
-      _ResourceID = resource.ID;
-      _LastName = resource.LastName;
-      _FirstName = resource.FirstName;
-      _Assigned.Date = DateTime.Now;
-      _Role = Convert.ToInt32(Roles.Key(Role));
+      _resourceID = resource.ID;
+      _lastName = resource.LastName;
+      _firstName = resource.FirstName;
+      _assigned.Date = DateTime.Now;
+      _role = Convert.ToInt32(Roles.Key(role));
     }
 
     private ProjectResource()
@@ -133,11 +133,11 @@ namespace ProjectTracker.Library
 
     private void Fetch(SafeDataReader dr)
     {
-      _ResourceID = dr.GetString(0);
-      _LastName = dr.GetString(1);
-      _FirstName = dr.GetString(2);
-      _Assigned = dr.GetSmartDate(3);
-      _Role = dr.GetInt32(4);
+      _resourceID = dr.GetString(0);
+      _lastName = dr.GetString(1);
+      _firstName = dr.GetString(2);
+      _assigned = dr.GetSmartDate(3);
+      _role = dr.GetInt32(4);
       MarkOld();
     }
 
@@ -163,7 +163,7 @@ namespace ProjectTracker.Library
             // we're not new, so delete
             cm.CommandText = "deleteAssignment";
             cm.Parameters.Add("@ProjectID", project.ID);
-            cm.Parameters.Add("@ResourceID", _ResourceID);
+            cm.Parameters.Add("@ResourceID", _resourceID);
 
             cm.ExecuteNonQuery();
 
@@ -171,25 +171,27 @@ namespace ProjectTracker.Library
           }
         }
         else
+        {
           // we are either adding or updating
           if(this.IsNew)
-        {
-          // we're new, so insert
-          cm.CommandText = "addAssignment";
-        }
-        else
-        {
-          // we're not new, so update
-          cm.CommandText = "updateAssignment";
-        }
-        cm.Parameters.Add("@ProjectID", project.ID);
-        cm.Parameters.Add("@ResourceID", _ResourceID);
-        cm.Parameters.Add("@Assigned", _Assigned.DBValue);
-        cm.Parameters.Add("@Role", _Role);
+          {
+            // we're new, so insert
+            cm.CommandText = "addAssignment";
+          }
+          else
+          {
+            // we're not new, so update
+            cm.CommandText = "updateAssignment";
+          }
+          cm.Parameters.Add("@ProjectID", project.ID);
+          cm.Parameters.Add("@ResourceID", _resourceID);
+          cm.Parameters.Add("@Assigned", _assigned.DBValue);
+          cm.Parameters.Add("@Role", _role);
 
-        cm.ExecuteNonQuery();
+          cm.ExecuteNonQuery();
 
-        MarkOld();
+          MarkOld();
+        }
       }
       finally
       {

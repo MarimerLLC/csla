@@ -98,6 +98,11 @@
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
+                    Name = "CSLA.Server.ServicedDataPortal"
+                    AssemblyName = "CSLA.Server.ServicedDataPortal"
+                    HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                />
+                <Reference
                     Name = "CSLA.Core.BindableBase"
                     AssemblyName = "CSLA.Core.BindableBase"
                     HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Core.BindableBase.dll"
@@ -111,11 +116,6 @@
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
                     HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.DataPortal.dll"
-                />
-                <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
                 />
             </References>
         </Build>
@@ -132,6 +132,16 @@
                 <File
                     RelPath = "AssemblyInfo.cs"
                     BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "InputBox.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "InputBox.resx"
+                    DependentUpon = "InputBox.cs"
+                    BuildAction = "EmbeddedResource"
                 />
                 <File
                     RelPath = "Login.cs"

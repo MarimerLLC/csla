@@ -278,17 +278,17 @@ namespace PTWin
     }
 		#endregion
 
-    Project _Project;
+    Project _project;
 
     public Project Project
     {
       get
       {
-        return _Project;
+        return _project;
       }
       set
       {
-        _Project = value;
+        _project = value;
       }
     }
 
@@ -297,8 +297,8 @@ namespace PTWin
       try
       {
         Cursor.Current = Cursors.WaitCursor;
-        _Project.ApplyEdit();
-        _Project = (Project)_Project.Save();
+        _project.ApplyEdit();
+        _project = (Project)_project.Save();
         DataBind();
         Cursor.Current = Cursors.Default;
       }
@@ -307,18 +307,18 @@ namespace PTWin
         Cursor.Current = Cursors.Default;
         MessageBox.Show(ex.ToString());
       }
-      Hide();
+      Close();
     }
 
     private void btnCancel_Click(object sender, System.EventArgs e)
     {
-    _Project.CancelEdit();
-      Hide();
+      _project.CancelEdit();
+      Close();
     }
 
     private void ProjectEdit_Load(object sender, System.EventArgs e)
     {
-      this.Text = "Project " + _Project.Name;
+      this.Text = "Project " + _project.Name;
 
       foreach(string role in Assignment.Roles)
       {
@@ -330,7 +330,7 @@ namespace PTWin
       if(Thread.CurrentPrincipal.IsInRole("ProjectManager"))
       {
         // only project managers can save a project
-        _Project.BeginEdit();
+        _project.BeginEdit();
         btnAddResource.Enabled = true;
         btnRemoveResource.Enabled = true;
       }
@@ -348,19 +348,21 @@ namespace PTWin
       if(Thread.CurrentPrincipal.IsInRole("ProjectManager"))
       {
         // only project managers can save a project
-        Util.BindField(btnSave, "Enabled", _Project, "IsValid");
+        Util.BindField(btnSave, "Enabled", _project, "IsValid");
       }
       else
         btnSave.Enabled = false;
 
-      Util.BindField(chkIsDirty, "Checked", _Project, "IsDirty");
-      Util.BindField(txtID, "Text", _Project, "ID");
-      Util.BindField(txtName, "Text", _Project, "Name");
-      Util.BindField(txtStarted, "Text", _Project, "Started");
-      Util.BindField(txtEnded, "Text", _Project, "Ended");
-      Util.BindField(txtDescription, "Text", _Project, "Description");
-      lstRules.DataSource = _Project.GetBrokenRulesCollection();
+      Util.BindField(chkIsDirty, "Checked", _project, "IsDirty");
+      Util.BindField(txtID, "Text", _project, "ID");
+      Util.BindField(txtName, "Text", _project, "Name");
+      Util.BindField(txtStarted, "Text", _project, "Started");
+      Util.BindField(txtEnded, "Text", _project, "Ended");
+      Util.BindField(txtDescription, "Text", _project, "Description");
+      
+      lstRules.DataSource = _project.GetBrokenRulesCollection();
       lstRules.DisplayMember = "Description";
+
       dvResources.SuspendLayout();
       dvResources.Clear();
       dvResources.AutoDiscover = false;
@@ -369,13 +371,14 @@ namespace PTWin
       dvResources.Columns.Add("First name", "FirstName", 100);
       dvResources.Columns.Add("Assigned", "Assigned", 100);
       dvResources.Columns.Add("Role", "Role", 150);
-      dvResources.DataSource = _Project.Resources;
+      dvResources.DataSource = _project.Resources;
       dvResources.ResumeLayout();
     }
 
-    private void ProjectEdit_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    private void ProjectEdit_Closing(object sender, 
+      System.ComponentModel.CancelEventArgs e)
     {
-      _Project.CancelEdit();
+      _project.CancelEdit();
     }
 
     private void btnAddResource_Click(object sender, System.EventArgs e)
@@ -391,7 +394,7 @@ namespace PTWin
         dvResources.DataSource = null;
         try
         {
-          _Project.Resources.Assign(id);
+          _project.Resources.Assign(id);
         }
         catch(Exception ex)
         {
@@ -399,7 +402,7 @@ namespace PTWin
         }
         finally
         {
-          dvResources.DataSource = _Project.Resources;
+          dvResources.DataSource = _project.Resources;
           dvResources.ResumeLayout();
         }
       }
@@ -409,14 +412,15 @@ namespace PTWin
     {
       string id = dvResources.SelectedItems[0].Text;
 
-      if(MessageBox.Show("Remove resource " + id + " from project?", "Remove resource",
+      if(MessageBox.Show("Remove resource " + id + " from project?", 
+        "Remove resource",
         MessageBoxButtons.YesNo, 
         MessageBoxIcon.Question) == DialogResult.Yes)
       {
         dvResources.SuspendLayout();
         dvResources.DataSource = null;
-        _Project.Resources.Remove(id);
-        dvResources.DataSource = _Project.Resources;
+        _project.Resources.Remove(id);
+        dvResources.DataSource = _project.Resources;
         dvResources.ResumeLayout();
       }
     }
@@ -441,8 +445,8 @@ namespace PTWin
 
         dvResources.SuspendLayout();
         dvResources.DataSource = null;
-        _Project.Resources[id].Role = item.Text;
-        dvResources.DataSource = _Project.Resources;
+        _project.Resources[id].Role = item.Text;
+        dvResources.DataSource = _project.Resources;
         dvResources.ResumeLayout();
       }
     }

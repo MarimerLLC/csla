@@ -153,31 +153,31 @@ namespace PTWin
     }
 		#endregion
 
-    string _Username = string.Empty;
-    string _Password = string.Empty;
-    bool _Login;
+    string _username = string.Empty;
+    string _password = string.Empty;
+    bool _login;
 
     private void btnLogin_Click(object sender, System.EventArgs e)
     {
-      _Username = txtUsername.Text;
-      _Password = txtPassword.Text;
-      _Login = true;
-      Hide();
+      _username = txtUsername.Text;
+      _password = txtPassword.Text;
+      _login = true;
+      Close();
     }
 
     private void btnCancel_Click(object sender, System.EventArgs e)
     {
-      _Username = string.Empty;
-      _Password = string.Empty;
-      _Login = false;
-      Hide();
+      _username = string.Empty;
+      _password = string.Empty;
+      _login = false;
+      Close();
     }
 
     public string Username
     {
       get
       {
-        return _Username;
+        return _username;
       }
     }
 
@@ -185,7 +185,7 @@ namespace PTWin
     {
       get
       {
-        return _Password;
+        return _password;
       }
     }
 
@@ -193,7 +193,7 @@ namespace PTWin
     {
       get
       {
-        return _Login;
+        return _login;
       }
     }
 

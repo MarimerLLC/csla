@@ -130,13 +130,13 @@ namespace PTWin
         result = dvDisplay.SelectedItems[0].Text;
       else
         result = string.Empty;
-      Hide();
+      Close();
     }
 
     private void btnCancel_Click(object sender, System.EventArgs e)
     {
       result = string.Empty;
-      Hide();
+      Close();
     }
 
     public string Result

@@ -9,8 +9,8 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceAssignment : Assignment
 	{
-    Guid _ProjectID = Guid.Empty;
-    string _ProjectName = string.Empty;
+    Guid _projectID = Guid.Empty;
+    string _projectName = string.Empty;
 
     #region Business Properties and Methods
 
@@ -18,7 +18,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _ProjectID;
+        return _projectID;
       }
     }
 
@@ -26,13 +26,13 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return _ProjectName;
+        return _projectName;
       }
     }
 
     public Project GetProject()
     {
-      return Project.GetProject(_ProjectID);
+      return Project.GetProject(_projectID);
     }
 
     #endregion
@@ -41,7 +41,7 @@ namespace ProjectTracker.Library
 
     public override string ToString()
     {
-      return _ProjectName;
+      return _projectName;
     }
 
     public new static bool Equals(object objA, object objB)
@@ -62,12 +62,12 @@ namespace ProjectTracker.Library
 
     public bool Equals(ResourceAssignment assignment)
     {
-      return _ProjectID.Equals(assignment.ProjectID);
+      return _projectID.Equals(assignment.ProjectID);
     }
 
     public override int GetHashCode()
     {
-      return _ProjectID.GetHashCode();
+      return _projectID.GetHashCode();
     }
 
     #endregion
@@ -102,10 +102,10 @@ namespace ProjectTracker.Library
 
     private ResourceAssignment(Project project, string role)
     {
-      _ProjectID = project.ID;
-      _ProjectName = project.Name;
-      _Assigned.Date = DateTime.Now;
-      _Role = Convert.ToInt32(Roles.Key(role));
+      _projectID = project.ID;
+      _projectName = project.Name;
+      _assigned.Date = DateTime.Now;
+      _role = Convert.ToInt32(Roles.Key(role));
       MarkAsChild();
     }
 
@@ -120,10 +120,10 @@ namespace ProjectTracker.Library
 
     private void Fetch(SafeDataReader dr)
     {
-      _ProjectID = dr.GetGuid(0);
-      _ProjectName = dr.GetString(1);
-      _Assigned.Date = dr.GetDateTime(2);
-      _Role = dr.GetInt32(3);
+      _projectID = dr.GetGuid(0);
+      _projectName = dr.GetString(1);
+      _assigned.Date = dr.GetDateTime(2);
+      _role = dr.GetInt32(3);
       MarkOld();
     }
 
@@ -145,7 +145,7 @@ namespace ProjectTracker.Library
         {
           // we're not new, so delete
           cm.CommandText = "deleteAssignment";
-          cm.Parameters.Add("@ProjectID", _ProjectID);
+          cm.Parameters.Add("@ProjectID", _projectID);
           cm.Parameters.Add("@ResourceID", resource.ID);
 
           cm.ExecuteNonQuery();
@@ -166,10 +166,10 @@ namespace ProjectTracker.Library
           // we're not new, so update
           cm.CommandText = "updateAssignment";
         }
-        cm.Parameters.Add("@ProjectID", _ProjectID);
+        cm.Parameters.Add("@ProjectID", _projectID);
         cm.Parameters.Add("@ResourceID", resource.ID);
-        cm.Parameters.Add("@Assigned", _Assigned.DBValue);
-        cm.Parameters.Add("@Role", _Role);
+        cm.Parameters.Add("@Assigned", _assigned.DBValue);
+        cm.Parameters.Add("@Role", _role);
         cm.ExecuteNonQuery();
 
         MarkOld();

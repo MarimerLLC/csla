@@ -73,6 +73,11 @@
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
                 />
                 <Reference
+                    Name = "CSLA.Server.ServicedDataPortal"
+                    AssemblyName = "CSLA.Server.ServicedDataPortal"
+                    HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
+                />
+                <Reference
                     Name = "CSLA.Core.BindableBase"
                     AssemblyName = "CSLA.Core.BindableBase"
                     HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Core.BindableBase.dll"
@@ -86,11 +91,6 @@
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
                     HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.DataPortal.dll"
-                />
-                <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\cslacs10\CSLA\bin\Debug\CSLA.Server.ServicedDataPortal.dll"
                 />
             </References>
         </Build>

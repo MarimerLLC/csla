@@ -318,7 +318,9 @@ Namespace Data
       If mDataReader.IsDBNull(i) Then
         Return Char.MinValue
       Else
-        Return mDataReader.GetChar(i)
+        Dim myChar() As Char
+        mDataReader.GetChars(i, 0, myChar, 0, 1)
+        Return myChar(0)
       End If
     End Function
 

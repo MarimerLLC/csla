@@ -271,7 +271,11 @@ namespace CSLA.Data
       if(_dataReader.IsDBNull(i))
         return char.MinValue;
       else
-        return _dataReader.GetChar(i);
+      {
+        char[] myChar = new char[1];
+        _dataReader.GetChars(i, 0, myChar, 0, 1);
+        return myChar[0];
+      }
     }
 
     /// <summary>

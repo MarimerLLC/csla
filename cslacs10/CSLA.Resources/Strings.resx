@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="ResMimeType">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="Version">
+    <value>1.0.0.0</value>
+  </resheader>
+  <resheader name="Reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="Writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ClearInvalidException" type="System.String">
+    <value>Clear is an invalid operation</value>
+  </data>
+  <data name="InsertInvalidException" type="System.String">
+    <value>Insert is an invalid operation</value>
+  </data>
+  <data name="RemoveInvalidException" type="System.String">
+    <value>Remove is an invalid operation</value>
+  </data>
+  <data name="ChangeInvalidException" type="System.String">
+    <value>Changing an element is an invalid operation</value>
+  </data>
+  <data name="ParentSetException" type="System.String">
+    <value>Parent value can only be set for child objects</value>
+  </data>
+  <data name="ChildDeleteException" type="System.String">
+    <value>Can not directly mark a child object for deletion - use its parent collection</value>
+  </data>
+  <data name="NoDeleteRootException" type="System.String">
+    <value>Invalid for root objects - use Delete instead</value>
+  </data>
+  <data name="NoSaveChildException" type="System.String">
+    <value>Can not directly save a child object</value>
+  </data>
+  <data name="NoSaveEditingException" type="System.String">
+    <value>Object is still being edited and can not be saved</value>
+  </data>
+  <data name="NoSaveInvalidException" type="System.String">
+    <value>Object is not valid and can not be saved</value>
+  </data>
+  <data name="CreateNotSupportedException" type="System.String">
+    <value>Invalid operation - create not allowed</value>
+  </data>
+  <data name="FetchNotSupportedException" type="System.String">
+    <value>Invalid operation - fetch not allowed</value>
+  </data>
+  <data name="UpdateNotSupportedException" type="System.String">
+    <value>Invalid operation - update not allowed</value>
+  </data>
+  <data name="DeleteNotSupportedException" type="System.String">
+    <value>Invalid operation - delete not allowed</value>
+  </data>
+  <data name="NoBeginEditChildException" type="System.String">
+    <value>BeginEdit is not valid on a child object</value>
+  </data>
+  <data name="NoCancelEditChildException" type="System.String">
+    <value>CancelEdit is not valid on a child object</value>
+  </data>
+  <data name="NoApplyEditChildException" type="System.String">
+    <value>ApplyEdit is not valid on a child object</value>
+  </data>
+  <data name="NoSuchValueExistsException" type="System.String">
+    <value>No such value exists:</value>
+  </data>
+  <data name="ErrorReadingValueException" type="System.String">
+    <value>Error reading value:</value>
+  </data>
+  <data name="NoInsertReadOnlyException" type="System.String">
+    <value>Insert is invalid for a read-only collection</value>
+  </data>
+  <data name="NoRemoveReadOnlyException" type="System.String">
+    <value>Remove is invalid for a read-only collection</value>
+  </data>
+  <data name="NoClearReadOnlyException" type="System.String">
+    <value>Clear is invalid for a read-only collection</value>
+  </data>
+  <data name="NoChangeReadOnlyException" type="System.String">
+    <value>Items can not be changed in a read-only collection</value>
+  </data>
+  <data name="StringToDateException" type="System.String">
+    <value>String value can not be converted to a date</value>
+  </data>
+  <data name="ValueNotSmartDateException" type="System.String">
+    <value>Value is not a SmartDate</value>
+  </data>
+  <data name="InvalidDateException" type="System.String">
+    <value>Value must be a valid date</value>
+  </data>
+  <data name="SortingNotSupportedException" type="System.String">
+    <value>Sorting is not supported by this collection</value>
+  </data>
+  <data name="SearchingNotSupportedException" type="System.String">
+    <value>Searching is not supported by this collection</value>
+  </data>
+  <data name="AddItemException" type="System.String">
+    <value>Adding items not allowed</value>
+  </data>
+  <data name="NoPrincipalAllowedException" type="System.String">
+    <value>No principal object should be passed to DataPortal when using Windows integrated security</value>
+  </data>
+  <data name="BusinessPrincipalException" type="System.String">
+    <value>Principal must be of type BusinessPrincipal, not</value>
+  </data>
+  <data name="NoMatchException" type="System.String">
+    <value>No matching item in collection</value>
+  </data>
+  <data name="SecurityDataBase" type="System.String">
+    <value>Security</value>
+  </data>
+  <data name="SecurityStoredProcedure" type="System.String">
+    <value>Login</value>
+  </data>
+  <data name="SecurityUserParam" type="System.String">
+    <value>@user</value>
+  </data>
+  <data name="SecurityPasswordParam" type="System.String">
+    <value>@pw</value>
+  </data>
+  <data name="SmartDateT" type="System.String">
+    <value>t</value>
+  </data>
+  <data name="SmartDateToday" type="System.String">
+    <value>today</value>
+  </data>
+  <data name="SmartDateY" type="System.String">
+    <value>y</value>
+  </data>
+  <data name="SmartDateYesterday" type="System.String">
+    <value>yesterday</value>
+  </data>
+  <data name="SmartDateTom" type="System.String">
+    <value>tom</value>
+  </data>
+  <data name="SmartDateTomorrow" type="System.String">
+    <value>tomorrow</value>
+  </data>
+  <data name="BatchQueueJobCompleted" type="System.String">
+    <value>Batch job completed</value>
+  </data>
+  <data name="BatchQueueJobPrefix" type="System.String">
+    <value>Batch job:</value>
+  </data>
+  <data name="BatchQueueJobObjectPrefix" type="System.String">
+    <value>Job object:</value>
+  </data>
+  <data name="BatchQueueJobFailed" type="System.String">
+    <value>Batch job failed due to execution error</value>
+  </data>
+  <data name="BatchQueueProcStarted" type="System.String">
+    <value>Batch queue processor started</value>
+  </data>
+  <data name="BatchQueueProcName" type="System.String">
+    <value>Name:</value>
+  </data>
+  <data name="BatchQueueProcPort" type="System.String">
+    <value>Port:</value>
+  </data>
+  <data name="BatchQueueProcQueue" type="System.String">
+    <value>Queue:</value>
+  </data>
+  <data name="BatchQueueProcMaxJobs" type="System.String">
+    <value>Max jobs:</value>
+  </data>
+  <data name="Failed" type="System.String">
+    <value>failed</value>
+  </data>
+  <data name="FailedOnServer" type="System.String">
+    <value>failed on the server</value>
+  </data>
+</root>

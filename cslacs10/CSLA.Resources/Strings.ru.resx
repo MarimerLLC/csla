@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="ResMimeType">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="Version">
+		<value>1.0.0.0</value>
+	</resheader>
+	<resheader name="Reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="Writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="ClearInvalidException" type="System.String">
+		<value>Неверная операция "Clear"</value>
+	</data>
+	<data name="InsertInvalidException" type="System.String">
+		<value>Неверная операция "Insert"</value>
+	</data>
+	<data name="RemoveInvalidException" type="System.String">
+		<value>Неверная операция "Remove"</value>
+	</data>
+	<data name="ChangeInvalidException" type="System.String">
+		<value>Редактирование элемента недопустимо</value>
+	</data>
+	<data name="ParentSetException" type="System.String">
+		<value>Значение Parent может быть установленно только для дочерних объектов</value>
+	</data>
+	<data name="ChildDeleteException" type="System.String">
+		<value>Невозможно напрямую пометить дочерний объект для удаления. Используйте его родительскую коллекцию</value>
+	</data>
+	<data name="NoDeleteRootException" type="System.String">
+		<value>Неверно для корневого объекта - используйте команду Delete </value>
+	</data>
+	<data name="NoSaveChildException" type="System.String">
+		<value>Невозможно сохранить дочерний объект напрямую</value>
+	</data>
+	<data name="NoSaveEditingException" type="System.String">
+		<value>Невозможно сохранить объект находящийся в состоянии редактирования</value>
+	</data>
+	<data name="NoSaveInvalidException" type="System.String">
+		<value>Невозможно сохранить объект с ошибками</value>
+	</data>
+	<data name="CreateNotSupportedException" type="System.String">
+		<value>Неверная операция - создание нового объекта не разрешено</value>
+	</data>
+	<data name="FetchNotSupportedException" type="System.String">
+		<value>Неверная операция - чтение не разрешено</value>
+	</data>
+	<data name="UpdateNotSupportedException" type="System.String">
+		<value>Неверная операция - редактирование не разрешено</value>
+	</data>
+	<data name="DeleteNotSupportedException" type="System.String">
+		<value>Неверная операция - удаление не разрешено</value>
+	</data>
+	<data name="NoBeginEditChildException" type="System.String">
+		<value>BeginEdit не разрешено для дочернего объекта</value>
+	</data>
+	<data name="NoCancelEditChildException" type="System.String">
+		<value>CancelEdit не разрешено для дочернего объекта</value>
+	</data>
+	<data name="NoApplyEditChildException" type="System.String">
+		<value>ApplyEdit не разрешено для дочернего объекта</value>
+	</data>
+	<data name="NoSuchValueExistsException" type="System.String">
+		<value>Такого значения не существует:</value>
+	</data>
+	<data name="ErrorReadingValueException" type="System.String">
+		<value>Ошибка чтения значения:</value>
+	</data>
+	<data name="NoInsertReadOnlyException" type="System.String">
+		<value>Вставка не разрешена для коллекций "только для чтения"</value>
+	</data>
+	<data name="NoRemoveReadOnlyException" type="System.String">
+		<value>Удаление не разрешено для коллекций "только для чтения"</value>
+	</data>
+	<data name="NoClearReadOnlyException" type="System.String">
+		<value>Очистка коллекций "только для чтения" не разрешена</value>
+	</data>
+	<data name="NoChangeReadOnlyException" type="System.String">
+		<value>Редактирование коллекций "только для чтения" не разрешено</value>
+	</data>
+	<data name="StringToDateException" type="System.String">
+		<value>Строковое значение не может быть переведено в дату</value>
+	</data>
+	<data name="ValueNotSmartDateException" type="System.String">
+		<value>Тип значения не SmartDate</value>
+	</data>
+	<data name="InvalidDateException" type="System.String">
+		<value>Значение должно быть правильной датой</value>
+	</data>
+	<data name="SortingNotSupportedException" type="System.String">
+		<value>Сортировка не поддерживается данной коллекцией</value>
+	</data>
+	<data name="SearchingNotSupportedException" type="System.String">
+		<value>Поиск не поддерживается данной коллекцией</value>
+	</data>
+	<data name="AddItemException" type="System.String">
+		<value>Добавление записей не разрешено</value>
+	</data>
+	<data name="NoPrincipalAllowedException" type="System.String">
+		<value>Не следует передавать объект "principal" в DataPortal при использовании интегрированной системы безопасности Windows (WIS)</value>
+	</data>
+	<data name="BusinessPrincipalException" type="System.String">
+		<value>Объект "Principal" должен быть типа BusinessPrincipal, а не</value>
+	</data>
+	<data name="NoMatchException" type="System.String">
+		<value>Нет соответсвующей записи в коллекции</value>
+	</data>
+	<data name="SecurityDataBase" type="System.String">
+		<value>Security</value>
+	</data>
+	<data name="SecurityStoredProcedure" type="System.String">
+		<value>Login</value>
+	</data>
+	<data name="SecurityUserParam" type="System.String">
+		<value>@user</value>
+	</data>
+	<data name="SecurityPasswordParam" type="System.String">
+		<value>@pw</value>
+	</data>
+	<data name="SmartDateT" type="System.String">
+		<value>t</value>
+	</data>
+	<data name="SmartDateToday" type="System.String">
+		<value>сегодня</value>
+	</data>
+	<data name="SmartDateY" type="System.String">
+		<value>y</value>
+	</data>
+	<data name="SmartDateYesterday" type="System.String">
+		<value>вчера</value>
+	</data>
+	<data name="SmartDateTom" type="System.String">
+		<value>tom</value>
+	</data>
+	<data name="SmartDateTomorrow" type="System.String">
+		<value>завтра</value>
+	</data>
+	<data name="BatchQueueJobCompleted" type="System.String">
+		<value>Пакетное задание окончено</value>
+	</data>
+	<data name="BatchQueueJobPrefix" type="System.String">
+		<value>Пакетное задание:</value>
+	</data>
+	<data name="BatchQueueJobObjectPrefix" type="System.String">
+		<value>Объект задания:</value>
+	</data>
+	<data name="BatchQueueJobFailed" type="System.String">
+		<value>Пакетное задание не выполнено из-за ошибки выполнения</value>
+	</data>
+	<data name="BatchQueueProcStarted" type="System.String">
+		<value>Стартовал обработчик пактной очереди</value>
+	</data>
+	<data name="BatchQueueProcName" type="System.String">
+		<value>Имя:</value>
+	</data>
+	<data name="BatchQueueProcPort" type="System.String">
+		<value>Port:</value>
+	</data>
+	<data name="BatchQueueProcQueue" type="System.String">
+		<value>Очередь:</value>
+	</data>
+	<data name="BatchQueueProcMaxJobs" type="System.String">
+		<value>Максимально заданий:</value>
+	</data>
+	<data name="Failed" type="System.String">
+		<value>потерпел неудачу</value>
+	</data>
+	<data name="FailedOnServer" type="System.String">
+		<value>потерпел неудачу на сервере</value>
+	</data>
+</root>

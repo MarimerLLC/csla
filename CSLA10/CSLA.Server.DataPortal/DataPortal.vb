@@ -95,35 +95,51 @@ Public Class DataPortal
   End Function
 
   Private Sub SetPrincipal(ByVal Principal As Object)
+    Dim objPrincipal As IPrincipal
+    Dim objIdentity As IIdentity
+
     If AUTHENTICATION() = "Windows" Then
-      ' when using integrated security, Principal must be Nothing
-      ' and we need to set our policy to use the Windows principal
+      ' When using integrated security, Principal must be Nothing 
       If Principal Is Nothing Then
+        ' Set .NET to use integrated security 
         AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal)
         Exit Sub
 
       Else
-        Throw New Security.SecurityException("No principal object should be passed to DataPortal when using Windows integrated security")
+        Throw New Security.SecurityException( _
+          "No principal object should be passed to DataPortal when using Windows integrated security")
       End If
     End If
 
-    ' we expect Principal to be of type BusinessPrincipal, but
-    ' we can't enforce that since it causes a circular reference
-    ' with the business library so instead we must use type Object
-    ' for the parameter, so here we do a check on the type of the
-    ' parameter
-    If Principal.ToString = "CSLA.Security.BusinessPrincipal" Then
-      ' see if our current principal is
-      ' different from the caller's principal
-      If Not ReferenceEquals(Principal, System.Threading.Thread.CurrentPrincipal) Then
-        ' the caller had a different principal, so change ours to
-        ' match the caller's so all our objects use the caller's
-        ' security
-        System.Threading.Thread.CurrentPrincipal = CType(Principal, IPrincipal)
+    ' We expect the Principal to be of the type BusinessPrincipal, but we can't enforce 
+    ' that since it causes a circular reference with the business library. 
+    ' Instead we must use type Object for the parameter, so here we do a check 
+    ' on the type of the parameter. 
+    objPrincipal = CType(Principal, IPrincipal)
+    If Not (objPrincipal Is Nothing) Then
+      objIdentity = objPrincipal.Identity
+      If Not (objIdentity Is Nothing) Then
+        If objIdentity.AuthenticationType = "CSLA" Then
+          ' See if our current principal is different from the caller's principal 
+          If Not ReferenceEquals(Principal, _
+              System.Threading.Thread.CurrentPrincipal) Then
+
+            ' The caller had a different principal, so change ours to match the 
+            ' caller's, so all our objects use the caller's security. 
+            System.Threading.Thread.CurrentPrincipal = CType(Principal, _
+              IPrincipal)
+          End If
+
+        Else
+          Throw New Security.SecurityException( _
+            "Principal must be of type BusinessPrincipal, not " & Principal.ToString())
+        End If
+
       End If
 
     Else
-      Throw New Security.SecurityException("Principal must be of type BusinessPrincipal, not " & Principal.ToString)
+      Throw New Security.SecurityException( _
+        "Principal must be of type BusinessPrincipal, not Nothing")
     End If
 
   End Sub

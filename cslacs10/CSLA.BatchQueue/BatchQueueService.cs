@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Threading;
-using System.Configuration;
 using System.Messaging;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using CSLA;
 
 namespace CSLA.BatchQueue.Server
 {

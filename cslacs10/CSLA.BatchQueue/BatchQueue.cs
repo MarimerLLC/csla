@@ -2,7 +2,7 @@ using System;
 using System.Messaging;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
-using System.Configuration;
+using CSLA;
 
 namespace CSLA.BatchQueue
 {
@@ -222,18 +222,17 @@ namespace CSLA.BatchQueue
 
     #region Security
 
-    string AUTHENTICATION()
+    string AUTHENTICATION
     {
-      string val = ConfigurationSettings.AppSettings["Authentication"];
-      if(val == null)
-        return string.Empty;
-      else
-        return val;
+      get
+      {
+        return ConfigurationSettings.AppSettings["Authentication"];
+      }
     }
 
     System.Security.Principal.IPrincipal GetPrincipal()
     {
-      if(AUTHENTICATION() == "Windows")
+      if(AUTHENTICATION == "Windows")
       {
         // Windows integrated security 
         return null;

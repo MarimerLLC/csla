@@ -53,7 +53,7 @@ namespace CSLA.Security
     /// <param name="Password">The user's password.</param>
     public static void Login(string username, string password)
     {
-      BusinessPrincipal p = new BusinessPrincipal(username, password);
+      new BusinessPrincipal(username, password);
     }
 
     private BusinessPrincipal(string username, string password)

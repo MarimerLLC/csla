@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 using System.Security.Principal;
-using System.Configuration;
+using CSLA;
 
 namespace CSLA.Server
 {
@@ -92,18 +92,17 @@ namespace CSLA.Server
 
     #region Security
 
-    private string AUTHENTICATION()
+    private string AUTHENTICATION
     {
-      string val = ConfigurationSettings.AppSettings["Authentication"];
-      if(val == null)
-        return string.Empty;
-      else
-        return val;
+      get
+      {
+        return ConfigurationSettings.AppSettings["Authentication"];
+      }
     }
 
     private void SetPrincipal(object principal)
     {
-      if(AUTHENTICATION() == "Windows")
+      if(AUTHENTICATION == "Windows")
       {
         // when using integrated security, Principal must be Nothing
         // and we need to set our policy to use the Windows principal
@@ -117,6 +116,11 @@ namespace CSLA.Server
           throw new System.Security.SecurityException(
             "No principal object should be passed to DataPortal " + 
             "when using Windows integrated security");
+      }
+      else
+      {
+        System.Diagnostics.Debug.Assert(AUTHENTICATION.Length > 0, 
+          "No AUTHENTICATION token found in config file");
       }
 
       // we expect Principal to be of type BusinessPrincipal, but

@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Configuration;
 
 namespace CSLA
 {
@@ -152,11 +151,7 @@ namespace CSLA
 
     protected string DB(string databaseName)
     {
-      string val = ConfigurationSettings.AppSettings["DB:" + databaseName];
-      if(val == null)
-        return string.Empty;
-      else
-        return val;
+      return ConfigurationSettings.AppSettings["DB:" + databaseName];
     }
 
     /// <summary>
@@ -174,36 +169,28 @@ namespace CSLA
     protected void SimpleFetch(string dataBaseName, 
       string tableName, string nameColumn, string valueColumn)
     {
-      SqlConnection cn = new SqlConnection(DB(dataBaseName));
-      SqlCommand cm = new SqlCommand();
-
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB(dataBaseName)))
       {
-        cm.Connection = cn;
-        cm.CommandText = 
-          "SELECT " + nameColumn + "," + valueColumn + " FROM " + tableName;
-        CSLA.Data.SafeDataReader dr = new CSLA.Data.SafeDataReader(cm.ExecuteReader());
-        try
+        cn.Open();
+        using(SqlCommand cm = cn.CreateCommand())
         {
-          while(dr.Read())
-            if(dr.IsDBNull(1))
+          cm.CommandText = 
+            "SELECT " + nameColumn + "," + valueColumn + " FROM " + tableName;
+          using(SqlDataReader dr = cm.ExecuteReader())
+          {
+            while(dr.Read())
             {
-              Add(dr.GetValue(0).ToString(), string.Empty);
+              if(dr.IsDBNull(1))
+              {
+                Add(dr.GetValue(0).ToString(), string.Empty);
+              }
+              else
+              {
+                Add(dr.GetValue(0).ToString(), dr.GetValue(1).ToString());
+              }
             }
-            else
-            {
-              Add(dr.GetValue(0).ToString(), dr.GetValue(1).ToString());
-            }
+          }
         }
-        finally
-        {
-          dr.Close();
-        }
-      }
-      finally
-      {
-        cn.Close();
       }
     }
 

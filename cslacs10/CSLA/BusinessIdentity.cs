@@ -95,38 +95,29 @@ namespace CSLA.Security
 
       _roles.Clear();
 
-      SqlConnection cn = new SqlConnection(DB("Security"));
-      SqlCommand cm = new SqlCommand();
-      cn.Open();
-      try
+      using(SqlConnection cn = new SqlConnection(DB("Security")))
       {
-        cm.Connection = cn;
-        cm.CommandText = "Login";
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.Parameters.Add("@user", crit.Username);
-        cm.Parameters.Add("@pw", crit.Password);
-        SqlDataReader dr = cm.ExecuteReader();
-        try
+        cn.Open();
+        using(SqlCommand cm = cn.CreateCommand())
         {
-          if(dr.Read())
+          cm.CommandText = "Login";
+          cm.CommandType = CommandType.StoredProcedure;
+          cm.Parameters.Add("@user", crit.Username);
+          cm.Parameters.Add("@pw", crit.Password);
+          using(SqlDataReader dr = cm.ExecuteReader())
           {
-            _username = crit.Username;
+            if(dr.Read())
+            {
+              _username = crit.Username;
 
-            if(dr.NextResult())
-              while(dr.Read())
-                _roles.Add(dr.GetString(0));
+              if(dr.NextResult())
+                while(dr.Read())
+                  _roles.Add(dr.GetString(0));
+            }
+            else
+              _username = string.Empty;
           }
-          else
-            _username = string.Empty;
         }
-        finally
-        {
-          dr.Close();
-        }
-      }
-      finally
-      {
-        cn.Close();
       }
     }
 

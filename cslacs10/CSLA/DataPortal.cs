@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Http;
-using System.Configuration;
 
 namespace CSLA
 {
@@ -112,11 +111,7 @@ namespace CSLA
     {
       get
       {
-        string val = ConfigurationSettings.AppSettings["PortalServer"];
-        if(val == null)
-          return string.Empty;
-        else
-          return val;
+        return ConfigurationSettings.AppSettings["PortalServer"];
       }
     }
 
@@ -124,11 +119,7 @@ namespace CSLA
     {
       get
       {
-        string val = ConfigurationSettings.AppSettings["ServicedPortalServer"];
-        if(val == null)
-          return string.Empty;
-        else
-          return val;
+        return ConfigurationSettings.AppSettings["ServicedPortalServer"];
       }
     }
 
@@ -136,18 +127,17 @@ namespace CSLA
 
     #region Security
 
-    static private string AUTHENTICATION()
+    static private string AUTHENTICATION
     {
-      string val = ConfigurationSettings.AppSettings["Authentication"];
-      if(val == null)
-        return string.Empty;
-      else
-        return val;
+      get
+      {
+        return ConfigurationSettings.AppSettings["Authentication"];
+      }
     }
 
     static private System.Security.Principal.IPrincipal GetPrincipal()
     {
-      if(AUTHENTICATION() == "Windows")
+      if(AUTHENTICATION == "Windows")
         // Windows integrated security 
         return null;
       else
@@ -182,7 +172,7 @@ namespace CSLA
         // that uses the binary formatter
         Hashtable properties = new Hashtable();
         properties["name"] = "HttpBinary";
-        if(AUTHENTICATION() == "Windows")
+        if(AUTHENTICATION == "Windows")
         {
           // make sure we pass the user's Windows credentials
           // to the server

@@ -1,7 +1,7 @@
 using System;
 using System.Security.Principal;
-using System.Configuration;
 using System.Diagnostics;
+using CSLA;
 
 namespace CSLA.BatchQueue.Server
 {
@@ -167,18 +167,17 @@ namespace CSLA.BatchQueue.Server
 
     #region Security
 
-    string AUTHENTICATION()
+    string AUTHENTICATION
     {
-      string val = ConfigurationSettings.AppSettings["Authentication"];
-      if(val == null)
-        return string.Empty;
-      else
-        return val;
+      get
+      {
+        return ConfigurationSettings.AppSettings["Authentication"];
+      }
     }
 
     IPrincipal GetPrincipal() 
     {
-      if(AUTHENTICATION() == "Windows")
+      if(AUTHENTICATION == "Windows")
       {
         // Windows integrated security 
         return null;
@@ -192,7 +191,7 @@ namespace CSLA.BatchQueue.Server
 
     void SetPrincipal(object principal)
     {
-      if(AUTHENTICATION() == "Windows")
+      if(AUTHENTICATION == "Windows")
       {
         // when using integrated security, Principal must be Nothing
         // and we need to set our policy to use the Windows principal

@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Configuration;
 
 namespace CSLA
 {
@@ -133,11 +132,7 @@ namespace CSLA
     /// <returns>A database connection string.</returns>
     protected string DB(string databaseName)
     {
-      string val = ConfigurationSettings.AppSettings["DB:" + databaseName];
-      if(val == null)
-        return string.Empty;
-      else
-        return val;
+      return ConfigurationSettings.AppSettings["DB:" + databaseName];
     }
 
     #endregion

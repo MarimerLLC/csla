@@ -22,7 +22,7 @@ Public Class DataPortal
   ''' <param name="Criteria">Object-specific criteria.</param>
   ''' <returns>A new object, populated with default values.</returns>
   Public Shared Function Create(ByVal Criteria As Object) As Object
-    If IsTransactionalMethod(GetMethod(Criteria.GetType.DeclaringType, "DataPortal_Create")) Then
+    If IsTransactionalMethod(GetMethod(GetObjectType(Criteria), "DataPortal_Create")) Then
       Return ServicedPortal.Create(Criteria, GetPrincipal)
     Else
       Return Portal.Create(Criteria, GetPrincipal)
@@ -36,7 +36,7 @@ Public Class DataPortal
   ''' <param name="Criteria">Object-specific criteria.</param>
   ''' <returns>An object populated with values from the database.</returns>
   Public Shared Function Fetch(ByVal Criteria As Object) As Object
-    If IsTransactionalMethod(GetMethod(Criteria.GetType.DeclaringType, "DataPortal_Fetch")) Then
+    If IsTransactionalMethod(GetMethod(GetObjectType(Criteria), "DataPortal_Fetch")) Then
       Return ServicedPortal.Fetch(Criteria, GetPrincipal)
     Else
       Return Portal.Fetch(Criteria, GetPrincipal)
@@ -69,7 +69,7 @@ Public Class DataPortal
   ''' </summary>
   ''' <param name="Criteria">Object-specific criteria.</param>
   Public Shared Sub Delete(ByVal Criteria As Object)
-    If IsTransactionalMethod(GetMethod(Criteria.GetType.DeclaringType, "DataPortal_Delete")) Then
+    If IsTransactionalMethod(GetMethod(GetObjectType(Criteria), "DataPortal_Delete")) Then
       ServicedPortal.Delete(Criteria, GetPrincipal)
     Else
       Portal.Delete(Criteria, GetPrincipal)
@@ -134,15 +134,30 @@ Public Class DataPortal
     Return ObjectType.GetMethod(method, BindingFlags.FlattenHierarchy Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic)
   End Function
 
+  Private Shared Function GetObjectType(ByVal criteria As Object) As Type
+
+    If criteria.GetType.IsSubclassOf(GetType(Server.CriteriaBase)) Then
+      ' get the type of the actual business object
+      ' from CriteriaBase (using the new scheme)
+      Return CType(criteria, Server.CriteriaBase).ObjectType
+
+    Else
+      ' get the type of the actual business object
+      ' based on the nested class scheme in the book
+      Return criteria.GetType.DeclaringType
+    End If
+
+  End Function
+
   Shared Sub New()
     ' see if we need to configure remoting at all
     If Len(PORTAL_SERVER) > 0 OrElse Len(SERVICED_PORTAL_SERVER) > 0 Then
       ' create and register our custom HTTP channel
       ' that uses the binary formatter
-      Dim properties As New Hashtable
+      Dim properties As New Hashtable()
       properties("name") = "HttpBinary"
 
-      Dim formatter As New BinaryClientFormatterSinkProvider
+      Dim formatter As New BinaryClientFormatterSinkProvider()
 
       Dim channel As New HttpChannel(properties, formatter, Nothing)
 

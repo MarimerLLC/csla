@@ -102,6 +102,10 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Strings.ru.resx"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Strings.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

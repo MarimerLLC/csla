@@ -169,7 +169,7 @@ namespace CSLA.Server
       }
       catch(System.Exception e)
       {
-        throw e.InnerException();
+        throw e.InnerException;
       }
       return result;
     }

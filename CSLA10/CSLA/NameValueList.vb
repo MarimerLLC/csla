@@ -29,12 +29,14 @@ Public MustInherit Class NameValueList
   ''' </summary>
   ''' <returns>A new object containing the exact data of the original object.</returns>
   Public Function Clone() As Object Implements ICloneable.Clone
+
     Dim buffer As New MemoryStream()
     Dim formatter As New BinaryFormatter()
 
     formatter.Serialize(buffer, Me)
     buffer.Position = 0
     Return formatter.Deserialize(buffer)
+
   End Function
 
 #End Region
@@ -145,6 +147,17 @@ Public MustInherit Class NameValueList
     Throw New NotSupportedException("Invalid operation - delete not allowed")
   End Sub
 
+  ''' <summary>
+  ''' Returns the specified database connection string from the application
+  ''' configuration file.
+  ''' </summary>
+  ''' <remarks>
+  ''' The database connection string must be in the <c>appSettings</c> section
+  ''' of the application configuration file. The database name should be
+  ''' prefixed with 'DB:'. For instance, <c>DB:mydatabase</c>.
+  ''' </remarks>
+  ''' <param name="DatabaseName">Name of the database.</param>
+  ''' <returns>A database connection string.</returns>
   Protected Function DB(ByVal DatabaseName As String) As String
     Return ConfigurationSettings.AppSettings("DB:" & DatabaseName)
   End Function

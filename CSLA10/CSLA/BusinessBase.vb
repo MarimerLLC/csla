@@ -693,7 +693,8 @@ Public MustInherit Class BusinessBase
                             BindingFlags.Public)
 
     For Each field In fields
-      If Not field.FieldType.IsValueType Then
+      If Not field.FieldType.IsValueType AndAlso _
+            Not Attribute.IsDefined(field, GetType(NotUndoableAttribute)) Then
         ' it's a ref type, so check for ISerializationNotification
         Dim value As Object = field.GetValue(Me)
         If TypeOf value Is Serialization.ISerializationNotification Then
@@ -722,7 +723,8 @@ Public MustInherit Class BusinessBase
                             BindingFlags.Public)
 
     For Each field In fields
-      If Not field.FieldType.IsValueType Then
+      If Not field.FieldType.IsValueType AndAlso _
+            Not Attribute.IsDefined(field, GetType(NotUndoableAttribute)) Then
         ' it's a ref type, so check for ISerializationNotification
         Dim value As Object = field.GetValue(Me)
         If TypeOf value Is Serialization.ISerializationNotification Then
@@ -750,7 +752,8 @@ Public MustInherit Class BusinessBase
                             BindingFlags.Public)
 
     For Each field In fields
-      If Not field.FieldType.IsValueType Then
+      If Not field.FieldType.IsValueType AndAlso _
+            Not Attribute.IsDefined(field, GetType(NotUndoableAttribute)) Then
         ' it's a ref type, so check for ISerializationNotification
         Dim value As Object = field.GetValue(Me)
         If TypeOf value Is Serialization.ISerializationNotification Then

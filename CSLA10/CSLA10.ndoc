@@ -86,7 +86,7 @@
             <property name="DocumentPrivates" value="False" />
             <property name="DocumentEmptyNamespaces" value="False" />
             <property name="IncludeAssemblyVersion" value="False" />
-            <property name="CopyrightText" value="Copyright 2003 Rockford Lhotka. All rights reserved." />
+            <property name="CopyrightText" value="Copyright 2003-2004 Rockford Lhotka. All rights reserved." />
             <property name="CopyrightHref" value="http://www.lhotka.net/Articles.aspx?id=201678c1-4111-4e1e-accb-06a19a088166" />
             <property name="SkipNamespacesWithoutSummaries" value="False" />
             <property name="AutoPropertyBackerSummaries" value="False" />

@@ -13,8 +13,8 @@ namespace CSLA
   /// </summary>
   public class DataPortal
   {
-    static Server.DataPortal _Portal;
-    static Server.ServicedDataPortal.DataPortal _ServicedPortal;
+    static Server.DataPortal _portal;
+    static Server.ServicedDataPortal.DataPortal _servicedPortal;
 
     #region Data Access methods
 
@@ -91,9 +91,9 @@ namespace CSLA
     {
       get
       {
-        if(_Portal == null)
-          _Portal = new Server.DataPortal();
-        return _Portal;
+        if(_portal == null)
+          _portal = new Server.DataPortal();
+        return _portal;
       }
     }
 
@@ -101,9 +101,9 @@ namespace CSLA
     {
       get
       {
-        if(_ServicedPortal == null)
-          _ServicedPortal = new Server.ServicedDataPortal.DataPortal();
-        return _ServicedPortal;
+        if(_servicedPortal == null)
+          _servicedPortal = new Server.ServicedDataPortal.DataPortal();
+        return _servicedPortal;
       }
     }
 

@@ -415,7 +415,8 @@ Public MustInherit Class BusinessCollectionBase
       ' being deleted, so do the deletion work
       ' for all the objects in the list
       While list.Count > 0
-        DeleteChild(CType(list(0), BusinessBase))
+        list.RemoveAt(0)
+        'DeleteChild(CType(list(0), BusinessBase))
       End While
       MyBase.OnClear()
     End If
@@ -584,19 +585,5 @@ Public MustInherit Class BusinessCollectionBase
   End Function
 
 #End Region
-
-  Friend Sub DumpState()
-    Dim Child As BusinessBase
-
-    Debug.WriteLine("BusinessCollectionBase!Count:" & list.Count)
-    Debug.WriteLine("BusinessCollectionBase!DeletedCount:" & deletedList.Count)
-    Debug.WriteLine("BusinessCollectionBase!mIsChild:" & mIsChild)
-    Debug.WriteLine("BusinessCollectionBase!mEditLevel:" & mEditLevel)
-    Debug.Indent()
-    For Each Child In list
-      Child.DumpState()
-    Next
-    Debug.Unindent()
-  End Sub
 
 End Class

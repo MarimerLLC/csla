@@ -144,9 +144,11 @@ Public MustInherit Class ReadOnlyCollectionBase
   Protected Overridable Sub Deserialized() _
     Implements CSLA.Serialization.ISerializationNotification.Deserialized
 
-    Dim child As Serialization.ISerializationNotification
+    Dim child As Object
     For Each child In list
-      child.Deserialized()
+      If TypeOf child Is Serialization.ISerializationNotification Then
+        DirectCast(child, Serialization.ISerializationNotification).Deserialized()
+      End If
     Next
   End Sub
 
@@ -157,9 +159,11 @@ Public MustInherit Class ReadOnlyCollectionBase
   Protected Overridable Sub Serialized() _
     Implements CSLA.Serialization.ISerializationNotification.Serialized
 
-    Dim child As Serialization.ISerializationNotification
+    Dim child As Object
     For Each child In list
-      child.Serialized()
+      If TypeOf child Is Serialization.ISerializationNotification Then
+        DirectCast(child, Serialization.ISerializationNotification).Serialized()
+      End If
     Next
   End Sub
 
@@ -169,9 +173,11 @@ Public MustInherit Class ReadOnlyCollectionBase
   Protected Overridable Sub Serializing() _
     Implements CSLA.Serialization.ISerializationNotification.Serializing
 
-    Dim child As Serialization.ISerializationNotification
+    Dim child As Object
     For Each child In list
-      child.Serializing()
+      If TypeOf child Is Serialization.ISerializationNotification Then
+        DirectCast(child, Serialization.ISerializationNotification).Serializing()
+      End If
     Next
   End Sub
 

@@ -3,6 +3,7 @@ Public Class Child
   Inherits BusinessBase
 
   Private mData As String = ""
+  Private mGuid As Guid = Guid.NewGuid
 
   Private mChildren As Grandchildren = Grandchildren.NewGrandChildren
 
@@ -18,7 +19,13 @@ Public Class Child
     End Set
   End Property
 
-  Public ReadOnly Property GrandChildren() As Grandchildren
+  Public ReadOnly Property Guid() As Guid
+    Get
+      Return mGuid
+    End Get
+  End Property
+
+  Public ReadOnly Property GrandChildren() As GrandChildren
     Get
       Return mChildren
     End Get

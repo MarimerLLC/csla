@@ -107,6 +107,11 @@
         <Files>
             <Include>
                 <File
+                    RelPath = "Adapter.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "AssemblyInfo.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

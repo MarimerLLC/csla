@@ -381,22 +381,22 @@ namespace CSLA
 
     static public bool operator == (SmartDate date1, SmartDate date2)
     {
-      return date1.Equals(date2);
+      return Equals(date1, date2);
     }
 
     static public bool operator == (SmartDate date1, DateTime date2)
     {
-      return date1.Equals(date2);
+      return Equals(date1, date2);
     }
 
     static public bool operator != (SmartDate date1, SmartDate date2)
     {
-      return !date1.Equals(date2);
+      return !Equals(date1, date2);
     }
 
     static public bool operator != (SmartDate date1, DateTime date2)
     {
-      return !date1.Equals(date2);
+      return !Equals(date1, date2);
     }
 
     static public bool operator + (SmartDate d, TimeSpan t)

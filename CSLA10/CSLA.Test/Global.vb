@@ -1,5 +1,5 @@
 Module Global
 
-  Public GotWhereWeExpected As Boolean
+  Public Session As New Hashtable()
 
 End Module

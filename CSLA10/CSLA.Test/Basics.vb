@@ -2,11 +2,26 @@
 Public Class Basics
 
   <Test()> _
+  Public Sub CreateGetRoot()
+    Session.Clear()
+    Dim root As GenRoot
+    root = GenRoot.NewRoot
+    Assert.IsNotNull(root)
+    Assert.AreEqual("<new>", root.Data)
+    Assert.AreEqual("Created", Session("GenRoot"))
+    Assert.AreEqual(True, root.IsNew)
+    Assert.AreEqual(False, root.IsDeleted)
+    Assert.AreEqual(True, root.IsDirty)
+  End Sub
+
+  <Test()> _
   Public Sub CreateRoot()
+    Session.Clear()
     Dim root As root
     root = root.NewRoot
     Assert.IsNotNull(root)
     Assert.AreEqual("<new>", root.Data)
+    Assert.AreEqual("Created", Session("Root"))
     Assert.AreEqual(True, root.IsNew)
     Assert.AreEqual(False, root.IsDeleted)
     Assert.AreEqual(True, root.IsDirty)
@@ -14,6 +29,7 @@ Public Class Basics
 
   <Test()> _
   Public Sub AddChild()
+    Session.Clear()
     Dim root As root = root.NewRoot
     root.Children.Add("1")
     Assert.AreEqual(1, root.Children.Count)
@@ -22,6 +38,7 @@ Public Class Basics
 
   <Test()> _
   Public Sub AddRemoveChild()
+    Session.Clear()
     Dim root As root = root.NewRoot
     root.Children.Add("1")
     root.Children.Remove(root.Children.Item(0))
@@ -30,6 +47,7 @@ Public Class Basics
 
   <Test()> _
   Public Sub AddGrandChild()
+    Session.Clear()
     Dim root As root = root.NewRoot
     root.Children.Add("1")
     Dim child As child = root.Children(0)
@@ -40,6 +58,7 @@ Public Class Basics
 
   <Test()> _
   Public Sub AddRemoveGrandChild()
+    Session.Clear()
     Dim root As root = root.NewRoot
     root.Children.Add("1")
     Dim child As child = root.Children(0)

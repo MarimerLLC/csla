@@ -9,7 +9,10 @@ Public Class Grandchild
       Return mData
     End Get
     Set(ByVal Value As String)
-      mData = Value
+      If mData <> Value Then
+        mData = Value
+        MarkDirty()
+      End If
     End Set
   End Property
 

@@ -136,6 +136,16 @@
                     BuildAction = "None"
                 />
                 <File
+                    RelPath = "GenRoot.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "GenRootBase.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Global.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -90,7 +90,7 @@ namespace CSLA
     [Serializable()]
     public class RulesCollection : CSLA.Core.BindableCollectionBase
     {
-      bool _legal = false;
+      bool _validToEdit = false;
 
       /// <summary>
       /// Returns a <see cref="T:CSLA.BrokenRules.Rule" /> object
@@ -116,32 +116,28 @@ namespace CSLA
       internal void Add(string name, string description)
       {
         Remove(name);
-        _legal = true;
+        _validToEdit = true;
         List.Add(new Rule(name, description));
-        _legal = false;
+        _validToEdit = false;
       }
 
       internal void Remove(string name)
       {
-        int index;
-
         // we loop through using a numeric counter because
-        // the base class Remove requires a numberic index
-        _legal = true;
-        for(index = 0; index < List.Count; index++)
+        // the base class Remove requires a numeric index
+        _validToEdit = true;
+        for(int index = 0; index < List.Count; index++)
           if(((Rule)List[index]).Name == name)
           {
             List.Remove(List[index]);
             break;
           }
-        _legal = false;
+        _validToEdit = false;
       }
 
       internal bool Contains(string name)
       {
-        int index;
-
-        for(index = 0; index < List.Count; index++)
+        for(int index = 0; index < List.Count; index++)
           if(((Rule)List[index]).Name == name)
             return true;
         return false;
@@ -149,25 +145,25 @@ namespace CSLA
 
       protected override void OnClear()
       {
-        if(!_legal)
+        if(!_validToEdit)
           throw new NotSupportedException("Clear is an invalid operation");
       }
 
       protected override void OnInsert(int index, object val)
       {
-        if(!_legal)
+        if(!_validToEdit)
           throw new NotSupportedException("Insert is an invalid operation");
       }
 
       protected override void OnRemove(int index, object val)
       {
-        if(!_legal)
+        if(!_validToEdit)
           throw new NotSupportedException("Remove is an invalid operation");
       }
 
       protected override void OnSet(int index, object oldValue, object newValue)
       {
-        if(!_legal)
+        if(!_validToEdit)
           throw new NotSupportedException(
                                   "Changing an element is an invalid operation");
       }
@@ -236,9 +232,12 @@ namespace CSLA
     /// display of the broken rules at all times.
     /// </remarks>
     /// <returns>A reference to the collection of broken rules.</returns>
-    public RulesCollection GetBrokenRules() 
+    public RulesCollection GetBrokenRules
     {
-      return _rules;
+      get
+      {
+        return _rules;
+      }
     }
 
     /// <summary>
@@ -256,7 +255,7 @@ namespace CSLA
         if(first)
           first = false;
         else
-          obj.AppendFormat("/n");
+          obj.Append(Environment.NewLine);
         obj.Append(item.Description);
       }
       return obj.ToString();

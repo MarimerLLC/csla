@@ -118,6 +118,7 @@ namespace CSLA.Core
         Serialization.SerializationNotification.OnSerialized(child);
       }
 
+      currentType = this.GetType();
       do
       {
         // get the list of fields in this type
@@ -222,8 +223,8 @@ namespace CSLA.Core
                   {
                     // this is a child collection, cascade the call
                     BusinessCollectionBase tmp = (BusinessCollectionBase)value;
-                    Serialization.SerializationNotification.OnDeserialized(tmp);
                     tmp.UndoChanges();
+                    Serialization.SerializationNotification.OnDeserialized(tmp);
                   }
                 }
                 else
@@ -235,8 +236,8 @@ namespace CSLA.Core
                     {
                       // this is a child object, cascade the call
                       BusinessBase tmp = (BusinessBase)value;
-                      Serialization.SerializationNotification.OnDeserialized(tmp);
                       tmp.UndoChanges();
+                      Serialization.SerializationNotification.OnDeserialized(tmp);
                     }
                   }
                   else

@@ -20,12 +20,7 @@ namespace CSLA.Core
   {
     // keep a stack of object state values
     [NotUndoable()]
-    Stack _StateStack = new Stack();
-
-    // variables containing type info for comparisons
-    static Type UndoableType = typeof(UndoableBase);
-    static Type BusinessType = typeof(BusinessBase);
-    static Type CollectionType = typeof(BusinessCollectionBase);
+    Stack _stateStack = new Stack();
 
     /// <summary>
     /// Returns the current edit level of the object.
@@ -34,7 +29,7 @@ namespace CSLA.Core
     {
       get
       {
-        return _StateStack.Count;
+        return _stateStack.Count;
       }
     }
 
@@ -68,7 +63,7 @@ namespace CSLA.Core
               // the field is undoable, so it needs to be processed
               object value = field.GetValue(this);
 
-              if(TypeInheritsFrom(field.FieldType, CollectionType))
+              if(field.FieldType.IsSubclassOf(typeof(BusinessCollectionBase)))
               {
                 // make sure the variable has a value
                 if(!(value == null))
@@ -80,7 +75,7 @@ namespace CSLA.Core
               }
               else
               {
-                if(TypeInheritsFrom(field.FieldType, BusinessType))
+                if(field.FieldType.IsSubclassOf(typeof(BusinessBase)))
                 {
                   // make sure the variable has a value
                   if(!(value == null))
@@ -93,7 +88,7 @@ namespace CSLA.Core
                 else
                 {
                   // this is a normal field, simply trap the value
-                  fieldName = field.DeclaringType.Name + @"!" + field.Name;
+                  fieldName = field.DeclaringType.Name + "." + field.Name;
                   state.Add(fieldName, value);
                 }
               }
@@ -101,13 +96,13 @@ namespace CSLA.Core
           }
         }
         currentType = currentType.BaseType;
-      } while(currentType != UndoableType);
+      } while(currentType != typeof(UndoableBase));
 
       // serialize the state and stack it
       MemoryStream buffer = new MemoryStream();
       BinaryFormatter formatter = new BinaryFormatter();
       formatter.Serialize(buffer, state);
-      _StateStack.Push(buffer.ToArray());
+      _stateStack.Push(buffer.ToArray());
     }
 
     /// <summary>
@@ -127,7 +122,7 @@ namespace CSLA.Core
       // so just do nothing in that case
       if(EditLevel > 0)
       {
-        MemoryStream buffer = new MemoryStream((byte[])_StateStack.Pop());
+        MemoryStream buffer = new MemoryStream((byte[])_stateStack.Pop());
         buffer.Position = 0;
         BinaryFormatter formatter = new BinaryFormatter();
         Hashtable state = (Hashtable)(formatter.Deserialize(buffer));
@@ -154,7 +149,7 @@ namespace CSLA.Core
                 // the field is undoable, so restore its value
                 object value = field.GetValue(this);
 
-                if(TypeInheritsFrom(field.FieldType, CollectionType))
+                if(field.FieldType.IsSubclassOf(typeof(BusinessCollectionBase)))
                 {
                   // make sure the variable has a value
                   if(!(value == null))
@@ -166,7 +161,7 @@ namespace CSLA.Core
                 }
                 else
                 {
-                  if(TypeInheritsFrom(field.FieldType, BusinessType))
+                  if(field.FieldType.IsSubclassOf(typeof(BusinessBase)))
                   {
                     // make sure the variable has a value
                     if(!(value == null))
@@ -179,7 +174,7 @@ namespace CSLA.Core
                   else
                   {
                     // this is a regular field, restore its value
-                    fieldName = field.DeclaringType.Name + @"!" + field.Name;
+                    fieldName = field.DeclaringType.Name + "." + field.Name;
                     field.SetValue(this, state[fieldName]);
                   }
                 }
@@ -187,7 +182,7 @@ namespace CSLA.Core
             }
           }
           currentType = currentType.BaseType;
-        } while(currentType != UndoableType);
+        } while(currentType != typeof(UndoableBase));
       }
     }
 
@@ -204,7 +199,7 @@ namespace CSLA.Core
     {
       if(EditLevel > 0)
       {
-        _StateStack.Pop();
+        _stateStack.Pop();
 
         Type currentType = this.GetType();
         FieldInfo[] fields;
@@ -227,7 +222,7 @@ namespace CSLA.Core
                 object value = field.GetValue(this);
 
                 // the field is undoable so see if it is a collection
-                if(TypeInheritsFrom(field.FieldType, CollectionType))
+                if(field.FieldType.IsSubclassOf(typeof(BusinessCollectionBase)))
                 {
                   // make sure the variable has a value
                   if(!(value == null))
@@ -239,7 +234,7 @@ namespace CSLA.Core
                 }
                 else
                 {
-                  if(TypeInheritsFrom(field.FieldType, BusinessType))
+                  if(field.FieldType.IsSubclassOf(typeof(BusinessBase)))
                   {
                     // make sure the variable has a value
                     if(!(value == null))
@@ -255,7 +250,7 @@ namespace CSLA.Core
           }
           currentType = currentType.BaseType;
         } 
-        while(currentType != UndoableType);
+        while(currentType != typeof(UndoableBase));
       }
     }
 
@@ -264,24 +259,6 @@ namespace CSLA.Core
     private bool NotUndoableField(FieldInfo field)
     {
       return Attribute.IsDefined(field, typeof(NotUndoableAttribute));
-    }
-
-    private bool TypeInheritsFrom(Type typeToCheck, Type checkAgainst)
-    {
-      Type baseType = typeToCheck;
-
-      //   scan up through the inheritance hierarchy, checking each
-      // class to see if it is the one we're looking for
-      while(!(baseType == null))
-      {
-        // if we find the target class return True
-        if(baseType == checkAgainst) return true;
-        baseType = baseType.BaseType;
-      }
-
-      // the target class is not in the inheritance hierarchy so
-      // return false
-      return false;
     }
 
     #endregion

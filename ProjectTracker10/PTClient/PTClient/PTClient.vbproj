@@ -140,7 +140,7 @@
                 />
                 <Folder
                     RelPath = "Web References\PTService\"
-                    WebReferenceUrl = "http://localhost/PTServicecs/ProjectTracker.asmx"
+                    WebReferenceUrl = "http://localhost/PTService/ProjectTracker.asmx"
                     UrlBehavior = "Static"
                 />
                 <Folder

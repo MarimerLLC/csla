@@ -267,10 +267,13 @@ Public MustInherit Class BusinessCollectionBase
     For Index = deletedList.Count - 1 To 0 Step -1
       Child = deletedList.Item(Index)
       Child.UndoChanges()
-      ' if item is below its point of addition, remove
-      If Child.EditLevelAdded > mEditLevel Then deletedList.Remove(Child)
-      ' if item is no longer deleted move back to main list
-      If Not Child.IsDeleted Then UnDeleteChild(Child)
+      If Child.EditLevelAdded > mEditLevel Then
+        ' if item is below its point of addition, remove
+        deletedList.Remove(Child)
+      Else
+        ' if item is no longer deleted move back to main list
+        If Not Child.IsDeleted Then UnDeleteChild(Child)
+      End If
     Next
   End Sub
 

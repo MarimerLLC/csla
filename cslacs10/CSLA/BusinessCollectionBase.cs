@@ -260,12 +260,17 @@ namespace CSLA
       {
         child = (BusinessBase)deletedList[index];
         child.UndoChanges();
-        // if item is below its point of addition, remove
         if(child.EditLevelAdded > _editLevel)
+        {
+          // if item is below its point of addition, remove
           deletedList.Remove(child);
-        // if item is no longer deleted move back to main list
-        if(!child.IsDeleted)
-          UnDeleteChild(child);
+        }
+        else
+        {
+          // if item is no longer deleted move back to main list
+          if(!child.IsDeleted)
+            UnDeleteChild(child);
+        }
       }
     }
 

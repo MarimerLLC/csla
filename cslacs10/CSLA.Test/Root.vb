@@ -106,6 +106,7 @@ Public Class Root
         ' we would update here
         Session.Add("Root", "Updated")
       End If
+      mChildren.Update(Nothing)
       MarkOld()
     End If
   End Sub

@@ -59,6 +59,33 @@ Public Class Basics
   End Sub
 
   <Test()> _
+  Public Sub AddCancelMultipleChild()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.Children.Add("1")
+    Session.Clear()
+    root = root.Save()
+    Assert.AreEqual(1, root.Children.Count)
+    Assert.AreEqual("1", root.Children(0).Data)
+    Assert.AreEqual(False, root.IsNew, "Object should not be new")
+    Assert.AreEqual(False, root.IsDirty, "Object should not be dirty")
+    Assert.AreEqual(False, root.IsDeleted, "Object should not be marked for deletion")
+
+    Session.Clear()
+    root.BeginEdit()
+    root.Children.Add("2")
+    Assert.AreEqual(2, root.Children.Count, "Should have 2 children after add")
+    root.BeginEdit()
+    root.Children.Add("3")
+    Assert.AreEqual(3, root.Children.Count, "Should have 3 children after add")
+    root.CancelEdit()
+    Assert.AreEqual(2, root.Children.Count, "Should have 2 children after cancel")
+    root.CancelEdit()
+    Assert.AreEqual(1, root.Children.Count, "Should have 1 child after cancel")
+    Assert.AreEqual("1", root.Children(0).Data)
+  End Sub
+
+  <Test()> _
   Public Sub AddGrandChild()
     Session.Clear()
     Dim root As root = root.NewRoot

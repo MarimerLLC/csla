@@ -159,7 +159,6 @@ Public Class DataPortal
   Private Function CallMethod(ByVal obj As Object, ByVal method As String, ByVal ParamArray params() As Object) As Object
 
     ' call a private method on the object
-    'Dim t As Type = obj.GetType
     Dim info As MethodInfo = GetMethod(obj.GetType, method)
     Dim result As Object
 
@@ -167,7 +166,7 @@ Public Class DataPortal
       result = info.Invoke(obj, params)
 
     Catch e As Exception
-      Throw e.GetBaseException
+      Throw e.InnerException
     End Try
     Return result
 

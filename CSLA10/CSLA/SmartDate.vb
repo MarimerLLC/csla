@@ -449,16 +449,23 @@ Public NotInheritable Class SmartDate
   ''' <summary>
   ''' Adds a TimeSpan onto the object.
   ''' </summary>
-  Public Sub Add(ByVal Value As TimeSpan)
-    mDate.Add(Value)
-  End Sub
+  Public Function Add(ByVal Value As TimeSpan) As Date
+    Return mDate.Add(Value)
+  End Function
 
   ''' <summary>
   ''' Subtracts a TimeSpan from the object.
   ''' </summary>
-  Public Sub Subtract(ByVal Value As TimeSpan)
-    mDate.Subtract(Value)
-  End Sub
+  Public Function Subtract(ByVal Value As TimeSpan) As Date
+    Return mDate.Subtract(Value)
+  End Function
+
+  ''' <summary>
+  ''' Subtracts a Date from the object.
+  ''' </summary>
+  Public Function Subtract(ByVal Value As Date) As TimeSpan
+    Return mDate.Subtract(Value)
+  End Function
 
 #End Region
 

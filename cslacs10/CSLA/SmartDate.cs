@@ -447,17 +447,25 @@ namespace CSLA
     /// <summary>
     /// Adds a TimeSpan onto the object.
     /// </summary>
-    public void Add(TimeSpan span)
+    public DateTime Add(TimeSpan span)
     {
-      _date.Add(span);
+      return _date.Add(span);
     }
 
     /// <summary>
     /// Subtracts a TimeSpan from the object.
     /// </summary>
-    public void Subtract(TimeSpan span)
+    public DateTime Subtract(TimeSpan span)
     {
-      _date.Subtract(span);
+      return _date.Subtract(span);
+    }
+
+    /// <summary>
+    /// Subtracts a DateTime from the object.
+    /// </summary>
+    public TimeSpan Subtract(DateTime date)
+    {
+      return _date.Subtract(date);
     }
 
     #endregion

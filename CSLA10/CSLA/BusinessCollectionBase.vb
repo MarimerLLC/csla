@@ -476,12 +476,18 @@ Public MustInherit Class BusinessCollectionBase
   ''' </summary>
   ''' <returns>A new object containing the exact data of the original object.</returns>
   Public Function Clone() As Object Implements ICloneable.Clone
+
     Dim buffer As New MemoryStream()
     Dim formatter As New BinaryFormatter()
 
+    Serialization.SerializationNotification.OnSerializing(Me)
     formatter.Serialize(buffer, Me)
+    Serialization.SerializationNotification.OnSerialized(Me)
     buffer.Position = 0
-    Return formatter.Deserialize(buffer)
+    Dim temp As Object = formatter.Deserialize(buffer)
+    Serialization.SerializationNotification.OnDeserialized(temp)
+    Return temp
+
   End Function
 
 #End Region
@@ -620,6 +626,9 @@ Public MustInherit Class BusinessCollectionBase
     For Each child In list
       child.Deserialized()
     Next
+    For Each child In deletedList
+      child.Deserialized()
+    Next
   End Sub
 
   ''' <summary>
@@ -633,6 +642,9 @@ Public MustInherit Class BusinessCollectionBase
     For Each child In list
       child.Serialized()
     Next
+    For Each child In deletedList
+      child.Serialized()
+    Next
   End Sub
 
   ''' <summary>
@@ -643,6 +655,9 @@ Public MustInherit Class BusinessCollectionBase
 
     Dim child As Serialization.ISerializationNotification
     For Each child In list
+      child.Serializing()
+    Next
+    For Each child In deletedList
       child.Serializing()
     Next
   End Sub

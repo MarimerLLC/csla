@@ -24,26 +24,26 @@ Public Class DataPortal
   ''' <returns>A new object, populated with default values.</returns>
   Public Shared Function Create(ByVal Criteria As Object) As Object
 
-    Dim obj As Object
+    Dim result As Server.DataPortalResult
+
     Dim method As MethodInfo = GetMethod(GetObjectType(Criteria), "DataPortal_Create")
 
     Dim forceLocal As Boolean = RunLocal(method)
+    Dim isRemotePortal As Boolean = mPortalRemote AndAlso Not forceLocal
+    Dim dpContext As New Server.DataPortalContext(GetPrincipal, isRemotePortal)
 
     If IsTransactionalMethod(method) Then
-      obj = ServicedPortal(forceLocal).Create(Criteria, _
-        New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
+      result = CType(ServicedPortal(forceLocal).Create(Criteria, dpContext), Server.DataPortalResult)
 
     Else
-      obj = Portal(forceLocal).Create(Criteria, _
-        New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
+      result = CType(Portal(forceLocal).Create(Criteria, dpContext), Server.DataPortalResult)
     End If
 
-
-    If mPortalRemote AndAlso Not forceLocal Then
-      RestoreContext(obj)
-      Serialization.SerializationNotification.OnDeserialized(obj)
+    If isRemotePortal Then
+      RestoreContext(result)
+      Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
-    Return CType(obj, Server.DataPortalResult).ReturnObject
+    Return result.ReturnObject
 
   End Function
 
@@ -55,26 +55,26 @@ Public Class DataPortal
   ''' <returns>An object populated with values from the database.</returns>
   Public Shared Function Fetch(ByVal Criteria As Object) As Object
 
-    Dim obj As Object
+    Dim result As Server.DataPortalResult
 
     Dim method As MethodInfo = GetMethod(GetObjectType(Criteria), "DataPortal_Fetch")
 
     Dim forceLocal As Boolean = RunLocal(method)
+    Dim isRemotePortal As Boolean = mPortalRemote AndAlso Not forceLocal
+    Dim dpContext As New Server.DataPortalContext(GetPrincipal, isRemotePortal)
 
     If IsTransactionalMethod(method) Then
-      obj = ServicedPortal(forceLocal).Fetch(Criteria, _
-        New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
+      result = CType(ServicedPortal(forceLocal).Fetch(Criteria, dpContext), Server.DataPortalResult)
 
     Else
-      obj = Portal(forceLocal).Fetch(Criteria, _
-        New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
+      result = CType(Portal(forceLocal).Fetch(Criteria, dpContext), Server.DataPortalResult)
     End If
 
-    If mPortalRemote AndAlso Not forceLocal Then
-      RestoreContext(obj)
-      Serialization.SerializationNotification.OnDeserialized(obj)
+    If isRemotePortal Then
+      RestoreContext(result)
+      Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
-    Return CType(obj, Server.DataPortalResult).ReturnObject
+    Return result.ReturnObject
 
   End Function
 
@@ -92,31 +92,31 @@ Public Class DataPortal
   ''' <returns>A reference to the updated business object.</returns>
   Public Shared Function Update(ByVal obj As Object) As Object
 
-    Dim updated As Object
+    Dim result As Server.DataPortalResult
 
     Dim method As MethodInfo = GetMethod(obj.GetType, "DataPortal_Update")
 
     Dim forceLocal As Boolean = RunLocal(method)
+    Dim isRemotePortal As Boolean = mPortalRemote AndAlso Not forceLocal
+    Dim dpContext As New Server.DataPortalContext(GetPrincipal, isRemotePortal)
 
-    If mPortalRemote AndAlso Not forceLocal Then
+    If isRemotePortal Then
       Serialization.SerializationNotification.OnSerializing(obj)
     End If
 
     If IsTransactionalMethod(method) Then
-      updated = ServicedPortal(forceLocal).Update(obj, _
-        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
+      result = CType(ServicedPortal(forceLocal).Update(obj, dpContext), Server.DataPortalResult)
 
     Else
-      updated = Portal(forceLocal).Update(obj, _
-        New Server.DataPortalContext(GetPrincipal, mPortalRemote))
+      result = CType(Portal(forceLocal).Update(obj, dpContext), Server.DataPortalResult)
     End If
 
-    If mPortalRemote AndAlso Not forceLocal Then
-      RestoreContext(updated)
+    If isRemotePortal Then
+      RestoreContext(result)
       Serialization.SerializationNotification.OnSerialized(obj)
-      Serialization.SerializationNotification.OnDeserialized(updated)
+      Serialization.SerializationNotification.OnDeserialized(result.ReturnObject)
     End If
-    Return CType(updated, Server.DataPortalResult).ReturnObject
+    Return result.ReturnObject
 
   End Function
 
@@ -127,23 +127,23 @@ Public Class DataPortal
   ''' <param name="Criteria">Object-specific criteria.</param>
   Public Shared Sub Delete(ByVal Criteria As Object)
 
-    Dim obj As Object
+    Dim result As Server.DataPortalResult
 
     Dim method As MethodInfo = GetMethod(GetObjectType(Criteria), "DataPortal_Delete")
 
     Dim forceLocal As Boolean = RunLocal(method)
+    Dim isRemotePortal As Boolean = mPortalRemote AndAlso Not forceLocal
+    Dim dpContext As New Server.DataPortalContext(GetPrincipal, isRemotePortal)
 
     If IsTransactionalMethod(method) Then
-      obj = ServicedPortal(forceLocal).Delete(Criteria, _
-        New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
+      result = CType(ServicedPortal(forceLocal).Delete(Criteria, dpContext), Server.DataPortalResult)
 
     Else
-      obj = Portal(forceLocal).Delete(Criteria, _
-        New Server.DataPortalContext(GetPrincipal, mPortalRemote AndAlso Not forceLocal))
+      result = CType(Portal(forceLocal).Delete(Criteria, dpContext), Server.DataPortalResult)
     End If
 
-    If mPortalRemote AndAlso Not forceLocal Then
-      RestoreContext(obj)
+    If isRemotePortal Then
+      RestoreContext(result)
     End If
 
   End Sub

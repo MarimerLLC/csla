@@ -37,9 +37,9 @@ Namespace Server
         Serialization.SerializationNotification.OnSerializing(obj)
       End If
 
+      Dim result As New DataPortalResult(obj)
       ClearContext(context)
-
-      Return New DataPortalResult(obj)
+      Return result
 
     End Function
 
@@ -64,9 +64,9 @@ Namespace Server
         Serialization.SerializationNotification.OnSerializing(obj)
       End If
 
+      Dim result As New DataPortalResult(obj)
       ClearContext(context)
-
-      Return New DataPortalResult(obj)
+      Return result
 
     End Function
 
@@ -91,9 +91,9 @@ Namespace Server
         Serialization.SerializationNotification.OnSerializing(obj)
       End If
 
+      Dim result As New DataPortalResult(obj)
       ClearContext(context)
-
-      Return New DataPortalResult(obj)
+      Return result
 
     End Function
 
@@ -112,9 +112,9 @@ Namespace Server
       ' tell the business object to delete itself
       CallMethod(obj, "DataPortal_Delete", Criteria)
 
+      Dim result As New DataPortalResult
       ClearContext(context)
-
-      Return New DataPortalResult
+      Return result
 
     End Function
 

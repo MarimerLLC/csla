@@ -10,11 +10,11 @@ Namespace Core
   ''' </summary>
   ''' <remarks>
   ''' <para>
-  ''' This class inhirits from Core.BindableCollectionBase. If you want 
-  ''' to create a sorted collection that is safe for data binding and
-  ''' also supports sorting, create a subclass of this class. To create
-  ''' a fully functional business collection, create a subclass of
-  ''' BusinessCollectionBase.
+  ''' This class inhirits from Core.BindableCollectionBase and adds
+  ''' sorting capability to collections. BusinessCollectionBase inherits
+  ''' from this class, and business collections should inherit from
+  ''' BusinessCollectionBase. Core.SortedCollectionBase is for internal
+  ''' framework use only.
   ''' </para><para>
   ''' The Core.BindableCollectionBase class implements the IBindableList
   ''' interface. However, it doesn't actually implement sorting. Instead

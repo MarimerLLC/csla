@@ -128,7 +128,13 @@ namespace CSLA.Core
     // calls a virtual method, so subclasses can override those
     // methods and provide the actual implementation of the interface
 
-    object IBindingList.AddNew() { return OnAddNew(); }
+    object IBindingList.AddNew() 
+    { 
+      if(AllowNew)
+        return OnAddNew(); 
+      else
+        throw new InvalidOperationException("Adding items not allowed");
+    }
 
     bool IBindingList.AllowEdit { get { return AllowEdit; } }
     bool IBindingList.AllowNew { get { return AllowNew; } }

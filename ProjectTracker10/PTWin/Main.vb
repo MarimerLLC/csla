@@ -279,8 +279,8 @@ Public Class Main
 
   Private Sub DoLogout()
 
-    ' drop any reference to a Principal
-    Thread.CurrentPrincipal = Nothing
+    ' reset to an unauthorized principal
+    Thread.CurrentPrincipal = New GenericPrincipal(New GenericIdentity(""), New Object())
     pnlUser.Text = ""
     mnuAction.Enabled = False
     mnuReport.Enabled = False

@@ -113,4 +113,38 @@ Public Class Root
     Session.Add("Serializing", "root Serializing")
   End Sub
 
+#Region " System.Object Overrides "
+
+  Public Overrides Function ToString() As String
+    Return mData.ToString
+  End Function
+
+  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
+    If TypeOf objA Is Root AndAlso TypeOf objB Is Root Then
+      Return DirectCast(objA, Root).Equals(DirectCast(objB, Root))
+
+    Else
+      Return False
+    End If
+  End Function
+
+  Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
+    If TypeOf obj Is Root Then
+      Return Equals(DirectCast(obj, Root))
+
+    Else
+      Return False
+    End If
+  End Function
+
+  Public Overloads Function Equals(ByVal obj As Root) As Boolean
+    Return mData.Equals(obj.Data)
+  End Function
+
+  Public Overrides Function GetHashCode() As Integer
+    Return mData.GetHashCode
+  End Function
+
+#End Region
+
 End Class

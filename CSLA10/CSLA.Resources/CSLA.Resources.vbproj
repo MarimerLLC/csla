@@ -86,6 +86,14 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Strings.pt.resx"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Strings.pt-br.resx"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Strings.resx"
                     BuildAction = "EmbeddedResource"
                 />

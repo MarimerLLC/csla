@@ -108,13 +108,16 @@ Public Class ProjectList
 
         Dim dr As New SafeDataReader(.ExecuteReader)
         Try
+          Locked = False
           While dr.Read()
             Dim info As ProjectInfo
             info.ID = dr.GetGuid(0)
             info.Name = dr.GetString(1)
-            innerlist.Add(info)
+            List.Add(info)
           End While
+
         Finally
+          Locked = True
           dr.Close()
         End Try
 

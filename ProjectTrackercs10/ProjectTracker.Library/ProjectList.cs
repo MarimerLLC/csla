@@ -121,16 +121,18 @@ namespace ProjectTracker.Library
         SafeDataReader dr = new SafeDataReader(cm.ExecuteReader());
         try
         {
+          locked = false;
           while(dr.Read())
           {
             ProjectInfo info = new ProjectInfo();
             info.ID = dr.GetGuid(0);
             info.Name = dr.GetString(1);
-            base.InnerList.Add(info);
+            List.Add(info);
           }
         }
         finally
         {
+          locked = true;
           dr.Close();
         }
       }

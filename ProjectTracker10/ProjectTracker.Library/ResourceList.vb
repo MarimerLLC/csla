@@ -104,14 +104,16 @@ Public Class ResourceList
 
         Dim dr As New SafeDataReader(.ExecuteReader)
         Try
+          Locked = False
           While dr.Read()
             Dim info As ResourceInfo
             info.ID = dr.GetString(0)
             info.Name = dr.GetString(1) & ", " & dr.GetString(2)
-            innerlist.Add(info)
+            List.Add(info)
           End While
 
         Finally
+          Locked = True
           dr.Close()
         End Try
 

@@ -125,6 +125,7 @@ namespace ProjectTracker.Library
         SafeDataReader dr = new SafeDataReader(cm.ExecuteReader());
         try
         {
+          locked = false;
           while(dr.Read())
           {
             ResourceInfo info = new ResourceInfo();
@@ -135,6 +136,7 @@ namespace ProjectTracker.Library
         }
         finally
         {
+          locked = true;
           dr.Close();
         }
       }

@@ -98,13 +98,6 @@ Public NotInheritable Class SmartDate
     End Set
   End Property
 
-  ''' <summary>
-  ''' Returns a text representation of the date value.
-  ''' </summary>
-  Public Overrides Function ToString() As String
-    Return Me.Text
-  End Function
-
 #End Region
 
 #Region " Date Support "
@@ -120,6 +113,71 @@ Public NotInheritable Class SmartDate
       mDate = Value
     End Set
   End Property
+
+#End Region
+
+#Region " System.Object overrides "
+
+  ''' <summary>
+  ''' Returns a text representation of the date value.
+  ''' </summary>
+  Public Overrides Function ToString() As String
+    Return Me.Text
+  End Function
+
+  ''' <summary>
+  ''' Returns True if the objects are equal.
+  ''' </summary>
+  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
+    If TypeOf objA Is SmartDate AndAlso TypeOf objB Is SmartDate Then
+      Return DirectCast(objA, SmartDate).Equals(DirectCast(objB, SmartDate))
+    Else
+      Return False
+    End If
+  End Function
+
+  ''' <summary>
+  ''' Returns True if the object is equal to this SmartDate.
+  ''' </summary>
+  Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
+    If TypeOf obj Is SmartDate Then
+      Return Me.Equals(DirectCast(obj, SmartDate))
+    ElseIf TypeOf obj Is Date Then
+      Return Me.Equals(DirectCast(obj, Date))
+    ElseIf TypeOf obj Is String Then
+      Return Me.Equals(CStr(obj))
+    Else
+      Return False
+    End If
+  End Function
+
+  ''' <summary>
+  ''' Returns True if the SmartDate is equal to this SmartDate.
+  ''' </summary>
+  Public Overloads Function Equals(ByVal obj As SmartDate) As Boolean
+    Return Me.CompareTo(obj) = 0
+  End Function
+
+  ''' <summary>
+  ''' Returns True if the date is equal to this SmartDate.
+  ''' </summary>
+  Public Overloads Function Equals(ByVal obj As Date) As Boolean
+    Return Me.CompareTo(obj) = 0
+  End Function
+
+  ''' <summary>
+  ''' Returns True if the text (as a date) is equal to this SmartDate.
+  ''' </summary>
+  Public Overloads Function Equals(ByVal obj As String) As Boolean
+    Return Me.CompareTo(obj) = 0
+  End Function
+
+  ''' <summary>
+  ''' Returns a hash code for this object.
+  ''' </summary>
+  Public Overrides Function GetHashCode() As Integer
+    Return mDate.GetHashCode
+  End Function
 
 #End Region
 
@@ -281,6 +339,30 @@ Public NotInheritable Class SmartDate
     End If
 
   End Function
+
+  ''' <summary>
+  ''' Compares a SmartDate to a text date value.
+  ''' </summary>
+  ''' <param name="Value">The date to which we are being compared.</param>
+  ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
+  Public Function CompareTo(ByVal Value As String) As Integer
+    If Not IsDate(Value) Then
+      Throw New ArgumentException("Value must be a valid date")
+
+    Else
+      Return mDate.CompareTo(CDate(Value))
+    End If
+  End Function
+
+  ''' <summary>
+  ''' Compares a SmartDate to a date value.
+  ''' </summary>
+  ''' <param name="Value">The date to which we are being compared.</param>
+  ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
+  Public Function CompareTo(ByVal Value As Date) As Integer
+    Return mDate.CompareTo(Value)
+  End Function
+
 
   ''' <summary>
   ''' Adds a TimeSpan onto the object.

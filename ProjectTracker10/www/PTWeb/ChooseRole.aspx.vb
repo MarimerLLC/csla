@@ -49,7 +49,7 @@ Public Class ChooseRole
 
         ' TODO: this line only works in 1.1, so is replaced with next line for 1.0
         'lstRoles.SelectedValue = obj.Role
-        lstRoles.SelectedItem.Value = obj.Role
+        SelectItem(lstRoles, obj.Role)
 
       Else
         ' we are dealing with a ResourceAssignment
@@ -67,7 +67,7 @@ Public Class ChooseRole
 
         ' TODO: this line only works in 1.1, so is replaced with next line for 1.0
         'lstRoles.SelectedValue = obj.Role
-        lstRoles.SelectedItem.Value = obj.Role
+        SelectItem(lstRoles, obj.Role)
 
       End If
     End If
@@ -110,6 +110,22 @@ Public Class ChooseRole
     Dim src As String = Session("Source")
     Session.Remove("Source")
     Response.Redirect(src)
+
+  End Sub
+
+  Private Sub SelectItem(ByVal lst As System.Web.UI.WebControls.ListBox, _
+    ByVal item As String)
+
+    Dim index As Integer = 0
+    Dim entry As ListItem
+
+    For Each entry In lst.Items
+      If entry.Value = item Then
+        lst.SelectedIndex = index
+        Return
+      End If
+      index += 1
+    Next
 
   End Sub
 

@@ -283,7 +283,6 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
-                <Folder RelPath = "bin\" />
             </Include>
         </Files>
         <StartupServices>

@@ -125,7 +125,6 @@ Public Class ResourceEdit
   Private Sub dgProjects_SelectedIndexChanged(ByVal sender As System.Object, _
       ByVal e As System.EventArgs) Handles dgProjects.SelectedIndexChanged
 
-
     ' check security
     If User.IsInRole("Supervisor") OrElse _
        User.IsInRole("ProjectManager") Then

@@ -255,7 +255,8 @@ namespace CSLA
         child.UndoChanges();
         // if item is below its point of addition, remove
         if(child.EditLevelAdded > _editLevel)
-          List.Remove(child);
+          //List.Remove(child);
+          List.RemoveAt(index);
       }
 
       // cancel edit on all deleted items
@@ -266,7 +267,8 @@ namespace CSLA
         if(child.EditLevelAdded > _editLevel)
         {
           // if item is below its point of addition, remove
-          deletedList.Remove(child);
+          //deletedList.Remove(child);
+          deletedList.RemoveAt(index);
         }
         else
         {
@@ -300,7 +302,8 @@ namespace CSLA
         child.AcceptChanges();
         // if item is below its point of addition, remove
         if(child.EditLevelAdded > _editLevel)
-          deletedList.Remove(child);
+          //deletedList.Remove(child);
+          deletedList.RemoveAt(index);
 //        // if item is below its point of addition, lower point of addition
 //        if(child.EditLevelAdded > _editLevel)
 //          child.EditLevelAdded = _editLevel;

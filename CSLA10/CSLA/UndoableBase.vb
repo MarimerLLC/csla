@@ -26,11 +26,6 @@ Namespace Core
     <NotUndoable()> _
     Private mStateStack As New Stack
 
-    ' variables containing type info for comparisons
-    Private Shared UndoableType As Type = GetType(UndoableBase)
-    Private Shared BusinessType As Type = GetType(BusinessBase)
-    Private Shared CollectionType As Type = GetType(BusinessCollectionBase)
-
     ''' <summary>
     ''' Returns the current edit level of the object.
     ''' </summary>
@@ -67,14 +62,14 @@ Namespace Core
               ' the field is undoable, so it needs to be processed
               Dim value As Object = field.GetValue(Me)
 
-              If TypeInheritsFrom(field.FieldType, CollectionType) Then
+              If field.FieldType.IsSubclassOf(GetType(BusinessCollectionBase)) Then
                 ' make sure the variable has a value
                 If Not value Is Nothing Then
                   ' this is a child collection, cascade the call
                   CType(value, BusinessCollectionBase).CopyState()
                 End If
 
-              ElseIf TypeInheritsFrom(field.FieldType, BusinessType) Then
+              ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
                 ' make sure the variable has a value
                 If Not value Is Nothing Then
                   ' this is a child object, cascade the call
@@ -95,7 +90,7 @@ Namespace Core
 
         currentType = currentType.BaseType
 
-      Loop Until currentType Is UndoableType
+      Loop Until currentType Is GetType(UndoableBase)
 
       ' serialize the state and stack it
       Dim buffer As New MemoryStream()
@@ -145,26 +140,26 @@ Namespace Core
                 ' the field is undoable, so restore its value
                 Dim value As Object = field.GetValue(Me)
 
-                If TypeInheritsFrom(field.FieldType, CollectionType) Then
+                If field.FieldType.IsSubclassOf(GetType(BusinessCollectionBase)) Then
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' this is a child collection, cascade the call
                     CType(value, BusinessCollectionBase).UndoChanges()
                   End If
 
-                ElseIf TypeInheritsFrom(field.FieldType, BusinessType) Then
+                ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' this is a child object, cascade the call
                     CType(value, BusinessBase).UndoChanges()
                   End If
 
-                  Else
-                    ' this is a regular field, restore its value
-                    fieldName = field.DeclaringType.Name & "!" & field.Name
-                    field.SetValue(Me, state.Item(fieldName))
+                Else
+                  ' this is a regular field, restore its value
+                  fieldName = field.DeclaringType.Name & "!" & field.Name
+                  field.SetValue(Me, state.Item(fieldName))
 
-                  End If
+                End If
 
               End If
 
@@ -173,7 +168,7 @@ Namespace Core
 
           currentType = currentType.BaseType
 
-        Loop Until currentType Is UndoableType
+        Loop Until currentType Is GetType(UndoableBase)
 
       End If
 
@@ -211,14 +206,14 @@ Namespace Core
                 ' the field is undoable so see if it is a collection
                 Dim value As Object = field.GetValue(Me)
 
-                If TypeInheritsFrom(field.FieldType, CollectionType) Then
+                If field.FieldType.IsSubclassOf(GetType(BusinessCollectionBase)) Then
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' it is a collection so cascade the call
                     CType(value, BusinessCollectionBase).AcceptChanges()
                   End If
 
-                ElseIf TypeInheritsFrom(field.FieldType, BusinessType) Then
+                ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' it is a child object so cascade the call
@@ -233,7 +228,7 @@ Namespace Core
 
           currentType = currentType.BaseType
 
-        Loop Until currentType Is UndoableType
+        Loop Until currentType Is GetType(UndoableBase)
 
       End If
     End Sub
@@ -249,25 +244,6 @@ Namespace Core
       '  Field.GetCustomAttributes(GetType(NotUndoableAttribute), True)
       '' return True if any NotUndoableAttributes exist on this field
       'Return (UBound(attribs) > -1)
-
-    End Function
-
-    Private Function TypeInheritsFrom( _
-      ByVal TypeToCheck As Type, ByVal CheckAgainst As Type) As Boolean
-
-      Dim base As Type = TypeToCheck
-
-      ' scan up through the inheritance hierarchy, checking each
-      ' class to see if it is the one we're looking for
-      While Not base.BaseType Is Nothing
-        ' if we find the target class return True
-        If base Is CheckAgainst Then Return True
-        base = base.BaseType
-      End While
-
-      ' the target class is not in the inheritance hierarchy so
-      ' return False
-      Return False
 
     End Function
 
@@ -305,7 +281,7 @@ Namespace Core
             ' see if this field is marked as not undoable
             If Not NotUndoableField(field) Then
               ' the field is undoable, so it needs to be processed
-              If TypeInheritsFrom(field.FieldType, CollectionType) Then
+              If field.FieldType.IsSubclassOf(GetType(BusinessCollectionBase)) Then
                 ' this is a child collection, cascade the call
                 Debug.Indent()
                 Debug.WriteLine("COLLECTION " & fieldName)
@@ -316,7 +292,7 @@ Namespace Core
                 End If
                 Debug.Unindent()
 
-              ElseIf TypeInheritsFrom(field.FieldType, BusinessType) Then
+              ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
                 ' this is a child object, cascade the call
                 Debug.Indent()
                 Debug.WriteLine("CHILD OBJECT " & fieldName)
@@ -350,7 +326,7 @@ Namespace Core
 
         currentType = currentType.BaseType
 
-      Loop Until currentType Is UndoableType
+      Loop Until currentType Is GetType(UndoableBase)
 
     End Sub
 

@@ -34,7 +34,7 @@ namespace CSLA
     /// </summary>
     protected override void OnInsert(int index, object val)
     {
-      if(locked)
+      if(!ActivelySorting && locked)
         throw new NotSupportedException(
               "Insert is invalid for a read-only collection");
     }
@@ -45,7 +45,7 @@ namespace CSLA
     /// </summary>
     protected override void OnRemove(int index, object val)
     {
-      if(locked)
+      if(!ActivelySorting && locked)
         throw new NotSupportedException(
               "Remove is invalid for a read-only collection");
     }
@@ -56,7 +56,7 @@ namespace CSLA
     /// </summary>
     protected override void OnClear()
     {
-      if(locked)
+      if(!ActivelySorting && locked)
         throw new NotSupportedException(
               "Clear is invalid for a read-only collection");
     }
@@ -67,7 +67,7 @@ namespace CSLA
     /// </summary>
     protected override void OnSet(int index, object oldValue, object newValue)
     {
-      if(locked)
+      if(!ActivelySorting && locked)
         throw new NotSupportedException(
               "Items can not be changed in a read-only collection");
     }

@@ -56,28 +56,30 @@ Public Class Main
   Friend WithEvents mnuReport As System.Windows.Forms.MenuItem
   Friend WithEvents mnuBatch As System.Windows.Forms.MenuItem
   Friend WithEvents mnuProjectUpdate As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuFileLogout As System.Windows.Forms.MenuItem
   <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-    Me.MainMenu1 = New System.Windows.Forms.MainMenu
-    Me.MenuItem1 = New System.Windows.Forms.MenuItem
-    Me.mnuFileLogin = New System.Windows.Forms.MenuItem
-    Me.MenuItem3 = New System.Windows.Forms.MenuItem
-    Me.mnuFileExit = New System.Windows.Forms.MenuItem
-    Me.mnuAction = New System.Windows.Forms.MenuItem
-    Me.MenuItem6 = New System.Windows.Forms.MenuItem
-    Me.mnuProjectNew = New System.Windows.Forms.MenuItem
-    Me.mnuProjectEdit = New System.Windows.Forms.MenuItem
-    Me.mnuProjectRemove = New System.Windows.Forms.MenuItem
-    Me.MenuItem10 = New System.Windows.Forms.MenuItem
-    Me.mnuResourceNew = New System.Windows.Forms.MenuItem
-    Me.mnuResourceEdit = New System.Windows.Forms.MenuItem
-    Me.mnuResourceRemove = New System.Windows.Forms.MenuItem
-    Me.mnuReport = New System.Windows.Forms.MenuItem
-    Me.mnuProjectList = New System.Windows.Forms.MenuItem
-    Me.mnuBatch = New System.Windows.Forms.MenuItem
-    Me.mnuProjectUpdate = New System.Windows.Forms.MenuItem
-    Me.StatusBar1 = New System.Windows.Forms.StatusBar
-    Me.pnlStatus = New System.Windows.Forms.StatusBarPanel
-    Me.pnlUser = New System.Windows.Forms.StatusBarPanel
+    Me.MainMenu1 = New System.Windows.Forms.MainMenu()
+    Me.MenuItem1 = New System.Windows.Forms.MenuItem()
+    Me.mnuFileLogin = New System.Windows.Forms.MenuItem()
+    Me.MenuItem3 = New System.Windows.Forms.MenuItem()
+    Me.mnuFileExit = New System.Windows.Forms.MenuItem()
+    Me.mnuAction = New System.Windows.Forms.MenuItem()
+    Me.MenuItem6 = New System.Windows.Forms.MenuItem()
+    Me.mnuProjectNew = New System.Windows.Forms.MenuItem()
+    Me.mnuProjectEdit = New System.Windows.Forms.MenuItem()
+    Me.mnuProjectRemove = New System.Windows.Forms.MenuItem()
+    Me.MenuItem10 = New System.Windows.Forms.MenuItem()
+    Me.mnuResourceNew = New System.Windows.Forms.MenuItem()
+    Me.mnuResourceEdit = New System.Windows.Forms.MenuItem()
+    Me.mnuResourceRemove = New System.Windows.Forms.MenuItem()
+    Me.mnuReport = New System.Windows.Forms.MenuItem()
+    Me.mnuProjectList = New System.Windows.Forms.MenuItem()
+    Me.mnuBatch = New System.Windows.Forms.MenuItem()
+    Me.mnuProjectUpdate = New System.Windows.Forms.MenuItem()
+    Me.StatusBar1 = New System.Windows.Forms.StatusBar()
+    Me.pnlStatus = New System.Windows.Forms.StatusBarPanel()
+    Me.pnlUser = New System.Windows.Forms.StatusBarPanel()
+    Me.mnuFileLogout = New System.Windows.Forms.MenuItem()
     CType(Me.pnlStatus, System.ComponentModel.ISupportInitialize).BeginInit()
     CType(Me.pnlUser, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.SuspendLayout()
@@ -89,7 +91,7 @@ Public Class Main
     'MenuItem1
     '
     Me.MenuItem1.Index = 0
-    Me.MenuItem1.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFileLogin, Me.MenuItem3, Me.mnuFileExit})
+    Me.MenuItem1.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFileLogin, Me.mnuFileLogout, Me.MenuItem3, Me.mnuFileExit})
     Me.MenuItem1.Text = "&File"
     '
     'mnuFileLogin
@@ -99,12 +101,12 @@ Public Class Main
     '
     'MenuItem3
     '
-    Me.MenuItem3.Index = 1
+    Me.MenuItem3.Index = 2
     Me.MenuItem3.Text = "-"
     '
     'mnuFileExit
     '
-    Me.mnuFileExit.Index = 2
+    Me.mnuFileExit.Index = 3
     Me.mnuFileExit.Text = "E&xit"
     '
     'mnuAction
@@ -182,24 +184,29 @@ Public Class Main
     '
     'StatusBar1
     '
-    Me.StatusBar1.Location = New System.Drawing.Point(0, 384)
+    Me.StatusBar1.Location = New System.Drawing.Point(0, 244)
     Me.StatusBar1.Name = "StatusBar1"
     Me.StatusBar1.Panels.AddRange(New System.Windows.Forms.StatusBarPanel() {Me.pnlStatus, Me.pnlUser})
     Me.StatusBar1.ShowPanels = True
-    Me.StatusBar1.Size = New System.Drawing.Size(720, 22)
+    Me.StatusBar1.Size = New System.Drawing.Size(292, 22)
     Me.StatusBar1.TabIndex = 0
     Me.StatusBar1.Text = "StatusBar1"
     '
     'pnlStatus
     '
     Me.pnlStatus.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring
-    Me.pnlStatus.Width = 604
+    Me.pnlStatus.Width = 176
+    '
+    'mnuFileLogout
+    '
+    Me.mnuFileLogout.Index = 1
+    Me.mnuFileLogout.Text = "Log&out"
     '
     'Main
     '
     Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
-    Me.ClientSize = New System.Drawing.Size(720, 406)
-    Me.Controls.Add(Me.StatusBar1)
+    Me.ClientSize = New System.Drawing.Size(292, 266)
+    Me.Controls.AddRange(New System.Windows.Forms.Control() {Me.StatusBar1})
     Me.IsMdiContainer = True
     Me.Menu = Me.MainMenu1
     Me.Name = "Main"
@@ -250,9 +257,16 @@ Public Class Main
 
   End Sub
 
+  Private Sub mnuFileLogout_Click(ByVal sender As System.Object, _
+      ByVal e As System.EventArgs) Handles mnuFileLogout.Click
+
+    DoLogout()
+
+  End Sub
+
   Private Sub DoLogin()
 
-    Dim dlg As New Login
+    Dim dlg As New Login()
 
     dlg.ShowDialog(Me)
     If dlg.Login Then
@@ -263,7 +277,6 @@ Public Class Main
       Cursor = Cursors.Default
 
       If Thread.CurrentPrincipal.Identity.IsAuthenticated Then
-        pnlUser.Text = Thread.CurrentPrincipal.Identity.Name
         EnableMenus()
 
       Else
@@ -280,11 +293,11 @@ Public Class Main
   Private Sub DoLogout()
 
     ' reset to an unauthorized principal
-    Thread.CurrentPrincipal = New GenericPrincipal(New GenericIdentity(""), New Object())
-    pnlUser.Text = ""
-    mnuAction.Enabled = False
-    mnuReport.Enabled = False
-    mnuBatch.Enabled = False
+    Thread.CurrentPrincipal = New GenericPrincipal(New GenericIdentity(""), New String() {})
+    'mnuAction.Enabled = False
+    'mnuReport.Enabled = False
+    'mnuBatch.Enabled = False
+    EnableMenus()
 
   End Sub
 
@@ -292,9 +305,11 @@ Public Class Main
     Dim user As Security.Principal.IPrincipal
     user = Thread.CurrentPrincipal
 
-    mnuAction.Enabled = True
-    mnuReport.Enabled = True
-    mnuBatch.Enabled = True
+    pnlUser.Text = user.Identity.Name
+
+    mnuAction.Enabled = user.Identity.IsAuthenticated
+    mnuReport.Enabled = user.Identity.IsAuthenticated
+    mnuBatch.Enabled = user.Identity.IsAuthenticated
 
     mnuProjectNew.Enabled = _
       user.IsInRole("ProjectManager")

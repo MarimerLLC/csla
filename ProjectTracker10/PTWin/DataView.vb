@@ -1,3 +1,5 @@
+Option Strict Off
+
 Imports System.ComponentModel
 Imports System.Reflection
 

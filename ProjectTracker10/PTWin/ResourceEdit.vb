@@ -279,7 +279,7 @@ Public Class ResourceEdit
     Try
       Cursor.Current = Cursors.WaitCursor
       mResource.ApplyEdit()
-      mResource = mResource.Save
+      mResource = DirectCast(mResource.Save, Resource)
       Cursor.Current = Cursors.Default
 
     Catch ex As Exception

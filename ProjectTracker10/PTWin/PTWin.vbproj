@@ -19,7 +19,7 @@
                 OutputType = "WinExe"
                 OptionCompare = "Binary"
                 OptionExplicit = "On"
-                OptionStrict = "Off"
+                OptionStrict = "On"
                 RootNamespace = "PTWin"
                 StartupObject = "PTWin.Main"
             >
@@ -108,11 +108,6 @@
                     HintPath = "..\..\..\Program Files\Common Files\Crystal Decisions\1.1\Managed\CrystalDecisions.Windows.Forms.dll"
                 />
                 <Reference
-                    Name = "CSLA.Server.ServicedDataPortal"
-                    AssemblyName = "CSLA.Server.ServicedDataPortal"
-                    HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.ServicedDataPortal.dll"
-                />
-                <Reference
                     Name = "CSLA.BatchQueue"
                     AssemblyName = "CSLA.BatchQueue"
                     HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.BatchQueue.dll"
@@ -131,6 +126,11 @@
                     Name = "CSLA.Server.DataPortal"
                     AssemblyName = "CSLA.Server.DataPortal"
                     HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.DataPortal.dll"
+                />
+                <Reference
+                    Name = "CSLA.Server.ServicedDataPortal"
+                    AssemblyName = "CSLA.Server.ServicedDataPortal"
+                    HintPath = "..\..\csla10\CSLA.BatchQueue\bin\CSLA.Server.ServicedDataPortal.dll"
                 />
             </References>
             <Imports>

@@ -292,7 +292,7 @@ Public Class ProjectEdit
     Try
       Cursor.Current = Cursors.WaitCursor
       mProject.ApplyEdit()
-      mProject = mProject.Save
+      mProject = DirectCast(mProject.Save, Project)
       DataBind()
       Cursor.Current = Cursors.Default
 

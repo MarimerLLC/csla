@@ -269,7 +269,10 @@ Public MustInherit Class BusinessCollectionBase
       Child = CType(list.Item(Index), BusinessBase)
       Child.UndoChanges()
       ' if item is below its point of addition, remove
-      If Child.EditLevelAdded > mEditLevel Then list.Remove(Child)
+      If Child.EditLevelAdded > mEditLevel Then
+        'list.Remove(Child)
+        list.RemoveAt(Index)
+      End If
     Next
 
     ' cancel edit on all deleted items
@@ -278,7 +281,8 @@ Public MustInherit Class BusinessCollectionBase
       Child.UndoChanges()
       If Child.EditLevelAdded > mEditLevel Then
         ' if item is below its point of addition, remove
-        deletedList.Remove(Child)
+        'deletedList.Remove(Child)
+        deletedList.RemoveAt(Index)
       Else
         ' if item is no longer deleted move back to main list
         If Not Child.IsDeleted Then UnDeleteChild(Child)
@@ -309,7 +313,10 @@ Public MustInherit Class BusinessCollectionBase
       '' if item is below its point of addition, lower point of addition
       'If Child.EditLevelAdded > mEditLevel Then Child.EditLevelAdded = mEditLevel
       ' if item is below its point of addition, remove
-      If Child.EditLevelAdded > mEditLevel Then deletedList.Remove(Child)
+      If Child.EditLevelAdded > mEditLevel Then
+        'deletedList.Remove(Child)
+        deletedList.RemoveAt(Index)
+      End If
     Next
   End Sub
 

@@ -46,6 +46,19 @@ Public Class Basics
   End Sub
 
   <Test()> _
+  Public Sub AddRemoveAddChild()
+    Session.Clear()
+    Dim root As root = root.NewRoot
+    root.Children.Add("1")
+    root.BeginEdit()
+    root.Children.Remove(root.Children.Item(0))
+    root.Children.Add("2")
+    root.CancelEdit()
+    Assert.AreEqual(1, root.Children.Count)
+    Assert.AreEqual("1", root.Children(0).Data)
+  End Sub
+
+  <Test()> _
   Public Sub AddGrandChild()
     Session.Clear()
     Dim root As root = root.NewRoot

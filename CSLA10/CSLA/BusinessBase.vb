@@ -23,6 +23,7 @@ Public MustInherit Class BusinessBase
 
   Implements IEditableObject
   Implements ICloneable
+  Implements IDataErrorInfo
 
 #Region " IsNew, IsDeleted, IsDirty "
 
@@ -169,17 +170,96 @@ Public MustInherit Class BusinessBase
 
 #End Region
 
-#Region " Begin/Cancel/ApplyEdit "
+#Region " IEditableObject "
 
   <NotUndoable()> _
+  Private mParent As BusinessCollectionBase
+  <NotUndoable()> _
   Private mBindingEdit As Boolean = False
+  Private mNeverCommitted As Boolean = True
 
-  ' allow data binding to start a nested edit on the object
-  Private Sub BindingBeginEdit() Implements IEditableObject.BeginEdit
+  ''' <summary>
+  ''' Used by <see cref="T:CSLA.BusinessCollectionBase" /> as a
+  ''' child object is created to tell the child object about its
+  ''' parent.
+  ''' </summary>
+  ''' <param name="parent">A reference to the parent collection object.</param>
+  Friend Sub SetParent(ByVal parent As BusinessCollectionBase)
+
+    If Not IsChild Then
+      Throw New Exception("Parent value can only be set for child objects")
+    End If
+    mParent = parent
+
+  End Sub
+
+  ''' <summary>
+  ''' Allow data binding to start a nested edit on the object.
+  ''' </summary>
+  ''' <remarks>
+  ''' Data binding may call this method many times. Only the first
+  ''' call should be honored, so we have extra code to detect this
+  ''' and do nothing for subsquent calls.
+  ''' </remarks>
+  Private Sub IEditableObject_BeginEdit() Implements IEditableObject.BeginEdit
+
+    Debug.WriteLine("beginedit " & Me.ToString)
     If Not mBindingEdit Then
       BeginEdit()
     End If
+
   End Sub
+
+  ''' <summary>
+  ''' Allow data binding to cancel the current edit.
+  ''' </summary>
+  ''' <remarks>
+  ''' Data binding may call this method many times. Only the first
+  ''' call to either IEditableObject.CancelEdit or 
+  ''' <see cref="M:CSLA.BusinessBase.IEditableObject_EndEdit">IEditableObject.EndEdit</see>
+  ''' should be honored. We include extra code to detect this and do
+  ''' nothing for subsequent calls.
+  ''' </remarks>
+  Private Sub IEditableObject_CancelEdit() Implements IEditableObject.CancelEdit
+
+    Debug.WriteLine("canceledit " & Me.ToString)
+    If mBindingEdit Then
+      CancelEdit()
+      If IsNew AndAlso mNeverCommitted AndAlso EditLevel <= EditLevelAdded Then
+        ' we're new and no EndEdit or ApplyEdit has ever been
+        ' called on us, and now we've been canceled back to 
+        ' where we were added so we should have ourselves  
+        ' removed from the parent collection
+        If Not mParent Is Nothing Then
+          mParent.RemoveChild(Me)
+        End If
+      End If
+    End If
+
+  End Sub
+
+  ''' <summary>
+  ''' Allow data binding to apply the current edit.
+  ''' </summary>
+  ''' <remarks>
+  ''' Data binding may call this method many times. Only the first
+  ''' call to either IEditableObject.EndEdit or 
+  ''' <see cref="M:CSLA.BusinessBase.IEditableObject_CancelEdit">IEditableObject.CancelEdit</see>
+  ''' should be honored. We include extra code to detect this and do
+  ''' nothing for subsequent calls.
+  ''' </remarks>
+  Private Sub IEditableObject_EndEdit() Implements IEditableObject.EndEdit
+
+    Debug.WriteLine("endedit " & Me.ToString)
+    If mBindingEdit Then
+      ApplyEdit()
+    End If
+
+  End Sub
+
+#End Region
+
+#Region " Begin/Cancel/ApplyEdit "
 
   ''' <summary>
   ''' Starts a nested edit on the object.
@@ -214,7 +294,7 @@ Public MustInherit Class BusinessBase
   ''' to the point of the last <see cref="M:CSLA.BusinessBase.BeginEdit" />
   ''' call.
   ''' </remarks>
-  Public Sub CancelEdit() Implements IEditableObject.CancelEdit
+  Public Sub CancelEdit()
     mBindingEdit = False
     UndoChanges()
   End Sub
@@ -228,8 +308,9 @@ Public MustInherit Class BusinessBase
   ''' to the object's state since the last <see cref="M:CSLA.BusinessBase.BeginEdit" />
   ''' call.
   ''' </remarks>
-  Public Sub ApplyEdit() Implements IEditableObject.EndEdit
+  Public Sub ApplyEdit()
     mBindingEdit = False
+    mNeverCommitted = False
     AcceptChanges()
   End Sub
 
@@ -353,7 +434,7 @@ Public MustInherit Class BusinessBase
 #Region " BrokenRules, IsValid "
 
   ' keep a list of broken rules
-  Private mBrokenRules As New BrokenRules
+  Private mBrokenRules As New BrokenRules()
 
   ''' <summary>
   ''' Returns True if the object is currently valid, False if the
@@ -514,6 +595,31 @@ Public MustInherit Class BusinessBase
   Protected Function DB(ByVal DatabaseName As String) As String
     Return ConfigurationSettings.AppSettings("DB:" & DatabaseName)
   End Function
+
+#End Region
+
+#Region " IDataErrorInfo "
+
+  Private ReadOnly Property [Error]() As String Implements System.ComponentModel.IDataErrorInfo.Error
+    Get
+      If Not IsValid Then
+        If BrokenRules.GetBrokenRules.Count = 1 Then
+          Return BrokenRules.GetBrokenRules.Item(0).Description
+
+        Else
+          Return BrokenRules.ToString
+        End If
+      End If
+    End Get
+  End Property
+
+  Private ReadOnly Property Item(ByVal columnName As String) As String Implements System.ComponentModel.IDataErrorInfo.Item
+    Get
+      If Not IsValid Then
+        Return BrokenRules.GetBrokenRules.RuleForProperty(columnName).Description
+      End If
+    End Get
+  End Property
 
 #End Region
 

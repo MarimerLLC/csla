@@ -171,6 +171,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "SortedCollectionBase.vb"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "TransactionalAttribute.vb"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -13,6 +13,9 @@ namespace CSLA.Core
   [Serializable]
   public abstract class BindableCollectionBase : CollectionBase, IBindingList 
   {
+
+		#region Protected control variables
+
 		/// <summary>
 		/// Set this to True to allow data binding to add new
 		/// child objects to the collection.
@@ -32,64 +35,208 @@ namespace CSLA.Core
 		/// remove child objects from the collection.
 		/// </summary>
     protected bool AllowRemove = false;
+		/// <summary>
+		/// Set this to True to allow this collection to be sorted.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// There is an overhead cost to enabling sorting. Specifically,
+		/// the collection must contain an internal collection containing
+		/// the original order of the items in the collection, so the order
+		/// can be reset if the sort is removed.
+		/// </para><para>
+		/// This overhead is only incurred if AllowSort is set to True, and is
+		/// only a major concern if you are using a remote DataPortal. The concern
+		/// there is that this extra collection must also be serialized, thus
+		/// increasing the overall amount of data sent across the wire.
+		/// </para>
+		/// </remarks>
+		protected bool AllowSort = false;
+		/// <summary>
+		/// Set this to True to allow this collection to be
+		/// searched.
+		/// </summary>
+		protected bool AllowFind = false;
+
+		#endregion
+
+		#region ListChanged event
 
 		/// <summary>
 		/// Declares a serialization-safe ListChanged event.
 		/// </summary>
-    [field: NonSerialized]
-    public event System.ComponentModel.ListChangedEventHandler ListChanged;
+		[field: NonSerialized]
+		public event System.ComponentModel.ListChangedEventHandler ListChanged;
     
 		/// <summary>
 		/// Call this method to raise the ListChanged event.
 		/// </summary>
-    virtual protected void OnListChanged(System.ComponentModel.ListChangedEventArgs e)
-    {
-      if (ListChanged != null)
-        ListChanged(this, e);
-    }
+		virtual protected void OnListChanged(System.ComponentModel.ListChangedEventArgs e)
+		{
+			if (ListChanged != null)
+				ListChanged(this, e);
+		}
 
-    void IBindingList.AddIndex(System.ComponentModel.PropertyDescriptor property)     {    }
-    object IBindingList.AddNew() { return OnAddNew(); }
-    void IBindingList.ApplySort(System.ComponentModel.PropertyDescriptor property, System.ComponentModel.ListSortDirection direction) {}
-    int IBindingList.Find(System.ComponentModel.PropertyDescriptor property, object key) { return 0 ;}
-    void IBindingList.RemoveIndex(System.ComponentModel.PropertyDescriptor property) {}
-    void IBindingList.RemoveSort() {}
-    bool IBindingList.AllowEdit { get { return AllowEdit; } }
-    bool IBindingList.AllowNew { get { return AllowNew; } }
-    bool IBindingList.AllowRemove { get { return AllowRemove; } }
-    bool IBindingList.IsSorted { get { return false; } }
-    System.ComponentModel.ListSortDirection IBindingList.SortDirection { get { return System.ComponentModel.ListSortDirection.Ascending; } }
-    System.ComponentModel.PropertyDescriptor IBindingList.SortProperty { get { return null; } }
-    bool IBindingList.SupportsChangeNotification { get { return true; } }
-    bool IBindingList.SupportsSearching { get { return false; } }
-    bool IBindingList.SupportsSorting { get { return false; } }
+		#endregion
+
+		#region Collection events
+
+		// *******************************************************************
+		/// <summary>
+		/// Ensures that the OnListChanged event is raised when a
+		/// new child is inserted.
+		/// </summary>
+		override protected void OnInsertComplete(int index, object value)
+		{
+			OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, index));
+		}
+
+		/// <summary>
+		/// Ensures that the OnListChanged event is raised when the
+		/// list is cleared.
+		/// </summary>
+		override protected void OnClearComplete()
+		{
+			OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
+		}
+
+		/// <summary>
+		/// Ensures that the OnListChanged event is raised when an
+		/// item is removed.
+		/// </summary>
+		override protected void OnRemoveComplete(int index, object value)
+		{
+			OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
+		}
+
+		/// <summary>
+		/// Ensures that the OnListChanged event is raised when an
+		/// item is changed.
+		/// </summary>
+		override protected void OnSetComplete(int index, object oldValue, object newValue)
+		{
+			OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+		}
+
+		#endregion
+
+		#region IBindingList interface
+
+		// *******************************************************************
+		// This is most of the IBindingList interface.
+		// Notice that each of these implementations merely
+		// calls a virtual method, so subclasses can override those
+		// methods and provide the actual implementation of the interface
+
+		object IBindingList.AddNew() { return OnAddNew(); }
+
+		bool IBindingList.AllowEdit { get { return AllowEdit; } }
+		bool IBindingList.AllowNew { get { return AllowNew; } }
+		bool IBindingList.AllowRemove { get { return AllowRemove; } }
+		bool IBindingList.SupportsSearching { get { return AllowFind; } }
+		bool IBindingList.SupportsSorting { get { return AllowSort; } }
+
+		bool IBindingList.SupportsChangeNotification { get { return true; } }
+
+		int IBindingList.Find(System.ComponentModel.PropertyDescriptor property, object key) 
+		{ 
+			return IBindingList_Find(property, key);
+		}
+
+		void IBindingList.AddIndex(System.ComponentModel.PropertyDescriptor property) {}
+		void IBindingList.RemoveIndex(System.ComponentModel.PropertyDescriptor property) {}
+
+		void IBindingList.ApplySort(System.ComponentModel.PropertyDescriptor property, System.ComponentModel.ListSortDirection direction) 
+		{
+			IBindingList_ApplySort(property, direction);
+		}
+		void IBindingList.RemoveSort() 
+		{
+			IBindingList_RemoveSort();
+		}
+		bool IBindingList.IsSorted { get { return IBindingList_IsSorted; } }
+		System.ComponentModel.ListSortDirection IBindingList.SortDirection { get { return IBindingList_SortDirection; } }
+		System.ComponentModel.PropertyDescriptor IBindingList.SortProperty { get { return IBindingList_SortProperty; } }
+
+		#endregion
+
+		#region OnAddNew
+
+		// *******************************************************************
+		// The following methods allow a subclass to actually provide
+		// the implementation of adding a new child object
 
 		/// <summary>
 		/// Override this method to allow data binding to automatically
 		/// add new child objects to a collection.
 		/// </summary>
 		/// <returns></returns>
-    virtual protected object OnAddNew() { return null; }
+		virtual protected object OnAddNew() { return null; }
 
-		override protected void OnInsertComplete(int index, object value)
+		#endregion
+
+		#region Search/Find
+
+		// *******************************************************************
+		// The following methods allow a subclass to actually provide
+		// the implementation of IBindingList searching
+
+		/// <summary>
+		/// Override this method to implement search/find functionality
+		/// for the collection.
+		/// </summary>
+		/// <param name="property">The property to search.</param>
+		/// <param name="key">The value to searched for.</param>
+		/// <returns></returns>
+		protected virtual int IBindingList_Find(PropertyDescriptor property, object key) 
 		{
-			OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, index));
+			return -1;
 		}
 
-		override protected void OnClearComplete()
-		{
-			OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
-		}
+		#endregion
 
-		override protected void OnRemoveComplete(int index, object value)
-		{
-			OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
-		}
+		#region Sorting
 
-		override protected void OnSetComplete(int index, object oldValue, object newValue)
-		{
-			OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
-		}
+		// *******************************************************************
+		// The following methods allow a subclass to actually provide
+		// the implementation of IBindingList sorting
+
+		/// <summary>
+		/// Override this method to indicate whether your collection
+		/// is currently sorted. This returns False by default.
+		/// </summary>
+		protected virtual bool IBindingList_IsSorted 
+		{	get{		return false;}}
+
+		/// <summary>
+		/// Override this method to return the property by which
+		/// the collection is sorted (if you implement sorting).
+		/// </summary>
+		protected virtual System.ComponentModel.PropertyDescriptor IBindingList_SortProperty 
+		{	get{		return null;}}
+
+		/// <summary>
+		/// Override this method to return the current sort direction
+		/// (if you implement sorting).
+		/// </summary>
+		protected virtual ListSortDirection IBindingList_SortDirection 
+		{	get{		return ListSortDirection.Ascending;}}
+
+		/// <summary>
+		/// Override this method to provide sorting functionality
+		/// (if you implement sorting).
+		/// </summary>
+		/// <param name="property">The property on which to sort.</param>
+		/// <param name="direction">The sort direction.</param>
+		protected virtual void IBindingList_ApplySort(PropertyDescriptor property, ListSortDirection direction) {}
+
+		/// <summary>
+		/// Override this method to remove any existing sort
+		/// (if you implement sorting).
+		/// </summary>
+		protected virtual void IBindingList_RemoveSort() {}
+
+		#endregion
 
   }
 }

@@ -13,10 +13,17 @@ Public Class BrokenRules
   Public Structure Rule
     Private mRule As String
     Private mDescription As String
+    Private mProperty As String
 
     Friend Sub New(ByVal Rule As String, ByVal Description As String)
       mRule = Rule
       mDescription = Description
+    End Sub
+
+    Friend Sub New(ByVal Rule As String, ByVal Description As String, ByVal [Property] As String)
+      mRule = Rule
+      mDescription = Description
+      mProperty = [Property]
     End Sub
 
     ''' <summary>
@@ -60,6 +67,27 @@ Public Class BrokenRules
         ' changed dynamically so we ignore any attempt to set it
       End Set
     End Property
+
+    ''' <summary>
+    ''' Provides access to the property affected by the broken rule.
+    ''' </summary>
+    ''' <remarks>
+    ''' This value is actually readonly, not readwrite. Any new
+    ''' value set into this property is ignored. The property is only
+    ''' readwrite because that is required to support data binding
+    ''' within Web Forms.
+    ''' </remarks>
+    ''' <value>The property affected by the rule.</value>
+    Public Property [Property]() As String
+      Get
+        Return mProperty
+      End Get
+      Set(ByVal Value As String)
+        ' the property must be read-write for Web Forms data binding
+        ' to work, but we really don't want to allow the value to be
+        ' changed dynamically so we ignore any attempt to set it
+      End Set
+    End Property
   End Structure
 
 #End Region
@@ -93,6 +121,39 @@ Public Class BrokenRules
       End Get
     End Property
 
+    ''' <summary>
+    ''' Returns the first <see cref="T:CSLA.BrokenRules.Rule" /> object
+    ''' corresponding to the specified property.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' When a rule is marked as broken, the business developer can provide
+    ''' an optional Property parameter. This parameter is the name of the
+    ''' Property on the object that is most affected by the rule. Data binding
+    ''' may later use the IDataErrorInfo interface to query the object for
+    ''' details about errors corresponding to specific properties, and this
+    ''' value will be returned as a result of that query.
+    ''' </para><para>
+    ''' Code in a business object or UI can also use this value to retrieve
+    ''' the first broken rule in <see cref="T:CSLA.BrokenRules" /> that corresponds
+    ''' to a specfic Property on the object.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="Property">The name of the property affected by the rule.</param>
+    ''' <returns></returns>
+    Public ReadOnly Property RuleForProperty(ByVal [Property] As String) As Rule
+      Get
+        Dim item As Rule
+
+        For Each item In list
+          If item.Property = [Property] Then
+            Return item
+          End If
+        Next
+        Return New Rule()
+      End Get
+    End Property
+
     Friend Sub New()
       AllowEdit = False
       AllowRemove = False
@@ -103,6 +164,13 @@ Public Class BrokenRules
       Remove(Rule)
       mLegal = True
       list.Add(New Rule(Rule, Description))
+      mLegal = False
+    End Sub
+
+    Friend Sub Add(ByVal Rule As String, ByVal Description As String, ByVal [Property] As String)
+      Remove(Rule)
+      mLegal = True
+      list.Add(New Rule(Rule, Description, [Property]))
       mLegal = False
     End Sub
 
@@ -184,6 +252,28 @@ Public Class BrokenRules
   End Sub
 
   ''' <summary>
+  ''' This method is called by business logic within a business class to
+  ''' indicate whether a business rule is broken.
+  ''' </summary>
+  ''' <remarks>
+  ''' Rules are identified by their names. The description field is merely a 
+  ''' comment that is used for display to the end user. When a rule is marked as
+  ''' broken, it is recorded under the rule name value. To mark the rule as not
+  ''' broken, the same rule name must be used.
+  ''' </remarks>
+  ''' <param name="Rule">The name of the business rule.</param>
+  ''' <param name="Description">The description of the business rule.</param>
+  ''' <param name="Property">The property affected by the business rule.</param>
+  ''' <param name="IsBroken">True if the value is broken, False if it is not broken.</param>
+  Public Sub Assert(ByVal Rule As String, ByVal Description As String, ByVal [Property] As String, ByVal IsBroken As Boolean)
+    If IsBroken Then
+      mRules.Add(Rule, Description, [Property])
+    Else
+      mRules.Remove(Rule)
+    End If
+  End Sub
+
+  ''' <summary>
   ''' Returns a value indicating whether there are any broken rules
   ''' at this time. If there are broken rules, the business object
   ''' is assumed to be invalid and False is returned. If there are no
@@ -230,10 +320,15 @@ Public Class BrokenRules
   Public Overrides Function ToString() As String
     Dim obj As New System.Text.StringBuilder()
     Dim item As Rule
+    Dim first As Boolean = True
 
     For Each item In mRules
+      If first Then
+        first = False
+      Else
+        obj.Append(vbCrLf)
+      End If
       obj.Append(item.Description)
-      obj.Append(vbCrLf)
     Next
     Return obj.ToString
   End Function

@@ -20,7 +20,7 @@ Imports System.Configuration
 ''' </remarks>
 <Serializable()> _
 Public MustInherit Class BusinessCollectionBase
-  Inherits CSLA.Core.BindableCollectionBase
+  Inherits CSLA.Core.SortableCollectionBase
 
   Implements ICloneable
 
@@ -361,13 +361,26 @@ Public MustInherit Class BusinessCollectionBase
 #Region " Insert, Remove, Clear "
 
   ''' <summary>
+  ''' This method is called by a child object when it
+  ''' wants to be removed from the collection.
+  ''' </summary>
+  ''' <param name="child">The child object to remove.</param>
+  Friend Sub RemoveChild(ByVal child As BusinessBase)
+    list.Remove(child)
+  End Sub
+
+  ''' <summary>
   ''' Sets the edit level of the child object as it is added.
   ''' </summary>
   Protected Overrides Sub OnInsert(ByVal index As Integer, ByVal value As Object)
-    ' when an object is inserted we assume it is
-    ' a new object and so the edit level when it was
-    ' added must be set
-    CType(value, BusinessBase).EditLevelAdded = mEditLevel
+    If Not ActivelySorting Then
+      ' when an object is inserted we assume it is
+      ' a new object and so the edit level when it was
+      ' added must be set
+      CType(value, BusinessBase).EditLevelAdded = mEditLevel
+      CType(value, BusinessBase).SetParent(Me)
+      MyBase.OnInsert(index, value)
+    End If
   End Sub
 
   ''' <summary>
@@ -375,9 +388,12 @@ Public MustInherit Class BusinessCollectionBase
   ''' the collection of deleted objects.
   ''' </summary>
   Protected Overrides Sub OnRemove(ByVal index As Integer, ByVal value As Object)
-    ' when an object is 'removed' it is really
-    ' being deleted, so do the deletion work
-    DeleteChild(CType(value, BusinessBase))
+    If Not ActivelySorting Then
+      ' when an object is 'removed' it is really
+      ' being deleted, so do the deletion work
+      DeleteChild(CType(value, BusinessBase))
+      MyBase.OnRemove(index, value)
+    End If
   End Sub
 
   ''' <summary>
@@ -385,12 +401,15 @@ Public MustInherit Class BusinessCollectionBase
   ''' to the collection of deleted objects.
   ''' </summary>
   Protected Overrides Sub OnClear()
-    ' when an object is 'removed' it is really
-    ' being deleted, so do the deletion work
-    ' for all the objects in the list
-    While list.Count > 0
-      DeleteChild(CType(list(0), BusinessBase))
-    End While
+    If Not ActivelySorting Then
+      ' when an object is 'removed' it is really
+      ' being deleted, so do the deletion work
+      ' for all the objects in the list
+      While list.Count > 0
+        DeleteChild(CType(list(0), BusinessBase))
+      End While
+      MyBase.OnClear()
+    End If
   End Sub
 
 #End Region

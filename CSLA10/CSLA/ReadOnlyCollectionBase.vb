@@ -8,7 +8,7 @@ Imports System.Configuration
 ''' </summary>
 <Serializable()> _
 Public MustInherit Class ReadOnlyCollectionBase
-  Inherits CSLA.Core.BindableCollectionBase
+  Inherits CSLA.Core.SortableCollectionBase
 
   Implements ICloneable
 
@@ -31,7 +31,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' collection is locked.
   ''' </summary>
   Protected Overrides Sub OnInsert(ByVal index As Integer, ByVal value As Object)
-    If Locked Then
+    If Not ActivelySorting AndAlso Locked Then
       Throw New NotSupportedException("Insert is invalid for a read-only collection")
     End If
   End Sub
@@ -41,7 +41,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' collection is locked.
   ''' </summary>
   Protected Overrides Sub OnRemove(ByVal index As Integer, ByVal value As Object)
-    If Locked Then
+    If Not ActivelySorting AndAlso Locked Then
       Throw New NotSupportedException("Remove is invalid for a read-only collection")
     End If
   End Sub
@@ -51,7 +51,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' collection is locked.
   ''' </summary>
   Protected Overrides Sub OnClear()
-    If Locked Then
+    If Not ActivelySorting AndAlso Locked Then
       Throw New NotSupportedException("Clear is invalid for a read-only collection")
     End If
   End Sub
@@ -61,7 +61,7 @@ Public MustInherit Class ReadOnlyCollectionBase
   ''' collection is locked.
   ''' </summary>
   Protected Overrides Sub OnSet(ByVal index As Integer, ByVal oldValue As Object, ByVal newValue As Object)
-    If Locked Then
+    If Not ActivelySorting AndAlso Locked Then
       Throw New NotSupportedException("Items can not be changed in a read-only collection")
     End If
   End Sub

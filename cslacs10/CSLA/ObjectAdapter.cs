@@ -43,11 +43,8 @@ namespace CSLA.Data
     /// <param name="source">A reference to the object or collection acting as a data source.</param>
     public void Fill(DataSet ds, string tableName, object source)
     {
-      DataTable dt;
-      bool exists;
-
-      dt = ds.Tables[tableName];
-      exists = !(dt == null);
+      DataTable dt = ds.Tables[tableName];
+      bool exists = (dt != null);
 
       if(!exists)
         dt = new DataTable(tableName);
@@ -204,16 +201,14 @@ namespace CSLA.Data
 
       // retrieve a list of all public properties
       PropertyInfo [] props = sourceType.GetProperties();
-      if(props.Length > 0)
-        for(int column = 0; column < props.Length; column++)
-          if(props[column].CanRead)
-            _columns.Add(props[column].Name);
+      for(int column = 0; column < props.Length; column++)
+        if(props[column].CanRead)
+          _columns.Add(props[column].Name);
 
       // retrieve a list of all public fields
       FieldInfo [] fields = sourceType.GetFields();
-      if(fields.Length > 0)
-        for(int column = 0; column < fields.Length; column++)
-          _columns.Add(fields[column].Name);
+      for(int column = 0; column < fields.Length; column++)
+        _columns.Add(fields[column].Name);
     }
 
     #endregion
@@ -233,14 +228,20 @@ namespace CSLA.Data
         if(obj is ValueType && obj.GetType().IsPrimitive)
         {
           // this is a primitive value type
-          return obj.ToString();
+          if(obj == null)
+            return string.Empty();
+          else
+            return obj.ToString();
         }
         else
         {
           if(obj is string)
           {
             // this is a simple string
-            return obj.ToString();
+            if(obj == null)
+              return string.Empty();
+            else
+              return obj.ToString();
           }
           else
           {

@@ -26,7 +26,7 @@ namespace CSLA.BatchQueue.Server
     static MessageQueue _queue;
     static Thread _monitor;
     static System.Timers.Timer _timer;
-    static bool _running;
+    static volatile bool _running;
     static Hashtable _activeEntries = Hashtable.Synchronized(new Hashtable());
 
     static AutoResetEvent _sync = new AutoResetEvent(false);
@@ -267,7 +267,7 @@ namespace CSLA.BatchQueue.Server
 
     internal static void Dequeue(BatchEntryInfo entry)
     {
-      string msgID = string.Empty;
+      string msgID;
 
       string label = entry.ToString();
       MessageEnumerator en = _queue.GetMessageEnumerator();
@@ -282,7 +282,7 @@ namespace CSLA.BatchQueue.Server
         }
       }
 
-      if(msgID.Length > 0)
+      if(msgID != null)
         _queue.ReceiveById(msgID);
     }
 

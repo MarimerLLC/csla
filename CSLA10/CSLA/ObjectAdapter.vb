@@ -144,6 +144,8 @@ Namespace Data
         innerSource = source
       End If
 
+      mColumns.Clear()
+
       If TypeOf innerSource Is DataView Then
         ScanDataView(CType(innerSource, DataView))
 

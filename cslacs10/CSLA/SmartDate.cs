@@ -480,7 +480,10 @@ namespace CSLA
     /// </summary>
     public DateTime Add(TimeSpan span)
     {
-      return _date.Add(span);
+      if (IsEmpty)
+        return _date;
+      else
+        return  _date.Add(span);
     }
 
     /// <summary>
@@ -488,7 +491,10 @@ namespace CSLA
     /// </summary>
     public DateTime Subtract(TimeSpan span)
     {
-      return _date.Subtract(span);
+      if (IsEmpty)
+        return _date;
+      else
+        return  _date.Subtract(span);
     }
 
     /// <summary>
@@ -496,7 +502,10 @@ namespace CSLA
     /// </summary>
     public TimeSpan Subtract(DateTime date)
     {
-      return _date.Subtract(date);
+      if (IsEmpty)
+        return TimeSpan.Zero;
+      else
+        return _date.Subtract(date);
     }
 
     #endregion

@@ -83,7 +83,7 @@ Namespace Server
         properties("port") = CStr(PORT())
         Dim svFormatter As New BinaryServerFormatterSinkProvider()
 
-        ' the next line is for .NET 1.1 only
+        'TODO: the next line is for .NET 1.1 only
         'svFormatter.TypeFilterLevel = Runtime.Serialization.Formatters.TypeFilterLevel.Full
 
         mChannel = New TcpServerChannel(properties, svFormatter)

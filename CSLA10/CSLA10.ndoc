@@ -1,0 +1,116 @@
+<project>
+    <assemblies>
+        <assembly location="C:\Visual Studio Projects\csla10\CSLA.Core.Bindablebase\bin\Debug\CSLA.Core.Bindablebase.dll" documentation="C:\Visual Studio Projects\csla10\CSLA.Core.Bindablebase\CSLA.Core.BindableBase.xml" />
+        <assembly location="C:\Visual Studio Projects\csla10\CSLA\bin\CSLA.dll" documentation="C:\Visual Studio Projects\csla10\CSLA\bin\CSLA.xml" />
+        <assembly location="C:\Visual Studio Projects\csla10\CSLA.Server.DataPortal\bin\CSLA.Server.DataPortal.dll" documentation="C:\Visual Studio Projects\csla10\CSLA.Server.DataPortal\bin\CSLA.Server.DataPortal.xml" />
+        <assembly location="C:\Visual Studio Projects\csla10\CSLA.Server.ServicedDataPortal\bin\CSLA.Server.ServicedDataPortal.dll" documentation="C:\Visual Studio Projects\csla10\CSLA.Server.ServicedDataPortal\bin\CSLA.Server.ServicedDataPortal.xml" />
+    </assemblies>
+    <namespaces>
+        <namespace name="CSLA"></namespace>
+        <namespace name="CSLA.Core"></namespace>
+        <namespace name="CSLA.Data"></namespace>
+        <namespace name="CSLA.Security"></namespace>
+        <namespace name="CSLA.Server"></namespace>
+        <namespace name="CSLA.Server.ServicedDataPortal"></namespace>
+    </namespaces>
+    <documenters>
+        <documenter name="JavaDoc">
+            <property name="OutputDirectory" value=".\docs\JavaDoc\" />
+            <property name="ShowMissingSummaries" value="False" />
+            <property name="ShowMissingRemarks" value="False" />
+            <property name="ShowMissingParams" value="False" />
+            <property name="ShowMissingReturns" value="False" />
+            <property name="ShowMissingValues" value="False" />
+            <property name="DocumentInternals" value="False" />
+            <property name="DocumentProtected" value="True" />
+            <property name="DocumentPrivates" value="False" />
+            <property name="DocumentEmptyNamespaces" value="False" />
+            <property name="IncludeAssemblyVersion" value="False" />
+            <property name="CopyrightText" value="" />
+            <property name="CopyrightHref" value="" />
+            <property name="SkipNamespacesWithoutSummaries" value="False" />
+            <property name="AutoPropertyBackerSummaries" value="False" />
+            <property name="AutoDocumentConstructors" value="True" />
+            <property name="DocumentAttributes" value="False" />
+            <property name="DocumentedAttributes" value="" />
+            <property name="GetExternalSummaries" value="True" />
+        </documenter>
+        <documenter name="Latex">
+            <property name="OutputDirectory" value="Tex" />
+            <property name="TextFileFullName" value="Documentation.tex" />
+            <property name="TexFileBaseName" value="Documentation" />
+            <property name="LatexCompiler" value="latex" />
+            <property name="TexFileFullPath" value="Tex\Documentation.tex" />
+            <property name="ShowMissingSummaries" value="False" />
+            <property name="ShowMissingRemarks" value="False" />
+            <property name="ShowMissingParams" value="False" />
+            <property name="ShowMissingReturns" value="False" />
+            <property name="ShowMissingValues" value="False" />
+            <property name="DocumentInternals" value="False" />
+            <property name="DocumentProtected" value="True" />
+            <property name="DocumentPrivates" value="False" />
+            <property name="DocumentEmptyNamespaces" value="False" />
+            <property name="IncludeAssemblyVersion" value="False" />
+            <property name="CopyrightText" value="" />
+            <property name="CopyrightHref" value="" />
+            <property name="SkipNamespacesWithoutSummaries" value="False" />
+            <property name="AutoPropertyBackerSummaries" value="False" />
+            <property name="AutoDocumentConstructors" value="True" />
+            <property name="DocumentAttributes" value="False" />
+            <property name="DocumentedAttributes" value="" />
+            <property name="GetExternalSummaries" value="True" />
+        </documenter>
+        <documenter name="MSDN">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="HtmlHelpName" value="Documentation" />
+            <property name="IncludeFavorites" value="False" />
+            <property name="Title" value="CSLA .NET" />
+            <property name="SplitTOCs" value="False" />
+            <property name="DefaulTOC" value="" />
+            <property name="IncludeHierarchy" value="True" />
+            <property name="ShowVisualBasic" value="True" />
+            <property name="OmitObjectTags" value="False" />
+            <property name="RootPageContainsNamespaces" value="False" />
+            <property name="SortTOCByNamespace" value="True" />
+            <property name="ShowMissingSummaries" value="False" />
+            <property name="ShowMissingRemarks" value="False" />
+            <property name="ShowMissingParams" value="False" />
+            <property name="ShowMissingReturns" value="False" />
+            <property name="ShowMissingValues" value="False" />
+            <property name="DocumentInternals" value="False" />
+            <property name="DocumentProtected" value="True" />
+            <property name="DocumentPrivates" value="False" />
+            <property name="DocumentEmptyNamespaces" value="False" />
+            <property name="IncludeAssemblyVersion" value="False" />
+            <property name="CopyrightText" value="Copyright Rockford Lhotka 2003" />
+            <property name="CopyrightHref" value="" />
+            <property name="SkipNamespacesWithoutSummaries" value="False" />
+            <property name="AutoPropertyBackerSummaries" value="False" />
+            <property name="AutoDocumentConstructors" value="True" />
+            <property name="DocumentAttributes" value="False" />
+            <property name="DocumentedAttributes" value="" />
+            <property name="GetExternalSummaries" value="True" />
+        </documenter>
+        <documenter name="XML">
+            <property name="OutputFile" value=".\doc\doc.xml" />
+            <property name="ShowMissingSummaries" value="False" />
+            <property name="ShowMissingRemarks" value="False" />
+            <property name="ShowMissingParams" value="False" />
+            <property name="ShowMissingReturns" value="False" />
+            <property name="ShowMissingValues" value="False" />
+            <property name="DocumentInternals" value="False" />
+            <property name="DocumentProtected" value="True" />
+            <property name="DocumentPrivates" value="False" />
+            <property name="DocumentEmptyNamespaces" value="False" />
+            <property name="IncludeAssemblyVersion" value="False" />
+            <property name="CopyrightText" value="" />
+            <property name="CopyrightHref" value="" />
+            <property name="SkipNamespacesWithoutSummaries" value="False" />
+            <property name="AutoPropertyBackerSummaries" value="False" />
+            <property name="AutoDocumentConstructors" value="True" />
+            <property name="DocumentAttributes" value="False" />
+            <property name="DocumentedAttributes" value="" />
+            <property name="GetExternalSummaries" value="True" />
+        </documenter>
+    </documenters>
+</project>

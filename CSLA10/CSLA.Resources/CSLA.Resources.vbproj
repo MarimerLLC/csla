@@ -90,6 +90,10 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Strings.fr.resx"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Strings.nl.resx"
                     BuildAction = "EmbeddedResource"
                 />

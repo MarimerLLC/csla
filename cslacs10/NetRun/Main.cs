@@ -16,17 +16,24 @@ namespace NetRun
     [STAThread]
     static void Main(string[] args)
     {
+      if(args.Length != 1)
+      {
+        MessageBox.Show("URL to application must be provided", 
+          "Error launching application", 
+          MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+      }
+
       try
       {
         // launch the app based on the URL provided by the user
-        RunAppliation(args[0]);
+        RunApplication(args[0]);
       }
       catch(Exception ex)
       {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.AppendFormat("NetRun was unable to launch the application\n");
-        sb.AppendFormat("{0}\n\n", args[0]);
-        sb.Append(ex.ToString());
+        sb.AppendFormat("NetRun was unable to launch the application\n{0}\n\n{1}", 
+          args[0], ex.ToString());
         MessageBox.Show(sb.ToString(), "Error launching application", 
           MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
@@ -34,7 +41,7 @@ namespace NetRun
 
     #region RunApplication
 
-    private static void RunAppliation(string appURL)
+    private static void RunApplication(string appURL)
     {
       // create setup object for the new app domain 
       AppDomainSetup setupDomain = new AppDomainSetup();

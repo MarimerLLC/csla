@@ -457,6 +457,7 @@ Public MustInherit Class BusinessCollectionBase
 
 #Region " IsChild "
 
+  <NotUndoable()> _
   Private mIsChild As Boolean = False
 
   ''' <summary>

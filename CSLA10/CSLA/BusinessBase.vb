@@ -580,11 +580,11 @@ Public MustInherit Class BusinessBase
     End If
 
     If EditLevel > 0 Then
-      Throw New Exception("Object is still being edited and can not be saved")
+      Throw New ApplicationException("Object is still being edited and can not be saved")
     End If
 
     If Not IsValid Then
-      Throw New Exception("Object is not valid and can not be saved")
+      Throw New ValidationException("Object is not valid and can not be saved")
     End If
 
     If IsDirty Then

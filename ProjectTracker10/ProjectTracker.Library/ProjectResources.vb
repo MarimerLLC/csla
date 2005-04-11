@@ -66,20 +66,20 @@ Public Class ProjectResources
 
 #Region " Contains "
 
-  Public Overloads Function Contains( _
-      ByVal Assignment As ProjectResource) As Boolean
+  'Public Overloads Function Contains( _
+  '    ByVal Assignment As ProjectResource) As Boolean
 
-    Dim child As ProjectResource
+  '  Dim child As ProjectResource
 
-    For Each child In list
-      If child.Equals(Assignment) Then
-        Return True
-      End If
-    Next
+  '  For Each child In list
+  '    If child.Equals(Assignment) Then
+  '      Return True
+  '    End If
+  '  Next
 
-    Return False
+  '  Return False
 
-  End Function
+  'End Function
 
   Public Overloads Function ContainsDeleted( _
       ByVal Assignment As ProjectResource) As Boolean

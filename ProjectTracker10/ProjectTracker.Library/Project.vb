@@ -9,7 +9,6 @@ Public Class Project
   Private mStarted As New SmartDate(False)
   Private mEnded As New SmartDate
   Private mDescription As String = ""
-  Private mHours As Integer = 0
 
   Private mResources As ProjectResources = _
     ProjectResources.NewProjectResources()
@@ -119,26 +118,14 @@ Public Class Project
     Return mID.ToString
   End Function
 
-  Public Overloads Shared Function Equals(ByVal objA As Object, ByVal objB As Object) As Boolean
-    If TypeOf objA Is Project AndAlso TypeOf objB Is Project Then
-      Return DirectCast(objA, Project).Equals(DirectCast(objB, Project))
+  Public Overloads Overrides Function Equals( _
+    ByVal obj As Object) As Boolean
+    If obj Is Nothing OrElse Not TypeOf obj Is Project Then
+      Return False
 
     Else
-      Return False
+      Return mID.Equals(DirectCast(obj, Project).ID)
     End If
-  End Function
-
-  Public Overloads Overrides Function Equals(ByVal Project As Object) As Boolean
-    If TypeOf Project Is Project Then
-      Return Equals(DirectCast(Project, Project))
-
-    Else
-      Return False
-    End If
-  End Function
-
-  Public Overloads Function Equals(ByVal Project As Project) As Boolean
-    Return mID.Equals(Project.ID)
   End Function
 
   Public Overrides Function GetHashCode() As Integer

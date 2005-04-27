@@ -152,25 +152,11 @@ namespace ProjectTracker.Library
       return _id.ToString();
     }
 
-    public new static bool Equals(object objA, object objB)
+    public override bool Equals(object obj)
     {
-      if(objA is Project && objB is Project)
-        return ((Project)objA).Equals((Project)objB);
-      else
+      if (obj == null || obj.GetType() != this.GetType())
         return false;
-    }
-
-    public override bool Equals(object project)
-    {
-      if(project is Project)
-        return Equals((Project)project);
-      else
-        return false;
-    }
-
-    public bool Equals(Project project)
-    {
-      return _id.Equals(project.ID);
+      return _id == ((Project)obj).ID;
     }
 
     public override int GetHashCode()
@@ -233,7 +219,7 @@ namespace ProjectTracker.Library
 
     #region Constructors
 
-    public Project()
+    private Project()
     {
       // prevent direct instantiation
     }

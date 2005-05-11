@@ -27,6 +27,14 @@ Public MustInherit Class BusinessBase
   Implements IDataErrorInfo
   Implements Serialization.ISerializationNotification
 
+#Region " Constructors "
+
+  Protected Sub New()
+    AddBusinessRules()
+  End Sub
+
+#End Region
+
 #Region " IsNew, IsDeleted, IsDirty "
 
   ' keep track of whether we are new, deleted or dirty
@@ -204,13 +212,20 @@ Public MustInherit Class BusinessBase
 
 #End Region
 
-#Region " IEditableObject "
+#Region " Parent/Child link "
 
   <NotUndoable(), NonSerialized()> _
   Private mParent As BusinessCollectionBase
-  <NotUndoable()> _
-  Private mBindingEdit As Boolean = False
-  Private mNeverCommitted As Boolean = True
+
+  ''' <summary>
+  ''' Provide access to the parent reference for use
+  ''' in child object code.
+  ''' </summary>
+  Protected ReadOnly Property Parent() As BusinessCollectionBase
+    Get
+      Return mParent
+    End Get
+  End Property
 
   ''' <summary>
   ''' Used by <see cref="T:CSLA.BusinessCollectionBase" /> as a
@@ -226,6 +241,14 @@ Public MustInherit Class BusinessBase
     mParent = parent
 
   End Sub
+
+#End Region
+
+#Region " IEditableObject "
+
+  <NotUndoable()> _
+  Private mBindingEdit As Boolean = False
+  Private mNeverCommitted As Boolean = True
 
   ''' <summary>
   ''' Allow data binding to start a nested edit on the object.
@@ -457,8 +480,8 @@ Public MustInherit Class BusinessBase
   Public Function Clone() As Object _
     Implements ICloneable.Clone
 
-    Dim buffer As New MemoryStream()
-    Dim formatter As New BinaryFormatter()
+    Dim buffer As New MemoryStream
+    Dim formatter As New BinaryFormatter
 
     Serialization.SerializationNotification.OnSerializing(Me)
     formatter.Serialize(buffer, Me)
@@ -475,7 +498,7 @@ Public MustInherit Class BusinessBase
 #Region " BrokenRules, IsValid "
 
   ' keep a list of broken rules
-  Private mBrokenRules As New BrokenRules()
+  Private mBrokenRules As New BrokenRules
 
   ''' <summary>
   ''' Override this method in your business class to

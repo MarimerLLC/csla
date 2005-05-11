@@ -667,9 +667,11 @@ Public MustInherit Class BusinessCollectionBase
     Dim child As Serialization.ISerializationNotification
     For Each child In list
       child.Deserialized()
+      DirectCast(child, BusinessBase).SetParent(Me)
     Next
     For Each child In deletedList
       child.Deserialized()
+      DirectCast(child, BusinessBase).SetParent(Me)
     Next
   End Sub
 

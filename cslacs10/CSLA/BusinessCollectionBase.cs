@@ -653,9 +653,15 @@ namespace CSLA
     protected virtual void Deserialized()
     {
       foreach(Serialization.ISerializationNotification child in List)
+      {
         child.Deserialized();
+        ((BusinessBase)child).SetParent(this);
+      }
       foreach(Serialization.ISerializationNotification child in deletedList)
+      {
         child.Deserialized();
+        ((BusinessBase)child).SetParent(this);
+      }
     }
 
     void Serialization.ISerializationNotification.Serialized()

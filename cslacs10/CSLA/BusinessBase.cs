@@ -26,6 +26,16 @@ namespace CSLA
     IEditableObject, ICloneable,
     IDataErrorInfo, Serialization.ISerializationNotification
   {
+
+    #region Constructors
+
+    protected BusinessBase()
+    {
+      AddBusinessRules();
+    }
+
+    #endregion
+
     #region IsNew, IsDeleted, IsDirty
 
     // keep track of whether we are new, deleted or dirty
@@ -216,10 +226,27 @@ namespace CSLA
 
     #endregion
 
-    #region IEditableObject
+    #region Parent/Child link
 
     [NotUndoable(), NonSerialized()]
     BusinessCollectionBase _parent;
+
+    /// <summary>
+    /// Provide access to the parent reference for use
+    /// in child object code.
+    /// </summary>
+    protected BusinessCollectionBase Parent
+    {
+      get
+      {
+        return _parent;
+      }
+    }
+
+    #endregion
+
+    #region IEditableObject
+
     [NotUndoable()]
     bool _bindingEdit = false;
     bool _neverCommitted = true;

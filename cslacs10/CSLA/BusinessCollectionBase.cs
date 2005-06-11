@@ -387,6 +387,22 @@ namespace CSLA
 
     #endregion
 
+    #region OnIsDirtyChanged Event Handling
+
+    private void OnChildIsDirty(object sender, EventArgs e)
+    {
+      int pos = 0;
+      foreach(BusinessBase item in List)
+      {
+        if (ReferenceEquals(sender,item))
+          break;
+        pos++;
+      }
+      this.OnListChanged(new System.ComponentModel.ListChangedEventArgs(System.ComponentModel.ListChangedType.ItemChanged,pos));
+    }
+
+    #endregion
+
     #region Insert, Remove, Clear
 
     /// <summary>
@@ -411,6 +427,7 @@ namespace CSLA
         // added must be set
         ((BusinessBase)val).EditLevelAdded = _editLevel;
         ((BusinessBase)val).SetParent(this);
+        ((BusinessBase)val).IsDirtyChanged += new EventHandler(OnChildIsDirty);
         base.OnInsert(index, val);
       }
     }
@@ -426,6 +443,7 @@ namespace CSLA
         // when an object is 'removed' it is really
         // being deleted, so do the deletion work
         DeleteChild((BusinessBase)val);
+        ((BusinessBase)val).IsDirtyChanged -= new EventHandler(OnChildIsDirty);
         base.OnRemove(index, val);
       }
     }

@@ -392,13 +392,31 @@ Public MustInherit Class BusinessCollectionBase
 
 #End Region
 
+#Region " OnIsDirtyChanged Event Handling "
+
+  Private Sub OnChildIsDirty(ByVal sender As Object, ByVal e As EventArgs)
+
+    Dim pos As Integer = 0
+    For Each item As BusinessBase In List
+      If ReferenceEquals(sender, item) Then
+        Exit For
+        pos += 1
+      End If
+    Next
+    Me.OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+      System.ComponentModel.ListChangedType.ItemChanged, pos))
+
+  End Sub
+
+#End Region
+
 #Region " Insert, Remove, Clear "
 
-  ''' <summary>
-  ''' This method is called by a child object when it
-  ''' wants to be removed from the collection.
-  ''' </summary>
-  ''' <param name="child">The child object to remove.</param>
+      ''' <summary>
+      ''' This method is called by a child object when it
+      ''' wants to be removed from the collection.
+      ''' </summary>
+      ''' <param name="child">The child object to remove.</param>
   Friend Sub RemoveChild(ByVal child As BusinessBase)
     list.Remove(child)
   End Sub
@@ -413,6 +431,7 @@ Public MustInherit Class BusinessCollectionBase
       ' added must be set
       CType(value, BusinessBase).EditLevelAdded = mEditLevel
       CType(value, BusinessBase).SetParent(Me)
+      AddHandler CType(value, BusinessBase).IsDirtyChanged, AddressOf OnChildIsDirty
       MyBase.OnInsert(index, value)
     End If
   End Sub
@@ -426,6 +445,7 @@ Public MustInherit Class BusinessCollectionBase
       ' when an object is 'removed' it is really
       ' being deleted, so do the deletion work
       DeleteChild(CType(value, BusinessBase))
+      RemoveHandler CType(value, BusinessBase).IsDirtyChanged, AddressOf OnChildIsDirty
       MyBase.OnRemove(index, value)
     End If
   End Sub
@@ -501,8 +521,8 @@ Public MustInherit Class BusinessCollectionBase
   ''' <returns>A new object containing the exact data of the original object.</returns>
   Public Function Clone() As Object Implements ICloneable.Clone
 
-    Dim buffer As New MemoryStream()
-    Dim formatter As New BinaryFormatter()
+    Dim buffer As New MemoryStream
+    Dim formatter As New BinaryFormatter
 
     Serialization.SerializationNotification.OnSerializing(Me)
     formatter.Serialize(buffer, Me)

@@ -106,6 +106,7 @@
                 <File
                     RelPath = "VersionInfo.cs"
                     Link = "..\VersionInfo.cs"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
             </Include>

@@ -76,7 +76,7 @@
                 />
                 <Reference
                     Name = "System.XML"
-                    AssemblyName = "System.XML"
+                    AssemblyName = "System.Xml"
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
                 />
             </References>
@@ -92,6 +92,10 @@
                     RelPath = "Strings.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Strings.da.resx"
+                    BuildAction = "EmbeddedResource"
                 />
                 <File
                     RelPath = "Strings.de.resx"
@@ -130,12 +134,13 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
-                    RelPath = "Strings.da.resx"
+                    RelPath = "Strings.sv.resx"
                     BuildAction = "EmbeddedResource"
                 />
                 <File
                     RelPath = "VersionInfo.cs"
                     Link = "..\VersionInfo.cs"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
             </Include>

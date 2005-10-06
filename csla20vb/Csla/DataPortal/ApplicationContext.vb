@@ -146,6 +146,32 @@ Public NotInheritable Class ApplicationContext
     End Get
   End Property
 
+  ''' <summary>
+  ''' Enum representing the locations code can execute.
+  ''' </summary>
+  Public Enum ExecutionLocations
+    Client
+    Server
+  End Enum
+
+  Private Shared mExecutionLocation As ExecutionLocations = ExecutionLocations.Client
+
+  ''' <summary>
+  ''' Returns a value indicating whether the application code
+  ''' is currently executing on the client or server.
+  ''' </summary>
+  Public Shared ReadOnly Property ExecutionLocation() As ExecutionLocations
+    Get
+      Return mExecutionLocation
+    End Get
+  End Property
+
+  Friend Shared Sub SetExecutionLocation(ByVal location As ExecutionLocations)
+
+    mExecutionLocation = location
+
+  End Sub
+
   Friend Shared Function GetClientContext() As HybridDictionary
 
     Dim slot As System.LocalDataStoreSlot = _

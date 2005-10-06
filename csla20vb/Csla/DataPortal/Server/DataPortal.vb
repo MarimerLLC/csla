@@ -170,7 +170,11 @@ Namespace Server
 
       ' set the app context to the value we got from the
       ' client
-      Csla.ApplicationContext.SetContext(context.ClientContext, context.GlobalContext)
+      ApplicationContext.SetContext(context.ClientContext, context.GlobalContext)
+
+      ' set the context value so everyone knows the
+      ' code is running on the server
+      ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server)
 
       If ApplicationContext.AuthenticationType = "Windows" Then
         ' When using integrated security, Principal must be Nothing 

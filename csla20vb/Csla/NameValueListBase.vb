@@ -1,0 +1,200 @@
+Imports System.IO
+Imports System.Runtime.Serialization.Formatters.Binary
+Imports System.ComponentModel
+
+''' <summary>
+''' This is the base class from which readonly name/value
+''' collections should be derived.
+''' </summary>
+''' <remarks>
+''' To implement a name/value collection:
+''' <list>
+''' <item>Inherit from this base class</item>
+''' <item>Implement a Private constructor</item>
+''' <item>Implement a factory method using the supplied Criteria class</item>
+''' <item>Override <see cref="M:DataPortal_Fetch">DataPortal_Fetch</see></item>
+''' </list>
+''' </remarks>
+<System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")> _
+<System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
+<Serializable()> _
+Public MustInherit Class NameValueListBase(Of K, V)
+  Inherits Core.ReadOnlyBindingList(Of NameValuePair)
+
+  Implements ICloneable
+
+#Region " Constructors "
+
+  Protected Sub New()
+
+  End Sub
+
+#End Region
+
+#Region " NameValuePair class "
+
+  ''' <summary>
+  ''' Contains a key and value pair.
+  ''' </summary>
+  <Serializable()> _
+  Public Class NameValuePair
+    Private mKey As K
+    Private mValue As V
+
+    ''' <summary>
+    ''' The Key or Name value.
+    ''' </summary>
+    Public ReadOnly Property Key() As K
+      Get
+        Return mKey
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' The Value corresponding to the key/name.
+    ''' </summary>
+    Public Property Value() As V
+      Get
+        Return mValue
+      End Get
+      Set(ByVal value As V)
+        mValue = value
+      End Set
+    End Property
+
+    Public Sub New(ByVal key As K, ByVal value As V)
+      mKey = key
+      mValue = value
+    End Sub
+
+  End Class
+
+#End Region
+
+  Public Function Value(ByVal key As K) As V
+    For Each item As NameValuePair In Me
+      If item.Key.Equals(key) Then
+        Return item.Value
+      End If
+    Next
+    Return Nothing
+  End Function
+
+  Public Function Key(ByVal value As V) As K
+    For Each item As NameValuePair In Me
+      If item.Value.Equals(value) Then
+        Return item.Key
+      End If
+    Next
+    Return Nothing
+  End Function
+
+#Region " Clone "
+
+  ''' <summary>
+  ''' Creates a clone of the object.
+  ''' </summary>
+  ''' <returns>A new object containing the exact data of the original object.</returns>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
+  Public Overridable Function Clone() As Object Implements ICloneable.Clone
+
+    Return ObjectCloner.Clone(Me)
+
+  End Function
+
+  ''' <summary>
+  ''' Creates a clone of the object.
+  ''' </summary>
+  ''' <returns>A new object containing the exact data of the original object.</returns>
+  Public Function Clone(Of T)() As T
+    Return DirectCast(Me.Clone, T)
+  End Function
+
+#End Region
+
+#Region " Criteria "
+
+  ''' <summary>
+  ''' Default Criteria for retrieving simple
+  ''' name/value lists.
+  ''' </summary>
+  ''' <remarks>
+  ''' This criteria merely specifies the type of
+  ''' collection to be retrieved. That type information
+  ''' is used by the DataPortal to create the correct
+  ''' type of collection object during data retrieval.
+  ''' </remarks>
+  <Serializable()> _
+  Protected Class Criteria
+    Inherits CriteriaBase
+
+    Public Sub New(ByVal collectionType As Type)
+      MyBase.New(collectionType)
+    End Sub
+  End Class
+
+#End Region
+
+#Region " Data Access "
+
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId:="criteria")> _
+  Private Sub DataPortal_Create(ByVal criteria As Object)
+    Throw New NotSupportedException(My.Resources.CreateNotSupportedException)
+  End Sub
+
+  ''' <summary>
+  ''' Override this method to allow retrieval of an existing business
+  ''' object based on data in the database.
+  ''' </summary>
+  ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+  Protected Overridable Sub DataPortal_Fetch(ByVal criteria As Object)
+    Throw New NotSupportedException(My.Resources.FetchNotSupportedException)
+  End Sub
+
+  Private Sub DataPortal_Update()
+    Throw New NotSupportedException(My.Resources.UpdateNotSupportedException)
+  End Sub
+
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId:="criteria")> _
+  Private Sub DataPortal_Delete(ByVal criteria As Object)
+    Throw New NotSupportedException(My.Resources.DeleteNotSupportedException)
+  End Sub
+
+  ''' <summary>
+  ''' Called by the server-side DataPortal prior to calling the 
+  ''' requested DataPortal_xyz method.
+  ''' </summary>
+  ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+
+  End Sub
+
+  ''' <summary>
+  ''' Called by the server-side DataPortal after calling the 
+  ''' requested DataPortal_xyz method.
+  ''' </summary>
+  ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+
+  End Sub
+
+  ''' <summary>
+  ''' Called by the server-side DataPortal if an exception
+  ''' occurs during data access.
+  ''' </summary>
+  ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+  ''' <param name="ex">The Exception thrown during data access.</param>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+
+  End Sub
+
+#End Region
+
+End Class

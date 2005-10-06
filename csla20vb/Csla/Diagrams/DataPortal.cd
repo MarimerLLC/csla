@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Csla.DataPortal" Collapsed="true">
+    <Position X="2" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Client\DataPortal.vb</FileName>
+      <HashCode>AAQCAAAQQBCQAAAAAAEQAgAEAAEgAEAAAAQIAAABAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.CriteriaBase" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Client\CriteriaBase.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.ApplicationContext" Collapsed="true">
+    <Position X="4" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Client\ApplicationContext.vb</FileName>
+      <HashCode>AAAAAACAAAIAAAAAgCAAAAAAAAAAAAAAAAAAAAJAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Server.DataPortal" Collapsed="true">
+    <Position X="6" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Server\DataPortal.vb</FileName>
+      <HashCode>AEQAAAAAAAKAgAAAAAEQAAAAAAEAAEAAAAAAAIAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Server.DataPortalContext" Collapsed="true">
+    <Position X="4" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Server\DataPortalContext.vb</FileName>
+      <HashCode>AAAQAAAAAAAAAAAAADAAAAAECAAAAAAoAAAAAAIAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Server.DataPortalResult" Collapsed="true">
+    <Position X="4" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Server\DataPortalResult.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Server.DataPortalException" Collapsed="true">
+    <Position X="4" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Server\DataPortalException.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAgAAABAAAAQgAACAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

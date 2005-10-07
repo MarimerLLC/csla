@@ -228,14 +228,26 @@ Namespace Core
     ''' property changed event for the current property is raised.
     ''' </remarks>
     Protected Sub PropertyHasChanged(ByVal propertyName As String)
-      CheckRules(propertyName)
+
+      ValidationRules.CheckRules(propertyName)
       MarkDirty(True)
       OnPropertyChanged(propertyName)
+
     End Sub
 
-    Private Sub MarkClean()
+    ''' <summary>
+    ''' Forces the object's IsDirty flag to False.
+    ''' </summary>
+    ''' <remarks>
+    ''' This method is normally called automatically and is
+    ''' not intended to be called manually.
+    ''' </remarks>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Sub MarkClean()
+
       mIsDirty = False
       OnIsDirtyChanged()
+
     End Sub
 
 #End Region
@@ -675,114 +687,23 @@ Namespace Core
 
 #End Region
 
-#Region " BrokenRules, IsValid "
+#Region " ValidationRules, IsValid "
 
-    ' keep a list of broken rules
-    Private mBrokenRules As New Validation.ValidationRules(Me)
+    Private mValidationRules As New Validation.ValidationRules(Me)
 
     ''' <summary>
-    ''' Adds a rule to the list of rules to be enforced.
+    ''' Provides access to the broken rules functionality.
     ''' </summary>
     ''' <remarks>
-    ''' <para>
-    ''' A rule is implemented by a method which conforms to the 
-    ''' method signature defined by the RuleHandler delegate.
-    ''' </para><para>
-    ''' The propertyName may be used by the method that implements the rule
-    ''' in order to retrieve the value to be validated. If the rule
-    ''' implementation is inside the target object then it probably has
-    ''' direct access to all data. However, if the rule implementation
-    ''' is outside the target object then it will need to use reflection
-    ''' or CallByName to dynamically invoke this property to retrieve
-    ''' the value to be validated.
-    ''' </para>
+    ''' This property is used within your business logic so you can
+    ''' easily call the <see cref="M:Csla.BrokenRules.Assert(System.String,System.String,System.Boolean)" /> 
+    ''' method to mark rules as broken and unbroken.
     ''' </remarks>
-    ''' <param name="handler">The method that implements the rule.</param>
-    ''' <param name="propertyName">
-    ''' The property name on the target object where the rule implementation can retrieve
-    ''' the value to be validated.
-    ''' </param>
-    Protected Sub AddRule(ByVal handler As Validation.RuleHandler, _
-      ByVal propertyName As String)
-
-      BrokenRules.AddRule(handler, propertyName)
-
-    End Sub
-
-    ''' <summary>
-    ''' Adds a rule to the list of rules to be enforced.
-    ''' </summary>
-    ''' <remarks>
-    ''' A rule is implemented by a method which conforms to the 
-    ''' method signature defined by the RuleHandler delegate.
-    ''' </remarks>
-    ''' <param name="handler">The method that implements the rule.</param>
-    ''' <param name="args">
-    ''' A RuleArgs object specifying the property name and other arguments
-    ''' passed to the rule method
-    ''' </param>
-    Protected Sub AddRule(ByVal handler As Validation.RuleHandler, _
-      ByVal args As Validation.RuleArgs)
-
-      BrokenRules.AddRule(handler, args)
-
-    End Sub
-
-    ''' <summary>
-    ''' Adds a rule to the list of rules to be enforced.
-    ''' </summary>
-    ''' <remarks>
-    ''' <para>
-    ''' A rule is implemented by a method which conforms to the 
-    ''' method signature defined by the RuleHandler delegate.
-    ''' </para><para>
-    ''' The ruleName is used to group all the rules that apply
-    ''' to a specific field, property or concept. All rules applying
-    ''' to the field or property should have the same rule name. When
-    ''' rules are checked, they can be checked globally or for a 
-    ''' specific ruleName.
-    ''' </para><para>
-    ''' The propertyName may be used by the method that implements the rule
-    ''' in order to retrieve the value to be validated. If the rule
-    ''' implementation is inside the target object then it probably has
-    ''' direct access to all data. However, if the rule implementation
-    ''' is outside the target object then it will need to use reflection
-    ''' or CallByName to dynamically invoke this property to retrieve
-    ''' the value to be validated.
-    ''' </para>
-    ''' </remarks>
-    ''' <param name="handler">The method that implements the rule.</param>
-    ''' <param name="args">
-    ''' A RuleArgs object specifying the property name and other arguments
-    ''' passed to the rule method
-    ''' </param>
-    ''' <param name="ruleName">Unique name for the rule.</param>
-    Protected Sub AddRule(ByVal handler As Validation.RuleHandler, _
-      ByVal args As Validation.RuleArgs, ByVal ruleName As String)
-
-      BrokenRules.AddRule(handler, args, ruleName)
-
-    End Sub
-
-    ''' <summary>
-    ''' Checks all the rules for a specific property.
-    ''' </summary>
-    ''' <param name="propertyName">The property to be validated.</param>
-    <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Sub CheckRules(ByVal propertyName As String)
-
-      BrokenRules.CheckRules(propertyName)
-
-    End Sub
-
-    ''' <summary>
-    ''' Checks all the rules for the business object.
-    ''' </summary>
-    Protected Sub CheckRules()
-
-      BrokenRules.CheckRules()
-
-    End Sub
+    Protected ReadOnly Property ValidationRules() As Validation.ValidationRules
+      Get
+        Return mValidationRules
+      End Get
+    End Property
 
     ''' <summary>
     ''' Override this method in your business class to
@@ -805,7 +726,7 @@ Namespace Core
     ''' </summary>
     ''' <remarks>
     ''' <para>
-    ''' By default this property relies on the underling <see cref="T:Csla.BrokenRules" />
+    ''' By default this property relies on the underling <see cref="T:Csla.Validation.ValidationRules" />
     ''' object to track whether any business rules are currently broken for this object.
     ''' </para><para>
     ''' You can override this property to provide more sophisticated
@@ -818,7 +739,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsValid() As Boolean
       Get
-        Return mBrokenRules.IsValid
+        Return mValidationRules.IsValid
       End Get
     End Property
 
@@ -826,27 +747,12 @@ Namespace Core
     ''' Provides access to the readonly collection of broken business rules
     ''' for this object.
     ''' </summary>
-    ''' <returns>A <see cref="T:Csla.BrokenRules.RulesCollection" /> object.</returns>
+    ''' <returns>A <see cref="T:Csla.Validation.RulesCollection" /> object.</returns>
     <Browsable(False)> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Public Overridable ReadOnly Property BrokenRulesCollection() As Validation.RulesCollection
+    Public Overridable ReadOnly Property BrokenRulesCollection() As Validation.BrokenRulesCollection
       Get
-        Return mBrokenRules.GetBrokenRules
-      End Get
-    End Property
-
-    ''' <summary>
-    ''' Provides access to the broken rules functionality.
-    ''' </summary>
-    ''' <remarks>
-    ''' This property is used within your business logic so you can
-    ''' easily call the <see cref="M:Csla.BrokenRules.Assert(System.String,System.String,System.Boolean)" /> 
-    ''' method to mark rules as broken and unbroken.
-    ''' </remarks>
-    <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected ReadOnly Property BrokenRules() As Validation.ValidationRules
-      Get
-        Return mBrokenRules
+        Return mValidationRules.GetBrokenRules
       End Get
     End Property
 
@@ -941,7 +847,7 @@ Namespace Core
     Private ReadOnly Property [Error]() As String Implements System.ComponentModel.IDataErrorInfo.Error
       Get
         If Not IsValid Then
-          Return BrokenRules.GetBrokenRules.ToString
+          Return mValidationRules.GetBrokenRules.ToString
 
         Else
           Return ""
@@ -952,8 +858,8 @@ Namespace Core
     Private ReadOnly Property Item(ByVal columnName As String) As String Implements System.ComponentModel.IDataErrorInfo.Item
       Get
         If Not IsValid Then
-          Dim rule As Validation.Rule = _
-            BrokenRules.GetBrokenRules.RuleForProperty(columnName)
+          Dim rule As Validation.BrokenRule = _
+            mValidationRules.GetBrokenRules.RuleForProperty(columnName)
           If rule Is Nothing Then
             Return ""
 

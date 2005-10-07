@@ -123,19 +123,34 @@ Namespace Validation
 
 #End Region
 
-    <NotUndoable()> _
-    Private mBrokenRules As New RulesCollection()
-
-    <NonSerialized(), NotUndoable()> _
+    Private mBrokenRules As BrokenRulesCollection
+    <NonSerialized()> _
     Private mTarget As Object
-
-    <NonSerialized(), NotUndoable()> _
+    <NonSerialized()> _
     Private mRulesList As _
-      New Generic.Dictionary(Of String, List(Of RuleMethod))
+      Generic.Dictionary(Of String, List(Of RuleMethod))
 
     Friend Sub New(ByVal businessObject As Object)
       mTarget = businessObject
     End Sub
+
+    Private ReadOnly Property BrokenRulesList() As BrokenRulesCollection
+      Get
+        If mBrokenRules Is Nothing Then
+          mBrokenRules = New BrokenRulesCollection
+        End If
+        Return mBrokenRules
+      End Get
+    End Property
+
+    Private ReadOnly Property RulesList() As Generic.Dictionary(Of String, List(Of RuleMethod))
+      Get
+        If mRulesList Is Nothing Then
+          mRulesList = New Generic.Dictionary(Of String, List(Of RuleMethod))
+        End If
+        Return mRulesList
+      End Get
+    End Property
 
 #Region " Adding Rules "
 
@@ -148,20 +163,42 @@ Namespace Validation
 
       ' get the list (if any) from the dictionary
       Dim list As List(Of RuleMethod) = Nothing
-      If mRulesList.ContainsKey(propertyName) Then
-        list = mRulesList.Item(propertyName)
+      If RulesList.ContainsKey(propertyName) Then
+        list = RulesList.Item(propertyName)
       End If
 
       If list Is Nothing Then
         ' there is no list for this name - create one
         list = New List(Of RuleMethod)
-        mRulesList.Add(propertyName, list)
+        RulesList.Add(propertyName, list)
       End If
       Return list
 
     End Function
 
-    Friend Sub AddRule(ByVal handler As RuleHandler, ByVal propertyName As String)
+    ''' <summary>
+    ''' Adds a rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' A rule is implemented by a method which conforms to the 
+    ''' method signature defined by the RuleHandler delegate.
+    ''' </para><para>
+    ''' The propertyName may be used by the method that implements the rule
+    ''' in order to retrieve the value to be validated. If the rule
+    ''' implementation is inside the target object then it probably has
+    ''' direct access to all data. However, if the rule implementation
+    ''' is outside the target object then it will need to use reflection
+    ''' or CallByName to dynamically invoke this property to retrieve
+    ''' the value to be validated.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="handler">The method that implements the rule.</param>
+    ''' <param name="propertyName">
+    ''' The property name on the target object where the rule implementation can retrieve
+    ''' the value to be validated.
+    ''' </param>
+    Public Sub AddRule(ByVal handler As RuleHandler, ByVal propertyName As String)
 
       ' get the list of rules for the property
       Dim list As List(Of RuleMethod) = GetRulesForProperty(propertyName)
@@ -171,7 +208,19 @@ Namespace Validation
 
     End Sub
 
-    Friend Sub AddRule(ByVal handler As RuleHandler, ByVal args As RuleArgs)
+    ''' <summary>
+    ''' Adds a rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <remarks>
+    ''' A rule is implemented by a method which conforms to the 
+    ''' method signature defined by the RuleHandler delegate.
+    ''' </remarks>
+    ''' <param name="handler">The method that implements the rule.</param>
+    ''' <param name="args">
+    ''' A RuleArgs object specifying the property name and other arguments
+    ''' passed to the rule method
+    ''' </param>
+    Public Sub AddRule(ByVal handler As RuleHandler, ByVal args As RuleArgs)
 
       ' get the list of rules for the property
       Dim list As List(Of RuleMethod) = GetRulesForProperty(args.PropertyName)
@@ -181,7 +230,36 @@ Namespace Validation
 
     End Sub
 
-    Friend Sub AddRule(ByVal handler As RuleHandler, ByVal args As RuleArgs, ByVal ruleName As String)
+    ''' <summary>
+    ''' Adds a rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' A rule is implemented by a method which conforms to the 
+    ''' method signature defined by the RuleHandler delegate.
+    ''' </para><para>
+    ''' The ruleName is used to group all the rules that apply
+    ''' to a specific field, property or concept. All rules applying
+    ''' to the field or property should have the same rule name. When
+    ''' rules are checked, they can be checked globally or for a 
+    ''' specific ruleName.
+    ''' </para><para>
+    ''' The propertyName may be used by the method that implements the rule
+    ''' in order to retrieve the value to be validated. If the rule
+    ''' implementation is inside the target object then it probably has
+    ''' direct access to all data. However, if the rule implementation
+    ''' is outside the target object then it will need to use reflection
+    ''' or CallByName to dynamically invoke this property to retrieve
+    ''' the value to be validated.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="handler">The method that implements the rule.</param>
+    ''' <param name="args">
+    ''' A RuleArgs object specifying the property name and other arguments
+    ''' passed to the rule method
+    ''' </param>
+    ''' <param name="ruleName">Unique name for the rule.</param>
+    Public Sub AddRule(ByVal handler As RuleHandler, ByVal args As RuleArgs, ByVal ruleName As String)
 
       ' get the list of rules for the property
       Dim list As List(Of RuleMethod) = GetRulesForProperty(args.PropertyName)
@@ -195,21 +273,21 @@ Namespace Validation
 
 #Region " Checking Rules "
 
-    Friend Sub CheckRules(ByVal propertyName As String)
+    Public Sub CheckRules(ByVal propertyName As String)
 
       Dim list As List(Of RuleMethod)
       ' get the list of rules to check
-      If mRulesList.ContainsKey(propertyName) Then
-        list = mRulesList.Item(propertyName)
+      If RulesList.ContainsKey(propertyName) Then
+        list = RulesList.Item(propertyName)
         If list Is Nothing Then Exit Sub
 
         ' now check the rules
         Dim rule As RuleMethod
         For Each rule In list
           If rule.Invoke() Then
-            mBrokenRules.Remove(rule.ToString)
+            BrokenRulesList.Remove(rule.ToString)
           Else
-            mBrokenRules.Add( _
+            BrokenRulesList.Add( _
               rule.RuleName, _
               rule.RuleArgs.Description, _
               rule.RuleArgs.PropertyName)
@@ -219,11 +297,11 @@ Namespace Validation
 
     End Sub
 
-    Friend Sub CheckRules()
+    Public Sub CheckRules()
 
       ' get the rules for each rule name
       Dim de As Generic.KeyValuePair(Of String, List(Of RuleMethod))
-      For Each de In mRulesList
+      For Each de In RulesList
 
         Dim list As List(Of RuleMethod) = _
           de.Value
@@ -232,9 +310,9 @@ Namespace Validation
         Dim rule As RuleMethod
         For Each rule In list
           If rule.Invoke() Then
-            mBrokenRules.Remove(rule.ToString)
+            BrokenRulesList.Remove(rule.ToString)
           Else
-            mBrokenRules.Add( _
+            BrokenRulesList.Add( _
               rule.RuleName, _
               rule.RuleArgs.Description, _
               rule.RuleArgs.PropertyName)
@@ -257,7 +335,7 @@ Namespace Validation
     ''' <returns>A value indicating whether any rules are broken.</returns>
     Friend ReadOnly Property IsValid() As Boolean
       Get
-        Return mBrokenRules.Count = 0
+        Return BrokenRulesList.Count = 0
       End Get
     End Property
 
@@ -273,8 +351,8 @@ Namespace Validation
     ''' display of the broken rules at all times.
     ''' </remarks>
     ''' <returns>A reference to the collection of broken rules.</returns>
-    Friend Function GetBrokenRules() As RulesCollection
-      Return mBrokenRules
+    Public Function GetBrokenRules() As BrokenRulesCollection
+      Return BrokenRulesList
     End Function
 
 #End Region

@@ -82,10 +82,10 @@
     <Compile Include="Core\BindableBase.vb" />
     <Compile Include="Core\BindableCollectionBase.vb" />
     <Compile Include="Security\RolesForProperty.vb" />
-    <Compile Include="Validation\Rule.vb" />
+    <Compile Include="Validation\BrokenRule.vb" />
     <Compile Include="Validation\RuleArgs.vb" />
     <Compile Include="Validation\RuleHandler.vb" />
-    <Compile Include="Validation\RulesCollection.vb" />
+    <Compile Include="Validation\BrokenRulesCollection.vb" />
     <Compile Include="Validation\ValidationRules.vb" />
     <Compile Include="Core\BusinessBase.vb" />
     <Compile Include="BusinessCollectionBase.vb" />

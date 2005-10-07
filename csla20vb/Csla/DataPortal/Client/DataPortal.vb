@@ -201,7 +201,13 @@ Public NotInheritable Class DataPortal
 
     Dim result As Server.DataPortalResult
 
-    Dim method As MethodInfo = GetMethod(obj.GetType, "DataPortal_Update")
+    Dim method As MethodInfo
+    If TypeOf obj Is CommandBase Then
+      method = GetMethod(obj.GetType, "DataPortal_Execute")
+
+    Else
+      method = GetMethod(obj.GetType, "DataPortal_Update")
+    End If
 
     Dim portal As DataPortalClient.IDataPortalProxy
     portal = GetDataPortalProxy(RunLocal(method))

@@ -31,15 +31,19 @@ Namespace Server
         Dim method As MethodInfo = GetMethod(objectType, "DataPortal_Create")
 
         ' route to Enterprise Services if requested
-        Dim portal As IDataPortalServer
         If IsTransactionalMethod(method) Then
-          portal = New ServicedDataPortal
+          Dim portal As New ServicedDataPortal
+          Try
+            result = portal.Create(objectType, criteria, context)
+
+          Finally
+            portal.Dispose()
+          End Try
 
         Else
-          portal = New SimpleDataPortal
+          Dim portal As New SimpleDataPortal
+          result = portal.Create(objectType, criteria, context)
         End If
-
-        result = portal.Create(objectType, criteria, context)
 
         ClearContext(context)
         Return result
@@ -67,15 +71,19 @@ Namespace Server
         Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Fetch")
 
         ' route to Enterprise Services if requested
-        Dim portal As IDataPortalServer
         If IsTransactionalMethod(method) Then
-          portal = New ServicedDataPortal
+          Dim portal As New ServicedDataPortal
+          Try
+            result = portal.Fetch(criteria, context)
+
+          Finally
+            portal.Dispose()
+          End Try
 
         Else
-          portal = New SimpleDataPortal
+          Dim portal As New SimpleDataPortal
+          result = portal.Fetch(criteria, context)
         End If
-
-        result = portal.Fetch(criteria, context)
 
         ClearContext(context)
         Return result
@@ -93,25 +101,38 @@ Namespace Server
     ''' <param name="obj">A reference to the object being updated.</param>
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A reference to the newly updated object.</returns>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Update
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+    Public Function Update(ByVal obj As Object, _
+      ByVal context As DataPortalContext) As DataPortalResult _
+      Implements IDataPortalServer.Update
 
       Try
         SetContext(context)
 
         Dim result As DataPortalResult
 
-        Dim method As MethodInfo = GetMethod(obj.GetType, "DataPortal_Update")
-
-        ' route to Enterprise Services if requested
-        Dim portal As IDataPortalServer
-        If IsTransactionalMethod(method) Then
-          portal = New ServicedDataPortal
+        Dim method As MethodInfo
+        If TypeOf obj Is CommandBase Then
+          method = GetMethod(obj.GetType, "DataPortal_Execute")
 
         Else
-          portal = New SimpleDataPortal
+          method = GetMethod(obj.GetType, "DataPortal_Update")
         End If
 
-        result = portal.Update(obj, context)
+        ' route to Enterprise Services if requested
+        If IsTransactionalMethod(method) Then
+          Dim portal As New ServicedDataPortal
+          Try
+            result = portal.Update(obj, context)
+
+          Finally
+            portal.Dispose()
+          End Try
+
+        Else
+          Dim portal As New SimpleDataPortal
+          result = portal.Update(obj, context)
+        End If
 
         ClearContext(context)
         Return result
@@ -138,15 +159,19 @@ Namespace Server
         Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Delete")
 
         ' route to Enterprise Services if requested
-        Dim portal As IDataPortalServer
         If IsTransactionalMethod(method) Then
-          portal = New ServicedDataPortal
+          Dim portal As New ServicedDataPortal
+          Try
+            result = portal.Delete(criteria, context)
+
+          Finally
+            portal.Dispose()
+          End Try
 
         Else
-          portal = New SimpleDataPortal
+          Dim portal As New SimpleDataPortal
+          result = portal.Delete(criteria, context)
         End If
-
-        result = portal.Delete(criteria, context)
 
         ClearContext(context)
         Return result

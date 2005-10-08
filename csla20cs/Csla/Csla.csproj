@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +32,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +49,7 @@
     <Compile Include="Core\ObjectCloner.cs" />
     <Compile Include="Core\SortableCollectionBase.cs" />
     <Compile Include="Core\UndoableBase.cs" />
+    <Compile Include="DataPortal\ApplicationContext.cs" />
     <Compile Include="DataPortal\DataPortalEventArgs.cs" />
     <Compile Include="DataPortal\Server\DataPortalContext.cs" />
     <Compile Include="NotUndoableAttribute.cs" />

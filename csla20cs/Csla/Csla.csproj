@@ -64,6 +64,8 @@
     <Compile Include="Security\RolesForProperty.cs" />
     <Compile Include="Validation\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRulesCollection.cs" />
+    <Compile Include="Validation\RuleArgs.cs" />
+    <Compile Include="Validation\RuleHandler.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
   </ItemGroup>
   <ItemGroup>

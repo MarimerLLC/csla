@@ -47,6 +47,7 @@
     <Compile Include="Core\BusinessBase.cs" />
     <Compile Include="Core\IEditableCollection.cs" />
     <Compile Include="Core\ObjectCloner.cs" />
+    <Compile Include="Core\ReadOnlyBindingList.cs" />
     <Compile Include="Core\SortableCollectionBase.cs" />
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="DataPortal\ApplicationContext.cs" />

@@ -60,6 +60,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Security\AuthorizationRules.cs" />
+    <Compile Include="Security\RolesForProperty.cs" />
     <Compile Include="Validation\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRulesCollection.cs" />
     <Compile Include="Validation\ValidationRules.cs" />

@@ -21,7 +21,7 @@ namespace Csla.Core
     {
         // keep a stack of object state values.
         [NotUndoable()]
-        private Stack _stateStack;
+        private Stack _stateStack = new Stack();
 
         protected UndoableBase()
         {

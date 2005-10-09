@@ -51,6 +51,7 @@
     <Compile Include="Core\SortableCollectionBase.cs" />
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="DataPortal\ApplicationContext.cs" />
+    <Compile Include="DataPortal\Client\DataPortal.cs" />
     <Compile Include="DataPortal\DataPortalEventArgs.cs" />
     <Compile Include="DataPortal\Server\DataPortalContext.cs" />
     <Compile Include="Data\ObjectAdapter.cs" />
@@ -64,10 +65,12 @@
     </Compile>
     <Compile Include="Security\AuthorizationRules.cs" />
     <Compile Include="Security\RolesForProperty.cs" />
+    <Compile Include="SmartDate.cs" />
     <Compile Include="Validation\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRulesCollection.cs" />
     <Compile Include="Validation\RuleArgs.cs" />
     <Compile Include="Validation\RuleHandler.cs" />
+    <Compile Include="Validation\ValidationException.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -114,7 +117,6 @@
     <Content Include="Properties\Resources.Designer.vb" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataPortal\Client\" />
     <Folder Include="DataPortal\Hosts\" />
     <Folder Include="Diagrams\" />
   </ItemGroup>

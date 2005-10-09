@@ -120,10 +120,10 @@ namespace CSLA.Data
         public Csla.SmartDate GetSmartDate(int i)
         {
             if (_dataReader.IsDBNull(i))
-                return new CSLA.SmartDate(false);
+                return new Csla.SmartDate(false);
 
             else
-                return new CSLA.SmartDate(_dataReader.GetDateTime(i), false);
+                return new Csla.SmartDate(_dataReader.GetDateTime(i), false);
         }
 
         /// <summary>
@@ -145,10 +145,10 @@ namespace CSLA.Data
         public Csla.SmartDate GetSmartDate(int i, bool minIsEmpty)
         {
             if (_dataReader.IsDBNull(i))
-                return new CSLA.SmartDate(minIsEmpty);
+                return new Csla.SmartDate(minIsEmpty);
 
             else
-                return new CSLA.SmartDate(_dataReader.GetDateTime(i), minIsEmpty);
+                return new Csla.SmartDate(_dataReader.GetDateTime(i), minIsEmpty);
         }
 
         /// <summary>

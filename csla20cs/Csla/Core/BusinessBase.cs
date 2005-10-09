@@ -679,7 +679,7 @@ namespace Csla.Core
         /// <returns>
         /// A new object containing the exact data of the original object.
         /// </returns>
-        public object Clone<T>()
+        public T Clone<T>()
         {
             return (T)this.Clone();
         }

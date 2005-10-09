@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessBase.cs" />
+    <Compile Include="BusinessBaseOfT.cs" />
     <Compile Include="BusinessCollectionBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BindableCollectionBase.cs" />
@@ -64,10 +65,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Security\AuthorizationRules.cs" />
+    <Compile Include="Security\BusinessPrincipalBase.cs" />
     <Compile Include="Security\RolesForProperty.cs" />
     <Compile Include="SmartDate.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="Validation\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRulesCollection.cs" />
+    <Compile Include="Validation\CommonRules.cs" />
     <Compile Include="Validation\RuleArgs.cs" />
     <Compile Include="Validation\RuleHandler.cs" />
     <Compile Include="Validation\ValidationException.cs" />

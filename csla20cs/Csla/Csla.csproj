@@ -43,6 +43,7 @@
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessBaseOfT.cs" />
     <Compile Include="BusinessCollectionBase.cs" />
+    <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BindableCollectionBase.cs" />
     <Compile Include="Core\BusinessBase.cs" />

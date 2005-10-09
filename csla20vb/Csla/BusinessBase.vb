@@ -81,6 +81,33 @@ Public MustInherit Class BusinessBase
 
   End Function
 
+  ''' <summary>
+  ''' Saves the object to the database, forcing
+  ''' IsNew to False and IsDirty to True.
+  ''' </summary>
+  ''' <param name="forceUpdate">
+  ''' If True, triggers overriding IsNew and IsDirty. 
+  ''' If False then it is the same as calling Save().
+  ''' </param>
+  ''' <returns>A new object containing the saved values.</returns>
+  ''' <remarks>
+  ''' This overload is designed for use in web applications
+  ''' when implementing the Update method in your 
+  ''' data wrapper object.
+  ''' </remarks>
+  Public Function Save(ByVal forceUpdate As Boolean) As BusinessBase
+
+    If forceUpdate AndAlso IsNew Then
+      ' mark the object as old - which makes it
+      ' not dirty
+      MarkOld()
+      ' now mark the object as dirty so it can save
+      MarkDirty()
+    End If
+    Return Me.Save()
+
+  End Function
+
 #End Region
 
 End Class

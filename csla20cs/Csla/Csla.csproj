@@ -54,8 +54,17 @@
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="DataPortal\ApplicationContext.cs" />
     <Compile Include="DataPortal\Client\DataPortal.cs" />
+    <Compile Include="DataPortal\Client\IDataPortalProxy.cs" />
+    <Compile Include="DataPortal\Client\LocalProxy.cs" />
+    <Compile Include="DataPortal\CriteriaBase.cs" />
     <Compile Include="DataPortal\DataPortalEventArgs.cs" />
+    <Compile Include="DataPortal\DataPortalException.cs" />
+    <Compile Include="DataPortal\RunLocalAttribute.cs" />
+    <Compile Include="DataPortal\Server\DataPortal.cs" />
     <Compile Include="DataPortal\Server\DataPortalContext.cs" />
+    <Compile Include="DataPortal\Server\DataPortalException.cs" />
+    <Compile Include="DataPortal\Server\DataPortalResult.cs" />
+    <Compile Include="DataPortal\Server\IDataPortalServer.cs" />
     <Compile Include="Data\ObjectAdapter.cs" />
     <Compile Include="Data\SafeDataReader.cs" />
     <Compile Include="EnterpriseServicesSettings.cs" />

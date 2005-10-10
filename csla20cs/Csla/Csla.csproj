@@ -54,11 +54,13 @@
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="DataPortal\ApplicationContext.cs" />
     <Compile Include="DataPortal\Client\DataPortal.cs" />
+    <Compile Include="DataPortal\Client\EnterpriseServicesProxy.cs" />
     <Compile Include="DataPortal\Client\IDataPortalProxy.cs" />
     <Compile Include="DataPortal\Client\LocalProxy.cs" />
     <Compile Include="DataPortal\CriteriaBase.cs" />
     <Compile Include="DataPortal\DataPortalEventArgs.cs" />
     <Compile Include="DataPortal\DataPortalException.cs" />
+    <Compile Include="DataPortal\Hosts\EnterpriseServicesPortal.cs" />
     <Compile Include="DataPortal\RunLocalAttribute.cs" />
     <Compile Include="DataPortal\Server\DataPortal.cs" />
     <Compile Include="DataPortal\Server\DataPortalContext.cs" />
@@ -133,7 +135,6 @@
     <Content Include="Properties\Resources.Designer.vb" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataPortal\Hosts\" />
     <Folder Include="Diagrams\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

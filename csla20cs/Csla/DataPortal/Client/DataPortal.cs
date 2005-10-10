@@ -27,8 +27,6 @@ namespace Csla
 
         #region DataPortal events
 
-
-
         /// <summary>
         /// Raised by DataPortal prior to calling the 
         /// requested server-side DataPortal method.
@@ -119,6 +117,169 @@ namespace Csla
             return result.ReturnObject;
         }
 
+        /// <summary>
+        /// Called by a factory method in a business class to retrieve
+        /// an object, which is loaded with values from the database.
+        /// </summary>
+        /// <param name="Criteria">Object-specific criteria.</param>
+        /// <returns>An object populated with values from the database.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+        public static T Fetch<T>(object criteria)
+        {
+            return (T)Fetch(criteria);
+        }
+
+        /// <summary>
+        /// Called by a factory method in a business class to retrieve
+        /// an object, which is loaded with values from the database.
+        /// </summary>
+        /// <param name="Criteria">Object-specific criteria.</param>
+        /// <returns>An object populated with values from the database.</returns>
+        public static object Fetch(object criteria)
+        {
+            Server.DataPortalResult result;
+            
+            MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Fetch");
+
+            DataPortalClient.IDataPortalProxy portal;
+            portal = GetDataPortalProxy(RunLocal(method));
+
+            Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+
+            if (OnDataPortalInvoke != null)
+                OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+
+            try
+            {
+                result = (Server.DataPortalResult)portal.Fetch(criteria, dpContext);
+            }
+            catch (Server.DataPortalException ex)
+            {
+                result = ex.Result;
+                if (portal.IsServerRemote)
+                    RestoreContext(result);
+                throw new DataPortalException("DataPortal.Fetch " + Resources.Failed, ex.InnerException, result.ReturnObject);
+            }
+
+            if (portal.IsServerRemote)
+                RestoreContext(result);
+
+            if (OnDataPortalInvokeComplete != null)
+                OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+
+            return result.ReturnObject;
+        }
+
+        /// <summary>
+        /// Called by the <see cref="Csla.BusinessBase.Save" /> method to
+        /// insert, update or delete an object in the database.
+        /// </summary>
+        /// <remarks>
+        /// Note that this method returns a reference to the updated business object.
+        /// If the server-side DataPortal is running remotely, this will be a new and
+        /// different object from the original, and all object references MUST be updated
+        /// to use this new object.
+        /// </remarks>
+        /// <param name="obj">A reference to the business object to be updated.</param>
+        /// <returns>A reference to the updated business object.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+        public static T Update<T>(T obj)
+        {
+            return (T)Update((object)obj);
+        }
+
+        /// <summary>
+        /// Called by the <see cref="M:Csla.BusinessBase.Save" /> method to
+        /// insert, update or delete an object in the database.
+        /// </summary>
+        /// <remarks>
+        /// Note that this method returns a reference to the updated business object.
+        /// If the server-side DataPortal is running remotely, this will be a new and
+        /// different object from the original, and all object references MUST be updated
+        /// to use this new object.
+        /// </remarks>
+        /// <param name="obj">A reference to the business object to be updated.</param>
+        /// <returns>A reference to the updated business object.</returns>
+        public static object Update(object obj)
+        {
+            Server.DataPortalResult result;
+
+            MethodInfo method;
+            if (obj is CommandBase)
+                method = GetMethod(obj.GetType(), "DataPortal_Execute");
+            else
+                method = GetMethod(obj.GetType(), "DataPortal_Update");
+
+            DataPortalClient.IDataPortalProxy portal;
+            portal = GetDataPortalProxy(RunLocal(method));
+
+            Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+
+            if (OnDataPortalInvoke != null)
+                OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+
+            try
+            {
+                result = (Server.DataPortalResult)portal.Update(obj, dpContext);
+            }
+            catch (Server.DataPortalException ex)
+            {
+                result = ex.Result;
+                if (portal.IsServerRemote)
+                    RestoreContext(result);
+                throw new DataPortalException("DataPortal.Update " + Resources.Failed, ex.InnerException, result.ReturnObject);
+            }
+
+            if (portal.IsServerRemote)
+                RestoreContext(result);
+
+            if (OnDataPortalInvokeComplete != null)
+                OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+
+            return result.ReturnObject;
+        }
+        
+        /// <summary>
+        /// Called by a <c>Shared</c> method in the business class to cause
+        /// immediate deletion of a specific object from the database.
+        /// </summary>
+        /// <param name="criteria">Object-specific criteria.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+        public static void Delete(object criteria)
+        {
+            Server.DataPortalResult result;
+
+            MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Delete");
+
+            DataPortalClient.IDataPortalProxy portal;
+            portal = GetDataPortalProxy(RunLocal(method));
+
+            Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+
+            if (OnDataPortalInvoke != null)
+                OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+
+            try
+            {
+                result = (Server.DataPortalResult)portal.Delete(criteria, dpContext);
+            }
+            catch (Server.DataPortalException ex)
+            {
+                result = ex.Result;
+                if (portal.IsServerRemote)
+                    RestoreContext(result);
+                throw new DataPortalException("DataPortal.Delete " + Resources.Failed, ex.InnerException, result.ReturnObject);
+            }
+
+            if (portal.IsServerRemote)
+                RestoreContext(result);
+
+            if (OnDataPortalInvokeComplete != null)
+                OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+        }
 
         #endregion
 
@@ -154,7 +315,6 @@ namespace Csla
         }
 
         #endregion
-
 
         #region Security
 
@@ -217,382 +377,3 @@ namespace Csla
 
     }
 }
-
-/*
-Imports System.Threading
-Imports System.Reflection
-Imports System.Runtime.Remoting
-Imports System.Runtime.Remoting.Channels
-Imports System.Runtime.Remoting.Channels.Http
-
-''' <summary>
-''' This is the client-side DataPortal as described in
-''' Chapter 5.
-''' </summary>
-Public NotInheritable Class DataPortal
-
-#Region " Constructors "
-
-  Private Sub New()
-
-  End Sub
-
-#End Region
-
-#Region " DataPortal events "
-
-  ''' <summary>
-  ''' Raised by DataPortal prior to calling the 
-  ''' requested server-side DataPortal method.
-  ''' </summary>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
-  ''' <summary>
-  ''' Raised by DataPortal after the requested 
-  ''' server-side DataPortal method call is complete.
-  ''' </summary>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
-
-#End Region
-
-#Region " Data Access methods "
-
-  ''' <summary>
-  ''' Called by a factory method in a business class to create 
-  ''' a new object, which is loaded with default
-  ''' values from the database.
-  ''' </summary>
-  ''' <param name="Criteria">Object-specific criteria.</param>
-  ''' <returns>A new object, populated with default values.</returns>
-  Public Shared Function Create(Of T)(ByVal criteria As Object) As T
-    Return DirectCast(Create(GetType(T), criteria), T)
-  End Function
-
-  ''' <summary>
-  ''' Called by a factory method in a business class to create 
-  ''' a new object, which is loaded with default
-  ''' values from the database.
-  ''' </summary>
-  ''' <returns>A new object, populated with default values.</returns>
-  Public Shared Function Create(Of T)() As T
-    Return DirectCast(Create(GetType(T), Nothing), T)
-  End Function
-
-  ''' <summary>
-  ''' Called by a factory method in a business class to create 
-  ''' a new object, which is loaded with default
-  ''' values from the database.
-  ''' </summary>
-  ''' <param name="Criteria">Object-specific criteria.</param>
-  ''' <returns>A new object, populated with default values.</returns>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
-  Public Shared Function Create(ByVal criteria As Object) As Object
-
-    Return Create(GetObjectType(criteria), criteria)
-
-  End Function
-
-  Private Shared Function Create(ByVal objectType As Type, ByVal criteria As Object) As Object
-
-    Dim result As Server.DataPortalResult
-
-    Dim method As MethodInfo = GetMethod(objectType, "DataPortal_Create")
-
-    Dim portal As DataPortalClient.IDataPortalProxy
-    portal = GetDataPortalProxy(RunLocal(method))
-
-    Dim dpContext As New Server.DataPortalContext(GetPrincipal, portal.IsServerRemote)
-
-    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
-
-    Try
-      result = CType(portal.Create( _
-        objectType, criteria, dpContext), Server.DataPortalResult)
-
-    Catch ex As Server.DataPortalException
-      result = ex.Result
-      If portal.IsServerRemote Then
-        RestoreContext(result)
-      End If
-      Throw New DataPortalException("DataPortal.Create " & _
-        My.Resources.Failed, ex.InnerException, result.ReturnObject)
-    End Try
-
-    If portal.IsServerRemote Then
-      RestoreContext(result)
-    End If
-
-    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
-
-    Return result.ReturnObject
-
-  End Function
-
-  ''' <summary>
-  ''' Called by a factory method in a business class to retrieve
-  ''' an object, which is loaded with values from the database.
-  ''' </summary>
-  ''' <param name="Criteria">Object-specific criteria.</param>
-  ''' <returns>An object populated with values from the database.</returns>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Fetch(Of T)(ByVal criteria As Object) As T
-
-    Return DirectCast(Fetch(criteria), T)
-
-  End Function
-
-  ''' <summary>
-  ''' Called by a factory method in a business class to retrieve
-  ''' an object, which is loaded with values from the database.
-  ''' </summary>
-  ''' <param name="Criteria">Object-specific criteria.</param>
-  ''' <returns>An object populated with values from the database.</returns>
-  Public Shared Function Fetch(ByVal criteria As Object) As Object
-
-    Dim result As Server.DataPortalResult
-
-    Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Fetch")
-
-    Dim portal As DataPortalClient.IDataPortalProxy
-    portal = GetDataPortalProxy(RunLocal(method))
-
-    Dim dpContext As New Server.DataPortalContext(GetPrincipal, portal.IsServerRemote)
-
-    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
-
-    Try
-      result = CType(portal.Fetch(criteria, dpContext), Server.DataPortalResult)
-
-    Catch ex As Server.DataPortalException
-      result = ex.Result
-      If portal.IsServerRemote Then
-        RestoreContext(result)
-      End If
-      Throw New DataPortalException("DataPortal.Fetch " & _
-        My.Resources.Failed, ex.InnerException, result.ReturnObject)
-    End Try
-
-    If portal.IsServerRemote Then
-      RestoreContext(result)
-    End If
-
-    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
-
-    Return result.ReturnObject
-
-  End Function
-
-  ''' <summary>
-  ''' Called by the <see cref="M:Csla.BusinessBase.Save" /> method to
-  ''' insert, update or delete an object in the database.
-  ''' </summary>
-  ''' <remarks>
-  ''' Note that this method returns a reference to the updated business object.
-  ''' If the server-side DataPortal is running remotely, this will be a new and
-  ''' different object from the original, and all object references MUST be updated
-  ''' to use this new object.
-  ''' </remarks>
-  ''' <param name="obj">A reference to the business object to be updated.</param>
-  ''' <returns>A reference to the updated business object.</returns>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Update(Of T)(ByVal obj As T) As T
-
-    Return DirectCast(Update(CObj(obj)), T)
-
-  End Function
-
-  ''' <summary>
-  ''' Called by the <see cref="M:Csla.BusinessBase.Save" /> method to
-  ''' insert, update or delete an object in the database.
-  ''' </summary>
-  ''' <remarks>
-  ''' Note that this method returns a reference to the updated business object.
-  ''' If the server-side DataPortal is running remotely, this will be a new and
-  ''' different object from the original, and all object references MUST be updated
-  ''' to use this new object.
-  ''' </remarks>
-  ''' <param name="obj">A reference to the business object to be updated.</param>
-  ''' <returns>A reference to the updated business object.</returns>
-  Public Shared Function Update(ByVal obj As Object) As Object
-
-    Dim result As Server.DataPortalResult
-
-    Dim method As MethodInfo
-    If TypeOf obj Is CommandBase Then
-      method = GetMethod(obj.GetType, "DataPortal_Execute")
-
-    Else
-      method = GetMethod(obj.GetType, "DataPortal_Update")
-    End If
-
-    Dim portal As DataPortalClient.IDataPortalProxy
-    portal = GetDataPortalProxy(RunLocal(method))
-
-    Dim dpContext As New Server.DataPortalContext(GetPrincipal, portal.IsServerRemote)
-
-    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
-
-    Try
-      result = CType(portal.Update(obj, dpContext), Server.DataPortalResult)
-
-    Catch ex As Server.DataPortalException
-      result = ex.Result
-      If portal.IsServerRemote Then
-        RestoreContext(result)
-      End If
-      Throw New DataPortalException("DataPortal.Update " & _
-        My.Resources.Failed, ex.InnerException, result.ReturnObject)
-    End Try
-
-    If portal.IsServerRemote Then
-      RestoreContext(result)
-    End If
-
-    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
-
-    Return result.ReturnObject
-
-  End Function
-
-  ''' <summary>
-  ''' Called by a <c>Shared</c> method in the business class to cause
-  ''' immediate deletion of a specific object from the database.
-  ''' </summary>
-  ''' <param name="criteria">Object-specific criteria.</param>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Sub Delete(ByVal criteria As Object)
-
-    Dim result As Server.DataPortalResult
-
-    Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Delete")
-
-    Dim portal As DataPortalClient.IDataPortalProxy
-    portal = GetDataPortalProxy(RunLocal(method))
-
-    Dim dpContext As New Server.DataPortalContext(GetPrincipal, portal.IsServerRemote)
-
-    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
-
-    Try
-      result = CType(portal.Delete(criteria, dpContext), Server.DataPortalResult)
-
-    Catch ex As Server.DataPortalException
-      result = ex.Result
-      If portal.IsServerRemote Then
-        RestoreContext(result)
-      End If
-      Throw New DataPortalException("DataPortal.Delete " & _
-        My.Resources.Failed, ex.InnerException, result.ReturnObject)
-    End Try
-
-    If portal.IsServerRemote Then
-      RestoreContext(result)
-    End If
-
-    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
-
-  End Sub
-
-#End Region
-
-#Region " Get DataPortal Proxy "
-
-  Private Shared mLocalPortal As DataPortalClient.IDataPortalProxy
-  Private Shared mPortal As DataPortalClient.IDataPortalProxy
-
-  Private Shared Function GetDataPortalProxy(ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
-
-    If forceLocal Then
-      If mLocalPortal Is Nothing Then
-        mLocalPortal = New DataPortalClient.LocalProxy
-      End If
-      Return mLocalPortal
-
-    Else
-      If mPortal Is Nothing Then
-
-        Dim proxyTypeName As String = ApplicationContext.DataPortalProxy
-        If proxyTypeName = "Local" Then
-          mPortal = New DataPortalClient.LocalProxy
-
-        Else
-          Dim typeName As String = proxyTypeName.Substring(0, proxyTypeName.IndexOf(",")).Trim
-          Dim assemblyName As String = proxyTypeName.Substring(proxyTypeName.IndexOf(",") + 1).Trim
-          mPortal = DirectCast(Activator.CreateInstance(assemblyName, _
-            typeName).Unwrap, DataPortalClient.IDataPortalProxy)
-        End If
-      End If
-      Return mPortal
-    End If
-
-  End Function
-
-#End Region
-
-#Region " Security "
-
-  Private Shared Function GetPrincipal() As System.Security.Principal.IPrincipal
-    If ApplicationContext.AuthenticationType = "Windows" Then
-      ' Windows integrated security 
-      Return Nothing
-
-    Else
-      ' we assume using the CSLA framework security
-      Return System.Threading.Thread.CurrentPrincipal
-    End If
-  End Function
-
-#End Region
-
-#Region " Helper methods "
-
-  Private Shared Sub RestoreContext(ByVal result As Object)
-
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Threading.Thread.SetData(slot, CType(result, Server.DataPortalResult).GlobalContext)
-
-  End Sub
-
-  Private Shared Function RunLocal(ByVal method As MethodInfo) As Boolean
-
-    Return Attribute.IsDefined(method, GetType(RunLocalAttribute))
-
-  End Function
-
-  Private Shared Function GetMethod(ByVal objectType As Type, ByVal method As String) As MethodInfo
-
-    Return objectType.GetMethod( _
-      method, _
-      BindingFlags.FlattenHierarchy Or _
-      BindingFlags.Instance Or _
-      BindingFlags.Public Or _
-      BindingFlags.NonPublic)
-
-  End Function
-
-  Private Shared Function GetObjectType(ByVal criteria As Object) As Type
-
-    If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
-      ' get the type of the actual business object
-      ' from CriteriaBase (using the new scheme)
-      Return CType(criteria, CriteriaBase).ObjectType
-
-    Else
-      ' get the type of the actual business object
-      ' based on the nested class scheme in the book
-      Return criteria.GetType.DeclaringType
-    End If
-
-  End Function
-
-#End Region
-
-End Class
-
-*/

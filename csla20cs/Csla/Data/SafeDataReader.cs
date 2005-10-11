@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 
-namespace CSLA.Data
+namespace Csla.Data
 {
     /// <summary>
     /// This is a DataReader that 'fixes' any null values before

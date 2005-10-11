@@ -43,6 +43,7 @@
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessBaseOfT.cs" />
     <Compile Include="BusinessCollectionBase.cs" />
+    <Compile Include="BusinessListBase.cs" />
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BindableCollectionBase.cs" />
@@ -57,20 +58,33 @@
     <Compile Include="DataPortal\Client\EnterpriseServicesProxy.cs" />
     <Compile Include="DataPortal\Client\IDataPortalProxy.cs" />
     <Compile Include="DataPortal\Client\LocalProxy.cs" />
+    <Compile Include="DataPortal\Client\RemotingProxy.cs" />
+    <Compile Include="DataPortal\Client\WebServicesProxy.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DataPortal\CriteriaBase.cs" />
     <Compile Include="DataPortal\DataPortalEventArgs.cs" />
     <Compile Include="DataPortal\DataPortalException.cs" />
     <Compile Include="DataPortal\Hosts\EnterpriseServicesPortal.cs" />
+    <Compile Include="DataPortal\Hosts\RemotingPortal.cs" />
+    <Compile Include="DataPortal\Hosts\WebServicePortal.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DataPortal\RunLocalAttribute.cs" />
+    <Compile Include="DataPortal\Server\CallMethodException.cs" />
     <Compile Include="DataPortal\Server\DataPortal.cs" />
     <Compile Include="DataPortal\Server\DataPortalContext.cs" />
     <Compile Include="DataPortal\Server\DataPortalException.cs" />
     <Compile Include="DataPortal\Server\DataPortalResult.cs" />
     <Compile Include="DataPortal\Server\IDataPortalServer.cs" />
+    <Compile Include="DataPortal\Server\ServicedDataPortal.cs" />
+    <Compile Include="DataPortal\Server\SimpleDataPortal.cs" />
+    <Compile Include="DataPortal\TransactionalAttribute.cs" />
     <Compile Include="Data\ObjectAdapter.cs" />
     <Compile Include="Data\SafeDataReader.cs" />
     <Compile Include="EnterpriseServicesSettings.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="NameValueListBase.cs" />
     <Compile Include="NotUndoableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -78,10 +92,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ReadOnlyBase.cs" />
+    <Compile Include="ReadOnlyCollectionBase.cs" />
+    <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="Security\AuthorizationRules.cs" />
     <Compile Include="Security\BusinessPrincipalBase.cs" />
     <Compile Include="Security\RolesForProperty.cs" />
     <Compile Include="SmartDate.cs" />
+    <Compile Include="SortedBindingList.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Validation\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRulesCollection.cs" />

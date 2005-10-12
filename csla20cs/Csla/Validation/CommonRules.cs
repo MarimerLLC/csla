@@ -49,9 +49,10 @@ namespace Csla.Validation
         public static bool StringMaxLength(object target, RuleArgs e)
         {
             int max = ((MaxLengthRuleArgs)e).MaxLength;
-            if (Utilities.CallByName(target, e.PropertyName, CallType.Get).ToString().Length > max)
+            string value = (string)Utilities.CallByName(target, e.PropertyName, CallType.Get);
+            if (!String.IsNullOrEmpty(value) && (value.Length > max))
             {
-                e.Description = e.PropertyName + " can not exceed " + max + " characters";
+                e.Description = String.Format("{0} can not exceed {1} characters", max.ToString());
                 return false;
             }
             return true;

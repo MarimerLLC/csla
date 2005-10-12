@@ -49,7 +49,10 @@ namespace Csla.Validation
         public static bool StringMaxLength(object target, RuleArgs e)
         {
             int max = ((MaxLengthRuleArgs)e).MaxLength;
-            if (Utilities.CallByName(target, e.PropertyName, CallType.Get).ToString().Length > max)
+            object val = Utilities.CallByName(target, e.PropertyName, CallType.Get);
+            if (val == null)
+                return true;
+            if (val.ToString().Length > max)
             {
                 e.Description = e.PropertyName + " can not exceed " + max + " characters";
                 return false;

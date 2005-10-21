@@ -25,19 +25,10 @@ Public MustInherit Class ReadOnlyListBase(Of T)
   ''' Creates a clone of the object.
   ''' </summary>
   ''' <returns>A new object containing the exact data of the original object.</returns>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
   Public Overridable Function Clone() As Object Implements ICloneable.Clone
 
     Return ObjectCloner.Clone(Me)
 
-  End Function
-
-  ''' <summary>
-  ''' Creates a clone of the object.
-  ''' </summary>
-  ''' <returns>A new object containing the exact data of the original object.</returns>
-  Public Function Clone(Of K)() As K
-    Return DirectCast(Me.Clone, K)
   End Function
 
 #End Region

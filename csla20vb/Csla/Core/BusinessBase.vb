@@ -669,20 +669,10 @@ Namespace Core
     ''' <returns>
     ''' A new object containing the exact data of the original object.
     ''' </returns>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> Public Overridable Function Clone() As Object Implements ICloneable.Clone
+    Public Overridable Function Clone() As Object Implements ICloneable.Clone
 
       Return ObjectCloner.Clone(Me)
 
-    End Function
-
-    ''' <summary>
-    ''' Creates a clone of the object.
-    ''' </summary>
-    ''' <returns>
-    ''' A new object containing the exact data of the original object.
-    ''' </returns>
-    Public Function Clone(Of T)() As Object
-      Return DirectCast(Me.Clone, T)
     End Function
 
 #End Region

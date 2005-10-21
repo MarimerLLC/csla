@@ -36,7 +36,7 @@ Namespace Validation
       'End Property
 
       ''' <summary>
-      ''' Gets or sets the name of the rule.
+      ''' Gets the name of the rule.
       ''' </summary>
       ''' <remarks>
       ''' The rule's name must be unique and is used

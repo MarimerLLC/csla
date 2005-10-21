@@ -226,11 +226,11 @@ Namespace Server
 #Region " Calling a method "
 
     Private Shared Function CallMethodIfImplemented(ByVal obj As Object, _
-      ByVal method As String, ByVal ParamArray params() As Object) As Object
+      ByVal method As String, ByVal ParamArray parameters() As Object) As Object
 
       Dim info As MethodInfo = GetMethod(obj.GetType, method)
       If info IsNot Nothing Then
-        Return CallMethod(obj, info, params)
+        Return CallMethod(obj, info, parameters)
 
       Else
         Return Nothing
@@ -239,7 +239,7 @@ Namespace Server
     End Function
 
     Private Shared Function CallMethod(ByVal obj As Object, _
-      ByVal method As String, ByVal ParamArray params() As Object) As Object
+      ByVal method As String, ByVal ParamArray parameters() As Object) As Object
 
       Dim info As MethodInfo = GetMethod(obj.GetType, method)
       If info Is Nothing Then
@@ -247,17 +247,17 @@ Namespace Server
           method & " " & My.Resources.MethodNotImplemented)
       End If
 
-      Return CallMethod(obj, info, params)
+      Return CallMethod(obj, info, parameters)
 
     End Function
 
     Private Shared Function CallMethod(ByVal obj As Object, _
-      ByVal info As MethodInfo, ByVal ParamArray params() As Object) As Object
+      ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) As Object
 
       ' call a private method on the object
       Dim result As Object
       Try
-        result = info.Invoke(obj, params)
+        result = info.Invoke(obj, parameters)
 
       Catch e As Exception
         Throw New CallMethodException( _

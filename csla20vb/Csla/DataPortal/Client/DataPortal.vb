@@ -25,13 +25,25 @@ Public NotInheritable Class DataPortal
   ''' requested server-side DataPortal method.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Public Shared Event DataPortalInvoke(ByVal e As DataPortalEventArgs)
   ''' <summary>
   ''' Raised by DataPortal after the requested 
   ''' server-side DataPortal method call is complete.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Public Shared Event DataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+
+  Private Shared Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+
+    RaiseEvent DataPortalInvoke(e)
+
+  End Sub
+
+  Private Shared Sub OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+
+    RaiseEvent DataPortalInvokeComplete(e)
+
+  End Sub
 
 #End Region
 
@@ -84,7 +96,7 @@ Public NotInheritable Class DataPortal
 
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, portal.IsServerRemote)
 
-    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
     Try
       result = CType(portal.Create( _
@@ -103,7 +115,7 @@ Public NotInheritable Class DataPortal
       RestoreContext(result)
     End If
 
-    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
     Return result.ReturnObject
 
@@ -141,7 +153,7 @@ Public NotInheritable Class DataPortal
 
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, portal.IsServerRemote)
 
-    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
     Try
       result = CType(portal.Fetch(criteria, dpContext), Server.DataPortalResult)
@@ -159,7 +171,7 @@ Public NotInheritable Class DataPortal
       RestoreContext(result)
     End If
 
-    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
     Return result.ReturnObject
 
@@ -214,7 +226,7 @@ Public NotInheritable Class DataPortal
 
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, portal.IsServerRemote)
 
-    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
     Try
       result = CType(portal.Update(obj, dpContext), Server.DataPortalResult)
@@ -232,7 +244,7 @@ Public NotInheritable Class DataPortal
       RestoreContext(result)
     End If
 
-    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
     Return result.ReturnObject
 
@@ -255,7 +267,7 @@ Public NotInheritable Class DataPortal
 
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, portal.IsServerRemote)
 
-    RaiseEvent OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
     Try
       result = CType(portal.Delete(criteria, dpContext), Server.DataPortalResult)
@@ -273,7 +285,7 @@ Public NotInheritable Class DataPortal
       RestoreContext(result)
     End If
 
-    RaiseEvent OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
   End Sub
 

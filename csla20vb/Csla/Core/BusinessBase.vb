@@ -544,6 +544,7 @@ Namespace Core
     Public Sub CancelEdit()
       mBindingEdit = False
       UndoChanges()
+      ValidationRules.SetTarget(Me)
       AddBusinessRules()
       OnIsDirtyChanged()
     End Sub

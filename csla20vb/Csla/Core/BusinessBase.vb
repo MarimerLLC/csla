@@ -209,6 +209,7 @@ Namespace Core
     ''' directly from the property to be checked.
     ''' </para>
     ''' </remarks>
+    <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Protected Sub PropertyHasChanged()
 
       Dim propertyName As String = _

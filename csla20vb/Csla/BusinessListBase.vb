@@ -166,10 +166,10 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
     UndoChanges()
 
     ' make sure the child objects re-add their business rules
-    For Each child As Core.BusinessBase In Me
+    For Each child As T In Me
       child.AddBusinessRules()
     Next
-    For Each child As Core.BusinessBase In DeletedList
+    For Each child As T In DeletedList
       child.AddBusinessRules()
     Next
 
@@ -201,7 +201,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
 #Region " N-level undo "
 
   Friend Sub CopyState()
-    Dim Child As Core.BusinessBase
+    Dim Child As T
 
     ' we are going a level deeper in editing
     mEditLevel += 1
@@ -251,7 +251,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   End Sub
 
   Friend Sub AcceptChanges()
-    Dim child As Core.BusinessBase
+    Dim child As T
     Dim index As Integer
 
     ' we are coming up one edit level

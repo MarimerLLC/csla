@@ -131,7 +131,15 @@ Namespace Validation
       Generic.Dictionary(Of String, List(Of RuleMethod))
 
     Friend Sub New(ByVal businessObject As Object)
+
+      SetTarget(businessObject)
+
+    End Sub
+
+    Friend Sub SetTarget(ByVal businessObject As Object)
+
       mTarget = businessObject
+
     End Sub
 
     Private ReadOnly Property BrokenRulesList() As BrokenRulesCollection

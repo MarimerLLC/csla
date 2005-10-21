@@ -729,7 +729,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsValid() As Boolean
       Get
-        Return mValidationRules.IsValid
+        Return ValidationRules.IsValid
       End Get
     End Property
 
@@ -742,7 +742,7 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Public Overridable ReadOnly Property BrokenRulesCollection() As Validation.BrokenRulesCollection
       Get
-        Return mValidationRules.GetBrokenRules
+        Return ValidationRules.GetBrokenRules
       End Get
     End Property
 
@@ -846,7 +846,7 @@ Namespace Core
     Private ReadOnly Property [Error]() As String Implements System.ComponentModel.IDataErrorInfo.Error
       Get
         If Not IsValid Then
-          Return mValidationRules.GetBrokenRules.ToString
+          Return ValidationRules.GetBrokenRules.ToString
 
         Else
           Return ""
@@ -858,7 +858,7 @@ Namespace Core
       Get
         If Not IsValid Then
           Dim rule As Validation.BrokenRule = _
-            mValidationRules.GetBrokenRules.GetFirstBrokenRule(columnName)
+            ValidationRules.GetBrokenRules.GetFirstBrokenRule(columnName)
           If rule Is Nothing Then
             Return ""
 
@@ -879,6 +879,7 @@ Namespace Core
     <OnDeserialized()> _
     Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
 
+      ValidationRules.SetTarget(Me)
       AddBusinessRules()
       OnDeserialized(context)
 

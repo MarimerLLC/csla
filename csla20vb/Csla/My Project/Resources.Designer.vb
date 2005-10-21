@@ -250,6 +250,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to GetIdValue must not return Nothing.
+        '''</summary>
+        Friend ReadOnly Property GetIdValueCantBeNull() As String
+            Get
+                Return ResourceManager.GetString("GetIdValueCantBeNull", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Insert is an invalid operation.
         '''</summary>
         Friend ReadOnly Property InsertInvalidException() As String

@@ -578,4 +578,10 @@
 
   </data>
 
+  <data name="GetIdValueCantBeNull" xml:space="preserve">
+
+    <value>GetIdValue must not return Nothing</value>
+
+  </data>
+
 </root>

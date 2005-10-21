@@ -78,17 +78,36 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   ''' </para>
   ''' </remarks>
   ''' <returns>A value indicating if the object is currently valid.</returns>
-  Public ReadOnly Property IsValid() As Boolean
+  Public Overridable ReadOnly Property IsValid() As Boolean
     Get
       ' run through all the child objects
       ' and if any are invalid then the
       ' collection is invalid
-      Dim Child As T
-
-      For Each Child In Me
-        If Not Child.IsValid Then Return False
+      For Each child As T In Me
+        If Not child.IsValid Then Return False
       Next
       Return True
+    End Get
+  End Property
+
+  ''' <summary>
+  ''' Returns a String indicating why the collection
+  ''' is not currently valid.
+  ''' </summary>
+  ''' <remarks>
+  ''' This property should return an empty string
+  ''' unless IsValid is returning False.
+  ''' </remarks>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Public Overridable ReadOnly Property ErrorText() As String
+    Get
+      If IsValid Then
+        Return ""
+
+      Else
+        Return "One or more child objects are in " & _
+          "an invalid state"
+      End If
     End Get
   End Property
 

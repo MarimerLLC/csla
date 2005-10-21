@@ -27,16 +27,16 @@ Namespace Validation
     ''' The first BrokenRule object corresponding to the specified property, or Nothing if 
     ''' there are no rules defined for the property.
     ''' </returns>
-    Public ReadOnly Property RuleForProperty(ByVal [property] As String) As BrokenRule
-      Get
-        For Each item As BrokenRule In Me
-          If item.Property = [property] Then
-            Return item
-          End If
-        Next
-        Return Nothing
-      End Get
-    End Property
+    Public Function GetFirstBrokenRule(ByVal [property] As String) As BrokenRule
+
+      For Each item As BrokenRule In Me
+        If item.Property = [property] Then
+          Return item
+        End If
+      Next
+      Return Nothing
+
+    End Function
 
     Friend Sub New()
       ' limit creation to this assembly

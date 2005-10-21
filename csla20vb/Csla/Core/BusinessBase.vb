@@ -755,7 +755,8 @@ Namespace Core
     ''' values from the database.
     ''' </summary>
     ''' <param name="Criteria">An object containing criteria values.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)
       Throw New NotSupportedException(My.Resources.CreateNotSupportedException)
     End Sub
 
@@ -764,7 +765,8 @@ Namespace Core
     ''' object based on data in the database.
     ''' </summary>
     ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> Protected Overridable Sub DataPortal_Fetch(ByVal criteria As Object)
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    Protected Overridable Sub DataPortal_Fetch(ByVal criteria As Object)
       Throw New NotSupportedException(My.Resources.FetchNotSupportedException)
     End Sub
 
@@ -772,7 +774,8 @@ Namespace Core
     ''' Override this method to allow insertion of a business
     ''' object.
     ''' </summary>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> Protected Overridable Sub DataPortal_Insert()
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    Protected Overridable Sub DataPortal_Insert()
       Throw New NotSupportedException(My.Resources.InsertNotSupportedException)
     End Sub
 
@@ -780,14 +783,16 @@ Namespace Core
     ''' Override this method to allow update of a business
     ''' object.
     ''' </summary>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> Protected Overridable Sub DataPortal_Update()
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    Protected Overridable Sub DataPortal_Update()
       Throw New NotSupportedException(My.Resources.UpdateNotSupportedException)
     End Sub
 
     ''' <summary>
     ''' Override this method to allow deferred deletion of a business object.
     ''' </summary>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> Protected Overridable Sub DataPortal_DeleteSelf()
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    Protected Overridable Sub DataPortal_DeleteSelf()
       Throw New NotSupportedException(My.Resources.DeleteNotSupportedException)
     End Sub
 
@@ -795,7 +800,8 @@ Namespace Core
     ''' Override this method to allow immediate deletion of a business object.
     ''' </summary>
     ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> Protected Overridable Sub DataPortal_Delete(ByVal criteria As Object)
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    Protected Overridable Sub DataPortal_Delete(ByVal criteria As Object)
       Throw New NotSupportedException(My.Resources.DeleteNotSupportedException)
     End Sub
 
@@ -804,7 +810,8 @@ Namespace Core
     ''' requested DataPortal_xyz method.
     ''' </summary>
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
     End Sub
@@ -814,7 +821,8 @@ Namespace Core
     ''' requested DataPortal_xyz method.
     ''' </summary>
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
     End Sub
@@ -825,7 +833,8 @@ Namespace Core
     ''' </summary>
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     ''' <param name="ex">The Exception thrown during data access.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
     End Sub
@@ -849,7 +858,7 @@ Namespace Core
       Get
         If Not IsValid Then
           Dim rule As Validation.BrokenRule = _
-            mValidationRules.GetBrokenRules.RuleForProperty(columnName)
+            mValidationRules.GetBrokenRules.GetFirstBrokenRule(columnName)
           If rule Is Nothing Then
             Return ""
 

@@ -30,20 +30,24 @@ Namespace Server
 
         Dim method As MethodInfo = GetMethod(objectType, "DataPortal_Create")
 
-        ' route to Enterprise Services if requested
-        If IsTransactionalMethod(method) Then
-          Dim portal As New ServicedDataPortal
-          Try
+        Select Case TransactionalType(method)
+          Case TransactionalTypes.EnterpriseServices
+            Dim portal As New ServicedDataPortal
+            Try
+              result = portal.Create(objectType, criteria, context)
+
+            Finally
+              portal.Dispose()
+            End Try
+
+          Case TransactionalTypes.TransactionScope
+            Dim portal As New TransactionalDataPortal
             result = portal.Create(objectType, criteria, context)
 
-          Finally
-            portal.Dispose()
-          End Try
-
-        Else
-          Dim portal As New SimpleDataPortal
-          result = portal.Create(objectType, criteria, context)
-        End If
+          Case Else
+            Dim portal As New SimpleDataPortal
+            result = portal.Create(objectType, criteria, context)
+        End Select
 
         ClearContext(context)
         Return result
@@ -70,20 +74,24 @@ Namespace Server
 
         Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Fetch")
 
-        ' route to Enterprise Services if requested
-        If IsTransactionalMethod(method) Then
-          Dim portal As New ServicedDataPortal
-          Try
+        Select Case TransactionalType(method)
+          Case TransactionalTypes.EnterpriseServices
+            Dim portal As New ServicedDataPortal
+            Try
+              result = portal.Fetch(criteria, context)
+
+            Finally
+              portal.Dispose()
+            End Try
+
+          Case TransactionalTypes.TransactionScope
+            Dim portal As New TransactionalDataPortal
             result = portal.Fetch(criteria, context)
 
-          Finally
-            portal.Dispose()
-          End Try
-
-        Else
-          Dim portal As New SimpleDataPortal
-          result = portal.Fetch(criteria, context)
-        End If
+          Case Else
+            Dim portal As New SimpleDataPortal
+            result = portal.Fetch(criteria, context)
+        End Select
 
         ClearContext(context)
         Return result
@@ -119,20 +127,24 @@ Namespace Server
           method = GetMethod(obj.GetType, "DataPortal_Update")
         End If
 
-        ' route to Enterprise Services if requested
-        If IsTransactionalMethod(method) Then
-          Dim portal As New ServicedDataPortal
-          Try
+        Select Case TransactionalType(method)
+          Case TransactionalTypes.EnterpriseServices
+            Dim portal As New ServicedDataPortal
+            Try
+              result = portal.Update(obj, context)
+
+            Finally
+              portal.Dispose()
+            End Try
+
+          Case TransactionalTypes.TransactionScope
+            Dim portal As New TransactionalDataPortal
             result = portal.Update(obj, context)
 
-          Finally
-            portal.Dispose()
-          End Try
-
-        Else
-          Dim portal As New SimpleDataPortal
-          result = portal.Update(obj, context)
-        End If
+          Case Else
+            Dim portal As New SimpleDataPortal
+            result = portal.Update(obj, context)
+        End Select
 
         ClearContext(context)
         Return result
@@ -158,20 +170,24 @@ Namespace Server
 
         Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Delete")
 
-        ' route to Enterprise Services if requested
-        If IsTransactionalMethod(method) Then
-          Dim portal As New ServicedDataPortal
-          Try
+        Select Case TransactionalType(method)
+          Case TransactionalTypes.EnterpriseServices
+            Dim portal As New ServicedDataPortal
+            Try
+              result = portal.Delete(criteria, context)
+
+            Finally
+              portal.Dispose()
+            End Try
+
+          Case TransactionalTypes.TransactionScope
+            Dim portal As New TransactionalDataPortal
             result = portal.Delete(criteria, context)
 
-          Finally
-            portal.Dispose()
-          End Try
-
-        Else
-          Dim portal As New SimpleDataPortal
-          result = portal.Delete(criteria, context)
-        End If
+          Case Else
+            Dim portal As New SimpleDataPortal
+            result = portal.Delete(criteria, context)
+        End Select
 
         ClearContext(context)
         Return result
@@ -255,6 +271,22 @@ Namespace Server
     Private Shared Function IsTransactionalMethod(ByVal method As MethodInfo) As Boolean
 
       Return Attribute.IsDefined(method, GetType(TransactionalAttribute))
+
+    End Function
+
+    Private Shared Function TransactionalType(ByVal method As MethodInfo) As TransactionalTypes
+
+      Dim result As TransactionalTypes
+      If IsTransactionalMethod(method) Then
+        Dim attrib As TransactionalAttribute = _
+          DirectCast(Attribute.GetCustomAttribute(method, GetType(TransactionalAttribute)), _
+          TransactionalAttribute)
+        result = attrib.TransactionType
+
+      Else
+        result = TransactionalTypes.Manual
+      End If
+      Return result
 
     End Function
 

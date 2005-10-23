@@ -32,25 +32,33 @@ namespace Csla.Server
 
                 MethodInfo method = GetMethod(objectType, "DataPortal_Create");
 
-                // route to Enterprise Services if requested
-                if (IsTransactionalMethod(method))
+                IDataPortalServer portal;
+                switch (TransactionalType(method))
                 {
-                    ServicedDataPortal portal = new ServicedDataPortal();
-                    try
-                    {
-                        result = portal.Create(objectType, criteria, context);
-                    }
-                    finally
-                    {
-                        portal.Dispose();
-                    }
-                }
-                else
-                {
-                    SimpleDataPortal portal = new SimpleDataPortal();
-                    result = portal.Create(objectType, criteria, context);
-                }
+                    case TransactionalTypes.EnterpriseServices:
+                        portal = new ServicedDataPortal();
+                        try
+                        {
+                            result = portal.Create(objectType, criteria, context);
+                        }
+                        finally
+                        {
+                            ((ServicedDataPortal)portal).Dispose();
+                        }
 
+                        break;
+                    case TransactionalTypes.TransactionScope:
+
+                        portal = new TransactionalDataPortal();
+                        result = portal.Create(objectType, criteria, context);
+
+                        break;
+                    default:
+                        portal = new SimpleDataPortal();
+                        result = portal.Create(objectType, criteria, context);
+                        break;
+                }
+                
                 ClearContext(context);
                 return result;
             }
@@ -75,25 +83,30 @@ namespace Csla.Server
 
                 DataPortalResult result;
 
-                MethodInfo method = GetMethod(GetObjecctType(criteria), "DataPortal_Fetch");
+                MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Fetch");
 
-                // route to Enterprise Services if requested
-                if (IsTransactionalMethod(method))
+                IDataPortalServer portal;
+                switch (TransactionalType(method))
                 {
-                    ServicedDataPortal portal = new ServicedDataPortal();
-                    try
-                    {
+                    case TransactionalTypes.EnterpriseServices:
+                        portal = new ServicedDataPortal();
+                        try
+                        {
+                            result = portal.Fetch(criteria, context);
+                        }
+                        finally
+                        {
+                            ((ServicedDataPortal)portal).Dispose();
+                        }
+                        break;
+                    case TransactionalTypes.TransactionScope:
+                        portal = new TransactionalDataPortal();
                         result = portal.Fetch(criteria, context);
-                    }
-                    finally
-                    {
-                        portal.Dispose();
-                    }
-                }
-                else
-                {
-                    SimpleDataPortal portal = new SimpleDataPortal();
-                    result = portal.Fetch(criteria, context);
+                        break;
+                    default:
+                        portal = new SimpleDataPortal();
+                        result = portal.Fetch(criteria, context);
+                        break;
                 }
 
                 ClearContext(context);
@@ -127,23 +140,28 @@ namespace Csla.Server
                 else
                     method = GetMethod(obj.GetType(), "DataPortal_Update");
 
-                // route to Enterprise Services if requested
-                if (IsTransactionalMethod(method))
+                IDataPortalServer portal;
+                switch (TransactionalType(method))
                 {
-                    ServicedDataPortal portal = new ServicedDataPortal();
-                    try
-                    {
+                    case TransactionalTypes.EnterpriseServices:
+                        portal = new ServicedDataPortal();
+                        try
+                        {
+                            result = portal.Update(obj, context);
+                        }
+                        finally
+                        {
+                            ((ServicedDataPortal)portal).Dispose();
+                        }
+                        break;
+                    case TransactionalTypes.TransactionScope:
+                        portal = new TransactionalDataPortal();
                         result = portal.Update(obj, context);
-                    }
-                    finally
-                    {
-                        portal.Dispose();
-                    }
-                }
-                else
-                {
-                    SimpleDataPortal portal = new SimpleDataPortal();
-                    result = portal.Update(obj, context);
+                        break;
+                    default:
+                        portal = new SimpleDataPortal();
+                        result = portal.Update(obj, context);
+                        break;
                 }
 
                 ClearContext(context);
@@ -169,25 +187,30 @@ namespace Csla.Server
 
                 DataPortalResult result;
 
-                MethodInfo method = GetMethod(GetObjecctType(criteria), "DataPortal_Delete");
+                MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Delete");
 
-                // route to Enterprise Services if requested
-                if (IsTransactionalMethod(method))
+                IDataPortalServer portal;
+                switch (TransactionalType(method))
                 {
-                    ServicedDataPortal portal = new ServicedDataPortal();
-                    try
-                    {
+                    case TransactionalTypes.EnterpriseServices:
+                        portal = new ServicedDataPortal();
+                        try
+                        {
+                            result = portal.Delete(criteria, context);
+                        }
+                        finally
+                        {
+                            ((ServicedDataPortal)portal).Dispose();
+                        }
+                        break;
+                    case TransactionalTypes.TransactionScope:
+                        portal = new TransactionalDataPortal();
                         result = portal.Delete(criteria, context);
-                    }
-                    finally
-                    {
-                        portal.Dispose();
-                    }
-                }
-                else
-                {
-                    SimpleDataPortal portal = new SimpleDataPortal();
-                    result = portal.Delete(criteria, context);
+                        break;
+                    default:
+                        portal = new SimpleDataPortal();
+                        result = portal.Delete(criteria, context);
+                        break;
                 }
 
                 ClearContext(context);
@@ -269,7 +292,23 @@ namespace Csla.Server
             return Attribute.IsDefined(method, typeof(TransactionalAttribute));
         }
 
-        private static Type GetObjecctType(object criteria)
+        private static TransactionalTypes TransactionalType(MethodInfo method)
+        {
+            TransactionalTypes result;
+            if (IsTransactionalMethod(method))
+            {
+                TransactionalAttribute attrib =
+                    (TransactionalAttribute)Attribute.GetCustomAttribute(method, typeof(TransactionalAttribute));
+                result = attrib.TransactionType;
+            }
+            else
+                result = TransactionalTypes.Manual;
+            return result;
+        }
+
+
+
+        private static Type GetObjectType(object criteria)
         {
             if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
             {

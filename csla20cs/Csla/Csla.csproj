@@ -36,6 +36,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -79,7 +80,9 @@
     <Compile Include="DataPortal\Server\IDataPortalServer.cs" />
     <Compile Include="DataPortal\Server\ServicedDataPortal.cs" />
     <Compile Include="DataPortal\Server\SimpleDataPortal.cs" />
+    <Compile Include="DataPortal\Server\TransactionalDataPortal.cs" />
     <Compile Include="DataPortal\TransactionalAttribute.cs" />
+    <Compile Include="DataPortal\TransactionalTypes.cs" />
     <Compile Include="Data\ObjectAdapter.cs" />
     <Compile Include="Data\SafeDataReader.cs" />
     <Compile Include="EnterpriseServicesSettings.cs" />

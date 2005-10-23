@@ -250,6 +250,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Business object must supply a non-null ID value in GetIdValue.
+        /// </summary>
+        internal static string GetIdValueCantBeNull {
+            get {
+                return ResourceManager.GetString("GetIdValueCantBeNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Insert is an invalid operation.
         /// </summary>
         internal static string InsertInvalidException {

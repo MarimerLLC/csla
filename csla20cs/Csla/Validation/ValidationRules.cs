@@ -34,7 +34,7 @@ namespace Csla.Validation
             }
 
             /// <summary>
-            /// Gets or sets the name of the rule.
+            /// Gets the name of the rule.
             /// </summary>
             /// <remarks>
             /// The rule's name must be unique and is used
@@ -117,6 +117,11 @@ namespace Csla.Validation
         private Dictionary<string, List<RuleMethod>> _rulesList;
 
         internal ValidationRules(object businessObject)
+        {
+            SetTarget(businessObject);
+        }
+
+        internal void SetTarget(object businessObject)
         {
             _target = businessObject;
         }

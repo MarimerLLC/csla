@@ -28,19 +28,9 @@ namespace Csla
         /// Creates a clone of the object.
         /// </summary>
         /// <returns>A new object containing the exact data of the original object.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
         public virtual object Clone()
         {
             return Core.ObjectCloner.Clone(this);
-        }
-
-        /// <summary>
-        /// Creates a clone of the object.
-        /// </summary>
-        /// <returns>A new object containing the exact data of the original object.</returns>
-        public K Clone<K>()
-        {
-            return (K)this.Clone();
         }
 
         #endregion

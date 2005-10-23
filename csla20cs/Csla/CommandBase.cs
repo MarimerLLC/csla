@@ -17,13 +17,13 @@ namespace Csla
     /// type of stateless, atomic call to the server instead.
     /// </para><para>
     /// To implement a command object, inherit from CommandBase and
-    /// override the DataPortal_Update method. In this method you can
+    /// override the DataPortal_Execute method. In this method you can
     /// implement any server-side code as required.
     /// </para><para>
     /// To pass data to/from the server, use instance variables within
     /// the command object itself. The command object is instantiated on
     /// the client, and is passed by value to the server where the 
-    /// DataPortal_Update method is invoked. The command object is then
+    /// DataPortal_Execute method is invoked. The command object is then
     /// returned to the client by value.
     /// </para>
     /// </remarks>

@@ -31,15 +31,27 @@ namespace Csla
         /// Raised by DataPortal prior to calling the 
         /// requested server-side DataPortal method.
         /// </summary>
-        public static event OnDataPortalInvokeEventHandler OnDataPortalInvoke;
-        public delegate void OnDataPortalInvokeEventHandler(DataPortalEventArgs e);
+        public static event DataPortalInvokeEventHandler DataPortalInvoke;
+        public delegate void DataPortalInvokeEventHandler(DataPortalEventArgs e);
 
         /// <summary>
         /// Raised by DataPortal after the requested 
         /// server-side DataPortal method call is complete.
         /// </summary>
-        public static event OnDataPortalInvokeCompleteEventHandler OnDataPortalInvokeComplete;
-        public delegate void OnDataPortalInvokeCompleteEventHandler(DataPortalEventArgs e);
+        public static event DataPortalInvokeCompleteEventHandler DataPortalInvokeComplete;
+        public delegate void DataPortalInvokeCompleteEventHandler(DataPortalEventArgs e);
+
+        private static void OnDataPortalInvoke(DataPortalEventArgs e)
+        {
+            if (DataPortalInvoke != null)
+                DataPortalInvoke(e);
+        }
+
+        private static void OnDataPortalInvokeComplete(DataPortalEventArgs e)
+        {
+            if (DataPortalInvokeComplete != null)
+                DataPortalInvokeComplete(e);
+        }
 
         #endregion
 
@@ -93,8 +105,7 @@ namespace Csla
 
             Server.DataPortalContext dpContext = new Csla.Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
 
-            if (OnDataPortalInvoke != null)
-                OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+            OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
             try
             {
@@ -111,8 +122,7 @@ namespace Csla
             if (portal.IsServerRemote)
                 RestoreContext(result);
 
-            if (OnDataPortalInvokeComplete != null)
-                OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+            OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
             return result.ReturnObject;
         }
@@ -148,8 +158,7 @@ namespace Csla
 
             Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
 
-            if (OnDataPortalInvoke != null)
-                OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+            OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
             try
             {
@@ -166,8 +175,7 @@ namespace Csla
             if (portal.IsServerRemote)
                 RestoreContext(result);
 
-            if (OnDataPortalInvokeComplete != null)
-                OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+            OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
             return result.ReturnObject;
         }
@@ -218,8 +226,7 @@ namespace Csla
 
             Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
 
-            if (OnDataPortalInvoke != null)
-                OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+            OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
             try
             {
@@ -236,8 +243,7 @@ namespace Csla
             if (portal.IsServerRemote)
                 RestoreContext(result);
 
-            if (OnDataPortalInvokeComplete != null)
-                OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+            OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
             return result.ReturnObject;
         }
@@ -259,8 +265,7 @@ namespace Csla
 
             Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
 
-            if (OnDataPortalInvoke != null)
-                OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+            OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
             try
             {
@@ -277,8 +282,7 @@ namespace Csla
             if (portal.IsServerRemote)
                 RestoreContext(result);
 
-            if (OnDataPortalInvokeComplete != null)
-                OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+            OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
         }
 
         #endregion

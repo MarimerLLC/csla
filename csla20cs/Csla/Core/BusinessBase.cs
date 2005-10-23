@@ -230,6 +230,7 @@ namespace Csla.Core
         /// directly from the property to be checked.
         /// </para>
         /// </remarks>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
         protected void PropertyHasChanged()
         {
             string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
@@ -547,6 +548,7 @@ namespace Csla.Core
         {
             _bindingEdit = false;
             UndoChanges();
+            ValidationRules.SetTarget(this);
             AddBusinessRules();
             OnIsDirtyChanged();
         }
@@ -667,21 +669,9 @@ namespace Csla.Core
         /// <returns>
         /// A new object containing the exact data of the original object.
         /// </returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public virtual object Clone()
         {
             return ObjectCloner.Clone(this);
-        }
-
-        /// <summary>
-        /// Creates a clone of the object.
-        /// </summary>
-        /// <returns>
-        /// A new object containing the exact data of the original object.
-        /// </returns>
-        public T Clone<T>()
-        {
-            return (T)this.Clone();
         }
 
         #endregion
@@ -744,7 +734,7 @@ namespace Csla.Core
         [Browsable(false)]
         public virtual bool IsValid
         {
-            get { return _validationRules.IsValid; }
+            get { return ValidationRules.IsValid; }
         }
 
 
@@ -757,7 +747,7 @@ namespace Csla.Core
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public virtual Validation.BrokenRulesCollection BrokenRulesCollection
         {
-            get { return _validationRules.GetBrokenRules(); }
+            get { return ValidationRules.GetBrokenRules(); }
         }
 
         #endregion
@@ -871,7 +861,7 @@ namespace Csla.Core
             get
             {
                 if (!IsValid)
-                    return _validationRules.GetBrokenRules().ToString();
+                    return ValidationRules.GetBrokenRules().ToString();
                 else
                     return String.Empty;
             }
@@ -883,7 +873,7 @@ namespace Csla.Core
             {
                 if (!IsValid)
                 {
-                    Validation.BrokenRule rule = _validationRules.GetBrokenRules().RuleForProperty(columnName);
+                    Validation.BrokenRule rule = ValidationRules.GetBrokenRules().GetFirstBrokenRule(columnName);
                     if (rule == null)
                         return String.Empty;
                     return rule.Description;
@@ -899,6 +889,7 @@ namespace Csla.Core
         [OnDeserialized()]
         private void OnDeserializedHandler(StreamingContext context)
         {
+            ValidationRules.SetTarget(this);
             AddBusinessRules();
             OnDeserialized(context);
         }

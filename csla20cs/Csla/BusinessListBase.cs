@@ -84,7 +84,7 @@ namespace Csla
         /// </para>
         /// </remarks>
         /// <returns>A value indicating if the object is currently valid.</returns>
-        public bool IsValid
+        public virtual bool IsValid
         {
             get
             {
@@ -95,6 +95,27 @@ namespace Csla
                     if (!child.IsValid)
                         return false;
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns a String indicating why the collection
+        /// is not currently valid.
+        /// </summary>
+        /// <remarks>
+        /// This property should return an empty string
+        /// unless IsValid is returning False.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public virtual string ErrorText
+        {
+            get
+            {
+                if (IsValid)
+                    return String.Empty;
+                else
+                    return "One or more child objects are in " +
+                        "an invalid state";
             }
         }
 
@@ -432,19 +453,9 @@ namespace Csla
         /// Creates a clone of the object.
         /// </summary>
         /// <returns>A new object containing the exact data of the original object.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
         public virtual object Clone()
         {
             return Core.ObjectCloner.Clone(this);
-        }
-
-        /// <summary>
-        /// Creates a clone of the object.
-        /// </summary>
-        /// <returns>A new object containing the exact data of the original object.</returns>
-        public K Clone<K>()
-        {
-            return (K)this.Clone();
         }
 
         #endregion

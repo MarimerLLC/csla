@@ -29,7 +29,7 @@ namespace Csla.Validation
         /// The first BrokenRule object corresponding to the specified property, or Nothing if 
         /// there are no rules defined for the property.
         /// </returns>
-        public BrokenRule RuleForProperty(string property)
+        public BrokenRule GetFirstBrokenRule(string property)
         {
             foreach (BrokenRule item in this)
                 if (item.Property == property)

@@ -317,22 +317,24 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
 
 #End Region
 
-#Region " Cascade Child events "
+  ' commented out because BindingList(Of T) automatically
+  ' cascades the child events
+  '#Region " Cascade Child events "
 
-  Private Sub Child_PropertyChanged(ByVal sender As Object, _
-    ByVal e As System.ComponentModel.PropertyChangedEventArgs)
+  '  Private Sub Child_PropertyChanged(ByVal sender As Object, _
+  '    ByVal e As System.ComponentModel.PropertyChangedEventArgs)
 
-    For index As Integer = 0 To Count - 1
-      If ReferenceEquals(Me(index), sender) Then
-        OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
-          ComponentModel.ListChangedType.ItemChanged, index))
-        Exit For
-      End If
-    Next
+  '    For index As Integer = 0 To Count - 1
+  '      If ReferenceEquals(Me(index), sender) Then
+  '        OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+  '          ComponentModel.ListChangedType.ItemChanged, index))
+  '        Exit For
+  '      End If
+  '    Next
 
-  End Sub
+  '  End Sub
 
-#End Region
+  '#End Region
 
 #Region " Insert, Remove, Clear "
 
@@ -357,8 +359,8 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
     ' added must be set
     item.EditLevelAdded = mEditLevel
     item.SetParent(Me)
-    AddHandler item.PropertyChanged, _
-      AddressOf Child_PropertyChanged
+    'AddHandler item.PropertyChanged, _
+    '  AddressOf Child_PropertyChanged
     MyBase.InsertItem(index, item)
   End Sub
 
@@ -371,8 +373,8 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
     ' being deleted, so do the deletion work
     Dim item As T = Me(index)
     DeleteChild(item)
-    RemoveHandler item.PropertyChanged, _
-      AddressOf Child_PropertyChanged
+    'RemoveHandler item.PropertyChanged, _
+    '  AddressOf Child_PropertyChanged
     MyBase.RemoveItem(index)
   End Sub
 

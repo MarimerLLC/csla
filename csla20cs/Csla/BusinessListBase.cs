@@ -319,22 +319,22 @@ namespace Csla
 
         #endregion
 
-        #region Cascade Child events
+        //#region Cascade Child events
 
-        private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            for (int index = 0; index < Count; index++)
-            {
-                if (ReferenceEquals(this[index], sender))
-                {
-                    OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
-                    return;
-                }
-            }
+        //private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //    for (int index = 0; index < Count; index++)
+        //    {
+        //        if (ReferenceEquals(this[index], sender))
+        //        {
+        //            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+        //            return;
+        //        }
+        //    }
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
         #region Insert, Remove, Clear
 
@@ -368,7 +368,7 @@ namespace Csla
             // added must be set
             item.EditLevelAdded = _editLevel;
             item.SetParent(this);
-            item.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+            //item.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
             base.InsertItem(index, item);
         }
 
@@ -382,7 +382,7 @@ namespace Csla
             // being deleted, so do the deletion work
             T item = this[index];
             DeleteChild(item);
-            item.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+            //item.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
             base.RemoveItem(index);
         }
 

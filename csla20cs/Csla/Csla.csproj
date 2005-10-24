@@ -41,18 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessBaseOfT.cs" />
-    <Compile Include="BusinessCollectionBase.cs" />
     <Compile Include="BusinessListBase.cs" />
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
-    <Compile Include="Core\BindableCollectionBase.cs" />
     <Compile Include="Core\BusinessBase.cs" />
     <Compile Include="Core\IEditableCollection.cs" />
+    <Compile Include="Core\IEditableObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />
     <Compile Include="Core\ReadOnlyBindingList.cs" />
-    <Compile Include="Core\SortableCollectionBase.cs" />
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="DataPortal\ApplicationContext.cs" />
     <Compile Include="DataPortal\Client\DataPortal.cs" />
@@ -96,7 +93,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReadOnlyBase.cs" />
-    <Compile Include="ReadOnlyCollectionBase.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="Security\AuthorizationRules.cs" />
     <Compile Include="Security\BusinessPrincipalBase.cs" />

@@ -317,6 +317,17 @@ namespace Csla
             DeletedList.Remove(child);
         }
 
+        /// <summary>
+        /// Returns True if the internal deleted list
+        /// contains the specified child object.
+        /// </summary>
+        /// <param name="item">Child object to check.</param>
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public bool ContainsDeleted(T item)
+        {
+          return DeletedList.Contains(item);
+        }
+
         #endregion
 
         //#region Cascade Child events

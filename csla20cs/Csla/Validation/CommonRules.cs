@@ -2,13 +2,9 @@ using System;
 
 namespace Csla.Validation
 {
-    public sealed class CommonRules
+    public static class CommonRules
     {
-        private CommonRules()
-        {
-
-        }
-
+        
         /// <summary>
         /// Rule ensuring a String value contains one or more
         /// characters.

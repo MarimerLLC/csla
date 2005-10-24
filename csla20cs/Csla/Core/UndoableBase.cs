@@ -238,8 +238,8 @@ namespace Csla.Core
 
         private static bool IsImplemented(Type objectType, Type interfaceType)
         {
-          bool result;
-          foreach (Type item in objectType.GetInterfaces)
+          bool result = false;
+          foreach (Type item in objectType.GetInterfaces())
             if (interfaceType.Equals(item))
             {
               result = true;

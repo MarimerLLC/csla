@@ -66,7 +66,7 @@ Namespace Core
               ' the field is undoable, so it needs to be processed
               Dim value As Object = field.GetValue(Me)
 
-              If field.FieldType.IsSubclassOf(GetType(IEditableObject)) Then
+              If field.FieldType.GetInterface("Csla.Core.IEditableObject") IsNot Nothing Then
                 ' make sure the variable has a value
                 If Not value Is Nothing Then
                   ' this is a child object, cascade the call
@@ -139,7 +139,7 @@ Namespace Core
                   ' the field is undoable, so restore its value
                   Dim value As Object = field.GetValue(Me)
 
-                  If field.FieldType.IsSubclassOf(GetType(IEditableObject)) Then
+                  If field.FieldType.GetInterface("Csla.Core.IEditableObject") IsNot Nothing Then
                     ' this is a child object, cascade the call
                     ' first make sure the variable has a value
                     If Not value Is Nothing Then
@@ -192,7 +192,7 @@ Namespace Core
               ' see if the field is undoable or not
               If Not NotUndoableField(field) Then
                 ' the field is undoable so see if it is editable
-                If field.FieldType.IsSubclassOf(GetType(IEditableObject)) Then
+                If field.FieldType.GetInterface("Csla.Core.IEditableObject") IsNot Nothing Then
                   Dim value As Object = field.GetValue(Me)
                   ' make sure the variable has a value
                   If Not value Is Nothing Then

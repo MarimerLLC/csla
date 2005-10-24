@@ -24,10 +24,13 @@ Public Class SortedBindingList(Of T)
       End Get
     End Property
 
-    Public ReadOnly Property BaseIndex() As Integer
+    Public Property BaseIndex() As Integer
       Get
         Return mBaseIndex
       End Get
+      Set(ByVal value As Integer)
+        mBaseIndex = value
+      End Set
     End Property
 
     Public Sub New(ByVal key As Object, ByVal baseIndex As Integer)
@@ -222,9 +225,9 @@ Public Class SortedBindingList(Of T)
     Dim result As Object
 
     If mSupportsBinding Then
-      mAddingNew = True
+      mInitiatedLocally = True
       result = mBindingList.AddNew
-      mAddingNew = False
+      mInitiatedLocally = False
 
     Else
       result = Nothing
@@ -544,7 +547,27 @@ Public Class SortedBindingList(Of T)
 
   Public Sub RemoveAt(ByVal index As Integer) _
     Implements System.Collections.IList.RemoveAt, System.Collections.Generic.IList(Of T).RemoveAt
-    mList.RemoveAt(index)
+
+    If mSorted Then
+      mInitiatedLocally = True
+      Dim baseIndex As Integer = OriginalIndex(index)
+      ' remove the item from the source list
+      mList.RemoveAt(baseIndex)
+      ' delete the corresponding value in the sort index
+      mSortIndex.RemoveAt(index)
+      ' now fix up all index pointers in the sort index
+      For Each item As ListItem In mSortIndex
+        If item.BaseIndex > baseIndex Then
+          item.BaseIndex -= 1
+        End If
+      Next
+      OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
+      mInitiatedLocally = False
+
+    Else
+      mList.RemoveAt(index)
+    End If
+
   End Sub
 
   Default Public Overloads Property Item(ByVal index As Integer) As T Implements System.Collections.Generic.IList(Of T).Item
@@ -574,7 +597,7 @@ Public Class SortedBindingList(Of T)
   Private mSupportsBinding As Boolean
   Private mBindingList As IBindingList
   Private mSorted As Boolean
-  Private mAddingNew As Boolean
+  Private mInitiatedLocally As Boolean
   Private mSortBy As PropertyDescriptor
   Private mSortOrder As ListSortDirection = ListSortDirection.Ascending
   Private mSortIndex As New List(Of ListItem)
@@ -598,35 +621,42 @@ Public Class SortedBindingList(Of T)
   Private Sub SourceChanged(ByVal sender As Object, ByVal e As ListChangedEventArgs)
 
     If mSorted Then
-      If e.ListChangedType = ListChangedType.ItemAdded Then
-        Dim newItem As T = mList(e.NewIndex)
-        Dim newKey As Object
-        If mSorted Then
-          newKey = mSortBy.GetValue(newItem)
-        Else
-          newKey = newItem
-        End If
+      Select Case e.ListChangedType
+        Case ListChangedType.ItemAdded
+          Dim newItem As T = mList(e.NewIndex)
+          Dim newKey As Object
+          If mSorted Then
+            newKey = mSortBy.GetValue(newItem)
+          Else
+            newKey = newItem
+          End If
 
-        If mSortOrder = ListSortDirection.Ascending Then
-          mSortIndex.Add(New ListItem(newKey, e.NewIndex))
+          If mSortOrder = ListSortDirection.Ascending Then
+            mSortIndex.Add(New ListItem(newKey, e.NewIndex))
 
-        Else
-          mSortIndex.Insert(0, New ListItem(newKey, e.NewIndex))
-        End If
-        If Not mAddingNew Then
-          OnListChanged(New ListChangedEventArgs(ListChangedType.ItemAdded, SortedIndex(e.NewIndex)))
-        End If
+          Else
+            mSortIndex.Insert(0, New ListItem(newKey, e.NewIndex))
+          End If
+          If Not mInitiatedLocally Then
+            OnListChanged(New ListChangedEventArgs(ListChangedType.ItemAdded, SortedIndex(e.NewIndex)))
+          End If
 
-      ElseIf e.ListChangedType = ListChangedType.ItemChanged Then
-        ' an item changed - just relay the event with
-        ' a translated index value
-        OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, SortedIndex(e.NewIndex)))
+        Case ListChangedType.ItemChanged
+          ' an item changed - just relay the event with
+          ' a translated index value
+          OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, SortedIndex(e.NewIndex)))
 
-      Else
-        ' for anything other than add, or change
-        ' just re-sort the list
-        DoSort()
-      End If
+        Case ListChangedType.ItemDeleted
+          If Not mInitiatedLocally Then
+            'RemoveSortItem(SortedIndex(e.NewIndex))
+            DoSort()
+          End If
+
+        Case Else
+          ' for anything other than add, or change
+          ' just re-sort the list
+          DoSort()
+      End Select
 
     Else
       OnListChanged(e)

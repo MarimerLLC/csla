@@ -12,11 +12,13 @@ Namespace Core
   ''' <remarks>
   ''' You should not directly derive from this class. Your
   ''' business classes should derive from
-  ''' <see cref="Csla.BusinessBase" />.
+  ''' <see cref="Csla.BusinessBase(Of T)" />.
   ''' </remarks>
   <Serializable()> _
   Public MustInherit Class UndoableBase
     Inherits Csla.Core.BindableBase
+
+    Implements IEditableObject
 
     ' keep a stack of object state values
     <NotUndoable()> _
@@ -41,7 +43,7 @@ Namespace Core
     ''' onto the state stack.
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub CopyState()
+    Protected Friend Sub CopyState() Implements IEditableObject.CopyState
 
       Dim currentType As Type = Me.GetType
       Dim state As New Hashtable()
@@ -64,18 +66,11 @@ Namespace Core
               ' the field is undoable, so it needs to be processed
               Dim value As Object = field.GetValue(Me)
 
-              If field.FieldType.IsSubclassOf(GetType(BusinessCollectionBase)) Then
-                ' make sure the variable has a value
-                If Not value Is Nothing Then
-                  ' this is a child collection, cascade the call
-                  CType(value, BusinessCollectionBase).CopyState()
-                End If
-
-              ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
+              If field.FieldType.IsSubclassOf(GetType(IEditableObject)) Then
                 ' make sure the variable has a value
                 If Not value Is Nothing Then
                   ' this is a child object, cascade the call
-                  CType(value, BusinessBase).CopyState()
+                  DirectCast(value, IEditableObject).CopyState()
                 End If
 
               Else
@@ -114,7 +109,7 @@ Namespace Core
     ''' of the object.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub UndoChanges()
+    Protected Friend Sub UndoChanges() Implements IEditableObject.UndoChanges
       ' if we are a child object we might be asked to
       ' undo below the level where we stacked states,
       ' so just do nothing in that case
@@ -144,29 +139,19 @@ Namespace Core
                   ' the field is undoable, so restore its value
                   Dim value As Object = field.GetValue(Me)
 
-                  If field.FieldType.IsSubclassOf(GetType(BusinessCollectionBase)) Then
-                    ' make sure the variable has a value
+                  If field.FieldType.IsSubclassOf(GetType(IEditableObject)) Then
+                    ' this is a child object, cascade the call
+                    ' first make sure the variable has a value
                     If Not value Is Nothing Then
-                      ' this is a child collection, cascade the call
-                      CType(value, BusinessCollectionBase).UndoChanges()
-                    End If
-
-                  ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
-                    ' make sure the variable has a value
-                    If Not value Is Nothing Then
-                      ' this is a child object, cascade the call
-                      CType(value, BusinessBase).UndoChanges()
+                      DirectCast(value, IEditableObject).UndoChanges()
                     End If
 
                   Else
                     ' this is a regular field, restore its value
                     fieldName = field.DeclaringType.Name & "!" & field.Name
                     field.SetValue(Me, state.Item(fieldName))
-
                   End If
-
                 End If
-
               End If
             Next
 
@@ -187,7 +172,7 @@ Namespace Core
     ''' to the object's state.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub AcceptChanges()
+    Protected Friend Sub AcceptChanges() Implements IEditableObject.AcceptChanges
       If EditLevel > 0 Then
         mStateStack.Pop()
 
@@ -206,26 +191,16 @@ Namespace Core
             If field.DeclaringType Is currentType Then
               ' see if the field is undoable or not
               If Not NotUndoableField(field) Then
-                ' the field is undoable so see if it is a collection
-                Dim value As Object = field.GetValue(Me)
-
-                If field.FieldType.IsSubclassOf(GetType(BusinessCollectionBase)) Then
-                  ' make sure the variable has a value
-                  If Not value Is Nothing Then
-                    ' it is a collection so cascade the call
-                    CType(value, BusinessCollectionBase).AcceptChanges()
-                  End If
-
-                ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
+                ' the field is undoable so see if it is editable
+                If field.FieldType.IsSubclassOf(GetType(IEditableObject)) Then
+                  Dim value As Object = field.GetValue(Me)
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' it is a child object so cascade the call
-                    CType(value, BusinessBase).AcceptChanges()
+                    DirectCast(value, IEditableObject).AcceptChanges()
                   End If
                 End If
-
               End If
-
             End If
           Next
 

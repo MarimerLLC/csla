@@ -21,7 +21,7 @@ Namespace Core
   Public MustInherit Class BusinessBase
     Inherits UndoableBase
 
-    Implements IEditableObject
+    Implements System.ComponentModel.IEditableObject
     Implements ICloneable
     Implements IDataErrorInfo
 
@@ -451,7 +451,7 @@ Namespace Core
     ''' call should be honored, so we have extra code to detect this
     ''' and do nothing for subsquent calls.
     ''' </remarks>
-    Private Sub IEditableObject_BeginEdit() Implements IEditableObject.BeginEdit
+    Private Sub IEditableObject_BeginEdit() Implements System.ComponentModel.IEditableObject.BeginEdit
 
       If Not mBindingEdit Then
         BeginEdit()
@@ -469,7 +469,7 @@ Namespace Core
     ''' should be honored. We include extra code to detect this and do
     ''' nothing for subsequent calls.
     ''' </remarks>
-    Private Sub IEditableObject_CancelEdit() Implements IEditableObject.CancelEdit
+    Private Sub IEditableObject_CancelEdit() Implements System.ComponentModel.IEditableObject.CancelEdit
 
       If mBindingEdit Then
         CancelEdit()
@@ -497,7 +497,7 @@ Namespace Core
     ''' nothing for subsequent calls.
     ''' </remarks>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")> _
-    Private Sub IEditableObject_EndEdit() Implements IEditableObject.EndEdit
+    Private Sub IEditableObject_EndEdit() Implements System.ComponentModel.IEditableObject.EndEdit
 
       If mBindingEdit Then
         ApplyEdit()

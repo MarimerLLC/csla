@@ -200,7 +200,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
 
 #Region " N-level undo "
 
-  Friend Sub CopyState()
+  Friend Sub CopyState() Implements Core.IEditableCollection.CopyState
     Dim Child As T
 
     ' we are going a level deeper in editing
@@ -217,7 +217,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
     Next
   End Sub
 
-  Friend Sub UndoChanges()
+  Friend Sub UndoChanges() Implements Core.IEditableCollection.UndoChanges
     Dim child As T
     Dim index As Integer
 
@@ -250,7 +250,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
     Next
   End Sub
 
-  Friend Sub AcceptChanges()
+  Friend Sub AcceptChanges() Implements Core.IEditableCollection.AcceptChanges
     Dim child As T
     Dim index As Integer
 

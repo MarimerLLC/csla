@@ -345,6 +345,8 @@ namespace Csla
 
     #endregion
 
+    // commented out because BindingList<T> automatically
+    // cascades the child events
     //#region Cascade Child events
 
     //private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -357,7 +359,6 @@ namespace Csla
     //            return;
     //        }
     //    }
-
     //}
 
     //#endregion

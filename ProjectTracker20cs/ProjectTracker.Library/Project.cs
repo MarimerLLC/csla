@@ -309,9 +309,7 @@ namespace ProjectTracker.Library
             dr.Read();
             _id = dr.GetGuid("ID");
             _name = dr.GetString("Name");
-            SmartDate result;
-            result = dr.GetSmartDate("Started", _started.EmptyIsMin);
-            _started = result;
+            _started = dr.GetSmartDate("Started", _started.EmptyIsMin);
             _ended = dr.GetSmartDate("Ended", _ended.EmptyIsMin);
             _description = dr.GetString("Description");
 

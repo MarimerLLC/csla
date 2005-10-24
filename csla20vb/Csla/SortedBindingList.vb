@@ -87,7 +87,7 @@ Public Class SortedBindingList(Of T)
       End Get
     End Property
 
-    Public ReadOnly Property CurrentItem() As Object Implements System.Collections.IEnumerator.Current
+    Private ReadOnly Property CurrentItem() As Object Implements System.Collections.IEnumerator.Current
       Get
         Return mList(mSortIndex(index).BaseIndex)
       End Get

@@ -22,7 +22,7 @@ namespace Csla.Core
     /// </para>
     /// </remarks>
     [Serializable()]
-    public abstract class BusinessBase : Csla.Core.UndoableBase, IEditableObject, ICloneable, IDataErrorInfo
+  public abstract class BusinessBase : Csla.Core.UndoableBase, System.ComponentModel.IEditableObject, ICloneable, IDataErrorInfo
     {
 
         #region Constructors
@@ -442,7 +442,7 @@ namespace Csla.Core
         
         #endregion
 
-        #region IEditableObject
+        #region System.ComponentModel.IEditableObject
 
         [NotUndoable()]
         private bool _bindingEdit;
@@ -456,7 +456,7 @@ namespace Csla.Core
         /// call should be honored, so we have extra code to detect this
         /// and do nothing for subsquent calls.
         /// </remarks>
-        void IEditableObject.BeginEdit()
+        void System.ComponentModel.IEditableObject.BeginEdit()
         {
             if (!_bindingEdit)
                 BeginEdit();
@@ -467,12 +467,12 @@ namespace Csla.Core
         /// </summary>
         /// <remarks>
         /// Data binding may call this method many times. Only the first
-        /// call to either IEditableObject.CancelEdit or 
-        /// <see cref="Csla.BusinessBase.IEditableObject_EndEdit">IEditableObject.EndEdit</see>
+        /// call to either System.ComponentModel.IEditableObject.CancelEdit or 
+        /// <see cref="System.ComponentModel.IEditableObject_EndEdit">IEditableObject.EndEdit</see>
         /// should be honored. We include extra code to detect this and do
         /// nothing for subsequent calls.
         /// </remarks>
-        void IEditableObject.CancelEdit()
+        void System.ComponentModel.IEditableObject.CancelEdit()
         {
             if (_bindingEdit)
             {
@@ -495,12 +495,12 @@ namespace Csla.Core
         /// <remarks>
         /// Data binding may call this method many times. Only the first
         /// call to either IEditableObject.EndEdit or 
-        /// <see cref="Csla.BusinessBase.IEditableObject_CancelEdit">IEditableObject.CancelEdit</see>
+        /// <see cref="System.ComponentModel.IEditableObject_CancelEdit">IEditableObject.CancelEdit</see>
         /// should be honored. We include extra code to detect this and do
         /// nothing for subsequent calls.
         /// </remarks>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
-        void IEditableObject.EndEdit()
+        void System.ComponentModel.IEditableObject.EndEdit()
         {
             if (_bindingEdit)
                 ApplyEdit();

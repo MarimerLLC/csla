@@ -13,7 +13,7 @@ namespace Csla.Core
     /// the collection objects.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
-    public interface IEditableCollection
+    public interface IEditableCollection : IEditableObject
     {
         void RemoveChild(Core.BusinessBase child);
     }

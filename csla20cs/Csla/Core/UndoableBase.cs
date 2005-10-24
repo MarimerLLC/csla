@@ -17,7 +17,7 @@ namespace Csla.Core
     /// <see cref="Csla.BusinessBase" />.
     /// </remarks>
     [Serializable()]
-    public abstract class UndoableBase : Csla.Core.BindableBase
+    public abstract class UndoableBase : Csla.Core.BindableBase, Csla.Core.IEditableObject
     {
         // keep a stack of object state values.
         [NotUndoable()]
@@ -35,6 +35,21 @@ namespace Csla.Core
         protected int EditLevel
         {
             get { return _stateStack.Count; }
+        }
+
+        void IEditableObject.CopyState()
+        {
+          CopyState();
+        }
+
+        void IEditableObject.UndoChanges()
+        {
+          UndoChanges();
+        }
+
+        void IEditableObject.AcceptChanges()
+        {
+          AcceptChanges();
         }
 
         /// <summary>
@@ -68,22 +83,13 @@ namespace Csla.Core
                             // the field is undoable, so it needs to be processed.
                             object value = field.GetValue(this);
 
-                            if (field.FieldType.IsSubclassOf(typeof(BusinessCollectionBase)))
-                            {
-                                // make sure the variable has a value
-                                if (value != null)
-                                {
-                                    // this is a child collection, cascade the call
-                                    ((BusinessCollectionBase)value).CopyState();
-                                }
-                            }
-                            else if (field.FieldType.IsSubclassOf(typeof(BusinessBase)))
+                            if (field.FieldType.GetInterface("Csla.Core.IEditableObject") != null)
                             {
                                 // make sure the variable has a value
                                 if (value != null)
                                 {
                                     // this is a child object, cascade the call
-                                    ((BusinessBase)value).CopyState();
+                                    ((Core.IEditableObject)value).CopyState();
                                 }
                             }
                             else
@@ -151,29 +157,20 @@ namespace Csla.Core
                                     // the field is undoable, so restore its value
                                     object value = field.GetValue(this);
 
-                                    if (field.FieldType.IsSubclassOf(typeof(BusinessCollectionBase)))
+                                    if (field.FieldType.GetInterface("Csla.Core.IEditableObject") != null)
                                     {
                                         // make sure the variable has a value
                                         if (value != null)
                                         {
-                                            // this is a child collection, cascade the call
-                                            ((BusinessCollectionBase)value).UndoChanges();
+                                            // this is a child object, cascade the call.
+                                            ((Core.IEditableObject)value).UndoChanges();
                                         }
-                                        else if (field.FieldType.IsSubclassOf(typeof(BusinessBase)))
-                                        {
-                                            // make sure the variable has a value
-                                            if (value != null)
-                                            {
-                                                // this is a child object, cascade the call.
-                                                ((BusinessBase)value).UndoChanges();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // this is a regular field, restore its value
-                                            fieldName = field.DeclaringType.Name + "!" + field.Name;
-                                            field.SetValue(this, state[fieldName]);
-                                        }
+                                    }
+                                    else
+                                    {
+                                        // this is a regular field, restore its value
+                                        fieldName = field.DeclaringType.Name + "!" + field.Name;
+                                        field.SetValue(this, state[fieldName]);
                                     }
                                 }
                             }
@@ -214,25 +211,15 @@ namespace Csla.Core
                         // see if the field is undoable or not
                         if (!NotUndoableField(field))
                         {
-                            // the field is undoable so see if it is a collection
-                            object value = field.GetValue(this);
-
-                            if (field.FieldType.IsSubclassOf(typeof(BusinessCollectionBase)))
+                            // the field is undoable so see if it is a child object
+                            if (field.FieldType.GetInterface("Csla.Core.IEditableObject") != null)
                             {
-                                // made sure the variable has a value
-                                if (value != null)
-                                {
-                                    // it is a collection so cascade the call
-                                    ((BusinessCollectionBase)value).AcceptChanges();
-                                }
-                            }
-                            else if (field.FieldType.IsSubclassOf(typeof(BusinessBase)))
-                            {
+                                object value = field.GetValue(this);
                                 // make sure the variable has a value
                                 if (value != null)
                                 {
                                     // it is a child object so cascade the call
-                                    ((BusinessBase)value).AcceptChanges();
+                                    ((Core.IEditableObject)value).AcceptChanges();
                                 }
                             }
                         }

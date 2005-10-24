@@ -315,6 +315,18 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
     DeletedList.Remove(child)
   End Sub
 
+  ''' <summary>
+  ''' Returns True if the internal deleted list
+  ''' contains the specified child object.
+  ''' </summary>
+  ''' <param name="item">Child object to check.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Public Function ContainsDeleted(ByVal item As T) As Boolean
+
+    Return DeletedList.Contains(item)
+
+  End Function
+
 #End Region
 
   ' commented out because BindingList(Of T) automatically

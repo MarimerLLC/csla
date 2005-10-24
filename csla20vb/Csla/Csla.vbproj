@@ -59,9 +59,9 @@
     <Import Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessBaseOfT.vb" />
     <Compile Include="BusinessListBase.vb" />
+    <Compile Include="Core\IEditableObject.vb" />
     <Compile Include="Core\ObjectCloner.vb" />
     <Compile Include="DataPortal\Client\EnterpriseServicesProxy.vb" />
     <Compile Include="DataPortal\Client\IDataPortalProxy.vb" />
@@ -83,7 +83,6 @@
     <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="Validation\CommonRules.vb" />
     <Compile Include="Core\BindableBase.vb" />
-    <Compile Include="Core\BindableCollectionBase.vb" />
     <Compile Include="Security\RolesForProperty.vb" />
     <Compile Include="Validation\BrokenRule.vb" />
     <Compile Include="Validation\RuleArgs.vb" />
@@ -91,10 +90,8 @@
     <Compile Include="Validation\BrokenRulesCollection.vb" />
     <Compile Include="Validation\ValidationRules.vb" />
     <Compile Include="Core\BusinessBase.vb" />
-    <Compile Include="BusinessCollectionBase.vb" />
     <Compile Include="Core\IEditableCollection.vb" />
     <Compile Include="Core\ReadOnlyBindingList.vb" />
-    <Compile Include="Core\SortableCollectionBase.vb" />
     <Compile Include="DataPortal\ApplicationContext.vb" />
     <Compile Include="DataPortal\Server\CallMethodException.vb" />
     <Compile Include="CommandBase.vb" />
@@ -122,7 +119,6 @@
     <Compile Include="NotUndoableAttribute.vb" />
     <Compile Include="Data\ObjectAdapter.vb" />
     <Compile Include="ReadOnlyBase.vb" />
-    <Compile Include="ReadOnlyCollectionBase.vb" />
     <Compile Include="DataPortal\RunLocalAttribute.vb" />
     <Compile Include="Data\SafeDataReader.vb" />
     <Compile Include="DataPortal\Server\DataPortal.vb" />

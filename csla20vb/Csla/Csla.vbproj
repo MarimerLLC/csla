@@ -59,7 +59,7 @@
     <Import Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessBaseOfT.vb" />
+    <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessListBase.vb" />
     <Compile Include="Core\IEditableObject.vb" />
     <Compile Include="Core\ObjectCloner.vb" />

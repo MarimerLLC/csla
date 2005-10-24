@@ -3,12 +3,8 @@ using System.Reflection;
 
 namespace Csla
 {
-    internal sealed class Utilities
+    internal static class Utilities
     {
-        private Utilities()
-        {
-
-        }
 
         public static bool IsNumeric(object value)
         {

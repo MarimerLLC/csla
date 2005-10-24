@@ -29,7 +29,7 @@ namespace Csla
     public SmartDate(bool emptyIsMin)
     {
       _emptyIsMax = !emptyIsMin;
-      _format = String.Empty;
+      _format = null;
       _initialized = false;
       if (!_emptyIsMax)
         _date = DateTime.MinValue;
@@ -48,9 +48,10 @@ namespace Csla
     public SmartDate(DateTime value)
     {
       _emptyIsMax = false;
-      _format = String.Empty;
+      _format = null;
       _initialized = false;
-      _date = value;
+      _date = DateTime.MinValue;
+      Date = value;
     }
 
     /// <summary>
@@ -61,9 +62,10 @@ namespace Csla
     public SmartDate(DateTime value, bool emptyIsMin)
     {
       _emptyIsMax = !emptyIsMin;
-      _format = String.Empty;
+      _format = null;
       _initialized = false;
-      _date = value;
+      _date = DateTime.MinValue;
+      Date = value;
     }
 
     /// <summary>
@@ -77,7 +79,7 @@ namespace Csla
     public SmartDate(string value)
     {
       _emptyIsMax = false;
-      _format = String.Empty;
+      _format = null;
       _initialized = true;
       _date = DateTime.MinValue;
       this.Text = value;
@@ -91,7 +93,7 @@ namespace Csla
     public SmartDate(string value, bool emptyIsMin)
     {
       _emptyIsMax = !emptyIsMin;
-      _format = String.Empty;
+      _format = null;
       _initialized = true;
       _date = DateTime.MinValue;
       this.Text = value;
@@ -117,7 +119,7 @@ namespace Csla
       get
       {
         if (_format == null)
-          _format = "Short date";
+          _format = "{0:d}";
         return _format;
       }
       set

@@ -306,6 +306,7 @@ namespace Csla.Core
         /// directly from the property to be checked.
         /// </para>
         /// </remarks>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
         public bool CanReadProperty()
         {
             string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
@@ -352,6 +353,7 @@ namespace Csla.Core
         /// directly from the property to be checked.
         /// </para>
         /// </remarks>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
         public bool CanWriteProperty()
         {
             string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);

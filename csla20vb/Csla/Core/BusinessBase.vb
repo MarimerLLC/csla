@@ -289,6 +289,7 @@ Namespace Core
     ''' directly from the property to be checked.
     ''' </para>
     ''' </remarks>
+    <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanReadProperty() As Boolean
 
       Dim propertyName As String = _
@@ -339,6 +340,7 @@ Namespace Core
     ''' directly from the property to be checked.
     ''' </para>
     ''' </remarks>
+    <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanWriteProperty() As Boolean
 
       Dim propertyName As String = _

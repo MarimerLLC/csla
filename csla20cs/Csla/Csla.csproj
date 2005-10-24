@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessBaseOfT.cs" />
+    <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessListBase.cs" />
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />

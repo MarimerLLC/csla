@@ -54,6 +54,7 @@ Public NotInheritable Class DataPortal
   ''' a new object, which is loaded with default
   ''' values from the database.
   ''' </summary>
+  ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <param name="Criteria">Object-specific criteria.</param>
   ''' <returns>A new object, populated with default values.</returns>
   Public Shared Function Create(Of T)(ByVal criteria As Object) As T
@@ -65,6 +66,7 @@ Public NotInheritable Class DataPortal
   ''' a new object, which is loaded with default
   ''' values from the database.
   ''' </summary>
+  ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <returns>A new object, populated with default values.</returns>
   Public Shared Function Create(Of T)() As T
     Return DirectCast(Create(GetType(T), Nothing), T)
@@ -125,6 +127,7 @@ Public NotInheritable Class DataPortal
   ''' Called by a factory method in a business class to retrieve
   ''' an object, which is loaded with values from the database.
   ''' </summary>
+  ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <param name="Criteria">Object-specific criteria.</param>
   ''' <returns>An object populated with values from the database.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
@@ -178,6 +181,58 @@ Public NotInheritable Class DataPortal
   End Function
 
   ''' <summary>
+  ''' Called to execute a Command object on the server.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' To be a Command object, the object must inherit from
+  ''' <see cref="CommandBase">CommandBase</see>.
+  ''' </para><para>
+  ''' Note that this method returns a reference to the updated business object.
+  ''' If the server-side DataPortal is running remotely, this will be a new and
+  ''' different object from the original, and all object references MUST be updated
+  ''' to use this new object.
+  ''' </para><para>
+  ''' On the server, the Command object's DataPortal_Execute() method will
+  ''' be invoked. Write any server-side code in that method.
+  ''' </para>
+  ''' </remarks>
+  ''' <typeparam name="T">Specific type of the Command object.</typeparam>
+  ''' <param name="obj">A reference to the Command object to be executed.</param>
+  ''' <returns>A reference to the updated Command object.</returns>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
+  Public Shared Function Execute(Of T As CommandBase)(ByVal obj As T) As T
+
+    Return DirectCast(Update(CObj(obj)), T)
+
+  End Function
+
+  ''' <summary>
+  ''' Called to execute a Command object on the server.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' Note that this method returns a reference to the updated business object.
+  ''' If the server-side DataPortal is running remotely, this will be a new and
+  ''' different object from the original, and all object references MUST be updated
+  ''' to use this new object.
+  ''' </para><para>
+  ''' On the server, the Command object's DataPortal_Execute() method will
+  ''' be invoked. Write any server-side code in that method.
+  ''' </para>
+  ''' </remarks>
+  ''' <param name="obj">A reference to the Command object to be executed.</param>
+  ''' <returns>A reference to the updated Command object.</returns>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
+  Public Shared Function Execute(ByVal obj As CommandBase) As CommandBase
+
+    Return DirectCast(Update(obj), CommandBase)
+
+  End Function
+
+  ''' <summary>
   ''' Called by the <see cref="M:Csla.BusinessBase.Save" /> method to
   ''' insert, update or delete an object in the database.
   ''' </summary>
@@ -187,6 +242,7 @@ Public NotInheritable Class DataPortal
   ''' different object from the original, and all object references MUST be updated
   ''' to use this new object.
   ''' </remarks>
+  ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <param name="obj">A reference to the business object to be updated.</param>
   ''' <returns>A reference to the updated business object.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _

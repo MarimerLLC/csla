@@ -23,6 +23,70 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
   Implements ICloneable
 
+#Region " Core Implementation "
+
+  ''' <summary>
+  ''' Returns the value corresponding to the
+  ''' specified key.
+  ''' </summary>
+  Public Function Value(ByVal key As K) As V
+
+    For Each item As NameValuePair In Me
+      If item.Key.Equals(key) Then
+        Return item.Value
+      End If
+    Next
+    Return Nothing
+
+  End Function
+
+  ''' <summary>
+  ''' Returns the key corresponding to the
+  ''' specified value.
+  ''' </summary>
+  Public Function Key(ByVal value As V) As K
+
+    For Each item As NameValuePair In Me
+      If item.Value.Equals(value) Then
+        Return item.Key
+      End If
+    Next
+    Return Nothing
+
+  End Function
+
+  ''' <summary>
+  ''' Returns True if the list contains the
+  ''' specified key.
+  ''' </summary>
+  Public Function ContainsKey(ByVal key As K) As Boolean
+
+    For Each item As NameValuePair In Me
+      If item.Key.Equals(key) Then
+        Return True
+      End If
+    Next
+    Return False
+
+  End Function
+
+  ''' <summary>
+  ''' Returns True if the list contains the
+  ''' specified value.
+  ''' </summary>
+  Public Function ContainsValue(ByVal value As V) As Boolean
+
+    For Each item As NameValuePair In Me
+      If item.Value.Equals(value) Then
+        Return True
+      End If
+    Next
+    Return False
+
+  End Function
+
+#End Region
+
 #Region " Constructors "
 
   Protected Sub New()
@@ -70,24 +134,6 @@ Public MustInherit Class NameValueListBase(Of K, V)
   End Class
 
 #End Region
-
-  Public Function Value(ByVal key As K) As V
-    For Each item As NameValuePair In Me
-      If item.Key.Equals(key) Then
-        Return item.Value
-      End If
-    Next
-    Return Nothing
-  End Function
-
-  Public Function Key(ByVal value As V) As K
-    For Each item As NameValuePair In Me
-      If item.Value.Equals(value) Then
-        Return item.Key
-      End If
-    Next
-    Return Nothing
-  End Function
 
 #Region " Clone "
 

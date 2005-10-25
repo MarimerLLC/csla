@@ -341,7 +341,9 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   Public Function Find(ByVal [property] As System.ComponentModel.PropertyDescriptor, ByVal key As Object) As Integer Implements System.ComponentModel.IBindingList.Find
     If mSupportsBinding Then
-      mBindingList.Find([property], key)
+      Return mBindingList.Find([property], key)
+    Else
+      Return -1
     End If
   End Function
 
@@ -664,29 +666,25 @@ Public Class SortedBindingList(Of T)
 
   End Sub
 
-  Private ReadOnly Property OriginalIndex(ByVal sortedIndex As Integer) As Integer
-    Get
-      If mSortOrder = ListSortDirection.Descending Then
-        sortedIndex = mSortIndex.Count - 1 - sortedIndex
-      End If
-      Return mSortIndex.Item(sortedIndex).BaseIndex
-    End Get
-  End Property
+  Private Function OriginalIndex(ByVal sortedIndex As Integer) As Integer
+    If mSortOrder = ListSortDirection.Descending Then
+      sortedIndex = mSortIndex.Count - 1 - sortedIndex
+    End If
+    Return mSortIndex.Item(sortedIndex).BaseIndex
+  End Function
 
-  Private ReadOnly Property SortedIndex(ByVal originalIndex As Integer) As Integer
-    Get
-      Dim result As Integer
-      For index As Integer = 0 To mSortIndex.Count - 1
-        If mSortIndex(index).BaseIndex = originalIndex Then
-          result = index
-          Exit For
-        End If
-      Next
-      If mSortOrder = ListSortDirection.Descending Then
-        result = mSortIndex.Count - 1 - result
+  Private Function SortedIndex(ByVal originalIndex As Integer) As Integer
+    Dim result As Integer
+    For index As Integer = 0 To mSortIndex.Count - 1
+      If mSortIndex(index).BaseIndex = originalIndex Then
+        result = index
+        Exit For
       End If
-      Return result
-    End Get
-  End Property
+    Next
+    If mSortOrder = ListSortDirection.Descending Then
+      result = mSortIndex.Count - 1 - result
+    End If
+    Return result
+  End Function
 
 End Class

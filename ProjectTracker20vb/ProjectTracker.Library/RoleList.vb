@@ -4,6 +4,16 @@ Imports System.Data.SqlClient
 Public Class RoleList
   Inherits NameValueListBase(Of Integer, String)
 
+#Region " Business Methods "
+
+  Public Shared Function DefaultRole() As Integer
+
+    Return GetList.Items(0).Key
+
+  End Function
+
+#End Region
+
 #Region " Constructors "
 
   Private Sub New()

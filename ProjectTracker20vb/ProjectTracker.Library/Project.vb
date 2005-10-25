@@ -361,4 +361,59 @@ Public Class Project
 
 #End Region
 
+#Region " Exists "
+
+  Public Shared Function Exists(ByVal id As Guid) As Boolean
+
+    Dim result As ExistsCommand
+    result = DataPortal.Execute(Of ExistsCommand)(New ExistsCommand(id))
+    Return result.Exists
+
+  End Function
+
+  <Serializable()> _
+  Private Class ExistsCommand
+    Inherits CommandBase
+
+    Private mId As Guid
+    Private mExists As Boolean
+
+    Public ReadOnly Property Exists() As Boolean
+      Get
+        Return mExists
+      End Get
+    End Property
+
+    Public Sub New(ByVal id As Guid)
+      mId = id
+    End Sub
+
+    Protected Overrides Sub DataPortal_Execute()
+
+      Using cn As New SqlConnection(DataBase.DbConn)
+        cn.Open()
+        Using cm As SqlCommand = cn.CreateCommand
+          cm.CommandType = CommandType.Text
+          cm.CommandText = "SELECT id FROM Projects WHERE id=@id"
+          cm.Parameters.AddWithValue("@ID", mId)
+
+          Using dr As SqlDataReader = cm.ExecuteReader
+            If dr.Read() Then
+              mExists = True
+
+            Else
+              mExists = False
+            End If
+            dr.Close()
+          End Using
+        End Using
+        cn.Close()
+      End Using
+
+    End Sub
+
+  End Class
+
+#End Region
+
 End Class

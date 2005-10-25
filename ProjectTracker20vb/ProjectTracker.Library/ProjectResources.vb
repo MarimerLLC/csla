@@ -17,26 +17,31 @@ Public Class ProjectResources
     End Get
   End Property
 
-  'Public Sub Assign(ByVal Resource As Resource, ByVal Role As String)
-  '  DoAssignment(ProjectResource.NewProjectResource(Resource, Role))
-  'End Sub
+  Public Sub Assign(ByVal resource As Resource, ByVal role As Integer)
 
-  'Public Sub Assign(ByVal ResourceID As String, ByVal Role As String)
-  '  DoAssignment(ProjectResource.NewProjectResource(ResourceID, Role))
-  'End Sub
+    DoAssignment(ProjectResource.NewProjectResource(resource, role))
 
-  'Public Sub Assign(ByVal ResourceID As String)
-  '  DoAssignment(ProjectResource.NewProjectResource(ResourceID))
-  'End Sub
+  End Sub
+
+  Public Sub Assign(ByVal resourceID As String, ByVal role As Integer)
+
+    DoAssignment(ProjectResource.NewProjectResource(resourceID, role))
+
+  End Sub
+
+  Public Sub Assign(ByVal resourceID As String)
+
+    DoAssignment(ProjectResource.NewProjectResource(resourceID))
+
+  End Sub
 
   Private Sub DoAssignment(ByVal resource As ProjectResource)
 
     If Not Contains(resource) Then
-
       Me.Add(resource)
 
     Else
-      Throw New Exception("Resource already assigned")
+      Throw New InvalidOperationException("Resource already assigned to project")
     End If
 
   End Sub
@@ -87,7 +92,9 @@ Public Class ProjectResources
 #Region " Factory Methods "
 
   Friend Shared Function NewProjectResources() As ProjectResources
+
     Return New ProjectResources
+
   End Function
 
   Friend Shared Function GetProjectResources( _

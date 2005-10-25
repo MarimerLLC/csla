@@ -72,6 +72,12 @@ Public Class ProjectResource
     End Set
   End Property
 
+  Public Function GetResource() As Resource
+
+    Return Resource.GetResource(mResourceId)
+
+  End Function
+
   Protected Overrides Function GetIdValue() As Object
 
     Return mResourceId
@@ -114,6 +120,24 @@ Public Class ProjectResource
 
 #Region " Factory Methods "
 
+  Friend Shared Function NewProjectResource(ByVal resource As Resource, ByVal role As Integer) As ProjectResource
+
+    Return New ProjectResource(resource, role)
+
+  End Function
+
+  Friend Shared Function NewProjectResource(ByVal resourceID As String, ByVal role As Integer) As ProjectResource
+
+    Return New ProjectResource(Resource.GetResource(resourceID), role)
+
+  End Function
+
+  Friend Shared Function NewProjectResource(ByVal resourceID As String) As ProjectResource
+
+    Return New ProjectResource(Resource.GetResource(resourceID), RoleList.DefaultRole)
+
+  End Function
+
   Friend Shared Function GetResource(ByVal dr As SafeDataReader) As ProjectResource
 
     Return New ProjectResource(dr)
@@ -123,6 +147,19 @@ Public Class ProjectResource
 #End Region
 
 #Region " Data Access "
+
+  Private Sub New(ByVal resource As Resource, ByVal role As Integer)
+
+    MarkAsChild()
+    With resource
+      mResourceId = .Id
+      mLastName = .LastName
+      mFirstName = .FirstName
+      mAssigned.Date = Now
+      mRole = role
+    End With
+
+  End Sub
 
   Private Sub New(ByVal dr As SafeDataReader)
 
@@ -202,21 +239,21 @@ Public Class ProjectResource
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
 
+    ' if we're new then don't update the database
+    If Me.IsNew Then Exit Sub
+
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
           .CommandType = CommandType.StoredProcedure
-          If Not Me.IsNew Then
-            ' we're not new, so delete
-            .CommandText = "deleteAssignment"
-            .Parameters.AddWithValue("@ProjectID", project.Id)
-            .Parameters.AddWithValue("@ResourceID", mResourceId)
+          .CommandText = "deleteAssignment"
+          .Parameters.AddWithValue("@ProjectID", project.Id)
+          .Parameters.AddWithValue("@ResourceID", mResourceId)
 
-            .ExecuteNonQuery()
+          .ExecuteNonQuery()
 
-            MarkNew()
-          End If
+          MarkNew()
         End With
       End Using
       cn.Close()

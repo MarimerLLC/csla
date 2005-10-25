@@ -72,6 +72,10 @@
     </Compile>
     <Compile Include="Project.vb" />
     <Compile Include="ProjectResources.vb" />
+    <Compile Include="Resource.vb" />
+    <Compile Include="ResourceAssignment.vb" />
+    <Compile Include="ResourceAssignments.vb" />
+    <Compile Include="ResourceList.vb" />
     <Compile Include="RoleList.vb" />
     <Compile Include="Security\PTIdentity.vb" />
     <Compile Include="Security\PTPrincipal.vb" />

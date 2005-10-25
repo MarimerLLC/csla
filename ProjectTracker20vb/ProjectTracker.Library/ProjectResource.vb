@@ -140,6 +140,7 @@ Public Class ProjectResource
 
   Private Sub New(ByVal dr As SafeDataReader)
 
+    MarkAsChild()
     With dr
       mResourceId = .GetString(0)
       mLastName = .GetString(1)

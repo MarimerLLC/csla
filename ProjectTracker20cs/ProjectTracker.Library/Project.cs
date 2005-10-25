@@ -316,8 +316,10 @@ namespace ProjectTracker.Library
             //// load child objects
             //dr.NextResult();
             //_resources = ProjectResources.GetProjectResources(dr);
+            dr.Close();
           }
         }
+        cn.Close();
       }
     }
 
@@ -334,6 +336,7 @@ namespace ProjectTracker.Library
 
           cm.ExecuteNonQuery();
         }
+        cn.Close();
       }
       //// update child objects
       //_resources.Update(this);
@@ -352,6 +355,7 @@ namespace ProjectTracker.Library
 
           cm.ExecuteNonQuery();
         }
+        cn.Close();
       }
       //// update child objects
       //_resources.Update(this);
@@ -384,6 +388,7 @@ namespace ProjectTracker.Library
           cm.Parameters.AddWithValue("@ID", crit.Id);
           cm.ExecuteNonQuery();
         }
+        cn.Close();
       }
     }
 

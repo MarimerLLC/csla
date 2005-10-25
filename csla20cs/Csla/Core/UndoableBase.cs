@@ -14,7 +14,7 @@ namespace Csla.Core
   /// <remarks>
   /// You should not directly derive from this class. Your
   /// business classes should derive from
-  /// <see cref="Csla.BusinessBase" />.
+  /// <see cref="Csla.BusinessBase<T>" />.
   /// </remarks>
   [Serializable()]
   public abstract class UndoableBase : Csla.Core.BindableBase, Csla.Core.IEditableObject

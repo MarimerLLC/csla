@@ -127,14 +127,19 @@ Public Class ProjectResources
 
     ' update (thus deleting) any deleted child objects
     For Each obj In DeletedList
-      obj.Update(project)
+      obj.DeleteSelf(project)
     Next
     ' now that they are deleted, remove them from memory too
     DeletedList.Clear()
 
     ' add/update any current child objects
     For Each obj In Me
-      obj.Update(project)
+      If obj.IsNew Then
+        obj.Insert(project)
+
+      Else
+        obj.Update(project)
+      End If
     Next
 
   End Sub

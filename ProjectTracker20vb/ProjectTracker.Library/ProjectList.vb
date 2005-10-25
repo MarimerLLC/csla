@@ -52,6 +52,20 @@ Public Class ProjectList
     ' no criteria - we retrieve all projects
   End Class
 
+  <Serializable()> _
+  Private Class FilteredCriteria
+    Private mName As String
+    Public ReadOnly Property Name() As String
+      Get
+        Return mName
+      End Get
+    End Property
+
+    Public Sub New(ByVal name As String)
+      mName = name
+    End Sub
+  End Class
+
 #End Region
 
 #Region " Constructors "
@@ -70,19 +84,24 @@ Public Class ProjectList
 
   End Function
 
+  Public Shared Function GetProjectList(ByVal name As String) As ProjectList
+
+    Return DataPortal.Fetch(Of ProjectList)(New FilteredCriteria(name))
+
+  End Function
+
 #End Region
 
 #Region " Data Access "
 
-  Private ReadOnly Property DbConn() As String
-    Get
-      Return System.Configuration.ConfigurationManager.ConnectionStrings("PTracker").ConnectionString
-    End Get
-  End Property
+  Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
 
-  Protected Overrides Sub DataPortal_Fetch(ByVal Criteria As Object)
+    Dim filter As String = ""
+    If TypeOf criteria Is FilteredCriteria Then
+      filter = CType(criteria, FilteredCriteria).Name
+    End If
 
-    Using cn As New SqlConnection(DbConn)
+    Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
@@ -94,7 +113,10 @@ Public Class ProjectList
               Dim info As New ProjectInfo
               info.ID = dr.GetGuid(0)
               info.Name = dr.GetString(1)
-              Me.Add(info)
+              ' apply filter if necessary
+              If Len(filter) = 0 OrElse info.Name.IndexOf(filter) = 0 Then
+                Me.Add(info)
+              End If
             End While
             IsReadOnly = True
             dr.Close()

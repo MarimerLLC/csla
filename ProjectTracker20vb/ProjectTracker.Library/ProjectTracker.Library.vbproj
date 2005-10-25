@@ -38,6 +38,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +52,7 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataBase.vb" />
     <Compile Include="ProjectList.vb" />
     <Compile Include="ProjectResource.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -70,6 +72,9 @@
     </Compile>
     <Compile Include="Project.vb" />
     <Compile Include="ProjectResources.vb" />
+    <Compile Include="RoleList.vb" />
+    <Compile Include="Security\PTIdentity.vb" />
+    <Compile Include="Security\PTPrincipal.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

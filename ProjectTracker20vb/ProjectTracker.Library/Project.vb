@@ -146,10 +146,10 @@ Public Class Project
 
     If mStarted > mEnded Then
       e.Description = "Start date can't be after end date"
-      Return True
+      Return False
 
     Else
-      Return False
+      Return True
     End If
 
   End Function
@@ -242,12 +242,6 @@ Public Class Project
 
 #Region " Data Access "
 
-  Private ReadOnly Property DbConn() As String
-    Get
-      Return System.Configuration.ConfigurationManager.ConnectionStrings("PTracker").ConnectionString
-    End Get
-  End Property
-
   Protected Overrides Sub DataPortal_Create(ByVal criteria As Object)
     mId = Guid.NewGuid
     Started = CStr(Today)
@@ -258,7 +252,7 @@ Public Class Project
   Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
 
     Dim crit As Criteria = CType(criteria, Criteria)
-    Using cn As New SqlConnection(DbConn)
+    Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandType = CommandType.StoredProcedure
@@ -286,10 +280,10 @@ Public Class Project
 
   End Sub
 
-  <Transactional(TransactionalTypes.TransactionScope)> _
+  <Transactional(TransactionalTypes.Manual)> _
   Protected Overrides Sub DataPortal_Insert()
 
-    Using cn As New SqlConnection(DbConn)
+    Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandType = CommandType.StoredProcedure
@@ -305,10 +299,10 @@ Public Class Project
 
   End Sub
 
-  <Transactional(TransactionalTypes.TransactionScope)> _
+  <Transactional(TransactionalTypes.Manual)> _
   Protected Overrides Sub DataPortal_Update()
 
-    Using cn As New SqlConnection(DbConn)
+    Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandType = CommandType.StoredProcedure
@@ -336,17 +330,17 @@ Public Class Project
 
   End Sub
 
-  <Transactional(TransactionalTypes.TransactionScope)> _
+  <Transactional(TransactionalTypes.Manual)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
     DataPortal_Delete(New Criteria(mId))
 
   End Sub
 
-  <Transactional(TransactionalTypes.TransactionScope)> _
+  <Transactional(TransactionalTypes.Manual)> _
   Protected Overrides Sub DataPortal_Delete(ByVal Criteria As Object)
     Dim crit As Criteria = CType(Criteria, Criteria)
-    Dim cn As New SqlConnection(DbConn)
+    Dim cn As New SqlConnection(DataBase.DbConn)
     Dim cm As New SqlCommand()
 
     cn.Open()

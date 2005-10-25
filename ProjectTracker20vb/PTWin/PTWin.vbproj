@@ -102,6 +102,7 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <None Include="ProjectTracker.Library.RoleList.datasource" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectTracker.Library\ProjectTracker.Library.vbproj">

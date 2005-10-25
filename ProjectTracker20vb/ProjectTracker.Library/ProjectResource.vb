@@ -12,7 +12,7 @@ Public Class ProjectResource
   Private mAssigned As New SmartDate(Today)
   Private mRole As Integer
 
-  Public Property ResourceId() As String
+  Public ReadOnly Property ResourceId() As String
     Get
       If CanReadProperty() Then
         Return mResourceId
@@ -20,19 +20,9 @@ Public Class ProjectResource
         Throw New System.Security.SecurityException("Property read not allowed")
       End If
     End Get
-    Set(ByVal value As String)
-      If CanWriteProperty() Then
-        If Not mResourceId.Equals(value) Then
-          mResourceId = value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property write not allowed")
-      End If
-    End Set
   End Property
 
-  Public Property FirstName() As String
+  Public ReadOnly Property FirstName() As String
     Get
       If CanReadProperty() Then
         Return mFirstName
@@ -40,19 +30,9 @@ Public Class ProjectResource
         Throw New System.Security.SecurityException("Property read not allowed")
       End If
     End Get
-    Set(ByVal value As String)
-      If CanWriteProperty() Then
-        If Not mFirstName.Equals(value) Then
-          mFirstName = value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property write not allowed")
-      End If
-    End Set
   End Property
 
-  Public Property LastName() As String
+  Public ReadOnly Property LastName() As String
     Get
       If CanReadProperty() Then
         Return mLastName
@@ -60,16 +40,6 @@ Public Class ProjectResource
         Throw New System.Security.SecurityException("Property read not allowed")
       End If
     End Get
-    Set(ByVal value As String)
-      If CanWriteProperty() Then
-        If Not mLastName.Equals(value) Then
-          mLastName = value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property write not allowed")
-      End If
-    End Set
   End Property
 
   Public ReadOnly Property Assigned() As String
@@ -110,6 +80,28 @@ Public Class ProjectResource
 
 #End Region
 
+#Region " Business Rules "
+
+  Protected Overrides Sub AddBusinessRules()
+
+    ValidationRules.AddRule(AddressOf ValidRole, "Role")
+
+  End Sub
+
+  Private Function ValidRole(ByVal target As Object, ByVal e As Validation.RuleArgs) As Boolean
+
+    If RoleList.GetList().ContainsKey(mRole) Then
+      Return True
+
+    Else
+      e.Description = "Role must be in RoleList"
+      Return False
+    End If
+
+  End Function
+
+#End Region
+
 #Region " Constructors "
 
   Private Sub New()
@@ -132,12 +124,6 @@ Public Class ProjectResource
 
 #Region " Data Access "
 
-  Private ReadOnly Property DbConn() As String
-    Get
-      Return System.Configuration.ConfigurationManager.ConnectionStrings("PTracker").ConnectionString
-    End Get
-  End Property
-
   Private Sub New(ByVal dr As SafeDataReader)
 
     MarkAsChild()
@@ -152,50 +138,85 @@ Public Class ProjectResource
 
   End Sub
 
-  Friend Sub Update(ByVal project As Project)
+  Friend Sub Insert(ByVal project As Project)
 
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
 
-    Using cn As New SqlConnection(DbConn)
+    Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
           .Connection = cn
           .CommandType = CommandType.StoredProcedure
-          If Me.IsDeleted Then
-            If Not Me.IsNew Then
-              ' we're not new, so delete
-              .CommandText = "deleteAssignment"
-              .Parameters.AddWithValue("@ProjectID", project.Id)
-              .Parameters.AddWithValue("@ResourceID", mResourceId)
+          .CommandText = "addAssignment"
+          LoadParameters(cm, project)
 
-              .ExecuteNonQuery()
+          .ExecuteNonQuery()
 
-              MarkNew()
-            End If
+          MarkOld()
+        End With
+      End Using
+      cn.Close()
+    End Using
 
-          Else
-            ' we are either adding or updating
-            If Me.IsNew Then
-              ' we're new, so insert
-              .CommandText = "addAssignment"
+  End Sub
 
-            Else
-              ' we're not new, so update
-              .CommandText = "updateAssignment"
+  Friend Sub Update(ByVal project As Project)
 
-            End If
+    ' if we're not dirty then don't update the database
+    If Not Me.IsDirty Then Exit Sub
+
+    Using cn As New SqlConnection(DataBase.DbConn)
+      cn.Open()
+      Using cm As SqlCommand = cn.CreateCommand
+        With cm
+          .Connection = cn
+          .CommandType = CommandType.StoredProcedure
+          .CommandText = "updateAssignment"
+          LoadParameters(cm, project)
+
+          .ExecuteNonQuery()
+
+          MarkOld()
+        End With
+      End Using
+      cn.Close()
+    End Using
+
+  End Sub
+
+  Private Sub LoadParameters(ByVal cm As SqlCommand, ByVal project As Project)
+
+    With cm
+      .Parameters.AddWithValue("@ProjectID", project.Id)
+      .Parameters.AddWithValue("@ResourceID", mResourceId)
+      .Parameters.AddWithValue("@Assigned", mAssigned.DBValue)
+      .Parameters.AddWithValue("@Role", mRole)
+    End With
+
+  End Sub
+
+  Friend Sub DeleteSelf(ByVal project As Project)
+
+    ' if we're not dirty then don't update the database
+    If Not Me.IsDirty Then Exit Sub
+
+    Using cn As New SqlConnection(DataBase.DbConn)
+      cn.Open()
+      Using cm As SqlCommand = cn.CreateCommand
+        With cm
+          .CommandType = CommandType.StoredProcedure
+          If Not Me.IsNew Then
+            ' we're not new, so delete
+            .CommandText = "deleteAssignment"
             .Parameters.AddWithValue("@ProjectID", project.Id)
             .Parameters.AddWithValue("@ResourceID", mResourceId)
-            .Parameters.AddWithValue("@Assigned", mAssigned.DBValue)
-            .Parameters.AddWithValue("@Role", mRole)
 
             .ExecuteNonQuery()
 
-            MarkOld()
+            MarkNew()
           End If
-
         End With
       End Using
       cn.Close()

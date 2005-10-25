@@ -1,3 +1,370 @@
+Imports System.Data.SqlClient
+
+<Serializable()> _
 Public Class Project
+  Inherits BusinessBase(Of Project)
+
+#Region " Business Properties and Methods "
+
+  Private mId As Guid = Guid.NewGuid
+  Private mName As String = ""
+  Private mStarted As New SmartDate(False)
+  Private mEnded As New SmartDate
+  Private mDescription As String = ""
+
+  Private mResources As ProjectResources = _
+    ProjectResources.NewProjectResources()
+
+  Public ReadOnly Property Id() As Guid
+    Get
+      If CanReadProperty() Then
+        Return mId
+      Else
+        Throw New System.Security.SecurityException("Property get not allowed")
+      End If
+    End Get
+  End Property
+
+  Public Property Name() As String
+    Get
+      If CanReadProperty() Then
+        Return mName
+      Else
+        Throw New System.Security.SecurityException("Property get not allowed")
+      End If
+    End Get
+    Set(ByVal Value As String)
+      If CanWriteProperty() Then
+        If mName <> Value Then
+          mName = Value
+          PropertyHasChanged()
+        End If
+      Else
+        Throw New System.Security.SecurityException("Property set not allowed")
+      End If
+    End Set
+  End Property
+
+  Public Property Started() As String
+    Get
+      If CanReadProperty() Then
+        Return mStarted.Text
+      Else
+        Throw New System.Security.SecurityException("Property get not allowed")
+      End If
+    End Get
+    Set(ByVal Value As String)
+      If CanWriteProperty() Then
+        If mStarted <> Value Then
+          mStarted.Text = Value
+          PropertyHasChanged()
+        End If
+      Else
+        Throw New System.Security.SecurityException("Property set not allowed")
+      End If
+    End Set
+  End Property
+
+  Public Property Ended() As String
+    Get
+      If CanReadProperty() Then
+        Return mEnded.Text
+      Else
+        Throw New System.Security.SecurityException("Property get not allowed")
+      End If
+    End Get
+    Set(ByVal Value As String)
+      If CanWriteProperty() Then
+        If mEnded <> Value Then
+          mEnded.Text = Value
+          PropertyHasChanged()
+        End If
+      Else
+        Throw New System.Security.SecurityException("Property set not allowed")
+      End If
+    End Set
+  End Property
+
+  Public Property Description() As String
+    Get
+      If CanReadProperty() Then
+        Return mDescription
+      Else
+        Throw New System.Security.SecurityException("Property get not allowed")
+      End If
+    End Get
+    Set(ByVal Value As String)
+      If CanWriteProperty() Then
+        If mDescription <> Value Then
+          mDescription = Value
+          PropertyHasChanged()
+        End If
+      Else
+        Throw New System.Security.SecurityException("Property set not allowed")
+      End If
+    End Set
+  End Property
+
+  Public ReadOnly Property Resources() As ProjectResources
+    Get
+      Return mResources
+    End Get
+  End Property
+
+  Public Overrides ReadOnly Property IsValid() As Boolean
+    Get
+      Return MyBase.IsValid AndAlso mResources.IsValid
+    End Get
+  End Property
+
+  Public Overrides ReadOnly Property IsDirty() As Boolean
+    Get
+      Return MyBase.IsDirty OrElse mResources.IsDirty
+    End Get
+  End Property
+
+  Protected Overrides Function GetIdValue() As Object
+    Return mId
+  End Function
+
+#End Region
+
+#Region " Business Rules "
+
+  Protected Overrides Sub AddBusinessRules()
+
+    ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, "Name")
+    ValidationRules.AddRule(AddressOf Validation.CommonRules.StringMaxLength, _
+      New Validation.CommonRules.MaxLengthRuleArgs("Name", 50))
+
+    ValidationRules.AddRule(AddressOf StartDateGTEndDate, "Started")
+    ValidationRules.AddRule(AddressOf StartDateGTEndDate, "Ended")
+
+  End Sub
+
+  Private Function StartDateGTEndDate(ByVal target As Object, ByVal e As Validation.RuleArgs) As Boolean
+
+    If mStarted > mEnded Then
+      e.Description = "Start date can't be after end date"
+      Return True
+
+    Else
+      Return False
+    End If
+
+  End Function
+
+#End Region
+
+#Region " Factory Methods "
+
+  ' create new object
+  Public Shared Function NewProject() As Project
+    If Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") Then
+      Throw New System.Security.SecurityException("User not authorized to add a project")
+    End If
+    Return DataPortal.Create(Of Project)(Nothing)
+  End Function
+
+  ' load existing object by id
+  Public Shared Function GetProject(ByVal id As Guid) As Project
+    Return DataPortal.Fetch(Of Project)(New Criteria(id))
+  End Function
+
+  ' delete object
+  Public Shared Sub DeleteProject(ByVal id As Guid)
+    If Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") _
+      AndAlso _
+       Not Threading.Thread.CurrentPrincipal.IsInRole("Administrator") Then
+      Throw New System.Security.SecurityException("User not authorized to remove a project")
+    End If
+    DataPortal.Delete(New Criteria(id))
+  End Sub
+
+  Public Overrides Function Save() As Project
+    If IsDeleted Then
+      If Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") _
+        AndAlso _
+         Not Threading.Thread.CurrentPrincipal.IsInRole("Administrator") Then
+        Throw New System.Security.SecurityException("User not authorized to remove a project")
+      End If
+
+    Else
+      ' no deletion - we're adding or updating
+      If Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") Then
+        Throw New System.Security.SecurityException("User not authorized to update a project")
+      End If
+    End If
+
+    Return MyBase.Save
+  End Function
+
+#End Region
+
+#Region " Constructors "
+
+  ''' <summary>
+  ''' DO NOT USE. Call the static NewProject() method instead.
+  ''' </summary>
+  ''' <remarks>
+  ''' This constructor is public only to support Web Forms
+  ''' data binding. Do not call it directly. To create a new
+  ''' object, call the appropriate factory method.
+  ''' </remarks>
+  Public Sub New()
+    ' add AuthorizationRules here
+    AuthorizationRules.AllowWrite("Name", "ProjectManager")
+    AuthorizationRules.AllowWrite("Started", "ProjectManager")
+    AuthorizationRules.AllowWrite("Ended", "ProjectManager")
+    AuthorizationRules.AllowWrite("Description", "ProjectManager")
+  End Sub
+
+#End Region
+
+#Region " Criteria "
+
+  <Serializable()> _
+  Private Class Criteria
+
+    Private mId As Guid
+    Public ReadOnly Property Id() As Guid
+      Get
+        Return mId
+      End Get
+    End Property
+
+    Public Sub New(ByVal id As Guid)
+      mId = id
+    End Sub
+  End Class
+
+#End Region
+
+#Region " Data Access "
+
+  Private ReadOnly Property DbConn() As String
+    Get
+      Return System.Configuration.ConfigurationManager.ConnectionStrings("PTracker").ConnectionString
+    End Get
+  End Property
+
+  Protected Overrides Sub DataPortal_Create(ByVal criteria As Object)
+    mId = Guid.NewGuid
+    Started = CStr(Today)
+    Name = ""
+    ValidationRules.CheckRules()
+  End Sub
+
+  Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
+
+    Dim crit As Criteria = CType(criteria, Criteria)
+    Using cn As New SqlConnection(DbConn)
+      cn.Open()
+      Using cm As SqlCommand = cn.CreateCommand
+        cm.CommandType = CommandType.StoredProcedure
+        cm.CommandText = "getProject"
+        cm.Parameters.AddWithValue("@ID", crit.Id)
+
+        Using dr As New SafeDataReader(cm.ExecuteReader)
+          dr.Read()
+          With dr
+            mId = .GetGuid(0)
+            mName = .GetString(1)
+            mStarted = .GetSmartDate(2, mStarted.EmptyIsMin)
+            mEnded = .GetSmartDate(3, mEnded.EmptyIsMin)
+            mDescription = .GetString(4)
+
+            ' load child objects
+            .NextResult()
+            mResources = ProjectResources.GetProjectResources(dr)
+          End With
+          dr.Close()
+        End Using
+      End Using
+      cn.Close()
+    End Using
+
+  End Sub
+
+  <Transactional(TransactionalTypes.TransactionScope)> _
+  Protected Overrides Sub DataPortal_Insert()
+
+    Using cn As New SqlConnection(DbConn)
+      cn.Open()
+      Using cm As SqlCommand = cn.CreateCommand
+        cm.CommandType = CommandType.StoredProcedure
+        cm.CommandText = "addProject"
+        LoadParameters(cm)
+        cm.ExecuteNonQuery()
+      End Using
+      cn.Close()
+    End Using
+
+    ' update child objects
+    mResources.Update(Me)
+
+  End Sub
+
+  <Transactional(TransactionalTypes.TransactionScope)> _
+  Protected Overrides Sub DataPortal_Update()
+
+    Using cn As New SqlConnection(DbConn)
+      cn.Open()
+      Using cm As SqlCommand = cn.CreateCommand
+        cm.CommandType = CommandType.StoredProcedure
+        cm.CommandText = "updateProject"
+        LoadParameters(cm)
+        cm.ExecuteNonQuery()
+      End Using
+      cn.Close()
+    End Using
+
+    ' update child objects
+    mResources.Update(Me)
+
+  End Sub
+
+  Private Sub LoadParameters(ByVal cm As SqlCommand)
+
+    With cm
+      .Parameters.AddWithValue("@ID", mId.ToString)
+      .Parameters.AddWithValue("@Name", mName)
+      .Parameters.AddWithValue("@Started", mStarted.DBValue)
+      .Parameters.AddWithValue("@Ended", mEnded.DBValue)
+      .Parameters.AddWithValue("@Description", mDescription)
+    End With
+
+  End Sub
+
+  <Transactional(TransactionalTypes.TransactionScope)> _
+  Protected Overrides Sub DataPortal_DeleteSelf()
+
+    DataPortal_Delete(New Criteria(mId))
+
+  End Sub
+
+  <Transactional(TransactionalTypes.TransactionScope)> _
+  Protected Overrides Sub DataPortal_Delete(ByVal Criteria As Object)
+    Dim crit As Criteria = CType(Criteria, Criteria)
+    Dim cn As New SqlConnection(DbConn)
+    Dim cm As New SqlCommand()
+
+    cn.Open()
+
+    Try
+      With cm
+        .Connection = cn
+        .CommandType = CommandType.StoredProcedure
+        .CommandText = "deleteProject"
+        .Parameters.AddWithValue("@ID", crit.Id.ToString)
+        .ExecuteNonQuery()
+      End With
+
+    Finally
+      cn.Close()
+    End Try
+  End Sub
+
+#End Region
 
 End Class

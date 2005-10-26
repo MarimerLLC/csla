@@ -42,6 +42,12 @@ Public Class ProjectResource
     End Get
   End Property
 
+  Public ReadOnly Property FullName() As String
+    Get
+      Return LastName & ", " & FirstName
+    End Get
+  End Property
+
   Public ReadOnly Property Assigned() As String
     Get
       If CanReadProperty() Then

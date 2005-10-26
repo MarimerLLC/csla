@@ -44,8 +44,7 @@ Partial Class ProjectEdit
     Me.StartedTextBox = New System.Windows.Forms.TextBox
     Me.ReadWriteAuthorization1 = New PTWin.ReadWriteAuthorization(Me.components)
     Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewLinkColumn
-    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.Column1 = New System.Windows.Forms.DataGridViewLinkColumn
     Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
     Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn
     DescriptionLabel = New System.Windows.Forms.Label
@@ -228,7 +227,7 @@ Partial Class ProjectEdit
     Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.ResourcesDataGridView, False)
     Me.ResourcesDataGridView.AutoGenerateColumns = False
     Me.ResourcesDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
-    Me.ResourcesDataGridView.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn2, Me.DataGridViewTextBoxColumn1, Me.DataGridViewTextBoxColumn3, Me.Role, Me.DataGridViewTextBoxColumn4})
+    Me.ResourcesDataGridView.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn2, Me.Column1, Me.Role, Me.DataGridViewTextBoxColumn4})
     Me.ResourcesDataGridView.DataSource = Me.ResourcesBindingSource
     Me.ResourcesDataGridView.Location = New System.Drawing.Point(6, 19)
     Me.ResourcesDataGridView.MultiSelect = False
@@ -305,23 +304,15 @@ Partial Class ProjectEdit
     Me.DataGridViewTextBoxColumn2.Visible = False
     Me.DataGridViewTextBoxColumn2.Width = 5
     '
-    'DataGridViewTextBoxColumn1
+    'Column1
     '
-    Me.DataGridViewTextBoxColumn1.DataPropertyName = "LastName"
-    Me.DataGridViewTextBoxColumn1.HeaderText = "LastName"
-    Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
-    Me.DataGridViewTextBoxColumn1.ReadOnly = True
-    Me.DataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-    Me.DataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-    Me.DataGridViewTextBoxColumn1.Width = 80
-    '
-    'DataGridViewTextBoxColumn3
-    '
-    Me.DataGridViewTextBoxColumn3.DataPropertyName = "FirstName"
-    Me.DataGridViewTextBoxColumn3.HeaderText = "FirstName"
-    Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
-    Me.DataGridViewTextBoxColumn3.ReadOnly = True
-    Me.DataGridViewTextBoxColumn3.Width = 79
+    Me.Column1.DataPropertyName = "FullName"
+    Me.Column1.HeaderText = "Name"
+    Me.Column1.Name = "Column1"
+    Me.Column1.ReadOnly = True
+    Me.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+    Me.Column1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+    Me.Column1.Width = 60
     '
     'Role
     '
@@ -393,8 +384,7 @@ Partial Class ProjectEdit
   Friend WithEvents StartedTextBox As System.Windows.Forms.TextBox
   Friend WithEvents ReadWriteAuthorization1 As PTWin.ReadWriteAuthorization
   Friend WithEvents DataGridViewTextBoxColumn2 As System.Windows.Forms.DataGridViewTextBoxColumn
-  Friend WithEvents DataGridViewTextBoxColumn1 As System.Windows.Forms.DataGridViewLinkColumn
-  Friend WithEvents DataGridViewTextBoxColumn3 As System.Windows.Forms.DataGridViewTextBoxColumn
+  Friend WithEvents Column1 As System.Windows.Forms.DataGridViewLinkColumn
   Friend WithEvents Role As System.Windows.Forms.DataGridViewComboBoxColumn
   Friend WithEvents DataGridViewTextBoxColumn4 As System.Windows.Forms.DataGridViewTextBoxColumn
 

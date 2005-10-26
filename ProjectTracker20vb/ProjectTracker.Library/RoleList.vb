@@ -45,8 +45,8 @@ Public Class RoleList
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandType = CommandType.Text
-        cm.CommandText = "SELECT id,name FROM Roles"
+        cm.CommandType = CommandType.StoredProcedure
+        cm.CommandText = "getRoles"
 
         Using dr As New SafeDataReader(cm.ExecuteReader)
           IsReadOnly = False

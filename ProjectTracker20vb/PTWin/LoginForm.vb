@@ -16,4 +16,10 @@ Public Class LoginForm
 
   End Sub
 
+  Private Sub LoginForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+
+    Me.UsernameTextBox.Focus()
+
+  End Sub
+
 End Class

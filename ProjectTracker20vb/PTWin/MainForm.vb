@@ -164,6 +164,27 @@ Public Class MainForm
 
 #End Region
 
+#Region " Admin "
+
+  Private Sub EditRolesToolStripMenuItem_Click( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles EditRolesToolStripMenuItem.Click
+
+    ' see if this form is already loaded
+    For Each ctl As Control In Panel1.Controls
+      If TypeOf ctl Is RolesEdit Then
+        ShowWinPart(CType(ctl, WinPart))
+        Exit Sub
+      End If
+    Next
+
+    ' it wasn't already loaded, so show it
+    AddWinPart(New RolesEdit)
+
+  End Sub
+
+#End Region
+
 #Region " ApplyAuthorizationRules "
 
   Private Sub ApplyAuthorizationRules()

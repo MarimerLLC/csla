@@ -108,6 +108,12 @@
     <Compile Include="ResourceSelect.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="RolesEdit.Designer.vb">
+      <DependentUpon>RolesEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="RolesEdit.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="StatusBusy.vb" />
     <Compile Include="StatusChangedEventArgs.vb" />
     <Compile Include="WinPart.vb">
@@ -145,6 +151,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>ResourceSelect.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="RolesEdit.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RolesEdit.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -152,6 +162,7 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
+    <None Include="My Project\DataSources\ProjectTracker.Library.Admin.Roles.datasource" />
     <None Include="My Project\DataSources\ProjectTracker.Library.Project.datasource" />
     <None Include="My Project\DataSources\ProjectTracker.Library.ProjectList.datasource" />
     <None Include="My Project\DataSources\ProjectTracker.Library.Resource.datasource" />

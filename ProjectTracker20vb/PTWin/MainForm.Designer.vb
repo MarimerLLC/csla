@@ -37,6 +37,8 @@ Partial Class MainForm
     Me.Panel1 = New System.Windows.Forms.Panel
     Me.StatusStrip1 = New System.Windows.Forms.StatusStrip
     Me.StatusLabel = New System.Windows.Forms.ToolStripStatusLabel
+    Me.AdminToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton
+    Me.EditRolesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
     Me.ToolStrip1.SuspendLayout()
     Me.StatusStrip1.SuspendLayout()
     Me.SuspendLayout()
@@ -44,7 +46,7 @@ Partial Class MainForm
     'ToolStrip1
     '
     Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-    Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ProjectsToolStripDropDownButton, Me.ResourcesToolStripDropDownButton, Me.ToolStripSeparator1, Me.LoginToolStripLabel, Me.LoginToolStripButton, Me.ToolStripSeparator2, Me.DocumentsToolStripDropDownButton})
+    Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ProjectsToolStripDropDownButton, Me.ResourcesToolStripDropDownButton, Me.AdminToolStripDropDownButton, Me.ToolStripSeparator1, Me.LoginToolStripLabel, Me.LoginToolStripButton, Me.ToolStripSeparator2, Me.DocumentsToolStripDropDownButton})
     Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
     Me.ToolStrip1.Name = "ToolStrip1"
     Me.ToolStrip1.Size = New System.Drawing.Size(827, 25)
@@ -162,6 +164,21 @@ Partial Class MainForm
     Me.StatusLabel.Size = New System.Drawing.Size(111, 17)
     Me.StatusLabel.Text = "ToolStripStatusLabel1"
     '
+    'AdminToolStripDropDownButton
+    '
+    Me.AdminToolStripDropDownButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EditRolesToolStripMenuItem})
+    Me.AdminToolStripDropDownButton.Image = CType(resources.GetObject("AdminToolStripDropDownButton.Image"), System.Drawing.Image)
+    Me.AdminToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
+    Me.AdminToolStripDropDownButton.Name = "AdminToolStripDropDownButton"
+    Me.AdminToolStripDropDownButton.Size = New System.Drawing.Size(65, 22)
+    Me.AdminToolStripDropDownButton.Text = "Admin"
+    '
+    'EditRolesToolStripMenuItem
+    '
+    Me.EditRolesToolStripMenuItem.Name = "EditRolesToolStripMenuItem"
+    Me.EditRolesToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+    Me.EditRolesToolStripMenuItem.Text = "Edit roles"
+    '
     'MainForm
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -197,4 +214,6 @@ Partial Class MainForm
   Friend WithEvents DocumentsToolStripDropDownButton As System.Windows.Forms.ToolStripDropDownButton
   Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
   Friend WithEvents StatusLabel As System.Windows.Forms.ToolStripStatusLabel
+  Friend WithEvents AdminToolStripDropDownButton As System.Windows.Forms.ToolStripDropDownButton
+  Friend WithEvents EditRolesToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 End Class

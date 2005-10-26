@@ -52,6 +52,8 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\Role.vb" />
+    <Compile Include="Admin\Roles.vb" />
     <Compile Include="DataBase.vb" />
     <Compile Include="ProjectList.vb" />
     <Compile Include="ProjectResource.vb" />

@@ -2,7 +2,7 @@ Imports System.Data.SqlClient
 
 <Serializable()> _
 Public Class ResourceAssignments
-  Inherits BusinessListBase(Of ResourceAssignment)
+  Inherits BusinessListBase(Of ResourceAssignments, ResourceAssignment)
 
 #Region " Business Methods "
 

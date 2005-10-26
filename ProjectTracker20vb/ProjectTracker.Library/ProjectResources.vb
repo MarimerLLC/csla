@@ -2,7 +2,7 @@ Imports System.Data.SqlClient
 
 <Serializable()> _
 Public Class ProjectResources
-  Inherits BusinessListBase(Of ProjectResource)
+  Inherits BusinessListBase(Of ProjectResources, ProjectResource)
 
 #Region " Business Properties and Methods "
 

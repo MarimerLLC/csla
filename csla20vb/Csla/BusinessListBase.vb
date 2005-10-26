@@ -2,8 +2,8 @@ Imports System.ComponentModel
 
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
-Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
-  Inherits System.ComponentModel.BindingList(Of T)
+Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C As Core.BusinessBase)
+  Inherits System.ComponentModel.BindingList(Of C)
 
   Implements Core.IEditableCollection
   Implements ICloneable
@@ -48,7 +48,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
       ' run through all the child objects
       ' and if any are dirty then the
       ' collection is dirty
-      Dim Child As T
+      Dim Child As C
 
       For Each Child In Me
         If Child.IsDirty Then Return True
@@ -63,7 +63,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   ''' </summary>
   ''' <remarks>
   ''' <para>
-  ''' By default this property relies on the underling <see cref="T:Csla.BrokenRules" />
+  ''' By default this property relies on the underling <see cref="Validation.ValidationRules" />
   ''' object to track whether any business rules are currently broken for this object.
   ''' </para><para>
   ''' You can override this property to provide more sophisticated
@@ -83,7 +83,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
       ' run through all the child objects
       ' and if any are invalid then the
       ' collection is invalid
-      For Each child As T In Me
+      For Each child As C In Me
         If Not child.IsValid Then Return False
       Next
       Return True
@@ -166,10 +166,10 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
     UndoChanges()
 
     ' make sure the child objects re-add their business rules
-    For Each child As T In Me
+    For Each child As C In Me
       child.AddBusinessRules()
     Next
-    For Each child As T In DeletedList
+    For Each child As C In DeletedList
       child.AddBusinessRules()
     Next
 
@@ -201,7 +201,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
 #Region " N-level undo "
 
   Friend Sub CopyState() Implements Core.IEditableCollection.CopyState
-    Dim Child As T
+    Dim Child As C
 
     ' we are going a level deeper in editing
     mEditLevel += 1
@@ -218,7 +218,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   End Sub
 
   Friend Sub UndoChanges() Implements Core.IEditableCollection.UndoChanges
-    Dim child As T
+    Dim child As C
     Dim index As Integer
 
     ' we are coming up one edit level
@@ -251,7 +251,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   End Sub
 
   Friend Sub AcceptChanges() Implements Core.IEditableCollection.AcceptChanges
-    Dim child As T
+    Dim child As C
     Dim index As Integer
 
     ' we are coming up one edit level
@@ -281,7 +281,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
 
 #Region " Delete and Undelete child "
 
-  Private mDeletedList As New List(Of T)
+  Private mDeletedList As New List(Of C)
 
   ''' <summary>
   ''' A collection containing all child objects marked
@@ -289,20 +289,20 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected ReadOnly Property DeletedList() As List(Of T)
+  Protected ReadOnly Property DeletedList() As List(Of C)
     Get
       Return mDeletedList
     End Get
   End Property
 
-  Private Sub DeleteChild(ByVal child As T)
+  Private Sub DeleteChild(ByVal child As C)
     ' mark the object as deleted
     child.DeleteChild()
     ' and add it to the deleted collection for storage
     DeletedList.Add(child)
   End Sub
 
-  Private Sub UnDeleteChild(ByVal child As T)
+  Private Sub UnDeleteChild(ByVal child As C)
     ' we are inserting an _existing_ object so
     ' we need to preserve the object's editleveladded value
     ' because it will be changed by the normal add process
@@ -321,7 +321,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   ''' </summary>
   ''' <param name="item">Child object to check.</param>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Public Function ContainsDeleted(ByVal item As T) As Boolean
+  Public Function ContainsDeleted(ByVal item As C) As Boolean
 
     Return DeletedList.Contains(item)
 
@@ -329,7 +329,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
 
 #End Region
 
-  ' commented out because BindingList(Of T) automatically
+  ' commented out because BindingList(Of C) automatically
   ' cascades the child events
   '#Region " Cascade Child events "
 
@@ -358,14 +358,14 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   Private Sub RemoveChild(ByVal child As Core.BusinessBase) _
     Implements Core.IEditableCollection.RemoveChild
 
-    Remove(DirectCast(child, T))
+    Remove(DirectCast(child, C))
 
   End Sub
 
   ''' <summary>
   ''' Sets the edit level of the child object as it is added.
   ''' </summary>
-  Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As T)
+  Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As C)
     ' when an object is inserted we assume it is
     ' a new object and so the edit level when it was
     ' added must be set
@@ -383,7 +383,7 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   Protected Overrides Sub RemoveItem(ByVal index As Integer)
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
-    Dim item As T = Me(index)
+    Dim item As C = Me(index)
     DeleteChild(item)
     'RemoveHandler item.PropertyChanged, _
     '  AddressOf Child_PropertyChanged
@@ -494,7 +494,8 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
   ''' </para>
   ''' </remarks>
   ''' <returns>A new object containing the saved values.</returns>
-  Public Overridable Function Save() As BusinessListBase(Of T)
+  Public Overridable Function Save() As T
+
     If Me.IsChild Then
       Throw New NotSupportedException(My.Resources.NoSaveChildException)
     End If
@@ -508,9 +509,10 @@ Public MustInherit Class BusinessListBase(Of T As Core.BusinessBase)
     End If
 
     If IsDirty Then
-      Return CType(DataPortal.Update(Me), BusinessListBase(Of T))
+      Return DirectCast(DataPortal.Update(Me), T)
+
     Else
-      Return Me
+      Return DirectCast(Me, T)
     End If
 
   End Function

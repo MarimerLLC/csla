@@ -64,6 +64,12 @@ Public Class Resource
     End Set
   End Property
 
+  Public ReadOnly Property FullName() As String
+    Get
+      Return mLastName & ", " & mFirstName
+    End Get
+  End Property
+
   Public ReadOnly Property Assignments() As ResourceAssignments
     Get
       Return mAssignments
@@ -90,7 +96,7 @@ Public Class Resource
 
 #End Region
 
-#Region " Business Rules "
+#Region " Validation Rules "
 
   Protected Overrides Sub AddBusinessRules()
 
@@ -105,13 +111,54 @@ Public Class Resource
 
 #End Region
 
+#Region " Authorization Rules "
+
+  Protected Overrides Sub AddAuthorizationRules()
+
+    ' add AuthorizationRules here
+    AuthorizationRules.AllowWrite("LastName", "ProjectManager")
+    AuthorizationRules.AllowWrite("FirstName", "ProjectManager")
+
+  End Sub
+
+  Public Shared Function CanAddObject() As Boolean
+
+    Return My.User.IsInRole("ProjectManager")
+
+  End Function
+
+  Public Shared Function CanGetObject() As Boolean
+
+    Return True
+
+  End Function
+
+  Public Shared Function CanDeleteObject() As Boolean
+
+    Dim result As Boolean
+    If My.User.IsInRole("ProjectManager") Then
+      result = True
+    End If
+    If My.User.IsInRole("Administrator") Then
+      result = True
+    End If
+    Return result
+
+  End Function
+
+  Public Shared Function CanSaveObject() As Boolean
+
+    Return Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager")
+
+  End Function
+
+#End Region
+
 #Region " Shared Methods "
 
   Public Shared Function NewResource(ByVal id As String) As Resource
 
-    If Not Threading.Thread.CurrentPrincipal.IsInRole("Supervisor") _
-      AndAlso _
-      Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") Then
+    If Not CanAddObject() Then
       Throw New System.Security.SecurityException("User not authorized to add a resource")
     End If
     Return DataPortal.Create(Of Resource)(New Criteria(id))
@@ -120,38 +167,31 @@ Public Class Resource
 
   Public Shared Sub DeleteResource(ByVal id As String)
 
-    If Not Threading.Thread.CurrentPrincipal.IsInRole("Supervisor") _
-      AndAlso _
-      Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") _
-      AndAlso _
-      Not Threading.Thread.CurrentPrincipal.IsInRole("Administrator") Then
+    If Not CanDeleteObject() Then
       Throw New System.Security.SecurityException("User not authorized to remove a resource")
     End If
-    DataPortal.Delete(New Criteria(ID))
+    DataPortal.Delete(New Criteria(id))
 
   End Sub
 
   Public Shared Function GetResource(ByVal id As String) As Resource
 
-    Return CType(DataPortal.Fetch(New Criteria(ID)), Resource)
+    If Not CanGetObject() Then
+      Throw New System.Security.SecurityException("User not authorized to view a resource")
+    End If
+    Return CType(DataPortal.Fetch(New Criteria(id)), Resource)
 
   End Function
 
   Public Overrides Function Save() As Resource
 
     If IsDeleted Then
-      If Not Threading.Thread.CurrentPrincipal.IsInRole("Supervisor") _
-         AndAlso _
-         Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") _
-         AndAlso _
-         Not Threading.Thread.CurrentPrincipal.IsInRole("Administrator") Then
+      If Not CanDeleteObject() Then
         Throw New System.Security.SecurityException("User not authorized to remove a resource")
       End If
 
     Else
-      If Not Threading.Thread.CurrentPrincipal.IsInRole("Supervisor") _
-         AndAlso _
-         Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") Then
+      If Not CanSaveObject() Then
         Throw New System.Security.SecurityException( _
           "User not authorized to update a resource")
       End If

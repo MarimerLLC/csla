@@ -1,335 +1,200 @@
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class MainForm
-    Inherits System.Windows.Forms.Form
+  Inherits System.Windows.Forms.Form
 
-    'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
-    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-        If disposing AndAlso components IsNot Nothing Then
-            components.Dispose()
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
+  'Form overrides dispose to clean up the component list.
+  <System.Diagnostics.DebuggerNonUserCode()> _
+  Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+    If disposing AndAlso components IsNot Nothing Then
+      components.Dispose()
+    End If
+    MyBase.Dispose(disposing)
+  End Sub
 
-    'Required by the Windows Form Designer
-    Private components As System.ComponentModel.IContainer
+  'Required by the Windows Form Designer
+  Private components As System.ComponentModel.IContainer
 
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
-    'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
-    Private Sub InitializeComponent()
-    Me.components = New System.ComponentModel.Container
-    Dim DescriptionLabel As System.Windows.Forms.Label
-    Dim EndedLabel As System.Windows.Forms.Label
-    Dim IdLabel As System.Windows.Forms.Label
-    Dim NameLabel As System.Windows.Forms.Label
-    Dim StartedLabel As System.Windows.Forms.Label
-    Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-    Me.ProjectListDataGridView = New System.Windows.Forms.DataGridView
-    Me.GroupBox1 = New System.Windows.Forms.GroupBox
-    Me.ResourcesDataGridView = New System.Windows.Forms.DataGridView
-    Me.ResourcesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-    Me.DescriptionTextBox = New System.Windows.Forms.TextBox
-    Me.EndedTextBox = New System.Windows.Forms.TextBox
-    Me.IdLabel1 = New System.Windows.Forms.Label
-    Me.NameTextBox = New System.Windows.Forms.TextBox
-    Me.StartedTextBox = New System.Windows.Forms.TextBox
-    Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
-    Me.RoleListBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-    Me.ProjectBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-    Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.ProjectListBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-    Me.BindingSourceRefresh1 = New PTWin.BindingSourceRefresh(Me.components)
-    Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.DataGridViewTextBoxColumn5 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.DataGridViewTextBoxColumn6 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
-    DescriptionLabel = New System.Windows.Forms.Label
-    EndedLabel = New System.Windows.Forms.Label
-    IdLabel = New System.Windows.Forms.Label
-    NameLabel = New System.Windows.Forms.Label
-    StartedLabel = New System.Windows.Forms.Label
-    CType(Me.ProjectListDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
-    Me.GroupBox1.SuspendLayout()
-    CType(Me.ResourcesDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ResourcesBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.RoleListBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ProjectBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ProjectListBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
+  'NOTE: The following procedure is required by the Windows Form Designer
+  'It can be modified using the Windows Form Designer.  
+  'Do not modify it using the code editor.
+  <System.Diagnostics.DebuggerStepThrough()> _
+  Private Sub InitializeComponent()
+    Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
+    Me.ToolStrip1 = New System.Windows.Forms.ToolStrip
+    Me.ProjectsToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton
+    Me.NewProjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+    Me.EditProjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+    Me.DeleteProjectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+    Me.ResourcesToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton
+    Me.NewResourceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+    Me.EditResourceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+    Me.DeleteResourceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+    Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator
+    Me.LoginToolStripLabel = New System.Windows.Forms.ToolStripLabel
+    Me.LoginToolStripButton = New System.Windows.Forms.ToolStripButton
+    Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator
+    Me.DocumentsToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton
+    Me.Panel1 = New System.Windows.Forms.Panel
+    Me.StatusStrip1 = New System.Windows.Forms.StatusStrip
+    Me.StatusLabel = New System.Windows.Forms.ToolStripStatusLabel
+    Me.ToolStrip1.SuspendLayout()
+    Me.StatusStrip1.SuspendLayout()
     Me.SuspendLayout()
     '
-    'DescriptionLabel
+    'ToolStrip1
     '
-    DescriptionLabel.AutoSize = True
-    DescriptionLabel.Location = New System.Drawing.Point(27, 132)
-    DescriptionLabel.Name = "DescriptionLabel"
-    DescriptionLabel.Size = New System.Drawing.Size(63, 13)
-    DescriptionLabel.TabIndex = 0
-    DescriptionLabel.Text = "Description:"
+    Me.ToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+    Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ProjectsToolStripDropDownButton, Me.ResourcesToolStripDropDownButton, Me.ToolStripSeparator1, Me.LoginToolStripLabel, Me.LoginToolStripButton, Me.ToolStripSeparator2, Me.DocumentsToolStripDropDownButton})
+    Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
+    Me.ToolStrip1.Name = "ToolStrip1"
+    Me.ToolStrip1.Size = New System.Drawing.Size(827, 25)
+    Me.ToolStrip1.TabIndex = 1
     '
-    'EndedLabel
+    'ProjectsToolStripDropDownButton
     '
-    EndedLabel.AutoSize = True
-    EndedLabel.Location = New System.Drawing.Point(27, 106)
-    EndedLabel.Name = "EndedLabel"
-    EndedLabel.Size = New System.Drawing.Size(41, 13)
-    EndedLabel.TabIndex = 2
-    EndedLabel.Text = "Ended:"
+    Me.ProjectsToolStripDropDownButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewProjectToolStripMenuItem, Me.EditProjectToolStripMenuItem, Me.DeleteProjectToolStripMenuItem})
+    Me.ProjectsToolStripDropDownButton.Image = CType(resources.GetObject("ProjectsToolStripDropDownButton.Image"), System.Drawing.Image)
+    Me.ProjectsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
+    Me.ProjectsToolStripDropDownButton.Name = "ProjectsToolStripDropDownButton"
+    Me.ProjectsToolStripDropDownButton.Size = New System.Drawing.Size(75, 22)
+    Me.ProjectsToolStripDropDownButton.Text = "Projects"
     '
-    'IdLabel
+    'NewProjectToolStripMenuItem
     '
-    IdLabel.AutoSize = True
-    IdLabel.Location = New System.Drawing.Point(27, 25)
-    IdLabel.Name = "IdLabel"
-    IdLabel.Size = New System.Drawing.Size(19, 13)
-    IdLabel.TabIndex = 4
-    IdLabel.Text = "Id:"
+    Me.NewProjectToolStripMenuItem.Name = "NewProjectToolStripMenuItem"
+    Me.NewProjectToolStripMenuItem.Size = New System.Drawing.Size(153, 22)
+    Me.NewProjectToolStripMenuItem.Text = "New project"
     '
-    'NameLabel
+    'EditProjectToolStripMenuItem
     '
-    NameLabel.AutoSize = True
-    NameLabel.Location = New System.Drawing.Point(27, 54)
-    NameLabel.Name = "NameLabel"
-    NameLabel.Size = New System.Drawing.Size(38, 13)
-    NameLabel.TabIndex = 6
-    NameLabel.Text = "Name:"
+    Me.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem"
+    Me.EditProjectToolStripMenuItem.Size = New System.Drawing.Size(153, 22)
+    Me.EditProjectToolStripMenuItem.Text = "Edit project"
     '
-    'StartedLabel
+    'DeleteProjectToolStripMenuItem
     '
-    StartedLabel.AutoSize = True
-    StartedLabel.Location = New System.Drawing.Point(27, 80)
-    StartedLabel.Name = "StartedLabel"
-    StartedLabel.Size = New System.Drawing.Size(44, 13)
-    StartedLabel.TabIndex = 8
-    StartedLabel.Text = "Started:"
+    Me.DeleteProjectToolStripMenuItem.Name = "DeleteProjectToolStripMenuItem"
+    Me.DeleteProjectToolStripMenuItem.Size = New System.Drawing.Size(153, 22)
+    Me.DeleteProjectToolStripMenuItem.Text = "Delete project"
     '
-    'ProjectListDataGridView
+    'ResourcesToolStripDropDownButton
     '
-    Me.ProjectListDataGridView.AllowUserToAddRows = False
-    Me.ProjectListDataGridView.AllowUserToDeleteRows = False
-    DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-    Me.ProjectListDataGridView.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
-    Me.ProjectListDataGridView.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-    Me.ProjectListDataGridView.AutoGenerateColumns = False
-    Me.ProjectListDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
-    Me.ProjectListDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None
-    Me.ProjectListDataGridView.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn1, Me.DataGridViewTextBoxColumn2})
-    Me.ProjectListDataGridView.DataSource = Me.ProjectListBindingSource
-    Me.ProjectListDataGridView.Location = New System.Drawing.Point(12, 12)
-    Me.ProjectListDataGridView.MultiSelect = False
-    Me.ProjectListDataGridView.Name = "ProjectListDataGridView"
-    Me.ProjectListDataGridView.ReadOnly = True
-    Me.ProjectListDataGridView.RowHeadersVisible = False
-    Me.ProjectListDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-    Me.ProjectListDataGridView.Size = New System.Drawing.Size(300, 433)
-    Me.ProjectListDataGridView.TabIndex = 1
+    Me.ResourcesToolStripDropDownButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewResourceToolStripMenuItem, Me.EditResourceToolStripMenuItem, Me.DeleteResourceToolStripMenuItem})
+    Me.ResourcesToolStripDropDownButton.Image = CType(resources.GetObject("ResourcesToolStripDropDownButton.Image"), System.Drawing.Image)
+    Me.ResourcesToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
+    Me.ResourcesToolStripDropDownButton.Name = "ResourcesToolStripDropDownButton"
+    Me.ResourcesToolStripDropDownButton.Size = New System.Drawing.Size(86, 22)
+    Me.ResourcesToolStripDropDownButton.Text = "Resources"
     '
-    'GroupBox1
+    'NewResourceToolStripMenuItem
     '
-    Me.GroupBox1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.GroupBox1.Controls.Add(Me.ResourcesDataGridView)
-    Me.GroupBox1.Controls.Add(DescriptionLabel)
-    Me.GroupBox1.Controls.Add(Me.DescriptionTextBox)
-    Me.GroupBox1.Controls.Add(EndedLabel)
-    Me.GroupBox1.Controls.Add(Me.EndedTextBox)
-    Me.GroupBox1.Controls.Add(IdLabel)
-    Me.GroupBox1.Controls.Add(Me.IdLabel1)
-    Me.GroupBox1.Controls.Add(NameLabel)
-    Me.GroupBox1.Controls.Add(Me.NameTextBox)
-    Me.GroupBox1.Controls.Add(StartedLabel)
-    Me.GroupBox1.Controls.Add(Me.StartedTextBox)
-    Me.GroupBox1.Location = New System.Drawing.Point(318, 12)
-    Me.GroupBox1.Name = "GroupBox1"
-    Me.GroupBox1.Size = New System.Drawing.Size(538, 452)
-    Me.GroupBox1.TabIndex = 2
-    Me.GroupBox1.TabStop = False
-    Me.GroupBox1.Text = "Project"
+    Me.NewResourceToolStripMenuItem.Name = "NewResourceToolStripMenuItem"
+    Me.NewResourceToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
+    Me.NewResourceToolStripMenuItem.Text = "New resource"
     '
-    'ResourcesDataGridView
+    'EditResourceToolStripMenuItem
     '
-    Me.ResourcesDataGridView.AllowUserToAddRows = False
-    Me.ResourcesDataGridView.AllowUserToDeleteRows = False
-    Me.ResourcesDataGridView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                Or System.Windows.Forms.AnchorStyles.Left) _
-                Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.ResourcesDataGridView.AutoGenerateColumns = False
-    Me.ResourcesDataGridView.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn4, Me.DataGridViewTextBoxColumn3, Me.DataGridViewTextBoxColumn5, Me.DataGridViewTextBoxColumn6, Me.Role})
-    Me.ResourcesDataGridView.DataSource = Me.ResourcesBindingSource
-    Me.ResourcesDataGridView.Location = New System.Drawing.Point(96, 247)
-    Me.ResourcesDataGridView.Name = "ResourcesDataGridView"
-    Me.ResourcesDataGridView.RowHeadersVisible = False
-    Me.ResourcesDataGridView.Size = New System.Drawing.Size(401, 186)
-    Me.ResourcesDataGridView.TabIndex = 10
+    Me.EditResourceToolStripMenuItem.Name = "EditResourceToolStripMenuItem"
+    Me.EditResourceToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
+    Me.EditResourceToolStripMenuItem.Text = "Edit resource"
     '
-    'ResourcesBindingSource
+    'DeleteResourceToolStripMenuItem
     '
-    Me.ResourcesBindingSource.DataMember = "Resources"
-    Me.ResourcesBindingSource.DataSource = Me.ProjectBindingSource
-    Me.BindingSourceRefresh1.SetReadValuesOnChange(Me.ResourcesBindingSource, False)
+    Me.DeleteResourceToolStripMenuItem.Name = "DeleteResourceToolStripMenuItem"
+    Me.DeleteResourceToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
+    Me.DeleteResourceToolStripMenuItem.Text = "Delete resource"
     '
-    'DescriptionTextBox
+    'ToolStripSeparator1
     '
-    Me.DescriptionTextBox.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ProjectBindingSource, "Description", True))
-    Me.DescriptionTextBox.Location = New System.Drawing.Point(96, 129)
-    Me.DescriptionTextBox.Multiline = True
-    Me.DescriptionTextBox.Name = "DescriptionTextBox"
-    Me.DescriptionTextBox.Size = New System.Drawing.Size(401, 109)
-    Me.DescriptionTextBox.TabIndex = 1
+    Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+    Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
     '
-    'EndedTextBox
+    'LoginToolStripLabel
     '
-    Me.EndedTextBox.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ProjectBindingSource, "Ended", True))
-    Me.EndedTextBox.Location = New System.Drawing.Point(96, 103)
-    Me.EndedTextBox.Name = "EndedTextBox"
-    Me.EndedTextBox.Size = New System.Drawing.Size(401, 20)
-    Me.EndedTextBox.TabIndex = 3
+    Me.LoginToolStripLabel.Name = "LoginToolStripLabel"
+    Me.LoginToolStripLabel.Size = New System.Drawing.Size(70, 22)
+    Me.LoginToolStripLabel.Text = "Not logged in"
     '
-    'IdLabel1
+    'LoginToolStripButton
     '
-    Me.IdLabel1.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ProjectBindingSource, "Id", True))
-    Me.IdLabel1.Location = New System.Drawing.Point(93, 25)
-    Me.IdLabel1.Name = "IdLabel1"
-    Me.IdLabel1.Size = New System.Drawing.Size(401, 23)
-    Me.IdLabel1.TabIndex = 5
+    Me.LoginToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+    Me.LoginToolStripButton.Image = CType(resources.GetObject("LoginToolStripButton.Image"), System.Drawing.Image)
+    Me.LoginToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta
+    Me.LoginToolStripButton.Name = "LoginToolStripButton"
+    Me.LoginToolStripButton.Size = New System.Drawing.Size(36, 22)
+    Me.LoginToolStripButton.Text = "Login"
     '
-    'NameTextBox
+    'ToolStripSeparator2
     '
-    Me.NameTextBox.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ProjectBindingSource, "Name", True))
-    Me.NameTextBox.Location = New System.Drawing.Point(96, 51)
-    Me.NameTextBox.Name = "NameTextBox"
-    Me.NameTextBox.Size = New System.Drawing.Size(401, 20)
-    Me.NameTextBox.TabIndex = 7
+    Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+    Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 25)
     '
-    'StartedTextBox
+    'DocumentsToolStripDropDownButton
     '
-    Me.StartedTextBox.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ProjectBindingSource, "Started", True))
-    Me.StartedTextBox.Location = New System.Drawing.Point(96, 77)
-    Me.StartedTextBox.Name = "StartedTextBox"
-    Me.StartedTextBox.Size = New System.Drawing.Size(401, 20)
-    Me.StartedTextBox.TabIndex = 9
+    Me.DocumentsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+    Me.DocumentsToolStripDropDownButton.Image = CType(resources.GetObject("DocumentsToolStripDropDownButton.Image"), System.Drawing.Image)
+    Me.DocumentsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
+    Me.DocumentsToolStripDropDownButton.Name = "DocumentsToolStripDropDownButton"
+    Me.DocumentsToolStripDropDownButton.Size = New System.Drawing.Size(73, 22)
+    Me.DocumentsToolStripDropDownButton.Text = "Documents"
     '
-    'ErrorProvider1
+    'Panel1
     '
-    Me.ErrorProvider1.ContainerControl = Me
-    Me.ErrorProvider1.DataSource = Me.ProjectBindingSource
+    Me.Panel1.BackColor = System.Drawing.SystemColors.ControlDark
+    Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.Panel1.Location = New System.Drawing.Point(0, 25)
+    Me.Panel1.Name = "Panel1"
+    Me.Panel1.Size = New System.Drawing.Size(827, 371)
+    Me.Panel1.TabIndex = 2
     '
-    'RoleListBindingSource
+    'StatusStrip1
     '
-    Me.RoleListBindingSource.DataSource = GetType(ProjectTracker.Library.RoleList)
-    Me.BindingSourceRefresh1.SetReadValuesOnChange(Me.RoleListBindingSource, False)
+    Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StatusLabel})
+    Me.StatusStrip1.Location = New System.Drawing.Point(0, 396)
+    Me.StatusStrip1.Name = "StatusStrip1"
+    Me.StatusStrip1.Size = New System.Drawing.Size(827, 22)
+    Me.StatusStrip1.TabIndex = 3
+    Me.StatusStrip1.Text = "StatusStrip1"
     '
-    'ProjectBindingSource
+    'StatusLabel
     '
-    Me.ProjectBindingSource.DataSource = GetType(ProjectTracker.Library.Project)
-    Me.BindingSourceRefresh1.SetReadValuesOnChange(Me.ProjectBindingSource, True)
-    '
-    'DataGridViewTextBoxColumn1
-    '
-    Me.DataGridViewTextBoxColumn1.DataPropertyName = "ID"
-    Me.DataGridViewTextBoxColumn1.HeaderText = "ID"
-    Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
-    Me.DataGridViewTextBoxColumn1.ReadOnly = True
-    Me.DataGridViewTextBoxColumn1.Visible = False
-    Me.DataGridViewTextBoxColumn1.Width = 43
-    '
-    'DataGridViewTextBoxColumn2
-    '
-    Me.DataGridViewTextBoxColumn2.DataPropertyName = "Name"
-    Me.DataGridViewTextBoxColumn2.HeaderText = "Name"
-    Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
-    Me.DataGridViewTextBoxColumn2.ReadOnly = True
-    Me.DataGridViewTextBoxColumn2.Width = 60
-    '
-    'ProjectListBindingSource
-    '
-    Me.ProjectListBindingSource.DataSource = GetType(ProjectTracker.Library.ProjectList)
-    Me.BindingSourceRefresh1.SetReadValuesOnChange(Me.ProjectListBindingSource, False)
-    '
-    'DataGridViewTextBoxColumn4
-    '
-    Me.DataGridViewTextBoxColumn4.DataPropertyName = "ResourceId"
-    Me.DataGridViewTextBoxColumn4.HeaderText = "ResourceId"
-    Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
-    Me.DataGridViewTextBoxColumn4.ReadOnly = True
-    Me.DataGridViewTextBoxColumn4.Visible = False
-    '
-    'DataGridViewTextBoxColumn3
-    '
-    Me.DataGridViewTextBoxColumn3.DataPropertyName = "LastName"
-    Me.DataGridViewTextBoxColumn3.HeaderText = "LastName"
-    Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
-    Me.DataGridViewTextBoxColumn3.ReadOnly = True
-    '
-    'DataGridViewTextBoxColumn5
-    '
-    Me.DataGridViewTextBoxColumn5.DataPropertyName = "FirstName"
-    Me.DataGridViewTextBoxColumn5.HeaderText = "FirstName"
-    Me.DataGridViewTextBoxColumn5.Name = "DataGridViewTextBoxColumn5"
-    Me.DataGridViewTextBoxColumn5.ReadOnly = True
-    '
-    'DataGridViewTextBoxColumn6
-    '
-    Me.DataGridViewTextBoxColumn6.DataPropertyName = "Assigned"
-    Me.DataGridViewTextBoxColumn6.HeaderText = "Assigned"
-    Me.DataGridViewTextBoxColumn6.Name = "DataGridViewTextBoxColumn6"
-    Me.DataGridViewTextBoxColumn6.ReadOnly = True
-    '
-    'Role
-    '
-    Me.Role.DataPropertyName = "Role"
-    Me.Role.DataSource = Me.RoleListBindingSource
-    Me.Role.DisplayMember = "Value"
-    Me.Role.HeaderText = "Role"
-    Me.Role.Name = "Role"
-    Me.Role.ValueMember = "Key"
+    Me.StatusLabel.Name = "StatusLabel"
+    Me.StatusLabel.Size = New System.Drawing.Size(111, 17)
+    Me.StatusLabel.Text = "ToolStripStatusLabel1"
     '
     'MainForm
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-    Me.ClientSize = New System.Drawing.Size(856, 466)
-    Me.Controls.Add(Me.GroupBox1)
-    Me.Controls.Add(Me.ProjectListDataGridView)
+    Me.ClientSize = New System.Drawing.Size(827, 418)
+    Me.Controls.Add(Me.Panel1)
+    Me.Controls.Add(Me.StatusStrip1)
+    Me.Controls.Add(Me.ToolStrip1)
     Me.Name = "MainForm"
-    Me.Text = "MainForm"
-    CType(Me.ProjectListDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
-    Me.GroupBox1.ResumeLayout(False)
-    Me.GroupBox1.PerformLayout()
-    CType(Me.ResourcesDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ResourcesBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.RoleListBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ProjectBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ProjectListBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
+    Me.Text = "Project Tracker"
+    Me.ToolStrip1.ResumeLayout(False)
+    Me.ToolStrip1.PerformLayout()
+    Me.StatusStrip1.ResumeLayout(False)
+    Me.StatusStrip1.PerformLayout()
     Me.ResumeLayout(False)
+    Me.PerformLayout()
 
   End Sub
-  Friend WithEvents ProjectListBindingSource As System.Windows.Forms.BindingSource
-  Friend WithEvents ProjectListDataGridView As System.Windows.Forms.DataGridView
-  Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
-  Friend WithEvents ResourcesDataGridView As System.Windows.Forms.DataGridView
-  Friend WithEvents ResourcesBindingSource As System.Windows.Forms.BindingSource
-  Friend WithEvents ProjectBindingSource As System.Windows.Forms.BindingSource
-  Friend WithEvents DescriptionTextBox As System.Windows.Forms.TextBox
-  Friend WithEvents EndedTextBox As System.Windows.Forms.TextBox
-  Friend WithEvents IdLabel1 As System.Windows.Forms.Label
-  Friend WithEvents NameTextBox As System.Windows.Forms.TextBox
-  Friend WithEvents StartedTextBox As System.Windows.Forms.TextBox
-  Friend WithEvents DataGridViewTextBoxColumn1 As System.Windows.Forms.DataGridViewTextBoxColumn
-  Friend WithEvents DataGridViewTextBoxColumn2 As System.Windows.Forms.DataGridViewTextBoxColumn
-  Friend WithEvents ErrorProvider1 As System.Windows.Forms.ErrorProvider
-  Friend WithEvents BindingSourceRefresh1 As PTWin.BindingSourceRefresh
-  Friend WithEvents RoleListBindingSource As System.Windows.Forms.BindingSource
-  Friend WithEvents DataGridViewTextBoxColumn4 As System.Windows.Forms.DataGridViewTextBoxColumn
-  Friend WithEvents DataGridViewTextBoxColumn3 As System.Windows.Forms.DataGridViewTextBoxColumn
-  Friend WithEvents DataGridViewTextBoxColumn5 As System.Windows.Forms.DataGridViewTextBoxColumn
-  Friend WithEvents DataGridViewTextBoxColumn6 As System.Windows.Forms.DataGridViewTextBoxColumn
-  Friend WithEvents Role As System.Windows.Forms.DataGridViewComboBoxColumn
+  Friend WithEvents ToolStrip1 As System.Windows.Forms.ToolStrip
+  Friend WithEvents ProjectsToolStripDropDownButton As System.Windows.Forms.ToolStripDropDownButton
+  Friend WithEvents NewProjectToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+  Friend WithEvents EditProjectToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+  Friend WithEvents DeleteProjectToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+  Friend WithEvents ResourcesToolStripDropDownButton As System.Windows.Forms.ToolStripDropDownButton
+  Friend WithEvents NewResourceToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+  Friend WithEvents EditResourceToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+  Friend WithEvents DeleteResourceToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+  Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
+  Friend WithEvents LoginToolStripLabel As System.Windows.Forms.ToolStripLabel
+  Friend WithEvents LoginToolStripButton As System.Windows.Forms.ToolStripButton
+  Friend WithEvents Panel1 As System.Windows.Forms.Panel
+  Friend WithEvents ToolStripSeparator2 As System.Windows.Forms.ToolStripSeparator
+  Friend WithEvents DocumentsToolStripDropDownButton As System.Windows.Forms.ToolStripDropDownButton
+  Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
+  Friend WithEvents StatusLabel As System.Windows.Forms.ToolStripStatusLabel
 End Class

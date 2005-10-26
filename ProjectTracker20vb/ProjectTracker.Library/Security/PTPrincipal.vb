@@ -21,7 +21,7 @@ Namespace Security
 
     Public Shared Sub Logout()
 
-      Dim identity As New GenericIdentity("")
+      Dim identity As PTIdentity = PTIdentity.UnauthenticatedIdentity
       Dim principal As New PTPrincipal(identity)
       My.User.CurrentPrincipal = principal
 

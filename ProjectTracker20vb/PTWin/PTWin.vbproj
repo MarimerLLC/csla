@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
+    <Import Include="ProjectTracker.Library" />
     <Import Include="System" />
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
@@ -55,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingSourceRefresh.vb" />
+    <Compile Include="LoginForm.Designer.vb">
+      <DependentUpon>LoginForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="LoginForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
     </Compile>
@@ -76,8 +83,42 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ProjectEdit.Designer.vb">
+      <DependentUpon>ProjectEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectEdit.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProjectSelect.Designer.vb">
+      <DependentUpon>ProjectSelect.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectSelect.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReadWriteAuthorization.vb" />
+    <Compile Include="ResourceEdit.Designer.vb">
+      <DependentUpon>ResourceEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceEdit.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResourceSelect.Designer.vb">
+      <DependentUpon>ResourceSelect.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceSelect.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StatusBusy.vb" />
+    <Compile Include="StatusChangedEventArgs.vb" />
+    <Compile Include="WinPart.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LoginForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LoginForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.vb</DependentUpon>
@@ -88,6 +129,22 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProjectEdit.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProjectEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectSelect.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProjectSelect.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceEdit.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ResourceEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceSelect.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ResourceSelect.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -97,12 +154,14 @@
     </None>
     <None Include="My Project\DataSources\ProjectTracker.Library.Project.datasource" />
     <None Include="My Project\DataSources\ProjectTracker.Library.ProjectList.datasource" />
+    <None Include="My Project\DataSources\ProjectTracker.Library.Resource.datasource" />
+    <None Include="My Project\DataSources\ProjectTracker.Library.ResourceList.datasource" />
+    <None Include="My Project\DataSources\ProjectTracker.Library.RoleList.datasource" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="ProjectTracker.Library.RoleList.datasource" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectTracker.Library\ProjectTracker.Library.vbproj">

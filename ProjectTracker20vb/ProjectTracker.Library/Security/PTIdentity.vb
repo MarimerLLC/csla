@@ -11,7 +11,7 @@ Namespace Security
 
 #Region " IsInRole "
 
-    Private mRoles As List(Of String)
+    Private mRoles As New List(Of String)
 
     Friend Function IsInRole(ByVal role As String) As Boolean
 
@@ -83,6 +83,12 @@ Namespace Security
 
 #Region " Factory Methods "
 
+    Friend Shared Function UnauthenticatedIdentity() As PTIdentity
+
+      Return New PTIdentity
+
+    End Function
+
     Friend Shared Function GetIdentity(ByVal username As String, ByVal password As String) As PTIdentity
 
       Return DataPortal.Fetch(Of PTIdentity)(New Criteria(username, password))
@@ -96,8 +102,6 @@ Namespace Security
     Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
 
       Dim crit As Criteria = CType(criteria, Criteria)
-
-      mRoles = New List(Of String)
 
       Using cn As New SqlConnection(DataBase.SecurityConn)
         cn.Open()

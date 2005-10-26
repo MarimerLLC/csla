@@ -57,6 +57,7 @@ Public Class Project
       If CanWriteProperty() Then
         If mStarted <> Value Then
           mStarted.Text = Value
+          ValidationRules.CheckRules("Ended")
           PropertyHasChanged()
         End If
       Else
@@ -77,6 +78,7 @@ Public Class Project
       If CanWriteProperty() Then
         If mEnded <> Value Then
           mEnded.Text = Value
+          ValidationRules.CheckRules("Started")
           PropertyHasChanged()
         End If
       Else
@@ -129,7 +131,7 @@ Public Class Project
 
 #End Region
 
-#Region " Business Rules "
+#Region " Validation Rules "
 
   Protected Overrides Sub AddBusinessRules()
 
@@ -156,42 +158,89 @@ Public Class Project
 
 #End Region
 
+#Region " Authorization Rules "
+
+  Protected Overrides Sub AddAuthorizationRules()
+
+    ' add AuthorizationRules here
+    AuthorizationRules.AllowWrite("Name", "ProjectManager")
+    AuthorizationRules.AllowWrite("Started", "ProjectManager")
+    AuthorizationRules.AllowWrite("Ended", "ProjectManager")
+    AuthorizationRules.AllowWrite("Description", "ProjectManager")
+
+  End Sub
+
+  Public Shared Function CanAddObject() As Boolean
+
+    Return My.User.IsInRole("ProjectManager")
+
+  End Function
+
+  Public Shared Function CanGetObject() As Boolean
+
+    Return True
+
+  End Function
+
+  Public Shared Function CanDeleteObject() As Boolean
+
+    Dim result As Boolean
+    If My.User.IsInRole("ProjectManager") Then
+      result = True
+    End If
+    If My.User.IsInRole("Administrator") Then
+      result = True
+    End If
+    Return result
+
+  End Function
+
+  Public Shared Function CanSaveObject() As Boolean
+
+    Return Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager")
+
+  End Function
+
+#End Region
+
 #Region " Factory Methods "
 
-  ' create new object
   Public Shared Function NewProject() As Project
-    If Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") Then
+
+    If Not CanAddObject() Then
       Throw New System.Security.SecurityException("User not authorized to add a project")
     End If
     Return DataPortal.Create(Of Project)(Nothing)
+
   End Function
 
-  ' load existing object by id
   Public Shared Function GetProject(ByVal id As Guid) As Project
+
+    If Not CanGetObject() Then
+      Throw New System.Security.SecurityException("User not authorized to view a project")
+    End If
     Return DataPortal.Fetch(Of Project)(New Criteria(id))
+
   End Function
 
-  ' delete object
   Public Shared Sub DeleteProject(ByVal id As Guid)
-    If Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") _
-      AndAlso _
-       Not Threading.Thread.CurrentPrincipal.IsInRole("Administrator") Then
+
+    If Not CanDeleteObject() Then
       Throw New System.Security.SecurityException("User not authorized to remove a project")
     End If
     DataPortal.Delete(New Criteria(id))
+
   End Sub
 
   Public Overrides Function Save() As Project
     If IsDeleted Then
-      If Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") _
-        AndAlso _
-         Not Threading.Thread.CurrentPrincipal.IsInRole("Administrator") Then
+      If Not CanDeleteObject() Then
         Throw New System.Security.SecurityException("User not authorized to remove a project")
       End If
 
     Else
       ' no deletion - we're adding or updating
-      If Not Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager") Then
+      If Not CanSaveObject() Then
         Throw New System.Security.SecurityException("User not authorized to update a project")
       End If
     End If
@@ -212,11 +261,9 @@ Public Class Project
   ''' object, call the appropriate factory method.
   ''' </remarks>
   Public Sub New()
-    ' add AuthorizationRules here
-    AuthorizationRules.AllowWrite("Name", "ProjectManager")
-    AuthorizationRules.AllowWrite("Started", "ProjectManager")
-    AuthorizationRules.AllowWrite("Ended", "ProjectManager")
-    AuthorizationRules.AllowWrite("Description", "ProjectManager")
+
+    AddAuthorizationRules()
+
   End Sub
 
 #End Region

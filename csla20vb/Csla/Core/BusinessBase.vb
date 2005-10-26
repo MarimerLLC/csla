@@ -28,7 +28,10 @@ Namespace Core
 #Region " Constructors "
 
     Protected Sub New()
+
       AddBusinessRules()
+      AddAuthorizationRules()
+
     End Sub
 
 #End Region
@@ -257,6 +260,14 @@ Namespace Core
 
     <NotUndoable()> _
     Private mAuthorizationRules As New Security.AuthorizationRules
+
+    ''' <summary>
+    ''' Override this method to add authorization
+    ''' rules for your object's properties.
+    ''' </summary>
+    Protected Overridable Sub AddAuthorizationRules()
+
+    End Sub
 
     ''' <summary>
     ''' Provides access to the AuthorizationRules object for this

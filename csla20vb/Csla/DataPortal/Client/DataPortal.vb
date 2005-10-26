@@ -201,7 +201,8 @@ Public NotInheritable Class DataPortal
   ''' <param name="obj">A reference to the Command object to be executed.</param>
   ''' <returns>A reference to the updated Command object.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
+    MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
   Public Shared Function Execute(Of T As CommandBase)(ByVal obj As T) As T
 
     Return DirectCast(Update(CObj(obj)), T)

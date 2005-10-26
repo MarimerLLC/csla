@@ -66,8 +66,7 @@ Namespace Core
               ' the field is undoable, so it needs to be processed
               Dim value As Object = field.GetValue(Me)
 
-              'If field.FieldType.GetInterface("Csla.Core.IEditableObject") IsNot Nothing Then
-              If IsImplemented(field.FieldType, GetType(Csla.Core.IEditableObject)) Then
+              If GetType(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType) Then
                 ' make sure the variable has a value
                 If Not value Is Nothing Then
                   ' this is a child object, cascade the call
@@ -140,8 +139,7 @@ Namespace Core
                   ' the field is undoable, so restore its value
                   Dim value As Object = field.GetValue(Me)
 
-                  'If field.FieldType.GetInterface("Csla.Core.IEditableObject") IsNot Nothing Then
-                  If IsImplemented(field.FieldType, GetType(Csla.Core.IEditableObject)) Then
+                  If GetType(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType) Then
                     ' this is a child object, cascade the call
                     ' first make sure the variable has a value
                     If Not value Is Nothing Then
@@ -194,8 +192,7 @@ Namespace Core
               ' see if the field is undoable or not
               If Not NotUndoableField(field) Then
                 ' the field is undoable so see if it is editable
-                'If field.FieldType.GetInterface("Csla.Core.IEditableObject") IsNot Nothing Then
-                If IsImplemented(field.FieldType, GetType(Csla.Core.IEditableObject)) Then
+                If GetType(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType) Then
                   Dim value As Object = field.GetValue(Me)
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
@@ -219,19 +216,6 @@ Namespace Core
     Private Shared Function NotUndoableField(ByVal field As FieldInfo) As Boolean
 
       Return Attribute.IsDefined(field, GetType(NotUndoableAttribute))
-
-    End Function
-
-    Private Shared Function IsImplemented(ByVal objectType As Type, ByVal interfaceType As Type) As Boolean
-
-      Dim result As Boolean
-      For Each item As Type In objectType.GetInterfaces
-        If interfaceType.Equals(item) Then
-          result = True
-          Exit For
-        End If
-      Next
-      Return result
 
     End Function
 

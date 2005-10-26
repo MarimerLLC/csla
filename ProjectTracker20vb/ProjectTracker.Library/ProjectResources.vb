@@ -17,21 +17,9 @@ Public Class ProjectResources
     End Get
   End Property
 
-  Public Sub Assign(ByVal resource As Resource, ByVal role As Integer)
+  Public Sub Assign(ByVal resourceId As String)
 
-    DoAssignment(ProjectResource.NewProjectResource(resource, role))
-
-  End Sub
-
-  Public Sub Assign(ByVal resourceID As String, ByVal role As Integer)
-
-    DoAssignment(ProjectResource.NewProjectResource(resourceID, role))
-
-  End Sub
-
-  Public Sub Assign(ByVal resourceID As String)
-
-    DoAssignment(ProjectResource.NewProjectResource(resourceID))
+    DoAssignment(ProjectResource.NewProjectResource(resourceId, RoleList.DefaultRole))
 
   End Sub
 

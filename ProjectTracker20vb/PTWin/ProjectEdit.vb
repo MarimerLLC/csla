@@ -134,10 +134,21 @@ Public Class ProjectEdit
   Private Sub AssignButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles AssignButton.Click
 
+    Dim dlg As New ResourceSelect
+    If dlg.ShowDialog = DialogResult.OK Then
+      mProject.Resources.Assign(dlg.ResourceId)
+    End If
+
   End Sub
 
   Private Sub UnassignButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles UnassignButton.Click
+
+    If Me.ResourcesDataGridView.SelectedRows.Count > 0 Then
+      Dim resourceId As String = _
+        CStr(Me.ResourcesDataGridView.SelectedRows(0).Cells(0).Value)
+      mProject.Resources.Remove(resourceId)
+    End If
 
   End Sub
 
@@ -148,6 +159,17 @@ Public Class ProjectEdit
     If e.PropertyName = "IsDirty" Then
       Me.ProjectBindingSource.ResetBindings(False)
       Me.ResourcesBindingSource.ResetBindings(False)
+    End If
+
+  End Sub
+
+  Private Sub ResourcesDataGridView_CellContentClick(ByVal sender As System.Object, _
+    ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles ResourcesDataGridView.CellContentClick
+
+    If e.ColumnIndex = 1 Then
+      Dim resourceId As String = _
+        CStr(Me.ResourcesDataGridView.Rows(e.RowIndex).Cells(0).Value)
+      MainForm.ShowEditResource(resourceId)
     End If
 
   End Sub

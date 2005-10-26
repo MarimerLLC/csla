@@ -26,28 +26,31 @@ Public Class MainForm
     Dim dlg As New ProjectSelect
     dlg.Text = "Edit Project"
     If dlg.ShowDialog = Windows.Forms.DialogResult.OK Then
-      ' get the project id
-      Dim projectId As Guid = dlg.ProjectId
-
-      ' see if this project is already loaded
-      For Each ctl As Control In Panel1.Controls
-        If TypeOf ctl Is ProjectEdit Then
-          Dim part As ProjectEdit = CType(ctl, ProjectEdit)
-          If part.Project.Id.Equals(projectId) Then
-            ' project already loaded so just
-            ' display the existing winpart
-            ShowWinPart(part)
-            Exit Sub
-          End If
-        End If
-      Next
-
-      ' the project wasn't already loaded
-      ' so load it and display the new winpart
-      Using busy As New StatusBusy("Loading project...")
-        AddWinPart(New ProjectEdit(Project.GetProject(projectId)))
-      End Using
+      ShowEditProject(dlg.ProjectId)
     End If
+
+  End Sub
+
+  Public Sub ShowEditProject(ByVal projectId As Guid)
+
+    ' see if this project is already loaded
+    For Each ctl As Control In Panel1.Controls
+      If TypeOf ctl Is ProjectEdit Then
+        Dim part As ProjectEdit = CType(ctl, ProjectEdit)
+        If part.Project.Id.Equals(projectId) Then
+          ' project already loaded so just
+          ' display the existing winpart
+          ShowWinPart(part)
+          Exit Sub
+        End If
+      End If
+    Next
+
+    ' the project wasn't already loaded
+    ' so load it and display the new winpart
+    Using busy As New StatusBusy("Loading project...")
+      AddWinPart(New ProjectEdit(Project.GetProject(projectId)))
+    End Using
 
   End Sub
 
@@ -105,27 +108,31 @@ Public Class MainForm
     dlg.Text = "Edit Resource"
     If dlg.ShowDialog = Windows.Forms.DialogResult.OK Then
       ' get the project id
-      Dim resourceId As String = dlg.ResourceId
-
-      ' see if this project is already loaded
-      For Each ctl As Control In Panel1.Controls
-        If TypeOf ctl Is ResourceEdit Then
-          Dim part As ResourceEdit = CType(ctl, ResourceEdit)
-          If part.Resource.Id.Equals(resourceId) Then
-            ' project already loaded so just
-            ' display the existing winpart
-            ShowWinPart(part)
-            Exit Sub
-          End If
-        End If
-      Next
-
-      ' the project wasn't already loaded
-      ' so load it and display the new winpart
-      Using busy As New StatusBusy("Loading resource...")
-        AddWinPart(New ResourceEdit(Resource.GetResource(resourceId)))
-      End Using
+      ShowEditResource(dlg.ResourceId)
     End If
+
+  End Sub
+
+  Public Sub ShowEditResource(ByVal resourceId As String)
+
+    ' see if this project is already loaded
+    For Each ctl As Control In Panel1.Controls
+      If TypeOf ctl Is ResourceEdit Then
+        Dim part As ResourceEdit = CType(ctl, ResourceEdit)
+        If part.Resource.Id.Equals(resourceId) Then
+          ' project already loaded so just
+          ' display the existing winpart
+          ShowWinPart(part)
+          Exit Sub
+        End If
+      End If
+    Next
+
+    ' the project wasn't already loaded
+    ' so load it and display the new winpart
+    Using busy As New StatusBusy("Loading resource...")
+      AddWinPart(New ResourceEdit(Resource.GetResource(resourceId)))
+    End Using
 
   End Sub
 

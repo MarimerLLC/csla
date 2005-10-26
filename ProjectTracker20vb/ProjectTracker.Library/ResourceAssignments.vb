@@ -17,21 +17,7 @@ Public Class ResourceAssignments
     End Get
   End Property
 
-  Public Sub AssignTo( _
-    ByVal project As Project, ByVal role As Integer)
-
-    DoAssignment(ResourceAssignment.NewResourceAssignment(project, role))
-
-  End Sub
-
-  Public Sub AssignTo( _
-    ByVal projectID As Guid, ByVal role As Integer)
-
-    DoAssignment(ResourceAssignment.NewResourceAssignment(projectID, role))
-
-  End Sub
-
-  Public Sub AssignTo(ByVal projectID As Guid)
+  Public Sub AssignTo(ByVal projectId As Guid)
 
     DoAssignment(ResourceAssignment.NewResourceAssignment(projectID))
 
@@ -45,6 +31,17 @@ Public Class ResourceAssignments
     Else
       Throw New InvalidOperationException("Resource already assigned to project")
     End If
+
+  End Sub
+
+  Public Overloads Sub Remove(ByVal projectId As Guid)
+
+    For Each res As ResourceAssignment In Me
+      If res.ProjectID.Equals(projectId) Then
+        Remove(res)
+        Exit For
+      End If
+    Next
 
   End Sub
 

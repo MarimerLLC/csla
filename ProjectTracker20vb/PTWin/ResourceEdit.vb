@@ -137,10 +137,21 @@ Public Class ResourceEdit
   Private Sub AssignButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles AssignButton.Click
 
+    Dim dlg As New ProjectSelect
+    If dlg.ShowDialog = DialogResult.OK Then
+      mResource.Assignments.AssignTo(dlg.ProjectId)
+    End If
+
   End Sub
 
   Private Sub UnassignButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles UnassignButton.Click
+
+    If Me.AssignmentsDataGridView.SelectedRows.Count > 0 Then
+      Dim projectId As Guid = _
+        CType(Me.AssignmentsDataGridView.SelectedRows(0).Cells(0).Value, Guid)
+      mResource.Assignments.Remove(projectId)
+    End If
 
   End Sub
 
@@ -151,6 +162,18 @@ Public Class ResourceEdit
     If e.PropertyName = "IsDirty" Then
       Me.ResourceBindingSource.ResetBindings(False)
       Me.AssignmentsBindingSource.ResetBindings(False)
+    End If
+
+  End Sub
+
+  Private Sub AssignmentsDataGridView_CellContentClick(ByVal sender As System.Object, _
+    ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) _
+    Handles AssignmentsDataGridView.CellContentClick
+
+    If e.ColumnIndex = 1 Then
+      Dim projectId As Guid = _
+        CType(Me.AssignmentsDataGridView.Rows(e.RowIndex).Cells(0).Value, Guid)
+      MainForm.ShowEditProject(projectId)
     End If
 
   End Sub

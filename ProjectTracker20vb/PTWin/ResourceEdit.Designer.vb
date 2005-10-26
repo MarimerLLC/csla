@@ -31,10 +31,6 @@ Partial Public Class ResourceEdit
     Me.UnassignButton = New System.Windows.Forms.Button
     Me.AssignButton = New System.Windows.Forms.Button
     Me.AssignmentsDataGridView = New System.Windows.Forms.DataGridView
-    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
     Me.AssignmentsBindingSource = New System.Windows.Forms.BindingSource(Me.components)
     Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
     Me.BindingSourceRefresh1 = New PTWin.BindingSourceRefresh(Me.components)
@@ -43,6 +39,10 @@ Partial Public Class ResourceEdit
     Me.ApplyButton = New System.Windows.Forms.Button
     Me.Cancel_Button = New System.Windows.Forms.Button
     Me.OKButton = New System.Windows.Forms.Button
+    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewLinkColumn
+    Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
     FirstNameLabel = New System.Windows.Forms.Label
     IdLabel = New System.Windows.Forms.Label
     LastNameLabel = New System.Windows.Forms.Label
@@ -185,40 +185,6 @@ Partial Public Class ResourceEdit
     Me.AssignmentsDataGridView.Size = New System.Drawing.Size(356, 285)
     Me.AssignmentsDataGridView.TabIndex = 0
     '
-    'DataGridViewTextBoxColumn3
-    '
-    Me.DataGridViewTextBoxColumn3.DataPropertyName = "ProjectID"
-    Me.DataGridViewTextBoxColumn3.HeaderText = "ProjectID"
-    Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
-    Me.DataGridViewTextBoxColumn3.ReadOnly = True
-    Me.DataGridViewTextBoxColumn3.Visible = False
-    '
-    'DataGridViewTextBoxColumn2
-    '
-    Me.DataGridViewTextBoxColumn2.DataPropertyName = "ProjectName"
-    Me.DataGridViewTextBoxColumn2.HeaderText = "ProjectName"
-    Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
-    Me.DataGridViewTextBoxColumn2.ReadOnly = True
-    Me.DataGridViewTextBoxColumn2.Width = 93
-    '
-    'DataGridViewTextBoxColumn1
-    '
-    Me.DataGridViewTextBoxColumn1.DataPropertyName = "Assigned"
-    Me.DataGridViewTextBoxColumn1.HeaderText = "Assigned"
-    Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
-    Me.DataGridViewTextBoxColumn1.ReadOnly = True
-    Me.DataGridViewTextBoxColumn1.Width = 75
-    '
-    'Role
-    '
-    Me.Role.DataPropertyName = "Role"
-    Me.Role.DataSource = Me.RoleListBindingSource
-    Me.Role.DisplayMember = "Value"
-    Me.Role.HeaderText = "Role"
-    Me.Role.Name = "Role"
-    Me.Role.ValueMember = "Key"
-    Me.Role.Width = 35
-    '
     'AssignmentsBindingSource
     '
     Me.AssignmentsBindingSource.DataMember = "Assignments"
@@ -278,6 +244,45 @@ Partial Public Class ResourceEdit
     Me.OKButton.Text = "OK"
     Me.OKButton.UseVisualStyleBackColor = True
     '
+    'DataGridViewTextBoxColumn3
+    '
+    Me.DataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+    Me.DataGridViewTextBoxColumn3.DataPropertyName = "ProjectID"
+    Me.DataGridViewTextBoxColumn3.HeaderText = "ProjectID"
+    Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
+    Me.DataGridViewTextBoxColumn3.ReadOnly = True
+    Me.DataGridViewTextBoxColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
+    Me.DataGridViewTextBoxColumn3.Visible = False
+    Me.DataGridViewTextBoxColumn3.Width = 5
+    '
+    'DataGridViewTextBoxColumn2
+    '
+    Me.DataGridViewTextBoxColumn2.DataPropertyName = "ProjectName"
+    Me.DataGridViewTextBoxColumn2.HeaderText = "Project Name"
+    Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
+    Me.DataGridViewTextBoxColumn2.ReadOnly = True
+    Me.DataGridViewTextBoxColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+    Me.DataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+    Me.DataGridViewTextBoxColumn2.Width = 96
+    '
+    'DataGridViewTextBoxColumn1
+    '
+    Me.DataGridViewTextBoxColumn1.DataPropertyName = "Assigned"
+    Me.DataGridViewTextBoxColumn1.HeaderText = "Assigned"
+    Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
+    Me.DataGridViewTextBoxColumn1.ReadOnly = True
+    Me.DataGridViewTextBoxColumn1.Width = 75
+    '
+    'Role
+    '
+    Me.Role.DataPropertyName = "Role"
+    Me.Role.DataSource = Me.RoleListBindingSource
+    Me.Role.DisplayMember = "Value"
+    Me.Role.HeaderText = "Role"
+    Me.Role.Name = "Role"
+    Me.Role.ValueMember = "Key"
+    Me.Role.Width = 35
+    '
     'ResourceEdit
     '
     Me.ReadWriteAuthorization1.SetApplyAuthorization(Me, False)
@@ -322,7 +327,7 @@ Partial Public Class ResourceEdit
   Friend WithEvents UnassignButton As System.Windows.Forms.Button
   Friend WithEvents AssignButton As System.Windows.Forms.Button
   Friend WithEvents DataGridViewTextBoxColumn3 As System.Windows.Forms.DataGridViewTextBoxColumn
-  Friend WithEvents DataGridViewTextBoxColumn2 As System.Windows.Forms.DataGridViewTextBoxColumn
+  Friend WithEvents DataGridViewTextBoxColumn2 As System.Windows.Forms.DataGridViewLinkColumn
   Friend WithEvents DataGridViewTextBoxColumn1 As System.Windows.Forms.DataGridViewTextBoxColumn
   Friend WithEvents Role As System.Windows.Forms.DataGridViewComboBoxColumn
 

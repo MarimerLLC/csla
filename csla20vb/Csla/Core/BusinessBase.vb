@@ -280,13 +280,15 @@ Namespace Core
     ''' <returns>True if read is allowed.</returns>
     ''' <remarks>
     ''' <para>
-    ''' If and only if the user is in a role explicitly denied 
-    ''' access and NOT in a role that explicitly
-    ''' allows access they will be denied read access to the property.
+    ''' If a list of allowed roles is provided then only users in those
+    ''' roles can read. If no list of allowed roles is provided then
+    ''' the list of denied roles is checked.
     ''' </para><para>
-    ''' This implementation uses System.Diagnostics.StackTrace to
-    ''' determine the name of the current property, and so must be called
-    ''' directly from the property to be checked.
+    ''' If a list of denied roles is provided then users in the denied
+    ''' roles are denied read access. All other users are allowed.
+    ''' </para><para>
+    ''' If neither a list of allowed nor denied roles is provided then
+    ''' all users will have read access.
     ''' </para>
     ''' </remarks>
     <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
@@ -305,22 +307,36 @@ Namespace Core
     ''' <param name="propertyName">Name of the property to read.</param>
     ''' <returns>True if read is allowed.</returns>
     ''' <remarks>
-    ''' If and only if the user is in a role explicitly denied 
-    ''' access and NOT in a role that explicitly
-    ''' allows access they will be denied read access to the property.
+    ''' <para>
+    ''' If a list of allowed roles is provided then only users in those
+    ''' roles can read. If no list of allowed roles is provided then
+    ''' the list of denied roles is checked.
+    ''' </para><para>
+    ''' If a list of denied roles is provided then users in the denied
+    ''' roles are denied read access. All other users are allowed.
+    ''' </para><para>
+    ''' If neither a list of allowed nor denied roles is provided then
+    ''' all users will have read access.
+    ''' </para>
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Public Overridable Function CanReadProperty(ByVal propertyName As String) As Boolean
 
-      If mAuthorizationRules.IsReadDenied(propertyName) Then
-        If mAuthorizationRules.IsReadAllowed(propertyName) Then
-          Return True
+      Dim result As Boolean = True
+      If mAuthorizationRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0 Then
+        ' some users are explicitly granted read access
+        ' in which case all other users are denied
+        If Not mAuthorizationRules.IsReadAllowed(propertyName) Then
+          result = False
+        End If
 
-        Else
-          Return False
+      ElseIf mAuthorizationRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0 Then
+        ' some users are explicitly denied read access
+        If mAuthorizationRules.IsReadDenied(propertyName) Then
+          result = False
         End If
       End If
-      Return True
+      Return result
 
     End Function
 
@@ -331,13 +347,15 @@ Namespace Core
     ''' <returns>True if write is allowed.</returns>
     ''' <remarks>
     ''' <para>
-    ''' If and only if the user is in a role explicitly denied 
-    ''' access and NOT in a role that explicitly
-    ''' allows access they will be denied write access to the property.
+    ''' If a list of allowed roles is provided then only users in those
+    ''' roles can write. If no list of allowed roles is provided then
+    ''' the list of denied roles is checked.
     ''' </para><para>
-    ''' This implementation uses System.Diagnostics.StackTrace to
-    ''' determine the name of the current property, and so must be called
-    ''' directly from the property to be checked.
+    ''' If a list of denied roles is provided then users in the denied
+    ''' roles are denied write access. All other users are allowed.
+    ''' </para><para>
+    ''' If neither a list of allowed nor denied roles is provided then
+    ''' all users will have write access.
     ''' </para>
     ''' </remarks>
     <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
@@ -356,22 +374,36 @@ Namespace Core
     ''' <param name="propertyName">Name of the property to write.</param>
     ''' <returns>True if write is allowed.</returns>
     ''' <remarks>
-    ''' If and only if the user is in a role explicitly denied 
-    ''' access and NOT in a role that explicitly
-    ''' allows access they will be denied write access to the property.
+    ''' <para>
+    ''' If a list of allowed roles is provided then only users in those
+    ''' roles can write. If no list of allowed roles is provided then
+    ''' the list of denied roles is checked.
+    ''' </para><para>
+    ''' If a list of denied roles is provided then users in the denied
+    ''' roles are denied write access. All other users are allowed.
+    ''' </para><para>
+    ''' If neither a list of allowed nor denied roles is provided then
+    ''' all users will have write access.
+    ''' </para>
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Public Overridable Function CanWriteProperty(ByVal propertyName As String) As Boolean
 
-      If mAuthorizationRules.IsWriteDenied(propertyName) Then
-        If mAuthorizationRules.IsWriteAllowed(propertyName) Then
-          Return True
+      Dim result As Boolean = True
+      If mAuthorizationRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0 Then
+        ' some users are explicitly granted write access
+        ' in which case all other users are denied
+        If Not mAuthorizationRules.IsWriteAllowed(propertyName) Then
+          result = False
+        End If
 
-        Else
-          Return False
+      ElseIf mAuthorizationRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0 Then
+        ' some users are explicitly denied write access
+        If mAuthorizationRules.IsWriteDenied(propertyName) Then
+          result = False
         End If
       End If
-      Return True
+      Return result
 
     End Function
 

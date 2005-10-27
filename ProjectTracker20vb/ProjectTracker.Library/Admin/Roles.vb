@@ -41,7 +41,7 @@ Namespace Admin
 
     Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
 
-      Dim crit As Criteria = CType(criteria, Criteria)
+      Dim crit As Criteria = CType(Criteria, Criteria)
       Using cn As New SqlConnection(DataBase.DbConn)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
@@ -84,6 +84,61 @@ Namespace Admin
       End Using
 
     End Sub
+
+#End Region
+
+#Region " Atomic Operations "
+
+    Public Shared Sub InsertRole(ByVal role As Role)
+
+      role.WebSave(False)
+
+    End Sub
+
+    Public Shared Sub UpdateRole(ByVal role As Role)
+
+      role.WebSave(True)
+
+    End Sub
+
+    Public Shared Sub DeleteRole(ByVal id As Integer)
+
+      DataPortal.Execute(New RoleDeleter(id))
+
+    End Sub
+
+    Public Shared Sub DeleteRole(ByVal role As Role)
+
+      DataPortal.Execute(New RoleDeleter(role.Id))
+
+    End Sub
+
+    <Serializable()> _
+    Private Class RoleDeleter
+      Inherits CommandBase
+
+      Private mId As Integer
+      Public ReadOnly Property Id() As Integer
+        Get
+          Return mId
+        End Get
+      End Property
+
+      Public Sub New(ByVal id As Integer)
+        mId = id
+      End Sub
+
+      Protected Overrides Sub DataPortal_Execute()
+
+        Using cn As New SqlConnection(DataBase.DbConn)
+          cn.Open()
+          Role.DeleteRole(cn, mId)
+          cn.Close()
+        End Using
+
+      End Sub
+
+    End Class
 
 #End Region
 

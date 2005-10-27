@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
-    <title>Untitled Page</title>
+    <title>Project Tracker</title>
 </head>
 <body>
     <form id="form1" runat="server">
     <div>
-    
+      <h1>Project Tracker</h1>
+      <br />
+      <asp:LinkButton ID="ProjectsButton" runat="server">Projects</asp:LinkButton><br />
+      <br />
+      <asp:LinkButton ID="ResourcesButton" runat="server">Resources</asp:LinkButton><br />
+      <br />
+      &nbsp;<br />
+      <asp:LinkButton ID="EditRolesButton" runat="server">Edit roles</asp:LinkButton><br />
+      <br />
     </div>
     </form>
 </body>

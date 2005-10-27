@@ -12,6 +12,17 @@ Public Class RoleList
 
   End Function
 
+  ''' <summary>
+  ''' Clears the in-memory RoleList cache
+  ''' so the list of roles is reloaded on
+  ''' next request.
+  ''' </summary>
+  Public Shared Sub InvalidateCache()
+
+    mList = Nothing
+
+  End Sub
+
 #End Region
 
 #Region " Constructors "

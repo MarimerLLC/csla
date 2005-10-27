@@ -10,6 +10,8 @@ Namespace Admin
   Public Class Roles
     Inherits BusinessListBase(Of Roles, Role)
 
+    Private WithEvents mDataPortal As DataPortal
+
 #Region " Constructors "
 
     Private Sub New()
@@ -82,6 +84,26 @@ Namespace Admin
         Next
         cn.Close()
       End Using
+
+    End Sub
+
+    Protected Overrides Sub DataPortal_OnDataPortalInvokeComplete( _
+      ByVal e As Csla.DataPortalEventArgs)
+
+      If ApplicationContext.ExecutionLocation = ApplicationContext.ExecutionLocations.Server Then
+        ' this runs on the server and invalidates
+        ' the RoleList cache
+        RoleList.InvalidateCache()
+      End If
+
+    End Sub
+
+    Private Sub mDataPortal_DataPortalInvokeComplete( _
+      ByVal e As Csla.DataPortalEventArgs) Handles mDataPortal.DataPortalInvokeComplete
+
+      ' this runs on the client and invalidates
+      ' the RoleList cache
+      RoleList.InvalidateCache()
 
     End Sub
 

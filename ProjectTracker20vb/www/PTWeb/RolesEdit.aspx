@@ -8,8 +8,10 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-      <h1>Edit Roles</h1>
+    <div style="font-size: x-large">
+      Edit Roles
+      <br />
+      </div><div>
       <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
         <asp:View ID="MainView" runat="server">
       <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4"

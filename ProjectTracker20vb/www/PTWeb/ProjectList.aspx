@@ -8,9 +8,32 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-    
+    <div style="font-size: x-large">
+      Project List<br />
+      <br />
     </div>
+      <div>
+        <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
+          CellPadding="4" DataKeyNames="Id" DataSourceID="ProjectDataSource" ForeColor="#333333"
+          GridLines="None" PageSize="4">
+          <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
+          <Columns>
+            <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" Visible="False" />
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+            <asp:CommandField ShowDeleteButton="True" ShowSelectButton="True" />
+          </Columns>
+          <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
+          <SelectedRowStyle BackColor="#FFCC66" Font-Bold="True" ForeColor="Navy" />
+          <PagerStyle BackColor="#FFCC66" ForeColor="#333333" HorizontalAlign="Center" />
+          <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
+          <AlternatingRowStyle BackColor="White" />
+        </asp:GridView>
+        <asp:ObjectDataSource ID="ProjectDataSource" runat="server" CacheDuration="3" CacheExpirationPolicy="Sliding"
+          DataObjectTypeName="ProjectListData+ProjectProxy" DeleteMethod="DeleteProject"
+          EnableCaching="True" OldValuesParameterFormatString="original_{0}" SelectMethod="GetProjectList"
+          TypeName="ProjectListData"></asp:ObjectDataSource>
+        <br />
+      </div>
     </form>
 </body>
 </html>

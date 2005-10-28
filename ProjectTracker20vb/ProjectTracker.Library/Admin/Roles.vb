@@ -10,8 +10,6 @@ Namespace Admin
   Public Class Roles
     Inherits BusinessListBase(Of Roles, Role)
 
-    Private WithEvents mDataPortal As DataPortal
-
 #Region " Constructors "
 
     Private Sub New()
@@ -41,9 +39,31 @@ Namespace Admin
 
 #Region " Data Access "
 
+    Public Overrides Function Save() As Roles
+
+      Dim result As Roles
+      result = MyBase.Save()
+      ' this runs on the client and invalidates
+      ' the RoleList cache
+      RoleList.InvalidateCache()
+      Return result
+
+    End Function
+
+    Protected Overrides Sub DataPortal_OnDataPortalInvokeComplete( _
+      ByVal e As Csla.DataPortalEventArgs)
+
+      If ApplicationContext.ExecutionLocation = ApplicationContext.ExecutionLocations.Server Then
+        ' this runs on the server and invalidates
+        ' the RoleList cache
+        RoleList.InvalidateCache()
+      End If
+
+    End Sub
+
     Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
 
-      Dim crit As Criteria = CType(Criteria, Criteria)
+      Dim crit As Criteria = CType(criteria, Criteria)
       Using cn As New SqlConnection(DataBase.DbConn)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
@@ -84,26 +104,6 @@ Namespace Admin
         Next
         cn.Close()
       End Using
-
-    End Sub
-
-    Protected Overrides Sub DataPortal_OnDataPortalInvokeComplete( _
-      ByVal e As Csla.DataPortalEventArgs)
-
-      If ApplicationContext.ExecutionLocation = ApplicationContext.ExecutionLocations.Server Then
-        ' this runs on the server and invalidates
-        ' the RoleList cache
-        RoleList.InvalidateCache()
-      End If
-
-    End Sub
-
-    Private Sub mDataPortal_DataPortalInvokeComplete( _
-      ByVal e As Csla.DataPortalEventArgs) Handles mDataPortal.DataPortalInvokeComplete
-
-      ' this runs on the client and invalidates
-      ' the RoleList cache
-      RoleList.InvalidateCache()
 
     End Sub
 

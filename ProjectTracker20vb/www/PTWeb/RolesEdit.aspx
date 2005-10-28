@@ -9,11 +9,9 @@
 <body>
     <form id="form1" runat="server">
     <div>
-      <h1>Edit Roles</h1><br />
-      <br />
-      <br />
-      <asp:MultiView ID="MultiView3" runat="server" ActiveViewIndex="0">
-        <asp:View ID="View1" runat="server">
+      <h1>Edit Roles</h1>
+      <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
+        <asp:View ID="MainView" runat="server">
       <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4"
         DataSourceID="RolesDataSource" ForeColor="#333333" GridLines="None" DataKeyNames="Id">
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
@@ -29,30 +27,29 @@
         <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <AlternatingRowStyle BackColor="White" />
       </asp:GridView>
-      <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="RoleEdit.aspx?id=0&mode=insert">Add role</asp:HyperLink><br />
-      <asp:ObjectDataSource ID="RolesDataSource" runat="server" SelectMethod="GetRoles"
-        TypeName="RolesData" DataObjectTypeName="ProjectTracker.Library.Admin.Role" DeleteMethod="Delete"></asp:ObjectDataSource>
+          <asp:LinkButton ID="AddRoleButton" runat="server">Add role</asp:LinkButton><br />
         </asp:View>
-        <asp:View ID="View2" runat="server">
-          <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False" DataSourceID="RoleDataSource"
+        <asp:View ID="InsertView" runat="server">
+          <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False" CellPadding="4"
+            DataSourceID="RolesDataSource" DefaultMode="Insert" ForeColor="#333333" GridLines="None"
             Height="50px" Width="125px">
+            <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
+            <CommandRowStyle BackColor="#FFFFC0" Font-Bold="True" />
+            <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
+            <PagerStyle BackColor="#FFCC66" ForeColor="#333333" HorizontalAlign="Center" />
             <Fields>
               <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" />
               <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
-              <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" ShowInsertButton="True" />
+              <asp:CommandField ShowInsertButton="True" />
             </Fields>
+            <FieldHeaderStyle BackColor="#FFFF99" Font-Bold="True" />
+            <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
+            <AlternatingRowStyle BackColor="White" />
           </asp:DetailsView>
-          <asp:ObjectDataSource ID="RoleDataSource" runat="server" DataObjectTypeName="ProjectTracker.Library.Admin.Role"
-            DeleteMethod="Delete" InsertMethod="InsertRole" SelectMethod="GetRole" TypeName="RolesData"
-            UpdateMethod="UpdateRole">
-            <SelectParameters>
-              <asp:QueryStringParameter Name="id" QueryStringField="id" Type="Int32" />
-            </SelectParameters>
-          </asp:ObjectDataSource>
         </asp:View>
       </asp:MultiView><br />
-      <br />
-      &nbsp;<br />
+      <asp:ObjectDataSource ID="RolesDataSource" runat="server" SelectMethod="GetRoles"
+        TypeName="RolesData" DataObjectTypeName="ProjectTracker.Library.Admin.Role" DeleteMethod="Delete" InsertMethod="InsertRole" OldValuesParameterFormatString="original_{0}" UpdateMethod="UpdateRole"></asp:ObjectDataSource>
     
     </div>
     </form>

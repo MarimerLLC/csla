@@ -5,21 +5,22 @@ Imports ProjectTracker.Library.Admin
 Partial Class RolesEdit
   Inherits System.Web.UI.Page
 
-  Protected Sub GridView1_RowEditing(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewEditEventArgs) Handles GridView1.RowEditing
+  Protected Sub AddRoleButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles AddRoleButton.Click
 
-    Dim pcnt As Integer = Me.RoleDataSource.SelectParameters.Count
-    '= GridView1.Rows(e.NewEditIndex).Cells(0).Text
-    Me.MultiView3.ActiveViewIndex = 1
+    Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
+    MultiView1.ActiveViewIndex = 1
 
   End Sub
 
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub DetailsView1_ItemInserted(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DetailsViewInsertedEventArgs) Handles DetailsView1.ItemInserted
 
-    If IsPostBack Then
+    MultiView1.ActiveViewIndex = 0
 
-      Me.MultiView3.ActiveViewIndex = 0
+  End Sub
 
-    End If
+  Protected Sub DetailsView1_ModeChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DetailsView1.ModeChanged
+
+    MultiView1.ActiveViewIndex = 0
 
   End Sub
 

@@ -25,13 +25,13 @@ Public NotInheritable Class DataPortal
   ''' requested server-side DataPortal method.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event DataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Public Shared Event DataPortalInvoke As Action(Of DataPortalEventArgs)
   ''' <summary>
   ''' Raised by DataPortal after the requested 
   ''' server-side DataPortal method call is complete.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event DataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Public Shared Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
 
   Private Shared Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 

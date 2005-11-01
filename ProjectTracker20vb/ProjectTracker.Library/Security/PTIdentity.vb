@@ -5,7 +5,7 @@ Namespace Security
 
   <Serializable()> _
   Public Class PTIdentity
-    Inherits ReadOnlyBase
+    Inherits ReadOnlyBase(Of PTIdentity)
 
     Implements IIdentity
 

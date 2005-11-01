@@ -20,7 +20,7 @@
           <Columns>
             <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" Visible="False" />
             <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
-            <asp:CommandField ShowDeleteButton="True" ShowSelectButton="True" />
+            <asp:CommandField ShowDeleteButton="True" ShowSelectButton="True" SelectText="Edit" />
           </Columns>
           <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
           <SelectedRowStyle BackColor="#FFCC66" Font-Bold="True" ForeColor="Navy" />

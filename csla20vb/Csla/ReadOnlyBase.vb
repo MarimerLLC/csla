@@ -11,7 +11,7 @@ Imports System.ComponentModel
 ''' should only implement readonly properties.
 ''' </remarks>
 <Serializable()> _
-Public MustInherit Class ReadOnlyBase
+Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Implements ICloneable
 
@@ -100,10 +100,24 @@ Public MustInherit Class ReadOnlyBase
   ''' <summary>
   ''' Creates a clone of the object.
   ''' </summary>
-  ''' <returns>A new object containing the exact data of the original object.</returns>
-  Public Overridable Function Clone() As Object Implements ICloneable.Clone
+  ''' <returns>
+  ''' A new object containing the exact data of the original object.
+  ''' </returns>
+  Protected Overridable Function ICloneable_Clone() As Object Implements ICloneable.Clone
 
     Return ObjectCloner.Clone(Me)
+
+  End Function
+
+  ''' <summary>
+  ''' Creates a clone of the object.
+  ''' </summary>
+  ''' <returns>
+  ''' A new object containing the exact data of the original object.
+  ''' </returns>
+  Public Overloads Function Clone() As T
+
+    Return DirectCast(ICloneable_Clone(), T)
 
   End Function
 

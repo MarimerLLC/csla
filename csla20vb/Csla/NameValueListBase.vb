@@ -140,10 +140,24 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <summary>
   ''' Creates a clone of the object.
   ''' </summary>
-  ''' <returns>A new object containing the exact data of the original object.</returns>
-  Public Overridable Function Clone() As Object Implements ICloneable.Clone
+  ''' <returns>
+  ''' A new object containing the exact data of the original object.
+  ''' </returns>
+  Protected Overridable Function ICloneable_Clone() As Object Implements ICloneable.Clone
 
     Return ObjectCloner.Clone(Me)
+
+  End Function
+
+  ''' <summary>
+  ''' Creates a clone of the object.
+  ''' </summary>
+  ''' <returns>
+  ''' A new object containing the exact data of the original object.
+  ''' </returns>
+  Public Overloads Function Clone() As NameValueListBase(Of K, V)
+
+    Return DirectCast(ICloneable_Clone(), NameValueListBase(Of K, V))
 
   End Function
 

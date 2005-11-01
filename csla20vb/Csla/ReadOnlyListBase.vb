@@ -24,10 +24,24 @@ Public MustInherit Class ReadOnlyListBase(Of T)
   ''' <summary>
   ''' Creates a clone of the object.
   ''' </summary>
-  ''' <returns>A new object containing the exact data of the original object.</returns>
-  Public Overridable Function Clone() As Object Implements ICloneable.Clone
+  ''' <returns>
+  ''' A new object containing the exact data of the original object.
+  ''' </returns>
+  Protected Overridable Function ICloneable_Clone() As Object Implements ICloneable.Clone
 
     Return ObjectCloner.Clone(Me)
+
+  End Function
+
+  ''' <summary>
+  ''' Creates a clone of the object.
+  ''' </summary>
+  ''' <returns>
+  ''' A new object containing the exact data of the original object.
+  ''' </returns>
+  Public Overloads Function Clone() As ReadOnlyListBase(Of T)
+
+    Return DirectCast(ICloneable_Clone(), ReadOnlyListBase(Of T))
 
   End Function
 

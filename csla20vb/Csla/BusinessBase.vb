@@ -7,7 +7,7 @@
 ''' This class is the core of the CSLA .NET framework. To create
 ''' a business object, inherit from this class.
 ''' </para><para>
-''' Please refer to 'Expert One-on-One VB.NET Business Objects' for
+''' Please refer to 'Expert VB 2005 Business Objects' for
 ''' full details on the use of this base class to create business
 ''' objects.
 ''' </para>
@@ -52,6 +52,22 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
     End If
     Return id.ToString
+
+  End Function
+
+#End Region
+
+#Region " Clone "
+
+  ''' <summary>
+  ''' Creates a clone of the object.
+  ''' </summary>
+  ''' <returns>
+  ''' A new object containing the exact data of the original object.
+  ''' </returns>
+  Public Overloads Function Clone() As T
+
+    Return DirectCast(ICloneable_Clone(), T)
 
   End Function
 

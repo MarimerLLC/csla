@@ -12,7 +12,7 @@ Namespace Core
   ''' This class is the core of the CSLA .NET framework. To create
   ''' a business object, inherit from this class.
   ''' </para><para>
-  ''' Please refer to 'Expert One-on-One VB.NET Business Objects' for
+  ''' Please refer to 'Expert VB 2005 Business Objects' for
   ''' full details on the use of this base class to create business
   ''' objects.
   ''' </para>
@@ -708,7 +708,7 @@ Namespace Core
 
 #End Region
 
-#Region " Clone "
+#Region " ICloneable "
 
     ''' <summary>
     ''' Creates a clone of the object.
@@ -716,7 +716,7 @@ Namespace Core
     ''' <returns>
     ''' A new object containing the exact data of the original object.
     ''' </returns>
-    Public Overridable Function Clone() As Object Implements ICloneable.Clone
+    Protected Overridable Function ICloneable_Clone() As Object Implements ICloneable.Clone
 
       Return ObjectCloner.Clone(Me)
 

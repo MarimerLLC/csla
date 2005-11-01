@@ -135,7 +135,13 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
 #End Region
 
-#Region " Clone "
+#Region " ICloneable "
+
+  Private Function ICloneable_Clone() As Object Implements ICloneable.Clone
+
+    Return OnClone()
+
+  End Function
 
   ''' <summary>
   ''' Creates a clone of the object.
@@ -143,7 +149,8 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <returns>
   ''' A new object containing the exact data of the original object.
   ''' </returns>
-  Protected Overridable Function ICloneable_Clone() As Object Implements ICloneable.Clone
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Function OnClone() As Object
 
     Return ObjectCloner.Clone(Me)
 
@@ -157,7 +164,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' </returns>
   Public Overloads Function Clone() As NameValueListBase(Of K, V)
 
-    Return DirectCast(ICloneable_Clone(), NameValueListBase(Of K, V))
+    Return DirectCast(OnClone(), NameValueListBase(Of K, V))
 
   End Function
 

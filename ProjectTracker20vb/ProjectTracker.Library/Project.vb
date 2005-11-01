@@ -327,7 +327,7 @@ Public Class Project
 
   End Sub
 
-  <Transactional(TransactionalTypes.Manual)> _
+  <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Insert()
 
     Using cn As New SqlConnection(DataBase.DbConn)
@@ -346,7 +346,7 @@ Public Class Project
 
   End Sub
 
-  <Transactional(TransactionalTypes.Manual)> _
+  <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Update()
 
     Using cn As New SqlConnection(DataBase.DbConn)
@@ -377,14 +377,14 @@ Public Class Project
 
   End Sub
 
-  <Transactional(TransactionalTypes.Manual)> _
+  <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
     DataPortal_Delete(New Criteria(mId))
 
   End Sub
 
-  <Transactional(TransactionalTypes.Manual)> _
+  <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Delete(ByVal Criteria As Object)
     Dim crit As Criteria = CType(Criteria, Criteria)
     Dim cn As New SqlConnection(DataBase.DbConn)

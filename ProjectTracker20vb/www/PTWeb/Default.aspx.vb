@@ -21,4 +21,12 @@ Partial Class _Default
 
   End Sub
 
+  Protected Sub LoginStatus1_LoggingOut(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.LoginCancelEventArgs) Handles LoginStatus1.LoggingOut
+
+    ProjectTracker.Library.Security.PTPrincipal.Logout()
+    Session.Remove("CslaPrincipal")
+    System.Web.Security.FormsAuthentication.SignOut()
+
+  End Sub
+
 End Class

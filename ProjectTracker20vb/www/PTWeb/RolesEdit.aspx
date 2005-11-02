@@ -19,9 +19,8 @@
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>
           <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False" />
-          <asp:BoundField DataField="Name" HeaderText="Role" SortExpression="Name" />
-          <asp:CommandField ShowEditButton="True" />
-          <asp:CommandField ShowDeleteButton="True" />
+          <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
+          <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" />
         </Columns>
         <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
         <SelectedRowStyle BackColor="#FFCC66" Font-Bold="True" ForeColor="Navy" />
@@ -34,7 +33,7 @@
         <asp:View ID="InsertView" runat="server">
           <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False" CellPadding="4"
             DataSourceID="RolesDataSource" DefaultMode="Insert" ForeColor="#333333" GridLines="None"
-            Height="50px" Width="125px">
+            Height="50px" Width="125px" DataKeyNames="Id">
             <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
             <CommandRowStyle BackColor="#FFFFC0" Font-Bold="True" />
             <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
@@ -50,10 +49,10 @@
           </asp:DetailsView>
         </asp:View>
       </asp:MultiView><br />
-      <asp:ObjectDataSource ID="RolesDataSource" runat="server" SelectMethod="GetRoles"
-        TypeName="RolesData" DataObjectTypeName="ProjectTracker.Library.Admin.Role" DeleteMethod="Delete" InsertMethod="InsertRole" OldValuesParameterFormatString="original_{0}" UpdateMethod="UpdateRole"></asp:ObjectDataSource>
-    
-    </div>
+        <asp:ObjectDataSource ID="RolesDataSource" runat="server" DataObjectTypeName="ProjectTracker.Library.Admin.Role"
+          DeleteMethod="Delete" InsertMethod="InsertRole" OldValuesParameterFormatString="original_{0}"
+          SelectMethod="GetRoles" TypeName="RolesData" UpdateMethod="UpdateRole"></asp:ObjectDataSource>
+        &nbsp;</div>
     </form>
 </body>
 </html>

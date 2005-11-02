@@ -11,11 +11,18 @@
     <div>
       <h1>Project Tracker</h1>
       <br />
+      Logged in as
+      <asp:LoginName ID="LoginName1" runat="server" />
+      &nbsp; &nbsp; &nbsp; &nbsp;
+      <asp:LoginStatus ID="LoginStatus1" runat="server" />
+      <br />
+      <br />
+      <br />
       <asp:LinkButton ID="ProjectsButton" runat="server">Projects</asp:LinkButton><br />
       <br />
       <asp:LinkButton ID="ResourcesButton" runat="server">Resources</asp:LinkButton><br />
       <br />
-      &nbsp;<br />
+      <br />
       <asp:LinkButton ID="EditRolesButton" runat="server">Edit roles</asp:LinkButton><br />
       <br />
     </div>

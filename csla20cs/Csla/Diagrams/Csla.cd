@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Csla.BusinessBase&lt;T&gt;" Collapsed="true">
+    <Position X="6.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessBase.cs</FileName>
+      <HashCode>AAAAAIAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAAAgAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Core.BusinessBase" Collapsed="true">
+    <Position X="6.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\BusinessBase.cs</FileName>
+      <HashCode>FAgBAA8ACAADnCDAEAlISEiUBJHgAAEAIFCBAQAgKFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Core.UndoableBase" Collapsed="true">
+    <Position X="6.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\UndoableBase.cs</FileName>
+      <HashCode>AgIAAAAAAAAAAAAAAAIAkAAAAAAAEAAAAAhAEAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Core.BindableBase" Collapsed="true">
+    <Position X="6.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\BindableBase.cs</FileName>
+      <HashCode>AAAABAAAAAAAAAACIAAAIAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.BusinessListBase&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>BusinessListBase.cs</FileName>
+      <HashCode>AgAAAIhACAAADAJAEAgAGCgAQAKIAAlEoQABUAAgCFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.ComponentModel.BindingList&lt;T&gt;" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Core.ReadOnlyBindingList&lt;T&gt;" Collapsed="true">
+    <Position X="3.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\ReadOnlyBindingList.cs</FileName>
+      <HashCode>AAAAAABAAAAABAAQAAAAAAAAQCAAAAAEIAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.NameValueListBase&lt;K, V&gt;" Collapsed="true">
+    <Position X="4.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>NameValueListBase.cs</FileName>
+      <HashCode>BAAAAAgAAAAABAQAEAAAAAAAAAAAAAEAAAAgAAAACFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.CommandBase" Collapsed="true">
+    <Position X="4.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>CommandBase.cs</FileName>
+      <HashCode>AAAAAAgAAAAABABAEAAAAAAAAAAAAAEAAAAAAAAACEI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.NotUndoableAttribute" Collapsed="true">
+    <Position X="8.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>NotUndoableAttribute.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.ReadOnlyListBase&lt;T&gt;" Collapsed="true">
+    <Position X="2.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>ReadOnlyListBase.cs</FileName>
+      <HashCode>BAAAAAgAAAAABAAAEAAAAAAAAAAAAAEAAAAAAAAACFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.SortedBindingList&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>SortedBindingList.cs</FileName>
+      <HashCode>AGoAAEAAgUQACBAUGAAINAQAKAE4ROAIeAEQADBQIpQ=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="Csla.SmartDate" Collapsed="true">
+    <Position X="2.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>SmartDate.cs</FileName>
+      <HashCode>AAJAAAAAACAACAQExAGCEgAAAwAAAIAhAAAACAAAAmA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+</ClassDiagram>

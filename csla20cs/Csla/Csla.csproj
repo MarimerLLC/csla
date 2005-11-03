@@ -110,6 +110,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />
+    <None Include="Diagrams\Csla.cd" />
+    <None Include="Diagrams\DataPortal.cd" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.de.resx">
@@ -147,9 +149,6 @@
     <EmbeddedResource Include="Properties\Resources.sv.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Diagrams\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

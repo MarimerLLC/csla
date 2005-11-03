@@ -241,6 +241,92 @@
       <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
+  <Class Name="Csla.Core.ObjectCloner" Collapsed="true">
+    <Position X="5" Y="6" Width="2" />
+    <TypeIdentifier>
+      <FileName>Core\ObjectCloner.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Data.SafeDataReader" Collapsed="true">
+    <Position X="7.5" Y="6" Width="2" />
+    <TypeIdentifier>
+      <FileName>Data\SafeDataReader.cs</FileName>
+      <HashCode>BCCQIAAgMCgAAAABCAIIBCYgAAJEAEQwIBQAAACAJEA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Data.ObjectAdapter" Collapsed="true">
+    <Position X="10" Y="6" Width="2" />
+    <TypeIdentifier>
+      <FileName>Data\ObjectAdapter.cs</FileName>
+      <HashCode>AAAAAQABgGAAAAAIQAAAIAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Security.AuthorizationRules" Collapsed="true">
+    <Position X="10" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>Security\AuthorizationRules.cs</FileName>
+      <HashCode>AoiAAgAAAAABAAAAAAAIAAAAAAAAAAAAAAABACIAgAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Security.RolesForProperty" Collapsed="true">
+    <Position X="10" Y="5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Security\RolesForProperty.cs</FileName>
+      <HashCode>AAgAAAAAABAAAAAABAQQBAAAAAAAAQBAAAAAECIAgAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Security.BusinessPrincipalBase" Collapsed="true">
+    <Position X="7.5" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Security\BusinessPrincipalBase.cs</FileName>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Validation.CommonRules" Collapsed="true">
+    <Position X="12.5" Y="5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Validation\CommonRules.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAQA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.ValidationRules" Collapsed="true">
+    <Position X="12.5" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>Validation\ValidationRules.cs</FileName>
+      <HashCode>AAAAAAAAAAAAACAAAAggAAIIQgAEAAAAAAgAAAAAgAI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.BrokenRulesCollection" Collapsed="true">
+    <Position X="15" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>Validation\BrokenRulesCollection.cs</FileName>
+      <HashCode>AAIAAAAAAAAAAAAEIAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.BrokenRule" Collapsed="true">
+    <Position X="15" Y="5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Validation\BrokenRule.cs</FileName>
+      <HashCode>EAAABAAAAAAgAAAEAAAAAAAABAAAAAAAAAAAAQAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.RuleArgs" Collapsed="true">
+    <Position X="13.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Validation\RuleArgs.cs</FileName>
+      <HashCode>EAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.ValidationException" Collapsed="true">
+    <Position X="12.5" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Validation\ValidationException.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
   <Struct Name="Csla.SmartDate" Collapsed="true">
     <Position X="0.5" Y="6" Width="2" />
     <TypeIdentifier>
@@ -256,4 +342,11 @@
       <HashCode>AAAAAAAgQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Enum>
+  <Delegate Name="Csla.Validation.RuleHandler" Collapsed="true">
+    <Position X="12.5" Y="6" Width="2" />
+    <TypeIdentifier>
+      <FileName>Validation\RuleHandler.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Delegate>
 </ClassDiagram>

@@ -111,6 +111,7 @@
   <ItemGroup>
     <None Include="CslaKey.snk" />
     <None Include="Diagrams\Csla.cd" />
+    <None Include="Diagrams\CslaBaseClasses.cd" />
     <None Include="Diagrams\DataPortal.cd" />
     <None Include="Diagrams\FullCsla.cd" />
   </ItemGroup>

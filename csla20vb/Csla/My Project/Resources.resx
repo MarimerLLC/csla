@@ -584,4 +584,16 @@
 
   </data>
 
+  <data name="PropertyGetNotAllowed" xml:space="preserve">
+
+    <value>Property get not allowed</value>
+
+  </data>
+
+  <data name="PropertySetNotAllowed" xml:space="preserve">
+
+    <value>Property set not allowed</value>
+
+  </data>
+
 </root>

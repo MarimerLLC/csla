@@ -306,6 +306,34 @@ namespace Csla.Core
     /// directly from the property to be checked.
     /// </para>
     /// </remarks>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    public bool CanReadProperty(bool throwOnFalse)
+    {
+      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      bool result = CanReadProperty(propertyName);
+      if (throwOnFalse && result == false)
+        throw new System.Security.SecurityException(Resources.PropertyGetNotAllowed);
+      return result;
+    }
+
+    /// <summary>
+    /// Returns True if the user is allowed to read the
+    /// calling property.
+    /// </summary>
+    /// <returns>True if read is allowed.</returns>
+    /// <remarks>
+    /// <para>
+    /// If and only if the user is in a role explicitly denied 
+    /// access and NOT in a role that explicitly
+    /// allows access they will be denied read access to the property.
+    /// </para><para>
+    /// This implementation uses System.Diagnostics.StackTrace to
+    /// determine the name of the current property, and so must be called
+    /// directly from the property to be checked.
+    /// </para>
+    /// </remarks>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public bool CanReadProperty()
     {
@@ -335,6 +363,34 @@ namespace Csla.Core
           return false;
       }
       return true;
+    }
+
+    /// <summary>
+    /// Returns True if the user is allowed to write the
+    /// calling property.
+    /// </summary>
+    /// <returns>True if write is allowed.</returns>
+    /// <remarks>
+    /// <para>
+    /// If and only if the user is in a role explicitly denied 
+    /// access and NOT in a role that explicitly
+    /// allows access they will be denied write access to the property.
+    /// </para><para>
+    /// This implementation uses System.Diagnostics.StackTrace to
+    /// determine the name of the current property, and so must be called
+    /// directly from the property to be checked.
+    /// </para>
+    /// </remarks>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    public bool CanWriteProperty(bool throwOnFalse)
+    {
+      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      bool result = CanWriteProperty(propertyName);
+      if (throwOnFalse && result == false)
+        throw new System.Security.SecurityException(Resources.PropertySetNotAllowed);
+      return result;
     }
 
     /// <summary>

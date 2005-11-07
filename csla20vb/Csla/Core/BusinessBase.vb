@@ -302,6 +302,39 @@ Namespace Core
     ''' all users will have read access.
     ''' </para>
     ''' </remarks>
+    ''' <param name="throwOnFalse">Indicates whether a negative
+    ''' result should cause an exception.</param>
+    <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+    Public Function CanReadProperty(ByVal throwOnFalse As Boolean) As Boolean
+
+      Dim propertyName As String = _
+        New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
+      Dim result As Boolean = CanReadProperty(propertyName)
+      If throwOnFalse AndAlso result = False Then
+        Throw New System.Security.SecurityException(My.Resources.PropertyGetNotAllowed)
+      End If
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Returns True if the user is allowed to read the
+    ''' calling property.
+    ''' </summary>
+    ''' <returns>True if read is allowed.</returns>
+    ''' <remarks>
+    ''' <para>
+    ''' If a list of allowed roles is provided then only users in those
+    ''' roles can read. If no list of allowed roles is provided then
+    ''' the list of denied roles is checked.
+    ''' </para><para>
+    ''' If a list of denied roles is provided then users in the denied
+    ''' roles are denied read access. All other users are allowed.
+    ''' </para><para>
+    ''' If neither a list of allowed nor denied roles is provided then
+    ''' all users will have read access.
+    ''' </para>
+    ''' </remarks>
     <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanReadProperty() As Boolean
 
@@ -346,6 +379,39 @@ Namespace Core
         If mAuthorizationRules.IsReadDenied(propertyName) Then
           result = False
         End If
+      End If
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Returns True if the user is allowed to write the
+    ''' calling property.
+    ''' </summary>
+    ''' <returns>True if write is allowed.</returns>
+    ''' <remarks>
+    ''' <para>
+    ''' If a list of allowed roles is provided then only users in those
+    ''' roles can write. If no list of allowed roles is provided then
+    ''' the list of denied roles is checked.
+    ''' </para><para>
+    ''' If a list of denied roles is provided then users in the denied
+    ''' roles are denied write access. All other users are allowed.
+    ''' </para><para>
+    ''' If neither a list of allowed nor denied roles is provided then
+    ''' all users will have write access.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="throwOnFalse">Indicates whether a negative
+    ''' result should cause an exception.</param>
+    <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+    Public Function CanWriteProperty(ByVal throwOnFalse As Boolean) As Boolean
+
+      Dim propertyName As String = _
+        New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
+      Dim result As Boolean = CanWriteProperty(propertyName)
+      If throwOnFalse AndAlso result = False Then
+        Throw New System.Security.SecurityException(My.Resources.PropertySetNotAllowed)
       End If
       Return result
 

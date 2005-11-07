@@ -17,92 +17,65 @@ Public Class Project
 
   Public ReadOnly Property Id() As Guid
     Get
-      If CanReadProperty() Then
-        Return mId
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mId
     End Get
   End Property
 
   Public Property Name() As String
     Get
-      If CanReadProperty() Then
-        Return mName
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mName
     End Get
     Set(ByVal Value As String)
-      If CanWriteProperty() Then
-        If mName <> Value Then
-          mName = Value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property set not allowed")
+      CanWriteProperty(True)
+      If mName <> Value Then
+        mName = Value
+        PropertyHasChanged()
       End If
     End Set
   End Property
 
   Public Property Started() As String
     Get
-      If CanReadProperty() Then
-        Return mStarted.Text
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mStarted.Text
     End Get
     Set(ByVal Value As String)
-      If CanWriteProperty() Then
-        If mStarted <> Value Then
-          mStarted.Text = Value
-          ValidationRules.CheckRules("Ended")
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property set not allowed")
+      CanWriteProperty(True)
+      If mStarted <> Value Then
+        mStarted.Text = Value
+        ValidationRules.CheckRules("Ended")
+        PropertyHasChanged()
       End If
     End Set
   End Property
 
   Public Property Ended() As String
     Get
-      If CanReadProperty() Then
-        Return mEnded.Text
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mEnded.Text
     End Get
     Set(ByVal Value As String)
-      If CanWriteProperty() Then
-        If mEnded <> Value Then
-          mEnded.Text = Value
-          ValidationRules.CheckRules("Started")
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property set not allowed")
+      CanWriteProperty(True)
+      If mEnded <> Value Then
+        mEnded.Text = Value
+        ValidationRules.CheckRules("Started")
+        PropertyHasChanged()
       End If
     End Set
   End Property
 
   Public Property Description() As String
     Get
-      If CanReadProperty() Then
-        Return mDescription
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mDescription
     End Get
     Set(ByVal Value As String)
-      If CanWriteProperty() Then
-        If mDescription <> Value Then
-          mDescription = Value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property set not allowed")
+      CanWriteProperty(True)
+      If mDescription <> Value Then
+        mDescription = Value
+        PropertyHasChanged()
       End If
     End Set
   End Property

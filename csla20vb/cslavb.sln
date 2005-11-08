@@ -11,12 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.txt = readme.txt
 	EndProjectSection
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CSLA.Test", "CSLA.Test\CSLA.Test.vbproj", "{0D6E1AE7-CB8A-4EF2-92C0-039DB7FB7614}"
-EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = cslavb.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -26,12 +21,11 @@ Global
 		{AD7860FD-83E2-4E2C-A859-6FF077980884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD7860FD-83E2-4E2C-A859-6FF077980884}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD7860FD-83E2-4E2C-A859-6FF077980884}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D6E1AE7-CB8A-4EF2-92C0-039DB7FB7614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D6E1AE7-CB8A-4EF2-92C0-039DB7FB7614}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D6E1AE7-CB8A-4EF2-92C0-039DB7FB7614}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D6E1AE7-CB8A-4EF2-92C0-039DB7FB7614}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = cslavb.vsmdi
 	EndGlobalSection
 EndGlobal

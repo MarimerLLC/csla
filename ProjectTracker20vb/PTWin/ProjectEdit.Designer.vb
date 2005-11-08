@@ -37,16 +37,16 @@ Partial Class ProjectEdit
     Me.GroupBox1 = New System.Windows.Forms.GroupBox
     Me.AssignButton = New System.Windows.Forms.Button
     Me.ResourcesDataGridView = New System.Windows.Forms.DataGridView
+    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.Column1 = New System.Windows.Forms.DataGridViewLinkColumn
+    Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
+    Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn
     Me.DescriptionTextBox = New System.Windows.Forms.TextBox
     Me.EndedTextBox = New System.Windows.Forms.TextBox
     Me.IdLabel1 = New System.Windows.Forms.Label
     Me.NameTextBox = New System.Windows.Forms.TextBox
     Me.StartedTextBox = New System.Windows.Forms.TextBox
     Me.ReadWriteAuthorization1 = New PTWin.ReadWriteAuthorization(Me.components)
-    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.Column1 = New System.Windows.Forms.DataGridViewLinkColumn
-    Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
-    Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn
     DescriptionLabel = New System.Windows.Forms.Label
     EndedLabel = New System.Windows.Forms.Label
     IdLabel = New System.Windows.Forms.Label
@@ -237,6 +237,45 @@ Partial Class ProjectEdit
     Me.ResourcesDataGridView.Size = New System.Drawing.Size(367, 185)
     Me.ResourcesDataGridView.TabIndex = 10
     '
+    'DataGridViewTextBoxColumn2
+    '
+    Me.DataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+    Me.DataGridViewTextBoxColumn2.DataPropertyName = "ResourceId"
+    Me.DataGridViewTextBoxColumn2.HeaderText = "ResourceId"
+    Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
+    Me.DataGridViewTextBoxColumn2.ReadOnly = True
+    Me.DataGridViewTextBoxColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
+    Me.DataGridViewTextBoxColumn2.Visible = False
+    Me.DataGridViewTextBoxColumn2.Width = 5
+    '
+    'Column1
+    '
+    Me.Column1.DataPropertyName = "FullName"
+    Me.Column1.HeaderText = "Name"
+    Me.Column1.Name = "Column1"
+    Me.Column1.ReadOnly = True
+    Me.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+    Me.Column1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+    Me.Column1.Width = 60
+    '
+    'Role
+    '
+    Me.Role.DataPropertyName = "Role"
+    Me.Role.DataSource = Me.RoleListBindingSource
+    Me.Role.DisplayMember = "Value"
+    Me.Role.HeaderText = "Role"
+    Me.Role.Name = "Role"
+    Me.Role.ValueMember = "Key"
+    Me.Role.Width = 35
+    '
+    'DataGridViewTextBoxColumn4
+    '
+    Me.DataGridViewTextBoxColumn4.DataPropertyName = "Assigned"
+    Me.DataGridViewTextBoxColumn4.HeaderText = "Assigned"
+    Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
+    Me.DataGridViewTextBoxColumn4.ReadOnly = True
+    Me.DataGridViewTextBoxColumn4.Width = 75
+    '
     'DescriptionTextBox
     '
     Me.DescriptionTextBox.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
@@ -292,45 +331,6 @@ Partial Class ProjectEdit
     Me.StartedTextBox.Name = "StartedTextBox"
     Me.StartedTextBox.Size = New System.Drawing.Size(460, 20)
     Me.StartedTextBox.TabIndex = 25
-    '
-    'DataGridViewTextBoxColumn2
-    '
-    Me.DataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-    Me.DataGridViewTextBoxColumn2.DataPropertyName = "ResourceId"
-    Me.DataGridViewTextBoxColumn2.HeaderText = "ResourceId"
-    Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
-    Me.DataGridViewTextBoxColumn2.ReadOnly = True
-    Me.DataGridViewTextBoxColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
-    Me.DataGridViewTextBoxColumn2.Visible = False
-    Me.DataGridViewTextBoxColumn2.Width = 5
-    '
-    'Column1
-    '
-    Me.Column1.DataPropertyName = "FullName"
-    Me.Column1.HeaderText = "Name"
-    Me.Column1.Name = "Column1"
-    Me.Column1.ReadOnly = True
-    Me.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-    Me.Column1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-    Me.Column1.Width = 60
-    '
-    'Role
-    '
-    Me.Role.DataPropertyName = "Role"
-    Me.Role.DataSource = Me.RoleListBindingSource
-    Me.Role.DisplayMember = "Value"
-    Me.Role.HeaderText = "Role"
-    Me.Role.Name = "Role"
-    Me.Role.ValueMember = "Key"
-    Me.Role.Width = 35
-    '
-    'DataGridViewTextBoxColumn4
-    '
-    Me.DataGridViewTextBoxColumn4.DataPropertyName = "Assigned"
-    Me.DataGridViewTextBoxColumn4.HeaderText = "Assigned"
-    Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
-    Me.DataGridViewTextBoxColumn4.ReadOnly = True
-    Me.DataGridViewTextBoxColumn4.Width = 75
     '
     'ProjectEdit
     '

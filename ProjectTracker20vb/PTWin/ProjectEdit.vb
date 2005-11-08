@@ -64,7 +64,7 @@ Public Class ProjectEdit
       Me.ResourcesBindingSource.RaiseListChangedEvents = False
 
       ' do the save
-      Dim old As Project = CType(mProject.Clone, Project)
+      Dim old As Project = mProject.Clone
       mProject.ApplyEdit()
       Try
         mProject = mProject.Save
@@ -174,4 +174,7 @@ Public Class ProjectEdit
 
   End Sub
 
+  Private Sub ProjectEdit_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+
+  End Sub
 End Class

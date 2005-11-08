@@ -65,13 +65,13 @@
       <br />
       <br />
       <csla:CslaDataSource ID="ProjectDataSource" runat="server" 
-          TypeName="ProjectTracker.Library.Project" TypeAssemblyName="">
+          TypeName="ProjectTracker.Library.Project" TypeAssemblyName="ProjectTracker.Library">
       </csla:CslaDataSource> 
       <csla:CslaDataSource ID="ResourcesDataSource" runat="server" 
-          TypeName="ProjectTracker.Library.ProjectResources" TypeAssemblyName="">
+          TypeName="ProjectTracker.Library.ProjectResources" TypeAssemblyName="ProjectTracker.Library">
       </csla:CslaDataSource> 
       <csla:CslaDataSource ID="RoleListDataSource" runat="server" 
-          TypeName="ProjectTracker.Library.RoleList" TypeAssemblyName="">
+          TypeName="ProjectTracker.Library.RoleList" TypeAssemblyName="ProjectTracker.Library">
       </csla:CslaDataSource> 
       <br />
     </div>

@@ -304,7 +304,8 @@ Namespace Core
     ''' </remarks>
     ''' <param name="throwOnFalse">Indicates whether a negative
     ''' result should cause an exception.</param>
-    <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+    <System.Runtime.CompilerServices.MethodImpl( _
+      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanReadProperty(ByVal throwOnFalse As Boolean) As Boolean
 
       Dim propertyName As String = _

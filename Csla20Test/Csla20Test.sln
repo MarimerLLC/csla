@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Test", "Csla.Test\Csla.Test.csproj", "{002E4164-CFAF-4923-BEBB-B3A11281AB48}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslacs.Test", "Csla.Test\Cslacs.Test.csproj", "{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslavb.Test", "Csla.Test\Cslavb.Test.csproj", "{002E4164-CFAF-4923-BEBB-B3A11281AB48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,6 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{002E4164-CFAF-4923-BEBB-B3A11281AB48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{002E4164-CFAF-4923-BEBB-B3A11281AB48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{002E4164-CFAF-4923-BEBB-B3A11281AB48}.Release|Any CPU.ActiveCfg = Release|Any CPU

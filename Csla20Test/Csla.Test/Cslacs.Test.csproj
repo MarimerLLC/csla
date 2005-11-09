@@ -1,0 +1,85 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla.Test</RootNamespace>
+    <AssemblyName>Csla.Test</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\cs\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\cs\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Csla, Version=2.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\csla20cs\Csla\bin\Debug\Csla.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppContext\AppContextTests.cs" />
+    <Compile Include="AppContext\ExceptionRoot.cs" />
+    <Compile Include="AppContext\SimpleRoot.cs" />
+    <Compile Include="Basic\BasicTests.cs" />
+    <Compile Include="Basic\Child.cs" />
+    <Compile Include="Basic\Children.cs" />
+    <Compile Include="Basic\GenRoot.cs" />
+    <Compile Include="Basic\GenRootBase.cs" />
+    <Compile Include="Basic\GrandChild.cs" />
+    <Compile Include="Basic\GrandChildren.cs" />
+    <Compile Include="Basic\Root.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="DataPortal\DataPortalTests.cs" />
+    <Compile Include="DataPortal\DpRoot.cs" />
+    <Compile Include="IO\IOTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RollBack\RollbackRoot.cs" />
+    <Compile Include="RollBack\RollBackTests.cs" />
+    <Compile Include="Serialization\SerializationRoot.cs" />
+    <Compile Include="Serialization\SerializationTests.cs" />
+    <Compile Include="Serialization\TestEventSink.cs" />
+    <Compile Include="SmartDate\SmartDateTests.cs" />
+    <Compile Include="ValidationRules\HasRulesManager.cs" />
+    <Compile Include="ValidationRules\MaxLengthArgs.cs" />
+    <Compile Include="ValidationRules\ValidationTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Csla.Test.config" />
+    <None Include="cslaTest.nunit" />
+    <None Include="Properties\CVS\Entries" />
+    <None Include="Properties\CVS\Entries.Extra" />
+    <None Include="Properties\CVS\Entries.Extra.Old" />
+    <None Include="Properties\CVS\Entries.Old" />
+    <None Include="Properties\CVS\Repository" />
+    <None Include="Properties\CVS\Root" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

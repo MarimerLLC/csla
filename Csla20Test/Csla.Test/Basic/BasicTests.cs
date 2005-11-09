@@ -43,7 +43,7 @@ namespace Csla.Test.Basic
             Root root = Csla.Test.Basic.Root.NewRoot();
             root.Children.Add("1");
             Assert.AreEqual(1, root.Children.Count);
-            Assert.AreEqual("1", root.Children[0]._data);
+            Assert.AreEqual("1", root.Children[0].Data);
         }
 
         [Test]

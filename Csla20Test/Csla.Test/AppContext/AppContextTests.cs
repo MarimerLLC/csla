@@ -107,6 +107,7 @@ namespace Csla.Test.AppContext
 
         #region Dataportal Events
         #if csla20vb
+        #warning Bugs here
         [NUnit.Framework.Test()]
         public void DataPortalEvents()
         {

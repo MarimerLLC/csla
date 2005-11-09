@@ -9,7 +9,7 @@ namespace Csla.Test.Basic
     {
         private string _data;
 
-        private Children _children = null; //Csla.Test.Children.NewChildren();
+        private Children _children = Csla.Test.Basic.Children.NewChildren();
 
         protected override object GetIdValue()
         {
@@ -51,10 +51,30 @@ namespace Csla.Test.Basic
             get { return _children; }
         }
 
-        /*public override bool IsDirty
+        #if csla20vb
+        /// <summary>
+        /// Override of IsDirty
+        /// </summary>
+        /// <remarks>
+        /// Seems like a bug here, the C# version of the library is not marked as virtual.
+        /// </remarks>
+        public override bool IsDirty
         {
-            get { return base.IsDirty || _children.IsDirty(); }
-        }*/
+            get { return base.IsDirty || this._children.IsDirty; }
+        }
+        #elif csla20cs
+        #warning Potential bug here, library inconsitency
+        /// <summary>
+        /// IsDirty Override
+        /// </summary>
+        /// <remarks>
+        /// This is probably an error, should be override rather than new but the C# version is not marked as virtual.
+        /// </remarks>
+        public new bool IsDirty
+        {
+            get { return base.IsDirty || this._children.IsDirty; }
+        }
+        #endif
 
         #region Criteria
         [Serializable()]

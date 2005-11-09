@@ -4,7 +4,13 @@ using System.Text;
 
 namespace Csla.Test.Basic
 {
-    class GenRoot
+    [Serializable()]
+    public class GenRoot : GenRootBase
     {
+        private GenRoot()
+        {
+            //prevent direct creation
+        }
+
     }
 }

@@ -57,9 +57,203 @@ namespace Csla.Test.Basic
         }
 
         [Test]
+        public void AddRemoveAddChild()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root root = Csla.Test.Basic.Root.NewRoot();
+            root.Children.Add("1");
+            root.BeginEdit();
+            root.Children.Remove(root.Children[0]);
+            root.Children.Add("2");
+            root.CancelEdit();
+            Assert.AreEqual(1, root.Children.Count);
+            Assert.AreEqual("1", root.Children[0].Data);
+        }
+
+        [Test]
         public void AddGrandChild()
-        { }
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root root = Csla.Test.Basic.Root.NewRoot();
+            root.Children.Add("1");
+            root.BeginEdit();
+            root.Children.Remove(root.Children[0]);
+            root.Children.Add("2");
+            root.CancelEdit();
+            Assert.AreEqual(1, root.Children.Count);
+            Assert.AreEqual("1", root.Children[0].Data);
+        }
 
+        [Test]
+        public void AddRemoveGrandChild()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root root = Csla.Test.Basic.Root.NewRoot();
+            root.Children.Add("1");
+            Child child = root.Children[0];
+            child.GrandChildren.Add("1");
+            child.GrandChildren.Remove(child.GrandChildren[0]);
+            Assert.AreEqual("1", child.GrandChildren[0].Data);
+        }
 
+        ///<remarks>"the non-generic method AreEqual cannot be used with type arguments" - though
+        ///it is used with type arguments in BasicTests.vb
+        ///</remarks>
+        //[Test]
+        //public void CloneGraph()
+        //{
+        //    Csla.ApplicationContext.GlobalContext.Clear();
+        //    Root root = Csla.Test.Basic.Root.NewRoot();
+        //    FormSimulator form = new FormSimulator(root);
+        //    SerializableListener listener = new SerializableListener(root);
+        //    root.Children.Add("1");
+        //    Child child = root.Children[0];
+        //    Child.GrandChildren.Add("1");
+        //    Assert.AreEqual<int>(1, child.GrandChildren.Count);
+        //    Assert.AreEqual<string>("1", child.GrandChildren[0].Data);
+
+        //    Root clone = ((Root)(root.Clone()));
+        //    child = clone.Children[0];
+        //    Assert.AreEqual<int>(1, child.GrandChildren.Count);
+        //    Assert.AreEqual<string>("1", child.GrandChildren[0].Data);
+
+        //    Assert.AreEqual<string>("root Deserialized", ((string)(Csla.ApplicationContext.GlobalContext["Deserialized"])));
+        //    Assert.AreEqual<string>("GC Deserialized", ((string)(Csla.ApplicationContext.GlobalContext["GCDeserialized"])));
+        //}
+
+        [Test]
+        public void ClearChildList()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root root = Csla.Test.Basic.Root.NewRoot();
+            root.Children.Add("A");
+            root.Children.Add("B");
+            root.Children.Add("C");
+            root.Children.Clear();
+            Assert.AreEqual(0, root.Children.Count);
+        }
+
+        [Test]
+        public void NestedAddAcceptchild()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root root = Csla.Test.Basic.Root.NewRoot();
+            root.BeginEdit();
+            root.Children.Add("A");
+            root.BeginEdit();
+            root.Children.Add("B");
+            root.BeginEdit();
+            root.Children.Add("C");
+            root.ApplyEdit();
+            root.ApplyEdit();
+            root.ApplyEdit();
+            Assert.AreEqual(3, root.Children.Count);
+        }
+
+        [Test]
+        public void NestedAddDeleteAcceptChild()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root root = Csla.Test.Basic.Root.NewRoot();
+            root.BeginEdit();
+            root.Children.Add("A");
+            root.BeginEdit();
+            root.Children.Add("B");
+            root.BeginEdit();
+            root.Children.Add("C");
+            Child childC = root.Children[2];
+            Assert.AreEqual(true, root.Children.Contains(childC), "Child should be in collection");
+            root.Children.Remove(root.Children[0]);
+            root.Children.Remove(root.Children[0]);
+            root.Children.Remove(root.Children[0]);
+            Assert.AreEqual(false, root.Children.Contains(childC), "Child should not be in collection");
+            Assert.AreEqual(true, root.Children.ContainsDeleted(childC), "Deleted child should be in deleted collection");
+            root.ApplyEdit();
+            Assert.AreEqual(false, root.Children.ContainsDeleted(childC), "Deleted child should not be in deleted collection after first applyedit");
+            root.ApplyEdit();
+            Assert.AreEqual(false, root.Children.ContainsDeleted(childC), "Deleted child should not be in deleted collection after ApplyEdit");
+            root.ApplyEdit();
+            Assert.AreEqual(0, root.Children.Count, "No children should remain");
+            Assert.AreEqual(false, root.Children.ContainsDeleted(childC), "Deleted child should not be in deleted collection after third applyedit");
+        }
+
+        [Test]
+        public void BasicEquality()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root r1 = Root.NewRoot();
+            r1.Data = "abc";
+            Assert.AreEqual(true, r1.Equals(r1), "objects should be equal on instance compare");
+            Assert.AreEqual(true, Equals(r1, r1), "objects should be equal on static compare");
+
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root r2 = Root.NewRoot();
+            r2.Data = "xyz";
+            Assert.AreEqual(false, r1.Equals(r2), "objects should not be equal");
+            Assert.AreEqual(false, Equals(r1, r2), "objects should not be equal");
+
+            Assert.AreEqual(false, r1.Equals(null), "Objects should not be equal");
+            Assert.AreEqual(false, Equals(r1, null), "Objects should not be equal");
+            Assert.AreEqual(false, Equals(null, r2), "Objects should not be equal");
+        }
+
+        [Test]
+        public void ChildEquality()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Root root = Root.NewRoot();
+            root.Children.Add("abc");
+            root.Children.Add("xyz");
+            root.Children.Add("123");
+            Child c1 = root.Children[0];
+            Child c2 = root.Children[1];
+            Child c3 = root.Children[2];
+            root.Children.Remove(c3);
+
+            Assert.AreEqual(true, c1.Equals(c1), "objects should be equal");
+            Assert.AreEqual(true, Equals(c1, c1), "objects should be equal");
+
+            Assert.AreEqual(false, c1.Equals(c2), "objects should not be equal");
+            Assert.AreEqual(false, Equals(c1, c2), "objects should not be equal");
+
+            Assert.AreEqual(false, c1.Equals(null), "objects should not be equal");
+            Assert.AreEqual(false, Equals(c1, null), "objects should not be equal");
+            Assert.AreEqual(false, Equals(null, c2), "objects should not be equal");
+
+            Assert.AreEqual(true, root.Children.Contains(c1), "Collection should contain c1");
+            Assert.AreEqual(true, root.Children.Contains(c2), "collection should contain c2");
+            Assert.AreEqual(false, root.Children.Contains(c3), "collection should not contain c3");
+            Assert.AreEqual(true, root.Children.ContainsDeleted(c3), "Deleted collection should contain c3");
+        }
     }
+
+    public class FormSimulator
+    {
+        private Core.BusinessBase _obj;
+
+        public FormSimulator(Core.BusinessBase obj)
+        {
+            this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+            this._obj = obj;
+        }
+
+        private void obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) 
+        {}
+    }
+
+    [Serializable()]
+    public class SerializableListener
+    {
+        private Core.BusinessBase _obj;
+
+        public SerializableListener(Core.BusinessBase obj)
+        {
+            this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+            this._obj = obj;
+        }
+
+        public void obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        { }
+    }
+
 }

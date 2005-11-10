@@ -16,7 +16,7 @@ namespace Csla.Test.Basic
             root = GenRoot.NewRoot();
             Assert.IsNotNull(root);
             Assert.AreEqual("<new>", root.Data);
-            Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["Root"]);
+            Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["GenRoot"]);
             Assert.AreEqual(true, root.IsNew);
             Assert.AreEqual(false, root.IsDeleted);
             Assert.AreEqual(true, root.IsDirty);
@@ -67,7 +67,7 @@ namespace Csla.Test.Basic
             root.Children.Add("2");
             root.CancelEdit();
             Assert.AreEqual(1, root.Children.Count);
-            //Assert.AreEqual("1", root.Children[0].Data);
+            Assert.AreEqual("1", root.Children[0].Data);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace Csla.Test.Basic
             Child child = root.Children[0];
             child.GrandChildren.Add("1");
             child.GrandChildren.Remove(child.GrandChildren[0]);
-            Assert.AreEqual("1", child.GrandChildren[0].Data);
+            Assert.AreEqual(0, child.GrandChildren.Count);
         }
 
         ///<remarks>"the non-generic method AreEqual cannot be used with type arguments" - though

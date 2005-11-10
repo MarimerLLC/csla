@@ -22,6 +22,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   Inherits Core.ReadOnlyBindingList(Of NameValuePair)
 
   Implements ICloneable
+  Implements Core.IBusinessObject
 
 #Region " Core Implementation "
 

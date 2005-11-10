@@ -25,6 +25,8 @@ Imports System.ComponentModel
 <Serializable()> _
 Public MustInherit Class CommandBase
 
+  Implements Core.IBusinessObject
+
 #Region " Constructors "
 
   Protected Sub New()

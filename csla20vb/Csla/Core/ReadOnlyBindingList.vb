@@ -15,6 +15,8 @@ Namespace Core
   Public MustInherit Class ReadOnlyBindingList(Of T)
     Inherits System.ComponentModel.BindingList(Of T)
 
+    Implements Core.IBusinessObject
+
     Private mIsReadOnly As Boolean = True
 
     ''' <summary>

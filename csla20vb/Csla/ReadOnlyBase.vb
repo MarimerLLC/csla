@@ -14,6 +14,7 @@ Imports System.ComponentModel
 Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Implements ICloneable
+  Implements Core.IBusinessObject
 
 #Region " Constructors "
 

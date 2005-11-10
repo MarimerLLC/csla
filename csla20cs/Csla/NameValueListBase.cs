@@ -23,7 +23,7 @@ namespace Csla
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
-  public abstract class NameValueListBase<K, V> : Core.ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>, ICloneable
+  public abstract class NameValueListBase<K, V> : Core.ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>, ICloneable, Core.IBusinessObject
   {
 
     #region Constructors

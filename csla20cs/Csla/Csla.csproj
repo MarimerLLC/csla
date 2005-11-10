@@ -46,6 +46,7 @@
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BusinessBase.cs" />
+    <Compile Include="Core\IBusinessObject.cs" />
     <Compile Include="Core\IEditableCollection.cs" />
     <Compile Include="Core\IEditableObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />

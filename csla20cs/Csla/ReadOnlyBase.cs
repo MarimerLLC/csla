@@ -16,7 +16,7 @@ namespace Csla
   /// should only implement readonly properties.
   /// </remarks>
   [Serializable()]
-  public abstract class ReadOnlyBase : ICloneable
+  public abstract class ReadOnlyBase : ICloneable, Core.IBusinessObject
   {
 
     #region Constructors

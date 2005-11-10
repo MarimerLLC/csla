@@ -17,7 +17,7 @@
     <OutputPath>bin\vb\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;csla20vb</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>1</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

@@ -31,15 +31,13 @@ namespace Csla
     /// Raised by DataPortal prior to calling the 
     /// requested server-side DataPortal method.
     /// </summary>
-    public static event DataPortalInvokeEventHandler DataPortalInvoke;
-    public delegate void DataPortalInvokeEventHandler(DataPortalEventArgs e);
+    public static event Action<DataPortalEventArgs> DataPortalInvoke;
 
     /// <summary>
     /// Raised by DataPortal after the requested 
     /// server-side DataPortal method call is complete.
     /// </summary>
-    public static event DataPortalInvokeCompleteEventHandler DataPortalInvokeComplete;
-    public delegate void DataPortalInvokeCompleteEventHandler(DataPortalEventArgs e);
+    public static event Action<DataPortalEventArgs> DataPortalInvokeComplete;
 
     private static void OnDataPortalInvoke(DataPortalEventArgs e)
     {
@@ -62,6 +60,7 @@ namespace Csla
     /// a new object, which is loaded with default
     /// values from the database.
     /// </summary>
+    /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <param name="Criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
     public static T Create<T>(object criteria)
@@ -74,6 +73,7 @@ namespace Csla
     /// a new object, which is loaded with default
     /// values from the database.
     /// </summary>
+    /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <returns>A new object, populated with default values.</returns>
     public static T Create<T>()
     {
@@ -131,6 +131,7 @@ namespace Csla
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
+    /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <param name="Criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
@@ -190,6 +191,7 @@ namespace Csla
     /// different object from the original, and all object references MUST be updated
     /// to use this new object.
     /// </remarks>
+    /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <returns>A reference to the updated business object.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]

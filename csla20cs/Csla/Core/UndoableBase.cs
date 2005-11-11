@@ -83,7 +83,7 @@ namespace Csla.Core
               // the field is undoable, so it needs to be processed.
               object value = field.GetValue(this);
 
-              if (IsImplemented(field.FieldType, typeof(Csla.Core.IEditableObject)))
+              if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType))
               {
                 // make sure the variable has a value
                 if (value != null)
@@ -157,7 +157,7 @@ namespace Csla.Core
                   // the field is undoable, so restore its value
                   object value = field.GetValue(this);
 
-                  if (IsImplemented(field.FieldType, typeof(Csla.Core.IEditableObject)))
+                  if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType))
                   {
                     // make sure the variable has a value
                     if (value != null)
@@ -212,7 +212,7 @@ namespace Csla.Core
             if (!NotUndoableField(field))
             {
               // the field is undoable so see if it is a child object
-              if (IsImplemented(field.FieldType, typeof(Csla.Core.IEditableObject)))
+              if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType))
               {
                 object value = field.GetValue(this);
                 // make sure the variable has a value
@@ -234,18 +234,6 @@ namespace Csla.Core
     private static bool NotUndoableField(FieldInfo field)
     {
       return Attribute.IsDefined(field, typeof(NotUndoableAttribute));
-    }
-
-    private static bool IsImplemented(Type objectType, Type interfaceType)
-    {
-      bool result = false;
-      foreach (Type item in objectType.GetInterfaces())
-        if (interfaceType.Equals(item))
-        {
-          result = true;
-          break;
-        }
-      return result;
     }
 
     #endregion

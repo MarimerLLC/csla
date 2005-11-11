@@ -16,7 +16,8 @@ namespace Csla
   /// should only implement readonly properties.
   /// </remarks>
   [Serializable()]
-  public abstract class ReadOnlyBase : ICloneable, Core.IBusinessObject
+  public abstract class ReadOnlyBase<T> : ICloneable, Core.IBusinessObject
+    where T : ReadOnlyBase<T>
   {
 
     #region Constructors
@@ -99,17 +100,33 @@ namespace Csla
 
     #endregion
 
-    #region Clone
+    #region IClonable
+
+    object ICloneable.Clone()
+    {
+      return OnClone();
+    }
 
     /// <summary>
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
-    public virtual object Clone()
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual object OnClone()
     {
       return Core.ObjectCloner.Clone(this);
     }
 
+    /// <summary>
+    /// Creates a clone of the object.
+    /// </summary>
+    /// <returns>
+    /// A new object containing the exact data of the original object.
+    /// </returns>
+    public T Clone()
+    {
+      return (T)OnClone();
+    }
     #endregion
 
     #region Data Access

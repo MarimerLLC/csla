@@ -8,25 +8,12 @@ namespace Csla.Test.DataPortal
     [NUnit.Framework.TestFixture()]
     class DataPortalTests
     {
-        #if csla20vb
-        #warning The VB version is unable to access DataPortal.DataPortalInvokeEventHandler or InvokeCompleteHandler
         [NUnit.Framework.Test()]
         public void DataPortalEvents()
         {
-            Assert.Fail("The VB version is unable to access DataPortal.DataPortalInvokeEventHandler or InvokeCompleteHandler");
-        }
-        #elif csla20cs
 
-        private Action<DataPortalEventArgs> InvokeHandler;
-        private Action<DataPortalEventArgs> InvokeCompleteHandler;
-        [NUnit.Framework.Test()]
-        public void DataPortalEvents()
-        {
-            InvokeHandler = new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
-            InvokeCompleteHandler = new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
-
-            Csla.DataPortal.DataPortalInvoke += InvokeHandler;
-            Csla.DataPortal.DataPortalInvokeComplete += InvokeCompleteHandler;
+            Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
+            Csla.DataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
 
             try
             {
@@ -44,11 +31,10 @@ namespace Csla.Test.DataPortal
             }
             finally
             {
-                Csla.DataPortal.DataPortalInvoke -= InvokeHandler;
-                Csla.DataPortal.DataPortalInvokeComplete -= InvokeCompleteHandler;
+                Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
+                Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
             }
         }
-        #endif
 
         private void ClientPortal_DataPortalInvoke(DataPortalEventArgs obj)
         {

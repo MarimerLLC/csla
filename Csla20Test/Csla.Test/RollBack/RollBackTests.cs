@@ -12,6 +12,7 @@ namespace Csla.Test.RollBack
         [Test]
         public void NoFail()
         {
+            #warning Bug Here.
             Csla.ApplicationContext.GlobalContext.Clear();
             RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
 
@@ -28,7 +29,7 @@ namespace Csla.Test.RollBack
             try
             {
                 root.ApplyEdit();
-                root = (RollbackRoot)(root.Save());
+                root = root.Save();
             }
             catch
             {
@@ -39,7 +40,7 @@ namespace Csla.Test.RollBack
             Assert.IsNotNull(root, "obj is not null");
             Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"], "obj was inserted");
             Assert.AreEqual("saved", root.Data, "data is 'saved'");
-            Assert.AreEqual(false, root.IsNew, "isnew is false");
+            Assert.AreEqual(false, root.IsNew, "is new is false");
             Assert.AreEqual(false, root.IsDeleted, "isdeleted is false");
             Assert.AreEqual(false, root.IsDirty, "isdirty is false");
         }
@@ -47,6 +48,7 @@ namespace Csla.Test.RollBack
         [Test]
         public void YesFail()
         {
+            #warning Bug Here.
             Csla.ApplicationContext.GlobalContext.Clear();
             RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
 
@@ -83,6 +85,7 @@ namespace Csla.Test.RollBack
         [Test]
         public void YesFailCancel()
         {
+            #warning Bug Here.
             Csla.ApplicationContext.GlobalContext.Clear();
             RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
             Assert.AreEqual(true, root.IsDirty, "isdirty is true");

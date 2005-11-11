@@ -48,7 +48,7 @@ namespace Csla.Test.AppContext
         public void ClientContext()
         {
             #if csla20cs
-            #warning Fails CS Tests, passes VB tests. Might be related to the lack of virtual on IsDirty error.
+            #warning Fails CS Tests, passes VB tests. Something is wrong with the Root
             #endif
 
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -99,6 +99,8 @@ namespace Csla.Test.AppContext
             root = root.Save();
 
             Assert.IsNotNull(root);
+
+            #warning Bug Here. DataPortal_Insert override is never called.
             Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);
             Assert.AreEqual("saved", root.Data);
             Assert.AreEqual(false, root.IsNew);
@@ -110,7 +112,6 @@ namespace Csla.Test.AppContext
         #endregion
 
         #region Dataportal Events
-        
         /// <summary>
         /// Test the dataportal events
         /// </summary>
@@ -129,17 +130,13 @@ namespace Csla.Test.AppContext
             ApplicationContext.Clear();
             ApplicationContext.GlobalContext["global"] = "global";
 
-            this.InvokeHandler = new Action<DataPortalEventArgs>(OnDataPortaInvoke);
-            this.InvokeCompleteHandler = new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
-
-            Csla.DataPortal.DataPortalInvoke += this.InvokeHandler;
-            Csla.DataPortal.DataPortalInvoke += this.InvokeCompleteHandler;
-            Csla.DataPortal.DataPortalInvokeComplete += this.InvokeCompleteHandler;
+            Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(OnDataPortaInvoke);
+            Csla.DataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
 
             Csla.Test.Basic.Root root = Csla.Test.Basic.Root.GetRoot("testing");
 
-            Csla.DataPortal.DataPortalInvoke -= this.InvokeHandler;
-            Csla.DataPortal.DataPortalInvokeComplete -= this.InvokeCompleteHandler;
+            Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(OnDataPortaInvoke);
+            Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
 
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["ClientInvoke"], "Client invoke incorrect");
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"], "Client invoke complete");
@@ -149,17 +146,13 @@ namespace Csla.Test.AppContext
             //Maybe GetRoot should be called again, here, and tested to 
             //make sure that the EventHandlers were removed properly.
         }
-        private Action<DataPortalEventArgs> InvokeHandler;
-        private Action<DataPortalEventArgs> InvokeCompleteHandler;
 
         private void OnDataPortaInvoke(DataPortalEventArgs e)
         {
-            Console.WriteLine("OnDataPortalInvoke");
             Csla.ApplicationContext.GlobalContext["ClientInvoke"] = ApplicationContext.GlobalContext["global"];
         }
         private void OnDataPortalInvokeComplete(DataPortalEventArgs e)
         {
-            Console.WriteLine("OnDataPortalInvokeComplete");
             Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"] = ApplicationContext.GlobalContext["global"];
         }
         #endregion
@@ -238,6 +231,8 @@ namespace Csla.Test.AppContext
             try
             {
                 root = root.Save();
+
+                #warning Bug Here. DataPortal_Insert override is never called.
                 Assert.Fail("Insert exception didn't occur");
             }
             catch (DataPortalException ex)

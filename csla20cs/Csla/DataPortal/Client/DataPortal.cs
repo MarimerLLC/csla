@@ -182,6 +182,57 @@ namespace Csla
     }
 
     /// <summary>
+    /// Called to execute a Command object on the server.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// To be a Command object, the object must inherit from
+    /// <see cref="CommandBase">CommandBase</see>.
+    /// </para><para>
+    /// Note that this method returns a reference to the updated business object.
+    /// If the server-side DataPortal is running remotely, this will be a new and
+    /// different object from the original, and all object references MUST be updated
+    /// to use this new object.
+    /// </para><para>
+    /// On the server, the Command object's DataPortal_Execute() method will
+    /// be invoked. Write any server-side code in that method.
+    /// </para>
+    /// </remarks>
+    /// <typeparam name="T">Specific type of the Command object.</typeparam>
+    /// <param name="obj">A reference to the Command object to be executed.</param>
+    /// <returns>A reference to the updated Command object.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters",
+    MessageId="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+    public static T Execute<T>(T obj) where T : CommandBase
+    {
+      return (T)Update(obj);
+    }
+
+    /// <summary>
+    /// Called to execute a Command object on the server.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Note that this method returns a reference to the updated business object.
+    /// If the server-side DataPortal is running remotely, this will be a new and
+    /// different object from the original, and all object references MUST be updated
+    /// to use this new object.
+    /// </para><para>
+    /// On the server, the Command object's DataPortal_Execute() method will
+    /// be invoked. Write any server-side code in that method.
+    /// </para>
+    /// </remarks>
+    /// <param name="obj">A reference to the Command object to be executed.</param>
+    /// <returns>A reference to the updated Command object.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+    public static CommandBase Execute(CommandBase obj) 
+    {
+      return (CommandBase)Update(obj);
+    }
+    
+    /// <summary>
     /// Called by the <see cref="Csla.BusinessBase.Save" /> method to
     /// insert, update or delete an object in the database.
     /// </summary>

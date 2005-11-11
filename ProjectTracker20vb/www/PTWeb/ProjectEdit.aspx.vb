@@ -4,6 +4,8 @@ Partial Class ProjectEdit
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
+    DetailsView1.DataKeyNames = New String() {"Id"}
+    GridView1.DataKeyNames = New String() {"ResourceId"}
     If Not IsPostBack Then
       Dim idString As String = Request.QueryString("id")
       Dim obj As ProjectTracker.Library.Project
@@ -22,8 +24,8 @@ Partial Class ProjectEdit
         obj = ProjectTracker.Library.Project.NewProject
         Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
       End If
-        Session("currentObject") = obj
-      End If
+      Session("currentObject") = obj
+    End If
 
   End Sub
 

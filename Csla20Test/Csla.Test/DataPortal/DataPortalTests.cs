@@ -10,19 +10,20 @@ namespace Csla.Test.DataPortal
     {
         #if csla20vb
         #warning The VB version is unable to access DataPortal.DataPortalInvokeEventHandler or InvokeCompleteHandler
+        [NUnit.Framework.Test()]
         public void DataPortalEvents()
         {
             Assert.Fail("The VB version is unable to access DataPortal.DataPortalInvokeEventHandler or InvokeCompleteHandler");
         }
         #elif csla20cs
 
-        private Csla.DataPortal.DataPortalInvokeEventHandler InvokeHandler;
-        private Csla.DataPortal.DataPortalInvokeCompleteEventHandler InvokeCompleteHandler;
+        private Action<DataPortalEventArgs> InvokeHandler;
+        private Action<DataPortalEventArgs> InvokeCompleteHandler;
         [NUnit.Framework.Test()]
         public void DataPortalEvents()
         {
-            InvokeHandler = new Csla.DataPortal.DataPortalInvokeEventHandler(ClientPortal_DataPortalInvoke);
-            InvokeCompleteHandler = new Csla.DataPortal.DataPortalInvokeCompleteEventHandler(ClientPortal_DataPortalInvokeComplete);
+            InvokeHandler = new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
+            InvokeCompleteHandler = new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
 
             Csla.DataPortal.DataPortalInvoke += InvokeHandler;
             Csla.DataPortal.DataPortalInvokeComplete += InvokeCompleteHandler;

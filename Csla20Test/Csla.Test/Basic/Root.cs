@@ -60,10 +60,10 @@ namespace Csla.Test.Basic
         /// </remarks>
         public override bool IsDirty
         {
-            get { return base.IsDirty; } //|| this._children.IsDirty; }
+            get { return base.IsDirty || this._children.IsDirty; }
         }
         #elif csla20cs
-        #warning Potential bug here, library inconsitency
+        #warning Potential bug here, library inconsitency. VB version is not marked as virtual. Tests imply it should be.
         /// <summary>
         /// IsDirty Override
         /// </summary>

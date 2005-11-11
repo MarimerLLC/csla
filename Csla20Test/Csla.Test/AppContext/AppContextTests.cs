@@ -47,6 +47,10 @@ namespace Csla.Test.AppContext
         [NUnit.Framework.Test()]
         public void ClientContext()
         {
+            #if csla20cs
+            #warning Fails CS Tests, passes VB tests. Might be related to the lack of virtual on IsDirty error.
+            #endif
+
             Csla.ApplicationContext.GlobalContext.Clear();
 
             Csla.ApplicationContext.ClientContext.Add("clientcontext", "client context data");
@@ -106,19 +110,7 @@ namespace Csla.Test.AppContext
         #endregion
 
         #region Dataportal Events
-        #if csla20vb
-        #warning Bugs here
-        [NUnit.Framework.Test()]
-        public void DataPortalEvents()
-        {
-            Assert.Fail(
-            "This Method seems to produce an error when linking to the VB library.\n" + 
-            "For some reason DataPortalInvokeEventHandler cannot be found. But it \n" +
-            "is found in the C# library. I am using Precompiler options to conditionally\n" +
-            " compile different functions for each project."
-            );
-        }
-        #elif csla20cs
+        
         /// <summary>
         /// Test the dataportal events
         /// </summary>
@@ -136,11 +128,12 @@ namespace Csla.Test.AppContext
             ApplicationContext.GlobalContext.Clear();
             ApplicationContext.Clear();
             ApplicationContext.GlobalContext["global"] = "global";
-            
-            this.InvokeHandler = new Csla.DataPortal.DataPortalInvokeEventHandler(OnDataPortaInvoke);
-            this.InvokeCompleteHandler = new Csla.DataPortal.DataPortalInvokeCompleteEventHandler(OnDataPortalInvokeComplete);
+
+            this.InvokeHandler = new Action<DataPortalEventArgs>(OnDataPortaInvoke);
+            this.InvokeCompleteHandler = new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
 
             Csla.DataPortal.DataPortalInvoke += this.InvokeHandler;
+            Csla.DataPortal.DataPortalInvoke += this.InvokeCompleteHandler;
             Csla.DataPortal.DataPortalInvokeComplete += this.InvokeCompleteHandler;
 
             Csla.Test.Basic.Root root = Csla.Test.Basic.Root.GetRoot("testing");
@@ -156,8 +149,8 @@ namespace Csla.Test.AppContext
             //Maybe GetRoot should be called again, here, and tested to 
             //make sure that the EventHandlers were removed properly.
         }
-        private Csla.DataPortal.DataPortalInvokeEventHandler InvokeHandler;
-        private Csla.DataPortal.DataPortalInvokeCompleteEventHandler InvokeCompleteHandler;
+        private Action<DataPortalEventArgs> InvokeHandler;
+        private Action<DataPortalEventArgs> InvokeCompleteHandler;
 
         private void OnDataPortaInvoke(DataPortalEventArgs e)
         {
@@ -167,7 +160,6 @@ namespace Csla.Test.AppContext
         {
             Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"] = ApplicationContext.GlobalContext["global"];
         }
-        #endif
         #endregion
 
         #region FailCreateContext
@@ -274,7 +266,7 @@ namespace Csla.Test.AppContext
             catch (DataPortalException ex)
             {
                 root = (ExceptionRoot)ex.BusinessObject;
-                Assert.AreEqual("Fail insert", ex.GetBaseException().Message, "Base exception message incorrect");
+                Assert.AreEqual("Fail delete", ex.GetBaseException().Message, "Base exception message incorrect");
                 Assert.AreEqual("DataPortal.Delete failed", ex.Message, "Exception message incorrect");
             }
             Assert.IsNull(root, "Business object returned");

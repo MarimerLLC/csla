@@ -5,11 +5,18 @@ using Csla.Properties;
 
 namespace Csla
 {
+/*  Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C As Core.BusinessBase)
+  Inherits System.ComponentModel.BindingList(Of C)
 
+  Implements Core.IEditableCollection
+  Implements ICloneable
+*/
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
-  public abstract class BusinessListBase<T> : System.ComponentModel.BindingList<T>,
-      Core.IEditableCollection, ICloneable where T : Core.BusinessBase
+  public abstract class BusinessListBase<T, C> : System.ComponentModel.BindingList<C>,
+      Core.IEditableCollection, ICloneable
+    where T : BusinessListBase<T, C>
+    where C : Core.BusinessBase
   {
 
     #region Constructors
@@ -56,7 +63,7 @@ namespace Csla
         // and if any are dirty then then
         // collection is dirty
 
-        foreach (T child in this)
+        foreach (C child in this)
           if (child.IsDirty)
             return true;
         return false;
@@ -69,7 +76,7 @@ namespace Csla
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By default this property relies on the underling <see cref="T:Csla.BrokenRules" />
+    /// By default this property relies on the underling <see cref="Validation.ValidationRules" />
     /// object to track whether any business rules are currently broken for this object.
     /// </para><para>
     /// You can override this property to provide more sophisticated
@@ -91,7 +98,7 @@ namespace Csla
         // run through all the child objects
         // and if any are invalid then the
         // collection is invalid
-        foreach (T child in this)
+        foreach (C child in this)
           if (!child.IsValid)
             return false;
         return true;
@@ -172,10 +179,10 @@ namespace Csla
       UndoChanges();
 
       // make sure the child objects re-add their business rules
-      foreach (T child in this)
+      foreach (C child in this)
         child.AddBusinessRules();
 
-      foreach (T child in DeletedList)
+      foreach (C child in DeletedList)
         child.AddBusinessRules();
     }
 
@@ -224,17 +231,17 @@ namespace Csla
       _editLevel += 1;
 
       // cascade the call to all child objects
-      foreach (T child in this)
+      foreach (C child in this)
         child.CopyState();
 
       // cascade the call to all deleted child objects
-      foreach (T child in DeletedList)
+      foreach (C child in DeletedList)
         child.CopyState();
     }
 
     internal void UndoChanges()
     {
-      T child;
+      C child;
 
       // we are coming up one edit level
       _editLevel -= 1;
@@ -275,7 +282,7 @@ namespace Csla
       if (_editLevel < 0) _editLevel = 0;
 
       // cascade the call to all child objects
-      foreach (T child in this)
+      foreach (C child in this)
       {
         child.AcceptChanges();
         // if item is below its point of addition, lower point of addition
@@ -285,7 +292,7 @@ namespace Csla
       // cascade the call to all deleted child objects
       for (int index = DeletedList.Count - 1; index >= 0; index--)
       {
-        T child = DeletedList[index];
+        C child = DeletedList[index];
         child.AcceptChanges();
         // if item is below its point of addition, remove
         if (child.EditLevelAdded > _editLevel)
@@ -297,7 +304,7 @@ namespace Csla
 
     #region Delete and Undelete child
 
-    private List<T> _deletedList = new List<T>();
+    private List<C> _deletedList = new List<C>();
 
     /// <summary>
     /// A collection containing all child objects marked
@@ -305,12 +312,12 @@ namespace Csla
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected List<T> DeletedList
+    protected List<C> DeletedList
     {
       get { return _deletedList; }
     }
 
-    private void DeleteChild(T child)
+    private void DeleteChild(C child)
     {
       // mark the object as deleted
       child.DeleteChild();
@@ -318,7 +325,7 @@ namespace Csla
       DeletedList.Add(child);
     }
 
-    private void UnDeleteChild(T child)
+    private void UnDeleteChild(C child)
     {
       // we are inserting an _existing_ object so
       // we need to preserve the object's editleveladded value
@@ -338,14 +345,14 @@ namespace Csla
     /// </summary>
     /// <param name="item">Child object to check.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public bool ContainsDeleted(T item)
+    public bool ContainsDeleted(C item)
     {
       return DeletedList.Contains(item);
     }
 
     #endregion
 
-    // commented out because BindingList<T> automatically
+    // commented out because BindingList<C> automatically
     // cascades the child events
     //#region Cascade Child events
 
@@ -372,23 +379,13 @@ namespace Csla
     /// <param name="child">The child object to remove.</param>
     void Core.IEditableCollection.RemoveChild(Csla.Core.BusinessBase child)
     {
-      Remove((T)child);
-    }
-
-    /// <summary>
-    /// This method is called by a child object when it
-    /// wants to be removed from the collection.
-    /// </summary>
-    /// <param name="child">The child object to remove.</param>
-    private void RemoveChild(T child)
-    {
-      Remove(child);
+      Remove((C)child);
     }
 
     /// <summary>
     /// Sets the edit level of the child object as it is added.
     /// </summary>
-    protected override void InsertItem(int index, T item)
+    protected override void InsertItem(int index, C item)
     {
       // when an object is inserted we assume it is
       // a new object and so the edit level when it was
@@ -407,7 +404,7 @@ namespace Csla
     {
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
-      T item = this[index];
+      C item = this[index];
       DeleteChild(item);
       //item.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
       base.RemoveItem(index);
@@ -474,15 +471,30 @@ namespace Csla
 
     #endregion
 
-    #region Clone
+    #region ICloneable
+
+    object ICloneable.Clone()
+    {
+      return OnClone();
+    }
 
     /// <summary>
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
-    public virtual object Clone()
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual object OnClone()
     {
       return Core.ObjectCloner.Clone(this);
+    }
+
+    /// <summary>
+    /// Creates a clone of the object.
+    /// </summary>
+    /// <returns>A new object containing the exact data of the original object.</returns>
+    public T Clone()
+    {
+      return (T)OnClone();
     }
 
     #endregion
@@ -516,7 +528,7 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual BusinessListBase<T> Save()
+    public virtual T Save()
     {
       if (this.IsChild)
         throw new NotSupportedException(Resources.NoSaveChildException);
@@ -528,9 +540,9 @@ namespace Csla
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
 
       if (IsDirty)
-        return (BusinessListBase<T>)DataPortal.Update(this);
+        return (T)DataPortal.Update(this);
       else
-        return this;
+        return (T)this;
     }
 
     /// <summary>

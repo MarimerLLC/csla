@@ -56,6 +56,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual(0, root.Children.Count);
         }
 
+#warning "it appears that any tests that make calls to the BeginEdit(), CancelEdit(), or ApplyEdit() methods fail with the C# library"
         [Test]
         public void AddRemoveAddChild()
         {
@@ -253,5 +254,4 @@ namespace Csla.Test.Basic
         public void obj_IsDirtyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         { }
     }
-
 }

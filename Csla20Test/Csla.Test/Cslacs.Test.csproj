@@ -76,6 +76,10 @@
     <None Include="Properties\CVS\Repository" />
     <None Include="Properties\CVS\Root" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataBinding\" />
+    <Folder Include="Security\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

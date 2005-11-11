@@ -21,13 +21,13 @@ Partial Class ProjectList
 
   End Sub
 
-  Protected Sub ProjectListDataSource_DeleteObject(ByVal sender As Object, ByVal e As DataControls.DeleteObjectArgs) Handles ProjectListDataSource.DeleteObject
+  Protected Sub ProjectListDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectListDataSource.DeleteObject
 
     ProjectTracker.Library.Project.DeleteProject(New Guid(e.Keys("Id").ToString))
 
   End Sub
 
-  Protected Sub ProjectListDataSource_SelectObject(ByVal sender As Object, ByVal e As DataControls.SelectObjectArgs) Handles ProjectListDataSource.SelectObject
+  Protected Sub ProjectListDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectListDataSource.SelectObject
 
     e.BusinessObject = ProjectTracker.Library.ProjectList.GetProjectList
 

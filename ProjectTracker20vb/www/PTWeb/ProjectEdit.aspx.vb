@@ -33,7 +33,7 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub RoleListDataSource_SelectObject(ByVal sender As Object, ByVal e As DataControls.SelectObjectArgs) Handles RoleListDataSource.SelectObject
+  Protected Sub RoleListDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles RoleListDataSource.SelectObject
 
     e.BusinessObject = ProjectTracker.Library.RoleList.GetList
 
@@ -47,14 +47,14 @@ Partial Class ProjectEdit
 
 #Region " Project "
 
-  Protected Sub ProjectDataSource_DeleteObject(ByVal sender As Object, ByVal e As DataControls.DeleteObjectArgs) Handles ProjectDataSource.DeleteObject
+  Protected Sub ProjectDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectDataSource.DeleteObject
 
     ProjectTracker.Library.Project.DeleteProject(New Guid(e.Keys("Id").ToString))
     Session("currentObject") = Nothing
 
   End Sub
 
-  Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, ByVal e As DataControls.InsertObjectArgs) Handles ProjectDataSource.InsertObject
+  Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, ByVal e As Csla.Web.InsertObjectArgs) Handles ProjectDataSource.InsertObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
 
@@ -68,13 +68,13 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub ProjectDataSource_SelectObject(ByVal sender As Object, ByVal e As DataControls.SelectObjectArgs) Handles ProjectDataSource.SelectObject
+  Protected Sub ProjectDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectDataSource.SelectObject
 
     e.BusinessObject = Session("currentObject")
 
   End Sub
 
-  Protected Sub ProjectDataSource_UpdateObject(ByVal sender As Object, ByVal e As DataControls.UpdateObjectArgs) Handles ProjectDataSource.UpdateObject
+  Protected Sub ProjectDataSource_UpdateObject(ByVal sender As Object, ByVal e As Csla.Web.UpdateObjectArgs) Handles ProjectDataSource.UpdateObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
 
@@ -92,7 +92,7 @@ Partial Class ProjectEdit
 
 #Region " Resources "
 
-  Protected Sub ResourcesDataSource_DeleteObject(ByVal sender As Object, ByVal e As DataControls.DeleteObjectArgs) Handles ResourcesDataSource.DeleteObject
+  Protected Sub ResourcesDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourcesDataSource.DeleteObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
     Dim res As ProjectTracker.Library.ProjectResource
@@ -103,14 +103,14 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub ResourcesDataSource_SelectObject(ByVal sender As Object, ByVal e As DataControls.SelectObjectArgs) Handles ResourcesDataSource.SelectObject
+  Protected Sub ResourcesDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ResourcesDataSource.SelectObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
     e.BusinessObject = obj.Resources
 
   End Sub
 
-  Protected Sub ResourcesDataSource_UpdateObject(ByVal sender As Object, ByVal e As DataControls.UpdateObjectArgs) Handles ResourcesDataSource.UpdateObject
+  Protected Sub ResourcesDataSource_UpdateObject(ByVal sender As Object, ByVal e As Csla.Web.UpdateObjectArgs) Handles ResourcesDataSource.UpdateObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
     Dim res As ProjectTracker.Library.ProjectResource

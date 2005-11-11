@@ -8,13 +8,13 @@ Partial Class ResourceList
 
   End Sub
 
-  Protected Sub ResourceListDataSource_DeleteObject(ByVal sender As Object, ByVal e As DataControls.DeleteObjectArgs) Handles ResourceListDataSource.DeleteObject
+  Protected Sub ResourceListDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourceListDataSource.DeleteObject
 
     ProjectTracker.Library.Resource.DeleteResource(e.Keys("Id"))
 
   End Sub
 
-  Protected Sub ResourceListDataSource_SelectObject(ByVal sender As Object, ByVal e As DataControls.SelectObjectArgs) Handles ResourceListDataSource.SelectObject
+  Protected Sub ResourceListDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ResourceListDataSource.SelectObject
 
     e.BusinessObject = ProjectTracker.Library.ResourceList.GetResourceList
 

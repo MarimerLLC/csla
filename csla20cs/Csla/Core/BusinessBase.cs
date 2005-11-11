@@ -16,7 +16,7 @@ namespace Csla.Core
   /// This class is the core of the CSLA .NET framework. To create
   /// a business object, inherit from this class.
   /// </para><para>
-  /// Please refer to 'Expert One-on-One VB.NET Business Objects' for
+  /// Please refer to 'Expert C# 2005 Business Objects' for
   /// full details on the use of this base class to create business
   /// objects.
   /// </para>
@@ -30,6 +30,7 @@ namespace Csla.Core
     protected BusinessBase()
     {
       AddBusinessRules();
+      AddAuthorizationRules();
     }
 
     #endregion
@@ -277,6 +278,15 @@ namespace Csla.Core
     private Security.AuthorizationRules _authorizationRules = new Security.AuthorizationRules();
 
     /// <summary>
+    /// Override this method to add authorization
+    /// rules for your object's properties.
+    /// </summary>
+    protected virtual void AddAuthorizationRules()
+    {
+
+    }
+
+    /// <summary>
     /// Provides access to the AuthorizationRules object for this
     /// object.
     /// </summary>
@@ -297,18 +307,19 @@ namespace Csla.Core
     /// <returns>True if read is allowed.</returns>
     /// <remarks>
     /// <para>
-    /// If and only if the user is in a role explicitly denied 
-    /// access and NOT in a role that explicitly
-    /// allows access they will be denied read access to the property.
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can read. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
     /// </para><para>
-    /// This implementation uses System.Diagnostics.StackTrace to
-    /// determine the name of the current property, and so must be called
-    /// directly from the property to be checked.
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied read access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have read access.
     /// </para>
     /// </remarks>
     /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    /// result should cause an exception.</param>    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public bool CanReadProperty(bool throwOnFalse)
     {
       string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
@@ -325,13 +336,15 @@ namespace Csla.Core
     /// <returns>True if read is allowed.</returns>
     /// <remarks>
     /// <para>
-    /// If and only if the user is in a role explicitly denied 
-    /// access and NOT in a role that explicitly
-    /// allows access they will be denied read access to the property.
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can read. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
     /// </para><para>
-    /// This implementation uses System.Diagnostics.StackTrace to
-    /// determine the name of the current property, and so must be called
-    /// directly from the property to be checked.
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied read access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have read access.
     /// </para>
     /// </remarks>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -348,21 +361,36 @@ namespace Csla.Core
     /// <param name="propertyName">Name of the property to read.</param>
     /// <returns>True if read is allowed.</returns>
     /// <remarks>
-    /// If and only if the user is in a role explicitly denied 
-    /// access and NOT in a role that explicitly
-    /// allows access they will be denied read access to the property.
+    /// <para>
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can read. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
+    /// </para><para>
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied read access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have read access.
+    /// </para>
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanReadProperty(string propertyName)
     {
-      if (_authorizationRules.IsReadDenied(propertyName))
+      bool result = true;
+      if (_authorizationRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0)
       {
-        if (_authorizationRules.IsReadAllowed(propertyName))
-          return true;
-        else
-          return false;
+        // some users are explicitly granted read access
+        // in which case all other users are denied.
+        if (!_authorizationRules.IsReadAllowed(propertyName))
+          result = false;
       }
-      return true;
+      else if (_authorizationRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0)
+      {
+        // some users are explicitly denied read access.
+        if (_authorizationRules.IsReadDenied(propertyName))
+          result = false;
+      }
+      return result;
     }
 
     /// <summary>
@@ -372,13 +400,15 @@ namespace Csla.Core
     /// <returns>True if write is allowed.</returns>
     /// <remarks>
     /// <para>
-    /// If and only if the user is in a role explicitly denied 
-    /// access and NOT in a role that explicitly
-    /// allows access they will be denied write access to the property.
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can write. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
     /// </para><para>
-    /// This implementation uses System.Diagnostics.StackTrace to
-    /// determine the name of the current property, and so must be called
-    /// directly from the property to be checked.
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied write access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have write access.
     /// </para>
     /// </remarks>
     /// <param name="throwOnFalse">Indicates whether a negative
@@ -400,13 +430,15 @@ namespace Csla.Core
     /// <returns>True if write is allowed.</returns>
     /// <remarks>
     /// <para>
-    /// If and only if the user is in a role explicitly denied 
-    /// access and NOT in a role that explicitly
-    /// allows access they will be denied write access to the property.
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can write. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
     /// </para><para>
-    /// This implementation uses System.Diagnostics.StackTrace to
-    /// determine the name of the current property, and so must be called
-    /// directly from the property to be checked.
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied write access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have write access.
     /// </para>
     /// </remarks>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -423,21 +455,36 @@ namespace Csla.Core
     /// <param name="propertyName">Name of the property to write.</param>
     /// <returns>True if write is allowed.</returns>
     /// <remarks>
-    /// If and only if the user is in a role explicitly denied 
-    /// access and NOT in a role that explicitly
-    /// allows access they will be denied write access to the property.
+    /// <para>
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can write. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
+    /// </para><para>
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied write access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have write access.
+    /// </para>
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanWriteProperty(string propertyName)
     {
-      if (_authorizationRules.IsWriteDenied(propertyName))
+      bool result = true;
+      if (_authorizationRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0)
       {
-        if (_authorizationRules.IsWriteAllowed(propertyName))
-          return true;
-        else
-          return false;
+        // some users are explicitly granted write access
+        // in which case all other users are denied
+        if (!_authorizationRules.IsWriteAllowed(propertyName))
+          result = false;
       }
-      return true;
+      else if (_authorizationRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0)
+      {
+        // some users are explicitly denied write access
+        if (_authorizationRules.IsWriteDenied(propertyName))
+          result = false;
+      }
+      return result;
     }
 
     #endregion
@@ -719,15 +766,20 @@ namespace Csla.Core
 
     #endregion
 
-    #region Clone
+    #region IClonable
 
+    object ICloneable.Clone()
+    {
+      return OnClone();
+    }
     /// <summary>
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>
     /// A new object containing the exact data of the original object.
     /// </returns>
-    public virtual object Clone()
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual object OnClone()
     {
       return ObjectCloner.Clone(this);
     }

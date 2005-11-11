@@ -22,15 +22,31 @@ namespace Csla
 
     #endregion
 
-    #region Clone
+    #region ICloneable
 
+    object ICloneable.Clone()
+    {
+      return OnClone();
+    }
     /// <summary>
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
-    public virtual object Clone()
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual object OnClone()
     {
       return Core.ObjectCloner.Clone(this);
+    }
+
+    /// <summary>
+    /// Creates a clone of the object.
+    /// </summary>
+    /// <returns>
+    /// A new object containing the exact data of the original object.
+    /// </returns>
+    public virtual ReadOnlyListBase<T> Clone()
+    {
+      return (ReadOnlyListBase<T>)OnClone();
     }
 
     #endregion

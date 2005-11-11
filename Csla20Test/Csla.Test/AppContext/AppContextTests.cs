@@ -154,10 +154,12 @@ namespace Csla.Test.AppContext
 
         private void OnDataPortaInvoke(DataPortalEventArgs e)
         {
-            Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"] = ApplicationContext.GlobalContext["global"];
+            Console.WriteLine("OnDataPortalInvoke");
+            Csla.ApplicationContext.GlobalContext["ClientInvoke"] = ApplicationContext.GlobalContext["global"];
         }
         private void OnDataPortalInvokeComplete(DataPortalEventArgs e)
         {
+            Console.WriteLine("OnDataPortalInvokeComplete");
             Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"] = ApplicationContext.GlobalContext["global"];
         }
         #endregion

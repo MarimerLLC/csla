@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Csla.Test.DataPortal
 {
     [NUnit.Framework.TestFixture()]
-    class DataPortalTests
+    public class DataPortalTests
     {
         [NUnit.Framework.Test()]
         public void DataPortalEvents()

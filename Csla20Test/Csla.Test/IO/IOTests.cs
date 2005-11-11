@@ -23,13 +23,33 @@ namespace Csla.Test.IO
             root = root.Save();
 
             Assert.IsNotNull(root);
-            Assert.AreEqual("updated", Csla.ApplicationContext.GlobalContext["Root"]);
+            Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);
             Assert.AreEqual("saved", root.Data);
             Assert.AreEqual(false, root.IsNew, "IsNew");
             Assert.AreEqual(false, root.IsDeleted, "IsDeleted");
             Assert.AreEqual(false, root.IsDirty, "IsDirty");
         }
+        [Test]
+        public void SaveOldRoot()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Csla.Test.Basic.Root root = Csla.Test.Basic.Root.GetRoot("old");
 
+            root.Data = "saved";
+            Assert.AreEqual("saved", root.Data);
+            Assert.AreEqual(true, root.IsDirty, "IsDirty");
+            Assert.AreEqual(true, root.IsValid, "IsValid");
+
+            Csla.ApplicationContext.GlobalContext.Clear();
+            root = root.Save();
+
+            Assert.IsNotNull(root);
+            Assert.AreEqual("Updated", Csla.ApplicationContext.GlobalContext["Root"]);
+            Assert.AreEqual("saved", root.Data);
+            Assert.AreEqual(false, root.IsNew, "IsNew");
+            Assert.AreEqual(false, root.IsDeleted, "IsDeleted");
+            Assert.AreEqual(false, root.IsDirty, "IsDirty");
+        }
         [Test]
         public void LoadRoot()
         {
@@ -41,7 +61,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(false, root.IsNew);
             Assert.AreEqual(false, root.IsDeleted);
             Assert.AreEqual(false, root.IsDirty);
-            Assert.AreEqual(false, root.IsValid);
+            Assert.AreEqual(true, root.IsValid);
         }
 
         [Test]

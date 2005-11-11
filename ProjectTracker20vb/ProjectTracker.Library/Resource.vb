@@ -16,50 +16,35 @@ Public Class Resource
 
   Public ReadOnly Property Id() As String
     Get
-      If CanReadProperty() Then
-        Return mId
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mId
     End Get
   End Property
 
   Public Property LastName() As String
     Get
-      If CanReadProperty() Then
-        Return mLastName
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mLastName
     End Get
     Set(ByVal value As String)
-      If CanWriteProperty() Then
-        If mLastName <> value Then
-          mLastName = value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property set not allowed")
+      CanWriteProperty(True)
+      If mLastName <> value Then
+        mLastName = value
+        PropertyHasChanged()
       End If
     End Set
   End Property
 
   Public Property FirstName() As String
     Get
-      If CanReadProperty() Then
-        Return mFirstName
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mFirstName
     End Get
     Set(ByVal value As String)
-      If CanWriteProperty() Then
-        If mFirstName <> value Then
-          mFirstName = value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property set not allowed")
+      CanWriteProperty(True)
+      If mFirstName <> value Then
+        mFirstName = value
+        PropertyHasChanged()
       End If
     End Set
   End Property

@@ -114,8 +114,9 @@ namespace Csla.Test.Basic
 
         protected override void DataPortal_Insert()
         {
-            Csla.ApplicationContext.GlobalContext.Add("clientcontext",
-                ApplicationContext.ClientContext["clientcontext"]);
+            try
+            {
+                #warning Bug here. This override does not seem to get called in the CS version of the code. 
 
             Csla.ApplicationContext.GlobalContext.Add("globalcontext",
                 ApplicationContext.ClientContext["globalcontext"]);

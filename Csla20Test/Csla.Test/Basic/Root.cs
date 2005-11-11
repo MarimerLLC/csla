@@ -7,7 +7,7 @@ namespace Csla.Test.Basic
     [Serializable()]
     public class Root : BusinessBase<Root>
     {
-        private string _data;
+        private string _data = "";
 
         private Children _children = Csla.Test.Basic.Children.NewChildren();
 
@@ -51,32 +51,16 @@ namespace Csla.Test.Basic
             get { return _children; }
         }
 
-        #if csla20vb
-        /// <summary>
-        /// Override of IsDirty
-        /// </summary>
-        /// <remarks>
-        /// Seems like a bug here, the C# version of the library is not marked as virtual.
-        /// </remarks>
+        ///start editing
+        ///
         public override bool IsDirty
         {
-            get { return base.IsDirty || this._children.IsDirty; }
+            get
+            {
+                return base.IsDirty || _children.IsDirty;
+            }
         }
-        #elif csla20cs
-        #warning Potential bug here, library inconsitency. VB version is not marked as virtual. Tests imply it should be.
-        /// <summary>
-        /// IsDirty Override
-        /// </summary>
-        /// <remarks>
-        /// This is probably an error, should be override rather than new but the C# version is not marked as virtual.
-        /// </remarks>
-        public new bool IsDirty
-        {
-            get { return base.IsDirty || this._children.IsDirty; }
-        }
-        #endif
 
-        #region Criteria
         [Serializable()]
         private class Criteria
         {
@@ -92,7 +76,6 @@ namespace Csla.Test.Basic
                 this._data = data;
             }
         }
-        #endregion
 
         public static Root NewRoot()
         {
@@ -135,9 +118,9 @@ namespace Csla.Test.Basic
                 ApplicationContext.ClientContext["clientcontext"]);
 
             Csla.ApplicationContext.GlobalContext.Add("globalcontext",
-                ApplicationContext.GlobalContext["globalcontext"]);
+                ApplicationContext.ClientContext["globalcontext"]);
 
-            ApplicationContext.GlobalContext.Remove("globalcontext");
+            Csla.ApplicationContext.GlobalContext.Remove("globalcontext");
             ApplicationContext.GlobalContext["globalcontext"] = "new global value";
 
             Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
@@ -151,20 +134,17 @@ namespace Csla.Test.Basic
 
         protected override void DataPortal_DeleteSelf()
         {
-            //we would delete here
             Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted self");
         }
 
         protected override void DataPortal_Delete(object criteria)
         {
-            //we would delete here
             Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
         }
 
         protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
         {
-            base.OnDeserialized(context);
-            Csla.ApplicationContext.GlobalContext.Add("Deserialized", "root deserialized");
+            Csla.ApplicationContext.GlobalContext.Add("Deserialized", "root Deserialized");
         }
 
         protected override void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
@@ -175,6 +155,7 @@ namespace Csla.Test.Basic
         protected override void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
         {
             Csla.ApplicationContext.GlobalContext["dpinvokecomplete"] = ApplicationContext.GlobalContext["global"];
-        }    
+        }
+
     }
 }

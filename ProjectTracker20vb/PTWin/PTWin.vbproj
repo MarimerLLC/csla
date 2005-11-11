@@ -36,6 +36,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\csla20vb\Csla\bin\Debug\Csla.dll</HintPath>
     </Reference>
+    <Reference Include="Csla.Windows, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\csla20vb\Csla.Windows\bin\Debug\Csla.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -55,7 +59,6 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BindingSourceRefresh.vb" />
     <Compile Include="LoginForm.Designer.vb">
       <DependentUpon>LoginForm.vb</DependentUpon>
     </Compile>
@@ -95,7 +98,6 @@
     <Compile Include="ProjectSelect.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReadWriteAuthorization.vb" />
     <Compile Include="ResourceEdit.Designer.vb">
       <DependentUpon>ResourceEdit.vb</DependentUpon>
     </Compile>

@@ -33,8 +33,8 @@ Partial Public Class ResourceEdit
     Me.AssignmentsDataGridView = New System.Windows.Forms.DataGridView
     Me.AssignmentsBindingSource = New System.Windows.Forms.BindingSource(Me.components)
     Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
-    Me.BindingSourceRefresh1 = New PTWin.BindingSourceRefresh(Me.components)
-    Me.ReadWriteAuthorization1 = New PTWin.ReadWriteAuthorization(Me.components)
+    Me.BindingSourceRefresh1 = New Csla.Windows.BindingSourceRefresh(Me.components)
+    Me.ReadWriteAuthorization1 = New Csla.Windows.ReadWriteAuthorization(Me.components)
     Me.CloseButton = New System.Windows.Forms.Button
     Me.ApplyButton = New System.Windows.Forms.Button
     Me.Cancel_Button = New System.Windows.Forms.Button
@@ -318,8 +318,8 @@ Partial Public Class ResourceEdit
   Friend WithEvents AssignmentsDataGridView As System.Windows.Forms.DataGridView
   Friend WithEvents AssignmentsBindingSource As System.Windows.Forms.BindingSource
   Friend WithEvents ErrorProvider1 As System.Windows.Forms.ErrorProvider
-  Friend WithEvents BindingSourceRefresh1 As PTWin.BindingSourceRefresh
-  Friend WithEvents ReadWriteAuthorization1 As PTWin.ReadWriteAuthorization
+  Friend WithEvents BindingSourceRefresh1 As Csla.Windows.BindingSourceRefresh
+  Friend WithEvents ReadWriteAuthorization1 As Csla.Windows.ReadWriteAuthorization
   Friend WithEvents CloseButton As System.Windows.Forms.Button
   Friend WithEvents ApplyButton As System.Windows.Forms.Button
   Friend WithEvents Cancel_Button As System.Windows.Forms.Button

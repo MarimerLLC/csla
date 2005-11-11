@@ -5,43 +5,6 @@ using System.Data;
 
 namespace Csla.Test.Basic
 {
-#if csla20cs
-    [Serializable()]
-    public class Children : BusinessListBase<Child>
-    {
-        public void Add(string data)
-        {
-            this.Add(Child.NewChild(data));
-        }
-
-
-        internal static Children NewChildren()
-        {
-            return new Children();
-        }
-
-        internal static Children GetChildren(IDataReader dr)
-        {
-            //todo: load child data
-            return null;
-        }
-
-        internal void Update(IDbTransaction tr)
-        {
-            foreach (Child child in this)
-            {
-                child.Update(tr);
-            }
-        }
-
-        private Children()
-        {
-            //prevent direct creation
-            this.MarkAsChild();
-        }
-    }
-#endif
-#if csla20vb
     [Serializable()]
     public class Children : BusinessListBase<Children, Child>
     {
@@ -76,5 +39,4 @@ namespace Csla.Test.Basic
             this.MarkAsChild();
         }
     }
-#endif
 }

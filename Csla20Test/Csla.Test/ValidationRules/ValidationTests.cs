@@ -5,10 +5,10 @@ using NUnit.Framework;
 
 namespace Csla.Test.ValidationRules
 {
-    [TestFixture]
+    [TestFixture()]
     public class ValidationTests
     {
-        [Test]
+        [Test()]
         public void BreakRequiredRule()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -18,7 +18,7 @@ namespace Csla.Test.ValidationRules
             Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
         }
 
-        [Test]
+        [Test()]
         public void BreakLengthRule()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -34,7 +34,7 @@ namespace Csla.Test.ValidationRules
             Assert.AreEqual(0, root.BrokenRulesCollection.Count);
         }
 
-        [Test]
+        [Test()]
         public void BreakLengthRuleAndClone()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

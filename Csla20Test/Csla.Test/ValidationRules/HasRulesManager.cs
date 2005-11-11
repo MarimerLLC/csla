@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Csla.Test.ValidationRules
 {
-    [Serializable]
+    [Serializable()]
     public class HasRulesManager : BusinessBase<HasRulesManager>
     {
         private string _name = string.Empty;
@@ -58,7 +58,7 @@ namespace Csla.Test.ValidationRules
             }
         }
 
-        [Serializable]
+        [Serializable()]
         private class Criteria
         {
             public string _name;

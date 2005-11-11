@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace Csla.Test.RollBack
 {
+#warning "makes calls to the BeginEdit(), CancelEdit(), and ApplyEdit() methods, which seem to be causing problems in the C# library"
     [TestFixture]
     public class RollBackTests
     {

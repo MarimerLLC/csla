@@ -63,6 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
+    <Compile Include="Security\CustomAuthenticationTests.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />
     <Compile Include="Serialization\TestEventSink.cs" />
@@ -80,9 +81,6 @@
     <None Include="Properties\CVS\Entries.Old" />
     <None Include="Properties\CVS\Repository" />
     <None Include="Properties\CVS\Root" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Security\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

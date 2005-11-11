@@ -54,8 +54,9 @@
     <Compile Include="Basic\GrandChild.cs" />
     <Compile Include="Basic\GrandChildren.cs" />
     <Compile Include="Basic\Root.cs" />
-    <Compile Include="Customer.cs" />
-    <Compile Include="CustomerList.cs" />
+    <Compile Include="Customer\Customer.cs" />
+    <Compile Include="Customer\CustomerList.cs" />
+    <Compile Include="Customer\CustomerTests.cs" />
     <Compile Include="DataBinding\DataBindingTests.cs" />
     <Compile Include="DataPortal\DataPortalTests.cs" />
     <Compile Include="DataPortal\DpRoot.cs" />
@@ -68,19 +69,12 @@
     <Compile Include="Serialization\SerializationTests.cs" />
     <Compile Include="Serialization\TestEventSink.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="ValidationRules\HasRulesManager.cs" />
     <Compile Include="ValidationRules\MaxLengthArgs.cs" />
     <Compile Include="ValidationRules\ValidationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Csla.Test.config" />
-    <None Include="Properties\CVS\Entries" />
-    <None Include="Properties\CVS\Entries.Extra" />
-    <None Include="Properties\CVS\Entries.Extra.Old" />
-    <None Include="Properties\CVS\Entries.Old" />
-    <None Include="Properties\CVS\Repository" />
-    <None Include="Properties\CVS\Root" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

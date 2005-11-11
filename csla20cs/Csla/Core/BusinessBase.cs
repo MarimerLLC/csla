@@ -99,7 +99,7 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if this object's data has been changed.</returns>
     [Browsable(false)]
-    public bool IsDirty
+    public virtual bool IsDirty
     {
       get { return _isDirty; }
     }

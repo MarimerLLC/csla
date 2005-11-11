@@ -60,13 +60,23 @@ namespace Csla.Test.Basic
         [Test]
         public void AddRemoveAddChild()
         {
+
+            #warning Seems to be a Bug with BeginEdit and CancelEdit here.
+            Console.WriteLine("----AddRemoveAddChild----");
             Csla.ApplicationContext.GlobalContext.Clear();
             Root root = Csla.Test.Basic.Root.NewRoot();
             root.Children.Add("1");
+            Console.WriteLine("Begin edit");
             root.BeginEdit();
             root.Children.Remove(root.Children[0]);
+            Console.WriteLine("\tCount after remove: {0}", root.Children.Count);
+            
             root.Children.Add("2");
+            Console.WriteLine("\tCount after add 2: {0}", root.Children.Count);
+            Console.WriteLine("Cancel edit");
             root.CancelEdit();
+            Console.WriteLine("\tCount after cancel: {0}, expected 1"+System.Environment.NewLine, root.Children.Count);
+
             Assert.AreEqual(1, root.Children.Count);
             Assert.AreEqual("1", root.Children[0].Data);
         }

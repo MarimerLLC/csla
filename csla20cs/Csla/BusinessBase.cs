@@ -13,7 +13,7 @@ namespace Csla
   /// This class is the core of the CSLA .NET framework. To create
   /// a business object, inherit from this class.
   /// </para><para>
-  /// Please refer to 'Expert One-on-One VB.NET Business Objects' for
+  /// Please refer to 'Expert C# 2005 Business Objects' for
   /// full details on the use of this base class to create business
   /// objects.
   /// </para>
@@ -52,6 +52,21 @@ namespace Csla
       if (id == null)
         throw new ArgumentException(Resources.GetIdValueCantBeNull);
       return id.ToString();
+    }
+
+    #endregion
+
+    #region Clone
+
+    /// <summary>
+    /// Creates a clone of the object.
+    /// </summary>
+    /// <returns>
+    /// A new object containing the exact data of the original object.
+    /// </returns>
+    public virtual T Clone()
+    {
+      return (T)OnClone();
     }
 
     #endregion

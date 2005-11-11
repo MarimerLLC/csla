@@ -7,7 +7,7 @@ namespace Csla.Test.ValidationRules
     [Serializable]
     public class HasRulesManager : BusinessBase<HasRulesManager>
     {
-        private string _name;
+        private string _name = string.Empty;
 
         protected override object GetIdValue()
         {
@@ -19,10 +19,12 @@ namespace Csla.Test.ValidationRules
             get { return _name; }
             set
             {
-                if (_name != value)
-                    _name = value;
-                ValidationRules.CheckRules("Name");
-                MarkDirty();
+                if (this._name != value)
+                {
+                    this._name = value;
+                    ValidationRules.CheckRules("Name");
+                    MarkDirty();
+                }
             }
         }
 
@@ -35,10 +37,7 @@ namespace Csla.Test.ValidationRules
 
         private bool NameRequired(object target, Validation.RuleArgs e)
         {
-            if (_name.Length > 0)
-            {
-                return true;
-            }
+            if (this._name.Length > 0) return true;
             else
             {
                 e.Description = "Name required";
@@ -48,7 +47,7 @@ namespace Csla.Test.ValidationRules
 
         private bool NameLength(object target, Validation.RuleArgs e)
         {
-            if (_name.Length <= ((MaxLengthArgs)(e)).MaxLength)
+            if (this._name.Length <= ((MaxLengthArgs)e).MaxLength)
             {
                 return true;
             }
@@ -77,12 +76,12 @@ namespace Csla.Test.ValidationRules
 
         public static HasRulesManager NewHasRulesManager()
         {
-            return (HasRulesManager)(Csla.DataPortal.Create(new Criteria()));
+            return Csla.DataPortal.Create(new Criteria()) as HasRulesManager;
         }
 
         public static HasRulesManager GetHasRulesManager(string name)
         {
-            return (HasRulesManager)(Csla.DataPortal.Fetch(new Criteria(name)));
+            return Csla.DataPortal.Fetch(new Criteria(name)) as HasRulesManager;
         }
 
         public static void DeleteHasRulesManager(string name)
@@ -116,12 +115,12 @@ namespace Csla.Test.ValidationRules
             if (IsDeleted)
             {
                 //we would delete here
-                Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Fetched");
+                Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Deleted");
                 MarkNew();
             }
             else
             {
-                if (IsNew)
+                if (this.IsNew)
                 {
                     //we would insert here
                     Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Inserted");

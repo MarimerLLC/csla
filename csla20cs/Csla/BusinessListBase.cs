@@ -258,7 +258,7 @@ namespace Csla
       }
 
       // cancel edit on all deleted items
-      for (int index = Count - 1; index >= 0; index--)
+      for (int index = DeletedList.Count - 1; index >= 0; index--)
       {
         child = DeletedList[index];
         child.UndoChanges();

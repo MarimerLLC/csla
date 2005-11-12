@@ -39,7 +39,7 @@ namespace Csla.Core
 
     // keep track of whether we are new, deleted or dirty
     private bool _isNew = true;
-    private bool _isDeleted = true;
+    private bool _isDeleted;
     private bool _isDirty = true;
 
     /// <summary>
@@ -210,7 +210,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkDirty(bool suppressEvent)
     {
-      _isDeleted = true;
+      _isDirty = true;
       if (!suppressEvent)
         OnIsDirtyChanged();
     }
@@ -678,6 +678,7 @@ namespace Csla.Core
 
     #region IsChild
 
+    [NotUndoable()]
     private bool _isChild;
 
     protected internal bool IsChild

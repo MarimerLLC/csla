@@ -115,6 +115,7 @@ namespace Csla.Test.Basic
         protected override void DataPortal_Insert()
         {
 #warning Bug here. This override does not seem to get called in the CS version of the code.
+#warning fix: add a call to DataPortal_Insert in DataPortal_Update if IsDeleted == false and IsNew == true
 
                 Csla.ApplicationContext.GlobalContext.Add("globalcontext",
                     ApplicationContext.ClientContext["globalcontext"]);

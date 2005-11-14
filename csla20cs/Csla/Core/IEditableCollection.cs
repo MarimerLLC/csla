@@ -1,5 +1,3 @@
-using System;
-
 namespace Csla.Core
 {
   /// <summary>
@@ -12,7 +10,8 @@ namespace Csla.Core
   /// so as to not clutter up the native interface of
   /// the collection objects.
   /// </remarks>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
+    "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
   public interface IEditableCollection : IEditableObject
   {
     void RemoveChild(Core.BusinessBase child);

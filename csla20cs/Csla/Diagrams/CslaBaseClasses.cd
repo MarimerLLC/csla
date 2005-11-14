@@ -5,14 +5,14 @@
     <Position X="1" Y="1" Width="2" />
     <TypeIdentifier>
       <FileName>BusinessBase.cs</FileName>
-      <HashCode>AAAAAIAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAAAAIAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAAAgBA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Csla.BusinessListBase&lt;T&gt;" Collapsed="true">
+  <Class Name="Csla.BusinessListBase&lt;T, C&gt;" Collapsed="true">
     <Position X="3.25" Y="1" Width="2" />
     <TypeIdentifier>
       <FileName>BusinessListBase.cs</FileName>
-      <HashCode>AgAAAIhACAAADAJAEAgAGCgAQAKIAAlEoQABUAAgCFA=</HashCode>
+      <HashCode>AgAAAIhACAAADAJIEAgAGCgAQACIAAlEoQIBUAAgCFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -22,6 +22,7 @@
       <FileName>CommandBase.cs</FileName>
       <HashCode>AAAAAAgAAAAABABAEAAAAAAAAAAAAAEAAAAAAAAACEI=</HashCode>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.NameValueListBase&lt;K, V&gt;" Collapsed="true">
     <Position X="3.25" Y="3.5" Width="2" />
@@ -31,11 +32,11 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Csla.ReadOnlyBase" Collapsed="true">
+  <Class Name="Csla.ReadOnlyBase&lt;T&gt;" Collapsed="true">
     <Position X="1" Y="2.25" Width="2" />
     <TypeIdentifier>
       <FileName>ReadOnlyBase.cs</FileName>
-      <HashCode>AAAAAAgAAAAABABAEAAIAAAEAABAAAEAAAAAAAAACFA=</HashCode>
+      <HashCode>AAAAAAgAAAAABABIEAAIAAAEAABAAAEAAAIAAAAACFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -43,7 +44,7 @@
     <Position X="3.25" Y="2.25" Width="2" />
     <TypeIdentifier>
       <FileName>ReadOnlyListBase.cs</FileName>
-      <HashCode>BAAAAAgAAAAABAAAEAAAAAAAAAAAAAEAAAAAAAAACFA=</HashCode>
+      <HashCode>BAAAAAgAAAAABAAIEAAAAAAAAAAAAAEAAAIAAAAACFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

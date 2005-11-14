@@ -126,5 +126,41 @@ namespace Csla.Test.RollBack
             Assert.AreEqual(false, root.IsDeleted, "isdeleted is false");
             Assert.AreEqual(true, root.IsDirty, "isdirty is true");
         }
+
+        [TestMethod]
+        public void EditParentEntity()
+        {
+            Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity();
+            p.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(p_PropertyChanged);
+
+            p.BeginEdit();
+            p.Data = "something";
+            p.BeginEdit();
+            p.CancelEdit();
+            p.CancelEdit();
+
+            Assert.IsNull(p.Data);
+
+            p.BeginEdit();
+            p.BeginEdit();
+            p.Data = "data";
+            p.ApplyEdit();
+            p.CancelEdit();
+
+            Assert.IsNull(p.Data);
+
+            p.Data = "data";
+            p.BeginEdit();
+            p.Data += " more data";
+            p.ApplyEdit();
+            p.CancelEdit();
+
+            Assert.AreEqual("data more data", p.Data);
+        }
+
+        public void p_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Console.WriteLine(e.PropertyName + " has been changed");
+        }
     }
 }

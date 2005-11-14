@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Test.DataBinding;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,7 +21,6 @@ namespace Csla.Test.DataPortal
         [TestMethod()]
         public void DataPortalEvents()
         {
-
             Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
             Csla.DataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
 
@@ -29,9 +29,9 @@ namespace Csla.Test.DataPortal
                 ApplicationContext.GlobalContext.Clear();
                 DpRoot root = DpRoot.NewRoot();
 
-                //root.Data = "saved";
-                //Csla.ApplicationContext.GlobalContext.Clear();
-                //root = root.Save();
+                root.Data = "saved";
+                Csla.ApplicationContext.GlobalContext.Clear();
+                root = root.Save();
 
                 Assert.IsTrue((bool)ApplicationContext.GlobalContext["dpinvoke"], "DataPortalInvoke not called");
                 Assert.IsTrue((bool)ApplicationContext.GlobalContext["dpinvokecomplete"], "DataPortalInvokeComplete not called");
@@ -43,6 +43,58 @@ namespace Csla.Test.DataPortal
                 Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
                 Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
             }
+        }
+
+        [Test]
+        public void CallDataPortalOverrides()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            ParentEntity parent = ParentEntity.NewParentEntity();
+            parent.Data = "something";
+
+            Assert.AreEqual(false, parent.IsDeleted);
+            Assert.AreEqual(true, parent.IsValid);
+            Assert.AreEqual(true, parent.IsNew);
+            Assert.AreEqual(true, parent.IsDirty);
+            Assert.AreEqual(true, parent.IsSavable);
+
+            parent = parent.Save();
+
+            Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
+
+            Assert.AreEqual(false, parent.IsDeleted);
+            Assert.AreEqual(true, parent.IsValid);
+            Assert.AreEqual(false, parent.IsNew);
+            Assert.AreEqual(false, parent.IsDirty);
+            Assert.AreEqual(false, parent.IsSavable);
+
+            parent.Data = "something new";
+
+            Assert.AreEqual(false, parent.IsDeleted);
+            Assert.AreEqual(true, parent.IsValid);
+            Assert.AreEqual(false, parent.IsNew);
+            Assert.AreEqual(true, parent.IsDirty);
+            Assert.AreEqual(true, parent.IsSavable);
+
+            parent = parent.Save();
+
+            Assert.AreEqual("Updated", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
+
+            parent.Delete();
+            Assert.AreEqual(true, parent.IsDeleted);
+            parent = parent.Save();
+            Assert.AreEqual("Deleted Self", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
+
+            ParentEntity.DeleteParentEntity(33);
+            Assert.AreEqual("Deleted", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
+            Assert.AreEqual(false, parent.IsDeleted);
+            Assert.AreEqual(true, parent.IsValid);
+            Assert.AreEqual(true, parent.IsNew);
+            Assert.AreEqual(true, parent.IsDirty);
+            Assert.AreEqual(true, parent.IsSavable);
+
+            ParentEntity.GetParentEntity(33);
+            Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["ParentEntity"]);
         }
 
         private void ClientPortal_DataPortalInvoke(DataPortalEventArgs obj)

@@ -58,7 +58,10 @@
     <Compile Include="Customer\Customer.cs" />
     <Compile Include="Customer\CustomerList.cs" />
     <Compile Include="Customer\CustomerTests.cs" />
+    <Compile Include="DataBinding\ChildEntity.cs" />
+    <Compile Include="DataBinding\ChildEntityList.cs" />
     <Compile Include="DataBinding\DataBindingTests.cs" />
+    <Compile Include="DataBinding\ParentEntity.cs" />
     <Compile Include="DataPortal\DataPortalTests.cs" />
     <Compile Include="DataPortal\DpRoot.cs" />
     <Compile Include="IO\IOTests.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
     <Compile Include="Security\CustomAuthenticationTests.cs" />
+    <Compile Include="Security\PermissionsRoot.cs" />
     <Compile Include="Security\TestIdentity.cs" />
     <Compile Include="Security\TestPrincipal.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />

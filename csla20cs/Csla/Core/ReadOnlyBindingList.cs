@@ -16,7 +16,7 @@ namespace Csla.Core
   /// </remarks>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
-  public abstract class ReadOnlyBindingList<T> : System.ComponentModel.BindingList<T>, Core.IBusinessObject
+  public abstract class ReadOnlyBindingList<C> : System.ComponentModel.BindingList<C>, Core.IBusinessObject
   {
     private bool _isReadOnly = true;
 
@@ -66,7 +66,7 @@ namespace Csla.Core
     /// <summary>
     /// Prevents insertion of items into the collection.
     /// </summary>
-    protected override void InsertItem(int index, T item)
+    protected override void InsertItem(int index, C item)
     {
       if (!IsReadOnly)
         base.InsertItem(index, item);
@@ -95,7 +95,7 @@ namespace Csla.Core
     /// specified item if the collection is not in
     /// readonly mode.
     /// </summary>
-    protected override void SetItem(int index, T item)
+    protected override void SetItem(int index, C item)
     {
       if (!IsReadOnly)
         base.SetItem(index, item);

@@ -5,14 +5,14 @@
     <Position X="2.75" Y="4.75" Width="1.75" />
     <TypeIdentifier>
       <FileName>BusinessBase.cs</FileName>
-      <HashCode>AAAAAIAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAAAAIAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAAAgBA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Csla.BusinessListBase&lt;T&gt;" Collapsed="true">
+  <Class Name="Csla.BusinessListBase&lt;T, C&gt;" Collapsed="true">
     <Position X="5" Y="4.75" Width="1.75" />
     <TypeIdentifier>
       <FileName>BusinessListBase.cs</FileName>
-      <HashCode>AgAAAIhACAAADAJAEAgAGCgAQAKIAAlEoQABUAAgCFA=</HashCode>
+      <HashCode>AgAAAIhACAAADAJIEAgAGCgAQACIAAlEoQIBUAAgCFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -25,7 +25,7 @@
     <Position X="2.75" Y="3.5" Width="1.75" />
     <TypeIdentifier>
       <FileName>Core\BusinessBase.cs</FileName>
-      <HashCode>FAgBAA8ACAADnCDAEAlISEiUBJHgAAEAIFCBAQAgKFA=</HashCode>
+      <HashCode>FAgBAA8ACAADnCDIEAlISEiUBJHgAAEAIFKBAQAgKEA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -33,7 +33,7 @@
     <Position X="2.75" Y="2" Width="1.75" />
     <TypeIdentifier>
       <FileName>Core\UndoableBase.cs</FileName>
-      <HashCode>AgIAAAAAAAAAAAAAAAIAkAAAAAAAEAAAAAhAEAAAAAA=</HashCode>
+      <HashCode>AgAAAAAAAAAAAAAAAAIAkAAAAAAAEAAAAAhAEAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

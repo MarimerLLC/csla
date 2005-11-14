@@ -3,7 +3,7 @@ Namespace Core
   ''' <summary>
   ''' A readonly version of BindingList(Of T)
   ''' </summary>
-  ''' <typeparam name="T">Type of item contained in the list.</typeparam>
+  ''' <typeparam name="C">Type of item contained in the list.</typeparam>
   ''' <remarks>
   ''' This is a subclass of BindingList(Of T) that implements
   ''' a readonly list, preventing adding and removing of items
@@ -12,8 +12,8 @@ Namespace Core
   ''' </remarks>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
   <Serializable()> _
-  Public MustInherit Class ReadOnlyBindingList(Of T)
-    Inherits System.ComponentModel.BindingList(Of T)
+  Public MustInherit Class ReadOnlyBindingList(Of C)
+    Inherits System.ComponentModel.BindingList(Of C)
 
     Implements Core.IBusinessObject
 
@@ -65,7 +65,7 @@ Namespace Core
     ''' <summary>
     ''' Prevents insertion of items into the collection.
     ''' </summary>
-    Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As T)
+    Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As C)
       If Not IsReadOnly Then
         MyBase.InsertItem(index, item)
       Else
@@ -93,7 +93,7 @@ Namespace Core
     ''' specified item if the collection is not in
     ''' readonly mode.
     ''' </summary>
-    Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As T)
+    Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As C)
       If Not IsReadOnly Then
         MyBase.SetItem(index, item)
       Else

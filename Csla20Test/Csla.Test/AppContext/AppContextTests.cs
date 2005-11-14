@@ -47,10 +47,6 @@ namespace Csla.Test.AppContext
         [NUnit.Framework.Test()]
         public void ClientContext()
         {
-            #if csla20cs
-            #warning Fails CS Tests, passes VB tests. Something is wrong with the Root
-            #endif
-
             Csla.ApplicationContext.GlobalContext.Clear();
 
             Csla.ApplicationContext.ClientContext.Add("clientcontext", "client context data");
@@ -74,6 +70,7 @@ namespace Csla.Test.AppContext
 
             Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"]);
             Assert.AreEqual("client context data", Csla.ApplicationContext.GlobalContext["clientcontext"]);
+            Assert.AreEqual("new global value", Csla.ApplicationContext.GlobalContext["globalcontext"]);
         }
         #endregion
 
@@ -100,7 +97,6 @@ namespace Csla.Test.AppContext
 
             Assert.IsNotNull(root);
 
-            #warning Bug Here. DataPortal_Insert override is never called.
             Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);
             Assert.AreEqual("saved", root.Data);
             Assert.AreEqual(false, root.IsNew);

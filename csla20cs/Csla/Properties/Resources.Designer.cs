@@ -61,96 +61,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding items not allowed.
-        /// </summary>
-        internal static string AddItemException {
-            get {
-                return ResourceManager.GetString("AddItemException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Batch job completed.
-        /// </summary>
-        internal static string BatchQueueJobCompleted {
-            get {
-                return ResourceManager.GetString("BatchQueueJobCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Batch job failed due to execution error .
-        /// </summary>
-        internal static string BatchQueueJobFailed {
-            get {
-                return ResourceManager.GetString("BatchQueueJobFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Job object:.
-        /// </summary>
-        internal static string BatchQueueJobObjectPrefix {
-            get {
-                return ResourceManager.GetString("BatchQueueJobObjectPrefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Batch job:.
-        /// </summary>
-        internal static string BatchQueueJobPrefix {
-            get {
-                return ResourceManager.GetString("BatchQueueJobPrefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Max jobs:.
-        /// </summary>
-        internal static string BatchQueueProcMaxJobs {
-            get {
-                return ResourceManager.GetString("BatchQueueProcMaxJobs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name:.
-        /// </summary>
-        internal static string BatchQueueProcName {
-            get {
-                return ResourceManager.GetString("BatchQueueProcName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Port:.
-        /// </summary>
-        internal static string BatchQueueProcPort {
-            get {
-                return ResourceManager.GetString("BatchQueueProcPort", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Queue:.
-        /// </summary>
-        internal static string BatchQueueProcQueue {
-            get {
-                return ResourceManager.GetString("BatchQueueProcQueue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Batch queue processor started.
-        /// </summary>
-        internal static string BatchQueueProcStarted {
-            get {
-                return ResourceManager.GetString("BatchQueueProcStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Principal must be of type BusinessPrincipal, not.
         /// </summary>
         internal static string BusinessPrincipalException {
@@ -277,15 +187,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value must be a valid date.
-        /// </summary>
-        internal static string InvalidDateException {
-            get {
-                return ResourceManager.GetString("InvalidDateException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to method call failed.
         /// </summary>
         internal static string MethodCallFailed {
@@ -331,24 +232,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Items can not be changed in a read-only collection.
-        /// </summary>
-        internal static string NoChangeReadOnlyException {
-            get {
-                return ResourceManager.GetString("NoChangeReadOnlyException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear is invalid for a read-only collection.
-        /// </summary>
-        internal static string NoClearReadOnlyException {
-            get {
-                return ResourceManager.GetString("NoClearReadOnlyException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Invalid for root objects - use Delete instead.
         /// </summary>
         internal static string NoDeleteRootException {
@@ -358,38 +241,11 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert is invalid for a read-only collection.
-        /// </summary>
-        internal static string NoInsertReadOnlyException {
-            get {
-                return ResourceManager.GetString("NoInsertReadOnlyException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No matching item in collection.
-        /// </summary>
-        internal static string NoMatchException {
-            get {
-                return ResourceManager.GetString("NoMatchException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No principal object should be passed to DataPortal when using Windows integrated security.
         /// </summary>
         internal static string NoPrincipalAllowedException {
             get {
                 return ResourceManager.GetString("NoPrincipalAllowedException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove is invalid for a read-only collection.
-        /// </summary>
-        internal static string NoRemoveReadOnlyException {
-            get {
-                return ResourceManager.GetString("NoRemoveReadOnlyException", resourceCulture);
             }
         }
         
@@ -466,51 +322,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Searching is not supported by this collection.
-        /// </summary>
-        internal static string SearchingNotSupportedException {
-            get {
-                return ResourceManager.GetString("SearchingNotSupportedException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Security.
-        /// </summary>
-        internal static string SecurityDataBase {
-            get {
-                return ResourceManager.GetString("SecurityDataBase", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to @pw.
-        /// </summary>
-        internal static string SecurityPasswordParam {
-            get {
-                return ResourceManager.GetString("SecurityPasswordParam", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Login.
-        /// </summary>
-        internal static string SecurityStoredProcedure {
-            get {
-                return ResourceManager.GetString("SecurityStoredProcedure", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to @user.
-        /// </summary>
-        internal static string SecurityUserParam {
-            get {
-                return ResourceManager.GetString("SecurityUserParam", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to t.
         /// </summary>
         internal static string SmartDateT {
@@ -561,15 +372,6 @@ namespace Csla.Properties {
         internal static string SmartDateYesterday {
             get {
                 return ResourceManager.GetString("SmartDateYesterday", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sorting is not supported by this collection.
-        /// </summary>
-        internal static string SortingNotSupportedException {
-            get {
-                return ResourceManager.GetString("SortingNotSupportedException", resourceCulture);
             }
         }
         

@@ -61,96 +61,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Adding items not allowed.
-        '''</summary>
-        Friend ReadOnly Property AddItemException() As String
-            Get
-                Return ResourceManager.GetString("AddItemException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Batch job completed.
-        '''</summary>
-        Friend ReadOnly Property BatchQueueJobCompleted() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueJobCompleted", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Batch job failed due to execution error .
-        '''</summary>
-        Friend ReadOnly Property BatchQueueJobFailed() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueJobFailed", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Job object:.
-        '''</summary>
-        Friend ReadOnly Property BatchQueueJobObjectPrefix() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueJobObjectPrefix", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Batch job:.
-        '''</summary>
-        Friend ReadOnly Property BatchQueueJobPrefix() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueJobPrefix", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Max jobs:.
-        '''</summary>
-        Friend ReadOnly Property BatchQueueProcMaxJobs() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueProcMaxJobs", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Name:.
-        '''</summary>
-        Friend ReadOnly Property BatchQueueProcName() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueProcName", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Port:.
-        '''</summary>
-        Friend ReadOnly Property BatchQueueProcPort() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueProcPort", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Queue:.
-        '''</summary>
-        Friend ReadOnly Property BatchQueueProcQueue() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueProcQueue", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Batch queue processor started.
-        '''</summary>
-        Friend ReadOnly Property BatchQueueProcStarted() As String
-            Get
-                Return ResourceManager.GetString("BatchQueueProcStarted", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to Principal must be of type BusinessPrincipal, not.
         '''</summary>
         Friend ReadOnly Property BusinessPrincipalException() As String
@@ -277,15 +187,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Value must be a valid date.
-        '''</summary>
-        Friend ReadOnly Property InvalidDateException() As String
-            Get
-                Return ResourceManager.GetString("InvalidDateException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to method call failed.
         '''</summary>
         Friend ReadOnly Property MethodCallFailed() As String
@@ -331,24 +232,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Items can not be changed in a read-only collection.
-        '''</summary>
-        Friend ReadOnly Property NoChangeReadOnlyException() As String
-            Get
-                Return ResourceManager.GetString("NoChangeReadOnlyException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Clear is invalid for a read-only collection.
-        '''</summary>
-        Friend ReadOnly Property NoClearReadOnlyException() As String
-            Get
-                Return ResourceManager.GetString("NoClearReadOnlyException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to Invalid for root objects - use Delete instead.
         '''</summary>
         Friend ReadOnly Property NoDeleteRootException() As String
@@ -358,38 +241,11 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Insert is invalid for a read-only collection.
-        '''</summary>
-        Friend ReadOnly Property NoInsertReadOnlyException() As String
-            Get
-                Return ResourceManager.GetString("NoInsertReadOnlyException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to No matching item in collection.
-        '''</summary>
-        Friend ReadOnly Property NoMatchException() As String
-            Get
-                Return ResourceManager.GetString("NoMatchException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to No principal object should be passed to DataPortal when using Windows integrated security.
         '''</summary>
         Friend ReadOnly Property NoPrincipalAllowedException() As String
             Get
                 Return ResourceManager.GetString("NoPrincipalAllowedException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Remove is invalid for a read-only collection.
-        '''</summary>
-        Friend ReadOnly Property NoRemoveReadOnlyException() As String
-            Get
-                Return ResourceManager.GetString("NoRemoveReadOnlyException", resourceCulture)
             End Get
         End Property
         
@@ -466,51 +322,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Searching is not supported by this collection.
-        '''</summary>
-        Friend ReadOnly Property SearchingNotSupportedException() As String
-            Get
-                Return ResourceManager.GetString("SearchingNotSupportedException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Security.
-        '''</summary>
-        Friend ReadOnly Property SecurityDataBase() As String
-            Get
-                Return ResourceManager.GetString("SecurityDataBase", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to @pw.
-        '''</summary>
-        Friend ReadOnly Property SecurityPasswordParam() As String
-            Get
-                Return ResourceManager.GetString("SecurityPasswordParam", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Login.
-        '''</summary>
-        Friend ReadOnly Property SecurityStoredProcedure() As String
-            Get
-                Return ResourceManager.GetString("SecurityStoredProcedure", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to @user.
-        '''</summary>
-        Friend ReadOnly Property SecurityUserParam() As String
-            Get
-                Return ResourceManager.GetString("SecurityUserParam", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to t.
         '''</summary>
         Friend ReadOnly Property SmartDateT() As String
@@ -561,15 +372,6 @@ Namespace My.Resources
         Friend ReadOnly Property SmartDateYesterday() As String
             Get
                 Return ResourceManager.GetString("SmartDateYesterday", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Sorting is not supported by this collection.
-        '''</summary>
-        Friend ReadOnly Property SortingNotSupportedException() As String
-            Get
-                Return ResourceManager.GetString("SortingNotSupportedException", resourceCulture)
             End Get
         End Property
         

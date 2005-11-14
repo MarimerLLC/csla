@@ -32,7 +32,8 @@ namespace Csla.Test.IO
             root = root.Save();
 
             Assert.IsNotNull(root);
-            Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);
+            //fails because no call is being made to DataPortal_Insert in Root.DataPortal_Update if IsDeleted == false and IsNew == true
+            Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);  
             Assert.AreEqual("saved", root.Data);
             Assert.AreEqual(false, root.IsNew, "IsNew");
             Assert.AreEqual(false, root.IsDeleted, "IsDeleted");

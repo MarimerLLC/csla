@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\cs\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;csla20cs</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;csla20cs;NUNIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>1</WarningLevel>
   </PropertyGroup>

@@ -1,18 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.RollBack
 {
-#warning "makes calls to the BeginEdit(), CancelEdit(), and ApplyEdit() methods, which seem to be causing problems in the C# library"
-    [TestFixture]
+    [TestClass]
     public class RollBackTests
     {
-        [Test]
+        [TestMethod]
         public void NoFail()
         {
-            #warning Bug Here.
             Csla.ApplicationContext.GlobalContext.Clear();
             RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
 
@@ -45,10 +52,9 @@ namespace Csla.Test.RollBack
             Assert.AreEqual(false, root.IsDirty, "isdirty is false");
         }
 
-        [Test]
+        [TestMethod]
         public void YesFail()
         {
-            #warning Bug Here.
             Csla.ApplicationContext.GlobalContext.Clear();
             RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
 
@@ -82,10 +88,9 @@ namespace Csla.Test.RollBack
             Assert.AreEqual(true, root.IsDirty, "isdirty is true");
         }
 
-        [Test]
+        [TestMethod]
         public void YesFailCancel()
         {
-            #warning Bug Here.
             Csla.ApplicationContext.GlobalContext.Clear();
             RollbackRoot root = Csla.Test.RollBack.RollbackRoot.NewRoot();
             Assert.AreEqual(true, root.IsDirty, "isdirty is true");

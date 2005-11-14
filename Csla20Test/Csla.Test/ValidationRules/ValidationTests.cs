@@ -1,14 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.ValidationRules
 {
-    [TestFixture()]
+    [TestClass()]
     public class ValidationTests
     {
-        [Test()]
+        [TestMethod()]
         public void BreakRequiredRule()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -18,7 +27,7 @@ namespace Csla.Test.ValidationRules
             Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
         }
 
-        [Test()]
+        [TestMethod()]
         public void BreakLengthRule()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -34,7 +43,7 @@ namespace Csla.Test.ValidationRules
             Assert.AreEqual(0, root.BrokenRulesCollection.Count);
         }
 
-        [Test()]
+        [TestMethod()]
         public void BreakLengthRuleAndClone()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\vb\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;csla20vb</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;csla20vb;NUNIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>1</WarningLevel>
   </PropertyGroup>

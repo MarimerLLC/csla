@@ -1,15 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using NUnit.Framework;
 using Microsoft.VisualBasic;
+
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
+using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.SmartDate
 {
-    [TestFixture()]
+    [TestClass()]
     public class SmartDateTests
     {
-        [Test()]
+        [TestMethod()]
         public void TestSmartDate()
         {
             DateTime now = DateTime.Now;
@@ -17,7 +26,7 @@ namespace Csla.Test.SmartDate
             Assert.AreEqual(now, d.Date);
         }
 
-        [Test()]
+        [TestMethod()]
         public void Add()
         {
             Csla.SmartDate d2 = new Csla.SmartDate();
@@ -28,7 +37,7 @@ namespace Csla.Test.SmartDate
             Assert.AreEqual(DateAndTime.DateAdd(DateInterval.Day, 30, d2.Date), d3.Date, "Dates should be equal");
         }
 
-        [Test()]
+        [TestMethod()]
         public void Subtract()
         {
             Csla.SmartDate d2 = new Csla.SmartDate();
@@ -39,7 +48,7 @@ namespace Csla.Test.SmartDate
             Assert.AreEqual(DateAndTime.DateAdd(DateInterval.Day, -30, d2.Date), d3.Date, "Dates should be equal");
         }
 
-        [Test()]
+        [TestMethod()]
         public void Comparison()
         {
             Csla.SmartDate d2 = new Csla.SmartDate(true);
@@ -62,7 +71,7 @@ namespace Csla.Test.SmartDate
             Assert.IsTrue(d3.Equals(new DateTime(2005, 2, 2)), "should be equal to DateTime");
         }
 
-        [Test()]
+        [TestMethod()]
         public void Empty()
         {
             Csla.SmartDate d2 = new Csla.SmartDate();
@@ -75,7 +84,7 @@ namespace Csla.Test.SmartDate
             Assert.AreEqual(d2, d3, "Dates should be equal");
         }
 
-        [Test()]
+        [TestMethod()]
         public void ComparisonOperators()
         {
             Csla.SmartDate d1 = new Csla.SmartDate();

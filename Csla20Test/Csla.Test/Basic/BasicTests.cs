@@ -1,14 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.Basic
 {
-    [TestFixture]
+    [TestClass]
     public class BasicTests
     {
-        [Test]
+        [TestMethod]
         public void CreateGenRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -22,7 +31,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual(true, root.IsDirty);
         }
 
-        [Test]
+        [TestMethod]
         public void CreateRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -36,7 +45,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual(true, root.IsDirty);
         }
 
-        [Test]
+        [TestMethod]
         public void AddChild()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -46,7 +55,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual("1", root.Children[0].Data);
         }
 
-        [Test]
+        [TestMethod]
         public void AddRemoveChild()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -56,32 +65,23 @@ namespace Csla.Test.Basic
             Assert.AreEqual(0, root.Children.Count);
         }
 
-#warning "it appears that any tests that make calls to the BeginEdit(), CancelEdit(), or ApplyEdit() methods fail with the C# library"
-        [Test]
+        [TestMethod]
         public void AddRemoveAddChild()
         {
-
-            #warning Seems to be a Bug with BeginEdit and CancelEdit here.
-            Console.WriteLine("----AddRemoveAddChild----");
             Csla.ApplicationContext.GlobalContext.Clear();
             Root root = Csla.Test.Basic.Root.NewRoot();
             root.Children.Add("1");
-            Console.WriteLine("Begin edit");
             root.BeginEdit();
             root.Children.Remove(root.Children[0]);
-            Console.WriteLine("\tCount after remove: {0}", root.Children.Count);
             
             root.Children.Add("2");
-            Console.WriteLine("\tCount after add 2: {0}", root.Children.Count);
-            Console.WriteLine("Cancel edit");
             root.CancelEdit();
-            Console.WriteLine("\tCount after cancel: {0}, expected 1"+System.Environment.NewLine, root.Children.Count);
 
             Assert.AreEqual(1, root.Children.Count);
             Assert.AreEqual("1", root.Children[0].Data);
         }
 
-        [Test]
+        [TestMethod]
         public void AddGrandChild()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -93,7 +93,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual("1", child.GrandChildren[0].Data);
         }
 
-        [Test]
+        [TestMethod]
         public void AddRemoveGrandChild()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -108,7 +108,7 @@ namespace Csla.Test.Basic
         ///<remarks>"the non-generic method AreEqual cannot be used with type arguments" - though
         ///it is used with type arguments in BasicTests.vb
         ///</remarks>
-        //[Test]
+        //[TestMethod]
         //public void CloneGraph()
         //{
         //    Csla.ApplicationContext.GlobalContext.Clear();
@@ -130,7 +130,7 @@ namespace Csla.Test.Basic
         //    Assert.AreEqual<string>("GC Deserialized", ((string)(Csla.ApplicationContext.GlobalContext["GCDeserialized"])));
         //}
 
-        [Test]
+        [TestMethod]
         public void ClearChildList()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -142,7 +142,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual(0, root.Children.Count);
         }
 
-        [Test]
+        [TestMethod]
         public void NestedAddAcceptchild()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -159,7 +159,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual(3, root.Children.Count);
         }
 
-        [Test]
+        [TestMethod]
         public void NestedAddDeleteAcceptChild()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -186,7 +186,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual(false, root.Children.ContainsDeleted(childC), "Deleted child should not be in deleted collection after third applyedit");
         }
 
-        [Test]
+        [TestMethod]
         public void BasicEquality()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -206,7 +206,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual(false, Equals(null, r2), "Objects should not be equal");
         }
 
-        [Test]
+        [TestMethod]
         public void ChildEquality()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

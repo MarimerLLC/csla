@@ -1,14 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.IO
 {
-    [TestFixture]
+    [TestClass]
     public class IOTests
     {
-        [Test]
+        [TestMethod]
         public void SaveNewRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -29,7 +38,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(false, root.IsDeleted, "IsDeleted");
             Assert.AreEqual(false, root.IsDirty, "IsDirty");
         }
-        [Test]
+        [TestMethod]
         public void SaveOldRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -50,7 +59,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(false, root.IsDeleted, "IsDeleted");
             Assert.AreEqual(false, root.IsDirty, "IsDirty");
         }
-        [Test]
+        [TestMethod]
         public void LoadRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -64,7 +73,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(true, root.IsValid);
         }
 
-        [Test]
+        [TestMethod]
         public void DeleteNewRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -84,7 +93,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(true, root.IsDirty);
         }
 
-        [Test]
+        [TestMethod]
         public void DeleteOldRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -104,7 +113,7 @@ namespace Csla.Test.IO
             Assert.AreEqual(true, root.IsDirty);
         }
 
-        [Test]
+        [TestMethod]
         public void DeleteRootImmediate()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

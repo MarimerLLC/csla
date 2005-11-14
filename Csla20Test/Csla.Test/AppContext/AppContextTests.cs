@@ -2,12 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla;
-using NUnit.Framework;
 using System.Threading;
+
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
+using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.AppContext
 {
-    [NUnit.Framework.TestFixture()]
+    [TestClass()]
     public class AppContextTests
     {
         #region NoContext
@@ -18,7 +27,7 @@ namespace Csla.Test.AppContext
         /// This test only passes if "CSLA" is all capitol letters. Using "Csla",
         /// as the namespace implies, is incorrect.
         /// </remarks>
-        [NUnit.Framework.Test()]
+        [TestMethod()]
         public void NoContext()
         {
             //clear the contexts
@@ -44,7 +53,7 @@ namespace Csla.Test.AppContext
         /// Clearing the GlobalContext clears the ClientContext also? 
         /// Should the ClientContext be cleared explicitly also?
         /// </remarks>
-        [NUnit.Framework.Test()]
+        [TestMethod()]
         public void ClientContext()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -78,7 +87,7 @@ namespace Csla.Test.AppContext
         /// <summary>
         /// Test the Global Context
         /// </summary>
-        [NUnit.Framework.Test()]
+        [TestMethod()]
         public void GlobalContext()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -119,7 +128,7 @@ namespace Csla.Test.AppContext
         /// VB library does not seem to contain the DataPortalInvokeEventHandler object so I put a conditional compile
         /// flag around this method and set a warning message.
         /// </remarks>
-        [NUnit.Framework.Test()]
+        [TestMethod()]
         public void DataPortalEvents()
         {
             ApplicationContext.GlobalContext.Clear();
@@ -138,9 +147,6 @@ namespace Csla.Test.AppContext
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"], "Client invoke complete");
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["dpinvoke"], "Server invoke incorrect");
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["dpinvokecomplete"], "Server invoke compelte incorrect");
-
-            //Maybe GetRoot should be called again, here, and tested to 
-            //make sure that the EventHandlers were removed properly.
         }
 
         private void OnDataPortaInvoke(DataPortalEventArgs e)
@@ -157,7 +163,7 @@ namespace Csla.Test.AppContext
         /// <summary>
         /// Test the FaileCreate Context
         /// </summary>
-        [NUnit.Framework.Test()]
+        [TestMethod()]
         public void FailCreateContext()
         {
             ApplicationContext.GlobalContext.Clear();
@@ -182,7 +188,7 @@ namespace Csla.Test.AppContext
         #endregion
 
         #region FailFetchContext
-        [NUnit.Framework.Test()]
+        [TestMethod()]
         public void FailFetchContext()
         {
             ApplicationContext.GlobalContext.Clear();
@@ -205,7 +211,7 @@ namespace Csla.Test.AppContext
         #endregion
 
         #region FailUpdateContext
-        [NUnit.Framework.Test()]
+        [TestMethod()]
         public void FailUpdateContext()
         {
             ApplicationContext.GlobalContext.Clear();
@@ -228,7 +234,6 @@ namespace Csla.Test.AppContext
             {
                 root = root.Save();
 
-                #warning Bug Here. DataPortal_Insert override is never called.
                 Assert.Fail("Insert exception didn't occur");
             }
             catch (DataPortalException ex)
@@ -244,7 +249,7 @@ namespace Csla.Test.AppContext
         #endregion
 
         #region FailDeleteContext
-        [NUnit.Framework.Test()]
+        [TestMethod()]
         public void FailDeleteContext()
         {
             ApplicationContext.GlobalContext.Clear();

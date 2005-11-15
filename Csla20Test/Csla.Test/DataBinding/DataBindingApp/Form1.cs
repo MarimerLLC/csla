@@ -11,26 +11,19 @@ namespace DataBindingApp
     [TestFixture]
     public partial class Form1 : Form
     {
-        private TextBox textBox2;
         private ListBox listBox1;
         private Button button1;
         private TextBox textBox1;
-        Random randomNumber = new Random();
 
         public Form1()
         {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1.Location = new System.Drawing.Point(169, 26);
             this.textBox1.Size = new System.Drawing.Size(100, 20);
             this.textBox1.Text = "new element";
-            this.textBox2.Location = new System.Drawing.Point(169, 57);
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.Text = "4343";
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(12, 12);
             this.listBox1.Size = new System.Drawing.Size(120, 95);
@@ -41,7 +34,6 @@ namespace DataBindingApp
             this.ClientSize = new System.Drawing.Size(292, 266);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Text = "Databinding Tests";
             this.Load += new EventHandler(Form1_Load);
@@ -53,7 +45,6 @@ namespace DataBindingApp
         {
             dataSource = ListObject.GetList();
             dataSource.AddingNew += new AddingNewEventHandler(dataSource_AddingNew);
-            dataSource.ListChanged += new ListChangedEventHandler(dataSource_ListChanged);
             dataSource.RaiseListChangedEvents = true;
             dataSource.AllowNew = true;
             dataSource.AllowRemove = false;
@@ -61,12 +52,13 @@ namespace DataBindingApp
 
             listBox1.DataSource = dataSource;
             listBox1.DisplayMember = "Data";
+            dataSource.ListChanged += new ListChangedEventHandler(dataSource_ListChanged);
         }
 
         //create a new dataobject
         public void dataSource_AddingNew(object sender, AddingNewEventArgs e)
         {
-            e.NewObject = new ListObject.DataObject(textBox1.Text, int.Parse(textBox2.Text));
+            e.NewObject = new ListObject.DataObject(textBox1.Text, 45);
             MessageBox.Show("AddingNew event raised");
         }
 

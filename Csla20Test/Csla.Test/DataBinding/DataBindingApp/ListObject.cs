@@ -28,6 +28,12 @@ namespace DataBindingApp
                 set { _data = value; }
             }
 
+            public int ID
+            {
+                get { return _ID; }
+                set { _ID = value; }
+            }
+
             protected override object GetIdValue()
             {
                 return _ID;

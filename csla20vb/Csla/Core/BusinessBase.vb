@@ -653,8 +653,8 @@ Namespace Core
     Public Sub CancelEdit()
       mBindingEdit = False
       UndoChanges()
-      ValidationRules.SetTarget(Me)
-      AddBusinessRules()
+      'ValidationRules.SetTarget(Me)
+      'AddBusinessRules()
       OnIsDirtyChanged()
     End Sub
 
@@ -796,6 +796,7 @@ Namespace Core
 
 #Region " ValidationRules, IsValid "
 
+    <NotUndoable()> _
     Private mValidationRules As New Validation.ValidationRules(Me)
 
     ''' <summary>

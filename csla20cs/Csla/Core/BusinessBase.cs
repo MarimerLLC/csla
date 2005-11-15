@@ -653,8 +653,8 @@ namespace Csla.Core
     {
       _bindingEdit = false;
       UndoChanges();
-      ValidationRules.SetTarget(this);
-      AddBusinessRules();
+      //ValidationRules.SetTarget(this);
+      //AddBusinessRules();
       OnIsDirtyChanged();
     }
 
@@ -789,6 +789,7 @@ namespace Csla.Core
 
     #region ValidationRules, IsValid
 
+    [NotUndoable()]
     private Validation.ValidationRules _validationRules;
 
     /// <summary>

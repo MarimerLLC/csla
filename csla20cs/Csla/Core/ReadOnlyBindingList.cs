@@ -14,20 +14,26 @@ namespace Csla.Core
   /// from the list. Use the Protected IsReadOnly property
   /// to unlock the list for loading/unloading data.
   /// </remarks>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
+    "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
-  public abstract class ReadOnlyBindingList<C> : System.ComponentModel.BindingList<C>, Core.IBusinessObject
+  public abstract class ReadOnlyBindingList<C> : 
+    System.ComponentModel.BindingList<C>, Core.IBusinessObject
   {
     private bool _isReadOnly = true;
 
     /// <summary>
-    /// Gets or sets whether the list is readonly.
+    /// Gets a value indicating whether the list is readonly.
     /// </summary>
+    /// <remarks>
+    /// Subclasses can set this value to unlock the collection
+    /// in order to alter the collection's data.
+    /// </remarks>
     /// <value>True indicates that the list is readonly.</value>
-    protected bool IsReadOnly
+    public bool IsReadOnly
     {
       get { return _isReadOnly; }
-      set { _isReadOnly = value; }
+      protected set { _isReadOnly = value; }
     }
 
     protected ReadOnlyBindingList()

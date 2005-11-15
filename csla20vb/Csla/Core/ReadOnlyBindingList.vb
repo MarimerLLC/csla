@@ -20,14 +20,18 @@ Namespace Core
     Private mIsReadOnly As Boolean = True
 
     ''' <summary>
-    ''' Gets or sets whether the list is readonly.
+    ''' Gets a value indicating whether the list is readonly.
     ''' </summary>
+    ''' <remarks>
+    ''' Subclasses can set this value to unlock the collection
+    ''' in order to alter the collection's data.
+    ''' </remarks>
     ''' <value>True indicates that the list is readonly.</value>
-    Protected Property IsReadOnly() As Boolean
+    Public Property IsReadOnly() As Boolean
       Get
         Return mIsReadOnly
       End Get
-      Set(ByVal value As Boolean)
+      Protected Set(ByVal value As Boolean)
         mIsReadOnly = value
       End Set
     End Property

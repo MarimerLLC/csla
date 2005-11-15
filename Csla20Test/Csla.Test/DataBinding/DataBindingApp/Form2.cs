@@ -9,13 +9,13 @@ using NUnit.Framework;
 namespace DataBindingApp
 {
     [TestFixture]
-    public partial class Form1 : Form
+    public partial class Form2 : Form
     {
         private ListBox listBox1;
         private Button button1;
         private TextBox textBox1;
 
-        public Form1()
+        public Form2()
         {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -39,8 +39,8 @@ namespace DataBindingApp
             this.Load += new EventHandler(Form1_Load);
         }
 
-        private ListObject dataSource;
-        //private BindingList<MyObject> dataSource;
+        //private ListObject dataSource;
+        private BindingList<MyObject> dataSource;
 
         public class MyObject
         {
@@ -68,20 +68,20 @@ namespace DataBindingApp
 
         void Form1_Load(object sender, EventArgs e)
         {
-            //dataSource = new BindingList<MyObject>();
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    dataSource.Add(new MyObject("element" + i, i));
-            //}
+            dataSource = new BindingList<MyObject>();
+            for (int i = 0; i < 5; i++)
+            {
+                dataSource.Add(new MyObject("element" + i, i));
+            }
 
-            dataSource = ListObject.GetList();
+            //dataSource = ListObject.GetList();
             dataSource.RaiseListChangedEvents = true;
             dataSource.AllowNew = true;
             dataSource.AllowRemove = false;
             dataSource.AllowEdit = false;
 
             listBox1.DataSource = dataSource;
-            listBox1.DisplayMember = "Data";
+            listBox1.DisplayMember = "Name";
             dataSource.AddingNew += new AddingNewEventHandler(dataSource_AddingNew);
             dataSource.ListChanged += new ListChangedEventHandler(dataSource_ListChanged);
         }
@@ -89,38 +89,38 @@ namespace DataBindingApp
         //create a new dataobject
         public void dataSource_AddingNew(object sender, AddingNewEventArgs e)
         {
-            e.NewObject = new ListObject.DataObject(textBox1.Text, 45);
-            //e.NewObject = new MyObject(textBox1.Text, 45);
+            //e.NewObject = new ListObject.DataObject(textBox1.Text, 45);
+            e.NewObject = new MyObject(textBox1.Text, 45);
             MessageBox.Show("AddingNew event raised");
         }
 
         //add the new object and test ICancelAddNew interface
         private void button1_Click(object sender, EventArgs e)
         {
-            ListObject.DataObject newObject = dataSource.AddNew();
+            //ListObject.DataObject newObject = dataSource.AddNew();
 
-            //cancel new if textbox contains spaces
-            if (newObject.Data.Contains(" "))
-            {
-                MessageBox.Show("CancelNew: data property cannot contain spaces");
-                //discards pending object
-                dataSource.CancelNew(dataSource.IndexOf(newObject));
-                Console.WriteLine(dataSource.IndexOf(newObject));
-            }
-            else
-            {
-                //commits pending object
-                dataSource.EndNew(dataSource.IndexOf(newObject));
-            }
-
-            //MyObject newObject = dataSource.AddNew();
-
-            //if (newObject.Name.Contains(" "))
+            ////cancel new if textbox contains spaces
+            //if (newObject.Data.Contains(" "))
             //{
-            //    MessageBox.Show("CancelNew: name property cannot contain spaces");
+            //    MessageBox.Show("CancelNew: data property cannot contain spaces");
             //    //discards pending object
             //    dataSource.CancelNew(dataSource.IndexOf(newObject));
+            //    Console.WriteLine(dataSource.IndexOf(newObject));
             //}
+            //else
+            //{
+            //    //commits pending object
+            //    dataSource.EndNew(dataSource.IndexOf(newObject));
+            //}
+
+            MyObject newObject = dataSource.AddNew();
+
+            if (newObject.Name.Contains(" "))
+            {
+                MessageBox.Show("CancelNew: name property cannot contain spaces");
+                //discards pending object
+                dataSource.CancelNew(dataSource.IndexOf(newObject));
+            }
         }
 
 
@@ -130,17 +130,17 @@ namespace DataBindingApp
         }
 
         [Test]
-        public void RunFormWithBusinessListBaseObj()
+        public void RunFormWithRegularListObj()
         {
-            Main();
+            RunForm2();
         }
 
         [STAThread]
-        public static void Main()
+        public static void RunForm2()
         {
             Application.EnableVisualStyles();
-            Form1 newForm1 = new Form1();
-            Application.Run(newForm1);
+            Form2 newForm2 = new Form2();
+            Application.Run(newForm2);
         }
 
         private void InitializeComponent()

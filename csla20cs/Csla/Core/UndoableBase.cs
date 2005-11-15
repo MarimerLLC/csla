@@ -132,53 +132,55 @@ namespace Csla.Core
       // so just do nothing in that case
       if (EditLevel > 0)
       {
+        Hashtable state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           BinaryFormatter formatter = new BinaryFormatter();
-          Hashtable state = (Hashtable)formatter.Deserialize(buffer);
-          Type currentType = this.GetType();
-          FieldInfo[] fields;
-          string fieldName;
+          state = (Hashtable)formatter.Deserialize(buffer);
+        }
 
-          do
+        Type currentType = this.GetType();
+        FieldInfo[] fields;
+        string fieldName;
+
+        do
+        {
+          // get the list of fields in this type
+          fields = currentType.GetFields(
+              BindingFlags.NonPublic |
+              BindingFlags.Instance |
+              BindingFlags.Public);
+          foreach (FieldInfo field in fields)
           {
-            // get the list of fields in this type
-            fields = currentType.GetFields(
-                BindingFlags.NonPublic |
-                BindingFlags.Instance |
-                BindingFlags.Public);
-            foreach (FieldInfo field in fields)
+            if (field.DeclaringType == currentType)
             {
-              if (field.DeclaringType == currentType)
+              // see if the field is undoable or not
+              if (!NotUndoableField(field))
               {
-                // see if the field is undoable or not
-                if (!NotUndoableField(field))
-                {
-                  // the field is undoable, so restore its value
-                  object value = field.GetValue(this);
+                // the field is undoable, so restore its value
+                object value = field.GetValue(this);
 
-                  if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType))
+                if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType))
+                {
+                  // make sure the variable has a value
+                  if (value != null)
                   {
-                    // make sure the variable has a value
-                    if (value != null)
-                    {
-                      // this is a child object, cascade the call.
-                      ((Core.IEditableObject)value).UndoChanges();
-                    }
+                    // this is a child object, cascade the call.
+                    ((Core.IEditableObject)value).UndoChanges();
                   }
-                  else
-                  {
-                    // this is a regular field, restore its value
-                    fieldName = field.DeclaringType.Name + "!" + field.Name;
-                    field.SetValue(this, state[fieldName]);
-                  }
+                }
+                else
+                {
+                  // this is a regular field, restore its value
+                  fieldName = field.DeclaringType.Name + "!" + field.Name;
+                  field.SetValue(this, state[fieldName]);
                 }
               }
             }
-            currentType = currentType.BaseType;
-          } while (currentType != typeof(UndoableBase));
-        }
+          }
+          currentType = currentType.BaseType;
+        } while (currentType != typeof(UndoableBase));
       }
     }
 

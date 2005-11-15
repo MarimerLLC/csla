@@ -114,50 +114,51 @@ Namespace Core
       ' undo below the level where we stacked states,
       ' so just do nothing in that case
       If EditLevel > 0 Then
+        Dim state As Hashtable
         Using buffer As New MemoryStream(mStateStack.Pop())
           buffer.Position = 0
           Dim formatter As New BinaryFormatter()
-          Dim state As Hashtable = CType(formatter.Deserialize(buffer), Hashtable)
+          state = CType(formatter.Deserialize(buffer), Hashtable)
+        End Using
 
-          Dim currentType As Type = Me.GetType
-          Dim fields() As FieldInfo
-          Dim field As FieldInfo
-          Dim fieldName As String
+        Dim currentType As Type = Me.GetType
+        Dim fields() As FieldInfo
+        Dim field As FieldInfo
+        Dim fieldName As String
 
 
-          Do
-            ' get the list of fields in this type
-            fields = currentType.GetFields( _
-                                    BindingFlags.NonPublic Or _
-                                    BindingFlags.Instance Or _
-                                    BindingFlags.Public)
+        Do
+          ' get the list of fields in this type
+          fields = currentType.GetFields( _
+                                  BindingFlags.NonPublic Or _
+                                  BindingFlags.Instance Or _
+                                  BindingFlags.Public)
 
-            For Each field In fields
-              If field.DeclaringType Is currentType Then
-                ' see if the field is undoable or not
-                If Not NotUndoableField(field) Then
-                  ' the field is undoable, so restore its value
-                  Dim value As Object = field.GetValue(Me)
+          For Each field In fields
+            If field.DeclaringType Is currentType Then
+              ' see if the field is undoable or not
+              If Not NotUndoableField(field) Then
+                ' the field is undoable, so restore its value
+                Dim value As Object = field.GetValue(Me)
 
-                  If GetType(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType) Then
-                    ' this is a child object, cascade the call
-                    ' first make sure the variable has a value
-                    If Not value Is Nothing Then
-                      DirectCast(value, IEditableObject).UndoChanges()
-                    End If
-
-                  Else
-                    ' this is a regular field, restore its value
-                    fieldName = field.DeclaringType.Name & "!" & field.Name
-                    field.SetValue(Me, state.Item(fieldName))
+                If GetType(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType) Then
+                  ' this is a child object, cascade the call
+                  ' first make sure the variable has a value
+                  If Not value Is Nothing Then
+                    DirectCast(value, IEditableObject).UndoChanges()
                   End If
+
+                Else
+                  ' this is a regular field, restore its value
+                  fieldName = field.DeclaringType.Name & "!" & field.Name
+                  field.SetValue(Me, state.Item(fieldName))
                 End If
               End If
-            Next
+            End If
+          Next
 
-            currentType = currentType.BaseType
-          Loop Until currentType Is GetType(UndoableBase)
-        End Using
+          currentType = currentType.BaseType
+        Loop Until currentType Is GetType(UndoableBase)
       End If
 
     End Sub

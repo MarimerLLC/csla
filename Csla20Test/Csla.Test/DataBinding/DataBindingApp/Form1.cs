@@ -40,19 +40,49 @@ namespace DataBindingApp
         }
 
         private ListObject dataSource;
+        //private BindingList<MyObject> dataSource;
+
+        public class MyObject
+        {
+            private string _name;
+            private int _age;
+
+            public string Name
+            {
+                get { return _name; }
+                set { _name = value; }
+            }
+
+            public int Age
+            {
+                get { return _age; }
+                set { _age = value; }
+            }
+
+            public MyObject(string name, int age)
+            {
+                _name = name;
+                _age = age;
+            }
+        }
 
         void Form1_Load(object sender, EventArgs e)
         {
+            //dataSource = new BindingList<MyObject>();
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    dataSource.Add(new MyObject("element" + i, i));
+            //}
+
             dataSource = ListObject.GetList();
-            dataSource.AddingNew += new AddingNewEventHandler(dataSource_AddingNew);
             dataSource.RaiseListChangedEvents = true;
             dataSource.AllowNew = true;
             dataSource.AllowRemove = false;
             dataSource.AllowEdit = false;
 
-
             listBox1.DataSource = dataSource;
             listBox1.DisplayMember = "Data";
+            dataSource.AddingNew += new AddingNewEventHandler(dataSource_AddingNew);
             dataSource.ListChanged += new ListChangedEventHandler(dataSource_ListChanged);
         }
 
@@ -60,6 +90,7 @@ namespace DataBindingApp
         public void dataSource_AddingNew(object sender, AddingNewEventArgs e)
         {
             e.NewObject = new ListObject.DataObject(textBox1.Text, 45);
+            //e.NewObject = new MyObject(textBox1.Text, 45);
             MessageBox.Show("AddingNew event raised");
         }
 
@@ -72,10 +103,26 @@ namespace DataBindingApp
             if (newObject.Data.Contains(" "))
             {
                 MessageBox.Show("CancelNew: data property cannot contain spaces");
+                //discards pending object
                 dataSource.CancelNew(dataSource.IndexOf(newObject));
+                Console.WriteLine(dataSource.IndexOf(newObject));
             }
-            dataSource.EndNew(dataSource.IndexOf(newObject));
+            else
+            {
+                //commits pending object
+                dataSource.EndNew(dataSource.IndexOf(newObject));
+            }
+
+            //MyObject newObject = dataSource.AddNew();
+
+            //if (newObject.Name.Contains(" "))
+            //{
+            //    MessageBox.Show("CancelNew: name property cannot contain spaces");
+            //    //discards pending object
+            //    dataSource.CancelNew(dataSource.IndexOf(newObject));
+            //}
         }
+
 
         void dataSource_ListChanged(object sender, ListChangedEventArgs e)
         {

@@ -44,6 +44,12 @@ namespace DataBindingApp
                 this.MarkAsChild();
                 _data = data;
                 _number = number;
+                this.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DataObject_PropertyChanged);
+            }
+
+            public void DataObject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            {
+                Console.WriteLine("Property has changed");
             }
         }
 

@@ -63,7 +63,7 @@ namespace DataBindingApp
             MessageBox.Show("AddingNew event raised");
         }
 
-        //add the new object
+        //add the new object and test ICancelAddNew interface
         private void button1_Click(object sender, EventArgs e)
         {
             ListObject.DataObject newObject = dataSource.AddNew();
@@ -74,6 +74,7 @@ namespace DataBindingApp
                 MessageBox.Show("CancelNew: data property cannot contain spaces");
                 dataSource.CancelNew(dataSource.IndexOf(newObject));
             }
+            dataSource.EndNew(dataSource.IndexOf(newObject));
         }
 
         void dataSource_ListChanged(object sender, ListChangedEventArgs e)

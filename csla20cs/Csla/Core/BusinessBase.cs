@@ -299,7 +299,7 @@ namespace Csla.Core
     #region Authorization
 
     [NotUndoable()]
-    private Security.AuthorizationRules _authorizationRules = new Security.AuthorizationRules();
+    private Security.AuthorizationRules _authorizationRules; 
 
     /// <summary>
     /// Override this method to add authorization
@@ -321,7 +321,12 @@ namespace Csla.Core
     /// </remarks>
     protected Security.AuthorizationRules AuthorizationRules
     {
-      get { return _authorizationRules; }
+      get 
+      { 
+        if (_authorizationRules == null)
+          _authorizationRules = new Security.AuthorizationRules();
+        return _authorizationRules; 
+      }
     }
 
     /// <summary>
@@ -401,17 +406,17 @@ namespace Csla.Core
     public virtual bool CanReadProperty(string propertyName)
     {
       bool result = true;
-      if (_authorizationRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0)
+      if (AuthorizationRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0)
       {
         // some users are explicitly granted read access
         // in which case all other users are denied.
-        if (!_authorizationRules.IsReadAllowed(propertyName))
+        if (!AuthorizationRules.IsReadAllowed(propertyName))
           result = false;
       }
-      else if (_authorizationRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0)
+      else if (AuthorizationRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0)
       {
         // some users are explicitly denied read access.
-        if (_authorizationRules.IsReadDenied(propertyName))
+        if (AuthorizationRules.IsReadDenied(propertyName))
           result = false;
       }
       return result;
@@ -495,17 +500,17 @@ namespace Csla.Core
     public virtual bool CanWriteProperty(string propertyName)
     {
       bool result = true;
-      if (_authorizationRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0)
+      if (AuthorizationRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0)
       {
         // some users are explicitly granted write access
         // in which case all other users are denied
-        if (!_authorizationRules.IsWriteAllowed(propertyName))
+        if (!AuthorizationRules.IsWriteAllowed(propertyName))
           result = false;
       }
-      else if (_authorizationRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0)
+      else if (AuthorizationRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0)
       {
         // some users are explicitly denied write access
-        if (_authorizationRules.IsWriteDenied(propertyName))
+        if (AuthorizationRules.IsWriteDenied(propertyName))
           result = false;
       }
       return result;
@@ -604,7 +609,6 @@ namespace Csla.Core
     /// should be honored. We include extra code to detect this and do
     /// nothing for subsequent calls.
     /// </remarks>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
     void System.ComponentModel.IEditableObject.EndEdit()
     {
       if (_bindingEdit)
@@ -985,7 +989,8 @@ namespace Csla.Core
       {
         if (!IsValid)
         {
-          Validation.BrokenRule rule = ValidationRules.GetBrokenRules().GetFirstBrokenRule(columnName);
+          Validation.BrokenRule rule = 
+            ValidationRules.GetBrokenRules().GetFirstBrokenRule(columnName);
           if (rule == null)
             return String.Empty;
           return rule.Description;

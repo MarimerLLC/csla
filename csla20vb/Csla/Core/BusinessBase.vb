@@ -280,7 +280,7 @@ Namespace Core
 #Region " Authorization "
 
     <NotUndoable()> _
-    Private mAuthorizationRules As New Security.AuthorizationRules
+    Private mAuthorizationRules As Security.AuthorizationRules
 
     ''' <summary>
     ''' Override this method to add authorization
@@ -301,6 +301,9 @@ Namespace Core
     ''' </remarks>
     Protected ReadOnly Property AuthorizationRules() As Security.AuthorizationRules
       Get
+        If mAuthorizationRules Is Nothing Then
+          mAuthorizationRules = New Security.AuthorizationRules
+        End If
         Return mAuthorizationRules
       End Get
     End Property
@@ -389,16 +392,16 @@ Namespace Core
     Public Overridable Function CanReadProperty(ByVal propertyName As String) As Boolean
 
       Dim result As Boolean = True
-      If mAuthorizationRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0 Then
+      If AuthorizationRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0 Then
         ' some users are explicitly granted read access
         ' in which case all other users are denied
-        If Not mAuthorizationRules.IsReadAllowed(propertyName) Then
+        If Not AuthorizationRules.IsReadAllowed(propertyName) Then
           result = False
         End If
 
-      ElseIf mAuthorizationRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0 Then
+      ElseIf AuthorizationRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0 Then
         ' some users are explicitly denied read access
-        If mAuthorizationRules.IsReadDenied(propertyName) Then
+        If AuthorizationRules.IsReadDenied(propertyName) Then
           result = False
         End If
       End If
@@ -489,16 +492,16 @@ Namespace Core
     Public Overridable Function CanWriteProperty(ByVal propertyName As String) As Boolean
 
       Dim result As Boolean = True
-      If mAuthorizationRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0 Then
+      If AuthorizationRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0 Then
         ' some users are explicitly granted write access
         ' in which case all other users are denied
-        If Not mAuthorizationRules.IsWriteAllowed(propertyName) Then
+        If Not AuthorizationRules.IsWriteAllowed(propertyName) Then
           result = False
         End If
 
-      ElseIf mAuthorizationRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0 Then
+      ElseIf AuthorizationRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0 Then
         ' some users are explicitly denied write access
-        If mAuthorizationRules.IsWriteDenied(propertyName) Then
+        If AuthorizationRules.IsWriteDenied(propertyName) Then
           result = False
         End If
       End If

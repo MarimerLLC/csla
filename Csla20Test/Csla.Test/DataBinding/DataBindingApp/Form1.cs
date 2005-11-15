@@ -50,6 +50,7 @@ namespace DataBindingApp
             dataSource.AllowRemove = false;
             dataSource.AllowEdit = false;
 
+
             listBox1.DataSource = dataSource;
             listBox1.DisplayMember = "Data";
             dataSource.ListChanged += new ListChangedEventHandler(dataSource_ListChanged);
@@ -66,6 +67,13 @@ namespace DataBindingApp
         private void button1_Click(object sender, EventArgs e)
         {
             ListObject.DataObject newObject = dataSource.AddNew();
+
+            //cancel new if textbox contains spaces
+            if (newObject.Data.Contains(" "))
+            {
+                MessageBox.Show("CancelNew: data property cannot contain spaces");
+                dataSource.CancelNew(dataSource.IndexOf(newObject));
+            }
         }
 
         void dataSource_ListChanged(object sender, ListChangedEventArgs e)

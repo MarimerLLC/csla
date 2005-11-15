@@ -233,10 +233,12 @@ namespace Csla.Core
     /// directly from the property to be checked.
     /// </para>
     /// </remarks>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [System.Runtime.CompilerServices.MethodImpl(
+      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     protected void PropertyHasChanged()
     {
-      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      string propertyName = 
+        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
       PropertyHasChanged(propertyName);
     }
 
@@ -611,7 +613,7 @@ namespace Csla.Core
 
     #endregion
 
-    #region Being/Cancel/ApplyEdit
+    #region Begin/Cancel/ApplyEdit
 
     /// <summary>
     /// Starts a nested edit on the object.

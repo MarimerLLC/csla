@@ -272,12 +272,6 @@
 
   </data>
 
-  <data name="NoDeleteRootException" xml:space="preserve">
-
-    <value>Invalid for root objects - use Delete instead</value>
-
-  </data>
-
   <data name="NoSaveChildException" xml:space="preserve">
 
     <value>Can not directly save a child object</value>
@@ -461,6 +455,12 @@
   <data name="PropertySetNotAllowed" xml:space="preserve">
 
     <value>Property set not allowed</value>
+
+  </data>
+
+  <data name="NoDeleteRootException" xml:space="preserve">
+
+    <value>Invalid for root objects - use Delete instead</value>
 
   </data>
 

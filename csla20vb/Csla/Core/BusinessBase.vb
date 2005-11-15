@@ -586,8 +586,8 @@ Namespace Core
           ' called on us, and now we've been canceled back to 
           ' where we were added so we should have ourselves  
           ' removed from the parent collection
-          If Not mParent Is Nothing Then
-            mParent.RemoveChild(Me)
+          If Not Parent Is Nothing Then
+            Parent.RemoveChild(Me)
           End If
         End If
       End If

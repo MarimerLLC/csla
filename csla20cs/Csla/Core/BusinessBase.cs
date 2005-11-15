@@ -588,8 +588,8 @@ namespace Csla.Core
           // called on us, and now we've been cancelled back to
           // where we were added so we should have ourselves
           // removed from the parent collection
-          if (_parent != null)
-            _parent.RemoveChild(this);
+          if (Parent != null)
+            Parent.RemoveChild(this);
         }
       }
     }

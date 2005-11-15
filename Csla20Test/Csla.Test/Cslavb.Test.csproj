@@ -59,9 +59,6 @@
     <Compile Include="Basic\NameValueListObj.cs" />
     <Compile Include="Basic\ReadOnlyList.cs" />
     <Compile Include="Basic\Root.cs" />
-    <Compile Include="Customer\Customer.cs" />
-    <Compile Include="Customer\CustomerList.cs" />
-    <Compile Include="Customer\CustomerTests.cs" />
     <Compile Include="DataBinding\ChildEntity.cs" />
     <Compile Include="DataBinding\ChildEntityList.cs" />
     <Compile Include="DataBinding\DataBindingTests.cs" />

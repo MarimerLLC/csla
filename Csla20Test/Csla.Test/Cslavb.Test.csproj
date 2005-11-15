@@ -30,7 +30,7 @@
   <ItemGroup>
     <Reference Include="Csla, Version=2.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\csla20cs\Csla\bin\Debug\Csla.dll</HintPath>
+      <HintPath>..\..\csla20vb\Csla\bin\Debug\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Web, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -348,10 +348,13 @@ namespace Csla.Core
     /// </para>
     /// </remarks>
     /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    /// result should cause an exception.</param>    
+    [System.Runtime.CompilerServices.MethodImpl(
+      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public bool CanReadProperty(bool throwOnFalse)
     {
-      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      string propertyName = 
+        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
       bool result = CanReadProperty(propertyName);
       if (throwOnFalse && result == false)
         throw new System.Security.SecurityException(Resources.PropertyGetNotAllowed);
@@ -771,7 +774,7 @@ namespace Csla.Core
 
     #endregion
 
-    #region IClonable
+    #region ICloneable
 
     object ICloneable.Clone()
     {

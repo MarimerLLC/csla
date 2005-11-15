@@ -18,6 +18,29 @@ namespace Csla.Test.Basic
     public class BasicTests
     {
         [TestMethod]
+        public void TestReadOnlyList()
+        {
+            ReadOnlyList list = ReadOnlyList.GetReadOnlyList();
+            Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["ReadOnlyList"]);
+        }
+
+        [TestMethod]
+        public void TestNameValueList()
+        {
+            NameValueListObj nvList = NameValueListObj.GetNameValueListObj();
+            Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["NameValueListObj"]);
+        }
+
+        [TestMethod]
+        public void TestCommandBase()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            CommandObject obj = new CommandObject();
+            obj.ExecuteServerCode();
+            Assert.AreEqual("DataPortal_Execute called", Csla.ApplicationContext.GlobalContext["CommandObject"]);
+        }
+
+        [TestMethod]
         public void CreateGenRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

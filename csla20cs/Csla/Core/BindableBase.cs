@@ -22,22 +22,27 @@ namespace Csla.Core
     /// <summary>
     /// Implements a serialization-safe IsDirtyChanged event.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", 
+      "CA1062:ValidateArgumentsOfPublicMethods")]
     public event PropertyChangedEventHandler PropertyChanged
     {
       add
       {
         if (value.Method.IsPublic && (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic))
-          _serializableHandlers = (PropertyChangedEventHandler)System.Delegate.Combine(_serializableHandlers, value);
+          _serializableHandlers = (PropertyChangedEventHandler)
+            System.Delegate.Combine(_serializableHandlers, value);
         else
-          _nonSerializableHandlers = (PropertyChangedEventHandler)System.Delegate.Combine(_nonSerializableHandlers, value);
+          _nonSerializableHandlers = (PropertyChangedEventHandler)
+            System.Delegate.Combine(_nonSerializableHandlers, value);
       }
       remove
       {
         if (value.Method.IsPublic && (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic))
-          _serializableHandlers = (PropertyChangedEventHandler)System.Delegate.Remove(_serializableHandlers, value);
+          _serializableHandlers = (PropertyChangedEventHandler)
+            System.Delegate.Remove(_serializableHandlers, value);
         else
-          _nonSerializableHandlers = (PropertyChangedEventHandler)System.Delegate.Remove(_nonSerializableHandlers, value);
+          _nonSerializableHandlers = (PropertyChangedEventHandler)
+            System.Delegate.Remove(_nonSerializableHandlers, value);
       }
     }
 

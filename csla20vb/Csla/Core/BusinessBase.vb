@@ -254,6 +254,27 @@ Namespace Core
 
     End Sub
 
+    ''' <summary>
+    ''' Returns True if this object is both dirty and valid.
+    ''' </summary>
+    ''' <remarks>
+    ''' An object is considered dirty (changed) if 
+    ''' <see cref="P:Csla.BusinessBase.IsDirty" /> returns True. It is
+    ''' considered valid if <see cref="P:Csla.BusinessBase.IsValid" /> 
+    ''' returns True. The IsSavable property is
+    ''' a combination of these two properties. It is provided specifically to
+    ''' enable easy binding to a Save or OK button on a form so that button
+    ''' can automatically enable/disable as the object's state changes between
+    ''' being savable and not savable. 
+    ''' </remarks>
+    ''' <returns>A value indicating if this object is new.</returns>
+    <Browsable(False)> _
+    Public Overridable ReadOnly Property IsSavable() As Boolean
+      Get
+        Return IsDirty AndAlso IsValid
+      End Get
+    End Property
+
 #End Region
 
 #Region " Authorization "
@@ -484,31 +505,6 @@ Namespace Core
       Return result
 
     End Function
-
-#End Region
-
-#Region " IsSavable "
-
-    ''' <summary>
-    ''' Returns True if this object is both dirty and valid.
-    ''' </summary>
-    ''' <remarks>
-    ''' An object is considered dirty (changed) if 
-    ''' <see cref="P:Csla.BusinessBase.IsDirty" /> returns True. It is
-    ''' considered valid if <see cref="P:Csla.BusinessBase.IsValid" /> 
-    ''' returns True. The IsSavable property is
-    ''' a combination of these two properties. It is provided specifically to
-    ''' enable easy binding to a Save or OK button on a form so that button
-    ''' can automatically enable/disable as the object's state changes between
-    ''' being savable and not savable. 
-    ''' </remarks>
-    ''' <returns>A value indicating if this object is new.</returns>
-    <Browsable(False)> _
-    Public Overridable ReadOnly Property IsSavable() As Boolean
-      Get
-        Return IsDirty AndAlso IsValid
-      End Get
-    End Property
 
 #End Region
 

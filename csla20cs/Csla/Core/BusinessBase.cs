@@ -22,7 +22,9 @@ namespace Csla.Core
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class BusinessBase : Csla.Core.UndoableBase, System.ComponentModel.IEditableObject, ICloneable, IDataErrorInfo
+  public abstract class BusinessBase : Csla.Core.UndoableBase,
+    System.ComponentModel.IEditableObject, System.ComponentModel.IDataErrorInfo, 
+    ICloneable
   {
 
     #region Constructors
@@ -35,7 +37,7 @@ namespace Csla.Core
 
     #endregion
 
-    #region IsNew, IsDeleted, IsDirty
+    #region IsNew, IsDeleted, IsDirty, IsSavable
 
     // keep track of whether we are new, deleted or dirty
     private bool _isNew = true;
@@ -270,6 +272,26 @@ namespace Csla.Core
       OnIsDirtyChanged();
     }
 
+    /// <summary>
+    /// Returns True if this object is both dirty and valid.
+    /// </summary>
+    /// <remarks>
+    /// An object is considered dirty (changed) if 
+    /// <see cref="Csla.BusinessBase.IsDirty" /> returns True. It is
+    /// considered valid if <see cref="Csla.BusinessBase.IsValid" /> 
+    /// returns True. The IsSavable property is
+    /// a combination of these two properties. It is provided specifically to
+    /// enable easy binding to a Save or OK button on a form so that button
+    /// can automatically enable/disable as the object's state changes between
+    /// being savable and not savable. 
+    /// </remarks>
+    /// <returns>A value indicating if this object is new.</returns>
+    [Browsable(false)]
+    public virtual bool IsSavable
+    {
+      get { return (IsDirty && IsValid); }
+    }
+
     #endregion
 
     #region Authorization
@@ -485,30 +507,6 @@ namespace Csla.Core
           result = false;
       }
       return result;
-    }
-
-    #endregion
-
-    #region IsSavable
-
-    /// <summary>
-    /// Returns True if this object is both dirty and valid.
-    /// </summary>
-    /// <remarks>
-    /// An object is considered dirty (changed) if 
-    /// <see cref="Csla.BusinessBase.IsDirty" /> returns True. It is
-    /// considered valid if <see cref="Csla.BusinessBase.IsValid" /> 
-    /// returns True. The IsSavable property is
-    /// a combination of these two properties. It is provided specifically to
-    /// enable easy binding to a Save or OK button on a form so that button
-    /// can automatically enable/disable as the object's state changes between
-    /// being savable and not savable. 
-    /// </remarks>
-    /// <returns>A value indicating if this object is new.</returns>
-    [Browsable(false)]
-    public virtual bool IsSavable
-    {
-      get { return (IsDirty && IsValid); }
     }
 
     #endregion

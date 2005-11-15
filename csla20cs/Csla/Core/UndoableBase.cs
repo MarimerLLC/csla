@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Runtime.Serialization;
@@ -21,7 +22,7 @@ namespace Csla.Core
   {
     // keep a stack of object state values.
     [NotUndoable()]
-    private Stack _stateStack = new Stack();
+    private Stack<byte[]> _stateStack = new Stack<byte[]>();
 
     protected UndoableBase()
     {
@@ -131,7 +132,7 @@ namespace Csla.Core
       // so just do nothing in that case
       if (EditLevel > 0)
       {
-        using (MemoryStream buffer = new MemoryStream((byte[])_stateStack.Pop()))
+        using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           BinaryFormatter formatter = new BinaryFormatter();

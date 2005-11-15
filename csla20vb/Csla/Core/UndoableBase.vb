@@ -22,7 +22,7 @@ Namespace Core
 
     ' keep a stack of object state values
     <NotUndoable()> _
-    Private mStateStack As New Stack
+    Private mStateStack As New Stack(Of Byte())
 
     Protected Sub New()
 
@@ -114,7 +114,7 @@ Namespace Core
       ' undo below the level where we stacked states,
       ' so just do nothing in that case
       If EditLevel > 0 Then
-        Using buffer As New MemoryStream(CType(mStateStack.Pop(), Byte()))
+        Using buffer As New MemoryStream(mStateStack.Pop())
           buffer.Position = 0
           Dim formatter As New BinaryFormatter()
           Dim state As Hashtable = CType(formatter.Deserialize(buffer), Hashtable)

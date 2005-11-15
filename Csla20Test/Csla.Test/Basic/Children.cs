@@ -10,9 +10,7 @@ namespace Csla.Test.Basic
     {
         public void Add(string data)
         {
-            Console.WriteLine("Adding Child to Children");
             this.Add(Child.NewChild(data));
-            Console.WriteLine("\tNum children: {0}", this.Items.Count);
         }
 
 

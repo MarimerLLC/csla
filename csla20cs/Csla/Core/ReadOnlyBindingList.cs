@@ -50,9 +50,10 @@ namespace Csla.Core
     {
       if (!IsReadOnly)
       {
+        bool oldValue = AllowRemove;
         AllowRemove = true;
         base.ClearItems();
-        AllowRemove = false;
+        AllowRemove = oldValue;
       }
       else
         throw new NotSupportedException(Resources.ClearInvalidException);
@@ -88,9 +89,10 @@ namespace Csla.Core
     {
       if (!IsReadOnly)
       {
+        bool oldValue = AllowRemove;
         AllowRemove = true;
         base.RemoveItem(index);
-        AllowRemove = false;
+        AllowRemove = oldValue;
       }
       else
         throw new NotSupportedException(Resources.RemoveInvalidException);

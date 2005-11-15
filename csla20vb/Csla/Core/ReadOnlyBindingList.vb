@@ -47,9 +47,10 @@ Namespace Core
     ''' </summary>
     Protected Overrides Sub ClearItems()
       If Not IsReadOnly Then
+        Dim oldValue As Boolean = AllowRemove
         AllowRemove = True
         MyBase.ClearItems()
-        AllowRemove = False
+        AllowRemove = oldValue
       Else
         Throw New NotSupportedException(My.Resources.ClearInvalidException)
       End If
@@ -83,9 +84,10 @@ Namespace Core
     ''' </summary>
     Protected Overrides Sub RemoveItem(ByVal index As Integer)
       If Not IsReadOnly Then
+        Dim oldValue As Boolean = AllowRemove
         AllowRemove = True
         MyBase.RemoveItem(index)
-        AllowRemove = False
+        AllowRemove = oldValue
 
       Else
         Throw New NotSupportedException(My.Resources.RemoveInvalidException)

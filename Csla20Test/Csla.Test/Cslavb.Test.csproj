@@ -67,6 +67,8 @@
     <Compile Include="DataPortal\DataPortalTests.cs" />
     <Compile Include="DataPortal\DpRoot.cs" />
     <Compile Include="IO\IOTests.cs" />
+    <Compile Include="Nullable\NullableObject.cs" />
+    <Compile Include="Nullable\NullableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Serialization\TestEventSink.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="ValidationRules\HasRulesManager.cs" />
+    <Compile Include="ValidationRules\HasRulesManager2.cs" />
     <Compile Include="ValidationRules\MaxLengthArgs.cs" />
     <Compile Include="ValidationRules\ValidationTests.cs" />
   </ItemGroup>

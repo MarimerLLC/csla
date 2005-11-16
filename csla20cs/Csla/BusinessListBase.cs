@@ -11,7 +11,8 @@ namespace Csla
   Implements Core.IEditableCollection
   Implements ICloneable
 */
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+  [System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
   public abstract class BusinessListBase<T, C> : System.ComponentModel.BindingList<C>,
       Core.IEditableCollection, ICloneable
@@ -102,27 +103,6 @@ namespace Csla
           if (!child.IsValid)
             return false;
         return true;
-      }
-    }
-
-    /// <summary>
-    /// Returns a String indicating why the collection
-    /// is not currently valid.
-    /// </summary>
-    /// <remarks>
-    /// This property should return an empty string
-    /// unless IsValid is returning False.
-    /// </remarks>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual string ErrorText
-    {
-      get
-      {
-        if (IsValid)
-          return String.Empty;
-        else
-          return "One or more child objects are in " +
-              "an invalid state";
       }
     }
 

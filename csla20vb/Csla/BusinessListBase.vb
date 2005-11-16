@@ -90,27 +90,6 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
     End Get
   End Property
 
-  ''' <summary>
-  ''' Returns a String indicating why the collection
-  ''' is not currently valid.
-  ''' </summary>
-  ''' <remarks>
-  ''' This property should return an empty string
-  ''' unless IsValid is returning False.
-  ''' </remarks>
-  <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Public Overridable ReadOnly Property ErrorText() As String
-    Get
-      If IsValid Then
-        Return ""
-
-      Else
-        Return "One or more child objects are in " & _
-          "an invalid state"
-      End If
-    End Get
-  End Property
-
 #End Region
 
 #Region " Begin/Cancel/ApplyEdit "

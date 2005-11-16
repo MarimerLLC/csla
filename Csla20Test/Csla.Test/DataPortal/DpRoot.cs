@@ -8,14 +8,14 @@ namespace Csla.Test.DataPortal
     public class DpRoot : BusinessBase<DpRoot>
     {
         private string _data;
-        private string _auth = "Blah - initial value";
+        private string _auth = "No value";
 
         protected override object GetIdValue()
         {
             return _data;
         }
 
-        #region "Data" 
+        #region "Get/Set Private Variables" 
 
         public string Data
         {
@@ -44,6 +44,19 @@ namespace Csla.Test.DataPortal
                         throw new System.Security.SecurityException("Property set not allowed");
                     }
                 }
+            }
+        }
+
+        public string Auth
+        {
+            get
+            {
+                return _auth;
+            }
+
+            set
+            {
+                //Not allowed
             }
         }
 
@@ -85,6 +98,7 @@ namespace Csla.Test.DataPortal
         private DpRoot()
         {
             //prevent direct creation
+            AddAuthRules();
         }
 
         #endregion 
@@ -144,31 +158,18 @@ namespace Csla.Test.DataPortal
 
         #region "Authorization Rules"
 
-        public string Auth
+        private void AddAuthRules()
         {
-            get
-            {
-                return _auth;
-            }
+            string role = "Admin";
 
-            set
-            {
-                _auth = "Brand new value";
-            }
-        }
+            this.AuthorizationRules.DenyRead(DenyReadOnProperty, role);
+            this.AuthorizationRules.DenyWrite(DenyWriteOnProperty, role);
 
-        public void AddAuthRules()
-        {
-            string[] roles = { "What's the purpose of this?" };
+            this.AuthorizationRules.DenyRead(DenyReadWriteOnProperty, role);
+            this.AuthorizationRules.DenyWrite(DenyReadWriteOnProperty, role);
 
-            this.AuthorizationRules.DenyRead(DenyReadOnProperty, roles);
-            this.AuthorizationRules.DenyWrite(DenyWriteOnProperty, roles);
-
-            this.AuthorizationRules.DenyRead(DenyReadWriteOnProperty, roles);
-            this.AuthorizationRules.DenyWrite(DenyReadWriteOnProperty, roles);
-
-            this.AuthorizationRules.AllowRead(AllowReadWriteOnProperty, roles);
-            this.AuthorizationRules.AllowWrite(AllowReadWriteOnProperty, roles);
+            this.AuthorizationRules.AllowRead(AllowReadWriteOnProperty, role);
+            this.AuthorizationRules.AllowWrite(AllowReadWriteOnProperty, role);
         }
 
         public string DenyReadOnProperty
@@ -176,14 +177,15 @@ namespace Csla.Test.DataPortal
             get
             {
                 if (CanReadProperty())
-                    return _auth;
-                else
                     return "[DenyReadOnProperty] Can't read property";
+
+                else
+                    throw new System.Security.SecurityException("Not allowed");
             }
 
             set
             {
-                _auth = value;
+                //Not allowed
             }
         }
 
@@ -191,16 +193,17 @@ namespace Csla.Test.DataPortal
         {
             get
             {
-                return _auth;
+                return "<No Value>";
             }
 
             set
             {
                 if (CanWriteProperty())
-                    _auth = value;
+                    _auth = "[DenyWriteOnProperty] Can't write variable";
 
                 else
-                    _auth = "[DenyWriteOnProperty] Can't write variable";
+                    throw new System.Security.SecurityException("Not allowed");
+
             }
         }
 
@@ -209,17 +212,15 @@ namespace Csla.Test.DataPortal
             get
             {
                 if (CanReadProperty())
-                    return _auth;
-                else
                     return "[DenyReadWriteOnProperty] Can't read property";
+
+                else
+                    throw new System.Security.SecurityException("Not allowed");
             }
 
             set
             {
                 if (CanWriteProperty())
-                    _auth = value;
-
-                else
                     _auth = "[DenyReadWriteOnProperty] Can't write variable";
             }
         }
@@ -228,21 +229,17 @@ namespace Csla.Test.DataPortal
         {
             get
             {
-                this._auth = "AllowReadWriteOnProperty";
-
                 if (CanReadProperty())
                     return _auth;
+
                 else
-                    return "[DenyReadWriteOnProperty] Can't read property";
+                    throw new System.Security.SecurityException("Not allowed");
             }
 
             set
             {
                 if (CanWriteProperty())
                     _auth = value;
-
-                else
-                    _auth = "[DenyReadWriteOnProperty] Can't write variable";
             }
         }
 

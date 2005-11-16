@@ -18,8 +18,10 @@ namespace Csla.Test.Auth
     [TestClass()]
     public class AuthTests
     {
+        private DataPortal.DpRoot root = DataPortal.DpRoot.NewRoot();
+
         [TestMethod()]
-        public void TestAuthRules()
+        public void TestAuthCloneRules()
         {
             ApplicationContext.GlobalContext.Clear();
 
@@ -28,8 +30,6 @@ namespace Csla.Test.Auth
             Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
 
             #region "Pre Cloning Tests" 
-
-            DataPortal.DpRoot root = DataPortal.DpRoot.NewRoot();
 
             //Is it denying read properly?
             Assert.AreEqual("[DenyReadOnProperty] Can't read property", root.DenyReadOnProperty,
@@ -95,6 +95,119 @@ namespace Csla.Test.Auth
                 "Write should have been allowed 12");
 
             #endregion 
+        }
+
+        [TestMethod()]
+        public void TestAuthBeginEditRules()
+        {
+            ApplicationContext.GlobalContext.Clear();
+            Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+
+            root.BeginEdit();
+
+            root.Data = "Something new";
+
+            root.BeginEdit();
+
+            #region "Pre-Testing"
+
+            root.Data = "Something new 1";
+
+            //Is it denying read properly?
+            Assert.AreEqual("[DenyReadOnProperty] Can't read property", root.DenyReadOnProperty,
+                "Read should have been denied");
+
+            //Is it denying write properly?
+            root.DenyWriteOnProperty = "DenyWriteOnProperty";
+
+            Assert.AreEqual("[DenyWriteOnProperty] Can't write variable", root.Auth,
+                "Write should have been denied");
+
+            //Is it denying both read and write properly?
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't read property", root.DenyReadWriteOnProperty,
+                "Read should have been denied");
+
+            root.DenyReadWriteOnProperty = "DenyReadWriteONproperty";
+
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't write variable", root.Auth,
+                "Write should have been denied");
+
+            //Is it allowing both read and write properly?
+            Assert.AreEqual(root.AllowReadWriteOnProperty, root.Auth,
+                "Read should have been allowed");
+
+            root.AllowReadWriteOnProperty = "No value";
+            Assert.AreEqual("No value", root.Auth,
+                "Write should have been allowed");
+
+            #endregion 
+
+            #region "Cancel Edit"
+
+            //Cancel the edit and see if the authorization rules still work
+            root.CancelEdit();
+
+            //Is it denying read properly?
+            Assert.AreEqual("[DenyReadOnProperty] Can't read property", root.DenyReadOnProperty,
+                "Read should have been denied");
+
+            //Is it denying write properly?
+            root.DenyWriteOnProperty = "DenyWriteOnProperty";
+
+            Assert.AreEqual("[DenyWriteOnProperty] Can't write variable", root.Auth,
+                "Write should have been denied");
+
+            //Is it denying both read and write properly?
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't read property", root.DenyReadWriteOnProperty,
+                "Read should have been denied");
+
+            root.DenyReadWriteOnProperty = "DenyReadWriteONproperty";
+
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't write variable", root.Auth,
+                "Write should have been denied");
+
+            //Is it allowing both read and write properly?
+            Assert.AreEqual(root.AllowReadWriteOnProperty, root.Auth,
+                "Read should have been allowed");
+
+            root.AllowReadWriteOnProperty = "No value";
+            Assert.AreEqual("No value", root.Auth,
+                "Write should have been allowed");
+
+            #endregion
+
+            #region "Apply Edit"
+
+            //Apply this edit and see if the authorization rules still work
+            //Is it denying read properly?
+            Assert.AreEqual("[DenyReadOnProperty] Can't read property", root.DenyReadOnProperty,
+                "Read should have been denied");
+
+            //Is it denying write properly?
+            root.DenyWriteOnProperty = "DenyWriteOnProperty";
+
+            Assert.AreEqual("[DenyWriteOnProperty] Can't write variable", root.Auth,
+                "Write should have been denied");
+
+            //Is it denying both read and write properly?
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't read property", root.DenyReadWriteOnProperty,
+                "Read should have been denied");
+
+            root.DenyReadWriteOnProperty = "DenyReadWriteONproperty";
+
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't write variable", root.Auth,
+                "Write should have been denied");
+
+            //Is it allowing both read and write properly?
+            Assert.AreEqual(root.AllowReadWriteOnProperty, root.Auth,
+                "Read should have been allowed");
+
+            root.AllowReadWriteOnProperty = "No value";
+            Assert.AreEqual("No value", root.Auth,
+                "Write should have been allowed");
+
+
+            #endregion
 
             Security.TestPrincipal.SimulateLogout();
         }

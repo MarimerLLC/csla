@@ -71,9 +71,9 @@ namespace Csla.Validation
       }
     }
 
-    public static bool MaxIntegerValue(object target, RuleArgs e)
+    public static bool IntegerMaxValue(object target, RuleArgs e)
     {
-      int max = ((MaxIntegerValueRuleArgs)e).MaxValue;
+      int max = ((IntegerMaxValueRuleArgs)e).MaxValue;
       int value = (int)Utilities.CallByName(target, e.PropertyName, CallType.Get);
       if (value > max)
       {
@@ -84,7 +84,7 @@ namespace Csla.Validation
       return true;
     }
 
-    public class MaxIntegerValueRuleArgs : RuleArgs
+    public class IntegerMaxValueRuleArgs : RuleArgs
     {
       private int _maxValue;
 
@@ -93,7 +93,7 @@ namespace Csla.Validation
         get { return _maxValue; }
       }
 
-      public MaxIntegerValueRuleArgs(string propertyName, int maxValue)
+      public IntegerMaxValueRuleArgs(string propertyName, int maxValue)
         : base(propertyName)
       {
         _maxValue = maxValue;

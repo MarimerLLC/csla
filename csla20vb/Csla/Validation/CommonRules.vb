@@ -79,8 +79,8 @@ Namespace Validation
 
     End Class
 
-    Public Shared Function MaxIntegerValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
-      Dim max As Integer = CType(e, MaxIntegerValueRuleArgs).MaxValue
+    Public Shared Function IntegerMaxValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+      Dim max As Integer = CType(e, IntegerMaxValueRuleArgs).MaxValue
       Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
       If value > max Then
         e.Description = String.Format("{0} can not exceed {1}", _
@@ -91,7 +91,7 @@ Namespace Validation
       End If
     End Function
 
-    Public Class MaxIntegerValueRuleArgs
+    Public Class IntegerMaxValueRuleArgs
       Inherits RuleArgs
 
       Private mMaxValue As Integer

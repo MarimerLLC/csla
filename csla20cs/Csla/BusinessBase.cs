@@ -19,7 +19,8 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class BusinessBase<T> : Core.BusinessBase where T : BusinessBase<T>
+  public abstract class BusinessBase<T> : 
+    Core.BusinessBase where T : BusinessBase<T>
   {
 
     #region Object ID Value
@@ -33,7 +34,12 @@ namespace Csla
     public override bool Equals(object obj)
     {
       if (obj is T)
-        return ((T)obj).GetIdValue().Equals(GetIdValue());
+      {
+        object id = GetIdValue();
+        if (id == null)
+          throw new ArgumentException(Resources.GetIdValueCantBeNull);
+        return ((T)obj).GetIdValue().Equals(id);
+      }
       else
         return false;
     }

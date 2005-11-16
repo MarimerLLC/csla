@@ -27,7 +27,11 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
 
     If TypeOf obj Is T Then
-      Return DirectCast(obj, T).GetIdValue.Equals(GetIdValue)
+      Dim id As Object = GetIdValue()
+      If id Is Nothing Then
+        Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
+      End If
+      Return DirectCast(obj, T).GetIdValue.Equals(id)
 
     Else
       Return False

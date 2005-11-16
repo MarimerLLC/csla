@@ -101,9 +101,10 @@ namespace Csla.Test.Auth
         public void TestAuthBeginEditRules()
         {
             ApplicationContext.GlobalContext.Clear();
-            Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
 
-            root.BeginEdit();
+            Security.TestPrincipal.SimulateLogin();
+
+            Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
 
             root.Data = "Something new";
 
@@ -211,6 +212,7 @@ namespace Csla.Test.Auth
 
             Security.TestPrincipal.SimulateLogout();
         }
+
     }
 }
 

@@ -56,6 +56,27 @@ namespace Csla.Test.ValidationRules
         }
 
         [TestMethod()]
+        public void TestValidationRulesAfterClone()
+        {
+            //this test uses HasRulesManager2, which assigns criteria._name to its public
+            //property in DataPortal_Create.  If it used HasRulesManager, it would fail
+            //the first assert, but pass the others
+            Csla.ApplicationContext.GlobalContext.Clear();
+            HasRulesManager2 root = HasRulesManager2.NewHasRulesManager2();
+            Assert.AreEqual(true, root.IsValid);
+            root.BeginEdit();
+            root.Name = "";
+            root.ApplyEdit();
+
+            Assert.AreEqual(false, root.IsValid);
+            HasRulesManager2 rootClone = root.Clone();
+            Assert.AreEqual(false, rootClone.IsValid);
+
+            rootClone.Name = "something";
+            Assert.AreEqual(true, rootClone.IsValid);
+        }
+
+        [TestMethod()]
         public void BreakRequiredRule()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

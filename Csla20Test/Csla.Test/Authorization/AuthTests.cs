@@ -95,6 +95,8 @@ namespace Csla.Test.Auth
                 "Write should have been allowed 12");
 
             #endregion 
+
+            Security.TestPrincipal.SimulateLogout();
         }
 
         [TestMethod()]

@@ -30,7 +30,7 @@ Namespace Security
     ''' <param name="access">Desired access type.</param>
     ''' <returns>An string array of roles.</returns>
     <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
-    Private Function GetRolesForProperty(ByVal propertyName As String, _
+    Public Function GetRolesForProperty(ByVal propertyName As String, _
       ByVal access As AccessType) As String()
 
       Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)

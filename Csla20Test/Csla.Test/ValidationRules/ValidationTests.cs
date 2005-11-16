@@ -30,6 +30,15 @@ namespace Csla.Test.ValidationRules
             Assert.AreEqual(false, root.IsValid, "should not be valid");
             Assert.AreEqual(1, root.BrokenRulesCollection.Count);
             Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+
+            ////uncomment this to see that IsValid returns false before the BeginEdit()/CancelEdit()
+            ////cycle, and true after the cycle
+            //root.BeginEdit();
+            //root.CancelEdit();
+            //Assert.AreEqual("<new>", root.Name);
+            //Assert.AreEqual(false, root.IsValid, "should not be valid");
+            //Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+            //Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
         }
 
         [TestMethod()]

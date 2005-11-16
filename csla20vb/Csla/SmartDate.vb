@@ -515,6 +515,30 @@ Public Structure SmartDate
     Return obj1.CompareTo(obj2) < 0
   End Operator
 
+  Public Shared Operator >=(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+    Return obj1.CompareTo(obj2) >= 0
+  End Operator
+
+  Public Shared Operator <=(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+    Return obj1.CompareTo(obj2) <= 0
+  End Operator
+
+  Public Shared Operator >=(ByVal obj1 As SmartDate, ByVal obj2 As Date) As Boolean
+    Return obj1.CompareTo(obj2) >= 0
+  End Operator
+
+  Public Shared Operator <=(ByVal obj1 As SmartDate, ByVal obj2 As Date) As Boolean
+    Return obj1.CompareTo(obj2) <= 0
+  End Operator
+
+  Public Shared Operator >=(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
+    Return obj1.CompareTo(obj2) >= 0
+  End Operator
+
+  Public Shared Operator <=(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
+    Return obj1.CompareTo(obj2) <= 0
+  End Operator
+
 #End Region
 
 End Structure

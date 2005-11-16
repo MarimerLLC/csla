@@ -553,6 +553,36 @@ namespace Csla
       return obj1.CompareTo(obj2) < 0;
     }
 
+    public static bool operator >=(SmartDate obj1, SmartDate obj2)
+    {
+      return obj1.CompareTo(obj2) >= 0;
+    }
+
+    public static bool operator <=(SmartDate obj1, SmartDate obj2)
+    {
+      return obj1.CompareTo(obj2) <= 0;
+    }
+
+    public static bool operator >=(SmartDate obj1, DateTime obj2)
+    {
+      return obj1.CompareTo(obj2) >= 0;
+    }
+
+    public static bool operator <=(SmartDate obj1, DateTime obj2)
+    {
+      return obj1.CompareTo(obj2) <= 0;
+    }
+
+    public static bool operator >=(SmartDate obj1, string obj2)
+    {
+      return obj1.CompareTo(obj2) >= 0;
+    }
+
+    public static bool operator <=(SmartDate obj1, string obj2)
+    {
+      return obj1.CompareTo(obj2) < 0;
+    }
+
     #endregion
 
   }

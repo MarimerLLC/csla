@@ -42,22 +42,22 @@ Namespace Validation
       ' limit creation to this assembly
     End Sub
 
-    Friend Overloads Sub Add(ByVal ruleName As String, ByVal description As String, ByVal [property] As String)
+    Friend Overloads Sub Add(ByVal rule As ValidationRules.RuleMethod)
 
-      Remove(ruleName)
+      Remove(rule)
       IsReadOnly = False
-      Add(New BrokenRule(ruleName, description, [property]))
+      Add(New BrokenRule(rule))
       IsReadOnly = True
 
     End Sub
 
-    Friend Overloads Sub Remove(ByVal ruleName As String)
+    Friend Overloads Sub Remove(ByVal rule As ValidationRules.RuleMethod)
 
       ' we loop through using a numeric counter because
       ' the base class Remove requires a numeric index
       IsReadOnly = False
       For index As Integer = 0 To Count - 1
-        If Me(index).RuleName = ruleName Then
+        If Me(index).RuleName = rule.RuleName Then
           RemoveAt(index)
           Exit For
         End If

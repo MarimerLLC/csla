@@ -42,22 +42,22 @@ namespace Csla.Validation
       // limit creation to this assembly
     }
 
-    internal void Add(string ruleName, string description, string property)
+    internal void Add(ValidationRules.RuleMethod rule)
     {
-      Remove(ruleName);
+      Remove(rule);
       IsReadOnly = false;
-      Add(new BrokenRule(ruleName, description, property));
+      Add(new BrokenRule(rule));
       IsReadOnly = true;
     }
 
-    internal void Remove(string ruleName)
+    internal void Remove(ValidationRules.RuleMethod rule)
     {
       // we loop through using a numeric counter because
       // the base class Remove requires a numeric index
       IsReadOnly = false;
       for (int index = 0; index < Count; index++)
       {
-        if (this[index].RuleName == ruleName)
+        if (this[index].RuleName == rule.RuleName)
         {
           RemoveAt(index);
           break;

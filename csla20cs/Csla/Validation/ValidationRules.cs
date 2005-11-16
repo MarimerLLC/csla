@@ -16,7 +16,7 @@ namespace Csla.Validation
     /// <summary>
     /// Tracks all information for a rule.
     /// </summary>
-    private class RuleMethod
+    internal class RuleMethod
     {
       private object _target;
       private RuleHandler _handler;
@@ -275,9 +275,9 @@ namespace Csla.Validation
         foreach (RuleMethod rule in list)
         {
           if (rule.Invoke())
-            BrokenRulesList.Remove(rule.ToString());
+            BrokenRulesList.Remove(rule);
           else
-            BrokenRulesList.Add(rule.RuleName, rule.RuleArgs.Description, rule.RuleArgs.PropertyName);
+            BrokenRulesList.Add(rule);
         }
       }
     }
@@ -293,9 +293,9 @@ namespace Csla.Validation
         foreach (RuleMethod rule in list)
         {
           if (rule.Invoke())
-            BrokenRulesList.Remove(rule.ToString());
+            BrokenRulesList.Remove(rule);
           else
-            BrokenRulesList.Add(rule.RuleName, rule.RuleArgs.Description, rule.RuleArgs.PropertyName);
+            BrokenRulesList.Add(rule);
         }
       }
     }

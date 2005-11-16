@@ -11,7 +11,7 @@ Namespace Validation
     ''' <summary>
     ''' Tracks all information for a rule.
     ''' </summary>
-    Private Class RuleMethod
+    Friend Class RuleMethod
       Private mTarget As Object
       Private mHandler As RuleHandler
       Private mRuleName As String = ""
@@ -293,12 +293,9 @@ Namespace Validation
         Dim rule As RuleMethod
         For Each rule In list
           If rule.Invoke() Then
-            BrokenRulesList.Remove(rule.ToString)
+            BrokenRulesList.Remove(rule)
           Else
-            BrokenRulesList.Add( _
-              rule.RuleName, _
-              rule.RuleArgs.Description, _
-              rule.RuleArgs.PropertyName)
+            BrokenRulesList.Add(rule)
           End If
         Next
       End If
@@ -318,12 +315,9 @@ Namespace Validation
         Dim rule As RuleMethod
         For Each rule In list
           If rule.Invoke() Then
-            BrokenRulesList.Remove(rule.ToString)
+            BrokenRulesList.Remove(rule)
           Else
-            BrokenRulesList.Add( _
-              rule.RuleName, _
-              rule.RuleArgs.Description, _
-              rule.RuleArgs.PropertyName)
+            BrokenRulesList.Add(rule)
           End If
         Next
       Next

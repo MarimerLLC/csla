@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
+    <Compile Include="Security\AccessType.cs" />
     <Compile Include="Security\AuthorizationRules.cs" />
     <Compile Include="Security\BusinessPrincipalBase.cs" />
     <Compile Include="Security\RolesForProperty.cs" />

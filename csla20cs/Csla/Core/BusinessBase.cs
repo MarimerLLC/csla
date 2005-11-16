@@ -409,14 +409,14 @@ namespace Csla.Core
     public virtual bool CanReadProperty(string propertyName)
     {
       bool result = true;
-      if (AuthorizationRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0)
+      if (AuthorizationRules.HasReadAllowedRoles(propertyName))
       {
         // some users are explicitly granted read access
         // in which case all other users are denied.
         if (!AuthorizationRules.IsReadAllowed(propertyName))
           result = false;
       }
-      else if (AuthorizationRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0)
+      else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
       {
         // some users are explicitly denied read access.
         if (AuthorizationRules.IsReadDenied(propertyName))
@@ -503,14 +503,16 @@ namespace Csla.Core
     public virtual bool CanWriteProperty(string propertyName)
     {
       bool result = true;
-      if (AuthorizationRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0)
+      if (AuthorizationRules.GetRolesForProperty(
+        propertyName, Csla.Security.AccessType.WriteAllowed).Length > 0)
       {
         // some users are explicitly granted write access
         // in which case all other users are denied
         if (!AuthorizationRules.IsWriteAllowed(propertyName))
           result = false;
       }
-      else if (AuthorizationRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0)
+      else if (AuthorizationRules.GetRolesForProperty(
+        propertyName, Csla.Security.AccessType.WriteDenied).Length > 0)
       {
         // some users are explicitly denied write access
         if (AuthorizationRules.IsWriteDenied(propertyName))

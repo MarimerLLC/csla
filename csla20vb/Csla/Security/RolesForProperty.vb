@@ -8,7 +8,7 @@ Namespace Security
   ''' </summary>
   ''' <remarks></remarks>
   <Serializable()> _
-  Public Class RolesForProperty
+  Friend Class RolesForProperty
     Private mReadAllowed As New List(Of String)
     Private mReadDenied As New List(Of String)
     Private mWriteAllowed As New List(Of String)
@@ -18,8 +18,6 @@ Namespace Security
     ''' Returns a List(Of String) containing the list
     ''' of roles allowed read access.
     ''' </summary>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")> _
-    <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
     Public ReadOnly Property ReadAllowed() As List(Of String)
       Get
         Return mReadAllowed
@@ -30,8 +28,6 @@ Namespace Security
     ''' Returns a List(Of String) containing the list
     ''' of roles denied read access.
     ''' </summary>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")> _
-    <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
     Public ReadOnly Property ReadDenied() As List(Of String)
       Get
         Return mReadDenied
@@ -42,8 +38,6 @@ Namespace Security
     ''' Returns a List(Of String) containing the list
     ''' of roles allowed write access.
     ''' </summary>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")> _
-    <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
     Public ReadOnly Property WriteAllowed() As List(Of String)
       Get
         Return mWriteAllowed
@@ -54,8 +48,6 @@ Namespace Security
     ''' Returns a List(Of String) containing the list
     ''' of roles denied write access.
     ''' </summary>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")> _
-    <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
     Public ReadOnly Property WriteDenied() As List(Of String)
       Get
         Return mWriteDenied

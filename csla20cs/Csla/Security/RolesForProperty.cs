@@ -12,7 +12,7 @@ namespace Csla.Security
   /// </summary>
   /// <remarks></remarks>
   [Serializable()]
-  public class RolesForProperty
+  internal class RolesForProperty
   {
     private List<string> _readAllowed = new List<string>();
     private List<string> _readDenied = new List<string>();
@@ -23,8 +23,6 @@ namespace Csla.Security
     /// Returns a List(Of String) containing the list
     /// of roles allowed read access.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public List<string> ReadAllowed
     {
       get { return _readAllowed; }
@@ -34,8 +32,6 @@ namespace Csla.Security
     /// Returns a List(Of String) containing the list
     /// of roles denied read access.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public List<string> ReadDenied
     {
       get { return _readDenied; }
@@ -45,8 +41,6 @@ namespace Csla.Security
     /// Returns a List(Of String) containing the list
     /// of roles allowed write access.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public List<string> WriteAllowed
     {
       get { return _writeAllowed; }
@@ -56,8 +50,6 @@ namespace Csla.Security
     /// Returns a List(Of String) containing the list
     /// of roles denied write access.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public List<string> WriteDenied
     {
       get { return _writeDenied; }

@@ -19,8 +19,36 @@ Namespace Security
       End Get
     End Property
 
+#Region " Get Roles "
+
+    ''' <summary>
+    ''' Returns a list of roles for the property
+    ''' and requested access type.
+    ''' </summary>
+    ''' <param name="propertyName">
+    ''' Name of the object property.</param>
+    ''' <param name="access">Desired access type.</param>
+    ''' <returns>An string array of roles.</returns>
     <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
-    Public Function GetRolesForProperty(ByVal propertyName As String) As RolesForProperty
+    Private Function GetRolesForProperty(ByVal propertyName As String, _
+      ByVal access As AccessType) As String()
+
+      Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
+      Select Case access
+        Case AccessType.ReadAllowed
+          Return currentRoles.ReadAllowed.ToArray
+        Case AccessType.ReadDenied
+          Return currentRoles.ReadDenied.ToArray
+        Case AccessType.WriteAllowed
+          Return currentRoles.WriteAllowed.ToArray
+        Case AccessType.WriteDenied
+          Return currentRoles.WriteDenied.ToArray
+      End Select
+      Return Nothing
+
+    End Function
+
+    Private Function GetRolesForProperty(ByVal propertyName As String) As RolesForProperty
 
       Dim currentRoles As RolesForProperty = Nothing
       If Not Rules.ContainsKey(propertyName) Then
@@ -33,6 +61,10 @@ Namespace Security
       Return currentRoles
 
     End Function
+
+#End Region
+
+#Region " Add Roles "
 
     Public Sub AllowRead(ByVal propertyName As String, ByVal ParamArray roles() As String)
 
@@ -70,9 +102,25 @@ Namespace Security
 
     End Sub
 
+#End Region
+
+#Region " Check Roles "
+
+    Public Function HasReadAllowedRoles(ByVal propertyName As String) As Boolean
+
+      Return (GetRolesForProperty(propertyName).ReadAllowed.Count > 0)
+
+    End Function
+
     Public Function IsReadAllowed(ByVal propertyName As String) As Boolean
 
       Return GetRolesForProperty(propertyName).IsReadAllowed(My.User.CurrentPrincipal)
+
+    End Function
+
+    Public Function HasReadDeniedRoles(ByVal propertyName As String) As Boolean
+
+      Return (GetRolesForProperty(propertyName).ReadDenied.Count > 0)
 
     End Function
 
@@ -82,9 +130,21 @@ Namespace Security
 
     End Function
 
+    Public Function HasWriteAllowedRoles(ByVal propertyName As String) As Boolean
+
+      Return (GetRolesForProperty(propertyName).WriteAllowed.Count > 0)
+
+    End Function
+
     Public Function IsWriteAllowed(ByVal propertyName As String) As Boolean
 
       Return GetRolesForProperty(propertyName).IsWriteAllowed(My.User.CurrentPrincipal)
+
+    End Function
+
+    Public Function HasWriteDeniedRoles(ByVal propertyName As String) As Boolean
+
+      Return (GetRolesForProperty(propertyName).WriteDenied.Count > 0)
 
     End Function
 
@@ -93,6 +153,8 @@ Namespace Security
       Return GetRolesForProperty(propertyName).IsWriteDenied(My.User.CurrentPrincipal)
 
     End Function
+
+#End Region
 
   End Class
 

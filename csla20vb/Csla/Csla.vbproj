@@ -82,6 +82,7 @@
     <Compile Include="DataPortal\TransactionalTypes.vb" />
     <Compile Include="EnterpriseServicesSettings.vb" />
     <Compile Include="GlobalSuppressions.vb" />
+    <Compile Include="Security\AccessType.vb" />
     <Compile Include="Validation\CommonRules.vb" />
     <Compile Include="Core\BindableBase.vb" />
     <Compile Include="Security\RolesForProperty.vb" />

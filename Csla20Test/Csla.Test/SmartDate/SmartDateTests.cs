@@ -18,6 +18,7 @@ namespace Csla.Test.SmartDate
     [TestClass()]
     public class SmartDateTests
     {
+        #region Basic
         [TestMethod()]
         public void TestSmartDate()
         {
@@ -25,7 +26,9 @@ namespace Csla.Test.SmartDate
             Csla.SmartDate d = new Csla.SmartDate(now, true);
             Assert.AreEqual(now, d.Date);
         }
+        #endregion
 
+        #region Add
         [TestMethod()]
         public void Add()
         {
@@ -35,8 +38,12 @@ namespace Csla.Test.SmartDate
             d2.Date = new DateTime(2005, 1, 1);
             d3 = new Csla.SmartDate(d2.Add(new TimeSpan(30, 0, 0, 0)));
             Assert.AreEqual(DateAndTime.DateAdd(DateInterval.Day, 30, d2.Date), d3.Date, "Dates should be equal");
-        }
 
+            Assert.AreEqual(d3, d2 + new TimeSpan(30, 0, 0, 0, 0), "Dates should be equal");
+        }
+        #endregion
+
+        #region Subtract
         [TestMethod()]
         public void Subtract()
         {
@@ -46,7 +53,12 @@ namespace Csla.Test.SmartDate
             d2.Date = new DateTime(2005, 1, 1);
             d3 = new Csla.SmartDate(d2.Subtract(new TimeSpan(30, 0, 0, 0)));
             Assert.AreEqual(DateAndTime.DateAdd(DateInterval.Day, -30, d2.Date), d3.Date, "Dates should be equal");
+
+            Assert.AreEqual(30, ((TimeSpan)(d2-d3)).Days, "Should be 30 days different");
+            Assert.AreEqual(d3, d2 - new TimeSpan(30, 0, 0, 0, 0), "Should be equal");
         }
+        #endregion
+
         #region Comparison
         [TestMethod()]
         public void Comparison()
@@ -57,6 +69,8 @@ namespace Csla.Test.SmartDate
             Assert.IsTrue(d2.Equals(d3), "Empty dates should be equal");
             Assert.IsTrue(Csla.SmartDate.Equals(d2, d3), "Empty dates should be equal (shared)");
             Assert.IsTrue(d2.Equals(d3), "Empty dates should be equal (unary)");
+            Assert.IsTrue(d2.Equals(""), "Should be equal to an empty string");
+            Assert.IsTrue(d3.Equals(""), "Should be equal to an empty string");
 
             Assert.IsTrue(d2.Date.Equals(DateTime.MinValue), "Should be DateTime.MinValue");
             Assert.IsTrue(d3.Date.Equals(DateTime.MaxValue), "Should be DateTime.MaxValue");
@@ -78,16 +92,17 @@ namespace Csla.Test.SmartDate
             Assert.IsTrue(d3.Equals("1/1/2005"), "Should be equal to string date");
             Assert.IsTrue(d3.Equals(new DateTime(2005, 1, 1)), "should be equal to DateTime");
             
+            
             Assert.IsTrue(d3.Equals(d2.Date.ToString()),"Should be equal to any date time string");
-            //Assert.IsTrue(d3.Equals(d2.Date.ToShortTimeString()), "Should be equal to any date time string");
-            Assert.IsTrue(d3.Equals(d2.Date.ToShortDateString()), "Should be equal to any date time string");
-            //Assert.IsTrue(d3.Equals(d2.Date.ToLongTimeString()), "Should be equal to any date time string");
             Assert.IsTrue(d3.Equals(d2.Date.ToLongDateString()), "Should be equal to any date time string");
+            Assert.IsTrue(d3.Equals(d2.Date.ToShortDateString()), "Should be equal to any date time string");
+            Assert.IsFalse(d3.Equals(""), "Should not be equal to a blank string");
 
             //DateTime can be compared using all sorts of formats but the SmartDate cannot.
             //DateTime dt = DateTime.Now;
             //long ldt = dt.ToBinary();
             //Assert.IsTrue(dt.Equals(ldt), "Should be equal");
+            //Should smart date also be converted into these various types?
         }
         #endregion
 

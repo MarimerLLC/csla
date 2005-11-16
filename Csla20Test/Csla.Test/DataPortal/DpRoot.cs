@@ -8,11 +8,14 @@ namespace Csla.Test.DataPortal
     public class DpRoot : BusinessBase<DpRoot>
     {
         private string _data;
+        private string _auth = "Blah - initial value";
 
         protected override object GetIdValue()
         {
             return _data;
         }
+
+        #region "Data" 
 
         public string Data
         {
@@ -44,6 +47,10 @@ namespace Csla.Test.DataPortal
             }
         }
 
+        #endregion 
+
+        #region "Criteria class"
+
         [Serializable()]
         private class Criteria
         {
@@ -60,6 +67,10 @@ namespace Csla.Test.DataPortal
             }
         }
 
+        #endregion
+
+        #region "New root + constructor"
+
         public static DpRoot NewRoot()
         {
             Criteria crit = new Criteria();
@@ -75,6 +86,16 @@ namespace Csla.Test.DataPortal
         {
             //prevent direct creation
         }
+
+        #endregion 
+
+        public DpRoot CloneThis()
+        {
+            return this.Clone();
+        }
+
+
+        #region "DataPortal"
 
         protected override void DataPortal_Create(object criteria)
         {
@@ -118,5 +139,111 @@ namespace Csla.Test.DataPortal
         {
             Csla.ApplicationContext.GlobalContext["serverinvokecomplete"] = true;
         }
+
+        #endregion
+
+        #region "Authorization Rules"
+
+        public string Auth
+        {
+            get
+            {
+                return _auth;
+            }
+
+            set
+            {
+                //Not allowed
+            }
+        }
+
+        public void AddAuthRules()
+        {
+            string[] roles = { "What's the purpose of this?" };
+
+            this.AuthorizationRules.DenyRead(DenyReadOnProperty, roles);
+            this.AuthorizationRules.DenyWrite(DenyWriteOnProperty, roles);
+
+            this.AuthorizationRules.DenyRead(DenyReadWriteOnProperty, roles);
+            this.AuthorizationRules.DenyWrite(DenyReadWriteOnProperty, roles);
+
+            this.AuthorizationRules.AllowRead(AllowReadWriteOnProperty, roles);
+            this.AuthorizationRules.AllowWrite(AllowReadWriteOnProperty, roles);
+        }
+
+        public string DenyReadOnProperty
+        {
+            get
+            {
+                if (CanReadProperty())
+                    return _auth;
+                else
+                    return "[DenyReadOnProperty] Can't read property";
+            }
+
+            set
+            {
+                _auth = value;
+            }
+        }
+
+        public string DenyWriteOnProperty
+        {
+            get
+            {
+                return _auth;
+            }
+
+            set
+            {
+                if (CanWriteProperty())
+                    _auth = value;
+
+                else
+                    _auth = "[DenyWriteOnProperty] Can't write variable";
+            }
+        }
+
+        public string DenyReadWriteOnProperty
+        {
+            get
+            {
+                if (CanReadProperty())
+                    return _auth;
+                else
+                    return "[DenyReadWriteOnProperty] Can't read property";
+            }
+
+            set
+            {
+                if (CanWriteProperty())
+                    _auth = value;
+
+                else
+                    _auth = "[DenyReadWriteOnProperty] Can't write variable";
+            }
+        }
+
+        public string AllowReadWriteOnProperty
+        {
+            get
+            {
+                if (CanReadProperty())
+                    return _auth;
+                else
+                    return "[DenyReadWriteOnProperty] Can't read property";
+            }
+
+            set
+            {
+                if (CanWriteProperty())
+                    _auth = value;
+
+                else
+                    _auth = "[DenyReadWriteOnProperty] Can't write variable";
+            }
+        }
+
+        #endregion
     }
 }

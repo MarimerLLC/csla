@@ -36,7 +36,7 @@ namespace DataBindingApp
 
             protected override object GetIdValue()
             {
-                return _ID;
+                 return _number;
             }
 
             public DataObject(string data, int number)

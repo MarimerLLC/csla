@@ -24,11 +24,8 @@ namespace Csla.Test.Auth
             ApplicationContext.GlobalContext.Clear();
 
             Security.TestPrincipal.SimulateLogin();
-            Security.TestPrincipal.SimulateLogout();
 
-            //Security.TestPrincipal.SimulateLogin();
-
-            //Security.PermissionsRoot pr = Security.PermissionsRoot.NewPermissionsRoot();
+            Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
 
             #region "Pre Cloning Tests" 
 
@@ -98,6 +95,8 @@ namespace Csla.Test.Auth
                 "Write should have been allowed 12");
 
             #endregion 
+
+            Security.TestPrincipal.SimulateLogout();
         }
     }
 }

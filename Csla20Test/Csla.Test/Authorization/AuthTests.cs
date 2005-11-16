@@ -23,49 +23,78 @@ namespace Csla.Test.Auth
         {
             ApplicationContext.GlobalContext.Clear();
 
+            Security.TestPrincipal.SimulateLogin();
+
+            //Security.PermissionsRoot pr = Security.PermissionsRoot.NewPermissionsRoot();
+
+            #region "Pre Cloning Tests" 
+
             DataPortal.DpRoot root = DataPortal.DpRoot.NewRoot();
 
-            root.AddAuthRules();
-
             //Is it denying read properly?
-            string DeniedRead = root.DenyReadOnProperty;
+            Assert.AreEqual("[DenyReadOnProperty] Can't read property", root.DenyReadOnProperty,
+                "Read should have been denied 1");
 
             //Is it denying write properly?
-            root.DenyWriteOnProperty = "Write has been allowed when it shouldn't";
-            string DeniedWrite = root.Auth;
+            root.DenyWriteOnProperty = "DenyWriteOnProperty"; 
+
+            Assert.AreEqual("[DenyWriteOnProperty] Can't write variable", root.Auth,
+                "Write should have been denied 2");
 
             //Is it denying both read and write properly?
-            //We're checking this to see whether the methods are working properly
-            //for a single method (i.e., is the property having both read and write 
-            //denied, like it's supposed to).
-            string DeniedReadWrite_Read = root.DenyReadWriteOnProperty;
-            root.DenyReadWriteOnProperty = "Write has been allowed when it shouldn't";
-            string DeniedReadWrite_Write = root.Auth;
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't read property", root.DenyReadWriteOnProperty,
+                "Read should have been denied 3");
 
-            //Is it allowing read and write properly?
-            string AllowReadWrite_Read = root.AllowReadWriteOnProperty;
-            root.AllowReadWriteOnProperty = "Write was allowed";
-            string AllowReadWrite_Write = root.Auth;
+            root.DenyReadWriteOnProperty = "DenyReadWriteONproperty";
+
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't write variable", root.Auth,
+                "Write should have been denied 4");
+
+            //Is it allowing both read and write properly?
+            Assert.AreEqual(root.AllowReadWriteOnProperty, root.Auth,
+                "Read should have been allowed 5");
+
+            root.AllowReadWriteOnProperty = "No value";
+            Assert.AreEqual("No value", root.Auth,
+                "Write should have been allowed 6");
+
+            #endregion 
+
+            #region "After Cloning Tests"
+
+            //Do they work under cloning as well?
+            DataPortal.DpRoot NewRoot = root.Clone();
 
             ApplicationContext.GlobalContext.Clear();
 
-            Assert.AreEqual("[DenyReadOnProperty] Can't read property", DeniedRead, 
-                "Read should have been denied 1");
-            
-            Assert.AreEqual("[DenyWriteOnProperty] Can't write variable", DeniedWrite,
-                "Write should have been denied 2");
+            //Is it denying read properly?
+            Assert.AreEqual("[DenyReadOnProperty] Can't read property", NewRoot.DenyReadOnProperty,
+                "Read should have been denied 7");
 
-            Assert.AreEqual("[DenyReadWriteOnProperty] Can't read property", DeniedReadWrite_Read,
-                "Read should have been denied 3");
+            //Is it denying write properly?
+            NewRoot.DenyWriteOnProperty = "DenyWriteOnProperty";
 
-            Assert.AreEqual("[DenyReadWriteOnProperty] Can't write variable", DeniedReadWrite_Write,
-                "Write should have been denied 4");
+            Assert.AreEqual("[DenyWriteOnProperty] Can't write variable", NewRoot.Auth,
+                "Write should have been denied 8");
 
-            Assert.AreEqual("AllowReadWriteOnProperty", AllowReadWrite_Read,
-                "Read should have been allowed 5");
+            //Is it denying both read and write properly?
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't read property", NewRoot.DenyReadWriteOnProperty,
+                "Read should have been denied 9");
 
-            Assert.AreEqual("Write was allowed", AllowReadWrite_Write,
-                "Write shoudl have been allowed 6");
+            NewRoot.DenyReadWriteOnProperty = "DenyReadWriteONproperty";
+
+            Assert.AreEqual("[DenyReadWriteOnProperty] Can't write variable", NewRoot.Auth,
+                "Write should have been denied 10");
+
+            //Is it allowing both read and write properly?
+            Assert.AreEqual(NewRoot.AllowReadWriteOnProperty, NewRoot.Auth,
+                "Read should have been allowed 11");
+
+            NewRoot.AllowReadWriteOnProperty = "AllowReadWriteOnProperty";
+            Assert.AreEqual("AllowReadWriteOnProperty", NewRoot.Auth,
+                "Write should have been allowed 12");
+
+            #endregion 
         }
     }
 }

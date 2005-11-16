@@ -79,6 +79,36 @@ Namespace Validation
 
     End Class
 
+    Public Shared Function MaxIntegerValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+      Dim max As Integer = CType(e, MaxIntegerValueRuleArgs).MaxValue
+      Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
+      If value > max Then
+        e.Description = String.Format("{0} can not exceed {1}", _
+          e.PropertyName, max.ToString)
+        Return False
+      Else
+        Return True
+      End If
+    End Function
+
+    Public Class MaxIntegerValueRuleArgs
+      Inherits RuleArgs
+
+      Private mMaxValue As Integer
+
+      Public ReadOnly Property MaxValue() As Integer
+        Get
+          Return mMaxValue
+        End Get
+      End Property
+
+      Public Sub New(ByVal propertyName As String, ByVal maxValue As Integer)
+        MyBase.New(propertyName)
+        mMaxValue = maxValue
+      End Sub
+
+    End Class
+
   End Class
 
 End Namespace

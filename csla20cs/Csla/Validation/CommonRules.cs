@@ -48,7 +48,8 @@ namespace Csla.Validation
       string value = (string)Utilities.CallByName(target, e.PropertyName, CallType.Get);
       if (!String.IsNullOrEmpty(value) && (value.Length > max))
       {
-        e.Description = String.Format("{0} can not exceed {1} characters", max.ToString());
+        e.Description = String.Format("{0} can not exceed {1} characters", 
+          e.PropertyName, max.ToString());
         return false;
       }
       return true;
@@ -69,5 +70,35 @@ namespace Csla.Validation
         _maxLength = maxLength;
       }
     }
+
+    public static bool MaxIntegerValue(object target, RuleArgs e)
+    {
+      int max = ((MaxIntegerValueRuleArgs)e).MaxValue;
+      int value = (int)Utilities.CallByName(target, e.PropertyName, CallType.Get);
+      if (value > max)
+      {
+        e.Description = String.Format("{0} can not exceed {1}",
+          e.PropertyName, max.ToString());
+        return false;
+      }
+      return true;
+    }
+
+    public class MaxIntegerValueRuleArgs : RuleArgs
+    {
+      private int _maxValue;
+
+      public int MaxValue
+      {
+        get { return _maxValue; }
+      }
+
+      public MaxIntegerValueRuleArgs(string propertyName, int maxValue)
+        : base(propertyName)
+      {
+        _maxValue = maxValue;
+      }
+    }
+
   }
 }

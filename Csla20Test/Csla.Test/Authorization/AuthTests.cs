@@ -24,6 +24,9 @@ namespace Csla.Test.Auth
             ApplicationContext.GlobalContext.Clear();
 
             Security.TestPrincipal.SimulateLogin();
+            Security.TestPrincipal.SimulateLogout();
+
+            //Security.TestPrincipal.SimulateLogin();
 
             //Security.PermissionsRoot pr = Security.PermissionsRoot.NewPermissionsRoot();
 

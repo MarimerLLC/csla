@@ -153,7 +153,7 @@ namespace Csla.Test.DataPortal
 
             set
             {
-                //Not allowed
+                _auth = "Brand new value";
             }
         }
 
@@ -228,6 +228,8 @@ namespace Csla.Test.DataPortal
         {
             get
             {
+                this._auth = "AllowReadWriteOnProperty";
+
                 if (CanReadProperty())
                     return _auth;
                 else

@@ -48,7 +48,6 @@
     <Compile Include="AppContext\AppContextTests.cs" />
     <Compile Include="AppContext\ExceptionRoot.cs" />
     <Compile Include="AppContext\SimpleRoot.cs" />
-    <Compile Include="Auth\AuthTests.cs" />
     <Compile Include="Basic\BasicTests.cs" />
     <Compile Include="Basic\Child.cs" />
     <Compile Include="Basic\Children.cs" />
@@ -60,21 +59,12 @@
     <Compile Include="Basic\NameValueListObj.cs" />
     <Compile Include="Basic\ReadOnlyList.cs" />
     <Compile Include="Basic\Root.cs" />
-<<<<<<< Cslacs.Test.csproj
-    <Compile Include="CommandBase\CommandBaseTests.cs" />
-    <Compile Include="CommandBase\ExecCommands.cs" />
-    <Compile Include="Customer\Customer.cs" />
-    <Compile Include="Customer\CustomerList.cs" />
-    <Compile Include="Customer\CustomerTests.cs" />
-=======
->>>>>>> 1.15
     <Compile Include="DataBinding\ChildEntity.cs" />
     <Compile Include="DataBinding\ChildEntityList.cs" />
     <Compile Include="DataBinding\DataBindingTests.cs" />
     <Compile Include="DataBinding\ListObject.cs" />
     <Compile Include="DataBinding\ParentEntity.cs" />
     <Compile Include="DataPortal\DataPortalTests.cs" />
-    <Compile Include="DataPortal\DpExecute.cs" />
     <Compile Include="DataPortal\DpRoot.cs" />
     <Compile Include="IO\IOTests.cs" />
     <Compile Include="Nullable\NullableObject.cs" />

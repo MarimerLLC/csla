@@ -19,8 +19,13 @@ namespace Csla.Test.Nullable
     public class NullableTests
     {
         [TestMethod()]
-        public void DoSomething()
-        { }
+        public void TestNullableProperty()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            NullableObject nullRoot = NullableObject.NewNullableObject();
+            nullRoot.NullableInteger = null;
+            Assert.AreEqual(null, nullRoot.NullableInteger);
+        }          
 
     }
 }

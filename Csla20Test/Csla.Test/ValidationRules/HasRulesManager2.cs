@@ -101,6 +101,7 @@ namespace Csla.Test.ValidationRules
             //_name = crit._name;
             Name = crit._name;
             Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Created");
+            this.ValidationRules.CheckRules();
         }
 
         protected override void DataPortal_Fetch(object criteria)

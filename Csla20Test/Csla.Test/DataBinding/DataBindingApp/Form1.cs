@@ -103,6 +103,7 @@ namespace DataBindingApp
             if (newObject.Data.Contains(" "))
             {
                 MessageBox.Show("CancelNew: data property cannot contain spaces");
+                MessageBox.Show("CancelNew: index is " + dataSource.IndexOf(newObject).ToString());
                 //discards pending object
                 dataSource.CancelNew(dataSource.IndexOf(newObject));
                 Console.WriteLine(dataSource.IndexOf(newObject));

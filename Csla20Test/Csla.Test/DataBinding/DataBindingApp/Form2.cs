@@ -118,6 +118,7 @@ namespace DataBindingApp
             if (newObject.Name.Contains(" "))
             {
                 MessageBox.Show("CancelNew: name property cannot contain spaces");
+                MessageBox.Show("CancelNew: index is " + dataSource.IndexOf(newObject).ToString());
                 //discards pending object
                 dataSource.CancelNew(dataSource.IndexOf(newObject));
             }

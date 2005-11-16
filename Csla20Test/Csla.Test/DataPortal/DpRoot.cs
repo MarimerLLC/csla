@@ -162,14 +162,14 @@ namespace Csla.Test.DataPortal
         {
             string role = "Admin";
 
-            this.AuthorizationRules.DenyRead(DenyReadOnProperty, role);
-            this.AuthorizationRules.DenyWrite(DenyWriteOnProperty, role);
+            this.AuthorizationRules.DenyRead("DenyReadOnProperty", role);
+            this.AuthorizationRules.DenyWrite("DenyWriteOnProperty", role);
 
-            this.AuthorizationRules.DenyRead(DenyReadWriteOnProperty, role);
-            this.AuthorizationRules.DenyWrite(DenyReadWriteOnProperty, role);
+            this.AuthorizationRules.DenyRead("DenyReadWriteOnProperty", role);
+            this.AuthorizationRules.DenyWrite("DenyReadWriteOnProperty", role);
 
-            this.AuthorizationRules.AllowRead(AllowReadWriteOnProperty, role);
-            this.AuthorizationRules.AllowWrite(AllowReadWriteOnProperty, role);
+            this.AuthorizationRules.AllowRead("AllowReadWriteOnProperty", role);
+            this.AuthorizationRules.AllowWrite("AllowReadWriteOnProperty", role);
         }
 
         public string DenyReadOnProperty
@@ -177,10 +177,10 @@ namespace Csla.Test.DataPortal
             get
             {
                 if (CanReadProperty())
-                    return "[DenyReadOnProperty] Can't read property";
-
+                    throw new System.Security.SecurityException("Not allowed 1");
+                    
                 else
-                    throw new System.Security.SecurityException("Not allowed");
+                    return "[DenyReadOnProperty] Can't read property";
             }
 
             set
@@ -199,10 +199,10 @@ namespace Csla.Test.DataPortal
             set
             {
                 if (CanWriteProperty())
-                    _auth = "[DenyWriteOnProperty] Can't write variable";
+                    throw new System.Security.SecurityException("Not allowed 2");
 
                 else
-                    throw new System.Security.SecurityException("Not allowed");
+                    _auth = "[DenyWriteOnProperty] Can't write variable";
 
             }
         }
@@ -212,15 +212,18 @@ namespace Csla.Test.DataPortal
             get
             {
                 if (CanReadProperty())
-                    return "[DenyReadWriteOnProperty] Can't read property";
+                    throw new System.Security.SecurityException("Not allowed 3");
 
                 else
-                    throw new System.Security.SecurityException("Not allowed");
+                    return "[DenyReadWriteOnProperty] Can't read property";
             }
 
             set
             {
                 if (CanWriteProperty())
+                    throw new System.Security.SecurityException("Not allowed 4");
+
+                else
                     _auth = "[DenyReadWriteOnProperty] Can't write variable";
             }
         }
@@ -233,13 +236,16 @@ namespace Csla.Test.DataPortal
                     return _auth;
 
                 else
-                    throw new System.Security.SecurityException("Not allowed");
+                    throw new System.Security.SecurityException("Should be allowed 5");
             }
 
             set
             {
                 if (CanWriteProperty())
                     _auth = value;
+
+                else
+                    throw new System.Security.SecurityException("Should be allowed 5");
             }
         }
 

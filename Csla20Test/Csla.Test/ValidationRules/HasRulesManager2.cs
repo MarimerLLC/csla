@@ -5,7 +5,7 @@ using System.Text;
 namespace Csla.Test.ValidationRules
 {
     [Serializable()]
-    public class HasRulesManager : BusinessBase<HasRulesManager>
+    public class HasRulesManager2 : BusinessBase<HasRulesManager2>
     {
         private string _name = string.Empty;
 
@@ -74,22 +74,22 @@ namespace Csla.Test.ValidationRules
             }
         }
 
-        public static HasRulesManager NewHasRulesManager()
+        public static HasRulesManager2 NewHasRulesManager2()
         {
-            return Csla.DataPortal.Create(new Criteria()) as HasRulesManager;
+            return Csla.DataPortal.Create(new Criteria()) as HasRulesManager2;
         }
 
-        public static HasRulesManager GetHasRulesManager(string name)
+        public static HasRulesManager2 GetHasRulesManager2(string name)
         {
-            return Csla.DataPortal.Fetch(new Criteria(name)) as HasRulesManager;
+            return Csla.DataPortal.Fetch(new Criteria(name)) as HasRulesManager2;
         }
 
-        public static void DeleteHasRulesManager(string name)
+        public static void DeleteHasRulesManager2(string name)
         {
             Csla.DataPortal.Delete(new Criteria(name));
         }
 
-        private HasRulesManager()
+        private HasRulesManager2()
         {
             //prevent direct creation
             AddBusinessRules();
@@ -98,9 +98,9 @@ namespace Csla.Test.ValidationRules
         protected override void DataPortal_Create(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
-            _name = crit._name;
-            //Name = crit._name;
-            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Created");
+            //_name = crit._name;
+            Name = crit._name;
+            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Created");
         }
 
         protected override void DataPortal_Fetch(object criteria)
@@ -108,7 +108,7 @@ namespace Csla.Test.ValidationRules
             Criteria crit = (Criteria)(criteria);
             _name = crit._name;
             MarkOld();
-            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Fetched");
+            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Fetched");
         }
 
         protected override void DataPortal_Update()
@@ -116,7 +116,7 @@ namespace Csla.Test.ValidationRules
             if (IsDeleted)
             {
                 //we would delete here
-                Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Deleted");
+                Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Deleted");
                 MarkNew();
             }
             else
@@ -124,12 +124,12 @@ namespace Csla.Test.ValidationRules
                 if (this.IsNew)
                 {
                     //we would insert here
-                    Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Inserted");
+                    Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Inserted");
                 }
                 else
                 {
                     //we would update here
-                    Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Updated");
+                    Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Updated");
                 }
                 MarkOld();
             }
@@ -138,7 +138,7 @@ namespace Csla.Test.ValidationRules
         protected override void DataPortal_Delete(object criteria)
         {
             //we would delete here
-            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Deleted");
+            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Deleted");
         }
 
 

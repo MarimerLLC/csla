@@ -18,6 +18,35 @@ namespace Csla.Test.ValidationRules
     public class ValidationTests
     {
         [TestMethod()]
+        public void TestValidationRulesWithPrivateMember()
+        {
+            //this uses the first HasRulesManager which is the same as
+            //HasRulesManager2 EXCEPT that it assigns the criteria data 
+            //to the private variable that the Name property references
+            //inside DataPortal_Create
+            Csla.ApplicationContext.GlobalContext.Clear();
+            HasRulesManager root = HasRulesManager.NewHasRulesManager();
+            Assert.AreEqual("<new>", root.Name);
+            Assert.AreEqual(false, root.IsValid, "should not be valid");
+            Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+            Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+        }
+
+        [TestMethod()]
+        public void TestValidationRulesWithPublicProperty()
+        {
+            //this is the same test as above except it uses HasRulesManager2,
+            //which assigns the value from the criteria object to the Public 
+            //Name property inside DataPortal_Create
+            Csla.ApplicationContext.GlobalContext.Clear();
+            HasRulesManager2 root = HasRulesManager2.NewHasRulesManager2();
+            Assert.AreEqual("<new>", root.Name);
+            Assert.AreEqual(false, root.IsValid, "should not be valid");
+            Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+            Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+        }
+
+        [TestMethod()]
         public void BreakRequiredRule()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

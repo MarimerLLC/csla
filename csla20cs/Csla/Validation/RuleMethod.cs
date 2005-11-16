@@ -56,8 +56,8 @@ namespace Csla.Validation
     {
       _target = target;
       _handler = handler;
-      _ruleName = _handler.Method.Name + "!" + propertyName;
       _args = new RuleArgs(propertyName);
+      _ruleName = _handler.Method.Name + "!" + _args.ToString();
     }
 
     /// <summary>
@@ -70,8 +70,8 @@ namespace Csla.Validation
     {
       _target = target;
       _handler = handler;
-      _ruleName = _handler.Method.Name + "!" + args.PropertyName;
       _args = args;
+      _ruleName = _handler.Method.Name + "!" + _args.ToString();
     }
 
     ///// <summary>

@@ -69,6 +69,14 @@ namespace Csla.Validation
       {
         _maxLength = maxLength;
       }
+
+      /// <summary>
+      /// Return a string representation of the object.
+      /// </summary>
+      public override string ToString()
+      {
+        return base.PropertyName + "!" + _maxLength.ToString();
+      }
     }
 
     public static bool IntegerMaxValue(object target, RuleArgs e)
@@ -97,6 +105,14 @@ namespace Csla.Validation
         : base(propertyName)
       {
         _maxValue = maxValue;
+      }
+
+      /// <summary>
+      /// Return a string representation of the object.
+      /// </summary>
+      public override string ToString()
+      {
+        return base.PropertyName + "!" + _maxValue.ToString();
       }
     }
 

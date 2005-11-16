@@ -77,6 +77,13 @@ Namespace Validation
         mMaxLength = maxLength
       End Sub
 
+      ''' <summary>
+      ''' Returns a string representation of the object.
+      ''' </summary>
+      Public Overrides Function ToString() As String
+        Return MyBase.PropertyName & "!" & mMaxLength.ToString
+      End Function
+
     End Class
 
     Public Shared Function IntegerMaxValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
@@ -106,6 +113,13 @@ Namespace Validation
         MyBase.New(propertyName)
         mMaxValue = maxValue
       End Sub
+
+      ''' <summary>
+      ''' Returns a string representation of the object.
+      ''' </summary>
+      Public Overrides Function ToString() As String
+        Return MyBase.PropertyName & "!" & mMaxValue.ToString
+      End Function
 
     End Class
 

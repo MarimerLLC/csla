@@ -65,8 +65,8 @@ Namespace Validation
 
       mTarget = target
       mHandler = handler
-      mRuleName = mHandler.Method.Name & "!" & propertyName
       mArgs = New RuleArgs(propertyName)
+      mRuleName = mHandler.Method.Name & "!" & mArgs.ToString
 
     End Sub
 
@@ -81,8 +81,8 @@ Namespace Validation
 
       mTarget = target
       mHandler = handler
-      mRuleName = mHandler.Method.Name & "!" & args.PropertyName
       mArgs = args
+      mRuleName = mHandler.Method.Name & "!" & mArgs.ToString
 
     End Sub
 

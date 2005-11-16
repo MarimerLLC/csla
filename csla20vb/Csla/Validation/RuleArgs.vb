@@ -38,6 +38,13 @@ Namespace Validation
       mPropertyName = propertyName
     End Sub
 
+    ''' <summary>
+    ''' Returns a string representation of the object.
+    ''' </summary>
+    Public Overrides Function ToString() As String
+      Return mPropertyName
+    End Function
+
   End Class
 
 End Namespace

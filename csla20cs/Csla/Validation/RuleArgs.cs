@@ -38,5 +38,13 @@ namespace Csla.Validation
     {
       _propertyName = propertyName;
     }
+
+    /// <summary>
+    /// Return a string representation of the object.
+    /// </summary>
+    public override string ToString()
+    {
+      return _propertyName;
+    }
   }
 }

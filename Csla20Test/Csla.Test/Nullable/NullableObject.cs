@@ -9,10 +9,20 @@ namespace Csla.Test.Nullable
     {
         private string _name = string.Empty;
         private Nullable<int> _nullableInteger;
+        public Nullable<int> _nullableIntMember;
 
         protected override object GetIdValue()
         {
             return _name;
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+            }
         }
 
         public Nullable<int> NullableInteger

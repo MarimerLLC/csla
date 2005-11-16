@@ -14,7 +14,7 @@ namespace Csla.Validation
     private string _description;
     private string _property;
 
-    internal BrokenRule(ValidationRules.RuleMethod rule)
+    internal BrokenRule(RuleMethod rule)
     {
       _ruleName = rule.RuleName;
       _description = rule.RuleArgs.Description;

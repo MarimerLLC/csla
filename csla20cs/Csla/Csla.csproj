@@ -106,6 +106,7 @@
     <Compile Include="Validation\CommonRules.cs" />
     <Compile Include="Validation\RuleArgs.cs" />
     <Compile Include="Validation\RuleHandler.cs" />
+    <Compile Include="Validation\RuleMethod.cs" />
     <Compile Include="Validation\ValidationException.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
   </ItemGroup>

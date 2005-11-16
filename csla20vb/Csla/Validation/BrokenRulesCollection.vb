@@ -42,7 +42,7 @@ Namespace Validation
       ' limit creation to this assembly
     End Sub
 
-    Friend Overloads Sub Add(ByVal rule As ValidationRules.RuleMethod)
+    Friend Overloads Sub Add(ByVal rule As RuleMethod)
 
       Remove(rule)
       IsReadOnly = False
@@ -51,7 +51,7 @@ Namespace Validation
 
     End Sub
 
-    Friend Overloads Sub Remove(ByVal rule As ValidationRules.RuleMethod)
+    Friend Overloads Sub Remove(ByVal rule As RuleMethod)
 
       ' we loop through using a numeric counter because
       ' the base class Remove requires a numeric index

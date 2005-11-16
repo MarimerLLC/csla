@@ -42,7 +42,7 @@ namespace Csla.Validation
       // limit creation to this assembly
     }
 
-    internal void Add(ValidationRules.RuleMethod rule)
+    internal void Add(RuleMethod rule)
     {
       Remove(rule);
       IsReadOnly = false;
@@ -50,7 +50,7 @@ namespace Csla.Validation
       IsReadOnly = true;
     }
 
-    internal void Remove(ValidationRules.RuleMethod rule)
+    internal void Remove(RuleMethod rule)
     {
       // we loop through using a numeric counter because
       // the base class Remove requires a numeric index

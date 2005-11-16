@@ -9,7 +9,7 @@ Namespace Validation
     Private mDescription As String
     Private mProperty As String
 
-    Friend Sub New(ByVal rule As ValidationRules.RuleMethod)
+    Friend Sub New(ByVal rule As RuleMethod)
       mRuleName = rule.RuleName
       mDescription = rule.RuleArgs.Description
       mProperty = rule.RuleArgs.PropertyName

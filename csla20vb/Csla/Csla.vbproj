@@ -89,6 +89,7 @@
     <Compile Include="Validation\RuleArgs.vb" />
     <Compile Include="Validation\RuleHandler.vb" />
     <Compile Include="Validation\BrokenRulesCollection.vb" />
+    <Compile Include="Validation\RuleMethod.vb" />
     <Compile Include="Validation\ValidationRules.vb" />
     <Compile Include="Core\BusinessBase.vb" />
     <Compile Include="Core\IEditableCollection.vb" />

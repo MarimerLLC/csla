@@ -29,6 +29,16 @@ namespace Csla.Test.Basic
         {
             NameValueListObj nvList = NameValueListObj.GetNameValueListObj();
             Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["NameValueListObj"]);
+
+            Assert.AreEqual("element_1", nvList[1].Value);
+
+            //won't work, because IsReadOnly is set to true after object is populated in the for
+            //loop in DataPortal_Fetch
+            //NameValueListObj.NameValuePair newPair = new NameValueListObj.NameValuePair(45, "something");
+
+            //nvList.Add(newPair);
+
+            //Assert.AreEqual("something", nvList[45].Value);
         }
 
         [TestMethod]

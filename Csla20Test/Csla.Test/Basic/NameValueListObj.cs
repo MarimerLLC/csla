@@ -27,6 +27,13 @@ namespace Csla.Test.Basic
         {
             Csla.ApplicationContext.GlobalContext.Clear();
             Csla.ApplicationContext.GlobalContext.Add("NameValueListObj", "Fetched");
+
+            this.IsReadOnly = false;
+            for (int i = 0; i < 10; i++)
+            {
+                this.Add(new NameValuePair(i, "element_" + i.ToString()));
+            }
+            this.IsReadOnly = true;
         }
 
         #endregion

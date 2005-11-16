@@ -215,6 +215,26 @@ namespace Csla.Test.Auth
             Security.TestPrincipal.SimulateLogout();
         }
 
+        [TestMethod()]
+        public void TestAuthorizationAfterEditCycle()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Csla.Test.Security.PermissionsRoot pr = Csla.Test.Security.PermissionsRoot.NewPermissionsRoot();
+
+            Csla.Test.Security.TestPrincipal.SimulateLogin();
+            pr.FirstName = "something";
+
+            pr.BeginEdit();
+            pr.FirstName = "ba";
+            pr.CancelEdit();
+            Csla.Test.Security.TestPrincipal.SimulateLogout();
+
+            Csla.Test.Security.PermissionsRoot prClone = pr.Clone();
+            Csla.Test.Security.TestPrincipal.SimulateLogin();
+            prClone.FirstName = "somethiansdfasdf";
+            Csla.Test.Security.TestPrincipal.SimulateLogout();
+        }
+
     }
 }
 

@@ -48,6 +48,7 @@
     <Compile Include="AppContext\AppContextTests.cs" />
     <Compile Include="AppContext\ExceptionRoot.cs" />
     <Compile Include="AppContext\SimpleRoot.cs" />
+    <Compile Include="Authorization\AuthTests.cs" />
     <Compile Include="Basic\BasicTests.cs" />
     <Compile Include="Basic\Child.cs" />
     <Compile Include="Basic\Children.cs" />

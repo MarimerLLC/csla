@@ -99,6 +99,8 @@ namespace Csla.Test.ValidationRules
         {
             Csla.ApplicationContext.GlobalContext.Clear();
             HasRulesManager root = HasRulesManager.NewHasRulesManager();
+            root.Name = "";
+
             Assert.AreEqual(false, root.IsValid, "should not be valid");
             Assert.AreEqual(1, root.BrokenRulesCollection.Count);
             Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);

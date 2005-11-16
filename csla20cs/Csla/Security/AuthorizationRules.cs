@@ -119,7 +119,8 @@ namespace Csla.Security
 
     public bool IsReadAllowed(string propertyName)
     {
-      return GetRolesForProperty(propertyName).IsReadAllowed(Thread.CurrentPrincipal);
+      return GetRolesForProperty(
+        propertyName).IsReadAllowed(Thread.CurrentPrincipal);
     }
 
     public bool HasReadDeniedRoles(string propertyName)

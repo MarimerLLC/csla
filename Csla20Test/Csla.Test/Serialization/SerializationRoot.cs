@@ -5,7 +5,7 @@ using System.Text;
 namespace Csla.Test.Serialization
 {
     [Serializable()]
-    class SerializationRoot : BusinessBase<SerializationRoot>
+    public class SerializationRoot : BusinessBase<SerializationRoot>
     {
         string _data = "";
 
@@ -31,10 +31,11 @@ namespace Csla.Test.Serialization
             }
         }
 
-        protected override void  OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+        protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
         {
  	        base.OnDeserialized(context);
             Csla.ApplicationContext.GlobalContext.Add("Deserialized", true);
+            Console.WriteLine("OnDeserialized");
         }
     }
 }

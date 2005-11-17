@@ -67,10 +67,9 @@ namespace Csla.Test.Serialization
                 Csla.ApplicationContext.GlobalContext["PublicStaticOnIsDirtyChanged"],
                 "Didn't call public static handler");
 
-            //shouldn't be called - never assigned to handle any events
-            //Assert.AreEqual("Test.OnIsDirtyChanged",
-            //    Csla.ApplicationContext.GlobalContext["Test.OnIsDirtyChanged"],
-            //    "Didn't call serializable handler");
+            Assert.AreEqual("Test.OnIsDirtyChanged",
+                Csla.ApplicationContext.GlobalContext["Test.OnIsDirtyChanged"],
+                "Didn't call serializable handler");
             
             Assert.AreEqual("Test.PrivateOnIsDirtyChanged",
                 Csla.ApplicationContext.GlobalContext["Test.PrivateOnIsDirtyChanged"],
@@ -94,13 +93,18 @@ namespace Csla.Test.Serialization
                 Csla.ApplicationContext.GlobalContext["PublicStaticOnIsDirtyChanged"],
                 "Didn't call public static handler after clone");
 
-            //shouldn't pass - method is never assigned to an event
-            //Assert.AreEqual("Test.OnIsDirtyChanged",
-            //    Csla.ApplicationContext.GlobalContext["Test.OnIsDirtyChanged"],
-            //    "Didn't call serializable handler after clone");
+            Assert.AreEqual("Test.OnIsDirtyChanged",
+                Csla.ApplicationContext.GlobalContext["Test.OnIsDirtyChanged"],
+                "Didn't call serializable handler after clone");
 
             Assert.AreEqual(null, Csla.ApplicationContext.GlobalContext["Test.PrivateOnIsDirtyChanged"],
                 "Called serializable private handler after clone");
+        }
+
+        [TestMethod()]
+        public void TestValidationRulesAfterSerialization()
+        {
+            
         }
 
         private void OnIsDirtyChanged(object sender, 

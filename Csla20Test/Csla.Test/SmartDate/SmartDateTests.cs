@@ -69,8 +69,8 @@ namespace Csla.Test.SmartDate
             Assert.IsTrue(d2.Equals(d3), "Empty dates should be equal");
             Assert.IsTrue(Csla.SmartDate.Equals(d2, d3), "Empty dates should be equal (shared)");
             Assert.IsTrue(d2.Equals(d3), "Empty dates should be equal (unary)");
-            Assert.IsTrue(d2.Equals(""), "Should be equal to an empty string");
-            Assert.IsTrue(d3.Equals(""), "Should be equal to an empty string");
+            Assert.IsTrue(d2.Equals(""), "Should be equal to an empty string (d2)");
+            Assert.IsTrue(d3.Equals(""), "Should be equal to an empty string (d3)");
 
             Assert.IsTrue(d2.Date.Equals(DateTime.MinValue), "Should be DateTime.MinValue");
             Assert.IsTrue(d3.Date.Equals(DateTime.MaxValue), "Should be DateTime.MaxValue");

@@ -33,7 +33,7 @@ namespace Csla.Test.ValidationRules
         {
             ValidationRules.AddRule(NameRequired, "Name");
             ValidationRules.AddRule(NameLength, new MaxLengthArgs("Name", 10));
-            ValidationRules.CheckRules();
+            //ValidationRules.CheckRules();
         }
 
         private bool NameRequired(object target, Validation.RuleArgs e)

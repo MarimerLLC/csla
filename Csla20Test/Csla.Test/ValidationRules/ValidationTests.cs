@@ -74,6 +74,77 @@ namespace Csla.Test.ValidationRules
         }
 
         [TestMethod()]
+        public void TestValidationAfterEditCycle()
+        {
+            //should work since ValidationRules.CheckRules() is called in DataPortal_Create
+            Csla.ApplicationContext.GlobalContext.Clear();
+            HasRulesManager root = HasRulesManager.NewHasRulesManager();
+            Assert.AreEqual("<new>", root.Name);
+            Assert.AreEqual(true, root.IsValid, "should be valid on create");
+            Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+
+            root.BeginEdit();
+            root.Name = "";
+            Assert.AreEqual("", root.Name);
+            Assert.AreEqual(false, root.IsValid);
+            Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+            Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+            root.BeginEdit();
+            root.Name = "Begin 1";
+            Assert.AreEqual("Begin 1", root.Name);
+            Assert.AreEqual(true, root.IsValid);
+            Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+            root.BeginEdit();
+            root.Name = "Begin 2";
+            Assert.AreEqual("Begin 2", root.Name);
+            Assert.AreEqual(true, root.IsValid);
+            Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+            root.BeginEdit();
+            root.Name = "Begin 3";
+            Assert.AreEqual("Begin 3", root.Name);
+            Assert.AreEqual(true, root.IsValid);
+            Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+
+            HasRulesManager hrmClone = root.Clone();
+
+            //Test validation rule cancels for both clone and cloned
+            root.CancelEdit();
+            Assert.AreEqual("Begin 2", root.Name);
+            Assert.AreEqual(true, root.IsValid);
+            Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+            hrmClone.CancelEdit();
+            Assert.AreEqual("Begin 2", hrmClone.Name);
+            Assert.AreEqual(true, hrmClone.IsValid);
+            Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+            root.CancelEdit();
+            Assert.AreEqual("Begin 1", root.Name);
+            Assert.AreEqual(true, root.IsValid);
+            Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+            hrmClone.CancelEdit();
+            Assert.AreEqual("Begin 1", hrmClone.Name);
+            Assert.AreEqual(true, hrmClone.IsValid);
+            Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+            root.CancelEdit();
+            Assert.AreEqual("", root.Name);
+            Assert.AreEqual(false, root.IsValid);
+            Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+            Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+            hrmClone.CancelEdit();
+            Assert.AreEqual("", hrmClone.Name);
+            Assert.AreEqual(false, hrmClone.IsValid);
+            Assert.AreEqual(1, hrmClone.BrokenRulesCollection.Count);
+            Assert.AreEqual("Name required", hrmClone.BrokenRulesCollection[0].Description);
+            root.CancelEdit();
+            Assert.AreEqual("<new>", root.Name);
+            Assert.AreEqual(true, root.IsValid);
+            Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+            hrmClone.CancelEdit();
+            Assert.AreEqual("<new>", hrmClone.Name);
+            Assert.AreEqual(true, hrmClone.IsValid);
+            Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+        }
+
+        [TestMethod()]
         public void TestValidationRulesAfterClone()
         {
             //this test uses HasRulesManager2, which assigns criteria._name to its public

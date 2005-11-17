@@ -10,7 +10,9 @@ namespace Csla
   /// </summary>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
-  public abstract class ReadOnlyListBase<C> : Core.ReadOnlyBindingList<C>, ICloneable
+  public abstract class ReadOnlyListBase<T, C> : 
+    Core.ReadOnlyBindingList<C>, ICloneable
+    where T : ReadOnlyListBase<T, C>
   {
 
     #region Constructors
@@ -44,9 +46,9 @@ namespace Csla
     /// <returns>
     /// A new object containing the exact data of the original object.
     /// </returns>
-    public virtual ReadOnlyListBase<C> Clone()
+    public virtual T Clone()
     {
-      return (ReadOnlyListBase<C>)OnClone();
+      return (T)OnClone();
     }
 
     #endregion

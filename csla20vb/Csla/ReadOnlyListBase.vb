@@ -6,7 +6,7 @@ Imports System.ComponentModel
 ''' </summary>
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
-Public MustInherit Class ReadOnlyListBase(Of C)
+Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   Inherits Core.ReadOnlyBindingList(Of C)
 
   Implements ICloneable
@@ -46,9 +46,9 @@ Public MustInherit Class ReadOnlyListBase(Of C)
   ''' <returns>
   ''' A new object containing the exact data of the original object.
   ''' </returns>
-  Public Overloads Function Clone() As ReadOnlyListBase(Of C)
+  Public Overloads Function Clone() As T
 
-    Return DirectCast(OnClone(), ReadOnlyListBase(Of C))
+    Return DirectCast(OnClone(), T)
 
   End Function
 

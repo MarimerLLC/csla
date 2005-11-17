@@ -144,6 +144,12 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
 
     UndoChanges()
 
+    ResetChildValidationRules()
+
+  End Sub
+
+  Private Sub ResetChildValidationRules()
+
     ' make sure the child objects re-add their business rules
     For Each child As C In Me
       child.SetParent(Me)
@@ -429,6 +435,30 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
     Return DirectCast(OnClone(), T)
 
   End Function
+
+#End Region
+
+#Region " Serialization Notification "
+
+  <OnDeserialized()> _
+  Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
+
+    ResetChildValidationRules()
+    OnDeserialized(context)
+
+  End Sub
+
+  ''' <summary>
+  ''' This method is called on a newly deserialized object
+  ''' after deserialization is complete.
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub OnDeserialized(ByVal context As StreamingContext)
+
+    ' do nothing - this is here so a subclass
+    ' could override if needed
+
+  End Sub
 
 #End Region
 

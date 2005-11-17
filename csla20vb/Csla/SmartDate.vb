@@ -288,6 +288,7 @@ Public Structure SmartDate
   ''' <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   ''' <returns>A Date value.</returns>
   Public Shared Function StringToDate(ByVal value As String, ByVal emptyIsMin As Boolean) As Date
+
     If Len(value) = 0 Then
       If emptyIsMin Then
         Return Date.MinValue
@@ -314,6 +315,7 @@ Public Structure SmartDate
           Throw New ArgumentException(My.Resources.StringToDateException)
       End Select
     End If
+
   End Function
 
   ''' <summary>

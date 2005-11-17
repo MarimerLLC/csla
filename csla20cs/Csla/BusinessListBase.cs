@@ -204,7 +204,7 @@ namespace Csla
       AcceptChanges();
     }
 
-    internal void CopyState()
+    private void CopyState()
     {
       // we are going a level deeper in editing
       _editLevel += 1;
@@ -218,7 +218,7 @@ namespace Csla
         child.CopyState();
     }
 
-    internal void UndoChanges()
+    private void UndoChanges()
     {
       C child;
 
@@ -254,7 +254,7 @@ namespace Csla
       }
     }
 
-    internal void AcceptChanges()
+    private void AcceptChanges()
     {
       // we are coming up one edit level
       _editLevel -= 1;

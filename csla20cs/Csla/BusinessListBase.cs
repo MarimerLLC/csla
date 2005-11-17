@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Csla.Properties;
 
 namespace Csla
@@ -157,6 +158,11 @@ namespace Csla
 
       UndoChanges();
 
+      ResetChildValidationRules();
+    }
+
+    void ResetChildValidationRules()
+    {
       // make sure the child objects re-add their business rules
       foreach (C child in this)
       {
@@ -451,6 +457,28 @@ namespace Csla
     public T Clone()
     {
       return (T)OnClone();
+    }
+
+    #endregion
+
+    #region Serialization Notification
+
+    [OnDeserialized()]
+    private void OnDeserializedHandler(StreamingContext context)
+    {
+      ResetChildValidationRules();
+      OnDeserialized(context);
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnDeserialized(StreamingContext context)
+    {
+      // do nothing - this is here so a subclass
+      // could override if needed
     }
 
     #endregion

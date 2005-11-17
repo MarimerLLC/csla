@@ -15,7 +15,7 @@ using TestMethod = NUnit.Framework.TestAttribute;
 namespace Csla.Test.Serialization
 {
     [TestClass()]
-    class SerializationTests
+    public class SerializationTests
     {
         [TestMethod()]
         public void Clone( )

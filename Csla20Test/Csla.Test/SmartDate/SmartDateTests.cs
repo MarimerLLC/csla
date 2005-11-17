@@ -56,10 +56,16 @@ namespace Csla.Test.SmartDate
             Assert.AreEqual(DateTime.MaxValue, d.Date);
             Assert.AreEqual("", d.ToString());
 
-            d = new Csla.SmartDate("Invalid Date", true);
-            Assert.AreEqual(DateTime.MinValue, d.Date);
-            d = new Csla.SmartDate("Invalid Date", false);
-            Assert.AreEqual(DateTime.MaxValue, d.Date);
+            try
+            {
+                d = new Csla.SmartDate("Invalid Date", true);
+            }
+            catch (Exception ex) { Assert.IsTrue(ex is ArgumentException); }
+            try
+            {
+                d = new Csla.SmartDate("Invalid Date", false);
+            }
+            catch (Exception ex) { Assert.IsTrue(ex is ArgumentException); }
 
             d = new Csla.SmartDate(now, true);
             Assert.AreEqual(now, d.Date);
@@ -118,7 +124,10 @@ namespace Csla.Test.SmartDate
             {
                 Assert.IsTrue(ex is ArgumentException);
             }
-            //d = Csla.SmartDate.StringToDate(null, true);
+            d = Csla.SmartDate.StringToDate(null, true);
+            Assert.AreEqual(DateTime.MinValue, d);
+            d = Csla.SmartDate.StringToDate(null, false);
+            Assert.AreEqual(DateTime.MaxValue, d);
 
             d = new DateTime(2005, 1, 2);
             string date = Csla.SmartDate.DateToString(d, "dd/MM/yyyy");
@@ -128,7 +137,7 @@ namespace Csla.Test.SmartDate
             date = Csla.SmartDate.DateToString(d, "");
             Assert.AreEqual("1/2/2005", date);
 
-            
+            #warning Bugs found here
             date = Csla.SmartDate.DateToString(DateTime.MinValue, "dd/MM/yyyy", true);
             Assert.AreEqual("", date);
             date = Csla.SmartDate.DateToString(DateTime.MinValue, "dd/MM/yyyy", false);

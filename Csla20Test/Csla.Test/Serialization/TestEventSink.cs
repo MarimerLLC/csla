@@ -11,6 +11,8 @@ namespace Csla.Test.Serialization
         {
             obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
                 (PrivateOnIsDirtyChanged);
+
+            obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(OnIsDirtyChanged);
         }
 
         private void PrivateOnIsDirtyChanged(object sender, 

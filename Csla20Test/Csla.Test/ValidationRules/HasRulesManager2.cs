@@ -22,8 +22,9 @@ namespace Csla.Test.ValidationRules
                 if (this._name != value)
                 {
                     this._name = value;
-                    ValidationRules.CheckRules("Name");
-                    MarkDirty();
+                    //ValidationRules.CheckRules("Name");
+                    //MarkDirty();
+                    PropertyHasChanged();
                 }
             }
         }

@@ -51,6 +51,40 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <returns>True if read is allowed.</returns>
   ''' <remarks>
   ''' <para>
+  ''' If a list of allowed roles is provided then only users in those
+  ''' roles can read. If no list of allowed roles is provided then
+  ''' the list of denied roles is checked.
+  ''' </para><para>
+  ''' If a list of denied roles is provided then users in the denied
+  ''' roles are denied read access. All other users are allowed.
+  ''' </para><para>
+  ''' If neither a list of allowed nor denied roles is provided then
+  ''' all users will have read access.
+  ''' </para>
+  ''' </remarks>
+  ''' <param name="throwOnFalse">Indicates whether a negative
+  ''' result should cause an exception.</param>
+  <System.Runtime.CompilerServices.MethodImpl( _
+    System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+  Public Function CanReadProperty(ByVal throwOnFalse As Boolean) As Boolean
+
+    Dim propertyName As String = _
+      New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
+    Dim result As Boolean = CanReadProperty(propertyName)
+    If throwOnFalse AndAlso result = False Then
+      Throw New System.Security.SecurityException(My.Resources.PropertyGetNotAllowed)
+    End If
+    Return result
+
+  End Function
+
+  ''' <summary>
+  ''' Returns True if the user is allowed to read the
+  ''' calling property.
+  ''' </summary>
+  ''' <returns>True if read is allowed.</returns>
+  ''' <remarks>
+  ''' <para>
   ''' If and only if the user is in a role explicitly denied 
   ''' access and NOT in a role that explicitly
   ''' allows access they will be denied read access to the property.
@@ -82,15 +116,21 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Public Overridable Function CanReadProperty(ByVal propertyName As String) As Boolean
 
-    If mAuthorizationRules.IsReadDenied(propertyName) Then
-      If mAuthorizationRules.IsReadAllowed(propertyName) Then
-        Return True
+    Dim result As Boolean = True
+    If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
+      ' some users are explicitly granted read access
+      ' in which case all other users are denied
+      If Not AuthorizationRules.IsReadAllowed(propertyName) Then
+        result = False
+      End If
 
-      Else
-        Return False
+    ElseIf AuthorizationRules.HasReadDeniedRoles(propertyName) Then
+      ' some users are explicitly denied read access
+      If AuthorizationRules.IsReadDenied(propertyName) Then
+        result = False
       End If
     End If
-    Return True
+    Return result
 
   End Function
 

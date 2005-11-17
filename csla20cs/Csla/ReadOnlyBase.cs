@@ -55,6 +55,38 @@ namespace Csla
     /// <returns>True if read is allowed.</returns>
     /// <remarks>
     /// <para>
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can read. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
+    /// </para><para>
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied read access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have read access.
+    /// </para>
+    /// </remarks>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>    
+    [System.Runtime.CompilerServices.MethodImpl(
+      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    public bool CanReadProperty(bool throwOnFalse)
+    {
+      string propertyName =
+        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      bool result = CanReadProperty(propertyName);
+      if (throwOnFalse && result == false)
+        throw new System.Security.SecurityException(Resources.PropertyGetNotAllowed);
+      return result;
+    }
+
+    /// <summary>
+    /// Returns True if the user is allowed to read the
+    /// calling property.
+    /// </summary>
+    /// <returns>True if read is allowed.</returns>
+    /// <remarks>
+    /// <para>
     /// If and only if the user is in a role explicitly denied 
     /// access and NOT in a role that explicitly
     /// allows access they will be denied read access to the property.
@@ -66,7 +98,8 @@ namespace Csla
     /// </remarks>
     public bool CanReadProperty()
     {
-      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      string propertyName = 
+        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
       return CanReadProperty(propertyName);
     }
 
@@ -84,18 +117,21 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanReadProperty(string propertyName)
     {
-      if (_authorizationRules.IsReadDenied(propertyName))
+      bool result = true;
+      if (AuthorizationRules.HasReadAllowedRoles(propertyName))
       {
-        if (_authorizationRules.IsWriteAllowed(propertyName))
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
+        // some users are explicitly granted read access
+        // in which case all other users are denied.
+        if (!AuthorizationRules.IsReadAllowed(propertyName))
+          result = false;
       }
-      return true;
+      else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
+      {
+        // some users are explicitly denied read access.
+        if (AuthorizationRules.IsReadDenied(propertyName))
+          result = false;
+      }
+      return result;
     }
 
     #endregion

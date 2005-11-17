@@ -369,19 +369,19 @@ namespace Csla
       base.RemoveItem(index);
     }
 
-    /// <summary>
-    /// Marks all child objects for deletion and moves them
-    /// to the collection of deleted objects.
-    /// </summary>
-    protected override void ClearItems()
-    {
-      // when an object is 'removed' it is really
-      // being deleted, so do the deletion work
-      // for all the objects in the list
-      while (Count > 0)
-        RemoveAt(Count - 1);
-      base.ClearItems();
-    }
+    ///// <summary>
+    ///// Marks all child objects for deletion and moves them
+    ///// to the collection of deleted objects.
+    ///// </summary>
+    //protected override void ClearItems()
+    //{
+    //  // when an object is 'removed' it is really
+    //  // being deleted, so do the deletion work
+    //  // for all the objects in the list
+    //  while (Count > 0)
+    //    RemoveAt(Count - 1);
+    //  base.ClearItems();
+    //}
 
     #endregion
 

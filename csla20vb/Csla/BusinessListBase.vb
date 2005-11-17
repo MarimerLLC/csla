@@ -346,20 +346,6 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
     MyBase.RemoveItem(index)
   End Sub
 
-  ''' <summary>
-  ''' Marks all child objects for deletion and moves them
-  ''' to the collection of deleted objects.
-  ''' </summary>
-  Protected Overrides Sub ClearItems()
-    ' when an object is 'removed' it is really
-    ' being deleted, so do the deletion work
-    ' for all the objects in the list
-    While Count > 0
-      RemoveAt(Count - 1)
-    End While
-    MyBase.ClearItems()
-  End Sub
-
 #End Region
 
 #Region " Edit level tracking "

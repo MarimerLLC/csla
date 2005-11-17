@@ -24,15 +24,15 @@ namespace Csla.Test.AppContext
         /// Test to see if contexts get cleared out properly
         /// </summary>
         /// <remarks>
-        /// This test only passes if "CSLA" is all capitol letters. Using "Csla",
-        /// as the namespace implies, is incorrect.
+        /// This test fails if "CSLA" is all capitol letters. Using "Csla",
+        /// as the namespace implies, is correct.
         /// </remarks>
         [TestMethod()]
         public void NoContext()
         {
             //clear the contexts
             Csla.ApplicationContext.GlobalContext.Clear();
-            ApplicationContext.Clear();
+            ApplicationContext.ClientContext.Clear();
 
             SimpleRoot root = SimpleRoot.GetSimpleRoot("simple");
 
@@ -42,6 +42,64 @@ namespace Csla.Test.AppContext
 
             slot = Thread.GetNamedDataSlot("CSLA.GlobalContext");
             Assert.IsNull(Thread.GetData(slot), "GlobalContext should be null");
+
+            slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+            Assert.IsNotNull(Thread.GetData(slot), "Csla.ClientContext should not be null");
+
+            slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+            Assert.IsNotNull(Thread.GetData(slot), "ClientContext should not be null");
+        }
+        [TestMethod]
+        public void ClearContexts()
+        {
+            ApplicationContext.GlobalContext.Clear();
+            ApplicationContext.ClientContext.Clear();
+            
+            //put stuff into the application context
+            SimpleRoot root = SimpleRoot.GetSimpleRoot("simple");
+            
+            //it should NOT be null
+            System.LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+            Assert.IsNotNull(Thread.GetData(slot), "Csla.ClientContext should not be null");
+            slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+            Assert.IsNotNull(Thread.GetData(slot), "ClientContext should not be null");
+
+            ApplicationContext.Clear();
+
+            //cleared, this stuff should be null now
+            slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+            Assert.IsNull(Thread.GetData(slot), "Csla.ClientContext should not be null");
+            slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+            Assert.IsNull(Thread.GetData(slot), "ClientContext should not be null");
+
+            try
+            {
+                //Creating a new SimpleRoot puts stuff into the Application context
+                root = SimpleRoot.GetSimpleRoot("simple");
+
+                //Should NOT be null
+                slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+                Assert.IsNotNull(Thread.GetData(slot), "Csla.ClientContext should not be null");
+                slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+                Assert.IsNotNull(Thread.GetData(slot), "ClientContext should not be null");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Bug? " + ex);
+            }
+
+            //clearing each individually instead of with ApplicationContext.Clear();
+            ApplicationContext.ClientContext.Clear();
+            ApplicationContext.GlobalContext.Clear();
+
+            //create a new root to put ApplicationContext data in
+            root = SimpleRoot.GetSimpleRoot("simple");
+
+            //should NOT be null
+            slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+            Assert.IsNotNull(Thread.GetData(slot), "Csla.ClientContext should not be null");
+            slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+            Assert.IsNotNull(Thread.GetData(slot), "ClientContext should not be null");
         }
         #endregion
 

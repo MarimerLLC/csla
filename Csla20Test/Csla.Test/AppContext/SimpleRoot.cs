@@ -60,11 +60,7 @@ namespace Csla.Test.AppContext
         public static SimpleRoot NewSimpleRoot()
         {
             Criteria crit = new Criteria();
-
-            //Is this the correct DataPortal?
-            //The references in the VB version seem ambiguous
             object result = Csla.DataPortal.Create(crit);
-            
             return result as SimpleRoot;
         }
         /// <summary>

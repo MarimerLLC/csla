@@ -90,13 +90,13 @@ Public Structure SmartDate
   ''' </summary>
   ''' <remarks>
   ''' The format string should follow the requirements for the
-  ''' Visual Basic .NET Format() statement.
+  ''' .NET String.Format() statement.
   ''' </remarks>
   ''' <value>A format string.</value>
   Public Property FormatString() As String
     Get
       If mFormat Is Nothing Then
-        mFormat = "Short date"
+        mFormat = "d"
       End If
       Return mFormat
     End Get
@@ -353,7 +353,7 @@ Public Structure SmartDate
     ElseIf Not emptyIsMin AndAlso value = Date.MaxValue Then
       Return ""
     Else
-      Return Format(value, formatString)
+      Return String.Format("{0:" + formatString + "}", value)
     End If
   End Function
 

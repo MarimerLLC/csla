@@ -113,7 +113,7 @@ namespace Csla
     /// </summary>
     /// <remarks>
     /// The format string should follow the requirements for the
-    /// Visual Basic .NET Format() statement.
+    /// .NET String.Format() statement.
     /// </remarks>
     /// <value>A format string.</value>
     public string FormatString
@@ -121,7 +121,7 @@ namespace Csla
       get
       {
         if (_format == null)
-          _format = "{0:d}";
+          _format = "d";
         return _format;
       }
       set
@@ -380,7 +380,7 @@ namespace Csla
       else if (!emptyIsMin && value == DateTime.MaxValue)
         return string.Empty;
       else
-        return string.Format(formatString, value);
+        return string.Format("{0:" + formatString + "}", value);
     }
 
     #endregion

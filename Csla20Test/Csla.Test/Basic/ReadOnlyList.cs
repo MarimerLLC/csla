@@ -5,9 +5,10 @@ using System.Text;
 namespace Csla.Test.Basic
 {
     [Serializable()]
+#if csla20vb
     public class ReadOnlyList : ReadOnlyListBase<ReadOnlyList, object>
     {
-        #region "Criteria"
+    #region "Criteria"
 
         private class Criteria
         {
@@ -20,7 +21,7 @@ namespace Csla.Test.Basic
             //require use of factory method
         }
 
-        #region "Factory methods"
+    #region "Factory methods"
 
         public static ReadOnlyList GetReadOnlyList()
         {
@@ -29,7 +30,7 @@ namespace Csla.Test.Basic
 
         #endregion
 
-        #region "Data access"
+    #region "Data access"
 
         protected override void DataPortal_Fetch(object criteria)
         {
@@ -40,4 +41,9 @@ namespace Csla.Test.Basic
         #endregion
 
     }
+#elif csla20cs
+    public class ReadOnlyList
+    {
+    }
+#endif
 }

@@ -382,7 +382,8 @@ namespace Csla.Core
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public bool CanReadProperty()
     {
-      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      string propertyName = 
+        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
       return CanReadProperty(propertyName);
     }
 

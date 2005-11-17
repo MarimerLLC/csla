@@ -63,7 +63,6 @@ namespace Csla
         // run through all the child objects
         // and if any are dirty then then
         // collection is dirty
-
         foreach (C child in this)
           if (child.IsDirty)
             return true;
@@ -332,24 +331,6 @@ namespace Csla
 
     #endregion
 
-    // commented out because BindingList<C> automatically
-    // cascades the child events
-    //#region Cascade Child events
-
-    //private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    //{
-    //    for (int index = 0; index < Count; index++)
-    //    {
-    //        if (ReferenceEquals(this[index], sender))
-    //        {
-    //            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
-    //            return;
-    //        }
-    //    }
-    //}
-
-    //#endregion
-
     #region Insert, Remove, Clear
 
     /// <summary>
@@ -372,7 +353,6 @@ namespace Csla
       // added must be set
       item.EditLevelAdded = _editLevel;
       item.SetParent(this);
-      //item.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
       base.InsertItem(index, item);
     }
 
@@ -386,7 +366,6 @@ namespace Csla
       // being deleted, so do the deletion work
       C item = this[index];
       DeleteChild(item);
-      //item.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
       base.RemoveItem(index);
     }
 

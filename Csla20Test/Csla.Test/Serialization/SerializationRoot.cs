@@ -31,6 +31,12 @@ namespace Csla.Test.Serialization
             }
         }
 
+        public SerializationRoot()
+        {
+            nonSerializableEventHandler objHandler = new nonSerializableEventHandler();
+            objHandler.Reg(this);
+        }
+
         protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
         {
  	        base.OnDeserialized(context);

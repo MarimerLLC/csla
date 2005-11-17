@@ -17,6 +17,28 @@ namespace Csla.Test.Serialization
     [TestClass()]
     public class SerializationTests
     {
+
+        [TestMethod()]
+        public void TestWithoutSerializableHandler()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            SerializationRoot root = new SerializationRoot();
+            root.Data = "something";
+            Assert.AreEqual(1, Csla.ApplicationContext.GlobalContext["PropertyChangedFiredCount"]);
+            root.Data = "something else";
+            Assert.AreEqual(2, Csla.ApplicationContext.GlobalContext["PropertyChangedFiredCount"]);
+
+            //serialize an object with eventhandling objects that are nonserializable
+            root = root.Clone();
+            root.Data = "something new";
+
+            //still at 2 even though we changed the property again 
+            //when the clone method performs serialization, the nonserializable 
+            //object containing an event handler for the propertyChanged event
+            //is lost
+            Assert.AreEqual(2, Csla.ApplicationContext.GlobalContext["PropertyChangedFiredCount"]);
+        }
+
         [TestMethod()]
         public void Clone( )
         {

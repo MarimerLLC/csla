@@ -131,10 +131,14 @@ namespace Csla.Test.SmartDate
 
             d = new DateTime(2005, 1, 2);
             string date = Csla.SmartDate.DateToString(d, "dd/MM/yyyy");
-            Assert.AreEqual("02/01/2005", date);
+            Assert.AreEqual("02/01/2005", date, "dd/MM/yyyy test");
             date = Csla.SmartDate.DateToString(d, "MM/dd/yy");
-            Assert.AreEqual("01/02/05", date);
+            Assert.AreEqual("01/02/05", date, "MM/dd/yy test");
             date = Csla.SmartDate.DateToString(d, "");
+            Assert.AreEqual("1/2/2005 12:00:00 AM", date);
+            date = Csla.SmartDate.DateToString(d, "d");
+            Assert.AreEqual("1/2/2005", date);
+            date = new Csla.SmartDate(d).ToString();
             Assert.AreEqual("1/2/2005", date);
 
             #warning Bugs found here

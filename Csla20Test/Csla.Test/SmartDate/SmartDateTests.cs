@@ -139,13 +139,13 @@ namespace Csla.Test.SmartDate
 
             #warning Bugs found here
             date = Csla.SmartDate.DateToString(DateTime.MinValue, "dd/MM/yyyy", true);
-            Assert.AreEqual("", date);
+            Assert.AreEqual("", date, "MinValue w/ emptyIsMin=true");
             date = Csla.SmartDate.DateToString(DateTime.MinValue, "dd/MM/yyyy", false);
-            Assert.AreEqual("", date);
+            Assert.AreEqual(DateTime.MinValue.ToString("dd/MM/yyyy"), date, "MinValue w/ emptyIsMin=false");
             date = Csla.SmartDate.DateToString(DateTime.MaxValue, "dd/MM/yyyy", true);
-            Assert.AreEqual("", date);
+            Assert.AreEqual(DateTime.MaxValue.ToString("dd/MM/yyyy"), date, "MaxValue w/ emptyIsMin=true");
             date = Csla.SmartDate.DateToString(DateTime.MaxValue, "dd/MM/yyyy", false);
-            Assert.AreEqual("", date);
+            Assert.AreEqual("", date, "MaxValue w/ emptyIsMin=false");
         }
         #endregion
 

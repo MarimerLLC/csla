@@ -170,23 +170,23 @@ namespace Csla.Test.SmartDate
             d2.Date = new DateTime(2005, 2, 1);
             Assert.IsFalse(d1 == d2, "d1 should not be equal to d2");
 
-            #warning Smart date does not overload the <= or >= operators!
-            Assert.Fail("Missing <= and >= operators");
-            //d1.Date = new DateTime(2005, 1, 1);
-            //d2.Date = new DateTime(2005, 2, 1);
-            //Assert.IsTrue(d1 <= d2, "d1 should be less than or equal to d2");
-            //d1.Date = new DateTime(2005, 2, 1);
-            //Assert.IsTrue(d1 <= d2, "d1 should be less than or equal to d2");
-            //d1.Date = new DateTime(2005, 3, 1);
-            //Assert.IsFalse(d1 <= d2, "d1 should be greater than to d2");
+            //#warning Smart date does not overload the <= or >= operators!
+            //Assert.Fail("Missing <= and >= operators");
+            d1.Date = new DateTime(2005, 1, 1);
+            d2.Date = new DateTime(2005, 2, 1);
+            Assert.IsTrue(d1 <= d2, "d1 should be less than or equal to d2");
+            d1.Date = new DateTime(2005, 2, 1);
+            Assert.IsTrue(d1 <= d2, "d1 should be less than or equal to d2");
+            d1.Date = new DateTime(2005, 3, 1);
+            Assert.IsFalse(d1 <= d2, "d1 should be greater than to d2");
 
-            //d1.Date = new DateTime(2005, 3, 1);
-            //d2.Date = new DateTime(2005, 2, 1);
-            //Assert.IsTrue(d1 >= d2, "d1 should be greater than or equal to d2");
-            //d1.Date = new DateTime(2005, 2, 1);
-            //Assert.IsTrue(d1 >= d2, "d1 should be greater than or equal to d2");
-            //d1.Date = new DateTime(2005, 1, 1);
-            //Assert.IsFalse(d1 >= d2, "d1 should be less than to d2");
+            d1.Date = new DateTime(2005, 3, 1);
+            d2.Date = new DateTime(2005, 2, 1);
+            Assert.IsTrue(d1 >= d2, "d1 should be greater than or equal to d2");
+            d1.Date = new DateTime(2005, 2, 1);
+            Assert.IsTrue(d1 >= d2, "d1 should be greater than or equal to d2");
+            d1.Date = new DateTime(2005, 1, 1);
+            Assert.IsFalse(d1 >= d2, "d1 should be less than to d2");
 
             d1.Date = new DateTime(2005, 1, 1);
             d2.Date = new DateTime(2005, 2, 1);

@@ -104,7 +104,71 @@ namespace Csla.Test.Serialization
         [TestMethod()]
         public void TestValidationRulesAfterSerialization()
         {
-            
+            Csla.Test.ValidationRules.HasRulesManager root = Csla.Test.ValidationRules.HasRulesManager.NewHasRulesManager();
+            root.Name = "";
+            Assert.AreEqual(false, root.IsValid);
+
+            root = root.Clone();
+            Assert.AreEqual(false, root.IsValid);
+            root.Name = "something";
+            Assert.AreEqual(true, root.IsValid);
+            root = root.Clone();
+            Assert.AreEqual(true, root.IsValid);
+        }
+
+        [TestMethod()]
+        public void TestAuthorizationRulesAfterSerialization()
+        {
+            Csla.Test.Security.PermissionsRoot root = Csla.Test.Security.PermissionsRoot.NewPermissionsRoot();
+
+            try
+            {
+                root.FirstName = "something";
+                Assert.Fail("Exception didn't occur");
+            }
+            catch (System.Security.SecurityException ex)
+            {
+                Assert.AreEqual("Property set not allowed", ex.Message);
+            }
+
+            Csla.Test.Security.TestPrincipal.SimulateLogin();
+
+            try
+            {
+                root.FirstName = "something";
+            }
+            catch (System.Security.SecurityException ex)
+            {
+                Assert.Fail("exception occurred");
+            }
+
+            Csla.Test.Security.TestPrincipal.SimulateLogout();
+
+            Csla.Test.Security.PermissionsRoot rootClone = root.Clone();
+
+            try
+            {
+                rootClone.FirstName = "something else";
+                Assert.Fail("Exception didn't occur");
+            }
+            catch (System.Security.SecurityException ex)
+            {
+                Assert.AreEqual("Property set not allowed", ex.Message);
+            }
+
+            Csla.Test.Security.TestPrincipal.SimulateLogin();
+
+            try
+            {
+                rootClone.FirstName = "something new";
+            }
+            catch (System.Security.SecurityException ex)
+            {
+                Assert.Fail("exception occurred");
+            }
+
+            Csla.Test.Security.TestPrincipal.SimulateLogout();
+
         }
 
         private void OnIsDirtyChanged(object sender, 

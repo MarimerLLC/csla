@@ -5,7 +5,7 @@ using System.Text;
 namespace Csla.Test.Basic
 {
     [Serializable()]
-    public class ReadOnlyList : ReadOnlyListBase<ReadOnlyList>
+    public class ReadOnlyList : ReadOnlyListBase<ReadOnlyList, object>
     {
         #region "Criteria"
 

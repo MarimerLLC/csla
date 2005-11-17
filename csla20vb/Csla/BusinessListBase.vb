@@ -260,7 +260,7 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
 
 #Region " Delete and Undelete child "
 
-  Private mDeletedList As New List(Of C)
+  Private mDeletedList As List(Of C)
 
   ''' <summary>
   ''' A collection containing all child objects marked
@@ -270,6 +270,9 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected ReadOnly Property DeletedList() As List(Of C)
     Get
+      If mDeletedList Is Nothing Then
+        mDeletedList = New List(Of C)
+      End If
       Return mDeletedList
     End Get
   End Property
@@ -341,8 +344,7 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
   Protected Overrides Sub RemoveItem(ByVal index As Integer)
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
-    Dim item As C = Me(index)
-    DeleteChild(item)
+    DeleteChild(Me(index))
     MyBase.RemoveItem(index)
   End Sub
 

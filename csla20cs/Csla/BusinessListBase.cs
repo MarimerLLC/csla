@@ -283,17 +283,23 @@ namespace Csla
 
     #region Delete and Undelete child
 
-    private List<C> _deletedList = new List<C>();
+    private List<C> _deletedList;
 
     /// <summary>
     /// A collection containing all child objects marked
     /// for deletion.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+      "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected List<C> DeletedList
     {
-      get { return _deletedList; }
+      get 
+      { 
+        if (_deletedList == null)
+          _deletedList = new List<C>();
+        return _deletedList; 
+      }
     }
 
     private void DeleteChild(C child)
@@ -364,24 +370,9 @@ namespace Csla
     {
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
-      C item = this[index];
-      DeleteChild(item);
+      DeleteChild(this[index]);
       base.RemoveItem(index);
     }
-
-    ///// <summary>
-    ///// Marks all child objects for deletion and moves them
-    ///// to the collection of deleted objects.
-    ///// </summary>
-    //protected override void ClearItems()
-    //{
-    //  // when an object is 'removed' it is really
-    //  // being deleted, so do the deletion work
-    //  // for all the objects in the list
-    //  while (Count > 0)
-    //    RemoveAt(Count - 1);
-    //  base.ClearItems();
-    //}
 
     #endregion
 

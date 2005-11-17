@@ -18,13 +18,125 @@ namespace Csla.Test.SmartDate
     [TestClass()]
     public class SmartDateTests
     {
-        #region Basic
+        #region Test Constructors
         [TestMethod()]
-        public void TestSmartDate()
+        public void TestSmartDateConstructors()
         {
             DateTime now = DateTime.Now;
-            Csla.SmartDate d = new Csla.SmartDate(now, true);
+            Csla.SmartDate d = new Csla.SmartDate(now);
             Assert.AreEqual(now, d.Date);
+
+            d = new Csla.SmartDate(true);
+            Assert.IsTrue(d.EmptyIsMin);
+            d = new Csla.SmartDate(false);
+            Assert.IsFalse(d.EmptyIsMin);
+
+            d = new Csla.SmartDate("1/1/2005");
+            Assert.AreEqual("1/1/2005", d.ToString());
+            d = new Csla.SmartDate("Jan/1/2005");
+            Assert.AreEqual("1/1/2005", d.ToString());
+            d = new Csla.SmartDate("January-1-2005");
+            Assert.AreEqual("1/1/2005", d.ToString());
+            d = new Csla.SmartDate("1-1-2005");
+            Assert.AreEqual("1/1/2005", d.ToString());
+            d = new Csla.SmartDate("");
+            Assert.AreEqual("", d.ToString());
+            Assert.IsTrue(d.IsEmpty);
+
+            d = new Csla.SmartDate("1/1/2005", true);
+            Assert.AreEqual("1/1/2005", d.ToString());
+            Assert.IsTrue(d.EmptyIsMin);
+            d = new Csla.SmartDate("1/1/2005", false);
+            Assert.AreEqual("1/1/2005", d.ToString());
+            Assert.IsFalse(d.EmptyIsMin);
+            d = new Csla.SmartDate("", true);
+            Assert.AreEqual(DateTime.MinValue, d.Date);
+            Assert.AreEqual("", d.ToString());
+            d = new Csla.SmartDate("", false);
+            Assert.AreEqual(DateTime.MaxValue, d.Date);
+            Assert.AreEqual("", d.ToString());
+
+            d = new Csla.SmartDate("Invalid Date", true);
+            Assert.AreEqual(DateTime.MinValue, d.Date);
+            d = new Csla.SmartDate("Invalid Date", false);
+            Assert.AreEqual(DateTime.MaxValue, d.Date);
+
+            d = new Csla.SmartDate(now, true);
+            Assert.AreEqual(now, d.Date);
+            Assert.IsTrue(d.EmptyIsMin);
+            d = new Csla.SmartDate(now, false);
+            Assert.AreEqual(now, d.Date);
+            Assert.IsFalse(d.EmptyIsMin);
+        }
+        #endregion
+
+        #region Converters
+        [TestMethod]
+        public void TestConverters()
+        {
+            DateTime d = Csla.SmartDate.StringToDate("1/1/2005");
+            Assert.AreEqual("1/1/2005", d.ToShortDateString());
+            d = Csla.SmartDate.StringToDate("january-1-2005");
+            Assert.AreEqual("1/1/2005", d.ToShortDateString());
+            d = Csla.SmartDate.StringToDate(".");
+            Assert.AreEqual(DateTime.Now.ToShortDateString(), d.ToShortDateString());
+            d = Csla.SmartDate.StringToDate("-");
+            Assert.AreEqual(DateTime.Now.AddDays(-1.0).ToShortDateString(), d.ToShortDateString());
+            d = Csla.SmartDate.StringToDate("+");
+            Assert.AreEqual(DateTime.Now.AddDays(1.0).ToShortDateString(), d.ToShortDateString());
+            try
+            {
+                d = Csla.SmartDate.StringToDate("Invalid Date");
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(ex is System.ArgumentException);
+            }
+
+            d = Csla.SmartDate.StringToDate("");
+            Assert.AreEqual(DateTime.MinValue, d);
+            d = Csla.SmartDate.StringToDate(null);
+            Assert.AreEqual(DateTime.MinValue, d);
+
+            d = Csla.SmartDate.StringToDate("", true);
+            Assert.AreEqual(DateTime.MinValue, d);
+            d = Csla.SmartDate.StringToDate("", false);
+            Assert.AreEqual(DateTime.MaxValue, d);
+            try
+            {
+                d = Csla.SmartDate.StringToDate("Invalid Date", true);
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(ex is ArgumentException);
+            }
+            try
+            {
+                d = Csla.SmartDate.StringToDate("Invalid Date", false);
+            }
+            catch (Exception ex)
+            {
+                Assert.IsTrue(ex is ArgumentException);
+            }
+            //d = Csla.SmartDate.StringToDate(null, true);
+
+            d = new DateTime(2005, 1, 2);
+            string date = Csla.SmartDate.DateToString(d, "dd/MM/yyyy");
+            Assert.AreEqual("02/01/2005", date);
+            date = Csla.SmartDate.DateToString(d, "MM/dd/yy");
+            Assert.AreEqual("01/02/05", date);
+            date = Csla.SmartDate.DateToString(d, "");
+            Assert.AreEqual("1/2/2005", date);
+
+            
+            date = Csla.SmartDate.DateToString(DateTime.MinValue, "dd/MM/yyyy", true);
+            Assert.AreEqual("", date);
+            date = Csla.SmartDate.DateToString(DateTime.MinValue, "dd/MM/yyyy", false);
+            Assert.AreEqual("", date);
+            date = Csla.SmartDate.DateToString(DateTime.MaxValue, "dd/MM/yyyy", true);
+            Assert.AreEqual("", date);
+            date = Csla.SmartDate.DateToString(DateTime.MaxValue, "dd/MM/yyyy", false);
+            Assert.AreEqual("", date);
         }
         #endregion
 
@@ -91,7 +203,6 @@ namespace Csla.Test.SmartDate
 
             Assert.IsTrue(d3.Equals("1/1/2005"), "Should be equal to string date");
             Assert.IsTrue(d3.Equals(new DateTime(2005, 1, 1)), "should be equal to DateTime");
-            
             
             Assert.IsTrue(d3.Equals(d2.Date.ToString()),"Should be equal to any date time string");
             Assert.IsTrue(d3.Equals(d2.Date.ToLongDateString()), "Should be equal to any date time string");

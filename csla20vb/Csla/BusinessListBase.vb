@@ -146,9 +146,11 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
 
     ' make sure the child objects re-add their business rules
     For Each child As C In Me
+      child.SetParent(Me)
       child.AddBusinessRules()
     Next
     For Each child As C In DeletedList
+      child.SetParent(Me)
       child.AddBusinessRules()
     Next
 

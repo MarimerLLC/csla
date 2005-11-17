@@ -31,10 +31,12 @@ namespace Csla
       _emptyIsMax = !emptyIsMin;
       _format = null;
       _initialized = false;
+      // provide a dummy value to allow real initialization
+      _date = DateTime.MinValue;
       if (!_emptyIsMax)
-        _date = DateTime.MinValue;
+        Date = DateTime.MinValue;
       else
-        _date = DateTime.MaxValue;
+        Date = DateTime.MaxValue;
     }
 
     /// <summary>
@@ -321,7 +323,7 @@ namespace Csla
           return DateTime.MaxValue;
       }
       else if (DateTime.TryParse(value, out tmp))
-        return DateTime.Parse(value);
+        return tmp; //DateTime.Parse(value);
       else
       {
         string ldate = value.Trim().ToLower();

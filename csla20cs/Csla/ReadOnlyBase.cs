@@ -32,7 +32,8 @@ namespace Csla
     #region Authorization
 
     [NotUndoable()]
-    private Security.AuthorizationRules _authorizationRules = new Security.AuthorizationRules();
+    private Security.AuthorizationRules _authorizationRules = 
+      new Security.AuthorizationRules();
 
     /// <summary>
     /// Provides access to the AuthorizationRules object for this

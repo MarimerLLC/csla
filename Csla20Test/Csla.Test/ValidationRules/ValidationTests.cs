@@ -24,7 +24,7 @@ namespace Csla.Test.ValidationRules
             Csla.ApplicationContext.GlobalContext.Clear();
             HasRulesManager root = HasRulesManager.NewHasRulesManager();
             Assert.AreEqual("<new>", root.Name);
-            Assert.AreEqual(true, root.IsValid, "should be valid");
+            Assert.AreEqual(true, root.IsValid, "should be valid on create");
             Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
             root.BeginEdit();
@@ -32,7 +32,7 @@ namespace Csla.Test.ValidationRules
             root.CancelEdit();
 
             Assert.AreEqual("<new>", root.Name);
-            Assert.AreEqual(true, root.IsValid, "should be valid");
+            Assert.AreEqual(true, root.IsValid, "should be valid after CancelEdit");
             Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
             root.BeginEdit();
@@ -52,7 +52,7 @@ namespace Csla.Test.ValidationRules
             Csla.ApplicationContext.GlobalContext.Clear();
             HasRulesManager2 root = HasRulesManager2.NewHasRulesManager2();
             Assert.AreEqual("<new>", root.Name);
-            Assert.AreEqual(true, root.IsValid, "should be valid");
+            Assert.AreEqual(true, root.IsValid, "should be valid on create");
             Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
             root.BeginEdit();
@@ -60,7 +60,7 @@ namespace Csla.Test.ValidationRules
             root.CancelEdit();
 
             Assert.AreEqual("<new>", root.Name);
-            Assert.AreEqual(true, root.IsValid, "should be valid");
+            Assert.AreEqual(true, root.IsValid, "should be valid after CancelEdit");
             Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
             root.BeginEdit();

@@ -52,6 +52,7 @@ namespace Csla.Test.AppContext
         [TestMethod]
         public void TestOnDemandContexts()
         {
+            //Make sure its all clear completely
             Csla.ApplicationContext.Clear();
             System.LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
             Assert.IsNull(Thread.GetData(slot), "ClientContext should be null");
@@ -86,12 +87,14 @@ namespace Csla.Test.AppContext
             Csla.ApplicationContext.GlobalContext.Clear();
             slot = Thread.GetNamedDataSlot("Csla.ClientContext");
             Assert.IsNotNull(Thread.GetData(slot), "ClientContext should be null");
+            //The global context should still exist, it is just empty now
             slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
             Assert.IsNotNull(Thread.GetData(slot), "GlobalContext should be null");
 
             //Now add an item to the GlobalContext and clear only the ClientContext
             ApplicationContext.GlobalContext.Add("Test", "Test");
             ApplicationContext.ClientContext.Clear();
+            //the clientcontext should still exist, its just empty now.
             slot = Thread.GetNamedDataSlot("Csla.ClientContext");
             Assert.IsNotNull(Thread.GetData(slot), "ClientContext should be null");
             slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
@@ -181,6 +184,7 @@ namespace Csla.Test.AppContext
             root = root.Save();
 
             Assert.IsNotNull(root);
+            Assert.IsNotNull(Thread.GetData(Thread.GetNamedDataSlot("Csla.ClientContext")));
             Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);
             Assert.AreEqual("saved", root.Data);
             Assert.AreEqual(false, root.IsNew);
@@ -215,7 +219,7 @@ namespace Csla.Test.AppContext
             root = root.Save();
 
             Assert.IsNotNull(root);
-
+            Assert.IsNotNull(Thread.GetData(Thread.GetNamedDataSlot("Csla.GlobalContext")));
             Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"]);
             Assert.AreEqual("saved", root.Data);
             Assert.AreEqual(false, root.IsNew);
@@ -253,8 +257,11 @@ namespace Csla.Test.AppContext
             Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(OnDataPortaInvoke);
             Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(OnDataPortalInvokeComplete);
 
+            //Populated in the handlers below
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["ClientInvoke"], "Client invoke incorrect");
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["ClientInvokeComplete"], "Client invoke complete");
+
+            //populated in the Root Dataportal handlers.
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["dpinvoke"], "Server invoke incorrect");
             Assert.AreEqual("global", Csla.ApplicationContext.GlobalContext["dpinvokecomplete"], "Server invoke compelte incorrect");
         }

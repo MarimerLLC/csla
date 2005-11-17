@@ -8,7 +8,8 @@ namespace Csla
   /// This is the base class from which readonly collections
   /// of readonly objects should be derived.
   /// </summary>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+  [System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
   public abstract class ReadOnlyListBase<T, C> : 
     Core.ReadOnlyBindingList<C>, ICloneable

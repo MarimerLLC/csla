@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContext\AppContextTests.cs" />
+    <Compile Include="AppContext\AppContextThread.cs" />
     <Compile Include="AppContext\ExceptionRoot.cs" />
     <Compile Include="AppContext\SimpleRoot.cs" />
     <Compile Include="Authorization\AuthTests.cs" />

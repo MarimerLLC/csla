@@ -49,6 +49,9 @@ namespace Csla.Test.AppContext
             slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
             Assert.IsNotNull(Thread.GetData(slot), "ClientContext should not be null");
         }
+        #endregion
+
+        #region TestOnDemandContexts
         [TestMethod]
         public void TestOnDemandContexts()
         {
@@ -107,6 +110,56 @@ namespace Csla.Test.AppContext
             slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
             Assert.IsNull(Thread.GetData(slot), "GlobalContext should be null");
         }
+        #endregion
+
+        #region TestAppContext across different Threads
+        [TestMethod]
+        public void TestAppContextAcrossDifferentThreads()
+        {
+            List<AppContextThread> AppContextThreadList = new List<AppContextThread>();
+            List<Thread> ThreadList = new List<Thread>();
+
+            for (int x = 0; x < 10; x++)
+            {
+                AppContextThread act = new AppContextThread("Thread: " + x);
+                AppContextThreadList.Add(act);
+
+                Thread t = new Thread(new ThreadStart(act.Run));
+                t.Name = "Thread: " + x;
+                t.Start();
+                ThreadList.Add(t);
+            }
+
+            ApplicationContext.Clear();
+            Exception ex = null;
+            try
+            {
+                foreach (AppContextThread act in AppContextThreadList)
+                {
+                    //We are accessing the Client/GlobalContext via this thread, therefore
+                    //it should be removed.
+                    Assert.AreEqual(true, act.Removed);
+                }
+                //We are now accessing the shared value. If any other thread
+                //loses its Client/GlobalContext this will turn to true
+                Assert.AreEqual(false, AppContextThread.StaticRemoved);
+            }
+            catch (Exception e)
+            {
+                ex = e;
+            }
+            finally
+            {
+                foreach (Thread t in ThreadList)
+                {
+                    t.Abort();
+                }
+            }
+            if (ex != null) throw ex;
+        }
+        #endregion
+
+        #region ClearContexts
         [TestMethod]
         public void ClearContexts()
         {

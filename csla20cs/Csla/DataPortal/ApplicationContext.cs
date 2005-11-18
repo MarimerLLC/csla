@@ -196,7 +196,7 @@ namespace Csla
 
     public static void Clear()
     {
-      SetContext(Nothing, Nothing);
+      SetContext(null, null);
     }
 
     private ApplicationContext()

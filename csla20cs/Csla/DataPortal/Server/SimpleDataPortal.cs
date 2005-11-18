@@ -29,16 +29,16 @@ namespace Csla.Server
         obj = Activator.CreateInstance(objectType, true);
 
         // tell the business object we're about to make a DataPortal_xyz call
-        CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
 
         // tell the business object to fetch its data
-        CallMethod(obj, "DataPortal_Create", criteria);
+        MethodCaller.CallMethod(obj, "DataPortal_Create", criteria);
 
         // mark the object as new
-        CallMethodIfImplemented(obj, "MarkNew");
+        MethodCaller.CallMethodIfImplemented(obj, "MarkNew");
 
         // tell the business object the DataPortal_xyz call is complete
-        CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
 
         // return the populated business object as a result
         return new DataPortalResult(obj);
@@ -48,7 +48,7 @@ namespace Csla.Server
         try
         {
           // tell the business object there was an exception
-          CallMethodIfImplemented(obj, "DataPortal_OnDataPortalException", new DataPortalEventArgs(context), ex);
+          MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalException", new DataPortalEventArgs(context), ex);
         }
         catch
         {
@@ -76,16 +76,16 @@ namespace Csla.Server
         obj = CreateBusinessObject(criteria);
 
         // tell the business object we're about to make a DataPortal_xyz call
-        CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
 
         // tell the business object to fetch its data
-        CallMethod(obj, "DataPortal_Fetch", criteria);
+        MethodCaller.CallMethod(obj, "DataPortal_Fetch", criteria);
 
         // mark the object as old
-        CallMethodIfImplemented(obj, "MarkOld");
+        MethodCaller.CallMethodIfImplemented(obj, "MarkOld");
 
         // tell the business object the DataPortal_xyz call is complete
-        CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
 
         // return the populated business object as a result
         return new DataPortalResult(obj);
@@ -95,7 +95,7 @@ namespace Csla.Server
         try
         {
           // tell the business object there was an exception
-          CallMethodIfImplemented(obj, "DataPortal_OnDataPortalException", new DataPortalEventArgs(context), ex);
+          MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalException", new DataPortalEventArgs(context), ex);
         }
         catch
         {
@@ -118,7 +118,7 @@ namespace Csla.Server
       try
       {
         // tell the business object we're about to make a DataPortal_xyz call
-        CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
 
         // tell the business object to update itself
         if (obj is Core.BusinessBase)
@@ -129,44 +129,44 @@ namespace Csla.Server
             if (!busObj.IsNew)
             {
               // tell the object to delete itself
-              CallMethod(busObj, "DataPortal_DeleteSelf");
+              MethodCaller.CallMethod(busObj, "DataPortal_DeleteSelf");
             }
             // mark the object as new
-            CallMethodIfImplemented(busObj, "MarkNew");
+            MethodCaller.CallMethodIfImplemented(busObj, "MarkNew");
           }
           else
           {
             if (busObj.IsNew)
             {
               // tell the object to insert itself
-              CallMethod(busObj, "DataPortal_Insert");
+              MethodCaller.CallMethod(busObj, "DataPortal_Insert");
             }
             else
             {
               // tell the object to update itself
-              CallMethod(busObj, "DataPortal_Update");
+              MethodCaller.CallMethod(busObj, "DataPortal_Update");
             }
             // mark the object as old
-            CallMethodIfImplemented(busObj, "MarkOld");
+            MethodCaller.CallMethodIfImplemented(busObj, "MarkOld");
           }
         }
         else if (obj is CommandBase)
         {
           // tell the object to update itself
-          CallMethod(obj, "DataPortal_Execute");
+          MethodCaller.CallMethod(obj, "DataPortal_Execute");
         }
         else
         {
           // this is an updatable collection or some other
           // non-BusinessBase type of object
           // tell the object to update itself
-          CallMethod(obj, "DataPortal_Update");
+          MethodCaller.CallMethod(obj, "DataPortal_Update");
           // mark the object as old
-          CallMethodIfImplemented(obj, "MarkOld");
+          MethodCaller.CallMethodIfImplemented(obj, "MarkOld");
         }
 
         // tell the business object the DataPortal_xyz is complete
-        CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
 
         return new DataPortalResult(obj);
       }
@@ -191,13 +191,13 @@ namespace Csla.Server
         obj = CreateBusinessObject(criteria);
 
         // tell the business object we're about to make a DataPortal_xyz call
-        CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
 
         // tell the business object to delete itself
-        CallMethod(obj, "DataPortal_Delete", criteria);
+        MethodCaller.CallMethod(obj, "DataPortal_Delete", criteria);
 
         // tell the business object the DataPortal_xyz call is complete
-        CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
 
         return new DataPortalResult();
       }
@@ -229,51 +229,6 @@ namespace Csla.Server
 
       // create an instance of the business object
       return Activator.CreateInstance(businessType, true);
-    }
-
-    #endregion
-
-    #region Calling a method
-
-    private static object CallMethodIfImplemented(object obj, string method, params object[] parameters)
-    {
-      MethodInfo info = GetMethod(obj.GetType(), method);
-      if (info != null)
-        return CallMethod(obj, info, parameters);
-      else
-        return null;
-    }
-
-    private static object CallMethod(object obj, string method, params object[] parameters)
-    {
-      MethodInfo info = GetMethod(obj.GetType(), method);
-      if (info == null)
-        throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
-      return CallMethod(obj, info, parameters);
-    }
-
-    private static object CallMethod(object obj, MethodInfo info, params object[] parameters)
-    {
-      // call a private method on the object
-      object result;
-      try
-      {
-        result = info.Invoke(obj, parameters);
-      }
-      catch (Exception e)
-      {
-        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, e.InnerException);
-      }
-      return result;
-    }
-
-    private static MethodInfo GetMethod(Type objectType, string method)
-    {
-      return objectType.GetMethod(method,
-          BindingFlags.FlattenHierarchy |
-          BindingFlags.Instance |
-          BindingFlags.Public |
-          BindingFlags.NonPublic);
     }
 
     #endregion

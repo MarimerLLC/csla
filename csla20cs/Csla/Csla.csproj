@@ -69,6 +69,7 @@
     <Compile Include="DataPortal\Hosts\WebServicePortal.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DataPortal\MethodCaller.cs" />
     <Compile Include="DataPortal\RunLocalAttribute.cs" />
     <Compile Include="DataPortal\Server\CallMethodException.cs" />
     <Compile Include="DataPortal\Server\DataPortal.cs" />

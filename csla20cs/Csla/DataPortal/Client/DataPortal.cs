@@ -98,7 +98,7 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = GetMethod(objectType, "DataPortal_Create");
+      MethodInfo method = MethodCaller.GetMethod(objectType, "DataPortal_Create");
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
@@ -152,7 +152,7 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Fetch");
+      MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch");
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
@@ -270,9 +270,9 @@ namespace Csla
 
       MethodInfo method;
       if (obj is CommandBase)
-        method = GetMethod(obj.GetType(), "DataPortal_Execute");
+        method = MethodCaller.GetMethod(obj.GetType(), "DataPortal_Execute");
       else
-        method = GetMethod(obj.GetType(), "DataPortal_Update");
+        method = MethodCaller.GetMethod(obj.GetType(), "DataPortal_Update");
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
@@ -311,7 +311,7 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Delete");
+      MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete");
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
@@ -402,16 +402,6 @@ namespace Csla
     private static bool RunLocal(MethodInfo method)
     {
       return Attribute.IsDefined(method, typeof(RunLocalAttribute));
-    }
-
-    private static MethodInfo GetMethod(Type objectType, string method)
-    {
-      return objectType.GetMethod(
-          method,
-          BindingFlags.FlattenHierarchy |
-          BindingFlags.Instance |
-          BindingFlags.Public |
-          BindingFlags.NonPublic);
     }
 
     private static Type GetObjectType(object criteria)

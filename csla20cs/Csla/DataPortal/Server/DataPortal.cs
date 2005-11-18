@@ -30,7 +30,7 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = GetMethod(objectType, "DataPortal_Create");
+        MethodInfo method = MethodCaller.GetMethod(objectType, "DataPortal_Create");
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -83,7 +83,7 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Fetch");
+        MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch");
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -136,9 +136,9 @@ namespace Csla.Server
 
         MethodInfo method;
         if (obj is CommandBase)
-          method = GetMethod(obj.GetType(), "DataPortal_Execute");
+          method = MethodCaller.GetMethod(obj.GetType(), "DataPortal_Execute");
         else
-          method = GetMethod(obj.GetType(), "DataPortal_Update");
+          method = MethodCaller.GetMethod(obj.GetType(), "DataPortal_Update");
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -187,7 +187,7 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = GetMethod(GetObjectType(criteria), "DataPortal_Delete");
+        MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete");
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -322,15 +322,6 @@ namespace Csla.Server
         // based on the nested class scheme in the book
         return criteria.GetType().DeclaringType;
       }
-    }
-
-    private static MethodInfo GetMethod(Type objectType, string method)
-    {
-      return objectType.GetMethod(method,
-          BindingFlags.FlattenHierarchy |
-          BindingFlags.Instance |
-          BindingFlags.Public |
-          BindingFlags.NonPublic);
     }
 
     #endregion

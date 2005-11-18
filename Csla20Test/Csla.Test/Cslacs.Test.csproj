@@ -74,6 +74,9 @@
     <Compile Include="DataBinding\DataBindingTests.cs" />
     <Compile Include="DataBinding\ListObject.cs" />
     <Compile Include="DataBinding\ParentEntity.cs" />
+    <Compile Include="DataPortalTestDatabaseDataSet.cs">
+      <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="DataPortalTestDatabaseDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -96,6 +99,7 @@
     <Compile Include="Security\PermissionsRoot.cs" />
     <Compile Include="Security\TestIdentity.cs" />
     <Compile Include="Security\TestPrincipal.cs" />
+    <Compile Include="Serialization\nonSerializableEventHandler.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />
     <Compile Include="Serialization\TestEventSink.cs" />

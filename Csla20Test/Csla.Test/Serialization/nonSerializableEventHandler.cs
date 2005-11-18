@@ -21,3 +21,4 @@ namespace Csla.Test.Serialization
         }
     }
 }
+

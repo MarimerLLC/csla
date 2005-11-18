@@ -96,6 +96,7 @@
     <Compile Include="Security\PermissionsRoot.cs" />
     <Compile Include="Security\TestIdentity.cs" />
     <Compile Include="Security\TestPrincipal.cs" />
+    <Compile Include="Serialization\nonSerializableEventHandler.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />
     <Compile Include="Serialization\TestEventSink.cs" />

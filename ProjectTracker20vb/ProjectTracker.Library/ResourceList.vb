@@ -3,7 +3,7 @@ Imports CSLA.Data
 
 <Serializable()> _
 Public Class ResourceList
-  Inherits ReadOnlyListBase(Of ResourceInfo)
+  Inherits ReadOnlyListBase(Of ResourceList, ResourceInfo)
 
 #Region " ResourceInfo Class "
 

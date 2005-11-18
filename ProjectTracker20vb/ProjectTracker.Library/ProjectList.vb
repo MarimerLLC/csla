@@ -3,7 +3,7 @@ Imports CSLA.Data
 
 <Serializable()> _
 Public Class ProjectList
-  Inherits ReadOnlyListBase(Of ProjectInfo)
+  Inherits ReadOnlyListBase(Of ProjectList, ProjectInfo)
 
 #Region " ProjectInfo Class "
 

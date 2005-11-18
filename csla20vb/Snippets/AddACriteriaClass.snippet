@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Define a nested Criteria class</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Defines a Csla-style Criteria class.</Description>
+      <Shortcut>cslacrit</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>Criteria</Default>
+        </Literal>
+        <Literal>
+          <ID>IdName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with Id variable name.</ToolTip>
+          <Default>Id</Default>
+        </Literal>
+        <Literal>
+          <ID>IdType</ID>
+          <Type>
+          </Type>
+          <ToolTip>Replace with the Id variable type.</ToolTip>
+          <Default>Integer</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="VB" Kind="type decl"><![CDATA[#Region " Criteria "
+
+<Serializable()> _
+Private Class $ClassName$
+
+  Public $IdName$ As $IdType$
+
+  Public Sub New(ByVal $IdName$ As $IdType$)
+    Me.$IdName$ = $IdName$
+  End Sub
+
+End Class
+
+#End Region]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

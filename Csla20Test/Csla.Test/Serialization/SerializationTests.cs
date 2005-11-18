@@ -23,6 +23,8 @@ namespace Csla.Test.Serialization
         {
             Csla.ApplicationContext.GlobalContext.Clear();
             SerializationRoot root = new SerializationRoot();
+            nonSerializableEventHandler handler = new nonSerializableEventHandler();
+            handler.Reg(root);
             root.Data = "something";
             Assert.AreEqual(1, Csla.ApplicationContext.GlobalContext["PropertyChangedFiredCount"]);
             root.Data = "something else";

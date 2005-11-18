@@ -18,6 +18,25 @@ namespace Csla.Test.Basic
     public class BasicTests
     {
         [TestMethod]
+        public void TestNotUndoableField()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity();
+
+            p.NotUndoable = "something";
+            p.Data = "data";
+            p.BeginEdit();
+            p.NotUndoable = "something else";
+            p.Data = "new data";
+            p.CancelEdit();
+            //NotUndoable property points to a private field marked with [NotUndoable()]
+            //so its state is never copied when BeginEdit() is called
+            Assert.AreEqual("something else", p.NotUndoable);
+            //the Data property points to a field that is undoable, so it reverts
+            Assert.AreEqual("data", p.Data);
+        }
+
+        [TestMethod]
         public void TestReadOnlyList()
         {
             //ReadOnlyList list = ReadOnlyList.GetReadOnlyList();

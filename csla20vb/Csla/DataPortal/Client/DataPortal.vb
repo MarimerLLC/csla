@@ -91,7 +91,8 @@ Public NotInheritable Class DataPortal
 
     Dim result As Server.DataPortalResult
 
-    Dim method As MethodInfo = GetMethod(objectType, "DataPortal_Create")
+    Dim method As MethodInfo = _
+      MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria)
 
     Dim portal As DataPortalClient.IDataPortalProxy
     portal = GetDataPortalProxy(RunLocal(method))
@@ -149,7 +150,8 @@ Public NotInheritable Class DataPortal
 
     Dim result As Server.DataPortalResult
 
-    Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Fetch")
+    Dim method As MethodInfo = _
+      MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch", criteria)
 
     Dim portal As DataPortalClient.IDataPortalProxy
     portal = GetDataPortalProxy(RunLocal(method))
@@ -272,10 +274,11 @@ Public NotInheritable Class DataPortal
 
     Dim method As MethodInfo
     If TypeOf obj Is CommandBase Then
-      method = GetMethod(obj.GetType, "DataPortal_Execute")
+      method = _
+        MethodCaller.GetMethod(obj.GetType, "DataPortal_Execute")
 
     Else
-      method = GetMethod(obj.GetType, "DataPortal_Update")
+      method = MethodCaller.GetMethod(obj.GetType, "DataPortal_Update")
     End If
 
     Dim portal As DataPortalClient.IDataPortalProxy
@@ -312,12 +315,15 @@ Public NotInheritable Class DataPortal
   ''' immediate deletion of a specific object from the database.
   ''' </summary>
   ''' <param name="criteria">Object-specific criteria.</param>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage( _
+    "Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
+    MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
   Public Shared Sub Delete(ByVal criteria As Object)
 
     Dim result As Server.DataPortalResult
 
-    Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Delete")
+    Dim method As MethodInfo = _
+      MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete", criteria)
 
     Dim portal As DataPortalClient.IDataPortalProxy
     portal = GetDataPortalProxy(RunLocal(method))
@@ -410,17 +416,6 @@ Public NotInheritable Class DataPortal
   Private Shared Function RunLocal(ByVal method As MethodInfo) As Boolean
 
     Return Attribute.IsDefined(method, GetType(RunLocalAttribute))
-
-  End Function
-
-  Private Shared Function GetMethod(ByVal objectType As Type, ByVal method As String) As MethodInfo
-
-    Return objectType.GetMethod( _
-      method, _
-      BindingFlags.FlattenHierarchy Or _
-      BindingFlags.Instance Or _
-      BindingFlags.Public Or _
-      BindingFlags.NonPublic)
 
   End Function
 

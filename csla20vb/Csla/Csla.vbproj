@@ -74,6 +74,7 @@
     <Compile Include="DataPortal\Hosts\WebServicePortal.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DataPortal\MethodCaller.vb" />
     <Compile Include="DataPortal\Server\DataPortalContext.vb" />
     <Compile Include="DataPortal\Server\IDataPortalServer.vb" />
     <Compile Include="DataPortal\Server\ServicedDataPortal.vb" />

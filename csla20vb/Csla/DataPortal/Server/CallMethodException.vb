@@ -9,13 +9,17 @@ Namespace Server
   ''' underlying business object method that was
   ''' being invoked.
   ''' </summary>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")> <Serializable()> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", _
+    "CA1032:ImplementStandardExceptionConstructors")> _
+  <Serializable()> _
   Public Class CallMethodException
     Inherits Exception
 
     Private mInnerStackTrace As String
 
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId:="System.String.Format(System.String,System.Object,System.Object,System.Object)")> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", _
+      "CA1305:SpecifyIFormatProvider", _
+      MessageId:="System.String.Format(System.String,System.Object,System.Object,System.Object)")> _
     Public Overrides ReadOnly Property StackTrace() As String
       Get
         Return String.Format("{0}{1}{2}", mInnerStackTrace, vbCrLf, MyBase.StackTrace)
@@ -29,18 +33,24 @@ Namespace Server
 
     End Sub
 
-    Protected Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
+    Protected Sub New( _
+      ByVal info As System.Runtime.Serialization.SerializationInfo, _
+      ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.New(info, context)
       mInnerStackTrace = info.GetString("mInnerStackTrace")
 
     End Sub
 
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> <SecurityPermission(SecurityAction.LinkDemand, _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", _
+      "CA1062:ValidateArgumentsOfPublicMethods")> _
+    <SecurityPermission(SecurityAction.LinkDemand, _
       Flags:=SecurityPermissionFlag.SerializationFormatter)> _
     <SecurityPermission(SecurityAction.Demand, _
       Flags:=SecurityPermissionFlag.SerializationFormatter)> _
-    Public Overrides Sub GetObjectData(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
+    Public Overrides Sub GetObjectData( _
+      ByVal info As System.Runtime.Serialization.SerializationInfo, _
+      ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.GetObjectData(info, context)
       info.AddValue("mInnerStackTrace", mInnerStackTrace)

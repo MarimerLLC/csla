@@ -21,14 +21,19 @@ Namespace Server
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A populated business object.</returns>
-    Public Function Create(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Create
+    Public Function Create( _
+      ByVal objectType As Type, _
+      ByVal criteria As Object, _
+      ByVal context As DataPortalContext) As DataPortalResult _
+      Implements IDataPortalServer.Create
 
       Try
         SetContext(context)
 
         Dim result As DataPortalResult
 
-        Dim method As MethodInfo = GetMethod(objectType, "DataPortal_Create")
+        Dim method As MethodInfo = _
+          MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria)
 
         Select Case TransactionalType(method)
           Case TransactionalTypes.EnterpriseServices
@@ -72,7 +77,8 @@ Namespace Server
 
         Dim result As DataPortalResult
 
-        Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Fetch")
+        Dim method As MethodInfo = _
+          MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch", criteria)
 
         Select Case TransactionalType(method)
           Case TransactionalTypes.EnterpriseServices
@@ -121,10 +127,10 @@ Namespace Server
 
         Dim method As MethodInfo
         If TypeOf obj Is CommandBase Then
-          method = GetMethod(obj.GetType, "DataPortal_Execute")
+          method = MethodCaller.GetMethod(obj.GetType, "DataPortal_Execute")
 
         Else
-          method = GetMethod(obj.GetType, "DataPortal_Update")
+          method = MethodCaller.GetMethod(obj.GetType, "DataPortal_Update")
         End If
 
         Select Case TransactionalType(method)
@@ -168,7 +174,8 @@ Namespace Server
 
         Dim result As DataPortalResult
 
-        Dim method As MethodInfo = GetMethod(GetObjectType(criteria), "DataPortal_Delete")
+        Dim method As MethodInfo = _
+          MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete", criteria)
 
         Select Case TransactionalType(method)
           Case TransactionalTypes.EnterpriseServices
@@ -302,17 +309,6 @@ Namespace Server
         ' based on the nested class scheme in the book
         Return criteria.GetType.DeclaringType
       End If
-
-    End Function
-
-    Private Shared Function GetMethod(ByVal objectType As Type, _
-      ByVal method As String) As MethodInfo
-
-      Return objectType.GetMethod(method, _
-        BindingFlags.FlattenHierarchy Or _
-        BindingFlags.Instance Or _
-        BindingFlags.Public Or _
-        BindingFlags.NonPublic)
 
     End Function
 

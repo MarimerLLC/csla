@@ -196,8 +196,7 @@ namespace Csla
 
     public static void Clear()
     {
-      Thread.FreeNamedDataSlot("Csla.ClientContext");
-      Thread.FreeNamedDataSlot("Csla.GlobalContext");
+      SetContext(Nothing, Nothing);
     }
 
     private ApplicationContext()

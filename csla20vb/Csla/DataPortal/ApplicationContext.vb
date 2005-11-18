@@ -201,8 +201,7 @@ Public NotInheritable Class ApplicationContext
 
   Public Shared Sub Clear()
 
-    Thread.FreeNamedDataSlot("Csla.ClientContext")
-    Thread.FreeNamedDataSlot("Csla.GlobalContext")
+    SetContext(Nothing, Nothing)
 
   End Sub
 

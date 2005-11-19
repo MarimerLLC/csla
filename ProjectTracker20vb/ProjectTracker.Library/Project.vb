@@ -262,22 +262,23 @@ Public Class Project
 
 #Region " Data Access "
 
-  Protected Overrides Sub DataPortal_Create(ByVal criteria As Object)
+  Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
+
     mId = Guid.NewGuid
     Started = CStr(Today)
     Name = ""
     ValidationRules.CheckRules()
+
   End Sub
 
-  Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
-    Dim crit As Criteria = CType(criteria, Criteria)
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandType = CommandType.StoredProcedure
         cm.CommandText = "getProject"
-        cm.Parameters.AddWithValue("@ID", crit.Id)
+        cm.Parameters.AddWithValue("@ID", criteria.Id)
 
         Using dr As New SafeDataReader(cm.ExecuteReader)
           dr.Read()
@@ -358,8 +359,8 @@ Public Class Project
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
-  Protected Overrides Sub DataPortal_Delete(ByVal Criteria As Object)
-    Dim crit As Criteria = CType(Criteria, Criteria)
+  Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
+
     Dim cn As New SqlConnection(DataBase.DbConn)
     Dim cm As New SqlCommand()
 
@@ -370,13 +371,14 @@ Public Class Project
         .Connection = cn
         .CommandType = CommandType.StoredProcedure
         .CommandText = "deleteProject"
-        .Parameters.AddWithValue("@ID", crit.Id.ToString)
+        .Parameters.AddWithValue("@ID", criteria.Id.ToString)
         .ExecuteNonQuery()
       End With
 
     Finally
       cn.Close()
     End Try
+
   End Sub
 
 #End Region

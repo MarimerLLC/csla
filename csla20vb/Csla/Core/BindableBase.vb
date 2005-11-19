@@ -1,4 +1,5 @@
 Imports System.ComponentModel
+Imports System.Reflection
 
 Namespace Core
 
@@ -14,11 +15,6 @@ Namespace Core
     Protected Sub New()
 
     End Sub
-
-    'Public Event PropertyChanged( _
-    '  ByVal sender As Object, _
-    '  ByVal e As PropertyChangedEventArgs) _
-    '  Implements INotifyPropertyChanged.PropertyChanged
 
     <NonSerialized()> _
     Private mNonSerializableHandlers As PropertyChangedEventHandler
@@ -64,7 +60,13 @@ Namespace Core
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnIsDirtyChanged()
-      RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs("IsDirty"))
+
+      Dim properties() As PropertyInfo = _
+        Me.GetType.GetProperties(BindingFlags.Public Or BindingFlags.Instance)
+      For Each item As PropertyInfo In properties
+        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(item.Name))
+      Next
+
     End Sub
 
     ''' <summary>

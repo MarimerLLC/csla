@@ -39,6 +39,14 @@ Namespace Core
     End Property
 
     ''' <summary>
+    ''' This method is invoked after the CopyState
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub CopyStateComplete()
+
+    End Sub
+
+    ''' <summary>
     ''' Copies the state of the object and places the copy
     ''' onto the state stack.
     ''' </summary>
@@ -95,6 +103,15 @@ Namespace Core
         formatter.Serialize(buffer, state)
         mStateStack.Push(buffer.ToArray)
       End Using
+      CopyStateComplete()
+
+    End Sub
+
+    ''' <summary>
+    ''' This method is invoked after the UndoChanges
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub UndoChangesComplete()
 
     End Sub
 
@@ -160,6 +177,15 @@ Namespace Core
           currentType = currentType.BaseType
         Loop Until currentType Is GetType(UndoableBase)
       End If
+      UndoChangesComplete()
+
+    End Sub
+
+    ''' <summary>
+    ''' This method is invoked after the AcceptChanges
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub AcceptChangesComplete()
 
     End Sub
 
@@ -210,6 +236,8 @@ Namespace Core
         Loop Until currentType Is GetType(UndoableBase)
 
       End If
+      AcceptChangesComplete()
+
     End Sub
 
 #Region " Helper Functions "

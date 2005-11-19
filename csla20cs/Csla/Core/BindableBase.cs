@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace Csla.Core
 {
@@ -56,7 +57,10 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnIsDirtyChanged()
     {
-      OnPropertyChanged("IsDirty");
+      PropertyInfo [] properties = 
+        this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+      foreach (PropertyInfo item in properties)
+        OnPropertyChanged(item.Name);
     }
 
     /// <summary>

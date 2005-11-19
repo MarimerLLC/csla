@@ -661,11 +661,16 @@ namespace Csla.Core
     /// </remarks>
     public void CancelEdit()
     {
-      _bindingEdit = false;
       UndoChanges();
+    }
+
+    protected override void UndoChangesComplete()
+    {
+      _bindingEdit = false;
       ValidationRules.SetTarget(this);
       AddBusinessRules();
       OnIsDirtyChanged();
+      base.UndoChangesComplete();
     }
 
     /// <summary>

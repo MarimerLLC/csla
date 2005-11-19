@@ -654,11 +654,17 @@ Namespace Core
     ''' call.
     ''' </remarks>
     Public Sub CancelEdit()
-      mBindingEdit = False
       UndoChanges()
+    End Sub
+
+    Protected Overrides Sub UndoChangesComplete()
+
+      mBindingEdit = False
       ValidationRules.SetTarget(Me)
       AddBusinessRules()
       OnIsDirtyChanged()
+      MyBase.UndoChangesComplete()
+
     End Sub
 
     ''' <summary>

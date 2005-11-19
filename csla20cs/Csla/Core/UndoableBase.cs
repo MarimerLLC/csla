@@ -54,6 +54,14 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// This method is invoked after the CopyState
+    /// operation is complete.
+    /// </summary>
+    protected virtual void CopyStateComplete()
+    {
+    }
+
+    /// <summary>
     /// Copies the state of the object and places the copy
     /// onto the state stack.
     /// </summary>
@@ -112,6 +120,15 @@ namespace Csla.Core
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
+      CopyStateComplete();
+    }
+
+    /// <summary>
+    /// This method is invoked after the UndoChanges
+    /// operation is complete.
+    /// </summary>
+    protected virtual void UndoChangesComplete()
+    {
     }
 
     /// <summary>
@@ -182,6 +199,15 @@ namespace Csla.Core
           currentType = currentType.BaseType;
         } while (currentType != typeof(UndoableBase));
       }
+      UndoChangesComplete();
+    }
+
+    /// <summary>
+    /// This method is invoked after the AcceptChanges
+    /// operation is complete.
+    /// </summary>
+    protected virtual void AcceptChangesComplete()
+    {
     }
 
     /// <summary>
@@ -230,6 +256,7 @@ namespace Csla.Core
           currentType = currentType.BaseType;
         } while (currentType != typeof(UndoableBase));
       }
+      AcceptChangesComplete();
     }
 
     #region Helper Functions

@@ -362,11 +362,17 @@ namespace CSLA
     /// </remarks>
     public void CancelEdit()
     {
-      _bindingEdit = false;
       UndoChanges();
+    }
+
+    protected override void UndoChangesComplete()
+    {
+      _bindingEdit = false;
       AddBusinessRules();
       OnIsDirtyChanged();
+      base.UndoChangesComplete ();
     }
+
 
     /// <summary>
     /// Commits the current edit process.

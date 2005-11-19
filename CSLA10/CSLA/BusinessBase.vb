@@ -352,10 +352,16 @@ Public MustInherit Class BusinessBase
   ''' call.
   ''' </remarks>
   Public Sub CancelEdit()
-    mBindingEdit = False
     UndoChanges()
+  End Sub
+
+  Protected Overrides Sub UndoChangesComplete()
+
+    mBindingEdit = False
     AddBusinessRules()
     OnIsDirtyChanged()
+    MyBase.UndoChangesComplete()
+
   End Sub
 
   ''' <summary>

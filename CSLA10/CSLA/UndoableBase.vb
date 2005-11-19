@@ -36,13 +36,21 @@ Namespace Core
     End Property
 
     ''' <summary>
+    ''' This method is invoked after the CopyState
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub CopyStateComplete()
+
+    End Sub
+
+    ''' <summary>
     ''' Copies the state of the object and places the copy
     ''' onto the state stack.
     ''' </summary>
     Protected Friend Sub CopyState()
 
       Dim currentType As Type = Me.GetType
-      Dim state As New Hashtable()
+      Dim state As New Hashtable
       Dim fields() As FieldInfo
       Dim field As FieldInfo
       Dim fieldName As String
@@ -150,6 +158,15 @@ Namespace Core
         currentType = currentType.BaseType
 
       Loop Until currentType Is GetType(UndoableBase)
+      CopyStateComplete()
+
+    End Sub
+
+    ''' <summary>
+    ''' This method is invoked after the UndoChanges
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub UndoChangesComplete()
 
     End Sub
 
@@ -170,7 +187,7 @@ Namespace Core
       If EditLevel > 0 Then
         Dim buffer As New MemoryStream(CType(mStateStack.Pop(), Byte()))
         buffer.Position = 0
-        Dim formatter As New BinaryFormatter()
+        Dim formatter As New BinaryFormatter
         Dim state As Hashtable = CType(formatter.Deserialize(buffer), Hashtable)
 
         ' tell child objects they've been deserialized
@@ -231,6 +248,15 @@ Namespace Core
         Loop Until currentType Is GetType(UndoableBase)
 
       End If
+      UndoChangesComplete()
+
+    End Sub
+
+    ''' <summary>
+    ''' This method is invoked after the AcceptChanges
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub AcceptChangesComplete()
 
     End Sub
 
@@ -289,8 +315,9 @@ Namespace Core
           currentType = currentType.BaseType
 
         Loop Until currentType Is GetType(UndoableBase)
-
       End If
+      AcceptChangesComplete()
+
     End Sub
 
 #Region " Helper Functions "
@@ -318,7 +345,7 @@ Namespace Core
     Public Sub DumpState()
 
       Dim currentType As Type = Me.GetType
-      Dim state As New Hashtable()
+      Dim state As New Hashtable
       Dim field As FieldInfo
       Dim fieldName As String
 

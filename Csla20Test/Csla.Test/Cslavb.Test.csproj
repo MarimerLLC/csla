@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="DataPortal\DataPortalTests.cs" />
     <Compile Include="DataPortal\DpRoot.cs" />
+    <Compile Include="DataPortal\TransactionalRoot.cs" />
     <Compile Include="IO\IOTests.cs" />
     <Compile Include="Nullable\NullableObject.cs" />
     <Compile Include="Nullable\NullableTests.cs" />

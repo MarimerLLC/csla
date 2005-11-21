@@ -115,7 +115,6 @@
     <Compile Include="ValidationRules\ValidationTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Csla.Test.config" />
     <None Include="DataPortalTestDatabaseDataSet.xsc">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
     </None>

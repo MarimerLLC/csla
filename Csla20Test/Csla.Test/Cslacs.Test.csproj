@@ -75,6 +75,7 @@
     <Compile Include="DataBinding\DataBindingTests.cs" />
     <Compile Include="DataBinding\ListObject.cs" />
     <Compile Include="DataBinding\ParentEntity.cs" />
+    <Compile Include="DataPortal\ESTransactionalRoot.cs" />
     <Compile Include="DataPortal\TransactionalRoot.cs" />
     <Compile Include="DataPortalTestDatabaseDataSet.cs">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>

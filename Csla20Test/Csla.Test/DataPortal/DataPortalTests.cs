@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla.Test.DataBinding;
+using System.Data;
+using System.Data.SqlClient;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,6 +20,180 @@ namespace Csla.Test.DataPortal
     [TestClass()]
     public class DataPortalTests
     {
+        //pull from ConfigurationManager
+        private const string CONNECTION_STRING = 
+            "Data Source=.\\SQLEXPRESS;AttachDbFilename=|DataDirectory|DataPortalTestDatabase.mdf;Integrated Security=True;User Instance=True";
+        
+        public void ClearDataBase()
+        {
+            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cm = new SqlCommand("DELETE FROM Table2", cn);
+
+            try
+            {
+                cn.Open();
+                cm.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                //do nothing
+            }
+            finally
+            {
+                cn.Close();
+            }
+        }
+
+        [TestMethod()]
+        public void TestEnterpriseServicesTransactionalUpdate()
+        {
+            Csla.Test.DataPortal.ESTransactionalRoot tr = Csla.Test.DataPortal.ESTransactionalRoot.NewESTransactionalRoot();
+            tr.FirstName = "Bill";
+            tr.LastName = "Johnson";
+            //setting smallColumn to a string less than or equal to 5 characters will
+            //not cause the transaction to rollback
+            tr.SmallColumn = "abc";
+
+            tr = tr.Save();
+
+            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cm = new SqlCommand("SELECT * FROM Table2", cn);
+
+            try
+            {
+                cn.Open();
+                SqlDataReader dr = cm.ExecuteReader();
+
+                //will have rows since no sqlexception was thrown on the insert
+                Assert.AreEqual(true, dr.HasRows);
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                //do nothing
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+            ClearDataBase();
+
+            Csla.Test.DataPortal.ESTransactionalRoot tr2 = Csla.Test.DataPortal.ESTransactionalRoot.NewESTransactionalRoot();
+            tr2.FirstName = "Jimmy";
+            tr2.LastName = "Smith";
+            //intentionally input a string longer than varchar(5) to 
+            //cause a sql exception and rollback the transaction
+            tr2.SmallColumn = "this will cause a sql exception";
+
+            try
+            {
+                //will throw a sql exception since the SmallColumn property is too long
+                tr2 = tr2.Save();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual("DataPortal.Update failed", ex.Message);
+            }
+
+            //within the DataPortal_Insert method, two commands are run to insert data into
+            //the database. Here we verify that both commands have been rolled back
+            try
+            {
+                cn.Open();
+                SqlDataReader dr = cm.ExecuteReader();
+
+                //should not have rows since both commands were rolled back
+                Assert.AreEqual(false, dr.HasRows);
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                //do nothing
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+            ClearDataBase();
+        }
+
+        [TestMethod()]
+        public void TestTransactionScopeUpdate()
+        {
+            Csla.Test.DataPortal.TransactionalRoot tr = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
+            tr.FirstName = "Bill";
+            tr.LastName = "Johnson";
+            //setting smallColumn to a string less than or equal to 5 characters will
+            //not cause the transaction to rollback
+            tr.SmallColumn = "abc";
+
+            tr = tr.Save();
+
+            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cm = new SqlCommand("SELECT * FROM Table2", cn);
+
+            try
+            {
+                cn.Open();
+                SqlDataReader dr = cm.ExecuteReader();
+
+                //will have rows since no sqlexception was thrown on the insert
+                Assert.AreEqual(true, dr.HasRows);
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                //do nothing
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+            ClearDataBase();
+
+            Csla.Test.DataPortal.TransactionalRoot tr2 = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
+            tr2.FirstName = "Jimmy";
+            tr2.LastName = "Smith";
+            //intentionally input a string longer than varchar(5) to 
+            //cause a sql exception and rollback the transaction
+            tr2.SmallColumn = "this will cause a sql exception";
+
+            try
+            {
+                //will throw a sql exception since the SmallColumn property is too long
+                tr2 = tr2.Save();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual("DataPortal.Update failed", ex.Message);
+            }
+
+            //within the DataPortal_Insert method, two commands are run to insert data into
+            //the database. Here we verify that both commands have been rolled back
+            try
+            {
+                cn.Open();
+                SqlDataReader dr = cm.ExecuteReader();
+
+                //should not have rows since both commands were rolled back
+                Assert.AreEqual(false, dr.HasRows);
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                //do nothing
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+            ClearDataBase();
+        }
+
         [TestMethod()]
         public void DataPortalEvents()
         {

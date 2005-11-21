@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 namespace Csla.Test.DataPortal
 {
     [Serializable()]
-    public class TransactionalRoot : BusinessBase<TransactionalRoot>
+    public class ESTransactionalRoot : BusinessBase<ESTransactionalRoot>
     {
         #region "Business methods"
 
@@ -16,7 +16,7 @@ namespace Csla.Test.DataPortal
         private string _lastName;
         private string _smallColumn;
         //get the configurationmanager to work right
-        public const string CONNECTION_STRING = 
+        public const string CONNECTION_STRING =
             "Data Source=.\\SQLEXPRESS;AttachDbFilename=|DataDirectory|DataPortalTestDatabase.mdf;Integrated Security=True;User Instance=True";
 
         public int ID
@@ -77,8 +77,8 @@ namespace Csla.Test.DataPortal
 
         #region "constructors"
 
-        private TransactionalRoot()
-        { 
+        private ESTransactionalRoot()
+        {
             //require factory method 
         }
 
@@ -86,24 +86,24 @@ namespace Csla.Test.DataPortal
 
         #region "Factory Methods"
 
-        public static TransactionalRoot NewTransactionalRoot()
+        public static ESTransactionalRoot NewESTransactionalRoot()
         {
-            return Csla.DataPortal.Create<TransactionalRoot>();
+            return Csla.DataPortal.Create<ESTransactionalRoot>();
         }
 
-        public static TransactionalRoot GetTransactionalRoot(int ID)
+        public static ESTransactionalRoot GetESTransactionalRoot(int ID)
         {
-            return Csla.DataPortal.Fetch<TransactionalRoot>(new Criteria(ID));
+            return Csla.DataPortal.Fetch<ESTransactionalRoot>(new Criteria(ID));
         }
 
-        public static void DeleteTransactionalRoot(int ID)
+        public static void DeleteESTransactionalRoot(int ID)
         {
             Csla.DataPortal.Delete(new Criteria(ID));
         }
 
         #endregion
 
-        public override TransactionalRoot Save()
+        public override ESTransactionalRoot Save()
         {
             return base.Save();
         }
@@ -129,7 +129,7 @@ namespace Csla.Test.DataPortal
         protected override void DataPortal_Create(object criteria)
         {
             Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Created");
+            Csla.ApplicationContext.GlobalContext.Add("ESTransactionalRoot", "Created");
             ValidationRules.CheckRules();
             Console.WriteLine("DataPortal_Create");
         }
@@ -138,7 +138,7 @@ namespace Csla.Test.DataPortal
         {
             Console.WriteLine("DataPortal_Fetch");
             Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Fetched");
+            Csla.ApplicationContext.GlobalContext.Add("ESTransactionalRoot", "Fetched");
             ValidationRules.CheckRules();
         }
 
@@ -172,30 +172,30 @@ namespace Csla.Test.DataPortal
             cn.Close();
 
             Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Inserted");
+            Csla.ApplicationContext.GlobalContext.Add("ESTransactionalRoot", "Inserted");
             Console.WriteLine("DataPortal_Insert");
         }
 
-        [Transactional(TransactionalTypes.TransactionScope)]
+        [Transactional(TransactionalTypes.EnterpriseServices)]
         protected override void DataPortal_Update()
         {
             Console.WriteLine("DataPortal_Update");
             Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Updated");
+            Csla.ApplicationContext.GlobalContext.Add("ESTransactionalRoot", "Updated");
         }
 
         protected override void DataPortal_DeleteSelf()
         {
             Console.WriteLine("DataPortal_DeleteSelf");
             Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Deleted Self");
+            Csla.ApplicationContext.GlobalContext.Add("ESTransactionalRoot", "Deleted Self");
         }
 
         protected override void DataPortal_Delete(object criteria)
         {
             Console.WriteLine("DataPortal_Delete");
             Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.ApplicationContext.GlobalContext.Add("TransactionRoot", "Deleted");
+            Csla.ApplicationContext.GlobalContext.Add("ESTransactionRoot", "Deleted");
         }
 
         #endregion

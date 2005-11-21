@@ -18,6 +18,34 @@ namespace Csla.Test.Basic
     public class BasicTests
     {
         [TestMethod]
+        public void TestSortedBindingList()
+        {
+            string[] data = { "a", "c", "b", "z", "f" };
+            SortedBindingList<string> list = new SortedBindingList<string>(data);
+
+            foreach (string item in data)
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+
+            list.ApplySort("a", System.ComponentModel.ListSortDirection.Ascending);
+            foreach (string item in list)
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+
+            list.RemoveSort();
+            foreach (string item in list)
+            {
+                Console.WriteLine(item);
+            }
+        }
+
+        [TestMethod]
         public void TestNotUndoableField()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

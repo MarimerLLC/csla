@@ -20,14 +20,15 @@ namespace Csla.Test.AppDomainTests
         [TestMethod]
         public void AppDomainTestIsCalled()
         {
-            Assert.IsNotNull(System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"], "Missing Proxy settings string");
+            if (System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] != null)
+            {
+                Console.WriteLine("Local: " + AppDomain.CurrentDomain.Id);
 
-            Console.WriteLine("Local: " + AppDomain.CurrentDomain.Id);
-
-            Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(DataPortal_DataPortalInvoke);
-            Basic.Root r = Basic.Root.NewRoot();
-            Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(DataPortal_DataPortalInvoke);
-            
+                Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(DataPortal_DataPortalInvoke);
+                Basic.Root r = Basic.Root.NewRoot();
+                Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(DataPortal_DataPortalInvoke);
+            }
+            else Assert.Ignore("Invalid configuration: Missing CslaDataPortalProxy value");
         }
 
         void DataPortal_DataPortalInvoke(DataPortalEventArgs obj)

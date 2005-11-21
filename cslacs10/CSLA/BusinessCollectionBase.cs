@@ -194,11 +194,6 @@ namespace CSLA
         throw new NotSupportedException(Strings.GetResourceString("NoCancelEditChildException"));
 
       UndoChanges();
-
-      foreach(BusinessBase child in List)
-        child.AddBusinessRules();
-      foreach(BusinessBase child in deletedList)
-        child.AddBusinessRules();
     }
 
     /// <summary>

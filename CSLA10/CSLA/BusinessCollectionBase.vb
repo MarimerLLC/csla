@@ -204,14 +204,6 @@ Public MustInherit Class BusinessCollectionBase
 
     UndoChanges()
 
-    ' make sure the child objects re-add their business rules
-    For Each child As BusinessBase In list
-      child.AddBusinessRules()
-    Next
-    For Each child As BusinessBase In deletedList
-      child.AddBusinessRules()
-    Next
-
   End Sub
 
   ''' <summary>

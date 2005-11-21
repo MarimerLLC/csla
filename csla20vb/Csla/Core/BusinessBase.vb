@@ -805,7 +805,7 @@ Namespace Core
 
 #Region " ValidationRules, IsValid "
 
-    Private mValidationRules As New Validation.ValidationRules(Me)
+    Private mValidationRules As Validation.ValidationRules
 
     ''' <summary>
     ''' Provides access to the broken rules functionality.
@@ -817,6 +817,9 @@ Namespace Core
     ''' </remarks>
     Protected ReadOnly Property ValidationRules() As Validation.ValidationRules
       Get
+        If mValidationRules Is Nothing Then
+          mValidationRules = New Validation.ValidationRules(Me)
+        End If
         Return mValidationRules
       End Get
     End Property

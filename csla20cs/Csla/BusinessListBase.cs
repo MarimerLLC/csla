@@ -157,24 +157,6 @@ namespace Csla
         throw new NotSupportedException(Resources.NoCancelEditChildException);
 
       UndoChanges();
-
-      ResetChildValidationRules();
-    }
-
-    void ResetChildValidationRules()
-    {
-      // make sure the child objects re-add their business rules
-      foreach (C child in this)
-      {
-        child.SetParent(this);
-        child.AddBusinessRules();
-      }
-
-      foreach (C child in DeletedList)
-      {
-        child.SetParent(this);
-        child.AddBusinessRules();
-      }
     }
 
     /// <summary>
@@ -466,7 +448,6 @@ namespace Csla
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
-      ResetChildValidationRules();
       OnDeserialized(context);
     }
 

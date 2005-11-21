@@ -144,22 +144,6 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
 
     UndoChanges()
 
-    ResetChildValidationRules()
-
-  End Sub
-
-  Private Sub ResetChildValidationRules()
-
-    ' make sure the child objects re-add their business rules
-    For Each child As C In Me
-      child.SetParent(Me)
-      child.AddBusinessRules()
-    Next
-    For Each child As C In DeletedList
-      child.SetParent(Me)
-      child.AddBusinessRules()
-    Next
-
   End Sub
 
   ''' <summary>
@@ -443,7 +427,6 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
   <OnDeserialized()> _
   Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
 
-    ResetChildValidationRules()
     OnDeserialized(context)
 
   End Sub

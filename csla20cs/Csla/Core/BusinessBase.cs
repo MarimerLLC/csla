@@ -835,7 +835,7 @@ namespace Csla.Core
     /// your object is created. This method will be automatically
     /// called, if needed, when your object is serialized.
     /// </remarks>
-    protected internal virtual void AddBusinessRules()
+    protected virtual void AddBusinessRules()
     {
 
     }

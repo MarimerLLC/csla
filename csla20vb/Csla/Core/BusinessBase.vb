@@ -832,7 +832,7 @@ Namespace Core
     ''' your object is created. This method will be automatically
     ''' called, if needed, when your object is serialized.
     ''' </remarks>
-    Protected Friend Overridable Sub AddBusinessRules()
+    Protected Overridable Sub AddBusinessRules()
 
     End Sub
 

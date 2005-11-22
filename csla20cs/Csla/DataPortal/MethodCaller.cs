@@ -10,7 +10,7 @@ namespace Csla
   {
     public static object CallMethodIfImplemented(object obj, string method, params object[] parameters)
     {
-      MethodInfo info = GetMethod(obj.GetType(), method);
+      MethodInfo info = GetMethod(obj.GetType(), method, parameters);
       if (info != null)
         return CallMethod(obj, info, parameters);
       else
@@ -19,7 +19,7 @@ namespace Csla
 
     public static object CallMethod(object obj, string method, params object[] parameters)
     {
-      MethodInfo info = GetMethod(obj.GetType(), method);
+      MethodInfo info = GetMethod(obj.GetType(), method, parameters);
       if (info == null)
         throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
       return CallMethod(obj, info, parameters);
@@ -107,8 +107,22 @@ namespace Csla
 
     // no strongly typed match found, get default
     if (result == null)
-      result = objectType.GetMethod(method, flags);
-
+    {
+      try
+      { result = objectType.GetMethod(method, flags); }
+      catch (AmbiguousMatchException)
+      {
+        MethodInfo[] methods = objectType.GetMethods();
+        foreach (MethodInfo m in methods)
+          if (m.Name == method && m.GetParameters().Length == parameters.Length)
+          {
+            result = m;
+            break;
+          }
+        if (result == null)
+          throw;
+      }
+    }
     return result;
     }
 

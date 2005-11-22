@@ -98,7 +98,7 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = MethodCaller.GetMethod(objectType, "DataPortal_Create");
+      MethodInfo method = MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria);
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
@@ -152,7 +152,7 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch");
+      MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch", criteria);
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
@@ -311,7 +311,7 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete");
+      MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete", criteria);
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));

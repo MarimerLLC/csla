@@ -20,6 +20,8 @@ Namespace Server
 
     Private mPrincipal As IPrincipal
     Private mRemotePortal As Boolean
+    Private mClientCulture As String
+    Private mClientUICulture As String
     Private mClientContext As HybridDictionary
     Private mGlobalContext As HybridDictionary
 
@@ -43,6 +45,26 @@ Namespace Server
       End Get
     End Property
 
+    ''' <summary>
+    ''' The culture setting on the client
+    ''' workstation.
+    ''' </summary>
+    Public ReadOnly Property ClientCulture() As String
+      Get
+        Return mClientCulture
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' The UI culture setting on the client
+    ''' workstation.
+    ''' </summary>
+    Public ReadOnly Property ClientUICulture() As String
+      Get
+        Return mClientUICulture
+      End Get
+    End Property
+
     Friend ReadOnly Property ClientContext() As HybridDictionary
       Get
         Return mClientContext
@@ -63,6 +85,8 @@ Namespace Server
 
       If isRemotePortal Then
         mRemotePortal = isRemotePortal
+        mClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name
+        mClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name
         mClientContext = Csla.ApplicationContext.GetClientContext
         mGlobalContext = Csla.ApplicationContext.GetGlobalContext
       End If
@@ -79,6 +103,8 @@ Namespace Server
       If isRemotePortal Then
         mPrincipal = principal
         mRemotePortal = isRemotePortal
+        mClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name
+        mClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name
         mClientContext = Csla.ApplicationContext.GetClientContext
         mGlobalContext = Csla.ApplicationContext.GetGlobalContext
       End If

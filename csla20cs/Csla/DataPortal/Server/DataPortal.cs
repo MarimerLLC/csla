@@ -241,6 +241,12 @@ namespace Csla.Server
       // code is running on the server
       ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
 
+      // set the thread's culture to match the client
+      System.Threading.Thread.CurrentThread.CurrentCulture = 
+        new System.Globalization.CultureInfo(context.ClientCulture);
+      System.Threading.Thread.CurrentThread.CurrentUICulture = 
+        new System.Globalization.CultureInfo(context.ClientUICulture);
+
       if (ApplicationContext.AuthenticationType == "Windows")
       {
         // When using integrated security, Principal must be null

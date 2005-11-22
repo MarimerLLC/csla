@@ -21,6 +21,8 @@ namespace Csla.Server
   {
     private IPrincipal _principal;
     private bool _remotePortal;
+    private string _clientCulture;
+    private string _clientUICulture;
     private HybridDictionary _clientContext;
     private HybridDictionary _globalContext;
 
@@ -31,6 +33,24 @@ namespace Csla.Server
     public IPrincipal Principal
     {
       get { return _principal; }
+    }
+
+    /// <summary>
+    /// The culture setting on the client
+    /// workstation.
+    /// </summary>
+    public string ClientCulture
+    {
+      get { return _clientCulture; }
+    }
+
+    /// <summary>
+    /// The culture setting on the client
+    /// workstation.
+    /// </summary>
+    public string ClientUICulture
+    {
+      get { return _clientUICulture; }
     }
 
     /// <summary>
@@ -61,6 +81,8 @@ namespace Csla.Server
       if (isRemotePortal)
       {
         _remotePortal = isRemotePortal;
+        _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+        _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
         _clientContext = Csla.ApplicationContext.GetClientContext();
         _globalContext = Csla.ApplicationContext.GetGlobalContext();
       }
@@ -77,6 +99,8 @@ namespace Csla.Server
       {
         _principal = principal;
         _remotePortal = isRemotePortal;
+        _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+        _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
         _clientContext = Csla.ApplicationContext.GetClientContext();
         _globalContext = Csla.ApplicationContext.GetGlobalContext();
       }

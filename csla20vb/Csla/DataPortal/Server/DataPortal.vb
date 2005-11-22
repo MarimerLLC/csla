@@ -224,6 +224,12 @@ Namespace Server
       ' code is running on the server
       ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server)
 
+      ' set the thread's culture to match the client
+      System.Threading.Thread.CurrentThread.CurrentCulture = _
+        New System.Globalization.CultureInfo(context.ClientCulture)
+      System.Threading.Thread.CurrentThread.CurrentUICulture = _
+        New System.Globalization.CultureInfo(context.ClientUICulture)
+
       If ApplicationContext.AuthenticationType = "Windows" Then
         ' When using integrated security, Principal must be Nothing 
         If context.Principal Is Nothing Then

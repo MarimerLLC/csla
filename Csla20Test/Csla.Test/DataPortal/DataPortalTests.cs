@@ -195,6 +195,15 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod()]
+        public void StronglyTypedDataPortalMethods()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456);
+        
+        
+        }
+
+        [TestMethod()]
         public void DataPortalEvents()
         {
             Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);

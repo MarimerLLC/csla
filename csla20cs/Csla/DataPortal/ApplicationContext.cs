@@ -181,7 +181,7 @@ namespace Csla
 
     internal static HybridDictionary GetGlobalContext()
     {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Clsa.GlobalContext");
+      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
       return (HybridDictionary)Thread.GetData(slot);
     }
 

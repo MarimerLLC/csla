@@ -448,6 +448,10 @@ namespace Csla
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
+      foreach (Core.BusinessBase child in this)
+        child.SetParent(this);
+      foreach (Core.BusinessBase child in DeletedList)
+        child.SetParent(this);
       OnDeserialized(context);
     }
 

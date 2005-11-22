@@ -427,6 +427,12 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
   <OnDeserialized()> _
   Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
 
+    For Each child As Core.BusinessBase In Me
+      child.SetParent(Me)
+    Next
+    For Each child As Core.BusinessBase In DeletedList
+      child.SetParent(Me)
+    Next
     OnDeserialized(context)
 
   End Sub

@@ -92,6 +92,7 @@
     <Compile Include="DataPortal\DataPortalTests.cs" />
     <Compile Include="DataPortal\DpRoot.cs" />
     <Compile Include="DataPortal\ESTransactionalRoot.cs" />
+    <Compile Include="DataPortal\StronglyTypedDP.cs" />
     <Compile Include="DataPortal\TransactionalRoot.cs" />
     <Compile Include="IO\IOTests.cs" />
     <Compile Include="Nullable\NullableObject.cs" />

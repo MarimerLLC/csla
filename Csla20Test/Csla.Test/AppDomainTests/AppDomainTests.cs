@@ -20,20 +20,16 @@ namespace Csla.Test.AppDomainTests
         [TestMethod]
         public void AppDomainTestIsCalled()
         {
-            if (System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] != null)
-            {
-                Console.WriteLine("Local: " + AppDomain.CurrentDomain.Id);
+            int local= AppDomain.CurrentDomain.Id;
+            Basic.Root r = Basic.Root.NewRoot();
+            int remote = r.CreatedDomain;
 
-                Csla.DataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(DataPortal_DataPortalInvoke);
-                Basic.Root r = Basic.Root.NewRoot();
-                Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(DataPortal_DataPortalInvoke);
-            }
-            else Assert.Ignore("Invalid configuration: Missing CslaDataPortalProxy value");
+            if (System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] == null)
+              Assert.AreEqual(local, remote, "Local and Remote AppDomains should be the same");
+            else
+              Assert.IsFalse((local == remote), "Local and Remote AppDomains should be different");
+  
         }
 
-        void DataPortal_DataPortalInvoke(DataPortalEventArgs obj)
-        {
-            Console.WriteLine("Remote: " + AppDomain.CurrentDomain.Id);
-        }
     }
 }

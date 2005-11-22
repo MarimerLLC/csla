@@ -46,6 +46,17 @@ namespace Csla.Test.Basic
             }
         }
 
+        private int _createdDomain;
+
+        public int CreatedDomain
+        {
+          get 
+          {
+            CanReadProperty(true);
+            return _createdDomain; 
+          }
+        }
+	
         public Children Children
         {
             get { return _children; }
@@ -101,6 +112,7 @@ namespace Csla.Test.Basic
         {
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
+            _createdDomain = AppDomain.CurrentDomain.Id;
             Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
         }
 

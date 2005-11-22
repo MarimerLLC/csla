@@ -34,6 +34,7 @@ namespace Csla.Test.AppContext
         /// <summary>
         /// Criteria for DataPortal overrides
         /// </summary>
+        [Serializable()]
         private class Criteria
         {
             public const string DefaultData = "<new>";

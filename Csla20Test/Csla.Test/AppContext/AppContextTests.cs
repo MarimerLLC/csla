@@ -19,8 +19,26 @@ namespace Csla.Test.AppContext
     [TestClass()]
     public class AppContextTests
     {
+        #region Simple Test
+
+        [TestMethod()]
+        public void SimpleTest()
+        {
+          ApplicationContext.Clear();
+          ApplicationContext.ClientContext["v1"] = "client";
+          ApplicationContext.GlobalContext["v2"] = "client";
+
+          SimpleRoot root = SimpleRoot.GetSimpleRoot("data");
+
+          Assert.AreEqual("client", ApplicationContext.ClientContext["v1"], "client context didn't roundtrip");
+          Assert.AreEqual("client", ApplicationContext.GlobalContext["v2"], "global context didn't roundtrip");
+          Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["Root"], "global context missing server value");
+        }
+
+        #endregion
+
         #region NoContext
-        /// <summary>
+      /// <summary>
         /// Test to see if contexts get cleared out properly
         /// </summary>
         /// <remarks>

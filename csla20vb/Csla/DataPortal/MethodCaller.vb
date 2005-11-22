@@ -111,7 +111,21 @@ Friend Class MethodCaller
 
     ' no strongly typed match found, get default
     If result Is Nothing Then
-      result = objectType.GetMethod(method, flags)
+      Try
+        result = objectType.GetMethod(method, flags)
+
+      Catch ex As AmbiguousMatchException
+        Dim methods() As MethodInfo = objectType.GetMethods
+        For Each m As MethodInfo In methods
+          If m.Name = method AndAlso m.GetParameters.Length = parameters.Length Then
+            result = m
+            Exit For
+          End If
+        Next
+        If result Is Nothing Then
+          Throw
+        End If
+      End Try
     End If
 
     Return result

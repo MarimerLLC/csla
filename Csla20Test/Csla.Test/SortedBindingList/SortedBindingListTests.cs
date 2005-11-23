@@ -57,6 +57,8 @@ namespace Csla.Test.SortedBindingList
             string[] strArr = { "zandy", "alex", "Chris", "bert", "alfred", "Bert", "Jimmy", "chris", "chris", "mobbit", "myper", "Corey", "Monkey" };
             SortedBindingList<string> sortedList = new SortedBindingList<string>(strArr);
 
+            Assert.AreEqual("Bert", sortedList[5]);
+
             sortedList.ApplySort("", ListSortDirection.Descending);
 
             foreach (string item in sortedList)
@@ -64,7 +66,15 @@ namespace Csla.Test.SortedBindingList
                 Console.WriteLine(item);
             }
 
-            Assert.IsTrue(sortedList.Count > 0);
+            for (int i = 0; i < sortedList.Count; i++)
+            {
+                Console.WriteLine("regular loop: " + sortedList[i]);
+            }
+
+            Assert.AreEqual("Corey", sortedList[5]);
+
+            Console.WriteLine();
+            Console.WriteLine(sortedList.Count);
         }
 
         [TestMethod()]

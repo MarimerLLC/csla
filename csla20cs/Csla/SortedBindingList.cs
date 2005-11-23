@@ -78,6 +78,7 @@ namespace Csla
         _list = list;
         _sortIndex = sortIndex;
         _sortOrder = direction;
+        Reset();
       }
 
       public T Current

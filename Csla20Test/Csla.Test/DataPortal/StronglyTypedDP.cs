@@ -112,7 +112,7 @@ namespace Csla.Test.DataPortal
 
         protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
         {
-            Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Deleted");
+            Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP_Criteria", criteria._ID);
         }
     }
 }

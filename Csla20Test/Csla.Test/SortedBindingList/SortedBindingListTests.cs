@@ -77,13 +77,60 @@ namespace Csla.Test.SortedBindingList
             Console.WriteLine(sortedList.Count);
         }
 
-        [TestMethod()]
-        public void CopyTo()
-        { }
+        //[TestMethod()]
+        //public void TestFirstItemIssue()
+        //{
+        //    int[] intArray = { 10, 4, 6 };
+        //    SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
+
+        //    foreach (int item in sortedList)
+        //    {
+        //        Console.WriteLine(item.ToString());
+        //    }
+
+        //    sortedList.ApplySort("", ListSortDirection.Ascending);
+
+        //    Console.WriteLine();
+
+        //    foreach (int item in sortedList)
+        //    {
+        //        Console.WriteLine(item.ToString());
+        //    }
+
+        //    Console.WriteLine();
+
+        //    sortedList.ApplySort("", ListSortDirection.Descending);
+
+        //    foreach (int item in sortedList)
+        //    {
+        //        Console.WriteLine(item.ToString());
+        //    }
+        //}
 
         [TestMethod()]
-        public void Find()
-        { }
+        public void CopyTo()
+        {
+            int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+            SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
+
+            int[] intArray2 = { 3, 75, 1222, 3333, 511, 443, 332 };
+
+            Assert.AreEqual(1222, intArray2[2]);
+
+            sortedList.ApplySort("", ListSortDirection.Descending);
+            sortedList.CopyTo(intArray2, 0);
+
+            Assert.AreEqual(1, intArray2[2]);
+
+            foreach (int item in intArray2)
+            {
+                Console.WriteLine(item.ToString());
+            }        
+        }
+
+        //[TestMethod()]
+        //public void Find()
+        //{ }
 
     }
 }

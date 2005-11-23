@@ -197,10 +197,25 @@ namespace Csla.Test.DataPortal
         [TestMethod()]
         public void StronglyTypedDataPortalMethods()
         {
+            //test strongly-typed DataPortal_Fetch method
             Csla.ApplicationContext.GlobalContext.Clear();
             Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456);
-        
-        
+
+            Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["StronglyTypedDP"]);
+            Assert.AreEqual("fetched existing data", root.Data);
+            Assert.AreEqual(456, root.ID); 
+       
+            //test strongly-typed DataPortal_Create method
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Csla.Test.DataPortal.StronglyTypedDP root2 = Csla.Test.DataPortal.StronglyTypedDP.NewStronglyTypedDP();
+
+            Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["StronglyTypedDP"]);
+            Assert.AreEqual("new default data", root2.Data);
+            Assert.AreEqual(56, root2.ID);
+
+            //test strongly-typed DataPortal_Delete method
+            Csla.Test.DataPortal.StronglyTypedDP.DeleteStronglyTypedDP(567);
+            Assert.AreEqual(567, Csla.ApplicationContext.GlobalContext["StronglyTypedDP_Criteria"]);
         }
 
         [TestMethod()]

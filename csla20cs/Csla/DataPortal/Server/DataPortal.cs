@@ -83,7 +83,8 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch", criteria);
+        MethodInfo method = MethodCaller.GetMethod(
+          MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria);
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -135,10 +136,24 @@ namespace Csla.Server
         DataPortalResult result;
 
         MethodInfo method;
+        string methodName;
         if (obj is CommandBase)
-          method = MethodCaller.GetMethod(obj.GetType(), "DataPortal_Execute");
+          methodName = "DataPortal_Execute";
+        else if (obj is Core.BusinessBase)
+        {
+          Core.BusinessBase tmp = obj as Core.BusinessBase;
+          if (tmp.IsDeleted)
+            methodName = "DataPortal_DeleteSelf";
+          else
+            if (tmp.IsNew)
+              methodName = "DataPortal_Insert";
+            else
+              methodName = "DataPortal_Update";
+        }
         else
-          method = MethodCaller.GetMethod(obj.GetType(), "DataPortal_Update");
+          methodName = "DataPortal_Update";
+
+        method = MethodCaller.GetMethod(obj.GetType(), methodName);
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -187,7 +202,8 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete", criteria);
+        MethodInfo method = MethodCaller.GetMethod(
+          MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria);
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -310,24 +326,6 @@ namespace Csla.Server
       else
         result = TransactionalTypes.Manual;
       return result;
-    }
-
-
-
-    private static Type GetObjectType(object criteria)
-    {
-      if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
-      {
-        // get the type of the actual business object
-        // from CriteriaBase (using the new scheme)
-        return ((CriteriaBase)criteria).ObjectType;
-      }
-      else
-      {
-        // get the type of the actual business object
-        // based on the nested class scheme in the book
-        return criteria.GetType().DeclaringType;
-      }
     }
 
     #endregion

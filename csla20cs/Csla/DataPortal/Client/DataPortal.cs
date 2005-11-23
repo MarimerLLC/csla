@@ -91,32 +91,36 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
     public static object Create(object criteria)
     {
-      return Create(GetObjectType(criteria), criteria);
+      return Create(MethodCaller.GetObjectType(criteria), criteria);
     }
 
     private static object Create(Type objectType, object criteria)
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria);
+      MethodInfo method = 
+        MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria);
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
 
-      Server.DataPortalContext dpContext = new Csla.Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+      Server.DataPortalContext dpContext = 
+        new Csla.Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
 
       OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
       try
       {
-        result = (Server.DataPortalResult)portal.Create(objectType, criteria, dpContext);
+        result = (Server.DataPortalResult)
+          portal.Create(objectType, criteria, dpContext);
       }
       catch (Server.DataPortalException ex)
       {
         result = ex.Result;
         if (portal.IsServerRemote)
           RestoreContext(result);
-        throw new DataPortalException("DataPortal.Create " + Resources.Failed, ex.InnerException, result.ReturnObject);
+        throw new DataPortalException(
+          "DataPortal.Create " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
       if (portal.IsServerRemote)
@@ -152,12 +156,14 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch", criteria);
+      MethodInfo method = MethodCaller.GetMethod(
+        MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria);
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
 
-      Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+      Server.DataPortalContext dpContext = 
+        new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
 
       OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
@@ -170,7 +176,8 @@ namespace Csla
         result = ex.Result;
         if (portal.IsServerRemote)
           RestoreContext(result);
-        throw new DataPortalException("DataPortal.Fetch " + Resources.Failed, ex.InnerException, result.ReturnObject);
+        throw new DataPortalException("DataPortal.Fetch " + 
+          Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
       if (portal.IsServerRemote)
@@ -269,10 +276,24 @@ namespace Csla
       Server.DataPortalResult result;
 
       MethodInfo method;
+      string methodName;
       if (obj is CommandBase)
-        method = MethodCaller.GetMethod(obj.GetType(), "DataPortal_Execute");
+        methodName = "DataPortal_Execute";
+      else if (obj is Core.BusinessBase)
+      {
+        Core.BusinessBase tmp = obj as Core.BusinessBase;
+        if (tmp.IsDeleted)
+          methodName = "DataPortal_DeleteSelf";
+        else
+          if (tmp.IsNew)
+            methodName = "DataPortal_Insert";
+          else
+            methodName = "DataPortal_Update";
+      }
       else
-        method = MethodCaller.GetMethod(obj.GetType(), "DataPortal_Update");
+        methodName = "DataPortal_Update";
+      
+      method = MethodCaller.GetMethod(obj.GetType(), methodName);
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
@@ -311,7 +332,8 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete", criteria);
+      MethodInfo method = MethodCaller.GetMethod(
+        MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria);
 
       DataPortalClient.IDataPortalProxy portal;
       portal = GetDataPortalProxy(RunLocal(method));
@@ -362,9 +384,12 @@ namespace Csla
             _portal = new DataPortalClient.LocalProxy();
           else
           {
-            string typeName = proxyTypeName.Substring(0, proxyTypeName.IndexOf(",")).Trim();
-            string assemblyName = proxyTypeName.Substring(proxyTypeName.IndexOf(",") + 1).Trim();
-            _portal = (DataPortalClient.IDataPortalProxy)Activator.CreateInstance(assemblyName, typeName).Unwrap();
+            string typeName = 
+              proxyTypeName.Substring(0, proxyTypeName.IndexOf(",")).Trim();
+            string assemblyName = 
+              proxyTypeName.Substring(proxyTypeName.IndexOf(",") + 1).Trim();
+            _portal = (DataPortalClient.IDataPortalProxy)
+              Activator.CreateInstance(assemblyName, typeName).Unwrap();
           }
         }
         return _portal;
@@ -402,22 +427,6 @@ namespace Csla
     private static bool RunLocal(MethodInfo method)
     {
       return Attribute.IsDefined(method, typeof(RunLocalAttribute));
-    }
-
-    private static Type GetObjectType(object criteria)
-    {
-      if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
-      {
-        // get the type of the actual business object
-        // from CriteriaBase (using the new scheme)
-        return ((CriteriaBase)criteria).ObjectType;
-      }
-      else
-      {
-        // get the type of the actual business object
-        // based on the nested class scheme in the book
-        return criteria.GetType().DeclaringType;
-      }
     }
 
     #endregion

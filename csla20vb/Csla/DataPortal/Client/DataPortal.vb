@@ -83,7 +83,7 @@ Public NotInheritable Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
   Public Shared Function Create(ByVal criteria As Object) As Object
 
-    Return Create(GetObjectType(criteria), criteria)
+    Return Create(MethodCaller.GetObjectType(criteria), criteria)
 
   End Function
 
@@ -151,7 +151,7 @@ Public NotInheritable Class DataPortal
     Dim result As Server.DataPortalResult
 
     Dim method As MethodInfo = _
-      MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Fetch", criteria)
+      MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria)
 
     Dim portal As DataPortalClient.IDataPortalProxy
     portal = GetDataPortalProxy(RunLocal(method))
@@ -273,13 +273,27 @@ Public NotInheritable Class DataPortal
     Dim result As Server.DataPortalResult
 
     Dim method As MethodInfo
+    Dim methodName As String
     If TypeOf obj Is CommandBase Then
-      method = _
-        MethodCaller.GetMethod(obj.GetType, "DataPortal_Execute")
+      methodName = "DataPortal_Execute"
 
+    ElseIf TypeOf obj Is Core.BusinessBase Then
+      Dim tmp As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
+      If tmp.IsDeleted Then
+        methodName = "DataPortal_DeleteSelf"
+      Else
+        If tmp.IsNew Then
+          methodName = "DataPortal_Insert"
+
+        Else
+          methodName = "DataPortal_Update"
+        End If
+      End If
     Else
-      method = MethodCaller.GetMethod(obj.GetType, "DataPortal_Update")
+      methodName = "DataPortal_Update"
     End If
+
+    method = MethodCaller.GetMethod(obj.GetType, methodName)
 
     Dim portal As DataPortalClient.IDataPortalProxy
     portal = GetDataPortalProxy(RunLocal(method))
@@ -323,7 +337,7 @@ Public NotInheritable Class DataPortal
     Dim result As Server.DataPortalResult
 
     Dim method As MethodInfo = _
-      MethodCaller.GetMethod(GetObjectType(criteria), "DataPortal_Delete", criteria)
+      MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
 
     Dim portal As DataPortalClient.IDataPortalProxy
     portal = GetDataPortalProxy(RunLocal(method))
@@ -416,21 +430,6 @@ Public NotInheritable Class DataPortal
   Private Shared Function RunLocal(ByVal method As MethodInfo) As Boolean
 
     Return Attribute.IsDefined(method, GetType(RunLocalAttribute))
-
-  End Function
-
-  Private Shared Function GetObjectType(ByVal criteria As Object) As Type
-
-    If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
-      ' get the type of the actual business object
-      ' from CriteriaBase (using the new scheme)
-      Return CType(criteria, CriteriaBase).ObjectType
-
-    Else
-      ' get the type of the actual business object
-      ' based on the nested class scheme in the book
-      Return criteria.GetType.DeclaringType
-    End If
 
   End Function
 

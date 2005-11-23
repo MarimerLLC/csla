@@ -132,4 +132,19 @@ Friend Class MethodCaller
 
   End Function
 
+  Public Shared Function GetObjectType(ByVal criteria As Object) As Type
+
+    If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
+      ' get the type of the actual business object
+      ' from CriteriaBase (using the new scheme)
+      Return CType(criteria, CriteriaBase).ObjectType
+
+    Else
+      ' get the type of the actual business object
+      ' based on the nested class scheme in the book
+      Return criteria.GetType.DeclaringType
+    End If
+
+  End Function
+
 End Class

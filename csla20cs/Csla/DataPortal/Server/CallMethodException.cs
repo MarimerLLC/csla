@@ -21,7 +21,8 @@ namespace Csla.Server
     {
       get
       {
-        return string.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace);
+        return string.Format("{0}{1}{2}", 
+          _innerStackTrace, Environment.NewLine, base.StackTrace);
       }
     }
 

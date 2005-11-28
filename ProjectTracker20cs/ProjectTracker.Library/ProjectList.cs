@@ -8,8 +8,9 @@ using Csla.Data;
 
 namespace ProjectTracker.Library
 {
-  public class ProjectList : ReadOnlyListBase<ProjectList.ProjectInfo>
+  public class ProjectList : ReadOnlyListBase<ProjectList, ProjectList.ProjectInfo>
   {
+
     #region ProjectInfo Class
 
     [Serializable()]
@@ -20,26 +21,14 @@ namespace ProjectTracker.Library
 
       public Guid Id
       {
-        get
-        {
-          return _id;
-        }
-        set
-        {
-          _id = value;
-        }
+        get { return _id; }
+        set { _id = value; }
       }
 
       public string Name
       {
-        get
-        {
-          return _name;
-        }
-        set
-        {
-          _name = value;
-        }
+        get { return _name; }
+        set { _name = value; }
       }
 
 
@@ -59,21 +48,27 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Factory Methods
-
-    public static ProjectList GetProjectList()
-    {
-      return DataPortal.Fetch<ProjectList>(new Criteria());
-    }
-
-    #endregion
-
     #region Criteria
 
     [Serializable()]
     private class Criteria
     {
       // no criteria - we retrieve all projects
+    }
+
+    [Serializable()]
+    private class FilteredCriteria
+    {
+      private string _name;
+      public string Name
+      {
+        get { return _name; }
+      }
+
+      public FilteredCriteria(string name)
+      {
+        _name = name;
+      }
     }
 
     #endregion
@@ -87,26 +82,35 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Data Access
+    #region Factory Methods
 
-    private string DbConn
+    public static ProjectList GetProjectList()
     {
-      get
-      {
-        return System.Configuration.ConfigurationManager.ConnectionStrings["PTracker"].ConnectionString;
-      }
+      return DataPortal.Fetch<ProjectList>(new Criteria());
     }
+
+    public static ProjectList GetProjectList(string name)
+    {
+      return DataPortal.Fetch<ProjectList>(new FilteredCriteria(name));
+    }
+
+    #endregion
+
+    #region Data Access
 
     protected override void DataPortal_Fetch(object criteria)
     {
-      using (SqlConnection cn = new SqlConnection(DbConn))
+      string filter = string.Empty;
+      if (criteria is FilteredCriteria)
+        filter = ((FilteredCriteria)criteria).Name;
+
+      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
         {
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "getProjects";
-
           using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
           {
             IsReadOnly = false;
@@ -115,11 +119,15 @@ namespace ProjectTracker.Library
               ProjectInfo info = new ProjectInfo();
               info.Id = dr.GetGuid(0);
               info.Name = dr.GetString(1);
-              this.Add(info);
+              // apply filter if necessary
+              if ((filter.Length == 0) || (info.Name.IndexOf(filter) == 0))
+                this.Add(info);
             }
             IsReadOnly = true;
+            dr.Close();
           }
         }
+        cn.Close();
       }
     }
 

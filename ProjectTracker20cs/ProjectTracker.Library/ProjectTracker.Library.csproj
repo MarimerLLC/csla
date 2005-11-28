@@ -38,9 +38,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\Role.cs" />
+    <Compile Include="Admin\Roles.cs" />
+    <Compile Include="DataBase.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="ProjectList.cs" />
+    <Compile Include="ProjectResource.cs" />
+    <Compile Include="ProjectResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource.cs" />
+    <Compile Include="ResourceAssignment.cs" />
+    <Compile Include="ResourceAssignments.cs" />
+    <Compile Include="ResourceList.cs" />
+    <Compile Include="RoleList.cs" />
+    <Compile Include="Security\PTIdentity.cs" />
+    <Compile Include="Security\PTPrincipal.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

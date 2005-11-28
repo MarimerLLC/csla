@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
 using Csla;
+using Csla.Data;
 
 namespace ProjectTracker.Library
 {
@@ -13,28 +14,21 @@ namespace ProjectTracker.Library
   {
     #region Business Methods
 
-    Guid _id;
-    string _name = string.Empty;
-    SmartDate _started = new SmartDate(false);
-    SmartDate _ended;
-    string _description = string.Empty;
+    private Guid _id;
+    private string _name = string.Empty;
+    private SmartDate _started = new SmartDate(false);
+    private SmartDate _ended;
+    private string _description = string.Empty;
 
-    //ProjectResources _resources =
-    //  ProjectResources.NewProjectResources();
-
-    protected override object GetIdValue()
-    {
-      throw new Exception("The method or operation is not implemented.");
-    }
+    private ProjectResources _resources =
+      ProjectResources.NewProjectResources();
 
     public Guid Id
     {
       get
       {
-        if (CanReadProperty())
-          return _id;
-        else
-          throw new System.Security.SecurityException("Can not get property");
+        CanReadProperty(true);
+        return _id;
       }
     }
 
@@ -42,21 +36,17 @@ namespace ProjectTracker.Library
     {
       get
       {
-        if (CanReadProperty())
-          return _name;
-        else
-          throw new System.Security.SecurityException("Can not get property");
+        CanReadProperty(true);
+        return _name;
       }
       set
       {
-        if (CanWriteProperty())
+        CanWriteProperty(true);
+        if (value == null) value = string.Empty;
+        if (_name != value)
         {
-          if (value == null) value = string.Empty;
-          if (_name != value)
-          {
-            _name = value;
-            PropertyHasChanged();
-          }
+          _name = value;
+          PropertyHasChanged();
         }
       }
     }
@@ -65,21 +55,18 @@ namespace ProjectTracker.Library
     {
       get
       {
-        if (CanReadProperty())
-          return _started.Text;
-        else
-          throw new System.Security.SecurityException("Can not get property");
+        CanReadProperty(true);
+        return _started.Text;
       }
       set
       {
-        if (CanWriteProperty())
+        CanWriteProperty(true);
+        if (value == null) value = string.Empty;
+        if (_started != value)
         {
-          if (value == null) value = string.Empty;
-          if (_name != value)
-          {
-            _started.Text = value;
-            PropertyHasChanged();
-          }
+          _started.Text = value;
+          ValidationRules.CheckRules("Ended");
+          PropertyHasChanged();
         }
       }
     }
@@ -88,21 +75,18 @@ namespace ProjectTracker.Library
     {
       get
       {
-        if (CanReadProperty())
-          return _ended.Text;
-        else
-          throw new System.Security.SecurityException("Can not get property");
+        CanReadProperty(true);
+        return _ended.Text;
       }
       set
       {
-        if (CanWriteProperty())
+        CanWriteProperty(true);
+        if (value == null) value = string.Empty;
+        if (_ended != value)
         {
-          if (value == null) value = string.Empty;
-          if (_name != value)
-          {
-            _ended.Text = value;
-            PropertyHasChanged();
-          }
+          _ended.Text = value;
+          ValidationRules.CheckRules("Started");
+          PropertyHasChanged();
         }
       }
     }
@@ -111,52 +95,45 @@ namespace ProjectTracker.Library
     {
       get
       {
-        if (CanReadProperty())
+        CanReadProperty(true);
           return _description;
-        else
-          throw new System.Security.SecurityException("Can not get property");
       }
       set
       {
-        if (CanWriteProperty())
+        CanWriteProperty(true);
+        if (value == null) value = string.Empty;
+        if (_description != value)
         {
-          if (value == null) value = string.Empty;
-          if (_name != value)
-          {
-            _description = value;
-            PropertyHasChanged();
-          }
+          _description = value;
+          PropertyHasChanged();
         }
+
       }
     }
 
-    //public ProjectResources Resources
-    //{
-    //  get
-    //  {
-    //    return _resources;
-    //  }
-    //}
+    public ProjectResources Resources
+    {
+      get { return _resources; }
+    }
 
-    //public override bool IsValid
-    //{
-    //  get
-    //  {
-    //    return base.IsValid && _resources.IsValid;
-    //  }
-    //}
+    public override bool IsValid
+    {
+      get { return base.IsValid && _resources.IsValid; }
+    }
 
-    //public override bool IsDirty
-    //{
-    //  get
-    //  {
-    //    return base.IsDirty || _resources.IsDirty;
-    //  }
-    //}
+    public override bool IsDirty
+    {
+      get { return base.IsDirty || _resources.IsDirty; }
+    }
+
+    protected override object GetIdValue()
+    {
+      return _id;
+    }
 
     #endregion
 
-    #region Business Rules
+    #region Validation Rules
 
     protected override void AddBusinessRules()
     {
@@ -181,6 +158,86 @@ namespace ProjectTracker.Library
 
     #endregion
 
+    #region Authorization Rules
+
+    protected override void AddAuthorizationRules()
+    {
+      // add AuthorizationRules here
+      AuthorizationRules.AllowWrite("Name", "ProjectManager");
+      AuthorizationRules.AllowWrite("Started", "ProjectManager");
+      AuthorizationRules.AllowWrite("Ended", "ProjectManager");
+      AuthorizationRules.AllowWrite("Description", "ProjectManager");
+    }
+
+    public static bool CanAddObject()
+    {
+      return System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager");
+    }
+
+    public static bool CanGetObject()
+    {
+      return true;
+    }
+
+    public static bool CanDeleteObject()
+    {
+      bool result = false;
+      if (System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager"))
+        result = true;
+      if (System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator"))
+        result = true;
+      return result;
+    }
+
+    public static bool CanSaveObject()
+    {
+      return System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager");
+    }
+
+    #endregion
+
+    #region Factory Methods
+
+    public static Project NewProject()
+    {
+      if (!CanAddObject())
+        throw new System.Security.SecurityException("User not authorized to add a project");
+      return DataPortal.Create<Project>(null);
+    }
+
+    public static Project GetProject(Guid id)
+    {
+      if (!CanGetObject())
+        throw new System.Security.SecurityException("User not authorized to view a project");
+      return DataPortal.Fetch<Project>(new Criteria(id));
+    }
+
+    public static void DeleteProject(Guid id)
+    {
+      if (!CanDeleteObject())
+        throw new System.Security.SecurityException("User not authorized to remove a project");
+      DataPortal.Delete(new Criteria(id));
+    }
+
+    public override Project Save()
+    {
+      if (IsDeleted)
+      {
+        if (!CanDeleteObject())
+          throw new System.Security.SecurityException("User not authorized to remove a project");
+      }
+      else
+      {
+        // no deletion - we're adding or updating
+        if (!CanSaveObject())
+          throw new System.Security.SecurityException("User not authorized to update a project");
+      }
+
+      return base.Save();
+    }
+
+    #endregion
+
     #region Constructors
 
     /// <summary>
@@ -193,11 +250,7 @@ namespace ProjectTracker.Library
     /// </remarks>
     public Project()
     {
-      // add AuthorizationRules here
-      AuthorizationRules.AllowWrite("Name", "ProjectManager");
-      AuthorizationRules.AllowWrite("Started", "ProjectManager");
-      AuthorizationRules.AllowWrite("Ended", "ProjectManager");
-      AuthorizationRules.AllowWrite("Description", "ProjectManager");
+      AddAuthorizationRules();
     }
 
     #endregion
@@ -222,80 +275,21 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Factory Methods
-
-    /// <summary>
-    /// Create a new project object.
-    /// </summary>
-    public static Project NewProject()
-    {
-      if (!Thread.CurrentPrincipal.IsInRole("ProjectManager"))
-        throw new System.Security.SecurityException(
-          "User not authorized to add a project");
-      return (Project)DataPortal.Create(new Criteria(Guid.Empty));
-    }
-
-    // load existing object by id
-    public static Project GetProject(Guid id)
-    {
-      return (Project)DataPortal.Fetch(new Criteria(id));
-    }
-
-    // delete object
-    public static void DeleteProject(Guid id)
-    {
-      if (!Thread.CurrentPrincipal.IsInRole("ProjectManager") &&
-        !Thread.CurrentPrincipal.IsInRole("Administrator"))
-        throw new System.Security.SecurityException(
-          "User not authorized to remove a project");
-      DataPortal.Delete(new Criteria(id));
-    }
-
-    public override Project Save()
-    {
-      if (IsDeleted)
-      {
-        System.Security.Principal.IIdentity user =
-          Thread.CurrentPrincipal.Identity;
-        bool b = user.IsAuthenticated;
-        if (!Thread.CurrentPrincipal.IsInRole("ProjectManager") &&
-          !Thread.CurrentPrincipal.IsInRole("Administrator"))
-          throw new System.Security.SecurityException(
-            "User not authorized to remove a project");
-      }
-      else
-      {
-        // no deletion - we're adding or updating
-        if (!Thread.CurrentPrincipal.IsInRole("ProjectManager"))
-          throw new System.Security.SecurityException(
-            "User not authorized to update a project");
-      }
-      return base.Save();
-    }
-
-    #endregion
-
     #region Data Access
-
-    private string DbConn
-    {
-      get
-      {
-        return System.Configuration.ConfigurationManager.ConnectionStrings["PTracker"].ConnectionString;
-      }
-    }
 
     protected override void DataPortal_Create(object criteria)
     {
+      _id = Guid.NewGuid();
       Started = DateTime.Today.ToShortDateString();
+      Name = string.Empty;
       ValidationRules.CheckRules();
     }
 
     protected override void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)criteria;
-      // retrieve data from db
-      using (SqlConnection cn = new SqlConnection(DbConn))
+
+      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -304,18 +298,18 @@ namespace ProjectTracker.Library
           cm.CommandText = "getProject";
           cm.Parameters.AddWithValue("@ID", crit.Id);
 
-          using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
+          using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
           {
             dr.Read();
-            _id = dr.GetGuid("ID");
-            _name = dr.GetString("Name");
-            _started = dr.GetSmartDate("Started", _started.EmptyIsMin);
-            _ended = dr.GetSmartDate("Ended", _ended.EmptyIsMin);
-            _description = dr.GetString("Description");
+            _id = dr.GetGuid(0);
+            _name = dr.GetString(1);
+            _started = dr.GetSmartDate(2, _started.EmptyIsMin);
+            _ended = dr.GetSmartDate(3, _ended.EmptyIsMin);
+            _description = dr.GetString(4);
 
-            //// load child objects
-            //dr.NextResult();
-            //_resources = ProjectResources.GetProjectResources(dr);
+            // load child objects
+            dr.NextResult();
+            _resources = ProjectResources.GetProjectResources(dr);
             dr.Close();
           }
         }
@@ -323,9 +317,10 @@ namespace ProjectTracker.Library
       }
     }
 
+    [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
-      using (SqlConnection cn = new SqlConnection(DbConn))
+      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -333,18 +328,18 @@ namespace ProjectTracker.Library
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "addProject";
           LoadParameters(cm);
-
           cm.ExecuteNonQuery();
         }
         cn.Close();
       }
-      //// update child objects
-      //_resources.Update(this);
+      // update child objects
+      _resources.Update(this);
     }
 
+    [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
-      using (SqlConnection cn = new SqlConnection(DbConn))
+      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -352,16 +347,15 @@ namespace ProjectTracker.Library
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "updateProject";
           LoadParameters(cm);
-
           cm.ExecuteNonQuery();
         }
         cn.Close();
       }
-      //// update child objects
-      //_resources.Update(this);
+      // update child objects
+      _resources.Update(this);
     }
 
-    void LoadParameters(SqlCommand cm)
+    private void LoadParameters(SqlCommand cm)
     {
       cm.Parameters.AddWithValue("@ID", _id.ToString());
       cm.Parameters.AddWithValue("@Name", _name);
@@ -370,15 +364,18 @@ namespace ProjectTracker.Library
       cm.Parameters.AddWithValue("@Description", _description);
     }
 
+    [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(new Criteria(_id));
     }
 
+    [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Delete(object criteria)
     {
       Criteria crit = (Criteria)criteria;
-      using (SqlConnection cn = new SqlConnection(DbConn))
+
+      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -389,6 +386,57 @@ namespace ProjectTracker.Library
           cm.ExecuteNonQuery();
         }
         cn.Close();
+      }
+    }
+
+    #endregion
+
+    #region Exists
+
+    public static bool Exists(Guid id)
+    {
+      ExistsCommand result;
+      result = DataPortal.Execute<ExistsCommand>(new ExistsCommand(id));
+      return result.Exists;
+    }
+
+    [Serializable()]
+    private class ExistsCommand : CommandBase
+    {
+      private Guid _id;
+      private bool _exists;
+
+      public bool Exists
+      {
+        get { return _exists; }
+      }
+
+      public ExistsCommand(Guid id)
+      {
+        _id = id;
+      }
+
+      protected override void DataPortal_Execute()
+      {
+        using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+        {
+          cn.Open();
+          using (SqlCommand cm = cn.CreateCommand())
+          {
+            cm.CommandType = CommandType.Text;
+            cm.CommandText = "SELECT id FROM Projects WHERE id=@id";
+            cm.Parameters.AddWithValue("@ID", _id);
+            using (SqlDataReader dr = cm.ExecuteReader())
+            {
+              if (dr.Read())
+                _exists = true;
+              else
+                _exists = false;
+              dr.Close();
+            }
+          }
+          cn.Close();
+        }
       }
     }
 

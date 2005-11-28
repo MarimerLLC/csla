@@ -9,15 +9,15 @@ Public Class ProjectList
 
   <Serializable()> _
   Public Class ProjectInfo
-    Private mID As Guid
+    Private mId As Guid
     Private mName As String
 
-    Public Property ID() As Guid
+    Public Property Id() As Guid
       Get
-        Return mID
+        Return mId
       End Get
       Set(ByVal Value As Guid)
-        mID = Value
+        mId = Value
       End Set
     End Property
 
@@ -39,7 +39,7 @@ Public Class ProjectList
     End Function
 
     Public Overrides Function GetHashCode() As Integer
-      Return mID.GetHashCode
+      Return mId.GetHashCode
     End Function
   End Class
 

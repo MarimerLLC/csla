@@ -48,6 +48,10 @@ Public Class ResourceList
 
     End Function
 
+    Public Overrides Function GetHashCode() As Integer
+      Return mId.GetHashCode
+    End Function
+
   End Class
 
 #End Region

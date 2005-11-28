@@ -58,12 +58,12 @@ namespace Csla.Test.DataPortal
 
         public static StronglyTypedDP NewStronglyTypedDP()
         {
-            return Csla.DataPortal.Create<StronglyTypedDP>(new Criteria());
+            return Csla.DataPortal.Create<StronglyTypedDP>(new StronglyTypedDP.Criteria());
         }
 
         public static StronglyTypedDP GetStronglyTypedDP(int id)
         {
-            return Csla.DataPortal.Fetch<StronglyTypedDP>(new Criteria(id));
+            return Csla.DataPortal.Fetch<StronglyTypedDP>(new StronglyTypedDP.Criteria(id));
         }
 
         public static void DeleteStronglyTypedDP(int id)
@@ -76,7 +76,7 @@ namespace Csla.Test.DataPortal
             //prevent direct creation
         }
 
-        protected new void DataPortal_Create(StronglyTypedDP.Criteria criteria)
+        protected void DataPortal_Create(StronglyTypedDP.Criteria criteria)
         {
             _data = criteria._data;
             _ID = criteria._ID;
@@ -85,7 +85,7 @@ namespace Csla.Test.DataPortal
             Console.WriteLine(criteria._data + "Dataportal_create");
         }
 
-        protected new void DataPortal_Fetch(StronglyTypedDP.Criteria criteria)
+        protected void DataPortal_Fetch(StronglyTypedDP.Criteria criteria)
         {
             _data = criteria._data;
             _ID = criteria._ID;

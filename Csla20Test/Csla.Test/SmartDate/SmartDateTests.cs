@@ -141,7 +141,6 @@ namespace Csla.Test.SmartDate
             date = new Csla.SmartDate(d).ToString();
             Assert.AreEqual("1/2/2005", date);
 
-            #warning Bugs found here
             date = Csla.SmartDate.DateToString(DateTime.MinValue, "dd/MM/yyyy", true);
             Assert.AreEqual("", date, "MinValue w/ emptyIsMin=true");
             date = Csla.SmartDate.DateToString(DateTime.MinValue, "dd/MM/yyyy", false);

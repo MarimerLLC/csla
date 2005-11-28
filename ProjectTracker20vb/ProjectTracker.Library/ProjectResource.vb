@@ -190,7 +190,6 @@ Public Class ProjectResource
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
-          .Connection = cn
           .CommandType = CommandType.StoredProcedure
           .CommandText = "addAssignment"
           LoadParameters(cm, project)
@@ -214,7 +213,6 @@ Public Class ProjectResource
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
-          .Connection = cn
           .CommandType = CommandType.StoredProcedure
           .CommandText = "updateAssignment"
           LoadParameters(cm, project)

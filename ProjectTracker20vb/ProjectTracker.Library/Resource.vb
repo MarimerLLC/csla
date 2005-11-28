@@ -260,26 +260,20 @@ Public Class Resource
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using tr As SqlTransaction = cn.BeginTransaction
-        Try
-          Using cm As SqlCommand = cn.CreateCommand
-            With cm
-              .Transaction = tr
-              .CommandType = CommandType.StoredProcedure
-              .CommandText = "addResource"
-              LoadParameters(cm)
+        Using cm As SqlCommand = cn.CreateCommand
+          With cm
+            .Transaction = tr
+            .CommandType = CommandType.StoredProcedure
+            .CommandText = "addResource"
+            LoadParameters(cm)
 
-              .ExecuteNonQuery()
+            .ExecuteNonQuery()
 
-              ' update child objects
-              mAssignments.Update(tr, Me)
-            End With
-          End Using
-          tr.Commit()
-
-        Catch ex As Exception
-          tr.Rollback()
-          Throw ex
-        End Try
+            ' update child objects
+            mAssignments.Update(tr, Me)
+          End With
+        End Using
+        tr.Commit()
       End Using
       cn.Close()
     End Using
@@ -291,26 +285,20 @@ Public Class Resource
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using tr As SqlTransaction = cn.BeginTransaction
-        Try
-          Using cm As SqlCommand = cn.CreateCommand
-            With cm
-              .Transaction = tr
-              .CommandType = CommandType.StoredProcedure
-              .CommandText = "updateResource"
-              LoadParameters(cm)
+        Using cm As SqlCommand = cn.CreateCommand
+          With cm
+            .Transaction = tr
+            .CommandType = CommandType.StoredProcedure
+            .CommandText = "updateResource"
+            LoadParameters(cm)
 
-              .ExecuteNonQuery()
+            .ExecuteNonQuery()
 
-              ' update child objects
-              mAssignments.Update(tr, Me)
-            End With
-          End Using
-          tr.Commit()
-
-        Catch ex As Exception
-          tr.Rollback()
-          Throw ex
-        End Try
+            ' update child objects
+            mAssignments.Update(tr, Me)
+          End With
+        End Using
+        tr.Commit()
       End Using
       cn.Close()
     End Using
@@ -343,22 +331,16 @@ Public Class Resource
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using tr As SqlTransaction = cn.BeginTransaction
-        Try
-          Using cm As SqlCommand = cn.CreateCommand
-            With cm
-              .Transaction = tr
-              .CommandType = CommandType.StoredProcedure
-              .CommandText = "deleteResource"
-              .Parameters.AddWithValue("@ID", crit.Id)
-              .ExecuteNonQuery()
-            End With
-          End Using
-          tr.Commit()
-
-        Catch ex As Exception
-          tr.Rollback()
-          Throw ex
-        End Try
+        Using cm As SqlCommand = cn.CreateCommand
+          With cm
+            .Transaction = tr
+            .CommandType = CommandType.StoredProcedure
+            .CommandText = "deleteResource"
+            .Parameters.AddWithValue("@ID", crit.Id)
+            .ExecuteNonQuery()
+          End With
+        End Using
+        tr.Commit()
       End Using
       cn.Close()
     End Using

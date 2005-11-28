@@ -81,8 +81,28 @@ namespace Csla.Test.DataPortal
             _data = criteria._data;
             _ID = criteria._ID;
             Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Created");
-            
-            Console.WriteLine(criteria._data + "Dataportal_create");
+
+            System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace();
+
+            //change 16 to whatever you want (chops off the nunit calls that get made every time)
+            for (int i = 0; i < st.FrameCount - 16; i++)
+            {
+                string className = st.GetFrame(i).GetMethod().ReflectedType.ToString();
+                string methodName = st.GetFrame(i).GetMethod().Name;
+                string parameters = "";
+                System.Reflection.ParameterInfo[] paramArray = st.GetFrame(i).GetMethod().GetParameters();
+
+                foreach (System.Reflection.ParameterInfo pInfo in paramArray)
+                {
+                    parameters += pInfo.Name;
+
+                    if (pInfo.Name != paramArray[paramArray.Length - 1].Name)
+                        parameters += ", ";
+                }
+
+                Console.WriteLine(className + "." + methodName + "(" + parameters + ")");
+                Console.WriteLine();
+            }
         }
 
         protected void DataPortal_Fetch(StronglyTypedDP.Criteria criteria)
@@ -91,8 +111,6 @@ namespace Csla.Test.DataPortal
             _ID = criteria._ID;
             MarkOld();
             Csla.ApplicationContext.GlobalContext.Add("StronglyTypedDP", "Fetched");
-
-            Console.WriteLine("fetched");
         }
 
         protected override void DataPortal_Insert()

@@ -135,7 +135,7 @@ Public Class ResourceAssignment
     With dr
       mProjectId = .GetGuid(0)
       mProjectName = .GetString(1)
-      mAssigned.Date = .GetDateTime(2)
+      mAssigned = .GetSmartDate(2)
       mRole = .GetInt32(3)
     End With
     MarkOld()
@@ -174,7 +174,7 @@ Public Class ResourceAssignment
         .Transaction = tr
         .CommandType = CommandType.StoredProcedure
         .CommandText = "updateAssignment"
-        LoadParamters(cm, Resource)
+        LoadParamters(cm, resource)
 
         .ExecuteNonQuery()
 

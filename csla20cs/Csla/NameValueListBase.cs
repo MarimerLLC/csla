@@ -26,6 +26,58 @@ namespace Csla
   public abstract class NameValueListBase<K, V> : Core.ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>, ICloneable, Core.IBusinessObject
   {
 
+    #region Core Implementation
+
+    /// <summary>
+    /// Returns the value corresponding to the
+    /// specified key.
+    /// </summary>
+    public V Value(K key)
+    {
+      foreach (NameValuePair item in this)
+        if (item.Key.Equals(key))
+          return item.Value;
+      return default(V);
+    }
+
+    /// <summary>
+    /// Returns the key corresponding to the
+    /// specified value.
+    /// </summary>
+    public K Key(V value)
+    {
+      foreach (NameValuePair item in this)
+        if (item.Value.Equals(value))
+          return item.Key;
+      return default(K);
+    }
+
+    /// <summary>
+    /// Returns True if the list contains the
+    /// specified key.
+    /// </summary>
+    public bool ContainsKey(K key)
+    {
+      foreach (NameValuePair item in this)
+        if (item.Key.Equals(key))
+          return true;
+      return false;
+    }
+
+    /// <summary>
+    /// Returns True if the list contains the
+    /// specified value.
+    /// </summary>
+    public bool ContainsValue(V value)
+    {
+      foreach (NameValuePair item in this)
+        if (item.Value.Equals(value))
+          return true;
+      return false;
+    }
+
+    #endregion
+
     #region Constructors
 
     protected NameValueListBase()
@@ -71,31 +123,26 @@ namespace Csla
 
     #endregion
 
-    public V Value(K key)
-    {
-      foreach (NameValuePair item in this)
-        if (item.Key.Equals(key))
-          return item.Value;
-      return default(V);
-    }
+    #region ICloneable
 
-    public K Key(V value)
+    object ICloneable.Clone()
     {
-      foreach (NameValuePair item in this)
-        if (item.Value.Equals(value))
-          return item.Key;
-      return default(K);
+      return OnClone();
     }
-
-    #region Clone
 
     /// <summary>
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
-    public virtual object Clone()
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual object OnClone()
     {
       return Core.ObjectCloner.Clone(this);
+    }
+
+    public NameValueListBase<K, V> Clone()
+    {
+      return (NameValueListBase<K, V>)OnClone();
     }
 
     #endregion

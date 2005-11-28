@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Test.Security;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -234,6 +235,65 @@ namespace Csla.Test.Auth
             prClone.FirstName = "somethiansdfasdf";
             Csla.Test.Security.TestPrincipal.SimulateLogout();
         }
+
+        [ExpectedException(typeof(System.Security.SecurityException))]
+        [TestMethod]
+        public void TestUnauthorizedAccessToGet()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+
+            PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+
+            //this should throw an exception, since only admins have access to this property
+            string something = pr.FirstName;
+        }
+
+        [ExpectedException(typeof(System.Security.SecurityException))]
+        [TestMethod]
+        public void TestUnauthorizedAccessToSet()
+        {
+            PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+
+            //will cause an exception, because only admins can write to property
+            pr.FirstName = "test";
+        }
+
+        [TestMethod]
+        public void TestAuthorizedAccess()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Csla.Test.Security.TestPrincipal.SimulateLogin();
+
+            PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+            //should work, because we are now logged in as an admin
+            pr.FirstName = "something";
+            string something = pr.FirstName;
+
+            Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+            //set to null so the other testmethods continue to throw exceptions
+            Csla.Test.Security.TestPrincipal.SimulateLogout();
+
+            Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+        }
+
+        [TestMethod()]
+        public void TestAuthorizationAfterClone()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Csla.Test.Security.TestPrincipal.SimulateLogin();
+
+            PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+
+            //should work because we are now logged in as an admin
+            pr.FirstName = "something";
+            string something = pr.FirstName;
+
+            //The permissions should persist across a cloning
+            PermissionsRoot prClone = pr.Clone();
+            pr.FirstName = "something";
+            something = pr.FirstName;
+        }
+
 
     }
 }

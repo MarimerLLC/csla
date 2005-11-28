@@ -105,10 +105,9 @@
     </Compile>
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
-    <Compile Include="Security\CustomAuthenticationTests.cs" />
-    <Compile Include="Security\PermissionsRoot.cs" />
-    <Compile Include="Security\TestIdentity.cs" />
-    <Compile Include="Security\TestPrincipal.cs" />
+    <Compile Include="Authorization\PermissionsRoot.cs" />
+    <Compile Include="Authorization\TestIdentity.cs" />
+    <Compile Include="Authorization\TestPrincipal.cs" />
     <Compile Include="Serialization\nonSerializableEventHandler.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />

@@ -21,9 +21,6 @@ namespace Csla.Test.Nullable
         [TestMethod()]
         public void TestNullableProperty()
         {
-            //not sure what purpose nullable<T> serves
-            //object browser says "Supports a value type that can be assigned null like a reference type."
-            //but it works the same as my name property, which is a string and can be assigned null just fine
             Csla.ApplicationContext.GlobalContext.Clear();
             NullableObject nullRoot = NullableObject.NewNullableObject();
             nullRoot.NullableInteger = null;

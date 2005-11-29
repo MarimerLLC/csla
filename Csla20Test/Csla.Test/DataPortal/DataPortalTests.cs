@@ -21,9 +21,9 @@ namespace Csla.Test.DataPortal
     public class DataPortalTests
     {
         //pull from ConfigurationManager
-        private const string CONNECTION_STRING = 
+        private const string CONNECTION_STRING =
             "Data Source=.\\SQLEXPRESS;AttachDbFilename=|DataDirectory|DataPortalTestDatabase.mdf;Integrated Security=True;User Instance=True";
-        
+
         public void ClearDataBase()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);

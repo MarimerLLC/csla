@@ -41,10 +41,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AppDomainProxycs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\AppDomainProxy\AppDomainProxycs\bin\Debug\AppDomainProxycs.dll</HintPath>
-    </Reference>
     <Reference Include="Csla, Version=2.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\csla20cs\Csla\bin\Debug\Csla.dll</HintPath>
@@ -76,11 +72,9 @@
     <Compile Include="Basic\NameValueListObj.cs" />
     <Compile Include="Basic\ReadOnlyList.cs" />
     <Compile Include="Basic\Root.cs" />
-    <Compile Include="DataBinding\ChildEntity.cs" />
-    <Compile Include="DataBinding\ChildEntityList.cs" />
-    <Compile Include="DataBinding\DataBindingTests.cs" />
-    <Compile Include="DataBinding\ListObject.cs" />
-    <Compile Include="DataBinding\ParentEntity.cs" />
+    <Compile Include="DataPortal\ChildEntity.cs" />
+    <Compile Include="DataPortal\ChildEntityList.cs" />
+    <Compile Include="DataPortal\ParentEntity.cs" />
     <Compile Include="DataPortal\ESTransactionalRoot.cs" />
     <Compile Include="DataPortal\StronglyTypedDP.cs" />
     <Compile Include="DataPortal\TransactionalRoot.cs" />
@@ -108,6 +102,7 @@
     <Compile Include="Authorization\PermissionsRoot.cs" />
     <Compile Include="Authorization\TestIdentity.cs" />
     <Compile Include="Authorization\TestPrincipal.cs" />
+    <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />
     <Compile Include="Serialization\nonSerializableEventHandler.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />

@@ -14,7 +14,7 @@ using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
 #endif
 
-namespace Csla.Test.Auth
+namespace Csla.Test.Authorization
 {
     [TestClass()]
     public class AuthTests

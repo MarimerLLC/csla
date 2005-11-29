@@ -159,6 +159,12 @@ Namespace Server
         Return New DataPortalResult(obj)
 
       Catch ex As Exception
+        Try
+          ' tell the business object there was an exception
+          MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalException", New DataPortalEventArgs(context), ex)
+        Catch
+          ' ignore exceptions from the exception handler
+        End Try
         Throw New DataPortalException("DataPortal.Update " & _
           My.Resources.FailedOnServer, ex, New DataPortalResult(obj))
       End Try
@@ -173,7 +179,7 @@ Namespace Server
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
     Public Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Delete
 
-      Dim obj As Object
+      Dim obj As Object = Nothing
 
       Try
         ' create an instance of the business object
@@ -191,6 +197,12 @@ Namespace Server
         Return New DataPortalResult
 
       Catch ex As Exception
+        Try
+          ' tell the business object there was an exception
+          MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalException", New DataPortalEventArgs(context), ex)
+        Catch
+          ' ignore exceptions from the exception handler
+        End Try
         Throw New DataPortalException("DataPortal.Delete " & _
           My.Resources.FailedOnServer, ex, New DataPortalResult)
       End Try

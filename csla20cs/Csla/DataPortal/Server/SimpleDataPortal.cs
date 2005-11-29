@@ -145,7 +145,7 @@ namespace Csla.Server
         // tell the business object to update itself
         if (obj is Core.BusinessBase)
         {
-          Core.BusinessBase busObj = (Core.BusinessBase)obj;
+          Core.BusinessBase busObj = obj as Core.BusinessBase;
           if (busObj.IsDeleted)
           {
             if (!busObj.IsNew)
@@ -236,13 +236,18 @@ namespace Csla.Server
         obj = CreateBusinessObject(criteria);
 
         // tell the business object we're about to make a DataPortal_xyz call
-        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(
+          obj, "DataPortal_OnDataPortalInvoke", 
+          new DataPortalEventArgs(context));
 
         // tell the business object to delete itself
-        MethodCaller.CallMethod(obj, "DataPortal_Delete", criteria);
+        MethodCaller.CallMethod(
+          obj, "DataPortal_Delete", criteria);
 
         // tell the business object the DataPortal_xyz call is complete
-        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(
+          obj, "DataPortal_OnDataPortalInvokeComplete", 
+          new DataPortalEventArgs(context));
 
         return new DataPortalResult();
       }
@@ -259,7 +264,9 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        throw new DataPortalException("DataPortal.Delete " + Resources.FailedOnServer, ex, new DataPortalResult());
+        throw new DataPortalException(
+          "DataPortal.Delete " + Resources.FailedOnServer, 
+          ex, new DataPortalResult());
       }
     }
 

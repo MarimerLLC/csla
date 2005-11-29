@@ -28,6 +28,12 @@ namespace Csla.Test.DPException
             root.FirstName = "Billy";
             root.LastName = "lastname";
             root.SmallColumn = "too long for the database"; //normally would be prevented through validation
+            
+            string baseException = string.Empty;
+            string baseInnerException = string.Empty;
+            string baseInnerInnerException = string.Empty;
+            string exceptionSource = string.Empty;
+            string businessObjectType = string.Empty;
 
             try
             {
@@ -35,20 +41,24 @@ namespace Csla.Test.DPException
             }
             catch (Csla.DataPortalException ex)
             {
-                //check base exception
-                Assert.AreEqual("DataPortal.Update failed", ex.Message);
-                //check inner exception
-                Assert.AreEqual("DataPortal_Insert method call failed", ex.InnerException.Message);
-                //check inner exception of inner exception
-                Assert.AreEqual("String or binary data would be truncated.\r\nThe statement has been terminated.", ex.InnerException.InnerException.Message);
-
-                //check what caused base exception and base's innerexception
-                Assert.IsTrue(ex.Source == "Csla" && ex.InnerException.Source == "Csla");
-                //check what caused inner exception's inner exception (i.e. the root exception)
-                Assert.AreEqual(".Net SqlClient Data Provider", ex.InnerException.InnerException.Source);
-
-                Assert.AreEqual("Csla.Test.DataPortal.TransactionalRoot", ex.BusinessObject.GetType().ToString());
+                baseException = ex.Message;
+                baseInnerException = ex.InnerException.Message;
+                baseInnerInnerException = ex.InnerException.InnerException.Message;
+                exceptionSource = ex.InnerException.InnerException.Source;
+                businessObjectType = ex.BusinessObject.GetType().ToString();
             }
+
+            //check base exception
+            Assert.AreEqual("DataPortal.Update failed", baseException);
+            //check inner exception
+            Assert.AreEqual("DataPortal_Insert method call failed", baseInnerException);
+            //check inner exception of inner exception
+            Assert.AreEqual("String or binary data would be truncated.\r\nThe statement has been terminated.", baseInnerInnerException);
+
+            //check what caused inner exception's inner exception (i.e. the root exception)
+            Assert.AreEqual(".Net SqlClient Data Provider", exceptionSource);
+
+            Assert.AreEqual("Csla.Test.DataPortal.TransactionalRoot", businessObjectType);
         }
 
         [TestMethod()]

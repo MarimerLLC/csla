@@ -9,13 +9,15 @@ namespace Csla.DataPortalClient
   {
     private WebServiceHost.WebServicePortal GetPortal()
     {
-      WebServiceHost.WebServicePortal wsvc = new WebServiceHost.WebServicePortal();
+      WebServiceHost.WebServicePortal wsvc = 
+        new WebServiceHost.WebServicePortal();
       wsvc.Url = ApplicationContext.DataPortalUrl.ToString();
       return wsvc;
     }
 
 
-    public Server.DataPortalResult Create(Type objectType, object criteria, Server.DataPortalContext context)
+    public Server.DataPortalResult Create(
+      Type objectType, object criteria, Server.DataPortalContext context)
     {
       object result;
       WebServicePortal.CreateRequest request = new WebServicePortal.CreateRequest();
@@ -35,10 +37,12 @@ namespace Csla.DataPortalClient
       return (Server.DataPortalResult)result;
     }
 
-    public Server.DataPortalResult Fetch(object criteria, Server.DataPortalContext context)
+    public Server.DataPortalResult Fetch(
+      object criteria, Server.DataPortalContext context)
     {
       object result;
-      Server.Hosts.WebServicePortal.FetchRequest request = new Server.Hosts.WebServicePortal.FetchRequest();
+      Server.Hosts.WebServicePortal.FetchRequest request = 
+        new Server.Hosts.WebServicePortal.FetchRequest();
       request.Criteria = criteria;
       request.Context = context;
 

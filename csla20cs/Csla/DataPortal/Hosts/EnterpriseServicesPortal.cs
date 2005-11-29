@@ -53,10 +53,12 @@ namespace Csla.Server.Hosts
       // this is a workaround for a bug in the .NET runtime
       AppDomain currentDomain = AppDomain.CurrentDomain;
 
-      currentDomain.AssemblyResolve += new ResolveEventHandler(ResolveEventHandler);
+      currentDomain.AssemblyResolve += 
+        new ResolveEventHandler(ResolveEventHandler);
     }
 
-    private static Assembly ResolveEventHandler(object sender, ResolveEventArgs args)
+    private static Assembly ResolveEventHandler(
+      object sender, ResolveEventArgs args)
     {
       // get a list of all the assemblies loaded in our appdomain
       Assembly[] list = AppDomain.CurrentDomain.GetAssemblies();

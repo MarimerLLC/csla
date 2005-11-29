@@ -9,7 +9,8 @@ namespace Csla.Server.Hosts
   public class RemotingPortal : MarshalByRefObject, Server.IDataPortalServer
   {
 
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+    public DataPortalResult Create(
+      Type objectType, object criteria, DataPortalContext context)
     {
       DataPortal portal = new DataPortal();
       return portal.Create(objectType, criteria, context);

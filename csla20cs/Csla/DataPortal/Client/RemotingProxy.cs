@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Collections;
 using System.Threading;
 using System.Reflection;
@@ -27,9 +28,20 @@ namespace Csla.DataPortalClient
         properties["useDefaultCredentials"] = true;
       }
 
-      BinaryClientFormatterSinkProvider formatter = new BinaryClientFormatterSinkProvider();
+      BinaryClientFormatterSinkProvider 
+        formatter = new BinaryClientFormatterSinkProvider();
       HttpChannel channel = new HttpChannel(properties, formatter, null);
-      ChannelServices.RegisterChannel(channel, false);
+      ChannelServices.RegisterChannel(channel, EncryptChannel);
+    }
+
+    private static bool EncryptChannel
+    {
+      get 
+      {
+        bool encrypt = 
+          (ConfigurationManager.AppSettings["CslaEncryptRemoting"] == "true");
+        return encrypt; 
+      }
     }
 
     #endregion
@@ -41,13 +53,15 @@ namespace Csla.DataPortalClient
       get
       {
         if (_portal == null)
-          _portal = (Server.IDataPortalServer)Activator.GetObject(typeof(Server.Hosts.RemotingPortal),
+          _portal = (Server.IDataPortalServer)Activator.GetObject(
+            typeof(Server.Hosts.RemotingPortal),
               ApplicationContext.DataPortalUrl.ToString());
         return _portal;
       }
     }
 
-    public Server.DataPortalResult Create(Type objectType, object criteria, Server.DataPortalContext context)
+    public Server.DataPortalResult Create(
+      Type objectType, object criteria, Server.DataPortalContext context)
     {
       return Portal.Create(objectType, criteria, context);
     }

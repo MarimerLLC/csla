@@ -17,7 +17,8 @@ namespace Csla.DataPortalClient
       }
     }
 
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+    public DataPortalResult Create(
+      Type objectType, object criteria, DataPortalContext context)
     {
       return Portal.Create(objectType, criteria, context);
     }

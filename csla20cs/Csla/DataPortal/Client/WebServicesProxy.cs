@@ -20,7 +20,8 @@ namespace Csla.DataPortalClient
       Type objectType, object criteria, Server.DataPortalContext context)
     {
       object result;
-      WebServicePortal.CreateRequest request = new WebServicePortal.CreateRequest();
+      Csla.Server.Hosts.WebServicePortal.CreateRequest
+        request = new Csla.Server.Hosts.WebServicePortal.CreateRequest();
       request.ObjectType = objectType;
       request.Criteria = criteria;
       request.Context = context;
@@ -123,15 +124,5 @@ namespace Csla.DataPortalClient
 
     #endregion
 
-  }
-}
-
-//This is a stub to compile.  Where is the web service created??
-//TODO: Implement a web service (should this actually be part of the framework?)
-namespace Csla.WebServiceHost
-{
-  class WebServicePortal : Csla.Server.Hosts.WebServicePortal
-  {
-    public string Url;
   }
 }

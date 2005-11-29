@@ -19,7 +19,8 @@ namespace Csla.Server
     /// <returns>A populated business object.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+    public DataPortalResult Create(
+      Type objectType, object criteria, DataPortalContext context)
     {
       object obj = null;
 
@@ -29,16 +30,21 @@ namespace Csla.Server
         obj = Activator.CreateInstance(objectType, true);
 
         // tell the business object we're about to make a DataPortal_xyz call
-        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(
+          obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
 
         // tell the business object to fetch its data
-        MethodCaller.CallMethod(obj, "DataPortal_Create", criteria);
+        MethodCaller.CallMethod(
+          obj, "DataPortal_Create", criteria);
 
         // mark the object as new
-        MethodCaller.CallMethodIfImplemented(obj, "MarkNew");
+        MethodCaller.CallMethodIfImplemented(
+          obj, "MarkNew");
 
         // tell the business object the DataPortal_xyz call is complete
-        MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalInvokeComplete", new DataPortalEventArgs(context));
+        MethodCaller.CallMethodIfImplemented(
+          obj, "DataPortal_OnDataPortalInvokeComplete", 
+          new DataPortalEventArgs(context));
 
         // return the populated business object as a result
         return new DataPortalResult(obj);
@@ -48,13 +54,17 @@ namespace Csla.Server
         try
         {
           // tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented(obj, "DataPortal_OnDataPortalException", new DataPortalEventArgs(context), ex);
+          MethodCaller.CallMethodIfImplemented(
+            obj, "DataPortal_OnDataPortalException", 
+            new DataPortalEventArgs(context), ex);
         }
         catch
         {
           // ignore exceptions from the exception handler
         }
-        throw new DataPortalException("DataPortal.Create " + Resources.FailedOnServer, ex, new DataPortalResult(obj));
+        throw new DataPortalException(
+          "DataPortal.Create " + Resources.FailedOnServer, 
+          ex, new DataPortalResult(obj));
       }
 
     }

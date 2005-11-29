@@ -24,6 +24,8 @@ namespace Csla.Test.DPException
         [TestMethod()]
         public void CheckInnerExceptionsOnSave()
         {
+            Csla.ApplicationContext.Clear();
+
             Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
             root.FirstName = "Billy";
             root.LastName = "lastname";
@@ -59,11 +61,17 @@ namespace Csla.Test.DPException
             Assert.AreEqual(".Net SqlClient Data Provider", exceptionSource);
 
             Assert.AreEqual("Csla.Test.DataPortal.TransactionalRoot", businessObjectType);
+
+            //verify that the implemented method, DataPortal_OnDataPortal 
+            //was called for the business object that threw the exception
+            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
         }
 
         [TestMethod()]
         public void CheckInnerExceptionsOnDelete()
         {
+            Csla.ApplicationContext.Clear();
+
             string baseException = string.Empty;
             string baseInnerException = string.Empty;
             string baseInnerInnerException = string.Empty;
@@ -83,11 +91,17 @@ namespace Csla.Test.DPException
             Assert.AreEqual("DataPortal.Delete failed", baseException);
             Assert.AreEqual("DataPortal_Delete method call failed", baseInnerException);
             Assert.AreEqual("DataPortal_Delete: you chose an unlucky number", baseInnerInnerException);
+
+            //verify that the implemented method, DataPortal_OnDataPortal 
+            //was called for the business object that threw the exception
+            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
         }
 
         [TestMethod()]
         public void CheckInnerExceptionsOnFetch()
         {
+            Csla.ApplicationContext.GlobalContext.Clear();
+
             string baseException = string.Empty;
             string baseInnerException = string.Empty;
             string baseInnerInnerException = string.Empty;
@@ -108,6 +122,10 @@ namespace Csla.Test.DPException
             Assert.AreEqual("DataPortal.Fetch failed", baseException);
             Assert.AreEqual("DataPortal_Fetch method call failed", baseInnerException);
             Assert.AreEqual("DataPortal_Fetch: you chose an unlucky number", baseInnerInnerException);
+
+            //verify that the implemented method, DataPortal_OnDataPortal 
+            //was called for the business object that threw the exception
+            Assert.AreEqual("Called", Csla.ApplicationContext.GlobalContext["OnDataPortalException"]);
         }
     }
 }

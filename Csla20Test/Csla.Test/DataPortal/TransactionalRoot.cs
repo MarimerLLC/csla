@@ -212,5 +212,16 @@ namespace Csla.Test.DataPortal
         }
 
         #endregion
+
+        #region "DataPortalException"
+
+        protected override void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+            Csla.ApplicationContext.GlobalContext.Add("OnDataPortalException", "Called");
+            Console.WriteLine("OnDataPortalException called");
+        }
+
+        #endregion
     }
 }

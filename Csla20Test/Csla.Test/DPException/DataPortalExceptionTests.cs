@@ -22,7 +22,7 @@ namespace Csla.Test.DPException
     public class DataPortalExceptionTests
     {
         [TestMethod()]
-        public void CheckInnerExceptions()
+        public void CheckInnerExceptionsOnSave()
         {
             Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
             root.FirstName = "Billy";
@@ -51,5 +51,53 @@ namespace Csla.Test.DPException
             }
         }
 
+        [TestMethod()]
+        public void CheckInnerExceptionsOnDelete()
+        {
+            string baseException = string.Empty;
+            string baseInnerException = string.Empty;
+            string baseInnerInnerException = string.Empty;
+
+            try
+            {
+                //this will throw an exception
+                Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13);
+            }
+            catch (Csla.DataPortalException ex)
+            {
+                baseException = ex.Message;
+                baseInnerException = ex.InnerException.Message;
+                baseInnerInnerException = ex.InnerException.InnerException.Message;
+            }
+
+            Assert.AreEqual("DataPortal.Delete failed", baseException);
+            Assert.AreEqual("DataPortal_Delete method call failed", baseInnerException);
+            Assert.AreEqual("DataPortal_Delete: you chose an unlucky number", baseInnerInnerException);
+        }
+
+        [TestMethod()]
+        public void CheckInnerExceptionsOnFetch()
+        {
+            string baseException = string.Empty;
+            string baseInnerException = string.Empty;
+            string baseInnerInnerException = string.Empty;
+
+            try
+            {
+                //this will throw an exception
+                Csla.Test.DataPortal.TransactionalRoot root = 
+                    Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13);
+            }
+            catch (Csla.DataPortalException ex)
+            {
+                baseException = ex.Message;
+                baseInnerException = ex.InnerException.Message;
+                baseInnerInnerException = ex.InnerException.InnerException.Message;
+            }
+
+            Assert.AreEqual("DataPortal.Fetch failed", baseException);
+            Assert.AreEqual("DataPortal_Fetch method call failed", baseInnerException);
+            Assert.AreEqual("DataPortal_Fetch: you chose an unlucky number", baseInnerInnerException);
+        }
     }
 }

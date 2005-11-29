@@ -136,6 +136,13 @@ namespace Csla.Test.DataPortal
 
         protected override void DataPortal_Fetch(object criteria)
         {
+            Criteria crit = (Criteria)(criteria);
+
+            if (crit._id == 13)
+            {
+                throw new System.ApplicationException("DataPortal_Fetch: you chose an unlucky number");
+            }
+
             Console.WriteLine("DataPortal_Fetch");
             Csla.ApplicationContext.GlobalContext.Clear();
             Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Fetched");
@@ -193,6 +200,12 @@ namespace Csla.Test.DataPortal
 
         protected override void DataPortal_Delete(object criteria)
         {
+            Criteria crit = (Criteria)(criteria);
+            if (crit._id == 13)
+            {
+                throw new System.ApplicationException("DataPortal_Delete: you chose an unlucky number");
+            }
+
             Console.WriteLine("DataPortal_Delete");
             Csla.ApplicationContext.GlobalContext.Clear();
             Csla.ApplicationContext.GlobalContext.Add("TransactionRoot", "Deleted");

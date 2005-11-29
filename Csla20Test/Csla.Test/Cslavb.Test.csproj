@@ -91,6 +91,7 @@
     <Compile Include="DataPortal\ParentEntity.cs" />
     <Compile Include="DataPortal\StronglyTypedDP.cs" />
     <Compile Include="DataPortal\TransactionalRoot.cs" />
+    <Compile Include="DPException\DataPortalExceptionTests.cs" />
     <Compile Include="IO\IOTests.cs" />
     <Compile Include="Nullable\NullableObject.cs" />
     <Compile Include="Nullable\NullableTests.cs" />

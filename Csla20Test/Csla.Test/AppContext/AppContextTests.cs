@@ -37,6 +37,13 @@ namespace Csla.Test.AppContext
 
         #endregion
 
+        [TestMethod()]
+        public void ApplicationContextProperties()
+        {
+            Assert.AreEqual("Local", ApplicationContext.DataPortalProxy);
+            Assert.AreEqual("Client", ApplicationContext.ExecutionLocation.ToString());
+        }
+
         #region NoContext
       /// <summary>
         /// Test to see if contexts get cleared out properly

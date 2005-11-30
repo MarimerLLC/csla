@@ -60,14 +60,11 @@ namespace Csla.Server
             result = portal.Create(objectType, criteria, context);
             break;
         }
-
-        ClearContext(context);
         return result;
       }
-      catch
+      finally
       {
         ClearContext(context);
-        throw;
       }
     }
 
@@ -111,14 +108,11 @@ namespace Csla.Server
             result = portal.Fetch(criteria, context);
             break;
         }
-
-        ClearContext(context);
         return result;
       }
-      catch
+      finally
       {
         ClearContext(context);
-        throw;
       }
     }
 
@@ -180,14 +174,11 @@ namespace Csla.Server
             result = portal.Update(obj, context);
             break;
         }
-
-        ClearContext(context);
         return result;
       }
-      catch
+      finally
       {
         ClearContext(context);
-        throw;
       }
     }
 
@@ -230,14 +221,11 @@ namespace Csla.Server
             result = portal.Delete(criteria, context);
             break;
         }
-
-        ClearContext(context);
         return result;
       }
-      catch
+      finally
       {
         ClearContext(context);
-        throw;
       }
     }
 
@@ -300,7 +288,8 @@ namespace Csla.Server
       // do nothing
       if (!context.IsRemotePortal) return;
       ApplicationContext.Clear();
-      System.Threading.Thread.CurrentPrincipal = null;
+      if (ApplicationContext.AuthenticationType != "Windows")
+        System.Threading.Thread.CurrentPrincipal = null;
     }
 
     #endregion

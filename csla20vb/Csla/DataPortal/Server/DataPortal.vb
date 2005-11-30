@@ -282,7 +282,9 @@ Namespace Server
       If Not context.IsRemotePortal Then Exit Sub
 
       ApplicationContext.Clear()
-      System.Threading.Thread.CurrentPrincipal = Nothing
+      If ApplicationContext.AuthenticationType <> "Windows" Then
+        System.Threading.Thread.CurrentPrincipal = Nothing
+      End If
 
     End Sub
 

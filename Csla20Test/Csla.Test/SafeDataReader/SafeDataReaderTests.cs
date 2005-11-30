@@ -290,6 +290,7 @@ namespace Csla.Test.SafeDataReader
                     while (dr.Read()) //returns two results
                     {
                         string output = dr.GetString("Name") + ", age " + dr.GetInt32("Age") + ", added on " + dr.GetSmartDate("Date");
+                        Assert.AreEqual("varchar", dr.GetDataTypeName("Name"));
                         Assert.AreEqual(false, dr.IsClosed);
 
                         list.Add(output);

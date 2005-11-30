@@ -207,6 +207,56 @@ namespace Csla.Test.SafeDataReader
             cn.Close();
         }
 
+        [TestMethod()]
+        public void GetDataTypes()
+        {
+            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cm = cn.CreateCommand();
+            cm.CommandText = 
+                "SELECT BITFIELD, CHARFIELD, DATETIMEFIELD, UNIQUEIDENTIFIERFIELD, SMALLINTFIELD, INTFIELD, BIGINTFIELD, TEXT FROM MultiDataTypes";
+            bool bitfield;
+            char charfield;
+            Csla.SmartDate datetimefield;
+            Guid uniqueidentifierfield;
+            System.Int16 smallintfield;
+            System.Int32 intfield;
+            System.Int64 bigintfield;
+            System.String text;
+
+            cn.Open();
+            using (cm)
+            {
+                using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
+                {
+                    dr.Read();
+                    bitfield = dr.GetBoolean("BITFIELD");
+                    //this causes an error in vb version (char array initialized to nothing in vb version
+                    //and it's initialized with new Char[1] in c# version)
+                    charfield = dr.GetChar("CHARFIELD");
+                    datetimefield = dr.GetSmartDate("DATETIMEFIELD");
+                    uniqueidentifierfield = dr.GetGuid("UNIQUEIDENTIFIERFIELD");
+                    smallintfield = dr.GetInt16("SMALLINTFIELD");
+                    intfield = dr.GetInt32("INTFIELD");
+                    bigintfield = dr.GetInt64("BIGINTFIELD");
+                    text = dr.GetString("TEXT");
+                    dr.Close();
+                }
+            }
+            cn.Close();
+
+            Assert.AreEqual(false, bitfield);
+            Assert.AreEqual('z', charfield);
+            Assert.AreEqual("12/13/2005", datetimefield.ToString());
+            Assert.AreEqual("c0f92820-61b5-11da-8cd6-0800200c9a66", uniqueidentifierfield.ToString());
+            Assert.AreEqual(32767, smallintfield);
+            Assert.AreEqual(2147483647, intfield);
+            Assert.AreEqual(92233720368547111, bigintfield);
+            Assert.AreEqual("a bunch of text...a bunch of text...a bunch of text...a bunch of text...", text);
+        }
+
+
+
+
 
         [TestMethod()]
         [ExpectedException(typeof(SqlException))]

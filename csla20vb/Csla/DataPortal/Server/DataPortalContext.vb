@@ -80,22 +80,6 @@ Namespace Server
     ''' <summary>
     ''' Creates a new DataPortalContext object.
     ''' </summary>
-    ''' <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
-    Public Sub New(ByVal isRemotePortal As Boolean)
-
-      If isRemotePortal Then
-        mRemotePortal = isRemotePortal
-        mClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name
-        mClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name
-        mClientContext = Csla.ApplicationContext.GetClientContext
-        mGlobalContext = Csla.ApplicationContext.GetGlobalContext
-      End If
-
-    End Sub
-
-    ''' <summary>
-    ''' Creates a new DataPortalContext object.
-    ''' </summary>
     ''' <param name="principal">The current Principal object.</param>
     ''' <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     Public Sub New(ByVal principal As IPrincipal, ByVal isRemotePortal As Boolean)

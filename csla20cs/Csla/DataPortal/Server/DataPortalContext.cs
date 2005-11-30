@@ -75,22 +75,6 @@ namespace Csla.Server
     /// <summary>
     /// Creates a new DataPortalContext object.
     /// </summary>
-    /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
-    public DataPortalContext(bool isRemotePortal)
-    {
-      if (isRemotePortal)
-      {
-        _remotePortal = isRemotePortal;
-        _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-        _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-        _clientContext = Csla.ApplicationContext.GetClientContext();
-        _globalContext = Csla.ApplicationContext.GetGlobalContext();
-      }
-    }
-
-    /// <summary>
-    /// Creates a new DataPortalContext object.
-    /// </summary>
     /// <param name="principal">The current Principal object.</param>
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     public DataPortalContext(IPrincipal principal, bool isRemotePortal)

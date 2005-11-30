@@ -7,6 +7,8 @@ Imports System.Collections.Specialized
 ''' </summary>
 Public NotInheritable Class ApplicationContext
 
+#Region " Client/Global Context "
+
   ''' <summary>
   ''' Returns the application-specific context data provided
   ''' by the client.
@@ -62,6 +64,51 @@ Public NotInheritable Class ApplicationContext
       Return ctx
     End Get
   End Property
+
+  Friend Shared Function GetClientContext() As HybridDictionary
+
+    Dim slot As System.LocalDataStoreSlot = _
+      Thread.GetNamedDataSlot("Csla.ClientContext")
+    Return CType(Thread.GetData(slot), HybridDictionary)
+
+  End Function
+
+  Friend Shared Function GetGlobalContext() As HybridDictionary
+
+    Dim slot As System.LocalDataStoreSlot = _
+      Thread.GetNamedDataSlot("Csla.GlobalContext")
+    Return CType(Thread.GetData(slot), HybridDictionary)
+
+  End Function
+
+  Friend Shared Sub SetContext(ByVal clientContext As Object, ByVal globalContext As Object)
+
+    Dim slot As System.LocalDataStoreSlot = _
+      Thread.GetNamedDataSlot("Csla.ClientContext")
+    Threading.Thread.SetData(slot, clientContext)
+
+    slot = Thread.GetNamedDataSlot("Csla.GlobalContext")
+    Threading.Thread.SetData(slot, globalContext)
+
+  End Sub
+
+  Friend Shared Sub SetGlobalContext(ByVal globalContext As Object)
+
+    Dim slot As System.LocalDataStoreSlot = _
+      Thread.GetNamedDataSlot("Csla.GlobalContext")
+    Threading.Thread.SetData(slot, globalContext)
+
+  End Sub
+
+  Public Shared Sub Clear()
+
+    SetContext(Nothing, Nothing)
+
+  End Sub
+
+#End Region
+
+#Region " Config File Settings "
 
   ''' <summary>
   ''' Returns the authentication type being used by the
@@ -146,6 +193,10 @@ Public NotInheritable Class ApplicationContext
     End Get
   End Property
 
+#End Region
+
+#Region " ExecutionLocation Property "
+
   ''' <summary>
   ''' Enum representing the locations code can execute.
   ''' </summary>
@@ -172,46 +223,7 @@ Public NotInheritable Class ApplicationContext
 
   End Sub
 
-  Friend Shared Function GetClientContext() As HybridDictionary
-
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.ClientContext")
-    Return CType(Thread.GetData(slot), HybridDictionary)
-
-  End Function
-
-  Friend Shared Function GetGlobalContext() As HybridDictionary
-
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Return CType(Thread.GetData(slot), HybridDictionary)
-
-  End Function
-
-  Friend Shared Sub SetContext(ByVal clientContext As Object, ByVal globalContext As Object)
-
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.ClientContext")
-    Threading.Thread.SetData(slot, clientContext)
-
-    slot = Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Threading.Thread.SetData(slot, globalContext)
-
-  End Sub
-
-  Friend Shared Sub SetGlobalContext(ByVal globalContext As Object)
-
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Threading.Thread.SetData(slot, globalContext)
-
-  End Sub
-
-  Public Shared Sub Clear()
-
-    SetContext(Nothing, Nothing)
-
-  End Sub
+#End Region
 
   Private Sub New()
     ' prevent instantiation

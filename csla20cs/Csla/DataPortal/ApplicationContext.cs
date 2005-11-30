@@ -11,6 +11,9 @@ namespace Csla
   /// </summary>
   public sealed class ApplicationContext
   {
+
+    #region Client/Global Context
+
     /// <summary>
     /// Returns the application-specific context data provided
     /// by the client.
@@ -68,6 +71,43 @@ namespace Csla
         return ctx;
       }
     }
+
+
+    internal static HybridDictionary GetClientContext()
+    {
+      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+      return (HybridDictionary)Thread.GetData(slot);
+    }
+
+    internal static HybridDictionary GetGlobalContext()
+    {
+      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+      return (HybridDictionary)Thread.GetData(slot);
+    }
+
+    internal static void SetContext(object clientContext, object globalContext)
+    {
+      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+      Thread.SetData(slot, clientContext);
+
+      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+      Thread.SetData(slot, globalContext);
+    }
+
+    internal static void SetGlobalContext(object globalContext)
+    {
+      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+      Thread.SetData(slot, globalContext);
+    }
+
+    public static void Clear()
+    {
+      SetContext(null, null);
+    }
+
+    #endregion
+
+    #region Config Settings
 
     /// <summary>
     /// Returns the authentication type being used by the
@@ -157,7 +197,12 @@ namespace Csla
       Server
     }
 
-    private static ExecutionLocations _executionLocation = ExecutionLocations.Client;
+    #endregion
+
+    #region In-Memory Settings
+
+    private static ExecutionLocations _executionLocation = 
+      ExecutionLocations.Client;
 
     /// <summary>
     /// Returns a value indicating whether the application code
@@ -173,37 +218,7 @@ namespace Csla
       _executionLocation = location;
     }
 
-    internal static HybridDictionary GetClientContext()
-    {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
-      return (HybridDictionary)Thread.GetData(slot);
-    }
-
-    internal static HybridDictionary GetGlobalContext()
-    {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      return (HybridDictionary)Thread.GetData(slot);
-    }
-
-    internal static void SetContext(object clientContext, object globalContext)
-    {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
-      Thread.SetData(slot, clientContext);
-
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Thread.SetData(slot, globalContext);
-    }
-
-    internal static void SetGlobalContext(object globalContext)
-    {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Thread.SetData(slot, globalContext);
-    }
-
-    public static void Clear()
-    {
-      SetContext(null, null);
-    }
+    #endregion
 
     private ApplicationContext()
     {

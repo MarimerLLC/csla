@@ -186,6 +186,27 @@ namespace Csla.Test.SafeDataReader
             //}
         }
 
+        [TestMethod()]
+        public void IsDBNull()
+        {
+            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cm = cn.CreateCommand();
+            cm.CommandText = "SELECT TEXT, BIGINTFIELD, IMAGEFIELD FROM MultiDataTypes";
+
+            cn.Open();
+            using (cm)
+            {
+                using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
+                {
+                    dr.Read();
+                    Assert.AreEqual(true, dr.IsDBNull(2));
+                    Assert.AreEqual(false, dr.IsDBNull(1));
+                    dr.Close();
+                }
+            }
+            cn.Close();
+        }
+
 
         [TestMethod()]
         [ExpectedException(typeof(SqlException))]

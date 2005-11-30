@@ -83,8 +83,10 @@ namespace Csla.Server
       {
         _principal = principal;
         _remotePortal = isRemotePortal;
-        _clientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-        _clientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+        _clientCulture = 
+          System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+        _clientUICulture = 
+          System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
         _clientContext = Csla.ApplicationContext.GetClientContext();
         _globalContext = Csla.ApplicationContext.GetGlobalContext();
       }

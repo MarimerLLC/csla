@@ -118,13 +118,13 @@ namespace Csla
       {
         result = ex.Result;
         if (portal.IsServerRemote)
-          RestoreContext(result);
+          ApplicationContext.SetGlobalContext(result);
         throw new DataPortalException(
           "DataPortal.Create " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
       if (portal.IsServerRemote)
-        RestoreContext(result);
+        ApplicationContext.SetGlobalContext(result);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
@@ -175,13 +175,13 @@ namespace Csla
       {
         result = ex.Result;
         if (portal.IsServerRemote)
-          RestoreContext(result);
+          ApplicationContext.SetGlobalContext(result);
         throw new DataPortalException("DataPortal.Fetch " + 
           Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
       if (portal.IsServerRemote)
-        RestoreContext(result);
+        ApplicationContext.SetGlobalContext(result);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
@@ -310,12 +310,12 @@ namespace Csla
       {
         result = ex.Result;
         if (portal.IsServerRemote)
-          RestoreContext(result);
+          ApplicationContext.SetGlobalContext(result);
         throw new DataPortalException("DataPortal.Update " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
       if (portal.IsServerRemote)
-        RestoreContext(result);
+        ApplicationContext.SetGlobalContext(result);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
@@ -350,12 +350,12 @@ namespace Csla
       {
         result = ex.Result;
         if (portal.IsServerRemote)
-          RestoreContext(result);
+          ApplicationContext.SetGlobalContext(result);
         throw new DataPortalException("DataPortal.Delete " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
       if (portal.IsServerRemote)
-        RestoreContext(result);
+        ApplicationContext.SetGlobalContext(result);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
     }
@@ -417,12 +417,6 @@ namespace Csla
     #endregion
 
     #region Helper methods
-
-    private static void RestoreContext(object result)
-    {
-      System.LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Thread.SetData(slot, ((Server.DataPortalResult)result).GlobalContext);
-    }
 
     private static bool RunLocal(MethodInfo method)
     {

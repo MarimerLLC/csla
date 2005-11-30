@@ -199,6 +199,14 @@ Public NotInheritable Class ApplicationContext
 
   End Sub
 
+  Friend Shared Sub SetGlobalContext(ByVal globalContext As Object)
+
+    Dim slot As System.LocalDataStoreSlot = _
+      Thread.GetNamedDataSlot("Csla.GlobalContext")
+    Threading.Thread.SetData(slot, globalContext)
+
+  End Sub
+
   Public Shared Sub Clear()
 
     SetContext(Nothing, Nothing)

@@ -194,6 +194,12 @@ namespace Csla
       Thread.SetData(slot, globalContext);
     }
 
+    internal static void SetGlobalContext(object globalContext)
+    {
+      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+      Thread.SetData(slot, globalContext);
+    }
+
     public static void Clear()
     {
       SetContext(null, null);

@@ -108,14 +108,14 @@ Public NotInheritable Class DataPortal
     Catch ex As Server.DataPortalException
       result = ex.Result
       If portal.IsServerRemote Then
-        RestoreContext(result)
+        ApplicationContext.SetGlobalContext(result)
       End If
       Throw New DataPortalException("DataPortal.Create " & _
         My.Resources.Failed, ex.InnerException, result.ReturnObject)
     End Try
 
     If portal.IsServerRemote Then
-      RestoreContext(result)
+      ApplicationContext.SetGlobalContext(result)
     End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
@@ -166,14 +166,14 @@ Public NotInheritable Class DataPortal
     Catch ex As Server.DataPortalException
       result = ex.Result
       If portal.IsServerRemote Then
-        RestoreContext(result)
+        ApplicationContext.SetGlobalContext(result)
       End If
       Throw New DataPortalException("DataPortal.Fetch " & _
         My.Resources.Failed, ex.InnerException, result.ReturnObject)
     End Try
 
     If portal.IsServerRemote Then
-      RestoreContext(result)
+      ApplicationContext.SetGlobalContext(result)
     End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
@@ -308,14 +308,14 @@ Public NotInheritable Class DataPortal
     Catch ex As Server.DataPortalException
       result = ex.Result
       If portal.IsServerRemote Then
-        RestoreContext(result)
+        ApplicationContext.SetGlobalContext(result)
       End If
       Throw New DataPortalException("DataPortal.Update " & _
         My.Resources.Failed, ex.InnerException, result.ReturnObject)
     End Try
 
     If portal.IsServerRemote Then
-      RestoreContext(result)
+      ApplicationContext.SetGlobalContext(result)
     End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
@@ -352,14 +352,14 @@ Public NotInheritable Class DataPortal
     Catch ex As Server.DataPortalException
       result = ex.Result
       If portal.IsServerRemote Then
-        RestoreContext(result)
+        ApplicationContext.SetGlobalContext(result)
       End If
       Throw New DataPortalException("DataPortal.Delete " & _
         My.Resources.Failed, ex.InnerException, result.ReturnObject)
     End Try
 
     If portal.IsServerRemote Then
-      RestoreContext(result)
+      ApplicationContext.SetGlobalContext(result)
     End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
@@ -418,14 +418,6 @@ Public NotInheritable Class DataPortal
 #End Region
 
 #Region " Helper methods "
-
-  Private Shared Sub RestoreContext(ByVal result As Object)
-
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Threading.Thread.SetData(slot, CType(result, Server.DataPortalResult).GlobalContext)
-
-  End Sub
 
   Private Shared Function RunLocal(ByVal method As MethodInfo) As Boolean
 

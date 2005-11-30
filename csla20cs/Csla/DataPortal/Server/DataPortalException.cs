@@ -27,24 +27,12 @@ namespace Csla.Server
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
     public override string StackTrace
     {
-      get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
+      get { return String.Format("{0}{1}{2}", 
+        _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
 
-    public DataPortalException(string message, Exception ex)
-      : base(message, ex)
-    {
-      _innerStackTrace = ex.StackTrace;
-      _result = new DataPortalResult();
-    }
-
-    public DataPortalException(string message, DataPortalResult result)
-      : base(message)
-    {
-      _innerStackTrace = String.Empty;
-      _result = result;
-    }
-
-    public DataPortalException(string message, Exception ex, DataPortalResult result)
+    public DataPortalException(
+      string message, Exception ex, DataPortalResult result)
       : base(message, ex)
     {
       _innerStackTrace = ex.StackTrace;
@@ -54,7 +42,8 @@ namespace Csla.Server
     protected DataPortalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
       : base(info, context)
     {
-      _result = (DataPortalResult)info.GetValue("_result", typeof(DataPortalResult));
+      _result = (DataPortalResult)info.GetValue(
+        "_result", typeof(DataPortalResult));
       _innerStackTrace = info.GetString("_innerStackTrace");
     }
 

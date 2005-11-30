@@ -282,6 +282,7 @@ Namespace Server
       If Not context.IsRemotePortal Then Exit Sub
 
       ApplicationContext.Clear()
+      System.Threading.Thread.CurrentPrincipal = Nothing
 
     End Sub
 

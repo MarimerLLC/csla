@@ -300,6 +300,7 @@ namespace Csla.Server
       // do nothing
       if (!context.IsRemotePortal) return;
       ApplicationContext.Clear();
+      System.Threading.Thread.CurrentPrincipal = null;
     }
 
     #endregion

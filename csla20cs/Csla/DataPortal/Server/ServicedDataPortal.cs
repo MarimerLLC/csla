@@ -26,7 +26,8 @@ namespace Csla.Server
     /// <param name="context">Context data from the client.</param>
     /// <returns>A populated business object.</returns>
     [AutoComplete(true)]
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+    public DataPortalResult Create(
+      Type objectType, object criteria, DataPortalContext context)
     {
       SimpleDataPortal portal = new SimpleDataPortal();
       return portal.Create(objectType, criteria, context);

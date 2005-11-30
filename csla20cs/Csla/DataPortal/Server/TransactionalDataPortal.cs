@@ -29,7 +29,8 @@ namespace Csla.Server
     /// the object.</param>
     /// <param name="context">Context data from the client.</param>
     /// <returns>A populated business object.</returns>
-    public DataPortalResult Create(System.Type objectType, object criteria, DataPortalContext context)
+    public DataPortalResult Create(
+      System.Type objectType, object criteria, DataPortalContext context)
     {
       DataPortalResult result;
       using (TransactionScope tr = new TransactionScope())

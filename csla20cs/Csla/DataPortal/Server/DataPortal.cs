@@ -22,7 +22,8 @@ namespace Csla.Server
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
     /// <returns>A populated business object.</returns>
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+    public DataPortalResult Create(
+      Type objectType, object criteria, DataPortalContext context)
     {
       try
       {
@@ -30,7 +31,8 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria);
+        MethodInfo method = MethodCaller.GetMethod(
+          objectType, "DataPortal_Create", criteria);
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -320,7 +322,8 @@ namespace Csla.Server
       if (IsTransactionalMethod(method))
       {
         TransactionalAttribute attrib =
-            (TransactionalAttribute)Attribute.GetCustomAttribute(method, typeof(TransactionalAttribute));
+          (TransactionalAttribute)Attribute.GetCustomAttribute(
+          method, typeof(TransactionalAttribute));
         result = attrib.TransactionType;
       }
       else

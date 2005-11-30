@@ -143,7 +143,49 @@ namespace Csla.Test.SafeDataReader
 
             Assert.AreEqual("Bill", root.FirstName);
             Assert.AreEqual("Johnson", root.LastName);
-        }      
+        }
+
+        [TestMethod()]
+        public void GetSchemaTable()
+        {
+            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cm = cn.CreateCommand();
+            DataTable dtSchema = null;
+            cm.CommandText = "SELECT * FROM MultiDataTypes";
+            cn.Open();
+
+            using (cm)
+            {
+                using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
+                {
+                    dtSchema = dr.GetSchemaTable();
+                    dr.Close();
+                }
+            }
+            cn.Close();
+
+            Assert.AreEqual("BIGINTFIELD", dtSchema.Rows[0][0]);
+            Assert.AreEqual(typeof(System.Int64), dtSchema.Rows[0][12]);
+            Assert.AreEqual(typeof(System.Byte[]), dtSchema.Rows[1][12]);
+
+            //Console.WriteLine();
+            //foreach (DataColumn c in dtSchema.Columns)
+            //{
+            //    Console.WriteLine(c.ColumnName);
+            //}
+            //Console.WriteLine();
+            //for (int i = 0; i < dtSchema.Rows.Count; i++)
+            //{
+            //    Console.WriteLine(dtSchema.Rows[i][0]);
+            //}
+
+            //Console.WriteLine();
+            //for (int i = 0; i < dtSchema.Rows.Count; i++)
+            //{
+            //    Console.WriteLine(dtSchema.Rows[i][12]);
+            //}
+        }
+
 
         [TestMethod()]
         [ExpectedException(typeof(SqlException))]
@@ -190,6 +232,6 @@ namespace Csla.Test.SafeDataReader
 
             Assert.AreEqual("Bill, age 56, added on 12/23/2004", list[0]);
             Assert.AreEqual("Jim, age 33, added on 1/14/2003", list[1]);
-        }  
+        }
     }
 }

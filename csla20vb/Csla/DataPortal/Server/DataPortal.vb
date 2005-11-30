@@ -261,14 +261,7 @@ Namespace Server
       ' We expect the Principal to be of the type BusinessPrincipal
       If context.Principal IsNot Nothing Then
         If TypeOf context.Principal Is Security.BusinessPrincipalBase Then
-          ' See if our current principal is different from the caller's principal 
-          If Not ReferenceEquals(context.Principal, _
-              System.Threading.Thread.CurrentPrincipal) Then
-
-            ' The caller had a different principal, so change ours to match the 
-            ' caller's, so all our objects use the caller's security. 
-            System.Threading.Thread.CurrentPrincipal = context.Principal
-          End If
+          System.Threading.Thread.CurrentPrincipal = context.Principal
 
         Else
           Throw New System.Security.SecurityException( _

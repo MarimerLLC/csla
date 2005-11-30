@@ -283,20 +283,15 @@ namespace Csla.Server
       if (context.Principal != null)
       {
         if (context.Principal is Security.BusinessPrincipalBase)
-        {
-          // See if our current principal is different from the caller's principal
-          if (!ReferenceEquals(context.Principal, System.Threading.Thread.CurrentPrincipal))
-          {
-            // The caller had a different principal, so change ours to match the
-            // caller's, so all our objects use the caller's security.
-            System.Threading.Thread.CurrentPrincipal = context.Principal;
-          }
-        }
+          System.Threading.Thread.CurrentPrincipal = context.Principal;
         else
-          throw new System.Security.SecurityException(Resources.BusinessPrincipalException + " " + ((object)context.Principal).ToString());
+          throw new System.Security.SecurityException(
+            Resources.BusinessPrincipalException + " " + 
+            ((object)context.Principal).ToString());
       }
       else
-        throw new System.Security.SecurityException(Resources.BusinessPrincipalException + " Nothing");
+        throw new System.Security.SecurityException(
+          Resources.BusinessPrincipalException + " Nothing");
     }
 
     private static void ClearContext(DataPortalContext context)

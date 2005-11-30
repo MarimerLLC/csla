@@ -118,6 +118,7 @@ namespace Csla.Test.SafeDataReader
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);
             SqlCommand cm = cn.CreateCommand();
             cm.CommandText = "SELECT BINARYFIELD FROM MultiDataTypes WHERE CHARFIELD='z'";
+            
             byte[] byteArray = new Byte[7000];
             long longValue;
 

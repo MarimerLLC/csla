@@ -14,7 +14,7 @@
     </div>
       <div>
         <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
-          CellPadding="4" DataKeyNames="Id" DataSourceID="ProjectListDataSource" ForeColor="#333333"
+          CellPadding="4" DataSourceID="ProjectListDataSource" ForeColor="#333333"
           GridLines="None" PageSize="4">
           <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
           <Columns>

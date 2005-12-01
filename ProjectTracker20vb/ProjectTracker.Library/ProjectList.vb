@@ -16,8 +16,8 @@ Public Class ProjectList
       Get
         Return mId
       End Get
-      Set(ByVal Value As Guid)
-        mId = Value
+      Friend Set(ByVal value As Guid)
+        mId = value
       End Set
     End Property
 
@@ -25,8 +25,8 @@ Public Class ProjectList
       Get
         Return mName
       End Get
-      Set(ByVal Value As String)
-        mName = Value
+      Friend Set(ByVal value As String)
+        mName = value
       End Set
     End Property
 
@@ -49,7 +49,7 @@ Public Class ProjectList
 
   <Serializable()> _
   Private Class Criteria
-    ' no criteria - we retrieve all projects
+    ' no criteria - retrieve all projects
   End Class
 
   <Serializable()> _
@@ -94,12 +94,20 @@ Public Class ProjectList
 
 #Region " Data Access "
 
-  Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
-    Dim filter As String = ""
-    If TypeOf criteria Is FilteredCriteria Then
-      filter = CType(criteria, FilteredCriteria).Name
-    End If
+    ' fetch with no filter
+    Fetch("")
+
+  End Sub
+
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As FilteredCriteria)
+
+    Fetch(criteria.Name)
+
+  End Sub
+
+  Private Sub Fetch(ByVal nameFilter As String)
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
@@ -111,10 +119,10 @@ Public Class ProjectList
             IsReadOnly = False
             While dr.Read()
               Dim info As New ProjectInfo
-              info.ID = dr.GetGuid(0)
+              info.Id = dr.GetGuid(0)
               info.Name = dr.GetString(1)
               ' apply filter if necessary
-              If Len(filter) = 0 OrElse info.Name.IndexOf(filter) = 0 Then
+              If Len(nameFilter) = 0 OrElse info.Name.IndexOf(nameFilter) = 0 Then
                 Me.Add(info)
               End If
             End While

@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Public Class ProjectResources
   Inherits BusinessListBase(Of ProjectResources, ProjectResource)
 
-#Region " Business Properties and Methods "
+#Region " Business Methods "
 
   Default Public Overloads ReadOnly Property Item(ByVal resourceID As String) As ProjectResource
     Get

@@ -17,7 +17,7 @@ Public Class ResourceList
       Get
         Return mId
       End Get
-      Set(ByVal Value As String)
+      Friend Set(ByVal Value As String)
         mId = Value
       End Set
     End Property
@@ -26,7 +26,7 @@ Public Class ResourceList
       Get
         Return mName
       End Get
-      Set(ByVal Value As String)
+      Friend Set(ByVal Value As String)
         mName = Value
       End Set
     End Property
@@ -83,7 +83,7 @@ Public Class ResourceList
 
 #Region " Data Access "
 
-  Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
@@ -97,7 +97,9 @@ Public Class ResourceList
             While dr.Read()
               Dim info As New ResourceInfo
               info.Id = dr.GetString("id")
-              info.Name = dr.GetString("LastName") & ", " & dr.GetString("FirstName")
+              info.Name = _
+                dr.GetString("LastName") & _
+                ", " & dr.GetString("FirstName")
               Me.Add(info)
             End While
 

@@ -14,66 +14,52 @@ Public Class ProjectResource
 
   Public ReadOnly Property ResourceId() As String
     Get
-      If CanReadProperty() Then
-        Return mResourceId
-      Else
-        Throw New System.Security.SecurityException("Property read not allowed")
-      End If
+      CanReadProperty(True)
+      Return mResourceId
     End Get
   End Property
 
   Public ReadOnly Property FirstName() As String
     Get
-      If CanReadProperty() Then
-        Return mFirstName
-      Else
-        Throw New System.Security.SecurityException("Property read not allowed")
-      End If
+      CanReadProperty(True)
+      Return mFirstName
     End Get
   End Property
 
   Public ReadOnly Property LastName() As String
     Get
-      If CanReadProperty() Then
-        Return mLastName
-      Else
-        Throw New System.Security.SecurityException("Property read not allowed")
-      End If
+      CanReadProperty(True)
+      Return mLastName
     End Get
   End Property
 
   Public ReadOnly Property FullName() As String
     Get
-      Return LastName & ", " & FirstName
+      If CanReadProperty("FirstName") AndAlso CanReadProperty("LastName") Then
+        Return LastName & ", " & FirstName
+      Else
+        Throw New System.Security.SecurityException("Property read not allowed")
+      End If
     End Get
   End Property
 
   Public ReadOnly Property Assigned() As String
     Get
-      If CanReadProperty() Then
-        Return mAssigned.Text
-      Else
-        Throw New System.Security.SecurityException("Property read not allowed")
-      End If
+      CanReadProperty(True)
+      Return mAssigned.Text
     End Get
   End Property
 
   Public Property Role() As Integer
     Get
-      If CanReadProperty() Then
-        Return mRole
-      Else
-        Throw New System.Security.SecurityException("Property read not allowed")
-      End If
+      CanReadProperty(True)
+      Return mRole
     End Get
     Set(ByVal value As Integer)
-      If CanWriteProperty() Then
-        If Not mRole.Equals(value) Then
-          mRole = value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property write not allowed")
+      CanWriteProperty(True)
+      If Not mRole.Equals(value) Then
+        mRole = value
+        PropertyHasChanged()
       End If
     End Set
   End Property

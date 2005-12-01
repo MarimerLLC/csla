@@ -5,7 +5,7 @@ Imports CSLA.Data
 Public Class Resource
   Inherits BusinessBase(Of Resource)
 
-#Region " Business Properties and Methods "
+#Region " Business Methods "
 
   Private mId As String = ""
   Private mLastName As String = ""
@@ -51,7 +51,11 @@ Public Class Resource
 
   Public ReadOnly Property FullName() As String
     Get
-      Return mLastName & ", " & mFirstName
+      If CanReadProperty("FirstName") AndAlso CanReadProperty("LastName") Then
+        Return mLastName & ", " & mFirstName
+      Else
+        Throw New System.Security.SecurityException("Property read not allowed")
+      End If
     End Get
   End Property
 
@@ -139,7 +143,7 @@ Public Class Resource
 
 #End Region
 
-#Region " Shared Methods "
+#Region " Factory Methods "
 
   Public Shared Function NewResource(ByVal id As String) As Resource
 
@@ -217,15 +221,13 @@ Public Class Resource
 #Region " Data Access "
 
   <RunLocal()> _
-  Protected Overrides Sub DataPortal_Create(ByVal criteria As Object)
+  Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
 
-    mId = CType(criteria, Criteria).Id
+    mId = criteria.Id
 
   End Sub
 
-  Protected Overrides Sub DataPortal_Fetch(ByVal Criteria As Object)
-
-    Dim crit As Criteria = CType(Criteria, Criteria)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
@@ -233,7 +235,7 @@ Public Class Resource
         With cm
           .CommandType = CommandType.StoredProcedure
           .CommandText = "getResource"
-          .Parameters.AddWithValue("@ID", crit.Id)
+          .Parameters.AddWithValue("@ID", Criteria.Id)
 
           Using dr As New SafeDataReader(.ExecuteReader)
             dr.Read()
@@ -255,6 +257,7 @@ Public Class Resource
 
   End Sub
 
+  <Transactional(TransactionalTypes.Manual)> _
   Protected Overrides Sub DataPortal_Insert()
 
     Using cn As New SqlConnection(DataBase.DbConn)
@@ -280,6 +283,7 @@ Public Class Resource
 
   End Sub
 
+  <Transactional(TransactionalTypes.Manual)> _
   Protected Overrides Sub DataPortal_Update()
 
     Using cn As New SqlConnection(DataBase.DbConn)
@@ -315,6 +319,7 @@ Public Class Resource
 
   End Sub
 
+  <Transactional(TransactionalTypes.Manual)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
     If Not Me.IsNew Then
@@ -324,9 +329,8 @@ Public Class Resource
 
   End Sub
 
-  Protected Overrides Sub DataPortal_Delete(ByVal criteria As Object)
-
-    Dim crit As Criteria = CType(criteria, Criteria)
+  <Transactional(TransactionalTypes.Manual)> _
+  Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
@@ -336,7 +340,7 @@ Public Class Resource
             .Transaction = tr
             .CommandType = CommandType.StoredProcedure
             .CommandText = "deleteResource"
-            .Parameters.AddWithValue("@ID", crit.Id)
+            .Parameters.AddWithValue("@ID", criteria.Id)
             .ExecuteNonQuery()
           End With
         End Using

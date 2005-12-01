@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Public Class Project
   Inherits BusinessBase(Of Project)
 
-#Region " Business Properties and Methods "
+#Region " Business Methods "
 
   Private mId As Guid = Guid.NewGuid
   Private mName As String = ""
@@ -233,7 +233,7 @@ Public Class Project
   ''' data binding. Do not call it directly. To create a new
   ''' object, call the appropriate factory method.
   ''' </remarks>
-  Public Sub New()
+  Private Sub New()
 
     AddAuthorizationRules()
 

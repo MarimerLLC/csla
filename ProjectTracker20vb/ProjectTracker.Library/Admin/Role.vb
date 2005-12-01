@@ -13,40 +13,28 @@ Namespace Admin
 
     Public Property Id() As Integer
       Get
-        If CanReadProperty() Then
-          Return mId
-        Else
-          Throw New System.Security.SecurityException("Property read not allowed")
-        End If
+        CanReadProperty(True)
+        Return mId
       End Get
       Set(ByVal value As Integer)
-        If CanWriteProperty() Then
-          If Not mId.Equals(value) Then
-            mId = value
-            PropertyHasChanged()
-          End If
-        Else
-          Throw New System.Security.SecurityException("Property write not allowed")
+        CanWriteProperty(True)
+        If Not mId.Equals(value) Then
+          mId = value
+          PropertyHasChanged()
         End If
       End Set
     End Property
 
     Public Property Name() As String
       Get
-        If CanReadProperty() Then
-          Return mName
-        Else
-          Throw New System.Security.SecurityException("Property read not allowed")
-        End If
+        CanReadProperty(True)
+        Return mName
       End Get
       Set(ByVal value As String)
-        If CanWriteProperty() Then
-          If Not mName.Equals(value) Then
-            mName = value
-            PropertyHasChanged()
-          End If
-        Else
-          Throw New System.Security.SecurityException("Property write not allowed")
+        CanWriteProperty(True)
+        If Not mName.Equals(value) Then
+          mName = value
+          PropertyHasChanged()
         End If
       End Set
     End Property
@@ -61,13 +49,7 @@ Namespace Admin
 
 #Region " Constructors "
 
-    ''' <summary>
-    ''' DO NOT USE THIS CONSTRUCTOR. It
-    ''' exists solely for use by Web
-    ''' Forms data binding.
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Sub New()
+    Private Sub New()
 
       MarkAsChild()
 

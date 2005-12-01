@@ -50,9 +50,8 @@ Public Class RoleList
 
 #Region " Data Access "
 
-  Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
-    Dim crit As Criteria = CType(criteria, Criteria)
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
@@ -63,7 +62,8 @@ Public Class RoleList
           IsReadOnly = False
           With dr
             While .Read()
-              Me.Add(New NameValuePair(.GetInt32("id"), .GetString("name")))
+              Me.Add(New NameValuePair( _
+                .GetInt32("id"), .GetString("name")))
             End While
             .Close()
           End With

@@ -33,30 +33,21 @@ Public Class ResourceAssignment
 
   Public ReadOnly Property Assigned() As String
     Get
-      If CanReadProperty() Then
-        Return mAssigned.Text
-      Else
-        Throw New System.Security.SecurityException("Property read not allowed")
-      End If
+      CanReadProperty(True)
+      Return mAssigned.Text
     End Get
   End Property
 
   Public Property Role() As Integer
     Get
-      If CanReadProperty() Then
-        Return mRole
-      Else
-        Throw New System.Security.SecurityException("Property read not allowed")
-      End If
+      CanReadProperty(True)
+      Return mRole
     End Get
     Set(ByVal value As Integer)
-      If CanWriteProperty() Then
-        If Not mRole.Equals(value) Then
-          mRole = value
-          PropertyHasChanged()
-        End If
-      Else
-        Throw New System.Security.SecurityException("Property write not allowed")
+      CanWriteProperty(True)
+      If Not mRole.Equals(value) Then
+        mRole = value
+        PropertyHasChanged()
       End If
     End Set
   End Property
@@ -85,7 +76,7 @@ Public Class ResourceAssignment
 
 #End Region
 
-#Region " Shared Methods "
+#Region " Factory Methods "
 
   Friend Shared Function NewResourceAssignment( _
     ByVal project As Project, ByVal role As Integer) As ResourceAssignment

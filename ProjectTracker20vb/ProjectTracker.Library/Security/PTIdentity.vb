@@ -73,7 +73,7 @@ Namespace Security
         End Get
       End Property
 
-      Public Sub New(ByVal username As String, ByVal password As String)
+      Friend Sub New(ByVal username As String, ByVal password As String)
         mUsername = username
         mPassword = password
       End Sub
@@ -99,20 +99,18 @@ Namespace Security
 
 #Region " Data Access "
 
-    Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
-
-      Dim crit As Criteria = CType(criteria, Criteria)
+    Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
       Using cn As New SqlConnection(DataBase.SecurityConn)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
           cm.CommandText = "Login"
           cm.CommandType = CommandType.StoredProcedure
-          cm.Parameters.AddWithValue("@user", crit.Username)
-          cm.Parameters.AddWithValue("@pw", crit.Password)
+          cm.Parameters.AddWithValue("@user", criteria.Username)
+          cm.Parameters.AddWithValue("@pw", criteria.Password)
           Using dr As SqlDataReader = cm.ExecuteReader()
             If dr.Read() Then
-              mName = crit.Username
+              mName = criteria.Username
               mIsAuthenticated = True
               If dr.NextResult Then
                 While dr.Read

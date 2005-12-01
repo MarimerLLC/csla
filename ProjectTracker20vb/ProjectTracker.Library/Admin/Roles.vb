@@ -61,9 +61,8 @@ Namespace Admin
 
     End Sub
 
-    Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
+    Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
-      Dim crit As Criteria = CType(criteria, Criteria)
       Using cn As New SqlConnection(DataBase.DbConn)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
@@ -84,7 +83,7 @@ Namespace Admin
 
     End Sub
 
-    <Transactional(TransactionalTypes.Manual)> _
+    <Transactional(TransactionalTypes.TransactionScope)> _
     Protected Overrides Sub DataPortal_Update()
 
       Using cn As New SqlConnection(DataBase.DbConn)
@@ -111,24 +110,40 @@ Namespace Admin
 
 #Region " Atomic Operations "
 
+    ''' <summary>
+    ''' For use in web forms only.
+    ''' Inserts a role into the database.
+    ''' </summary>
     Public Shared Sub InsertRole(ByVal role As Role)
 
       role.WebSave(False)
 
     End Sub
 
+    ''' <summary>
+    ''' For use in web forms only.
+    ''' Updates a role in the database.
+    ''' </summary>
     Public Shared Sub UpdateRole(ByVal role As Role)
 
       role.WebSave(True)
 
     End Sub
 
+    ''' <summary>
+    ''' For use in web forms only.
+    ''' Deletes a role from the database.
+    ''' </summary>
     Public Shared Sub DeleteRole(ByVal id As Integer)
 
       DataPortal.Execute(New RoleDeleter(id))
 
     End Sub
 
+    ''' <summary>
+    ''' For use in web forms only.
+    ''' Deletes a role from the database.
+    ''' </summary>
     Public Shared Sub DeleteRole(ByVal role As Role)
 
       DataPortal.Execute(New RoleDeleter(role.Id))

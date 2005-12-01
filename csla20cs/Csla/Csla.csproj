@@ -34,10 +34,13 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +122,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web\CslaDataSource.cs" />
+    <Compile Include="Web\CslaDataSourceView.cs" />
+    <Compile Include="Web\Design\CslaDataSourceDesigner.cs" />
+    <Compile Include="Web\Design\CslaDesignerDataSourceView.cs" />
+    <Compile Include="Windows\BindingSourceRefresh.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Windows\ReadWriteAuthorization.cs">
+      <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

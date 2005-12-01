@@ -14,7 +14,7 @@ namespace Csla.DataPortalClient
 
     #region Configure Remoting
 
-    internal RemotingProxy()
+    static RemotingProxy()
     {
       // create and register a custom HTTP channel
       // that uses the binary formatter

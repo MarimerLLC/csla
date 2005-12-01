@@ -15,10 +15,10 @@
       <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
         <asp:View ID="MainView" runat="server">
       <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4"
-        DataSourceID="RolesDataSource" ForeColor="#333333" GridLines="None" DataKeyNames="Id">
+        DataSourceID="RolesDataSource" ForeColor="#333333" GridLines="None">
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>
-          <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False" />
+          <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id" />
           <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
           <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" />
         </Columns>
@@ -33,7 +33,7 @@
         <asp:View ID="InsertView" runat="server">
           <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False" CellPadding="4"
             DataSourceID="RolesDataSource" DefaultMode="Insert" ForeColor="#333333" GridLines="None"
-            Height="50px" Width="125px" DataKeyNames="Id">
+            Height="50px" Width="125px">
             <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
             <CommandRowStyle BackColor="#FFFFC0" Font-Bold="True" />
             <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
@@ -49,10 +49,10 @@
           </asp:DetailsView>
         </asp:View>
       </asp:MultiView><br />
-        <asp:ObjectDataSource ID="RolesDataSource" runat="server" DataObjectTypeName="ProjectTracker.Library.Admin.Role"
-          DeleteMethod="Delete" InsertMethod="InsertRole" OldValuesParameterFormatString="original_{0}"
-          SelectMethod="GetRoles" TypeName="RolesData" UpdateMethod="UpdateRole"></asp:ObjectDataSource>
-        &nbsp;</div>
+        &nbsp;&nbsp;<csla:CslaDataSource ID="RolesDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library"
+          TypeName="ProjectTracker.Library.Admin.Roles">
+        </csla:CslaDataSource>
+      </div>
     </form>
 </body>
 </html>

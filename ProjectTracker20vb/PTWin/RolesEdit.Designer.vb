@@ -42,6 +42,7 @@ Partial Class RolesEdit
     Me.RolesDataGridView.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn1, Me.DataGridViewTextBoxColumn2})
     Me.RolesDataGridView.DataSource = Me.RolesBindingSource
     Me.RolesDataGridView.Location = New System.Drawing.Point(12, 13)
+    Me.RolesDataGridView.MultiSelect = False
     Me.RolesDataGridView.Name = "RolesDataGridView"
     Me.RolesDataGridView.Size = New System.Drawing.Size(435, 323)
     Me.RolesDataGridView.TabIndex = 1

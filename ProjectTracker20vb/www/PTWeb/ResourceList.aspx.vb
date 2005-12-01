@@ -29,6 +29,7 @@ Partial Class ResourceList
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
+    Me.GridView1.DataKeyNames = New String() {"Id"}
     NewResourceButton.Visible = ProjectTracker.Library.Resource.CanAddObject
 
   End Sub

@@ -59,6 +59,12 @@ Namespace Admin
 
 #Region " Factory Methods "
 
+    Friend Shared Function NewRole() As Role
+
+      Return New Role
+
+    End Function
+
     Friend Shared Function GetRole(ByVal dr As Csla.Data.SafeDataReader) As Role
 
       Return New Role(dr)
@@ -128,45 +134,6 @@ Namespace Admin
         cm.CommandText = "deleteRole"
         cm.Parameters.AddWithValue("@id", Id)
         cm.ExecuteNonQuery()
-      End Using
-
-    End Sub
-
-#End Region
-
-#Region " Web Support "
-
-    ''' <summary>
-    ''' For use from Web Forms to atomically
-    ''' insert/update a Role.
-    ''' </summary>
-    ''' <param name="forceUpdate">True to update data, False to insert data.</param>
-    Friend Sub WebSave(ByVal forceUpdate As Boolean)
-
-      If forceUpdate Then
-        MarkOld()
-      End If
-      MarkDirty()
-      DataPortal.Update(Me)
-
-    End Sub
-
-    Protected Overrides Sub DataPortal_Insert()
-
-      Using cn As New SqlConnection(DataBase.DbConn)
-        cn.Open()
-        Insert(cn)
-        cn.Close()
-      End Using
-
-    End Sub
-
-    Protected Overrides Sub DataPortal_Update()
-
-      Using cn As New SqlConnection(DataBase.DbConn)
-        cn.Open()
-        Update(cn)
-        cn.Close()
       End Using
 
     End Sub

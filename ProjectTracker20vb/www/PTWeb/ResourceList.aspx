@@ -13,7 +13,7 @@
     <div>
       <br />
       <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
-        CellPadding="4" DataKeyNames="Id" DataSourceID="ResourceListDataSource" ForeColor="#333333"
+        CellPadding="4" DataSourceID="ResourceListDataSource" ForeColor="#333333"
         GridLines="None">
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>

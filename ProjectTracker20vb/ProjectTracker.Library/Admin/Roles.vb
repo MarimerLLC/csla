@@ -10,9 +10,54 @@ Namespace Admin
   Public Class Roles
     Inherits BusinessListBase(Of Roles, Role)
 
+#Region " Business Methods "
+
+    ''' <summary>
+    ''' Remove a role based on the role's
+    ''' id value.
+    ''' </summary>
+    ''' <param name="id">Id value of the role to remove.</param>
+    Public Overloads Sub Remove(ByVal id As Integer)
+
+      For Each item As Role In Me
+        If item.Id = id Then
+          Remove(item)
+          Exit For
+        End If
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Get a role bsaed on its id value.
+    ''' </summary>
+    ''' <param name="id">Id value of the role to return.</param>
+    Public Function GetRoleById(ByVal id As Integer) As Role
+
+      For Each item As Role In Me
+        If item.Id = id Then
+          Return item
+        End If
+      Next
+      Return Nothing
+
+    End Function
+
+    Protected Overrides Function AddNewCore() As Object
+
+      Dim item As Role = Role.NewRole
+      Add(item)
+      Return item
+
+    End Function
+
+#End Region
+
 #Region " Constructors "
 
     Private Sub New()
+
+      Me.AllowNew = True
 
     End Sub
 
@@ -105,77 +150,6 @@ Namespace Admin
       End Using
 
     End Sub
-
-#End Region
-
-#Region " Atomic Operations "
-
-    ''' <summary>
-    ''' For use in web forms only.
-    ''' Inserts a role into the database.
-    ''' </summary>
-    Public Shared Sub InsertRole(ByVal role As Role)
-
-      role.WebSave(False)
-
-    End Sub
-
-    ''' <summary>
-    ''' For use in web forms only.
-    ''' Updates a role in the database.
-    ''' </summary>
-    Public Shared Sub UpdateRole(ByVal role As Role)
-
-      role.WebSave(True)
-
-    End Sub
-
-    ''' <summary>
-    ''' For use in web forms only.
-    ''' Deletes a role from the database.
-    ''' </summary>
-    Public Shared Sub DeleteRole(ByVal id As Integer)
-
-      DataPortal.Execute(New RoleDeleter(id))
-
-    End Sub
-
-    ''' <summary>
-    ''' For use in web forms only.
-    ''' Deletes a role from the database.
-    ''' </summary>
-    Public Shared Sub DeleteRole(ByVal role As Role)
-
-      DataPortal.Execute(New RoleDeleter(role.Id))
-
-    End Sub
-
-    <Serializable()> _
-    Private Class RoleDeleter
-      Inherits CommandBase
-
-      Private mId As Integer
-      Public ReadOnly Property Id() As Integer
-        Get
-          Return mId
-        End Get
-      End Property
-
-      Public Sub New(ByVal id As Integer)
-        mId = id
-      End Sub
-
-      Protected Overrides Sub DataPortal_Execute()
-
-        Using cn As New SqlConnection(DataBase.DbConn)
-          cn.Open()
-          Role.DeleteRole(cn, mId)
-          cn.Close()
-        End Using
-
-      End Sub
-
-    End Class
 
 #End Region
 

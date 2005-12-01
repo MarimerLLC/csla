@@ -1,17 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Csla", "CSLA\Csla.vbproj", "{AD7860FD-83E2-4E2C-A859-6FF077980884}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Csla", "Csla\Csla.vbproj", "{AD7860FD-83E2-4E2C-A859-6FF077980884}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{844F108B-9672-4765-941B-B8CF580F3865}"
 	ProjectSection(SolutionItems) = preProject
 		license.txt = license.txt
 		readme.txt = readme.txt
 	EndProjectSection
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Csla.Windows", "Csla.Windows\Csla.Windows.vbproj", "{2D999782-9566-4C04-94CA-8CAFAD93CAD2}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Csla.Web", "Csla.Web\Csla.Web.vbproj", "{6044E43C-0C80-4352-89E1-73BEC5C89349}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +19,6 @@ Global
 		{AD7860FD-83E2-4E2C-A859-6FF077980884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD7860FD-83E2-4E2C-A859-6FF077980884}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD7860FD-83E2-4E2C-A859-6FF077980884}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D999782-9566-4C04-94CA-8CAFAD93CAD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D999782-9566-4C04-94CA-8CAFAD93CAD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D999782-9566-4C04-94CA-8CAFAD93CAD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D999782-9566-4C04-94CA-8CAFAD93CAD2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6044E43C-0C80-4352-89E1-73BEC5C89349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6044E43C-0C80-4352-89E1-73BEC5C89349}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6044E43C-0C80-4352-89E1-73BEC5C89349}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6044E43C-0C80-4352-89E1-73BEC5C89349}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

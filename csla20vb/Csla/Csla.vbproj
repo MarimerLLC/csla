@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Transactions" />
@@ -140,6 +141,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="Web\CslaDataSource.vb" />
+    <Compile Include="Web\CslaDataSourceView.vb" />
+    <Compile Include="Web\Design\CslaDataSourceDesigner.vb" />
+    <Compile Include="Web\Design\CslaDesignerDataSourceView.vb" />
+    <Compile Include="Windows\BindingSourceRefresh.vb" />
+    <Compile Include="Windows\ReadWriteAuthorization.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.da.resx">

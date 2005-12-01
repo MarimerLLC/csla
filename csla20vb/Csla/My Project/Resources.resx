@@ -464,4 +464,10 @@
 
   </data>
 
+  <data name="NothingNotValid" xml:space="preserve">
+
+    <value>Argument must not be Nothing</value>
+
+  </data>
+
 </root>

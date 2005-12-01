@@ -66,6 +66,8 @@ namespace Csla.Data
     /// <param name="source">A reference to the object or collection acting as a data source.</param>
     public void Fill(DataTable dt, object source)
     {
+      if (source == null)
+        throw new ArgumentException(Resources.NothingNotValid);
       AutoDiscover(source);
       DataCopy(dt, source);
     }

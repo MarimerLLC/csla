@@ -286,6 +286,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Argument must not be Nothing.
+        '''</summary>
+        Friend ReadOnly Property NothingNotValid() As String
+            Get
+                Return ResourceManager.GetString("NothingNotValid", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Parent value can only be set for child objects.
         '''</summary>
         Friend ReadOnly Property ParentSetException() As String

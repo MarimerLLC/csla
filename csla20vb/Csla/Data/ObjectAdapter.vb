@@ -68,6 +68,9 @@ Namespace Data
     ''' <param name="source">A reference to the object or collection acting as a data source.</param>
     Public Sub Fill(ByVal dt As DataTable, ByVal source As Object)
 
+      If source Is Nothing Then
+        Throw New ArgumentException(My.Resources.NothingNotValid)
+      End If
       AutoDiscover(source)
       DataCopy(dt, source)
 

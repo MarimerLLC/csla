@@ -286,6 +286,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Argument must not be null.
+        /// </summary>
+        internal static string NothingNotValid {
+            get {
+                return ResourceManager.GetString("NothingNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parent value can only be set for child objects.
         /// </summary>
         internal static string ParentSetException {

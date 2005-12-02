@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProjectTracker.Library
 {
-    public class DataBase
+    public static class DataBase
     {
       public static string DbConn
       {

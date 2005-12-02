@@ -17,7 +17,7 @@
       <br />
       <asp:LinkButton ID="ProjectListButton" runat="server">Project list</asp:LinkButton><br />
       <br />
-      <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False" DataSourceID="ProjectDataSource" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None">
+      <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False" DataSourceID="ProjectDataSource" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" DataKeyNames="Id">
         <Fields>
           <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id" />
           <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
@@ -36,7 +36,7 @@
       </asp:DetailsView>
       &nbsp;&nbsp;&nbsp;<br />
       <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
-        CellPadding="4" DataSourceID="ResourcesDataSource" ForeColor="#333333" GridLines="None" Width="432px">
+        CellPadding="4" DataSourceID="ResourcesDataSource" ForeColor="#333333" GridLines="None" Width="432px" DataKeyNames="ResourceId">
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>
           <asp:BoundField DataField="ResourceId" HeaderText="ResourceId" ReadOnly="True" SortExpression="ResourceId" Visible="False" />

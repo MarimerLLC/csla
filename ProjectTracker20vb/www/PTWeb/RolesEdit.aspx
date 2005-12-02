@@ -15,7 +15,7 @@
       <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
         <asp:View ID="MainView" runat="server">
       <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4"
-        DataSourceID="RolesDataSource" ForeColor="#333333" GridLines="None">
+        DataSourceID="RolesDataSource" ForeColor="#333333" GridLines="None" DataKeyNames="Id">
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>
           <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id" />
@@ -33,7 +33,7 @@
         <asp:View ID="InsertView" runat="server">
           <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False" CellPadding="4"
             DataSourceID="RolesDataSource" DefaultMode="Insert" ForeColor="#333333" GridLines="None"
-            Height="50px" Width="125px">
+            Height="50px" Width="125px" DataKeyNames="Id">
             <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
             <CommandRowStyle BackColor="#FFFFC0" Font-Bold="True" />
             <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />

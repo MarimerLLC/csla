@@ -25,12 +25,6 @@ Partial Class RolesEdit
 
   End Sub
 
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-
-    Me.GridView1.DataKeyNames = New String() {"Id"}
-
-  End Sub
-
   Protected Sub RolesDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles RolesDataSource.DeleteObject
 
     Dim obj As Roles = CType(Session("currentObject"), Roles)

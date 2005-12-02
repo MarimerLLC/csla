@@ -14,7 +14,7 @@
       <br />
       <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
         CellPadding="4" DataSourceID="ResourceListDataSource" ForeColor="#333333"
-        GridLines="None">
+        GridLines="None" DataKeyNames="Id">
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>
           <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id"

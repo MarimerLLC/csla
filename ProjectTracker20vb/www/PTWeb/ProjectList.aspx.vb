@@ -17,7 +17,6 @@ Partial Class ProjectList
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-    Me.GridView1.DataKeyNames = New String() {"Id"}
     NewProjectButton.Visible = ProjectTracker.Library.Project.CanAddObject
 
   End Sub

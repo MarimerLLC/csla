@@ -5,25 +5,32 @@ Imports ProjectTracker.Library.Admin
 Partial Class RolesEdit
   Inherits System.Web.UI.Page
 
+  Private Enum PageViews
+    MainView = 0
+    InsertView = 1
+  End Enum
+
   Protected Sub AddRoleButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles AddRoleButton.Click
 
     Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
-    MultiView1.ActiveViewIndex = 1
+    MultiView1.ActiveViewIndex = PageViews.InsertView
 
   End Sub
 
   Protected Sub DetailsView1_ItemInserted(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DetailsViewInsertedEventArgs) Handles DetailsView1.ItemInserted
 
-    MultiView1.ActiveViewIndex = 0
+    MultiView1.ActiveViewIndex = PageViews.MainView
     Me.GridView1.DataBind()
 
   End Sub
 
   Protected Sub DetailsView1_ModeChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DetailsView1.ModeChanged
 
-    MultiView1.ActiveViewIndex = 0
+    MultiView1.ActiveViewIndex = PageViews.MainView
 
   End Sub
+
+#Region " RolesDataSource "
 
   Protected Sub RolesDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles RolesDataSource.DeleteObject
 
@@ -61,5 +68,7 @@ Partial Class RolesEdit
     Session("currentObject") = obj.Save
 
   End Sub
+
+#End Region
 
 End Class

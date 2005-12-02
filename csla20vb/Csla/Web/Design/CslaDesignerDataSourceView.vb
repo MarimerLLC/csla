@@ -55,8 +55,10 @@ Namespace Web.Design
             values(colIndex) = False
           ElseIf col.DataType.IsPrimitive Then
             values(colIndex) = index
+          ElseIf col.DataType.Equals(GetType(Guid)) Then
+            values(colIndex) = Guid.NewGuid
           Else
-            values(colIndex) = ""
+            values(colIndex) = Nothing
           End If
           colIndex += 1
         Next
@@ -64,7 +66,7 @@ Namespace Web.Design
       Next
 
       isSampleData = True
-      Return CType(result, IEnumerable)
+      Return CType(New DataView(result), System.Collections.IEnumerable)
 
     End Function
 

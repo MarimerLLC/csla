@@ -240,15 +240,7 @@ namespace ProjectTracker.Library
 
     #region Constructors
 
-    /// <summary>
-    /// DO NOT USE. Call the static NewProject() method instead.
-    /// </summary>
-    /// <remarks>
-    /// This constructor is public only to support Web Forms
-    /// data binding. Do not call it directly. To create a new
-    /// object, call the appropriate factory method.
-    /// </remarks>
-    public Project()
+    private Project()
     {
       AddAuthorizationRules();
     }

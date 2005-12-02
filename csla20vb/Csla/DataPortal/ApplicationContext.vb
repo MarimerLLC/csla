@@ -96,7 +96,7 @@ Public NotInheritable Class ApplicationContext
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Threading.Thread.SetData(slot, globalContext)
+        Threading.Thread.SetData(slot, globalContext)
 
   End Sub
 

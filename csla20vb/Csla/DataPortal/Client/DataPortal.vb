@@ -115,7 +115,7 @@ Public NotInheritable Class DataPortal
     End Try
 
     If portal.IsServerRemote Then
-      ApplicationContext.SetGlobalContext(result)
+            ApplicationContext.SetGlobalContext(result.GlobalContext)
     End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
@@ -173,8 +173,8 @@ Public NotInheritable Class DataPortal
     End Try
 
     If portal.IsServerRemote Then
-      ApplicationContext.SetGlobalContext(result)
-    End If
+            ApplicationContext.SetGlobalContext(result.GlobalContext)
+        End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
@@ -315,8 +315,8 @@ Public NotInheritable Class DataPortal
     End Try
 
     If portal.IsServerRemote Then
-      ApplicationContext.SetGlobalContext(result)
-    End If
+            ApplicationContext.SetGlobalContext(result.GlobalContext)
+        End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
@@ -359,8 +359,8 @@ Public NotInheritable Class DataPortal
     End Try
 
     If portal.IsServerRemote Then
-      ApplicationContext.SetGlobalContext(result)
-    End If
+            ApplicationContext.SetGlobalContext(result.GlobalContext)
+        End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 

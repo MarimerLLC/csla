@@ -124,7 +124,7 @@ namespace Csla
       }
 
       if (portal.IsServerRemote)
-        ApplicationContext.SetGlobalContext(result);
+        ApplicationContext.SetGlobalContext(result.GlobalContext);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
@@ -181,7 +181,7 @@ namespace Csla
       }
 
       if (portal.IsServerRemote)
-        ApplicationContext.SetGlobalContext(result);
+        ApplicationContext.SetGlobalContext(result.GlobalContext);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
@@ -315,7 +315,7 @@ namespace Csla
       }
 
       if (portal.IsServerRemote)
-        ApplicationContext.SetGlobalContext(result);
+        ApplicationContext.SetGlobalContext(result.GlobalContext);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
 
@@ -355,7 +355,7 @@ namespace Csla
       }
 
       if (portal.IsServerRemote)
-        ApplicationContext.SetGlobalContext(result);
+        ApplicationContext.SetGlobalContext(result.GlobalContext);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
     }

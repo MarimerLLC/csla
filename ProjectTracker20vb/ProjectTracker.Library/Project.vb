@@ -225,14 +225,6 @@ Public Class Project
 
 #Region " Constructors "
 
-  ''' <summary>
-  ''' DO NOT USE. Call the static NewProject() method instead.
-  ''' </summary>
-  ''' <remarks>
-  ''' This constructor is public only to support Web Forms
-  ''' data binding. Do not call it directly. To create a new
-  ''' object, call the appropriate factory method.
-  ''' </remarks>
   Private Sub New()
 
     AddAuthorizationRules()

@@ -49,7 +49,7 @@ namespace Csla.Web.Design
       // create sample data
       for (int index = 1; index <= minimumRows; index++)
       {
-        object[] values = new object[result.Columns.Count - 1];
+        object[] values = new object[result.Columns.Count];
         int colIndex = 0;
         foreach (DataColumn col in result.Columns)
         {
@@ -59,15 +59,17 @@ namespace Csla.Web.Design
             values[colIndex] = false;
           else if (col.DataType.IsPrimitive)
             values[colIndex] = index;
+          else if (col.DataType.Equals(typeof(Guid)))
+            values[colIndex] = Guid.NewGuid();
           else
-            values[colIndex] = String.Empty;
+            values[colIndex] = null;
           colIndex++;
         }
         result.LoadDataRow(values, LoadOption.OverwriteChanges);
       }
 
       isSampleData = true;
-      return (System.Collections.IEnumerable)result;
+      return (System.Collections.IEnumerable)(new DataView(result));
 
     }
 

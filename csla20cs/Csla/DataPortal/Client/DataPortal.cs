@@ -118,7 +118,7 @@ namespace Csla
       {
         result = ex.Result;
         if (portal.IsServerRemote)
-          ApplicationContext.SetGlobalContext(result);
+          ApplicationContext.SetGlobalContext(result.GlobalContext);
         throw new DataPortalException(
           "DataPortal.Create " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
@@ -175,7 +175,7 @@ namespace Csla
       {
         result = ex.Result;
         if (portal.IsServerRemote)
-          ApplicationContext.SetGlobalContext(result);
+          ApplicationContext.SetGlobalContext(result.GlobalContext);
         throw new DataPortalException("DataPortal.Fetch " + 
           Resources.Failed, ex.InnerException, result.ReturnObject);
       }
@@ -310,7 +310,7 @@ namespace Csla
       {
         result = ex.Result;
         if (portal.IsServerRemote)
-          ApplicationContext.SetGlobalContext(result);
+          ApplicationContext.SetGlobalContext(result.GlobalContext);
         throw new DataPortalException("DataPortal.Update " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
@@ -350,7 +350,7 @@ namespace Csla
       {
         result = ex.Result;
         if (portal.IsServerRemote)
-          ApplicationContext.SetGlobalContext(result);
+          ApplicationContext.SetGlobalContext(result.GlobalContext);
         throw new DataPortalException("DataPortal.Delete " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 

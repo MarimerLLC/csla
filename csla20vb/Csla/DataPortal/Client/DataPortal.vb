@@ -108,7 +108,7 @@ Public NotInheritable Class DataPortal
     Catch ex As Server.DataPortalException
       result = ex.Result
       If portal.IsServerRemote Then
-        ApplicationContext.SetGlobalContext(result)
+        ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
       Throw New DataPortalException("DataPortal.Create " & _
         My.Resources.Failed, ex.InnerException, result.ReturnObject)
@@ -166,7 +166,7 @@ Public NotInheritable Class DataPortal
     Catch ex As Server.DataPortalException
       result = ex.Result
       If portal.IsServerRemote Then
-        ApplicationContext.SetGlobalContext(result)
+        ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
       Throw New DataPortalException("DataPortal.Fetch " & _
         My.Resources.Failed, ex.InnerException, result.ReturnObject)
@@ -308,7 +308,7 @@ Public NotInheritable Class DataPortal
     Catch ex As Server.DataPortalException
       result = ex.Result
       If portal.IsServerRemote Then
-        ApplicationContext.SetGlobalContext(result)
+        ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
       Throw New DataPortalException("DataPortal.Update " & _
         My.Resources.Failed, ex.InnerException, result.ReturnObject)
@@ -352,7 +352,7 @@ Public NotInheritable Class DataPortal
     Catch ex As Server.DataPortalException
       result = ex.Result
       If portal.IsServerRemote Then
-        ApplicationContext.SetGlobalContext(result)
+        ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
       Throw New DataPortalException("DataPortal.Delete " & _
         My.Resources.Failed, ex.InnerException, result.ReturnObject)

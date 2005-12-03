@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 
 namespace Csla.Server
@@ -14,14 +14,14 @@ namespace Csla.Server
   public class DataPortalResult
   {
     private object _returnObject;
-    private object _globalContext;
+    private HybridDictionary _globalContext;
 
     public object ReturnObject
     {
       get { return _returnObject; }
     }
 
-    public object GlobalContext
+    public HybridDictionary GlobalContext
     {
       get { return _globalContext; }
     }

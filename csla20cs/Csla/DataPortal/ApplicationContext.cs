@@ -85,7 +85,7 @@ namespace Csla
       return (HybridDictionary)Thread.GetData(slot);
     }
 
-    internal static void SetContext(object clientContext, object globalContext)
+    internal static void SetContext(HybridDictionary clientContext, HybridDictionary globalContext)
     {
       LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
       Thread.SetData(slot, clientContext);
@@ -94,7 +94,7 @@ namespace Csla
       Thread.SetData(slot, globalContext);
     }
 
-    internal static void SetGlobalContext(object globalContext)
+    internal static void SetGlobalContext(HybridDictionary globalContext)
     {
       LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
       Thread.SetData(slot, globalContext);

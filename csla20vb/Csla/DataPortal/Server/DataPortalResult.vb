@@ -1,3 +1,5 @@
+Imports System.Collections.Specialized
+
 Namespace Server
 
   ''' <summary>
@@ -9,7 +11,7 @@ Namespace Server
   Public Class DataPortalResult
 
     Private mReturnObject As Object
-    Private mGlobalContext As Object
+    Private mGlobalContext As HybridDictionary
 
     Public ReadOnly Property ReturnObject() As Object
       Get
@@ -17,7 +19,7 @@ Namespace Server
       End Get
     End Property
 
-    Public ReadOnly Property GlobalContext() As Object
+    Public ReadOnly Property GlobalContext() As HybridDictionary
       Get
         Return mGlobalContext
       End Get

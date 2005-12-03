@@ -81,7 +81,7 @@ Public NotInheritable Class ApplicationContext
 
   End Function
 
-  Friend Shared Sub SetContext(ByVal clientContext As Object, ByVal globalContext As Object)
+  Friend Shared Sub SetContext(ByVal clientContext As HybridDictionary, ByVal globalContext As HybridDictionary)
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("Csla.ClientContext")
@@ -92,11 +92,11 @@ Public NotInheritable Class ApplicationContext
 
   End Sub
 
-  Friend Shared Sub SetGlobalContext(ByVal globalContext As Object)
+  Friend Shared Sub SetGlobalContext(ByVal globalContext As HybridDictionary)
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("Csla.GlobalContext")
-        Threading.Thread.SetData(slot, globalContext)
+    Threading.Thread.SetData(slot, globalContext)
 
   End Sub
 

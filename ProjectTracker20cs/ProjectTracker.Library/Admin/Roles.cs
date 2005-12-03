@@ -15,11 +15,51 @@ namespace ProjectTracker.Library.Admin
   public class Roles : BusinessListBase<Roles, Role>
   {
 
+    #region Business Methods
+
+    /// <summary>
+    /// Remove a role based on the role's
+    /// id value.
+    /// </summary>
+    /// <param name="id">Id value of the role to remove.</param>
+    public void Remove(int id)
+    {
+      foreach (Role item in this)
+      {
+        if (item.Id == id)
+        {
+          Remove(item);
+          break;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Get a role based on its id value.
+    /// </summary>
+    /// <param name="id">Id valud of the role to return</param>
+    public Role GetRoleById(int id)
+    {
+      foreach (Role item in this)
+        if (item.Id == id)
+          return item;
+      return null;
+    }
+
+    protected override object AddNewCore()
+    {
+      Role item = Role.NewRole();
+      Add(item);
+      return item;
+    }
+
+    #endregion
+
     #region Constructors
 
     private Roles()
     {
-
+      this.AllowNew = true;
     }
 
     #endregion
@@ -65,9 +105,8 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
-    protected override void DataPortal_Fetch(object criteria)
+    private void DataPortal_Fetch(Criteria criteria)
     {
-      Criteria crit = (Criteria)criteria;
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
@@ -89,7 +128,7 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
-    [Transactional(TransactionalTypes.Manual)]
+    [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
@@ -109,57 +148,6 @@ namespace ProjectTracker.Library.Admin
             item.Update(cn);
         }
         cn.Close();
-      }
-    }
-
-    #endregion
-
-    #region Atomic Operations
-
-    public static void InsertRole(Role role)
-    {
-      role.WebSave(false);
-    }
-
-    public static void UpdateRole(Role role)
-    {
-      role.WebSave(true);
-    }
-
-    public static void DeleteRole(int id)
-    {
-      DataPortal.Execute(new RoleDeleter(id));
-    }
-
-    public static void DeleteRole(Role role)
-    {
-      DataPortal.Execute(new RoleDeleter(role.Id));
-    }
-
-    [Serializable()]
-    private class RoleDeleter : CommandBase
-    {
-
-      private int _id;
-
-      public int Id
-      {
-        get { return _id; }
-      }
-
-      public RoleDeleter(int id)
-      {
-        _id = id;
-      }
-
-      protected override void DataPortal_Execute()
-      {
-        using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
-        {
-          cn.Open();
-          Role.DeleteRole(cn, _id);
-          cn.Close();
-        }
       }
     }
 

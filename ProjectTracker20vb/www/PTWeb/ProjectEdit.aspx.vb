@@ -45,26 +45,22 @@ Partial Class ProjectEdit
 
   End Sub
 
-#Region " Project "
+#Region " ProjectDataSource "
 
   Protected Sub ProjectDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectDataSource.DeleteObject
 
     ProjectTracker.Library.Project.DeleteProject(New Guid(e.Keys("Id").ToString))
     Session("currentObject") = Nothing
+    e.RowsAffected = 1
 
   End Sub
 
   Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, ByVal e As Csla.Web.InsertObjectArgs) Handles ProjectDataSource.InsertObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
-
-    With obj
-      .Name = e.Values.Item("Name")
-      .Started = e.Values.Item("Started")
-      .Ended = e.Values.Item("Ended")
-      .Description = e.Values.Item("Description")
-    End With
-    obj.Save()
+    Csla.Web.DataMapper.Map(e.Values, obj)
+    Session("currentObject") = obj.Save()
+    e.RowsAffected = 1
 
   End Sub
 
@@ -77,20 +73,15 @@ Partial Class ProjectEdit
   Protected Sub ProjectDataSource_UpdateObject(ByVal sender As Object, ByVal e As Csla.Web.UpdateObjectArgs) Handles ProjectDataSource.UpdateObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
-
-    With obj
-      .Name = e.Values.Item("Name")
-      .Started = e.Values.Item("Started")
-      .Ended = e.Values.Item("Ended")
-      .Description = e.Values.Item("Description")
-    End With
+    Csla.Web.DataMapper.Map(e.Values, obj)
     Session("currentObject") = obj.Save()
+    e.RowsAffected = 1
 
   End Sub
 
 #End Region
 
-#Region " Resources "
+#Region " ResourcesDataSource "
 
   Protected Sub ResourcesDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourcesDataSource.DeleteObject
 
@@ -100,6 +91,7 @@ Partial Class ProjectEdit
     res = obj.Resources(rid)
     obj.Resources.Remove(res.ResourceId)
     Session("currentObject") = obj.Save()
+    e.RowsAffected = 1
 
   End Sub
 
@@ -119,6 +111,7 @@ Partial Class ProjectEdit
     Dim roleNum As Object = e.Values("Role")
     res.Role = roleNum
     Session("currentObject") = obj.Save()
+    e.RowsAffected = 1
 
   End Sub
 

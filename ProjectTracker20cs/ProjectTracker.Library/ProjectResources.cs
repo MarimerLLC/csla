@@ -10,7 +10,7 @@ namespace ProjectTracker.Library
   public class ProjectResources : BusinessListBase<ProjectResources, ProjectResource>
   {
 
-    #region Business Properties and Methods
+    #region Business Methods
 
     public ProjectResource this[string resourceId]
     {

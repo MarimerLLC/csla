@@ -2,7 +2,8 @@
 Partial Class ProjectEdit
   Inherits System.Web.UI.Page
 
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub Page_Load(ByVal sender As Object, _
+    ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
       Dim idString As String = Request.QueryString("id")
@@ -32,19 +33,22 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub DetailsView1_ItemDeleted(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DetailsViewDeletedEventArgs) Handles DetailsView1.ItemDeleted
+  Protected Sub DetailsView1_ItemDeleted(ByVal sender As Object, _
+    ByVal e As System.Web.UI.WebControls.DetailsViewDeletedEventArgs) Handles DetailsView1.ItemDeleted
 
     Response.Redirect("ProjectList.aspx")
 
   End Sub
 
-  Protected Sub RoleListDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles RoleListDataSource.SelectObject
+  Protected Sub RoleListDataSource_SelectObject(ByVal sender As Object, _
+    ByVal e As Csla.Web.SelectObjectArgs) Handles RoleListDataSource.SelectObject
 
     e.BusinessObject = ProjectTracker.Library.RoleList.GetList
 
   End Sub
 
-  Protected Sub ProjectListButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ProjectListButton.Click
+  Protected Sub ProjectListButton_Click(ByVal sender As Object, _
+    ByVal e As System.EventArgs) Handles ProjectListButton.Click
 
     Response.Redirect("ProjectList.aspx")
 
@@ -52,7 +56,8 @@ Partial Class ProjectEdit
 
 #Region " ProjectDataSource "
 
-  Protected Sub ProjectDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectDataSource.DeleteObject
+  Protected Sub ProjectDataSource_DeleteObject(ByVal sender As Object, _
+    ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectDataSource.DeleteObject
 
     ProjectTracker.Library.Project.DeleteProject(New Guid(e.Keys("Id").ToString))
     Session("currentObject") = Nothing
@@ -60,25 +65,28 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, ByVal e As Csla.Web.InsertObjectArgs) Handles ProjectDataSource.InsertObject
+  Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, _
+    ByVal e As Csla.Web.InsertObjectArgs) Handles ProjectDataSource.InsertObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
-    Csla.Web.DataMapper.Map(e.Values, obj, "Id")
+    Csla.Data.DataMapper.Map(e.Values, obj, "Id")
     Session("currentObject") = obj.Save()
     e.RowsAffected = 1
 
   End Sub
 
-  Protected Sub ProjectDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectDataSource.SelectObject
+  Protected Sub ProjectDataSource_SelectObject(ByVal sender As Object, _
+    ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectDataSource.SelectObject
 
     e.BusinessObject = Session("currentObject")
 
   End Sub
 
-  Protected Sub ProjectDataSource_UpdateObject(ByVal sender As Object, ByVal e As Csla.Web.UpdateObjectArgs) Handles ProjectDataSource.UpdateObject
+  Protected Sub ProjectDataSource_UpdateObject(ByVal sender As Object, _
+    ByVal e As Csla.Web.UpdateObjectArgs) Handles ProjectDataSource.UpdateObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
-    Csla.Web.DataMapper.Map(e.Values, obj)
+    Csla.Data.DataMapper.Map(e.Values, obj)
     Session("currentObject") = obj.Save()
     e.RowsAffected = 1
 
@@ -88,7 +96,8 @@ Partial Class ProjectEdit
 
 #Region " ResourcesDataSource "
 
-  Protected Sub ResourcesDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourcesDataSource.DeleteObject
+  Protected Sub ResourcesDataSource_DeleteObject(ByVal sender As Object, _
+    ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourcesDataSource.DeleteObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
     Dim res As ProjectTracker.Library.ProjectResource
@@ -113,7 +122,7 @@ Partial Class ProjectEdit
     Dim res As ProjectTracker.Library.ProjectResource
     Dim rid As String = e.Keys("ResourceId")
     res = obj.Resources(rid)
-    Csla.Web.DataMapper.Map(e.Values, res)
+    Csla.Data.DataMapper.Map(e.Values, res)
     Session("currentObject") = obj.Save()
     e.RowsAffected = 1
 

@@ -22,13 +22,13 @@ namespace ProjectTracker.Library
       public Guid Id
       {
         get { return _id; }
-        set { _id = value; }
+        internal set { _id = value; }
       }
 
       public string Name
       {
         get { return _name; }
-        set { _name = value; }
+        internal set { _name = value; }
       }
 
 
@@ -53,7 +53,7 @@ namespace ProjectTracker.Library
     [Serializable()]
     private class Criteria
     {
-      // no criteria - we retrieve all projects
+      // no criteria - retrieve all projects
     }
 
     [Serializable()]
@@ -98,12 +98,19 @@ namespace ProjectTracker.Library
 
     #region Data Access
 
-    protected override void DataPortal_Fetch(object criteria)
+    private void DataPortal_Fetch(Criteria criteria)
     {
-      string filter = string.Empty;
-      if (criteria is FilteredCriteria)
-        filter = ((FilteredCriteria)criteria).Name;
+      // fetch with no filter
+      Fetch("");
+    }
 
+    private void DataPortal_Fetch(FilteredCriteria criteria)
+    {
+      Fetch(criteria.Name);
+    }
+
+    private void Fetch(string nameFilter)
+    {
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
@@ -120,7 +127,7 @@ namespace ProjectTracker.Library
               info.Id = dr.GetGuid(0);
               info.Name = dr.GetString(1);
               // apply filter if necessary
-              if ((filter.Length == 0) || (info.Name.IndexOf(filter) == 0))
+              if ((nameFilter.Length == 0) || (info.Name.IndexOf(nameFilter) == 0))
                 this.Add(info);
             }
             IsReadOnly = true;

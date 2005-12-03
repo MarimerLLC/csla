@@ -26,19 +26,20 @@
     End Sub
        
   Protected Sub Application_AuthenticateRequest(ByVal sender As Object, ByVal e As System.EventArgs)
-
     
   End Sub
   
   Protected Sub Application_AcquireRequestState(ByVal sender As Object, ByVal e As System.EventArgs)
 
-    try
+    Try
       System.Threading.Thread.CurrentPrincipal = _
         CType(Session("CslaPrincipal"), System.Security.Principal.IPrincipal)
       HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal
 
-    catch
-    end try
+    Catch
+      ' do nothing - this really shouldn't happen
+      ' but it does on the first login.aspx call...
+    End Try
 
   End Sub
 </script>

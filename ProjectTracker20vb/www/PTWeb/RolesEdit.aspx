@@ -1,17 +1,6 @@
-<%@ Page Language="VB" AutoEventWireup="false" CodeFile="RolesEdit.aspx.vb" Inherits="RolesEdit" %>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<head runat="server">
-    <title>Edit Roles</title>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div style="font-size: x-large">
-      Edit Roles
-      <br />
-      </div><div>
+<%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="RolesEdit.aspx.vb" Inherits="RolesEdit" title="Project Roles" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<div>
       <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
         <asp:View ID="MainView" runat="server">
       <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4"
@@ -53,6 +42,4 @@
           TypeName="ProjectTracker.Library.Admin.Roles">
         </csla:CslaDataSource>
       </div>
-    </form>
-</body>
-</html>
+</asp:Content>

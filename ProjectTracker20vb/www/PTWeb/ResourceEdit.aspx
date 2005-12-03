@@ -1,16 +1,5 @@
-<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ResourceEdit.aspx.vb" Inherits="ResourceEdit" %>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<head runat="server">
-    <title>Untitled Page</title>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div>
-      <br />
-      &nbsp;</div>
+<%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="ResourceEdit.aspx.vb" Inherits="ResourceEdit" title="Resource Information" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
       <div>
         <asp:LinkButton ID="ResourceListButton" runat="server">Resource list</asp:LinkButton><br />
         <br />
@@ -65,6 +54,4 @@
       <csla:CslaDataSource ID="RoleListDataSource" runat="server"
         TypeName="ProjectTracker.Library.RoleList" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
        </div>
-    </form>
-</body>
-</html>
+</asp:Content>

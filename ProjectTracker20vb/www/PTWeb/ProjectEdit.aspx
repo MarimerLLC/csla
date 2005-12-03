@@ -1,17 +1,5 @@
-<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ProjectEdit.aspx.vb" Inherits="ProjectEdit" %>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<head runat="server">
-    <title>Untitled Page</title>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div style="font-size: x-large">
-      Project Edit<br />
-    
-    </div>
+<%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="ProjectEdit.aspx.vb" Inherits="ProjectEdit" title="Project Information" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div>
       &nbsp;<br />
       <br />
@@ -77,6 +65,4 @@
     </div>
       <br />
       &nbsp;
-    </form>
-</body>
-</html>
+</asp:Content>

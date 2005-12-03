@@ -9,15 +9,16 @@ Namespace Security
       MyBase.New(identity)
     End Sub
 
-    Public Shared Sub Login(ByVal username As String, ByVal password As String)
+    Public Shared Function Login(ByVal username As String, ByVal password As String) As Boolean
 
       Dim identity As PTIdentity = PTIdentity.GetIdentity(username, password)
       If identity.IsAuthenticated Then
         Dim principal As New PTPrincipal(identity)
         System.Threading.Thread.CurrentPrincipal = principal
       End If
+      Return identity.IsAuthenticated
 
-    End Sub
+    End Function
 
     Public Shared Sub Logout()
 

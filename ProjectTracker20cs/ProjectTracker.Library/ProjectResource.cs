@@ -48,7 +48,13 @@ namespace ProjectTracker.Library
 
     public string FullName
     {
-      get { return string.Format("{0}, {1}", LastName, FirstName); }
+      get
+      {
+        if (CanReadProperty("FirstName") && CanReadProperty("LastName"))
+          return string.Format("{0}, {1}", LastName, FirstName);
+        else
+          throw new System.Security.SecurityException("Property read not allowed");
+      }
     }
 
     public string Assigned

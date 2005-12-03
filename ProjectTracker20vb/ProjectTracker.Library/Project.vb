@@ -8,8 +8,8 @@ Public Class Project
 
   Private mId As Guid = Guid.NewGuid
   Private mName As String = ""
-  Private mStarted As New SmartDate(False)
-  Private mEnded As New SmartDate
+  Private mStarted As New SmartDate
+  Private mEnded As New SmartDate(False)
   Private mDescription As String = ""
 
   Private mResources As ProjectResources = _

@@ -16,8 +16,8 @@ namespace ProjectTracker.Library
 
     private Guid _id;
     private string _name = string.Empty;
-    private SmartDate _started = new SmartDate(false);
-    private SmartDate _ended;
+    private SmartDate _started;
+    private SmartDate _ended = new SmartDate(false);
     private string _description = string.Empty;
 
     private ProjectResources _resources =

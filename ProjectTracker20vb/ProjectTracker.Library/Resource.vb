@@ -235,7 +235,7 @@ Public Class Resource
         With cm
           .CommandType = CommandType.StoredProcedure
           .CommandText = "getResource"
-          .Parameters.AddWithValue("@ID", Criteria.Id)
+          .Parameters.AddWithValue("@ID", criteria.Id)
 
           Using dr As New SafeDataReader(.ExecuteReader)
             dr.Read()
@@ -387,7 +387,7 @@ Public Class Resource
         Using cm As SqlCommand = cn.CreateCommand
           cm.CommandType = CommandType.Text
           cm.CommandText = "SELECT id FROM Resources WHERE id=@id"
-          cm.Parameters.AddWithValue("@ID", mId)
+          cm.Parameters.AddWithValue("@id", mId)
 
           Using dr As SqlDataReader = cm.ExecuteReader
             If dr.Read() Then

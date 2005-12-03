@@ -73,7 +73,7 @@ Namespace Security
         End Get
       End Property
 
-      Friend Sub New(ByVal username As String, ByVal password As String)
+      Public Sub New(ByVal username As String, ByVal password As String)
         mUsername = username
         mPassword = password
       End Sub

@@ -56,7 +56,7 @@ Public Class ResourceList
 
 #End Region
 
-#Region " Shared Methods "
+#Region " Factory Methods "
 
   Public Shared Function EmptyList() As ResourceList
 

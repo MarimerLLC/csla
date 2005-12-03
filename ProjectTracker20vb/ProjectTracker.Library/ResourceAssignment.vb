@@ -144,7 +144,7 @@ Public Class ResourceAssignment
         .Transaction = tr
         .CommandType = CommandType.StoredProcedure
         .CommandText = "addAssignment"
-        LoadParamters(cm, resource)
+        LoadParameters(cm, resource)
 
         .ExecuteNonQuery()
 
@@ -165,7 +165,7 @@ Public Class ResourceAssignment
         .Transaction = tr
         .CommandType = CommandType.StoredProcedure
         .CommandText = "updateAssignment"
-        LoadParamters(cm, resource)
+        LoadParameters(cm, resource)
 
         .ExecuteNonQuery()
 
@@ -175,11 +175,11 @@ Public Class ResourceAssignment
 
   End Sub
 
-  Private Sub LoadParamters(ByVal cm As SqlCommand, ByVal resource As Resource)
+  Private Sub LoadParameters(ByVal cm As SqlCommand, ByVal resource As Resource)
 
     With cm
       .Parameters.AddWithValue("@ProjectID", mProjectId)
-      .Parameters.AddWithValue("@ResourceID", Resource.Id)
+      .Parameters.AddWithValue("@ResourceID", resource.Id)
       .Parameters.AddWithValue("@Assigned", mAssigned.DBValue)
       .Parameters.AddWithValue("@Role", mRole)
     End With

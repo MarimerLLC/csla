@@ -53,9 +53,8 @@ namespace ProjectTracker.Library
 
     #region Data Access
 
-    protected override void DataPortal_Fetch(object criteria)
+    private void DataPortal_Fetch(Criteria criteria)
     {
-      Criteria crit = (Criteria)criteria;
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();

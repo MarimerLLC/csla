@@ -72,7 +72,7 @@ namespace ProjectTracker.Library.Security
           get { return _password; }
         }
 
-        public Criteria(string username, string password)
+        internal Criteria(string username, string password)
         {
           _username = username;
           _password = password;
@@ -98,10 +98,8 @@ namespace ProjectTracker.Library.Security
 
       #region Data Access
 
-      protected override void DataPortal_Fetch(object criteria)
+      private void DataPortal_Fetch(Criteria criteria)
       {
-        Criteria crit = (Criteria)criteria;
-
         using (SqlConnection cn = new SqlConnection(DataBase.SecurityConn))
         {
           cn.Open();
@@ -109,13 +107,13 @@ namespace ProjectTracker.Library.Security
           {
             cm.CommandText = "Login";
             cm.CommandType = CommandType.StoredProcedure;
-            cm.Parameters.AddWithValue("@user", crit.Username);
-            cm.Parameters.AddWithValue("@pw", crit.Password);
+            cm.Parameters.AddWithValue("@user", criteria.Username);
+            cm.Parameters.AddWithValue("@pw", criteria.Password);
             using (SqlDataReader dr = cm.ExecuteReader())
             {
               if (dr.Read())
               {
-                _name = crit.Username;
+                _name = criteria.Username;
                 _isAuthenticated = true;
                 if (dr.NextResult())
                 {

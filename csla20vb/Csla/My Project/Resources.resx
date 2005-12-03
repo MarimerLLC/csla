@@ -470,4 +470,10 @@
 
   </data>
 
+  <data name="PrimitiveTypeRequired" xml:space="preserve">
+
+    <value>Type parameter must be a primitive type</value>
+
+  </data>
+
 </root>

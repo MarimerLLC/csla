@@ -123,6 +123,93 @@ Namespace Validation
 
     End Class
 
+    Public Shared Function MaxValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+
+      Dim max As Object = CType(e, MaxValueRuleArgs(Of T)).MaxValue
+      Dim value As Object = CallByName(target, e.PropertyName, CallType.Get)
+      Dim result As Boolean
+      Dim pType As Type = GetType(T)
+      If pType.IsPrimitive Then
+        If pType.Equals(GetType(Integer)) Then
+          result = (CInt(value) <= CInt(max))
+
+        ElseIf pType.Equals(GetType(Boolean)) Then
+          result = (CBool(value) <= CBool(max))
+
+        ElseIf pType.Equals(GetType(Single)) Then
+          result = (CSng(value) <= CSng(max))
+
+        ElseIf pType.Equals(GetType(Double)) Then
+          result = (CDbl(value) <= CDbl(max))
+
+        ElseIf pType.Equals(GetType(Byte)) Then
+          result = (CByte(value) <= CByte(max))
+
+        ElseIf pType.Equals(GetType(Char)) Then
+          result = (CChar(value) <= CChar(max))
+
+        ElseIf pType.Equals(GetType(Short)) Then
+          result = (CShort(value) <= CShort(max))
+
+        ElseIf pType.Equals(GetType(Long)) Then
+          result = (CLng(value) <= CLng(max))
+
+        ElseIf pType.Equals(GetType(UShort)) Then
+          result = (CUShort(value) <= CUShort(max))
+
+        ElseIf pType.Equals(GetType(UInteger)) Then
+          result = (CUInt(value) <= CUInt(max))
+
+        ElseIf pType.Equals(GetType(ULong)) Then
+          result = (CULng(value) <= CULng(max))
+
+        ElseIf pType.Equals(GetType(SByte)) Then
+          result = (CSByte(value) <= CSByte(max))
+
+        Else
+          Throw New ArgumentException(My.Resources.PrimitiveTypeRequired)
+        End If
+
+      Else  ' not primitive
+        Throw New ArgumentException(My.Resources.PrimitiveTypeRequired)
+      End If
+
+      If Not result Then
+        e.Description = String.Format("{0} can not exceed {1}", _
+          e.PropertyName, max.ToString)
+        Return False
+
+      Else
+        Return True
+      End If
+
+    End Function
+
+    Public Class MaxValueRuleArgs(Of T)
+      Inherits RuleArgs
+
+      Private mMaxValue As T
+
+      Public ReadOnly Property MaxValue() As T
+        Get
+          Return mMaxValue
+        End Get
+      End Property
+
+      Public Sub New(ByVal propertyName As String, ByVal maxValue As T)
+        MyBase.New(propertyName)
+        mMaxValue = maxValue
+      End Sub
+
+      ''' <summary>
+      ''' Returns a string representation of the object.
+      ''' </summary>
+      Public Overrides Function ToString() As String
+        Return MyBase.PropertyName & "!" & mMaxValue.ToString
+      End Function
+
+    End Class
+
   End Class
 
 End Namespace

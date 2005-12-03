@@ -304,6 +304,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Type parameter must be a primitive type.
+        '''</summary>
+        Friend ReadOnly Property PrimitiveTypeRequired() As String
+            Get
+                Return ResourceManager.GetString("PrimitiveTypeRequired", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Property get not allowed.
         '''</summary>
         Friend ReadOnly Property PropertyGetNotAllowed() As String

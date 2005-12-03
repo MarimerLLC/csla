@@ -96,7 +96,7 @@ Partial Class ResourceEdit
 
     Dim obj As ProjectTracker.Library.Resource = Session("currentObject")
     Dim res As ProjectTracker.Library.ResourceAssignment
-    Dim rid As Object = e.Keys("ProjectId")
+    Dim rid As New Guid(e.Keys("ProjectId").ToString)
     res = obj.Assignments(rid)
     obj.Assignments.Remove(res.ProjectID)
     Session("currentObject") = obj.Save()
@@ -118,7 +118,7 @@ Partial Class ResourceEdit
 
     Dim obj As ProjectTracker.Library.Resource = Session("currentObject")
     Dim res As ProjectTracker.Library.ResourceAssignment
-    Dim rid As Object = e.OldValues("ProjectId")
+    Dim rid As New Guid(e.Keys("ProjectId").ToString)
     res = obj.Assignments(rid)
     Csla.Data.DataMapper.Map(e.Values, res)
     Session("currentObject") = obj.Save()

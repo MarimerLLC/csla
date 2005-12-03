@@ -12,7 +12,7 @@ namespace ProjectTracker.Library
   public class Resource : BusinessBase<Resource>
   {
 
-    #region Business Properties and Methods
+    #region Business Methods
 
     private string _id = string.Empty;
     private string _lastName = string.Empty;
@@ -66,7 +66,13 @@ namespace ProjectTracker.Library
     }
     public string FullName
     {
-      get { return string.Format("{0}, {1}", _lastName, _firstName); }
+      get
+      {
+        if (CanReadProperty("FirstName") && CanReadProperty("LastName"))
+          return string.Format("{0}, {1}", _lastName, _firstName);
+        else
+          throw new System.Security.SecurityException("Property read not allowed");
+      }
     }
 
     public ResourceAssignments Assignments
@@ -141,7 +147,7 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Factory Methods
 
     public static Resource NewResource(string id)
     {
@@ -208,15 +214,13 @@ namespace ProjectTracker.Library
     #region Data Access
 
     [RunLocal()]
-    protected override void DataPortal_Create(object criteria)
+    private void DataPortal_Create(Criteria criteria)
     {
-      _id = ((Criteria)criteria).Id;
+      _id = criteria.Id;
     }
 
-    protected override void DataPortal_Fetch(object criteria)
+    private void DataPortal_Fetch(Criteria criteria)
     {
-      Criteria crit = (Criteria)criteria;
-
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
@@ -224,7 +228,7 @@ namespace ProjectTracker.Library
         {
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "getResource";
-          cm.Parameters.AddWithValue("@ID", crit.Id);
+          cm.Parameters.AddWithValue("@ID", criteria.Id);
 
           using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
           {
@@ -243,6 +247,7 @@ namespace ProjectTracker.Library
       }
     }
 
+    [Transactional(TransactionalTypes.Manual)]
     protected override void DataPortal_Insert()
     {
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
@@ -250,32 +255,25 @@ namespace ProjectTracker.Library
         cn.Open();
         using (SqlTransaction tr = cn.BeginTransaction())
         {
-          try
+          using (SqlCommand cm = cn.CreateCommand())
           {
-            using (SqlCommand cm = cn.CreateCommand())
-            {
-              cm.Transaction = tr;
-              cm.CommandType = CommandType.StoredProcedure;
-              cm.CommandText = "addResource";
-              LoadParameters(cm);
+            cm.Transaction = tr;
+            cm.CommandType = CommandType.StoredProcedure;
+            cm.CommandText = "addResource";
+            LoadParameters(cm);
 
-              cm.ExecuteNonQuery();
+            cm.ExecuteNonQuery();
 
-              // update child objects
-              _assignments.Update(tr, this);
-            }
-            tr.Commit();
+            // update child objects
+            _assignments.Update(tr, this);
           }
-          catch (Exception ex)
-          {
-            tr.Rollback();
-            throw ex;
-          }
+          tr.Commit();
         }
         cn.Close();
       }
     }
 
+    [Transactional(TransactionalTypes.Manual)]
     protected override void DataPortal_Update()
     {
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
@@ -283,27 +281,19 @@ namespace ProjectTracker.Library
         cn.Open();
         using (SqlTransaction tr = cn.BeginTransaction())
         {
-          try
+          using (SqlCommand cm = cn.CreateCommand())
           {
-            using (SqlCommand cm = cn.CreateCommand())
-            {
-              cm.Transaction = tr;
-              cm.CommandType = CommandType.StoredProcedure;
-              cm.CommandText = "updateResource";
-              LoadParameters(cm);
+            cm.Transaction = tr;
+            cm.CommandType = CommandType.StoredProcedure;
+            cm.CommandText = "updateResource";
+            LoadParameters(cm);
 
-              cm.ExecuteNonQuery();
+            cm.ExecuteNonQuery();
 
-              // update child objects
-              _assignments.Update(tr, this);
-            }
-            tr.Commit();
+            // update child objects
+            _assignments.Update(tr, this);
           }
-          catch (Exception ex)
-          {
-            tr.Rollback();
-            throw ex;
-          }
+          tr.Commit();
         }
         cn.Close();
       }
@@ -316,6 +306,7 @@ namespace ProjectTracker.Library
       cm.Parameters.AddWithValue("@FirstName", _firstName);
     }
 
+    [Transactional(TransactionalTypes.Manual)]
     protected override void DataPortal_DeleteSelf()
     {
       if (!this.IsNew)
@@ -325,32 +316,23 @@ namespace ProjectTracker.Library
       }
     }
 
-    protected override void DataPortal_Delete(object criteria)
+    [Transactional(TransactionalTypes.Manual)]
+    private void DataPortal_Delete(Criteria criteria)
     {
-      Criteria crit = (Criteria)criteria;
-
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
         using (SqlTransaction tr = cn.BeginTransaction())
         {
-          try
+          using (SqlCommand cm = cn.CreateCommand())
           {
-            using (SqlCommand cm = cn.CreateCommand())
-            {
-              cm.Transaction = tr;
-              cm.CommandType = CommandType.StoredProcedure;
-              cm.CommandText = "deleteResource";
-              cm.Parameters.AddWithValue("@ID", crit.Id);
-              cm.ExecuteNonQuery();
-            }
-            tr.Commit();
+            cm.Transaction = tr;
+            cm.CommandType = CommandType.StoredProcedure;
+            cm.CommandText = "deleteResource";
+            cm.Parameters.AddWithValue("@ID", criteria.Id);
+            cm.ExecuteNonQuery();
           }
-          catch (Exception ex)
-          {
-            tr.Rollback();
-            throw ex;
-          }
+          tr.Commit();
         }
         cn.Close();
       }
@@ -393,7 +375,7 @@ namespace ProjectTracker.Library
           {
             cm.CommandType = CommandType.Text;
             cm.CommandText = "SELECT id FROM Resources WHERE id=@id";
-            cm.Parameters.AddWithValue("@ID", _id);
+            cm.Parameters.AddWithValue("@id", _id);
 
             using (SqlDataReader dr = cm.ExecuteReader())
             {

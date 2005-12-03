@@ -22,13 +22,13 @@ namespace ProjectTracker.Library
       public string Id
       {
         get { return _id; }
-        set { _id = value; }
+        internal set { _id = value; }
       }
 
       public string Name
       {
         get { return _name; }
-        set { _name = value; }
+        internal set { _name = value; }
       }
 
       public override bool Equals(object obj)
@@ -52,7 +52,7 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Factory Methods
 
     public static ResourceList EmptyList()
     {
@@ -79,7 +79,7 @@ namespace ProjectTracker.Library
 
     #region Data Access
 
-    protected override void DataPortal_Fetch(object criteria)
+    private void DataPortal_Fetch(Criteria criteria)
     {
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {

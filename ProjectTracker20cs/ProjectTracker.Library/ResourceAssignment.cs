@@ -83,7 +83,7 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Shared Methods
+    #region Factory Methods
 
     internal static ResourceAssignment NewResourceAssignment(
       Project project, int role)
@@ -127,7 +127,7 @@ namespace ProjectTracker.Library
       MarkAsChild();
       _projectId = dr.GetGuid(0);
       _projectName = dr.GetString(1);
-      _assigned.Date = dr.GetDateTime(2);
+      _assigned = dr.GetSmartDate(2);
       _role = dr.GetInt32(3);
     }
 

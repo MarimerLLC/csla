@@ -43,12 +43,13 @@ Partial Class ResourceEdit
 
   End Sub
 
-#Region " Resource "
+#Region " ResourceDataSource "
 
   Protected Sub ResourceDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourceDataSource.DeleteObject
 
     ProjectTracker.Library.Resource.DeleteResource(e.Keys("Id"))
     Session.Remove("currentObject")
+    e.RowsAffected = 1
 
   End Sub
 
@@ -56,9 +57,9 @@ Partial Class ResourceEdit
 
     Dim obj As ProjectTracker.Library.Resource = _
       ProjectTracker.Library.Resource.NewResource(e.Values("Id"))
-    obj.LastName = e.Values("LastName")
-    obj.FirstName = e.Values("FirstName")
+    Csla.Web.DataMapper.Map(e.Values, obj, New String() {"Id"})
     Session("currentObject") = obj.Save
+    e.RowsAffected = 1
 
   End Sub
 
@@ -72,15 +73,15 @@ Partial Class ResourceEdit
 
     Dim obj As ProjectTracker.Library.Resource = _
       Session("currentObject")
-    obj.LastName = e.Values("LastName")
-    obj.FirstName = e.Values("FirstName")
+    Csla.Web.DataMapper.Map(e.Values, obj)
     Session("currentObject") = obj.Save
+    e.RowsAffected = 1
 
   End Sub
 
 #End Region
 
-#Region " Assignments "
+#Region " AssignmentsDataSource "
 
   Protected Sub AssignmentsDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles AssignmentsDataSource.DeleteObject
 
@@ -90,6 +91,7 @@ Partial Class ResourceEdit
     res = obj.Assignments(rid)
     obj.Assignments.Remove(res.ProjectID)
     Session("currentObject") = obj.Save()
+    e.RowsAffected = 1
 
   End Sub
 
@@ -107,9 +109,9 @@ Partial Class ResourceEdit
     Dim res As ProjectTracker.Library.ResourceAssignment
     Dim rid As Object = e.OldValues("ProjectId")
     res = obj.Assignments(rid)
-    Dim roleNum As Object = e.Values("Role")
-    res.Role = roleNum
+    Csla.Web.DataMapper.Map(e.Values, res)
     Session("currentObject") = obj.Save()
+    e.RowsAffected = 1
 
   End Sub
 

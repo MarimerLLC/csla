@@ -7,22 +7,27 @@ Partial Class ProjectEdit
     If Not IsPostBack Then
       Dim idString As String = Request.QueryString("id")
       Dim obj As ProjectTracker.Library.Project
-      If Len(idString) > 0 Then
-        Dim id As Guid
-        id = New Guid(idString)
-        obj = ProjectTracker.Library.Project.GetProject(id)
-        If ProjectTracker.Library.Project.CanSaveObject Then
-          Me.DetailsView1.DefaultMode = DetailsViewMode.Edit
+      Try
+        If Len(idString) > 0 Then
+          Dim id As Guid
+          id = New Guid(idString)
+          obj = ProjectTracker.Library.Project.GetProject(id)
+          If ProjectTracker.Library.Project.CanSaveObject Then
+            Me.DetailsView1.DefaultMode = DetailsViewMode.Edit
+
+          Else
+            Me.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly
+          End If
 
         Else
-          Me.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly
+          obj = ProjectTracker.Library.Project.NewProject
+          Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
         End If
+        Session("currentObject") = obj
 
-      Else
-        obj = ProjectTracker.Library.Project.NewProject
-        Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
-      End If
-      Session("currentObject") = obj
+      Catch ex As System.Security.SecurityException
+        Response.Redirect("Login.aspx")
+      End Try
     End If
 
   End Sub
@@ -58,7 +63,7 @@ Partial Class ProjectEdit
   Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, ByVal e As Csla.Web.InsertObjectArgs) Handles ProjectDataSource.InsertObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
-    Csla.Web.DataMapper.Map(e.Values, obj)
+    Csla.Web.DataMapper.Map(e.Values, obj, New String() {"Id"})
     Session("currentObject") = obj.Save()
     e.RowsAffected = 1
 
@@ -87,7 +92,7 @@ Partial Class ProjectEdit
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
     Dim res As ProjectTracker.Library.ProjectResource
-    Dim rid As Object = e.Keys("ResourceId")
+    Dim rid As String = e.Keys("ResourceId")
     res = obj.Resources(rid)
     obj.Resources.Remove(res.ResourceId)
     Session("currentObject") = obj.Save()
@@ -106,10 +111,9 @@ Partial Class ProjectEdit
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
     Dim res As ProjectTracker.Library.ProjectResource
-    Dim rid As Object = e.OldValues("ResourceId")
+    Dim rid As String = e.Keys("ResourceId")
     res = obj.Resources(rid)
-    Dim roleNum As Object = e.Values("Role")
-    res.Role = roleNum
+    Csla.Web.DataMapper.Map(e.Values, res)
     Session("currentObject") = obj.Save()
     e.RowsAffected = 1
 

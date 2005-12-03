@@ -12,6 +12,8 @@
       Resource List</div>
     <div>
       <br />
+      <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx">Home</asp:HyperLink><br />
+      <br />
       <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
         CellPadding="4" DataSourceID="ResourceListDataSource" ForeColor="#333333"
         GridLines="None" DataKeyNames="Id">

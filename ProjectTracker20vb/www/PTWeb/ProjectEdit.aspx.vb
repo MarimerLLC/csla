@@ -63,7 +63,7 @@ Partial Class ProjectEdit
   Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, ByVal e As Csla.Web.InsertObjectArgs) Handles ProjectDataSource.InsertObject
 
     Dim obj As ProjectTracker.Library.Project = Session("currentObject")
-    Csla.Web.DataMapper.Map(e.Values, obj, New String() {"Id"})
+    Csla.Web.DataMapper.Map(e.Values, obj, "Id")
     Session("currentObject") = obj.Save()
     e.RowsAffected = 1
 

@@ -57,7 +57,7 @@ Partial Class ResourceEdit
 
     Dim obj As ProjectTracker.Library.Resource = _
       ProjectTracker.Library.Resource.NewResource(e.Values("Id"))
-    Csla.Web.DataMapper.Map(e.Values, obj, New String() {"Id"})
+    Csla.Web.DataMapper.Map(e.Values, obj, "Id")
     Session("currentObject") = obj.Save
     e.RowsAffected = 1
 

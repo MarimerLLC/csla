@@ -9,8 +9,12 @@
 <body>
     <form id="form1" runat="server">
         <asp:Login ID="Login1" runat="server" DisplayRememberMe="False" LoginButtonText="Login"
-            TitleText="Project Tracker Login" UserNameLabelText="Username:">
-            <TitleTextStyle Font-Size="X-Large" HorizontalAlign="Left" />
+            TitleText="Project Tracker Login" UserNameLabelText="Username:" BackColor="#FFFBD6" BorderColor="#FFDFAD" BorderPadding="4" BorderStyle="Solid" BorderWidth="1px" Font-Names="Verdana" Font-Size="0.8em" ForeColor="#333333" TextLayout="TextOnTop">
+            <TitleTextStyle Font-Size="0.9em" HorizontalAlign="Left" BackColor="#990000" Font-Bold="True" ForeColor="White" />
+          <InstructionTextStyle Font-Italic="True" ForeColor="Black" />
+          <TextBoxStyle Font-Size="0.8em" />
+          <LoginButtonStyle BackColor="White" BorderColor="#CC9966" BorderStyle="Solid" BorderWidth="1px"
+            Font-Names="Verdana" Font-Size="0.8em" ForeColor="#990000" />
         </asp:Login>
     </form>
 </body>

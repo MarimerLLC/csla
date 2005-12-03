@@ -60,13 +60,7 @@ namespace ProjectTracker.Library.Admin
 
     #region Constructors
 
-    /// <summary>
-    /// DO NOT USE THIS CONSTRUCTOR. It
-    /// exists solely for use by Web
-    /// Forms data binding.
-    /// </summary>
-    /// <remarks></remarks>
-    public Role()
+    private Role()
     {
       MarkAsChild();
     }
@@ -74,6 +68,11 @@ namespace ProjectTracker.Library.Admin
     #endregion
 
     #region Factory Methods
+
+    internal static Role NewRole()
+    {
+      return new Role();
+    }
 
     internal static Role GetRole(Csla.Data.SafeDataReader dr)
     {
@@ -141,43 +140,6 @@ namespace ProjectTracker.Library.Admin
         cm.CommandText = "deleteRole";
         cm.Parameters.AddWithValue("@id", id);
         cm.ExecuteNonQuery();
-      }
-    }
-
-    #endregion
-
-    #region Web Support
-
-    /// <summary>
-    /// For use from Web Forms to atomically
-    /// insert/update a Role.
-    /// </summary>
-    /// <param name="forceUpdate">True to update data, False to insert data.</param>
-    internal void WebSave(bool forceUpdate)
-    {
-      if (forceUpdate)
-        MarkOld();
-      MarkDirty();
-      DataPortal.Update(this);
-    }
-
-    protected override void DataPortal_Insert()
-    {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
-      {
-        cn.Open();
-        Insert(cn);
-        cn.Close();
-      }
-    }
-
-    protected override void DataPortal_Update()
-    {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
-      {
-        cn.Open();
-        Update(cn);
-        cn.Close();
       }
     }
 

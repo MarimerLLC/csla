@@ -304,6 +304,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type parameter must be a primitive type.
+        /// </summary>
+        internal static string PrimitiveTypeRequired {
+            get {
+                return ResourceManager.GetString("PrimitiveTypeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Property get not allowed.
         /// </summary>
         internal static string PropertyGetNotAllowed {

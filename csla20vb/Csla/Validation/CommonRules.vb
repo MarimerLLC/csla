@@ -9,6 +9,8 @@ Namespace Validation
 
     End Sub
 
+#Region " StringRequired "
+
     ''' <summary>
     ''' Rule ensuring a String value contains one or more
     ''' characters.
@@ -35,6 +37,10 @@ Namespace Validation
       End If
 
     End Function
+
+#End Region
+
+#Region " StringMaxLength "
 
     ''' <summary>
     ''' Rule ensuring a String value doesn't exceed
@@ -86,6 +92,10 @@ Namespace Validation
 
     End Class
 
+#End Region
+
+#Region " IntegerMaxValue "
+
     Public Shared Function IntegerMaxValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
       Dim max As Integer = CType(e, IntegerMaxValueRuleArgs).MaxValue
       Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
@@ -122,6 +132,10 @@ Namespace Validation
       End Function
 
     End Class
+
+#End Region
+
+#Region " MaxValue "
 
     Public Shared Function MaxValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
@@ -209,6 +223,99 @@ Namespace Validation
       End Function
 
     End Class
+
+#End Region
+
+#Region " MinValue "
+
+    Public Shared Function MinValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+
+      Dim min As Object = CType(e, MinValueRuleArgs(Of T)).MinValue
+      Dim value As Object = CallByName(target, e.PropertyName, CallType.Get)
+      Dim result As Boolean
+      Dim pType As Type = GetType(T)
+      If pType.IsPrimitive Then
+        If pType.Equals(GetType(Integer)) Then
+          result = (CInt(value) >= CInt(min))
+
+        ElseIf pType.Equals(GetType(Boolean)) Then
+          result = (CBool(value) >= CBool(min))
+
+        ElseIf pType.Equals(GetType(Single)) Then
+          result = (CSng(value) >= CSng(min))
+
+        ElseIf pType.Equals(GetType(Double)) Then
+          result = (CDbl(value) >= CDbl(min))
+
+        ElseIf pType.Equals(GetType(Byte)) Then
+          result = (CByte(value) >= CByte(min))
+
+        ElseIf pType.Equals(GetType(Char)) Then
+          result = (CChar(value) >= CChar(min))
+
+        ElseIf pType.Equals(GetType(Short)) Then
+          result = (CShort(value) >= CShort(min))
+
+        ElseIf pType.Equals(GetType(Long)) Then
+          result = (CLng(value) >= CLng(min))
+
+        ElseIf pType.Equals(GetType(UShort)) Then
+          result = (CUShort(value) >= CUShort(min))
+
+        ElseIf pType.Equals(GetType(UInteger)) Then
+          result = (CUInt(value) >= CUInt(min))
+
+        ElseIf pType.Equals(GetType(ULong)) Then
+          result = (CULng(value) >= CULng(min))
+
+        ElseIf pType.Equals(GetType(SByte)) Then
+          result = (CSByte(value) >= CSByte(min))
+
+        Else
+          Throw New ArgumentException(My.Resources.PrimitiveTypeRequired)
+        End If
+
+      Else  ' not primitive
+        Throw New ArgumentException(My.Resources.PrimitiveTypeRequired)
+      End If
+
+      If Not result Then
+        e.Description = String.Format("{0} can not exceed {1}", _
+          e.PropertyName, min.ToString)
+        Return False
+
+      Else
+        Return True
+      End If
+
+    End Function
+
+    Public Class MinValueRuleArgs(Of T)
+      Inherits RuleArgs
+
+      Private mMinValue As T
+
+      Public ReadOnly Property MinValue() As T
+        Get
+          Return mMinValue
+        End Get
+      End Property
+
+      Public Sub New(ByVal propertyName As String, ByVal MinValue As T)
+        MyBase.New(propertyName)
+        mMinValue = MinValue
+      End Sub
+
+      ''' <summary>
+      ''' Returns a string representation of the object.
+      ''' </summary>
+      Public Overrides Function ToString() As String
+        Return MyBase.PropertyName & "!" & mMinValue.ToString
+      End Function
+
+    End Class
+
+#End Region
 
   End Class
 

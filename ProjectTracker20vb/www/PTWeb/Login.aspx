@@ -12,15 +12,16 @@
       Project Tracker Login</div>
     <div>
       <br />
-      Username:
-      <asp:TextBox ID="UsernameTextBox" runat="server"></asp:TextBox><br />
-      <br />
-      Password:
-      <asp:TextBox ID="PasswordTextBox" runat="server" TextMode="Password"></asp:TextBox>
-      <br />
-      <br />
-      <asp:Button ID="LoginButton" runat="server" Text="Login" /><br />
-    </div>
+      <asp:Login ID="Login1" runat="server" BackColor="#FFFBD6" BorderColor="#FFDFAD" BorderPadding="4"
+        BorderStyle="Solid" BorderWidth="1px" Font-Names="Verdana" Font-Size="0.8em" ForeColor="#333333"
+        TextLayout="TextOnTop">
+        <TitleTextStyle BackColor="#990000" Font-Bold="True" Font-Size="0.9em" ForeColor="White" />
+        <InstructionTextStyle Font-Italic="True" ForeColor="Black" />
+        <TextBoxStyle Font-Size="0.8em" />
+        <LoginButtonStyle BackColor="White" BorderColor="#CC9966" BorderStyle="Solid" BorderWidth="1px"
+          Font-Names="Verdana" Font-Size="0.8em" ForeColor="#990000" />
+      </asp:Login>
+      &nbsp;</div>
     </form>
 </body>
 </html>

@@ -32,9 +32,13 @@
   
   Protected Sub Application_AcquireRequestState(ByVal sender As Object, ByVal e As System.EventArgs)
 
-    System.Threading.Thread.CurrentPrincipal = _
-      CType(Session("CslaPrincipal"), System.Security.Principal.IPrincipal)
-    HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal
+    try
+      System.Threading.Thread.CurrentPrincipal = _
+        CType(Session("CslaPrincipal"), System.Security.Principal.IPrincipal)
+      HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal
+
+    catch
+    end try
 
   End Sub
 </script>

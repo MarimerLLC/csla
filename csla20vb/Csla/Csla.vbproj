@@ -82,6 +82,7 @@
     <Compile Include="DataPortal\Server\SimpleDataPortal.vb" />
     <Compile Include="DataPortal\Server\TransactionalDataPortal.vb" />
     <Compile Include="DataPortal\TransactionalTypes.vb" />
+    <Compile Include="Data\DataMapper.vb" />
     <Compile Include="EnterpriseServicesSettings.vb" />
     <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="Security\AccessType.vb" />
@@ -143,7 +144,6 @@
     </Compile>
     <Compile Include="Web\CslaDataSource.vb" />
     <Compile Include="Web\CslaDataSourceView.vb" />
-    <Compile Include="Web\DataMapper.vb" />
     <Compile Include="Web\Design\CslaDataSourceDesigner.vb" />
     <Compile Include="Web\Design\CslaDesignerDataSourceView.vb" />
     <Compile Include="Windows\BindingSourceRefresh.vb" />

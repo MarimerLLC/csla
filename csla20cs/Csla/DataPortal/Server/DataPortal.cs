@@ -239,7 +239,7 @@ namespace Csla.Server
       // do nothing
       if (!context.IsRemotePortal) return;
 
-      // set the app context to the value we gor from the
+      // set the app context to the value we got from the
       // client
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 

@@ -108,7 +108,7 @@ namespace Csla.Web
       // tell the page to insert the object
       InsertObjectArgs args = new InsertObjectArgs(values);
       _owner.DoInsert(args);
-      return 0;
+      return args.RowsAffected;
 
     }
 
@@ -134,7 +134,7 @@ namespace Csla.Web
       // tell the page to delete the object
       DeleteObjectArgs args = new DeleteObjectArgs(keys, oldValues);
       _owner.DoDelete(args);
-      return 0;
+      return args.RowsAffected;
     }
 
     #endregion
@@ -158,7 +158,7 @@ namespace Csla.Web
       // tell the page to update the object
       UpdateObjectArgs args = new UpdateObjectArgs(keys, values, oldValues);
       _owner.DoUpdate(args);
-      return 0;
+      return args.RowsAffected;
     }
 
     #endregion

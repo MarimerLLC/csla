@@ -179,6 +179,24 @@ namespace Csla.Web
   {
 
     private System.Collections.IDictionary _values;
+    private int _rowsAffected;
+
+    /// <summary>
+    /// Gets or sets the number of rows affected
+    /// while handling this event.
+    /// </summary>
+    /// <value></value>
+    /// <returns></returns>
+    /// <remarks>
+    /// The code handling the event should set this
+    /// value to indicate the number of rows affected
+    /// by the operation.
+    /// </remarks>
+    public int RowsAffected
+    {
+      get { return _rowsAffected; }
+      set { _rowsAffected = value; }
+    }
 
     /// <summary>
     /// The list of data values entered by the user.
@@ -211,6 +229,24 @@ namespace Csla.Web
     private System.Collections.IDictionary _keys;
     private System.Collections.IDictionary _values;
     private System.Collections.IDictionary _oldValues;
+    private int _rowsAffected;
+
+    /// <summary>
+    /// Gets or sets the number of rows affected
+    /// while handling this event.
+    /// </summary>
+    /// <value></value>
+    /// <returns></returns>
+    /// <remarks>
+    /// The code handling the event should set this
+    /// value to indicate the number of rows affected
+    /// by the operation.
+    /// </remarks>
+    public int RowsAffected
+    {
+      get { return _rowsAffected; }
+      set { _rowsAffected = value; }
+    }
 
     /// <summary>
     /// The list of key values entered by the user.
@@ -268,6 +304,24 @@ namespace Csla.Web
   {
     private System.Collections.IDictionary _keys;
     private System.Collections.IDictionary _oldValues;
+    private int _rowsAffected;
+
+    /// <summary>
+    /// Gets or sets the number of rows affected
+    /// while handling this event.
+    /// </summary>
+    /// <value></value>
+    /// <returns></returns>
+    /// <remarks>
+    /// The code handling the event should set this
+    /// value to indicate the number of rows affected
+    /// by the operation.
+    /// </remarks>
+    public int RowsAffected
+    {
+      get { return _rowsAffected; }
+      set { _rowsAffected = value; }
+    }
 
     /// <summary>
     /// The list of key values entered by the user.

@@ -11,29 +11,36 @@ using System.Web.UI.HtmlControls;
 
 public partial class ProjectEdit : System.Web.UI.Page
 {
-  bool _objectLoaded;
 
-  void LoadObject()
+  protected void Page_Load(object sender, EventArgs e)
   {
-    if (_objectLoaded) return;
-
-    string idString = Request.QueryString["id"];
-    ProjectTracker.Library.Project obj;
-    if (!string.IsNullOrEmpty(idString))
+    if (!Page.IsPostBack)
     {
-      Guid id = new Guid(idString);
-      obj = ProjectTracker.Library.Project.GetProject(id);
-      if (ProjectTracker.Library.Project.CanSaveObject())
-        this.DetailsView1.DefaultMode = DetailsViewMode.Edit;
-      else
-        this.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly;
+      string idString = Request.QueryString["id"];
+      ProjectTracker.Library.Project obj;
+      try
+      {
+        if (!string.IsNullOrEmpty(idString))
+        {
+          Guid id = new Guid(idString);
+          obj = ProjectTracker.Library.Project.GetProject(id);
+          if (ProjectTracker.Library.Project.CanSaveObject())
+            this.DetailsView1.DefaultMode = DetailsViewMode.Edit;
+          else
+            this.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly;
+        }
+        else
+        {
+          obj = ProjectTracker.Library.Project.NewProject();
+          this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
+        }
+        Session["currentObject"] = obj;
+      }
+      catch (System.Security.SecurityException)
+      {
+        Response.Redirect("Login.aspx");
+      }
     }
-    else
-    {
-      obj = ProjectTracker.Library.Project.NewProject();
-      this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
-    }
-    Session["currentObject"] = obj;
   }
 
   protected void DetailsView1_ItemDeleted(object sender, DetailsViewDeletedEventArgs e)
@@ -70,7 +77,6 @@ public partial class ProjectEdit : System.Web.UI.Page
 
   protected void ProjectDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
   {
-    LoadObject();
     e.BusinessObject = Session["currentObject"];
   }
 
@@ -83,8 +89,6 @@ public partial class ProjectEdit : System.Web.UI.Page
   }
 
   #endregion
-
-  #region ResourcesDataSource
 
   protected void ResourcesDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
   {
@@ -99,7 +103,6 @@ public partial class ProjectEdit : System.Web.UI.Page
 
   protected void ResourcesDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
   {
-    LoadObject();
     ProjectTracker.Library.Project obj = (ProjectTracker.Library.Project)Session["currentObject"];
     e.BusinessObject = obj.Resources;
   }
@@ -114,6 +117,5 @@ public partial class ProjectEdit : System.Web.UI.Page
     Session["currentObject"] = obj.Save();
     e.RowsAffected = 1;
   }
-
-  #endregion
 }
+

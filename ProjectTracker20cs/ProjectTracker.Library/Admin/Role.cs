@@ -13,7 +13,7 @@ namespace ProjectTracker.Library.Admin
     #region Business Methods
 
     private int _id;
-    private string _name;
+    private string _name = String.Empty;
 
     public int Id
     {

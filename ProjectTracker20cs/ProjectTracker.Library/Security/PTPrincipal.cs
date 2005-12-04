@@ -9,7 +9,7 @@ namespace ProjectTracker.Library.Security
     private PTPrincipal(IIdentity identity)
       : base(identity) { }
 
-    public static void Login(string username, string password)
+    public static bool Login(string username, string password)
     {
       PTIdentity identity = PTIdentity.GetIdentity(username, password);
       if (identity.IsAuthenticated)
@@ -17,6 +17,7 @@ namespace ProjectTracker.Library.Security
         PTPrincipal principal = new PTPrincipal(identity);
         System.Threading.Thread.CurrentPrincipal = principal;
       }
+      return identity.IsAuthenticated;
     }
 
     public static void Logout()

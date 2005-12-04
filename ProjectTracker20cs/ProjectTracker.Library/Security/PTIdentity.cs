@@ -72,7 +72,7 @@ namespace ProjectTracker.Library.Security
           get { return _password; }
         }
 
-        internal Criteria(string username, string password)
+        public Criteria(string username, string password)
         {
           _username = username;
           _password = password;

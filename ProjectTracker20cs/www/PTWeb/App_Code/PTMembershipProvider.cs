@@ -156,10 +156,9 @@ public class PTMembershipProvider : MembershipProvider
     {
       throw new Exception("The method or operation is not implemented.");
     }
+  }
 
   #endregion
-
-  }
 
 }
 

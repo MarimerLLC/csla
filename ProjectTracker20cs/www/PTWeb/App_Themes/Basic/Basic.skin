@@ -35,5 +35,5 @@ CellPadding="4" ForeColor="#333333" GridLines="None">
 <asp:LoginStatus runat="server" Font-Names="Verdana" Font-Size="10pt" />
 
 <asp:TreeView runat="server">
-  <NodeStyle HorizontalPadding="5pt" NodeSpacing="5pt" Font-Bold="True" Font-Names="Verdana" Font-Size="10pt" />
+  <NodeStyle HorizontalPadding="5pt" NodeSpacing="5pt" Font-Bold="True" Font-Names="Verdana" Font-Size="Large" />
 </asp:TreeView>

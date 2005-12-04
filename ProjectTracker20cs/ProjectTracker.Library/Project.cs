@@ -150,10 +150,10 @@ namespace ProjectTracker.Library
       if (_started > _ended)
       {
         e.Description = "Start date can't be after end date";
-        return true;
+        return false;
       }
       else
-        return false;
+        return true;
     }
 
     #endregion

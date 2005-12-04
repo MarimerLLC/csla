@@ -69,7 +69,13 @@ namespace Csla.Data
             // set target value
             PropertyInfo propertyInfo = targetType.GetProperty(propertyName);
             Type pType = propertyInfo.PropertyType;
-            if (pType.Equals(value.GetType()))
+            Type vType;
+            if (value != null)
+              vType = value.GetType();
+            else
+              vType = pType;
+
+            if (pType.Equals(vType))
             {
               // types match, just copy value
               propertyInfo.SetValue(target, value, null);

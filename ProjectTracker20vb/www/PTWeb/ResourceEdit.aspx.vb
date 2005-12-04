@@ -1,3 +1,4 @@
+Option Strict On
 
 Partial Class ResourceEdit
   Inherits System.Web.UI.Page
@@ -52,7 +53,7 @@ Partial Class ResourceEdit
   Protected Sub ResourceDataSource_DeleteObject(ByVal sender As Object, _
     ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourceDataSource.DeleteObject
 
-    ProjectTracker.Library.Resource.DeleteResource(e.Keys("Id"))
+    ProjectTracker.Library.Resource.DeleteResource(CStr(e.Keys("Id")))
     Session.Remove("currentObject")
     e.RowsAffected = 1
 
@@ -62,7 +63,7 @@ Partial Class ResourceEdit
     ByVal e As Csla.Web.InsertObjectArgs) Handles ResourceDataSource.InsertObject
 
     Dim obj As ProjectTracker.Library.Resource = _
-      ProjectTracker.Library.Resource.NewResource(e.Values("Id"))
+      ProjectTracker.Library.Resource.NewResource(CStr(e.Values("Id")))
     Csla.Data.DataMapper.Map(e.Values, obj, "Id")
     Session("currentObject") = obj.Save
     e.RowsAffected = 1
@@ -80,7 +81,7 @@ Partial Class ResourceEdit
     ByVal e As Csla.Web.UpdateObjectArgs) Handles ResourceDataSource.UpdateObject
 
     Dim obj As ProjectTracker.Library.Resource = _
-      Session("currentObject")
+      CType(Session("currentObject"), ProjectTracker.Library.Resource)
     Csla.Data.DataMapper.Map(e.Values, obj)
     Session("currentObject") = obj.Save
     e.RowsAffected = 1
@@ -94,7 +95,8 @@ Partial Class ResourceEdit
   Protected Sub AssignmentsDataSource_DeleteObject(ByVal sender As Object, _
     ByVal e As Csla.Web.DeleteObjectArgs) Handles AssignmentsDataSource.DeleteObject
 
-    Dim obj As ProjectTracker.Library.Resource = Session("currentObject")
+    Dim obj As ProjectTracker.Library.Resource = _
+      CType(Session("currentObject"), ProjectTracker.Library.Resource)
     Dim res As ProjectTracker.Library.ResourceAssignment
     Dim rid As New Guid(e.Keys("ProjectId").ToString)
     res = obj.Assignments(rid)
@@ -108,7 +110,7 @@ Partial Class ResourceEdit
     ByVal e As Csla.Web.SelectObjectArgs) Handles AssignmentsDataSource.SelectObject
 
     Dim obj As ProjectTracker.Library.Resource = _
-      Session("currentObject")
+      CType(Session("currentObject"), ProjectTracker.Library.Resource)
     e.BusinessObject = obj.Assignments
 
   End Sub
@@ -116,7 +118,8 @@ Partial Class ResourceEdit
   Protected Sub AssignmentsDataSource_UpdateObject(ByVal sender As Object, _
     ByVal e As Csla.Web.UpdateObjectArgs) Handles AssignmentsDataSource.UpdateObject
 
-    Dim obj As ProjectTracker.Library.Resource = Session("currentObject")
+    Dim obj As ProjectTracker.Library.Resource = _
+      CType(Session("currentObject"), ProjectTracker.Library.Resource)
     Dim res As ProjectTracker.Library.ResourceAssignment
     Dim rid As New Guid(e.Keys("ProjectId").ToString)
     res = obj.Assignments(rid)

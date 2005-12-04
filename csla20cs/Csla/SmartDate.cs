@@ -507,7 +507,7 @@ namespace Csla
 
     public static bool operator !=(SmartDate obj1, string obj2)
     {
-      return obj1.Equals(obj2);
+      return !obj1.Equals(obj2);
     }
 
     public static SmartDate operator +(SmartDate start, TimeSpan span)

@@ -5,11 +5,6 @@ using System.Web.Security;
 public class PTMembershipProvider : MembershipProvider
 {
 
-  public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
-  {
-    base.Initialize(name, config);
-  }
-
   public override bool ValidateUser(string username, string password)
   {
     PTPrincipal.Login(username, password);

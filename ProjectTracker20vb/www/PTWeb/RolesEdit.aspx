@@ -3,38 +3,26 @@
 <div>
       <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
         <asp:View ID="MainView" runat="server">
-      <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4"
-        DataSourceID="RolesDataSource" ForeColor="#333333" GridLines="None" DataKeyNames="Id">
+      <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False"
+        DataSourceID="RolesDataSource" DataKeyNames="Id">
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>
           <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id" />
           <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
           <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" />
         </Columns>
-        <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
-        <SelectedRowStyle BackColor="#FFCC66" Font-Bold="True" ForeColor="Navy" />
-        <PagerStyle BackColor="#FFCC66" ForeColor="#333333" HorizontalAlign="Center" />
-        <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
-        <AlternatingRowStyle BackColor="White" />
       </asp:GridView>
           <asp:LinkButton ID="AddRoleButton" runat="server">Add role</asp:LinkButton><br />
         </asp:View>
         <asp:View ID="InsertView" runat="server">
-          <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False" CellPadding="4"
-            DataSourceID="RolesDataSource" DefaultMode="Insert" ForeColor="#333333" GridLines="None"
+          <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False"
+            DataSourceID="RolesDataSource" DefaultMode="Insert"
             Height="50px" Width="125px" DataKeyNames="Id">
-            <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
-            <CommandRowStyle BackColor="#FFFFC0" Font-Bold="True" />
-            <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
-            <PagerStyle BackColor="#FFCC66" ForeColor="#333333" HorizontalAlign="Center" />
             <Fields>
               <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" />
               <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
               <asp:CommandField ShowInsertButton="True" />
             </Fields>
-            <FieldHeaderStyle BackColor="#FFFF99" Font-Bold="True" />
-            <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
-            <AlternatingRowStyle BackColor="White" />
           </asp:DetailsView>
         </asp:View>
       </asp:MultiView><br />

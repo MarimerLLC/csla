@@ -23,10 +23,8 @@
         <tr>
           <td style="width: 130px; vertical-align: text-top; background-color: khaki; height: 100%;" valign="top">
             <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" ShowStartingNode="False" />
-            <asp:TreeView ID="TreeView1" runat="server" DataSourceID="SiteMapDataSource1" Font-Size="Large"
-              ShowExpandCollapse="False" SkipLinkText="">
-              <NodeStyle HorizontalPadding="5pt" NodeSpacing="5pt" />
-            </asp:TreeView>
+            <asp:TreeView ID="TreeView1" runat="server" DataSourceID="SiteMapDataSource1" 
+              ShowExpandCollapse="False" SkipLinkText="" />
           </td>
           <td style="height: 100%; padding-left: 5px; padding-top: 5px;" valign="top">
         <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">

@@ -75,7 +75,7 @@ Namespace Data
               vType = pType
             End If
             value.GetType()
-            If pType.Equals(value.GetType) Then
+            If pType.Equals(vType) Then
               ' types match, just copy value
               propertyInfo.SetValue(target, value, Nothing)
 

@@ -67,25 +67,22 @@ Namespace Data
             ' set target value
             Dim propertyInfo As PropertyInfo = targetType.GetProperty(propertyName)
             Dim pType As Type = propertyInfo.PropertyType
-            Dim vType As Type
-            If value IsNot Nothing Then
-              vType = value.GetType
-
-            Else
-              vType = pType
-            End If
-            value.GetType()
-            If pType.Equals(vType) Then
-              ' types match, just copy value
+            If value Is Nothing Then
               propertyInfo.SetValue(target, value, Nothing)
 
             Else
-              ' types don't match, try to coerce types
-              If pType.Equals(GetType(Guid)) Then
-                propertyInfo.SetValue(target, New Guid(value.ToString), Nothing)
+              If pType.Equals(value.GetType) Then
+                ' types match, just copy value
+                propertyInfo.SetValue(target, value, Nothing)
 
               Else
-                propertyInfo.SetValue(target, Convert.ChangeType(value, pType), Nothing)
+                ' types don't match, try to coerce types
+                If pType.Equals(GetType(Guid)) Then
+                  propertyInfo.SetValue(target, New Guid(value.ToString), Nothing)
+
+                Else
+                  propertyInfo.SetValue(target, Convert.ChangeType(value, pType), Nothing)
+                End If
               End If
             End If
 

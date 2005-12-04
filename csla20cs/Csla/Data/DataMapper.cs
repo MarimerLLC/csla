@@ -69,24 +69,23 @@ namespace Csla.Data
             // set target value
             PropertyInfo propertyInfo = targetType.GetProperty(propertyName);
             Type pType = propertyInfo.PropertyType;
-            Type vType;
-            if (value != null)
-              vType = value.GetType();
-            else
-              vType = pType;
-
-            if (pType.Equals(vType))
-            {
-              // types match, just copy value
+            if (value == null)
               propertyInfo.SetValue(target, value, null);
-            }
             else
             {
-              // types don't match, try to coerce
-              if (pType.Equals(typeof(Guid)))
-                propertyInfo.SetValue(target, new Guid(value.ToString()), null);
+              if (pType.Equals(value.GetType()))
+              {
+                // types match, just copy value
+                propertyInfo.SetValue(target, value, null);
+              }
               else
-                propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+              {
+                // types don't match, try to coerce
+                if (pType.Equals(typeof(Guid)))
+                  propertyInfo.SetValue(target, new Guid(value.ToString()), null);
+                else
+                  propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+              }
             }
           }
           catch

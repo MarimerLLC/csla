@@ -48,7 +48,11 @@
                 (System.Security.Principal.IPrincipal)Session["CslaPrincipal"];
             HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal;
         }
-        catch { }
+        catch
+        {
+            // do nothing - this really shouldn't happen
+            // but it does on the first login.aspx call...
+        }
     }
        
 </script>

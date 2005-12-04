@@ -87,7 +87,7 @@ namespace ProjectTracker.Library
 
     public override bool IsDirty
     {
-      get { return base.IsDirty && _assignments.IsDirty; }
+      get { return base.IsDirty || _assignments.IsDirty; }
     }
 
     protected override object GetIdValue()

@@ -11,7 +11,6 @@ using System.Web.UI.HtmlControls;
 
 public partial class ProjectEdit : System.Web.UI.Page
 {
-
   protected void Page_Load(object sender, EventArgs e)
   {
     if (!Page.IsPostBack)
@@ -46,11 +45,6 @@ public partial class ProjectEdit : System.Web.UI.Page
   protected void DetailsView1_ItemDeleted(object sender, DetailsViewDeletedEventArgs e)
   {
     Response.Redirect("ProjectList.aspx");
-  }
-
-  protected void RoleListDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
-  {
-    e.BusinessObject = ProjectTracker.Library.RoleList.GetList();
   }
 
   protected void ProjectListButton_Click(object sender, EventArgs e)
@@ -90,6 +84,8 @@ public partial class ProjectEdit : System.Web.UI.Page
 
   #endregion
 
+  #region ResourcesDataSource
+
   protected void ResourcesDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
   {
     ProjectTracker.Library.Project obj = (ProjectTracker.Library.Project)Session["currentObject"];
@@ -117,5 +113,16 @@ public partial class ProjectEdit : System.Web.UI.Page
     Session["currentObject"] = obj.Save();
     e.RowsAffected = 1;
   }
+
+  #endregion
+
+  #region RoleListDataSource
+
+  protected void RoleListDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
+  {
+    e.BusinessObject = ProjectTracker.Library.RoleList.GetList();
+  }
+
+  #endregion
 }
 

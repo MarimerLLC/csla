@@ -170,7 +170,7 @@ Public Class Project
 
   Public Shared Function CanSaveObject() As Boolean
 
-    Return Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager")
+    Return My.User.IsInRole("ProjectManager")
 
   End Function
 

@@ -53,6 +53,38 @@ Namespace Admin
 
 #End Region
 
+#Region " Authorization Rules "
+
+    Public Shared Function CanAddObject() As Boolean
+
+      Return My.User.IsInRole("Administrator")
+
+    End Function
+
+    Public Shared Function CanGetObject() As Boolean
+
+      Return True
+
+    End Function
+
+    Public Shared Function CanDeleteObject() As Boolean
+
+      Dim result As Boolean
+      If My.User.IsInRole("Administrator") Then
+        result = True
+      End If
+      Return result
+
+    End Function
+
+    Public Shared Function CanSaveObject() As Boolean
+
+      Return My.User.IsInRole("Administrator")
+
+    End Function
+
+#End Region
+
 #Region " Constructors "
 
     Private Sub New()
@@ -86,8 +118,15 @@ Namespace Admin
 
     Public Overrides Function Save() As Roles
 
+      ' see if save is allowed
+      If Not CanSaveObject() Then
+        Throw New System.Security.SecurityException("User not authorized to save roles")
+      End If
+
+      ' do the save
       Dim result As Roles
       result = MyBase.Save()
+
       ' this runs on the client and invalidates
       ' the RoleList cache
       RoleList.InvalidateCache()

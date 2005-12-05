@@ -205,6 +205,9 @@ Public Class MainForm
     End If
     Me.DeleteResourceToolStripMenuItem.Enabled = Resource.CanDeleteObject
 
+    ' Admin menu
+    Me.EditRolesToolStripMenuItem.Enabled = Admin.Roles.CanSaveObject
+
   End Sub
 
 #End Region

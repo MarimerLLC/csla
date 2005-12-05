@@ -9,16 +9,30 @@ Namespace Admin
 #Region " Business Methods "
 
     Private mId As Integer
+    Private mIdSet As Boolean
     Private mName As String = ""
 
     Public Property Id() As Integer
       Get
         CanReadProperty(True)
+        If Not mIdSet Then
+          ' generate a default id value
+          mIdSet = True
+          Dim parent As Roles = CType(Me.Parent, Roles)
+          Dim max As Integer = 0
+          For Each item As Role In parent
+            If item.Id > max Then
+              max = item.Id
+            End If
+          Next
+          mId = max + 1
+        End If
         Return mId
       End Get
       Set(ByVal value As Integer)
         CanWriteProperty(True)
         If Not mId.Equals(value) Then
+          mIdSet = True
           mId = value
           PropertyHasChanged()
         End If

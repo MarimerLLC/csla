@@ -29,10 +29,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=2.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\csla20cs\Csla\bin\Debug\Csla.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -41,6 +37,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputBox.Designer.cs">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -48,19 +56,60 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProjectEdit.Designer.cs">
+      <DependentUpon>ProjectEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProjectSelect.Designer.cs">
+      <DependentUpon>ProjectSelect.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="InputBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoginForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectEdit.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProjectEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectSelect.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProjectSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ResourceEdit.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ResourceEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceSelect.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ResourceSelect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RolesEdit.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RolesEdit.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
     <None Include="Properties\DataSources\ProjectTracker.Library.Project.datasource" />
@@ -74,8 +123,38 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ResourceEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResourceEdit.Designer.cs">
+      <DependentUpon>ResourceEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ResourceSelect.Designer.cs">
+      <DependentUpon>ResourceSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RolesEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RolesEdit.Designer.cs">
+      <DependentUpon>RolesEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StatusBusy.cs" />
+    <Compile Include="StatusChangedEventArgs.cs" />
+    <Compile Include="WinPart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinPart.Designer.cs">
+      <DependentUpon>WinPart.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\csla20cs\Csla\Csla.csproj">
+      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
+      <Name>Csla</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectTracker.Library\ProjectTracker.Library.csproj">
       <Project>{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}</Project>
       <Name>ProjectTracker.Library</Name>

@@ -28,188 +28,192 @@ namespace PTWin
     /// </summary>
     private void InitializeComponent()
     {
-      this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-      System.Windows.Forms.Label descriptionLabel;
-      System.Windows.Forms.Label endedLabel;
-      System.Windows.Forms.Label idLabel;
-      System.Windows.Forms.Label nameLabel;
-      System.Windows.Forms.Label startedLabel;
-      this.projectListDataGridView = new System.Windows.Forms.DataGridView();
-      this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.projectListBindingSource = new System.Windows.Forms.BindingSource(this.components);
-      this.projectBindingSource = new System.Windows.Forms.BindingSource(this.components);
-      this.descriptionTextBox = new System.Windows.Forms.TextBox();
-      this.endedTextBox = new System.Windows.Forms.TextBox();
-      this.idLabel1 = new System.Windows.Forms.Label();
-      this.nameTextBox = new System.Windows.Forms.TextBox();
-      this.startedTextBox = new System.Windows.Forms.TextBox();
-      descriptionLabel = new System.Windows.Forms.Label();
-      endedLabel = new System.Windows.Forms.Label();
-      idLabel = new System.Windows.Forms.Label();
-      nameLabel = new System.Windows.Forms.Label();
-      startedLabel = new System.Windows.Forms.Label();
-      ((System.ComponentModel.ISupportInitialize)(this.projectListDataGridView)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.projectListBindingSource)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.projectBindingSource)).BeginInit();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+      this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+      this.ProjectsStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+      this.NewProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.EditProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.DeleteProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.ResourcesToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+      this.NewResourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.EditResourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.DeleteResourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.AdminToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+      this.EditRolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.LoginToolStripLabel = new System.Windows.Forms.ToolStripLabel();
+      this.LoginToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.DocumentsToolStringDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+      this.Panel1 = new System.Windows.Forms.Panel();
+      this.StatusStrip1 = new System.Windows.Forms.StatusStrip();
+      this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+      this.toolStrip1.SuspendLayout();
+      this.StatusStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
-      // projectListDataGridView
+      // toolStrip1
       // 
-      this.projectListDataGridView.AllowUserToAddRows = false;
-      this.projectListDataGridView.AllowUserToDeleteRows = false;
-      dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-      this.projectListDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
-      this.projectListDataGridView.AutoGenerateColumns = false;
-      this.projectListDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-      this.projectListDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-      this.projectListDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2});
-      this.projectListDataGridView.DataSource = this.projectListBindingSource;
-      this.projectListDataGridView.Location = new System.Drawing.Point(12, 12);
-      this.projectListDataGridView.MultiSelect = false;
-      this.projectListDataGridView.Name = "projectListDataGridView";
-      this.projectListDataGridView.ReadOnly = true;
-      this.projectListDataGridView.RowHeadersVisible = false;
-      this.projectListDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.projectListDataGridView.Size = new System.Drawing.Size(369, 414);
-      this.projectListDataGridView.TabIndex = 1;
-      this.projectListDataGridView.SelectionChanged += new System.EventHandler(this.projectListDataGridView_SelectionChanged);
+      this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ProjectsStripDropDownButton1,
+            this.ResourcesToolStripDropDownButton,
+            this.AdminToolStripDropDownButton,
+            this.LoginToolStripLabel,
+            this.LoginToolStripButton,
+            this.DocumentsToolStringDropDownButton});
+      this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+      this.toolStrip1.Name = "toolStrip1";
+      this.toolStrip1.Size = new System.Drawing.Size(827, 25);
+      this.toolStrip1.TabIndex = 1;
       // 
-      // dataGridViewTextBoxColumn1
+      // ProjectsStripDropDownButton1
       // 
-      this.dataGridViewTextBoxColumn1.DataPropertyName = "Id";
-      this.dataGridViewTextBoxColumn1.HeaderText = "Id";
-      this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-      this.dataGridViewTextBoxColumn1.ReadOnly = true;
-      this.dataGridViewTextBoxColumn1.Width = 41;
+      this.ProjectsStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewProjectToolStripMenuItem,
+            this.EditProjectToolStripMenuItem,
+            this.DeleteProjectToolStripMenuItem});
+      this.ProjectsStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("ProjectsStripDropDownButton1.Image")));
+      this.ProjectsStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.ProjectsStripDropDownButton1.Name = "ProjectsStripDropDownButton1";
+      this.ProjectsStripDropDownButton1.Size = new System.Drawing.Size(75, 22);
+      this.ProjectsStripDropDownButton1.Text = "Projects";
       // 
-      // dataGridViewTextBoxColumn2
+      // NewProjectToolStripMenuItem
       // 
-      this.dataGridViewTextBoxColumn2.DataPropertyName = "Name";
-      this.dataGridViewTextBoxColumn2.HeaderText = "Name";
-      this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-      this.dataGridViewTextBoxColumn2.ReadOnly = true;
-      this.dataGridViewTextBoxColumn2.Width = 60;
+      this.NewProjectToolStripMenuItem.Name = "NewProjectToolStripMenuItem";
+      this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.NewProjectToolStripMenuItem.Text = "New project";
+      this.NewProjectToolStripMenuItem.Click += new System.EventHandler(this.NewProjectToolStripMenuItem_Click);
       // 
-      // projectListBindingSource
+      // EditProjectToolStripMenuItem
       // 
-      this.projectListBindingSource.DataSource = typeof(ProjectTracker.Library.ProjectList);
+      this.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem";
+      this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.EditProjectToolStripMenuItem.Text = "Edit project";
+      this.EditProjectToolStripMenuItem.Click += new System.EventHandler(this.EditProjectToolStripMenuItem_Click);
       // 
-      // projectBindingSource
+      // DeleteProjectToolStripMenuItem
       // 
-      this.projectBindingSource.DataSource = typeof(ProjectTracker.Library.Project);
+      this.DeleteProjectToolStripMenuItem.Name = "DeleteProjectToolStripMenuItem";
+      this.DeleteProjectToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.DeleteProjectToolStripMenuItem.Text = "Delete project";
+      this.DeleteProjectToolStripMenuItem.Click += new System.EventHandler(this.DeleteProjectToolStripMenuItem_Click);
       // 
-      // descriptionLabel
+      // ResourcesToolStripDropDownButton
       // 
-      descriptionLabel.AutoSize = true;
-      descriptionLabel.Location = new System.Drawing.Point(417, 178);
-      descriptionLabel.Name = "descriptionLabel";
-      descriptionLabel.Size = new System.Drawing.Size(63, 13);
-      descriptionLabel.TabIndex = 1;
-      descriptionLabel.Text = "Description:";
+      this.ResourcesToolStripDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewResourceToolStripMenuItem,
+            this.EditResourceToolStripMenuItem,
+            this.DeleteResourceToolStripMenuItem});
+      this.ResourcesToolStripDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("ResourcesToolStripDropDownButton.Image")));
+      this.ResourcesToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.ResourcesToolStripDropDownButton.Name = "ResourcesToolStripDropDownButton";
+      this.ResourcesToolStripDropDownButton.Size = new System.Drawing.Size(86, 22);
+      this.ResourcesToolStripDropDownButton.Text = "Resources";
       // 
-      // descriptionTextBox
+      // NewResourceToolStripMenuItem
       // 
-      this.descriptionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.projectBindingSource, "Description", true));
-      this.descriptionTextBox.Location = new System.Drawing.Point(486, 175);
-      this.descriptionTextBox.Multiline = true;
-      this.descriptionTextBox.Name = "descriptionTextBox";
-      this.descriptionTextBox.Size = new System.Drawing.Size(295, 163);
-      this.descriptionTextBox.TabIndex = 2;
+      this.NewResourceToolStripMenuItem.Name = "NewResourceToolStripMenuItem";
+      this.NewResourceToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.NewResourceToolStripMenuItem.Text = "New resource";
+      this.NewResourceToolStripMenuItem.Click += new System.EventHandler(this.NewResourceToolStripMenuItem_Click);
       // 
-      // endedLabel
+      // EditResourceToolStripMenuItem
       // 
-      endedLabel.AutoSize = true;
-      endedLabel.Location = new System.Drawing.Point(417, 152);
-      endedLabel.Name = "endedLabel";
-      endedLabel.Size = new System.Drawing.Size(41, 13);
-      endedLabel.TabIndex = 3;
-      endedLabel.Text = "Ended:";
+      this.EditResourceToolStripMenuItem.Name = "EditResourceToolStripMenuItem";
+      this.EditResourceToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.EditResourceToolStripMenuItem.Text = "Edit resource";
+      this.EditResourceToolStripMenuItem.Click += new System.EventHandler(this.EditResourceToolStripMenuItem_Click);
       // 
-      // endedTextBox
+      // DeleteResourceToolStripMenuItem
       // 
-      this.endedTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.projectBindingSource, "Ended", true));
-      this.endedTextBox.Location = new System.Drawing.Point(486, 149);
-      this.endedTextBox.Name = "endedTextBox";
-      this.endedTextBox.Size = new System.Drawing.Size(100, 20);
-      this.endedTextBox.TabIndex = 4;
+      this.DeleteResourceToolStripMenuItem.Name = "DeleteResourceToolStripMenuItem";
+      this.DeleteResourceToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.DeleteResourceToolStripMenuItem.Text = "Delete resource";
+      this.DeleteResourceToolStripMenuItem.Click += new System.EventHandler(this.DeleteResourceToolStripMenuItem_Click);
       // 
-      // idLabel
+      // AdminToolStripDropDownButton
       // 
-      idLabel.AutoSize = true;
-      idLabel.Location = new System.Drawing.Point(417, 71);
-      idLabel.Name = "idLabel";
-      idLabel.Size = new System.Drawing.Size(19, 13);
-      idLabel.TabIndex = 5;
-      idLabel.Text = "Id:";
+      this.AdminToolStripDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditRolesToolStripMenuItem});
+      this.AdminToolStripDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("AdminToolStripDropDownButton.Image")));
+      this.AdminToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.AdminToolStripDropDownButton.Name = "AdminToolStripDropDownButton";
+      this.AdminToolStripDropDownButton.Size = new System.Drawing.Size(65, 22);
+      this.AdminToolStripDropDownButton.Text = "Admin";
       // 
-      // idLabel1
+      // EditRolesToolStripMenuItem
       // 
-      this.idLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.projectBindingSource, "Id", true));
-      this.idLabel1.Location = new System.Drawing.Point(483, 71);
-      this.idLabel1.Name = "idLabel1";
-      this.idLabel1.Size = new System.Drawing.Size(100, 23);
-      this.idLabel1.TabIndex = 6;
+      this.EditRolesToolStripMenuItem.Name = "EditRolesToolStripMenuItem";
+      this.EditRolesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.EditRolesToolStripMenuItem.Text = "Edit roles";
+      this.EditRolesToolStripMenuItem.Click += new System.EventHandler(this.EditRolesToolStripMenuItem_Click);
       // 
-      // nameLabel
+      // LoginToolStripLabel
       // 
-      nameLabel.AutoSize = true;
-      nameLabel.Location = new System.Drawing.Point(417, 100);
-      nameLabel.Name = "nameLabel";
-      nameLabel.Size = new System.Drawing.Size(38, 13);
-      nameLabel.TabIndex = 7;
-      nameLabel.Text = "Name:";
+      this.LoginToolStripLabel.Name = "LoginToolStripLabel";
+      this.LoginToolStripLabel.Size = new System.Drawing.Size(70, 22);
+      this.LoginToolStripLabel.Text = "Not logged in";
       // 
-      // nameTextBox
+      // LoginToolStripButton
       // 
-      this.nameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.projectBindingSource, "Name", true));
-      this.nameTextBox.Location = new System.Drawing.Point(486, 97);
-      this.nameTextBox.Name = "nameTextBox";
-      this.nameTextBox.Size = new System.Drawing.Size(100, 20);
-      this.nameTextBox.TabIndex = 8;
+      this.LoginToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.LoginToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("LoginToolStripButton.Image")));
+      this.LoginToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.LoginToolStripButton.Name = "LoginToolStripButton";
+      this.LoginToolStripButton.Size = new System.Drawing.Size(36, 22);
+      this.LoginToolStripButton.Text = "Login";
+      this.LoginToolStripButton.Click += new System.EventHandler(this.LoginToolStripButton_Click);
       // 
-      // startedLabel
+      // DocumentsToolStringDropDownButton
       // 
-      startedLabel.AutoSize = true;
-      startedLabel.Location = new System.Drawing.Point(417, 126);
-      startedLabel.Name = "startedLabel";
-      startedLabel.Size = new System.Drawing.Size(44, 13);
-      startedLabel.TabIndex = 9;
-      startedLabel.Text = "Started:";
+      this.DocumentsToolStringDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.DocumentsToolStringDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("DocumentsToolStringDropDownButton.Image")));
+      this.DocumentsToolStringDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.DocumentsToolStringDropDownButton.Name = "DocumentsToolStringDropDownButton";
+      this.DocumentsToolStringDropDownButton.Size = new System.Drawing.Size(73, 22);
+      this.DocumentsToolStringDropDownButton.Text = "Documents";
+      this.DocumentsToolStringDropDownButton.DropDownOpening += new System.EventHandler(this.DocumentsToolStringDropDownButton_DropDownOpening);
       // 
-      // startedTextBox
+      // Panel1
       // 
-      this.startedTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.projectBindingSource, "Started", true));
-      this.startedTextBox.Location = new System.Drawing.Point(486, 123);
-      this.startedTextBox.Name = "startedTextBox";
-      this.startedTextBox.Size = new System.Drawing.Size(100, 20);
-      this.startedTextBox.TabIndex = 10;
+      this.Panel1.BackColor = System.Drawing.SystemColors.ControlDark;
+      this.Panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.Panel1.Location = new System.Drawing.Point(0, 25);
+      this.Panel1.Name = "Panel1";
+      this.Panel1.Size = new System.Drawing.Size(827, 393);
+      this.Panel1.TabIndex = 2;
+      this.Panel1.Resize += new System.EventHandler(this.Panel1_Resize);
+      // 
+      // StatusStrip1
+      // 
+      this.StatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StatusLabel});
+      this.StatusStrip1.Location = new System.Drawing.Point(0, 396);
+      this.StatusStrip1.Name = "StatusStrip1";
+      this.StatusStrip1.Size = new System.Drawing.Size(827, 22);
+      this.StatusStrip1.TabIndex = 3;
+      this.StatusStrip1.Text = "statusStrip1";
+      // 
+      // StatusLabel
+      // 
+      this.StatusLabel.Name = "StatusLabel";
+      this.StatusLabel.Size = new System.Drawing.Size(111, 17);
+      this.StatusLabel.Text = "ToolStripStatusLabel1";
       // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(804, 446);
-      this.Controls.Add(descriptionLabel);
-      this.Controls.Add(this.descriptionTextBox);
-      this.Controls.Add(endedLabel);
-      this.Controls.Add(this.endedTextBox);
-      this.Controls.Add(idLabel);
-      this.Controls.Add(this.idLabel1);
-      this.Controls.Add(nameLabel);
-      this.Controls.Add(this.nameTextBox);
-      this.Controls.Add(startedLabel);
-      this.Controls.Add(this.startedTextBox);
-      this.Controls.Add(this.projectListDataGridView);
+      this.ClientSize = new System.Drawing.Size(827, 418);
+      this.Controls.Add(this.StatusStrip1);
+      this.Controls.Add(this.Panel1);
+      this.Controls.Add(this.toolStrip1);
       this.Name = "MainForm";
-      this.Text = "MainForm";
+      this.Text = "Project Tracker";
       this.Load += new System.EventHandler(this.MainForm_Load);
-      ((System.ComponentModel.ISupportInitialize)(this.projectListDataGridView)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.projectListBindingSource)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.projectBindingSource)).EndInit();
+      this.toolStrip1.ResumeLayout(false);
+      this.toolStrip1.PerformLayout();
+      this.StatusStrip1.ResumeLayout(false);
+      this.StatusStrip1.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -217,16 +221,22 @@ namespace PTWin
 
     #endregion
 
-    private System.Windows.Forms.BindingSource projectListBindingSource;
-    private System.Windows.Forms.DataGridView projectListDataGridView;
-    private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-    private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-    private System.Windows.Forms.BindingSource projectBindingSource;
-    private System.Windows.Forms.TextBox descriptionTextBox;
-    private System.Windows.Forms.TextBox endedTextBox;
-    private System.Windows.Forms.Label idLabel1;
-    private System.Windows.Forms.TextBox nameTextBox;
-    private System.Windows.Forms.TextBox startedTextBox;
-
+    internal System.Windows.Forms.ToolStrip toolStrip1;
+    internal System.Windows.Forms.ToolStripDropDownButton ProjectsStripDropDownButton1;
+    internal System.Windows.Forms.ToolStripMenuItem NewProjectToolStripMenuItem;
+    internal System.Windows.Forms.ToolStripMenuItem EditProjectToolStripMenuItem;
+    internal System.Windows.Forms.ToolStripMenuItem DeleteProjectToolStripMenuItem;
+    internal System.Windows.Forms.ToolStripLabel LoginToolStripLabel;
+    internal System.Windows.Forms.ToolStripButton LoginToolStripButton;
+    internal System.Windows.Forms.ToolStripDropDownButton ResourcesToolStripDropDownButton;
+    internal System.Windows.Forms.ToolStripMenuItem NewResourceToolStripMenuItem;
+    internal System.Windows.Forms.ToolStripMenuItem EditResourceToolStripMenuItem;
+    internal System.Windows.Forms.ToolStripMenuItem DeleteResourceToolStripMenuItem;
+    internal System.Windows.Forms.ToolStripDropDownButton AdminToolStripDropDownButton;
+    internal System.Windows.Forms.ToolStripMenuItem EditRolesToolStripMenuItem;
+    internal System.Windows.Forms.ToolStripDropDownButton DocumentsToolStringDropDownButton;
+    internal System.Windows.Forms.Panel Panel1;
+    internal System.Windows.Forms.StatusStrip StatusStrip1;
+    internal System.Windows.Forms.ToolStripStatusLabel StatusLabel;
   }
 }

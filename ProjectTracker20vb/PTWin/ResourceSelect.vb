@@ -2,8 +2,8 @@ Imports System.Windows.Forms
 
 Public Class ResourceSelect
 
-  Private mResourceId As String
-  Public ReadOnly Property ResourceId() As String
+  Private mResourceId As Integer
+  Public ReadOnly Property ResourceId() As Integer
     Get
       Return mResourceId
     End Get

@@ -10,7 +10,7 @@ Partial Class ResourceEdit
       Dim idString As String = Request.QueryString("id")
       Dim obj As ProjectTracker.Library.Resource
       If Len(idString) > 0 Then
-        obj = ProjectTracker.Library.Resource.GetResource(idString)
+        obj = ProjectTracker.Library.Resource.GetResource(CInt(idString))
         If ProjectTracker.Library.Resource.CanSaveObject Then
           Me.DetailsView1.DefaultMode = DetailsViewMode.Edit
 
@@ -19,7 +19,7 @@ Partial Class ResourceEdit
         End If
 
       Else
-        obj = ProjectTracker.Library.Resource.NewResource("new")
+        obj = ProjectTracker.Library.Resource.NewResource
         Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
       End If
       Session("currentObject") = obj
@@ -53,7 +53,7 @@ Partial Class ResourceEdit
   Protected Sub ResourceDataSource_DeleteObject(ByVal sender As Object, _
     ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourceDataSource.DeleteObject
 
-    ProjectTracker.Library.Resource.DeleteResource(CStr(e.Keys("Id")))
+    ProjectTracker.Library.Resource.DeleteResource(CInt(e.Keys("Id")))
     Session.Remove("currentObject")
     e.RowsAffected = 1
 
@@ -63,7 +63,7 @@ Partial Class ResourceEdit
     ByVal e As Csla.Web.InsertObjectArgs) Handles ResourceDataSource.InsertObject
 
     Dim obj As ProjectTracker.Library.Resource = _
-      ProjectTracker.Library.Resource.NewResource(CStr(e.Values("Id")))
+      ProjectTracker.Library.Resource.NewResource
     Csla.Data.DataMapper.Map(e.Values, obj, "Id")
     Session("currentObject") = obj.Save
     e.RowsAffected = 1

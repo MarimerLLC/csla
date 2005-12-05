@@ -6,10 +6,10 @@ Public Class ResourceAssignments
 
 #Region " Business Methods "
 
-  Default Public Overloads ReadOnly Property Item(ByVal projectID As Guid) As ResourceAssignment
+  Default Public Overloads ReadOnly Property Item(ByVal projectId As Guid) As ResourceAssignment
     Get
       For Each res As ResourceAssignment In Me
-        If res.ProjectID.Equals(projectID) Then
+        If res.ProjectId.Equals(projectId) Then
           Return res
         End If
       Next
@@ -19,7 +19,7 @@ Public Class ResourceAssignments
 
   Public Sub AssignTo(ByVal projectId As Guid)
 
-    DoAssignment(ResourceAssignment.NewResourceAssignment(projectID))
+    DoAssignment(ResourceAssignment.NewResourceAssignment(projectId))
 
   End Sub
 
@@ -37,7 +37,7 @@ Public Class ResourceAssignments
   Public Overloads Sub Remove(ByVal projectId As Guid)
 
     For Each res As ResourceAssignment In Me
-      If res.ProjectID.Equals(projectId) Then
+      If res.ProjectId.Equals(projectId) Then
         Remove(res)
         Exit For
       End If

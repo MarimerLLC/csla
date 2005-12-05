@@ -33,7 +33,13 @@ Public Class ResourceEdit
 
   End Function
 
-  Private Sub ProjectEdit_CurrentPrincipalChanged( _
+  Public Overrides Function GetHashCode() As Integer
+
+    Return mResource.GetHashCode
+
+  End Function
+
+  Private Sub ResourceEdit_CurrentPrincipalChanged( _
   ByVal sender As Object, _
   ByVal e As System.EventArgs) _
   Handles Me.CurrentPrincipalChanged
@@ -67,7 +73,7 @@ Public Class ResourceEdit
       Me.AssignmentsBindingSource.RaiseListChangedEvents = False
 
       ' do the save
-      Dim old As Resource = CType(mResource.Clone, Resource)
+      Dim old As Resource = mResource.Clone
       mResource.ApplyEdit()
       Try
         mResource = mResource.Save
@@ -155,7 +161,7 @@ Public Class ResourceEdit
 
   End Sub
 
-  Private Sub mProject_PropertyChanged(ByVal sender As Object, _
+  Private Sub mResource_PropertyChanged(ByVal sender As Object, _
     ByVal e As System.ComponentModel.PropertyChangedEventArgs) _
     Handles mResource.PropertyChanged
 

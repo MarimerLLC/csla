@@ -6,13 +6,13 @@ Public Class ProjectResource
 
 #Region " Business Methods "
 
-  Private mResourceId As String
+  Private mResourceId As Integer
   Private mFirstName As String = ""
   Private mLastName As String = ""
   Private mAssigned As New SmartDate(Today)
   Private mRole As Integer
 
-  Public ReadOnly Property ResourceId() As String
+  Public ReadOnly Property ResourceId() As Integer
     Get
       CanReadProperty(True)
       Return mResourceId
@@ -118,15 +118,15 @@ Public Class ProjectResource
 
   End Function
 
-  Friend Shared Function NewProjectResource(ByVal resourceID As String, ByVal role As Integer) As ProjectResource
+  Friend Shared Function NewProjectResource(ByVal resourceId As Integer, ByVal role As Integer) As ProjectResource
 
-    Return New ProjectResource(Resource.GetResource(resourceID), role)
+    Return New ProjectResource(Resource.GetResource(resourceId), role)
 
   End Function
 
-  Friend Shared Function NewProjectResource(ByVal resourceID As String) As ProjectResource
+  Friend Shared Function NewProjectResource(ByVal resourceId As Integer) As ProjectResource
 
-    Return New ProjectResource(Resource.GetResource(resourceID), RoleList.DefaultRole)
+    Return New ProjectResource(Resource.GetResource(resourceId), RoleList.DefaultRole)
 
   End Function
 
@@ -157,10 +157,10 @@ Public Class ProjectResource
 
     MarkAsChild()
     With dr
-      mResourceId = .GetString(0)
-      mLastName = .GetString(1)
-      mFirstName = .GetString(2)
-      mAssigned = .GetSmartDate(3)
+      mResourceId = .GetInt32("ResourceId")
+      mLastName = .GetString("LastName")
+      mFirstName = .GetString("FirstName")
+      mAssigned = .GetSmartDate("Assigned")
       mRole = .GetInt32(4)
     End With
     MarkOld()
@@ -216,10 +216,10 @@ Public Class ProjectResource
   Private Sub LoadParameters(ByVal cm As SqlCommand, ByVal project As Project)
 
     With cm
-      .Parameters.AddWithValue("@ProjectID", project.Id)
-      .Parameters.AddWithValue("@ResourceID", mResourceId)
-      .Parameters.AddWithValue("@Assigned", mAssigned.DBValue)
-      .Parameters.AddWithValue("@Role", mRole)
+      .Parameters.AddWithValue("@projectId", project.Id)
+      .Parameters.AddWithValue("@resourceId", mResourceId)
+      .Parameters.AddWithValue("@assigned", mAssigned.DBValue)
+      .Parameters.AddWithValue("@role", mRole)
     End With
 
   End Sub
@@ -238,8 +238,8 @@ Public Class ProjectResource
         With cm
           .CommandType = CommandType.StoredProcedure
           .CommandText = "deleteAssignment"
-          .Parameters.AddWithValue("@ProjectID", project.Id)
-          .Parameters.AddWithValue("@ResourceID", mResourceId)
+          .Parameters.AddWithValue("@projectId", project.Id)
+          .Parameters.AddWithValue("@resourceId", mResourceId)
 
           .ExecuteNonQuery()
 

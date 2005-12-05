@@ -13,7 +13,7 @@ Public Class RolesEdit
   Private Sub SaveButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveButton.Click
 
     Me.RolesBindingSource.RaiseListChangedEvents = False
-    Dim old As Admin.Roles = CType(mRoles.Clone, Admin.Roles)
+    Dim old As Admin.Roles = mRoles.Clone
     Try
       mRoles = mRoles.Save
 

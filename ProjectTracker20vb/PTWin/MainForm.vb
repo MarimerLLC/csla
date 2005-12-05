@@ -92,13 +92,9 @@ Public Class MainForm
     ByVal e As System.EventArgs) _
     Handles NewResourceToolStripMenuItem.Click
 
-    Dim resourceId As String
-    resourceId = InputBox("New resource id", "New resource")
-    If Len(resourceId) > 0 Then
-      Using busy As New StatusBusy("Creating resource...")
-        AddWinPart(New ResourceEdit(Resource.NewResource(resourceId)))
-      End Using
-    End If
+    Using busy As New StatusBusy("Creating resource...")
+      AddWinPart(New ResourceEdit(Resource.NewResource))
+    End Using
 
   End Sub
 
@@ -113,7 +109,7 @@ Public Class MainForm
 
   End Sub
 
-  Public Sub ShowEditResource(ByVal resourceId As String)
+  Public Sub ShowEditResource(ByVal resourceId As Integer)
 
     ' see if this project is already loaded
     For Each ctl As Control In Panel1.Controls
@@ -142,7 +138,7 @@ Public Class MainForm
     dlg.Text = "Delete Resource"
     If dlg.ShowDialog = Windows.Forms.DialogResult.OK Then
       ' get the resource id
-      Dim resourceId As String = dlg.ResourceId
+      Dim resourceId As Integer = dlg.ResourceId
 
       If MessageBox.Show("Are you sure?", "Delete resource", _
         MessageBoxButtons.YesNo, MessageBoxIcon.Question, _

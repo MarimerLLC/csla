@@ -10,14 +10,14 @@ Public Class ResourceList
   <Serializable()> _
   Public Class ResourceInfo
 
-    Private mId As String
+    Private mId As Integer
     Private mName As String
 
-    Public Property Id() As String
+    Public Property Id() As Integer
       Get
         Return mId
       End Get
-      Friend Set(ByVal Value As String)
+      Friend Set(ByVal Value As Integer)
         mId = Value
       End Set
     End Property
@@ -96,7 +96,7 @@ Public Class ResourceList
             IsReadOnly = False
             While dr.Read()
               Dim info As New ResourceInfo
-              info.Id = dr.GetString("id")
+              info.Id = dr.GetInt32("Id")
               info.Name = _
                 dr.GetString("LastName") & _
                 ", " & dr.GetString("FirstName")

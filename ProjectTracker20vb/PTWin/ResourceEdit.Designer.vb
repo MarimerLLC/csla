@@ -247,8 +247,8 @@ Partial Public Class ResourceEdit
     'DataGridViewTextBoxColumn3
     '
     Me.DataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-    Me.DataGridViewTextBoxColumn3.DataPropertyName = "ProjectID"
-    Me.DataGridViewTextBoxColumn3.HeaderText = "ProjectID"
+    Me.DataGridViewTextBoxColumn3.DataPropertyName = "ProjectId"
+    Me.DataGridViewTextBoxColumn3.HeaderText = "ProjectId"
     Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
     Me.DataGridViewTextBoxColumn3.ReadOnly = True
     Me.DataGridViewTextBoxColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.[False]

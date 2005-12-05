@@ -33,6 +33,12 @@ Public Class ProjectEdit
 
   End Function
 
+  Public Overrides Function GetHashCode() As Integer
+
+    Return mProject.GetHashCode
+
+  End Function
+
   Private Sub ProjectEdit_CurrentPrincipalChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.CurrentPrincipalChanged
 
     ApplyAuthorizationRules()
@@ -145,8 +151,8 @@ Public Class ProjectEdit
     ByVal e As System.EventArgs) Handles UnassignButton.Click
 
     If Me.ResourcesDataGridView.SelectedRows.Count > 0 Then
-      Dim resourceId As String = _
-        CStr(Me.ResourcesDataGridView.SelectedRows(0).Cells(0).Value)
+      Dim resourceId As Integer = _
+        CInt(Me.ResourcesDataGridView.SelectedRows(0).Cells(0).Value)
       mProject.Resources.Remove(resourceId)
     End If
 
@@ -167,8 +173,8 @@ Public Class ProjectEdit
     ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles ResourcesDataGridView.CellContentClick
 
     If e.ColumnIndex = 1 Then
-      Dim resourceId As String = _
-        CStr(Me.ResourcesDataGridView.Rows(e.RowIndex).Cells(0).Value)
+      Dim resourceId As Integer = _
+        CInt(Me.ResourcesDataGridView.Rows(e.RowIndex).Cells(0).Value)
       MainForm.ShowEditResource(resourceId)
     End If
 

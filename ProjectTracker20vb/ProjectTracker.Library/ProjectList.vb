@@ -32,7 +32,7 @@ Public Class ProjectList
 
     Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
       If TypeOf obj Is ProjectInfo Then
-        Return mID.Equals(CType(obj, ProjectInfo).ID)
+        Return mId.Equals(CType(obj, ProjectInfo).Id)
       Else
         Return False
       End If

@@ -11,7 +11,7 @@ Public Class ResourceAssignment
   Private mAssigned As New SmartDate(Today)
   Private mRole As Integer
 
-  Public ReadOnly Property ProjectID() As Guid
+  Public ReadOnly Property ProjectId() As Guid
     Get
       If CanReadProperty() Then
         Return mProjectId
@@ -86,16 +86,16 @@ Public Class ResourceAssignment
   End Function
 
   Friend Shared Function NewResourceAssignment( _
-    ByVal projectID As Guid, ByVal role As Integer) As ResourceAssignment
+    ByVal projectId As Guid, ByVal role As Integer) As ResourceAssignment
 
-    Return New ResourceAssignment(Project.GetProject(projectID), role)
+    Return New ResourceAssignment(Project.GetProject(projectId), role)
 
   End Function
 
   Friend Shared Function NewResourceAssignment( _
-    ByVal projectID As Guid) As ResourceAssignment
+    ByVal projectId As Guid) As ResourceAssignment
 
-    Return New ResourceAssignment(Project.GetProject(projectID), RoleList.DefaultRole)
+    Return New ResourceAssignment(Project.GetProject(projectId), RoleList.DefaultRole)
 
   End Function
 
@@ -178,10 +178,10 @@ Public Class ResourceAssignment
   Private Sub LoadParameters(ByVal cm As SqlCommand, ByVal resource As Resource)
 
     With cm
-      .Parameters.AddWithValue("@ProjectID", mProjectId)
-      .Parameters.AddWithValue("@ResourceID", resource.Id)
-      .Parameters.AddWithValue("@Assigned", mAssigned.DBValue)
-      .Parameters.AddWithValue("@Role", mRole)
+      .Parameters.AddWithValue("@projectId", mProjectId)
+      .Parameters.AddWithValue("@resourceId", resource.Id)
+      .Parameters.AddWithValue("@assigned", mAssigned.DBValue)
+      .Parameters.AddWithValue("@role", mRole)
     End With
 
   End Sub
@@ -200,8 +200,8 @@ Public Class ResourceAssignment
         .Transaction = tr
         .CommandType = CommandType.StoredProcedure
         .CommandText = "deleteAssignment"
-        .Parameters.AddWithValue("@ProjectID", mProjectId)
-        .Parameters.AddWithValue("@ResourceID", resource.Id)
+        .Parameters.AddWithValue("@projectId", mProjectId)
+        .Parameters.AddWithValue("@resourceId", resource.Id)
 
         .ExecuteNonQuery()
 

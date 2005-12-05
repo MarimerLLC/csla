@@ -270,7 +270,7 @@ Public Class Project
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandType = CommandType.StoredProcedure
         cm.CommandText = "getProject"
-        cm.Parameters.AddWithValue("@ID", criteria.Id)
+        cm.Parameters.AddWithValue("@id", criteria.Id)
 
         Using dr As New SafeDataReader(cm.ExecuteReader)
           dr.Read()
@@ -334,11 +334,11 @@ Public Class Project
   Private Sub LoadParameters(ByVal cm As SqlCommand)
 
     With cm
-      .Parameters.AddWithValue("@ID", mId.ToString)
-      .Parameters.AddWithValue("@Name", mName)
-      .Parameters.AddWithValue("@Started", mStarted.DBValue)
-      .Parameters.AddWithValue("@Ended", mEnded.DBValue)
-      .Parameters.AddWithValue("@Description", mDescription)
+      .Parameters.AddWithValue("@id", mId.ToString)
+      .Parameters.AddWithValue("@name", mName)
+      .Parameters.AddWithValue("@started", mStarted.DBValue)
+      .Parameters.AddWithValue("@ended", mEnded.DBValue)
+      .Parameters.AddWithValue("@description", mDescription)
     End With
 
   End Sub
@@ -363,7 +363,7 @@ Public Class Project
         .Connection = cn
         .CommandType = CommandType.StoredProcedure
         .CommandText = "deleteProject"
-        .Parameters.AddWithValue("@ID", criteria.Id.ToString)
+        .Parameters.AddWithValue("@id", criteria.Id.ToString)
         .ExecuteNonQuery()
       End With
 
@@ -408,8 +408,8 @@ Public Class Project
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
           cm.CommandType = CommandType.Text
-          cm.CommandText = "SELECT id FROM Projects WHERE id=@id"
-          cm.Parameters.AddWithValue("@ID", mId)
+          cm.CommandText = "SELECT Id FROM Projects WHERE Id=@id"
+          cm.Parameters.AddWithValue("@id", mId)
 
           Using dr As SqlDataReader = cm.ExecuteReader
             If dr.Read() Then

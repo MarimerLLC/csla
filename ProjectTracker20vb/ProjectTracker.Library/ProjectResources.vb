@@ -6,10 +6,10 @@ Public Class ProjectResources
 
 #Region " Business Methods "
 
-  Default Public Overloads ReadOnly Property Item(ByVal resourceID As String) As ProjectResource
+  Default Public Overloads ReadOnly Property Item(ByVal resourceId As Integer) As ProjectResource
     Get
       For Each res As ProjectResource In Me
-        If res.ResourceId = resourceID Then
+        If res.ResourceId = resourceId Then
           Return res
         End If
       Next
@@ -17,7 +17,7 @@ Public Class ProjectResources
     End Get
   End Property
 
-  Public Sub Assign(ByVal resourceId As String)
+  Public Sub Assign(ByVal resourceId As Integer)
 
     DoAssignment(ProjectResource.NewProjectResource(resourceId, RoleList.DefaultRole))
 
@@ -34,10 +34,10 @@ Public Class ProjectResources
 
   End Sub
 
-  Public Overloads Sub Remove(ByVal resourceID As String)
+  Public Overloads Sub Remove(ByVal resourceId As Integer)
 
     For Each res As ProjectResource In Me
-      If res.ResourceId = resourceID Then
+      If res.ResourceId = resourceId Then
         Remove(res)
         Exit For
       End If
@@ -50,10 +50,10 @@ Public Class ProjectResources
 #Region " Contains "
 
   Public Overloads Function Contains( _
-      ByVal resourceID As String) As Boolean
+      ByVal resourceId As Integer) As Boolean
 
     For Each res As ProjectResource In Me
-      If res.ResourceId = resourceID Then
+      If res.ResourceId = resourceId Then
         Return True
       End If
     Next
@@ -63,10 +63,10 @@ Public Class ProjectResources
   End Function
 
   Public Overloads Function ContainsDeleted( _
-    ByVal resourceID As String) As Boolean
+    ByVal resourceId As Integer) As Boolean
 
     For Each res As ProjectResource In DeletedList
-      If res.ResourceId = resourceID Then
+      If res.ResourceId = resourceId Then
         Return True
       End If
     Next

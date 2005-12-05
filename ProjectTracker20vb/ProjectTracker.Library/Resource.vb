@@ -7,14 +7,15 @@ Public Class Resource
 
 #Region " Business Methods "
 
-  Private mId As String = ""
+  Private mId As Integer
   Private mLastName As String = ""
   Private mFirstName As String = ""
+  Private mTimestamp(7) As Byte
 
   Private mAssignments As ResourceAssignments = _
     ResourceAssignments.NewResourceAssignments()
 
-  Public ReadOnly Property Id() As String
+  Public ReadOnly Property Id() As Integer
     Get
       CanReadProperty(True)
       Return mId
@@ -145,16 +146,16 @@ Public Class Resource
 
 #Region " Factory Methods "
 
-  Public Shared Function NewResource(ByVal id As String) As Resource
+  Public Shared Function NewResource() As Resource
 
     If Not CanAddObject() Then
       Throw New System.Security.SecurityException("User not authorized to add a resource")
     End If
-    Return DataPortal.Create(Of Resource)(New Criteria(id))
+    Return DataPortal.Create(Of Resource)()
 
   End Function
 
-  Public Shared Sub DeleteResource(ByVal id As String)
+  Public Shared Sub DeleteResource(ByVal id As Integer)
 
     If Not CanDeleteObject() Then
       Throw New System.Security.SecurityException("User not authorized to remove a resource")
@@ -163,7 +164,7 @@ Public Class Resource
 
   End Sub
 
-  Public Shared Function GetResource(ByVal id As String) As Resource
+  Public Shared Function GetResource(ByVal id As Integer) As Resource
 
     If Not CanGetObject() Then
       Throw New System.Security.SecurityException("User not authorized to view a resource")
@@ -204,14 +205,14 @@ Public Class Resource
 
   <Serializable()> _
   Private Class Criteria
-    Private mId As String
-    Public ReadOnly Property Id() As String
+    Private mId As Integer
+    Public ReadOnly Property Id() As Integer
       Get
         Return mId
       End Get
     End Property
 
-    Public Sub New(ByVal id As String)
+    Public Sub New(ByVal id As Integer)
       mId = id
     End Sub
   End Class
@@ -223,7 +224,7 @@ Public Class Resource
   <RunLocal()> _
   Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
 
-    mId = criteria.Id
+    ' nothing to initialize
 
   End Sub
 
@@ -235,14 +236,15 @@ Public Class Resource
         With cm
           .CommandType = CommandType.StoredProcedure
           .CommandText = "getResource"
-          .Parameters.AddWithValue("@ID", criteria.Id)
+          .Parameters.AddWithValue("@id", criteria.Id)
 
           Using dr As New SafeDataReader(.ExecuteReader)
             dr.Read()
             With dr
-              mId = .GetString(0)
-              mLastName = .GetString(1)
-              mFirstName = .GetString(2)
+              mId = .GetInt32("Id")
+              mLastName = .GetString("LastName")
+              mFirstName = .GetString("FirstName")
+              .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
             End With
 
             ' load child objects
@@ -312,9 +314,10 @@ Public Class Resource
   Private Sub LoadParameters(ByVal cm As SqlCommand)
 
     With cm
-      .Parameters.AddWithValue("@ID", mId)
-      .Parameters.AddWithValue("@LastName", mLastName)
-      .Parameters.AddWithValue("@FirstName", mFirstName)
+      .Parameters.AddWithValue("@id", mId)
+      .Parameters.AddWithValue("@lastName", mLastName)
+      .Parameters.AddWithValue("@firstName", mFirstName)
+      .Parameters.AddWithValue("@lastChanged", mTimestamp)
     End With
 
   End Sub
@@ -340,7 +343,7 @@ Public Class Resource
             .Transaction = tr
             .CommandType = CommandType.StoredProcedure
             .CommandText = "deleteResource"
-            .Parameters.AddWithValue("@ID", criteria.Id)
+            .Parameters.AddWithValue("@id", criteria.Id)
             .ExecuteNonQuery()
           End With
         End Using

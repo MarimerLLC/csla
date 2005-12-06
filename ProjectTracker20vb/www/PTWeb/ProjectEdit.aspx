@@ -5,7 +5,7 @@
       <br />
       <asp:LinkButton ID="ProjectListButton" runat="server">Project list</asp:LinkButton><br />
       <br />
-      <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False" DataSourceID="ProjectDataSource" AllowPaging="True" DataKeyNames="Id">
+      <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False" DataSourceID="ProjectDataSource" DataKeyNames="Id">
         <Fields>
           <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id" />
           <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
@@ -36,7 +36,7 @@
           <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" />
         </Columns>
       </asp:GridView>
-      <br />
+      <asp:LinkButton ID="AddResourceButton" runat="server">Add resource</asp:LinkButton><br />
       <br />
       <csla:CslaDataSource ID="ProjectDataSource" runat="server" 
           TypeName="ProjectTracker.Library.Project" TypeAssemblyName="ProjectTracker.Library">

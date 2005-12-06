@@ -185,7 +185,6 @@ Public Class ProjectResource
           MarkOld()
         End With
       End Using
-      cn.Close()
     End Using
 
   End Sub
@@ -208,7 +207,6 @@ Public Class ProjectResource
           MarkOld()
         End With
       End Using
-      cn.Close()
     End Using
 
   End Sub
@@ -246,7 +244,6 @@ Public Class ProjectResource
           MarkNew()
         End With
       End Using
-      cn.Close()
     End Using
 
   End Sub

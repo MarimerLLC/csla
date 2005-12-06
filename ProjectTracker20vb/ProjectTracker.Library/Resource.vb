@@ -250,11 +250,9 @@ Public Class Resource
             ' load child objects
             dr.NextResult()
             mAssignments = ResourceAssignments.GetResourceAssignments(dr)
-            dr.Close()
           End Using
         End With
       End Using
-      cn.Close()
     End Using
 
   End Sub
@@ -272,7 +270,10 @@ Public Class Resource
             .CommandText = "addResource"
             LoadParameters(cm)
 
-            .ExecuteNonQuery()
+            Using dr As SqlDataReader = cm.ExecuteReader
+              dr.Read()
+              mId = dr.GetInt32(0)
+            End Using
 
             ' update child objects
             mAssignments.Update(tr, Me)
@@ -280,7 +281,6 @@ Public Class Resource
         End Using
         tr.Commit()
       End Using
-      cn.Close()
     End Using
 
   End Sub
@@ -306,7 +306,6 @@ Public Class Resource
         End Using
         tr.Commit()
       End Using
-      cn.Close()
     End Using
 
   End Sub
@@ -349,7 +348,6 @@ Public Class Resource
         End Using
         tr.Commit()
       End Using
-      cn.Close()
     End Using
 
   End Sub
@@ -399,10 +397,8 @@ Public Class Resource
             Else
               mExists = False
             End If
-            dr.Close()
           End Using
         End Using
-        cn.Close()
       End Using
 
     End Sub

@@ -158,11 +158,9 @@ Namespace Admin
               While .Read()
                 Me.Add(Role.GetRole(dr))
               End While
-              .Close()
             End With
           End Using
         End Using
-        cn.Close()
       End Using
 
     End Sub
@@ -185,7 +183,6 @@ Namespace Admin
             item.Update(cn)
           End If
         Next
-        cn.Close()
       End Using
 
     End Sub

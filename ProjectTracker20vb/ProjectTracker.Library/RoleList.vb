@@ -65,12 +65,10 @@ Public Class RoleList
               Me.Add(New NameValuePair( _
                 .GetInt32("id"), .GetString("name")))
             End While
-            .Close()
           End With
           IsReadOnly = True
         End Using
       End Using
-      cn.Close()
     End Using
 
   End Sub

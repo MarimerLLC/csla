@@ -122,10 +122,8 @@ Namespace Security
               mName = ""
               mIsAuthenticated = False
             End If
-            dr.Close()
           End Using
         End Using
-        cn.Close()
       End Using
 
     End Sub

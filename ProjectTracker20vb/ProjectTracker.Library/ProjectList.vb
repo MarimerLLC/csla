@@ -127,11 +127,9 @@ Public Class ProjectList
               End If
             End While
             IsReadOnly = True
-            dr.Close()
           End Using
         End With
       End Using
-      cn.Close()
     End Using
 
   End Sub

@@ -285,10 +285,8 @@ Public Class Project
             .NextResult()
             mResources = ProjectResources.GetProjectResources(dr)
           End With
-          dr.Close()
         End Using
       End Using
-      cn.Close()
     End Using
 
   End Sub
@@ -304,7 +302,6 @@ Public Class Project
         LoadParameters(cm)
         cm.ExecuteNonQuery()
       End Using
-      cn.Close()
     End Using
 
     ' update child objects
@@ -323,7 +320,6 @@ Public Class Project
         LoadParameters(cm)
         cm.ExecuteNonQuery()
       End Using
-      cn.Close()
     End Using
 
     ' update child objects
@@ -353,23 +349,18 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
 
-    Dim cn As New SqlConnection(DataBase.DbConn)
-    Dim cm As New SqlCommand()
-
-    cn.Open()
-
-    Try
-      With cm
-        .Connection = cn
-        .CommandType = CommandType.StoredProcedure
-        .CommandText = "deleteProject"
-        .Parameters.AddWithValue("@id", criteria.Id.ToString)
-        .ExecuteNonQuery()
-      End With
-
-    Finally
-      cn.Close()
-    End Try
+    Using cn As New SqlConnection(DataBase.DbConn)
+      cn.Open()
+      Using cm As SqlCommand = cn.CreateCommand
+        With cm
+          .Connection = cn
+          .CommandType = CommandType.StoredProcedure
+          .CommandText = "deleteProject"
+          .Parameters.AddWithValue("@id", criteria.Id.ToString)
+          .ExecuteNonQuery()
+        End With
+      End Using
+    End Using
 
   End Sub
 
@@ -418,10 +409,8 @@ Public Class Project
             Else
               mExists = False
             End If
-            dr.Close()
           End Using
         End Using
-        cn.Close()
       End Using
 
     End Sub

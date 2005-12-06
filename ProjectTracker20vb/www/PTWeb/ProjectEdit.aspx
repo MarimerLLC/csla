@@ -1,7 +1,7 @@
 <%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="ProjectEdit.aspx.vb" Inherits="ProjectEdit" title="Project Information" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div>
-      &nbsp;<asp:MultiView ID="MultiView1" runat="server">
+      <asp:MultiView ID="MultiView1" runat="server">
         <asp:View ID="MainView" runat="server">
       <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False" DataSourceID="ProjectDataSource" DataKeyNames="Id">
         <Fields>
@@ -17,7 +17,8 @@
       <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ResourcesDataSource" Width="432px" DataKeyNames="ResourceId">
         <Columns>
           <asp:BoundField DataField="ResourceId" HeaderText="ResourceId" ReadOnly="True" SortExpression="ResourceId" Visible="False" />
-          <asp:BoundField DataField="FullName" HeaderText="Name" ReadOnly="True" SortExpression="FullName" />
+          <asp:HyperLinkField DataNavigateUrlFields="ResourceId" DataNavigateUrlFormatString="ResourceEdit.aspx?id={0}"
+            DataTextField="FullName" HeaderText="Name" />
           <asp:BoundField DataField="Assigned" HeaderText="Assigned" ReadOnly="True" SortExpression="Assigned" />
           <asp:TemplateField HeaderText="Role" SortExpression="Role">
             <EditItemTemplate>

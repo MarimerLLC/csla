@@ -30,8 +30,11 @@ Partial Class ProjectEdit
         ApplyAuthorizationRules()
 
       Catch ex As System.Security.SecurityException
-        Response.Redirect("Login.aspx?ReturnUrl=ProjectEdit.aspx")
+        Response.Redirect("ProjectList.aspx")
       End Try
+
+    Else
+      Me.ErrorLabel.Text = ""
     End If
 
   End Sub
@@ -60,6 +63,8 @@ Partial Class ProjectEdit
 
   End Sub
 
+#Region " Project DetailsView "
+
   Protected Sub DetailsView1_ItemInserted(ByVal sender As Object, _
     ByVal e As System.Web.UI.WebControls.DetailsViewInsertedEventArgs) _
     Handles DetailsView1.ItemInserted
@@ -84,7 +89,9 @@ Partial Class ProjectEdit
 
   End Sub
 
-#Region " Add Resource "
+#End Region
+
+#Region " Resource Grid "
 
   Protected Sub AddResourceButton_Click(ByVal sender As Object, _
     ByVal e As System.EventArgs) Handles AddResourceButton.Click
@@ -96,21 +103,17 @@ Partial Class ProjectEdit
   Protected Sub GridView2_SelectedIndexChanged(ByVal sender As Object, _
     ByVal e As System.EventArgs) Handles GridView2.SelectedIndexChanged
 
+    Dim obj As Project = CType(Session("currentObject"), Project)
     Try
-      Dim obj As Project = CType(Session("currentObject"), Project)
       obj.Resources.Assign(CInt(Me.GridView2.SelectedDataKey.Value))
-      Session("currentObject") = obj.Save()
-      Me.GridView1.DataBind()
-      Me.MultiView1.ActiveViewIndex = Views.MainView
-      ErrorLabel.Text = ""
+      If SaveProject(obj) > 0 Then
+        Me.GridView1.DataBind()
+        Me.MultiView1.ActiveViewIndex = Views.MainView
+      End If
 
     Catch ex As InvalidOperationException
       ErrorLabel.Text = ex.Message
-
-    Catch ex As Csla.DataPortalException
-      ErrorLabel.Text = ex.InnerException.Message
     End Try
-
 
   End Sub
 
@@ -129,9 +132,19 @@ Partial Class ProjectEdit
   Protected Sub ProjectDataSource_DeleteObject(ByVal sender As Object, _
     ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectDataSource.DeleteObject
 
-    Project.DeleteProject(New Guid(e.Keys("Id").ToString))
-    Session("currentObject") = Nothing
-    e.RowsAffected = 1
+    Try
+      Project.DeleteProject(New Guid(e.Keys("Id").ToString))
+      Session("currentObject") = Nothing
+      e.RowsAffected = 1
+
+    Catch ex As Csla.DataPortalException
+      Me.ErrorLabel.Text = ex.BusinessException.Message
+      e.RowsAffected = 0
+
+    Catch ex As Exception
+      Me.ErrorLabel.Text = ex.Message
+      e.RowsAffected = 0
+    End Try
 
   End Sub
 
@@ -140,8 +153,7 @@ Partial Class ProjectEdit
 
     Dim obj As Project = CType(Session("currentObject"), Project)
     Csla.Data.DataMapper.Map(e.Values, obj, "Id")
-    Session("currentObject") = obj.Save()
-    e.RowsAffected = 1
+    e.RowsAffected = SaveProject(obj)
 
   End Sub
 
@@ -157,8 +169,7 @@ Partial Class ProjectEdit
 
     Dim obj As Project = CType(Session("currentObject"), Project)
     Csla.Data.DataMapper.Map(e.Values, obj)
-    Session("currentObject") = obj.Save()
-    e.RowsAffected = 1
+    e.RowsAffected = SaveProject(obj)
 
   End Sub
 
@@ -174,8 +185,7 @@ Partial Class ProjectEdit
     Dim rid As Integer = CInt(e.Keys("ResourceId"))
     res = obj.Resources(rid)
     obj.Resources.Remove(res.ResourceId)
-    Session("currentObject") = obj.Save()
-    e.RowsAffected = 1
+    e.RowsAffected = SaveProject(obj)
 
   End Sub
 
@@ -193,8 +203,7 @@ Partial Class ProjectEdit
     Dim rid As Integer = CInt(e.Keys("ResourceId"))
     res = obj.Resources(rid)
     Csla.Data.DataMapper.Map(e.Values, res)
-    Session("currentObject") = obj.Save()
-    e.RowsAffected = 1
+    e.RowsAffected = SaveProject(obj)
 
   End Sub
 
@@ -202,7 +211,8 @@ Partial Class ProjectEdit
 
 #Region " ResourceListDataSource "
 
-  Protected Sub ResourceListDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ResourceListDataSource.SelectObject
+  Protected Sub ResourceListDataSource_SelectObject(ByVal sender As Object, _
+    ByVal e As Csla.Web.SelectObjectArgs) Handles ResourceListDataSource.SelectObject
 
     e.BusinessObject = ProjectTracker.Library.ResourceList.GetResourceList
 
@@ -220,5 +230,24 @@ Partial Class ProjectEdit
   End Sub
 
 #End Region
+
+  Private Function SaveProject(ByVal project As Project) As Integer
+
+    Dim rowsAffected As Integer
+    Try
+      Session("currentObject") = project.Save()
+      rowsAffected = 1
+
+    Catch ex As Csla.DataPortalException
+      Me.ErrorLabel.Text = ex.BusinessException.Message
+      rowsAffected = 0
+
+    Catch ex As Exception
+      Me.ErrorLabel.Text = ex.Message
+      rowsAffected = 0
+    End Try
+    Return rowsAffected
+
+  End Function
 
 End Class

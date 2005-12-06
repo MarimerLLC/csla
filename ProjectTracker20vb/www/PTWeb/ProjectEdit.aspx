@@ -1,16 +1,14 @@
 <%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="ProjectEdit.aspx.vb" Inherits="ProjectEdit" title="Project Information" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div>
-      &nbsp;<br />
-      <br />
-      <asp:LinkButton ID="ProjectListButton" runat="server">Project list</asp:LinkButton><br />
-      <br />
+      &nbsp;<asp:MultiView ID="MultiView1" runat="server">
+        <asp:View ID="MainView" runat="server">
       <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False" DataSourceID="ProjectDataSource" DataKeyNames="Id">
         <Fields>
-          <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id" />
+          <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id" InsertVisible="False" />
           <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
-          <asp:BoundField DataField="Ended" HeaderText="Ended" SortExpression="Ended" />
           <asp:BoundField DataField="Started" HeaderText="Started" SortExpression="Started" />
+          <asp:BoundField DataField="Ended" HeaderText="Ended" SortExpression="Ended" />
           <asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" />
           <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" ShowInsertButton="True" />
         </Fields>
@@ -38,7 +36,25 @@
       </asp:GridView>
       <asp:LinkButton ID="AddResourceButton" runat="server">Add resource</asp:LinkButton><br />
       <br />
-      <csla:CslaDataSource ID="ProjectDataSource" runat="server" 
+          &nbsp;
+        </asp:View>
+        <asp:View ID="AssignView" runat="server">
+          <strong>Pick resource:</strong><br />
+          <asp:GridView ID="GridView2" runat="server" AllowPaging="True" AutoGenerateColumns="False"
+            DataKeyNames="Id" DataSourceID="ResourceListDataSource">
+            <Columns>
+              <asp:BoundField DataField="Name" HeaderText="Name" ReadOnly="True" SortExpression="Name" />
+              <asp:CommandField ShowSelectButton="True" />
+            </Columns>
+          </asp:GridView>
+          <asp:LinkButton ID="CancelAssignButton" runat="server">Cancel</asp:LinkButton><br />
+          <csla:CslaDataSource ID="ResourceListDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library"
+            TypeName="ProjectTracker.Library.ResourceList">
+          </csla:CslaDataSource>
+        </asp:View>
+      </asp:MultiView>
+      <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
+      &nbsp;<csla:CslaDataSource ID="ProjectDataSource" runat="server" 
           TypeName="ProjectTracker.Library.Project" TypeAssemblyName="ProjectTracker.Library">
       </csla:CslaDataSource> 
       <csla:CslaDataSource ID="ResourcesDataSource" runat="server" 

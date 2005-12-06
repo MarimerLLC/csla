@@ -1,8 +1,8 @@
 <%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="ProjectList.aspx.vb" Inherits="ProjectList" title="Project List" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
       <div>
-        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx">Home</asp:HyperLink><br />
-        <br />
+        <strong>Projects:<br />
+        </strong>
         <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ProjectListDataSource" PageSize="4" DataKeyNames="Id">
           <Columns>
             <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" Visible="False" />

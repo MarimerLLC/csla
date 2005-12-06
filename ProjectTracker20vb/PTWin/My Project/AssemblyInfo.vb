@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("PTWin")> 
 <Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("Microsoft Corp.")> 
+<Assembly: AssemblyCompany("Rockford Lhotka")> 
 <Assembly: AssemblyProduct("PTWin")> 
-<Assembly: AssemblyCopyright("Copyright © Microsoft Corp. 2005")> 
+<Assembly: AssemblyCopyright("Copyright © Rockford Lhotka 2005")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

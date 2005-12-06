@@ -223,6 +223,8 @@ Public Class MainForm
 
   Private Sub DoLogin()
 
+    ProjectTracker.Library.Security.PTPrincipal.Logout()
+
     If Me.LoginToolStripButton.Text = "Login" Then
       LoginForm.ShowDialog(Me)
 

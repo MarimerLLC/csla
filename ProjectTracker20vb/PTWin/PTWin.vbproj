@@ -186,6 +186,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EnterpriseServicesHostvb\EnterpriseServicesHostvb.vbproj">
+      <Project>{424C335A-9CC1-4AAA-9733-44F6C6A808C6}</Project>
+      <Name>EnterpriseServicesHostvb</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectTracker.Library\ProjectTracker.Library.vbproj">
       <Project>{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}</Project>
       <Name>ProjectTracker.Library</Name>

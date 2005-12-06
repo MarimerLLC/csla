@@ -95,6 +95,7 @@ Namespace Admin
       MarkAsChild()
       With dr
         mId = .GetInt32("id")
+        mIdSet = True
         mName = .GetString("name")
         .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
       End With

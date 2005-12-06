@@ -125,10 +125,10 @@ Public Class ResourceAssignment
 
     MarkAsChild()
     With dr
-      mProjectId = .GetGuid(0)
-      mProjectName = .GetString(1)
-      mAssigned = .GetSmartDate(2)
-      mRole = .GetInt32(3)
+      mProjectId = .GetGuid("ProjectId")
+      mProjectName = .GetString("Name")
+      mAssigned = .GetSmartDate("Assigned")
+      mRole = .GetInt32("Role")
       .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
     End With
     MarkOld()

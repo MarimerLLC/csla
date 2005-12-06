@@ -162,7 +162,7 @@ Public Class ProjectResource
       mLastName = .GetString("LastName")
       mFirstName = .GetString("FirstName")
       mAssigned = .GetSmartDate("Assigned")
-      mRole = .GetInt32(4)
+      mRole = .GetInt32("Role")
       .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
     End With
     MarkOld()

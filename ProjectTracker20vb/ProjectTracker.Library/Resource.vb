@@ -268,7 +268,10 @@ Public Class Resource
             .Transaction = tr
             .CommandType = CommandType.StoredProcedure
             .CommandText = "addResource"
-            LoadParameters(cm)
+            With cm
+              .Parameters.AddWithValue("@lastName", mLastName)
+              .Parameters.AddWithValue("@firstName", mFirstName)
+            End With
 
             Using dr As SqlDataReader = cm.ExecuteReader
               dr.Read()
@@ -296,7 +299,12 @@ Public Class Resource
             .Transaction = tr
             .CommandType = CommandType.StoredProcedure
             .CommandText = "updateResource"
-            LoadParameters(cm)
+            With cm
+              .Parameters.AddWithValue("@id", mId)
+              .Parameters.AddWithValue("@lastName", mLastName)
+              .Parameters.AddWithValue("@firstName", mFirstName)
+              .Parameters.AddWithValue("@lastChanged", mTimestamp)
+            End With
 
             .ExecuteNonQuery()
 
@@ -307,17 +315,6 @@ Public Class Resource
         tr.Commit()
       End Using
     End Using
-
-  End Sub
-
-  Private Sub LoadParameters(ByVal cm As SqlCommand)
-
-    With cm
-      .Parameters.AddWithValue("@id", mId)
-      .Parameters.AddWithValue("@lastName", mLastName)
-      .Parameters.AddWithValue("@firstName", mFirstName)
-      .Parameters.AddWithValue("@lastChanged", mTimestamp)
-    End With
 
   End Sub
 

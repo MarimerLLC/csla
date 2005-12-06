@@ -10,6 +10,21 @@ Partial Class RolesEdit
     InsertView = 1
   End Enum
 
+  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+    If Not IsPostBack Then
+      ApplyAuthorizationRules()
+    End If
+
+  End Sub
+
+  Private Sub ApplyAuthorizationRules()
+
+    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Roles.CanSaveObject
+    Me.AddRoleButton.Visible = Roles.CanAddObject
+
+  End Sub
+
   Protected Sub AddRoleButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles AddRoleButton.Click
 
     Me.DetailsView1.DefaultMode = DetailsViewMode.Insert

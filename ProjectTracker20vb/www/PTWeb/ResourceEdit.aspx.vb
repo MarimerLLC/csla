@@ -1,5 +1,7 @@
 Option Strict On
 
+Imports ProjectTracker.Library
+
 Partial Class ResourceEdit
   Inherits System.Web.UI.Page
 
@@ -100,7 +102,7 @@ Partial Class ResourceEdit
     Dim res As ProjectTracker.Library.ResourceAssignment
     Dim rid As New Guid(e.Keys("ProjectId").ToString)
     res = obj.Assignments(rid)
-    obj.Assignments.Remove(res.ProjectID)
+    obj.Assignments.Remove(res.ProjectId)
     Session("currentObject") = obj.Save()
     e.RowsAffected = 1
 

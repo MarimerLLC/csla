@@ -1,6 +1,9 @@
+Option Strict On
+
+Imports ProjectTracker.Library
 
 Partial Class ResourceList
-    Inherits System.Web.UI.Page
+  Inherits System.Web.UI.Page
 
   Protected Sub NewResourceButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles NewResourceButton.Click
 
@@ -10,7 +13,7 @@ Partial Class ResourceList
 
   Protected Sub ResourceListDataSource_DeleteObject(ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourceListDataSource.DeleteObject
 
-    ProjectTracker.Library.Resource.DeleteResource(e.Keys("Id"))
+    ProjectTracker.Library.Resource.DeleteResource(CInt(e.Keys("Id")))
 
   End Sub
 
@@ -29,6 +32,7 @@ Partial Class ResourceList
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
+    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Resource.CanDeleteObject
     NewResourceButton.Visible = ProjectTracker.Library.Resource.CanAddObject
 
   End Sub

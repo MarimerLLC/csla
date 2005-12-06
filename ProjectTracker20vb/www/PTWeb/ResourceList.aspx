@@ -7,8 +7,9 @@
         <Columns>
           <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id"
             Visible="False" />
-          <asp:BoundField DataField="Name" HeaderText="Name" ReadOnly="True" SortExpression="Name" />
-          <asp:CommandField ShowDeleteButton="True" ShowSelectButton="True" SelectText="Edit" />
+          <asp:HyperLinkField DataNavigateUrlFields="Id" DataNavigateUrlFormatString="ResourceEdit.aspx?id={0}"
+            DataTextField="Name" HeaderText="Name" />
+          <asp:CommandField ShowDeleteButton="True" SelectText="Edit" />
         </Columns>
       </asp:GridView>
       <asp:LinkButton ID="NewResourceButton" runat="server">New resource</asp:LinkButton><br />

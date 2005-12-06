@@ -32,6 +32,27 @@ namespace Csla
       get { return _businessObject; }
     }
 
+    /// <summary>
+    /// Gets the original server-side exception.
+    /// </summary>
+    /// <returns>An exception object.</returns>
+    /// <remarks>
+    /// When an exception occurs in business code behind
+    /// the data portal, it is wrapped in a 
+    /// <see cref="Csla.Server.DataPortalException"/>, which 
+    /// is then wrapped in a 
+    /// <see cref="Csla.DataPortalException"/>. This property
+    /// unwraps and returns the original exception 
+    /// thrown by the business code on the server.
+    /// </remarks>
+    public Exception BusinessException
+    {
+      get
+      {
+        return this.InnerException.InnerException;
+      }
+    }
+
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
     public override string StackTrace
     {

@@ -22,8 +22,9 @@ Public Class RolesEdit
       MessageBox.Show(ex.ToString, "Error saving", _
         MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
     End Try
-    Me.RolesBindingSource.DataSource = mRoles
+    Me.RolesBindingSource.DataSource = Nothing
     Me.RolesBindingSource.RaiseListChangedEvents = True
+    Me.RolesBindingSource.DataSource = mRoles
 
   End Sub
 

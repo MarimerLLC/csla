@@ -25,7 +25,12 @@ Public Class ResourceEdit
   Public Overrides Function Equals(ByVal obj As Object) As Boolean
 
     If TypeOf obj Is ResourceEdit Then
-      Return CType(obj, ResourceEdit).Resource.Equals(mResource)
+      If mResource IsNot Nothing Then
+        Return CType(obj, ResourceEdit).Resource.Equals(mResource)
+
+      Else
+        Return False
+      End If
 
     Else
       Return False
@@ -35,7 +40,12 @@ Public Class ResourceEdit
 
   Public Overrides Function GetHashCode() As Integer
 
-    Return mResource.GetHashCode
+    If mResource IsNot Nothing Then
+      Return mResource.GetHashCode
+
+    Else
+      Return MyBase.GetHashCode
+    End If
 
   End Function
 
@@ -86,10 +96,12 @@ Public Class ResourceEdit
       End Try
 
       ' rebind the UI
-      Me.ResourceBindingSource.DataSource = mResource
-      Me.AssignmentsBindingSource.DataSource = mResource.Assignments
+      Me.ResourceBindingSource.DataSource = Nothing
+      Me.AssignmentsBindingSource.DataSource = Nothing
       Me.ResourceBindingSource.RaiseListChangedEvents = True
       Me.AssignmentsBindingSource.RaiseListChangedEvents = True
+      Me.ResourceBindingSource.DataSource = mResource
+      Me.AssignmentsBindingSource.DataSource = mResource.Assignments
       ApplyAuthorizationRules()
     End Using
 

@@ -25,7 +25,12 @@ Public Class ProjectEdit
   Public Overrides Function Equals(ByVal obj As Object) As Boolean
 
     If TypeOf obj Is ProjectEdit Then
-      Return CType(obj, ProjectEdit).Project.Equals(mProject)
+      If mProject IsNot Nothing Then
+        Return CType(obj, ProjectEdit).Project.Equals(mProject)
+
+      Else
+        Return False
+      End If
 
     Else
       Return False
@@ -35,7 +40,12 @@ Public Class ProjectEdit
 
   Public Overrides Function GetHashCode() As Integer
 
-    Return mProject.GetHashCode
+    If mProject IsNot Nothing Then
+      Return mProject.GetHashCode
+
+    Else
+      Return MyBase.GetHashCode
+    End If
 
   End Function
 

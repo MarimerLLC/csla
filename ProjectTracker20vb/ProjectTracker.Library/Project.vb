@@ -11,6 +11,7 @@ Public Class Project
   Private mStarted As New SmartDate
   Private mEnded As New SmartDate(False)
   Private mDescription As String = ""
+  Private mTimestamp(7) As Byte
 
   Private mResources As ProjectResources = _
     ProjectResources.NewProjectResources()
@@ -280,6 +281,7 @@ Public Class Project
             mStarted = .GetSmartDate(2, mStarted.EmptyIsMin)
             mEnded = .GetSmartDate(3, mEnded.EmptyIsMin)
             mDescription = .GetString(4)
+            .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
 
             ' load child objects
             .NextResult()
@@ -312,15 +314,18 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Update()
 
-    Using cn As New SqlConnection(DataBase.DbConn)
-      cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandType = CommandType.StoredProcedure
-        cm.CommandText = "updateProject"
-        LoadParameters(cm)
-        cm.ExecuteNonQuery()
+    If MyBase.IsDirty Then
+      Using cn As New SqlConnection(DataBase.DbConn)
+        cn.Open()
+        Using cm As SqlCommand = cn.CreateCommand
+          cm.CommandType = CommandType.StoredProcedure
+          cm.CommandText = "updateProject"
+          LoadParameters(cm)
+          cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
+          cm.ExecuteNonQuery()
+        End Using
       End Using
-    End Using
+    End If
 
     ' update child objects
     mResources.Update(Me)

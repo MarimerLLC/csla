@@ -294,24 +294,24 @@ Public Class Resource
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using tr As SqlTransaction = cn.BeginTransaction
-        Using cm As SqlCommand = cn.CreateCommand
-          With cm
-            .Transaction = tr
-            .CommandType = CommandType.StoredProcedure
-            .CommandText = "updateResource"
+        If MyBase.IsDirty Then
+          Using cm As SqlCommand = cn.CreateCommand
             With cm
-              .Parameters.AddWithValue("@id", mId)
-              .Parameters.AddWithValue("@lastName", mLastName)
-              .Parameters.AddWithValue("@firstName", mFirstName)
-              .Parameters.AddWithValue("@lastChanged", mTimestamp)
+              .Transaction = tr
+              .CommandType = CommandType.StoredProcedure
+              .CommandText = "updateResource"
+              With cm
+                .Parameters.AddWithValue("@id", mId)
+                .Parameters.AddWithValue("@lastName", mLastName)
+                .Parameters.AddWithValue("@firstName", mFirstName)
+                .Parameters.AddWithValue("@lastChanged", mTimestamp)
+              End With
+              .ExecuteNonQuery()
             End With
-
-            .ExecuteNonQuery()
-
-            ' update child objects
-            mAssignments.Update(tr, Me)
-          End With
-        End Using
+          End Using
+        End If
+        ' update child objects
+        mAssignments.Update(tr, Me)
         tr.Commit()
       End Using
     End Using

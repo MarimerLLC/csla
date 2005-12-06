@@ -93,10 +93,12 @@ Public Class ProjectEdit
       End Try
 
       ' rebind the UI
-      Me.ProjectBindingSource.DataSource = mProject
-      Me.ResourcesBindingSource.DataSource = mProject.Resources
+      Me.ProjectBindingSource.DataSource = Nothing
+      Me.ResourcesBindingSource.DataSource = Nothing
       Me.ProjectBindingSource.RaiseListChangedEvents = True
       Me.ResourcesBindingSource.RaiseListChangedEvents = True
+      Me.ProjectBindingSource.DataSource = mProject
+      Me.ResourcesBindingSource.DataSource = mProject.Resources
       ApplyAuthorizationRules()
     End Using
 

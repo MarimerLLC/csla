@@ -276,6 +276,7 @@ Public Class Resource
             Using dr As SqlDataReader = cm.ExecuteReader
               dr.Read()
               mId = dr.GetInt32(0)
+              dr.GetBytes(1, 0, mTimestamp, 0, 8)
             End Using
 
             ' update child objects

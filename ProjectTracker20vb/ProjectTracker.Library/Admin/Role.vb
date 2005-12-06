@@ -112,7 +112,10 @@ Namespace Admin
         cm.CommandText = "addRole"
         cm.Parameters.AddWithValue("@id", mId)
         cm.Parameters.AddWithValue("@name", mName)
-        cm.ExecuteNonQuery()
+        Using dr As SqlDataReader = cm.ExecuteReader
+          dr.Read()
+          dr.GetBytes(0, 0, mTimestamp, 0, 8)
+        End Using
       End Using
 
     End Sub

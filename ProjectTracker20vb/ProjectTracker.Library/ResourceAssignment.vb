@@ -148,7 +148,10 @@ Public Class ResourceAssignment
         .CommandText = "addAssignment"
         LoadParameters(cm, resource)
 
-        .ExecuteNonQuery()
+        Using dr As SqlDataReader = cm.ExecuteReader
+          dr.Read()
+          dr.GetBytes(0, 0, mTimestamp, 0, 8)
+        End Using
 
         MarkOld()
       End With

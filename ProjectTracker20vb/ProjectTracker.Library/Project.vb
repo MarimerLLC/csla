@@ -325,7 +325,10 @@ Public Class Project
           cm.CommandText = "updateProject"
           LoadParameters(cm)
           cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
-          cm.ExecuteNonQuery()
+          Using dr As SqlDataReader = cm.ExecuteReader
+            dr.Read()
+            dr.GetBytes(0, 0, mTimestamp, 0, 8)
+          End Using
         End Using
       End Using
     End If

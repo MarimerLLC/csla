@@ -307,7 +307,11 @@ Public Class Resource
                 .Parameters.AddWithValue("@firstName", mFirstName)
                 .Parameters.AddWithValue("@lastChanged", mTimestamp)
               End With
-              .ExecuteNonQuery()
+              Using dr As SqlDataReader = cm.ExecuteReader
+                dr.Read()
+                mId = dr.GetInt32(0)
+                dr.GetBytes(1, 0, mTimestamp, 0, 8)
+              End Using
             End With
           End Using
         End If

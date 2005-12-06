@@ -5,43 +5,127 @@ Imports ProjectTracker.Library
 Partial Class ResourceEdit
   Inherits System.Web.UI.Page
 
+  Private Enum Views
+    MainView = 0
+    AssignView = 1
+  End Enum
+
   Protected Sub Page_Load(ByVal sender As Object, _
     ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
-      Dim idString As String = Request.QueryString("id")
-      Dim obj As ProjectTracker.Library.Resource
-      If Len(idString) > 0 Then
-        obj = ProjectTracker.Library.Resource.GetResource(CInt(idString))
-        If ProjectTracker.Library.Resource.CanSaveObject Then
-          Me.DetailsView1.DefaultMode = DetailsViewMode.Edit
+      Try
+        Dim idString As String = Request.QueryString("id")
+        Dim obj As Resource
+        If Len(idString) > 0 Then
+          Dim id As Integer
+          id = CInt(idString)
+          obj = Resource.GetResource(id)
 
         Else
-          Me.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly
+          obj = Resource.NewResource
         End If
+        Session("currentObject") = obj
+        Me.MultiView1.ActiveViewIndex = Views.MainView
+        ApplyAuthorizationRules()
 
-      Else
-        obj = ProjectTracker.Library.Resource.NewResource
-        Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
-      End If
-      Session("currentObject") = obj
+      Catch ex As System.Security.SecurityException
+        Response.Redirect("ResourceList.aspx")
+      End Try
+
+    Else
+      Me.ErrorLabel.Text = ""
     End If
 
   End Sub
 
-  Protected Sub ResourceListButton_Click(ByVal sender As Object, _
-    ByVal e As System.EventArgs) Handles ResourceListButton.Click
+  Private Sub ApplyAuthorizationRules()
 
-    Response.Redirect("ResourceList.aspx")
+    Dim obj As Resource = CType(Session("currentObject"), Resource)
+    ' Resource display
+    If Resource.CanSaveObject Then
+      If obj.IsNew Then
+        Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
+
+      Else
+        Me.DetailsView1.DefaultMode = DetailsViewMode.Edit
+      End If
+      Me.AssignProjectButton.Visible = Not obj.IsNew
+
+    Else
+      Me.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly
+      Me.AssignProjectButton.Visible = False
+    End If
+    Me.DetailsView1.Rows(Me.DetailsView1.Rows.Count - 1).Visible = Resource.CanSaveObject
+
+    ' resources display
+    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Resource.CanSaveObject
+
+  End Sub
+
+#Region " Resource DetailsView "
+
+  Protected Sub DetailsView1_ItemInserted(ByVal sender As Object, _
+    ByVal e As System.Web.UI.WebControls.DetailsViewInsertedEventArgs) _
+    Handles DetailsView1.ItemInserted
+
+    ApplyAuthorizationRules()
+
+  End Sub
+
+  Protected Sub DetailsView1_ItemUpdated(ByVal sender As Object, _
+    ByVal e As System.Web.UI.WebControls.DetailsViewUpdatedEventArgs) _
+    Handles DetailsView1.ItemUpdated
+
+    ApplyAuthorizationRules()
 
   End Sub
 
   Protected Sub DetailsView1_ItemDeleted(ByVal sender As Object, _
-    ByVal e As System.Web.UI.WebControls.DetailsViewDeletedEventArgs) Handles DetailsView1.ItemDeleted
+    ByVal e As System.Web.UI.WebControls.DetailsViewDeletedEventArgs) _
+    Handles DetailsView1.ItemDeleted
 
     Response.Redirect("ResourceList.aspx")
 
   End Sub
+
+#End Region
+
+#Region " Project Grid "
+
+  Protected Sub AssignProjectButton_Click(ByVal sender As Object, _
+    ByVal e As System.EventArgs) Handles AssignProjectButton.Click
+
+    Me.MultiView1.ActiveViewIndex = Views.AssignView
+
+  End Sub
+
+  Protected Sub GridView2_SelectedIndexChanged(ByVal sender As Object, _
+    ByVal e As System.EventArgs) Handles GridView2.SelectedIndexChanged
+
+    Dim obj As Resource = CType(Session("currentObject"), Resource)
+    Try
+      obj.Assignments.AssignTo(New Guid(Me.GridView2.SelectedDataKey.Value.ToString))
+      If SaveResource(obj) > 0 Then
+        Me.GridView1.DataBind()
+        Me.MultiView1.ActiveViewIndex = Views.MainView
+      End If
+
+    Catch ex As InvalidOperationException
+      ErrorLabel.Text = ex.Message
+    End Try
+
+  End Sub
+
+  Protected Sub CancelAssignButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles CancelAssignButton.Click
+
+    Me.MultiView1.ActiveViewIndex = Views.MainView
+
+  End Sub
+
+#End Region
+
+#Region " RoleListDataSource "
 
   Protected Sub RoleListDataSource_SelectObject(ByVal sender As Object, _
     ByVal e As Csla.Web.SelectObjectArgs) Handles RoleListDataSource.SelectObject
@@ -49,6 +133,8 @@ Partial Class ResourceEdit
     e.BusinessObject = ProjectTracker.Library.RoleList.GetList
 
   End Sub
+
+#End Region
 
 #Region " ResourceDataSource "
 
@@ -67,8 +153,7 @@ Partial Class ResourceEdit
     Dim obj As ProjectTracker.Library.Resource = _
       ProjectTracker.Library.Resource.NewResource
     Csla.Data.DataMapper.Map(e.Values, obj, "Id")
-    Session("currentObject") = obj.Save
-    e.RowsAffected = 1
+    e.RowsAffected = SaveResource(obj)
 
   End Sub
 
@@ -85,8 +170,7 @@ Partial Class ResourceEdit
     Dim obj As ProjectTracker.Library.Resource = _
       CType(Session("currentObject"), ProjectTracker.Library.Resource)
     Csla.Data.DataMapper.Map(e.Values, obj)
-    Session("currentObject") = obj.Save
-    e.RowsAffected = 1
+    e.RowsAffected = SaveResource(obj)
 
   End Sub
 
@@ -103,8 +187,7 @@ Partial Class ResourceEdit
     Dim rid As New Guid(e.Keys("ProjectId").ToString)
     res = obj.Assignments(rid)
     obj.Assignments.Remove(res.ProjectId)
-    Session("currentObject") = obj.Save()
-    e.RowsAffected = 1
+    e.RowsAffected = SaveResource(obj)
 
   End Sub
 
@@ -126,11 +209,40 @@ Partial Class ResourceEdit
     Dim rid As New Guid(e.Keys("ProjectId").ToString)
     res = obj.Assignments(rid)
     Csla.Data.DataMapper.Map(e.Values, res)
-    Session("currentObject") = obj.Save()
-    e.RowsAffected = 1
+    e.RowsAffected = SaveResource(obj)
 
   End Sub
 
 #End Region
+
+#Region " ProjectListDataSource "
+
+  Protected Sub ProjectListDataSource_SelectObject(ByVal sender As Object, _
+    ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectListDataSource.SelectObject
+
+    e.BusinessObject = ProjectTracker.Library.ProjectList.GetProjectList
+
+  End Sub
+
+#End Region
+
+  Private Function SaveResource(ByVal resource As Resource) As Integer
+
+    Dim rowsAffected As Integer
+    Try
+      Session("currentObject") = resource.Save()
+      rowsAffected = 1
+
+    Catch ex As Csla.DataPortalException
+      Me.ErrorLabel.Text = ex.BusinessException.Message
+      rowsAffected = 0
+
+    Catch ex As Exception
+      Me.ErrorLabel.Text = ex.Message
+      rowsAffected = 0
+    End Try
+    Return rowsAffected
+
+  End Function
 
 End Class

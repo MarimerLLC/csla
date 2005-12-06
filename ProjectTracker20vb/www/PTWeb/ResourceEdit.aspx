@@ -1,8 +1,8 @@
 <%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="ResourceEdit.aspx.vb" Inherits="ResourceEdit" title="Resource Information" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
       <div>
-        <asp:LinkButton ID="ResourceListButton" runat="server">Resource list</asp:LinkButton><br />
-        <br />
+        <asp:MultiView ID="MultiView1" runat="server">
+          <asp:View ID="MainView" runat="server">
         <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False"
           DataSourceID="ResourceDataSource" Height="50px"
           Width="440px" DataKeyNames="Id">
@@ -20,8 +20,9 @@
           <Columns>
             <asp:BoundField DataField="ProjectID" HeaderText="ProjectID" SortExpression="ProjectID"
               Visible="False" />
-            <asp:BoundField DataField="ProjectName" HeaderText="ProjectName" SortExpression="ProjectName" />
-            <asp:BoundField DataField="Assigned" HeaderText="Assigned" SortExpression="Assigned" />
+            <asp:HyperLinkField DataNavigateUrlFields="ProjectId" DataNavigateUrlFormatString="ProjectEdit.aspx?id={0}"
+              DataTextField="ProjectName" HeaderText="Project Name" />
+            <asp:BoundField DataField="Assigned" HeaderText="Assigned" SortExpression="Assigned" ReadOnly="True" />
             <asp:TemplateField HeaderText="Role" SortExpression="Role">
               <EditItemTemplate><asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="RoleListDataSource" DataTextField="Value" DataValueField="Key" SelectedValue='<%# Bind("Role") %>' Width="184px">
               </asp:DropDownList>
@@ -34,12 +35,26 @@
             <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" />
           </Columns>
         </asp:GridView>
-        <br />
+            <asp:LinkButton ID="AssignProjectButton" runat="server">Assign to project</asp:LinkButton></asp:View>
+          <asp:View ID="AssignView" runat="server">
+            <asp:GridView ID="GridView2" runat="server" AllowPaging="True" AutoGenerateColumns="False"
+              DataSourceID="ProjectListDataSource" DataKeyNames="Id">
+              <Columns>
+                <asp:BoundField DataField="Name" HeaderText="Name" ReadOnly="True" SortExpression="Name" />
+                <asp:CommandField ShowSelectButton="True" />
+              </Columns>
+            </asp:GridView>
+            <asp:LinkButton ID="CancelAssignButton" runat="server">Cancel</asp:LinkButton></asp:View>
+        </asp:MultiView>
+        <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
       <csla:CslaDataSource ID="ResourceDataSource" runat="server"
         TypeName="ProjectTracker.Library.Resource" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
       <csla:CslaDataSource ID="AssignmentsDataSource" runat="server"
         TypeName="ProjectTracker.Library.ResourceAssignments" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
       <csla:CslaDataSource ID="RoleListDataSource" runat="server"
         TypeName="ProjectTracker.Library.RoleList" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
+        <csla:CslaDataSource ID="ProjectListDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library"
+          TypeName="ProjectTracker.Library.ProjectList">
+        </csla:CslaDataSource>
        </div>
 </asp:Content>

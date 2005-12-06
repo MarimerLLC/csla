@@ -121,7 +121,6 @@ Partial Class ProjectEdit
     ByVal e As System.EventArgs) Handles CancelAssignButton.Click
 
     Me.MultiView1.ActiveViewIndex = Views.MainView
-    ErrorLabel.Text = ""
 
   End Sub
 

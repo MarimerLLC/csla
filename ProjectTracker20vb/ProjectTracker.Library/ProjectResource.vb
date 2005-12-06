@@ -11,6 +11,7 @@ Public Class ProjectResource
   Private mLastName As String = ""
   Private mAssigned As New SmartDate(Today)
   Private mRole As Integer
+  Private mTimestamp(7) As Byte
 
   Public ReadOnly Property ResourceId() As Integer
     Get
@@ -162,6 +163,7 @@ Public Class ProjectResource
       mFirstName = .GetString("FirstName")
       mAssigned = .GetSmartDate("Assigned")
       mRole = .GetInt32(4)
+      .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
     End With
     MarkOld()
 
@@ -201,6 +203,7 @@ Public Class ProjectResource
           .CommandType = CommandType.StoredProcedure
           .CommandText = "updateAssignment"
           LoadParameters(cm, project)
+          cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
 
           .ExecuteNonQuery()
 

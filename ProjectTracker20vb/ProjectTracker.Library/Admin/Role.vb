@@ -11,6 +11,7 @@ Namespace Admin
     Private mId As Integer
     Private mIdSet As Boolean
     Private mName As String = ""
+    Private mTimestamp(7) As Byte
 
     Public Property Id() As Integer
       Get
@@ -92,8 +93,11 @@ Namespace Admin
     Private Sub New(ByVal dr As Csla.Data.SafeDataReader)
 
       MarkAsChild()
-      mId = dr.GetInt32("id")
-      mName = dr.GetString("name")
+      With dr
+        mId = .GetInt32("id")
+        mName = .GetString("name")
+        .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
+      End With
       MarkOld()
 
     End Sub
@@ -123,6 +127,7 @@ Namespace Admin
         cm.CommandText = "updateRole"
         cm.Parameters.AddWithValue("@id", mId)
         cm.Parameters.AddWithValue("@name", mName)
+        cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
         cm.ExecuteNonQuery()
       End Using
 

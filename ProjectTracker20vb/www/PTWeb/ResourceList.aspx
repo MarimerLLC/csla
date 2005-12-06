@@ -1,9 +1,7 @@
 <%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="ResourceList.aspx.vb" Inherits="ResourceList" title="Resource List" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div>
-      <br />
-      <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx">Home</asp:HyperLink><br />
-      <br />
+      <strong>Resources:</strong><br />
       <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ResourceListDataSource" DataKeyNames="Id" >
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>

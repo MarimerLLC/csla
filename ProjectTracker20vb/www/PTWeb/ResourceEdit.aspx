@@ -15,7 +15,7 @@
         </asp:DetailsView>
         <br />
         <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False"
-          DataSourceID="AssignmentsDataSource" DataKeyNames="ProjectID">
+          DataSourceID="AssignmentsDataSource" DataKeyNames="ProjectId">
           <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
           <Columns>
             <asp:BoundField DataField="ProjectID" HeaderText="ProjectID" SortExpression="ProjectID"

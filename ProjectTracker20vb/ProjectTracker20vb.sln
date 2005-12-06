@@ -26,6 +26,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\PTWeb\", "www\PTWeb\
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
+Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "PTData", "PTData\PTData.dbp", "{2480976C-1317-4730-8FB7-D2AC35DFDDF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET

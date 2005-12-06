@@ -2,6 +2,7 @@ Imports System.Security.Principal
 
 Namespace Security
 
+  <Serializable()> _
   Public Class PTPrincipal
     Inherits Csla.Security.BusinessPrincipalBase
 

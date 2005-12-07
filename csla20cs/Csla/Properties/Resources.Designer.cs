@@ -313,6 +313,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Property copy failed.
+        /// </summary>
+        internal static string PropertyCopyFailed {
+            get {
+                return ResourceManager.GetString("PropertyCopyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Property get not allowed.
         /// </summary>
         internal static string PropertyGetNotAllowed {

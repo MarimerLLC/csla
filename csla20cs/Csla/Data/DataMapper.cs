@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.ComponentModel;
+using Csla.Properties;
 
 namespace Csla.Data
 {
@@ -64,34 +66,13 @@ namespace Csla.Data
         {
           try
           {
-            // get source value
-            object value = source[propertyName];
-            // set target value
-            PropertyInfo propertyInfo = targetType.GetProperty(propertyName);
-            Type pType = propertyInfo.PropertyType;
-            if (value == null)
-              propertyInfo.SetValue(target, value, null);
-            else
-            {
-              if (pType.Equals(value.GetType()))
-              {
-                // types match, just copy value
-                propertyInfo.SetValue(target, value, null);
-              }
-              else
-              {
-                // types don't match, try to coerce
-                if (pType.Equals(typeof(Guid)))
-                  propertyInfo.SetValue(target, new Guid(value.ToString()), null);
-                else
-                  propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
-              }
-            }
+            SetValue(target, propertyName, source[propertyName]);
           }
           catch
           {
             if (!supressExceptions)
-              throw;
+              throw new ArgumentException(
+                String.Format("{0} ({1})", Resources.PropertyCopyFailed, propertyName));
           }
         }
       }
@@ -153,7 +134,7 @@ namespace Csla.Data
     {
       List<string> ignore = new List<string>(ignoreList);
       Type sourceType = source.GetType();
-      PropertyInfo[] sourceProperties = sourceType.GetProperties();
+      PropertyInfo[] sourceProperties = GetSourceProperties(sourceType);
       Type targetType = target.GetType();
       foreach (PropertyInfo sourceProperty in sourceProperties)
       {
@@ -163,23 +144,55 @@ namespace Csla.Data
           try
           {
             PropertyInfo propertyInfo;
-            // get source value
             propertyInfo = sourceType.GetProperty(propertyName);
-            object value = propertyInfo.GetValue(source, null);
-            // set target value
-            propertyInfo = targetType.GetProperty(propertyName);
-            propertyInfo.SetValue(target, value, null);
+            SetValue(target, propertyName, propertyInfo.GetValue(source, null));
           }
           catch
           {
             if (!supressExceptions)
-              throw;
+              throw new ArgumentException(
+                String.Format("{0} ({1})", Resources.PropertyCopyFailed, propertyName));
           }
         }
       }
     }
 
+    static PropertyInfo[] GetSourceProperties(Type sourceType)
+    {
+      List<PropertyInfo> result = new List<PropertyInfo>();
+      PropertyDescriptorCollection props =
+        TypeDescriptor.GetProperties(sourceType);
+      foreach (PropertyDescriptor item in props)
+        if (item.IsBrowsable)
+          result.Add(sourceType.GetProperty(item.Name));
+      return result.ToArray();
+    }
+
     #endregion
 
+    static void SetValue(object target, string propertyName, object value)
+    {
+      PropertyInfo propertyInfo =
+        target.GetType().GetProperty(propertyName);
+      Type pType = propertyInfo.PropertyType;
+      if (value == null)
+        propertyInfo.SetValue(target, value, null);
+      else
+      {
+        if (pType.Equals(value.GetType()))
+        {
+          // types match, just copy value
+          propertyInfo.SetValue(target, value, null);
+        }
+        else
+        {
+          // types don't match, try to coerce
+          if (pType.Equals(typeof(Guid)))
+            propertyInfo.SetValue(target, new Guid(value.ToString()), null);
+          else
+            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+        }
+      }
+    }
   }
 }

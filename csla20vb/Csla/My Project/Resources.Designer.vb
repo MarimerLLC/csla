@@ -313,6 +313,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Property copy failed.
+        '''</summary>
+        Friend ReadOnly Property PropertyCopyFailed() As String
+            Get
+                Return ResourceManager.GetString("PropertyCopyFailed", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Property get not allowed.
         '''</summary>
         Friend ReadOnly Property PropertyGetNotAllowed() As String

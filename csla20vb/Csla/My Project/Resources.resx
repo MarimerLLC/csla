@@ -476,4 +476,10 @@
 
   </data>
 
+  <data name="PropertyCopyFailed" xml:space="preserve">
+
+    <value>Property copy failed</value>
+
+  </data>
+
 </root>

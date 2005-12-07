@@ -31,30 +31,43 @@
   
   Protected Sub Application_AcquireRequestState(ByVal sender As Object, ByVal e As System.EventArgs)
 
-    Try
-      Dim principal As System.Security.Principal.IPrincipal = _
-        CType(Session("CslaPrincipal"), System.Security.Principal.IPrincipal)
-      System.Threading.Thread.CurrentPrincipal = principal
-      HttpContext.Current.User = principal
-
-    Catch
-      ' do nothing - this really shouldn't happen
-      ' but it does on the first login.aspx call...
-    End Try
-    SetDefaultSecurity()
+    If Csla.ApplicationContext.AuthenticationType <> "Windows" Then
+      ReloadPrincipal()
+    End If
     
   End Sub
 
-  Private Sub SetDefaultSecurity()
+  ''' <summary>
+  ''' Reload the principal from Session if Session
+  ''' is available and if there's a principal 
+  ''' object already in there.  
+  ''' </summary>
+  Private Sub ReloadPrincipal()
+    
+    Dim principal As System.Security.Principal.IPrincipal = Nothing
+    Try
+      principal = _
+        CType(Session("CslaPrincipal"), System.Security.Principal.IPrincipal)
 
-    If TypeOf System.Threading.Thread.CurrentPrincipal Is System.Security.Principal.GenericPrincipal _
-          AndAlso Csla.ApplicationContext.AuthenticationType <> "Windows" Then
-
+    Catch
+      ' do nothing - this really shouldn't happen
+      ' but it does on the first login.aspx call
+      ' because Session isn't set up yet for some reason
+    End Try
+    
+    If principal Is Nothing Then
+      ' didn't get a principal from Session, so
+      ' set it to an unauthenticted PTPrincipal
       ProjectTracker.Library.Security.PTPrincipal.Logout()
-      Session("CslaPrincipal") = System.Threading.Thread.CurrentPrincipal
       HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal
+
+    Else
+      ' use the principal from Session
+      System.Threading.Thread.CurrentPrincipal = principal
+      HttpContext.Current.User = principal
     End If
 
+    
   End Sub
 
 </script>

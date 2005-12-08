@@ -496,10 +496,10 @@
   </wsdl:binding>
   <wsdl:service name="PTService">
     <wsdl:port name="PTServiceSoap" binding="tns:PTServiceSoap">
-      <soap:address location="http://localhost:1955/PTWebService/PTService.asmx" />
+      <soap:address location="http://localhost/PTWebService/PTService.asmx" />
     </wsdl:port>
     <wsdl:port name="PTServiceSoap12" binding="tns:PTServiceSoap12">
-      <soap12:address location="http://localhost:1955/PTWebService/PTService.asmx" />
+      <soap12:address location="http://localhost/PTWebService/PTService.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

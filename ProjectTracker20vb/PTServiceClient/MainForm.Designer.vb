@@ -25,6 +25,10 @@ Partial Class MainForm
     Dim StartedLabel As System.Windows.Forms.Label
     Dim EndedLabel As System.Windows.Forms.Label
     Dim DescriptionLabel As System.Windows.Forms.Label
+    Dim IdLabel2 As System.Windows.Forms.Label
+    Dim NameLabel1 As System.Windows.Forms.Label
+    Dim IdLabel4 As System.Windows.Forms.Label
+    Dim NameLabel3 As System.Windows.Forms.Label
     Me.ProjectInfoBindingSource = New System.Windows.Forms.BindingSource(Me.components)
     Me.ProjectInfoDataGridView = New System.Windows.Forms.DataGridView
     Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn
@@ -41,19 +45,38 @@ Partial Class MainForm
     Me.Label2 = New System.Windows.Forms.Label
     Me.Label3 = New System.Windows.Forms.Label
     Me.GroupBox1 = New System.Windows.Forms.GroupBox
+    Me.ClearProjectButton = New System.Windows.Forms.Button
     Me.SaveProjectButton = New System.Windows.Forms.Button
     Me.DescriptionTextBox = New System.Windows.Forms.TextBox
+    Me.ProjectDetailBindingSource = New System.Windows.Forms.BindingSource(Me.components)
     Me.EndedTextBox = New System.Windows.Forms.TextBox
     Me.StartedTextBox = New System.Windows.Forms.TextBox
     Me.NameTextBox = New System.Windows.Forms.TextBox
     Me.IdLabel1 = New System.Windows.Forms.Label
-    Me.ProjectDetailBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-    Me.ClearProjectButton = New System.Windows.Forms.Button
+    Me.GroupBox2 = New System.Windows.Forms.GroupBox
+    Me.ProjectIdLabel = New System.Windows.Forms.Label
+    Me.NameLabel2 = New System.Windows.Forms.Label
+    Me.Label4 = New System.Windows.Forms.Label
+    Me.ResourceIdLabel = New System.Windows.Forms.Label
+    Me.NameLabel4 = New System.Windows.Forms.Label
+    Me.Label5 = New System.Windows.Forms.Label
+    Me.AssignToProjectButton = New System.Windows.Forms.Button
+    Me.ProjectResourcesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
+    Me.ProjectResourcesDataGridView = New System.Windows.Forms.DataGridView
+    Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.DataGridViewTextBoxColumn5 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.DataGridViewTextBoxColumn10 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.DataGridViewTextBoxColumn11 = New System.Windows.Forms.DataGridViewComboBoxColumn
     IdLabel = New System.Windows.Forms.Label
     NameLabel = New System.Windows.Forms.Label
     StartedLabel = New System.Windows.Forms.Label
     EndedLabel = New System.Windows.Forms.Label
     DescriptionLabel = New System.Windows.Forms.Label
+    IdLabel2 = New System.Windows.Forms.Label
+    NameLabel1 = New System.Windows.Forms.Label
+    IdLabel4 = New System.Windows.Forms.Label
+    NameLabel3 = New System.Windows.Forms.Label
     CType(Me.ProjectInfoBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
     CType(Me.ProjectInfoDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
     CType(Me.ResourceInfoBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -62,6 +85,9 @@ Partial Class MainForm
     CType(Me.RoleInfoDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.GroupBox1.SuspendLayout()
     CType(Me.ProjectDetailBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
+    Me.GroupBox2.SuspendLayout()
+    CType(Me.ProjectResourcesBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
+    CType(Me.ProjectResourcesDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.SuspendLayout()
     '
     'IdLabel
@@ -216,9 +242,9 @@ Partial Class MainForm
     Me.Label2.AutoSize = True
     Me.Label2.Location = New System.Drawing.Point(295, 13)
     Me.Label2.Name = "Label2"
-    Me.Label2.Size = New System.Drawing.Size(58, 13)
+    Me.Label2.Size = New System.Drawing.Size(204, 13)
     Me.Label2.TabIndex = 4
-    Me.Label2.Text = "Resources"
+    Me.Label2.Text = "Resources (double-click to change name)"
     '
     'Label3
     '
@@ -231,6 +257,7 @@ Partial Class MainForm
     '
     'GroupBox1
     '
+    Me.GroupBox1.Controls.Add(Me.ProjectResourcesDataGridView)
     Me.GroupBox1.Controls.Add(Me.ClearProjectButton)
     Me.GroupBox1.Controls.Add(Me.SaveProjectButton)
     Me.GroupBox1.Controls.Add(DescriptionLabel)
@@ -245,10 +272,19 @@ Partial Class MainForm
     Me.GroupBox1.Controls.Add(Me.IdLabel1)
     Me.GroupBox1.Location = New System.Drawing.Point(12, 255)
     Me.GroupBox1.Name = "GroupBox1"
-    Me.GroupBox1.Size = New System.Drawing.Size(277, 287)
+    Me.GroupBox1.Size = New System.Drawing.Size(583, 282)
     Me.GroupBox1.TabIndex = 6
     Me.GroupBox1.TabStop = False
     Me.GroupBox1.Text = "Project"
+    '
+    'ClearProjectButton
+    '
+    Me.ClearProjectButton.Location = New System.Drawing.Point(95, 253)
+    Me.ClearProjectButton.Name = "ClearProjectButton"
+    Me.ClearProjectButton.Size = New System.Drawing.Size(75, 23)
+    Me.ClearProjectButton.TabIndex = 11
+    Me.ClearProjectButton.Text = "Clear"
+    Me.ClearProjectButton.UseVisualStyleBackColor = True
     '
     'SaveProjectButton
     '
@@ -268,6 +304,10 @@ Partial Class MainForm
     Me.DescriptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both
     Me.DescriptionTextBox.Size = New System.Drawing.Size(175, 102)
     Me.DescriptionTextBox.TabIndex = 9
+    '
+    'ProjectDetailBindingSource
+    '
+    Me.ProjectDetailBindingSource.DataSource = GetType(PTServiceClient.PTService.ProjectInfo)
     '
     'EndedTextBox
     '
@@ -301,24 +341,188 @@ Partial Class MainForm
     Me.IdLabel1.Size = New System.Drawing.Size(175, 23)
     Me.IdLabel1.TabIndex = 1
     '
-    'ProjectDetailBindingSource
+    'GroupBox2
     '
-    Me.ProjectDetailBindingSource.DataSource = GetType(PTServiceClient.PTService.ProjectInfo)
+    Me.GroupBox2.Controls.Add(Me.AssignToProjectButton)
+    Me.GroupBox2.Controls.Add(NameLabel3)
+    Me.GroupBox2.Controls.Add(Me.NameLabel4)
+    Me.GroupBox2.Controls.Add(IdLabel4)
+    Me.GroupBox2.Controls.Add(Me.ResourceIdLabel)
+    Me.GroupBox2.Controls.Add(Me.Label5)
+    Me.GroupBox2.Controls.Add(Me.Label4)
+    Me.GroupBox2.Controls.Add(NameLabel1)
+    Me.GroupBox2.Controls.Add(Me.NameLabel2)
+    Me.GroupBox2.Controls.Add(IdLabel2)
+    Me.GroupBox2.Controls.Add(Me.ProjectIdLabel)
+    Me.GroupBox2.Location = New System.Drawing.Point(602, 255)
+    Me.GroupBox2.Name = "GroupBox2"
+    Me.GroupBox2.Size = New System.Drawing.Size(300, 282)
+    Me.GroupBox2.TabIndex = 7
+    Me.GroupBox2.TabStop = False
+    Me.GroupBox2.Text = "Add assignment"
     '
-    'ClearProjectButton
+    'IdLabel2
     '
-    Me.ClearProjectButton.Location = New System.Drawing.Point(95, 253)
-    Me.ClearProjectButton.Name = "ClearProjectButton"
-    Me.ClearProjectButton.Size = New System.Drawing.Size(75, 23)
-    Me.ClearProjectButton.TabIndex = 11
-    Me.ClearProjectButton.Text = "Clear"
-    Me.ClearProjectButton.UseVisualStyleBackColor = True
+    IdLabel2.AutoSize = True
+    IdLabel2.Location = New System.Drawing.Point(9, 44)
+    IdLabel2.Name = "IdLabel2"
+    IdLabel2.Size = New System.Drawing.Size(19, 13)
+    IdLabel2.TabIndex = 0
+    IdLabel2.Text = "Id:"
+    '
+    'ProjectIdLabel
+    '
+    Me.ProjectIdLabel.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ProjectInfoBindingSource, "Id", True))
+    Me.ProjectIdLabel.Location = New System.Drawing.Point(53, 44)
+    Me.ProjectIdLabel.Name = "ProjectIdLabel"
+    Me.ProjectIdLabel.Size = New System.Drawing.Size(227, 23)
+    Me.ProjectIdLabel.TabIndex = 1
+    '
+    'NameLabel1
+    '
+    NameLabel1.AutoSize = True
+    NameLabel1.Location = New System.Drawing.Point(7, 68)
+    NameLabel1.Name = "NameLabel1"
+    NameLabel1.Size = New System.Drawing.Size(38, 13)
+    NameLabel1.TabIndex = 2
+    NameLabel1.Text = "Name:"
+    '
+    'NameLabel2
+    '
+    Me.NameLabel2.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ProjectInfoBindingSource, "Name", True))
+    Me.NameLabel2.Location = New System.Drawing.Point(53, 68)
+    Me.NameLabel2.Name = "NameLabel2"
+    Me.NameLabel2.Size = New System.Drawing.Size(227, 23)
+    Me.NameLabel2.TabIndex = 3
+    '
+    'Label4
+    '
+    Me.Label4.AutoSize = True
+    Me.Label4.Location = New System.Drawing.Point(9, 25)
+    Me.Label4.Name = "Label4"
+    Me.Label4.Size = New System.Drawing.Size(43, 13)
+    Me.Label4.TabIndex = 4
+    Me.Label4.Text = "Project:"
+    '
+    'IdLabel4
+    '
+    IdLabel4.AutoSize = True
+    IdLabel4.Location = New System.Drawing.Point(9, 130)
+    IdLabel4.Name = "IdLabel4"
+    IdLabel4.Size = New System.Drawing.Size(19, 13)
+    IdLabel4.TabIndex = 5
+    IdLabel4.Text = "Id:"
+    '
+    'ResourceIdLabel
+    '
+    Me.ResourceIdLabel.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ResourceInfoBindingSource, "Id", True))
+    Me.ResourceIdLabel.Location = New System.Drawing.Point(53, 130)
+    Me.ResourceIdLabel.Name = "ResourceIdLabel"
+    Me.ResourceIdLabel.Size = New System.Drawing.Size(218, 23)
+    Me.ResourceIdLabel.TabIndex = 6
+    '
+    'NameLabel3
+    '
+    NameLabel3.AutoSize = True
+    NameLabel3.Location = New System.Drawing.Point(9, 153)
+    NameLabel3.Name = "NameLabel3"
+    NameLabel3.Size = New System.Drawing.Size(38, 13)
+    NameLabel3.TabIndex = 7
+    NameLabel3.Text = "Name:"
+    '
+    'NameLabel4
+    '
+    Me.NameLabel4.DataBindings.Add(New System.Windows.Forms.Binding("Text", Me.ResourceInfoBindingSource, "Name", True))
+    Me.NameLabel4.Location = New System.Drawing.Point(53, 153)
+    Me.NameLabel4.Name = "NameLabel4"
+    Me.NameLabel4.Size = New System.Drawing.Size(218, 23)
+    Me.NameLabel4.TabIndex = 8
+    '
+    'Label5
+    '
+    Me.Label5.AutoSize = True
+    Me.Label5.Location = New System.Drawing.Point(9, 109)
+    Me.Label5.Name = "Label5"
+    Me.Label5.Size = New System.Drawing.Size(56, 13)
+    Me.Label5.TabIndex = 4
+    Me.Label5.Text = "Resource:"
+    '
+    'AssignToProjectButton
+    '
+    Me.AssignToProjectButton.Location = New System.Drawing.Point(196, 205)
+    Me.AssignToProjectButton.Name = "AssignToProjectButton"
+    Me.AssignToProjectButton.Size = New System.Drawing.Size(75, 23)
+    Me.AssignToProjectButton.TabIndex = 9
+    Me.AssignToProjectButton.Text = "Assign"
+    Me.AssignToProjectButton.UseVisualStyleBackColor = True
+    '
+    'ProjectResourcesBindingSource
+    '
+    Me.ProjectResourcesBindingSource.DataMember = "ProjectResources"
+    Me.ProjectResourcesBindingSource.DataSource = Me.ProjectDetailBindingSource
+    '
+    'ProjectResourcesDataGridView
+    '
+    Me.ProjectResourcesDataGridView.AllowUserToAddRows = False
+    Me.ProjectResourcesDataGridView.AllowUserToDeleteRows = False
+    Me.ProjectResourcesDataGridView.AutoGenerateColumns = False
+    Me.ProjectResourcesDataGridView.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn4, Me.DataGridViewTextBoxColumn3, Me.DataGridViewTextBoxColumn5, Me.DataGridViewTextBoxColumn10, Me.DataGridViewTextBoxColumn11})
+    Me.ProjectResourcesDataGridView.DataSource = Me.ProjectResourcesBindingSource
+    Me.ProjectResourcesDataGridView.Location = New System.Drawing.Point(257, 56)
+    Me.ProjectResourcesDataGridView.MultiSelect = False
+    Me.ProjectResourcesDataGridView.Name = "ProjectResourcesDataGridView"
+    Me.ProjectResourcesDataGridView.ReadOnly = True
+    Me.ProjectResourcesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+    Me.ProjectResourcesDataGridView.Size = New System.Drawing.Size(313, 220)
+    Me.ProjectResourcesDataGridView.TabIndex = 12
+    '
+    'DataGridViewTextBoxColumn4
+    '
+    Me.DataGridViewTextBoxColumn4.DataPropertyName = "ResourceId"
+    Me.DataGridViewTextBoxColumn4.HeaderText = "ResourceId"
+    Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
+    Me.DataGridViewTextBoxColumn4.ReadOnly = True
+    Me.DataGridViewTextBoxColumn4.Visible = False
+    '
+    'DataGridViewTextBoxColumn3
+    '
+    Me.DataGridViewTextBoxColumn3.DataPropertyName = "LastName"
+    Me.DataGridViewTextBoxColumn3.HeaderText = "LastName"
+    Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
+    Me.DataGridViewTextBoxColumn3.ReadOnly = True
+    '
+    'DataGridViewTextBoxColumn5
+    '
+    Me.DataGridViewTextBoxColumn5.DataPropertyName = "FirstName"
+    Me.DataGridViewTextBoxColumn5.HeaderText = "FirstName"
+    Me.DataGridViewTextBoxColumn5.Name = "DataGridViewTextBoxColumn5"
+    Me.DataGridViewTextBoxColumn5.ReadOnly = True
+    '
+    'DataGridViewTextBoxColumn10
+    '
+    Me.DataGridViewTextBoxColumn10.DataPropertyName = "Assigned"
+    Me.DataGridViewTextBoxColumn10.HeaderText = "Assigned"
+    Me.DataGridViewTextBoxColumn10.Name = "DataGridViewTextBoxColumn10"
+    Me.DataGridViewTextBoxColumn10.ReadOnly = True
+    '
+    'DataGridViewTextBoxColumn11
+    '
+    Me.DataGridViewTextBoxColumn11.DataPropertyName = "Role"
+    Me.DataGridViewTextBoxColumn11.DataSource = Me.RoleInfoBindingSource
+    Me.DataGridViewTextBoxColumn11.DisplayMember = "Name"
+    Me.DataGridViewTextBoxColumn11.HeaderText = "Role"
+    Me.DataGridViewTextBoxColumn11.Name = "DataGridViewTextBoxColumn11"
+    Me.DataGridViewTextBoxColumn11.ReadOnly = True
+    Me.DataGridViewTextBoxColumn11.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+    Me.DataGridViewTextBoxColumn11.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+    Me.DataGridViewTextBoxColumn11.ValueMember = "Id"
     '
     'MainForm
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-    Me.ClientSize = New System.Drawing.Size(914, 554)
+    Me.ClientSize = New System.Drawing.Size(914, 577)
+    Me.Controls.Add(Me.GroupBox2)
     Me.Controls.Add(Me.GroupBox1)
     Me.Controls.Add(Me.Label3)
     Me.Controls.Add(Me.Label2)
@@ -337,6 +541,10 @@ Partial Class MainForm
     Me.GroupBox1.ResumeLayout(False)
     Me.GroupBox1.PerformLayout()
     CType(Me.ProjectDetailBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
+    Me.GroupBox2.ResumeLayout(False)
+    Me.GroupBox2.PerformLayout()
+    CType(Me.ProjectResourcesBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
+    CType(Me.ProjectResourcesDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
     Me.ResumeLayout(False)
     Me.PerformLayout()
 
@@ -365,5 +573,20 @@ Partial Class MainForm
   Friend WithEvents SaveProjectButton As System.Windows.Forms.Button
   Friend WithEvents ProjectDetailBindingSource As System.Windows.Forms.BindingSource
   Friend WithEvents ClearProjectButton As System.Windows.Forms.Button
+  Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
+  Friend WithEvents NameLabel4 As System.Windows.Forms.Label
+  Friend WithEvents ResourceIdLabel As System.Windows.Forms.Label
+  Friend WithEvents Label4 As System.Windows.Forms.Label
+  Friend WithEvents NameLabel2 As System.Windows.Forms.Label
+  Friend WithEvents ProjectIdLabel As System.Windows.Forms.Label
+  Friend WithEvents AssignToProjectButton As System.Windows.Forms.Button
+  Friend WithEvents Label5 As System.Windows.Forms.Label
+  Friend WithEvents ProjectResourcesDataGridView As System.Windows.Forms.DataGridView
+  Friend WithEvents ProjectResourcesBindingSource As System.Windows.Forms.BindingSource
+  Friend WithEvents DataGridViewTextBoxColumn4 As System.Windows.Forms.DataGridViewTextBoxColumn
+  Friend WithEvents DataGridViewTextBoxColumn3 As System.Windows.Forms.DataGridViewTextBoxColumn
+  Friend WithEvents DataGridViewTextBoxColumn5 As System.Windows.Forms.DataGridViewTextBoxColumn
+  Friend WithEvents DataGridViewTextBoxColumn10 As System.Windows.Forms.DataGridViewTextBoxColumn
+  Friend WithEvents DataGridViewTextBoxColumn11 As System.Windows.Forms.DataGridViewComboBoxColumn
 
 End Class

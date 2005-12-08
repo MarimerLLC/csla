@@ -142,22 +142,31 @@ Public Class PTService
 
   <WebMethod(Description:="Change a resource's name")> _
   <SoapHeader("Credentials")> _
-  Public Function ChangeResourceName(ByVal id As Integer, ByVal firstName As String, ByVal lastName As String) As ResourceInfo
+  Public Function ChangeResourceName(ByVal id As Integer, _
+    ByVal firstName As String, ByVal lastName As String) As ResourceInfo
 
     ' user credentials required
     Security.Login(Credentials)
 
-    Dim res As Resource = Resource.GetResource(id)
-    With res
-      .FirstName = firstName
-      .LastName = lastName
-    End With
-    res = res.Save
+    Try
+      Dim res As Resource = Resource.GetResource(id)
+      With res
+        .FirstName = firstName
+        .LastName = lastName
+      End With
+      res = res.Save
 
-    Dim result As New ResourceInfo
-    result.Id = res.Id
-    result.Name = String.Format("{1}, {0}", res.FirstName, res.LastName)
-    Return result
+      Dim result As New ResourceInfo
+      result.Id = res.Id
+      result.Name = String.Format("{1}, {0}", res.FirstName, res.LastName)
+      Return result
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Function
 

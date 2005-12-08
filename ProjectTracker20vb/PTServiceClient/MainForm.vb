@@ -60,6 +60,51 @@ Public Class MainForm
 
   End Sub
 
+  Private Sub AssignToProjectButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AssignToProjectButton.Click
+
+    If Len(Me.ResourceIdLabel.Text.Trim) = 0 Then
+      MessageBox.Show("You must select a resource first", "Assign resource", _
+        MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End If
+    If Len(Me.ProjectIdLabel.Text.Trim) = 0 OrElse Guid.Empty.Equals(New Guid(Me.ProjectIdLabel.Text)) Then
+      MessageBox.Show("You must select a project first", "Assign resource", _
+        MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End If
+    Using svc As New PTService.PTService
+      SetCredentials(svc)
+      Try
+        ' do the assignment
+        svc.AssignResource(CInt(Me.ResourceIdLabel.Text), New Guid(Me.ProjectIdLabel.Text))
+        ' refresh the detail view
+        Me.ProjectDetailBindingSource.DataSource = svc.GetProject(Me.ProjectIdLabel.Text)
+
+      Catch ex As Exception
+        MessageBox.Show(ex.Message, "Assign resource", _
+          MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+      End Try
+    End Using
+
+  End Sub
+
+  Private Sub ResourceInfoDataGridView_CellDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles ResourceInfoDataGridView.CellDoubleClick
+
+    Dim dlg As New ResourceName(Me.ResourceInfoDataGridView.SelectedRows(0).Cells(0).Value.ToString, _
+      Me.ResourceInfoDataGridView.SelectedRows(0).Cells(1).Value.ToString)
+    If dlg.ShowDialog = Windows.Forms.DialogResult.OK Then
+      Using svc As New PTService.PTService
+        SetCredentials(svc)
+        ' save the changes
+        Dim resourceId As Integer = CInt(dlg.IdLabel1.Text)
+        Dim firstName As String = dlg.FirstNameTextBox.Text
+        Dim lastName As String = dlg.LastNameTextBox.Text
+        svc.ChangeResourceName(resourceId, firstName, lastName)
+        ' refresh the resource list
+        Me.ResourceInfoBindingSource.DataSource = svc.GetResourceList
+      End Using
+    End If
+
+  End Sub
+
   Private Sub SetCredentials(ByVal svc As PTService.PTService)
 
     Dim credentials As New PTService.CslaCredentials

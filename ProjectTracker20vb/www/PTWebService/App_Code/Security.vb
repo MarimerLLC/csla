@@ -21,6 +21,9 @@ Friend Module Security
         "Valid credentials not provided")
     End If
 
+    ' set to unauthenticated principal
+    ProjectTracker.Library.Security.PTPrincipal.Logout()
+
     With credentials
       ProjectTracker.Library.Security.PTPrincipal.Login(.Username, .Password)
     End With

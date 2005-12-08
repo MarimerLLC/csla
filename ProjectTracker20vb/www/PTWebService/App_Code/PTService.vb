@@ -25,14 +25,22 @@ Public Class PTService
     ' anonymous access allowed
     Security.UseAnonymous()
 
-    Dim list As ProjectList = ProjectList.GetProjectList
-    Dim result As New List(Of ProjectInfo)
-    For Each item As ProjectList.ProjectInfo In list
-      Dim info As New ProjectInfo
-      Csla.Data.DataMapper.Map(item, info)
-      result.Add(info)
-    Next
-    Return result.ToArray
+    Try
+      Dim list As ProjectList = ProjectList.GetProjectList
+      Dim result As New List(Of ProjectInfo)
+      For Each item As ProjectList.ProjectInfo In list
+        Dim info As New ProjectInfo
+        Csla.Data.DataMapper.Map(item, info)
+        result.Add(info)
+      Next
+      Return result.ToArray
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Function
 
@@ -42,15 +50,23 @@ Public Class PTService
     ' anonymous access allowed
     Security.UseAnonymous()
 
-    Dim proj As Project = Project.GetProject(New Guid(id))
-    Dim result As New ProjectInfo
-    Csla.Data.DataMapper.Map(proj, result, "Resources")
-    For Each resource As ProjectResource In proj.Resources
-      Dim info As New ProjectResourceInfo
-      Csla.Data.DataMapper.Map(resource, info, "FullName")
-      result.AddResource(info)
-    Next
-    Return result
+    Try
+      Dim proj As Project = Project.GetProject(New Guid(id))
+      Dim result As New ProjectInfo
+      Csla.Data.DataMapper.Map(proj, result, "Resources")
+      For Each resource As ProjectResource In proj.Resources
+        Dim info As New ProjectResourceInfo
+        Csla.Data.DataMapper.Map(resource, info, "FullName")
+        result.AddResource(info)
+      Next
+      Return result
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Function
 
@@ -61,18 +77,26 @@ Public Class PTService
     ' user credentials required
     Security.Login(Credentials)
 
-    Dim proj As Project = Project.NewProject
-    With proj
-      .Name = name
-      .Started = started
-      .Ended = ended
-      .Description = description
-    End With
-    proj = proj.Save
+    Try
+      Dim proj As Project = Project.NewProject
+      With proj
+        .Name = name
+        .Started = started
+        .Ended = ended
+        .Description = description
+      End With
+      proj = proj.Save
 
-    Dim result As New ProjectInfo
-    Csla.Data.DataMapper.Map(proj, result, "Resources")
-    Return result
+      Dim result As New ProjectInfo
+      Csla.Data.DataMapper.Map(proj, result, "Resources")
+      Return result
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Function
 
@@ -85,18 +109,26 @@ Public Class PTService
     ' user credentials required
     Security.Login(Credentials)
 
-    Dim proj As Project = Project.GetProject(id)
-    With proj
-      .Name = name
-      .Started = started
-      .Ended = ended
-      .Description = description
-    End With
-    proj = proj.Save
+    Try
+      Dim proj As Project = Project.GetProject(id)
+      With proj
+        .Name = name
+        .Started = started
+        .Ended = ended
+        .Description = description
+      End With
+      proj = proj.Save
 
-    Dim result As New ProjectInfo
-    Csla.Data.DataMapper.Map(proj, result, "Resources")
-    Return result
+      Dim result As New ProjectInfo
+      Csla.Data.DataMapper.Map(proj, result, "Resources")
+      Return result
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Function
 
@@ -110,14 +142,22 @@ Public Class PTService
     ' anonymous access allowed
     Security.UseAnonymous()
 
-    Dim list As ResourceList = ResourceList.GetResourceList
-    Dim result As New List(Of ResourceInfo)
-    For Each item As ResourceList.ResourceInfo In list
-      Dim info As New ResourceInfo
-      Csla.Data.DataMapper.Map(item, info)
-      result.Add(info)
-    Next
-    Return result.ToArray
+    Try
+      Dim list As ResourceList = ResourceList.GetResourceList
+      Dim result As New List(Of ResourceInfo)
+      For Each item As ResourceList.ResourceInfo In list
+        Dim info As New ResourceInfo
+        Csla.Data.DataMapper.Map(item, info)
+        result.Add(info)
+      Next
+      Return result.ToArray
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Function
 
@@ -127,16 +167,24 @@ Public Class PTService
     ' anonymous access allowed
     Security.UseAnonymous()
 
-    Dim res As Resource = Resource.GetResource(id)
-    Dim result As New ResourceInfo
-    result.Id = res.Id
-    result.Name = String.Format("{1}, {0}", res.FirstName, res.LastName)
-    For Each resource As ResourceAssignment In res.Assignments
-      Dim info As New ResourceAssignmentInfo
-      Csla.Data.DataMapper.Map(resource, info)
-      result.AddProject(info)
-    Next
-    Return result
+    Try
+      Dim res As Resource = Resource.GetResource(id)
+      Dim result As New ResourceInfo
+      result.Id = res.Id
+      result.Name = String.Format("{1}, {0}", res.FirstName, res.LastName)
+      For Each resource As ResourceAssignment In res.Assignments
+        Dim info As New ResourceAssignmentInfo
+        Csla.Data.DataMapper.Map(resource, info)
+        result.AddProject(info)
+      Next
+      Return result
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Function
 
@@ -181,9 +229,17 @@ Public Class PTService
     ' user credentials required
     Security.Login(Credentials)
 
-    Dim res As Resource = Resource.GetResource(resourceId)
-    res.Assignments.AssignTo(projectId)
-    res.Save()
+    Try
+      Dim res As Resource = Resource.GetResource(resourceId)
+      res.Assignments.AssignTo(projectId)
+      res.Save()
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Sub
 
@@ -197,15 +253,23 @@ Public Class PTService
     ' anonymous access allowed
     Security.UseAnonymous()
 
-    Dim list As RoleList = RoleList.GetList
-    Dim result As New List(Of RoleInfo)
-    For Each role As RoleList.NameValuePair In list
-      Dim info As New RoleInfo
-      info.Id = role.Key
-      info.Name = role.Value
-      result.Add(info)
-    Next
-    Return result.ToArray
+    Try
+      Dim list As RoleList = RoleList.GetList
+      Dim result As New List(Of RoleInfo)
+      For Each role As RoleList.NameValuePair In list
+        Dim info As New RoleInfo
+        info.Id = role.Key
+        info.Name = role.Value
+        result.Add(info)
+      Next
+      Return result.ToArray
+
+    Catch ex As Csla.DataPortalException
+      Throw ex.BusinessException
+
+    Catch ex As Exception
+      Throw New Exception(ex.Message)
+    End Try
 
   End Function
 

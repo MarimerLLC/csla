@@ -336,7 +336,8 @@ Namespace Core
         New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
       Dim result As Boolean = CanReadProperty(propertyName)
       If throwOnFalse AndAlso result = False Then
-        Throw New System.Security.SecurityException(My.Resources.PropertyGetNotAllowed)
+        Throw New System.Security.SecurityException( _
+          String.Format("{0} ({1})", My.Resources.PropertyGetNotAllowed, propertyName))
       End If
       Return result
 
@@ -436,7 +437,8 @@ Namespace Core
         New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
       Dim result As Boolean = CanWriteProperty(propertyName)
       If throwOnFalse AndAlso result = False Then
-        Throw New System.Security.SecurityException(My.Resources.PropertySetNotAllowed)
+        Throw New System.Security.SecurityException( _
+          String.Format("{0} ({1})", My.Resources.PropertySetNotAllowed, propertyName))
       End If
       Return result
 

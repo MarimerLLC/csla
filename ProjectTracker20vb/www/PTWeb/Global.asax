@@ -58,9 +58,13 @@
     If principal Is Nothing Then
       ' didn't get a principal from Session, so
       ' set it to an unauthenticted PTPrincipal
+
+      ' setting an unauthenticated principal when running
+      ' under the VShost causes serialization issues
+      ' and isn't strictly necessary anyway
       ProjectTracker.Library.Security.PTPrincipal.Logout()
       HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal
-
+      
     Else
       ' use the principal from Session
       System.Threading.Thread.CurrentPrincipal = principal

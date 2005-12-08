@@ -6,6 +6,9 @@ Friend Module Security
 
   Public Sub UseAnonymous()
 
+    ' setting an unauthenticated principal when running
+    ' under the VShost causes serialization issues
+    ' and isn't strictly necessary anyway
     If UrlIsHostedByVS(HttpContext.Current.Request.Url) Then Exit Sub
 
     ProjectTracker.Library.Security.PTPrincipal.Logout()
@@ -13,8 +16,6 @@ Friend Module Security
   End Sub
 
   Public Sub Login(ByVal credentials As CslaCredentials)
-
-    'If UrlIsHostedByVS(HttpContext.Current.Request.Url) Then Exit Sub
 
     If Len(credentials.Username) = 0 Then
       Throw New System.Security.SecurityException( _

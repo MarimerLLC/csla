@@ -73,7 +73,6 @@ namespace ProjectTracker.Library
             IsReadOnly = true;
           }
         }
-        cn.Close();
       }
     }
 

@@ -55,6 +55,30 @@ namespace ProjectTracker.Library.Admin
 
     #endregion
 
+    #region Authorization Rules
+
+    public static bool CanAddObject()
+    {
+      return System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator");
+    }
+
+    public static bool CanGetObject()
+    {
+      return true;
+    }
+
+    public static bool CanDeleteObject()
+    {
+      return System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator");
+    }
+
+    public static bool CanSaveObject()
+    {
+      return System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator");
+    }
+
+    #endregion
+
     #region Constructors
 
     private Roles()
@@ -87,6 +111,11 @@ namespace ProjectTracker.Library.Admin
 
     public override Roles Save()
     {
+      // see if save is allowed
+      if (!CanSaveObject())
+        throw new System.Security.SecurityException("User not authorized to save roles");
+
+      // do the save
       Roles result;
       result = base.Save();
       // this runs on the client and invalidates
@@ -121,10 +150,8 @@ namespace ProjectTracker.Library.Admin
             {
               this.Add(Role.GetRole(dr));
             }
-            dr.Close();
           }
         }
-        cn.Close();
       }
     }
 
@@ -147,7 +174,6 @@ namespace ProjectTracker.Library.Admin
           else
             item.Update(cn);
         }
-        cn.Close();
       }
     }
 

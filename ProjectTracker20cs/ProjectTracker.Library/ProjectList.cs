@@ -131,10 +131,8 @@ namespace ProjectTracker.Library
                 this.Add(info);
             }
             IsReadOnly = true;
-            dr.Close();
           }
         }
-        cn.Close();
       }
     }
 

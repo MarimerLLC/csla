@@ -128,10 +128,8 @@ namespace ProjectTracker.Library.Security
                 _name = string.Empty;
                 _isAuthenticated = false;
               }
-              dr.Close();
             }
           }
-          cn.Close();
         }
       }
 

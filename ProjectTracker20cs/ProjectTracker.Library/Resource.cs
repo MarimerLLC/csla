@@ -14,13 +14,14 @@ namespace ProjectTracker.Library
 
     #region Business Methods
 
-    private string _id = string.Empty;
+    private int _id;
     private string _lastName = string.Empty;
     private string _firstName = string.Empty;
+    private byte[] _timestamp = new byte[8];
 
     private ResourceAssignments _assignments = ResourceAssignments.NewResourceAssignments();
 
-    public string Id
+    public int Id
     {
       get
       {
@@ -149,21 +150,21 @@ namespace ProjectTracker.Library
 
     #region Factory Methods
 
-    public static Resource NewResource(string id)
+    public static Resource NewResource()
     {
       if (!CanAddObject())
         throw new System.Security.SecurityException("User not authorized to add a resource");
-      return DataPortal.Create<Resource>(new Criteria(id));
+      return DataPortal.Create<Resource>();
     }
 
-    public static void DeleteResource(string id)
+    public static void DeleteResource(int id)
     {
       if (!CanDeleteObject())
         throw new System.Security.SecurityException("User not authorized to remove a resource");
       DataPortal.Delete(new Criteria(id));
     }
 
-    public static Resource GetResource(string id)
+    public static Resource GetResource(int id)
     {
       if (!CanGetObject())
         throw new System.Security.SecurityException("User not authorized to view a resource");
@@ -192,18 +193,18 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region
+    #region Criteria
 
     [Serializable()]
     private class Criteria
     {
-      private string _id;
-      public string Id
+      private int _id;
+      public int Id
       {
         get { return _id; }
       }
 
-      public Criteria(string id)
+      public Criteria(int id)
       {
         _id = id;
       }
@@ -216,7 +217,7 @@ namespace ProjectTracker.Library
     [RunLocal()]
     private void DataPortal_Create(Criteria criteria)
     {
-      _id = criteria.Id;
+      // nothing to initialize
     }
 
     private void DataPortal_Fetch(Criteria criteria)
@@ -228,22 +229,21 @@ namespace ProjectTracker.Library
         {
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "getResource";
-          cm.Parameters.AddWithValue("@ID", criteria.Id);
+          cm.Parameters.AddWithValue("@id", criteria.Id);
 
           using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
           {
             dr.Read();
-            _id = dr.GetString(0);
-            _lastName = dr.GetString(1);
-            _firstName = dr.GetString(2);
+            _id = dr.GetInt32("Id");
+            _lastName = dr.GetString("LastName");
+            _firstName = dr.GetString("FirstName");
+            dr.GetBytes("LastChanged", 0, _timestamp, 0, 8);
 
             // load child objects
             dr.NextResult();
             _assignments = ResourceAssignments.GetResourceAssignments(dr);
-            dr.Close();
           }
         }
-        cn.Close();
       }
     }
 
@@ -260,7 +260,15 @@ namespace ProjectTracker.Library
             cm.Transaction = tr;
             cm.CommandType = CommandType.StoredProcedure;
             cm.CommandText = "addResource";
-            LoadParameters(cm);
+            cm.Parameters.AddWithValue("@lastName", _lastName);
+            cm.Parameters.AddWithValue("@firstName", _firstName);
+
+            using (SqlDataReader dr = cm.ExecuteReader()) 
+            {
+              dr.Read();
+              _id = dr.GetInt32(0);
+              dr.GetBytes(1,0,_timestamp, 0, 8);
+            }
 
             cm.ExecuteNonQuery();
 
@@ -269,7 +277,6 @@ namespace ProjectTracker.Library
           }
           tr.Commit();
         }
-        cn.Close();
       }
     }
 
@@ -281,29 +288,31 @@ namespace ProjectTracker.Library
         cn.Open();
         using (SqlTransaction tr = cn.BeginTransaction())
         {
-          using (SqlCommand cm = cn.CreateCommand())
+          if (base.IsDirty)
           {
-            cm.Transaction = tr;
-            cm.CommandType = CommandType.StoredProcedure;
-            cm.CommandText = "updateResource";
-            LoadParameters(cm);
+            using (SqlCommand cm = cn.CreateCommand())
+            {
+              cm.Transaction = tr;
+              cm.CommandType = CommandType.StoredProcedure;
+              cm.CommandText = "updateResource";
+              cm.Parameters.AddWithValue("@id", _id);
+              cm.Parameters.AddWithValue("@lastName", _lastName);
+              cm.Parameters.AddWithValue("@firstName", _firstName);
+              cm.Parameters.AddWithValue("@lastChanged", _timestamp);
 
-            cm.ExecuteNonQuery();
-
-            // update child objects
-            _assignments.Update(tr, this);
+              using (SqlDataReader dr = cm.ExecuteReader())
+              {
+                dr.Read();
+                dr.GetBytes(0, 0, _timestamp, 0, 8);
+              }
+            }
           }
+
+          // update child objects
+          _assignments.Update(tr, this);
           tr.Commit();
         }
-        cn.Close();
       }
-    }
-
-    private void LoadParameters(SqlCommand cm)
-    {
-      cm.Parameters.AddWithValue("@ID", _id);
-      cm.Parameters.AddWithValue("@LastName", _lastName);
-      cm.Parameters.AddWithValue("@FirstName", _firstName);
     }
 
     [Transactional(TransactionalTypes.Manual)]
@@ -329,12 +338,11 @@ namespace ProjectTracker.Library
             cm.Transaction = tr;
             cm.CommandType = CommandType.StoredProcedure;
             cm.CommandText = "deleteResource";
-            cm.Parameters.AddWithValue("@ID", criteria.Id);
+            cm.Parameters.AddWithValue("@id", criteria.Id);
             cm.ExecuteNonQuery();
           }
           tr.Commit();
         }
-        cn.Close();
       }
     }
 
@@ -383,10 +391,8 @@ namespace ProjectTracker.Library
                 _exists = true;
               else
                 _exists = false;
-              dr.Close();
             }
           }
-          cn.Close();
         }
       }
     }

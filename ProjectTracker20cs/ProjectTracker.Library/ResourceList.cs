@@ -16,10 +16,10 @@ namespace ProjectTracker.Library
     public class ResourceInfo
     {
 
-      private string _id;
+      private int _id;
       private string _name;
 
-      public string Id
+      public int Id
       {
         get { return _id; }
         internal set { _id = value; }
@@ -95,15 +95,13 @@ namespace ProjectTracker.Library
             while (dr.Read())
             {
               ResourceInfo info = new ResourceInfo();
-              info.Id = dr.GetString("id");
+              info.Id = dr.GetInt32("Id");
               info.Name = string.Format("{0}, {1}", dr.GetString("LastName"), dr.GetString("FirstName"));
               this.Add(info);
             }
             IsReadOnly = false;
-            dr.Close();
           }
         }
-        cn.Close();
       }
     }
 

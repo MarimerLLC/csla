@@ -12,7 +12,7 @@ namespace ProjectTracker.Library
 
     #region Business Methods
 
-    public ProjectResource this[string resourceId]
+    public ProjectResource this[int resourceId]
     {
       get
       {
@@ -23,7 +23,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    public void Assign(string resourceId)
+    public void Assign(int resourceId)
     {
       DoAssignment(ProjectResource.NewProjectResource(resourceId, RoleList.DefaultRole()));
     }
@@ -36,7 +36,7 @@ namespace ProjectTracker.Library
         throw new InvalidOperationException("Resource already assigned to project");
     }
 
-    public void Remove(string resourceId)
+    public void Remove(int resourceId)
     {
       foreach (ProjectResource res in this)
       {
@@ -52,7 +52,7 @@ namespace ProjectTracker.Library
 
     #region Contains
 
-    public bool Contains(string resourceId)
+    public bool Contains(int resourceId)
     {
       foreach (ProjectResource res in this)
         if (res.ResourceId == resourceId)
@@ -60,7 +60,7 @@ namespace ProjectTracker.Library
       return false;
     }
 
-    public bool ContainsDeleted(string resourceId)
+    public bool ContainsDeleted(int resourceId)
     {
       foreach (ProjectResource res in DeletedList)
         if (res.ResourceId == resourceId)

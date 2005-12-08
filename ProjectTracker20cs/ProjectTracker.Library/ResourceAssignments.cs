@@ -13,12 +13,12 @@ namespace ProjectTracker.Library
 
     #region Business Methods
 
-    public ResourceAssignment this[Guid projectID]
+    public ResourceAssignment this[Guid projectId]
     {
       get
       {
         foreach (ResourceAssignment res in this)
-          if (res.ProjectID.Equals(projectID))
+          if (res.ProjectId.Equals(projectId))
             return res;
         return null;
       }
@@ -41,7 +41,7 @@ namespace ProjectTracker.Library
     {
       foreach (ResourceAssignment res in this)
       {
-        if (res.ProjectID.Equals(projectId))
+        if (res.ProjectId.Equals(projectId))
         {
           Remove(res);
           break;

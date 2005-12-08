@@ -3,6 +3,7 @@ using System.Security.Principal;
 
 namespace ProjectTracker.Library.Security
 {
+  [Serializable()]
   public class PTPrincipal : Csla.Security.BusinessPrincipalBase
   {
 

@@ -16,8 +16,9 @@ namespace ProjectTracker.Library
     private string _projectName = string.Empty;
     private SmartDate _assigned = new SmartDate(DateTime.Today);
     private int _role;
+    private byte[] _timestamp = new byte[8];
 
-    public Guid ProjectID
+    public Guid ProjectId
     {
       get
       {
@@ -92,15 +93,15 @@ namespace ProjectTracker.Library
     }
 
     internal static ResourceAssignment NewResourceAssignment(
-      Guid projectID, int role)
+      Guid projectId, int role)
     {
-      return new ResourceAssignment(Project.GetProject(projectID), role);
+      return new ResourceAssignment(Project.GetProject(projectId), role);
     }
 
     internal static ResourceAssignment NewResourceAssignment(
-      Guid projectID)
+      Guid projectId)
     {
-      return new ResourceAssignment(Project.GetProject(projectID), RoleList.DefaultRole());
+      return new ResourceAssignment(Project.GetProject(projectId), RoleList.DefaultRole());
     }
 
     internal static ResourceAssignment GetResourceAssignment(
@@ -125,10 +126,12 @@ namespace ProjectTracker.Library
     private ResourceAssignment(SafeDataReader dr)
     {
       MarkAsChild();
-      _projectId = dr.GetGuid(0);
-      _projectName = dr.GetString(1);
-      _assigned = dr.GetSmartDate(2);
-      _role = dr.GetInt32(3);
+      _projectId = dr.GetGuid("ProjectId");
+      _projectName = dr.GetString("Name");
+      _assigned = dr.GetSmartDate("Assigned");
+      _role = dr.GetInt32("Role");
+      dr.GetBytes("LastChanged", 0, _timestamp, 0, 8);
+      MarkOld();
     }
 
     internal void Insert(SqlTransaction tr, Resource resource)
@@ -144,7 +147,11 @@ namespace ProjectTracker.Library
         cm.CommandText = "addAssignment";
         LoadParameters(cm, resource);
 
-        cm.ExecuteNonQuery();
+        using (SqlDataReader dr = cm.ExecuteReader())
+        {
+          dr.Read();
+          dr.GetBytes(0, 0, _timestamp, 0, 8);
+        }
 
         MarkOld();
       }
@@ -162,8 +169,13 @@ namespace ProjectTracker.Library
         cm.CommandType = CommandType.StoredProcedure;
         cm.CommandText = "updateAssignment";
         LoadParameters(cm, resource);
+        cm.Parameters.AddWithValue("@lastChanged", _timestamp);
 
-        cm.ExecuteNonQuery();
+        using (SqlDataReader dr = cm.ExecuteReader())
+        {
+          dr.Read();
+          dr.GetBytes(0, 0, _timestamp, 0, 8);
+        }
 
         MarkOld();
       }
@@ -171,10 +183,10 @@ namespace ProjectTracker.Library
 
     private void LoadParameters(SqlCommand cm, Resource resource)
     {
-      cm.Parameters.AddWithValue("@ProjectID", _projectId);
-      cm.Parameters.AddWithValue("@ResourceID", resource.Id);
-      cm.Parameters.AddWithValue("@Assigned", _assigned.DBValue);
-      cm.Parameters.AddWithValue("@Role", _role);
+      cm.Parameters.AddWithValue("@projectId", _projectId);
+      cm.Parameters.AddWithValue("@resourceId", resource.Id);
+      cm.Parameters.AddWithValue("@assigned", _assigned.DBValue);
+      cm.Parameters.AddWithValue("@role", _role);
     }
 
     internal void DeleteSelf(SqlTransaction tr, Resource resource)
@@ -191,8 +203,8 @@ namespace ProjectTracker.Library
         cm.Transaction = tr;
         cm.CommandType = CommandType.StoredProcedure;
         cm.CommandText = "deleteAssignment";
-        cm.Parameters.AddWithValue("@ProjectID", _projectId);
-        cm.Parameters.AddWithValue("@ResourceID", resource.Id);
+        cm.Parameters.AddWithValue("@projectId", _projectId);
+        cm.Parameters.AddWithValue("@resourceId", resource.Id);
 
         cm.ExecuteNonQuery();
 

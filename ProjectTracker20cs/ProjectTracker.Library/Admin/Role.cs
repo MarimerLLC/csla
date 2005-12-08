@@ -13,13 +13,26 @@ namespace ProjectTracker.Library.Admin
     #region Business Methods
 
     private int _id;
+    private bool _idSet;
     private string _name = String.Empty;
+    private byte[] _timestamp = new byte[7];
 
     public int Id
     {
       get
       {
         CanReadProperty(true);
+        if (!_idSet)
+        {
+          // generate a default id value
+          _idSet = true;
+          Roles parent = (Roles)this.Parent;
+          int max = 0;
+          foreach (Role item in parent)
+            if (item.Id > max)
+              max = item.Id;
+          _id = max + 1;
+        }
         return _id;
       }
       set
@@ -27,6 +40,7 @@ namespace ProjectTracker.Library.Admin
         CanWriteProperty(true);
         if (!_id.Equals(value))
         {
+          _idSet = true;
           _id = value;
           PropertyHasChanged();
         }
@@ -87,7 +101,9 @@ namespace ProjectTracker.Library.Admin
     {
       MarkAsChild();
       _id = dr.GetInt32("id");
+      _idSet = true;
       _name = dr.GetString("name");
+      dr.GetBytes("lastChanged", 0, _timestamp, 0, 8);
       MarkOld();
     }
 
@@ -102,7 +118,11 @@ namespace ProjectTracker.Library.Admin
         cm.CommandText = "addRole";
         cm.Parameters.AddWithValue("@id", _id);
         cm.Parameters.AddWithValue("@name", _name);
-        cm.ExecuteNonQuery();
+        using (SqlDataReader dr = cm.ExecuteReader())
+        {
+          dr.Read();
+          dr.GetBytes(0, 0, _timestamp, 0, 8);
+        }
       }
     }
 
@@ -117,6 +137,12 @@ namespace ProjectTracker.Library.Admin
         cm.CommandText = "updateRole";
         cm.Parameters.AddWithValue("@id", _id);
         cm.Parameters.AddWithValue("@name", _name);
+        cm.Parameters.AddWithValue("@lastChanged", _timestamp);
+        using (SqlDataReader dr = cm.ExecuteReader())
+        {
+          dr.Read();
+          dr.GetBytes(0, 0, _timestamp, 0, 8);
+        }
         cm.ExecuteNonQuery();
       }
     }

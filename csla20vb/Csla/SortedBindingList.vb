@@ -586,7 +586,11 @@ Public Class SortedBindingList(Of T)
     End Get
     Set(ByVal value As T)
       If mSorted Then
-        mList.Item(OriginalIndex(index)) = CType(value, T)
+        If mSortOrder = ListSortDirection.Ascending Then
+          mList(mSortIndex(index).BaseIndex) = value
+        Else
+          mList(mSortIndex.Item(mSortIndex.Count - 1 - index).BaseIndex) = value
+        End If
       Else
         mList(index) = CType(value, T)
       End If

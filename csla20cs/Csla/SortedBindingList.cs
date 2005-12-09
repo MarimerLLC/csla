@@ -10,7 +10,8 @@ namespace Csla
   /// <summary>
   /// Provides a sorted view into an existing IList(Of T).
   /// </summary>
-  public class SortedBindingList<T> : IList<T>, IBindingList, IEnumerable<T>
+  public class SortedBindingList<T> : 
+    IList<T>, IBindingList, IEnumerable<T>
   {
 
     #region ListItem class
@@ -294,7 +295,8 @@ namespace Csla
       if (!String.IsNullOrEmpty(propertyName))
       {
         Type itemType = typeof(T);
-        foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(itemType))
+        foreach (PropertyDescriptor prop in 
+          TypeDescriptor.GetProperties(itemType))
         {
           if (prop.Name == propertyName)
           {
@@ -313,7 +315,8 @@ namespace Csla
     /// </summary>
     /// <param name="property">A PropertyDescriptor for the property on which to sort.</param>
     /// <param name="direction">The direction to sort the data.</param>
-    public void ApplySort(PropertyDescriptor property, ListSortDirection direction)
+    public void ApplySort(
+      PropertyDescriptor property, ListSortDirection direction)
     {
       _sortBy = property;
       _sortOrder = direction;
@@ -549,7 +552,11 @@ namespace Csla
       set
       {
         if (_sorted)
-          _list[OriginalIndex(index)] = (T)value;
+          if (_sortOrder == ListSortDirection.Ascending)
+            _list[_sortIndex[index].BaseIndex] = (T)value;
+          else
+            _list[_sortIndex[
+              _sortIndex.Count - 1 - index].BaseIndex] = (T)value;
         else
           _list[index] = (T)value;
       }
@@ -637,7 +644,8 @@ namespace Csla
       }
     }
 
-    private void SourceChanged(object sender, ListChangedEventArgs e)
+    private void SourceChanged(
+      object sender, ListChangedEventArgs e)
     {
       if (_sorted)
       {
@@ -656,13 +664,17 @@ namespace Csla
             else
               _sortIndex.Insert(0, new ListItem(newKey, e.NewIndex));
             if (!_initiatedLocally)
-              OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, SortedIndex(e.NewIndex)));
+              OnListChanged(
+                new ListChangedEventArgs(
+                ListChangedType.ItemAdded, SortedIndex(e.NewIndex)));
             break;
 
           case ListChangedType.ItemChanged:
             // an item changed - just relay the event with
             // a translated index value
-            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, SortedIndex(e.NewIndex)));
+            OnListChanged(
+              new ListChangedEventArgs(
+              ListChangedType.ItemChanged, SortedIndex(e.NewIndex)));
             break;
 
           case ListChangedType.ItemDeleted:

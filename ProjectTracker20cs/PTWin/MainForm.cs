@@ -118,7 +118,7 @@ namespace PTWin
       {
         using (StatusBusy busy = new StatusBusy("Creating resource..."))
         {
-          AddWinPart(new ResourceEdit(Resource.NewResource(resourceId)));
+          AddWinPart(new ResourceEdit(Resource.NewResource()));
         }
       }
     }
@@ -134,7 +134,7 @@ namespace PTWin
       }
     }
 
-    public void ShowEditResource(string resourceId)
+    public void ShowEditResource(int resourceId)
     {
       // see if this project is already loaded
       foreach (Control ctl in Panel1.Controls)
@@ -166,7 +166,7 @@ namespace PTWin
       if (dlg.ShowDialog() == DialogResult.OK)
       {
         // get the resource id
-        string resourceId = dlg.ResourceId;
+        int resourceId = dlg.ResourceId;
 
         if (MessageBox.Show("Are you sure?", "Delete resource",
           MessageBoxButtons.YesNo, MessageBoxIcon.Question,

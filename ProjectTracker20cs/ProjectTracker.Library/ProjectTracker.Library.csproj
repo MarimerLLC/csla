@@ -28,6 +28,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Csla, Version=2.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\csla20cs\Csla\bin\Debug\Csla.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -49,12 +53,6 @@
     <Compile Include="RoleList.cs" />
     <Compile Include="Security\PTIdentity.cs" />
     <Compile Include="Security\PTPrincipal.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\csla20cs\Csla\Csla.csproj">
-      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
-      <Name>Csla</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

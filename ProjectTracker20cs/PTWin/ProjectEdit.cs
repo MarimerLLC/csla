@@ -142,7 +142,7 @@ namespace PTWin
     {
       if (this.ResourcesDataGridView.SelectedRows.Count > 0)
       {
-        string resourceId = this.ResourcesDataGridView.SelectedRows[0].Cells[0].Value.ToString();
+        int resourceId = int.Parse(this.ResourcesDataGridView.SelectedRows[0].Cells[0].Value.ToString());
         _project.Resources.Remove(resourceId);
       }
     }
@@ -160,7 +160,7 @@ namespace PTWin
     {
       if (e.ColumnIndex == 1)
       {
-        string resourceId = this.ResourcesDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+        int resourceId = int.Parse(this.ResourcesDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString());
         
         MainForm.Instance.ShowEditResource(resourceId);
       }

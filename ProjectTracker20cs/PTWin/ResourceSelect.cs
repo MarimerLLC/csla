@@ -12,8 +12,8 @@ namespace PTWin
   public partial class ResourceSelect : Form
   {
 
-    private string _resourceId;
-    public string ResourceId
+    private int _resourceId;
+    public int ResourceId
     {
       get { return _resourceId; }
     }

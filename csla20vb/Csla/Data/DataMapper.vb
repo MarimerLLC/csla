@@ -59,7 +59,6 @@ Namespace Data
       ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
 
       Dim ignore As New List(Of String)(ignoreList)
-      Dim targetType As Type = target.GetType
       For Each propertyName As String In source.Keys
         If Not ignore.Contains(propertyName) Then
           Try
@@ -142,16 +141,14 @@ Namespace Data
       ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
 
       Dim ignore As New List(Of String)(ignoreList)
-      Dim sourceType As Type = source.GetType
-      Dim sourceProperties As PropertyInfo() = GetSourceProperties(sourceType)
-      Dim targetType As Type = target.GetType
+      Dim sourceProperties As PropertyInfo() = _
+        GetSourceProperties(source.GetType)
       For Each sourceProperty As PropertyInfo In sourceProperties
         Dim propertyName As String = sourceProperty.Name
         If Not ignore.Contains(propertyName) Then
           Try
-            Dim propertyInfo As PropertyInfo
-            propertyInfo = sourceType.GetProperty(propertyName)
-            SetValue(target, propertyName, propertyInfo.GetValue(source, Nothing))
+            SetValue(target, propertyName, _
+              sourceProperty.GetValue(source, Nothing))
 
           Catch ex As Exception
             If Not suppressExceptions Then

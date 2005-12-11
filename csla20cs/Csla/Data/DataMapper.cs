@@ -62,7 +62,6 @@ namespace Csla.Data
       params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
-      Type targetType = target.GetType();
       foreach (string propertyName in source.Keys)
       {
         if (!ignore.Contains(propertyName))
@@ -140,9 +139,8 @@ namespace Csla.Data
       params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
-      Type sourceType = source.GetType();
-      PropertyInfo[] sourceProperties = GetSourceProperties(sourceType);
-      Type targetType = target.GetType();
+      PropertyInfo[] sourceProperties =
+        GetSourceProperties(source.GetType());
       foreach (PropertyInfo sourceProperty in sourceProperties)
       {
         string propertyName = sourceProperty.Name;
@@ -150,9 +148,9 @@ namespace Csla.Data
         {
           try
           {
-            PropertyInfo propertyInfo;
-            propertyInfo = sourceType.GetProperty(propertyName);
-            SetValue(target, propertyName, propertyInfo.GetValue(source, null));
+            SetValue(
+              target, propertyName, 
+              sourceProperty.GetValue(source, null));
           }
           catch (Exception ex)
           {

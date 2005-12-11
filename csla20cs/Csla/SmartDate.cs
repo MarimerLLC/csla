@@ -15,10 +15,10 @@ namespace Csla
   [Serializable()]
   public struct SmartDate : IComparable
   {
-
     private DateTime _date;
     private bool _initialized;
     private bool _emptyIsMax;
+    private string _format;
 
     #region Constructors
 
@@ -104,8 +104,6 @@ namespace Csla
     #endregion
 
     #region Text Support
-
-    private string _format;
 
     /// <summary>
     /// Gets or sets the format string used to format a date
@@ -355,7 +353,8 @@ namespace Csla
     /// <param name="Value">The date value to convert.</param>
     /// <param name="FormatString">The format string used to format the date into text.</param>
     /// <returns>Text representation of the date value.</returns>
-    public static string DateToString(DateTime value, string formatString)
+    public static string DateToString(
+      DateTime value, string formatString)
     {
       return DateToString(value, formatString, true);
     }
@@ -373,7 +372,8 @@ namespace Csla
     /// <param name="FormatString">The format string used to format the date into text.</param>
     /// <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     /// <returns>Text representation of the date value.</returns>
-    public static string DateToString(DateTime value, string formatString, bool emptyIsMin)
+    public static string DateToString(
+      DateTime value, string formatString, bool emptyIsMin)
     {
       if (emptyIsMin && value == DateTime.MinValue)
         return string.Empty;

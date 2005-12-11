@@ -20,7 +20,8 @@ namespace Csla.Validation
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public static bool StringRequired(object target, RuleArgs e)
     {
-      string value = (string)Utilities.CallByName(target, e.PropertyName, CallType.Get);
+      string value = (string)Utilities.CallByName(
+        target, e.PropertyName, CallType.Get);
       if (string.IsNullOrEmpty(value))
       {
         e.Description = e.PropertyName + " required";
@@ -64,7 +65,8 @@ namespace Csla.Validation
         get { return _maxLength; }
       }
 
-      public MaxLengthRuleArgs(string propertyName, int maxLength)
+      public MaxLengthRuleArgs(
+        string propertyName, int maxLength)
         : base(propertyName)
       {
         _maxLength = maxLength;
@@ -75,7 +77,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.PropertyName + "!" + _maxLength.ToString();
+        return base.ToString() + "!" + _maxLength.ToString();
       }
     }
 
@@ -112,7 +114,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.PropertyName + "!" + _maxValue.ToString();
+        return base.ToString() + "!" + _maxValue.ToString();
       }
     }
 

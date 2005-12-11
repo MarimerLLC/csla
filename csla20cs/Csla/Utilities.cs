@@ -13,7 +13,9 @@ namespace Csla
         System.Globalization.NumberFormatInfo.InvariantInfo, out dbl);
     }
 
-    public static object CallByName(object target, string methodName, CallType callType, params object[] args)
+    public static object CallByName(
+      object target, string methodName, CallType callType, 
+      params object[] args)
     {
       switch (callType)
       {

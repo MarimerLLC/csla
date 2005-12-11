@@ -219,7 +219,7 @@ Namespace Validation
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.PropertyName & "!" & mMaxValue.ToString
+        Return MyBase.ToString & "!" & mMaxValue.ToString
       End Function
 
     End Class
@@ -310,7 +310,7 @@ Namespace Validation
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.PropertyName & "!" & mMinValue.ToString
+        Return MyBase.ToString & "!" & mMinValue.ToString
       End Function
 
     End Class

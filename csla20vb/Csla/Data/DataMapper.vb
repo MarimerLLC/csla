@@ -65,10 +65,11 @@ Namespace Data
           Try
             SetValue(target, propertyName, source.Item(propertyName))
 
-          Catch
+          Catch ex As Exception
             If Not suppressExceptions Then
               Throw New ArgumentException( _
-                String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, propertyName))
+                String.Format("{0} ({1})", _
+                My.Resources.PropertyCopyFailed, propertyName), ex)
             End If
           End Try
         End If
@@ -152,10 +153,11 @@ Namespace Data
             propertyInfo = sourceType.GetProperty(propertyName)
             SetValue(target, propertyName, propertyInfo.GetValue(source, Nothing))
 
-          Catch
+          Catch ex As Exception
             If Not suppressExceptions Then
               Throw New ArgumentException( _
-                String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, propertyName))
+                String.Format("{0} ({1})", _
+                My.Resources.PropertyCopyFailed, propertyName), ex)
             End If
           End Try
         End If

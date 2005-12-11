@@ -71,12 +71,12 @@ namespace Csla.Data
           {
             SetValue(target, propertyName, source[propertyName]);
           }
-          catch
+          catch (Exception ex)
           {
             if (!suppressExceptions)
               throw new ArgumentException(
                 String.Format("{0} ({1})", 
-                Resources.PropertyCopyFailed, propertyName));
+                Resources.PropertyCopyFailed, propertyName), ex);
           }
         }
       }
@@ -134,7 +134,10 @@ namespace Csla.Data
     /// on the target object. Source properties may not be indexed. 
     /// Target properties may not be readonly or indexed.
     /// </remarks>
-    public static void Map(object source, object target, bool suppressExceptions, params string[] ignoreList)
+    public static void Map(
+      object source, object target, 
+      bool suppressExceptions, 
+      params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
       Type sourceType = source.GetType();
@@ -151,11 +154,12 @@ namespace Csla.Data
             propertyInfo = sourceType.GetProperty(propertyName);
             SetValue(target, propertyName, propertyInfo.GetValue(source, null));
           }
-          catch
+          catch (Exception ex)
           {
             if (!suppressExceptions)
               throw new ArgumentException(
-                String.Format("{0} ({1})", Resources.PropertyCopyFailed, propertyName));
+                String.Format("{0} ({1})", 
+                Resources.PropertyCopyFailed, propertyName), ex);
           }
         }
       }

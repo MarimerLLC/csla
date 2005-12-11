@@ -68,13 +68,15 @@ namespace Csla
 
     private class SortedEnumerator : IEnumerator<T>
     {
-      
       private IList<T> _list;
       private List<ListItem> _sortIndex;
       private ListSortDirection _sortOrder;
       private int index;
 
-      public SortedEnumerator(IList<T> list, List<ListItem> sortIndex, ListSortDirection direction)
+      public SortedEnumerator(
+        IList<T> list, 
+        List<ListItem> sortIndex, 
+        ListSortDirection direction)
       {
         _list = list;
         _sortIndex = sortIndex;
@@ -539,26 +541,11 @@ namespace Csla
     {
       get
       {
-        if (_sorted)
-        {
-          if (_sortOrder == ListSortDirection.Ascending)
-            return _list[_sortIndex[index].BaseIndex];
-          else
-            return _list[_sortIndex[_sortIndex.Count - 1 - index].BaseIndex];
-        }
-        else
-          return _list[index];
+        return this[index];
       }
       set
       {
-        if (_sorted)
-          if (_sortOrder == ListSortDirection.Ascending)
-            _list[_sortIndex[index].BaseIndex] = (T)value;
-          else
-            _list[_sortIndex[
-              _sortIndex.Count - 1 - index].BaseIndex] = (T)value;
-        else
-          _list[index] = (T)value;
+        this[index] = (T)value;
       }
     }
 
@@ -598,12 +585,7 @@ namespace Csla
       get
       {
         if (_sorted)
-        {
-          if (_sortOrder == ListSortDirection.Ascending)
-            return _list[_sortIndex[index].BaseIndex];
-          else
-            return _list[_sortIndex[_sortIndex.Count - 1 - index].BaseIndex];
-        }
+          return _list[OriginalIndex(index)];
         else
           return _list[index];
       }
@@ -653,20 +635,25 @@ namespace Csla
         {
           case ListChangedType.ItemAdded:
             T newItem = _list[e.NewIndex];
-            object newKey;
-            if (_sorted)
-              newKey = _sortBy.GetValue(newItem);
-            else
-              newKey = newItem;
+            if (e.NewIndex == _list.Count - 1)
+            {
+              object newKey;
+              if (_sortBy == null)
+                newKey = _sortBy.GetValue(newItem);
+              else
+                newKey = newItem;
 
-            if (_sortOrder == ListSortDirection.Ascending)
-              _sortIndex.Add(new ListItem(newKey, e.NewIndex));
+              if (_sortOrder == ListSortDirection.Ascending)
+                _sortIndex.Add(new ListItem(newKey, e.NewIndex));
+              else
+                _sortIndex.Insert(0, new ListItem(newKey, e.NewIndex));
+              if (!_initiatedLocally)
+                OnListChanged(
+                  new ListChangedEventArgs(
+                  ListChangedType.ItemAdded, SortedIndex(e.NewIndex)));
+            }
             else
-              _sortIndex.Insert(0, new ListItem(newKey, e.NewIndex));
-            if (!_initiatedLocally)
-              OnListChanged(
-                new ListChangedEventArgs(
-                ListChangedType.ItemAdded, SortedIndex(e.NewIndex)));
+              DoSort();
             break;
 
           case ListChangedType.ItemChanged:
@@ -683,7 +670,7 @@ namespace Csla
             break;
 
           default:
-            // for anything other than add, or change
+            // for anything other than add, delete or change
             // just re-sort the list
             DoSort();
             break;
@@ -695,9 +682,10 @@ namespace Csla
 
     private int OriginalIndex(int sortedIndex)
     {
-      if (_sortOrder == ListSortDirection.Descending)
-        sortedIndex = _sortIndex.Count - 1 - sortedIndex;
-      return _sortIndex[sortedIndex].BaseIndex;
+      if (_sortOrder == ListSortDirection.Ascending)
+        return _sortIndex[sortedIndex].BaseIndex;
+      else
+        return _sortIndex[_sortIndex.Count - 1 - sortedIndex].BaseIndex;
     }
 
     private int SortedIndex(int originalIndex)

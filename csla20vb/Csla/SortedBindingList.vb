@@ -520,22 +520,10 @@ Public Class SortedBindingList(Of T)
 
   Private Property Item1(ByVal index As Integer) As Object Implements System.Collections.IList.Item
     Get
-      If mSorted Then
-        If mSortOrder = ListSortDirection.Ascending Then
-          Return mList(mSortIndex(index).BaseIndex)
-        Else
-          Return mList(mSortIndex.Item(mSortIndex.Count - 1 - index).BaseIndex)
-        End If
-      Else
-        Return mList(index)
-      End If
+      Return Me(index)
     End Get
     Set(ByVal value As Object)
-      If mSorted Then
-        mList.Item(OriginalIndex(index)) = CType(value, T)
-      Else
-        mList(index) = CType(value, T)
-      End If
+      Me(index) = CType(value, T)
     End Set
   End Property
 
@@ -575,22 +563,14 @@ Public Class SortedBindingList(Of T)
   Default Public Overloads Property Item(ByVal index As Integer) As T Implements System.Collections.Generic.IList(Of T).Item
     Get
       If mSorted Then
-        If mSortOrder = ListSortDirection.Ascending Then
-          Return mList(mSortIndex(index).BaseIndex)
-        Else
-          Return mList(mSortIndex.Item(mSortIndex.Count - 1 - index).BaseIndex)
-        End If
+        Return mList(OriginalIndex(index))
       Else
         Return mList(index)
       End If
     End Get
     Set(ByVal value As T)
       If mSorted Then
-        If mSortOrder = ListSortDirection.Ascending Then
-          mList(mSortIndex(index).BaseIndex) = value
-        Else
-          mList(mSortIndex.Item(mSortIndex.Count - 1 - index).BaseIndex) = value
-        End If
+        mList(OriginalIndex(index)) = value
       Else
         mList(index) = CType(value, T)
       End If
@@ -630,21 +610,26 @@ Public Class SortedBindingList(Of T)
       Select Case e.ListChangedType
         Case ListChangedType.ItemAdded
           Dim newItem As T = mList(e.NewIndex)
-          Dim newKey As Object
-          If mSorted Then
-            newKey = mSortBy.GetValue(newItem)
-          Else
-            newKey = newItem
-          End If
+          If e.NewIndex = mList.Count - 1 Then
+            Dim newKey As Object
+            If mSortBy IsNot Nothing Then
+              newKey = mSortBy.GetValue(newItem)
+            Else
+              newKey = newItem
+            End If
 
-          If mSortOrder = ListSortDirection.Ascending Then
-            mSortIndex.Add(New ListItem(newKey, e.NewIndex))
+            If mSortOrder = ListSortDirection.Ascending Then
+              mSortIndex.Add(New ListItem(newKey, e.NewIndex))
+
+            Else
+              mSortIndex.Insert(0, New ListItem(newKey, e.NewIndex))
+            End If
+            If Not mInitiatedLocally Then
+              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemAdded, SortedIndex(e.NewIndex)))
+            End If
 
           Else
-            mSortIndex.Insert(0, New ListItem(newKey, e.NewIndex))
-          End If
-          If Not mInitiatedLocally Then
-            OnListChanged(New ListChangedEventArgs(ListChangedType.ItemAdded, SortedIndex(e.NewIndex)))
+            DoSort()
           End If
 
         Case ListChangedType.ItemChanged
@@ -654,12 +639,11 @@ Public Class SortedBindingList(Of T)
 
         Case ListChangedType.ItemDeleted
           If Not mInitiatedLocally Then
-            'RemoveSortItem(SortedIndex(e.NewIndex))
             DoSort()
           End If
 
         Case Else
-          ' for anything other than add, or change
+          ' for anything other than add, delete or change
           ' just re-sort the list
           DoSort()
       End Select
@@ -671,10 +655,11 @@ Public Class SortedBindingList(Of T)
   End Sub
 
   Private Function OriginalIndex(ByVal sortedIndex As Integer) As Integer
-    If mSortOrder = ListSortDirection.Descending Then
-      sortedIndex = mSortIndex.Count - 1 - sortedIndex
+    If mSortOrder = ListSortDirection.Ascending Then
+      Return mSortIndex.Item(sortedIndex).BaseIndex
+    Else
+      Return mSortIndex.Item(mSortIndex.Count - 1 - sortedIndex).BaseIndex
     End If
-    Return mSortIndex.Item(sortedIndex).BaseIndex
   End Function
 
   Private Function SortedIndex(ByVal originalIndex As Integer) As Integer

@@ -12,15 +12,12 @@ namespace ProjectTracker.Library
 
     #region Business Methods
 
-    public ProjectResource this[int resourceId]
+    public ProjectResource GetItem(int resourceId)
     {
-      get
-      {
-        foreach (ProjectResource res in this)
-          if (res.ResourceId == resourceId)
-            return res;
-        return null;
-      }
+      foreach (ProjectResource res in this)
+        if (res.ResourceId == resourceId)
+          return res;
+      return null;
     }
 
     public void Assign(int resourceId)

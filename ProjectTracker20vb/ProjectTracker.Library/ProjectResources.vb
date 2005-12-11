@@ -6,16 +6,16 @@ Public Class ProjectResources
 
 #Region " Business Methods "
 
-  Default Public Overloads ReadOnly Property Item(ByVal resourceId As Integer) As ProjectResource
-    Get
-      For Each res As ProjectResource In Me
-        If res.ResourceId = resourceId Then
-          Return res
-        End If
-      Next
-      Return Nothing
-    End Get
-  End Property
+  Public Function GetValue(ByVal resourceId As Integer) As ProjectResource
+
+    For Each res As ProjectResource In Me
+      If res.ResourceId = resourceId Then
+        Return res
+      End If
+    Next
+    Return Nothing
+
+  End Function
 
   Public Sub Assign(ByVal resourceId As Integer)
 

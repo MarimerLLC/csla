@@ -51,12 +51,15 @@ namespace Csla.Data
     /// <param name="target">An object with properties to be set from the dictionary.</param>
     /// <param name="ignoreList">A list of property names to ignore. 
     /// These properties will not be set on the target object.</param>
-    /// <param name="supressExceptions">If True, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If True, any exceptions will be supressed.</param>
     /// <remarks>
     /// The key names in the dictionary must match the property names on the target
     /// object. Target properties may not be readonly or indexed.
     /// </remarks>
-    public static void Map(System.Collections.IDictionary source, object target, bool supressExceptions, params string[] ignoreList)
+    public static void Map(
+      System.Collections.IDictionary source, 
+      object target, bool suppressExceptions, 
+      params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
       Type targetType = target.GetType();
@@ -70,9 +73,10 @@ namespace Csla.Data
           }
           catch
           {
-            if (!supressExceptions)
+            if (!suppressExceptions)
               throw new ArgumentException(
-                String.Format("{0} ({1})", Resources.PropertyCopyFailed, propertyName));
+                String.Format("{0} ({1})", 
+                Resources.PropertyCopyFailed, propertyName));
           }
         }
       }
@@ -124,13 +128,13 @@ namespace Csla.Data
     /// <param name="target">An object with properties to be set from the dictionary.</param>
     /// <param name="ignoreList">A list of property names to ignore. 
     /// These properties will not be set on the target object.</param>
-    /// <param name="supressExceptions">If True, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If True, any exceptions will be supressed.</param>
     /// <remarks>
     /// The property names and types of the source object must match the property names and types
     /// on the target object. Source properties may not be indexed. 
     /// Target properties may not be readonly or indexed.
     /// </remarks>
-    public static void Map(object source, object target, bool supressExceptions, params string[] ignoreList)
+    public static void Map(object source, object target, bool suppressExceptions, params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
       Type sourceType = source.GetType();
@@ -149,7 +153,7 @@ namespace Csla.Data
           }
           catch
           {
-            if (!supressExceptions)
+            if (!suppressExceptions)
               throw new ArgumentException(
                 String.Format("{0} ({1})", Resources.PropertyCopyFailed, propertyName));
           }
@@ -170,7 +174,8 @@ namespace Csla.Data
 
     #endregion
 
-    static void SetValue(object target, string propertyName, object value)
+    static void SetValue(
+      object target, string propertyName, object value)
     {
       PropertyInfo propertyInfo =
         target.GetType().GetProperty(propertyName);
@@ -188,9 +193,11 @@ namespace Csla.Data
         {
           // types don't match, try to coerce
           if (pType.Equals(typeof(Guid)))
-            propertyInfo.SetValue(target, new Guid(value.ToString()), null);
+            propertyInfo.SetValue(
+              target, new Guid(value.ToString()), null);
           else
-            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+            propertyInfo.SetValue(
+              target, Convert.ChangeType(value, pType), null);
         }
       }
     }

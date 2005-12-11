@@ -50,13 +50,13 @@ Namespace Data
     ''' <param name="target">An object with properties to be set from the dictionary.</param>
     ''' <param name="ignoreList">A list of property names to ignore. 
     ''' These properties will not be set on the target object.</param>
-    ''' <param name="supressExceptions">If True, any exceptions will be supressed.</param>
+    ''' <param name="suppressExceptions">If True, any exceptions will be supressed.</param>
     ''' <remarks>
     ''' The key names in the dictionary must match the property names on the target
     ''' object. Target properties may not be readonly or indexed.
     ''' </remarks>
     Public Sub Map(ByVal source As System.Collections.IDictionary, ByVal target As Object, _
-      ByVal supressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
+      ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
 
       Dim ignore As New List(Of String)(ignoreList)
       Dim targetType As Type = target.GetType
@@ -66,7 +66,7 @@ Namespace Data
             SetValue(target, propertyName, source.Item(propertyName))
 
           Catch
-            If Not supressExceptions Then
+            If Not suppressExceptions Then
               Throw New ArgumentException( _
                 String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, propertyName))
             End If
@@ -125,7 +125,7 @@ Namespace Data
     ''' <param name="target">An object with properties to be set from the dictionary.</param>
     ''' <param name="ignoreList">A list of property names to ignore. 
     ''' These properties will not be set on the target object.</param>
-    ''' <param name="supressExceptions">If True, any exceptions will be supressed.</param>
+    ''' <param name="suppressExceptions">If True, any exceptions will be supressed.</param>
     ''' <remarks>
     ''' <para>
     ''' The property names and types of the source object must match the property names and types
@@ -138,7 +138,7 @@ Namespace Data
     ''' </para>
     ''' </remarks>
     Public Sub Map(ByVal source As Object, ByVal target As Object, _
-      ByVal supressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
+      ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
 
       Dim ignore As New List(Of String)(ignoreList)
       Dim sourceType As Type = source.GetType
@@ -153,7 +153,7 @@ Namespace Data
             SetValue(target, propertyName, propertyInfo.GetValue(source, Nothing))
 
           Catch
-            If Not supressExceptions Then
+            If Not suppressExceptions Then
               Throw New ArgumentException( _
                 String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, propertyName))
             End If

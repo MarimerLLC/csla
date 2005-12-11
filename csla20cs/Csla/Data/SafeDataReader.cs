@@ -37,7 +37,7 @@ namespace Csla.Data
       return GetString(_dataReader.GetOrdinal(name));
     }
 
-    public string GetString(int i)
+    public virtual string GetString(int i)
     {
       if (_dataReader.IsDBNull(i))
         return string.Empty;
@@ -57,7 +57,7 @@ namespace Csla.Data
       return GetValue(_dataReader.GetOrdinal(name));
     }
 
-    public object GetValue(int i)
+    public virtual object GetValue(int i)
     {
       if (_dataReader.IsDBNull(i))
         return null;
@@ -76,7 +76,7 @@ namespace Csla.Data
       return GetInt32(_dataReader.GetOrdinal(name));
     }
 
-    public int GetInt32(int i)
+    public virtual int GetInt32(int i)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
@@ -95,7 +95,7 @@ namespace Csla.Data
       return GetDouble(_dataReader.GetOrdinal(name));
     }
 
-    public double GetDouble(int i)
+    public virtual double GetDouble(int i)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
@@ -117,7 +117,7 @@ namespace Csla.Data
       return GetSmartDate(_dataReader.GetOrdinal(name));
     }
 
-    public Csla.SmartDate GetSmartDate(int i)
+    public virtual Csla.SmartDate GetSmartDate(int i)
     {
       if (_dataReader.IsDBNull(i))
         return new Csla.SmartDate(false);
@@ -142,7 +142,7 @@ namespace Csla.Data
       return GetSmartDate(_dataReader.GetOrdinal(name), minIsEmpty);
     }
 
-    public Csla.SmartDate GetSmartDate(int i, bool minIsEmpty)
+    public virtual Csla.SmartDate GetSmartDate(int i, bool minIsEmpty)
     {
       if (_dataReader.IsDBNull(i))
         return new Csla.SmartDate(minIsEmpty);
@@ -159,7 +159,7 @@ namespace Csla.Data
       return GetGuid(_dataReader.GetOrdinal(name));
     }
 
-    public System.Guid GetGuid(int i)
+    public virtual System.Guid GetGuid(int i)
     {
       if (_dataReader.IsDBNull(i))
         return Guid.Empty;
@@ -221,7 +221,7 @@ namespace Csla.Data
       return GetBoolean(_dataReader.GetOrdinal(name));
     }
 
-    public bool GetBoolean(int i)
+    public virtual bool GetBoolean(int i)
     {
       if (_dataReader.IsDBNull(i))
         return false;
@@ -237,7 +237,7 @@ namespace Csla.Data
       return GetByte(_dataReader.GetOrdinal(name));
     }
 
-    public byte GetByte(int i)
+    public virtual byte GetByte(int i)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
@@ -254,7 +254,7 @@ namespace Csla.Data
       return GetBytes(_dataReader.GetOrdinal(name), fieldOffset, buffer, bufferoffset, length);
     }
 
-    public Int64 GetBytes(int i, Int64 fieldOffset,
+    public virtual Int64 GetBytes(int i, Int64 fieldOffset,
       byte[] buffer, int bufferoffset, int length)
     {
       if (_dataReader.IsDBNull(i))
@@ -271,7 +271,7 @@ namespace Csla.Data
       return GetChar(_dataReader.GetOrdinal(name));
     }
 
-    public char GetChar(int i)
+    public virtual char GetChar(int i)
     {
       if (_dataReader.IsDBNull(i))
         return char.MinValue;
@@ -292,7 +292,7 @@ namespace Csla.Data
       return GetChars(_dataReader.GetOrdinal(name), fieldoffset, buffer, bufferoffset, length);
     }
 
-    public Int64 GetChars(int i, Int64 fieldoffset,
+    public virtual Int64 GetChars(int i, Int64 fieldoffset,
       char[] buffer, int bufferoffset, int length)
     {
       if (_dataReader.IsDBNull(i))
@@ -309,7 +309,7 @@ namespace Csla.Data
       return GetData(_dataReader.GetOrdinal(name));
     }
 
-    public IDataReader GetData(int i)
+    public virtual IDataReader GetData(int i)
     {
       return _dataReader.GetData(i);
     }
@@ -322,7 +322,7 @@ namespace Csla.Data
       return GetDataTypeName(_dataReader.GetOrdinal(name));
     }
 
-    public string GetDataTypeName(int i)
+    public virtual string GetDataTypeName(int i)
     {
       return _dataReader.GetDataTypeName(i);
     }
@@ -330,12 +330,12 @@ namespace Csla.Data
     /// <summary>
     /// Gets a date value from the datareader.
     /// </summary>
-    public DateTime GetDateTime(string name)
+    public virtual DateTime GetDateTime(string name)
     {
       return GetDateTime(_dataReader.GetOrdinal(name));
     }
 
-    public DateTime GetDateTime(int i)
+    public virtual DateTime GetDateTime(int i)
     {
       if (_dataReader.IsDBNull(i))
         return DateTime.MinValue;
@@ -351,7 +351,7 @@ namespace Csla.Data
       return GetDecimal(_dataReader.GetOrdinal(name));
     }
 
-    public decimal GetDecimal(int i)
+    public virtual decimal GetDecimal(int i)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
@@ -367,7 +367,7 @@ namespace Csla.Data
       return GetFieldType(_dataReader.GetOrdinal(name));
     }
 
-    public Type GetFieldType(int i)
+    public virtual Type GetFieldType(int i)
     {
       return _dataReader.GetFieldType(i);
     }
@@ -380,7 +380,7 @@ namespace Csla.Data
       return GetFloat(_dataReader.GetOrdinal(name));
     }
 
-    public float GetFloat(int i)
+    public virtual float GetFloat(int i)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
@@ -396,7 +396,7 @@ namespace Csla.Data
       return GetInt16(_dataReader.GetOrdinal(name));
     }
 
-    public short GetInt16(int i)
+    public virtual short GetInt16(int i)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
@@ -412,7 +412,7 @@ namespace Csla.Data
       return GetInt64(_dataReader.GetOrdinal(name));
     }
 
-    public Int64 GetInt64(int i)
+    public virtual Int64 GetInt64(int i)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
@@ -423,7 +423,7 @@ namespace Csla.Data
     /// <summary>
     /// Invokes the GetName method of the underlying datareader.
     /// </summary>
-    public string GetName(int i)
+    public virtual string GetName(int i)
     {
       return _dataReader.GetName(i);
     }
@@ -467,7 +467,7 @@ namespace Csla.Data
     /// <summary>
     /// Invokes the IsDBNull method of the underlying datareader.
     /// </summary>
-    public bool IsDBNull(int i)
+    public virtual bool IsDBNull(int i)
     {
       return _dataReader.IsDBNull(i);
     }
@@ -496,7 +496,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns Nothing if the value is null.
     /// </remarks>
-    public object this[int i]
+    public virtual object this[int i]
     {
       get
       {

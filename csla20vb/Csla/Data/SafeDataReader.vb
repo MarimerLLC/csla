@@ -33,7 +33,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns empty string for null.
     ''' </remarks>
-    Public Function GetString(ByVal i As Integer) As String Implements IDataReader.GetString
+    Public Overridable Function GetString(ByVal i As Integer) As String Implements IDataReader.GetString
       If mDataReader.IsDBNull(i) Then
         Return ""
       Else
@@ -58,7 +58,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns Nothing for null.
     ''' </remarks>
-    Public Function GetValue(ByVal i As Integer) As Object Implements IDataReader.GetValue
+    Public Overridable Function GetValue(ByVal i As Integer) As Object Implements IDataReader.GetValue
       If mDataReader.IsDBNull(i) Then
         Return Nothing
       Else
@@ -83,7 +83,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns 0 for null.
     ''' </remarks>
-    Public Function GetInt32(ByVal i As Integer) As Integer Implements IDataReader.GetInt32
+    Public Overridable Function GetInt32(ByVal i As Integer) As Integer Implements IDataReader.GetInt32
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -108,7 +108,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns 0 for null.
     ''' </remarks>
-    Public Function GetDouble(ByVal i As Integer) As Double Implements IDataReader.GetDouble
+    Public Overridable Function GetDouble(ByVal i As Integer) As Double Implements IDataReader.GetDouble
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -135,7 +135,7 @@ Namespace Data
     ''' See Chapter 5 for more details on the SmartDate class.
     ''' </remarks>
     ''' <param name="i">The column number within the datareader.</param>
-    Public Function GetSmartDate(ByVal i As Integer) As SmartDate
+    Public Overridable Function GetSmartDate(ByVal i As Integer) As SmartDate
       If mDataReader.IsDBNull(i) Then
         Return New SmartDate(True)
 
@@ -154,7 +154,7 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">The column number within the datareader.</param>
     ''' <param name="MinIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
-    Public Function GetSmartDate(ByVal i As Integer, ByVal minIsEmpty As Boolean) As SmartDate
+    Public Overridable Function GetSmartDate(ByVal i As Integer, ByVal minIsEmpty As Boolean) As SmartDate
       If mDataReader.IsDBNull(i) Then
         Return New SmartDate(minIsEmpty)
 
@@ -194,7 +194,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a Guid value from the datareader.
     ''' </summary>
-    Public Function GetGuid(ByVal i As Integer) As Guid Implements IDataReader.GetGuid
+    Public Overridable Function GetGuid(ByVal i As Integer) As Guid Implements IDataReader.GetGuid
       If mDataReader.IsDBNull(i) Then
         Return Guid.Empty
       Else
@@ -252,7 +252,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a boolean value from the datareader.
     ''' </summary>
-    Public Function GetBoolean(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.GetBoolean
+    Public Overridable Function GetBoolean(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.GetBoolean
       If mDataReader.IsDBNull(i) Then
         Return False
       Else
@@ -271,7 +271,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a byte value from the datareader.
     ''' </summary>
-    Public Function GetByte(ByVal i As Integer) As Byte Implements System.Data.IDataReader.GetByte
+    Public Overridable Function GetByte(ByVal i As Integer) As Byte Implements System.Data.IDataReader.GetByte
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -290,7 +290,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetBytes method of the underlying datareader.
     ''' </summary>
-    Public Function GetBytes(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetBytes
+    Public Overridable Function GetBytes(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetBytes
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -309,7 +309,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a char value from the datareader.
     ''' </summary>
-    Public Function GetChar(ByVal i As Integer) As Char Implements System.Data.IDataReader.GetChar
+    Public Overridable Function GetChar(ByVal i As Integer) As Char Implements System.Data.IDataReader.GetChar
       If mDataReader.IsDBNull(i) Then
         Return Char.MinValue
       Else
@@ -330,7 +330,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetChars method of the underlying datareader.
     ''' </summary>
-    Public Function GetChars(ByVal i As Integer, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetChars
+    Public Overridable Function GetChars(ByVal i As Integer, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetChars
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -349,7 +349,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetData method of the underlying datareader.
     ''' </summary>
-    Public Function GetData(ByVal i As Integer) As System.Data.IDataReader Implements System.Data.IDataReader.GetData
+    Public Overridable Function GetData(ByVal i As Integer) As System.Data.IDataReader Implements System.Data.IDataReader.GetData
       Return mDataReader.GetData(i)
     End Function
 
@@ -364,7 +364,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetDataTypeName method of the underlying datareader.
     ''' </summary>
-    Public Function GetDataTypeName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetDataTypeName
+    Public Overridable Function GetDataTypeName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetDataTypeName
       Return mDataReader.GetDataTypeName(i)
     End Function
 
@@ -379,7 +379,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a date value from the datareader.
     ''' </summary>
-    Public Function GetDateTime(ByVal i As Integer) As Date Implements System.Data.IDataReader.GetDateTime
+    Public Overridable Function GetDateTime(ByVal i As Integer) As Date Implements System.Data.IDataReader.GetDateTime
       If mDataReader.IsDBNull(i) Then
         Return Date.MinValue
       Else
@@ -398,7 +398,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a decimal value from the datareader.
     ''' </summary>
-    Public Function GetDecimal(ByVal i As Integer) As Decimal Implements System.Data.IDataReader.GetDecimal
+    Public Overridable Function GetDecimal(ByVal i As Integer) As Decimal Implements System.Data.IDataReader.GetDecimal
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -417,7 +417,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetFieldType method of the underlying datareader.
     ''' </summary>
-    Public Function GetFieldType(ByVal i As Integer) As System.Type Implements System.Data.IDataReader.GetFieldType
+    Public Overridable Function GetFieldType(ByVal i As Integer) As System.Type Implements System.Data.IDataReader.GetFieldType
       Return mDataReader.GetFieldType(i)
     End Function
 
@@ -432,7 +432,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a Single value from the datareader.
     ''' </summary>
-    Public Function GetFloat(ByVal i As Integer) As Single Implements System.Data.IDataReader.GetFloat
+    Public Overridable Function GetFloat(ByVal i As Integer) As Single Implements System.Data.IDataReader.GetFloat
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -451,7 +451,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a Short value from the datareader.
     ''' </summary>
-    Public Function GetInt16(ByVal i As Integer) As Short Implements System.Data.IDataReader.GetInt16
+    Public Overridable Function GetInt16(ByVal i As Integer) As Short Implements System.Data.IDataReader.GetInt16
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -470,7 +470,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a Long value from the datareader.
     ''' </summary>
-    Public Function GetInt64(ByVal i As Integer) As Long Implements System.Data.IDataReader.GetInt64
+    Public Overridable Function GetInt64(ByVal i As Integer) As Long Implements System.Data.IDataReader.GetInt64
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
@@ -489,7 +489,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetName method of the underlying datareader.
     ''' </summary>
-    Public Function GetName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetName
+    Public Overridable Function GetName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetName
       Return mDataReader.GetName(i)
     End Function
 
@@ -526,7 +526,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the IsDBNull method of the underlying datareader.
     ''' </summary>
-    Public Function IsDBNull(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.IsDBNull
+    Public Overridable Function IsDBNull(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.IsDBNull
       Return mDataReader.IsDBNull(i)
     End Function
 
@@ -561,7 +561,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns Nothing if the value is null.
     ''' </remarks>
-    Default Public Overloads ReadOnly Property Item(ByVal i As Integer) As Object Implements System.Data.IDataReader.Item
+    Default Public Overridable Overloads ReadOnly Property Item(ByVal i As Integer) As Object Implements System.Data.IDataReader.Item
       Get
         If mDataReader.IsDBNull(i) Then
           Return Nothing

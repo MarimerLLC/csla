@@ -43,13 +43,16 @@ namespace Csla.Validation
     /// against String property values.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-    public static bool StringMaxLength(object target, RuleArgs e)
+    public static bool StringMaxLength(
+      object target, RuleArgs e)
     {
       int max = ((MaxLengthRuleArgs)e).MaxLength;
-      string value = (string)Utilities.CallByName(target, e.PropertyName, CallType.Get);
+      string value = (string)Utilities.CallByName(
+        target, e.PropertyName, CallType.Get);
       if (!String.IsNullOrEmpty(value) && (value.Length > max))
       {
-        e.Description = String.Format("{0} can not exceed {1} characters", 
+        e.Description = String.Format(
+          "{0} can not exceed {1} characters", 
           e.PropertyName, max.ToString());
         return false;
       }

@@ -20,6 +20,8 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Protected Sub New()
 
+    AddAuthorizationRules()
+
   End Sub
 
 #End Region
@@ -28,6 +30,14 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   <NotUndoable()> _
   Private mAuthorizationRules As New Security.AuthorizationRules
+
+  ''' <summary>
+  ''' Override this method to add authorization
+  ''' rules for your object's properties.
+  ''' </summary>
+  Protected Overridable Sub AddAuthorizationRules()
+
+  End Sub
 
   ''' <summary>
   ''' Provides access to the AuthorizationRules object for this

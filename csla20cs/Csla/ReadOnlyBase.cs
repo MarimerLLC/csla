@@ -24,7 +24,7 @@ namespace Csla
 
     protected ReadOnlyBase()
     {
-
+      AddAuthorizationRules();
     }
 
     #endregion
@@ -34,6 +34,15 @@ namespace Csla
     [NotUndoable()]
     private Security.AuthorizationRules _authorizationRules = 
       new Security.AuthorizationRules();
+
+    /// <summary>
+    /// Override this method to add authorization
+    /// rules for your object's properties.
+    /// </summary>
+    protected virtual void AddAuthorizationRules()
+    {
+
+    }
 
     /// <summary>
     /// Provides access to the AuthorizationRules object for this

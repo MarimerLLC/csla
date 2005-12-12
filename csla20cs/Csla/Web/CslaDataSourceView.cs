@@ -52,7 +52,8 @@ namespace Csla.Web
 
     #region Select
 
-    protected override System.Collections.IEnumerable ExecuteSelect(DataSourceSelectArguments arguments)
+    protected override System.Collections.IEnumerable 
+      ExecuteSelect(DataSourceSelectArguments arguments)
     {
       
       // get the object from the page
@@ -67,6 +68,14 @@ namespace Csla.Web
           result = 0;
         else if (obj is IList)
           result = ((IList)obj).Count;
+        else if (obj is IEnumerable)
+        {
+          IEnumerable temp = (IEnumerable)obj;
+          int count = 0;
+          foreach (object item in temp)
+            count++;
+          result = count;
+        }
         else
           result = 1;
       }
@@ -102,14 +111,14 @@ namespace Csla.Web
       }
     }
 
-    protected override int ExecuteInsert(IDictionary values)
+    protected override int ExecuteInsert(
+      IDictionary values)
     {
-      
       // tell the page to insert the object
-      InsertObjectArgs args = new InsertObjectArgs(values);
+      InsertObjectArgs args = 
+        new InsertObjectArgs(values);
       _owner.DoInsert(args);
       return args.RowsAffected;
-
     }
 
     #endregion

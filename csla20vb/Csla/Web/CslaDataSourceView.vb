@@ -72,6 +72,14 @@ Namespace Web
         ElseIf TypeOf obj Is IList Then
           result = CType(obj, IList).Count
 
+        ElseIf TypeOf obj Is IEnumerable Then
+          Dim temp As IEnumerable = CType(obj, IEnumerable)
+          Dim count As Integer = 0
+          For Each item As Object In temp
+            count += 1
+          Next
+          result = count
+
         Else
           result = 1
         End If

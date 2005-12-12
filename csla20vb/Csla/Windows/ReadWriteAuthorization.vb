@@ -54,26 +54,37 @@ Namespace Windows
     Public Sub ResetControlAuthorization()
 
       For Each item As System.Collections.Generic.KeyValuePair(Of Control, Boolean) In mSources
-
         If item.Value Then
-          'set control
-          For Each binding As Binding In item.Key.DataBindings
-            ' get the BindingSource if appropriate
-            If TypeOf binding.DataSource Is BindingSource Then
-              Dim bs As BindingSource = CType(binding.DataSource, BindingSource)
-              ' get the BusinessObject if appropriate
-              If TypeOf bs.DataSource Is Csla.Core.BusinessBase Then
-                Dim ds As Csla.Core.BusinessBase = CType(bs.DataSource, Csla.Core.BusinessBase)
-                ' get the object property name
-                Dim propertyName As String = binding.BindingMemberInfo.BindingField
-
-                ApplyReadRules(item.Key, binding, propertyName, ds.CanReadProperty(propertyName))
-                ApplyWriteRules(item.Key, binding, propertyName, ds.CanWriteProperty(propertyName))
-              End If
-            End If
-          Next
+          ' apply authorization rules
+          ApplyAuthorizationRules(item.Key)
         End If
+      Next
 
+    End Sub
+
+    Private Sub ApplyAuthorizationRules(ByVal control As Control)
+
+      For Each binding As Binding In control.DataBindings
+        ' get the BindingSource if appropriate
+        If TypeOf binding.DataSource Is BindingSource Then
+          Dim bs As BindingSource = CType(binding.DataSource, BindingSource)
+          ' get the BusinessObject if appropriate
+          If TypeOf bs.DataSource Is Csla.Core.BusinessBase Then
+            Dim ds As Csla.Core.BusinessBase = CType(bs.DataSource, Csla.Core.BusinessBase)
+            ' get the object property name
+            Dim propertyName As String = binding.BindingMemberInfo.BindingField
+
+            ApplyReadRules(control, binding, propertyName, ds.CanReadProperty(propertyName))
+            ApplyWriteRules(control, binding, propertyName, ds.CanWriteProperty(propertyName))
+
+          ElseIf TypeOf bs.DataSource Is Csla.Core.IReadOnlyObject Then
+            Dim ds As Csla.Core.IReadOnlyObject = CType(bs.DataSource, Csla.Core.IReadOnlyObject)
+            ' get the object property name
+            Dim propertyName As String = binding.BindingMemberInfo.BindingField
+
+            ApplyReadRules(control, binding, propertyName, ds.CanReadProperty(propertyName))
+          End If
+        End If
       Next
 
     End Sub

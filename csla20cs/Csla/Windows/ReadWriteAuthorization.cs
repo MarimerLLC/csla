@@ -12,16 +12,16 @@ namespace Csla.Windows
   public class ReadWriteAuthorization : Component, IExtenderProvider
   {
 
-    private Dictionary<Control, bool> _sources = new Dictionary<Control, bool>();
+    private Dictionary<Control, bool> _sources = 
+      new Dictionary<Control, bool>();
 
     public ReadWriteAuthorization(IContainer container)
-    {
-      container.Add(this);
-    }
+    { container.Add(this); }
 
     public bool CanExtend(object extendee)
     {
-      if (IsPropertyImplemented(extendee, "ReadOnly") || IsPropertyImplemented(extendee, "Enabled"))
+      if (IsPropertyImplemented(extendee, "ReadOnly") 
+        || IsPropertyImplemented(extendee, "Enabled"))
         return true;
       else
         return false;
@@ -49,57 +49,87 @@ namespace Csla.Windows
       {
         if (item.Value)
         {
-          // set control
-          foreach (Binding binding in item.Key.DataBindings)
-          {
-            // get the BindingSource if appropriate
-            if (binding.DataSource is BindingSource)
-            {
-              BindingSource bs = (BindingSource)binding.DataSource;
-              // get the BusinessObject if appropriate
-              if (bs.DataSource is Csla.Core.BusinessBase)
-              {
-                Csla.Core.BusinessBase ds = (Csla.Core.BusinessBase)bs.DataSource;
-                // get the object property name
-                string propertyName = binding.BindingMemberInfo.BindingField;
+          // apply authorization rules
+          ApplyAuthorizationRules(item.Key);
+        }
+      }
+    }
 
-                ApplyReadRules(item.Key, binding, propertyName, ds.CanReadProperty(propertyName));
-                ApplyWriteRules(item.Key, binding, propertyName, ds.CanWriteProperty(propertyName));
-              }
-            }
+    private void ApplyAuthorizationRules(Control control)
+    {
+      foreach (Binding binding in control.DataBindings)
+      {
+        // get the BindingSource if appropriate
+        if (binding.DataSource is BindingSource)
+        {
+          BindingSource bs =
+            (BindingSource)binding.DataSource;
+          // get the object property name
+          string propertyName =
+            binding.BindingMemberInfo.BindingField;
+          // get the BusinessObject if appropriate
+          if (bs.DataSource is Csla.Core.BusinessBase)
+          {
+            Csla.Core.BusinessBase ds =
+              (Csla.Core.BusinessBase)bs.DataSource;
+
+            ApplyReadRules(
+              control, binding, propertyName,
+              ds.CanReadProperty(propertyName));
+            ApplyWriteRules(
+              control, binding, propertyName,
+              ds.CanWriteProperty(propertyName));
+          }
+          else if (bs.DataSource is Csla.Core.IReadOnlyObject)
+          {
+            Csla.Core.IReadOnlyObject ds =
+              (Csla.Core.IReadOnlyObject)bs.DataSource;
+
+            ApplyReadRules(
+              control, binding, propertyName,
+              ds.CanReadProperty(propertyName));
           }
         }
       }
     }
 
-    private void ApplyReadRules(Control ctl, Binding binding, string propertyName, bool canRead)
+    private void ApplyReadRules(
+      Control ctl, Binding binding, 
+      string propertyName, bool canRead)
     {
       // enable/disable reading of the value
       if (canRead)
       {
         bool couldRead = ctl.Enabled;
         ctl.Enabled = true;
-        binding.Format -= new ConvertEventHandler(ReturnEmpty);
+        binding.Format -= 
+          new ConvertEventHandler(ReturnEmpty);
         if (!couldRead) binding.ReadValue();
       }
       else
       {
         ctl.Enabled = false;
-        binding.Format += new ConvertEventHandler(ReturnEmpty);
+        binding.Format += 
+          new ConvertEventHandler(ReturnEmpty);
 
         // clear the control property
-        PropertyInfo propertyInfo = ctl.GetType().GetProperty(binding.PropertyName,
+        PropertyInfo propertyInfo = 
+          ctl.GetType().GetProperty(binding.PropertyName,
           BindingFlags.FlattenHierarchy |
           BindingFlags.Instance |
           BindingFlags.Public);
         if (propertyInfo != null)
         {
-          propertyInfo.SetValue(ctl, GetEmptyValue(propertyInfo.PropertyType), new object[] { });
+          propertyInfo.SetValue(ctl, 
+            GetEmptyValue(propertyInfo.PropertyType), 
+            new object[] { });
         }
       }
     }
 
-    private void ApplyWriteRules(Control ctl, Binding binding, string propertyName, bool canWrite)
+    private void ApplyWriteRules(
+      Control ctl, Binding binding, 
+      string propertyName, bool canWrite)
     {
       if (ctl is Label) return;
 
@@ -111,8 +141,11 @@ namespace Csla.Windows
         BindingFlags.Public);
       if (propertyInfo != null)
       {
-        bool couldWrite = (!(bool)propertyInfo.GetValue(ctl, new object[] { }));
-        propertyInfo.SetValue(ctl, !canWrite, new object[] { });
+        bool couldWrite = 
+          (!(bool)propertyInfo.GetValue(
+          ctl, new object[] { }));
+        propertyInfo.SetValue(
+          ctl, !canWrite, new object[] { });
         if ((!couldWrite) && (canWrite))
           binding.ReadValue();
       }
@@ -125,7 +158,8 @@ namespace Csla.Windows
       }
     }
 
-    private void ReturnEmpty(object sender, ConvertEventArgs e)
+    private void ReturnEmpty(
+      object sender, ConvertEventArgs e)
     {
       e.Value = GetEmptyValue(e.DesiredType);
     }
@@ -144,7 +178,8 @@ namespace Csla.Windows
       return result;
     }
 
-    private static bool IsPropertyImplemented(object obj, string propertyName)
+    private static bool IsPropertyImplemented(
+      object obj, string propertyName)
     {
       if (obj.GetType().GetProperty(propertyName,
         BindingFlags.FlattenHierarchy |

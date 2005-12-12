@@ -15,7 +15,7 @@ namespace ProjectTracker.Library.Admin
     private int _id;
     private bool _idSet;
     private string _name = String.Empty;
-    private byte[] _timestamp = new byte[7];
+    private byte[] _timestamp = new byte[8];
 
     public int Id
     {

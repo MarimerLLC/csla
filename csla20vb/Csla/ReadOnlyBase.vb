@@ -14,7 +14,7 @@ Imports System.ComponentModel
 Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Implements ICloneable
-  Implements Core.IBusinessObject
+  Implements Core.IReadOnlyObject
 
 #Region " Constructors "
 
@@ -114,7 +114,9 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' allows access they will be denied read access to the property.
   ''' </remarks>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Public Overridable Function CanReadProperty(ByVal propertyName As String) As Boolean
+  Public Overridable Function CanReadProperty( _
+    ByVal propertyName As String) As Boolean _
+    Implements Core.IReadOnlyObject.CanReadProperty
 
     Dim result As Boolean = True
     If AuthorizationRules.HasReadAllowedRoles(propertyName) Then

@@ -52,6 +52,7 @@
     <Compile Include="Core\IBusinessObject.cs" />
     <Compile Include="Core\IEditableCollection.cs" />
     <Compile Include="Core\IEditableObject.cs" />
+    <Compile Include="Core\IReadOnlyObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />
     <Compile Include="Core\ReadOnlyBindingList.cs" />
     <Compile Include="Core\UndoableBase.cs" />

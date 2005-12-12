@@ -64,6 +64,7 @@
     <Compile Include="BusinessListBase.vb" />
     <Compile Include="Core\IBusinessObject.vb" />
     <Compile Include="Core\IEditableObject.vb" />
+    <Compile Include="Core\IReadOnlyObject.vb" />
     <Compile Include="Core\ObjectCloner.vb" />
     <Compile Include="DataPortal\Client\EnterpriseServicesProxy.vb" />
     <Compile Include="DataPortal\Client\IDataPortalProxy.vb" />

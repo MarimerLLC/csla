@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.ComponentModel;
 using System.Reflection;
@@ -14,8 +15,6 @@ namespace Csla.Data
   /// </summary>
   public class ObjectAdapter
   {
-    private ArrayList _columns = new ArrayList();
-
     /// <summary>
     /// Fills the DataSet with data from an object or collection.
     /// </summary>
@@ -68,44 +67,47 @@ namespace Csla.Data
     {
       if (source == null)
         throw new ArgumentException(Resources.NothingNotValid);
-      AutoDiscover(source);
-      DataCopy(dt, source);
+
+      // get the list of columns from the source
+      List<string> columns = GetColumns(source);
+      if (columns.Count < 1) return;
+
+      // create columns in DataTable if needed
+      foreach (string column in columns)
+        if (!dt.Columns.Contains(column))
+          dt.Columns.Add(column);
+
+      // get an IList and copy the data
+      CopyData(dt, GetIList(source), columns);
     }
 
-    #region Data Copy
+    #region DataCopyIList
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
-    private void DataCopy(DataTable dt, object source)
+    IList GetIList(object source)
     {
-      if (source == null) return;
-      if (_columns.Count < 1) return;
       if (source is IListSource)
-        DataCopyIList(dt, ((IListSource)source).GetList());
+        return ((IListSource)source).GetList();
       else if (source is IList)
-        DataCopyIList(dt, (IList)source);
+        return source as IList;
       else
       {
-        // they gave us a regular object - create a list
+        // this is a regular object - create a list
         ArrayList col = new ArrayList();
         col.Add(source);
-        DataCopyIList(dt, (IList)col);
+        return col;
       }
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    private void DataCopyIList(DataTable dt, IList ds)
+    private void CopyData(
+      DataTable dt, IList ds, List<string> columns)
     {
-      // create columns if needed
-      foreach (string column in _columns)
-        if (!dt.Columns.Contains(column))
-          dt.Columns.Add(column);
-
-      // load the data into the control
+      // load the data into the DataTable
       dt.BeginLoadData();
       for (int index = 0; index < ds.Count; index++)
       {
         DataRow dr = dt.NewRow();
-        foreach (string column in _columns)
+        foreach (string column in columns)
         {
           try
           {
@@ -123,10 +125,10 @@ namespace Csla.Data
 
     #endregion
 
-    #region AutoDiscover
+    #region GetColumns
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
-    private void AutoDiscover(object source)
+    private List<string> GetColumns(object source)
     {
       object innerSource;
       if (source is IListSource)
@@ -134,26 +136,26 @@ namespace Csla.Data
       else
         innerSource = source;
 
-      _columns.Clear();
-
       if (innerSource is DataView)
-        ScanDataView((DataView)innerSource);
+        return ScanDataView((DataView)innerSource);
       else if (innerSource is IList)
-        ScanIList((IList)innerSource);
+        return ScanIList((IList)innerSource);
       else
       {
-        // they gave us a regular object
-        ScanObject(innerSource);
+        // the source is a regular object
+        return ScanObject(innerSource);
       }
     }
 
-    private void ScanDataView(DataView ds)
+    private List<string> ScanDataView(DataView ds)
     {
+      List<string> result = new List<string>();
       for (int field = 0; field < ds.Table.Columns.Count; field++)
-        _columns.Add(ds.Table.Columns[field].ColumnName);
+        result.Add(ds.Table.Columns[field].ColumnName);
+      return result;
     }
 
-    private void ScanIList(IList ds)
+    private List<string> ScanIList(IList ds)
     {
       if (ds.Count > 0)
       {
@@ -163,23 +165,31 @@ namespace Csla.Data
         if (obj is ValueType && obj.GetType().IsPrimitive)
         {
           // the value is a primitive value type
-          _columns.Add("Value");
+          List<string> result = new List<string>();
+          result.Add("Value");
+          return result;
         }
         else if (obj is string)
         {
           // the value is a simple string
-          _columns.Add("Text");
+          List<string> result = new List<string>();
+          result.Add("Text");
+          return result;
         }
         else
         {
-          // we have a complex Structure or object
-          ScanObject(obj);
+          // the value is a complex Structure or object
+          return ScanObject(obj);
         }
       }
+      else
+        return new List<string>();
     }
 
-    private void ScanObject(object source)
+    private List<string> ScanObject(object source)
     {
+      List<string> result = new List<string>();
+
       Type sourceType = source.GetType();
 
       // retrieve a list of all public properties
@@ -187,13 +197,15 @@ namespace Csla.Data
       if (props.Length >= 0)
         for (int column = 0; column < props.Length; column++)
           if (props[column].CanRead)
-            _columns.Add(props[column].Name);
+            result.Add(props[column].Name);
 
       // retrieve a list of all public fields
       FieldInfo[] fields = sourceType.GetFields();
       if (fields.Length >= 0)
         for (int column = 0; column < fields.Length; column++)
-          _columns.Add(fields[column].Name);
+          result.Add(fields[column].Name);
+
+      return result;
     }
 
     #endregion
@@ -235,7 +247,8 @@ namespace Csla.Data
             if (field == null)
             {
               // no field exists either, throw an exception
-              throw new DataException(Resources.NoSuchValueExistsException + " " + fieldName);
+              throw new DataException(
+                Resources.NoSuchValueExistsException + " " + fieldName);
             }
             else
             {
@@ -251,7 +264,8 @@ namespace Csla.Data
         }
         catch (Exception ex)
         {
-          throw new DataException(Resources.ErrorReadingValueException + " " + fieldName, ex);
+          throw new DataException(
+            Resources.ErrorReadingValueException + " " + fieldName, ex);
         }
       }
     }

@@ -129,6 +129,9 @@
     <Compile Include="Web\CslaDataSourceView.cs" />
     <Compile Include="Web\Design\CslaDataSourceDesigner.cs" />
     <Compile Include="Web\Design\CslaDesignerDataSourceView.cs" />
+    <Compile Include="Web\Design\ObjectFieldInfo.cs" />
+    <Compile Include="Web\Design\ObjectSchema.cs" />
+    <Compile Include="Web\Design\ObjectViewSchema.cs" />
     <Compile Include="Windows\BindingSourceRefresh.cs">
       <SubType>Component</SubType>
     </Compile>

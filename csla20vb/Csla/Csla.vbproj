@@ -147,6 +147,9 @@
     <Compile Include="Web\CslaDataSourceView.vb" />
     <Compile Include="Web\Design\CslaDataSourceDesigner.vb" />
     <Compile Include="Web\Design\CslaDesignerDataSourceView.vb" />
+    <Compile Include="Web\Design\ObjectFieldInfo.vb" />
+    <Compile Include="Web\Design\ObjectSchema.vb" />
+    <Compile Include="Web\Design\ObjectViewSchema.vb" />
     <Compile Include="Windows\BindingSourceRefresh.vb" />
     <Compile Include="Windows\ReadWriteAuthorization.vb" />
   </ItemGroup>

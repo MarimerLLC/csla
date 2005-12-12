@@ -18,8 +18,6 @@ namespace PTWin
       get { return _resourceId; }
     }
 
-
-
     public ResourceSelect()
     {
       InitializeComponent();

@@ -29,7 +29,7 @@ namespace PTWin
 
     public override bool Equals(object obj)
     {
-      if (obj is ResourceEdit)
+      if ((obj is ResourceEdit)&&(_resource != null))
         return ((ResourceEdit)obj).Resource.Equals(_resource);
       else
         return false;
@@ -37,7 +37,10 @@ namespace PTWin
 
     public override int GetHashCode()
     {
-      return (_resource == null) ? base.GetHashCode() : _resource.GetHashCode();
+      if (_resource != null)
+        return _resource.GetHashCode();
+      else
+        return base.GetHashCode();
     }
 
     private void ResourceEdit_CurrentPrincipalChanged(object sender, EventArgs e)
@@ -84,10 +87,12 @@ namespace PTWin
         }
 
         // rebind the UI
-        this.ResourceBindingSource.DataSource = _resource;
-        this.AssignmentsBindingSource.DataSource = _resource.Assignments;
+        this.ResourceBindingSource.DataSource = null;
+        this.AssignmentsBindingSource.DataSource = null;
         this.ResourceBindingSource.RaiseListChangedEvents = true;
         this.AssignmentsBindingSource.RaiseListChangedEvents = true;
+        this.ResourceBindingSource.DataSource = _resource;
+        this.AssignmentsBindingSource.DataSource = _resource.Assignments;
         ApplyAuthorizationRules();
       }
     }

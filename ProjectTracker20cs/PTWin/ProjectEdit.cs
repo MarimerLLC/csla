@@ -29,7 +29,7 @@ namespace PTWin
 
     public override bool Equals(object obj)
     {
-      if (obj is ProjectEdit)
+      if ((obj is ProjectEdit)&&(_project != null))
         return ((ProjectEdit)obj).Project.Equals(_project);
       else
         return false;
@@ -37,7 +37,10 @@ namespace PTWin
 
     public override int GetHashCode()
     {
-      return (_project == null) ? base.GetHashCode() : _project.GetHashCode();
+      if (_project != null)
+        return _project.GetHashCode();
+      else
+        return base.GetHashCode();
     }
 
     private void ProjectEdit_CurrentPrincipalChanged(object sender, EventArgs e)
@@ -84,10 +87,12 @@ namespace PTWin
         }
 
         // rebind the UI
-        this.ProjectBindingSource.DataSource = _project;
-        this.ResourcesBindingSource.DataSource = _project.Resources;
+        this.ProjectBindingSource.DataSource = null;
+        this.ResourcesBindingSource.DataSource = null;
         this.ProjectBindingSource.RaiseListChangedEvents = true;
         this.ResourcesBindingSource.RaiseListChangedEvents = true;
+        this.ProjectBindingSource.DataSource = _project;
+        this.ResourcesBindingSource.DataSource = _project.Resources;
         ApplyAuthorizationRules();
       }
     }
@@ -161,7 +166,6 @@ namespace PTWin
       if (e.ColumnIndex == 1)
       {
         int resourceId = int.Parse(this.ResourcesDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString());
-        
         MainForm.Instance.ShowEditResource(resourceId);
       }
     }

@@ -40,8 +40,9 @@ namespace PTWin
         MessageBox.Show(ex.ToString(), "Error saving",
           MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
-      this.RolesBindingSource.DataSource = _roles;
+      this.RolesBindingSource.DataSource = null;
       this.RolesBindingSource.RaiseListChangedEvents = true;
+      this.RolesBindingSource.DataSource = _roles;
     }
 
     private void CancelButton_Click(object sender, EventArgs e)

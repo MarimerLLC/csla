@@ -113,14 +113,10 @@ namespace PTWin
 
     private void NewResourceToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      string resourceId = InputBox.GetInput("New resource id", "New resource");
-      if (!string.IsNullOrEmpty(resourceId))
-      {
         using (StatusBusy busy = new StatusBusy("Creating resource..."))
         {
           AddWinPart(new ResourceEdit(Resource.NewResource()));
         }
-      }
     }
 
     private void EditResourceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -231,6 +227,9 @@ namespace PTWin
       else
         this.EditResourceToolStripMenuItem.Text = "View resource";
       this.DeleteResourceToolStripMenuItem.Enabled = Resource.CanDeleteObject();
+
+      // Admin menu
+      this.EditRolesToolStripMenuItem.Enabled = ProjectTracker.Library.Admin.Roles.CanSaveObject();
     }
 
     #endregion
@@ -244,6 +243,8 @@ namespace PTWin
 
     private void DoLogin()
     {
+      ProjectTracker.Library.Security.PTPrincipal.Logout();
+
       if (this.LoginToolStripButton.Text == "Login")
       {
         LoginForm loginForm = new LoginForm();

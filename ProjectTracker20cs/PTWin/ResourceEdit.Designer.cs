@@ -189,8 +189,8 @@ namespace PTWin
       // DataGridViewTextBoxColumn3
       // 
       this.DataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-      this.DataGridViewTextBoxColumn3.DataPropertyName = "ProjectID";
-      this.DataGridViewTextBoxColumn3.HeaderText = "ProjectID";
+      this.DataGridViewTextBoxColumn3.DataPropertyName = "ProjectId";
+      this.DataGridViewTextBoxColumn3.HeaderText = "ProjectId";
       this.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3";
       this.DataGridViewTextBoxColumn3.ReadOnly = true;
       this.DataGridViewTextBoxColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.False;

@@ -17,7 +17,7 @@
               <asp:Label ID="PageTitle" runat="server"></asp:Label>&nbsp;
             </h1></div>
             <div style="text-align: right;"><asp:LoginStatus ID="LoginStatus1"
-                runat="server" /></div>
+                runat="server" OnLoggingOut="LoginStatus1_LoggingOut" /></div>
           </td>
         </tr>
         <tr>

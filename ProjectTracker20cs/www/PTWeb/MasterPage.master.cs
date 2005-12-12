@@ -15,4 +15,10 @@ public partial class MasterPage : System.Web.UI.MasterPage
   {
     PageTitle.Text = Page.Title;
   }
+  protected void LoginStatus1_LoggingOut(object sender, LoginCancelEventArgs e)
+  {
+    ProjectTracker.Library.Security.PTPrincipal.Logout();
+    Session["CslaPrincipal"] = System.Threading.Thread.CurrentPrincipal;
+    System.Web.Security.FormsAuthentication.SignOut();
+  }
 }

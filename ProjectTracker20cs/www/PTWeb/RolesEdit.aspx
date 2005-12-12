@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="RolesEdit.aspx.cs" Inherits="RolesEdit" title="Project Roles" %>
+<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="RolesEdit.aspx.cs" Inherits="RolesEdit" title="Project Roles" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 <div>
       <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">

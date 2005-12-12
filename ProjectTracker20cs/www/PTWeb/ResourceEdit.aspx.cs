@@ -8,60 +8,141 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using ProjectTracker.Library;
 
 public partial class ResourceEdit : System.Web.UI.Page
 {
+
+  private enum Views
+  {
+    MainView = 0,
+    AssignView = 1
+  }
+
   protected void Page_Load(object sender, EventArgs e)
   {
     if (!IsPostBack)
     {
-      string idString = Request.QueryString["id"];
-      ProjectTracker.Library.Resource obj;
-      if (!string.IsNullOrEmpty(idString))
+      try
       {
-        obj = ProjectTracker.Library.Resource.GetResource(idString);
-        if (ProjectTracker.Library.Resource.CanSaveObject())
-          this.DetailsView1.DefaultMode = DetailsViewMode.Edit;
+        string idString = Request.QueryString["id"];
+        Resource obj;
+        if (!string.IsNullOrEmpty(idString))
+        {
+          int id = int.Parse(idString);
+          obj = Resource.GetResource(id);
+        }
         else
-          this.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly;
+          obj = Resource.NewResource();
+        Session["currentObject"] = obj;
+        this.MultiView1.ActiveViewIndex = (int)Views.MainView;
+        ApplyAuthorizationRules();
       }
-      else
+      catch (System.Security.SecurityException)
       {
-        obj = ProjectTracker.Library.Resource.NewResource("new");
-        this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
+        Response.Redirect("ResourceList.aspx");
       }
-      Session["currentObject"] = obj;
+      this.ErrorLabel.Text = "";
     }
   }
-  protected void ResourceListButton_Click(object sender, EventArgs e)
+
+  private void ApplyAuthorizationRules()
   {
-    Response.Redirect("ResourceList.aspx");
+    Resource obj = (Resource)Session["currentObject"];
+    // Resource display
+    if (Resource.CanSaveObject())
+    {
+      if (obj.IsNew)
+        this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
+      else
+        this.DetailsView1.DefaultMode = DetailsViewMode.Edit;
+      this.AssignProjectButton.Visible = !obj.IsNew;
+    }
+    else
+    {
+      this.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly;
+      this.AssignProjectButton.Visible = false;
+    }
+    this.DetailsView1.Rows[this.DetailsView1.Rows.Count - 1].Visible = Resource.CanSaveObject();
+
+    // resources display
+    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Resource.CanSaveObject();
   }
+
+  #region DetailsView
+
+  protected void DetailsView1_ItemInserted(object sender, DetailsViewInsertedEventArgs e)
+  {
+    ApplyAuthorizationRules();
+  }
+
+  protected void DetailsView1_ItemUpdated(object sender, DetailsViewUpdatedEventArgs e)
+  {
+    ApplyAuthorizationRules();
+  }
+
   protected void DetailsView1_ItemDeleted(object sender, DetailsViewDeletedEventArgs e)
   {
     Response.Redirect("ResourceList.aspx");
   }
 
+  #endregion
+
+  #region Project Grid
+
+  protected void AssignProjectButton_Click(object sender, EventArgs e)
+  {
+    this.MultiView1.ActiveViewIndex = (int)Views.AssignView;
+  }
+
+  protected void GridView2_SelectedIndexChanged(object sender, EventArgs e)
+  {
+    Resource obj = (Resource)Session["currentObject"];
+    try
+    {
+      obj.Assignments.AssignTo(new Guid(this.GridView2.SelectedDataKey.Value.ToString()));
+      if (SaveResource(obj) > 0)
+      {
+        this.GridView1.DataBind();
+        this.MultiView1.ActiveViewIndex = (int)Views.MainView;
+      }
+    }
+    catch (InvalidOperationException ex)
+    {
+      ErrorLabel.Text = ex.Message;
+    }
+  }
+
+  protected void CancelAssignButton_Click(object sender, EventArgs e)
+  {
+    this.MultiView1.ActiveViewIndex = (int)Views.MainView;
+  }
+
+  #endregion
+
+  #region RoleListDataSource
+
   protected void RoleListDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
   {
-    e.BusinessObject = ProjectTracker.Library.RoleList.GetList();
+    e.BusinessObject = RoleList.GetList();
   }
+
+  #endregion
 
   #region ResourceDataSource
 
   protected void ResourceDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
   {
-    ProjectTracker.Library.Resource.DeleteResource(e.Keys["Id"].ToString());
+    Resource.DeleteResource(int.Parse(e.Keys["Id"].ToString()));
     Session.Remove("currentObject");
     e.RowsAffected = 1;
   }
 
   protected void ResourceDataSource_InsertObject(object sender, Csla.Web.InsertObjectArgs e)
   {
-    ProjectTracker.Library.Resource obj = (ProjectTracker.Library.Resource)Session["currentObject"];
+    Resource obj = Resource.NewResource();
     Csla.Data.DataMapper.Map(e.Values, obj, "Id");
-    Session["currentObject"] = obj.Save();
-    e.RowsAffected = 1;
+    e.RowsAffected = SaveResource(obj);
   }
 
   protected void ResourceDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
@@ -71,10 +152,9 @@ public partial class ResourceEdit : System.Web.UI.Page
 
   protected void ResourceDataSource_UpdateObject(object sender, Csla.Web.UpdateObjectArgs e)
   {
-    ProjectTracker.Library.Resource obj = (ProjectTracker.Library.Resource)Session["currentObject"];
+    Resource obj = (Resource)Session["currentObject"];
     Csla.Data.DataMapper.Map(e.Values, obj);
-    Session["currentObject"] = obj.Save();
-    e.RowsAffected = 1;
+    e.RowsAffected = SaveResource(obj);
   }
 
   #endregion
@@ -83,32 +163,60 @@ public partial class ResourceEdit : System.Web.UI.Page
 
   protected void AssignmentsDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
   {
-    ProjectTracker.Library.Resource obj = (ProjectTracker.Library.Resource)Session["currentObject"];
-    ProjectTracker.Library.ResourceAssignment res;
+    Resource obj = (Resource)Session["currentObject"];
+    ResourceAssignment res;
     Guid rid = new Guid(e.Keys["ProjectId"].ToString());
     res = obj.Assignments[rid];
-    obj.Assignments.Remove(res.ProjectID);
-    Session["currentObject"] = obj.Save();
-    e.RowsAffected = 1;
+    obj.Assignments.Remove(res.ProjectId);
+    e.RowsAffected = SaveResource(obj);
   }
 
   protected void AssignmentsDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
   {
-    ProjectTracker.Library.Resource obj = (ProjectTracker.Library.Resource)Session["currentObject"];
+    Resource obj = (Resource)Session["currentObject"];
     e.BusinessObject = obj.Assignments;
   }
 
   protected void AssignmentsDataSource_UpdateObject(object sender, Csla.Web.UpdateObjectArgs e)
   {
-    ProjectTracker.Library.Resource obj = (ProjectTracker.Library.Resource)Session["currentObject"];
-    ProjectTracker.Library.ResourceAssignment res;
+    Resource obj = (Resource)Session["currentObject"];
+    ResourceAssignment res;
     Guid rid = new Guid(e.Keys["ProjectId"].ToString());
     res = obj.Assignments[rid];
     Csla.Data.DataMapper.Map(e.Values, res);
-    Session["currentObject"] = obj.Save();
-    e.RowsAffected = 1;
+    e.RowsAffected = SaveResource(obj);
   }
 
   #endregion
+
+  #region ProjectListDataSource
+  
+  protected void ProjectListDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
+  {
+    e.BusinessObject = ProjectTracker.Library.ProjectList.GetProjectList();
+  }
+
+  #endregion
+
+  private int SaveResource(Resource resource)
+  {
+    int rowsAffected;
+    try
+    {
+      Session["currentObject"] = resource.Save();
+      rowsAffected = 1;
+    }
+    catch (Csla.DataPortalException ex)
+    {
+      this.ErrorLabel.Text = ex.BusinessException.Message;
+      rowsAffected = 0;
+    }
+    catch (Exception ex)
+    {
+      this.ErrorLabel.Text = ex.Message;
+      rowsAffected = 0;
+    }
+    return rowsAffected;
+  }
 
 }

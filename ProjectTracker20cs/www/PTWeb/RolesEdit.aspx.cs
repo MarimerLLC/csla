@@ -11,27 +11,40 @@ using System.Web.UI.HtmlControls;
 
 public partial class RolesEdit : System.Web.UI.Page
 {
-  private enum PageViews
+  private enum Views
   {
     MainView = 0,
     InsertView = 1
   }
 
+
+  protected void Page_Load(object sender, EventArgs e)
+  {
+    if (!IsPostBack)
+      ApplyAuthorizationRules();
+  }
+
+  private void ApplyAuthorizationRules()
+  {
+    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = ProjectTracker.Library.Admin.Roles.CanSaveObject();
+    this.AddRoleButton.Visible = ProjectTracker.Library.Admin.Roles.CanAddObject();
+  }
+
   protected void AddRoleButton_Click(object sender, EventArgs e)
   {
     this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
-    MultiView1.ActiveViewIndex = (int)PageViews.InsertView;
+    MultiView1.ActiveViewIndex = (int)Views.InsertView;
   }
 
   protected void DetailsView1_ItemInserted(object sender, DetailsViewInsertedEventArgs e)
   {
-    MultiView1.ActiveViewIndex = (int)PageViews.MainView;
+    MultiView1.ActiveViewIndex = (int)Views.MainView;
     this.GridView1.DataBind();
   }
 
   protected void DetailsView1_ModeChanged(object sender, EventArgs e)
   {
-    MultiView1.ActiveViewIndex = (int)PageViews.MainView;
+    MultiView1.ActiveViewIndex = (int)Views.MainView;
   }
 
   #region RolesDataSource

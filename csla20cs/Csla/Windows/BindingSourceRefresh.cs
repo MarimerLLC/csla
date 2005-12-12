@@ -35,7 +35,8 @@ namespace Csla.Windows
       return false;
     }
 
-    public void SetReadValuesOnChange(BindingSource source, bool value)
+    public void SetReadValuesOnChange(
+      BindingSource source, bool value)
     {
       if (_sources.ContainsKey(source))
         _sources[source] = value;
@@ -44,17 +45,19 @@ namespace Csla.Windows
       if (value)
       {
         // hook
-        source.BindingComplete += new BindingCompleteEventHandler(Source_BindingComplete);
+        source.BindingComplete += 
+          new BindingCompleteEventHandler(Source_BindingComplete);
       }
       else
       {
         // unhook
-        source.BindingComplete -= new BindingCompleteEventHandler(Source_BindingComplete);
+        source.BindingComplete -= 
+          new BindingCompleteEventHandler(Source_BindingComplete);
       }
-
     }
 
-    private void Source_BindingComplete(object sender, BindingCompleteEventArgs e)
+    private void Source_BindingComplete(
+      object sender, BindingCompleteEventArgs e)
     {
       e.Binding.ReadValue();
     }

@@ -56,7 +56,7 @@ Namespace Web.Design
       Dim t As Type = CslaDataSource.GetType(mTypeAssemblyName, mTypeName)
       If GetType(IEnumerable).IsAssignableFrom(t) Then
         ' this is a list so get the item type
-        t = GetItemType(t)
+        t = Utilities.GetChildItemType(t)
       End If
       Dim props As PropertyDescriptorCollection = TypeDescriptor.GetProperties(t)
       For Each item As PropertyDescriptor In props
@@ -68,25 +68,6 @@ Namespace Web.Design
 
     End Function
 
-    Private Function GetItemType(ByVal objectType As Type) As Type
-
-      If objectType.IsArray Then
-        Return objectType.GetElementType
-      End If
-      Dim props As PropertyInfo() = _
-        objectType.GetProperties( _
-          BindingFlags.FlattenHierarchy Or _
-          BindingFlags.Public Or _
-          BindingFlags.Instance)
-      For Each item As PropertyInfo In props
-        If Attribute.IsDefined( _
-          item, GetType(DefaultMemberAttribute)) Then
-          Return Utilities.GetPropertyType(item.PropertyType)
-        End If
-      Next
-      Return Nothing
-
-    End Function
 
     ''' <summary>
     ''' Returns the name of the schema.

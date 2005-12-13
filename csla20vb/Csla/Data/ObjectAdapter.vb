@@ -9,7 +9,7 @@ Namespace Data
   ''' </summary>
   Public Class ObjectAdapter
 
-    Private mColumns As New ArrayList
+    'Private mColumns As New ArrayList
 
     ''' <summary>
     ''' Fills the DataSet with data from an object or collection.
@@ -71,52 +71,50 @@ Namespace Data
       If source Is Nothing Then
         Throw New ArgumentException(My.Resources.NothingNotValid)
       End If
-      AutoDiscover(source)
-      DataCopy(dt, source)
 
-    End Sub
-
-#Region " Data Copy "
-
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")> _
-    Private Sub DataCopy(ByVal dt As DataTable, ByVal source As Object)
-
-      If source Is Nothing Then Exit Sub
-      If mColumns.Count < 1 Then Exit Sub
-
-      If TypeOf source Is IListSource Then
-        DataCopyIList(dt, CType(source, IListSource).GetList)
-
-      ElseIf TypeOf source Is IList Then
-        DataCopyIList(dt, CType(source, IList))
-
-      Else
-        ' they gave us a regular object - create a list
-        Dim col As New ArrayList
-        col.Add(source)
-        DataCopyIList(dt, CType(col, IList))
-      End If
-
-    End Sub
-
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
-    Private Sub DataCopyIList(ByVal dt As DataTable, ByVal ds As IList)
-
-      Dim index As Integer
-      Dim column As String
+      Dim columns As List(Of String) = GetColumns(source)
+      If columns.Count < 1 Then Exit Sub
 
       ' create columns if needed
-      For Each column In mColumns
+      For Each column As String In columns
         If Not dt.Columns.Contains(column) Then
           dt.Columns.Add(column)
         End If
       Next
 
-      ' load the data into the control
+      ' get an IList and copy the data
+      CopyData(dt, GetIList(source), columns)
+
+
+    End Sub
+
+#Region " DataCopyIList "
+
+    Private Function GetIList(ByVal source As Object) As IList
+
+      If TypeOf source Is IListSource Then
+        Return CType(source, IListSource).GetList
+
+      ElseIf TypeOf source Is IList Then
+        Return CType(source, IList)
+
+      Else
+        ' they gave us a regular object - create a list
+        Dim col As New ArrayList
+        col.Add(source)
+        Return CType(col, IList)
+      End If
+
+    End Function
+
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
+    Private Sub CopyData(ByVal dt As DataTable, ByVal ds As IList, ByVal columns As List(Of String))
+
+      ' load the data into the DataTable
       dt.BeginLoadData()
-      For index = 0 To ds.Count - 1
+      For index As Integer = 0 To ds.Count - 1
         Dim dr As DataRow = dt.NewRow
-        For Each column In mColumns
+        For Each column As String In columns
           Try
             dr(column) = GetField(ds(index), column)
 
@@ -132,10 +130,10 @@ Namespace Data
 
 #End Region
 
-#Region " AutoDiscover "
+#Region " GetColumns "
 
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")> _
-    Private Sub AutoDiscover(ByVal source As Object)
+    Private Function GetColumns(ByVal source As Object) As List(Of String)
 
       Dim innerSource As Object
 
@@ -146,78 +144,80 @@ Namespace Data
         innerSource = source
       End If
 
-      mColumns.Clear()
-
       If TypeOf innerSource Is DataView Then
-        ScanDataView(CType(innerSource, DataView))
+        Return ScanDataView(CType(innerSource, DataView))
 
-      ElseIf TypeOf innerSource Is IList Then
-        ScanIList(CType(innerSource, IList))
+      ElseIf TypeOf innerSource Is IEnumerable Then
+        Dim childType As Type = Utilities.GetChildItemType(innerSource.GetType)
+        Return ScanObject(childType)
 
       Else
         ' they gave us a regular object
-        ScanObject(innerSource)
-
+        Return ScanObject(innerSource.GetType)
       End If
 
-    End Sub
+    End Function
 
-    Private Sub ScanDataView(ByVal ds As DataView)
+    Private Function ScanDataView(ByVal ds As DataView) As List(Of String)
+
+      Dim result As New List(Of String)
 
       Dim field As Integer
 
       For field = 0 To ds.Table.Columns.Count - 1
-        mColumns.Add(ds.Table.Columns(field).ColumnName)
+        result.Add(ds.Table.Columns(field).ColumnName)
       Next
+      Return result
 
-    End Sub
+    End Function
 
-    Private Sub ScanIList(ByVal ds As IList)
+    'Private Sub ScanIList(ByVal ds As IList)
 
-      If ds.Count > 0 Then
-        ' retrieve the first item from the list
-        Dim obj As Object = ds.Item(0)
+    '  If ds.Count > 0 Then
+    '    ' retrieve the first item from the list
+    '    Dim obj As Object = ds.Item(0)
 
-        If TypeOf obj Is ValueType AndAlso obj.GetType.IsPrimitive Then
-          ' the value is a primitive value type
-          mColumns.Add("Value")
+    '    If TypeOf obj Is ValueType AndAlso obj.GetType.IsPrimitive Then
+    '      ' the value is a primitive value type
+    '      mColumns.Add("Value")
 
-        ElseIf TypeOf obj Is String Then
-          ' the value is a simple string
-          mColumns.Add("Text")
+    '    ElseIf TypeOf obj Is String Then
+    '      ' the value is a simple string
+    '      mColumns.Add("Text")
 
-        Else
-          ' we have a complex Structure or object
-          ScanObject(obj)
-        End If
-      End If
+    '    Else
+    '      ' we have a complex Structure or object
+    '      ScanObject(obj)
+    '    End If
+    '  End If
 
-    End Sub
+    'End Sub
 
-    Private Sub ScanObject(ByVal source As Object)
+    Private Function ScanObject(ByVal sourceType As Type) As List(Of String)
 
-      Dim SourceType As Type = source.GetType
-      Dim column As Integer
+      Dim result As New List(Of String)
 
       ' retrieve a list of all public properties
-      Dim props As PropertyInfo() = SourceType.GetProperties()
+      Dim props As PropertyInfo() = sourceType.GetProperties()
       If UBound(props) >= 0 Then
-        For column = 0 To UBound(props)
+        For column As Integer = 0 To UBound(props)
           If props(column).CanRead Then
-            mColumns.Add(props(column).Name)
+            result.Add(props(column).Name)
           End If
         Next
       End If
 
       ' retrieve a list of all public fields
-      Dim fields As FieldInfo() = SourceType.GetFields()
+      Dim fields As FieldInfo() = sourceType.GetFields()
       If UBound(fields) >= 0 Then
-        For column = 0 To UBound(fields)
-          mColumns.Add(fields(column).Name)
+        For column As Integer = 0 To UBound(fields)
+          result.Add(fields(column).Name)
         Next
       End If
 
-    End Sub
+      Return result
+
+    End Function
 
 #End Region
 

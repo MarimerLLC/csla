@@ -36,9 +36,9 @@ namespace Csla.Web.Design
     /// to create.</param>
     /// <param name="isSampleData">Returns True if the data
     /// is sample data.</param>
-    public override System.Collections.IEnumerable GetDesignTimeData(int minimumRows, out bool isSampleData)
+    public override System.Collections.IEnumerable 
+      GetDesignTimeData(int minimumRows, out bool isSampleData)
     {
-
       IDataSourceViewSchema schema = this.Schema;
       DataTable result = new DataTable();
 
@@ -60,7 +60,7 @@ namespace Csla.Web.Design
           else if (col.DataType.IsPrimitive)
             values[colIndex] = index;
           else if (col.DataType.Equals(typeof(Guid)))
-            values[colIndex] = Guid.NewGuid();
+            values[colIndex] = Guid.Empty;
           else
             values[colIndex] = null;
           colIndex++;
@@ -69,8 +69,7 @@ namespace Csla.Web.Design
       }
 
       isSampleData = true;
-      return (System.Collections.IEnumerable)(new DataView(result));
-
+      return result.DefaultView as IEnumerable;
     }
 
     /// <summary>
@@ -86,7 +85,8 @@ namespace Csla.Web.Design
     {
       get
       {
-        return new ObjectSchema(_owner.DataSourceControl.TypeAssemblyName,
+        return new ObjectSchema(
+          _owner.DataSourceControl.TypeAssemblyName,
           _owner.DataSourceControl.TypeName).GetViews()[0];
       }
     }
@@ -114,7 +114,8 @@ namespace Csla.Web.Design
       get
       {
         Type objectType = CslaDataSource.GetType(
-          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName);
+          _owner.DataSourceControl.TypeAssemblyName, 
+          _owner.DataSourceControl.TypeName);
         if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(objectType))
           return true;
         else if (objectType.GetMethod("Remove") != null)
@@ -137,8 +138,10 @@ namespace Csla.Web.Design
     {
       get
       {
-        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(CslaDataSource.GetType(
-          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName)))
+        Type objectType = CslaDataSource.GetType(
+          _owner.DataSourceControl.TypeAssemblyName,
+          _owner.DataSourceControl.TypeName);
+        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(objectType))
           return true;
         else
           return false;
@@ -158,8 +161,10 @@ namespace Csla.Web.Design
     {
       get
       {
-        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(CslaDataSource.GetType(
-          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName)))
+        Type objectType = CslaDataSource.GetType(
+          _owner.DataSourceControl.TypeAssemblyName,
+          _owner.DataSourceControl.TypeName);
+        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(objectType))
           return true;
         else
           return false;

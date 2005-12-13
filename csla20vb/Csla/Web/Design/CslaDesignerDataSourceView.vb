@@ -56,7 +56,7 @@ Namespace Web.Design
           ElseIf col.DataType.IsPrimitive Then
             values(colIndex) = index
           ElseIf col.DataType.Equals(GetType(Guid)) Then
-            values(colIndex) = Guid.NewGuid
+            values(colIndex) = Guid.Empty
           Else
             values(colIndex) = Nothing
           End If
@@ -66,7 +66,7 @@ Namespace Web.Design
       Next
 
       isSampleData = True
-      Return CType(New DataView(result), System.Collections.IEnumerable)
+      Return CType(result.DefaultView, System.Collections.IEnumerable)
 
     End Function
 

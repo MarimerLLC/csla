@@ -74,9 +74,13 @@ Namespace Web.Design
         Return objectType.GetElementType
       End If
       Dim props As PropertyInfo() = _
-        objectType.GetProperties(BindingFlags.FlattenHierarchy Or BindingFlags.Public Or BindingFlags.Instance)
+        objectType.GetProperties( _
+          BindingFlags.FlattenHierarchy Or _
+          BindingFlags.Public Or _
+          BindingFlags.Instance)
       For Each item As PropertyInfo In props
-        If (item.GetIndexParameters.Length > 0) Then
+        If Attribute.IsDefined( _
+          item, GetType(DefaultMemberAttribute)) Then
           Return item.PropertyType
         End If
       Next

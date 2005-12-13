@@ -15,7 +15,6 @@ namespace Csla.Web.Design
   /// </summary>
   public class ObjectViewSchema : IDataSourceViewSchema
   {
-
     private string _typeAssemblyName = string.Empty;
     private string _typeName = string.Empty;
 
@@ -56,14 +55,17 @@ namespace Csla.Web.Design
     /// </remarks>
     public IDataSourceFieldSchema[] GetFields()
     {
-      List<ObjectFieldInfo> result = new List<ObjectFieldInfo>();
-      Type t = CslaDataSource.GetType(_typeAssemblyName, _typeName);
+      List<ObjectFieldInfo> result = 
+        new List<ObjectFieldInfo>();
+      Type t = CslaDataSource.GetType(
+        _typeAssemblyName, _typeName);
       if (typeof(IEnumerable).IsAssignableFrom(t))
       {
         // this is a list so get the item type
         t = GetItemType(t);
       }
-      PropertyDescriptorCollection props = TypeDescriptor.GetProperties(t);
+      PropertyDescriptorCollection props = 
+        TypeDescriptor.GetProperties(t);
       foreach (PropertyDescriptor item in props)
         if (item.IsBrowsable)
           result.Add(new ObjectFieldInfo(item));
@@ -74,9 +76,13 @@ namespace Csla.Web.Design
     {
       if (objectType.IsArray)
         return objectType.GetElementType();
-      PropertyInfo[] props = objectType.GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance);
+      PropertyInfo[] props = 
+        objectType.GetProperties(
+          BindingFlags.FlattenHierarchy | 
+          BindingFlags.Public | 
+          BindingFlags.Instance);
       foreach (PropertyInfo item in props)
-        if (item.GetIndexParameters().Length > 0)
+        if (Attribute.IsDefined(item, typeof(DefaultMemberAttribute)))
           return item.PropertyType;
       return null;
     }

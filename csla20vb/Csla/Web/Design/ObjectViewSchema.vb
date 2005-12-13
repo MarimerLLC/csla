@@ -81,7 +81,7 @@ Namespace Web.Design
       For Each item As PropertyInfo In props
         If Attribute.IsDefined( _
           item, GetType(DefaultMemberAttribute)) Then
-          Return item.PropertyType
+          Return Utilities.GetPropertyType(item.PropertyType)
         End If
       Next
       Return Nothing

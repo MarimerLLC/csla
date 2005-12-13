@@ -13,7 +13,6 @@ Namespace Web.Design
     Implements System.Web.UI.Design.IDataSourceFieldSchema
 
     Private mField As PropertyDescriptor
-    Private mRetrievedMetaData As Boolean
     Private mPrimaryKey As Boolean
     Private mIsIdentity As Boolean
     Private mIsNullable As Boolean
@@ -27,21 +26,21 @@ Namespace Web.Design
     Public Sub New(ByVal field As PropertyDescriptor)
 
       mField = field
+      GetDataObjectAttribute()
 
     End Sub
 
-    Private Sub EnsureMetaData()
+    Private Sub GetDataObjectAttribute()
 
-      If Not mRetrievedMetaData Then
-        Dim attribute1 As DataObjectFieldAttribute = _
+      Dim attribute As DataObjectFieldAttribute = _
           CType(mField.Attributes.Item(GetType(DataObjectFieldAttribute)), DataObjectFieldAttribute)
-        If (Not attribute1 Is Nothing) Then
-          mPrimaryKey = attribute1.PrimaryKey
-          mIsIdentity = attribute1.IsIdentity
-          mIsNullable = attribute1.IsNullable
-          mLength = attribute1.Length
-        End If
-        mRetrievedMetaData = True
+      If (Not attribute Is Nothing) Then
+        With attribute
+          mPrimaryKey = .PrimaryKey
+          mIsIdentity = .IsIdentity
+          mIsNullable = .IsNullable
+          mLength = .Length
+        End With
       End If
 
     End Sub
@@ -51,11 +50,7 @@ Namespace Web.Design
     ''' </summary>
     Public ReadOnly Property DataType() As System.Type Implements System.Web.UI.Design.IDataSourceFieldSchema.DataType
       Get
-        Dim type1 As Type = Me.mField.PropertyType
-        If (type1.IsGenericType AndAlso (type1.GetGenericTypeDefinition Is GetType(Nullable))) Then
-          Return type1.GetGenericArguments(0)
-        End If
-        Return type1
+        Return Utilities.GetPropertyType(mField.PropertyType)
       End Get
     End Property
 
@@ -88,10 +83,14 @@ Namespace Web.Design
     ''' Gets a value indicating whether this property
     ''' must contain a unique value.
     ''' </summary>
-    ''' <returns>Always returns False.</returns>
+    ''' <returns>
+    ''' Always returns True if the property
+    ''' is marked as a primary key, otherwise
+    ''' returns False.
+    ''' </returns>
     Public ReadOnly Property IsUnique() As Boolean Implements System.Web.UI.Design.IDataSourceFieldSchema.IsUnique
       Get
-        Return False
+        Return mPrimaryKey
       End Get
     End Property
 

@@ -182,7 +182,7 @@ Namespace Data
 
       Dim propertyInfo As PropertyInfo = _
         target.GetType.GetProperty(propertyName)
-      Dim pType As Type = propertyInfo.PropertyType
+      Dim pType As Type = Utilities.GetPropertyType(propertyInfo.PropertyType)
       If value Is Nothing Then
         propertyInfo.SetValue(target, value, Nothing)
 

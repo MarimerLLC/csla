@@ -87,6 +87,7 @@
     <Compile Include="EnterpriseServicesSettings.vb" />
     <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="Security\AccessType.vb" />
+    <Compile Include="Utilities.vb" />
     <Compile Include="Validation\CommonRules.vb" />
     <Compile Include="Core\BindableBase.vb" />
     <Compile Include="Security\RolesForProperty.vb" />

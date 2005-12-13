@@ -111,7 +111,9 @@ Namespace Windows
             BindingFlags.Public)
         If propertyInfo IsNot Nothing Then
           propertyInfo.SetValue(ctl, _
-            GetEmptyValue(propertyInfo.PropertyType), New Object() {})
+            GetEmptyValue( _
+              Utilities.GetPropertyType(propertyInfo.PropertyType)), _
+              New Object() {})
         End If
       End If
 

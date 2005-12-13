@@ -138,12 +138,16 @@ namespace Csla.Data
 
       if (innerSource is DataView)
         return ScanDataView((DataView)innerSource);
-      else if (innerSource is IList)
-        return ScanIList((IList)innerSource);
+      else if (innerSource is IEnumerable)
+      {
+        Type childType = Utilities.GetChildItemType(
+          innerSource.GetType());
+        return ScanObject(childType);
+      }
       else
       {
         // the source is a regular object
-        return ScanObject(innerSource);
+        return ScanObject(innerSource.GetType());
       }
     }
 
@@ -155,56 +159,56 @@ namespace Csla.Data
       return result;
     }
 
-    private List<string> ScanIList(IList ds)
-    {
-      if (ds.Count > 0)
-      {
-        // retrieve the first item from the list
-        object obj = ds[0];
+    //private List<string> ScanIList(IList ds)
+    //{
+    //  if (ds.Count > 0)
+    //  {
+    //    // retrieve the first item from the list
+    //    object obj = ds[0];
 
-        if (obj is ValueType && obj.GetType().IsPrimitive)
-        {
-          // the value is a primitive value type
-          List<string> result = new List<string>();
-          result.Add("Value");
-          return result;
-        }
-        else if (obj is string)
-        {
-          // the value is a simple string
-          List<string> result = new List<string>();
-          result.Add("Text");
-          return result;
-        }
-        else
-        {
-          // the value is a complex Structure or object
-          return ScanObject(obj);
-        }
-      }
-      else
-        return new List<string>();
-    }
+    //    if (obj is ValueType && obj.GetType().IsPrimitive)
+    //    {
+    //      // the value is a primitive value type
+    //      List<string> result = new List<string>();
+    //      result.Add("Value");
+    //      return result;
+    //    }
+    //    else if (obj is string)
+    //    {
+    //      // the value is a simple string
+    //      List<string> result = new List<string>();
+    //      result.Add("Text");
+    //      return result;
+    //    }
+    //    else
+    //    {
+    //      // the value is a complex Structure or object
+    //      return ScanObject(obj.GetType());
+    //    }
+    //  }
+    //  else
+    //    return new List<string>();
+    //}
 
-    private List<string> ScanObject(object source)
+    private List<string> ScanObject(Type sourceType)
     {
       List<string> result = new List<string>();
 
-      Type sourceType = source.GetType();
+      if (sourceType != null)
+      {
+        // retrieve a list of all public properties
+        PropertyInfo[] props = sourceType.GetProperties();
+        if (props.Length >= 0)
+          for (int column = 0; column < props.Length; column++)
+            if (props[column].CanRead)
+              result.Add(props[column].Name);
 
-      // retrieve a list of all public properties
-      PropertyInfo[] props = sourceType.GetProperties();
-      if (props.Length >= 0)
-        for (int column = 0; column < props.Length; column++)
-          if (props[column].CanRead)
-            result.Add(props[column].Name);
-
-      // retrieve a list of all public fields
-      FieldInfo[] fields = sourceType.GetFields();
-      if (fields.Length >= 0)
-        for (int column = 0; column < fields.Length; column++)
-          result.Add(fields[column].Name);
-
+        // retrieve a list of all public fields
+        FieldInfo[] fields = sourceType.GetFields();
+        if (fields.Length >= 0)
+          for (int column = 0; column < fields.Length; column++)
+            result.Add(fields[column].Name);
+      }
       return result;
     }
 

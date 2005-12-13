@@ -62,7 +62,7 @@ namespace Csla.Web.Design
       if (typeof(IEnumerable).IsAssignableFrom(t))
       {
         // this is a list so get the item type
-        t = GetItemType(t);
+        t = Utilities.GetChildItemType(t);
       }
       PropertyDescriptorCollection props = 
         TypeDescriptor.GetProperties(t);
@@ -70,23 +70,6 @@ namespace Csla.Web.Design
         if (item.IsBrowsable)
           result.Add(new ObjectFieldInfo(item));
       return result.ToArray();
-    }
-
-    private Type GetItemType(Type objectType)
-    {
-      if (objectType.IsArray)
-        return objectType.GetElementType();
-      PropertyInfo[] props = 
-        objectType.GetProperties(
-          BindingFlags.FlattenHierarchy | 
-          BindingFlags.Public | 
-          BindingFlags.Instance);
-      foreach (PropertyInfo item in props)
-        if (Attribute.IsDefined(
-          item, typeof(DefaultMemberAttribute)))
-          return Utilities.GetPropertyType(
-            item.PropertyType);
-      return null;
     }
 
     /// <summary>

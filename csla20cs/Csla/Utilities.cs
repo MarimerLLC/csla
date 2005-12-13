@@ -54,6 +54,27 @@ namespace Csla
         return type.GetGenericArguments()[0];
       return type;
     }
+
+    /// <summary>
+    /// Returns the type of child object
+    /// contained in a collection or list.
+    /// </summary>
+    public static Type GetChildItemType(Type listType)
+    {
+      if (listType.IsArray)
+        return listType.GetElementType();
+      PropertyInfo[] props =
+        listType.GetProperties(
+          BindingFlags.FlattenHierarchy |
+          BindingFlags.Public |
+          BindingFlags.Instance);
+      foreach (PropertyInfo item in props)
+        if (Attribute.IsDefined(
+          item, typeof(DefaultMemberAttribute)))
+          return Utilities.GetPropertyType(
+            item.PropertyType);
+      return null;
+    }
   }
 
 

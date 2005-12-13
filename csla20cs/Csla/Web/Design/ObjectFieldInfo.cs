@@ -15,9 +15,7 @@ namespace Csla.Web.Design
   /// </summary>
   public class ObjectFieldInfo : IDataSourceFieldSchema
   {
-
     private PropertyDescriptor _field;
-    private bool _retrievedMetaData;
     private bool _primaryKey;
     private bool _isIdentity;
     private bool _isNullable;
@@ -31,21 +29,20 @@ namespace Csla.Web.Design
     public ObjectFieldInfo(PropertyDescriptor field)
     {
       _field = field;
+      GetDataObjectAttributes();
     }
 
-    private void EnsureMetaData()
+    private void GetDataObjectAttributes()
     {
-      if (!_retrievedMetaData)
+      DataObjectFieldAttribute attribute =
+        (DataObjectFieldAttribute)
+        _field.Attributes[typeof(DataObjectFieldAttribute)];
+      if (attribute != null)
       {
-        DataObjectFieldAttribute attribute1 = (DataObjectFieldAttribute)_field.Attributes[typeof(DataObjectFieldAttribute)];
-        if (attribute1 != null)
-        {
-          _primaryKey = attribute1.PrimaryKey;
-          _isIdentity = attribute1.IsIdentity;
-          _isNullable = attribute1.IsNullable;
-          _length = attribute1.Length;
-        }
-        _retrievedMetaData = true;
+        _primaryKey = attribute.PrimaryKey;
+        _isIdentity = attribute.IsIdentity;
+        _isNullable = attribute.IsNullable;
+        _length = attribute.Length;
       }
     }
 
@@ -56,10 +53,8 @@ namespace Csla.Web.Design
     {
       get
       {
-        Type type1 = _field.PropertyType;
-        if (type1.IsGenericType && (type1.GetGenericTypeDefinition() == typeof(Nullable)))
-          return type1.GetGenericArguments()[0];
-        return type1;
+        return Utilities.GetPropertyType(
+          _field.PropertyType);
       }
     }
 
@@ -90,10 +85,14 @@ namespace Csla.Web.Design
     /// Gets a value indicating whether this property
     /// must contain a unique value.
     /// </summary>
-    /// <returns>Always returns False.</returns>
+    /// <returns>
+    /// Always returns True if the property
+    /// is marked as a primary key, otherwise
+    /// returns False.
+    /// </returns>
     public bool IsUnique
     {
-      get { return false; }
+      get { return _primaryKey; }
     }
 
     /// <summary>

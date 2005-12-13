@@ -41,6 +41,19 @@ namespace Csla
       }
       return null;
     }
+
+    /// <summary>
+    /// Returns a property's type, dealing with
+    /// Nullable(Of T) if necessary.
+    /// </summary>
+    public static Type GetPropertyType(Type propertyType)
+    {
+      Type type = propertyType;
+      if (type.IsGenericType &&
+        (type.GetGenericTypeDefinition() == typeof(Nullable)))
+        return type.GetGenericArguments()[0];
+      return type;
+    }
   }
 
 

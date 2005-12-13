@@ -82,8 +82,10 @@ namespace Csla.Web.Design
           BindingFlags.Public | 
           BindingFlags.Instance);
       foreach (PropertyInfo item in props)
-        if (Attribute.IsDefined(item, typeof(DefaultMemberAttribute)))
-          return item.PropertyType;
+        if (Attribute.IsDefined(
+          item, typeof(DefaultMemberAttribute)))
+          return Utilities.GetPropertyType(
+            item.PropertyType);
       return null;
     }
 

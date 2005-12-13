@@ -55,7 +55,6 @@ namespace Csla.Web
     protected override System.Collections.IEnumerable 
       ExecuteSelect(DataSourceSelectArguments arguments)
     {
-      
       // get the object from the page
       SelectObjectArgs args = new SelectObjectArgs();
       _owner.DoSelect(args);

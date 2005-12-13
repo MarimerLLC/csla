@@ -93,7 +93,8 @@ namespace Csla.Web
     /// <param name="assemblyName">(Optional) Assembly name containing the type.</param>
     /// <param name="typeName">Full type name of the class.</param>
     /// <remarks></remarks>
-    internal static Type GetType(string assemblyName, string typeName)
+    internal static Type GetType(
+      string assemblyName, string typeName)
     {
       if (!string.IsNullOrEmpty(assemblyName))
       {

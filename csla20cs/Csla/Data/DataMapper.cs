@@ -181,7 +181,8 @@ namespace Csla.Data
     {
       PropertyInfo propertyInfo =
         target.GetType().GetProperty(propertyName);
-      Type pType = propertyInfo.PropertyType;
+      Type pType = 
+        Utilities.GetPropertyType(propertyInfo.PropertyType);
       if (value == null)
         propertyInfo.SetValue(target, value, null);
       else

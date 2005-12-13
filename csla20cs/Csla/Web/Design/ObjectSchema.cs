@@ -35,7 +35,8 @@ namespace Csla.Web.Design
     /// </summary>
     public IDataSourceViewSchema[] GetViews()
     {
-      return new IDataSourceViewSchema[] { new ObjectViewSchema(_typeAssemblyName, _typeName) };
+      return new IDataSourceViewSchema[] 
+        { new ObjectViewSchema(_typeAssemblyName, _typeName) };
     }
 
   }

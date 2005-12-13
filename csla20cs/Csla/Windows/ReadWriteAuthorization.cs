@@ -121,8 +121,10 @@ namespace Csla.Windows
         if (propertyInfo != null)
         {
           propertyInfo.SetValue(ctl, 
-            GetEmptyValue(propertyInfo.PropertyType), 
-            new object[] { });
+            GetEmptyValue(
+              Utilities.GetPropertyType(
+                propertyInfo.PropertyType)), 
+              new object[] { });
         }
       }
     }

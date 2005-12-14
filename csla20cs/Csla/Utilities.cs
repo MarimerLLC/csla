@@ -63,16 +63,28 @@ namespace Csla
     {
       if (listType.IsArray)
         return listType.GetElementType();
-      PropertyInfo[] props =
-        listType.GetProperties(
-          BindingFlags.FlattenHierarchy |
-          BindingFlags.Public |
-          BindingFlags.Instance);
-      foreach (PropertyInfo item in props)
-        if (Attribute.IsDefined(
-          item, typeof(DefaultMemberAttribute)))
-          return Utilities.GetPropertyType(
-            item.PropertyType);
+
+      DefaultMemberAttribute indexer =
+        (DefaultMemberAttribute)Attribute.GetCustomAttribute(
+        listType,
+        typeof(DefaultMemberAttribute));
+      if (indexer != null)
+      {
+        PropertyInfo prop = listType.GetProperty(indexer.MemberName);
+        return Utilities.GetPropertyType(prop.PropertyType);
+      }
+      else
+      {
+        PropertyInfo[] props =
+          listType.GetProperties(
+            BindingFlags.FlattenHierarchy |
+            BindingFlags.Public |
+            BindingFlags.Instance);
+        foreach (PropertyInfo item in props)
+          if (item.GetIndexParameters().Length > 0)
+            return 
+              Utilities.GetPropertyType(item.PropertyType);
+      }
       return null;
     }
   }

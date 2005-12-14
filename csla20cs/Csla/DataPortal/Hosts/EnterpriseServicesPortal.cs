@@ -15,7 +15,7 @@ namespace Csla.Server.Hosts
   public abstract class EnterpriseServicesPortal : ServicedComponent, Server.IDataPortalServer
   {
 
-    public EnterpriseServicesPortal()
+    static EnterpriseServicesPortal()
     {
       SerializationWorkaround();
     }

@@ -66,7 +66,7 @@ Namespace Web.Design
       Next
 
       isSampleData = True
-      Return CType(result.DefaultView, System.Collections.IEnumerable)
+      Return CType(result.DefaultView, IEnumerable)
 
     End Function
 

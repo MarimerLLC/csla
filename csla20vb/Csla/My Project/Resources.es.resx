@@ -2,401 +2,484 @@
 
 <root>
 
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<!-- 
 
-    <xsd:element name="root" msdata:IsDataSet="true">
+    Microsoft ResX Schema 
 
-      <xsd:complexType>
+    
 
-        <xsd:choice maxOccurs="unbounded">
+    Version 2.0
 
-          <xsd:element name="data">
+    
 
-            <xsd:complexType>
+    The primary goals of this format is to allow a simple XML format 
 
-              <xsd:sequence>
+    that is mostly human readable. The generation and parsing of the 
 
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+    various data types are done through the TypeConverter classes 
 
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+    associated with the data types.
 
-              </xsd:sequence>
+    
 
-              <xsd:attribute name="name" type="xsd:string" />
+    Example:
 
-              <xsd:attribute name="type" type="xsd:string" />
+    
 
-              <xsd:attribute name="mimetype" type="xsd:string" />
+    ... ado.net/XML headers & schema ...
 
-            </xsd:complexType>
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
 
-          </xsd:element>
+    <resheader name="version">2.0</resheader>
 
-          <xsd:element name="resheader">
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
 
-            <xsd:complexType>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
 
-              <xsd:sequence>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
 
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
 
-              </xsd:sequence>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
 
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
 
-            </xsd:complexType>
+    </data>
 
-          </xsd:element>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
 
-        </xsd:choice>
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
 
-      </xsd:complexType>
+        <comment>This is a comment</comment>
 
-    </xsd:element>
+    </data>
 
-  </xsd:schema>
+                
 
-  <resheader name="ResMimeType">
+    There are any number of "resheader" rows that contain simple 
 
-    <value>text/microsoft-resx</value>
+    name/value pairs.
 
-  </resheader>
+    
 
-  <resheader name="Version">
+    Each data row contains a name, and value. The row also contains a 
 
-    <value>1.0.0.0</value>
+    type or mimetype. Type corresponds to a .NET class that support 
 
-  </resheader>
+    text/value conversion through the TypeConverter architecture. 
 
-  <resheader name="Reader">
+    Classes that don't support this are serialized and stored with the 
 
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    mimetype set.
 
-  </resheader>
+    
 
-  <resheader name="Writer">
+    The mimetype is used for serialized objects, and tells the 
 
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    ResXResourceReader how to depersist the object. This is currently not 
 
-  </resheader>
+    extensible. For a given mimetype the value must be set accordingly:
 
-  <data name="ClearInvalidException" type="System.String">
+    
 
-    <value>Excepcion de limpieza invalida (clear)</value>
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
 
-  </data>
+    that the ResXResourceWriter will generate, however the reader can 
 
-  <data name="InsertInvalidException" type="System.String">
+    read any of the formats listed below.
 
-    <value>Excepcion de insercion invalida (insert)</value>
+    
 
-  </data>
+    mimetype: application/x-microsoft.net.object.binary.base64
 
-  <data name="RemoveInvalidException" type="System.String">
+    value   : The object must be serialized with 
 
-    <value>Excepcion de remocion invalida (remove)</value>
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
 
-  </data>
+            : and then encoded with base64 encoding.
 
-  <data name="ChangeInvalidException" type="System.String">
+    
 
-    <value>Excepcion de cambio invalido (change)</value>
+    mimetype: application/x-microsoft.net.object.soap.base64
 
-  </data>
+    value   : The object must be serialized with 
 
-  <data name="ParentSetException" type="System.String">
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
 
-    <value>Excepcion al establecer el objeto padre</value>
+            : and then encoded with base64 encoding.
 
-  </data>
 
-  <data name="ChildDeleteException" type="System.String">
 
-    <value>Excepcion al eliminar un objeto hijo</value>
+    mimetype: application/x-microsoft.net.object.bytearray.base64
 
-  </data>
+    value   : The object must be serialized into a byte array 
 
-  <data name="NoDeleteRootException" type="System.String">
+            : using a System.ComponentModel.TypeConverter
 
-    <value>Excepcion de borrado de raiz no permitido</value>
+            : and then encoded with base64 encoding.
 
-  </data>
+    -->
 
-  <data name="NoSaveChildException" type="System.String">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
 
-    <value>Excepcion de grabado de hijo no permitido</value>
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
 
-  </data>
+		<xsd:element name="root" msdata:IsDataSet="true">
 
-  <data name="NoSaveEditingException" type="System.String">
+			<xsd:complexType>
 
-    <value>Excepcion de grabado durante edicion no permitido</value>
+				<xsd:choice maxOccurs="unbounded">
 
-  </data>
+					<xsd:element name="metadata">
 
-  <data name="NoSaveInvalidException" type="System.String">
+						<xsd:complexType>
 
-    <value>Excepcion de grabado de objeto invalido no permitido</value>
+							<xsd:sequence>
 
-  </data>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
 
-  <data name="CreateNotSupportedException" type="System.String">
+							</xsd:sequence>
 
-    <value>Excepcion de creacion no soportada</value>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
 
-  </data>
+							<xsd:attribute name="type" type="xsd:string" />
 
-  <data name="FetchNotSupportedException" type="System.String">
+							<xsd:attribute name="mimetype" type="xsd:string" />
 
-    <value>Excepcion de lectura no soportada</value>
+							<xsd:attribute ref="xml:space" />
 
-  </data>
+						</xsd:complexType>
 
-  <data name="UpdateNotSupportedException" type="System.String">
+					</xsd:element>
 
-    <value>Excepcion de actualizacion no soportada</value>
+					<xsd:element name="assembly">
 
-  </data>
+						<xsd:complexType>
 
-  <data name="DeleteNotSupportedException" type="System.String">
+							<xsd:attribute name="alias" type="xsd:string" />
 
-    <value>Excepcion de borrado no soportado</value>
+							<xsd:attribute name="name" type="xsd:string" />
 
-  </data>
+						</xsd:complexType>
 
-  <data name="NoBeginEditChildException" type="System.String">
+					</xsd:element>
 
-    <value>Excepcion de inicio de edicion en hijo no permitido</value>
+					<xsd:element name="data">
 
-  </data>
+						<xsd:complexType>
 
-  <data name="NoCancelEditChildException" type="System.String">
+							<xsd:sequence>
 
-    <value>Excepcion de cancelacion de edicion en hijo no permitida</value>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
 
-  </data>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
 
-  <data name="NoApplyEditChildException" type="System.String">
+							</xsd:sequence>
 
-    <value>Excepcion de guardado de la edicion en hijo no permitido</value>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
 
-  </data>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
 
-  <data name="NoSuchValueExistsException" type="System.String">
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
 
-    <value>Excepcion de valor como tal no existe</value>
+							<xsd:attribute ref="xml:space" />
 
-  </data>
+						</xsd:complexType>
 
-  <data name="ErrorReadingValueException" type="System.String">
+					</xsd:element>
 
-    <value>Excepcion de error al leer el valor</value>
+					<xsd:element name="resheader">
 
-  </data>
+						<xsd:complexType>
 
-  <data name="NoInsertReadOnlyException" type="System.String">
+							<xsd:sequence>
 
-    <value>Excepcion de insercion en solo lectura no permitida</value>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
 
-  </data>
+							</xsd:sequence>
 
-  <data name="NoRemoveReadOnlyException" type="System.String">
+							<xsd:attribute name="name" type="xsd:string" use="required" />
 
-    <value>Excepcion de remocion en solo lectura no permitida</value>
+						</xsd:complexType>
 
-  </data>
+					</xsd:element>
 
-  <data name="NoClearReadOnlyException" type="System.String">
+				</xsd:choice>
 
-    <value>Excepcion de limpieza en solo lectura no permitida</value>
+			</xsd:complexType>
 
-  </data>
+		</xsd:element>
 
-  <data name="NoChangeReadOnlyException" type="System.String">
+	</xsd:schema>
 
-    <value>Excepcion de cambio en solo lectura no permitida</value>
+	<resheader name="resmimetype">
 
-  </data>
+		<value>text/microsoft-resx</value>
 
-  <data name="StringToDateException" type="System.String">
+	</resheader>
 
-    <value>Excepcion de conversion de cadena de caracteres a fecha</value>
+	<resheader name="version">
 
-  </data>
+		<value>2.0</value>
 
-  <data name="ValueNotSmartDateException" type="System.String">
+	</resheader>
 
-    <value>Excepcion de valor no es de tipo SmartDate</value>
+	<resheader name="reader">
 
-  </data>
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 
-  <data name="InvalidDateException" type="System.String">
+	</resheader>
 
-    <value>Excepcion de fecha invalida</value>
+	<resheader name="writer">
 
-  </data>
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 
-  <data name="SortingNotSupportedException" type="System.String">
+	</resheader>
 
-    <value>Excepcion de ordenamiento no soportado</value>
+	<data name="ClearInvalidException" xml:space="preserve">
 
-  </data>
+		<value>Clear es una operación inválida</value>
 
-  <data name="SearchingNotSupportedException" type="System.String">
+	</data>
 
-    <value>Excepcion de busqueda no soportada</value>
+	<data name="InsertInvalidException" xml:space="preserve">
 
-  </data>
+		<value>Insert es una operación inválida</value>
 
-  <data name="AddItemException" type="System.String">
+	</data>
 
-    <value>Excepcion de agregado de elementos</value>
+	<data name="RemoveInvalidException" xml:space="preserve">
 
-  </data>
+		<value>Remove es una operación inválida</value>
 
-  <data name="NoPrincipalAllowedException" type="System.String">
+	</data>
 
-    <value>Excepcion de Principal no permitido</value>
+	<data name="ChangeInvalidException" xml:space="preserve">
 
-  </data>
+		<value>Cambiar un elemento es una operación inválida</value>
 
-  <data name="BusinessPrincipalException" type="System.String">
+	</data>
 
-    <value>Excepcion en BusinessPrincipal</value>
+	<data name="ParentSetException" xml:space="preserve">
 
-  </data>
+		<value>La referencia al padre sólo se puede establecer para los objetos hijo</value>
 
-  <data name="NoMatchException" type="System.String">
+	</data>
 
-    <value>Excepcion de correspondencia no encontrada</value>
+	<data name="ChildDeleteException" xml:space="preserve">
 
-  </data>
+		<value>No se puede marcar directamente a un hijo para borrarlo - use su colección padre</value>
 
-  <data name="SecurityDataBase" type="System.String">
+	</data>
 
-    <value>Security</value>
+	<data name="NoDeleteRootException" xml:space="preserve">
 
-  </data>
+		<value>Inválido para objetos hijo - use "Delete" en su lugar</value>
 
-  <data name="SecurityStoredProcedure" type="System.String">
+	</data>
 
-    <value>Login</value>
+	<data name="NoSaveChildException" xml:space="preserve">
 
-  </data>
+		<value>No se puede guardar un objeto hijo en forma directa</value>
 
-  <data name="SecurityUserParam" type="System.String">
+	</data>
 
-    <value>@user</value>
+	<data name="NoSaveEditingException" xml:space="preserve">
 
-  </data>
+		<value>El objeto está siendo editado y no se puede guardar</value>
 
-  <data name="SecurityPasswordParam" type="System.String">
+	</data>
 
-    <value>@pw</value>
+	<data name="NoSaveInvalidException" xml:space="preserve">
 
-  </data>
+		<value>El objeto no es válido y no se puede guardar</value>
 
-  <data name="SmartDateT" type="System.String">
+	</data>
 
-    <value>h</value>
+	<data name="CreateNotSupportedException" xml:space="preserve">
 
-  </data>
+		<value>Operación inválida - Create no permitido</value>
 
-  <data name="SmartDateToday" type="System.String">
+	</data>
 
-    <value>hoy</value>
+	<data name="FetchNotSupportedException" xml:space="preserve">
 
-  </data>
+		<value>Operación inválida - Fetch no permitido</value>
 
-  <data name="SmartDateY" type="System.String">
+	</data>
 
-    <value>a</value>
+	<data name="UpdateNotSupportedException" xml:space="preserve">
 
-  </data>
+		<value>Operación inválida - Update no permitido</value>
 
-  <data name="SmartDateYesterday" type="System.String">
+	</data>
 
-    <value>ayer</value>
+	<data name="DeleteNotSupportedException" xml:space="preserve">
 
-  </data>
+		<value>Operación inválida - Delete no permitido</value>
 
-  <data name="SmartDateTom" type="System.String">
+	</data>
 
-    <value>m</value>
+	<data name="NoBeginEditChildException" xml:space="preserve">
 
-  </data>
+		<value>BeginEdit no es válido en un objeto hijo</value>
 
-  <data name="SmartDateTomorrow" type="System.String">
+	</data>
 
-    <value>manana</value>
+	<data name="NoCancelEditChildException" xml:space="preserve">
 
-  </data>
+		<value>CancelEdit no es válido en un objeto hijo</value>
 
-  <data name="BatchQueueJobCompleted" type="System.String">
+	</data>
 
-    <value>Cola de Tareas por lotes completada</value>
+	<data name="NoApplyEditChildException" xml:space="preserve">
 
-  </data>
+		<value>ApplyEdit no es válido en un objeto hijo</value>
 
-  <data name="BatchQueueJobPrefix" type="System.String">
+	</data>
 
-    <value>Prefijo de Cola de Tareas por lotes</value>
+	<data name="NoSuchValueExistsException" xml:space="preserve">
 
-  </data>
+		<value>No existe tal valor:</value>
 
-  <data name="BatchQueueJobObjectPrefix" type="System.String">
+	</data>
 
-    <value>Prefijo de objeto de Cola de tareas por lotes</value>
+	<data name="ErrorReadingValueException" xml:space="preserve">
 
-  </data>
+		<value>Error leyendo el valor:</value>
 
-  <data name="BatchQueueJobFailed" type="System.String">
+	</data>
 
-    <value>La cola de tareas por lotes ha fallado</value>
+	<data name="StringToDateException" xml:space="preserve">
 
-  </data>
+		<value>Un valor del tipo string no se puede convertir a Date</value>
 
-  <data name="BatchQueueProcStarted" type="System.String">
+	</data>
 
-    <value>Procesador de colas por lotes iniciado</value>
+	<data name="ValueNotSmartDateException" xml:space="preserve">
 
-  </data>
+		<value>El valor no es un SmartDate</value>
 
-  <data name="BatchQueueProcName" type="System.String">
+	</data>
 
-    <value>Nombre del procesador de colas por lotes:</value>
+	<data name="NoPrincipalAllowedException" xml:space="preserve">
 
-  </data>
+		<value>No se debería pasar un objeto "Principal" al DataPortal cuando se usa seguridad integrada de Windows</value>
 
-  <data name="BatchQueueProcPort" type="System.String">
+	</data>
 
-    <value>Puerto del procesador de colas por lotes:</value>
+	<data name="BusinessPrincipalException" xml:space="preserve">
 
-  </data>
+		<value>El Principal debe ser del tipo BusinessPrincipal, no</value>
 
-  <data name="BatchQueueProcQueue" type="System.String">
+	</data>
 
-    <value>Cola:</value>
+	<data name="SmartDateT" xml:space="preserve">
 
-  </data>
+		<value>h</value>
 
-  <data name="BatchQueueProcMaxJobs" type="System.String">
+	</data>
 
-    <value>Numero maximo de trabajos por cola por lotes</value>
+	<data name="SmartDateToday" xml:space="preserve">
 
-  </data>
+		<value>hoy</value>
 
-  <data name="Failed" type="System.String">
+	</data>
 
-    <value>Fallo</value>
+	<data name="SmartDateY" xml:space="preserve">
 
-  </data>
+		<value>a</value>
 
-  <data name="FailedOnServer" type="System.String">
+	</data>
 
-    <value>Fallo en el servidor</value>
+	<data name="SmartDateYesterday" xml:space="preserve">
 
-  </data>
+		<value>ayer</value>
+
+	</data>
+
+	<data name="SmartDateTom" xml:space="preserve">
+
+		<value>m</value>
+
+	</data>
+
+	<data name="SmartDateTomorrow" xml:space="preserve">
+
+		<value>mañana</value>
+
+	</data>
+
+	<data name="Failed" xml:space="preserve">
+
+		<value>falló</value>
+
+	</data>
+
+	<data name="FailedOnServer" xml:space="preserve">
+
+		<value>falló en el servidor</value>
+
+	</data>
+
+	<data name="MethodCallFailed" xml:space="preserve">
+
+		<value>llamada al método falló</value>
+
+	</data>
+
+	<data name="MethodNotImplemented" xml:space="preserve">
+
+		<value>no implementado</value>
+
+	</data>
+
+	<data name="ExecuteNotSupportedException" xml:space="preserve">
+
+		<value>Operación inválida - no se permite execute</value>
+
+	</data>
+
+	<data name="InsertNotSupportedException" xml:space="preserve">
+
+		<value>Operación inválida - no se permite insert </value>
+
+	</data>
+
+	<data name="GetIdValueCantBeNull" xml:space="preserve">
+
+		<value>GetIdValue no debe devolver Nothing</value>
+
+	</data>
+
+	<data name="PropertyGetNotAllowed" xml:space="preserve">
+
+		<value>No se puede obtener el valor de la propiedad</value>
+
+	</data>
+
+	<data name="PropertySetNotAllowed" xml:space="preserve">
+
+		<value>No se puede establecer el valor de la propiedad</value>
+
+	</data>
+
+	<data name="NothingNotValid" xml:space="preserve">
+
+		<value>El argumento no puede ser Nothing</value>
+
+	</data>
+
+	<data name="PrimitiveTypeRequired" xml:space="preserve">
+
+		<value>El parámetro Type debe ser in tipo primitivo</value>
+
+	</data>
+
+	<data name="PropertyCopyFailed" xml:space="preserve">
+
+		<value>La copia de la propiedad falló</value>
+
+	</data>
 
 </root>
-

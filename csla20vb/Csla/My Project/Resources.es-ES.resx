@@ -238,247 +238,247 @@
 
   <data name="ClearInvalidException" xml:space="preserve">
 
-    <value>Clear is an invalid operation</value>
+    <value>Clear no es una operación válida</value>
 
   </data>
 
   <data name="InsertInvalidException" xml:space="preserve">
 
-    <value>Insert is an invalid operation</value>
+    <value>Insert no es una operación válida</value>
 
   </data>
 
   <data name="RemoveInvalidException" xml:space="preserve">
 
-    <value>Remove is an invalid operation</value>
+    <value>Remove no es una operación válida</value>
 
   </data>
 
   <data name="ChangeInvalidException" xml:space="preserve">
 
-    <value>Changing an element is an invalid operation</value>
+    <value>Cambiar un elemento no es una operación válida</value>
 
   </data>
 
   <data name="ParentSetException" xml:space="preserve">
 
-    <value>Parent value can only be set for child objects</value>
+    <value>El valor Parent sólo puede ser establecido para objetos hijo</value>
 
   </data>
 
   <data name="ChildDeleteException" xml:space="preserve">
 
-    <value>Can not directly mark a child object for deletion - use its parent collection</value>
+    <value>No se puede marcar directamente un objeto hijo como borrado - use su colección padre</value>
 
   </data>
 
   <data name="NoDeleteRootException" xml:space="preserve">
 
-    <value>Invalid for root objects - use Delete instead</value>
+    <value>No válido para objetos raíz - use Delete en su lugar</value>
 
   </data>
 
   <data name="NoSaveChildException" xml:space="preserve">
 
-    <value>Can not directly save a child object</value>
+    <value>No se puede guardar directamente un objeto hijo</value>
 
   </data>
 
   <data name="NoSaveEditingException" xml:space="preserve">
 
-    <value>Object is still being edited and can not be saved</value>
+    <value>El objeto todavía está siendo editado y no puede ser guardado</value>
 
   </data>
 
   <data name="NoSaveInvalidException" xml:space="preserve">
 
-    <value>Object is not valid and can not be saved</value>
+    <value>El objeto no es válido y no puede ser guardado</value>
 
   </data>
 
   <data name="CreateNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - create not allowed</value>
+    <value>Operación no válida - no está permitido crear (create)</value>
 
   </data>
 
   <data name="FetchNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - fetch not allowed</value>
+    <value>Operación no válida - lectura (fetch) no permitida</value>
 
   </data>
 
   <data name="UpdateNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - update not allowed</value>
+    <value>Operación no válida - no está permitido actualizar (update)</value>
 
   </data>
 
   <data name="DeleteNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - delete not allowed</value>
+    <value>Operación no válida - no está permitido borrar (delete)</value>
 
   </data>
 
   <data name="NoBeginEditChildException" xml:space="preserve">
 
-    <value>BeginEdit is not valid on a child object</value>
+    <value>BeginEdit no es válido en un objeto hijo</value>
 
   </data>
 
   <data name="NoCancelEditChildException" xml:space="preserve">
 
-    <value>CancelEdit is not valid on a child object</value>
+    <value>CancelEdit no es válido en un objeto hijo</value>
 
   </data>
 
   <data name="NoApplyEditChildException" xml:space="preserve">
 
-    <value>ApplyEdit is not valid on a child object</value>
+    <value>ApplyEdit no es válido en un objeto hijo</value>
 
   </data>
 
   <data name="NoSuchValueExistsException" xml:space="preserve">
 
-    <value>No such value exists:</value>
+    <value>No existe tal valor:</value>
 
   </data>
 
   <data name="ErrorReadingValueException" xml:space="preserve">
 
-    <value>Error reading value:</value>
+    <value>Error leyendo el valor:</value>
 
   </data>
 
   <data name="StringToDateException" xml:space="preserve">
 
-    <value>String value can not be converted to a date</value>
+    <value>El valor de tipo String no puede ser convertido a una fecha</value>
 
   </data>
 
   <data name="ValueNotSmartDateException" xml:space="preserve">
 
-    <value>Value is not a SmartDate</value>
+    <value>El valor no es un SmartDate</value>
 
   </data>
 
   <data name="NoPrincipalAllowedException" xml:space="preserve">
 
-    <value>No principal object should be passed to DataPortal when using Windows integrated security</value>
+    <value>No se debería pasar un objeto principal al DataPortal cuando se está usando la seguridad integrada de Windows</value>
 
   </data>
 
   <data name="BusinessPrincipalException" xml:space="preserve">
 
-    <value>Principal must be of type BusinessPrincipal, not</value>
+    <value>El Principal debe ser del tipo BusinessPrincipal, no</value>
 
   </data>
 
   <data name="SmartDateT" xml:space="preserve">
 
-    <value>t</value>
+    <value>h</value>
 
   </data>
 
   <data name="SmartDateToday" xml:space="preserve">
 
-    <value>today</value>
+    <value>hoy</value>
 
   </data>
 
   <data name="SmartDateY" xml:space="preserve">
 
-    <value>y</value>
+    <value>a</value>
 
   </data>
 
   <data name="SmartDateYesterday" xml:space="preserve">
 
-    <value>yesterday</value>
+    <value>ayer</value>
 
   </data>
 
   <data name="SmartDateTom" xml:space="preserve">
 
-    <value>tom</value>
+    <value>m</value>
 
   </data>
 
   <data name="SmartDateTomorrow" xml:space="preserve">
 
-    <value>tomorrow</value>
+    <value>mañana</value>
 
   </data>
 
   <data name="Failed" xml:space="preserve">
 
-    <value>failed</value>
+    <value>falló</value>
 
   </data>
 
   <data name="FailedOnServer" xml:space="preserve">
 
-    <value>failed on the server</value>
+    <value>falló en el servidor</value>
 
   </data>
 
   <data name="MethodCallFailed" xml:space="preserve">
 
-    <value>method call failed</value>
+    <value>la llamada al método falló</value>
 
   </data>
 
   <data name="MethodNotImplemented" xml:space="preserve">
 
-    <value>not implemented</value>
+    <value>no implementado</value>
 
   </data>
 
   <data name="ExecuteNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - execute not allowed</value>
+    <value>Operación no válida - no está permitido ejecutar (execute)</value>
 
   </data>
 
   <data name="InsertNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - insert not allowed</value>
+    <value>Operación no válida - no está permitido insertar (insert)</value>
 
   </data>
 
   <data name="GetIdValueCantBeNull" xml:space="preserve">
 
-    <value>GetIdValue must not return Nothing</value>
+    <value>GetIdValue no debe devolver Nothing</value>
 
   </data>
 
   <data name="PropertyGetNotAllowed" xml:space="preserve">
 
-    <value>Property get not allowed</value>
+    <value>No está permitido recuperar (get) la propiedad</value>
 
   </data>
 
   <data name="PropertySetNotAllowed" xml:space="preserve">
 
-    <value>Property set not allowed</value>
+    <value>No está permitido establecer (set) la propiedad</value>
 
   </data>
 
   <data name="NothingNotValid" xml:space="preserve">
 
-    <value>Argument must not be Nothing</value>
+    <value>El argumento no puede ser Nothing</value>
 
   </data>
 
   <data name="PrimitiveTypeRequired" xml:space="preserve">
 
-    <value>Type parameter must be a primitive type</value>
+    <value>El tipo del parámetro debe ser un tipo primitivo</value>
 
   </data>
 
   <data name="PropertyCopyFailed" xml:space="preserve">
 
-    <value>Property copy failed</value>
+    <value>la copia de la propiedad falló</value>
 
   </data>
 

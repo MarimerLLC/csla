@@ -24,6 +24,7 @@ namespace ProjectTracker.Library
     private ProjectResources _resources =
       ProjectResources.NewProjectResources();
 
+    [System.ComponentModel.DataObjectField(true, true, false)]
     public Guid Id
     {
       get

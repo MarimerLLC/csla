@@ -147,7 +147,7 @@ namespace ProjectTracker.Library
       _resourceId = resource.Id;
       _lastName = resource.LastName;
       _firstName = resource.FirstName;
-      _assigned.Date = DateTime.Now;
+      _assigned.Date = Assignment.GetDefaultAssignedDate();
       _role = role;
     }
 
@@ -171,19 +171,9 @@ namespace ProjectTracker.Library
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "addAssignment";
-          LoadParameters(cm, project);
-          using (SqlDataReader dr = cm.ExecuteReader())
-          {
-            dr.Read();
-            dr.GetBytes(0, 0, _timestamp, 0, 8);
-          }
-          cm.ExecuteNonQuery();
-          MarkOld();
-        }
+        _timestamp = Assignment.AddAssignment(
+          cn, project.Id, _resourceId, _assigned, _role);
+        MarkOld();
       }
     }
 
@@ -195,29 +185,10 @@ namespace ProjectTracker.Library
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "updateAssignment";
-          LoadParameters(cm, project);
-          cm.Parameters.AddWithValue("@lastChanged", _timestamp);
-          using (SqlDataReader dr = cm.ExecuteReader())
-          {
-            dr.Read();
-            dr.GetBytes(0, 0, _timestamp, 0, 8);
-          }
-          cm.ExecuteNonQuery();
-          MarkOld();
-        }
+        _timestamp = Assignment.UpdateAssignment(
+          cn, project.Id, _resourceId, _assigned, _role, _timestamp);
+        MarkOld();
       }
-    }
-
-    private void LoadParameters(SqlCommand cm, Project project)
-    {
-      cm.Parameters.AddWithValue("@projectId", project.Id);
-      cm.Parameters.AddWithValue("@resourceId", _resourceId);
-      cm.Parameters.AddWithValue("@assigned", _assigned.DBValue);
-      cm.Parameters.AddWithValue("@role", _role);
     }
 
     internal void DeleteSelf(Project project)
@@ -231,15 +202,8 @@ namespace ProjectTracker.Library
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "deleteAssignment";
-          cm.Parameters.AddWithValue("@projectId", project.Id);
-          cm.Parameters.AddWithValue("@resourceId", _resourceId);
-          cm.ExecuteNonQuery();
-          MarkNew();
-        }
+        Assignment.RemoveAssignment(cn, project.Id, _resourceId);
+        MarkNew();
       }
     }
 

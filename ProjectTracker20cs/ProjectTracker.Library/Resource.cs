@@ -247,75 +247,65 @@ namespace ProjectTracker.Library
       }
     }
 
-    [Transactional(TransactionalTypes.Manual)]
+    [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
-        using (SqlTransaction tr = cn.BeginTransaction())
+        using (SqlCommand cm = cn.CreateCommand())
         {
-          using (SqlCommand cm = cn.CreateCommand())
+          cm.CommandType = CommandType.StoredProcedure;
+          cm.CommandText = "addResource";
+          cm.Parameters.AddWithValue("@lastName", _lastName);
+          cm.Parameters.AddWithValue("@firstName", _firstName);
+
+          using (SqlDataReader dr = cm.ExecuteReader())
           {
-            cm.Transaction = tr;
-            cm.CommandType = CommandType.StoredProcedure;
-            cm.CommandText = "addResource";
-            cm.Parameters.AddWithValue("@lastName", _lastName);
-            cm.Parameters.AddWithValue("@firstName", _firstName);
-
-            using (SqlDataReader dr = cm.ExecuteReader()) 
-            {
-              dr.Read();
-              _id = dr.GetInt32(0);
-              dr.GetBytes(1,0,_timestamp, 0, 8);
-            }
-
-            cm.ExecuteNonQuery();
-
-            // update child objects
-            _assignments.Update(tr, this);
+            dr.Read();
+            _id = dr.GetInt32(0);
+            dr.GetBytes(1, 0, _timestamp, 0, 8);
           }
-          tr.Commit();
+
+          cm.ExecuteNonQuery();
+
+          // update child objects
+          _assignments.Update(cn, this);
         }
       }
     }
 
-    [Transactional(TransactionalTypes.Manual)]
+    [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
-        using (SqlTransaction tr = cn.BeginTransaction())
+        if (base.IsDirty)
         {
-          if (base.IsDirty)
+          using (SqlCommand cm = cn.CreateCommand())
           {
-            using (SqlCommand cm = cn.CreateCommand())
-            {
-              cm.Transaction = tr;
-              cm.CommandType = CommandType.StoredProcedure;
-              cm.CommandText = "updateResource";
-              cm.Parameters.AddWithValue("@id", _id);
-              cm.Parameters.AddWithValue("@lastName", _lastName);
-              cm.Parameters.AddWithValue("@firstName", _firstName);
-              cm.Parameters.AddWithValue("@lastChanged", _timestamp);
+            cm.CommandType = CommandType.StoredProcedure;
+            cm.CommandText = "updateResource";
+            cm.Parameters.AddWithValue("@id", _id);
+            cm.Parameters.AddWithValue("@lastName", _lastName);
+            cm.Parameters.AddWithValue("@firstName", _firstName);
+            cm.Parameters.AddWithValue("@lastChanged", _timestamp);
 
-              using (SqlDataReader dr = cm.ExecuteReader())
-              {
-                dr.Read();
-                dr.GetBytes(0, 0, _timestamp, 0, 8);
-              }
+            using (SqlDataReader dr = cm.ExecuteReader())
+            {
+              dr.Read();
+              dr.GetBytes(0, 0, _timestamp, 0, 8);
             }
           }
-
-          // update child objects
-          _assignments.Update(tr, this);
-          tr.Commit();
         }
+
+        // update child objects
+        _assignments.Update(cn, this);
       }
     }
 
-    [Transactional(TransactionalTypes.Manual)]
+    [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
       if (!this.IsNew)
@@ -325,23 +315,18 @@ namespace ProjectTracker.Library
       }
     }
 
-    [Transactional(TransactionalTypes.Manual)]
+    [Transactional(TransactionalTypes.TransactionScope)]
     private void DataPortal_Delete(Criteria criteria)
     {
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
-        using (SqlTransaction tr = cn.BeginTransaction())
+        using (SqlCommand cm = cn.CreateCommand())
         {
-          using (SqlCommand cm = cn.CreateCommand())
-          {
-            cm.Transaction = tr;
-            cm.CommandType = CommandType.StoredProcedure;
-            cm.CommandText = "deleteResource";
-            cm.Parameters.AddWithValue("@id", criteria.Id);
-            cm.ExecuteNonQuery();
-          }
-          tr.Commit();
+          cm.CommandType = CommandType.StoredProcedure;
+          cm.CommandText = "deleteResource";
+          cm.Parameters.AddWithValue("@id", criteria.Id);
+          cm.ExecuteNonQuery();
         }
       }
     }

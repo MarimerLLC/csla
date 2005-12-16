@@ -123,15 +123,21 @@ namespace ProjectTracker.Library
 
     #region Data Access
 
+    /// <summary>
+    /// Called to when a new object is created.
+    /// </summary>
     private ResourceAssignment(Project project, int role)
     {
       MarkAsChild();
       _projectId = project.Id;
       _projectName = project.Name;
-      _assigned.Date = DateTime.Now;
+      _assigned.Date = Assignment.GetDefaultAssignedDate();
       _role = role;
     }
 
+    /// <summary>
+    /// Called when loading data from the database.
+    /// </summary>
     private ResourceAssignment(SafeDataReader dr)
     {
       MarkAsChild();
@@ -143,62 +149,27 @@ namespace ProjectTracker.Library
       MarkOld();
     }
 
-    internal void Insert(SqlTransaction tr, Resource resource)
+    internal void Insert(SqlConnection cn, Resource resource)
     {
       // if we're not dirty then don't update the database
       if (!this.IsDirty) return;
 
-      using (SqlCommand cm = new SqlCommand())
-      {
-        cm.Connection = tr.Connection;
-        cm.Transaction = tr;
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "addAssignment";
-        LoadParameters(cm, resource);
-
-        using (SqlDataReader dr = cm.ExecuteReader())
-        {
-          dr.Read();
-          dr.GetBytes(0, 0, _timestamp, 0, 8);
-        }
-
-        MarkOld();
-      }
+      _timestamp = Assignment.AddAssignment(
+        cn, _projectId, resource.Id, _assigned, _role);
+      MarkOld();
     }
 
-    internal void Update(SqlTransaction tr, Resource resource)
+    internal void Update(SqlConnection cn, Resource resource)
     {
       // if we're not dirty then don't update the database
       if (!this.IsDirty) return;
 
-      using (SqlCommand cm = new SqlCommand())
-      {
-        cm.Connection = tr.Connection;
-        cm.Transaction = tr;
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "updateAssignment";
-        LoadParameters(cm, resource);
-        cm.Parameters.AddWithValue("@lastChanged", _timestamp);
-
-        using (SqlDataReader dr = cm.ExecuteReader())
-        {
-          dr.Read();
-          dr.GetBytes(0, 0, _timestamp, 0, 8);
-        }
-
-        MarkOld();
-      }
+      _timestamp = Assignment.UpdateAssignment(
+        cn, _projectId, resource.Id, _assigned, _role, _timestamp);
+      MarkOld();
     }
 
-    private void LoadParameters(SqlCommand cm, Resource resource)
-    {
-      cm.Parameters.AddWithValue("@projectId", _projectId);
-      cm.Parameters.AddWithValue("@resourceId", resource.Id);
-      cm.Parameters.AddWithValue("@assigned", _assigned.DBValue);
-      cm.Parameters.AddWithValue("@role", _role);
-    }
-
-    internal void DeleteSelf(SqlTransaction tr, Resource resource)
+    internal void DeleteSelf(SqlConnection cn, Resource resource)
     {
       // if we're not dirty then don't update the database
       if (!this.IsDirty) return;
@@ -206,19 +177,8 @@ namespace ProjectTracker.Library
       // if we're new then don't update the database
       if (!this.IsNew) return;
 
-      using (SqlCommand cm = new SqlCommand())
-      {
-        cm.Connection = tr.Connection;
-        cm.Transaction = tr;
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "deleteAssignment";
-        cm.Parameters.AddWithValue("@projectId", _projectId);
-        cm.Parameters.AddWithValue("@resourceId", resource.Id);
-
-        cm.ExecuteNonQuery();
-
-        MarkNew();
-      }
+      Assignment.RemoveAssignment(cn, _projectId, resource.Id);
+      MarkNew();
     }
 
     #endregion

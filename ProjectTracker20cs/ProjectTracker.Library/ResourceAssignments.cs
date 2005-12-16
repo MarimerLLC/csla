@@ -82,11 +82,11 @@ namespace ProjectTracker.Library
         this.Add(ResourceAssignment.GetResourceAssignment(dr));
     }
 
-    internal void Update(SqlTransaction tr, Resource resource)
+    internal void Update(SqlConnection cn, Resource resource)
     {
       // update (thus deleting) any deleted child objects
       foreach (ResourceAssignment item in DeletedList)
-        item.DeleteSelf(tr, resource);
+        item.DeleteSelf(cn, resource);
       // now that they are deleted, remove them from memory too
       DeletedList.Clear();
 
@@ -94,9 +94,9 @@ namespace ProjectTracker.Library
       foreach (ResourceAssignment item in this)
       {
         if (item.IsNew)
-          item.Insert(tr, resource);
+          item.Insert(cn, resource);
         else
-          item.Update(tr, resource);
+          item.Update(cn, resource);
       }
     }
 

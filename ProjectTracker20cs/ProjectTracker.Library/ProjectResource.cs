@@ -101,18 +101,7 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(new Csla.Validation.RuleHandler(ValidRole), "Role");
-    }
-
-    private bool ValidRole(object target, RuleArgs e)
-    {
-      if (RoleList.GetList().ContainsKey(_role))
-        return true;
-      else
-      {
-        e.Description = "Role must be in RoleList";
-        return false;
-      }
+      ValidationRules.AddRule(new Csla.Validation.RuleHandler(Assignment.ValidRole), "Role");
     }
 
     #endregion

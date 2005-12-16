@@ -75,6 +75,15 @@ namespace ProjectTracker.Library
 
     #endregion
 
+    #region Business Rules
+
+    protected override void AddBusinessRules()
+    {
+      ValidationRules.AddRule(new Csla.Validation.RuleHandler(Assignment.ValidRole), "Role");
+    }
+
+    #endregion
+
     #region Constructors
 
     private ResourceAssignment()

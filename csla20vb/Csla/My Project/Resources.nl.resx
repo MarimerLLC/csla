@@ -1,14 +1,168 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <root>
 
+	<!-- 
+
+    Microsoft ResX Schema 
+
+    
+
+    Version 2.0
+
+    
+
+    The primary goals of this format is to allow a simple XML format 
+
+    that is mostly human readable. The generation and parsing of the 
+
+    various data types are done through the TypeConverter classes 
+
+    associated with the data types.
+
+    
+
+    Example:
+
+    
+
+    ... ado.net/XML headers & schema ...
+
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+
+    <resheader name="version">2.0</resheader>
+
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+
+    </data>
+
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+
+        <comment>This is a comment</comment>
+
+    </data>
+
+                
+
+    There are any number of "resheader" rows that contain simple 
+
+    name/value pairs.
+
+    
+
+    Each data row contains a name, and value. The row also contains a 
+
+    type or mimetype. Type corresponds to a .NET class that support 
+
+    text/value conversion through the TypeConverter architecture. 
+
+    Classes that don't support this are serialized and stored with the 
+
+    mimetype set.
+
+    
+
+    The mimetype is used for serialized objects, and tells the 
+
+    ResXResourceReader how to depersist the object. This is currently not 
+
+    extensible. For a given mimetype the value must be set accordingly:
+
+    
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+
+    that the ResXResourceWriter will generate, however the reader can 
+
+    read any of the formats listed below.
+
+    
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+
+    value   : The object must be serialized with 
+
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+
+            : and then encoded with base64 encoding.
+
+    
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+
+    value   : The object must be serialized with 
+
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+
+            : and then encoded with base64 encoding.
+
+
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+
+    value   : The object must be serialized into a byte array 
+
+            : using a System.ComponentModel.TypeConverter
+
+            : and then encoded with base64 encoding.
+
+    -->
+
 	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
 
 		<xsd:element name="root" msdata:IsDataSet="true">
 
 			<xsd:complexType>
 
 				<xsd:choice maxOccurs="unbounded">
+
+					<xsd:element name="metadata">
+
+						<xsd:complexType>
+
+							<xsd:sequence>
+
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+
+							</xsd:sequence>
+
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+
+							<xsd:attribute name="type" type="xsd:string" />
+
+							<xsd:attribute name="mimetype" type="xsd:string" />
+
+							<xsd:attribute ref="xml:space" />
+
+						</xsd:complexType>
+
+					</xsd:element>
+
+					<xsd:element name="assembly">
+
+						<xsd:complexType>
+
+							<xsd:attribute name="alias" type="xsd:string" />
+
+							<xsd:attribute name="name" type="xsd:string" />
+
+						</xsd:complexType>
+
+					</xsd:element>
 
 					<xsd:element name="data">
 
@@ -22,11 +176,13 @@
 
 							</xsd:sequence>
 
-							<xsd:attribute name="name" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
 
-							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
 
-							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+
+							<xsd:attribute ref="xml:space" />
 
 						</xsd:complexType>
 
@@ -56,345 +212,281 @@
 
 	</xsd:schema>
 
-	<resheader name="ResMimeType">
+	<resheader name="resmimetype">
 
 		<value>text/microsoft-resx</value>
 
 	</resheader>
 
-	<resheader name="Version">
+	<resheader name="version">
 
-		<value>1.0.0.0</value>
-
-	</resheader>
-
-	<resheader name="Reader">
-
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+		<value>2.0</value>
 
 	</resheader>
 
-	<resheader name="Writer">
+	<resheader name="reader">
 
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 
 	</resheader>
 
-	<data name="ClearInvalidException" type="System.String">
+	<resheader name="writer">
 
-		<value>Leegmaken van een collectie is een ongeldige operatie</value>
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 
-	</data>
+	</resheader>
 
-	<data name="InsertInvalidException" type="System.String">
+	<data name="ClearInvalidException" xml:space="preserve">
 
-		<value>Toevoegen is een ongeldige operatie</value>
-
-	</data>
-
-	<data name="RemoveInvalidException" type="System.String">
-
-		<value>Verwijderen is een ongeldige operatie</value>
+		<value>leeg maken is een ongeldige bewerking</value>
 
 	</data>
 
-	<data name="ChangeInvalidException" type="System.String">
+	<data name="InsertInvalidException" xml:space="preserve">
 
-		<value>Het wijzigen van een element is een ongeldige operatie</value>
-
-	</data>
-
-	<data name="ParentSetException" type="System.String">
-
-		<value>Het bovenliggende object kan alleen worden aangegeven door onderliggende objecten</value>
+		<value>toevoegen is een ongeldige bewerking</value>
 
 	</data>
 
-	<data name="ChildDeleteException" type="System.String">
+	<data name="RemoveInvalidException" xml:space="preserve">
 
-		<value>Een onderliggend object kan niet op zichzelf worden gemarkeerd voor verwijdering - gebruik hiervoor het meest bovenliggende object</value>
-
-	</data>
-
-	<data name="NoDeleteRootException" type="System.String">
-
-		<value>Niet mogelijk voor bovenliggende objecten - gebruik in plaats hiervan Delete</value>
+		<value>Verwijderen is een ongeldige bewerking</value>
 
 	</data>
 
-	<data name="NoSaveChildException" type="System.String">
+	<data name="ChangeInvalidException" xml:space="preserve">
 
-		<value>Een onderliggend object kan niet zelfstandig worden opgeslagen</value>
-
-	</data>
-
-	<data name="NoSaveEditingException" type="System.String">
-
-		<value>Het object wordt bewerkt en kan daarom niet worden opgeslagen</value>
+		<value>Het wijzigen van een element is een ongeldige bewerking</value>
 
 	</data>
 
-	<data name="NoSaveInvalidException" type="System.String">
+	<data name="ParentSetException" xml:space="preserve">
 
-		<value>Het object is niet valide en kan daarom niet worden opgeslagen</value>
-
-	</data>
-
-	<data name="CreateNotSupportedException" type="System.String">
-
-		<value>Ongeldige operatie - aanmaken van nieuwe gegevens niet toegestaan</value>
+		<value>Parent waarde kan alleen voor child objecten gewijzigd worden</value>
 
 	</data>
 
-	<data name="FetchNotSupportedException" type="System.String">
+	<data name="ChildDeleteException" xml:space="preserve">
 
-		<value>Ongeldige operatie - ophalen van gegevens niet toegestaan</value>
-
-	</data>
-
-	<data name="UpdateNotSupportedException" type="System.String">
-
-		<value>Ongeldige operatie - opslaan van wijzigingen niet toegestaan</value>
+		<value>Kan geen child object markeren om te verwijderen - gebruik de parent collectie</value>
 
 	</data>
 
-	<data name="DeleteNotSupportedException" type="System.String">
+	<data name="NoDeleteRootException" xml:space="preserve">
 
-		<value>Ongeldige operatie - verwijderen niet toegestaan</value>
-
-	</data>
-
-	<data name="NoBeginEditChildException" type="System.String">
-
-		<value>BeginEdit is niet mogelijk op een onderliggend object</value>
+		<value>Niet toegestaan voor root objecten - gebruik verwijderen</value>
 
 	</data>
 
-	<data name="NoCancelEditChildException" type="System.String">
+	<data name="NoSaveChildException" xml:space="preserve">
 
-		<value>CancelEdit is niet mogelijk op een onderliggend object</value>
-
-	</data>
-
-	<data name="NoApplyEditChildException" type="System.String">
-
-		<value>ApplyEdit is niet mogelijk op een onderliggend object</value>
+		<value>Het is niet toegestaan om een rechtstreeks een child object te bewaren</value>
 
 	</data>
 
-	<data name="NoSuchValueExistsException" type="System.String">
+	<data name="NoSaveEditingException" xml:space="preserve">
 
-		<value>Deze waarde bestaat niet:</value>
-
-	</data>
-
-	<data name="ErrorReadingValueException" type="System.String">
-
-		<value>Fout tijdens het lezen van een waarde:</value>
+		<value>Object wordt nog gewijzigd - bewaren is niet toegestaan</value>
 
 	</data>
 
-	<data name="NoInsertReadOnlyException" type="System.String">
+	<data name="NoSaveInvalidException" xml:space="preserve">
 
-		<value>Toevoegen is ongeldig voor een alleen - lezen collectie</value>
-
-	</data>
-
-	<data name="NoRemoveReadOnlyException" type="System.String">
-
-		<value>Verwijderen is ongeldig voor een alleen - lezen collectie</value>
+		<value>Validatie van het object is niet geldig - bewaren is niet toegestaan</value>
 
 	</data>
 
-	<data name="NoClearReadOnlyException" type="System.String">
+	<data name="CreateNotSupportedException" xml:space="preserve">
 
-		<value>Het leegmaken van een alleen - lezen collectie is een ongeldige operatie</value>
-
-	</data>
-
-	<data name="NoChangeReadOnlyException" type="System.String">
-
-		<value>Gegevens kunnen niet worden gewijzigd in een alleen - lezen collectie</value>
+		<value>ongeldige bewerking - aanmaken is niet toegestaan</value>
 
 	</data>
 
-	<data name="StringToDateException" type="System.String">
+	<data name="FetchNotSupportedException" xml:space="preserve">
 
-		<value>String waarde kan niet worden geconverteerd naar Datum waarde</value>
+		<value>ongeldige bewerking - ophalen is niet toegestaan</value>
 
 	</data>
 
-	<data name="ValueNotSmartDateException" type="System.String">
+	<data name="UpdateNotSupportedException" xml:space="preserve">
+
+		<value>ongeldige bewerking - wijzigen is niet toegestaan</value>
+
+	</data>
+
+	<data name="DeleteNotSupportedException" xml:space="preserve">
+
+		<value>ongeldige bewerking - verwijderen is niet toegestaan</value>
+
+	</data>
+
+	<data name="NoBeginEditChildException" xml:space="preserve">
+
+		<value>BeginEdit is een ongeldige bewerking voor een child object</value>
+
+	</data>
+
+	<data name="NoCancelEditChildException" xml:space="preserve">
+
+		<value>CancelEdit is een ongeldige bewerking voor een child object</value>
+
+	</data>
+
+	<data name="NoApplyEditChildException" xml:space="preserve">
+
+		<value>ApplyEdit is een ongeldige bewerking voor een child object</value>
+
+	</data>
+
+	<data name="NoSuchValueExistsException" xml:space="preserve">
+
+		<value>de volgende waarde bestaat niet:</value>
+
+	</data>
+
+	<data name="ErrorReadingValueException" xml:space="preserve">
+
+		<value>Fout tijdens het lezen van de waarde:</value>
+
+	</data>
+
+	<data name="StringToDateException" xml:space="preserve">
+
+		<value>Een string waarde kan niet geconverteerd worden naar een datum waarde</value>
+
+	</data>
+
+	<data name="ValueNotSmartDateException" xml:space="preserve">
 
 		<value>Waarde is geen SmartDate</value>
 
 	</data>
 
-	<data name="InvalidDateException" type="System.String">
+	<data name="NoPrincipalAllowedException" xml:space="preserve">
 
-		<value>Waarde moet een geldige datum zijn</value>
-
-	</data>
-
-	<data name="SortingNotSupportedException" type="System.String">
-
-		<value>Sorteren is niet mogelijk op deze collectie</value>
+		<value>Er mag geen principal object naar de DataPortal gestuurd worden wanneer men gebruik maakt van Windows integrated security</value>
 
 	</data>
 
-	<data name="SearchingNotSupportedException" type="System.String">
+	<data name="BusinessPrincipalException" xml:space="preserve">
 
-		<value>Zoeken is niet mogelijk op deze collectie</value>
-
-	</data>
-
-	<data name="AddItemException" type="System.String">
-
-		<value>Toevoegen van gegevens niet toegestaan</value>
+		<value>Principal moet type BusinessPrincipal zijn, niet:</value>
 
 	</data>
 
-	<data name="NoPrincipalAllowedException" type="System.String">
+	<data name="SmartDateT" xml:space="preserve">
 
-		<value>Er mag geen Principal waarde naar DataPortal worden gestuurd als Windows Integrated Security wordt gebruikt</value>
-
-	</data>
-
-	<data name="BusinessPrincipalException" type="System.String">
-
-		<value>Principal moet van het type BusinessPrincipal zijn, niet</value>
+		<value>v</value>
 
 	</data>
 
-	<data name="NoMatchException" type="System.String">
+	<data name="SmartDateToday" xml:space="preserve">
 
-		<value>Geen corresponderende gegevens gevonden in de collectie</value>
-
-	</data>
-
-	<data name="SecurityDataBase" type="System.String">
-
-		<value>Security</value>
+		<value>vandaag</value>
 
 	</data>
 
-	<data name="SecurityStoredProcedure" type="System.String">
+	<data name="SmartDateY" xml:space="preserve">
 
-		<value>Login</value>
-
-	</data>
-
-	<data name="SecurityUserParam" type="System.String">
-
-		<value>@user</value>
+		<value>g</value>
 
 	</data>
 
-	<data name="SecurityPasswordParam" type="System.String">
+	<data name="SmartDateYesterday" xml:space="preserve">
 
-		<value>@pw</value>
-
-	</data>
-
-	<data name="SmartDateT" type="System.String">
-
-		<value>t</value>
+		<value>gisteren</value>
 
 	</data>
 
-	<data name="SmartDateToday" type="System.String">
+	<data name="SmartDateTom" xml:space="preserve">
 
-		<value>today</value>
-
-	</data>
-
-	<data name="SmartDateY" type="System.String">
-
-		<value>y</value>
+		<value>mor</value>
 
 	</data>
 
-	<data name="SmartDateYesterday" type="System.String">
+	<data name="SmartDateTomorrow" xml:space="preserve">
 
-		<value>yesterday</value>
-
-	</data>
-
-	<data name="SmartDateTom" type="System.String">
-
-		<value>tom</value>
+		<value>morgen</value>
 
 	</data>
 
-	<data name="SmartDateTomorrow" type="System.String">
+	<data name="Failed" xml:space="preserve">
 
-		<value>tomorrow</value>
-
-	</data>
-
-	<data name="BatchQueueJobCompleted" type="System.String">
-
-		<value>Batch taak uitgevoerd</value>
+		<value>mislukt</value>
 
 	</data>
 
-	<data name="BatchQueueJobPrefix" type="System.String">
+	<data name="FailedOnServer" xml:space="preserve">
 
-		<value>Batch taak:</value>
-
-	</data>
-
-	<data name="BatchQueueJobObjectPrefix" type="System.String">
-
-		<value>Taak object:</value>
+		<value>mislukt op de server</value>
 
 	</data>
 
-	<data name="BatchQueueJobFailed" type="System.String">
+	<data name="MethodCallFailed" xml:space="preserve">
 
-		<value>Batch taak is mislukt door een uitvoeringsfout</value>
-
-	</data>
-
-	<data name="BatchQueueProcStarted" type="System.String">
-
-		<value>Batch wachtrij processor gestart</value>
+		<value>methode aanroepen mislukt</value>
 
 	</data>
 
-	<data name="BatchQueueProcName" type="System.String">
+	<data name="MethodNotImplemented" xml:space="preserve">
 
-		<value>Naam:</value>
-
-	</data>
-
-	<data name="BatchQueueProcPort" type="System.String">
-
-		<value>Poort:</value>
+		<value>niet geimplementeerd</value>
 
 	</data>
 
-	<data name="BatchQueueProcQueue" type="System.String">
+	<data name="ExecuteNotSupportedException" xml:space="preserve">
 
-		<value>Wachtrij:</value>
-
-	</data>
-
-	<data name="BatchQueueProcMaxJobs" type="System.String">
-
-		<value>Maximum aantal taken:</value>
+		<value>ongeldige bewerking - uitvoeren is niet toegestaan</value>
 
 	</data>
 
-	<data name="Failed" type="System.String">
+	<data name="InsertNotSupportedException" xml:space="preserve">
 
-		<value>Mislukt</value>
+		<value>ongeldige bewerking - toevoegen is niet toegestaan</value>
 
 	</data>
 
-	<data name="FailedOnServer" type="System.String">
+	<data name="GetIdValueCantBeNull" xml:space="preserve">
 
-		<value>Mislukt op de server</value>
+		<value>GetIdValue mag geen Nothing(leeg) retourneren</value>
+
+	</data>
+
+	<data name="PropertyGetNotAllowed" xml:space="preserve">
+
+		<value>Property get is niet toegestaan</value>
+
+	</data>
+
+	<data name="PropertySetNotAllowed" xml:space="preserve">
+
+		<value>Property set is niet toegestaan</value>
+
+	</data>
+
+	<data name="NothingNotValid" xml:space="preserve">
+
+		<value>Argument mag niet Nothing(leeg) zijn</value>
+
+	</data>
+
+	<data name="PrimitiveTypeRequired" xml:space="preserve">
+
+		<value>Type parameter mag alleen een primitief type zijn</value>
+
+	</data>
+
+	<data name="PropertyCopyFailed" xml:space="preserve">
+
+		<value>Kopiëren van de property is mislukt
+
+Kopiëren
+
+Kopiëren
+
+Kopiëren
+
+kopieren property is mislukt</value>
 
 	</data>
 

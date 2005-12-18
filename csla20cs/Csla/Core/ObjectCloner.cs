@@ -4,13 +4,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Csla.Core
 {
-  internal sealed class ObjectCloner
+  internal static class ObjectCloner
   {
-    private ObjectCloner()
-    {
-
-    }
-
     public static object Clone(object obj)
     {
       using (MemoryStream buffer = new MemoryStream())

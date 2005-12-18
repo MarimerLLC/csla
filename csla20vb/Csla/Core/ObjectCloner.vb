@@ -1,13 +1,9 @@
 Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 
-Friend NotInheritable Class ObjectCloner
+Friend Module ObjectCloner
 
-  Private Sub New()
-
-  End Sub
-
-  Public Shared Function Clone(ByVal obj As Object) As Object
+  Public Function Clone(ByVal obj As Object) As Object
 
     Using buffer As New MemoryStream()
       Dim formatter As New BinaryFormatter()
@@ -20,4 +16,4 @@ Friend NotInheritable Class ObjectCloner
 
   End Function
 
-End Class
+End Module

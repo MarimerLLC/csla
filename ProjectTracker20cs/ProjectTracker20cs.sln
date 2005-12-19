@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWin", "PTWin\PTWin.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Library", "ProjectTracker.Library\ProjectTracker.Library.csproj", "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\PTWeb\", "www\PTWeb\", "{D8F59D26-50C8-4DFD-B8B9-C529530297F1}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWeb\", "www\PTWeb\", "{D8F59D26-50C8-4DFD-B8B9-C529530297F1}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/PTWeb"
@@ -33,6 +33,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "PTData", "PTData\PTData.dbp", "{09B6FE9B-E21E-4454-8E64-928422F60E08}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\RemotingHost\", "www\RemotingHost\", "{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}"
+	ProjectSection(WebsiteProperties) = preProject
+		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/RemotingHost"
+		Debug.AspNetCompiler.PhysicalPath = "www\RemotingHost\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\RemotingHost\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/RemotingHost"
+		Release.AspNetCompiler.PhysicalPath = "www\RemotingHost\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\RemotingHost\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "1323"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +95,16 @@ Global
 		{D8F59D26-50C8-4DFD-B8B9-C529530297F1}.Release|Any CPU.ActiveCfg = Debug|.NET
 		{D8F59D26-50C8-4DFD-B8B9-C529530297F1}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
 		{D8F59D26-50C8-4DFD-B8B9-C529530297F1}.Release|Mixed Platforms.Build.0 = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Debug|.NET.ActiveCfg = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Debug|.NET.Build.0 = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Debug|Any CPU.ActiveCfg = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Debug|Mixed Platforms.ActiveCfg = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Debug|Mixed Platforms.Build.0 = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Release|.NET.ActiveCfg = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Release|.NET.Build.0 = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Release|Any CPU.ActiveCfg = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
+		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Release|Mixed Platforms.Build.0 = Debug|.NET
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

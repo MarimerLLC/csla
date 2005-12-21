@@ -16,6 +16,51 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Implements ICloneable
   Implements Core.IReadOnlyObject
 
+#Region " Object ID Value "
+
+  Protected MustOverride Function GetIdValue() As Object
+
+#End Region
+
+#Region " System.Object Overrides "
+
+  Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
+
+    If TypeOf obj Is T Then
+      Dim id As Object = GetIdValue()
+      If id Is Nothing Then
+        Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
+      End If
+      Return DirectCast(obj, T).GetIdValue.Equals(id)
+
+    Else
+      Return False
+    End If
+
+  End Function
+
+  Public Overrides Function GetHashCode() As Integer
+
+    Dim id As Object = GetIdValue()
+    If id Is Nothing Then
+      Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
+    End If
+    Return id.GetHashCode
+
+  End Function
+
+  Public Overrides Function ToString() As String
+
+    Dim id As Object = GetIdValue()
+    If id Is Nothing Then
+      Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
+    End If
+    Return id.ToString
+
+  End Function
+
+#End Region
+
 #Region " Constructors "
 
   Protected Sub New()

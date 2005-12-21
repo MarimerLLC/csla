@@ -19,6 +19,44 @@ namespace Csla
   public abstract class ReadOnlyBase<T> : ICloneable, Core.IReadOnlyObject
     where T : ReadOnlyBase<T>
   {
+    #region Object ID Value
+
+    protected abstract object GetIdValue();
+
+    #endregion
+
+    #region System.Object Overrides
+
+    public override bool Equals(object obj)
+    {
+      if (obj is T)
+      {
+        object id = GetIdValue();
+        if (id == null)
+          throw new ArgumentException(Resources.GetIdValueCantBeNull);
+        return ((T)obj).GetIdValue().Equals(id);
+      }
+      else
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+      object id = GetIdValue();
+      if (id == null)
+        throw new ArgumentException(Resources.GetIdValueCantBeNull);
+      return id.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+      object id = GetIdValue();
+      if (id == null)
+        throw new ArgumentException(Resources.GetIdValueCantBeNull);
+      return id.ToString();
+    }
+
+    #endregion
 
     #region Constructors
 

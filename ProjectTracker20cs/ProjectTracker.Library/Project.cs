@@ -24,7 +24,7 @@ namespace ProjectTracker.Library
     private ProjectResources _resources =
       ProjectResources.NewProjectResources();
 
-    [System.ComponentModel.DataObjectField(true, true, false)]
+    [System.ComponentModel.DataObjectField(true, true)]
     public Guid Id
     {
       get
@@ -109,7 +109,6 @@ namespace ProjectTracker.Library
           _description = value;
           PropertyHasChanged();
         }
-
       }
     }
 
@@ -139,19 +138,25 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, "Name");
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, 
+      ValidationRules.AddRule(
+        Csla.Validation.CommonRules.StringRequired, "Name");
+      ValidationRules.AddRule(
+        Csla.Validation.CommonRules.StringMaxLength, 
         new Csla.Validation.CommonRules.MaxLengthRuleArgs("Name", 50));
 
-      ValidationRules.AddRule(StartDateGTEndDate, "Started");
-      ValidationRules.AddRule(StartDateGTEndDate, "Ended");
+      ValidationRules.AddRule(
+        StartDateGTEndDate, "Started");
+      ValidationRules.AddRule(
+        StartDateGTEndDate, "Ended");
     }
 
-    bool StartDateGTEndDate(object target, Csla.Validation.RuleArgs e)
+    bool StartDateGTEndDate(
+      object target, Csla.Validation.RuleArgs e)
     {
       if (_started > _ended)
       {
-        e.Description = "Start date can't be after end date";
+        e.Description = 
+          "Start date can't be after end date";
         return false;
       }
       else
@@ -164,11 +169,14 @@ namespace ProjectTracker.Library
 
     protected override void AddAuthorizationRules()
     {
-      // add AuthorizationRules here
-      AuthorizationRules.AllowWrite("Name", "ProjectManager");
-      AuthorizationRules.AllowWrite("Started", "ProjectManager");
-      AuthorizationRules.AllowWrite("Ended", "ProjectManager");
-      AuthorizationRules.AllowWrite("Description", "ProjectManager");
+      AuthorizationRules.AllowWrite(
+        "Name", "ProjectManager");
+      AuthorizationRules.AllowWrite(
+        "Started", "ProjectManager");
+      AuthorizationRules.AllowWrite(
+        "Ended", "ProjectManager");
+      AuthorizationRules.AllowWrite(
+        "Description", "ProjectManager");
     }
 
     public static bool CanAddObject()

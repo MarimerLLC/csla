@@ -262,7 +262,7 @@
     <Position X="10" Y="5.75" Width="2" />
     <TypeIdentifier>
       <FileName>Data\ObjectAdapter.cs</FileName>
-      <HashCode>AAAAAQABgGAAAAAIQAAAIAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAABAAAAgGAAAAAAAAAAAAAAQAAACAAAAIAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Security.AuthorizationRules" Collapsed="true">
@@ -291,7 +291,7 @@
     <Position X="12.5" Y="4.75" Width="2" />
     <TypeIdentifier>
       <FileName>Validation\CommonRules.cs</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAEAAAAQA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAgEAAAAQA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Validation.ValidationRules" Collapsed="true">
@@ -333,7 +333,7 @@
     <Position X="7.5" Y="5" Width="2" />
     <TypeIdentifier>
       <FileName>Data\DataMapper.cs</FileName>
-      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAABAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Struct Name="Csla.SmartDate" Collapsed="true">
@@ -345,24 +345,31 @@
     <Lollipop Position="0.2" />
   </Struct>
   <Interface Name="Csla.Core.IBusinessObject" Collapsed="true">
-    <Position X="9.25" Y="0.5" Width="1.75" />
+    <Position X="9.5" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <FileName>Core\IBusinessObject.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.Core.IEditableObject" Collapsed="true">
-    <Position X="10.25" Y="1.5" Width="1.75" />
+    <Position X="8.5" Y="1.5" Width="1.75" />
     <TypeIdentifier>
       <FileName>Core\IEditableObject.cs</FileName>
       <HashCode>AgAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.Core.IEditableCollection" Collapsed="true">
-    <Position X="11" Y="2.5" Width="1.75" />
+    <Position X="8.5" Y="2.5" Width="1.75" />
     <TypeIdentifier>
       <FileName>Core\IEditableCollection.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.IReadOnlyObject" Collapsed="true">
+    <Position X="10.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\IReadOnlyObject.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
   <Enum Name="Csla.TransactionalTypes" Collapsed="true">

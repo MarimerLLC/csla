@@ -181,7 +181,8 @@ namespace ProjectTracker.Library
 
     public static bool CanAddObject()
     {
-      return System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager");
+      return System.Threading.Thread.CurrentPrincipal.IsInRole(
+        "ProjectManager");
     }
 
     public static bool CanGetObject()
@@ -192,14 +193,16 @@ namespace ProjectTracker.Library
     public static bool CanDeleteObject()
     {
       bool result = false;
-      if (System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager"))
+      if (System.Threading.Thread.CurrentPrincipal.IsInRole(
+        "ProjectManager"))
         result = true;
-      if (System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator"))
+      if (System.Threading.Thread.CurrentPrincipal.IsInRole(
+        "Administrator"))
         result = true;
       return result;
     }
 
-    public static bool CanSaveObject()
+    public static bool CanEditObject()
     {
       return System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager");
     }
@@ -211,73 +214,61 @@ namespace ProjectTracker.Library
     public static Project NewProject()
     {
       if (!CanAddObject())
-        throw new System.Security.SecurityException("User not authorized to add a project");
+        throw new System.Security.SecurityException(
+          "User not authorized to add a project");
       return DataPortal.Create<Project>(null);
     }
 
     public static Project GetProject(Guid id)
     {
       if (!CanGetObject())
-        throw new System.Security.SecurityException("User not authorized to view a project");
+        throw new System.Security.SecurityException(
+          "User not authorized to view a project");
       return DataPortal.Fetch<Project>(new Criteria(id));
     }
 
     public static void DeleteProject(Guid id)
     {
       if (!CanDeleteObject())
-        throw new System.Security.SecurityException("User not authorized to remove a project");
+        throw new System.Security.SecurityException(
+          "User not authorized to remove a project");
       DataPortal.Delete(new Criteria(id));
     }
 
+    private Project()
+    { /* require use of factory methods */ }
+
     public override Project Save()
     {
-      if (IsDeleted)
-      {
-        if (!CanDeleteObject())
-          throw new System.Security.SecurityException("User not authorized to remove a project");
-      }
-      else
-      {
-        // no deletion - we're adding or updating
-        if (!CanSaveObject())
-          throw new System.Security.SecurityException("User not authorized to update a project");
-      }
+      if (IsDeleted && !CanDeleteObject())
+        throw new System.Security.SecurityException(
+          "User not authorized to remove a project");
+      else if (IsNew && !CanAddObject())
+        throw new System.Security.SecurityException(
+          "User not authorized to add a project");
+      else if (!CanEditObject())
+        throw new System.Security.SecurityException(
+          "User not authorized to update a project");
 
       return base.Save();
     }
 
     #endregion
 
-    #region Constructors
-
-    private Project()
-    {
-      AddAuthorizationRules();
-    }
-
-    #endregion
-
-    #region Criteria
+    #region Data Access
 
     [Serializable()]
     private class Criteria
     {
       private Guid _id;
-
       public Guid Id
       {
         get { return _id; }
       }
 
       public Criteria(Guid id)
-      {
-        _id = id;
-      }
+      { _id = id; }
     }
-
-    #endregion
-
-    #region Data Access
 
     protected override void DataPortal_Create(object criteria)
     {

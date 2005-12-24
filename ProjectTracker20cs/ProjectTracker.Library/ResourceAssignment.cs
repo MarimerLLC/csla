@@ -75,20 +75,13 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Business Rules
+    #region Validation Rules
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(new Csla.Validation.RuleHandler(Assignment.ValidRole), "Role");
-    }
-
-    #endregion
-
-    #region Constructors
-
-    private ResourceAssignment()
-    {
-      MarkAsChild();
+      ValidationRules.AddRule(
+        new Csla.Validation.RuleHandler(
+          Assignment.ValidRole), "Role");
     }
 
     #endregion
@@ -96,21 +89,10 @@ namespace ProjectTracker.Library
     #region Factory Methods
 
     internal static ResourceAssignment NewResourceAssignment(
-      Project project, int role)
-    {
-      return new ResourceAssignment(project, role);
-    }
-
-    internal static ResourceAssignment NewResourceAssignment(
-      Guid projectId, int role)
-    {
-      return new ResourceAssignment(Project.GetProject(projectId), role);
-    }
-
-    internal static ResourceAssignment NewResourceAssignment(
       Guid projectId)
     {
-      return new ResourceAssignment(Project.GetProject(projectId), RoleList.DefaultRole());
+      return new ResourceAssignment(
+        Project.GetProject(projectId), RoleList.DefaultRole());
     }
 
     internal static ResourceAssignment GetResourceAssignment(
@@ -118,6 +100,9 @@ namespace ProjectTracker.Library
     {
       return new ResourceAssignment(dr);
     }
+
+    private ResourceAssignment()
+    { MarkAsChild(); }
 
     #endregion
 

@@ -85,7 +85,13 @@ Namespace Admin
 
 #End Region
 
-#Region " Constructors "
+#Region " Factory Methods "
+
+    Public Shared Function GetRoles() As Roles
+
+      Return DataPortal.Fetch(Of Roles)(New Criteria)
+
+    End Function
 
     Private Sub New()
 
@@ -95,26 +101,12 @@ Namespace Admin
 
 #End Region
 
-#Region " Criteria "
+#Region " Data Access "
 
     <Serializable()> _
     Private Class Criteria
       ' no criteria
     End Class
-
-#End Region
-
-#Region " Factory Methods "
-
-    Public Shared Function GetRoles() As Roles
-
-      Return DataPortal.Fetch(Of Roles)(New Criteria)
-
-    End Function
-
-#End Region
-
-#Region " Data Access "
 
     Public Overrides Function Save() As Roles
 

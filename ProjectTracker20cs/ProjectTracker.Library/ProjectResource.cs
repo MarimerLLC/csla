@@ -8,18 +8,19 @@ using Csla.Validation;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectResource : BusinessBase<ProjectResource>
+  public class ProjectResource : 
+    BusinessBase<ProjectResource>
   {
-
     #region Business Methods
 
     private int _resourceId;
     private string _firstName = string.Empty;
     private string _lastName = string.Empty;
-    private SmartDate _assigned = new SmartDate(DateTime.Today);
+    private SmartDate _assigned;
     private int _role;
     private byte[] _timestamp = new byte[8];
 
+    [System.ComponentModel.DataObjectField(false, true)]
     public int ResourceId
     {
       get
@@ -51,10 +52,12 @@ namespace ProjectTracker.Library
     {
       get
       {
-        if (CanReadProperty("FirstName") && CanReadProperty("LastName"))
+        if (CanReadProperty("FirstName") && 
+          CanReadProperty("LastName"))
           return string.Format("{0}, {1}", LastName, FirstName);
         else
-          throw new System.Security.SecurityException("Property read not allowed");
+          throw new System.Security.SecurityException(
+            "Property read not allowed");
       }
     }
 
@@ -97,44 +100,46 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Business Rules
+    #region Validation Rules
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(new Csla.Validation.RuleHandler(Assignment.ValidRole), "Role");
+      ValidationRules.AddRule(
+        new Csla.Validation.RuleHandler(
+          Assignment.ValidRole), "Role");
     }
 
     #endregion
 
-    #region Constructors
-
-    private ProjectResource()
+    #region Authorization Rules
+    
+    protected override void AddAuthorizationRules()
     {
-      MarkAsChild();
+      AuthorizationRules.AllowWrite(
+        "Role", "ProjectManager");
     }
 
     #endregion
 
     #region Factory Methods
 
-    internal static ProjectResource NewProjectResource(Resource resource, int role)
+    internal static ProjectResource 
+      NewProjectResource(int resourceId)
     {
-      return new ProjectResource(resource, role);
+      return new ProjectResource(
+        Resource.GetResource(resourceId), 
+        RoleList.DefaultRole());
     }
 
-    internal static ProjectResource NewProjectResource(int resourceId, int role)
-    {
-      return new ProjectResource(Resource.GetResource(resourceId), role);
-    }
-
-    internal static ProjectResource NewProjectResource(int resourceId)
-    {
-      return new ProjectResource(Resource.GetResource(resourceId), RoleList.DefaultRole());
-    }
-
-    internal static ProjectResource GetResource(SafeDataReader dr)
+    internal static ProjectResource 
+      GetResource(SafeDataReader dr)
     {
       return new ProjectResource(dr);
+    }
+
+    private ProjectResource()
+    {
+      MarkAsChild();
     }
 
     #endregion
@@ -197,7 +202,7 @@ namespace ProjectTracker.Library
       if (!this.IsDirty) return;
 
       // if we're new then don't update the database
-      if (!this.IsNew) return;
+      if (this.IsNew) return;
 
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {

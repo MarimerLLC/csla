@@ -9,6 +9,12 @@ Namespace Security
 
     Implements IIdentity
 
+    Protected Overrides Function GetIdValue() As Object
+
+      Return mName
+
+    End Function
+
 #Region " IsInRole "
 
     Private mRoles As New List(Of String)

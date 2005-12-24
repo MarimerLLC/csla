@@ -53,7 +53,7 @@ public partial class ProjectEdit : System.Web.UI.Page
   {
     Project obj = (Project)Session["currentObject"];
     // project display
-    if (Project.CanSaveObject())
+    if (Project.CanEditObject())
     {
       if (obj.IsNew)
         this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
@@ -66,10 +66,10 @@ public partial class ProjectEdit : System.Web.UI.Page
       this.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly;
       this.AddResourceButton.Visible = false;
     }
-    this.DetailsView1.Rows[this.DetailsView1.Rows.Count - 1].Visible = Project.CanSaveObject();
+    this.DetailsView1.Rows[this.DetailsView1.Rows.Count - 1].Visible = Project.CanEditObject();
 
     // resource display
-    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Project.CanSaveObject();
+    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Project.CanEditObject();
   }
 
   #region Project DetailsView

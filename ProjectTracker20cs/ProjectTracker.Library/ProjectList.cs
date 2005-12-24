@@ -8,14 +8,17 @@ using Csla.Data;
 
 namespace ProjectTracker.Library
 {
-  public class ProjectList : ReadOnlyListBase<ProjectList, ProjectList.ProjectInfo>
+  public class ProjectList : 
+    ReadOnlyListBase<ProjectList, ProjectList.ProjectInfo>
   {
-
     #region ProjectInfo Class
 
     [Serializable()]
-    public class ProjectInfo
+    public class ProjectInfo :
+      ReadOnlyBase<ProjectInfo>
     {
+      #region Business Methods
+
       private Guid _id;
       private string _name;
 
@@ -31,30 +34,57 @@ namespace ProjectTracker.Library
         internal set { _name = value; }
       }
 
-
-      public override bool Equals(object obj)
+      protected override object GetIdValue()
       {
-        if (obj is ProjectInfo)
-          return _id.Equals(((ProjectInfo)obj).Id);
-        else
-          return false;
+        return _id;
       }
+      #endregion
 
-      public override int GetHashCode()
+      #region Constructors
+
+      private ProjectInfo()
+      { /* require use of factory methods */ }
+
+      internal ProjectInfo(Guid id, string name)
       {
-        return _id.GetHashCode();
+        _id = id;
+        _name = name;
       }
+      #endregion
     }
 
     #endregion
 
-    #region Criteria
+    #region Factory Methods
+
+    /// <summary>
+    /// Return a list of all projects.
+    /// </summary>
+    public static ProjectList GetProjectList()
+    {
+      return DataPortal.Fetch<ProjectList>(new Criteria());
+    }
+
+    /// <summary>
+    /// Return a list of projects filtered
+    /// by project name.
+    /// </summary>
+    public static ProjectList GetProjectList(string name)
+    {
+      return DataPortal.Fetch<ProjectList>
+        (new FilteredCriteria(name));
+    }
+
+    private ProjectList()
+    { /* require use of factory methods */ }
+
+    #endregion
+
+    #region Data Access
 
     [Serializable()]
     private class Criteria
-    {
-      // no criteria - retrieve all projects
-    }
+    { /* no criteria - retrieve all projects */ }
 
     [Serializable()]
     private class FilteredCriteria
@@ -70,33 +100,6 @@ namespace ProjectTracker.Library
         _name = name;
       }
     }
-
-    #endregion
-
-    #region Constructors
-
-    private ProjectList()
-    {
-      // prevent direct creation
-    }
-
-    #endregion
-
-    #region Factory Methods
-
-    public static ProjectList GetProjectList()
-    {
-      return DataPortal.Fetch<ProjectList>(new Criteria());
-    }
-
-    public static ProjectList GetProjectList(string name)
-    {
-      return DataPortal.Fetch<ProjectList>(new FilteredCriteria(name));
-    }
-
-    #endregion
-
-    #region Data Access
 
     private void DataPortal_Fetch(Criteria criteria)
     {
@@ -123,9 +126,9 @@ namespace ProjectTracker.Library
             IsReadOnly = false;
             while (dr.Read())
             {
-              ProjectInfo info = new ProjectInfo();
-              info.Id = dr.GetGuid(0);
-              info.Name = dr.GetString(1);
+              ProjectInfo info = new ProjectInfo(
+                dr.GetGuid(0),
+                dr.GetString(1));
               // apply filter if necessary
               if ((nameFilter.Length == 0) || (info.Name.IndexOf(nameFilter) == 0))
                 this.Add(info);
@@ -137,6 +140,5 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
   }
 }

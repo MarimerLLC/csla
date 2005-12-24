@@ -26,7 +26,7 @@ public partial class RolesEdit : System.Web.UI.Page
 
   private void ApplyAuthorizationRules()
   {
-    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = ProjectTracker.Library.Admin.Roles.CanSaveObject();
+    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = ProjectTracker.Library.Admin.Roles.CanEditObject();
     this.AddRoleButton.Visible = ProjectTracker.Library.Admin.Roles.CanAddObject();
   }
 

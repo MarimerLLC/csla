@@ -7,14 +7,16 @@ using Csla.Data;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ResourceList : ReadOnlyListBase<ResourceList, ResourceList.ResourceInfo>
+  public class ResourceList : 
+    ReadOnlyListBase<ResourceList, ResourceList.ResourceInfo>
   {
-
     #region ResourceInfo Class
 
     [Serializable()]
-    public class ResourceInfo
+    public class ResourceInfo : 
+      ReadOnlyBase<ResourceInfo>
     {
+      #region Business Methods
 
       private int _id;
       private string _name;
@@ -22,62 +24,53 @@ namespace ProjectTracker.Library
       public int Id
       {
         get { return _id; }
-        internal set { _id = value; }
       }
 
       public string Name
       {
         get { return _name; }
-        internal set { _name = value; }
       }
 
-      public override bool Equals(object obj)
+      protected override object GetIdValue()
       {
-        if (obj is ResourceInfo)
-          return ((ResourceInfo)obj).Id == _id;
-        else
-          return false;
+        return _id;
       }
 
-      public override string ToString()
+      #endregion
+
+      #region Constructors
+
+      private ResourceInfo()
+      { /* require use of factory methods */ }
+
+      internal ResourceInfo(int id, string name)
       {
-        return Name;
+        _id = id;
+        _name = name;
       }
 
-      public override int GetHashCode()
-      {
-        return _id.GetHashCode();
-      }
+      #endregion
     }
 
     #endregion
 
     #region Factory Methods
 
-    public static ResourceList EmptyList()
-    {
-      return new ResourceList();
-    }
-
     public static ResourceList GetResourceList()
     {
       return DataPortal.Fetch<ResourceList>(new Criteria());
     }
 
-    [Serializable()]
-    private class Criteria
-    {
-      // no criteria - we retrieve all resources
-    }
-
     private ResourceList()
-    {
-      // prevent direct creation
-    }
+    { /* require use of factory methods */ }
 
     #endregion
 
     #region Data Access
+
+    [Serializable()]
+    private class Criteria
+    { /* no criteria - retrieve all resources */ }
 
     private void DataPortal_Fetch(Criteria criteria)
     {
@@ -89,14 +82,17 @@ namespace ProjectTracker.Library
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "getResources";
 
-          using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
+          using (SafeDataReader dr = 
+            new SafeDataReader(cm.ExecuteReader()))
           {
             IsReadOnly = false;
             while (dr.Read())
             {
-              ResourceInfo info = new ResourceInfo();
-              info.Id = dr.GetInt32("Id");
-              info.Name = string.Format("{0}, {1}", dr.GetString("LastName"), dr.GetString("FirstName"));
+              ResourceInfo info = new ResourceInfo(
+                dr.GetInt32("Id"),
+                string.Format("{0}, {1}", 
+                  dr.GetString("LastName"), 
+                  dr.GetString("FirstName")));
               this.Add(info);
             }
             IsReadOnly = false;

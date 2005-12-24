@@ -6,11 +6,9 @@ using Csla.Data;
 
 namespace ProjectTracker.Library
 {
-
   [Serializable()]
   public class ResourceAssignments : BusinessListBase<ResourceAssignments, ResourceAssignment>
   {
-
     #region Business Methods
 
     public ResourceAssignment this[Guid projectId]
@@ -63,10 +61,6 @@ namespace ProjectTracker.Library
       return new ResourceAssignments(dr);
     }
 
-    #endregion
-
-    #region Constructors
-
     private ResourceAssignments()
     {
       MarkAsChild();
@@ -101,6 +95,5 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
   }
 }

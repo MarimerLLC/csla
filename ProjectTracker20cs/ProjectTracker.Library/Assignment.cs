@@ -6,11 +6,24 @@ using System.Data.SqlClient;
 using Csla;
 using Csla.Validation;
 using Csla.Data;
+using System.Reflection;
 
 namespace ProjectTracker.Library
 {
   internal static class Assignment
   {
+
+    #region Business Methods
+
+    public static DateTime GetDefaultAssignedDate()
+    {
+      return DateTime.Today;
+    }
+
+    #endregion
+
+    #region Validation Rules
+
     /// <summary>
     /// Ensure the Role property value exists
     /// in RoleList
@@ -18,10 +31,14 @@ namespace ProjectTracker.Library
     public static bool ValidRole(object target, RuleArgs e)
     {
       int role = -1;
-      if (target is ProjectResource)
-        role = ((ProjectResource)target).Role;
-      else if (target is ResourceAssignment)
-        role = ((ResourceAssignment)target).Role;
+      PropertyInfo p = 
+        target.GetType().GetProperty(e.PropertyName);
+      role = (int)p.GetValue(target, null);
+
+      //if (target is ProjectResource)
+      //  role = ((ProjectResource)target).Role;
+      //else if (target is ResourceAssignment)
+      //  role = ((ResourceAssignment)target).Role;
 
       if (RoleList.GetList().ContainsKey(role))
         return true;
@@ -32,60 +49,58 @@ namespace ProjectTracker.Library
       }
     }
 
+    #endregion
+
     #region Data Access
 
-    public static DateTime GetDefaultAssignedDate()
-    {
-      return DateTime.Today;
-    }
-
-    public static byte[] AddAssignment(SqlConnection cn, Guid projectId, int resourceId, SmartDate assigned, int role)
+    public static byte[] AddAssignment(
+      SqlConnection cn, Guid projectId, int resourceId, 
+      SmartDate assigned, int role)
     {
       byte[] result = new byte[8];
       using (SqlCommand cm = cn.CreateCommand())
       {
-        cm.CommandType = CommandType.StoredProcedure;
         cm.CommandText = "addAssignment";
-        cm.Parameters.AddWithValue("@projectId", projectId);
-        cm.Parameters.AddWithValue("@resourceId", resourceId);
-        cm.Parameters.AddWithValue("@assigned", assigned.DBValue);
-        cm.Parameters.AddWithValue("@role", role);
-
-        using (SqlDataReader dr = cm.ExecuteReader())
-        {
-          dr.Read();
-          // get the timestamp for the new row
-          dr.GetBytes(0, 0, result, 0, 8);
-        }
+        return DoAddUpdate(
+          cm, projectId, resourceId, assigned, role);
       }
-      return result;
     }
 
     public static byte[] UpdateAssignment(SqlConnection cn,
-      Guid projectId, int resourceId, SmartDate assigned, int newRole, byte[] timestamp)
+      Guid projectId, int resourceId, SmartDate assigned, 
+      int newRole, byte[] timestamp)
     {
-      byte[] result = new byte[8];
       using (SqlCommand cm = cn.CreateCommand())
       {
-        cm.CommandType = CommandType.StoredProcedure;
         cm.CommandText = "updateAssignment";
-        cm.Parameters.AddWithValue("@projectId", projectId);
-        cm.Parameters.AddWithValue("@resourceId", resourceId);
-        cm.Parameters.AddWithValue("@assigned", assigned.DBValue);
-        cm.Parameters.AddWithValue("@role", newRole);
         cm.Parameters.AddWithValue("@lastChanged", timestamp);
+        return DoAddUpdate(
+          cm, projectId, resourceId, assigned, newRole);
+      }
+    }
 
-        using (SqlDataReader dr = cm.ExecuteReader())
-        {
-          dr.Read();
-          // get the new timestamp for the row
-          dr.GetBytes(0, 0, result, 0, 8);
-        }
+    private static byte[] DoAddUpdate(SqlCommand cm,
+      Guid projectId, int resourceId, SmartDate assigned,
+      int newRole)
+    {
+      byte[] result = new byte[8];
+      cm.CommandType = CommandType.StoredProcedure;
+      cm.Parameters.AddWithValue("@projectId", projectId);
+      cm.Parameters.AddWithValue("@resourceId", resourceId);
+      cm.Parameters.AddWithValue("@assigned", assigned.DBValue);
+      cm.Parameters.AddWithValue("@role", newRole);
+
+      using (SqlDataReader dr = cm.ExecuteReader())
+      {
+        dr.Read();
+        // get the new timestamp for the row
+        dr.GetBytes(0, 0, result, 0, 8);
       }
       return result;
     }
 
-    public static void RemoveAssignment(SqlConnection cn, Guid projectId, int resourceId)
+    public static void RemoveAssignment(
+      SqlConnection cn, Guid projectId, int resourceId)
     {
       using (SqlCommand cm = cn.CreateCommand())
       {

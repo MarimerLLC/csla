@@ -12,7 +12,8 @@ namespace ProjectTracker.Library.Security
 
     public static bool Login(string username, string password)
     {
-      PTIdentity identity = PTIdentity.GetIdentity(username, password);
+      PTIdentity identity = 
+        PTIdentity.GetIdentity(username, password);
       if (identity.IsAuthenticated)
       {
         PTPrincipal principal = new PTPrincipal(identity);

@@ -213,7 +213,7 @@ namespace PTWin
       // Project menu
       this.NewProjectToolStripMenuItem.Enabled = Project.CanAddObject();
       this.EditProjectToolStripMenuItem.Enabled = Project.CanGetObject();
-      if (Project.CanSaveObject())
+      if (Project.CanEditObject())
         this.EditProjectToolStripMenuItem.Text = "Edit project";
       else
         this.EditProjectToolStripMenuItem.Text = "View project";
@@ -222,14 +222,14 @@ namespace PTWin
       // Resource menu
       this.NewResourceToolStripMenuItem.Enabled = Resource.CanAddObject();
       this.EditResourceToolStripMenuItem.Enabled = Resource.CanGetObject();
-      if (Resource.CanSaveObject())
+      if (Resource.CanEditObject())
         this.EditResourceToolStripMenuItem.Text = "Edit resource";
       else
         this.EditResourceToolStripMenuItem.Text = "View resource";
       this.DeleteResourceToolStripMenuItem.Enabled = Resource.CanDeleteObject();
 
       // Admin menu
-      this.EditRolesToolStripMenuItem.Enabled = ProjectTracker.Library.Admin.Roles.CanSaveObject();
+      this.EditRolesToolStripMenuItem.Enabled = ProjectTracker.Library.Admin.Roles.CanEditObject();
     }
 
     #endregion

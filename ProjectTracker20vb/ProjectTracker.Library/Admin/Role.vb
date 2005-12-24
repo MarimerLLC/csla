@@ -62,11 +62,37 @@ Namespace Admin
 
 #End Region
 
-#Region " Constructors "
+#Region " Validation Rules "
 
-    Private Sub New()
+    Protected Overrides Sub AddBusinessRules()
 
-      MarkAsChild()
+      ValidationRules.AddRule( _
+        AddressOf Csla.Validation.CommonRules.StringRequired, "Name")
+      ValidationRules.AddRule(AddressOf NoDuplicates, "Id")
+
+    End Sub
+
+    Private Function NoDuplicates(ByVal target As Object, _
+      ByVal e As Csla.Validation.RuleArgs) As Boolean
+
+      Dim parent As Roles = CType(Me.Parent, Roles)
+      For Each item As Role In parent
+        If item.Id = mId AndAlso Not ReferenceEquals(item, Me) Then
+          e.Description = "Role Id must be unique"
+          Return False
+        End If
+      Next
+      Return True
+
+    End Function
+
+#End Region
+
+#Region " Authorization Rules "
+
+    Protected Overrides Sub AddAuthorizationRules()
+
+      AuthorizationRules.AllowWrite("Name", "Administrator")
 
     End Sub
 
@@ -85,6 +111,12 @@ Namespace Admin
       Return New Role(dr)
 
     End Function
+
+    Private Sub New()
+
+      MarkAsChild()
+
+    End Sub
 
 #End Region
 

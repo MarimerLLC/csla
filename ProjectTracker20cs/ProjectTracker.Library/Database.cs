@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Configuration;
 
 namespace ProjectTracker.Library
 {
@@ -8,7 +9,11 @@ namespace ProjectTracker.Library
     {
       public static string DbConn
       {
-        get { return System.Configuration.ConfigurationManager.ConnectionStrings["PTracker"].ConnectionString; }
+        get 
+        { 
+          return ConfigurationManager.ConnectionStrings
+            ["PTracker"].ConnectionString; 
+        }
       }
 
       public static string SecurityConn

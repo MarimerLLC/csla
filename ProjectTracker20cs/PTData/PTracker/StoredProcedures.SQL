@@ -14,6 +14,22 @@ DROP PROCEDURE [dbo].[updateRole]
 
 GO
 
+/****** Object:  StoredProcedure [dbo].[existsResource]    Script Date: 12/06/2005 11:10:57 ******/
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[existsResource]') AND type in (N'P', N'PC'))
+
+DROP PROCEDURE [dbo].[existsResource]
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[existsProject]    Script Date: 12/06/2005 11:10:57 ******/
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[existsProject]') AND type in (N'P', N'PC'))
+
+DROP PROCEDURE [dbo].[existsProject]
+
+GO
+
 /****** Object:  StoredProcedure [dbo].[addProject]    Script Date: 12/06/2005 11:10:57 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[addProject]') AND type in (N'P', N'PC'))
@@ -227,6 +243,70 @@ AS
 
 
 	SELECT LastChanged FROM Roles WHERE Id=@id
+
+	RETURN' 
+
+END
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[existsResource]    Script Date: 12/06/2005 11:10:57 ******/
+
+SET ANSI_NULLS ON
+
+GO
+
+SET QUOTED_IDENTIFIER ON
+
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[existsResource]') AND type in (N'P', N'PC'))
+
+BEGIN
+
+EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE existsResource
+
+	(
+
+		@id int
+
+	)
+
+AS
+
+	SELECT Id FROM Resources WHERE Id=@id
+
+	RETURN' 
+
+END
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[existsProject]    Script Date: 12/06/2005 11:10:57 ******/
+
+SET ANSI_NULLS ON
+
+GO
+
+SET QUOTED_IDENTIFIER ON
+
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[existsProject]') AND type in (N'P', N'PC'))
+
+BEGIN
+
+EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE existsProject
+
+	(
+
+		@id uniqueidentifier
+
+	)
+
+AS
+
+	SELECT Id FROM Projects WHERE Id=@id
 
 	RETURN' 
 

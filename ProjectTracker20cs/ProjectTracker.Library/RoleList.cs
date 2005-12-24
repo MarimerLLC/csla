@@ -7,14 +7,31 @@ using Csla.Data;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class RoleList : NameValueListBase<int, string>
+  public class RoleList : 
+    NameValueListBase<int, string>
   {
-
     #region Business Methods
 
     public static int DefaultRole()
     {
       return GetList().Items[0].Key;
+    }
+
+    #endregion
+
+    #region Factory Methods
+
+    private static RoleList _list;
+
+    /// <summary>
+    /// Returns a list of roles.
+    /// </summary>
+    public static RoleList GetList()
+    {
+      if (_list == null)
+        _list = DataPortal.Fetch<RoleList>
+          (new Criteria(typeof(RoleList)));
+      return _list;
     }
 
     /// <summary>
@@ -27,27 +44,8 @@ namespace ProjectTracker.Library
       _list = null;
     }
 
-    #endregion
-
-    #region Constructors
-
     private RoleList()
-    {
-
-    }
-
-    #endregion
-
-    #region Factory Methods
-
-    private static RoleList _list;
-
-    public static RoleList GetList()
-    {
-      if (_list == null)
-        _list = DataPortal.Fetch<RoleList>(new Criteria(typeof(RoleList)));
-      return _list;
-    }
+    { /* require use of factory methods */ }
 
     #endregion
 
@@ -63,12 +61,14 @@ namespace ProjectTracker.Library
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "getRoles";
 
-          using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
+          using (SafeDataReader dr = 
+            new SafeDataReader(cm.ExecuteReader()))
           {
             IsReadOnly = false;
             while (dr.Read())
             {
-              this.Add(new NameValuePair(dr.GetInt32("id"), dr.GetString("name")));
+              this.Add(new NameValuePair(
+                dr.GetInt32("id"), dr.GetString("name")));
             }
             IsReadOnly = true;
           }

@@ -55,7 +55,7 @@ namespace PTWin
       // have the controls enable/disable/etc
       this.ReadWriteAuthorization1.ResetControlAuthorization();
 
-      bool canSave = ProjectTracker.Library.Project.CanSaveObject();
+      bool canSave = ProjectTracker.Library.Project.CanEditObject();
 
       // enable/disable appropriate buttons
       this.OKButton.Enabled = canSave;

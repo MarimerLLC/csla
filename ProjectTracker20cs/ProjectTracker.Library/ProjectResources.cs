@@ -7,9 +7,9 @@ using Csla.Data;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectResources : BusinessListBase<ProjectResources, ProjectResource>
+  public class ProjectResources : 
+    BusinessListBase<ProjectResources, ProjectResource>
   {
-
     #region Business Methods
 
     public ProjectResource GetItem(int resourceId)
@@ -22,15 +22,15 @@ namespace ProjectTracker.Library
 
     public void Assign(int resourceId)
     {
-      DoAssignment(ProjectResource.NewProjectResource(resourceId, RoleList.DefaultRole()));
-    }
-
-    private void DoAssignment(ProjectResource resource)
-    {
-      if (!Contains(resource))
+      if (!Contains(resourceId))
+      {
+        ProjectResource resource =
+          ProjectResource.NewProjectResource(resourceId);
         this.Add(resource);
+      }
       else
-        throw new InvalidOperationException("Resource already assigned to project");
+        throw new InvalidOperationException(
+          "Resource already assigned to project");
     }
 
     public void Remove(int resourceId)
@@ -44,10 +44,6 @@ namespace ProjectTracker.Library
         }
       }
     }
-
-    #endregion
-
-    #region Contains
 
     public bool Contains(int resourceId)
     {
@@ -78,10 +74,6 @@ namespace ProjectTracker.Library
     {
       return new ProjectResources(dr);
     }
-
-    #endregion
-
-    #region Constructors
 
     private ProjectResources()
     {

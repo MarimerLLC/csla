@@ -276,11 +276,11 @@ Public Class Project
         Using dr As New SafeDataReader(cm.ExecuteReader)
           dr.Read()
           With dr
-            mId = .GetGuid(0)
-            mName = .GetString(1)
-            mStarted = .GetSmartDate(2, mStarted.EmptyIsMin)
-            mEnded = .GetSmartDate(3, mEnded.EmptyIsMin)
-            mDescription = .GetString(4)
+            mId = .GetGuid("Id")
+            mName = .GetString("Name")
+            mStarted = .GetSmartDate("Started", mStarted.EmptyIsMin)
+            mEnded = .GetSmartDate("Ended", mEnded.EmptyIsMin)
+            mDescription = .GetString("Description")
             .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
 
             ' load child objects
@@ -299,16 +299,10 @@ Public Class Project
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandType = CommandType.StoredProcedure
         cm.CommandText = "addProject"
-        LoadParameters(cm)
-        Using dr As SqlDataReader = cm.ExecuteReader
-          dr.Read()
-          dr.GetBytes(0, 0, mTimestamp, 0, 8)
-        End Using
+        DoInsertUpdate(cm)
       End Using
     End Using
-
     ' update child objects
     mResources.Update(Me)
 
@@ -321,32 +315,31 @@ Public Class Project
       Using cn As New SqlConnection(DataBase.DbConn)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
-          cm.CommandType = CommandType.StoredProcedure
           cm.CommandText = "updateProject"
-          LoadParameters(cm)
           cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
-          Using dr As SqlDataReader = cm.ExecuteReader
-            dr.Read()
-            dr.GetBytes(0, 0, mTimestamp, 0, 8)
-          End Using
+          DoInsertUpdate(cm)
         End Using
       End Using
     End If
-
     ' update child objects
     mResources.Update(Me)
 
   End Sub
 
-  Private Sub LoadParameters(ByVal cm As SqlCommand)
+  Private Sub DoInsertUpdate(ByVal cm As SqlCommand)
 
     With cm
+      .CommandType = CommandType.StoredProcedure
       .Parameters.AddWithValue("@id", mId.ToString)
       .Parameters.AddWithValue("@name", mName)
       .Parameters.AddWithValue("@started", mStarted.DBValue)
       .Parameters.AddWithValue("@ended", mEnded.DBValue)
       .Parameters.AddWithValue("@description", mDescription)
     End With
+    Using dr As SqlDataReader = cm.ExecuteReader
+      dr.Read()
+      dr.GetBytes(0, 0, mTimestamp, 0, 8)
+    End Using
 
   End Sub
 

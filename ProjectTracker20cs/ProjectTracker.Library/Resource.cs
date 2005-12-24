@@ -141,7 +141,7 @@ namespace ProjectTracker.Library
       return result;
     }
 
-    public static bool CanSaveObject()
+    public static bool CanEditObject()
     {
       return System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager");
     }
@@ -153,47 +153,47 @@ namespace ProjectTracker.Library
     public static Resource NewResource()
     {
       if (!CanAddObject())
-        throw new System.Security.SecurityException("User not authorized to add a resource");
+        throw new System.Security.SecurityException(
+          "User not authorized to add a resource");
       return DataPortal.Create<Resource>();
     }
 
     public static void DeleteResource(int id)
     {
       if (!CanDeleteObject())
-        throw new System.Security.SecurityException("User not authorized to remove a resource");
+        throw new System.Security.SecurityException(
+          "User not authorized to remove a resource");
       DataPortal.Delete(new Criteria(id));
     }
 
     public static Resource GetResource(int id)
     {
       if (!CanGetObject())
-        throw new System.Security.SecurityException("User not authorized to view a resource");
+        throw new System.Security.SecurityException(
+          "User not authorized to view a resource");
       return DataPortal.Fetch<Resource>(new Criteria(id));
     }
 
     public override Resource Save()
     {
-      if (IsDeleted)
-        if (!CanDeleteObject())
-          throw new System.Security.SecurityException("User not authorized to remove a resource");
-        else
-          if (!CanSaveObject())
-            throw new System.Security.SecurityException("User not authorized to update a resource");
+      if (IsDeleted && !CanDeleteObject())
+        throw new System.Security.SecurityException(
+          "User not authorized to remove a resource");
+      else if (IsNew && !CanAddObject())
+        throw new System.Security.SecurityException(
+          "User not authorized to add a resource");
+      else if (!CanEditObject())
+        throw new System.Security.SecurityException(
+          "User not authorized to update a resource");
       return base.Save();
     }
 
-    #endregion
-
-    #region Constructors
-
     private Resource()
-    {
-      // prevent direct instantiation
-    }
+    { /* require use of factory methods */ }
 
     #endregion
 
-    #region Criteria
+    #region Data Access
 
     [Serializable()]
     private class Criteria
@@ -205,14 +205,8 @@ namespace ProjectTracker.Library
       }
 
       public Criteria(int id)
-      {
-        _id = id;
-      }
+      { _id = id; }
     }
-
-    #endregion
-
-    #region Data Access
 
     [RunLocal()]
     private void DataPortal_Create(Criteria criteria)
@@ -231,7 +225,8 @@ namespace ProjectTracker.Library
           cm.CommandText = "getResource";
           cm.Parameters.AddWithValue("@id", criteria.Id);
 
-          using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
+          using (SafeDataReader dr = 
+            new SafeDataReader(cm.ExecuteReader()))
           {
             dr.Read();
             _id = dr.GetInt32("Id");
@@ -241,7 +236,8 @@ namespace ProjectTracker.Library
 
             // load child objects
             dr.NextResult();
-            _assignments = ResourceAssignments.GetResourceAssignments(dr);
+            _assignments = 
+              ResourceAssignments.GetResourceAssignments(dr);
           }
         }
       }
@@ -257,6 +253,7 @@ namespace ProjectTracker.Library
         {
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "addResource";
+          cm.Parameters.AddWithValue("@id", _id);
           cm.Parameters.AddWithValue("@lastName", _lastName);
           cm.Parameters.AddWithValue("@firstName", _firstName);
 
@@ -266,12 +263,9 @@ namespace ProjectTracker.Library
             _id = dr.GetInt32(0);
             dr.GetBytes(1, 0, _timestamp, 0, 8);
           }
-
-          cm.ExecuteNonQuery();
-
-          // update child objects
-          _assignments.Update(cn, this);
         }
+        // update child objects
+        _assignments.Update(cn, this);
       }
     }
 
@@ -299,7 +293,6 @@ namespace ProjectTracker.Library
             }
           }
         }
-
         // update child objects
         _assignments.Update(cn, this);
       }
@@ -312,6 +305,7 @@ namespace ProjectTracker.Library
       {
         // we're not new, so get rid of our data
         DataPortal_Delete(new Criteria(_id));
+        MarkNew();
       }
     }
 

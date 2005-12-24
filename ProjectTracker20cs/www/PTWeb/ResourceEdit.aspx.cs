@@ -50,7 +50,7 @@ public partial class ResourceEdit : System.Web.UI.Page
   {
     Resource obj = (Resource)Session["currentObject"];
     // Resource display
-    if (Resource.CanSaveObject())
+    if (Resource.CanEditObject())
     {
       if (obj.IsNew)
         this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
@@ -63,10 +63,10 @@ public partial class ResourceEdit : System.Web.UI.Page
       this.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly;
       this.AssignProjectButton.Visible = false;
     }
-    this.DetailsView1.Rows[this.DetailsView1.Rows.Count - 1].Visible = Resource.CanSaveObject();
+    this.DetailsView1.Rows[this.DetailsView1.Rows.Count - 1].Visible = Resource.CanEditObject();
 
     // resources display
-    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Resource.CanSaveObject();
+    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Resource.CanEditObject();
   }
 
   #region DetailsView

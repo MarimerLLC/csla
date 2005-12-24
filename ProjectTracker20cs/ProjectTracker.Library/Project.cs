@@ -270,18 +270,16 @@ namespace ProjectTracker.Library
       { _id = id; }
     }
 
-    protected override void DataPortal_Create(object criteria)
+    [RunLocal()]
+    private void DataPortal_Create(Criteria criteria)
     {
       _id = Guid.NewGuid();
-      Started = DateTime.Today.ToShortDateString();
-      Name = string.Empty;
+      _started.Date = DateTime.Today;
       ValidationRules.CheckRules();
     }
 
-    protected override void DataPortal_Fetch(object criteria)
+    private void DataPortal_Fetch(Criteria criteria)
     {
-      Criteria crit = (Criteria)criteria;
-
       using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
       {
         cn.Open();
@@ -289,17 +287,17 @@ namespace ProjectTracker.Library
         {
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "getProject";
-          cm.Parameters.AddWithValue("@id", crit.Id);
+          cm.Parameters.AddWithValue("@id", criteria.Id);
 
           using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
           {
             dr.Read();
-            _id = dr.GetGuid(0);
-            _name = dr.GetString(1);
-            _started = dr.GetSmartDate(2, _started.EmptyIsMin);
-            _ended = dr.GetSmartDate(3, _ended.EmptyIsMin);
-            _description = dr.GetString(4);
-            dr.GetBytes(5, 0, _timestamp, 0, 8);
+            _id = dr.GetGuid("Id");
+            _name = dr.GetString("Name");
+            _started = dr.GetSmartDate("Started", _started.EmptyIsMin);
+            _ended = dr.GetSmartDate("Ended", _ended.EmptyIsMin);
+            _description = dr.GetString("Description");
+            dr.GetBytes("LastChanged", 0, _timestamp, 0, 8);
 
             // load child objects
             dr.NextResult();
@@ -317,14 +315,8 @@ namespace ProjectTracker.Library
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
         {
-          cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "addProject";
-          LoadParameters(cm);
-          using (SqlDataReader dr = cm.ExecuteReader())
-          {
-            dr.Read();
-            dr.GetBytes(0, 0, _timestamp, 0, 8);
-          }
+          DoInsertUpdate(cm);
         }
       }
       // update child objects
@@ -341,36 +333,36 @@ namespace ProjectTracker.Library
           cn.Open();
           using (SqlCommand cm = cn.CreateCommand())
           {
-            cm.CommandType = CommandType.StoredProcedure;
             cm.CommandText = "updateProject";
-            LoadParameters(cm);
             cm.Parameters.AddWithValue("@lastChanged", _timestamp);
-            using (SqlDataReader dr = cm.ExecuteReader())
-            {
-              dr.Read();
-              dr.GetBytes(0, 0, _timestamp, 0, 8);
-            }
+            DoInsertUpdate(cm);
           }
         }
       }
-
       // update child objects
       _resources.Update(this);
     }
 
-    private void LoadParameters(SqlCommand cm)
+    private void DoInsertUpdate(SqlCommand cm)
     {
+      cm.CommandType = CommandType.StoredProcedure;
       cm.Parameters.AddWithValue("@id", _id.ToString());
       cm.Parameters.AddWithValue("@name", _name);
       cm.Parameters.AddWithValue("@started", _started.DBValue);
       cm.Parameters.AddWithValue("@ended", _ended.DBValue);
       cm.Parameters.AddWithValue("@description", _description);
+      using (SqlDataReader dr = cm.ExecuteReader())
+      {
+        dr.Read();
+        dr.GetBytes(0, 0, _timestamp, 0, 8);
+      }
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(new Criteria(_id));
+      MarkNew();
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
@@ -398,7 +390,8 @@ namespace ProjectTracker.Library
     public static bool Exists(Guid id)
     {
       ExistsCommand result;
-      result = DataPortal.Execute<ExistsCommand>(new ExistsCommand(id));
+      result = DataPortal.Execute<ExistsCommand>
+        (new ExistsCommand(id));
       return result.Exists;
     }
 
@@ -425,8 +418,8 @@ namespace ProjectTracker.Library
           cn.Open();
           using (SqlCommand cm = cn.CreateCommand())
           {
-            cm.CommandType = CommandType.Text;
-            cm.CommandText = "SELECT Id FROM Projects WHERE Id=@id";
+            cm.CommandType = CommandType.StoredProcedure;
+            cm.CommandText = "existsProject";
             cm.Parameters.AddWithValue("@id", _id);
             using (SqlDataReader dr = cm.ExecuteReader())
             {

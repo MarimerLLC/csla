@@ -5,11 +5,9 @@ using Csla;
 
 namespace ProjectTracker.Library.Admin
 {
-
   [Serializable()]
   public class Role : BusinessBase<Role>
   {
-
     #region Business Methods
 
     private int _id;
@@ -72,11 +70,37 @@ namespace ProjectTracker.Library.Admin
 
     #endregion
 
-    #region Constructors
+    #region Validation Rules
 
-    private Role()
+    protected override void AddBusinessRules()
     {
-      MarkAsChild();
+      ValidationRules.AddRule(
+        Csla.Validation.CommonRules.StringRequired, "Name");
+      ValidationRules.AddRule(NoDuplicates, "Id");
+    }
+
+    bool NoDuplicates(object target, Csla.Validation.RuleArgs e)
+    {
+      Roles parent = (Roles)this.Parent;
+      foreach (Role item in parent)
+        if (item.Id == _id && ReferenceEquals(item, this))
+        {
+          e.Description = "Role Id must be unique";
+          return false;
+        }
+      return true;
+    }
+
+    #endregion
+
+    #region Authorization Rules
+
+    protected override void AddAuthorizationRules()
+    {
+      AuthorizationRules.AllowWrite(
+        "Id", "Administrator");
+      AuthorizationRules.AllowWrite(
+        "Name", "Administrator");
     }
 
     #endregion
@@ -88,9 +112,15 @@ namespace ProjectTracker.Library.Admin
       return new Role();
     }
 
-    internal static Role GetRole(Csla.Data.SafeDataReader dr)
+    internal static Role 
+      GetRole(Csla.Data.SafeDataReader dr)
     {
       return new Role(dr);
+    }
+
+    private Role()
+    {
+      MarkAsChild();
     }
 
     #endregion
@@ -114,15 +144,8 @@ namespace ProjectTracker.Library.Admin
 
       using (SqlCommand cm = cn.CreateCommand())
       {
-        cm.CommandType = CommandType.StoredProcedure;
         cm.CommandText = "addRole";
-        cm.Parameters.AddWithValue("@id", _id);
-        cm.Parameters.AddWithValue("@name", _name);
-        using (SqlDataReader dr = cm.ExecuteReader())
-        {
-          dr.Read();
-          dr.GetBytes(0, 0, _timestamp, 0, 8);
-        }
+        DoInsertUpdate(cm);
       }
     }
 
@@ -133,18 +156,23 @@ namespace ProjectTracker.Library.Admin
 
       using (SqlCommand cm = cn.CreateCommand())
       {
-        cm.CommandType = CommandType.StoredProcedure;
         cm.CommandText = "updateRole";
-        cm.Parameters.AddWithValue("@id", _id);
-        cm.Parameters.AddWithValue("@name", _name);
         cm.Parameters.AddWithValue("@lastChanged", _timestamp);
-        using (SqlDataReader dr = cm.ExecuteReader())
-        {
-          dr.Read();
-          dr.GetBytes(0, 0, _timestamp, 0, 8);
-        }
-        cm.ExecuteNonQuery();
+        DoInsertUpdate(cm);
       }
+    }
+
+    void DoInsertUpdate(SqlCommand cm)
+    {
+      cm.CommandType = CommandType.StoredProcedure;
+      cm.Parameters.AddWithValue("@id", _id);
+      cm.Parameters.AddWithValue("@name", _name);
+      using (SqlDataReader dr = cm.ExecuteReader())
+      {
+        dr.Read();
+        dr.GetBytes(0, 0, _timestamp, 0, 8);
+      }
+      MarkOld();
     }
 
     internal void DeleteSelf(SqlConnection cn)
@@ -156,6 +184,7 @@ namespace ProjectTracker.Library.Admin
       if (this.IsNew) return;
 
       DeleteRole(cn, _id);
+      MarkNew();
     }
 
     internal static void DeleteRole(SqlConnection cn, int id)

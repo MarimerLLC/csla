@@ -6,15 +6,14 @@ using Csla.Data;
 
 namespace ProjectTracker.Library.Admin
 {
-
   /// <summary>
   /// Used to maintain the list of roles
   /// in the system.
   /// </summary>
   [Serializable()]
-  public class Roles : BusinessListBase<Roles, Role>
+  public class Roles : 
+    BusinessListBase<Roles, Role>
   {
-
     #region Business Methods
 
     /// <summary>
@@ -72,28 +71,9 @@ namespace ProjectTracker.Library.Admin
       return System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator");
     }
 
-    public static bool CanSaveObject()
+    public static bool CanEditObject()
     {
       return System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator");
-    }
-
-    #endregion
-
-    #region Constructors
-
-    private Roles()
-    {
-      this.AllowNew = true;
-    }
-
-    #endregion
-
-    #region Criteria
-
-    [Serializable()]
-    private class Criteria
-    {
-      // no criteria
     }
 
     #endregion
@@ -105,15 +85,25 @@ namespace ProjectTracker.Library.Admin
       return DataPortal.Fetch<Roles>(new Criteria());
     }
 
+    private Roles()
+    {
+      this.AllowNew = true;
+    }
+
     #endregion
 
     #region Data Access
 
+    [Serializable()]
+    private class Criteria
+    { /* no criteria */ }
+
     public override Roles Save()
     {
       // see if save is allowed
-      if (!CanSaveObject())
-        throw new System.Security.SecurityException("User not authorized to save roles");
+      if (!CanEditObject())
+        throw new System.Security.SecurityException(
+          "User not authorized to save roles");
 
       // do the save
       Roles result;
@@ -124,9 +114,11 @@ namespace ProjectTracker.Library.Admin
       return result;
     }
 
-    protected override void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    protected override void DataPortal_OnDataPortalInvokeComplete(
+      DataPortalEventArgs e)
     {
-      if (ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server)
+      if (ApplicationContext.ExecutionLocation == 
+        ApplicationContext.ExecutionLocations.Server)
       {
         // this runs on the server and invalidates
         // the RoleList cache

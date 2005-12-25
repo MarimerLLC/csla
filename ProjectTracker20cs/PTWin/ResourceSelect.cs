@@ -11,7 +11,6 @@ namespace PTWin
 {
   public partial class ResourceSelect : Form
   {
-
     private int _resourceId;
     public int ResourceId
     {
@@ -25,7 +24,9 @@ namespace PTWin
 
     private void OK_Button_Click(object sender, EventArgs e)
     {
-      _resourceId = ((ResourceList.ResourceInfo)this.ResourceListListBox.SelectedValue).Id;
+      _resourceId = 
+        ((ResourceList.ResourceInfo)
+         this.ResourceListListBox.SelectedValue).Id;
       this.DialogResult = DialogResult.OK;
       this.Close();
     }
@@ -38,7 +39,8 @@ namespace PTWin
 
     private void ResourceSelect_Load(object sender, EventArgs e)
     {
-      this.ResourceListBindingSource.DataSource = ResourceList.GetResourceList();
+      this.ResourceListBindingSource.DataSource =
+        ResourceList.GetResourceList();
     }
   }
 }

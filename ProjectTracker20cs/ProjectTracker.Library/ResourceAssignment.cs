@@ -9,7 +9,6 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceAssignment : BusinessBase<ResourceAssignment>
   {
-
     #region Business Methods
 
     private Guid _projectId = Guid.Empty;
@@ -55,7 +54,7 @@ namespace ProjectTracker.Library
       set
       {
         CanWriteProperty(true);
-        if (_role.Equals(value))
+        if (!_role.Equals(value))
         {
           _role = value;
           PropertyHasChanged();

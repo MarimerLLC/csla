@@ -25,6 +25,7 @@ Public Class RolesEdit
     Me.RolesBindingSource.DataSource = Nothing
     Me.RolesBindingSource.RaiseListChangedEvents = True
     Me.RolesBindingSource.DataSource = mRoles
+    Me.Close()
 
   End Sub
 

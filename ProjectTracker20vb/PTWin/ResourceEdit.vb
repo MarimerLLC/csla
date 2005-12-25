@@ -188,7 +188,7 @@ Public Class ResourceEdit
     ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) _
     Handles AssignmentsDataGridView.CellContentClick
 
-    If e.ColumnIndex = 1 Then
+    If e.ColumnIndex = 1 And e.RowIndex > -1 Then
       Dim projectId As Guid = _
         CType(Me.AssignmentsDataGridView.Rows(e.RowIndex).Cells(0).Value, Guid)
       MainForm.ShowEditProject(projectId)

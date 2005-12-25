@@ -184,7 +184,7 @@ Public Class ProjectEdit
   Private Sub ResourcesDataGridView_CellContentClick(ByVal sender As System.Object, _
     ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles ResourcesDataGridView.CellContentClick
 
-    If e.ColumnIndex = 1 Then
+    If e.ColumnIndex = 1 And e.RowIndex > -1 Then
       Dim resourceId As Integer = _
         CInt(Me.ResourcesDataGridView.Rows(e.RowIndex).Cells(0).Value)
       MainForm.ShowEditResource(resourceId)

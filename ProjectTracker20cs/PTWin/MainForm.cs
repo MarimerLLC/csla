@@ -14,6 +14,7 @@ namespace PTWin
     public MainForm()
     {
       InitializeComponent();
+      _main = this;
     }
 
     private static MainForm _main;
@@ -25,8 +26,6 @@ namespace PTWin
 
     private void MainForm_Load(object sender, EventArgs e)
     {
-      _main = this;
-      StatusChanged();
       DoLogin();
       if (DocumentCount == 0)
         this.DocumentsToolStringDropDownButton.Enabled = false;
@@ -66,6 +65,7 @@ namespace PTWin
             // project already loaded so just
             // display the existing winpart
             ShowWinPart(part);
+            return;
           }
         }
       }
@@ -113,10 +113,10 @@ namespace PTWin
 
     private void NewResourceToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        using (StatusBusy busy = new StatusBusy("Creating resource..."))
-        {
-          AddWinPart(new ResourceEdit(Resource.NewResource()));
-        }
+      using (StatusBusy busy = new StatusBusy("Creating resource..."))
+      {
+        AddWinPart(new ResourceEdit(Resource.NewResource()));
+      }
     }
 
     private void EditResourceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -132,7 +132,7 @@ namespace PTWin
 
     public void ShowEditResource(int resourceId)
     {
-      // see if this project is already loaded
+      // see if this resource is already loaded
       foreach (Control ctl in Panel1.Controls)
       {
         if (ctl is ResourceEdit)
@@ -140,9 +140,10 @@ namespace PTWin
           ResourceEdit part = (ResourceEdit)ctl;
           if (part.Resource.Id.Equals(resourceId))
           {
-            // project already loaded so just
+            // resource already loaded so just
             // display the existing winpart
             ShowWinPart(part);
+            return;
           }
         }
       }
@@ -186,7 +187,7 @@ namespace PTWin
 
     #endregion
 
-    #region Admin
+    #region Roles
 
     private void EditRolesToolStripMenuItem_Click(object sender, EventArgs e)
     {
@@ -211,30 +212,41 @@ namespace PTWin
     private void ApplyAuthorizationRules()
     {
       // Project menu
-      this.NewProjectToolStripMenuItem.Enabled = Project.CanAddObject();
-      this.EditProjectToolStripMenuItem.Enabled = Project.CanGetObject();
+      this.NewProjectToolStripMenuItem.Enabled = 
+        Project.CanAddObject();
+      this.EditProjectToolStripMenuItem.Enabled = 
+        Project.CanGetObject();
       if (Project.CanEditObject())
-        this.EditProjectToolStripMenuItem.Text = "Edit project";
+        this.EditProjectToolStripMenuItem.Text = 
+          "Edit project";
       else
-        this.EditProjectToolStripMenuItem.Text = "View project";
-      this.DeleteProjectToolStripMenuItem.Enabled = Project.CanDeleteObject();
+        this.EditProjectToolStripMenuItem.Text = 
+          "View project";
+      this.DeleteProjectToolStripMenuItem.Enabled = 
+        Project.CanDeleteObject();
 
       // Resource menu
-      this.NewResourceToolStripMenuItem.Enabled = Resource.CanAddObject();
-      this.EditResourceToolStripMenuItem.Enabled = Resource.CanGetObject();
+      this.NewResourceToolStripMenuItem.Enabled = 
+        Resource.CanAddObject();
+      this.EditResourceToolStripMenuItem.Enabled = 
+        Resource.CanGetObject();
       if (Resource.CanEditObject())
-        this.EditResourceToolStripMenuItem.Text = "Edit resource";
+        this.EditResourceToolStripMenuItem.Text = 
+          "Edit resource";
       else
-        this.EditResourceToolStripMenuItem.Text = "View resource";
-      this.DeleteResourceToolStripMenuItem.Enabled = Resource.CanDeleteObject();
+        this.EditResourceToolStripMenuItem.Text = 
+          "View resource";
+      this.DeleteResourceToolStripMenuItem.Enabled = 
+        Resource.CanDeleteObject();
 
       // Admin menu
-      this.EditRolesToolStripMenuItem.Enabled = ProjectTracker.Library.Admin.Roles.CanEditObject();
+      this.EditRolesToolStripMenuItem.Enabled = 
+        ProjectTracker.Library.Admin.Roles.CanEditObject();
     }
 
     #endregion
 
-    #region Login
+    #region Login/Logout
 
     private void LoginToolStripButton_Click(object sender, EventArgs e)
     {
@@ -279,10 +291,15 @@ namespace PTWin
 
     #region WinPart handling
 
+    /// <summary>
+    /// Add a new WinPart control to the
+    /// list of available documents and
+    /// make it the active WinPart.
+    /// </summary>
+    /// <param name="part">The WinPart control to add and display.</param>
     private void AddWinPart(WinPart part)
     {
       part.CloseWinPart += new EventHandler(CloseWinPart);
-      part.StatusChanged += new EventHandler<StatusChangedEventArgs>(StatusChanged);
       part.BackColor = toolStrip1.BackColor;
       Panel1.Controls.Add(part);
       ShowWinPart(part);
@@ -290,6 +307,11 @@ namespace PTWin
 
     private static Point TopLeft = new Point(0, 0);
 
+    /// <summary>
+    /// Make the specified WinPart the 
+    /// active, displayed control.
+    /// </summary>
+    /// <param name="part">The WinPart control to display.</param>
     private void ShowWinPart(WinPart part)
     {
       part.Location = TopLeft;
@@ -297,8 +319,13 @@ namespace PTWin
       part.Visible = true;
       part.BringToFront();
       this.DocumentsToolStringDropDownButton.Enabled = true;
+      this.Text = "Project Tracker - " + part.Title;
     }
 
+    /// <summary>
+    /// Resize all WinPart controls when the
+    /// container control is resized.
+    /// </summary>
     private void Panel1_Resize(object sender, EventArgs e)
     {
       foreach (Control ctl in Panel1.Controls)
@@ -306,6 +333,9 @@ namespace PTWin
           ctl.Size = Panel1.ClientSize;
     }
 
+    /// <summary>
+    /// Populate the Documents dropdown list.
+    /// </summary>
     private void DocumentsToolStringDropDownButton_DropDownOpening(object sender, EventArgs e)
     {
       ToolStripItemCollection items = DocumentsToolStringDropDownButton.DropDownItems;
@@ -315,6 +345,9 @@ namespace PTWin
           items.Add(((WinPart)ctl).Title, null, new EventHandler(DocumentClick));
     }
 
+    /// <summary>
+    /// Make selected WinPart the active control.
+    /// </summary>
     private void DocumentClick(object sender, EventArgs e)
     {
       foreach (Control ctl in Panel1.Controls)
@@ -323,21 +356,15 @@ namespace PTWin
         {
           ctl.Visible = true;
           ctl.BringToFront();
+          this.Text = "Project Tracker - " + ((WinPart)ctl).Title;
         }
       }
     }
-    
-    private void CloseWinPart(object sender, EventArgs e)
-    {
-      WinPart part = (WinPart)sender;
-      part.CloseWinPart -= new EventHandler(CloseWinPart);
-      part.Visible = false;
-      Panel1.Controls.Remove(part);
-      part.Dispose();
-      if (DocumentCount == 0)
-        this.DocumentsToolStringDropDownButton.Enabled = false;
-    }
 
+    /// <summary>
+    /// Gets a count of the number of loaded
+    /// documents.
+    /// </summary>
     public int DocumentCount
     {
       get
@@ -350,35 +377,39 @@ namespace PTWin
       }
     }
 
-    #endregion
-
-    #region Status
-
-    public void StatusChanged()
+    /// <summary>
+    /// Handles event from WinPart when that
+    /// WinPart is closing.
+    /// </summary>
+    private void CloseWinPart(object sender, EventArgs e)
     {
-      StatusChanged(string.Empty, false);
-    }
-
-    public void StatusChanged(string statusText)
-    {
-      StatusChanged(statusText, !string.IsNullOrEmpty(statusText));
-    }
-
-    public void StatusChanged(string statusText, bool busy)
-    {
-      StatusLabel.Text = statusText;
-      if (busy)
-        this.Cursor = Cursors.WaitCursor;
+      WinPart part = (WinPart)sender;
+      part.CloseWinPart -= new EventHandler(CloseWinPart);
+      part.Visible = false;
+      Panel1.Controls.Remove(part);
+      part.Dispose();
+      if (DocumentCount == 0)
+      {
+        this.DocumentsToolStringDropDownButton.Enabled = false;
+        this.Text = "Project Tracker";
+      }
       else
-        this.Cursor = Cursors.Default;
-    }
-
-    private void StatusChanged(object sender, StatusChangedEventArgs e)
-    {
-      StatusChanged(e.Status, e.Busy);
+      {
+        // Find the first WinPart control and set
+        // the main form's Text property accordingly.
+        // This works because the first WinPart 
+        // is the active one.
+        foreach (Control ctl in Panel1.Controls)
+        {
+          if (ctl is WinPart)
+          {
+            this.Text = "Project Tracker - " + ((WinPart)ctl).Title;
+            break;
+          }
+        }
+      }
     }
 
     #endregion
-
   }
 }

@@ -1,37 +1,35 @@
 using System;
+using System.Windows.Forms;
 
 namespace PTWin
 {
   public class StatusBusy : IDisposable
   {
-
     public StatusBusy(string statusText)
     {
-      MainForm.Instance.StatusChanged(statusText, true);
+      MainForm.Instance.StatusLabel.Text = statusText;
+      MainForm.Instance.Cursor = Cursors.WaitCursor;
     }
 
+    // IDisposable
     private bool _disposedValue = false; // To detect redundant calls
 
-    // IDisposable
     protected void Dispose(bool disposing)
     {
       if (!_disposedValue)
         if (disposing)
-          MainForm.Instance.StatusChanged();
+        {
+          MainForm.Instance.StatusLabel.Text = string.Empty;
+          MainForm.Instance.Cursor = Cursors.Default;
+        }
       _disposedValue = true;
     }
 
-    #region IDisposable Support
-
-    // This code added to correctly implement the disposable pattern
     public void Dispose()
     {
       // Do not change this code. Put cleanup code in Dispose(bool disposing) above
       Dispose(true);
       GC.SuppressFinalize(this);
     }
-
-    #endregion
-
   }
 }

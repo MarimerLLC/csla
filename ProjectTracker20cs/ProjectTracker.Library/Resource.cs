@@ -40,6 +40,7 @@ namespace ProjectTracker.Library
       set
       {
         CanWriteProperty(true);
+        if (value == null) value = string.Empty;
         if (_lastName != value)
         {
           _lastName = value;
@@ -58,6 +59,7 @@ namespace ProjectTracker.Library
       set
       {
         CanWriteProperty();
+        if (value == null) value = string.Empty;
         if (_firstName != value)
         {
           _firstName = value;

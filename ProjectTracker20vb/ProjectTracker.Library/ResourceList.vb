@@ -9,6 +9,7 @@ Public Class ResourceList
 
   <Serializable()> _
   Public Class ResourceInfo
+    Inherits ReadOnlyBase(Of ResourceInfo)
 
     Private mId As Integer
     Private mName As String
@@ -31,25 +32,8 @@ Public Class ResourceList
       End Set
     End Property
 
-    Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
-
-      If TypeOf obj Is ResourceInfo Then
-        Return CType(obj, ResourceInfo).Id = mId
-
-      Else
-        Return False
-      End If
-
-    End Function
-
-    Public Overrides Function ToString() As String
-
-      Return Name
-
-    End Function
-
-    Public Overrides Function GetHashCode() As Integer
-      Return mId.GetHashCode
+    Protected Overrides Function GetIdValue() As Object
+      Return mId
     End Function
 
   End Class

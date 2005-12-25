@@ -74,12 +74,13 @@ namespace PTWin
       this.ProjectListListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.ProjectListListBox.DataSource = this.ProjectListBindingSource;
       this.ProjectListListBox.DisplayMember = "Name";
       this.ProjectListListBox.Location = new System.Drawing.Point(12, 41);
       this.ProjectListListBox.Name = "ProjectListListBox";
       this.ProjectListListBox.Size = new System.Drawing.Size(419, 238);
       this.ProjectListListBox.TabIndex = 7;
-      this.ProjectListListBox.ValueMember = "ID";
+      this.ProjectListListBox.ValueMember = "Id";
       // 
       // TableLayoutPanel1
       // 
@@ -119,7 +120,7 @@ namespace PTWin
       // 
       // ProjectListBindingSource
       // 
-      this.ProjectListBindingSource.DataSource = typeof(ProjectTracker.Library.ProjectList);
+      this.ProjectListBindingSource.DataSource = typeof(ProjectTracker.Library.ProjectList.ProjectInfo);
       // 
       // ProjectSelect
       // 
@@ -156,6 +157,6 @@ namespace PTWin
     internal System.Windows.Forms.TableLayoutPanel TableLayoutPanel1;
     internal System.Windows.Forms.Button OK_Button;
     internal System.Windows.Forms.Button Cancel_Button;
-    internal System.Windows.Forms.BindingSource ProjectListBindingSource;
+    private System.Windows.Forms.BindingSource ProjectListBindingSource;
   }
 }

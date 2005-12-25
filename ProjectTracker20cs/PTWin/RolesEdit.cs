@@ -19,11 +19,15 @@ namespace PTWin
       InitializeComponent();
     }
 
-
     private void RolesEdit_Load(object sender, EventArgs e)
     {
       _roles = Roles.GetRoles();
       this.RolesBindingSource.DataSource = _roles;
+    }
+
+    protected internal override object GetIdValue()
+    {
+      return "Edit Roles";
     }
 
     private void SaveButton_Click(object sender, EventArgs e)
@@ -43,6 +47,7 @@ namespace PTWin
       this.RolesBindingSource.DataSource = null;
       this.RolesBindingSource.RaiseListChangedEvents = true;
       this.RolesBindingSource.DataSource = _roles;
+      this.Close();
     }
 
     private void CancelButton_Click(object sender, EventArgs e)

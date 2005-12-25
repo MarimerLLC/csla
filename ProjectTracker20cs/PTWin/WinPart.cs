@@ -10,15 +10,35 @@ namespace PTWin
 {
   public partial class WinPart : UserControl
   {
-
     public event EventHandler CloseWinPart;
-    public event EventHandler<StatusChangedEventArgs> StatusChanged;
+    //public event EventHandler<StatusChangedEventArgs> StatusChanged;
 
-    private string _title;
     public virtual string Title
     {
-      get { return _title; }
-      set { _title = value; }
+      get { return GetIdValue().ToString(); }
+    }
+
+    protected internal virtual object GetIdValue()
+    {
+      return null;
+    }
+
+    public override bool Equals(object obj)
+    {
+      object id = GetIdValue();
+      if (this.GetType().Equals(obj.GetType()) && id != null)
+        return ((WinPart)obj).GetIdValue().Equals(id);
+      else
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+      object id = GetIdValue();
+      if (id != null)
+        return GetIdValue().GetHashCode();
+      else
+        return base.GetHashCode();
     }
 
     protected void Close()
@@ -27,22 +47,25 @@ namespace PTWin
         CloseWinPart(this, EventArgs.Empty);
     }
 
-    protected virtual void OnStatusChanged()
-    {
-      OnStatusChanged(string.Empty, false);
-    }
+    //#region Status 
 
-    protected virtual void OnStatusChanged(string statusText)
-    {
-      if (StatusChanged != null)
-        StatusChanged(this, new StatusChangedEventArgs(statusText));
-    }
+    //protected void OnStatusChanged()
+    //{
+    //  OnStatusChanged(string.Empty, false);
+    //}
 
-    protected virtual void OnStatusChanged(string statusText, bool busy)
-    {
-      if (StatusChanged != null)
-        StatusChanged(this, new StatusChangedEventArgs(statusText, busy));
-    }
+    //protected void OnStatusChanged(string statusText)
+    //{
+    //  OnStatusChanged(statusText, !string.IsNullOrEmpty(statusText));
+    //}
+
+    //protected virtual void OnStatusChanged(string statusText, bool busy)
+    //{
+    //  if (StatusChanged != null)
+    //    StatusChanged(this, new StatusChangedEventArgs(statusText, busy));
+    //}
+
+    //#endregion
 
     #region CurrentPrincipalChanged
 

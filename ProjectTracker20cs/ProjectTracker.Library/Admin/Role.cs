@@ -55,6 +55,7 @@ namespace ProjectTracker.Library.Admin
       set
       {
         CanWriteProperty(true);
+        if (value == null) value = string.Empty;
         if (!_name.Equals(value))
         {
           _name = value;
@@ -83,7 +84,7 @@ namespace ProjectTracker.Library.Admin
     {
       Roles parent = (Roles)this.Parent;
       foreach (Role item in parent)
-        if (item.Id == _id && ReferenceEquals(item, this))
+        if (item.Id == _id && !ReferenceEquals(item, this))
         {
           e.Description = "Role Id must be unique";
           return false;

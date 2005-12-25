@@ -38,6 +38,12 @@ namespace ProjectTracker.Library
       {
         return _id;
       }
+
+      public override string ToString()
+      {
+        return _name;
+      }
+      
       #endregion
 
       #region Constructors

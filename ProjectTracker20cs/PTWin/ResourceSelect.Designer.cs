@@ -43,6 +43,7 @@ namespace PTWin
       this.ResourceListListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.ResourceListListBox.DataSource = this.ResourceListBindingSource;
       this.ResourceListListBox.Location = new System.Drawing.Point(12, 12);
       this.ResourceListListBox.Name = "ResourceListListBox";
       this.ResourceListListBox.Size = new System.Drawing.Size(416, 264);

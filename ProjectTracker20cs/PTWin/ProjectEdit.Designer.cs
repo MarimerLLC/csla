@@ -42,19 +42,21 @@ namespace PTWin
       this.UnassignButton = new System.Windows.Forms.Button();
       this.AssignButton = new System.Windows.Forms.Button();
       this.ResourcesDataGridView = new System.Windows.Forms.DataGridView();
-      this.Column1 = new System.Windows.Forms.DataGridViewLinkColumn();
-      this.Role = new System.Windows.Forms.DataGridViewComboBoxColumn();
+      this.RoleListBindingSource = new System.Windows.Forms.BindingSource(this.components);
+      this.ResourcesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+      this.ProjectBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.DescriptionTextBox = new System.Windows.Forms.TextBox();
       this.EndedTextBox = new System.Windows.Forms.TextBox();
       this.IdLabel1 = new System.Windows.Forms.Label();
       this.NameTextBox = new System.Windows.Forms.TextBox();
       this.StartedTextBox = new System.Windows.Forms.TextBox();
       this.ErrorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-      this.ProjectBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.ReadWriteAuthorization1 = new Csla.Windows.ReadWriteAuthorization(this.components);
-      this.ResourcesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-      this.RoleListBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.BindingSourceRefresh1 = new Csla.Windows.BindingSourceRefresh(this.components);
+      this.ResourceId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.FullName = new System.Windows.Forms.DataGridViewLinkColumn();
+      this.Role = new System.Windows.Forms.DataGridViewComboBoxColumn();
+      this.assignedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
       DescriptionLabel = new System.Windows.Forms.Label();
       EndedLabel = new System.Windows.Forms.Label();
       IdLabel = new System.Windows.Forms.Label();
@@ -62,10 +64,10 @@ namespace PTWin
       StartedLabel = new System.Windows.Forms.Label();
       this.GroupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.ResourcesDataGridView)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider1)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ProjectBindingSource)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ResourcesBindingSource)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.RoleListBindingSource)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.ResourcesBindingSource)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.ProjectBindingSource)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider1)).BeginInit();
       this.SuspendLayout();
       // 
       // DescriptionLabel
@@ -217,10 +219,14 @@ namespace PTWin
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.ReadWriteAuthorization1.SetApplyAuthorization(this.ResourcesDataGridView, false);
+      this.ResourcesDataGridView.AutoGenerateColumns = false;
       this.ResourcesDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
       this.ResourcesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Role});
+            this.ResourceId,
+            this.FullName,
+            this.Role,
+            this.assignedDataGridViewTextBoxColumn});
+      this.ResourcesDataGridView.DataSource = this.ResourcesBindingSource;
       this.ResourcesDataGridView.Location = new System.Drawing.Point(6, 19);
       this.ResourcesDataGridView.MultiSelect = false;
       this.ResourcesDataGridView.Name = "ResourcesDataGridView";
@@ -230,28 +236,28 @@ namespace PTWin
       this.ResourcesDataGridView.TabIndex = 10;
       this.ResourcesDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ResourcesDataGridView_CellContentClick);
       // 
-      // Column1
+      // RoleListBindingSource
       // 
-      this.Column1.DataPropertyName = "FullName";
-      this.Column1.HeaderText = "Name";
-      this.Column1.Name = "Column1";
-      this.Column1.ReadOnly = true;
-      this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-      this.Column1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-      this.Column1.Width = 60;
+      this.RoleListBindingSource.DataSource = typeof(ProjectTracker.Library.RoleList);
+      this.BindingSourceRefresh1.SetReadValuesOnChange(this.RoleListBindingSource, false);
       // 
-      // Role
+      // ResourcesBindingSource
       // 
-      this.Role.DataPropertyName = "Role";
-      this.Role.HeaderText = "Role";
-      this.Role.Name = "Role";
-      this.Role.Width = 35;
+      this.ResourcesBindingSource.DataMember = "Resources";
+      this.ResourcesBindingSource.DataSource = this.ProjectBindingSource;
+      this.BindingSourceRefresh1.SetReadValuesOnChange(this.ResourcesBindingSource, false);
+      // 
+      // ProjectBindingSource
+      // 
+      this.ProjectBindingSource.DataSource = typeof(ProjectTracker.Library.Project);
+      this.BindingSourceRefresh1.SetReadValuesOnChange(this.ProjectBindingSource, true);
       // 
       // DescriptionTextBox
       // 
       this.DescriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.DescriptionTextBox, false);
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.DescriptionTextBox, true);
+      this.DescriptionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ProjectBindingSource, "Description", true));
       this.DescriptionTextBox.Location = new System.Drawing.Point(81, 117);
       this.DescriptionTextBox.Multiline = true;
       this.DescriptionTextBox.Name = "DescriptionTextBox";
@@ -262,7 +268,8 @@ namespace PTWin
       // 
       this.EndedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.EndedTextBox, false);
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.EndedTextBox, true);
+      this.EndedTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ProjectBindingSource, "Ended", true));
       this.EndedTextBox.Location = new System.Drawing.Point(81, 91);
       this.EndedTextBox.Name = "EndedTextBox";
       this.EndedTextBox.Size = new System.Drawing.Size(460, 20);
@@ -273,6 +280,7 @@ namespace PTWin
       this.IdLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.ReadWriteAuthorization1.SetApplyAuthorization(this.IdLabel1, false);
+      this.IdLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ProjectBindingSource, "Id", true));
       this.IdLabel1.Location = new System.Drawing.Point(81, 13);
       this.IdLabel1.Name = "IdLabel1";
       this.IdLabel1.Size = new System.Drawing.Size(460, 23);
@@ -282,7 +290,8 @@ namespace PTWin
       // 
       this.NameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.NameTextBox, false);
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.NameTextBox, true);
+      this.NameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ProjectBindingSource, "Name", true));
       this.NameTextBox.Location = new System.Drawing.Point(81, 39);
       this.NameTextBox.Name = "NameTextBox";
       this.NameTextBox.Size = new System.Drawing.Size(460, 20);
@@ -292,7 +301,8 @@ namespace PTWin
       // 
       this.StartedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.StartedTextBox, false);
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.StartedTextBox, true);
+      this.StartedTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ProjectBindingSource, "Started", true));
       this.StartedTextBox.Location = new System.Drawing.Point(81, 65);
       this.StartedTextBox.Name = "StartedTextBox";
       this.StartedTextBox.Size = new System.Drawing.Size(460, 20);
@@ -304,21 +314,42 @@ namespace PTWin
       this.ErrorProvider1.ContainerControl = this;
       this.ErrorProvider1.DataSource = this.ProjectBindingSource;
       // 
-      // ProjectBindingSource
+      // ResourceId
       // 
-      this.ProjectBindingSource.DataSource = typeof(ProjectTracker.Library.Project);
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.ProjectBindingSource, true);
+      this.ResourceId.DataPropertyName = "ResourceId";
+      this.ResourceId.HeaderText = "ResourceId";
+      this.ResourceId.Name = "ResourceId";
+      this.ResourceId.ReadOnly = true;
+      this.ResourceId.Visible = false;
+      this.ResourceId.Width = 87;
       // 
-      // ResourcesBindingSource
+      // FullName
       // 
-      this.ResourcesBindingSource.DataMember = "Resources";
-      this.ResourcesBindingSource.DataSource = this.ProjectBindingSource;
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.ResourcesBindingSource, false);
+      this.FullName.DataPropertyName = "FullName";
+      this.FullName.HeaderText = "FullName";
+      this.FullName.Name = "FullName";
+      this.FullName.ReadOnly = true;
+      this.FullName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+      this.FullName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+      this.FullName.Width = 76;
       // 
-      // RoleListBindingSource
+      // Role
       // 
-      this.RoleListBindingSource.DataSource = typeof(ProjectTracker.Library.RoleList);
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.RoleListBindingSource, false);
+      this.Role.DataPropertyName = "Role";
+      this.Role.DataSource = this.RoleListBindingSource;
+      this.Role.DisplayMember = "Value";
+      this.Role.HeaderText = "Role";
+      this.Role.Name = "Role";
+      this.Role.ValueMember = "Key";
+      this.Role.Width = 35;
+      // 
+      // assignedDataGridViewTextBoxColumn
+      // 
+      this.assignedDataGridViewTextBoxColumn.DataPropertyName = "Assigned";
+      this.assignedDataGridViewTextBoxColumn.HeaderText = "Assigned";
+      this.assignedDataGridViewTextBoxColumn.Name = "assignedDataGridViewTextBoxColumn";
+      this.assignedDataGridViewTextBoxColumn.ReadOnly = true;
+      this.assignedDataGridViewTextBoxColumn.Width = 75;
       // 
       // ProjectEdit
       // 
@@ -344,10 +375,10 @@ namespace PTWin
       this.Size = new System.Drawing.Size(665, 454);
       this.GroupBox1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.ResourcesDataGridView)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider1)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ProjectBindingSource)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ResourcesBindingSource)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.RoleListBindingSource)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.ResourcesBindingSource)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.ProjectBindingSource)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -363,8 +394,6 @@ namespace PTWin
     internal System.Windows.Forms.Button UnassignButton;
     internal System.Windows.Forms.Button AssignButton;
     internal System.Windows.Forms.DataGridView ResourcesDataGridView;
-    internal System.Windows.Forms.DataGridViewLinkColumn Column1;
-    internal System.Windows.Forms.DataGridViewComboBoxColumn Role;
     internal System.Windows.Forms.TextBox DescriptionTextBox;
     internal System.Windows.Forms.TextBox EndedTextBox;
     internal System.Windows.Forms.Label IdLabel1;
@@ -376,5 +405,9 @@ namespace PTWin
     internal Csla.Windows.BindingSourceRefresh BindingSourceRefresh1;
     internal System.Windows.Forms.BindingSource ResourcesBindingSource;
     internal System.Windows.Forms.BindingSource RoleListBindingSource;
+    private System.Windows.Forms.DataGridViewTextBoxColumn ResourceId;
+    private System.Windows.Forms.DataGridViewLinkColumn FullName;
+    private System.Windows.Forms.DataGridViewComboBoxColumn Role;
+    private System.Windows.Forms.DataGridViewTextBoxColumn assignedDataGridViewTextBoxColumn;
   }
 }

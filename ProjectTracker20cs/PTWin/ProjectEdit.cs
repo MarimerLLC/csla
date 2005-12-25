@@ -24,23 +24,11 @@ namespace PTWin
     public override string Title
     {
       get { return _project.Name; }
-      set { _project.Name = value; }
     }
 
-    public override bool Equals(object obj)
+    protected internal override object GetIdValue()
     {
-      if ((obj is ProjectEdit)&&(_project != null))
-        return ((ProjectEdit)obj).Project.Equals(_project);
-      else
-        return false;
-    }
-
-    public override int GetHashCode()
-    {
-      if (_project != null)
-        return _project.GetHashCode();
-      else
-        return base.GetHashCode();
+      return _project;
     }
 
     private void ProjectEdit_CurrentPrincipalChanged(object sender, EventArgs e)
@@ -55,12 +43,15 @@ namespace PTWin
       // have the controls enable/disable/etc
       this.ReadWriteAuthorization1.ResetControlAuthorization();
 
-      bool canSave = ProjectTracker.Library.Project.CanEditObject();
+      bool canEdit = ProjectTracker.Library.Project.CanEditObject();
 
       // enable/disable appropriate buttons
-      this.OKButton.Enabled = canSave;
-      this.ApplyButton.Enabled = canSave;
-      this.Cancel_Button.Enabled = canSave;
+      this.OKButton.Enabled = canEdit;
+      this.ApplyButton.Enabled = canEdit;
+      this.Cancel_Button.Enabled = canEdit;
+
+      // enable/disable role column in grid
+      this.ResourcesDataGridView.Columns[2].ReadOnly = !canEdit;
     }
 
     private void SaveProject()
@@ -163,7 +154,7 @@ namespace PTWin
 
     private void ResourcesDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
     {
-      if (e.ColumnIndex == 1)
+      if (e.ColumnIndex == 1 && e.RowIndex > -1)
       {
         int resourceId = int.Parse(this.ResourcesDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString());
         MainForm.Instance.ShowEditResource(resourceId);

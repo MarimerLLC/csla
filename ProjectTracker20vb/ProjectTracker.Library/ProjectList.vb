@@ -9,6 +9,8 @@ Public Class ProjectList
 
   <Serializable()> _
   Public Class ProjectInfo
+    Inherits ReadOnlyBase(Of ProjectInfo)
+
     Private mId As Guid
     Private mName As String
 
@@ -30,17 +32,10 @@ Public Class ProjectList
       End Set
     End Property
 
-    Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
-      If TypeOf obj Is ProjectInfo Then
-        Return mId.Equals(CType(obj, ProjectInfo).Id)
-      Else
-        Return False
-      End If
+    Protected Overrides Function GetIdValue() As Object
+      Return mId
     End Function
 
-    Public Overrides Function GetHashCode() As Integer
-      Return mId.GetHashCode
-    End Function
   End Class
 
 #End Region

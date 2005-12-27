@@ -21,9 +21,9 @@ namespace PTWin
 
     #region WinPart Code
 
-    public override string Title
+    public override string ToString()
     {
-      get { return _project.Name; }
+      return _project.Name;
     }
 
     protected internal override object GetIdValue()
@@ -58,33 +58,39 @@ namespace PTWin
     {
       using (StatusBusy busy = new StatusBusy("Saving..."))
       {
-        // stop the flow of events
         this.ProjectBindingSource.RaiseListChangedEvents = false;
         this.ResourcesBindingSource.RaiseListChangedEvents = false;
-
         // do the save
-        Project old = _project.Clone();
-        _project.ApplyEdit();
+        Project temp = _project.Clone();
+        temp.ApplyEdit();
         try
         {
-          _project = _project.Save();
+          _project = temp.Save();
           _project.BeginEdit();
+          // rebind the UI
+          this.ProjectBindingSource.DataSource = null;
+          this.ProjectBindingSource.DataSource = _project;
+          this.ResourcesBindingSource.DataSource = null;
+          this.ResourcesBindingSource.DataSource = _project.Resources;
+          ApplyAuthorizationRules();
+        }
+        catch (Csla.DataPortalException ex)
+        {
+          MessageBox.Show(ex.BusinessException.ToString(),
+            "Error saving", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
         }
         catch (Exception ex)
         {
-          _project = old;
-          MessageBox.Show(ex.ToString(), "Save error",
-            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+          MessageBox.Show(ex.ToString(),
+            "Error Saving", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
         }
-
-        // rebind the UI
-        this.ProjectBindingSource.DataSource = null;
-        this.ResourcesBindingSource.DataSource = null;
-        this.ProjectBindingSource.RaiseListChangedEvents = true;
-        this.ResourcesBindingSource.RaiseListChangedEvents = true;
-        this.ProjectBindingSource.DataSource = _project;
-        this.ResourcesBindingSource.DataSource = _project.Resources;
-        ApplyAuthorizationRules();
+        finally
+        {
+          this.ProjectBindingSource.RaiseListChangedEvents = true;
+          this.ResourcesBindingSource.RaiseListChangedEvents = true;
+        }
       }
     }
 

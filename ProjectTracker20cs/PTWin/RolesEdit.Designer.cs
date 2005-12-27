@@ -31,11 +31,11 @@ namespace PTWin
       this.components = new System.ComponentModel.Container();
       this.CancelButton = new System.Windows.Forms.Button();
       this.SaveButton = new System.Windows.Forms.Button();
-      this.RolesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+      this.rolesBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.RolesDataGridView = new System.Windows.Forms.DataGridView();
       this.DataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.DataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      ((System.ComponentModel.ISupportInitialize)(this.RolesBindingSource)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.rolesBindingSource)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.RolesDataGridView)).BeginInit();
       this.SuspendLayout();
       // 
@@ -61,9 +61,9 @@ namespace PTWin
       this.SaveButton.UseVisualStyleBackColor = true;
       this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
       // 
-      // RolesBindingSource
+      // rolesBindingSource
       // 
-      this.RolesBindingSource.DataSource = typeof(ProjectTracker.Library.Admin.Roles);
+      this.rolesBindingSource.DataSource = typeof(ProjectTracker.Library.Admin.Roles);
       // 
       // RolesDataGridView
       // 
@@ -74,7 +74,7 @@ namespace PTWin
       this.RolesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.DataGridViewTextBoxColumn1,
             this.DataGridViewTextBoxColumn2});
-      this.RolesDataGridView.DataSource = this.RolesBindingSource;
+      this.RolesDataGridView.DataSource = this.rolesBindingSource;
       this.RolesDataGridView.Location = new System.Drawing.Point(12, 13);
       this.RolesDataGridView.MultiSelect = false;
       this.RolesDataGridView.Name = "RolesDataGridView";
@@ -103,7 +103,8 @@ namespace PTWin
       this.Name = "RolesEdit";
       this.Size = new System.Drawing.Size(541, 348);
       this.Load += new System.EventHandler(this.RolesEdit_Load);
-      ((System.ComponentModel.ISupportInitialize)(this.RolesBindingSource)).EndInit();
+      this.CurrentPrincipalChanged += new System.EventHandler(this.RolesEdit_CurrentPrincipalChanged);
+      ((System.ComponentModel.ISupportInitialize)(this.rolesBindingSource)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.RolesDataGridView)).EndInit();
       this.ResumeLayout(false);
 
@@ -113,7 +114,7 @@ namespace PTWin
 
     internal System.Windows.Forms.Button CancelButton;
     internal System.Windows.Forms.Button SaveButton;
-    internal System.Windows.Forms.BindingSource RolesBindingSource;
+    internal System.Windows.Forms.BindingSource rolesBindingSource;
     internal System.Windows.Forms.DataGridView RolesDataGridView;
     internal System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn1;
     internal System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn2;

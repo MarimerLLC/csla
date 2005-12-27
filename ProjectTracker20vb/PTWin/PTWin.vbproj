@@ -126,7 +126,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="StatusBusy.vb" />
-    <Compile Include="StatusChangedEventArgs.vb" />
     <Compile Include="WinPart.vb">
       <SubType>UserControl</SubType>
     </Compile>

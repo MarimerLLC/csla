@@ -26,7 +26,11 @@ namespace PTWin
 
     private void MainForm_Load(object sender, EventArgs e)
     {
-      DoLogin();
+      if (Csla.ApplicationContext.AuthenticationType == "Windows")
+        AppDomain.CurrentDomain.SetPrincipalPolicy(
+          System.Security.Principal.PrincipalPolicy.WindowsPrincipal);
+      else
+        DoLogin();
       if (DocumentCount == 0)
         this.DocumentsToolStringDropDownButton.Enabled = false;
       ApplyAuthorizationRules();
@@ -248,7 +252,8 @@ namespace PTWin
 
     #region Login/Logout
 
-    private void LoginToolStripButton_Click(object sender, EventArgs e)
+    private void LoginToolStripButton_Click(
+      object sender, EventArgs e)
     {
       DoLogin();
     }
@@ -262,13 +267,14 @@ namespace PTWin
         LoginForm loginForm = new LoginForm();
         loginForm.ShowDialog(this);
       }
-      else
-        ProjectTracker.Library.Security.PTPrincipal.Logout();
 
-      if (System.Threading.Thread.CurrentPrincipal.Identity.IsAuthenticated)
+      System.Security.Principal.IPrincipal user =
+        System.Threading.Thread.CurrentPrincipal;
+
+      if (user.Identity.IsAuthenticated)
       {
         this.LoginToolStripLabel.Text = "Logged in as " +
-          System.Threading.Thread.CurrentPrincipal.Identity.Name;
+          user.Identity.Name;
         this.LoginToolStripButton.Text = "Logout";
       }
       else
@@ -284,7 +290,6 @@ namespace PTWin
       foreach (Control ctl in Panel1.Controls)
         if (ctl is WinPart)
           ((WinPart)ctl).PrincipalChanged(this, EventArgs.Empty);
-
     }
 
     #endregion
@@ -302,10 +307,11 @@ namespace PTWin
       part.CloseWinPart += new EventHandler(CloseWinPart);
       part.BackColor = toolStrip1.BackColor;
       Panel1.Controls.Add(part);
+      this.DocumentsToolStringDropDownButton.Enabled = true;
       ShowWinPart(part);
     }
 
-    private static Point TopLeft = new Point(0, 0);
+    private static Point _topLeft = new Point(0, 0);
 
     /// <summary>
     /// Make the specified WinPart the 
@@ -314,12 +320,11 @@ namespace PTWin
     /// <param name="part">The WinPart control to display.</param>
     private void ShowWinPart(WinPart part)
     {
-      part.Location = TopLeft;
+      part.Location = _topLeft;
       part.Size = Panel1.ClientSize;
       part.Visible = true;
       part.BringToFront();
-      this.DocumentsToolStringDropDownButton.Enabled = true;
-      this.Text = "Project Tracker - " + part.Title;
+      this.Text = "Project Tracker - " + part.ToString();
     }
 
     /// <summary>
@@ -336,13 +341,23 @@ namespace PTWin
     /// <summary>
     /// Populate the Documents dropdown list.
     /// </summary>
-    private void DocumentsToolStringDropDownButton_DropDownOpening(object sender, EventArgs e)
+    private void DocumentsToolStringDropDownButton_DropDownOpening(
+      object sender, EventArgs e)
     {
-      ToolStripItemCollection items = DocumentsToolStringDropDownButton.DropDownItems;
+      ToolStripItemCollection items = 
+        DocumentsToolStringDropDownButton.DropDownItems;
+      foreach (ToolStripItem item in items)
+        item.Click -= new EventHandler(DocumentClick);
       items.Clear();
       foreach (Control ctl in Panel1.Controls)
         if (ctl is WinPart)
-          items.Add(((WinPart)ctl).Title, null, new EventHandler(DocumentClick));
+        {
+          ToolStripItem item = new ToolStripMenuItem();
+          item.Text = ((WinPart)ctl).ToString();
+          item.Tag = ctl;
+          item.Click += new EventHandler(DocumentClick);
+          items.Add(item);
+        }
     }
 
     /// <summary>
@@ -350,15 +365,8 @@ namespace PTWin
     /// </summary>
     private void DocumentClick(object sender, EventArgs e)
     {
-      foreach (Control ctl in Panel1.Controls)
-      {
-        if ((ctl is WinPart) && (((WinPart)ctl).Title == ((ToolStripItem)sender).Text))
-        {
-          ctl.Visible = true;
-          ctl.BringToFront();
-          this.Text = "Project Tracker - " + ((WinPart)ctl).Title;
-        }
-      }
+      WinPart ctl = ((ToolStripItem)sender).Tag as WinPart;
+      ShowWinPart(ctl);
     }
 
     /// <summary>
@@ -403,7 +411,7 @@ namespace PTWin
         {
           if (ctl is WinPart)
           {
-            this.Text = "Project Tracker - " + ((WinPart)ctl).Title;
+            this.Text = "Project Tracker - " + ((WinPart)ctl).ToString();
             break;
           }
         }

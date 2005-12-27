@@ -2,40 +2,56 @@ Public Class WinPart
   Inherits System.Windows.Forms.UserControl
 
   Public Event CloseWinPart As EventHandler
-  Public Event StatusChanged(ByVal sender As Object, ByVal e As StatusChangedEventArgs)
 
-  Private mTitle As String
+  Protected Overridable Function GetIdValue() As Object
 
-  Public Overridable Property Title() As String
-    Get
-      Return mTitle
-    End Get
-    Set(ByVal value As String)
-      mTitle = value
-    End Set
-  End Property
+    Return Nothing
+
+  End Function
+
+  Public Overrides Function Equals(ByVal obj As Object) As Boolean
+
+    If Me.DesignMode Then
+      Return MyBase.Equals(obj)
+    Else
+      Dim id As Object = GetIdValue()
+      If Me.GetType.Equals(obj.GetType) AndAlso id IsNot Nothing Then
+        Return CType(obj, WinPart).GetIdValue.Equals(id)
+
+      Else
+        Return False
+      End If
+    End If
+
+  End Function
+
+  Public Overrides Function GetHashCode() As Integer
+
+    Dim id As Object = GetIdValue()
+    If id IsNot Nothing Then
+      Return id.GetHashCode
+
+    Else
+      Return MyBase.GetHashCode
+    End If
+
+  End Function
+
+  Public Overrides Function ToString() As String
+
+    Dim id As Object = GetIdValue()
+    If id IsNot Nothing Then
+      Return id.ToString
+
+    Else
+      Return MyBase.ToString
+    End If
+
+  End Function
 
   Protected Sub Close()
 
     RaiseEvent CloseWinPart(Me, EventArgs.Empty)
-
-  End Sub
-
-  Protected Overridable Sub OnStatusChanged()
-
-    OnStatusChanged("", False)
-
-  End Sub
-
-  Protected Overridable Sub OnStatusChanged(ByVal statusText As String)
-
-    RaiseEvent StatusChanged(Me, New StatusChangedEventArgs(statusText))
-
-  End Sub
-
-  Protected Overridable Sub OnStatusChanged(ByVal statusText As String, ByVal busy As Boolean)
-
-    RaiseEvent StatusChanged(Me, New StatusChangedEventArgs(statusText, busy))
 
   End Sub
 

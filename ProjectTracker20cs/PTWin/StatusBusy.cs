@@ -5,9 +5,14 @@ namespace PTWin
 {
   public class StatusBusy : IDisposable
   {
+    private string _oldStatus;
+    private Cursor _oldCursor;
+
     public StatusBusy(string statusText)
     {
+      _oldStatus = MainForm.Instance.StatusLabel.Text;
       MainForm.Instance.StatusLabel.Text = statusText;
+      _oldCursor = MainForm.Instance.Cursor;
       MainForm.Instance.Cursor = Cursors.WaitCursor;
     }
 
@@ -19,8 +24,8 @@ namespace PTWin
       if (!_disposedValue)
         if (disposing)
         {
-          MainForm.Instance.StatusLabel.Text = string.Empty;
-          MainForm.Instance.Cursor = Cursors.Default;
+          MainForm.Instance.StatusLabel.Text = _oldStatus;
+          MainForm.Instance.Cursor = _oldCursor;
         }
       _disposedValue = true;
     }

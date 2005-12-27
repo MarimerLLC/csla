@@ -88,7 +88,6 @@ Partial Class RolesEdit
     Me.Controls.Add(Me.RolesDataGridView)
     Me.Name = "RolesEdit"
     Me.Size = New System.Drawing.Size(541, 348)
-    Me.Title = "Edit roles"
     CType(Me.RolesBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
     CType(Me.RolesDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
     Me.ResumeLayout(False)

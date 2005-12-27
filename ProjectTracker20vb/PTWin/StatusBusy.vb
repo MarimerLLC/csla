@@ -2,9 +2,15 @@ Public Class StatusBusy
 
   Implements IDisposable
 
+  Private mOldStatus As String
+  Private mOldCursor As Cursor
+
   Public Sub New(ByVal statusText As String)
 
-    MainForm.StatusChanged(statusText, True)
+    mOldStatus = MainForm.StatusLabel.Text
+    MainForm.StatusLabel.Text = statusText
+    mOldCursor = MainForm.Cursor
+    MainForm.Cursor = Cursors.WaitCursor
 
   End Sub
 
@@ -14,7 +20,8 @@ Public Class StatusBusy
   Protected Overridable Sub Dispose(ByVal disposing As Boolean)
     If Not Me.disposedValue Then
       If disposing Then
-        MainForm.StatusChanged()
+        MainForm.StatusLabel.Text = mOldStatus
+        MainForm.Cursor = mOldCursor
       End If
 
     End If

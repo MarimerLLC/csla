@@ -13,39 +13,15 @@ Public Class ResourceEdit
 
 #Region " WinPart Code "
 
-  Public Overrides Property Title() As String
-    Get
-      Return mResource.LastName
-    End Get
-    Set(ByVal value As String)
-      mResource.LastName = value
-    End Set
-  End Property
+  Protected Overrides Function GetIdValue() As Object
 
-  Public Overrides Function Equals(ByVal obj As Object) As Boolean
-
-    If TypeOf obj Is ResourceEdit Then
-      If mResource IsNot Nothing Then
-        Return CType(obj, ResourceEdit).Resource.Equals(mResource)
-
-      Else
-        Return False
-      End If
-
-    Else
-      Return False
-    End If
+    Return mResource
 
   End Function
 
-  Public Overrides Function GetHashCode() As Integer
+  Public Overrides Function ToString() As String
 
-    If mResource IsNot Nothing Then
-      Return mResource.GetHashCode
-
-    Else
-      Return MyBase.GetHashCode
-    End If
+    Return mResource.FullName
 
   End Function
 

@@ -17,7 +17,8 @@ namespace PTWin
 
     private void OK_Click(object sender, EventArgs e)
     {
-      using (StatusBusy busy = new StatusBusy("Verifying credentials..."))
+      using (StatusBusy busy = 
+        new StatusBusy("Verifying credentials..."))
       {
         ProjectTracker.Library.Security.PTPrincipal.Login(
           this.UsernameTextBox.Text, this.PasswordTextBox.Text);

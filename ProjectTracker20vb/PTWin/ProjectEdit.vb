@@ -13,39 +13,15 @@ Public Class ProjectEdit
 
 #Region " WinPart Code "
 
-  Public Overrides Property Title() As String
-    Get
-      Return mProject.Name
-    End Get
-    Set(ByVal value As String)
-      mProject.Name = value
-    End Set
-  End Property
+  Protected Overrides Function GetIdValue() As Object
 
-  Public Overrides Function Equals(ByVal obj As Object) As Boolean
-
-    If TypeOf obj Is ProjectEdit Then
-      If mProject IsNot Nothing Then
-        Return CType(obj, ProjectEdit).Project.Equals(mProject)
-
-      Else
-        Return False
-      End If
-
-    Else
-      Return False
-    End If
+    Return mProject
 
   End Function
 
-  Public Overrides Function GetHashCode() As Integer
+  Public Overrides Function ToString() As String
 
-    If mProject IsNot Nothing Then
-      Return mProject.GetHashCode
-
-    Else
-      Return MyBase.GetHashCode
-    End If
+    Return mProject.Name
 
   End Function
 

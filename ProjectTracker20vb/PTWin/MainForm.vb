@@ -2,7 +2,6 @@ Public Class MainForm
 
   Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-    StatusChanged()
     DoLogin()
     If DocumentCount = 0 Then
       Me.DocumentsToolStripDropDownButton.Enabled = False
@@ -260,7 +259,6 @@ Public Class MainForm
   Private Sub AddWinPart(ByVal part As WinPart)
 
     AddHandler part.CloseWinPart, AddressOf CloseWinPart
-    AddHandler part.StatusChanged, AddressOf StatusChanged
     part.BackColor = ToolStrip1.BackColor
     Panel1.Controls.Add(part)
     ShowWinPart(part)
@@ -295,7 +293,7 @@ Public Class MainForm
     items.Clear()
     For Each ctl As Control In Panel1.Controls
       If TypeOf ctl Is WinPart Then
-        items.Add(CType(ctl, WinPart).Title, Nothing, AddressOf DocumentClick)
+        items.Add(CType(ctl, WinPart).ToString, Nothing, AddressOf DocumentClick)
       End If
     Next
   End Sub
@@ -303,7 +301,7 @@ Public Class MainForm
   Private Sub DocumentClick(ByVal sender As Object, ByVal e As EventArgs)
 
     For Each ctl As Control In Panel1.Controls
-      If TypeOf ctl Is WinPart AndAlso CType(ctl, WinPart).Title = CType(sender, ToolStripItem).Text Then
+      If TypeOf ctl Is WinPart AndAlso CType(ctl, WinPart).ToString = CType(sender, ToolStripItem).Text Then
         ctl.Visible = True
         ctl.BringToFront()
       End If
@@ -335,40 +333,6 @@ Public Class MainForm
       Return count
     End Get
   End Property
-
-#End Region
-
-#Region " Status "
-
-  Public Sub StatusChanged()
-
-    StatusChanged("", False)
-
-  End Sub
-
-  Public Sub StatusChanged(ByVal statusText As String)
-
-    StatusChanged(statusText, Len(statusText) > 0)
-
-  End Sub
-
-  Public Sub StatusChanged(ByVal statusText As String, ByVal busy As Boolean)
-
-    StatusLabel.Text = statusText
-    If busy Then
-      Me.Cursor = Cursors.WaitCursor
-
-    Else
-      Me.Cursor = Cursors.Default
-    End If
-
-  End Sub
-
-  Private Sub StatusChanged(ByVal sender As Object, ByVal e As StatusChangedEventArgs)
-
-    StatusChanged(e.Status, e.Busy)
-
-  End Sub
 
 #End Region
 

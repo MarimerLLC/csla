@@ -21,8 +21,23 @@ namespace PTWin
 
     private void RolesEdit_Load(object sender, EventArgs e)
     {
-      _roles = Roles.GetRoles();
-      this.RolesBindingSource.DataSource = _roles;
+      try
+      {
+        _roles = Roles.GetRoles();
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        MessageBox.Show(ex.BusinessException.ToString(), 
+          "Data load error", MessageBoxButtons.OK, 
+          MessageBoxIcon.Exclamation);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.ToString(),
+          "Data load error", MessageBoxButtons.OK,
+          MessageBoxIcon.Exclamation);
+      }
+      this.rolesBindingSource.DataSource = _roles;
     }
 
     protected internal override object GetIdValue()
@@ -32,27 +47,43 @@ namespace PTWin
 
     private void SaveButton_Click(object sender, EventArgs e)
     {
-      this.RolesBindingSource.RaiseListChangedEvents = false;
-      Roles old = _roles.Clone();
+      this.rolesBindingSource.RaiseListChangedEvents = false;
+      Roles temp = _roles.Clone();
       try
       {
-        _roles = _roles.Save();
+        _roles = temp.Save();
+        // rebind the UI
+        this.rolesBindingSource.DataSource = null;
+        this.rolesBindingSource.DataSource = _roles;
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        MessageBox.Show(ex.BusinessException.ToString(),
+          "Error saving", MessageBoxButtons.OK,
+          MessageBoxIcon.Exclamation);
       }
       catch (Exception ex)
       {
-        _roles = old;
         MessageBox.Show(ex.ToString(), "Error saving",
           MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
-      this.RolesBindingSource.DataSource = null;
-      this.RolesBindingSource.RaiseListChangedEvents = true;
-      this.RolesBindingSource.DataSource = _roles;
+      finally
+      {
+        this.rolesBindingSource.RaiseListChangedEvents = true;
+      }
       this.Close();
     }
 
     private void CancelButton_Click(object sender, EventArgs e)
     {
       this.Close();
+    }
+
+    private void RolesEdit_CurrentPrincipalChanged(
+      object sender, EventArgs e)
+    {
+      if (!Roles.CanEditObject())
+        this.Close();
     }
   }
 }

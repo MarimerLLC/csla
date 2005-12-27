@@ -26,9 +26,9 @@ namespace PTWin
       return _resource;
     }
 
-    public override string Title
+    public override string ToString()
     {
-      get { return _resource.FullName; }
+      return _resource.FullName;
     }
 
     private void ResourceEdit_CurrentPrincipalChanged(object sender, EventArgs e)

@@ -79,21 +79,21 @@ namespace PTWin
       // NewProjectToolStripMenuItem
       // 
       this.NewProjectToolStripMenuItem.Name = "NewProjectToolStripMenuItem";
-      this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
       this.NewProjectToolStripMenuItem.Text = "New project";
       this.NewProjectToolStripMenuItem.Click += new System.EventHandler(this.NewProjectToolStripMenuItem_Click);
       // 
       // EditProjectToolStripMenuItem
       // 
       this.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem";
-      this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
       this.EditProjectToolStripMenuItem.Text = "Edit project";
       this.EditProjectToolStripMenuItem.Click += new System.EventHandler(this.EditProjectToolStripMenuItem_Click);
       // 
       // DeleteProjectToolStripMenuItem
       // 
       this.DeleteProjectToolStripMenuItem.Name = "DeleteProjectToolStripMenuItem";
-      this.DeleteProjectToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.DeleteProjectToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
       this.DeleteProjectToolStripMenuItem.Text = "Delete project";
       this.DeleteProjectToolStripMenuItem.Click += new System.EventHandler(this.DeleteProjectToolStripMenuItem_Click);
       // 
@@ -112,21 +112,21 @@ namespace PTWin
       // NewResourceToolStripMenuItem
       // 
       this.NewResourceToolStripMenuItem.Name = "NewResourceToolStripMenuItem";
-      this.NewResourceToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.NewResourceToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
       this.NewResourceToolStripMenuItem.Text = "New resource";
       this.NewResourceToolStripMenuItem.Click += new System.EventHandler(this.NewResourceToolStripMenuItem_Click);
       // 
       // EditResourceToolStripMenuItem
       // 
       this.EditResourceToolStripMenuItem.Name = "EditResourceToolStripMenuItem";
-      this.EditResourceToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.EditResourceToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
       this.EditResourceToolStripMenuItem.Text = "Edit resource";
       this.EditResourceToolStripMenuItem.Click += new System.EventHandler(this.EditResourceToolStripMenuItem_Click);
       // 
       // DeleteResourceToolStripMenuItem
       // 
       this.DeleteResourceToolStripMenuItem.Name = "DeleteResourceToolStripMenuItem";
-      this.DeleteResourceToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.DeleteResourceToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
       this.DeleteResourceToolStripMenuItem.Text = "Delete resource";
       this.DeleteResourceToolStripMenuItem.Click += new System.EventHandler(this.DeleteResourceToolStripMenuItem_Click);
       // 
@@ -143,7 +143,7 @@ namespace PTWin
       // EditRolesToolStripMenuItem
       // 
       this.EditRolesToolStripMenuItem.Name = "EditRolesToolStripMenuItem";
-      this.EditRolesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.EditRolesToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
       this.EditRolesToolStripMenuItem.Text = "Edit roles";
       this.EditRolesToolStripMenuItem.Click += new System.EventHandler(this.EditRolesToolStripMenuItem_Click);
       // 
@@ -196,8 +196,7 @@ namespace PTWin
       // StatusLabel
       // 
       this.StatusLabel.Name = "StatusLabel";
-      this.StatusLabel.Size = new System.Drawing.Size(111, 17);
-      this.StatusLabel.Text = "ToolStripStatusLabel1";
+      this.StatusLabel.Size = new System.Drawing.Size(0, 17);
       // 
       // MainForm
       // 

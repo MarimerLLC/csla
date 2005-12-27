@@ -29,6 +29,8 @@ Partial Class MainForm
     Me.NewResourceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
     Me.EditResourceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
     Me.DeleteResourceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
+    Me.AdminToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton
+    Me.EditRolesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
     Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator
     Me.LoginToolStripLabel = New System.Windows.Forms.ToolStripLabel
     Me.LoginToolStripButton = New System.Windows.Forms.ToolStripButton
@@ -37,8 +39,6 @@ Partial Class MainForm
     Me.Panel1 = New System.Windows.Forms.Panel
     Me.StatusStrip1 = New System.Windows.Forms.StatusStrip
     Me.StatusLabel = New System.Windows.Forms.ToolStripStatusLabel
-    Me.AdminToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton
-    Me.EditRolesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
     Me.ToolStrip1.SuspendLayout()
     Me.StatusStrip1.SuspendLayout()
     Me.SuspendLayout()
@@ -64,19 +64,19 @@ Partial Class MainForm
     'NewProjectToolStripMenuItem
     '
     Me.NewProjectToolStripMenuItem.Name = "NewProjectToolStripMenuItem"
-    Me.NewProjectToolStripMenuItem.Size = New System.Drawing.Size(153, 22)
+    Me.NewProjectToolStripMenuItem.Size = New System.Drawing.Size(142, 22)
     Me.NewProjectToolStripMenuItem.Text = "New project"
     '
     'EditProjectToolStripMenuItem
     '
     Me.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem"
-    Me.EditProjectToolStripMenuItem.Size = New System.Drawing.Size(153, 22)
+    Me.EditProjectToolStripMenuItem.Size = New System.Drawing.Size(142, 22)
     Me.EditProjectToolStripMenuItem.Text = "Edit project"
     '
     'DeleteProjectToolStripMenuItem
     '
     Me.DeleteProjectToolStripMenuItem.Name = "DeleteProjectToolStripMenuItem"
-    Me.DeleteProjectToolStripMenuItem.Size = New System.Drawing.Size(153, 22)
+    Me.DeleteProjectToolStripMenuItem.Size = New System.Drawing.Size(142, 22)
     Me.DeleteProjectToolStripMenuItem.Text = "Delete project"
     '
     'ResourcesToolStripDropDownButton
@@ -91,20 +91,35 @@ Partial Class MainForm
     'NewResourceToolStripMenuItem
     '
     Me.NewResourceToolStripMenuItem.Name = "NewResourceToolStripMenuItem"
-    Me.NewResourceToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
+    Me.NewResourceToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
     Me.NewResourceToolStripMenuItem.Text = "New resource"
     '
     'EditResourceToolStripMenuItem
     '
     Me.EditResourceToolStripMenuItem.Name = "EditResourceToolStripMenuItem"
-    Me.EditResourceToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
+    Me.EditResourceToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
     Me.EditResourceToolStripMenuItem.Text = "Edit resource"
     '
     'DeleteResourceToolStripMenuItem
     '
     Me.DeleteResourceToolStripMenuItem.Name = "DeleteResourceToolStripMenuItem"
-    Me.DeleteResourceToolStripMenuItem.Size = New System.Drawing.Size(161, 22)
+    Me.DeleteResourceToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
     Me.DeleteResourceToolStripMenuItem.Text = "Delete resource"
+    '
+    'AdminToolStripDropDownButton
+    '
+    Me.AdminToolStripDropDownButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EditRolesToolStripMenuItem})
+    Me.AdminToolStripDropDownButton.Image = CType(resources.GetObject("AdminToolStripDropDownButton.Image"), System.Drawing.Image)
+    Me.AdminToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
+    Me.AdminToolStripDropDownButton.Name = "AdminToolStripDropDownButton"
+    Me.AdminToolStripDropDownButton.Size = New System.Drawing.Size(65, 22)
+    Me.AdminToolStripDropDownButton.Text = "Admin"
+    '
+    'EditRolesToolStripMenuItem
+    '
+    Me.EditRolesToolStripMenuItem.Name = "EditRolesToolStripMenuItem"
+    Me.EditRolesToolStripMenuItem.Size = New System.Drawing.Size(118, 22)
+    Me.EditRolesToolStripMenuItem.Text = "Edit roles"
     '
     'ToolStripSeparator1
     '
@@ -161,23 +176,7 @@ Partial Class MainForm
     'StatusLabel
     '
     Me.StatusLabel.Name = "StatusLabel"
-    Me.StatusLabel.Size = New System.Drawing.Size(111, 17)
-    Me.StatusLabel.Text = "ToolStripStatusLabel1"
-    '
-    'AdminToolStripDropDownButton
-    '
-    Me.AdminToolStripDropDownButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EditRolesToolStripMenuItem})
-    Me.AdminToolStripDropDownButton.Image = CType(resources.GetObject("AdminToolStripDropDownButton.Image"), System.Drawing.Image)
-    Me.AdminToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
-    Me.AdminToolStripDropDownButton.Name = "AdminToolStripDropDownButton"
-    Me.AdminToolStripDropDownButton.Size = New System.Drawing.Size(65, 22)
-    Me.AdminToolStripDropDownButton.Text = "Admin"
-    '
-    'EditRolesToolStripMenuItem
-    '
-    Me.EditRolesToolStripMenuItem.Name = "EditRolesToolStripMenuItem"
-    Me.EditRolesToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-    Me.EditRolesToolStripMenuItem.Text = "Edit roles"
+    Me.StatusLabel.Size = New System.Drawing.Size(0, 17)
     '
     'MainForm
     '

@@ -106,9 +106,12 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
+    <None Include="Properties\DataSources\ProjectTracker.Library.Admin.Roles.datasource" />
     <None Include="Properties\DataSources\ProjectTracker.Library.Project.datasource" />
     <None Include="Properties\DataSources\ProjectTracker.Library.ProjectList.datasource" />
     <None Include="Properties\DataSources\ProjectTracker.Library.Resource.datasource" />
+    <None Include="Properties\DataSources\ProjectTracker.Library.ResourceList.datasource" />
+    <None Include="Properties\DataSources\ProjectTracker.Library.RoleList.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -137,7 +140,6 @@
       <DependentUpon>RolesEdit.cs</DependentUpon>
     </Compile>
     <Compile Include="StatusBusy.cs" />
-    <Compile Include="StatusChangedEventArgs.cs" />
     <Compile Include="WinPart.cs">
       <SubType>UserControl</SubType>
     </Compile>

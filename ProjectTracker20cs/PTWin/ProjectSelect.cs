@@ -41,16 +41,21 @@ namespace PTWin
 
     private void ProjectSelect_Load(object sender, EventArgs e)
     {
-      ProjectList list = ProjectList.GetProjectList();
+      DisplayList(ProjectList.GetProjectList());
+    }
+
+    private void DisplayList(ProjectList list)
+    {
       Csla.SortedBindingList<ProjectList.ProjectInfo> sortedList =
         new Csla.SortedBindingList<ProjectList.ProjectInfo>(list);
       sortedList.ApplySort("Name", ListSortDirection.Ascending);
-      this.ProjectListBindingSource.DataSource = sortedList;
+      this.projectListBindingSource.DataSource = sortedList;
     }
 
-    private void GetListButton_Click(object sender, EventArgs e)
+    private void GetListButton_Click(
+      object sender, EventArgs e)
     {
-      this.ProjectListBindingSource.DataSource = ProjectList.GetProjectList(NameTextBox.Text);
+      DisplayList(ProjectList.GetProjectList(NameTextBox.Text));
     }
   }
 }

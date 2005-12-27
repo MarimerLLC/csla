@@ -33,12 +33,12 @@ namespace PTWin
       this.NameTextBox = new System.Windows.Forms.TextBox();
       this.NameLabel = new System.Windows.Forms.Label();
       this.ProjectListListBox = new System.Windows.Forms.ListBox();
+      this.projectListBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.TableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.OK_Button = new System.Windows.Forms.Button();
       this.Cancel_Button = new System.Windows.Forms.Button();
-      this.ProjectListBindingSource = new System.Windows.Forms.BindingSource(this.components);
+      ((System.ComponentModel.ISupportInitialize)(this.projectListBindingSource)).BeginInit();
       this.TableLayoutPanel1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.ProjectListBindingSource)).BeginInit();
       this.SuspendLayout();
       // 
       // GetListButton
@@ -74,13 +74,17 @@ namespace PTWin
       this.ProjectListListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.ProjectListListBox.DataSource = this.ProjectListBindingSource;
+      this.ProjectListListBox.DataSource = this.projectListBindingSource;
       this.ProjectListListBox.DisplayMember = "Name";
       this.ProjectListListBox.Location = new System.Drawing.Point(12, 41);
       this.ProjectListListBox.Name = "ProjectListListBox";
       this.ProjectListListBox.Size = new System.Drawing.Size(419, 238);
       this.ProjectListListBox.TabIndex = 7;
       this.ProjectListListBox.ValueMember = "Id";
+      // 
+      // projectListBindingSource
+      // 
+      this.projectListBindingSource.DataSource = typeof(ProjectTracker.Library.ProjectList.ProjectInfo);
       // 
       // TableLayoutPanel1
       // 
@@ -118,10 +122,6 @@ namespace PTWin
       this.Cancel_Button.Text = "Cancel";
       this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
       // 
-      // ProjectListBindingSource
-      // 
-      this.ProjectListBindingSource.DataSource = typeof(ProjectTracker.Library.ProjectList.ProjectInfo);
-      // 
       // ProjectSelect
       // 
       this.AcceptButton = this.OK_Button;
@@ -139,10 +139,10 @@ namespace PTWin
       this.MinimizeBox = false;
       this.Name = "ProjectSelect";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-      this.Text = "ProjectSelect";
+      this.Text = "Select Project";
       this.Load += new System.EventHandler(this.ProjectSelect_Load);
+      ((System.ComponentModel.ISupportInitialize)(this.projectListBindingSource)).EndInit();
       this.TableLayoutPanel1.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.ProjectListBindingSource)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -157,6 +157,6 @@ namespace PTWin
     internal System.Windows.Forms.TableLayoutPanel TableLayoutPanel1;
     internal System.Windows.Forms.Button OK_Button;
     internal System.Windows.Forms.Button Cancel_Button;
-    private System.Windows.Forms.BindingSource ProjectListBindingSource;
+    private System.Windows.Forms.BindingSource projectListBindingSource;
   }
 }

@@ -38,21 +38,26 @@ namespace PTWin
 
     #region Projects
 
-    private void NewProjectToolStripMenuItem_Click(object sender, EventArgs e)
+    private void NewProjectToolStripMenuItem_Click(
+      object sender, EventArgs e)
     {
-      using (StatusBusy busy = new StatusBusy("Creating project..."))
+      using (StatusBusy busy = 
+        new StatusBusy("Creating project..."))
       {
         AddWinPart(new ProjectEdit(Project.NewProject()));
       }
     }
 
-    private void EditProjectToolStripMenuItem_Click(object sender, EventArgs e)
+    private void EditProjectToolStripMenuItem_Click(
+      object sender, EventArgs e)
     {
-      ProjectSelect dlg = new ProjectSelect();
-      dlg.Text = "Edit Project";
-      if (dlg.ShowDialog() == DialogResult.OK)
+      using (ProjectSelect dlg = new ProjectSelect())
       {
-        ShowEditProject(dlg.ProjectId);
+        dlg.Text = "Edit Project";
+        if (dlg.ShowDialog() == DialogResult.OK)
+        {
+          ShowEditProject(dlg.ProjectId);
+        }
       }
     }
 
@@ -78,7 +83,22 @@ namespace PTWin
       // so load it and display the new winpart
       using (StatusBusy busy = new StatusBusy("Loading project..."))
       {
-        AddWinPart(new ProjectEdit(Project.GetProject(projectId)));
+        try
+        {
+          AddWinPart(new ProjectEdit(Project.GetProject(projectId)));
+        }
+        catch (Csla.DataPortalException ex)
+        {
+          MessageBox.Show(ex.BusinessException.ToString(),
+            "Error loading", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.ToString(),
+            "Error loading", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
+        }
       }
     }
 
@@ -101,10 +121,17 @@ namespace PTWin
             {
               Project.DeleteProject(projectId);
             }
+            catch (Csla.DataPortalException ex)
+            {
+              MessageBox.Show(ex.BusinessException.ToString(),
+                "Error deleting", MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation);
+            }
             catch (Exception ex)
             {
-              MessageBox.Show(ex.ToString(), "Error deleting",
-                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+              MessageBox.Show(ex.ToString(),
+                "Error deleting", MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation);
             }
           }
         }
@@ -123,13 +150,14 @@ namespace PTWin
       }
     }
 
-    private void EditResourceToolStripMenuItem_Click(object sender, EventArgs e)
+    private void EditResourceToolStripMenuItem_Click(
+      object sender, EventArgs e)
     {
       ResourceSelect dlg = new ResourceSelect();
       dlg.Text = "Edit Resource";
       if (dlg.ShowDialog() == DialogResult.OK)
       {
-        // get the project id
+        // get the resource id
         ShowEditResource(dlg.ResourceId);
       }
     }
@@ -156,11 +184,27 @@ namespace PTWin
       // so load it and display the new winpart
       using (StatusBusy busy = new StatusBusy("Loading resource..."))
       {
-        AddWinPart(new ResourceEdit(Resource.GetResource(resourceId)));
+        try
+        {
+          AddWinPart(new ResourceEdit(Resource.GetResource(resourceId)));
+        }
+        catch (Csla.DataPortalException ex)
+        {
+          MessageBox.Show(ex.BusinessException.ToString(),
+            "Error loading", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.ToString(),
+            "Error loading", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
+        }
       }
     }
 
-    private void DeleteResourceToolStripMenuItem_Click(object sender, EventArgs e)
+    private void DeleteResourceToolStripMenuItem_Click(
+      object sender, EventArgs e)
     {
       ResourceSelect dlg = new ResourceSelect();
       dlg.Text = "Delete Resource";
@@ -173,16 +217,24 @@ namespace PTWin
           MessageBoxButtons.YesNo, MessageBoxIcon.Question,
           MessageBoxDefaultButton.Button2) == DialogResult.Yes)
         {
-          using (StatusBusy busy = new StatusBusy("Deleting resource..."))
+          using (StatusBusy busy = 
+            new StatusBusy("Deleting resource..."))
           {
             try
             {
               Resource.DeleteResource(resourceId);
             }
+            catch (Csla.DataPortalException ex)
+            {
+              MessageBox.Show(ex.BusinessException.ToString(), 
+                "Error deleting", MessageBoxButtons.OK, 
+                MessageBoxIcon.Exclamation);
+            }
             catch (Exception ex)
             {
-              MessageBox.Show(ex.ToString(), "Error deleting",
-                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+              MessageBox.Show(ex.ToString(), 
+                "Error deleting", MessageBoxButtons.OK, 
+                MessageBoxIcon.Exclamation);
             }
           }
         }
@@ -193,7 +245,8 @@ namespace PTWin
 
     #region Roles
 
-    private void EditRolesToolStripMenuItem_Click(object sender, EventArgs e)
+    private void EditRolesToolStripMenuItem_Click(
+      object sender, EventArgs e)
     {
       // see if this form is already loaded
       foreach (Control ctl in Panel1.Controls)

@@ -31,7 +31,8 @@ namespace PTWin
       return _project;
     }
 
-    private void ProjectEdit_CurrentPrincipalChanged(object sender, EventArgs e)
+    private void ProjectEdit_CurrentPrincipalChanged(
+      object sender, EventArgs e)
     {
       ApplyAuthorizationRules();
     }
@@ -43,7 +44,8 @@ namespace PTWin
       // have the controls enable/disable/etc
       this.ReadWriteAuthorization1.ResetControlAuthorization();
 
-      bool canEdit = ProjectTracker.Library.Project.CanEditObject();
+      bool canEdit = 
+        ProjectTracker.Library.Project.CanEditObject();
 
       // enable/disable appropriate buttons
       this.OKButton.Enabled = canEdit;
@@ -51,15 +53,16 @@ namespace PTWin
       this.Cancel_Button.Enabled = canEdit;
 
       // enable/disable role column in grid
-      this.ResourcesDataGridView.Columns[2].ReadOnly = !canEdit;
+      this.ResourcesDataGridView.Columns[2].ReadOnly = 
+        !canEdit;
     }
 
     private void SaveProject()
     {
       using (StatusBusy busy = new StatusBusy("Saving..."))
       {
-        this.ProjectBindingSource.RaiseListChangedEvents = false;
-        this.ResourcesBindingSource.RaiseListChangedEvents = false;
+        this.projectBindingSource.RaiseListChangedEvents = false;
+        this.resourcesBindingSource.RaiseListChangedEvents = false;
         // do the save
         Project temp = _project.Clone();
         temp.ApplyEdit();
@@ -68,10 +71,11 @@ namespace PTWin
           _project = temp.Save();
           _project.BeginEdit();
           // rebind the UI
-          this.ProjectBindingSource.DataSource = null;
-          this.ProjectBindingSource.DataSource = _project;
-          this.ResourcesBindingSource.DataSource = null;
-          this.ResourcesBindingSource.DataSource = _project.Resources;
+          this.projectBindingSource.DataSource = null;
+          this.resourcesBindingSource.DataSource = null;
+          this.projectBindingSource.DataSource = _project;
+          this.resourcesBindingSource.DataSource = 
+            _project.Resources;
           ApplyAuthorizationRules();
         }
         catch (Csla.DataPortalException ex)
@@ -88,8 +92,8 @@ namespace PTWin
         }
         finally
         {
-          this.ProjectBindingSource.RaiseListChangedEvents = true;
-          this.ResourcesBindingSource.RaiseListChangedEvents = true;
+          this.projectBindingSource.RaiseListChangedEvents = true;
+          this.resourcesBindingSource.RaiseListChangedEvents = true;
         }
       }
     }
@@ -98,15 +102,12 @@ namespace PTWin
     {
       InitializeComponent();
 
-      this.CurrentPrincipalChanged += new EventHandler(ProjectEdit_CurrentPrincipalChanged);
-
       _project = project;
       _project.BeginEdit();
-      _project.PropertyChanged += new PropertyChangedEventHandler(mProject_PropertyChanged);
 
-      this.RoleListBindingSource.DataSource = RoleList.GetList();
-      this.ProjectBindingSource.DataSource = _project;
-      this.ResourcesBindingSource.DataSource = _project.Resources;
+      this.roleListBindingSource.DataSource = RoleList.GetList();
+      this.projectBindingSource.DataSource = _project;
+      this.resourcesBindingSource.DataSource = _project.Resources;
 
       ApplyAuthorizationRules();
     }
@@ -144,25 +145,21 @@ namespace PTWin
     {
       if (this.ResourcesDataGridView.SelectedRows.Count > 0)
       {
-        int resourceId = int.Parse(this.ResourcesDataGridView.SelectedRows[0].Cells[0].Value.ToString());
+        int resourceId = int.Parse(
+          this.ResourcesDataGridView.SelectedRows[0].
+          Cells[0].Value.ToString());
         _project.Resources.Remove(resourceId);
       }
     }
 
-    private void mProject_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      if (e.PropertyName == "IsDirty")
-      {
-        this.ProjectBindingSource.ResetBindings(false);
-        this.ResourcesBindingSource.ResetBindings(false);
-      }
-    }
-
-    private void ResourcesDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+    private void ResourcesDataGridView_CellContentClick(
+      object sender, DataGridViewCellEventArgs e)
     {
       if (e.ColumnIndex == 1 && e.RowIndex > -1)
       {
-        int resourceId = int.Parse(this.ResourcesDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString());
+        int resourceId = int.Parse(
+          this.ResourcesDataGridView.Rows[
+            e.RowIndex].Cells[0].Value.ToString());
         MainForm.Instance.ShowEditResource(resourceId);
       }
     }

@@ -147,7 +147,7 @@ namespace Csla
         // not dirty
         MarkOld();
         // now mark the object as dirty so it can save
-        MarkDirty();
+        MarkDirty(true);
       }
       return this.Save();
     }

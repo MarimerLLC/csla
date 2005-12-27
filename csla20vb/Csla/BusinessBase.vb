@@ -153,7 +153,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       ' not dirty
       MarkOld()
       ' now mark the object as dirty so it can save
-      MarkDirty()
+      MarkDirty(True)
     End If
     Return Me.Save()
 

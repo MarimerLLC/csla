@@ -103,10 +103,12 @@ namespace Csla.DataPortalClient
     {
       if (obj != null)
       {
-        MemoryStream buffer = new MemoryStream();
-        BinaryFormatter formatter = new BinaryFormatter();
-        formatter.Serialize(buffer, obj);
-        return buffer.ToArray();
+        using (MemoryStream buffer = new MemoryStream())
+        {
+          BinaryFormatter formatter = new BinaryFormatter();
+          formatter.Serialize(buffer, obj);
+          return buffer.ToArray();
+        }
       }
       return null;
     }
@@ -115,9 +117,11 @@ namespace Csla.DataPortalClient
     {
       if (obj != null)
       {
-        MemoryStream buffer = new MemoryStream(obj);
-        BinaryFormatter formatter = new BinaryFormatter();
-        return formatter.Deserialize(buffer);
+        using (MemoryStream buffer = new MemoryStream(obj))
+        {
+          BinaryFormatter formatter = new BinaryFormatter();
+          return formatter.Deserialize(buffer);
+        }
       }
       return null;
     }

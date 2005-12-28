@@ -1,9 +1,9 @@
 Imports System.Reflection
 Imports Csla.Server
 
-Friend Class MethodCaller
+Friend Module MethodCaller
 
-  Public Shared Function CallMethodIfImplemented(ByVal obj As Object, _
+  Public Function CallMethodIfImplemented(ByVal obj As Object, _
     ByVal method As String, ByVal ParamArray parameters() As Object) As Object
 
     Dim info As MethodInfo = _
@@ -17,7 +17,7 @@ Friend Class MethodCaller
 
   End Function
 
-  Public Shared Function CallMethod(ByVal obj As Object, _
+  Public Function CallMethod(ByVal obj As Object, _
     ByVal method As String, ByVal ParamArray parameters() As Object) As Object
 
     Dim info As MethodInfo = _
@@ -31,7 +31,7 @@ Friend Class MethodCaller
 
   End Function
 
-  Public Shared Function CallMethod(ByVal obj As Object, _
+  Public Function CallMethod(ByVal obj As Object, _
     ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) As Object
 
     ' call a Public method on the object
@@ -48,7 +48,7 @@ Friend Class MethodCaller
 
   End Function
 
-  Public Shared Function GetMethod(ByVal objectType As Type, _
+  Public Function GetMethod(ByVal objectType As Type, _
     ByVal method As String, ByVal ParamArray parameters() As Object) As MethodInfo
 
     Dim flags As BindingFlags = _
@@ -132,7 +132,7 @@ Friend Class MethodCaller
 
   End Function
 
-  Public Shared Function GetObjectType(ByVal criteria As Object) As Type
+  Public Function GetObjectType(ByVal criteria As Object) As Type
 
     If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
       ' get the type of the actual business object
@@ -147,4 +147,4 @@ Friend Class MethodCaller
 
   End Function
 
-End Class
+End Module

@@ -5,7 +5,7 @@ Imports System.Collections.Specialized
 ''' Provides consistent context information between the client
 ''' and server DataPortal objects. 
 ''' </summary>
-Public NotInheritable Class ApplicationContext
+Public Module ApplicationContext
 
 #Region " Client/Global Context "
 
@@ -23,7 +23,7 @@ Public NotInheritable Class ApplicationContext
   ''' the server to the client.
   ''' </para>
   ''' </remarks>
-  Public Shared ReadOnly Property ClientContext() As HybridDictionary
+  Public ReadOnly Property ClientContext() As HybridDictionary
     Get
       Dim slot As System.LocalDataStoreSlot = _
         Thread.GetNamedDataSlot("Csla.ClientContext")
@@ -51,7 +51,7 @@ Public NotInheritable Class ApplicationContext
   ''' will be transferred bi-directionally across the network.
   ''' </para>
   ''' </remarks>
-  Public Shared ReadOnly Property GlobalContext() As HybridDictionary
+  Public ReadOnly Property GlobalContext() As HybridDictionary
     Get
       Dim slot As System.LocalDataStoreSlot = _
         Thread.GetNamedDataSlot("Csla.GlobalContext")
@@ -65,7 +65,7 @@ Public NotInheritable Class ApplicationContext
     End Get
   End Property
 
-  Friend Shared Function GetClientContext() As HybridDictionary
+  Friend Function GetClientContext() As HybridDictionary
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("Csla.ClientContext")
@@ -73,7 +73,7 @@ Public NotInheritable Class ApplicationContext
 
   End Function
 
-  Friend Shared Function GetGlobalContext() As HybridDictionary
+  Friend Function GetGlobalContext() As HybridDictionary
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("Csla.GlobalContext")
@@ -81,7 +81,7 @@ Public NotInheritable Class ApplicationContext
 
   End Function
 
-  Friend Shared Sub SetContext(ByVal clientContext As HybridDictionary, ByVal globalContext As HybridDictionary)
+  Friend Sub SetContext(ByVal clientContext As HybridDictionary, ByVal globalContext As HybridDictionary)
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("Csla.ClientContext")
@@ -92,7 +92,7 @@ Public NotInheritable Class ApplicationContext
 
   End Sub
 
-  Friend Shared Sub SetGlobalContext(ByVal globalContext As HybridDictionary)
+  Friend Sub SetGlobalContext(ByVal globalContext As HybridDictionary)
 
     Dim slot As System.LocalDataStoreSlot = _
       Thread.GetNamedDataSlot("Csla.GlobalContext")
@@ -100,7 +100,7 @@ Public NotInheritable Class ApplicationContext
 
   End Sub
 
-  Public Shared Sub Clear()
+  Public Sub Clear()
 
     SetContext(Nothing, Nothing)
 
@@ -123,7 +123,7 @@ Public NotInheritable Class ApplicationContext
   ''' (or AD) security. Any other value indicates the use of
   ''' custom security derived from BusinessPrincipalBase.
   ''' </remarks>
-  Public Shared ReadOnly Property AuthenticationType() As String
+  Public ReadOnly Property AuthenticationType() As String
     Get
       Return ConfigurationManager.AppSettings("CslaAuthentication")
       'Return My.Settings.CslaAuthentication
@@ -166,7 +166,7 @@ Public NotInheritable Class ApplicationContext
   ''' Enterprise Services must be hosted in COM+.
   ''' </para>
   ''' </remarks>
-  Public Shared ReadOnly Property DataPortalProxy() As String
+  Public ReadOnly Property DataPortalProxy() As String
     Get
       Dim result As String = ConfigurationManager.AppSettings("CslaDataPortalProxy")
       'Dim result As String = My.Settings.CslaDataPortalProxy
@@ -186,7 +186,7 @@ Public NotInheritable Class ApplicationContext
   ''' This value is read from the application configuration
   ''' file with the key value "CslaDataPortalUrl". 
   ''' </remarks>
-  Public Shared ReadOnly Property DataPortalUrl() As Uri
+  Public ReadOnly Property DataPortalUrl() As Uri
     Get
       Return New Uri(ConfigurationManager.AppSettings("CslaDataPortalUrl"))
       'Return New Uri(My.Settings.CslaDataPortalUrl)
@@ -205,19 +205,19 @@ Public NotInheritable Class ApplicationContext
     Server
   End Enum
 
-  Private Shared mExecutionLocation As ExecutionLocations = ExecutionLocations.Client
+  Private mExecutionLocation As ExecutionLocations = ExecutionLocations.Client
 
   ''' <summary>
   ''' Returns a value indicating whether the application code
   ''' is currently executing on the client or server.
   ''' </summary>
-  Public Shared ReadOnly Property ExecutionLocation() As ExecutionLocations
+  Public ReadOnly Property ExecutionLocation() As ExecutionLocations
     Get
       Return mExecutionLocation
     End Get
   End Property
 
-  Friend Shared Sub SetExecutionLocation(ByVal location As ExecutionLocations)
+  Friend Sub SetExecutionLocation(ByVal location As ExecutionLocations)
 
     mExecutionLocation = location
 
@@ -225,8 +225,4 @@ Public NotInheritable Class ApplicationContext
 
 #End Region
 
-  Private Sub New()
-    ' prevent instantiation
-  End Sub
-
-End Class
+End Module

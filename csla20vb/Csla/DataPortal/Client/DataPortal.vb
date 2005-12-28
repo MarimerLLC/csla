@@ -8,15 +8,7 @@ Imports System.Runtime.Remoting.Channels.Http
 ''' This is the client-side DataPortal as described in
 ''' Chapter 5.
 ''' </summary>
-Public NotInheritable Class DataPortal
-
-#Region " Constructors "
-
-  Private Sub New()
-
-  End Sub
-
-#End Region
+Public Module DataPortal
 
 #Region " DataPortal events "
 
@@ -25,21 +17,21 @@ Public NotInheritable Class DataPortal
   ''' requested server-side DataPortal method.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event DataPortalInvoke As Action(Of DataPortalEventArgs)
+  Public Event DataPortalInvoke As Action(Of DataPortalEventArgs)
   ''' <summary>
   ''' Raised by DataPortal after the requested 
   ''' server-side DataPortal method call is complete.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
+  Public Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
 
-  Private Shared Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Private Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
     RaiseEvent DataPortalInvoke(e)
 
   End Sub
 
-  Private Shared Sub OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Private Sub OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
     RaiseEvent DataPortalInvokeComplete(e)
 
@@ -57,7 +49,7 @@ Public NotInheritable Class DataPortal
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <param name="Criteria">Object-specific criteria.</param>
   ''' <returns>A new object, populated with default values.</returns>
-  Public Shared Function Create(Of T)(ByVal criteria As Object) As T
+  Public Function Create(Of T)(ByVal criteria As Object) As T
     Return DirectCast(Create(GetType(T), criteria), T)
   End Function
 
@@ -68,7 +60,7 @@ Public NotInheritable Class DataPortal
   ''' </summary>
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <returns>A new object, populated with default values.</returns>
-  Public Shared Function Create(Of T)() As T
+  Public Function Create(Of T)() As T
     Return DirectCast(Create(GetType(T), Nothing), T)
   End Function
 
@@ -81,13 +73,13 @@ Public NotInheritable Class DataPortal
   ''' <returns>A new object, populated with default values.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
-  Public Shared Function Create(ByVal criteria As Object) As Object
+  Public Function Create(ByVal criteria As Object) As Object
 
     Return Create(MethodCaller.GetObjectType(criteria), criteria)
 
   End Function
 
-  Private Shared Function Create(ByVal objectType As Type, ByVal criteria As Object) As Object
+  Private Function Create(ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
 
@@ -115,7 +107,7 @@ Public NotInheritable Class DataPortal
     End Try
 
     If portal.IsServerRemote Then
-            ApplicationContext.SetGlobalContext(result.GlobalContext)
+      ApplicationContext.SetGlobalContext(result.GlobalContext)
     End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
@@ -134,7 +126,7 @@ Public NotInheritable Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Fetch(Of T)(ByVal criteria As Object) As T
+  Public Function Fetch(Of T)(ByVal criteria As Object) As T
 
     Return DirectCast(Fetch(criteria), T)
 
@@ -146,7 +138,7 @@ Public NotInheritable Class DataPortal
   ''' </summary>
   ''' <param name="Criteria">Object-specific criteria.</param>
   ''' <returns>An object populated with values from the database.</returns>
-  Public Shared Function Fetch(ByVal criteria As Object) As Object
+  Public Function Fetch(ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
 
@@ -173,8 +165,8 @@ Public NotInheritable Class DataPortal
     End Try
 
     If portal.IsServerRemote Then
-            ApplicationContext.SetGlobalContext(result.GlobalContext)
-        End If
+      ApplicationContext.SetGlobalContext(result.GlobalContext)
+    End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
@@ -205,7 +197,7 @@ Public NotInheritable Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Execute(Of T As CommandBase)(ByVal obj As T) As T
+  Public Function Execute(Of T As CommandBase)(ByVal obj As T) As T
 
     Return DirectCast(Update(CObj(obj)), T)
 
@@ -229,7 +221,7 @@ Public NotInheritable Class DataPortal
   ''' <returns>A reference to the updated Command object.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Execute(ByVal obj As CommandBase) As CommandBase
+  Public Function Execute(ByVal obj As CommandBase) As CommandBase
 
     Return DirectCast(Update(obj), CommandBase)
 
@@ -250,7 +242,7 @@ Public NotInheritable Class DataPortal
   ''' <returns>A reference to the updated business object.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Update(Of T)(ByVal obj As T) As T
+  Public Function Update(Of T)(ByVal obj As T) As T
 
     Return DirectCast(Update(CObj(obj)), T)
 
@@ -268,7 +260,7 @@ Public NotInheritable Class DataPortal
   ''' </remarks>
   ''' <param name="obj">A reference to the business object to be updated.</param>
   ''' <returns>A reference to the updated business object.</returns>
-  Public Shared Function Update(ByVal obj As Object) As Object
+  Public Function Update(ByVal obj As Object) As Object
 
     Dim result As Server.DataPortalResult
 
@@ -315,8 +307,8 @@ Public NotInheritable Class DataPortal
     End Try
 
     If portal.IsServerRemote Then
-            ApplicationContext.SetGlobalContext(result.GlobalContext)
-        End If
+      ApplicationContext.SetGlobalContext(result.GlobalContext)
+    End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
@@ -332,7 +324,7 @@ Public NotInheritable Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage( _
     "Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Sub Delete(ByVal criteria As Object)
+  Public Sub Delete(ByVal criteria As Object)
 
     Dim result As Server.DataPortalResult
 
@@ -359,8 +351,8 @@ Public NotInheritable Class DataPortal
     End Try
 
     If portal.IsServerRemote Then
-            ApplicationContext.SetGlobalContext(result.GlobalContext)
-        End If
+      ApplicationContext.SetGlobalContext(result.GlobalContext)
+    End If
 
     OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
 
@@ -370,10 +362,10 @@ Public NotInheritable Class DataPortal
 
 #Region " Get DataPortal Proxy "
 
-  Private Shared mLocalPortal As DataPortalClient.IDataPortalProxy
-  Private Shared mPortal As DataPortalClient.IDataPortalProxy
+  Private mLocalPortal As DataPortalClient.IDataPortalProxy
+  Private mPortal As DataPortalClient.IDataPortalProxy
 
-  Private Shared Function GetDataPortalProxy(ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
+  Private Function GetDataPortalProxy(ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
 
     If forceLocal Then
       If mLocalPortal Is Nothing Then
@@ -404,7 +396,7 @@ Public NotInheritable Class DataPortal
 
 #Region " Security "
 
-  Private Shared Function GetPrincipal() As System.Security.Principal.IPrincipal
+  Private Function GetPrincipal() As System.Security.Principal.IPrincipal
     If ApplicationContext.AuthenticationType = "Windows" Then
       ' Windows integrated security 
       Return Nothing
@@ -419,7 +411,7 @@ Public NotInheritable Class DataPortal
 
 #Region " Helper methods "
 
-  Private Shared Function RunLocal(ByVal method As MethodInfo) As Boolean
+  Private Function RunLocal(ByVal method As MethodInfo) As Boolean
 
     Return Attribute.IsDefined(method, GetType(RunLocalAttribute))
 
@@ -427,4 +419,4 @@ Public NotInheritable Class DataPortal
 
 #End Region
 
-End Class
+End Module

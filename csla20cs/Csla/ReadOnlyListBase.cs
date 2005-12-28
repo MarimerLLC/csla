@@ -12,7 +12,8 @@ namespace Csla
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
   public abstract class ReadOnlyListBase<T, C> : 
-    Core.ReadOnlyBindingList<C>, Csla.Core.IReadOnlyCollection, ICloneable
+    Core.ReadOnlyBindingList<C>, Csla.Core.IReadOnlyCollection, 
+    ICloneable
     where T : ReadOnlyListBase<T, C>
   {
 

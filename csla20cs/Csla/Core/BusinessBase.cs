@@ -253,7 +253,7 @@ namespace Csla.Core
     /// that no event is raised for IsDirty, so only the specific
     /// property changed event for the current property is raised.
     /// </remarks>
-    protected void PropertyHasChanged(string propertyName)
+    protected virtual void PropertyHasChanged(string propertyName)
     {
       ValidationRules.CheckRules(propertyName);
       MarkDirty(true);

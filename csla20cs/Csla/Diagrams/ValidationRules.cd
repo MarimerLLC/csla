@@ -26,11 +26,11 @@
     <Position X="1" Y="4.5" Width="1.75" />
     <TypeIdentifier>
       <FileName>Validation\CommonRules.cs</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAQA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAgEAAAAQA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Validation.BrokenRulesCollection" Collapsed="true">
-    <Position X="4.5" Y="1.75" Width="1.75" />
+    <Position X="4.5" Y="1.75" Width="2" />
     <TypeIdentifier>
       <FileName>Validation\BrokenRulesCollection.cs</FileName>
       <HashCode>AAIAAAAAAAAAAAAEIAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -41,6 +41,13 @@
     <TypeIdentifier>
       <FileName>Validation\BrokenRule.cs</FileName>
       <HashCode>EAAABAAAAAAgAAAEAAAAAAAABAAAAAAAAAAAAQAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.RuleMethod" Collapsed="true">
+    <Position X="4.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Validation\RuleMethod.cs</FileName>
+      <HashCode>AAAAhAAAAAAIAAAEAAEAAAAARAAAAAAAAAAAAAAAAQA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Delegate Name="Csla.Validation.RuleHandler" Collapsed="true">

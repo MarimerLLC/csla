@@ -83,7 +83,7 @@ namespace Csla.Data
 
     #region DataCopyIList
 
-    IList GetIList(object source)
+    private IList GetIList(object source)
     {
       if (source is IListSource)
         return ((IListSource)source).GetList();

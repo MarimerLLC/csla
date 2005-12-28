@@ -116,7 +116,7 @@ namespace Csla.Web.Design
         Type objectType = CslaDataSource.GetType(
           _owner.DataSourceControl.TypeAssemblyName, 
           _owner.DataSourceControl.TypeName);
-        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(objectType))
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
           return true;
         else if (objectType.GetMethod("Remove") != null)
           return true;
@@ -141,7 +141,7 @@ namespace Csla.Web.Design
         Type objectType = CslaDataSource.GetType(
           _owner.DataSourceControl.TypeAssemblyName,
           _owner.DataSourceControl.TypeName);
-        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(objectType))
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
           return true;
         else
           return false;
@@ -164,7 +164,7 @@ namespace Csla.Web.Design
         Type objectType = CslaDataSource.GetType(
           _owner.DataSourceControl.TypeAssemblyName,
           _owner.DataSourceControl.TypeName);
-        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(objectType))
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
           return true;
         else
           return false;

@@ -18,7 +18,7 @@ namespace Csla.Core
   /// <see cref="Csla.BusinessBase<T>" />.
   /// </remarks>
   [Serializable()]
-  public abstract class UndoableBase : Csla.Core.BindableBase, Csla.Core.IEditableObject
+  public abstract class UndoableBase : Csla.Core.BindableBase, Csla.Core.IUndoableObject
   {
     // keep a stack of object state values.
     [NotUndoable()]
@@ -38,17 +38,17 @@ namespace Csla.Core
       get { return _stateStack.Count; }
     }
 
-    void IEditableObject.CopyState()
+    void IUndoableObject.CopyState()
     {
       CopyState();
     }
 
-    void IEditableObject.UndoChanges()
+    void IUndoableObject.UndoChanges()
     {
       UndoChanges();
     }
 
-    void IEditableObject.AcceptChanges()
+    void IUndoableObject.AcceptChanges()
     {
       AcceptChanges();
     }
@@ -92,13 +92,13 @@ namespace Csla.Core
               // the field is undoable, so it needs to be processed.
               object value = field.GetValue(this);
 
-              if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType))
+              if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
               {
                 // make sure the variable has a value
                 if (value != null)
                 {
                   // this is a child object, cascade the call
-                  ((Core.IEditableObject)value).CopyState();
+                  ((Core.IUndoableObject)value).CopyState();
                 }
               }
               else
@@ -178,13 +178,13 @@ namespace Csla.Core
                 // the field is undoable, so restore its value
                 object value = field.GetValue(this);
 
-                if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType))
+                if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
                 {
                   // make sure the variable has a value
                   if (value != null)
                   {
                     // this is a child object, cascade the call.
-                    ((Core.IEditableObject)value).UndoChanges();
+                    ((Core.IUndoableObject)value).UndoChanges();
                   }
                 }
                 else
@@ -241,14 +241,14 @@ namespace Csla.Core
             if (!NotUndoableField(field))
             {
               // the field is undoable so see if it is a child object
-              if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType))
+              if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
               {
                 object value = field.GetValue(this);
                 // make sure the variable has a value
                 if (value != null)
                 {
                   // it is a child object so cascade the call
-                  ((Core.IEditableObject)value).AcceptChanges();
+                  ((Core.IUndoableObject)value).AcceptChanges();
                 }
               }
             }

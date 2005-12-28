@@ -12,7 +12,7 @@ Namespace Core
   ''' </remarks>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")> _
   Public Interface IEditableCollection
-    Inherits IEditableObject
+    Inherits IUndoableObject
 
     Sub RemoveChild(ByVal child As Core.BusinessBase)
 

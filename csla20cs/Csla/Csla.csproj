@@ -49,10 +49,10 @@
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BusinessBase.cs" />
+    <Compile Include="Core\IUndoableObject.cs" />
     <Compile Include="Core\IBusinessObject.cs" />
     <Compile Include="Core\ICommandObject.cs" />
     <Compile Include="Core\IEditableCollection.cs" />
-    <Compile Include="Core\IEditableObject.cs" />
     <Compile Include="Core\IReadOnlyCollection.cs" />
     <Compile Include="Core\IReadOnlyObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />

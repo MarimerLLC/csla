@@ -18,7 +18,7 @@ Namespace Core
   Public MustInherit Class UndoableBase
     Inherits Csla.Core.BindableBase
 
-    Implements IEditableObject
+    Implements IUndoableObject
 
     ' keep a stack of object state values
     <NotUndoable()> _
@@ -51,7 +51,7 @@ Namespace Core
     ''' onto the state stack.
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub CopyState() Implements IEditableObject.CopyState
+    Protected Friend Sub CopyState() Implements IUndoableObject.CopyState
 
       Dim currentType As Type = Me.GetType
       Dim state As New Hashtable()
@@ -74,11 +74,11 @@ Namespace Core
               ' the field is undoable, so it needs to be processed
               Dim value As Object = field.GetValue(Me)
 
-              If GetType(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType) Then
+              If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType) Then
                 ' make sure the variable has a value
                 If Not value Is Nothing Then
                   ' this is a child object, cascade the call
-                  DirectCast(value, IEditableObject).CopyState()
+                  DirectCast(value, IUndoableObject).CopyState()
                 End If
 
               Else
@@ -126,7 +126,7 @@ Namespace Core
     ''' of the object.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub UndoChanges() Implements IEditableObject.UndoChanges
+    Protected Friend Sub UndoChanges() Implements IUndoableObject.UndoChanges
       ' if we are a child object we might be asked to
       ' undo below the level where we stacked states,
       ' so just do nothing in that case
@@ -158,11 +158,11 @@ Namespace Core
                 ' the field is undoable, so restore its value
                 Dim value As Object = field.GetValue(Me)
 
-                If GetType(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType) Then
+                If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType) Then
                   ' this is a child object, cascade the call
                   ' first make sure the variable has a value
                   If Not value Is Nothing Then
-                    DirectCast(value, IEditableObject).UndoChanges()
+                    DirectCast(value, IUndoableObject).UndoChanges()
                   End If
 
                 Else
@@ -199,7 +199,7 @@ Namespace Core
     ''' to the object's state.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub AcceptChanges() Implements IEditableObject.AcceptChanges
+    Protected Friend Sub AcceptChanges() Implements IUndoableObject.AcceptChanges
       If EditLevel > 0 Then
         mStateStack.Pop()
 
@@ -219,12 +219,12 @@ Namespace Core
               ' see if the field is undoable or not
               If Not NotUndoableField(field) Then
                 ' the field is undoable so see if it is editable
-                If GetType(Csla.Core.IEditableObject).IsAssignableFrom(field.FieldType) Then
+                If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType) Then
                   Dim value As Object = field.GetValue(Me)
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' it is a child object so cascade the call
-                    DirectCast(value, IEditableObject).AcceptChanges()
+                    DirectCast(value, IUndoableObject).AcceptChanges()
                   End If
                 End If
               End If

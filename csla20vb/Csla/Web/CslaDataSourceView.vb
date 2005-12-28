@@ -107,7 +107,7 @@ Namespace Web
 
     Public Overrides ReadOnly Property CanInsert() As Boolean
       Get
-        If GetType(Csla.Core.IEditableObject).IsAssignableFrom( _
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
           CslaDataSource.GetType(mTypeAssemblyName, mTypeName)) Then
           Return True
         Else
@@ -131,7 +131,7 @@ Namespace Web
 
     Public Overrides ReadOnly Property CanDelete() As Boolean
       Get
-        If GetType(Csla.Core.IEditableObject).IsAssignableFrom( _
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
           CslaDataSource.GetType(mTypeAssemblyName, mTypeName)) Then
           Return True
         Else
@@ -155,7 +155,7 @@ Namespace Web
 
     Public Overrides ReadOnly Property CanUpdate() As Boolean
       Get
-        If GetType(Csla.Core.IEditableObject).IsAssignableFrom( _
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
           CslaDataSource.GetType(mTypeAssemblyName, mTypeName)) Then
           Return True
         Else

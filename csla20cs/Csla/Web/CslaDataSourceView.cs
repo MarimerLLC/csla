@@ -102,7 +102,7 @@ namespace Csla.Web
     {
       get
       {
-        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
           CslaDataSource.GetType(_typeAssemblyName, _typeName)))
           return true;
         else
@@ -128,7 +128,7 @@ namespace Csla.Web
     {
       get
       {
-        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
           CslaDataSource.GetType(_typeAssemblyName, _typeName)))
           return true;
         else
@@ -153,7 +153,7 @@ namespace Csla.Web
     {
       get
       {
-        if (typeof(Csla.Core.IEditableObject).IsAssignableFrom(
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
           CslaDataSource.GetType(_typeAssemblyName, _typeName)))
           return true;
         else

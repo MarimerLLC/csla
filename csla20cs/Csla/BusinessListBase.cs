@@ -183,17 +183,17 @@ namespace Csla
 
     #region N-level undo
 
-    void Core.IEditableObject.CopyState()
+    void Core.IUndoableObject.CopyState()
     {
       CopyState();
     }
 
-    void Core.IEditableObject.UndoChanges()
+    void Core.IUndoableObject.UndoChanges()
     {
       UndoChanges();
     }
 
-    void Core.IEditableObject.AcceptChanges()
+    void Core.IUndoableObject.AcceptChanges()
     {
       AcceptChanges();
     }

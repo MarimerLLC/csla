@@ -111,7 +111,7 @@ Namespace Web.Design
       Get
         Dim objectType As Type = CslaDataSource.GetType( _
             mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)
-        If GetType(Csla.Core.IEditableObject).IsAssignableFrom(objectType) Then
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objectType) Then
           Return True
         ElseIf objectType.GetMethod("Remove") IsNot Nothing Then
           Return True
@@ -132,7 +132,7 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanInsert() As Boolean
       Get
-        If GetType(Csla.Core.IEditableObject).IsAssignableFrom(CslaDataSource.GetType( _
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(CslaDataSource.GetType( _
             mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)) Then
           Return True
         Else
@@ -152,7 +152,7 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanUpdate() As Boolean
       Get
-        If GetType(Csla.Core.IEditableObject).IsAssignableFrom(CslaDataSource.GetType( _
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(CslaDataSource.GetType( _
             mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)) Then
           Return True
         Else

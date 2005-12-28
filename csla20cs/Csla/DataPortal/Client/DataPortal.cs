@@ -13,17 +13,8 @@ namespace Csla
   /// This is the client-side DataPortal as described in
   /// Chapter 5.
   /// </summary>
-  public sealed class DataPortal
+  public static class DataPortal
   {
-
-    #region Constructors
-
-    private DataPortal()
-    {
-
-    }
-
-    #endregion
 
     #region DataPortal events
 

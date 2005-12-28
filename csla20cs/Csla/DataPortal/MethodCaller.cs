@@ -6,10 +6,8 @@ using Csla.Properties;
 
 namespace Csla
 {
-  internal class MethodCaller
+  internal static class MethodCaller
   {
-    private MethodCaller()
-    { }
 
     public static object CallMethodIfImplemented(
       object obj, string method, params object[] parameters)

@@ -9,7 +9,7 @@ namespace Csla
   /// Provides consistent context information between the client
   /// and server DataPortal objects. 
   /// </summary>
-  public sealed class ApplicationContext
+  public static class ApplicationContext
   {
 
     #region Client/Global Context
@@ -220,9 +220,5 @@ namespace Csla
 
     #endregion
 
-    private ApplicationContext()
-    {
-      // prevent instantiation
-    }
   }
 }

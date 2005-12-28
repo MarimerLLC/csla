@@ -28,7 +28,7 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class CommandBase : Core.IBusinessObject
+  public abstract class CommandBase : Core.ICommandObject
   {
 
     #region Constructors

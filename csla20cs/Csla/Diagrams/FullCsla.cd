@@ -80,7 +80,7 @@
     <Position X="5" Y="5.25" Width="2" />
     <TypeIdentifier>
       <FileName>ReadOnlyBase.cs</FileName>
-      <HashCode>AAAAAAgAAAAABABIEAAIAAAEAABAAAEAAAIAAAAACFA=</HashCode>
+      <HashCode>AAAAAAgAAAAABABMkAAIAAAEAABAAIEAAAIAAAAAiFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -345,7 +345,7 @@
     <Lollipop Position="0.2" />
   </Struct>
   <Interface Name="Csla.Core.IBusinessObject" Collapsed="true">
-    <Position X="9.5" Y="0.5" Width="1.75" />
+    <Position X="11.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <FileName>Core\IBusinessObject.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -370,6 +370,20 @@
     <TypeIdentifier>
       <FileName>Core\IReadOnlyObject.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.ICommandObject" Collapsed="true">
+    <Position X="14.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\ICommandObject.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.IReadOnlyCollection" Collapsed="true">
+    <Position X="12.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\IReadOnlyCollection.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
   <Enum Name="Csla.TransactionalTypes" Collapsed="true">

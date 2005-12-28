@@ -9,7 +9,7 @@ Imports System.ComponentModel
 Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   Inherits Core.ReadOnlyBindingList(Of C)
 
-  Implements Csla.Core.IBusinessObject
+  Implements Csla.Core.IReadOnlyCollection
   Implements ICloneable
 
 #Region " Constructors "

@@ -29,13 +29,21 @@ Namespace DataPortalClient
 
       Dim channel As New HttpChannel(properties, formatter, Nothing)
 
-      ChannelServices.RegisterChannel(channel, False)
+      ChannelServices.RegisterChannel(channel, EncryptChannel)
 
     End Sub
 
+    Private Shared ReadOnly Property EncryptChannel() As Boolean
+      Get
+        Dim encrypt As Boolean = _
+          (ConfigurationManager.AppSettings("CslaEncryptRemoting") = "true")
+        Return encrypt
+      End Get
+    End Property
+
 #End Region
 
-    Private mPortal As Server.IDataPortalServer
+        Private mPortal As Server.IDataPortalServer
 
     Private ReadOnly Property Portal() As Server.IDataPortalServer
       Get

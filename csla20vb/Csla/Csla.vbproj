@@ -202,6 +202,9 @@
     <EmbeddedResource Include="My Project\Resources.sv.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.zh-CHS.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

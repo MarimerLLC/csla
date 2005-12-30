@@ -21,6 +21,7 @@ namespace ProjectTracker.Library
 
     private ResourceAssignments _assignments = ResourceAssignments.NewResourceAssignments();
 
+    [System.ComponentModel.DataObjectField(true, true)]
     public int Id
     {
       get

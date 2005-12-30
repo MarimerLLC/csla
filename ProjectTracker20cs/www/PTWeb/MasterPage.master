@@ -1,41 +1,29 @@
 <%@ Master Language="C#" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head id="Head1" runat="server">
-    <title>Untitled Page</title>
+  <title>Untitled Page</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link href="App_Themes/Basic/style.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-      <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%">
-        <tr>
-          <td colspan="2" style="BACKGROUND-COLOR: khaki" align="left" valign="middle">
-          <div>
-            <h1>
-              <asp:Label ID="PageTitle" runat="server"></asp:Label>&nbsp;
-            </h1></div>
-            <div style="text-align: right;"><asp:LoginStatus ID="LoginStatus1"
+<div id="mainTable">
+  <div id="header"><asp:Label ID="PageTitle" runat="server"></asp:Label></div>
+  <div id="navigation">
+    <div id="navigationContent">
+      <asp:TreeView ID="TreeView1" runat="server" DataSourceID="SiteMapDataSource1" 
+            ShowExpandCollapse="False" SkipLinkText="" >
+        <NodeStyle CssClass="nav" />
+      </asp:TreeView></div>
+  </div><div id="subnavigation">
+    <div id="logout"><asp:LoginStatus ID="LoginStatus1"
                 runat="server" OnLoggingOut="LoginStatus1_LoggingOut" /></div>
-          </td>
-        </tr>
-        <tr>
-          <td style="width: 130px; vertical-align: text-top; background-color: khaki; height: 100%;" valign="top">
-            <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" ShowStartingNode="False" />
-            <asp:TreeView ID="TreeView1" runat="server" DataSourceID="SiteMapDataSource1" 
-            ShowExpandCollapse="False" SkipLinkText="" />
-          </td>
-          <td style="height: 100%; padding-left: 5px; padding-top: 5px;" valign="top">
-        <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
-        </asp:contentplaceholder>
-          </td>
-        </tr>
-      </table>
-      <br />
-      
-      <br />
-    </div>
-    </form>
+  </div>
+  <div id="content"><asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
+        </asp:contentplaceholder></div>
+</div>
+<asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" ShowStartingNode="False" />
+</form>
 </body>
 </html>

@@ -63,12 +63,18 @@ namespace PTWin
         this.AssignmentsBindingSource.RaiseListChangedEvents = false;
 
         // do the save
-        Resource old = Resource.Clone();
-        _resource.ApplyEdit();
+        Resource temp = Resource.Clone();
+        temp.ApplyEdit();
         try
         {
-          _resource = _resource.Save();
+          _resource = temp.Save();
           _resource.BeginEdit();
+          // rebind the UI
+          this.ResourceBindingSource.DataSource = null;
+          this.AssignmentsBindingSource.DataSource = null;
+          this.ResourceBindingSource.DataSource = _resource;
+          this.AssignmentsBindingSource.DataSource = _resource.Assignments;
+          ApplyAuthorizationRules();
         }
         catch (Exception ex)
         {
@@ -76,15 +82,11 @@ namespace PTWin
           MessageBox.Show(ex.ToString(), "Save error",
             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
-
-        // rebind the UI
-        this.ResourceBindingSource.DataSource = null;
-        this.AssignmentsBindingSource.DataSource = null;
-        this.ResourceBindingSource.RaiseListChangedEvents = true;
-        this.AssignmentsBindingSource.RaiseListChangedEvents = true;
-        this.ResourceBindingSource.DataSource = _resource;
-        this.AssignmentsBindingSource.DataSource = _resource.Assignments;
-        ApplyAuthorizationRules();
+        finally
+        {
+          this.ResourceBindingSource.RaiseListChangedEvents = true;
+          this.AssignmentsBindingSource.RaiseListChangedEvents = true;
+        }
       }
     }
 

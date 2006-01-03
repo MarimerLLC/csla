@@ -76,11 +76,17 @@ namespace PTWin
           this.AssignmentsBindingSource.DataSource = _resource.Assignments;
           ApplyAuthorizationRules();
         }
+        catch (Csla.DataPortalException ex)
+        {
+          MessageBox.Show(ex.BusinessException.ToString(),
+            "Error saving", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
+        }
         catch (Exception ex)
         {
-          _resource = old;
-          MessageBox.Show(ex.ToString(), "Save error",
-            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+          MessageBox.Show(ex.ToString(),
+            "Error Saving", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
         }
         finally
         {

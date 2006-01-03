@@ -11,14 +11,23 @@ using System.Web.UI.HtmlControls;
 
 public partial class MasterPage : System.Web.UI.MasterPage
 {
+  //protected void Page_Init(object sender, EventArgs e)
+  //{
+  //  if (Csla.ApplicationContext.AuthenticationType != "Windows")
+  //    PTSecurity.ReloadPrincipal();
+  //}
+  
   protected void Page_Load(object sender, EventArgs e)
   {
     PageTitle.Text = Page.Title;
   }
-  protected void LoginStatus1_LoggingOut(object sender, LoginCancelEventArgs e)
+  
+  protected void LoginStatus1_LoggingOut(
+    object sender, LoginCancelEventArgs e)
   {
     ProjectTracker.Library.Security.PTPrincipal.Logout();
-    Session["CslaPrincipal"] = System.Threading.Thread.CurrentPrincipal;
+    Session["CslaPrincipal"] = 
+      System.Threading.Thread.CurrentPrincipal;
     System.Web.Security.FormsAuthentication.SignOut();
   }
 }

@@ -8,6 +8,7 @@ using Csla.Data;
 
 namespace ProjectTracker.Library
 {
+  [Serializable()]
   public class ProjectList : 
     ReadOnlyListBase<ProjectList, ProjectList.ProjectInfo>
   {
@@ -25,13 +26,11 @@ namespace ProjectTracker.Library
       public Guid Id
       {
         get { return _id; }
-        internal set { _id = value; }
       }
 
       public string Name
       {
         get { return _name; }
-        internal set { _name = value; }
       }
 
       protected override object GetIdValue()

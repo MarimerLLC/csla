@@ -1,7 +1,7 @@
 <%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="ResourceEdit.aspx.cs" Inherits="ResourceEdit" title="Resource Information" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
       <div>
-        <asp:MultiView ID="MultiView1" runat="server">
+        <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
           <asp:View ID="MainView" runat="server">
         <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False"
           DataSourceID="ResourceDataSource" Height="50px"

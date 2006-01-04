@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="ProjectTracker.Library.Project" Collapsed="true">
+    <Position X="1" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Project.cs</FileName>
+      <HashCode>EAACIIwBIgAgRAEEAAjIAgQAAAJAgAECAhgBAAEAmAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.BusinessBase&lt;T&gt;" Collapsed="true">
+    <Position X="1" Y="1.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+</ClassDiagram>

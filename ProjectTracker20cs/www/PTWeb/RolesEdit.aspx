@@ -35,7 +35,8 @@
           </Fields>
         </asp:DetailsView>
       </asp:View>
-    </asp:MultiView><br />
+    </asp:MultiView>
+    <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
     &nbsp;&nbsp;
     <csla:CslaDataSource ID="RolesDataSource" runat="server" 
       TypeAssemblyName="ProjectTracker.Library"

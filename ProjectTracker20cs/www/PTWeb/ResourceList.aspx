@@ -13,6 +13,8 @@
         </Columns>
       </asp:GridView>
       <asp:LinkButton ID="NewResourceButton" runat="server" OnClick="NewResourceButton_Click">New resource</asp:LinkButton><br />
+      <br />
+      <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label>
       <csla:CslaDataSource ID="ResourceListDataSource" runat="server"
         TypeAssemblyName="ProjectTracker.Library" TypeName="ProjectTracker.Library.ResourceList" OnDeleteObject="ResourceListDataSource_DeleteObject" OnSelectObject="ResourceListDataSource_SelectObject">
       </csla:CslaDataSource>

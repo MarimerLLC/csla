@@ -23,35 +23,15 @@ public partial class ProjectEdit : System.Web.UI.Page
   {
     if (!Page.IsPostBack)
     {
-      try
-      {
-        string idString = Request.QueryString["id"];
-        ProjectTracker.Library.Project obj;
-        if (!string.IsNullOrEmpty(idString))
-        {
-          Guid id = new Guid(idString);
-          obj = Project.GetProject(id);
-        }
-        else
-          obj = Project.NewProject();
-        Session["currentObject"] = obj;
-        this.MultiView1.ActiveViewIndex = (int)Views.MainView;
-        ApplyAuthorizationRules();
-      }
-      catch (System.Security.SecurityException)
-      {
-        Response.Redirect("ProjectList.aspx");
-      }
+      ApplyAuthorizationRules();
     }
     else
-    {
-      this.ErrorLabel.Text = "";
-    }
+      this.ErrorLabel.Text = string.Empty;
   }
 
   private void ApplyAuthorizationRules()
   {
-    Project obj = (Project)Session["currentObject"];
+    Project obj = GetProject();
     // project display
     if (Project.CanEditObject())
     {
@@ -66,25 +46,32 @@ public partial class ProjectEdit : System.Web.UI.Page
       this.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly;
       this.AddResourceButton.Visible = false;
     }
-    this.DetailsView1.Rows[this.DetailsView1.Rows.Count - 1].Visible = Project.CanEditObject();
+    this.DetailsView1.Rows[
+      this.DetailsView1.Rows.Count - 1].Visible = 
+      Project.CanEditObject();
 
     // resource display
-    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Project.CanEditObject();
+    this.GridView1.Columns[
+      this.GridView1.Columns.Count - 1].Visible = 
+      Project.CanEditObject();
   }
 
   #region Project DetailsView
 
-  protected void DetailsView1_ItemInserted(object sender, DetailsViewInsertedEventArgs e)
+  protected void DetailsView1_ItemInserted(
+    object sender, DetailsViewInsertedEventArgs e)
   {
     ApplyAuthorizationRules();
   }
 
-  protected void DetailsView1_ItemUpdated(object sender, DetailsViewUpdatedEventArgs e)
+  protected void DetailsView1_ItemUpdated(
+    object sender, DetailsViewUpdatedEventArgs e)
   {
     ApplyAuthorizationRules();
   }
 
-  protected void DetailsView1_ItemDeleted(object sender, DetailsViewDeletedEventArgs e)
+  protected void DetailsView1_ItemDeleted(
+    object sender, DetailsViewDeletedEventArgs e)
   {
     Response.Redirect("ProjectList.aspx");
   }
@@ -93,17 +80,21 @@ public partial class ProjectEdit : System.Web.UI.Page
 
   #region Resource Grid
 
-  protected void AddResourceButton_Click(object sender, EventArgs e)
+  protected void AddResourceButton_Click(
+    object sender, EventArgs e)
   {
-    this.MultiView1.ActiveViewIndex = (int)Views.AssignView;
+    this.MultiView1.ActiveViewIndex = 
+      (int)Views.AssignView;
   }
 
-  protected void GridView2_SelectedIndexChanged(object sender, EventArgs e)
+  protected void GridView2_SelectedIndexChanged(
+    object sender, EventArgs e)
   {
-    Project obj = (Project)Session["currentObject"];
+    Project obj = GetProject();
     try
     {
-      obj.Resources.Assign(int.Parse(this.GridView2.SelectedDataKey.Value.ToString()));
+      obj.Resources.Assign(int.Parse(
+        this.GridView2.SelectedDataKey.Value.ToString()));
       if (SaveProject(obj) > 0)
       {
         this.GridView1.DataBind();
@@ -116,16 +107,19 @@ public partial class ProjectEdit : System.Web.UI.Page
     }
   }
 
-  protected void CancelAssignButton_Click(object sender, EventArgs e)
+  protected void CancelAssignButton_Click(
+    object sender, EventArgs e)
   {
-    this.MultiView1.ActiveViewIndex = (int)Views.MainView;
+    this.MultiView1.ActiveViewIndex = 
+      (int)Views.MainView;
   }
 
   #endregion
 
   #region ProjectDataSource
 
-  protected void ProjectDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
+  protected void ProjectDataSource_DeleteObject(
+    object sender, Csla.Web.DeleteObjectArgs e)
   {
     try
     {
@@ -145,21 +139,23 @@ public partial class ProjectEdit : System.Web.UI.Page
     }
   }
 
-  protected void ProjectDataSource_InsertObject(object sender, Csla.Web.InsertObjectArgs e)
+  protected void ProjectDataSource_InsertObject(
+    object sender, Csla.Web.InsertObjectArgs e)
   {
-    Project obj = (Project)Session["currentObject"];
+    Project obj = GetProject();
     Csla.Data.DataMapper.Map(e.Values, obj, "Id");
     e.RowsAffected = SaveProject(obj);
   }
 
-  protected void ProjectDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
+  protected void ProjectDataSource_SelectObject(
+    object sender, Csla.Web.SelectObjectArgs e)
   {
-    e.BusinessObject = Session["currentObject"];
+    e.BusinessObject = GetProject();
   }
 
   protected void ProjectDataSource_UpdateObject(object sender, Csla.Web.UpdateObjectArgs e)
   {
-    Project obj = (Project)Session["currentObject"];
+    Project obj = GetProject();
     Csla.Data.DataMapper.Map(e.Values, obj);
     e.RowsAffected = SaveProject(obj);
   }
@@ -168,28 +164,29 @@ public partial class ProjectEdit : System.Web.UI.Page
 
   #region ResourcesDataSource
 
-  protected void ResourcesDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
+  protected void ResourcesDataSource_DeleteObject(
+    object sender, Csla.Web.DeleteObjectArgs e)
   {
-    Project obj = (Project)Session["currentObject"];
-    ProjectResource res;
+    Project obj = GetProject();
     int rid = int.Parse(e.Keys["ResourceId"].ToString());
-    res = obj.Resources[rid];
-    obj.Resources.Remove(res.ResourceId);
+    obj.Resources.Remove(rid);
     e.RowsAffected = SaveProject(obj);
   }
 
-  protected void ResourcesDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
+  protected void ResourcesDataSource_SelectObject(
+    object sender, Csla.Web.SelectObjectArgs e)
   {
-    Project obj = (Project)Session["currentObject"];
+    Project obj = GetProject();
     e.BusinessObject = obj.Resources;
   }
 
-  protected void ResourcesDataSource_UpdateObject(object sender, Csla.Web.UpdateObjectArgs e)
+  protected void ResourcesDataSource_UpdateObject(
+    object sender, Csla.Web.UpdateObjectArgs e)
   {
-    Project obj = (Project)Session["currentObject"];
-    ProjectResource res;
+    Project obj = GetProject();
     int rid = int.Parse(e.Keys["ResourceId"].ToString());
-    res = obj.Resources[rid];
+    ProjectResource res =
+      obj.Resources.GetItem(rid);
     Csla.Data.DataMapper.Map(e.Values, res);
     e.RowsAffected = SaveProject(obj);
   }
@@ -198,21 +195,50 @@ public partial class ProjectEdit : System.Web.UI.Page
 
   #region ResourceListDataSource
   
-  protected void ResourceListDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
+  protected void ResourceListDataSource_SelectObject(
+    object sender, Csla.Web.SelectObjectArgs e)
   {
-    e.BusinessObject = ProjectTracker.Library.ResourceList.GetResourceList();
+    e.BusinessObject = 
+      ProjectTracker.Library.ResourceList.GetResourceList();
   }
 
   #endregion
 
   #region RoleListDataSource
 
-  protected void RoleListDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
+  protected void RoleListDataSource_SelectObject(
+    object sender, Csla.Web.SelectObjectArgs e)
   {
     e.BusinessObject = RoleList.GetList();
   }
 
   #endregion
+
+  private Project GetProject()
+  {
+    object businessObject = Session["currentObject"];
+    if (businessObject == null ||
+      !(businessObject is Project))
+    {
+      try
+      {
+        string idString = Request.QueryString["id"];
+        if (!string.IsNullOrEmpty(idString))
+        {
+          Guid id = new Guid(idString);
+          businessObject = Project.GetProject(id);
+        }
+        else
+          businessObject = Project.NewProject();
+        Session["currentObject"] = businessObject;
+      }
+      catch (System.Security.SecurityException)
+      {
+        Response.Redirect("ProjectList.aspx");
+      }
+    }
+    return (Project)businessObject;
+  }
 
   private int SaveProject(Project project)
   {

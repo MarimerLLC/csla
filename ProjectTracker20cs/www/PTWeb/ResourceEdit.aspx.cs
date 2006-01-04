@@ -22,33 +22,14 @@ public partial class ResourceEdit : System.Web.UI.Page
   protected void Page_Load(object sender, EventArgs e)
   {
     if (!IsPostBack)
-    {
-      try
-      {
-        string idString = Request.QueryString["id"];
-        Resource obj;
-        if (!string.IsNullOrEmpty(idString))
-        {
-          int id = int.Parse(idString);
-          obj = Resource.GetResource(id);
-        }
-        else
-          obj = Resource.NewResource();
-        Session["currentObject"] = obj;
-        this.MultiView1.ActiveViewIndex = (int)Views.MainView;
-        ApplyAuthorizationRules();
-      }
-      catch (System.Security.SecurityException)
-      {
-        Response.Redirect("ResourceList.aspx");
-      }
+      ApplyAuthorizationRules();
+    else
       this.ErrorLabel.Text = "";
-    }
   }
 
   private void ApplyAuthorizationRules()
   {
-    Resource obj = (Resource)Session["currentObject"];
+    Resource obj = GetResource();
     // Resource display
     if (Resource.CanEditObject())
     {
@@ -97,7 +78,7 @@ public partial class ResourceEdit : System.Web.UI.Page
 
   protected void GridView2_SelectedIndexChanged(object sender, EventArgs e)
   {
-    Resource obj = (Resource)Session["currentObject"];
+    Resource obj = GetResource();
     try
     {
       obj.Assignments.AssignTo(new Guid(this.GridView2.SelectedDataKey.Value.ToString()));
@@ -147,12 +128,12 @@ public partial class ResourceEdit : System.Web.UI.Page
 
   protected void ResourceDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
   {
-    e.BusinessObject = Session["currentObject"];
+    e.BusinessObject = GetResource();
   }
 
   protected void ResourceDataSource_UpdateObject(object sender, Csla.Web.UpdateObjectArgs e)
   {
-    Resource obj = (Resource)Session["currentObject"];
+    Resource obj = GetResource();
     Csla.Data.DataMapper.Map(e.Values, obj);
     e.RowsAffected = SaveResource(obj);
   }
@@ -163,23 +144,22 @@ public partial class ResourceEdit : System.Web.UI.Page
 
   protected void AssignmentsDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
   {
-    Resource obj = (Resource)Session["currentObject"];
+    Resource obj = GetResource();
     ResourceAssignment res;
     Guid rid = new Guid(e.Keys["ProjectId"].ToString());
-    res = obj.Assignments[rid];
-    obj.Assignments.Remove(res.ProjectId);
+    obj.Assignments.Remove(rid);
     e.RowsAffected = SaveResource(obj);
   }
 
   protected void AssignmentsDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)
   {
-    Resource obj = (Resource)Session["currentObject"];
+    Resource obj = GetResource();
     e.BusinessObject = obj.Assignments;
   }
 
   protected void AssignmentsDataSource_UpdateObject(object sender, Csla.Web.UpdateObjectArgs e)
   {
-    Resource obj = (Resource)Session["currentObject"];
+    Resource obj = GetResource();
     ResourceAssignment res;
     Guid rid = new Guid(e.Keys["ProjectId"].ToString());
     res = obj.Assignments[rid];
@@ -197,6 +177,32 @@ public partial class ResourceEdit : System.Web.UI.Page
   }
 
   #endregion
+
+  private Resource GetResource()
+  {
+    object businessObject = Session["currentObject"];
+    if (businessObject == null ||
+      !(businessObject is Resource))
+    {
+      try
+      {
+        string idString = Request.QueryString["id"];
+        if (!string.IsNullOrEmpty(idString))
+        {
+          int id = Int32.Parse(idString);
+          businessObject = Resource.GetResource(id);
+        }
+        else
+          businessObject = Resource.NewResource();
+        Session["currentObject"] = businessObject;
+      }
+      catch (System.Security.SecurityException)
+      {
+        Response.Redirect("ResourceList.aspx");
+      }
+    }
+    return (Resource)businessObject;
+  }
 
   private int SaveResource(Resource resource)
   {

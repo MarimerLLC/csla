@@ -20,7 +20,10 @@
   <AlternatingRowStyle BackColor="#CCCCCC" />
 </asp:DetailsView>
 
-<asp:Login runat="server" BackColor="#DEDEDE" BorderColor="Black" BorderStyle="Solid" BorderWidth="1px" Font-Names="Verdana" Font-Size="10pt">
-  <TitleTextStyle BackColor="Black" Font-Bold="True" Font-Names="Verdana" Font-Size="10pt"
+<asp:Login runat="server" BackColor="#DEDEDE" BorderColor="Black" 
+  BorderStyle="Solid" BorderWidth="1px" Font-Names="Verdana" 
+  Font-Size="10pt">
+  <TitleTextStyle BackColor="Black" Font-Bold="True" 
+    Font-Names="Verdana" Font-Size="10pt"
     ForeColor="White" />
 </asp:Login>

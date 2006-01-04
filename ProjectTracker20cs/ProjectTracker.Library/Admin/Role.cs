@@ -15,6 +15,7 @@ namespace ProjectTracker.Library.Admin
     private string _name = String.Empty;
     private byte[] _timestamp = new byte[8];
 
+    [System.ComponentModel.DataObjectField(true, true)]
     public int Id
     {
       get

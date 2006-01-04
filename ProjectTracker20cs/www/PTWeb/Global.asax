@@ -40,41 +40,30 @@
 
   }
 
-  protected void Application_AcquireRequestState(object sender, EventArgs e)
+  protected void Application_AcquireRequestState(
+    object sender, EventArgs e)
   {
-    if (Csla.ApplicationContext.AuthenticationType != "Windows")
-      ReloadPrincipal();
-  }
+    if (Csla.ApplicationContext.AuthenticationType == "Windows") 
+      return;
 
-  /// <summary>
-  /// Reloads the principal from Session if Session
-  /// is available and if there's a principal
-  /// object already in there.
-  /// </summary>
-  private void ReloadPrincipal()
-  {
-    System.Security.Principal.IPrincipal principal = null;
+    System.Security.Principal.IPrincipal principal;
     try
     {
-      principal = (System.Security.Principal.IPrincipal)Session["CslaPrincipal"];
+      principal = (System.Security.Principal.IPrincipal)
+        HttpContext.Current.Session["CslaPrincipal"];
     }
     catch
     {
-      // do nothing - this really shouldn't happen
-      // but it does on the first login.aspx call
-      // because Session isn't set up yet for some reason
+      principal = null;
     }
 
     if (principal == null)
     {
       // didn't get a principal from Session, so
       // set it to an unauthenticted PTPrincipal
-
-      // setting an unauthenticated principal when running
-      // under the VShost causes serialization issues
-      // and isn't strictly necessary anyway
       ProjectTracker.Library.Security.PTPrincipal.Logout();
-      HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal;
+      HttpContext.Current.User = 
+        System.Threading.Thread.CurrentPrincipal;
     }
     else
     {
@@ -83,6 +72,6 @@
       HttpContext.Current.User = principal;
     }
   }
-       
+
 </script>
 

@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("PTWin")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft Corp.")]
-[assembly: AssemblyProduct("PTWin")]
-[assembly: AssemblyCopyright("Copyright © Microsoft Corp. 2005")]
+[assembly: AssemblyCompany("Rockford Lhotka")]
+[assembly: AssemblyProduct("ProjectTracker")]
+[assembly: AssemblyCopyright("Copyright © Rockford Lhotka 2006")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

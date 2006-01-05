@@ -154,22 +154,22 @@ Namespace PTService
         
         '''<remarks/>
         <System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetProject", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function GetProject(ByVal id As String) As ProjectInfo
-            Dim results() As Object = Me.Invoke("GetProject", New Object() {id})
+        Public Function GetProject(ByVal request As ProjectRequest) As ProjectInfo
+            Dim results() As Object = Me.Invoke("GetProject", New Object() {request})
             Return CType(results(0),ProjectInfo)
         End Function
         
         '''<remarks/>
-        Public Overloads Sub GetProjectAsync(ByVal id As String)
-            Me.GetProjectAsync(id, Nothing)
+        Public Overloads Sub GetProjectAsync(ByVal request As ProjectRequest)
+            Me.GetProjectAsync(request, Nothing)
         End Sub
         
         '''<remarks/>
-        Public Overloads Sub GetProjectAsync(ByVal id As String, ByVal userState As Object)
+        Public Overloads Sub GetProjectAsync(ByVal request As ProjectRequest, ByVal userState As Object)
             If (Me.GetProjectOperationCompleted Is Nothing) Then
                 Me.GetProjectOperationCompleted = AddressOf Me.OnGetProjectOperationCompleted
             End If
-            Me.InvokeAsync("GetProject", New Object() {id}, Me.GetProjectOperationCompleted, userState)
+            Me.InvokeAsync("GetProject", New Object() {request}, Me.GetProjectOperationCompleted, userState)
         End Sub
         
         Private Sub OnGetProjectOperationCompleted(ByVal arg As Object)
@@ -264,22 +264,22 @@ Namespace PTService
         
         '''<remarks/>
         <System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetResource", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function GetResource(ByVal id As Integer) As ResourceInfo
-            Dim results() As Object = Me.Invoke("GetResource", New Object() {id})
+        Public Function GetResource(ByVal request As ResourceRequest) As ResourceInfo
+            Dim results() As Object = Me.Invoke("GetResource", New Object() {request})
             Return CType(results(0),ResourceInfo)
         End Function
         
         '''<remarks/>
-        Public Overloads Sub GetResourceAsync(ByVal id As Integer)
-            Me.GetResourceAsync(id, Nothing)
+        Public Overloads Sub GetResourceAsync(ByVal request As ResourceRequest)
+            Me.GetResourceAsync(request, Nothing)
         End Sub
         
         '''<remarks/>
-        Public Overloads Sub GetResourceAsync(ByVal id As Integer, ByVal userState As Object)
+        Public Overloads Sub GetResourceAsync(ByVal request As ResourceRequest, ByVal userState As Object)
             If (Me.GetResourceOperationCompleted Is Nothing) Then
                 Me.GetResourceOperationCompleted = AddressOf Me.OnGetResourceOperationCompleted
             End If
-            Me.InvokeAsync("GetResource", New Object() {id}, Me.GetResourceOperationCompleted, userState)
+            Me.InvokeAsync("GetResource", New Object() {request}, Me.GetResourceOperationCompleted, userState)
         End Sub
         
         Private Sub OnGetResourceOperationCompleted(ByVal arg As Object)
@@ -477,6 +477,27 @@ Namespace PTService
      System.Diagnostics.DebuggerStepThroughAttribute(),  _
      System.ComponentModel.DesignerCategoryAttribute("code"),  _
      System.Xml.Serialization.XmlTypeAttribute([Namespace]:="http://ws.lhotka.net/")>  _
+    Partial Public Class ResourceRequest
+        
+        Private idField As Integer
+        
+        '''<remarks/>
+        Public Property Id() As Integer
+            Get
+                Return Me.idField
+            End Get
+            Set
+                Me.idField = value
+            End Set
+        End Property
+    End Class
+    
+    '''<remarks/>
+    <System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "2.0.50727.42"),  _
+     System.SerializableAttribute(),  _
+     System.Diagnostics.DebuggerStepThroughAttribute(),  _
+     System.ComponentModel.DesignerCategoryAttribute("code"),  _
+     System.Xml.Serialization.XmlTypeAttribute([Namespace]:="http://ws.lhotka.net/")>  _
     Partial Public Class ResourceAssignmentInfo
         
         Private projectIdField As System.Guid
@@ -569,6 +590,27 @@ Namespace PTService
             End Get
             Set
                 Me.resourceAssignmentsField = value
+            End Set
+        End Property
+    End Class
+    
+    '''<remarks/>
+    <System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "2.0.50727.42"),  _
+     System.SerializableAttribute(),  _
+     System.Diagnostics.DebuggerStepThroughAttribute(),  _
+     System.ComponentModel.DesignerCategoryAttribute("code"),  _
+     System.Xml.Serialization.XmlTypeAttribute([Namespace]:="http://ws.lhotka.net/")>  _
+    Partial Public Class ProjectRequest
+        
+        Private idField As System.Guid
+        
+        '''<remarks/>
+        Public Property Id() As System.Guid
+            Get
+                Return Me.idField
+            End Get
+            Set
+                Me.idField = value
             End Set
         End Property
     End Class

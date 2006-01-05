@@ -16,7 +16,9 @@ Public Class MainForm
       Dim projectId As String = Me.ProjectInfoDataGridView.SelectedRows(0).Cells(0).Value.ToString
       If projectId <> Me.IdLabel1.Text Then
         Using svc As New PTService.PTService
-          Me.ProjectDetailBindingSource.DataSource = svc.GetProject(projectId)
+          Dim request As New PTService.ProjectRequest
+          request.Id = New Guid(projectId)
+          Me.ProjectDetailBindingSource.DataSource = svc.GetProject(request)
         End Using
       End If
     End If
@@ -76,7 +78,9 @@ Public Class MainForm
         ' do the assignment
         svc.AssignResource(CInt(Me.ResourceIdLabel.Text), New Guid(Me.ProjectIdLabel.Text))
         ' refresh the detail view
-        Me.ProjectDetailBindingSource.DataSource = svc.GetProject(Me.ProjectIdLabel.Text)
+        Dim request As New PTService.ProjectRequest
+        request.Id = New Guid(Me.ProjectIdLabel.Text)
+        Me.ProjectDetailBindingSource.DataSource = svc.GetProject(request)
 
       Catch ex As Exception
         MessageBox.Show(ex.Message, "Assign resource", _

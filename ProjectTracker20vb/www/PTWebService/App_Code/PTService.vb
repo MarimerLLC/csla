@@ -45,13 +45,13 @@ Public Class PTService
   End Function
 
   <WebMethod(Description:="Get a project")> _
-  Public Function GetProject(ByVal id As String) As ProjectInfo
+  Public Function GetProject(ByVal request As ProjectRequest) As ProjectInfo
 
     ' anonymous access allowed
     Security.UseAnonymous()
 
     Try
-      Dim proj As Project = Project.GetProject(New Guid(id))
+      Dim proj As Project = Project.GetProject(request.Id)
       Dim result As New ProjectInfo
       Csla.Data.DataMapper.Map(proj, result, "Resources")
       For Each resource As ProjectResource In proj.Resources
@@ -162,13 +162,13 @@ Public Class PTService
   End Function
 
   <WebMethod(Description:="Get a resource")> _
-  Public Function GetResource(ByVal id As Integer) As ResourceInfo
+  Public Function GetResource(ByVal request As ResourceRequest) As ResourceInfo
 
     ' anonymous access allowed
     Security.UseAnonymous()
 
     Try
-      Dim res As Resource = Resource.GetResource(id)
+      Dim res As Resource = Resource.GetResource(request.Id)
       Dim result As New ResourceInfo
       result.Id = res.Id
       result.Name = String.Format("{1}, {0}", res.FirstName, res.LastName)

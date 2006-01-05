@@ -354,11 +354,13 @@ namespace Csla.Core
     public bool CanReadProperty(bool throwOnFalse)
     {
       string propertyName = 
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+        new System.Diagnostics.StackTrace().
+        GetFrame(1).GetMethod().Name.Substring(4);
       bool result = CanReadProperty(propertyName);
       if (throwOnFalse && result == false)
         throw new System.Security.SecurityException(
-          String.Format("{0} ({1})", Resources.PropertyGetNotAllowed, propertyName));
+          String.Format("{0} ({1})", 
+          Resources.PropertyGetNotAllowed, propertyName));
       return result;
     }
 
@@ -788,7 +790,7 @@ namespace Csla.Core
 
     object ICloneable.Clone()
     {
-      return OnClone();
+      return GetClone();
     }
     /// <summary>
     /// Creates a clone of the object.
@@ -797,7 +799,7 @@ namespace Csla.Core
     /// A new object containing the exact data of the original object.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual object OnClone()
+    protected virtual object GetClone()
     {
       return ObjectCloner.Clone(this);
     }

@@ -71,7 +71,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' </returns>
   Public Overridable Function Clone() As T
 
-    Return DirectCast(OnClone(), T)
+    Return DirectCast(GetClone(), T)
 
   End Function
 

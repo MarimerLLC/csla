@@ -391,7 +391,7 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
 
   Private Function ICloneable_Clone() As Object Implements ICloneable.Clone
 
-    Return OnClone()
+    Return GetClone()
 
   End Function
 
@@ -402,7 +402,7 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
   ''' A new object containing the exact data of the original object.
   ''' </returns>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Function OnClone() As Object
+  Protected Overridable Function GetClone() As Object
 
     Return ObjectCloner.Clone(Me)
 
@@ -416,7 +416,7 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
   ''' </returns>
   Public Overloads Function Clone() As T
 
-    Return DirectCast(OnClone(), T)
+    Return DirectCast(GetClone(), T)
 
   End Function
 

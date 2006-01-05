@@ -30,14 +30,14 @@ namespace Csla
 
     object ICloneable.Clone()
     {
-      return OnClone();
+      return GetClone();
     }
     /// <summary>
     /// Creates a clone of the object.
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual object OnClone()
+    protected virtual object GetClone()
     {
       return Core.ObjectCloner.Clone(this);
     }
@@ -50,7 +50,7 @@ namespace Csla
     /// </returns>
     public virtual T Clone()
     {
-      return (T)OnClone();
+      return (T)GetClone();
     }
 
     #endregion

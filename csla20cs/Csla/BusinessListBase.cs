@@ -419,7 +419,7 @@ namespace Csla
 
     object ICloneable.Clone()
     {
-      return OnClone();
+      return GetClone();
     }
 
     /// <summary>
@@ -427,7 +427,7 @@ namespace Csla
     /// </summary>
     /// <returns>A new object containing the exact data of the original object.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual object OnClone()
+    protected virtual object GetClone()
     {
       return Core.ObjectCloner.Clone(this);
     }
@@ -438,7 +438,7 @@ namespace Csla
     /// <returns>A new object containing the exact data of the original object.</returns>
     public T Clone()
     {
-      return (T)OnClone();
+      return (T)GetClone();
     }
 
     #endregion

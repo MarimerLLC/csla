@@ -786,7 +786,7 @@ Namespace Core
 
     Private Function Clone() As Object Implements ICloneable.Clone
 
-      Return OnClone()
+      Return GetClone()
 
     End Function
 
@@ -797,7 +797,7 @@ Namespace Core
     ''' A new object containing the exact data of the original object.
     ''' </returns>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Function OnClone() As Object
+    Protected Overridable Function GetClone() As Object
 
       Return ObjectCloner.Clone(Me)
 

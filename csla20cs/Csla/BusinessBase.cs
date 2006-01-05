@@ -72,7 +72,7 @@ namespace Csla
     /// </returns>
     public virtual T Clone()
     {
-      return (T)OnClone();
+      return (T)GetClone();
     }
 
     #endregion

@@ -140,7 +140,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
   Private Function ICloneable_Clone() As Object Implements ICloneable.Clone
 
-    Return OnClone()
+    Return GetClone()
 
   End Function
 
@@ -151,7 +151,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' A new object containing the exact data of the original object.
   ''' </returns>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Function OnClone() As Object
+  Protected Overridable Function GetClone() As Object
 
     Return ObjectCloner.Clone(Me)
 
@@ -165,7 +165,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' </returns>
   Public Overloads Function Clone() As NameValueListBase(Of K, V)
 
-    Return DirectCast(OnClone(), NameValueListBase(Of K, V))
+    Return DirectCast(GetClone(), NameValueListBase(Of K, V))
 
   End Function
 

@@ -24,7 +24,7 @@ Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
 
   Private Function ICloneable_Clone() As Object Implements ICloneable.Clone
 
-    Return OnClone()
+    Return GetClone()
 
   End Function
 
@@ -35,7 +35,7 @@ Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   ''' A new object containing the exact data of the original object.
   ''' </returns>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Function OnClone() As Object
+  Protected Overridable Function GetClone() As Object
 
     Return ObjectCloner.Clone(Me)
 
@@ -49,7 +49,7 @@ Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   ''' </returns>
   Public Overloads Function Clone() As T
 
-    Return DirectCast(OnClone(), T)
+    Return DirectCast(GetClone(), T)
 
   End Function
 

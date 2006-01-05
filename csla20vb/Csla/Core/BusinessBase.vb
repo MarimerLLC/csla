@@ -192,7 +192,7 @@ Namespace Core
     Protected Sub MarkDirty(ByVal supressEvent As Boolean)
       mIsDirty = True
       If Not supressEvent Then
-        OnIsDirtyChanged()
+        OnUnknownPropertyChanged()
       End If
     End Sub
 
@@ -250,7 +250,7 @@ Namespace Core
     Protected Sub MarkClean()
 
       mIsDirty = False
-      OnIsDirtyChanged()
+      OnUnknownPropertyChanged()
 
     End Sub
 
@@ -664,7 +664,7 @@ Namespace Core
       mBindingEdit = False
       ValidationRules.SetTarget(Me)
       AddBusinessRules()
-      OnIsDirtyChanged()
+      OnUnknownPropertyChanged()
       MyBase.UndoChangesComplete()
 
     End Sub

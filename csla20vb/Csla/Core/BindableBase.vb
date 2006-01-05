@@ -57,13 +57,28 @@ Namespace Core
 
     ''' <summary>
     ''' Call this method to raise the PropertyChanged event
-    ''' for the IsDirty property.
+    ''' for all object properties.
+    ''' </summary>
+    ''' <remarks>
+    ''' This method is for backward compatibility with
+    ''' CSLA .NET 1.x.
+    ''' </remarks>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub OnIsDirtyChanged()
+
+      OnUnknownPropertyChanged()
+
+    End Sub
+
+    ''' <summary>
+    ''' Call this method to raise the PropertyChanged event
+    ''' for all object properties.
     ''' </summary>
     ''' <remarks>
     ''' This method is automatically called by MarkDirty
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub OnIsDirtyChanged()
+    Protected Overridable Sub OnUnknownPropertyChanged()
 
       Dim properties() As PropertyInfo = _
         Me.GetType.GetProperties(BindingFlags.Public Or BindingFlags.Instance)

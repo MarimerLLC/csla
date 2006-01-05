@@ -214,7 +214,7 @@ namespace Csla.Core
     {
       _isDirty = true;
       if (!suppressEvent)
-        OnIsDirtyChanged();
+        OnUnknownPropertyChanged();
     }
 
     /// <summary>
@@ -271,7 +271,7 @@ namespace Csla.Core
     protected void MarkClean()
     {
       _isDirty = false;
-      OnIsDirtyChanged();
+      OnUnknownPropertyChanged();
     }
 
     /// <summary>
@@ -671,7 +671,7 @@ namespace Csla.Core
       _bindingEdit = false;
       ValidationRules.SetTarget(this);
       AddBusinessRules();
-      OnIsDirtyChanged();
+      OnUnknownPropertyChanged();
       base.UndoChangesComplete();
     }
 

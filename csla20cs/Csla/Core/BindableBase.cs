@@ -53,13 +53,27 @@ namespace Csla.Core
 
     /// <summary>
     /// Call this method to raise the PropertyChanged event
-    /// for the IsDirty property.
+    /// for all object properties.
+    /// </summary>
+    /// <remarks>
+    /// This method exists for backward compatibility with
+    /// CSLA .NET 1.x.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnIsDirtyChanged()
+    {
+      OnUnknownPropertyChanged();
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for all object properties.
     /// </summary>
     /// <remarks>
     /// This method is automatically called by MarkDirty
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnIsDirtyChanged()
+    protected virtual void OnUnknownPropertyChanged()
     {
       PropertyInfo [] properties = 
         this.GetType().GetProperties(

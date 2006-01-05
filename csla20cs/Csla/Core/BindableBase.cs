@@ -29,7 +29,9 @@ namespace Csla.Core
     {
       add
       {
-        if (value.Method.IsPublic && (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic))
+        if (value.Method.IsPublic && 
+           (value.Method.DeclaringType.IsSerializable || 
+            value.Method.IsStatic))
           _serializableHandlers = (PropertyChangedEventHandler)
             System.Delegate.Combine(_serializableHandlers, value);
         else
@@ -38,7 +40,9 @@ namespace Csla.Core
       }
       remove
       {
-        if (value.Method.IsPublic && (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic))
+        if (value.Method.IsPublic && 
+           (value.Method.DeclaringType.IsSerializable || 
+            value.Method.IsStatic))
           _serializableHandlers = (PropertyChangedEventHandler)
             System.Delegate.Remove(_serializableHandlers, value);
         else
@@ -58,7 +62,8 @@ namespace Csla.Core
     protected virtual void OnIsDirtyChanged()
     {
       PropertyInfo [] properties = 
-        this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        this.GetType().GetProperties(
+        BindingFlags.Public | BindingFlags.Instance);
       foreach (PropertyInfo item in properties)
         OnPropertyChanged(item.Name);
     }
@@ -75,10 +80,16 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnPropertyChanged(string propertyName)
     {
-      if (_nonSerializableHandlers != null)
-        _nonSerializableHandlers.Invoke(this, new PropertyChangedEventArgs(propertyName));
-      if (_serializableHandlers != null)
-        _serializableHandlers.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChangedEventHandler nonSerializableHandlers =
+        _nonSerializableHandlers;
+      if (nonSerializableHandlers != null)
+        nonSerializableHandlers.Invoke(this,
+          new PropertyChangedEventArgs(propertyName));
+      PropertyChangedEventHandler serializableHandlers =
+        _serializableHandlers;
+      if (serializableHandlers != null)
+        serializableHandlers.Invoke(this,
+          new PropertyChangedEventArgs(propertyName));
     }
   }
 }

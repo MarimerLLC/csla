@@ -42,11 +42,15 @@ Namespace Core
       End RemoveHandler
 
       RaiseEvent(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-        If mNonSerializableHandlers IsNot Nothing Then
-          mNonSerializableHandlers.Invoke(sender, e)
+        Dim nonSerializableHandlers As PropertyChangedEventHandler = _
+          mNonSerializableHandlers
+        If nonSerializableHandlers IsNot Nothing Then
+          nonSerializableHandlers.Invoke(sender, e)
         End If
-        If mSerializableHandlers IsNot Nothing Then
-          mSerializableHandlers.Invoke(sender, e)
+        Dim serializableHandlers As PropertyChangedEventHandler = _
+          mSerializableHandlers
+        If serializableHandlers IsNot Nothing Then
+          serializableHandlers.Invoke(sender, e)
         End If
       End RaiseEvent
     End Event

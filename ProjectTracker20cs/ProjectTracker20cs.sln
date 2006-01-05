@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWin", "PTWin\PTWin.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Library", "ProjectTracker.Library\ProjectTracker.Library.csproj", "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\PTWeb\", "www\PTWeb\", "{D8F59D26-50C8-4DFD-B8B9-C529530297F1}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "G:\...\PTWeb\", "www\PTWeb\", "{D8F59D26-50C8-4DFD-B8B9-C529530297F1}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/PTWeb"
@@ -34,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "PTData", "PTData\PTData.dbp", "{09B6FE9B-E21E-4454-8E64-928422F60E08}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\RemotingHost\", "www\RemotingHost\", "{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "G:\...\RemotingHost\", "www\RemotingHost\", "{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/RemotingHost"
@@ -52,6 +52,27 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\RemotingHost\", "www
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "3187"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "G:\...\PTWebService\", "www\PTWebService\", "{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}"
+	ProjectSection(WebsiteProperties) = preProject
+		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/PTWebService"
+		Debug.AspNetCompiler.PhysicalPath = "www\PTWebService\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\PTWebService\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/PTWebService"
+		Release.AspNetCompiler.PhysicalPath = "www\PTWebService\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\PTWebService\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "7411"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -105,6 +126,16 @@ Global
 		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Release|Any CPU.ActiveCfg = Debug|.NET
 		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
 		{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}.Release|Mixed Platforms.Build.0 = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Debug|.NET.ActiveCfg = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Debug|.NET.Build.0 = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Debug|Any CPU.ActiveCfg = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Debug|Mixed Platforms.ActiveCfg = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Debug|Mixed Platforms.Build.0 = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Release|.NET.ActiveCfg = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Release|.NET.Build.0 = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Release|Any CPU.ActiveCfg = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
+		{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}.Release|Mixed Platforms.Build.0 = Debug|.NET
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

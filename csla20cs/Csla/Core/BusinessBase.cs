@@ -999,15 +999,15 @@ namespace Csla.Core
     {
       get
       {
+        string result = string.Empty;
         if (!IsValid)
         {
           Validation.BrokenRule rule = 
             ValidationRules.GetBrokenRules().GetFirstBrokenRule(columnName);
-          if (rule == null)
-            return String.Empty;
-          return rule.Description;
+          if (rule != null)
+            result = rule.Description;
         }
-        return String.Empty;
+        return result;
       }
     }
 

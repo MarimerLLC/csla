@@ -987,19 +987,15 @@ Namespace Core
 
     Private ReadOnly Property Item(ByVal columnName As String) As String Implements System.ComponentModel.IDataErrorInfo.Item
       Get
+        Dim result As String = ""
         If Not IsValid Then
           Dim rule As Validation.BrokenRule = _
             ValidationRules.GetBrokenRules.GetFirstBrokenRule(columnName)
-          If rule Is Nothing Then
-            Return ""
-
-          Else
-            Return rule.Description()
+          If rule IsNot Nothing Then
+            result = rule.Description()
           End If
-
-        Else
-          Return ""
         End If
+        Return result
       End Get
     End Property
 

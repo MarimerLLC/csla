@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
@@ -69,7 +70,7 @@ namespace Csla.Core
     protected internal void CopyState()
     {
       Type currentType = this.GetType();
-      Hashtable state = new Hashtable();
+      HybridDictionary state = new HybridDictionary();
       FieldInfo[] fields;
       string fieldName;
 
@@ -149,12 +150,12 @@ namespace Csla.Core
       // so just do nothing in that case
       if (EditLevel > 0)
       {
-        Hashtable state;
+        HybridDictionary state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           BinaryFormatter formatter = new BinaryFormatter();
-          state = (Hashtable)formatter.Deserialize(buffer);
+          state = (HybridDictionary)formatter.Deserialize(buffer);
         }
 
         Type currentType = this.GetType();

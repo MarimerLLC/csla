@@ -1,5 +1,6 @@
 Imports System.Reflection
 Imports System.IO
+Imports System.Collections.Specialized
 Imports System.Runtime.Serialization
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.ComponentModel
@@ -54,7 +55,7 @@ Namespace Core
     Protected Friend Sub CopyState() Implements IUndoableObject.CopyState
 
       Dim currentType As Type = Me.GetType
-      Dim state As New Hashtable()
+      Dim state As New HybridDictionary()
       Dim fields() As FieldInfo
       Dim field As FieldInfo
       Dim fieldName As String
@@ -131,11 +132,12 @@ Namespace Core
       ' undo below the level where we stacked states,
       ' so just do nothing in that case
       If EditLevel > 0 Then
-        Dim state As Hashtable
+        Dim state As HybridDictionary
         Using buffer As New MemoryStream(mStateStack.Pop())
           buffer.Position = 0
           Dim formatter As New BinaryFormatter()
-          state = CType(formatter.Deserialize(buffer), Hashtable)
+          state = _
+            CType(formatter.Deserialize(buffer), HybridDictionary)
         End Using
 
         Dim currentType As Type = Me.GetType

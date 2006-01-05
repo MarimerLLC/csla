@@ -264,6 +264,7 @@ public class PTService : System.Web.Services.WebService
 
   #region Roles
 
+  [WebMethod(Description="Get a list of roles")]
   public RoleInfo[] GetRoles()
   {
     // anonymous access allowed

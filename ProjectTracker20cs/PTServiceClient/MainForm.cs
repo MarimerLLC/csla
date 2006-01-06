@@ -20,9 +20,12 @@ namespace PTServiceClient
     {
       using (PTService.PTService svc = new PTService.PTService())
       {
-        this.ProjectInfoBindingSource.DataSource = svc.GetProjectList();
-        this.ResourceInfoBindingSource.DataSource = svc.GetResourceList();
-        this.RoleInfoBindingSource.DataSource = svc.GetRoles();
+        this.ProjectInfoBindingSource.DataSource = 
+          svc.GetProjectList();
+        this.ResourceInfoBindingSource.DataSource = 
+          svc.GetResourceList();
+        this.RoleInfoBindingSource.DataSource = 
+          svc.GetRoles();
       }
     }
 
@@ -80,13 +83,17 @@ namespace PTServiceClient
       this.ProjectDetailBindingSource.AddNew();
     }
 
-    private void AssignToProjectButton_Click(object sender, EventArgs e)
+    private void AssignToProjectButton_Click(
+      object sender, EventArgs e)
     {
       if (this.ResourceIdLabel.Text.Trim().Length == 0)
-        MessageBox.Show("You must select a resource first", "Assign resource",
+        MessageBox.Show(
+          "You must select a resource first", "Assign resource",
           MessageBoxButtons.OK, MessageBoxIcon.Information);
-      if (this.ProjectIdLabel.Text.Trim().Length == 0 || Guid.Empty.Equals(new Guid(this.ProjectIdLabel.Text)))
-        MessageBox.Show("You must select a project first", "Assign resource",
+      if (this.ProjectIdLabel.Text.Trim().Length == 0 || 
+        Guid.Empty.Equals(new Guid(this.ProjectIdLabel.Text)))
+        MessageBox.Show(
+          "You must select a project first", "Assign resource",
           MessageBoxButtons.OK, MessageBoxIcon.Information);
       using (PTService.PTService svc = new PTService.PTService())
       {
@@ -94,11 +101,15 @@ namespace PTServiceClient
         try
         {
           // do the assignment
-          svc.AssignResource(int.Parse(this.ResourceIdLabel.Text), new Guid(this.ProjectIdLabel.Text));
+          svc.AssignResource(
+            int.Parse(this.ResourceIdLabel.Text), 
+            new Guid(this.ProjectIdLabel.Text));
           // refresh the detail view
-          PTService.ProjectRequest request = new PTServiceClient.PTService.ProjectRequest();
+          PTService.ProjectRequest request = 
+            new PTServiceClient.PTService.ProjectRequest();
           request.Id = new Guid(this.ProjectIdLabel.Text);
-          this.ProjectDetailBindingSource.DataSource = svc.GetProject(request);
+          this.ProjectDetailBindingSource.DataSource = 
+            svc.GetProject(request);
         }
         catch (Exception ex)
         {
@@ -130,7 +141,8 @@ namespace PTServiceClient
 
     private void SetCredentials(PTService.PTService svc)
     {
-      PTService.CslaCredentials credentials = new PTService.CslaCredentials();
+      PTService.CslaCredentials credentials = 
+        new PTService.CslaCredentials();
       credentials.Username = "rocky";
       credentials.Password = "lhotka";
       svc.CslaCredentialsValue = credentials;

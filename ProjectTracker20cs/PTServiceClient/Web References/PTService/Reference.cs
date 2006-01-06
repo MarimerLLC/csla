@@ -152,24 +152,24 @@ namespace PTServiceClient.PTService {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetProject", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ProjectInfo GetProject(string id) {
+        public ProjectInfo GetProject(ProjectRequest request) {
             object[] results = this.Invoke("GetProject", new object[] {
-                        id});
+                        request});
             return ((ProjectInfo)(results[0]));
         }
         
         /// <remarks/>
-        public void GetProjectAsync(string id) {
-            this.GetProjectAsync(id, null);
+        public void GetProjectAsync(ProjectRequest request) {
+            this.GetProjectAsync(request, null);
         }
         
         /// <remarks/>
-        public void GetProjectAsync(string id, object userState) {
+        public void GetProjectAsync(ProjectRequest request, object userState) {
             if ((this.GetProjectOperationCompleted == null)) {
                 this.GetProjectOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetProjectOperationCompleted);
             }
             this.InvokeAsync("GetProject", new object[] {
-                        id}, this.GetProjectOperationCompleted, userState);
+                        request}, this.GetProjectOperationCompleted, userState);
         }
         
         private void OnGetProjectOperationCompleted(object arg) {
@@ -282,24 +282,24 @@ namespace PTServiceClient.PTService {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetResource", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResourceInfo GetResource(int id) {
+        public ResourceInfo GetResource(ResourceRequest request) {
             object[] results = this.Invoke("GetResource", new object[] {
-                        id});
+                        request});
             return ((ResourceInfo)(results[0]));
         }
         
         /// <remarks/>
-        public void GetResourceAsync(int id) {
-            this.GetResourceAsync(id, null);
+        public void GetResourceAsync(ResourceRequest request) {
+            this.GetResourceAsync(request, null);
         }
         
         /// <remarks/>
-        public void GetResourceAsync(int id, object userState) {
+        public void GetResourceAsync(ResourceRequest request, object userState) {
             if ((this.GetResourceOperationCompleted == null)) {
                 this.GetResourceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetResourceOperationCompleted);
             }
             this.InvokeAsync("GetResource", new object[] {
-                        id}, this.GetResourceOperationCompleted, userState);
+                        request}, this.GetResourceOperationCompleted, userState);
         }
         
         private void OnGetResourceOperationCompleted(object arg) {
@@ -506,6 +506,27 @@ namespace PTServiceClient.PTService {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://ws.lhotka.net/")]
+    public partial class ResourceRequest {
+        
+        private int idField;
+        
+        /// <remarks/>
+        public int Id {
+            get {
+                return this.idField;
+            }
+            set {
+                this.idField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "2.0.50727.42")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://ws.lhotka.net/")]
     public partial class ResourceAssignmentInfo {
         
         private System.Guid projectIdField;
@@ -598,6 +619,27 @@ namespace PTServiceClient.PTService {
             }
             set {
                 this.resourceAssignmentsField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "2.0.50727.42")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://ws.lhotka.net/")]
+    public partial class ProjectRequest {
+        
+        private System.Guid idField;
+        
+        /// <remarks/>
+        public System.Guid Id {
+            get {
+                return this.idField;
+            }
+            set {
+                this.idField = value;
             }
         }
     }

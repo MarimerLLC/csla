@@ -8,7 +8,7 @@ using ProjectTracker.Library;
 
 
 /// <summary>
-/// Summary description for PTService
+/// Web Service interface for the ProjectTracker application.
 /// </summary>
 [WebService(Namespace = "http://ws.lhotka.net/")]
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
@@ -51,14 +51,14 @@ public class PTService : System.Web.Services.WebService
   }
 
   [WebMethod(Description="Get a project")]
-  public ProjectInfo GetProject(string id)
+  public ProjectInfo GetProject(ProjectRequest request)
   {
     // anonymous access allowed
     Security.UseAnonymous();
 
     try
     {
-      Project proj = Project.GetProject(new Guid(id));
+      Project proj = Project.GetProject(request.Id);
       ProjectInfo result = new ProjectInfo();
       Csla.Data.DataMapper.Map(proj, result, "Resources");
       foreach (ProjectResource resource in proj.Resources)
@@ -81,7 +81,8 @@ public class PTService : System.Web.Services.WebService
 
   [WebMethod(Description="Add a project")]
   [SoapHeader("Credentials")]
-  public ProjectInfo AddProject(string name, string started, string ended, string description)
+  public ProjectInfo AddProject(
+    string name, string started, string ended, string description)
   {
     // user credentials required
     Security.Login(Credentials);
@@ -174,17 +175,17 @@ public class PTService : System.Web.Services.WebService
   }
 
   [WebMethod(Description="Get a resource")]
-  public ResourceInfo GetResource(int id)
+  public ResourceInfo GetResource(ResourceRequest request)
   {
     // anonymous access allowed
     Security.UseAnonymous();
 
     try
     {
-      Resource res = Resource.GetResource(id);
+      Resource res = Resource.GetResource(request.Id);
       ResourceInfo result = new ResourceInfo();
       result.Id = res.Id;
-      result.Name = string.Format("{1}, {0}", res.FirstName, res.LastName);
+      result.Name = res.FullName;
       foreach (ResourceAssignment resource in res.Assignments)
       {
         ResourceAssignmentInfo info = new ResourceAssignmentInfo();

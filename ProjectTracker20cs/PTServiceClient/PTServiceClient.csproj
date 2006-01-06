@@ -88,10 +88,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:7411/PTWebService/PTService.asmx">
+    <WebReferenceUrl Include="http://localhost/PTWebServicecs/PTService.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\PTService\</RelPath>
-      <UpdateFromURL>http://localhost:7411/PTWebService/PTService.asmx</UpdateFromURL>
+      <UpdateFromURL>http://localhost/PTWebServicecs/PTService.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

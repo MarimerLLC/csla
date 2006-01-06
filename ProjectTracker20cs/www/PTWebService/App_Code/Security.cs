@@ -1,5 +1,7 @@
 using System;
 using System.Web;
+using System.Security.Principal;
+using ProjectTracker.Library.Security;
 
 public static class Security
 {
@@ -11,6 +13,8 @@ public static class Security
     if (UrlIsHostedByVS(HttpContext.Current.Request.Url))
       return;
     ProjectTracker.Library.Security.PTPrincipal.Logout();
+    HttpContext.Current.User =
+      System.Threading.Thread.CurrentPrincipal;
   }
 
   public static void Login(CslaCredentials credentials)
@@ -20,11 +24,11 @@ public static class Security
         "Valid credentials not provided");
 
     // set to unauthenticated principal
-    ProjectTracker.Library.Security.PTPrincipal.Logout();
+    PTPrincipal.Logout();
 
-    ProjectTracker.Library.Security.PTPrincipal.Login(credentials.Username, credentials.Password);
+    PTPrincipal.Login(credentials.Username, credentials.Password);
 
-    System.Security.Principal.IPrincipal principal =
+    IPrincipal principal =
       System.Threading.Thread.CurrentPrincipal;
 
     if (principal.Identity.IsAuthenticated)
@@ -35,7 +39,9 @@ public static class Security
     else
     {
       // the user is not valid, raise an error
-      throw new System.Security.SecurityException("Invalid user or password");
+      throw 
+        new System.Security.SecurityException(
+          "Invalid user or password");
     }
   }
 

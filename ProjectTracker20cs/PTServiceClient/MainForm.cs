@@ -35,7 +35,9 @@ namespace PTServiceClient
         {
           using (PTService.PTService svc = new PTService.PTService())
           {
-            this.ProjectDetailBindingSource.DataSource = svc.GetProject(projectId);
+            PTService.ProjectRequest request = new PTServiceClient.PTService.ProjectRequest();
+            request.Id = new Guid(projectId);
+            this.ProjectDetailBindingSource.DataSource = svc.GetProject(request);
           }
         }
       }
@@ -94,7 +96,9 @@ namespace PTServiceClient
           // do the assignment
           svc.AssignResource(int.Parse(this.ResourceIdLabel.Text), new Guid(this.ProjectIdLabel.Text));
           // refresh the detail view
-          this.ProjectDetailBindingSource.DataSource = svc.GetProject(this.ProjectIdLabel.Text);
+          PTService.ProjectRequest request = new PTServiceClient.PTService.ProjectRequest();
+          request.Id = new Guid(this.ProjectIdLabel.Text);
+          this.ProjectDetailBindingSource.DataSource = svc.GetProject(request);
         }
         catch (Exception ex)
         {

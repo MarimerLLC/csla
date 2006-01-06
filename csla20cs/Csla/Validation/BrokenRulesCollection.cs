@@ -53,16 +53,14 @@ namespace Csla.Validation
     internal void Remove(RuleMethod rule)
     {
       // we loop through using a numeric counter because
-      // the base class Remove requires a numeric index
+      // removing items within a foreach isn't reliable
       IsReadOnly = false;
       for (int index = 0; index < Count; index++)
-      {
         if (this[index].RuleName == rule.RuleName)
         {
           RemoveAt(index);
           break;
         }
-      }
       IsReadOnly = true;
     }
 

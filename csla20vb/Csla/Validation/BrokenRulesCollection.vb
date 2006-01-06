@@ -54,7 +54,7 @@ Namespace Validation
     Friend Overloads Sub Remove(ByVal rule As RuleMethod)
 
       ' we loop through using a numeric counter because
-      ' the base class Remove requires a numeric index
+      ' removing items in a foreach isn't reliable
       IsReadOnly = False
       For index As Integer = 0 To Count - 1
         If Me(index).RuleName = rule.RuleName Then

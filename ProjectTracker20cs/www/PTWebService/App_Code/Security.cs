@@ -26,10 +26,7 @@ public static class Security
 
     PTPrincipal.Login(credentials.Username, credentials.Password);
 
-    IPrincipal principal =
-      Csla.ApplicationContext.User;
-
-    if (!principal.Identity.IsAuthenticated)
+    if (!Csla.ApplicationContext.User.Identity.IsAuthenticated)
     {
       // the user is not valid, raise an error
       throw 

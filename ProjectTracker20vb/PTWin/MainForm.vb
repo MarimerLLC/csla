@@ -231,8 +231,11 @@ Public Class MainForm
       ProjectTracker.Library.Security.PTPrincipal.Logout()
     End If
 
-    If Csla.ApplicationContext.User.Identity.IsAuthenticated Then
-      Me.LoginToolStripLabel.Text = "Logged in as " & Csla.ApplicationContext.User.Identity.Name
+    Dim user As System.Security.Principal.IPrincipal = _
+      Csla.ApplicationContext.User
+
+    If user.Identity.IsAuthenticated Then
+      Me.LoginToolStripLabel.Text = "Logged in as " & user.Identity.Name
       Me.LoginToolStripButton.Text = "Logout"
 
     Else

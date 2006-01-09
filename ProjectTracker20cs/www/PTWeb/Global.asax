@@ -62,14 +62,11 @@
       // didn't get a principal from Session, so
       // set it to an unauthenticted PTPrincipal
       ProjectTracker.Library.Security.PTPrincipal.Logout();
-      HttpContext.Current.User = 
-        System.Threading.Thread.CurrentPrincipal;
     }
     else
     {
       // use the principal from Session
-      System.Threading.Thread.CurrentPrincipal = principal;
-      HttpContext.Current.User = principal;
+      Csla.ApplicationContext.User = principal;
     }
   }
 

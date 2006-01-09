@@ -9,10 +9,8 @@ public class PTMembershipProvider : MembershipProvider
     string username, string password)
   {
     bool result = PTPrincipal.Login(username, password);
-    HttpContext.Current.Session["CslaPrincipal"] =
-      System.Threading.Thread.CurrentPrincipal;
-    System.Web.HttpContext.Current.User =
-      System.Threading.Thread.CurrentPrincipal;
+    HttpContext.Current.Session["CslaPrincipal"] = 
+      Csla.ApplicationContext.User;
     return result;
   }
 

@@ -126,7 +126,7 @@ namespace ProjectTracker.Library
 
     public static bool CanAddObject()
     {
-      return System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager");
+      return Csla.ApplicationContext.User.IsInRole("ProjectManager");
     }
 
     public static bool CanGetObject()
@@ -137,16 +137,16 @@ namespace ProjectTracker.Library
     public static bool CanDeleteObject()
     {
       bool result = false;
-      if (System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager"))
+      if (Csla.ApplicationContext.User.IsInRole("ProjectManager"))
         result = true;
-      if (System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator"))
+      if (Csla.ApplicationContext.User.IsInRole("Administrator"))
         result = true;
       return result;
     }
 
     public static bool CanEditObject()
     {
-      return System.Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager");
+      return Csla.ApplicationContext.User.IsInRole("ProjectManager");
     }
 
     #endregion

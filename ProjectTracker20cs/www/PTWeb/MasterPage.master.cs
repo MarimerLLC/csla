@@ -26,8 +26,8 @@ public partial class MasterPage : System.Web.UI.MasterPage
     object sender, LoginCancelEventArgs e)
   {
     ProjectTracker.Library.Security.PTPrincipal.Logout();
-    Session["CslaPrincipal"] = 
-      System.Threading.Thread.CurrentPrincipal;
+    Session["CslaPrincipal"] =
+      Csla.ApplicationContext.User;
     System.Web.Security.FormsAuthentication.SignOut();
   }
 }

@@ -17,7 +17,7 @@ namespace ProjectTracker.Library.Security
       if (identity.IsAuthenticated)
       {
         PTPrincipal principal = new PTPrincipal(identity);
-        System.Threading.Thread.CurrentPrincipal = principal;
+        Csla.ApplicationContext.User = principal;
       }
       return identity.IsAuthenticated;
     }
@@ -26,7 +26,7 @@ namespace ProjectTracker.Library.Security
     {
       PTIdentity identity = PTIdentity.UnauthenticatedIdentity();
       PTPrincipal principal = new PTPrincipal(identity);
-      System.Threading.Thread.CurrentPrincipal = principal;
+      Csla.ApplicationContext.User = principal;
     }
 
     public override bool IsInRole(string role)

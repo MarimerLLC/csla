@@ -26,7 +26,7 @@ namespace PTServiceClient.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost/PTWebServicecs/PTService.asmx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:7411/PTWebService/PTService.asmx")]
         public string PTServiceClient_PTService_PTService {
             get {
                 return ((string)(this["PTServiceClient_PTService_PTService"]));

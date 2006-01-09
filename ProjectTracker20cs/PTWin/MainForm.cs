@@ -322,7 +322,7 @@ namespace PTWin
       }
 
       System.Security.Principal.IPrincipal user =
-        System.Threading.Thread.CurrentPrincipal;
+        Csla.ApplicationContext.User;
 
       if (user.Identity.IsAuthenticated)
       {

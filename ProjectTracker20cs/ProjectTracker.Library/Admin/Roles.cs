@@ -58,7 +58,7 @@ namespace ProjectTracker.Library.Admin
 
     public static bool CanAddObject()
     {
-      return System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator");
+      return Csla.ApplicationContext.User.IsInRole("Administrator");
     }
 
     public static bool CanGetObject()
@@ -68,12 +68,12 @@ namespace ProjectTracker.Library.Admin
 
     public static bool CanDeleteObject()
     {
-      return System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator");
+      return Csla.ApplicationContext.User.IsInRole("Administrator");
     }
 
     public static bool CanEditObject()
     {
-      return System.Threading.Thread.CurrentPrincipal.IsInRole("Administrator");
+      return Csla.ApplicationContext.User.IsInRole("Administrator");
     }
 
     #endregion

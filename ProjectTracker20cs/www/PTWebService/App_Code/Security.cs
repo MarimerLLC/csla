@@ -13,8 +13,6 @@ public static class Security
     if (UrlIsHostedByVS(HttpContext.Current.Request.Url))
       return;
     ProjectTracker.Library.Security.PTPrincipal.Logout();
-    HttpContext.Current.User =
-      System.Threading.Thread.CurrentPrincipal;
   }
 
   public static void Login(CslaCredentials credentials)
@@ -29,14 +27,9 @@ public static class Security
     PTPrincipal.Login(credentials.Username, credentials.Password);
 
     IPrincipal principal =
-      System.Threading.Thread.CurrentPrincipal;
+      Csla.ApplicationContext.User;
 
-    if (principal.Identity.IsAuthenticated)
-    {
-      // the user is valid - set up the HttpContext
-      HttpContext.Current.User = principal;
-    }
-    else
+    if (!principal.Identity.IsAuthenticated)
     {
       // the user is not valid, raise an error
       throw 

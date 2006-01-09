@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="PTServiceClient_PTService_PTService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://localhost/PTWebServicecs/PTService.asmx</Value>
+      <Value Profile="(Default)">http://localhost:7411/PTWebService/PTService.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

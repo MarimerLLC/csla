@@ -110,11 +110,13 @@ namespace Csla
     {
       if (HttpContext.Current == null)
       {
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+        LocalDataStoreSlot slot = 
+          Thread.GetNamedDataSlot("Csla.ClientContext");
         return (HybridDictionary)Thread.GetData(slot);
       }
       else
-        return (HybridDictionary)HttpContext.Current.Items["Csla.ClientContext"];
+        return (HybridDictionary)
+          HttpContext.Current.Items["Csla.ClientContext"];
     }
 
     internal static HybridDictionary GetGlobalContext()
@@ -150,7 +152,9 @@ namespace Csla
         HttpContext.Current.Items["Csla.GlobalContext"] = globalContext;
     }
 
-    internal static void SetContext(HybridDictionary clientContext, HybridDictionary globalContext)
+    internal static void SetContext(
+      HybridDictionary clientContext, 
+      HybridDictionary globalContext)
     {
       SetClientContext(clientContext);
       SetGlobalContext(globalContext);

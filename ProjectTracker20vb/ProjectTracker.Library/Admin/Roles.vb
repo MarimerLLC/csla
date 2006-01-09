@@ -57,7 +57,7 @@ Namespace Admin
 
     Public Shared Function CanAddObject() As Boolean
 
-      Return My.User.IsInRole("Administrator")
+      Return Csla.ApplicationContext.User.IsInRole("Administrator")
 
     End Function
 
@@ -70,7 +70,7 @@ Namespace Admin
     Public Shared Function CanDeleteObject() As Boolean
 
       Dim result As Boolean
-      If My.User.IsInRole("Administrator") Then
+      If Csla.ApplicationContext.User.IsInRole("Administrator") Then
         result = True
       End If
       Return result
@@ -79,7 +79,7 @@ Namespace Admin
 
     Public Shared Function CanSaveObject() As Boolean
 
-      Return My.User.IsInRole("Administrator")
+      Return Csla.ApplicationContext.User.IsInRole("Administrator")
 
     End Function
 

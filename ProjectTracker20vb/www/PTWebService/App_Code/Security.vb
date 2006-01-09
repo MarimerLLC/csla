@@ -29,14 +29,7 @@ Friend Module Security
       ProjectTracker.Library.Security.PTPrincipal.Login(.Username, .Password)
     End With
 
-    Dim principal As System.Security.Principal.IPrincipal = _
-      Threading.Thread.CurrentPrincipal
-
-    If principal.Identity.IsAuthenticated Then
-      ' the user is valid - set up the HttpContext
-      HttpContext.Current.User = principal
-
-    Else
+    If Not Csla.ApplicationContext.User.Identity.IsAuthenticated Then
       ' the user is not valid, raise an error
       Throw New System.Security.SecurityException("Invalid user or password")
     End If

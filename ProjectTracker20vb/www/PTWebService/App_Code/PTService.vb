@@ -100,7 +100,7 @@ Public Class PTService
 
   End Function
 
-  <WebMethod(Description:="Add a project")> _
+  <WebMethod(Description:="Edit a project")> _
   <SoapHeader("Credentials")> _
   Public Function EditProject(ByVal id As Guid, ByVal name As String, _
     ByVal started As String, ByVal ended As String, _
@@ -171,7 +171,7 @@ Public Class PTService
       Dim res As Resource = Resource.GetResource(request.Id)
       Dim result As New ResourceInfo
       result.Id = res.Id
-      result.Name = String.Format("{1}, {0}", res.FirstName, res.LastName)
+      result.Name = res.FullName
       For Each resource As ResourceAssignment In res.Assignments
         Dim info As New ResourceAssignmentInfo
         Csla.Data.DataMapper.Map(resource, info)

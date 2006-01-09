@@ -298,7 +298,7 @@
       <wsdl:output message="tns:AddProjectSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="EditProject">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Add a project</wsdl:documentation>
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Edit a project</wsdl:documentation>
       <wsdl:input message="tns:EditProjectSoapIn" />
       <wsdl:output message="tns:EditProjectSoapOut" />
     </wsdl:operation>

@@ -113,7 +113,7 @@ Public Class Resource
 
   Public Shared Function CanAddObject() As Boolean
 
-    Return My.User.IsInRole("ProjectManager")
+    Return Csla.ApplicationContext.User.IsInRole("ProjectManager")
 
   End Function
 
@@ -126,10 +126,10 @@ Public Class Resource
   Public Shared Function CanDeleteObject() As Boolean
 
     Dim result As Boolean
-    If My.User.IsInRole("ProjectManager") Then
+    If Csla.ApplicationContext.User.IsInRole("ProjectManager") Then
       result = True
     End If
-    If My.User.IsInRole("Administrator") Then
+    If Csla.ApplicationContext.User.IsInRole("Administrator") Then
       result = True
     End If
     Return result
@@ -138,7 +138,7 @@ Public Class Resource
 
   Public Shared Function CanSaveObject() As Boolean
 
-    Return Threading.Thread.CurrentPrincipal.IsInRole("ProjectManager")
+    Return Csla.ApplicationContext.User.IsInRole("ProjectManager")
 
   End Function
 

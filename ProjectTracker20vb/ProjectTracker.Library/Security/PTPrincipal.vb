@@ -15,7 +15,7 @@ Namespace Security
       Dim identity As PTIdentity = PTIdentity.GetIdentity(username, password)
       If identity.IsAuthenticated Then
         Dim principal As New PTPrincipal(identity)
-        System.Threading.Thread.CurrentPrincipal = principal
+        Csla.ApplicationContext.User = principal
       End If
       Return identity.IsAuthenticated
 
@@ -25,7 +25,7 @@ Namespace Security
 
       Dim identity As PTIdentity = PTIdentity.UnauthenticatedIdentity
       Dim principal As New PTPrincipal(identity)
-      System.Threading.Thread.CurrentPrincipal = principal
+      Csla.ApplicationContext.User = principal
 
     End Sub
 

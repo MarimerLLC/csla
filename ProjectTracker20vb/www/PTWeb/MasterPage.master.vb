@@ -12,7 +12,7 @@ Partial Class MasterPage
   Protected Sub LoginStatus1_LoggingOut(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.LoginCancelEventArgs) Handles LoginStatus1.LoggingOut
 
     ProjectTracker.Library.Security.PTPrincipal.Logout()
-    Session("CslaPrincipal") = System.Threading.Thread.CurrentPrincipal
+    Session("CslaPrincipal") = Csla.ApplicationContext.User
     System.Web.Security.FormsAuthentication.SignOut()
 
   End Sub

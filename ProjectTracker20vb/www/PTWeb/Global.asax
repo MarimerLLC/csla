@@ -63,12 +63,10 @@
       ' under the VShost causes serialization issues
       ' and isn't strictly necessary anyway
       ProjectTracker.Library.Security.PTPrincipal.Logout()
-      HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal
       
     Else
       ' use the principal from Session
-      System.Threading.Thread.CurrentPrincipal = principal
-      HttpContext.Current.User = principal
+      Csla.ApplicationContext.User = principal
     End If
 
     

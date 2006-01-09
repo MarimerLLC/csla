@@ -5,11 +5,12 @@ Imports System.Web.Security
 Public Class PTMembershipProvider
   Inherits MembershipProvider
 
-  Public Overrides Function ValidateUser(ByVal username As String, ByVal password As String) As Boolean
+  Public Overrides Function ValidateUser( _
+    ByVal username As String, ByVal password As String) As Boolean
 
     If PTPrincipal.Login(username, password) Then
-      System.Web.HttpContext.Current.User = System.Threading.Thread.CurrentPrincipal
-      System.Web.HttpContext.Current.Session("CslaPrincipal") = System.Threading.Thread.CurrentPrincipal
+      System.Web.HttpContext.Current.Session("CslaPrincipal") = _
+        Csla.ApplicationContext.User
       Return True
 
     Else

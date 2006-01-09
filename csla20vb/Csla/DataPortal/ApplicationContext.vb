@@ -1,11 +1,36 @@
 Imports System.Threading
+Imports System.Security.Principal
 Imports System.Collections.Specialized
+Imports System.Web
 
 ''' <summary>
 ''' Provides consistent context information between the client
 ''' and server DataPortal objects. 
 ''' </summary>
 Public Module ApplicationContext
+
+#Region " User "
+
+  Public Property User() As IPrincipal
+    Get
+      If HttpContext.Current Is Nothing Then
+        Return Thread.CurrentPrincipal
+
+      Else
+        Return HttpContext.Current.User
+      End If
+    End Get
+    Set(ByVal value As IPrincipal)
+      If HttpContext.Current Is Nothing Then
+        Thread.CurrentPrincipal = value
+
+      Else
+        HttpContext.Current.User = value
+      End If
+    End Set
+  End Property
+
+#End Region
 
 #Region " Client/Global Context "
 
@@ -25,13 +50,10 @@ Public Module ApplicationContext
   ''' </remarks>
   Public ReadOnly Property ClientContext() As HybridDictionary
     Get
-      Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot("Csla.ClientContext")
-      Dim ctx As HybridDictionary = _
-        CType(Thread.GetData(slot), HybridDictionary)
+      Dim ctx As HybridDictionary = GetClientContext()
       If ctx Is Nothing Then
         ctx = New HybridDictionary
-        Threading.Thread.SetData(slot, ctx)
+        SetClientContext(ctx)
       End If
       Return ctx
     End Get
@@ -53,13 +75,10 @@ Public Module ApplicationContext
   ''' </remarks>
   Public ReadOnly Property GlobalContext() As HybridDictionary
     Get
-      Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot("Csla.GlobalContext")
-      Dim ctx As HybridDictionary = _
-        CType(Thread.GetData(slot), HybridDictionary)
+      Dim ctx As HybridDictionary = GetGlobalContext()
       If ctx Is Nothing Then
         ctx = New HybridDictionary
-        Threading.Thread.SetData(slot, ctx)
+        SetGlobalContext(ctx)
       End If
       Return ctx
     End Get
@@ -67,38 +86,63 @@ Public Module ApplicationContext
 
   Friend Function GetClientContext() As HybridDictionary
 
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.ClientContext")
-    Return CType(Thread.GetData(slot), HybridDictionary)
+    If HttpContext.Current Is Nothing Then
+      Dim slot As System.LocalDataStoreSlot = _
+        Thread.GetNamedDataSlot("Csla.ClientContext")
+      Return CType(Thread.GetData(slot), HybridDictionary)
+
+    Else
+      Return CType(HttpContext.Current.Items("Csla.ClientContext"), HybridDictionary)
+    End If
 
   End Function
 
   Friend Function GetGlobalContext() As HybridDictionary
 
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Return CType(Thread.GetData(slot), HybridDictionary)
+    If HttpContext.Current Is Nothing Then
+      Dim slot As System.LocalDataStoreSlot = _
+        Thread.GetNamedDataSlot("Csla.GlobalContext")
+      Return CType(Thread.GetData(slot), HybridDictionary)
+
+    Else
+      Return CType(HttpContext.Current.Items("Csla.GlobalContext"), HybridDictionary)
+    End If
 
   End Function
 
-  Friend Sub SetContext(ByVal clientContext As HybridDictionary, ByVal globalContext As HybridDictionary)
+  Private Sub SetClientContext(ByVal clientContext As HybridDictionary)
 
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.ClientContext")
-    Threading.Thread.SetData(slot, clientContext)
+    If HttpContext.Current Is Nothing Then
+      Dim slot As System.LocalDataStoreSlot = _
+        Thread.GetNamedDataSlot("Csla.ClientContext")
+      Threading.Thread.SetData(slot, clientContext)
 
-    slot = Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Threading.Thread.SetData(slot, globalContext)
+    Else
+      HttpContext.Current.Items("Csla.ClientContext") = clientContext
+    End If
 
   End Sub
 
   Friend Sub SetGlobalContext(ByVal globalContext As HybridDictionary)
 
-    Dim slot As System.LocalDataStoreSlot = _
-      Thread.GetNamedDataSlot("Csla.GlobalContext")
-    Threading.Thread.SetData(slot, globalContext)
+    If HttpContext.Current Is Nothing Then
+      Dim slot As System.LocalDataStoreSlot = _
+        Thread.GetNamedDataSlot("Csla.GlobalContext")
+      Threading.Thread.SetData(slot, globalContext)
+
+    Else
+      HttpContext.Current.Items("Csla.GlobalContext") = globalContext
+    End If
 
   End Sub
+
+  Friend Sub SetContext(ByVal clientContext As HybridDictionary, ByVal globalContext As HybridDictionary)
+
+    SetClientContext(clientContext)
+    SetGlobalContext(globalContext)
+
+  End Sub
+
 
   Public Sub Clear()
 

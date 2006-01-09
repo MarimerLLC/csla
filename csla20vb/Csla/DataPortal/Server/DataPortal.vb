@@ -261,7 +261,7 @@ Namespace Server
       ' We expect the Principal to be of the type BusinessPrincipal
       If context.Principal IsNot Nothing Then
         If TypeOf context.Principal Is Security.BusinessPrincipalBase Then
-          System.Threading.Thread.CurrentPrincipal = context.Principal
+          ApplicationContext.User = context.Principal
 
         Else
           Throw New System.Security.SecurityException( _
@@ -283,7 +283,7 @@ Namespace Server
 
       ApplicationContext.Clear()
       If ApplicationContext.AuthenticationType <> "Windows" Then
-        System.Threading.Thread.CurrentPrincipal = Nothing
+        ApplicationContext.User = Nothing
       End If
 
     End Sub

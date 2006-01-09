@@ -403,7 +403,7 @@ Public Module DataPortal
 
     Else
       ' we assume using the CSLA framework security
-      Return System.Threading.Thread.CurrentPrincipal
+      Return ApplicationContext.User
     End If
   End Function
 

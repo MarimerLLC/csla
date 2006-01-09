@@ -114,7 +114,7 @@ Namespace Security
 
     Public Function IsReadAllowed(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName).IsReadAllowed(My.User.CurrentPrincipal)
+      Return GetRolesForProperty(propertyName).IsReadAllowed(ApplicationContext.User)
 
     End Function
 
@@ -126,7 +126,7 @@ Namespace Security
 
     Public Function IsReadDenied(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName).IsReadDenied(My.User.CurrentPrincipal)
+      Return GetRolesForProperty(propertyName).IsReadDenied(ApplicationContext.User)
 
     End Function
 
@@ -138,7 +138,7 @@ Namespace Security
 
     Public Function IsWriteAllowed(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName).IsWriteAllowed(My.User.CurrentPrincipal)
+      Return GetRolesForProperty(propertyName).IsWriteAllowed(ApplicationContext.User)
 
     End Function
 
@@ -150,7 +150,7 @@ Namespace Security
 
     Public Function IsWriteDenied(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName).IsWriteDenied(My.User.CurrentPrincipal)
+      Return GetRolesForProperty(propertyName).IsWriteDenied(ApplicationContext.User)
 
     End Function
 

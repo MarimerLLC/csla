@@ -271,7 +271,7 @@ namespace Csla.Server
       if (context.Principal != null)
       {
         if (context.Principal is Security.BusinessPrincipalBase)
-          System.Threading.Thread.CurrentPrincipal = context.Principal;
+          ApplicationContext.User = context.Principal;
         else
           throw new System.Security.SecurityException(
             Resources.BusinessPrincipalException + " " + 
@@ -289,7 +289,7 @@ namespace Csla.Server
       if (!context.IsRemotePortal) return;
       ApplicationContext.Clear();
       if (ApplicationContext.AuthenticationType != "Windows")
-        System.Threading.Thread.CurrentPrincipal = null;
+        ApplicationContext.User = null;
     }
 
     #endregion

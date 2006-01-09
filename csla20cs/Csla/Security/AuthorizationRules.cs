@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 
 namespace Csla.Security
 {
@@ -120,7 +119,7 @@ namespace Csla.Security
     public bool IsReadAllowed(string propertyName)
     {
       return GetRolesForProperty(
-        propertyName).IsReadAllowed(Thread.CurrentPrincipal);
+        propertyName).IsReadAllowed(ApplicationContext.User);
     }
 
     public bool HasReadDeniedRoles(string propertyName)
@@ -130,7 +129,7 @@ namespace Csla.Security
 
     public bool IsReadDenied(string propertyName)
     {
-      return GetRolesForProperty(propertyName).IsReadDenied(Thread.CurrentPrincipal);
+      return GetRolesForProperty(propertyName).IsReadDenied(ApplicationContext.User);
     }
 
     public bool HasWriteAllowedRoles(string propertyName)
@@ -140,7 +139,7 @@ namespace Csla.Security
 
     public bool IsWriteAllowed(string propertyName)
     {
-      return GetRolesForProperty(propertyName).IsWriteAllowed(Thread.CurrentPrincipal);
+      return GetRolesForProperty(propertyName).IsWriteAllowed(ApplicationContext.User);
     }
 
     public bool HasWriteDeniedRoles(string propertyName)
@@ -150,7 +149,7 @@ namespace Csla.Security
 
     public bool IsWriteDenied(string propertyName)
     {
-      return GetRolesForProperty(propertyName).IsWriteDenied(Thread.CurrentPrincipal);
+      return GetRolesForProperty(propertyName).IsWriteDenied(ApplicationContext.User);
     }
 
     #endregion

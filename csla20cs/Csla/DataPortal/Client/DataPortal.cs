@@ -401,7 +401,7 @@ namespace Csla
       else
       {
         // we assume using the CSLA framework security
-        return System.Threading.Thread.CurrentPrincipal;
+        return ApplicationContext.User;
       }
     }
 

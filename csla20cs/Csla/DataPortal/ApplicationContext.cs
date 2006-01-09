@@ -1,7 +1,9 @@
 using System;
 using System.Threading;
+using System.Security.Principal;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Web;
 
 namespace Csla
 {
@@ -11,6 +13,40 @@ namespace Csla
   /// </summary>
   public static class ApplicationContext
   {
+    #region User
+
+    /// <summary>
+    /// Gets or sets the current .NET principal object
+    /// on either the thread or HttpContext
+    /// as appropriate.
+    /// </summary>
+    /// <remarks>
+    /// This method should always be used instead
+    /// of directly using either Thread.CurrentPrincipal
+    /// or HttpContext, as it automatically switches
+    /// to use the appropriate source depending on
+    /// whether the code is running within ASP.NET
+    /// or not.
+    /// </remarks>
+    public static IPrincipal User
+    {
+      get
+      {
+        if (HttpContext.Current == null)
+          return Thread.CurrentPrincipal;
+        else
+          return HttpContext.Current.User;
+      }
+      set
+      {
+        if (HttpContext.Current == null)
+          Thread.CurrentPrincipal = value;
+        else
+          HttpContext.Current.User = value;
+      }
+    }
+
+    #endregion
 
     #region Client/Global Context
 
@@ -32,12 +68,11 @@ namespace Csla
     {
       get
       {
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
-        HybridDictionary ctx = (HybridDictionary)Thread.GetData(slot);
+        HybridDictionary ctx = GetClientContext();
         if (ctx == null)
         {
           ctx = new HybridDictionary();
-          Thread.SetData(slot, ctx);
+          SetClientContext(ctx);
         }
         return ctx;
       }
@@ -61,43 +96,64 @@ namespace Csla
     {
       get
       {
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-        HybridDictionary ctx = (HybridDictionary)Thread.GetData(slot);
+        HybridDictionary ctx = GetGlobalContext();
         if (ctx == null)
         {
           ctx = new HybridDictionary();
-          Thread.SetData(slot, ctx);
+          SetGlobalContext(ctx);
         }
         return ctx;
       }
     }
 
-
     internal static HybridDictionary GetClientContext()
     {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
-      return (HybridDictionary)Thread.GetData(slot);
+      if (HttpContext.Current == null)
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+        return (HybridDictionary)Thread.GetData(slot);
+      }
+      else
+        return (HybridDictionary)HttpContext.Current.Items["Csla.ClientContext"];
     }
 
     internal static HybridDictionary GetGlobalContext()
     {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      return (HybridDictionary)Thread.GetData(slot);
+      if (HttpContext.Current == null)
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+        return (HybridDictionary)Thread.GetData(slot);
+      }
+      else
+        return (HybridDictionary)HttpContext.Current.Items["Csla.GlobalContext"];
     }
 
-    internal static void SetContext(HybridDictionary clientContext, HybridDictionary globalContext)
+    private static void SetClientContext(HybridDictionary clientContext)
     {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
-      Thread.SetData(slot, clientContext);
-
-      slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Thread.SetData(slot, globalContext);
+      if (HttpContext.Current == null)
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
+        Thread.SetData(slot, clientContext);
+      }
+      else
+        HttpContext.Current.Items["Csla.ClientContext"] = clientContext;
     }
 
     internal static void SetGlobalContext(HybridDictionary globalContext)
     {
-      LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
-      Thread.SetData(slot, globalContext);
+      if (HttpContext.Current == null)
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+        Thread.SetData(slot, globalContext);
+      }
+      else
+        HttpContext.Current.Items["Csla.GlobalContext"] = globalContext;
+    }
+
+    internal static void SetContext(HybridDictionary clientContext, HybridDictionary globalContext)
+    {
+      SetClientContext(clientContext);
+      SetGlobalContext(globalContext);
     }
 
     public static void Clear()

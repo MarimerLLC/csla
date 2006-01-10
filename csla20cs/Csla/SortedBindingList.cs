@@ -228,7 +228,7 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
-    object System.ComponentModel.IBindingList.AddNew()
+    public object AddNew()
     {
       object result;
       if (_supportsBinding)
@@ -236,6 +236,9 @@ namespace Csla
         _initiatedLocally = true;
         result = _bindingList.AddNew();
         _initiatedLocally = false;
+        OnListChanged(
+          new ListChangedEventArgs(
+          ListChangedType.ItemAdded, _bindingList.Count - 1));
       }
       else
         result = null;

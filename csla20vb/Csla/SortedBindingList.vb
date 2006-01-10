@@ -220,7 +220,7 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
-  Private Function AddNew() As Object Implements System.ComponentModel.IBindingList.AddNew
+  Public Function AddNew() As Object Implements System.ComponentModel.IBindingList.AddNew
 
     Dim result As Object
 
@@ -228,6 +228,8 @@ Public Class SortedBindingList(Of T)
       mInitiatedLocally = True
       result = mBindingList.AddNew
       mInitiatedLocally = False
+      OnListChanged(New ListChangedEventArgs( _
+        ListChangedType.ItemAdded, mBindingList.Count - 1))
 
     Else
       result = Nothing

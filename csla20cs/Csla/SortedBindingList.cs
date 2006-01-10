@@ -576,7 +576,8 @@ namespace Csla
         foreach (ListItem item in _sortIndex)
           if (item.BaseIndex > baseIndex)
             item.BaseIndex -= 1;
-        OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
+        OnListChanged(new ListChangedEventArgs(
+          ListChangedType.ItemDeleted, index));
         _initiatedLocally = false;
       }
       else

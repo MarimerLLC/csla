@@ -6,7 +6,7 @@ Public Class ProjectResources
 
 #Region " Business Methods "
 
-  Public Function GetValue(ByVal resourceId As Integer) As ProjectResource
+  Public Function GetItem(ByVal resourceId As Integer) As ProjectResource
 
     For Each res As ProjectResource In Me
       If res.ResourceId = resourceId Then
@@ -19,13 +19,8 @@ Public Class ProjectResources
 
   Public Sub Assign(ByVal resourceId As Integer)
 
-    DoAssignment(ProjectResource.NewProjectResource(resourceId, RoleList.DefaultRole))
-
-  End Sub
-
-  Private Sub DoAssignment(ByVal resource As ProjectResource)
-
-    If Not Contains(resource) Then
+    If Not Contains(resourceId) Then
+      Dim resource As ProjectResource = ProjectResource.NewProjectResource(resourceId)
       Me.Add(resource)
 
     Else
@@ -44,10 +39,6 @@ Public Class ProjectResources
     Next
 
   End Sub
-
-#End Region
-
-#Region " Contains "
 
   Public Overloads Function Contains( _
       ByVal resourceId As Integer) As Boolean
@@ -91,10 +82,6 @@ Public Class ProjectResources
     Return New ProjectResources(dr)
 
   End Function
-
-#End Region
-
-#Region " Constructors "
 
   Private Sub New()
 

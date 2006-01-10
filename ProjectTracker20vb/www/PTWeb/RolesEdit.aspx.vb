@@ -20,7 +20,7 @@ Partial Class RolesEdit
 
   Private Sub ApplyAuthorizationRules()
 
-    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Roles.CanSaveObject
+    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Roles.CanEditObject
     Me.AddRoleButton.Visible = Roles.CanAddObject
 
   End Sub

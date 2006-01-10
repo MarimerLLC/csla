@@ -24,13 +24,11 @@ namespace ProjectTracker.Library
 
     public void AssignTo(Guid projectId)
     {
-      DoAssignment(ResourceAssignment.NewResourceAssignment(projectId));
-    }
-
-    private void DoAssignment(ResourceAssignment project)
-    {
-      if (!Contains(project))
+      if (!Contains(projectId))
+      {
+        ResourceAssignment project = ResourceAssignment.NewResourceAssignment(projectId);
         this.Add(project);
+      }
       else
         throw new InvalidOperationException("Resource already assigned to project");
     }
@@ -45,6 +43,22 @@ namespace ProjectTracker.Library
           break;
         }
       }
+    }
+
+    public bool Contains(Guid projectId)
+    {
+      foreach (ResourceAssignment project in this)
+        if (project.ProjectId == projectId)
+          return true;
+      return false;
+    }
+
+    public bool ContainsDeleted(Guid projectId)
+    {
+      foreach (ResourceAssignment project in DeletedList)
+        if (project.ProjectId == projectId)
+          return true;
+      return false;
     }
 
     #endregion

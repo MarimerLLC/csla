@@ -187,7 +187,7 @@ Public Class MainForm
     ' Project menu
     Me.NewProjectToolStripMenuItem.Enabled = Project.CanAddObject
     Me.EditProjectToolStripMenuItem.Enabled = Project.CanGetObject
-    If Project.CanSaveObject Then
+    If Project.CanEditObject Then
       Me.EditProjectToolStripMenuItem.Text = "Edit project"
     Else
       Me.EditProjectToolStripMenuItem.Text = "View project"
@@ -197,7 +197,7 @@ Public Class MainForm
     ' Resource menu
     Me.NewResourceToolStripMenuItem.Enabled = Resource.CanAddObject
     Me.EditResourceToolStripMenuItem.Enabled = Resource.CanGetObject
-    If Resource.CanSaveObject Then
+    If Resource.CanEditObject Then
       Me.EditResourceToolStripMenuItem.Text = "Edit resource"
     Else
       Me.EditResourceToolStripMenuItem.Text = "View resource"
@@ -205,7 +205,7 @@ Public Class MainForm
     Me.DeleteResourceToolStripMenuItem.Enabled = Resource.CanDeleteObject
 
     ' Admin menu
-    Me.EditRolesToolStripMenuItem.Enabled = Admin.Roles.CanSaveObject
+    Me.EditRolesToolStripMenuItem.Enabled = Admin.Roles.CanEditObject
 
   End Sub
 

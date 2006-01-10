@@ -43,7 +43,7 @@ Partial Class ResourceEdit
 
     Dim obj As Resource = CType(Session("currentObject"), Resource)
     ' Resource display
-    If Resource.CanSaveObject Then
+    If Resource.CanEditObject Then
       If obj.IsNew Then
         Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
 
@@ -56,10 +56,10 @@ Partial Class ResourceEdit
       Me.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly
       Me.AssignProjectButton.Visible = False
     End If
-    Me.DetailsView1.Rows(Me.DetailsView1.Rows.Count - 1).Visible = Resource.CanSaveObject
+    Me.DetailsView1.Rows(Me.DetailsView1.Rows.Count - 1).Visible = Resource.CanEditObject
 
     ' resources display
-    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Resource.CanSaveObject
+    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Resource.CanEditObject
 
   End Sub
 

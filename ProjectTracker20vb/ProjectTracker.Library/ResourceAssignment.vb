@@ -14,21 +14,15 @@ Public Class ResourceAssignment
 
   Public ReadOnly Property ProjectId() As Guid
     Get
-      If CanReadProperty() Then
-        Return mProjectId
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mProjectId
     End Get
   End Property
 
   Public ReadOnly Property ProjectName() As String
     Get
-      If CanReadProperty() Then
-        Return mProjectName
-      Else
-        Throw New System.Security.SecurityException("Property get not allowed")
-      End If
+      CanReadProperty(True)
+      Return mProjectName
     End Get
   End Property
 
@@ -67,31 +61,27 @@ Public Class ResourceAssignment
 
 #End Region
 
-#Region " Constructors "
+#Region " Validation Rules "
 
-  Private Sub New()
+  Protected Overrides Sub AddBusinessRules()
 
-    MarkAsChild()
+    ValidationRules.AddRule(AddressOf Assignment.ValidRole, "Role")
+
+  End Sub
+
+#End Region
+
+#Region " Authorization Rules "
+
+  Protected Overrides Sub AddAuthorizationRules()
+
+    AuthorizationRules.AllowWrite("Role", "ProjectManager")
 
   End Sub
 
 #End Region
 
 #Region " Factory Methods "
-
-  Friend Shared Function NewResourceAssignment( _
-    ByVal project As Project, ByVal role As Integer) As ResourceAssignment
-
-    Return New ResourceAssignment(project, role)
-
-  End Function
-
-  Friend Shared Function NewResourceAssignment( _
-    ByVal projectId As Guid, ByVal role As Integer) As ResourceAssignment
-
-    Return New ResourceAssignment(Project.GetProject(projectId), role)
-
-  End Function
 
   Friend Shared Function NewResourceAssignment( _
     ByVal projectId As Guid) As ResourceAssignment
@@ -107,6 +97,12 @@ Public Class ResourceAssignment
 
   End Function
 
+  Private Sub New()
+
+    MarkAsChild()
+
+  End Sub
+
 #End Region
 
 #Region " Data Access "
@@ -116,7 +112,7 @@ Public Class ResourceAssignment
     MarkAsChild()
     mProjectId = project.Id
     mProjectName = project.Name
-    mAssigned.Date = Now
+    mAssigned.Date = Assignment.GetDefaultAssignedDate
     mRole = role
 
   End Sub
@@ -135,67 +131,29 @@ Public Class ResourceAssignment
 
   End Sub
 
-  Friend Sub Insert(ByVal tr As SqlClient.SqlTransaction, ByVal resource As Resource)
+  Friend Sub Insert(ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)
 
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
 
-    Using cm As New SqlClient.SqlCommand
-      With cm
-        .Connection = tr.Connection
-        .Transaction = tr
-        .CommandType = CommandType.StoredProcedure
-        .CommandText = "addAssignment"
-        LoadParameters(cm, resource)
-
-        Using dr As SqlDataReader = cm.ExecuteReader
-          dr.Read()
-          dr.GetBytes(0, 0, mTimestamp, 0, 8)
-        End Using
-
-        MarkOld()
-      End With
-    End Using
-
+    mTimestamp = Assignment.AddAssignment( _
+      cn, mProjectId, resource.Id, mAssigned, mRole)
+    MarkOld()
+    
   End Sub
 
-  Friend Sub Update(ByVal tr As SqlClient.SqlTransaction, ByVal resource As Resource)
+  Friend Sub Update(ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)
 
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
 
-    Using cm As New SqlClient.SqlCommand
-      With cm
-        .Connection = tr.Connection
-        .Transaction = tr
-        .CommandType = CommandType.StoredProcedure
-        .CommandText = "updateAssignment"
-        LoadParameters(cm, resource)
-        cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
-
-        Using dr As SqlDataReader = cm.ExecuteReader
-          dr.Read()
-          dr.GetBytes(0, 0, mTimestamp, 0, 8)
-        End Using
-
-        MarkOld()
-      End With
-    End Using
+    mTimestamp = Assignment.UpdateAssignment( _
+      cn, mProjectId, resource.Id, mAssigned, mRole, mTimestamp)
+    MarkOld()
 
   End Sub
 
-  Private Sub LoadParameters(ByVal cm As SqlCommand, ByVal resource As Resource)
-
-    With cm
-      .Parameters.AddWithValue("@projectId", mProjectId)
-      .Parameters.AddWithValue("@resourceId", resource.Id)
-      .Parameters.AddWithValue("@assigned", mAssigned.DBValue)
-      .Parameters.AddWithValue("@role", mRole)
-    End With
-
-  End Sub
-
-  Friend Sub DeleteSelf(ByVal tr As SqlClient.SqlTransaction, ByVal resource As Resource)
+  Friend Sub DeleteSelf(ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)
 
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
@@ -203,20 +161,8 @@ Public Class ResourceAssignment
     ' if we're new then don't update the database
     If Me.IsNew Then Exit Sub
 
-    Using cm As New SqlClient.SqlCommand
-      With cm
-        .Connection = tr.Connection
-        .Transaction = tr
-        .CommandType = CommandType.StoredProcedure
-        .CommandText = "deleteAssignment"
-        .Parameters.AddWithValue("@projectId", mProjectId)
-        .Parameters.AddWithValue("@resourceId", resource.Id)
-
-        .ExecuteNonQuery()
-
-        MarkNew()
-      End With
-    End Using
+    Assignment.RemoveAssignment(cn, mProjectId, resource.Id)
+    MarkNew()
 
   End Sub
 

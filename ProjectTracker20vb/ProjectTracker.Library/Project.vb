@@ -169,7 +169,7 @@ Public Class Project
 
   End Function
 
-  Public Shared Function CanSaveObject() As Boolean
+  Public Shared Function CanEditObject() As Boolean
 
     Return Csla.ApplicationContext.User.IsInRole("ProjectManager")
 
@@ -207,34 +207,27 @@ Public Class Project
   End Sub
 
   Public Overrides Function Save() As Project
-    If IsDeleted Then
-      If Not CanDeleteObject() Then
-        Throw New System.Security.SecurityException("User not authorized to remove a project")
-      End If
 
-    Else
-      ' no deletion - we're adding or updating
-      If Not CanSaveObject() Then
-        Throw New System.Security.SecurityException("User not authorized to update a project")
-      End If
+    If IsDeleted AndAlso Not CanDeleteObject() Then
+      Throw New System.Security.SecurityException("User not authorized to remove a project")
+
+    ElseIf IsNew AndAlso Not CanAddObject() Then
+      Throw New System.Security.SecurityException("User not authorized to add a project")
+
+    ElseIf Not CanEditObject() Then
+      Throw New System.Security.SecurityException("User not authorized to update a project")
     End If
-
     Return MyBase.Save
+
   End Function
 
-#End Region
-
-#Region " Constructors "
-
   Private Sub New()
-
-    AddAuthorizationRules()
-
+    ' require use of factory methods
   End Sub
 
 #End Region
 
-#Region " Criteria "
+#Region " Data Access "
 
   <Serializable()> _
   Private Class Criteria
@@ -251,15 +244,11 @@ Public Class Project
     End Sub
   End Class
 
-#End Region
-
-#Region " Data Access "
-
+  <RunLocal()> _
   Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
 
     mId = Guid.NewGuid
     Started = CStr(Today)
-    Name = ""
     ValidationRules.CheckRules()
 
   End Sub
@@ -360,7 +349,7 @@ Public Class Project
           .Connection = cn
           .CommandType = CommandType.StoredProcedure
           .CommandText = "deleteProject"
-          .Parameters.AddWithValue("@id", criteria.Id.ToString)
+          .Parameters.AddWithValue("@id", criteria.Id)
           .ExecuteNonQuery()
         End With
       End Using

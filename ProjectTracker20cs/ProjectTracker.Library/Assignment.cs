@@ -57,7 +57,6 @@ namespace ProjectTracker.Library
       SqlConnection cn, Guid projectId, int resourceId, 
       SmartDate assigned, int role)
     {
-      byte[] result = new byte[8];
       using (SqlCommand cm = cn.CreateCommand())
       {
         cm.CommandText = "addAssignment";

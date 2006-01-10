@@ -136,7 +136,7 @@ Public Class Resource
 
   End Function
 
-  Public Shared Function CanSaveObject() As Boolean
+  Public Shared Function CanEditObject() As Boolean
 
     Return Csla.ApplicationContext.User.IsInRole("ProjectManager")
 
@@ -175,36 +175,29 @@ Public Class Resource
 
   Public Overrides Function Save() As Resource
 
-    If IsDeleted Then
-      If Not CanDeleteObject() Then
-        Throw New System.Security.SecurityException("User not authorized to remove a resource")
-      End If
+    If IsDeleted AndAlso Not CanDeleteObject() Then
+      Throw New System.Security.SecurityException("User not authorized to remove a resource")
 
-    Else
-      If Not CanSaveObject() Then
-        Throw New System.Security.SecurityException( _
-          "User not authorized to update a resource")
-      End If
+    ElseIf IsNew AndAlso Not CanAddObject() Then
+      Throw New System.Security.SecurityException("User not authorized to add a resource")
+
+    ElseIf Not CanEditObject() Then
+      Throw New System.Security.SecurityException("User not authorized to update a resource")
     End If
-
     Return MyBase.Save
 
   End Function
 
-#End Region
-
-#Region " Constructors "
-
   Private Sub New()
-    ' prevent direct instantiation
+    ' require use of factory methods
   End Sub
 
 #End Region
 
-#Region " Criteria "
+#Region " Data Access "
 
   <Serializable()> _
-  Private Class Criteria
+Private Class Criteria
     Private mId As Integer
     Public ReadOnly Property Id() As Integer
       Get
@@ -217,15 +210,9 @@ Public Class Resource
     End Sub
   End Class
 
-#End Region
-
-#Region " Data Access "
-
   <RunLocal()> _
   Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
-
     ' nothing to initialize
-
   End Sub
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
@@ -257,72 +244,64 @@ Public Class Resource
 
   End Sub
 
-  <Transactional(TransactionalTypes.Manual)> _
+  <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Insert()
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
-      Using tr As SqlTransaction = cn.BeginTransaction
-        Using cm As SqlCommand = cn.CreateCommand
+      Using cm As SqlCommand = cn.CreateCommand
+        With cm
+          .CommandType = CommandType.StoredProcedure
+          .CommandText = "addResource"
           With cm
-            .Transaction = tr
-            .CommandType = CommandType.StoredProcedure
-            .CommandText = "addResource"
-            With cm
-              .Parameters.AddWithValue("@lastName", mLastName)
-              .Parameters.AddWithValue("@firstName", mFirstName)
-            End With
-
-            Using dr As SqlDataReader = cm.ExecuteReader
-              dr.Read()
-              mId = dr.GetInt32(0)
-              dr.GetBytes(1, 0, mTimestamp, 0, 8)
-            End Using
-
-            ' update child objects
-            mAssignments.Update(tr, Me)
+            .Parameters.AddWithValue("@lastName", mLastName)
+            .Parameters.AddWithValue("@firstName", mFirstName)
           End With
-        End Using
-        tr.Commit()
+
+          Using dr As SqlDataReader = cm.ExecuteReader
+            dr.Read()
+            mId = dr.GetInt32(0)
+            dr.GetBytes(1, 0, mTimestamp, 0, 8)
+          End Using
+
+          ' update child objects
+          mAssignments.Update(cn, Me)
+        End With
       End Using
     End Using
 
   End Sub
 
-  <Transactional(TransactionalTypes.Manual)> _
+  <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Update()
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
-      Using tr As SqlTransaction = cn.BeginTransaction
-        If MyBase.IsDirty Then
-          Using cm As SqlCommand = cn.CreateCommand
+      If MyBase.IsDirty Then
+        Using cm As SqlCommand = cn.CreateCommand
+          With cm
+            .CommandType = CommandType.StoredProcedure
+            .CommandText = "updateResource"
             With cm
-              .Transaction = tr
-              .CommandType = CommandType.StoredProcedure
-              .CommandText = "updateResource"
-              With cm
-                .Parameters.AddWithValue("@id", mId)
-                .Parameters.AddWithValue("@lastName", mLastName)
-                .Parameters.AddWithValue("@firstName", mFirstName)
-                .Parameters.AddWithValue("@lastChanged", mTimestamp)
-              End With
-              Using dr As SqlDataReader = cm.ExecuteReader
-                dr.Read()
-                dr.GetBytes(0, 0, mTimestamp, 0, 8)
-              End Using
+              .Parameters.AddWithValue("@id", mId)
+              .Parameters.AddWithValue("@lastName", mLastName)
+              .Parameters.AddWithValue("@firstName", mFirstName)
+              .Parameters.AddWithValue("@lastChanged", mTimestamp)
             End With
-          End Using
-        End If
-        ' update child objects
-        mAssignments.Update(tr, Me)
-        tr.Commit()
-      End Using
+            Using dr As SqlDataReader = cm.ExecuteReader
+              dr.Read()
+              dr.GetBytes(0, 0, mTimestamp, 0, 8)
+            End Using
+          End With
+        End Using
+      End If
+      ' update child objects
+      mAssignments.Update(cn, Me)
     End Using
 
   End Sub
 
-  <Transactional(TransactionalTypes.Manual)> _
+  <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
     If Not Me.IsNew Then
@@ -332,22 +311,18 @@ Public Class Resource
 
   End Sub
 
-  <Transactional(TransactionalTypes.Manual)> _
+  <Transactional(TransactionalTypes.TransactionScope)> _
   Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
-      Using tr As SqlTransaction = cn.BeginTransaction
-        Using cm As SqlCommand = cn.CreateCommand
-          With cm
-            .Transaction = tr
-            .CommandType = CommandType.StoredProcedure
-            .CommandText = "deleteResource"
-            .Parameters.AddWithValue("@id", criteria.Id)
-            .ExecuteNonQuery()
-          End With
-        End Using
-        tr.Commit()
+      Using cm As SqlCommand = cn.CreateCommand
+        With cm
+          .CommandType = CommandType.StoredProcedure
+          .CommandText = "deleteResource"
+          .Parameters.AddWithValue("@id", criteria.Id)
+          .ExecuteNonQuery()
+        End With
       End Using
     End Using
 

@@ -48,10 +48,12 @@ namespace ProjectTracker.Library
       private ResourceInfo()
       { /* require use of factory methods */ }
 
-      internal ResourceInfo(int id, string name)
+      internal ResourceInfo(SafeDataReader dr)
       {
-        _id = id;
-        _name = name;
+        _id = dr.GetInt32("Id");
+        _name = string.Format("{0}, {1}", 
+                  dr.GetString("LastName"), 
+                  dr.GetString("FirstName"));
       }
 
       #endregion
@@ -93,11 +95,7 @@ namespace ProjectTracker.Library
             IsReadOnly = false;
             while (dr.Read())
             {
-              ResourceInfo info = new ResourceInfo(
-                dr.GetInt32("Id"),
-                string.Format("{0}, {1}", 
-                  dr.GetString("LastName"), 
-                  dr.GetString("FirstName")));
+              ResourceInfo info = new ResourceInfo(dr);
               this.Add(info);
             }
             IsReadOnly = false;

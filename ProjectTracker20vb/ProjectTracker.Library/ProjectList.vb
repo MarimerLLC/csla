@@ -36,38 +36,16 @@ Public Class ProjectList
       Return mId
     End Function
 
-  End Class
+    Private Sub New()
+      ' require use of factory methods
+    End Sub
 
-#End Region
-
-#Region " Criteria "
-
-  <Serializable()> _
-  Private Class Criteria
-    ' no criteria - retrieve all projects
-  End Class
-
-  <Serializable()> _
-  Private Class FilteredCriteria
-    Private mName As String
-    Public ReadOnly Property Name() As String
-      Get
-        Return mName
-      End Get
-    End Property
-
-    Public Sub New(ByVal name As String)
+    Friend Sub New(ByVal id As Guid, ByVal name As String)
+      mId = id
       mName = name
     End Sub
+
   End Class
-
-#End Region
-
-#Region " Constructors "
-
-  Private Sub New()
-    ' prevent direct creation
-  End Sub
 
 #End Region
 
@@ -85,9 +63,32 @@ Public Class ProjectList
 
   End Function
 
+  Private Sub New()
+    ' require use of factory methods
+  End Sub
+
 #End Region
 
 #Region " Data Access "
+
+  <Serializable()> _
+Private Class Criteria
+    ' no criteria - retrieve all projects
+  End Class
+
+  <Serializable()> _
+  Private Class FilteredCriteria
+    Private mName As String
+    Public ReadOnly Property Name() As String
+      Get
+        Return mName
+      End Get
+    End Property
+
+    Public Sub New(ByVal name As String)
+      mName = name
+    End Sub
+  End Class
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
@@ -113,9 +114,7 @@ Public Class ProjectList
           Using dr As New SafeDataReader(.ExecuteReader)
             IsReadOnly = False
             While dr.Read()
-              Dim info As New ProjectInfo
-              info.Id = dr.GetGuid(0)
-              info.Name = dr.GetString(1)
+              Dim info As New ProjectInfo(dr.GetGuid(0), dr.GetString(1))
               ' apply filter if necessary
               If Len(nameFilter) = 0 OrElse info.Name.IndexOf(nameFilter) = 0 Then
                 Me.Add(info)

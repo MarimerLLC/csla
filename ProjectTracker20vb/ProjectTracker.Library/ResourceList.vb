@@ -36,6 +36,16 @@ Public Class ResourceList
       Return mId
     End Function
 
+    Private Sub New()
+      ' require use of factory methods
+    End Sub
+
+    Friend Sub New(ByVal dr As SafeDataReader)
+      mId = dr.GetInt32("Id")
+      mName = String.Format("{0}, {1}", _
+        dr.GetString("LastName"), dr.GetString("FirstName"))
+    End Sub
+
   End Class
 
 #End Region
@@ -54,18 +64,19 @@ Public Class ResourceList
 
   End Function
 
-  <Serializable()> _
-  Private Class Criteria
-    ' no criteria - we retrieve all resources
-  End Class
-
   Private Sub New()
-    ' prevent direct creation
+    ' require use of factory methods
   End Sub
 
 #End Region
 
 #Region " Data Access "
+
+  <Serializable()> _
+  Private Class Criteria
+    ' no criteria - we retrieve all resources
+  End Class
+
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
@@ -79,11 +90,7 @@ Public Class ResourceList
           Using dr As New SafeDataReader(.ExecuteReader)
             IsReadOnly = False
             While dr.Read()
-              Dim info As New ResourceInfo
-              info.Id = dr.GetInt32("Id")
-              info.Name = _
-                dr.GetString("LastName") & _
-                ", " & dr.GetString("FirstName")
+              Dim info As New ResourceInfo(dr)
               Me.Add(info)
             End While
 

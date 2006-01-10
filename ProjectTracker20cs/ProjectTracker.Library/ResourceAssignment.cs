@@ -85,6 +85,16 @@ namespace ProjectTracker.Library
 
     #endregion
 
+    #region Authorization Rules
+
+    protected override void AddAuthorizationRules()
+    {
+      AuthorizationRules.AllowWrite(
+        "Role", "ProjectManager");
+    }
+
+    #endregion
+
     #region Factory Methods
 
     internal static ResourceAssignment NewResourceAssignment(

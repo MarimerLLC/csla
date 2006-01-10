@@ -77,7 +77,7 @@ Namespace Admin
 
     End Function
 
-    Public Shared Function CanSaveObject() As Boolean
+    Public Shared Function CanEditObject() As Boolean
 
       Return Csla.ApplicationContext.User.IsInRole("Administrator")
 
@@ -111,7 +111,7 @@ Namespace Admin
     Public Overrides Function Save() As Roles
 
       ' see if save is allowed
-      If Not CanSaveObject() Then
+      If Not CanEditObject() Then
         Throw New System.Security.SecurityException("User not authorized to save roles")
       End If
 

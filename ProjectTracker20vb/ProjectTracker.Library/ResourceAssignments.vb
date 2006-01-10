@@ -19,13 +19,8 @@ Public Class ResourceAssignments
 
   Public Sub AssignTo(ByVal projectId As Guid)
 
-    DoAssignment(ResourceAssignment.NewResourceAssignment(projectId))
-
-  End Sub
-
-  Private Sub DoAssignment(ByVal project As ResourceAssignment)
-
-    If Not Contains(project) Then
+    If Not Contains(projectId) Then
+      Dim project As ResourceAssignment = ResourceAssignment.NewResourceAssignment(projectId)
       Me.Add(project)
 
     Else
@@ -45,9 +40,31 @@ Public Class ResourceAssignments
 
   End Sub
 
+  Public Overloads Function Contains(ByVal projectId As Guid) As Boolean
+
+    For Each project As ResourceAssignment In Me
+      If project.ProjectId = projectId Then
+        Return True
+      End If
+    Next
+    Return False
+
+  End Function
+
+  Public Overloads Function ContainsDeleted(ByVal projectId As Guid) As Boolean
+
+    For Each project As ResourceAssignment In DeletedList
+      If project.ProjectId = projectId Then
+        Return True
+      End If
+    Next
+    Return False
+
+  End Function
+
 #End Region
 
-#Region " Factory Methods"
+#Region " Factory Methods "
 
   Friend Shared Function NewResourceAssignments() As ResourceAssignments
 
@@ -61,10 +78,6 @@ Public Class ResourceAssignments
     Return New ResourceAssignments(dr)
 
   End Function
-
-#End Region
-
-#Region " Constructors "
 
   Private Sub New()
 
@@ -84,11 +97,11 @@ Public Class ResourceAssignments
 
   End Sub
 
-  Friend Sub Update(ByVal tr As SqlTransaction, ByVal resource As Resource)
+  Friend Sub Update(ByVal cn As SqlConnection, ByVal resource As Resource)
 
     ' update (thus deleting) any deleted child objects
     For Each item As ResourceAssignment In DeletedList
-      item.DeleteSelf(tr, resource)
+      item.DeleteSelf(cn, resource)
     Next
     ' now that they are deleted, remove them from memory too
     DeletedList.Clear()
@@ -96,10 +109,10 @@ Public Class ResourceAssignments
     ' add/update any current child objects
     For Each item As ResourceAssignment In Me
       If item.IsNew Then
-        item.Insert(tr, resource)
+        item.Insert(cn, resource)
 
       Else
-        item.Update(tr, resource)
+        item.Update(cn, resource)
       End If
     Next
 

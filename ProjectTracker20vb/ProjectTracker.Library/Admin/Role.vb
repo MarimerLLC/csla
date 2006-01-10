@@ -92,6 +92,7 @@ Namespace Admin
 
     Protected Overrides Sub AddAuthorizationRules()
 
+      AuthorizationRules.AllowWrite("Id", "Administrator")
       AuthorizationRules.AllowWrite("Name", "Administrator")
 
     End Sub
@@ -141,14 +142,8 @@ Namespace Admin
       If Not Me.IsDirty Then Exit Sub
 
       Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandType = CommandType.StoredProcedure
         cm.CommandText = "addRole"
-        cm.Parameters.AddWithValue("@id", mId)
-        cm.Parameters.AddWithValue("@name", mName)
-        Using dr As SqlDataReader = cm.ExecuteReader
-          dr.Read()
-          dr.GetBytes(0, 0, mTimestamp, 0, 8)
-        End Using
+        DoInsertUpdate(cm)
       End Using
 
     End Sub
@@ -159,16 +154,23 @@ Namespace Admin
       If Not Me.IsDirty Then Exit Sub
 
       Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandType = CommandType.StoredProcedure
         cm.CommandText = "updateRole"
-        cm.Parameters.AddWithValue("@id", mId)
-        cm.Parameters.AddWithValue("@name", mName)
         cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
-        Using dr As SqlDataReader = cm.ExecuteReader
-          dr.Read()
-          dr.GetBytes(0, 0, mTimestamp, 0, 8)
-        End Using
+        DoInsertUpdate(cm)
       End Using
+
+    End Sub
+
+    Private Sub DoInsertUpdate(ByVal cm As SqlCommand)
+
+      cm.Parameters.AddWithValue("@id", mId)
+      cm.Parameters.AddWithValue("@name", mName)
+      Using dr As SqlDataReader = cm.ExecuteReader
+        dr.Read()
+        dr.GetBytes(0, 0, mTimestamp, 0, 8)
+      End Using
+      cm.CommandType = CommandType.StoredProcedure
+      MarkOld()
 
     End Sub
 
@@ -181,6 +183,7 @@ Namespace Admin
       If Me.IsNew Then Exit Sub
 
       DeleteRole(cn, mId)
+      MarkNew()
 
     End Sub
 

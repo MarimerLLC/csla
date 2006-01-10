@@ -79,51 +79,27 @@ Public Class ProjectResource
 
 #End Region
 
-#Region " Business Rules "
+#Region " Validation Rules "
 
   Protected Overrides Sub AddBusinessRules()
 
-    ValidationRules.AddRule(AddressOf ValidRole, "Role")
+    ValidationRules.AddRule(AddressOf Assignment.ValidRole, "Role")
 
   End Sub
 
-  Private Function ValidRole(ByVal target As Object, ByVal e As Validation.RuleArgs) As Boolean
-
-    If RoleList.GetList().ContainsKey(mRole) Then
-      Return True
-
-    Else
-      e.Description = "Role must be in RoleList"
-      Return False
-    End If
-
-  End Function
-
 #End Region
 
-#Region " Constructors "
+#Region " Authorization Rules "
 
-  Private Sub New()
+  Protected Overrides Sub AddAuthorizationRules()
 
-    MarkAsChild()
+    AuthorizationRules.AllowWrite("Role", "ProjectManager")
 
   End Sub
 
 #End Region
 
 #Region " Factory Methods "
-
-  Friend Shared Function NewProjectResource(ByVal resource As Resource, ByVal role As Integer) As ProjectResource
-
-    Return New ProjectResource(resource, role)
-
-  End Function
-
-  Friend Shared Function NewProjectResource(ByVal resourceId As Integer, ByVal role As Integer) As ProjectResource
-
-    Return New ProjectResource(Resource.GetResource(resourceId), role)
-
-  End Function
 
   Friend Shared Function NewProjectResource(ByVal resourceId As Integer) As ProjectResource
 
@@ -137,6 +113,12 @@ Public Class ProjectResource
 
   End Function
 
+  Private Sub New()
+
+    MarkAsChild()
+
+  End Sub
+
 #End Region
 
 #Region " Data Access "
@@ -148,7 +130,7 @@ Public Class ProjectResource
       mResourceId = .Id
       mLastName = .LastName
       mFirstName = .FirstName
-      mAssigned.Date = Now
+      mAssigned.Date = Assignment.GetDefaultAssignedDate
       mRole = role
     End With
 
@@ -176,20 +158,9 @@ Public Class ProjectResource
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        With cm
-          .CommandType = CommandType.StoredProcedure
-          .CommandText = "addAssignment"
-          LoadParameters(cm, project)
-
-          Using dr As SqlDataReader = cm.ExecuteReader
-            dr.Read()
-            dr.GetBytes(0, 0, mTimestamp, 0, 8)
-          End Using
-
-          MarkOld()
-        End With
-      End Using
+      mTimestamp = Assignment.AddAssignment( _
+        cn, project.Id, mResourceId, mAssigned, mRole)
+      MarkOld()
     End Using
 
   End Sub
@@ -201,33 +172,10 @@ Public Class ProjectResource
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        With cm
-          .CommandType = CommandType.StoredProcedure
-          .CommandText = "updateAssignment"
-          LoadParameters(cm, project)
-          cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
-
-          Using dr As SqlDataReader = cm.ExecuteReader
-            dr.Read()
-            dr.GetBytes(0, 0, mTimestamp, 0, 8)
-          End Using
-
-          MarkOld()
-        End With
-      End Using
+      mTimestamp = Assignment.UpdateAssignment( _
+        cn, project.Id, mResourceId, mAssigned, mRole, mTimestamp)
+      MarkOld()
     End Using
-
-  End Sub
-
-  Private Sub LoadParameters(ByVal cm As SqlCommand, ByVal project As Project)
-
-    With cm
-      .Parameters.AddWithValue("@projectId", project.Id)
-      .Parameters.AddWithValue("@resourceId", mResourceId)
-      .Parameters.AddWithValue("@assigned", mAssigned.DBValue)
-      .Parameters.AddWithValue("@role", mRole)
-    End With
 
   End Sub
 
@@ -241,18 +189,8 @@ Public Class ProjectResource
 
     Using cn As New SqlConnection(DataBase.DbConn)
       cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        With cm
-          .CommandType = CommandType.StoredProcedure
-          .CommandText = "deleteAssignment"
-          .Parameters.AddWithValue("@projectId", project.Id)
-          .Parameters.AddWithValue("@resourceId", mResourceId)
-
-          .ExecuteNonQuery()
-
-          MarkNew()
-        End With
-      End Using
+      Assignment.RemoveAssignment(cn, project.Id, mResourceId)
+      MarkNew()
     End Using
 
   End Sub

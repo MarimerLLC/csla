@@ -79,8 +79,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTServiceClient", "PTServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnterpriseServicesHostcs", "EnterpriseServicesHostcs\EnterpriseServicesHostcs.csproj", "{B390C88E-66FD-4E84-8149-29852AFA8723}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "d:\...\WebServicesHost\", "www\WebServicesHost\", "{68865A7C-0792-4757-89D1-874F5A2FF551}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\WebServicesHost\", "www\WebServicesHost\", "{68865A7C-0792-4757-89D1-874F5A2FF551}"
 	ProjectSection(WebsiteProperties) = preProject
+		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/WebServicesHost"
 		Debug.AspNetCompiler.PhysicalPath = "www\WebServicesHost\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\WebServicesHost\"

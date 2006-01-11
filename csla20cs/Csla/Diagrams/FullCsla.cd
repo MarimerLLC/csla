@@ -12,7 +12,7 @@
     <Position X="0.5" Y="4" Width="2" />
     <TypeIdentifier>
       <FileName>Core\BusinessBase.cs</FileName>
-      <HashCode>FAgBAA8ACAADnCTIEAlISEiUBJHgAAEAIFKBAQAgKEA=</HashCode>
+      <HashCode>FAgBAA8ACAATnCTIEAlISEiUBJHgAAEAIFCBAQAgKEA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -28,7 +28,7 @@
     <Position X="0.5" Y="1.25" Width="2" />
     <TypeIdentifier>
       <FileName>Core\BindableBase.cs</FileName>
-      <HashCode>AAAABAAAAAAAAAACIAAAIAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAABAAAAAAAAAACIAAAIAAAgIAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -36,7 +36,7 @@
     <Position X="2.75" Y="2.5" Width="2" />
     <TypeIdentifier>
       <FileName>BusinessListBase.cs</FileName>
-      <HashCode>AgAAAIlACAAAHAJIkAgAGAgEQACAAAEEoQIBUAAgCFA=</HashCode>
+      <HashCode>AgAAAIlACAAQHAJIkAgAGAgEQACAAAEEoQABUAAgCFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -57,7 +57,7 @@
     <Position X="5" Y="4" Width="2" />
     <TypeIdentifier>
       <FileName>NameValueListBase.cs</FileName>
-      <HashCode>BAAAAAgAAAAEBAQIEAAAAAAAAAAAAAEAAAIgAAAACFA=</HashCode>
+      <HashCode>BAAAAAgAAAAUBAQIEAAAAAAAAAAAAAEAAAAgAAAACFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -80,7 +80,7 @@
     <Position X="5" Y="5.25" Width="2" />
     <TypeIdentifier>
       <FileName>ReadOnlyBase.cs</FileName>
-      <HashCode>AAAAAAgAAAAABABMkAAIAAAEAABAAIEAAAIAAAAAiFA=</HashCode>
+      <HashCode>AAAAAAgAAAAQBABMkAAIAAAEAABAAIEAAAAAAAAAiFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -88,7 +88,7 @@
     <Position X="7.5" Y="4" Width="2" />
     <TypeIdentifier>
       <FileName>ReadOnlyListBase.cs</FileName>
-      <HashCode>BAAAAAgAAAAABAAIEAAAAAAAAAAAAAEAAAIAAAAACFA=</HashCode>
+      <HashCode>BAAAAAgAAAAQBAAIEAAAAAAAAAAAAAEAAAAAAAAACFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -96,19 +96,19 @@
     <Position X="6.25" Y="1.25" Width="2" />
     <TypeIdentifier>
       <FileName>SortedBindingList.cs</FileName>
-      <HashCode>AGoAAEAAgUQACBAUGAAINAQAKAE4ROAIeAEQADBQIpQ=</HashCode>
+      <HashCode>AGoAAEAAgUQACBAUGAAINAQAKAE4RKAIeAEQADBQIpQ=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.DataPortal" Collapsed="true">
-    <Position X="0.5" Y="10" Width="2" />
+    <Position X="0.5" Y="10.5" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Client\DataPortal.cs</FileName>
       <HashCode>AAQAAAAAABAAAAQAAAHAAgAAIAEAAEAIAAAIAAADAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.DataPortalClient.EnterpriseServicesProxy" Collapsed="true">
-    <Position X="2.75" Y="8.5" Width="2" />
+    <Position X="2.75" Y="9" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Client\EnterpriseServicesProxy.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEIAAAAAAEAAEQAAAAAAAAAAAA=</HashCode>
@@ -116,7 +116,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.DataPortalClient.LocalProxy" Collapsed="true">
-    <Position X="2.75" Y="9.5" Width="2" />
+    <Position X="2.75" Y="10" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Client\LocalProxy.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAGIAAAAAAEAAEAAAAAAAAABAAA=</HashCode>
@@ -124,7 +124,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.DataPortalClient.RemotingProxy" Collapsed="true">
-    <Position X="2.75" Y="10.5" Width="2" />
+    <Position X="2.75" Y="11" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Client\RemotingProxy.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAGIAAAAAAEAAEAAAAAAAAABAIA=</HashCode>
@@ -132,7 +132,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.DataPortalClient.WebServicesProxy" Collapsed="true">
-    <Position X="2.75" Y="11.5" Width="2" />
+    <Position X="2.75" Y="12" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Client\WebServicesProxy.cs</FileName>
       <HashCode>AAQAAAAAAAAAABAAAAEIAAAAACFAAEAAAAAAAAAAAAA=</HashCode>
@@ -140,7 +140,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.Hosts.EnterpriseServicesPortal" Collapsed="true">
-    <Position X="7.5" Y="8.5" Width="2" />
+    <Position X="7.5" Y="9" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Hosts\EnterpriseServicesPortal.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAIAAEAAAAAAAEAAEABAAAAAAAAAAA=</HashCode>
@@ -148,7 +148,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.Hosts.RemotingPortal" Collapsed="true">
-    <Position X="7.5" Y="10.5" Width="2" />
+    <Position X="7.5" Y="11" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Hosts\RemotingPortal.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
@@ -156,14 +156,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.Hosts.WebServicePortal" Collapsed="true">
-    <Position X="7.5" Y="11.5" Width="2" />
+    <Position X="7.5" Y="12" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Hosts\WebServicePortal.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAACFAAEAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Server.TransactionalDataPortal" Collapsed="true">
-    <Position X="11.75" Y="10.5" Width="2" />
+    <Position X="11.75" Y="11" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\TransactionalDataPortal.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
@@ -171,7 +171,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.SimpleDataPortal" Collapsed="true">
-    <Position X="13.25" Y="9.5" Width="2" />
+    <Position X="13.25" Y="10" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\SimpleDataPortal.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAIAAAAA=</HashCode>
@@ -179,7 +179,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.ServicedDataPortal" Collapsed="true">
-    <Position X="11.75" Y="8.5" Width="2" />
+    <Position X="11.75" Y="9" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\ServicedDataPortal.cs</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
@@ -187,49 +187,49 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.DataPortalContext" Collapsed="true">
-    <Position X="5" Y="8.5" Width="2" />
+    <Position X="5" Y="9" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\DataPortalContext.cs</FileName>
       <HashCode>AAASQAAAAAAAABAAACAAAABACAAAAAAEACAAAAIAACE=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.ApplicationContext" Collapsed="true">
-    <Position X="5" Y="7.5" Width="2" />
+    <Position X="5" Y="8" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\ApplicationContext.cs</FileName>
-      <HashCode>IAAAAACAAAIAAABAiCIAAgBAAAAAAAAAAAAAAAJACAA=</HashCode>
+      <HashCode>IAABAACAAAIAAABAiCIAAgBAAAAAAAAIAAAAAAJACAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Server.DataPortalResult" Collapsed="true">
-    <Position X="5" Y="10.5" Width="2" />
+    <Position X="5" Y="11" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\DataPortalResult.cs</FileName>
       <HashCode>AAAAQAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Server.DataPortalException" Collapsed="true">
-    <Position X="5" Y="11.5" Width="2" />
+    <Position X="5" Y="12" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\DataPortalException.cs</FileName>
       <HashCode>AAAABAAAAAAAAgACAAAAAAQgAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.CriteriaBase" Collapsed="true">
-    <Position X="5" Y="9.5" Width="2" />
+    <Position X="5" Y="10" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\CriteriaBase.cs</FileName>
       <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.RunLocalAttribute" Collapsed="true">
-    <Position X="0.5" Y="7.5" Width="2" />
+    <Position X="0.5" Y="6.5" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\RunLocalAttribute.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Server.DataPortal" Collapsed="true">
-    <Position X="9.75" Y="9.5" Width="1.75" />
+    <Position X="9.75" Y="10" Width="1.75" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\DataPortal.cs</FileName>
       <HashCode>AEQAAAAAAAIAAAAAQAEAAAAAAAEAAEAAAAQAAAAAAAA=</HashCode>
@@ -237,7 +237,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.TransactionalAttribute" Collapsed="true">
-    <Position X="9.75" Y="11.5" Width="2" />
+    <Position X="9.75" Y="12" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\TransactionalAttribute.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
@@ -266,14 +266,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Security.AuthorizationRules" Collapsed="true">
-    <Position X="15" Y="4" Width="2" />
+    <Position X="14.5" Y="4" Width="2" />
     <TypeIdentifier>
       <FileName>Security\AuthorizationRules.cs</FileName>
       <HashCode>AoiCAgAAAAAhAAAQAAAIAAAAAAAAAAAAAAABACIAgAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Security.RolesForProperty" Collapsed="true">
-    <Position X="15" Y="4.75" Width="2" />
+    <Position X="14.5" Y="4.75" Width="2" />
     <TypeIdentifier>
       <FileName>Security\RolesForProperty.cs</FileName>
       <HashCode>AAgAAAAAABAAAAAABAQQBAAAAAAAAQBAAAAAECIAgAA=</HashCode>
@@ -288,14 +288,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Validation.CommonRules" Collapsed="true">
-    <Position X="12.5" Y="4.75" Width="2" />
+    <Position X="12.25" Y="5" Width="2" />
     <TypeIdentifier>
       <FileName>Validation\CommonRules.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAgEAAAAQA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Validation.ValidationRules" Collapsed="true">
-    <Position X="12.5" Y="4" Width="2" />
+    <Position X="12.25" Y="4" Width="2" />
     <TypeIdentifier>
       <FileName>Validation\ValidationRules.cs</FileName>
       <HashCode>AAAAAAAAAAAAACAAAAggAAIIQgAEAAAAAAgAAAAAgAI=</HashCode>
@@ -309,21 +309,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Validation.BrokenRule" Collapsed="true">
-    <Position X="12.5" Y="5.5" Width="2" />
+    <Position X="12.25" Y="5.75" Width="2" />
     <TypeIdentifier>
       <FileName>Validation\BrokenRule.cs</FileName>
       <HashCode>EAAABAAAAAAgAAAEAAAAAAAABAAAAAAAAAAAAQAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Csla.Validation.RuleArgs" Collapsed="true">
-    <Position X="14.5" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <FileName>Validation\RuleArgs.cs</FileName>
-      <HashCode>EAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Csla.Validation.ValidationException" Collapsed="true">
-    <Position X="12.5" Y="7.25" Width="2" />
+    <Position X="12.25" Y="7.75" Width="2" />
     <TypeIdentifier>
       <FileName>Validation\ValidationException.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -334,6 +327,41 @@
     <TypeIdentifier>
       <FileName>Data\DataMapper.cs</FileName>
       <HashCode>AAAAAAAAABAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.MethodCaller" Collapsed="true">
+    <Position X="14" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>DataPortal\MethodCaller.cs</FileName>
+      <HashCode>AAACAAAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Server.CallMethodException" Collapsed="true">
+    <Position X="15.25" Y="12.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Server\CallMethodException.cs</FileName>
+      <HashCode>AAAABAAAAAAAAgAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.DataPortalEventArgs" Collapsed="true">
+    <Position X="2.75" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\DataPortalEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAEAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.DataPortalException" Collapsed="true">
+    <Position X="2.75" Y="6.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\DataPortalException.cs</FileName>
+      <HashCode>AAAADAAAAAAAAgAAAAAAAABgAAAAAAAAAAAAAAAAAEA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.RuleArgs" Collapsed="true">
+    <Position X="13.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Validation\RuleArgs.cs</FileName>
+      <HashCode>EAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Struct Name="Csla.SmartDate" Collapsed="true">
@@ -386,15 +414,36 @@
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
+  <Interface Name="Csla.Server.IDataPortalServer" Collapsed="true">
+    <Position X="0.5" Y="8" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Server\IDataPortalServer.cs</FileName>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.DataPortalClient.IDataPortalProxy" Collapsed="true">
+    <Position X="2.75" Y="8" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Client\IDataPortalProxy.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
   <Enum Name="Csla.TransactionalTypes" Collapsed="true">
-    <Position X="11.75" Y="12" Width="2" />
+    <Position X="11.75" Y="12.5" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\TransactionalTypes.cs</FileName>
       <HashCode>AAAAAAAgQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Enum>
+  <Enum Name="Csla.Security.AccessType" Collapsed="true">
+    <Position X="15.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Security\AccessType.cs</FileName>
+      <HashCode>AAAAAAAAABAAAAAABAAQBAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
   <Delegate Name="Csla.Validation.RuleHandler" Collapsed="true">
-    <Position X="12.5" Y="6.25" Width="2" />
+    <Position X="12.25" Y="6.75" Width="2" />
     <TypeIdentifier>
       <FileName>Validation\RuleHandler.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAIAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>

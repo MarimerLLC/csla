@@ -32,14 +32,16 @@ namespace Csla
 
     private static void OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      if (DataPortalInvoke != null)
-        DataPortalInvoke(e);
+      Action<DataPortalEventArgs> action = DataPortalInvoke;
+      if (action != null)
+        action(e);
     }
 
     private static void OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      if (DataPortalInvokeComplete != null)
-        DataPortalInvokeComplete(e);
+      Action<DataPortalEventArgs> action = DataPortalInvokeComplete;
+      if (action != null)
+        action(e);
     }
 
     #endregion
@@ -92,29 +94,28 @@ namespace Csla
       MethodInfo method = 
         MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria);
 
-      DataPortalClient.IDataPortalProxy portal;
-      portal = GetDataPortalProxy(RunLocal(method));
+      DataPortalClient.IDataPortalProxy proxy;
+      proxy = GetDataPortalProxy(RunLocal(method));
 
       Server.DataPortalContext dpContext = 
-        new Csla.Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+        new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
       OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
       try
       {
-        result = (Server.DataPortalResult)
-          portal.Create(objectType, criteria, dpContext);
+        result = proxy.Create(objectType, criteria, dpContext);
       }
       catch (Server.DataPortalException ex)
       {
         result = ex.Result;
-        if (portal.IsServerRemote)
+        if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
         throw new DataPortalException(
           "DataPortal.Create " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
-      if (portal.IsServerRemote)
+      if (proxy.IsServerRemote)
         ApplicationContext.SetGlobalContext(result.GlobalContext);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
@@ -148,30 +149,32 @@ namespace Csla
       Server.DataPortalResult result;
 
       MethodInfo method = MethodCaller.GetMethod(
-        MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria);
+        MethodCaller.GetObjectType(criteria), 
+        "DataPortal_Fetch", criteria);
 
-      DataPortalClient.IDataPortalProxy portal;
-      portal = GetDataPortalProxy(RunLocal(method));
+      DataPortalClient.IDataPortalProxy proxy;
+      proxy = GetDataPortalProxy(RunLocal(method));
 
       Server.DataPortalContext dpContext = 
-        new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+        new Server.DataPortalContext(GetPrincipal(), 
+        proxy.IsServerRemote);
 
       OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
       try
       {
-        result = (Server.DataPortalResult)portal.Fetch(criteria, dpContext);
+        result = proxy.Fetch(criteria, dpContext);
       }
       catch (Server.DataPortalException ex)
       {
         result = ex.Result;
-        if (portal.IsServerRemote)
+        if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
         throw new DataPortalException("DataPortal.Fetch " + 
           Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
-      if (portal.IsServerRemote)
+      if (proxy.IsServerRemote)
         ApplicationContext.SetGlobalContext(result.GlobalContext);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
@@ -286,26 +289,28 @@ namespace Csla
       
       method = MethodCaller.GetMethod(obj.GetType(), methodName);
 
-      DataPortalClient.IDataPortalProxy portal;
-      portal = GetDataPortalProxy(RunLocal(method));
+      DataPortalClient.IDataPortalProxy proxy;
+      proxy = GetDataPortalProxy(RunLocal(method));
 
-      Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+      Server.DataPortalContext dpContext = 
+        new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
       OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
       try
       {
-        result = (Server.DataPortalResult)portal.Update(obj, dpContext);
+        result = proxy.Update(obj, dpContext);
       }
       catch (Server.DataPortalException ex)
       {
         result = ex.Result;
-        if (portal.IsServerRemote)
+        if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
-        throw new DataPortalException("DataPortal.Update " + Resources.Failed, ex.InnerException, result.ReturnObject);
+        throw new DataPortalException("DataPortal.Update " + 
+          Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
-      if (portal.IsServerRemote)
+      if (proxy.IsServerRemote)
         ApplicationContext.SetGlobalContext(result.GlobalContext);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
@@ -326,26 +331,26 @@ namespace Csla
       MethodInfo method = MethodCaller.GetMethod(
         MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria);
 
-      DataPortalClient.IDataPortalProxy portal;
-      portal = GetDataPortalProxy(RunLocal(method));
+      DataPortalClient.IDataPortalProxy proxy;
+      proxy = GetDataPortalProxy(RunLocal(method));
 
-      Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), portal.IsServerRemote);
+      Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
       OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
 
       try
       {
-        result = (Server.DataPortalResult)portal.Delete(criteria, dpContext);
+        result = proxy.Delete(criteria, dpContext);
       }
       catch (Server.DataPortalException ex)
       {
         result = ex.Result;
-        if (portal.IsServerRemote)
+        if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
         throw new DataPortalException("DataPortal.Delete " + Resources.Failed, ex.InnerException, result.ReturnObject);
       }
 
-      if (portal.IsServerRemote)
+      if (proxy.IsServerRemote)
         ApplicationContext.SetGlobalContext(result.GlobalContext);
 
       OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));

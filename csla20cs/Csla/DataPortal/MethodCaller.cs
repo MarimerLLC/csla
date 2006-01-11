@@ -139,7 +139,7 @@ namespace Csla
       if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
       {
         // get the type of the actual business object
-        // from CriteriaBase (using the new scheme)
+        // from CriteriaBase 
         return ((CriteriaBase)criteria).ObjectType;
       }
       else

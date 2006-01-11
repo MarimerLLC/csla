@@ -136,7 +136,7 @@ Friend Module MethodCaller
 
     If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
       ' get the type of the actual business object
-      ' from CriteriaBase (using the new scheme)
+      ' from CriteriaBase 
       Return CType(criteria, CriteriaBase).ObjectType
 
     Else

@@ -280,7 +280,7 @@ namespace Csla.Server
       if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
       {
         // get the type of the actual business object
-        // from CriteriaBase (using the new scheme)
+        // from CriteriaBase 
         businessType = ((CriteriaBase)criteria).ObjectType;
       }
       else

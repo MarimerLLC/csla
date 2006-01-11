@@ -36,6 +36,10 @@ Public Class ProjectList
       Return mId
     End Function
 
+    Public Overrides Function ToString() As String
+      Return mName
+    End Function
+
     Private Sub New()
       ' require use of factory methods
     End Sub

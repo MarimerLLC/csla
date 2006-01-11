@@ -49,8 +49,8 @@
         <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
       <csla:CslaDataSource ID="ResourceDataSource" runat="server"
         TypeName="ProjectTracker.Library.Resource" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
-      <csla:CslaDataSource ID="AssignmentsDataSource" runat="server"
-        TypeName="ProjectTracker.Library.ResourceAssignments" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
+        <csla:CslaDataSource ID="AssignmentsDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library" TypeName="ProjectTracker.Library.ResourceAssignments">
+        </csla:CslaDataSource>
       <csla:CslaDataSource ID="RoleListDataSource" runat="server"
         TypeName="ProjectTracker.Library.RoleList" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
         <csla:CslaDataSource ID="ProjectListDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library"

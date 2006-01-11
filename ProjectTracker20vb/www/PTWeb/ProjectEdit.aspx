@@ -6,10 +6,32 @@
       <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False" DataSourceID="ProjectDataSource" DataKeyNames="Id">
         <Fields>
           <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id" InsertVisible="False" />
-          <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
-          <asp:BoundField DataField="Started" HeaderText="Started" SortExpression="Started" />
-          <asp:BoundField DataField="Ended" HeaderText="Ended" SortExpression="Ended" />
-          <asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" />
+          <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" >
+            <ControlStyle Width="95%" />
+            <ItemStyle Width="95%" />
+          </asp:BoundField>
+          <asp:BoundField DataField="Started" HeaderText="Started" SortExpression="Started" >
+            <ControlStyle Width="95%" />
+            <ItemStyle Width="95%" />
+          </asp:BoundField>
+          <asp:BoundField DataField="Ended" HeaderText="Ended" SortExpression="Ended" >
+            <ControlStyle Width="95%" />
+            <ItemStyle Width="95%" />
+          </asp:BoundField>
+          <asp:TemplateField HeaderText="Description" SortExpression="Description">
+            <EditItemTemplate>
+              <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("Description") %>' TextMode="MultiLine"
+                Width="95%"></asp:TextBox>
+            </EditItemTemplate>
+            <InsertItemTemplate>
+              <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("Description") %>' TextMode="MultiLine"
+                Width="95%"></asp:TextBox>
+            </InsertItemTemplate>
+            <ItemTemplate>
+              <asp:TextBox ID="TextBox2" runat="server" ReadOnly="True" Text='<%# Bind("Description") %>'
+                TextMode="MultiLine" Width="95%"></asp:TextBox>
+            </ItemTemplate>
+          </asp:TemplateField>
           <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" ShowInsertButton="True" />
         </Fields>
       </asp:DetailsView>

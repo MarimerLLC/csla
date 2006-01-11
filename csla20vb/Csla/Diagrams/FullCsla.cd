@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Csla.Core.BindableBase" Collapsed="true">
+    <Position X="0.5" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\BindableBase.vb</FileName>
+      <HashCode>AAAABAAAAAAACCAAIAAAAAAAgIAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Core.BusinessBase" Collapsed="true">
+    <Position X="0.5" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\BusinessBase.vb</FileName>
+      <HashCode>NCgAAg0ECEAQlSRAFUgISEiEBBHgAAEAIFABAQIgKFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Core.UndoableBase" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\UndoableBase.vb</FileName>
+      <HashCode>AgAIAAAAAAAAAAQAAAIBEAAAQAAAAAAAAABAEAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Core.ReadOnlyBindingList(Of C)" Collapsed="true">
+    <Position X="5" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Core\ReadOnlyBindingList.vb</FileName>
+      <HashCode>AAAAAABAAAAABAAQAAAAAAAgQCAAAAAEAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.ComponentModel.BindingList(Of T)" Collapsed="true">
+    <Position X="3.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.SortedBindingList(Of T)" Collapsed="true">
+    <Position X="5.75" Y="1.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>SortedBindingList.vb</FileName>
+      <HashCode>gGoAAEABgMSACFAQCAAANAQkIAAoQAAIKAEQADBQMBQ=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.BusinessListBase(Of T, C)" Collapsed="true">
+    <Position X="2.5" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>BusinessListBase.vb</FileName>
+      <HashCode>AkAAAolACAAQFAJAEAgBGAgAAAKAAAEEIAABUIAgCFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.NotUndoableAttribute" Collapsed="true">
+    <Position X="2.5" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>NotUndoableAttribute.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.BusinessBase(Of T)" Collapsed="true">
+    <Position X="0.5" Y="5.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>BusinessBase.vb</FileName>
+      <HashCode>AAAAAIAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAAAgBA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.CommandBase" Collapsed="true">
+    <Position X="2.5" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>CommandBase.vb</FileName>
+      <HashCode>AAAAAAgAAAAABABAEAAAAAAAAAAAAAEAAAAAAAAACEI=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.ReadOnlyBase(Of T)" Collapsed="true">
+    <Position X="4.75" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>ReadOnlyBase.vb</FileName>
+      <HashCode>AAAAAAgAAAAQBABEkAAJAAAEAABgAIEAAAAAAAAAiFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.NameValueListBase(Of K, V)" Collapsed="true">
+    <Position X="4.75" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>NameValueListBase.vb</FileName>
+      <HashCode>AAAAAAgAAAAUBARAEAABAAAAAAAAAAEAAAAgAAAACFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.ReadOnlyListBase(Of T, C)" Collapsed="true">
+    <Position X="7.25" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>ReadOnlyListBase.vb</FileName>
+      <HashCode>AAAAAAgAAAAQBABAEAABAAAAAAAAAAEAAAAAAAAACFA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Validation.BrokenRulesCollection" Collapsed="true">
+    <Position X="9.5" Y="4" Width="2" />
+    <TypeIdentifier>
+      <FileName>Validation\BrokenRulesCollection.vb</FileName>
+      <HashCode>AAIAAAAAAAAAAAAEIAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Data.SafeDataReader" Collapsed="true">
+    <Position X="9.5" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Data\SafeDataReader.vb</FileName>
+      <HashCode>BACQIAAgMCgAAAABAAAIBCYkAAJEAEQwIBQACgCAJEA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Validation.ValidationRules" Collapsed="true">
+    <Position X="11.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Validation\ValidationRules.vb</FileName>
+      <HashCode>AAAAAAAAAAAAACAAAAgAAAIIAgAAABAgAAgAABAAgAI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Security.AuthorizationRules" Collapsed="true">
+    <Position X="13.5" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Security\AuthorizationRules.vb</FileName>
+      <HashCode>AoiCAgAAAAAhAAAQAAAIAAAAAAAAAAAAAAAAQCIAgAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Security.RolesForProperty" Collapsed="true">
+    <Position X="13.5" Y="5.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Security\RolesForProperty.vb</FileName>
+      <HashCode>AAgAABAAQBAAAAAABAAQBAAAAAAAAAAAAAAAACIQgAQ=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Csla.Core.IBusinessObject" Collapsed="true">
+    <Position X="11.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\IBusinessObject.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.IEditableCollection" Collapsed="true">
+    <Position X="8.25" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\IEditableCollection.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.IUndoableObject" Collapsed="true">
+    <Position X="8.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\IUndoableObject.vb</FileName>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.ICommandObject" Collapsed="true">
+    <Position X="14.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\ICommandObject.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.IReadOnlyCollection" Collapsed="true">
+    <Position X="12.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\IReadOnlyCollection.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.IReadOnlyObject" Collapsed="true">
+    <Position X="10.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Core\IReadOnlyObject.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Csla.Security.AccessType" Collapsed="true">
+    <Position X="15" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Security\AccessType.vb</FileName>
+      <HashCode>AAAAAAAAABAAAAAABAAQBAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Module Name="Csla.Data.DataMapper" Collapsed="true">
+    <Position X="7.25" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Data\DataMapper.vb</FileName>
+      <HashCode>AAAAAAAAABAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Csla.Validation.CommonRules" Collapsed="true">
+    <Position X="11.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Validation\CommonRules.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAgEAAAAQA=</HashCode>
+    </TypeIdentifier>
+  </Module>
+</ClassDiagram>

@@ -3,11 +3,7 @@ Namespace Validation
   ''' <summary>
   ''' Implements common business rules.
   ''' </summary>
-  Public NotInheritable Class CommonRules
-
-    Private Sub New()
-
-    End Sub
+  Public Module CommonRules
 
 #Region " StringRequired "
 
@@ -24,7 +20,7 @@ Namespace Validation
     ''' against String property values.
     ''' </remarks>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-    Public Shared Function StringRequired( _
+    Public Function StringRequired( _
       ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
       Dim value As String = CStr(CallByName(target, e.PropertyName, CallType.Get))
@@ -55,7 +51,7 @@ Namespace Validation
     ''' against String property values.
     ''' </remarks>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-    Public Shared Function StringMaxLength(ByVal target As Object, _
+    Public Function StringMaxLength(ByVal target As Object, _
       ByVal e As RuleArgs) As Boolean
 
       Dim max As Integer = DirectCast(e, MaxLengthRuleArgs).MaxLength
@@ -96,7 +92,7 @@ Namespace Validation
 
 #Region " IntegerMaxValue "
 
-    Public Shared Function IntegerMaxValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+    Public Function IntegerMaxValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
       Dim max As Integer = CType(e, IntegerMaxValueRuleArgs).MaxValue
       Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
       If value > max Then
@@ -137,7 +133,7 @@ Namespace Validation
 
 #Region " MaxValue "
 
-    Public Shared Function MaxValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+    Public Function MaxValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
       Dim max As Object = CType(e, MaxValueRuleArgs(Of T)).MaxValue
       Dim value As Object = CallByName(target, e.PropertyName, CallType.Get)
@@ -228,7 +224,7 @@ Namespace Validation
 
 #Region " MinValue "
 
-    Public Shared Function MinValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+    Public Function MinValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
       Dim min As Object = CType(e, MinValueRuleArgs(Of T)).MinValue
       Dim value As Object = CallByName(target, e.PropertyName, CallType.Get)
@@ -317,6 +313,6 @@ Namespace Validation
 
 #End Region
 
-  End Class
+  End Module
 
 End Namespace

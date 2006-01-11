@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Csla.Test.Security
 {
+    [Serializable()]
     public class TestPrincipal : Csla.Security.BusinessPrincipalBase
     {
         public override bool IsInRole(string role)
@@ -20,12 +21,23 @@ namespace Csla.Test.Security
             TestIdentity identity = new TestIdentity("User", "password");
             TestPrincipal p = new TestPrincipal(identity);
 
-            System.Threading.Thread.CurrentPrincipal = p;
+            Csla.ApplicationContext.User = p;
+            //System.Threading.Thread.CurrentPrincipal = p;
         }
 
         public static void SimulateLogout()
         {
-            System.Threading.Thread.CurrentPrincipal = null;
+            Csla.ApplicationContext.User = null;
+            //System.Threading.Thread.CurrentPrincipal = null;
+        }
+
+        public static void SetUnAuthenticatedPrincipal()
+        {
+            TestIdentity identity = new TestIdentity();
+            TestPrincipal principal = new TestPrincipal(identity);
+
+            Csla.ApplicationContext.User = principal;
+            //System.Threading.Thread.CurrentPrincipal = principal;
         }
     }
 }

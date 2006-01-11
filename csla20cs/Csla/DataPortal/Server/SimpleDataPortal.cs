@@ -145,7 +145,7 @@ namespace Csla.Server
         // tell the business object to update itself
         if (obj is Core.BusinessBase)
         {
-          Core.BusinessBase busObj = obj as Core.BusinessBase;
+          Core.BusinessBase busObj = (Core.BusinessBase)obj;
           if (busObj.IsDeleted)
           {
             if (!busObj.IsNew)

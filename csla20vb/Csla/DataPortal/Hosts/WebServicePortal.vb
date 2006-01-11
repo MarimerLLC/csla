@@ -203,10 +203,11 @@ Namespace Server.Hosts
     Private Shared Function Serialize(ByVal obj As Object) As Byte()
 
       If Not obj Is Nothing Then
-        Dim buffer As New MemoryStream
-        Dim formatter As New BinaryFormatter
-        formatter.Serialize(buffer, obj)
-        Return buffer.ToArray
+        Using buffer As New MemoryStream
+          Dim formatter As New BinaryFormatter
+          formatter.Serialize(buffer, obj)
+          Return buffer.ToArray
+        End Using
 
       Else
         Return Nothing
@@ -217,9 +218,10 @@ Namespace Server.Hosts
     Private Shared Function Deserialize(ByVal obj As Byte()) As Object
 
       If Not obj Is Nothing Then
-        Dim buffer As New MemoryStream(obj)
-        Dim formatter As New BinaryFormatter
-        Return formatter.Deserialize(buffer)
+        Using buffer As New MemoryStream(obj)
+          Dim formatter As New BinaryFormatter
+          Return formatter.Deserialize(buffer)
+        End Using
 
       Else
         Return Nothing

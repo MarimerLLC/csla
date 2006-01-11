@@ -13,7 +13,9 @@ Namespace DataPortalClient
         Return svc.Create(objectType, criteria, context)
 
       Finally
-        svc.Dispose()
+        If svc IsNot Nothing Then
+          svc.Dispose()
+        End If
       End Try
 
     End Function
@@ -25,7 +27,9 @@ Namespace DataPortalClient
         Return svc.Fetch(criteria, context)
 
       Finally
-        svc.Dispose()
+        If svc IsNot Nothing Then
+          svc.Dispose()
+        End If
       End Try
 
     End Function
@@ -37,7 +41,9 @@ Namespace DataPortalClient
         Return svc.Update(obj, context)
 
       Finally
-        svc.Dispose()
+        If svc IsNot Nothing Then
+          svc.Dispose()
+        End If
       End Try
 
     End Function
@@ -49,7 +55,9 @@ Namespace DataPortalClient
         Return svc.Delete(criteria, context)
 
       Finally
-        svc.Dispose()
+        If svc IsNot Nothing Then
+          svc.Dispose()
+        End If
       End Try
 
     End Function

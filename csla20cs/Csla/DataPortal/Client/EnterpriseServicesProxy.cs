@@ -16,7 +16,8 @@ namespace Csla.DataPortalClient
       }
       finally
       {
-        svc.Dispose();
+        if (svc != null)
+          svc.Dispose();
       }
     }
 
@@ -29,7 +30,8 @@ namespace Csla.DataPortalClient
       }
       finally
       {
-        svc.Dispose();
+        if (svc != null)
+          svc.Dispose();
       }
     }
 
@@ -42,7 +44,8 @@ namespace Csla.DataPortalClient
       }
       finally
       {
-        svc.Dispose();
+        if (svc != null)
+          svc.Dispose();
       }
     }
 
@@ -55,7 +58,8 @@ namespace Csla.DataPortalClient
       }
       finally
       {
-        svc.Dispose();
+        if (svc != null)
+          svc.Dispose();
       }
     }
     public virtual bool IsServerRemote

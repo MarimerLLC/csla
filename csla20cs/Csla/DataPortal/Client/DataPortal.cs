@@ -275,7 +275,7 @@ namespace Csla
         methodName = "DataPortal_Execute";
       else if (obj is Core.BusinessBase)
       {
-        Core.BusinessBase tmp = obj as Core.BusinessBase;
+        Core.BusinessBase tmp = (Core.BusinessBase)obj;
         if (tmp.IsDeleted)
           methodName = "DataPortal_DeleteSelf";
         else

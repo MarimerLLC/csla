@@ -14,24 +14,7 @@ Partial Class ResourceEdit
     ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
-      Try
-        Dim idString As String = Request.QueryString("id")
-        Dim obj As Resource
-        If Len(idString) > 0 Then
-          Dim id As Integer
-          id = CInt(idString)
-          obj = Resource.GetResource(id)
-
-        Else
-          obj = Resource.NewResource
-        End If
-        Session("currentObject") = obj
-        Me.MultiView1.ActiveViewIndex = Views.MainView
-        ApplyAuthorizationRules()
-
-      Catch ex As System.Security.SecurityException
-        Response.Redirect("ResourceList.aspx")
-      End Try
+      ApplyAuthorizationRules()
 
     Else
       Me.ErrorLabel.Text = ""
@@ -41,7 +24,7 @@ Partial Class ResourceEdit
 
   Private Sub ApplyAuthorizationRules()
 
-    Dim obj As Resource = CType(Session("currentObject"), Resource)
+    Dim obj As Resource = GetResource()
     ' Resource display
     If Resource.CanEditObject Then
       If obj.IsNew Then
@@ -103,7 +86,7 @@ Partial Class ResourceEdit
   Protected Sub GridView2_SelectedIndexChanged(ByVal sender As Object, _
     ByVal e As System.EventArgs) Handles GridView2.SelectedIndexChanged
 
-    Dim obj As Resource = CType(Session("currentObject"), Resource)
+    Dim obj As Resource = GetResource()
     Try
       obj.Assignments.AssignTo(New Guid(Me.GridView2.SelectedDataKey.Value.ToString))
       If SaveResource(obj) > 0 Then
@@ -160,15 +143,14 @@ Partial Class ResourceEdit
   Protected Sub ResourceDataSource_SelectObject(ByVal sender As Object, _
     ByVal e As Csla.Web.SelectObjectArgs) Handles ResourceDataSource.SelectObject
 
-    e.BusinessObject = Session("currentObject")
+    e.BusinessObject = GetResource()
 
   End Sub
 
   Protected Sub ResourceDataSource_UpdateObject(ByVal sender As Object, _
     ByVal e As Csla.Web.UpdateObjectArgs) Handles ResourceDataSource.UpdateObject
 
-    Dim obj As ProjectTracker.Library.Resource = _
-      CType(Session("currentObject"), ProjectTracker.Library.Resource)
+    Dim obj As ProjectTracker.Library.Resource = GetResource()
     Csla.Data.DataMapper.Map(e.Values, obj)
     e.RowsAffected = SaveResource(obj)
 
@@ -181,12 +163,9 @@ Partial Class ResourceEdit
   Protected Sub AssignmentsDataSource_DeleteObject(ByVal sender As Object, _
     ByVal e As Csla.Web.DeleteObjectArgs) Handles AssignmentsDataSource.DeleteObject
 
-    Dim obj As ProjectTracker.Library.Resource = _
-      CType(Session("currentObject"), ProjectTracker.Library.Resource)
-    Dim res As ProjectTracker.Library.ResourceAssignment
+    Dim obj As ProjectTracker.Library.Resource = GetResource()
     Dim rid As New Guid(e.Keys("ProjectId").ToString)
-    res = obj.Assignments(rid)
-    obj.Assignments.Remove(res.ProjectId)
+    obj.Assignments.Remove(rid)
     e.RowsAffected = SaveResource(obj)
 
   End Sub
@@ -194,8 +173,7 @@ Partial Class ResourceEdit
   Protected Sub AssignmentsDataSource_SelectObject(ByVal sender As Object, _
     ByVal e As Csla.Web.SelectObjectArgs) Handles AssignmentsDataSource.SelectObject
 
-    Dim obj As ProjectTracker.Library.Resource = _
-      CType(Session("currentObject"), ProjectTracker.Library.Resource)
+    Dim obj As ProjectTracker.Library.Resource = GetResource()
     e.BusinessObject = obj.Assignments
 
   End Sub
@@ -203,8 +181,7 @@ Partial Class ResourceEdit
   Protected Sub AssignmentsDataSource_UpdateObject(ByVal sender As Object, _
     ByVal e As Csla.Web.UpdateObjectArgs) Handles AssignmentsDataSource.UpdateObject
 
-    Dim obj As ProjectTracker.Library.Resource = _
-      CType(Session("currentObject"), ProjectTracker.Library.Resource)
+    Dim obj As ProjectTracker.Library.Resource = GetResource()
     Dim res As ProjectTracker.Library.ResourceAssignment
     Dim rid As New Guid(e.Keys("ProjectId").ToString)
     res = obj.Assignments(rid)
@@ -225,6 +202,27 @@ Partial Class ResourceEdit
   End Sub
 
 #End Region
+
+  Private Function GetResource() As Resource
+
+    Dim businessObject As Object = Session("currentObject")
+    If businessObject Is Nothing OrElse Not TypeOf businessObject Is Resource Then
+      Try
+        Dim idString As String = Request.QueryString("id")
+        If Not String.IsNullOrEmpty(idString) Then
+          Dim id As Integer = CInt(idString)
+          businessObject = Resource.GetResource(id)
+        Else
+          businessObject = Resource.NewResource
+          Session("currentObject") = businessObject
+        End If
+      Catch ex As System.Security.SecurityException
+        Response.Redirect("ResourceList.aspx")
+      End Try
+    End If
+    Return CType(businessObject, Resource)
+
+  End Function
 
   Private Function SaveResource(ByVal resource As Resource) As Integer
 

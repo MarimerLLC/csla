@@ -1,7 +1,7 @@
 <%@ Page Language="VB" MasterPageFile="~/MasterPage.master" AutoEventWireup="false" CodeFile="ProjectEdit.aspx.vb" Inherits="ProjectEdit" title="Project Information" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div>
-      <asp:MultiView ID="MultiView1" runat="server">
+      <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
         <asp:View ID="MainView" runat="server">
       <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False" DataSourceID="ProjectDataSource" DataKeyNames="Id">
         <Fields>

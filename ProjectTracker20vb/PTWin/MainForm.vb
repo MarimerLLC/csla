@@ -2,7 +2,13 @@ Public Class MainForm
 
   Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-    DoLogin()
+    If Csla.ApplicationContext.AuthenticationType = "Windows" Then
+      AppDomain.CurrentDomain.SetPrincipalPolicy( _
+        System.Security.Principal.PrincipalPolicy.WindowsPrincipal)
+
+    Else
+      DoLogin()
+    End If
     If DocumentCount = 0 Then
       Me.DocumentsToolStripDropDownButton.Enabled = False
     End If
@@ -48,7 +54,19 @@ Public Class MainForm
     ' the project wasn't already loaded
     ' so load it and display the new winpart
     Using busy As New StatusBusy("Loading project...")
-      AddWinPart(New ProjectEdit(Project.GetProject(projectId)))
+      Try
+        AddWinPart(New ProjectEdit(Project.GetProject(projectId)))
+
+      Catch ex As Csla.DataPortalException
+        MessageBox.Show(ex.BusinessException.ToString, _
+          "Error loading", MessageBoxButtons.OK, _
+          MessageBoxIcon.Exclamation)
+
+      Catch ex As Exception
+        MessageBox.Show(ex.ToString, _
+          "Error loading", MessageBoxButtons.OK, _
+          MessageBoxIcon.Exclamation)
+      End Try
     End Using
 
   End Sub
@@ -72,9 +90,16 @@ Public Class MainForm
         Using busy As New StatusBusy("Deleting project...")
           Try
             Project.DeleteProject(projectId)
+
+          Catch ex As Csla.DataPortalException
+            MessageBox.Show(ex.BusinessException.ToString, _
+              "Error deleting", MessageBoxButtons.OK, _
+              MessageBoxIcon.Exclamation)
+
           Catch ex As Exception
-            MessageBox.Show(ex.ToString, "Error deleting", _
-              MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show(ex.ToString, _
+              "Error deleting", MessageBoxButtons.OK, _
+              MessageBoxIcon.Exclamation)
           End Try
         End Using
       End If
@@ -126,7 +151,19 @@ Public Class MainForm
     ' the project wasn't already loaded
     ' so load it and display the new winpart
     Using busy As New StatusBusy("Loading resource...")
-      AddWinPart(New ResourceEdit(Resource.GetResource(resourceId)))
+      Try
+        AddWinPart(New ResourceEdit(Resource.GetResource(resourceId)))
+
+      Catch ex As Csla.DataPortalException
+        MessageBox.Show(ex.BusinessException.ToString, _
+          "Error loading", MessageBoxButtons.OK, _
+          MessageBoxIcon.Exclamation)
+
+      Catch ex As Exception
+        MessageBox.Show(ex.ToString, _
+          "Error loading", MessageBoxButtons.OK, _
+          MessageBoxIcon.Exclamation)
+      End Try
     End Using
 
   End Sub
@@ -147,9 +184,16 @@ Public Class MainForm
         Using busy As New StatusBusy("Deleting resource...")
           Try
             Resource.DeleteResource(resourceId)
+
+          Catch ex As Csla.DataPortalException
+            MessageBox.Show(ex.BusinessException.ToString, _
+              "Error deleting", MessageBoxButtons.OK, _
+              MessageBoxIcon.Exclamation)
+
           Catch ex As Exception
-            MessageBox.Show(ex.ToString, "Error deleting", _
-              MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show(ex.ToString, _
+              "Error deleting", MessageBoxButtons.OK, _
+              MessageBoxIcon.Exclamation)
           End Try
         End Using
       End If
@@ -264,6 +308,7 @@ Public Class MainForm
     AddHandler part.CloseWinPart, AddressOf CloseWinPart
     part.BackColor = ToolStrip1.BackColor
     Panel1.Controls.Add(part)
+    Me.DocumentsToolStripDropDownButton.Enabled = True
     ShowWinPart(part)
 
   End Sub
@@ -276,7 +321,7 @@ Public Class MainForm
     part.Size = Panel1.ClientSize
     part.Visible = True
     part.BringToFront()
-    Me.DocumentsToolStripDropDownButton.Enabled = True
+    Me.Text = "Project Tracker - " & part.ToString
 
   End Sub
 
@@ -293,35 +338,26 @@ Public Class MainForm
   Private Sub DocumentsToolStripDropDownButton_DropDownOpening(ByVal sender As Object, ByVal e As System.EventArgs) Handles DocumentsToolStripDropDownButton.DropDownOpening
 
     Dim items As ToolStripItemCollection = DocumentsToolStripDropDownButton.DropDownItems
+    For Each item As ToolStripItem In items
+      RemoveHandler item.Click, AddressOf DocumentClick
+    Next
     items.Clear()
     For Each ctl As Control In Panel1.Controls
       If TypeOf ctl Is WinPart Then
-        items.Add(CType(ctl, WinPart).ToString, Nothing, AddressOf DocumentClick)
+        Dim item As New ToolStripMenuItem()
+        item.Text = CType(ctl, WinPart).ToString
+        item.Tag = ctl
+        AddHandler item.Click, AddressOf DocumentClick
+        items.Add(item)
       End If
     Next
+
   End Sub
 
   Private Sub DocumentClick(ByVal sender As Object, ByVal e As EventArgs)
 
-    For Each ctl As Control In Panel1.Controls
-      If TypeOf ctl Is WinPart AndAlso CType(ctl, WinPart).ToString = CType(sender, ToolStripItem).Text Then
-        ctl.Visible = True
-        ctl.BringToFront()
-      End If
-    Next
-
-  End Sub
-
-  Private Sub CloseWinPart(ByVal sender As Object, ByVal e As EventArgs)
-
-    Dim part As WinPart = CType(sender, WinPart)
-    RemoveHandler part.CloseWinPart, AddressOf CloseWinPart
-    part.Visible = False
-    Panel1.Controls.Remove(part)
-    part.Dispose()
-    If DocumentCount = 0 Then
-      Me.DocumentsToolStripDropDownButton.Enabled = False
-    End If
+    Dim ctl As WinPart = CType(CType(sender, ToolStripItem).Tag, WinPart)
+    ShowWinPart(ctl)
 
   End Sub
 
@@ -336,6 +372,32 @@ Public Class MainForm
       Return count
     End Get
   End Property
+
+  Private Sub CloseWinPart(ByVal sender As Object, ByVal e As EventArgs)
+
+    Dim part As WinPart = CType(sender, WinPart)
+    RemoveHandler part.CloseWinPart, AddressOf CloseWinPart
+    part.Visible = False
+    Panel1.Controls.Remove(part)
+    part.Dispose()
+    If DocumentCount = 0 Then
+      Me.DocumentsToolStripDropDownButton.Enabled = False
+      Me.Text = "Project Tracker"
+
+    Else
+      ' Find the first WinPart control and set
+      ' the main form's Text property accordingly.
+      ' This works because the first WinPart 
+      ' is the active one.
+      For Each ctl As Control In Panel1.Controls
+        If TypeOf ctl Is WinPart Then
+          Me.Text = "Project Tracker - " + CType(ctl, WinPart).ToString
+          Exit For
+        End If
+      Next
+    End If
+
+  End Sub
 
 #End Region
 

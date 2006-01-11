@@ -19,7 +19,7 @@ Partial Class ResourceList
 
   Protected Sub ResourceListDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ResourceListDataSource.SelectObject
 
-    e.BusinessObject = ProjectTracker.Library.ResourceList.GetResourceList
+    e.BusinessObject = GetResourceList()
 
   End Sub
 
@@ -36,5 +36,16 @@ Partial Class ResourceList
     NewResourceButton.Visible = ProjectTracker.Library.Resource.CanAddObject
 
   End Sub
+
+  Private Function GetResourceList() As ProjectTracker.Library.ResourceList
+
+    Dim businessObject As Object = Session("currentObject")
+    If businessObject Is Nothing OrElse Not TypeOf businessObject Is ResourceList Then
+      businessObject = ProjectTracker.Library.ResourceList.GetResourceList
+      Session("currentObject") = businessObject
+    End If
+    Return CType(businessObject, ProjectTracker.Library.ResourceList)
+
+  End Function
 
 End Class

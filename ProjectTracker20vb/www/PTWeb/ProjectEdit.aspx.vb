@@ -14,24 +14,7 @@ Partial Class ProjectEdit
     ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
-      Try
-        Dim idString As String = Request.QueryString("id")
-        Dim obj As Project
-        If Len(idString) > 0 Then
-          Dim id As Guid
-          id = New Guid(idString)
-          obj = Project.GetProject(id)
-
-        Else
-          obj = Project.NewProject
-        End If
-        Session("currentObject") = obj
-        Me.MultiView1.ActiveViewIndex = Views.MainView
-        ApplyAuthorizationRules()
-
-      Catch ex As System.Security.SecurityException
-        Response.Redirect("ProjectList.aspx")
-      End Try
+      ApplyAuthorizationRules()
 
     Else
       Me.ErrorLabel.Text = ""
@@ -41,7 +24,7 @@ Partial Class ProjectEdit
 
   Private Sub ApplyAuthorizationRules()
 
-    Dim obj As Project = CType(Session("currentObject"), Project)
+    Dim obj As Project = GetProject()
     ' project display
     If Project.CanEditObject Then
       If obj.IsNew Then
@@ -103,7 +86,7 @@ Partial Class ProjectEdit
   Protected Sub GridView2_SelectedIndexChanged(ByVal sender As Object, _
     ByVal e As System.EventArgs) Handles GridView2.SelectedIndexChanged
 
-    Dim obj As Project = CType(Session("currentObject"), Project)
+    Dim obj As Project = GetProject()
     Try
       obj.Resources.Assign(CInt(Me.GridView2.SelectedDataKey.Value))
       If SaveProject(obj) > 0 Then
@@ -150,7 +133,7 @@ Partial Class ProjectEdit
   Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, _
     ByVal e As Csla.Web.InsertObjectArgs) Handles ProjectDataSource.InsertObject
 
-    Dim obj As Project = CType(Session("currentObject"), Project)
+    Dim obj As Project = GetProject()
     Csla.Data.DataMapper.Map(e.Values, obj, "Id")
     e.RowsAffected = SaveProject(obj)
 
@@ -159,14 +142,14 @@ Partial Class ProjectEdit
   Protected Sub ProjectDataSource_SelectObject(ByVal sender As Object, _
     ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectDataSource.SelectObject
 
-    e.BusinessObject = Session("currentObject")
+    e.BusinessObject = GetProject()
 
   End Sub
 
   Protected Sub ProjectDataSource_UpdateObject(ByVal sender As Object, _
     ByVal e As Csla.Web.UpdateObjectArgs) Handles ProjectDataSource.UpdateObject
 
-    Dim obj As Project = CType(Session("currentObject"), Project)
+    Dim obj As Project = GetProject()
     Csla.Data.DataMapper.Map(e.Values, obj)
     e.RowsAffected = SaveProject(obj)
 
@@ -179,28 +162,26 @@ Partial Class ProjectEdit
   Protected Sub ResourcesDataSource_DeleteObject(ByVal sender As Object, _
     ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourcesDataSource.DeleteObject
 
-    Dim obj As Project = CType(Session("currentObject"), Project)
-    Dim res As ProjectResource
+    Dim obj As Project = GetProject()
     Dim rid As Integer = CInt(e.Keys("ResourceId"))
-    res = obj.Resources(rid)
-    obj.Resources.Remove(res.ResourceId)
+    obj.Resources.Remove(rid)
     e.RowsAffected = SaveProject(obj)
 
   End Sub
 
   Protected Sub ResourcesDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ResourcesDataSource.SelectObject
 
-    Dim obj As Project = CType(Session("currentObject"), Project)
+    Dim obj As Project = GetProject()
     e.BusinessObject = obj.Resources
 
   End Sub
 
   Protected Sub ResourcesDataSource_UpdateObject(ByVal sender As Object, ByVal e As Csla.Web.UpdateObjectArgs) Handles ResourcesDataSource.UpdateObject
 
-    Dim obj As Project = CType(Session("currentObject"), Project)
+    Dim obj As Project = GetProject()
     Dim res As ProjectResource
     Dim rid As Integer = CInt(e.Keys("ResourceId"))
-    res = obj.Resources(rid)
+    res = obj.Resources.GetItem(rid)
     Csla.Data.DataMapper.Map(e.Values, res)
     e.RowsAffected = SaveProject(obj)
 
@@ -229,6 +210,27 @@ Partial Class ProjectEdit
   End Sub
 
 #End Region
+
+  Private Function GetProject() As Project
+
+    Dim businessObject As Object = Session("currentObject")
+    If businessObject Is Nothing OrElse Not TypeOf businessObject Is Project Then
+      Try
+        Dim idString As String = Request.QueryString("id")
+        If Not String.IsNullOrEmpty(idString) Then
+          Dim id As New Guid(idString)
+          businessObject = Project.GetProject(id)
+        Else
+          businessObject = Project.NewProject
+          Session("currentObject") = businessObject
+        End If
+      Catch ex As System.Security.SecurityException
+        Response.Redirect("ProjectList.aspx")
+      End Try
+    End If
+    Return CType(businessObject, Project)
+
+  End Function
 
   Private Function SaveProject(ByVal project As Project) As Integer
 

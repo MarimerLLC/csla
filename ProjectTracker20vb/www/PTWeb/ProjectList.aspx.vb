@@ -38,8 +38,19 @@ Partial Class ProjectList
   Protected Sub ProjectListDataSource_SelectObject(ByVal sender As Object, _
     ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectListDataSource.SelectObject
 
-    e.BusinessObject = ProjectTracker.Library.ProjectList.GetProjectList
+    e.BusinessObject = GetProjectList()
 
   End Sub
+
+  Private Function GetProjectList() As ProjectTracker.Library.ProjectList
+
+    Dim businessObject As Object = Session("currentObject")
+    If businessObject Is Nothing OrElse Not TypeOf businessObject Is ProjectList Then
+      businessObject = ProjectTracker.Library.ProjectList.GetProjectList
+      Session("currentObject") = businessObject
+    End If
+    Return CType(businessObject, ProjectTracker.Library.ProjectList)
+
+  End Function
 
 End Class

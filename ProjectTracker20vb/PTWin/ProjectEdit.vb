@@ -38,13 +38,16 @@ Public Class ProjectEdit
     ' have the controls enable/disable/etc
     Me.ReadWriteAuthorization1.ResetControlAuthorization()
 
-    Dim canSave As Boolean = _
+    Dim canEdit As Boolean = _
       ProjectTracker.Library.Project.CanEditObject
 
     ' enable/disable appropriate buttons
-    Me.OKButton.Enabled = canSave
-    Me.ApplyButton.Enabled = canSave
-    Me.Cancel_Button.Enabled = canSave
+    Me.OKButton.Enabled = canEdit
+    Me.ApplyButton.Enabled = canEdit
+    Me.Cancel_Button.Enabled = canEdit
+
+    ' enable/disable role column in grid
+    Me.ResourcesDataGridView.Columns(2).ReadOnly = Not canEdit
 
   End Sub
 
@@ -56,26 +59,33 @@ Public Class ProjectEdit
       Me.ResourcesBindingSource.RaiseListChangedEvents = False
 
       ' do the save
-      Dim old As Project = mProject.Clone
-      mProject.ApplyEdit()
+      Dim temp As Project = mProject.Clone
+      temp.ApplyEdit()
       Try
-        mProject = mProject.Save
+        mProject = temp.Save
         mProject.BeginEdit()
+        ' rebind the UI
+        Me.ProjectBindingSource.DataSource = Nothing
+        Me.ResourcesBindingSource.DataSource = Nothing
+        Me.ProjectBindingSource.DataSource = mProject
+        Me.ResourcesBindingSource.DataSource = mProject.Resources
+        ApplyAuthorizationRules()
+
+      Catch ex As Csla.DataPortalException
+        MessageBox.Show(ex.BusinessException.ToString, _
+          "Error saving", MessageBoxButtons.OK, _
+          MessageBoxIcon.Exclamation)
 
       Catch ex As Exception
-        mProject = old
-        MessageBox.Show(ex.ToString, "Save error", _
-          MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        MessageBox.Show(ex.ToString, _
+          "Error saving", MessageBoxButtons.OK, _
+          MessageBoxIcon.Exclamation)
+
+      Finally
+        Me.ProjectBindingSource.RaiseListChangedEvents = True
+        Me.ResourcesBindingSource.RaiseListChangedEvents = True
       End Try
 
-      ' rebind the UI
-      Me.ProjectBindingSource.DataSource = Nothing
-      Me.ResourcesBindingSource.DataSource = Nothing
-      Me.ProjectBindingSource.RaiseListChangedEvents = True
-      Me.ResourcesBindingSource.RaiseListChangedEvents = True
-      Me.ProjectBindingSource.DataSource = mProject
-      Me.ResourcesBindingSource.DataSource = mProject.Resources
-      ApplyAuthorizationRules()
     End Using
 
   End Sub
@@ -146,17 +156,6 @@ Public Class ProjectEdit
 
   End Sub
 
-  Private Sub mProject_PropertyChanged(ByVal sender As Object, _
-    ByVal e As System.ComponentModel.PropertyChangedEventArgs) _
-    Handles mProject.PropertyChanged
-
-    If e.PropertyName = "IsDirty" Then
-      Me.ProjectBindingSource.ResetBindings(False)
-      Me.ResourcesBindingSource.ResetBindings(False)
-    End If
-
-  End Sub
-
   Private Sub ResourcesDataGridView_CellContentClick(ByVal sender As System.Object, _
     ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles ResourcesDataGridView.CellContentClick
 
@@ -168,7 +167,4 @@ Public Class ProjectEdit
 
   End Sub
 
-  Private Sub ProjectEdit_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
-  End Sub
 End Class

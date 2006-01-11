@@ -1,8 +1,6 @@
 Public Class WinPart
   Inherits System.Windows.Forms.UserControl
 
-  Public Event CloseWinPart As EventHandler
-
   Protected Overridable Function GetIdValue() As Object
 
     Return Nothing
@@ -49,11 +47,17 @@ Public Class WinPart
 
   End Function
 
+#Region " CloseWinPart "
+
+  Public Event CloseWinPart As EventHandler
+
   Protected Sub Close()
 
     RaiseEvent CloseWinPart(Me, EventArgs.Empty)
 
   End Sub
+
+#End Region
 
 #Region " CurrentPrincipalChanged "
 

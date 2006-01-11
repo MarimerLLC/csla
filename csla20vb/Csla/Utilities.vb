@@ -32,10 +32,14 @@ Friend Module Utilities
       CType(Attribute.GetCustomAttribute(listType, _
       GetType(DefaultMemberAttribute)), DefaultMemberAttribute)
     If indexer IsNot Nothing Then
-      Dim prop As PropertyInfo = listType.GetProperty(indexer.MemberName)
-      Return Utilities.GetPropertyType(prop.PropertyType)
+      For Each prop As PropertyInfo In listType.GetProperties( _
+        BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.FlattenHierarchy)
+        If prop.Name = indexer.MemberName Then
+          Return Utilities.GetPropertyType(prop.PropertyType)
+        End If
+      Next
     End If
-    Return Nothing
+        Return Nothing
 
   End Function
 

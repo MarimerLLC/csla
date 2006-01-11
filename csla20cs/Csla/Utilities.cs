@@ -70,8 +70,12 @@ namespace Csla
         typeof(DefaultMemberAttribute));
       if (indexer != null)
       {
-        PropertyInfo prop = listType.GetProperty(indexer.MemberName);
-        return Utilities.GetPropertyType(prop.PropertyType);
+        foreach (PropertyInfo prop in listType.GetProperties(
+          BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy))
+        {
+          if (prop.Name == indexer.MemberName)
+            return Utilities.GetPropertyType(prop.PropertyType);
+        }
       }
       return null;
     }

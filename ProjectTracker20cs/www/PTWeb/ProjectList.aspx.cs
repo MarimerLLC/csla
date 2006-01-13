@@ -15,7 +15,10 @@ public partial class ProjectList : System.Web.UI.Page
   protected void Page_Load(object sender, EventArgs e)
   {
     if (!IsPostBack)
+    {
+      Session["currentObject"] = null;
       ApplyAuthorizationRules();
+    }
     else
       ErrorLabel.Text = string.Empty;
   }
@@ -29,6 +32,8 @@ public partial class ProjectList : System.Web.UI.Page
       ProjectTracker.Library.Project.CanAddObject();
   }
 
+  #region GridView1
+
   protected void GridView1_SelectedIndexChanged(
     object sender, EventArgs e)
   {
@@ -37,24 +42,19 @@ public partial class ProjectList : System.Web.UI.Page
     Response.Redirect("ProjectEdit.aspx?id=" + idString);
   }
 
+  protected void GridView1_RowDeleted(object sender, GridViewDeletedEventArgs e)
+  {
+    Session["currentObject"] = null;
+    GridView1.DataBind();
+  }
+
   protected void NewProjectButton_Click(object sender, EventArgs e)
   {
     // allow user to add a new project
     Response.Redirect("ProjectEdit.aspx");
   }
 
-  private ProjectTracker.Library.ProjectList GetProjectList()
-  {
-    object businessObject = Session["currentObject"];
-    if (businessObject == null || 
-      !(businessObject is ProjectTracker.Library.ProjectList))
-    {
-      businessObject =
-        ProjectTracker.Library.ProjectList.GetProjectList();
-      Session["currentObject"] = businessObject;
-    }
-    return (ProjectTracker.Library.ProjectList)businessObject;
-  }
+  #endregion
 
   #region ProjectListDataSource
 
@@ -86,4 +86,17 @@ public partial class ProjectList : System.Web.UI.Page
   }
 
   #endregion
+
+  private ProjectTracker.Library.ProjectList GetProjectList()
+  {
+    object businessObject = Session["currentObject"];
+    if (businessObject == null ||
+      !(businessObject is ProjectTracker.Library.ProjectList))
+    {
+      businessObject =
+        ProjectTracker.Library.ProjectList.GetProjectList();
+      Session["currentObject"] = businessObject;
+    }
+    return (ProjectTracker.Library.ProjectList)businessObject;
+  }
 }

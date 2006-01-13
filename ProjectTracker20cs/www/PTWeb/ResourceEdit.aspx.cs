@@ -22,7 +22,10 @@ public partial class ResourceEdit : System.Web.UI.Page
   protected void Page_Load(object sender, EventArgs e)
   {
     if (!IsPostBack)
+    {
+      Session["currentObject"] = null;
       ApplyAuthorizationRules();
+    }
     else
       this.ErrorLabel.Text = "";
   }
@@ -54,7 +57,8 @@ public partial class ResourceEdit : System.Web.UI.Page
 
   protected void DetailsView1_ItemInserted(object sender, DetailsViewInsertedEventArgs e)
   {
-    ApplyAuthorizationRules();
+    Resource resource = GetResource();
+    Response.Redirect("ResourceEdit.aspx?id=" + resource.Id.ToString());
   }
 
   protected void DetailsView1_ItemUpdated(object sender, DetailsViewUpdatedEventArgs e)
@@ -211,6 +215,20 @@ public partial class ResourceEdit : System.Web.UI.Page
     {
       Session["currentObject"] = resource.Save();
       rowsAffected = 1;
+    }
+    catch (Csla.Validation.ValidationException ex)
+    {
+      System.Text.StringBuilder message = new System.Text.StringBuilder();
+      message.AppendFormat("{0}<br/>", ex.Message);
+      if (resource.BrokenRulesCollection.Count == 1)
+        message.AppendFormat("* {0}: {1}",
+          resource.BrokenRulesCollection[0].Property,
+          resource.BrokenRulesCollection[0].Description);
+      else
+        foreach (Csla.Validation.BrokenRule rule in resource.BrokenRulesCollection)
+          message.AppendFormat("* {0}: {1}<br/>", rule.Property, rule.Description);
+      this.ErrorLabel.Text = message.ToString();
+      rowsAffected = 0;
     }
     catch (Csla.DataPortalException ex)
     {

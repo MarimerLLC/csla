@@ -15,7 +15,10 @@ public partial class ResourceList : System.Web.UI.Page
   protected void Page_Load(object sender, EventArgs e)
   {
     if (!IsPostBack)
+    {
+      Session["currentObject"] = null;
       ApplyAuthorizationRules();
+    }
     else
       ErrorLabel.Text = string.Empty;
   }
@@ -25,6 +28,8 @@ public partial class ResourceList : System.Web.UI.Page
     this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Resource.CanDeleteObject();
     NewResourceButton.Visible = Resource.CanAddObject();
   }
+
+  #region GridView1
 
   protected void NewResourceButton_Click(object sender, EventArgs e)
   {
@@ -37,20 +42,15 @@ public partial class ResourceList : System.Web.UI.Page
     Response.Redirect("ResourceEdit.aspx?id=" + idString);
   }
 
-  private ProjectTracker.Library.ResourceList GetResourceList()
+  protected void GridView1_RowDeleted(object sender, GridViewDeletedEventArgs e)
   {
-    object businessObject = Session["currentObject"];
-    if (businessObject == null || 
-      !(businessObject is ProjectTracker.Library.ResourceList))
-    {
-      businessObject =
-        ProjectTracker.Library.ResourceList.GetResourceList();
-      Session["currentObject"] = businessObject;
-    }
-    return (ProjectTracker.Library.ResourceList)businessObject;
+    Session["currentObject"] = null;
+    GridView1.DataBind();
   }
 
-#region ResourceListDataSource
+  #endregion
+
+  #region ResourceListDataSource
 
   protected void ResourceListDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
   {
@@ -77,4 +77,17 @@ public partial class ResourceList : System.Web.UI.Page
   }
 
   #endregion
+
+  private ProjectTracker.Library.ResourceList GetResourceList()
+  {
+    object businessObject = Session["currentObject"];
+    if (businessObject == null ||
+      !(businessObject is ProjectTracker.Library.ResourceList))
+    {
+      businessObject =
+        ProjectTracker.Library.ResourceList.GetResourceList();
+      Session["currentObject"] = businessObject;
+    }
+    return (ProjectTracker.Library.ResourceList)businessObject;
+  }
 }

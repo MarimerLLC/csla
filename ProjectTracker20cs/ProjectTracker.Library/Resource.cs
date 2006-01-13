@@ -256,7 +256,6 @@ namespace ProjectTracker.Library
         {
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "addResource";
-          cm.Parameters.AddWithValue("@id", _id);
           cm.Parameters.AddWithValue("@lastName", _lastName);
           cm.Parameters.AddWithValue("@firstName", _firstName);
 

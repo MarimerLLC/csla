@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Library", "P
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D:\...\PTWeb\", "www\PTWeb\", "{D8F59D26-50C8-4DFD-B8B9-C529530297F1}"
 	ProjectSection(WebsiteProperties) = preProject
-		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
+		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;{B390C88E-66FD-4E84-8149-29852AFA8723}|EnterpriseServicesHostcs.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/PTWeb"
 		Debug.AspNetCompiler.PhysicalPath = "www\PTWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\PTWeb\"

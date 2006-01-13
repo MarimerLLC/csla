@@ -61,7 +61,8 @@ public partial class ProjectEdit : System.Web.UI.Page
   protected void DetailsView1_ItemInserted(
     object sender, DetailsViewInsertedEventArgs e)
   {
-    ApplyAuthorizationRules();
+    Project project = GetProject();
+    Response.Redirect("ProjectEdit.aspx?id=" + project.Id.ToString());
   }
 
   protected void DetailsView1_ItemUpdated(
@@ -247,6 +248,20 @@ public partial class ProjectEdit : System.Web.UI.Page
     {
       Session["currentObject"] = project.Save();
       rowsAffected = 1;
+    }
+    catch (Csla.Validation.ValidationException ex)
+    {
+      System.Text.StringBuilder message = new System.Text.StringBuilder();
+      message.AppendFormat("{0}<br/>", ex.Message);
+      if (project.BrokenRulesCollection.Count == 1)
+        message.AppendFormat("* {0}: {1}",
+          project.BrokenRulesCollection[0].Property, 
+          project.BrokenRulesCollection[0].Description);
+      else
+        foreach (Csla.Validation.BrokenRule rule in project.BrokenRulesCollection)
+          message.AppendFormat("* {0}: {1}<br/>", rule.Property, rule.Description);
+      this.ErrorLabel.Text = message.ToString();
+      rowsAffected = 0;
     }
     catch (Csla.DataPortalException ex)
     {

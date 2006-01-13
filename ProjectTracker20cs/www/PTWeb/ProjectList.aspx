@@ -9,7 +9,7 @@
       AllowPaging="True" AutoGenerateColumns="False"
       DataSourceID="ProjectListDataSource" PageSize="4" 
       DataKeyNames="Id" 
-      OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
+      OnSelectedIndexChanged="GridView1_SelectedIndexChanged" OnRowDeleted="GridView1_RowDeleted">
       <Columns>
         <asp:BoundField DataField="Id" HeaderText="Id" 
           SortExpression="Id" Visible="False" />

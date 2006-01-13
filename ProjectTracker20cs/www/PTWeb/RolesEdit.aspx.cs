@@ -21,7 +21,10 @@ public partial class RolesEdit : System.Web.UI.Page
   protected void Page_Load(object sender, EventArgs e)
   {
     if (!IsPostBack)
+    {
+      Session["currentObject"] = null;
       ApplyAuthorizationRules();
+    }
     else
       this.ErrorLabel.Text = "";
   }
@@ -133,6 +136,20 @@ public partial class RolesEdit : System.Web.UI.Page
       role.Name = e.Values["Name"].ToString();
       Session["currentObject"] = obj.Save();
       e.RowsAffected = 1;
+    }
+    catch (Csla.Validation.ValidationException ex)
+    {
+      System.Text.StringBuilder message = new System.Text.StringBuilder();
+      message.AppendFormat("{0}<br/>", ex.Message);
+      if (obj.BrokenRulesCollection.Count == 1)
+        message.AppendFormat("* {0}: {1}",
+          obj.BrokenRulesCollection[0].Property,
+          obj.BrokenRulesCollection[0].Description);
+      else
+        foreach (Csla.Validation.BrokenRule rule in obj.BrokenRulesCollection)
+          message.AppendFormat("* {0}: {1}<br/>", rule.Property, rule.Description);
+      this.ErrorLabel.Text = message.ToString();
+      rowsAffected = 0;
     }
     catch (Csla.DataPortalException ex)
     {

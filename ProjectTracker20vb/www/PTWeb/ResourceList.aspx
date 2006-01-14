@@ -16,5 +16,6 @@
       <csla:CslaDataSource ID="ResourceListDataSource" runat="server"
         TypeAssemblyName="ProjectTracker.Library" TypeName="ProjectTracker.Library.ResourceList">
       </csla:CslaDataSource>
-      &nbsp;</div>
+      &nbsp;&nbsp;<br />
+      <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label></div>
 </asp:Content>

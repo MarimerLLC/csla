@@ -163,13 +163,13 @@ Namespace Admin
 
     Private Sub DoInsertUpdate(ByVal cm As SqlCommand)
 
+      cm.CommandType = CommandType.StoredProcedure
       cm.Parameters.AddWithValue("@id", mId)
       cm.Parameters.AddWithValue("@name", mName)
       Using dr As SqlDataReader = cm.ExecuteReader
         dr.Read()
         dr.GetBytes(0, 0, mTimestamp, 0, 8)
       End Using
-      cm.CommandType = CommandType.StoredProcedure
       MarkOld()
 
     End Sub

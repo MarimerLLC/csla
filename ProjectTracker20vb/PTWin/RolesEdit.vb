@@ -5,26 +5,53 @@ Public Class RolesEdit
 
   Private Sub RolesEdit_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-    mRoles = Admin.Roles.GetRoles
+    Try
+      mRoles = Admin.Roles.GetRoles
+
+    Catch ex As Csla.DataPortalException
+      MessageBox.Show(ex.BusinessException.ToString, _
+        "Error loading", MessageBoxButtons.OK, _
+        MessageBoxIcon.Exclamation)
+
+    Catch ex As Exception
+      MessageBox.Show(ex.ToString, _
+        "Error loading", MessageBoxButtons.OK, _
+        MessageBoxIcon.Exclamation)
+    End Try
+
     Me.RolesBindingSource.DataSource = mRoles
 
   End Sub
 
+  Protected Overrides Function GetIdValue() As Object
+
+    Return "Edit Roles"
+
+  End Function
+
   Private Sub SaveButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveButton.Click
 
     Me.RolesBindingSource.RaiseListChangedEvents = False
-    Dim old As Admin.Roles = mRoles.Clone
+    Dim temp As Admin.Roles = mRoles.Clone
     Try
-      mRoles = mRoles.Save
+      mRoles = temp.Save
+      ' rebind the UI
+      Me.RolesBindingSource.DataSource = Nothing
+      Me.RolesBindingSource.DataSource = mRoles
+
+    Catch ex As Csla.DataPortalException
+      MessageBox.Show(ex.BusinessException.ToString, _
+        "Error saving", MessageBoxButtons.OK, _
+        MessageBoxIcon.Exclamation)
 
     Catch ex As Exception
-      mRoles = old
-      MessageBox.Show(ex.ToString, "Error saving", _
-        MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+      MessageBox.Show(ex.ToString, _
+        "Error saving", MessageBoxButtons.OK, _
+        MessageBoxIcon.Exclamation)
+
+    Finally
+      Me.RolesBindingSource.RaiseListChangedEvents = True
     End Try
-    Me.RolesBindingSource.DataSource = Nothing
-    Me.RolesBindingSource.RaiseListChangedEvents = True
-    Me.RolesBindingSource.DataSource = mRoles
     Me.Close()
 
   End Sub

@@ -14,6 +14,7 @@ Partial Class ResourceEdit
     ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
+      Session("currentObject") = Nothing
       ApplyAuthorizationRules()
 
     Else
@@ -52,7 +53,8 @@ Partial Class ResourceEdit
     ByVal e As System.Web.UI.WebControls.DetailsViewInsertedEventArgs) _
     Handles DetailsView1.ItemInserted
 
-    ApplyAuthorizationRules()
+    Dim resource As Resource = GetResource()
+    Response.Redirect("resourceEdit.aspx?id=" & resource.Id.ToString)
 
   End Sub
 
@@ -230,6 +232,22 @@ Partial Class ResourceEdit
     Try
       Session("currentObject") = resource.Save()
       rowsAffected = 1
+
+    Catch ex As Csla.Validation.ValidationException
+      Dim message As New System.Text.StringBuilder
+      message.AppendFormat("{0}<br/>", ex.Message)
+      If resource.BrokenRulesCollection.Count = 1 Then
+        message.AppendFormat("* {0}: {1}", _
+          resource.BrokenRulesCollection(0).Property, _
+          resource.BrokenRulesCollection(0).Description)
+
+      Else
+        For Each rule As Csla.Validation.BrokenRule In resource.BrokenRulesCollection
+          message.AppendFormat("* {0}: {1}<br/>", rule.Property, rule.Description)
+        Next
+      End If
+      Me.ErrorLabel.Text = message.ToString
+      rowsAffected = 0
 
     Catch ex As Csla.DataPortalException
       Me.ErrorLabel.Text = ex.BusinessException.Message

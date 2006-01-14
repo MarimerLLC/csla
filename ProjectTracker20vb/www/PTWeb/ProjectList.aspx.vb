@@ -5,11 +5,45 @@ Imports ProjectTracker.Library
 Partial Class ProjectList
   Inherits System.Web.UI.Page
 
+  Protected Sub Page_Load(ByVal sender As Object, _
+    ByVal e As System.EventArgs) Handles Me.Load
+
+    If Not IsPostBack Then
+      Session("currentObject") = Nothing
+      ApplyAuthorizationRules()
+
+    Else
+      Me.ErrorLabel.Text = ""
+    End If
+
+  End Sub
+
+  Private Sub ApplyAuthorizationRules()
+
+    Me.GridView1.Columns( _
+      Me.GridView1.Columns.Count - 1).Visible = _
+      Project.CanDeleteObject
+    NewProjectButton.Visible = _
+      ProjectTracker.Library.Project.CanAddObject
+
+  End Sub
+
+#Region " GridView1 "
+
   Protected Sub GridView1_SelectedIndexChanged(ByVal sender As Object, _
     ByVal e As System.EventArgs) Handles GridView1.SelectedIndexChanged
 
     Dim idString As String = GridView1.SelectedDataKey.Value.ToString
     Response.Redirect("ProjectEdit.aspx?id=" & idString)
+
+  End Sub
+
+  Protected Sub GridView1_RowDeleted(ByVal sender As Object, _
+    ByVal e As System.Web.UI.WebControls.GridViewDeletedEventArgs) _
+    Handles GridView1.RowDeleted
+
+    Session("currentObject") = Nothing
+    GridView1.DataBind()
 
   End Sub
 
@@ -20,13 +54,9 @@ Partial Class ProjectList
 
   End Sub
 
-  Protected Sub Page_Load(ByVal sender As Object, _
-    ByVal e As System.EventArgs) Handles Me.Load
+#End Region
 
-    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Project.CanDeleteObject
-    NewProjectButton.Visible = Project.CanAddObject
-
-  End Sub
+#Region " ProjectListDataSource "
 
   Protected Sub ProjectListDataSource_DeleteObject(ByVal sender As Object, _
     ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectListDataSource.DeleteObject
@@ -41,6 +71,8 @@ Partial Class ProjectList
     e.BusinessObject = GetProjectList()
 
   End Sub
+
+#End Region
 
   Private Function GetProjectList() As ProjectTracker.Library.ProjectList
 

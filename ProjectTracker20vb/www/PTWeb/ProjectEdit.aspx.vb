@@ -14,6 +14,7 @@ Partial Class ProjectEdit
     ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
+      Session("currentObject") = Nothing
       ApplyAuthorizationRules()
 
     Else
@@ -52,7 +53,8 @@ Partial Class ProjectEdit
     ByVal e As System.Web.UI.WebControls.DetailsViewInsertedEventArgs) _
     Handles DetailsView1.ItemInserted
 
-    ApplyAuthorizationRules()
+    Dim project As Project = GetProject()
+    Response.Redirect("ProjectEdit.aspx?id=" & project.Id.ToString)
 
   End Sub
 
@@ -238,6 +240,22 @@ Partial Class ProjectEdit
     Try
       Session("currentObject") = project.Save()
       rowsAffected = 1
+
+    Catch ex As Csla.Validation.ValidationException
+      Dim message As New System.Text.StringBuilder
+      message.AppendFormat("{0}<br/>", ex.Message)
+      If project.BrokenRulesCollection.Count = 1 Then
+        message.AppendFormat("* {0}: {1}", _
+          project.BrokenRulesCollection(0).Property, _
+          project.BrokenRulesCollection(0).Description)
+
+      Else
+        For Each rule As Csla.Validation.BrokenRule In project.BrokenRulesCollection
+          message.AppendFormat("* {0}: {1}<br/>", rule.Property, rule.Description)
+        Next
+      End If
+      Me.ErrorLabel.Text = message.ToString
+      rowsAffected = 0
 
     Catch ex As Csla.DataPortalException
       Me.ErrorLabel.Text = ex.BusinessException.Message

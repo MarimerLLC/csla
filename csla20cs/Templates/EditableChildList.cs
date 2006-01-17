@@ -6,6 +6,7 @@ using Csla;
 
 namespace Templates
 {
+  [Serializable()]
   class EditableChildList : 
     BusinessListBase<EditableChildList, EditableChild>
   {
@@ -48,11 +49,14 @@ namespace Templates
     internal void Update()
     {
       foreach (EditableChild item in DeletedList)
-        item.Update();
+        item.DeleteSelf();
       DeletedList.Clear();
 
       foreach (EditableChild item in this)
-        item.Update();
+        if (item.IsNew)
+          item.Insert();
+        else
+          item.Update();
     }
 
     #endregion

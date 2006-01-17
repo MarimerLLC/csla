@@ -6,6 +6,7 @@ using Csla;
 
 namespace Templates
 {
+  [Serializable()]
   class EditableRootList : 
     BusinessListBase<EditableRootList, EditableChild>
   {
@@ -42,7 +43,7 @@ namespace Templates
 
     public static EditableRootList GetEditableRootList(int id)
     {
-      return DataPortal.Create<EditableRootList>(new Criteria(id));
+      return DataPortal.Fetch<EditableRootList>(new Criteria(id));
     }
 
     private EditableRootList()
@@ -83,9 +84,7 @@ namespace Templates
       DeletedList.Clear();
 
       foreach (EditableChild item in this)
-        if (item.IsDeleted)
-          item.DeleteSelf();
-        else if (item.IsNew)
+        if (item.IsNew)
           item.Insert();
         else
           item.Update();

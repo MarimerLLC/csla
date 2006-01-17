@@ -14,12 +14,31 @@ namespace Templates
 
     public int Id
     {
-      get { return _id; }
+      get 
+      {
+        CanReadProperty(true);
+        return _id; 
+      }
     }
 
     protected override object GetIdValue()
     {
       return _id;
+    }
+
+    #endregion
+
+    #region Authorization Rules
+
+    protected override void AddAuthorizationRules()
+    {
+      // TODO: add authorization rules
+      //AuthorizationRules.AllowRead("", "");
+    }
+
+    public static bool CanGetObject()
+    {
+      return ApplicationContext.User.IsInRole("");
     }
 
     #endregion

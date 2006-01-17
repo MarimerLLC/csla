@@ -6,6 +6,7 @@ using Csla;
 
 namespace Templates
 {
+  [Serializable()]
   class EditableChild : BusinessBase<EditableChild>
   {
     #region Business Methods

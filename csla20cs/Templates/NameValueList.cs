@@ -6,6 +6,7 @@ using Csla;
 
 namespace Templates
 {
+  [Serializable()]
   class NameValueList : NameValueListBase<int, string>
   {
     #region Factory Methods

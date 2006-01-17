@@ -32,28 +32,30 @@
           <Type>
           </Type>
           <ToolTip>Replace with the Id (primary key) variable type.</ToolTip>
-          <Default>Integer</Default>
+          <Default>int</Default>
         </Literal>
       </Declarations>
-      <Code Language="VB" Kind="method decl"><![CDATA[#Region " Factory Methods "
+      <Code Language="C#" Kind="method decl"><![CDATA[#region Factory Methods
 
-Public Shared Function New$ClassName$() As $ClassName$
-  Return DataPortal.Create(Of $ClassName$)(Nothing)
-End Function
+public static $ClassName$ New$ClassName$()
+{
+  return DataPortal.Create<$ClassName$>();
+}
 
-Public Shared Function Get$ClassName$(ByVal $IdName$ As $IdType$) As $ClassName$
-  Return DataPortal.Fetch(Of $ClassName$)(New $CriteriaClassName$($IdName$))
-End Function
+public static $ClassName$ Get$ClassName$($IdType$ $IdName$)
+{
+  return DataPortal.Fetch<$ClassName$>(new $CriteriaClassName$($IdName$));
+}
 
-Public Shared Sub Delete$ClassName$(ByVal $IdName$ As $IdType$)
-  DataPortal.Delete(New $CriteriaClassName$($IdName$))
-End Sub
+public static void Delete$ClassName$($IdType$ $IdName$)
+{
+  DataPortal.Delete(new $CriteriaClassName$($IdName$));
+}
 
-Private Sub New()
-  ' Require use of factory methods
-End Sub
+private $ClassName$()
+{  /* Require use of factory methods */ }
 
-#End Region]]></Code>
+#endregion]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

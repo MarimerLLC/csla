@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Insert business regions</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Insert CSLA .NET business regions.</Description>
+      <Shortcut>cslabiz</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+      </Declarations>
+      <Code Language="C#" Kind="type decl"><![CDATA[#region Business Methods
+
+  // TODO: add public properties and methods
+
+  protected override object GetIdValue()
+  {
+    // TODO: return unique id value for object
+  }
+
+#endregion
+
+#region Validation Rules
+
+protected override void AddValidationRules()
+{
+  // TODO: add validation rules
+}
+
+#endregion
+
+#region Authorization Rules
+
+protected override void AddAuthorizationRules()
+{
+  // TODO: add authorization rules
+}
+
+#endregion]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

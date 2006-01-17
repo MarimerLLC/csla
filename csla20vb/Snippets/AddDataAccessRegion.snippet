@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Insert data access region</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Insert CSLA .NET data access region.</Description>
+      <Shortcut>csladata</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>IdType</ID>
+          <Type>
+          </Type>
+          <ToolTip>Replace with the Id variable type.</ToolTip>
+          <Default>Integer</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="VB" Kind="type decl"><![CDATA[#Region " Data Access "
+
+<Serializable()> _
+Private Class Criteria
+
+  private mId As $IdType$
+  Public ReadOnly Property Id() As $IdType$
+    Get
+      Return mId
+    End Get
+  End Property
+  Public Sub New(ByVal id As $IdType$)
+    mId = id
+  End Sub
+
+End Class
+
+Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
+  ' TODO: load default values into object
+End Sub
+
+Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
+  ' TODO: load values into object
+End Sub
+
+Protected Overrides Sub DataPortal_Insert()
+  ' TODO: insert object's data
+End Sub
+
+Protected Overrides Sub DataPortal_Update()
+  ' TODO: update object's data
+End Sub
+
+Protected Overrides Sub DataPortal_DeleteSelf()
+  DataPortal_Delete(New Criteria($IdName$))
+End Sub
+
+Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
+  ' TODO: delete object's data
+End Sub
+
+#End Region]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

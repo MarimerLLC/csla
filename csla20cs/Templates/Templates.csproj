@@ -37,12 +37,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandObject.cs" />
     <Compile Include="EditableChild.cs" />
     <Compile Include="EditableChildList.cs" />
     <Compile Include="EditableRoot.cs" />
     <Compile Include="EditableRootList.cs" />
     <Compile Include="EditableRootParent.cs" />
+    <Compile Include="NameValueList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyList.cs" />
+    <Compile Include="ReadOnlyRoot.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

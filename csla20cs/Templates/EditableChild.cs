@@ -74,13 +74,18 @@ namespace Templates
       MarkAsChild();
     }
 
+    private EditableChild(SqlDataReader dr)
+    {
+      MarkAsChild();
+      Fetch(dr);
+    }
+
     #endregion
 
     #region Data Access
 
-    private EditableChild(SqlDataReader dr)
+    private void Fetch(SqlDataReader dr)
     {
-      MarkAsChild();
       // TODO: load values
       MarkOld();
     }

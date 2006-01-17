@@ -26,18 +26,24 @@ namespace Templates
       MarkAsChild();
     }
 
+    private EditableChildList(SqlDataReader dr)
+    {
+      MarkAsChild();
+      Fetch(dr);
+    }
+
     #endregion
 
     #region Data Access
 
-    private EditableChildList(SqlDataReader dr)
+    private void Fetch(SqlDataReader dr)
     {
-      MarkAsChild();
       while (dr.Read())
       {
         this.Add(EditableChild.GetEditableChild(dr));
       }
     }
+
 
     internal void Update()
     {

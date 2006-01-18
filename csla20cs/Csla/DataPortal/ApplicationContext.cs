@@ -39,10 +39,9 @@ namespace Csla
       }
       set
       {
-        if (HttpContext.Current == null)
-          Thread.CurrentPrincipal = value;
-        else
+        if (HttpContext.Current != null)
           HttpContext.Current.User = value;
+        Thread.CurrentPrincipal = value;
       }
     }
 

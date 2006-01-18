@@ -21,12 +21,10 @@ Public Module ApplicationContext
       End If
     End Get
     Set(ByVal value As IPrincipal)
-      If HttpContext.Current Is Nothing Then
-        Thread.CurrentPrincipal = value
-
-      Else
+      If HttpContext.Current IsNot Nothing Then
         HttpContext.Current.User = value
       End If
+      Thread.CurrentPrincipal = value
     End Set
   End Property
 

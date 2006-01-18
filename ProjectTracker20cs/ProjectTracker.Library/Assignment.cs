@@ -82,20 +82,19 @@ namespace ProjectTracker.Library
       Guid projectId, int resourceId, SmartDate assigned,
       int newRole)
     {
-      byte[] result = new byte[8];
       cm.CommandType = CommandType.StoredProcedure;
       cm.Parameters.AddWithValue("@projectId", projectId);
       cm.Parameters.AddWithValue("@resourceId", resourceId);
       cm.Parameters.AddWithValue("@assigned", assigned.DBValue);
       cm.Parameters.AddWithValue("@role", newRole);
+      SqlParameter param =
+        new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
+      param.Direction = ParameterDirection.Output;
+      cm.Parameters.Add(param);
 
-      using (SqlDataReader dr = cm.ExecuteReader())
-      {
-        dr.Read();
-        // get the new timestamp for the row
-        dr.GetBytes(0, 0, result, 0, 8);
-      }
-      return result;
+      cm.ExecuteNonQuery();
+
+      return (byte[])cm.Parameters["@newLastChanged"].Value;
     }
 
     public static void RemoveAssignment(

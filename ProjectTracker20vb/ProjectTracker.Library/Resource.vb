@@ -256,13 +256,18 @@ Private Class Criteria
           With cm
             .Parameters.AddWithValue("@lastName", mLastName)
             .Parameters.AddWithValue("@firstName", mFirstName)
-          End With
+            Dim param As New SqlParameter("@newId", SqlDbType.Int)
+            param.Direction = ParameterDirection.Output
+            .Parameters.Add(param)
+            param = New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
+            param.Direction = ParameterDirection.Output
+            .Parameters.Add(param)
 
-          Using dr As SqlDataReader = cm.ExecuteReader
-            dr.Read()
-            mId = dr.GetInt32(0)
-            dr.GetBytes(1, 0, mTimestamp, 0, 8)
-          End Using
+            .ExecuteNonQuery()
+
+            mId = CInt(.Parameters("@newId").Value)
+            mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
+          End With
 
           ' update child objects
           mAssignments.Update(cn, Me)
@@ -287,11 +292,14 @@ Private Class Criteria
               .Parameters.AddWithValue("@lastName", mLastName)
               .Parameters.AddWithValue("@firstName", mFirstName)
               .Parameters.AddWithValue("@lastChanged", mTimestamp)
+              Dim param As New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
+              param.Direction = ParameterDirection.Output
+              .Parameters.Add(param)
+
+              .ExecuteNonQuery()
+
+              mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
             End With
-            Using dr As SqlDataReader = cm.ExecuteReader
-              dr.Read()
-              dr.GetBytes(0, 0, mTimestamp, 0, 8)
-            End Using
           End With
         End Using
       End If
@@ -366,14 +374,8 @@ Private Class Criteria
           cm.CommandText = "SELECT id FROM Resources WHERE id=@id"
           cm.Parameters.AddWithValue("@id", mId)
 
-          Using dr As SqlDataReader = cm.ExecuteReader
-            If dr.Read() Then
-              mExists = True
-
-            Else
-              mExists = False
-            End If
-          End Using
+          Dim count As Integer = CInt(cm.ExecuteScalar)
+          mExists = (count > 0)
         End Using
       End Using
 

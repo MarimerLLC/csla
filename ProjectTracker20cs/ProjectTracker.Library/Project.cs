@@ -351,11 +351,14 @@ namespace ProjectTracker.Library
       cm.Parameters.AddWithValue("@started", _started.DBValue);
       cm.Parameters.AddWithValue("@ended", _ended.DBValue);
       cm.Parameters.AddWithValue("@description", _description);
-      using (SqlDataReader dr = cm.ExecuteReader())
-      {
-        dr.Read();
-        dr.GetBytes(0, 0, _timestamp, 0, 8);
-      }
+      SqlParameter param =
+        new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
+      param.Direction = ParameterDirection.Output;
+      cm.Parameters.Add(param);
+
+      cm.ExecuteNonQuery();
+
+      _timestamp = (byte[])cm.Parameters["@newLastChanged"].Value;
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
@@ -421,13 +424,8 @@ namespace ProjectTracker.Library
             cm.CommandType = CommandType.StoredProcedure;
             cm.CommandText = "existsProject";
             cm.Parameters.AddWithValue("@id", _id);
-            using (SqlDataReader dr = cm.ExecuteReader())
-            {
-              if (dr.Read())
-                _exists = true;
-              else
-                _exists = false;
-            }
+            int count = (int)cm.ExecuteScalar();
+            _exists = (count > 0);
           }
         }
       }

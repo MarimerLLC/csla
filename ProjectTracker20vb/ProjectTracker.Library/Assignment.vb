@@ -70,19 +70,18 @@ Friend Module Assignment
     ByVal projectId As Guid, ByVal resourceId As Integer, ByVal assigned As SmartDate, _
     ByVal newRole As Integer) As Byte()
 
-    Dim result(0 To 7) As Byte
     cm.CommandType = CommandType.StoredProcedure
     cm.Parameters.AddWithValue("@projectId", projectId)
     cm.Parameters.AddWithValue("@resourceId", resourceId)
     cm.Parameters.AddWithValue("@assigned", assigned.DBValue)
     cm.Parameters.AddWithValue("@role", newRole)
+    Dim param As New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
+    param.Direction = ParameterDirection.Output
+    cm.Parameters.Add(param)
 
-    Using dr As SqlDataReader = cm.ExecuteReader()
-      dr.Read()
-      ' get the new timestamp for the row
-      dr.GetBytes(0, 0, result, 0, 8)
-    End Using
-    Return result
+    cm.ExecuteNonQuery()
+
+    Return CType(cm.Parameters("@newLastChanged").Value, Byte())
 
   End Function
 

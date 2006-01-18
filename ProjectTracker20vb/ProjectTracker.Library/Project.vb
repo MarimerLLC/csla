@@ -324,11 +324,14 @@ Public Class Project
       .Parameters.AddWithValue("@started", mStarted.DBValue)
       .Parameters.AddWithValue("@ended", mEnded.DBValue)
       .Parameters.AddWithValue("@description", mDescription)
+      Dim param As New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
+      param.Direction = ParameterDirection.Output
+      .Parameters.Add(param)
+
+      .ExecuteNonQuery()
+
+      mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
     End With
-    Using dr As SqlDataReader = cm.ExecuteReader
-      dr.Read()
-      dr.GetBytes(0, 0, mTimestamp, 0, 8)
-    End Using
 
   End Sub
 
@@ -395,14 +398,8 @@ Public Class Project
           cm.CommandText = "SELECT Id FROM Projects WHERE Id=@id"
           cm.Parameters.AddWithValue("@id", mId)
 
-          Using dr As SqlDataReader = cm.ExecuteReader
-            If dr.Read() Then
-              mExists = True
-
-            Else
-              mExists = False
-            End If
-          End Using
+          Dim count As Integer = CInt(cm.ExecuteScalar)
+          mExists = (count > 0)
         End Using
       End Using
 

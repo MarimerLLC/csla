@@ -258,13 +258,18 @@ namespace ProjectTracker.Library
           cm.CommandText = "addResource";
           cm.Parameters.AddWithValue("@lastName", _lastName);
           cm.Parameters.AddWithValue("@firstName", _firstName);
+          SqlParameter param = 
+            new SqlParameter("@newId",SqlDbType.Int);
+          param.Direction = ParameterDirection.Output;
+          cm.Parameters.Add(param);
+          param = new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
+          param.Direction = ParameterDirection.Output;
+          cm.Parameters.Add(param);
 
-          using (SqlDataReader dr = cm.ExecuteReader())
-          {
-            dr.Read();
-            _id = dr.GetInt32(0);
-            dr.GetBytes(1, 0, _timestamp, 0, 8);
-          }
+          cm.ExecuteNonQuery();
+
+          _id = (int)cm.Parameters["@newId"].Value;
+          _timestamp = (byte[])cm.Parameters["@newLastChanged"].Value;
         }
         // update child objects
         _assignments.Update(cn, this);
@@ -287,12 +292,14 @@ namespace ProjectTracker.Library
             cm.Parameters.AddWithValue("@lastName", _lastName);
             cm.Parameters.AddWithValue("@firstName", _firstName);
             cm.Parameters.AddWithValue("@lastChanged", _timestamp);
+            SqlParameter param = 
+              new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
+            param.Direction = ParameterDirection.Output;
+            cm.Parameters.Add(param);
 
-            using (SqlDataReader dr = cm.ExecuteReader())
-            {
-              dr.Read();
-              dr.GetBytes(0, 0, _timestamp, 0, 8);
-            }
+            cm.ExecuteNonQuery();
+
+            _timestamp = (byte[])cm.Parameters["@newLastChanged"].Value;
           }
         }
         // update child objects
@@ -362,17 +369,11 @@ namespace ProjectTracker.Library
           cn.Open();
           using (SqlCommand cm = cn.CreateCommand())
           {
-            cm.CommandType = CommandType.Text;
-            cm.CommandText = "SELECT id FROM Resources WHERE id=@id";
+            cm.CommandType = CommandType.StoredProcedure;
+            cm.CommandText = "existsResource";
             cm.Parameters.AddWithValue("@id", _id);
-
-            using (SqlDataReader dr = cm.ExecuteReader())
-            {
-              if (dr.Read())
-                _exists = true;
-              else
-                _exists = false;
-            }
+            int count = (int)cm.ExecuteScalar();
+            _exists = (count > 0);
           }
         }
       }

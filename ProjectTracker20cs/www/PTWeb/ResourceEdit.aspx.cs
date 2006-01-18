@@ -149,7 +149,6 @@ public partial class ResourceEdit : System.Web.UI.Page
   protected void AssignmentsDataSource_DeleteObject(object sender, Csla.Web.DeleteObjectArgs e)
   {
     Resource obj = GetResource();
-    ResourceAssignment res;
     Guid rid = new Guid(e.Keys["ProjectId"].ToString());
     obj.Assignments.Remove(rid);
     e.RowsAffected = SaveResource(obj);

@@ -169,11 +169,15 @@ namespace ProjectTracker.Library.Admin
       cm.CommandType = CommandType.StoredProcedure;
       cm.Parameters.AddWithValue("@id", _id);
       cm.Parameters.AddWithValue("@name", _name);
-      using (SqlDataReader dr = cm.ExecuteReader())
-      {
-        dr.Read();
-        dr.GetBytes(0, 0, _timestamp, 0, 8);
-      }
+      SqlParameter param =
+        new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
+      param.Direction = ParameterDirection.Output;
+      cm.Parameters.Add(param);
+
+      cm.ExecuteNonQuery();
+
+      _timestamp = (byte[])cm.Parameters["@newLastChanged"].Value;
+
       MarkOld();
     }
 

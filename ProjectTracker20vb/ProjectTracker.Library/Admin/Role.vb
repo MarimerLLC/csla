@@ -166,10 +166,14 @@ Namespace Admin
       cm.CommandType = CommandType.StoredProcedure
       cm.Parameters.AddWithValue("@id", mId)
       cm.Parameters.AddWithValue("@name", mName)
-      Using dr As SqlDataReader = cm.ExecuteReader
-        dr.Read()
-        dr.GetBytes(0, 0, mTimestamp, 0, 8)
-      End Using
+      Dim param As New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
+      param.Direction = ParameterDirection.Output
+      cm.Parameters.Add(param)
+
+      cm.ExecuteNonQuery()
+
+      mTimestamp = CType(cm.Parameters("@newLastChanged").Value, Byte())
+
       MarkOld()
 
     End Sub

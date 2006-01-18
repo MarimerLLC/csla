@@ -27,7 +27,9 @@ Public Class ProjectSelect
 
   Private Sub ProjectSelect_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-    Me.ProjectListBindingSource.DataSource = ProjectList.GetProjectList
+    Dim sorted As New Csla.SortedBindingList(Of ProjectList.ProjectInfo)(ProjectList.GetProjectList)
+    sorted.ApplySort("Name", System.ComponentModel.ListSortDirection.Ascending)
+    Me.ProjectListBindingSource.DataSource = sorted
 
   End Sub
 

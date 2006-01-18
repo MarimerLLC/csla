@@ -17,7 +17,8 @@ namespace Templates
       return new EditableChildList();
     }
 
-    internal static EditableChildList GetEditableChildList(SqlDataReader dr)
+    internal static EditableChildList GetEditableChildList(
+      SqlDataReader dr)
     {
       return new EditableChildList(dr);
     }
@@ -39,23 +40,27 @@ namespace Templates
 
     private void Fetch(SqlDataReader dr)
     {
+      RaiseListChangedEvents = false;
       while (dr.Read())
       {
         this.Add(EditableChild.GetEditableChild(dr));
       }
+      RaiseListChangedEvents = true;
     }
 
-    internal void Update()
+    internal void Update(object parent)
     {
+      RaiseListChangedEvents = false;
       foreach (EditableChild item in DeletedList)
         item.DeleteSelf();
       DeletedList.Clear();
 
       foreach (EditableChild item in this)
         if (item.IsNew)
-          item.Insert(this);
+          item.Insert(parent);
         else
-          item.Update(this);
+          item.Update(parent);
+      RaiseListChangedEvents = true;
     }
 
     #endregion

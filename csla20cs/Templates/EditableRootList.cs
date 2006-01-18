@@ -14,22 +14,30 @@ namespace Templates
 
     public static bool CanAddObject()
     {
-      return ApplicationContext.User.IsInRole("");
+      // TODO: customize to check user role
+      //return ApplicationContext.User.IsInRole("");
+      return true;
     }
 
     public static bool CanGetObject()
     {
-      return ApplicationContext.User.IsInRole("");
+      // TODO: customize to check user role
+      //return ApplicationContext.User.IsInRole("");
+      return true;
     }
 
     public static bool CanEditObject()
     {
-      return ApplicationContext.User.IsInRole("");
+      // TODO: customize to check user role
+      //return ApplicationContext.User.IsInRole("");
+      return true;
     }
 
     public static bool CanDeleteObject()
     {
-      return ApplicationContext.User.IsInRole("");
+      // TODO: customize to check user role
+      //return ApplicationContext.User.IsInRole("");
+      return true;
     }
 
     #endregion
@@ -67,6 +75,7 @@ namespace Templates
 
     private void DataPortal_Fetch(Criteria criteria)
     {
+      RaiseListChangedEvents = false;
       // TODO: load values
       using (SqlDataReader dr = null)
       {
@@ -75,10 +84,12 @@ namespace Templates
           this.Add(EditableChild.GetEditableChild(dr));
         }
       }
+      RaiseListChangedEvents = true;
     }
 
     protected override void DataPortal_Update()
     {
+      RaiseListChangedEvents = false;
       foreach (EditableChild item in DeletedList)
         item.DeleteSelf();
       DeletedList.Clear();
@@ -88,6 +99,7 @@ namespace Templates
           item.Insert(this);
         else
           item.Update(this);
+      RaiseListChangedEvents = true;
     }
 
     #endregion

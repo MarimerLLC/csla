@@ -7,74 +7,23 @@ using Csla;
 namespace Templates
 {
   [Serializable()]
-  class ReadOnlyList : ReadOnlyListBase<ReadOnlyList, ReadOnlyList.ROLChild>
+  class ReadOnlyList : 
+    ReadOnlyListBase<ReadOnlyList, ReadOnlyChild>
   {
-    #region ROLChild
+    #region Authorization Rules
 
-    [Serializable()]
-    public class ROLChild : ReadOnlyBase<ROLChild>
+    public static bool CanGetObject()
     {
-      #region Business Methods
-
-      private int _id;
-      private string _data = string.Empty;
-
-      public int Id
-      {
-        get { return _id; }
-      }
-
-      public string Data
-      {
-        get { return _data; }
-      }
-
-      protected override object GetIdValue()
-      {
-        return _id;
-      }
-
-      public override string ToString()
-      {
-        return _data;
-      }
-
-      #endregion
-
-      #region Factory Methods
-
-      internal static ROLChild GetChild(SqlDataReader dr)
-      {
-        return new ROLChild(dr);
-      }
-
-      private ROLChild()
-      { /* require use of factory methods */ }
-
-      private ROLChild(SqlDataReader dr)
-      {
-        Fetch(dr);
-      }
-
-      #endregion
-
-      #region Data Access
-
-      private void Fetch(SqlDataReader dr)
-      {
-        // load values
-        _id = dr.GetInt32(0);
-        _data = dr.GetString(1);
-      }
-
-      #endregion
+      // TODO: customize to check user role
+      //return ApplicationContext.User.IsInRole("");
+      return true;
     }
 
     #endregion
 
     #region Factory Methods
 
-    public static ReadOnlyList GetList(string filter)
+    public static ReadOnlyList GetReadOnlyList(string filter)
     {
       return DataPortal.Fetch<ReadOnlyList>(new Criteria(filter));
     }
@@ -102,12 +51,16 @@ namespace Templates
 
     private void DataPortal_Fetch(Criteria criteria)
     {
-      // load values
+      RaiseListChangedEvents = false;
+      IsReadOnly = false;
+      // TODO: load values
       using (SqlDataReader dr = null)
       {
         while (dr.Read())
-          Add(ROLChild.GetChild(dr));
+          Add(ReadOnlyChild.GetReadOnlyChild(dr));
       }
+      IsReadOnly = true;
+      RaiseListChangedEvents = true;
     }
 
     #endregion

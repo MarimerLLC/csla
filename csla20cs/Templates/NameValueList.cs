@@ -11,10 +11,19 @@ namespace Templates
   {
     #region Factory Methods
 
-    public static NameValueList GetList()
+    private static NameValueList _list;
+
+    public static NameValueList GetNameValueList()
     {
-      return DataPortal.Fetch<NameValueList>(
-        new Criteria(typeof(NameValueList)));
+      if (_list == null)
+        _list = DataPortal.Fetch<NameValueList>(
+          new Criteria(typeof(NameValueList)));
+      return _list;
+    }
+
+    public static void InvalidateCache()
+    {
+      _list = null;
     }
 
     private NameValueList()
@@ -26,17 +35,19 @@ namespace Templates
 
     protected override void DataPortal_Fetch(object criteria)
     {
+      RaiseListChangedEvents = false;
       IsReadOnly = false;
       // TODO: load values
       using (SqlDataReader dr = null)
       {
         while (dr.Read())
         {
-          Add(new NameValueListBase<int, string>.NameValuePair(
-            dr.GetInt32(0), dr.GetString(1)));
+          Add(new NameValueListBase<int, string>.
+            NameValuePair(dr.GetInt32(0), dr.GetString(1)));
         }
       }
       IsReadOnly = true;
+      RaiseListChangedEvents = true;
     }
 
     #endregion

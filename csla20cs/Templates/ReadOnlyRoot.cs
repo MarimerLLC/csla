@@ -10,6 +10,7 @@ namespace Templates
   {
     #region Business Methods
 
+    // TODO: add your own fields, properties and methods
     private int _id;
 
     public int Id
@@ -38,7 +39,9 @@ namespace Templates
 
     public static bool CanGetObject()
     {
-      return ApplicationContext.User.IsInRole("");
+      // TODO: customize to check user role
+      //return ApplicationContext.User.IsInRole("");
+      return true;
     }
 
     #endregion
@@ -74,7 +77,7 @@ namespace Templates
 
     private void DataPortal_Fetch(Criteria criteria)
     {
-      // load values
+      // TODO: load values
       _id = criteria.Id;
     }
 

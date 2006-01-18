@@ -153,13 +153,13 @@ namespace Templates
     protected override void DataPortal_Insert()
     {
       // TODO: insert values
-      _children.Update();
+      _children.Update(this);
     }
 
     protected override void DataPortal_Update()
     {
       // TODO: update values
-      _children.Update();
+      _children.Update(this);
     }
 
     protected override void DataPortal_DeleteSelf()

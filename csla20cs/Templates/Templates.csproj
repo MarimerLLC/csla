@@ -45,6 +45,7 @@
     <Compile Include="EditableRootParent.cs" />
     <Compile Include="NameValueList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyChild.cs" />
     <Compile Include="ReadOnlyList.cs" />
     <Compile Include="ReadOnlyRoot.cs" />
     <Compile Include="SwitchableObject.cs" />

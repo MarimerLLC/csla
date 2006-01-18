@@ -2,6 +2,17 @@
 Public Class CommandObject
   Inherits CommandBase
 
+#Region " Authorization Rules "
+
+  Public Shared Function CanExecuteObject() As Boolean
+
+    ' to see if user is authorized
+    Return Csla.ApplicationContext.User.IsInRole("")
+
+  End Function
+
+#End Region
+
 #Region " Client-side Code "
 
   Private mResult As Boolean

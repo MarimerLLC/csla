@@ -11,6 +11,7 @@ namespace Templates
   {
     #region Business Methods
 
+    // TODO: add your own fields, properties and methods
     private int _id;
 
     public int id
@@ -62,7 +63,9 @@ namespace Templates
 
     internal static EditableChild NewEditableChild()
     {
-      return new EditableChild();
+      // TODO: change to use new keyword if not loading defaults
+      //return new EditableChild();
+      return DataPortal.Create<EditableChild>();
     }
 
     internal static EditableChild GetEditableChild(SqlDataReader dr)
@@ -85,19 +88,24 @@ namespace Templates
 
     #region Data Access
 
+    protected override void DataPortal_Create(object criteria)
+    {
+      // TODO: load default values, or remove method
+    }
+
     private void Fetch(SqlDataReader dr)
     {
       // TODO: load values
       MarkOld();
     }
 
-    internal void Insert()
+    internal void Insert(object parent)
     {
       // TODO: insert values
       MarkOld();
     }
 
-    internal void Update()
+    internal void Update(object parent)
     {
       // TODO: update values
       MarkOld();

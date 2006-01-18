@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.SqlClient;
 using Csla;
 
 namespace Templates
 {
   [Serializable()]
-  class EditableRoot : BusinessBase<EditableRoot>
+  class SwitchableObject : BusinessBase<SwitchableObject>
   {
     #region Business Methods
 
@@ -88,46 +89,97 @@ namespace Templates
 
     #region Factory Methods
 
-    public static EditableRoot NewEditableRoot()
+    public static SwitchableObject NewSwitchableRoot()
     {
-      return DataPortal.Create<EditableRoot>();
+      return DataPortal.Create<SwitchableObject>(
+        new RootCriteria());
     }
 
-    public static EditableRoot GetEditableRoot(int id)
+    internal static SwitchableObject NewSwitchableChild()
     {
-      return DataPortal.Create<EditableRoot>(new Criteria(id));
+      return DataPortal.Create<SwitchableObject>(
+        new ChildCriteria());
     }
 
-    public static void DeleteEditableRoot(int id)
+    public static SwitchableObject GetSwitchableRoot(int id)
     {
-      DataPortal.Delete(new Criteria(id));
+      return DataPortal.Create<SwitchableObject>(
+        new RootCriteria(id));
     }
 
-    private EditableRoot()
+    internal static SwitchableObject GetSwitchableChild(
+      SqlDataReader dr)
+    {
+      return new SwitchableObject(dr);
+    }
+
+    public static void DeleteSwitchableObject(int id)
+    {
+      DataPortal.Delete(new RootCriteria(id));
+    }
+
+    private SwitchableObject()
     { /* Require use of factory methods */ }
+
+    private SwitchableObject(SqlDataReader dr)
+    {
+      Fetch(dr);
+    }
 
     #endregion
 
     #region Data Access
 
     [Serializable()]
-    private class Criteria
+    private class RootCriteria
     {
       private int _id;
       public int Id
       {
         get { return _id; }
       }
-      public Criteria(int id)
+      public RootCriteria(int id)
       { _id = id; }
+      public RootCriteria()
+      { }
     }
 
-    private void DataPortal_Create(Criteria criteria)
+    [Serializable()]
+    private class ChildCriteria
+    { }
+
+    private void DataPortal_Create(RootCriteria criteria)
+    {
+      DoCreate();
+    }
+
+    private void DataPortal_Create(ChildCriteria criteria)
+    {
+      MarkAsChild();
+      DoCreate();
+    }
+
+    private void DoCreate()
     {
       // TODO: load default values
     }
 
-    private void DataPortal_Fetch(Criteria criteria)
+    private void DataPortal_Fetch(RootCriteria criteria)
+    {
+      // TODO: create data reader to load values
+      using (SqlDataReader dr = null)
+      {
+        DoFetch(dr);
+      }
+    }
+
+    private void Fetch(SqlDataReader dr)
+    {
+      MarkAsChild();
+      DoFetch(dr);
+    }
+
+    private void DoFetch(SqlDataReader dr)
     {
       // TODO: load values
     }
@@ -144,10 +196,10 @@ namespace Templates
 
     protected override void DataPortal_DeleteSelf()
     {
-      DataPortal_Delete(new Criteria(_id));
+      DataPortal_Delete(new RootCriteria(_id));
     }
 
-    private void DataPortal_Delete(Criteria criteria)
+    private void DataPortal_Delete(RootCriteria criteria)
     {
       // TODO: delete values
     }

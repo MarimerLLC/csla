@@ -8,6 +8,16 @@ namespace Templates
   [Serializable()]
   class CommandObject : CommandBase
   {
+    #region Authorization Methods
+
+    public static bool CanExecuteCommand()
+    {
+      // to see if user is authorized
+      return Csla.ApplicationContext.User.IsInRole("");
+    }
+
+    #endregion
+
     #region Client-side Code
 
     bool _result;

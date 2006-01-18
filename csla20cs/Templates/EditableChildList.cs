@@ -45,7 +45,6 @@ namespace Templates
       }
     }
 
-
     internal void Update()
     {
       foreach (EditableChild item in DeletedList)
@@ -54,9 +53,9 @@ namespace Templates
 
       foreach (EditableChild item in this)
         if (item.IsNew)
-          item.Insert();
+          item.Insert(this);
         else
-          item.Update();
+          item.Update(this);
     }
 
     #endregion

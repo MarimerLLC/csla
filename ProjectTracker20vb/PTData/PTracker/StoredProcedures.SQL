@@ -1,4 +1,4 @@
-﻿/****** Object:  StoredProcedure [dbo].[addAssignment]    Script Date: 01/17/2006 21:24:05 ******/
+﻿/****** Object:  StoredProcedure [dbo].[addAssignment]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[addAssignment]') AND type in (N'P', N'PC'))
 
@@ -6,7 +6,7 @@ DROP PROCEDURE [dbo].[addAssignment]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[updateRole]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[updateRole]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[updateRole]') AND type in (N'P', N'PC'))
 
@@ -14,7 +14,7 @@ DROP PROCEDURE [dbo].[updateRole]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[addProject]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[addProject]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[addProject]') AND type in (N'P', N'PC'))
 
@@ -22,7 +22,7 @@ DROP PROCEDURE [dbo].[addProject]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[addResource]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[addResource]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[addResource]') AND type in (N'P', N'PC'))
 
@@ -30,7 +30,7 @@ DROP PROCEDURE [dbo].[addResource]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[addRole]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[addRole]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[addRole]') AND type in (N'P', N'PC'))
 
@@ -38,7 +38,7 @@ DROP PROCEDURE [dbo].[addRole]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[deleteAssignment]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[deleteAssignment]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[deleteAssignment]') AND type in (N'P', N'PC'))
 
@@ -46,7 +46,7 @@ DROP PROCEDURE [dbo].[deleteAssignment]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[deleteProject]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[deleteProject]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[deleteProject]') AND type in (N'P', N'PC'))
 
@@ -54,7 +54,7 @@ DROP PROCEDURE [dbo].[deleteProject]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[deleteResource]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[deleteResource]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[deleteResource]') AND type in (N'P', N'PC'))
 
@@ -62,7 +62,7 @@ DROP PROCEDURE [dbo].[deleteResource]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[deleteRole]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[deleteRole]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[deleteRole]') AND type in (N'P', N'PC'))
 
@@ -70,7 +70,7 @@ DROP PROCEDURE [dbo].[deleteRole]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[existsProject]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[existsProject]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[existsProject]') AND type in (N'P', N'PC'))
 
@@ -78,7 +78,7 @@ DROP PROCEDURE [dbo].[existsProject]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[existsResource]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[existsResource]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[existsResource]') AND type in (N'P', N'PC'))
 
@@ -86,7 +86,7 @@ DROP PROCEDURE [dbo].[existsResource]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getProject]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[getProject]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[getProject]') AND type in (N'P', N'PC'))
 
@@ -94,7 +94,7 @@ DROP PROCEDURE [dbo].[getProject]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getProjects]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[getProjects]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[getProjects]') AND type in (N'P', N'PC'))
 
@@ -102,7 +102,7 @@ DROP PROCEDURE [dbo].[getProjects]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getResource]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[getResource]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[getResource]') AND type in (N'P', N'PC'))
 
@@ -110,7 +110,7 @@ DROP PROCEDURE [dbo].[getResource]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getResources]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[getResources]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[getResources]') AND type in (N'P', N'PC'))
 
@@ -118,7 +118,7 @@ DROP PROCEDURE [dbo].[getResources]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getRoles]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[getRoles]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[getRoles]') AND type in (N'P', N'PC'))
 
@@ -126,7 +126,7 @@ DROP PROCEDURE [dbo].[getRoles]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[updateAssignment]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[updateAssignment]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[updateAssignment]') AND type in (N'P', N'PC'))
 
@@ -134,7 +134,7 @@ DROP PROCEDURE [dbo].[updateAssignment]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[updateProject]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[updateProject]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[updateProject]') AND type in (N'P', N'PC'))
 
@@ -142,7 +142,7 @@ DROP PROCEDURE [dbo].[updateProject]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[updateResource]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[updateResource]    Script Date: 01/18/2006 09:28:48 ******/
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[updateResource]') AND type in (N'P', N'PC'))
 
@@ -150,7 +150,7 @@ DROP PROCEDURE [dbo].[updateResource]
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[addAssignment]    Script Date: 01/17/2006 21:24:05 ******/
+/****** Object:  StoredProcedure [dbo].[addAssignment]    Script Date: 01/18/2006 09:28:48 ******/
 
 SET ANSI_NULLS ON
 
@@ -204,7 +204,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[updateRole]    Script Date: 01/17/2006 21:24:06 ******/
+/****** Object:  StoredProcedure [dbo].[updateRole]    Script Date: 01/18/2006 09:28:49 ******/
 
 SET ANSI_NULLS ON
 
@@ -260,7 +260,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[addProject]    Script Date: 01/17/2006 21:24:06 ******/
+/****** Object:  StoredProcedure [dbo].[addProject]    Script Date: 01/18/2006 09:28:49 ******/
 
 SET ANSI_NULLS ON
 
@@ -286,7 +286,7 @@ EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE addProject
 
 		@ended datetime,
 
-		@description text,
+		@description varchar(MAX),
 
 		@newLastChanged timestamp output
 
@@ -314,7 +314,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[addResource]    Script Date: 01/17/2006 21:24:07 ******/
+/****** Object:  StoredProcedure [dbo].[addResource]    Script Date: 01/18/2006 09:28:50 ******/
 
 SET ANSI_NULLS ON
 
@@ -364,7 +364,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[addRole]    Script Date: 01/17/2006 21:24:08 ******/
+/****** Object:  StoredProcedure [dbo].[addRole]    Script Date: 01/18/2006 09:28:51 ******/
 
 SET ANSI_NULLS ON
 
@@ -412,7 +412,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[deleteAssignment]    Script Date: 01/17/2006 21:24:08 ******/
+/****** Object:  StoredProcedure [dbo].[deleteAssignment]    Script Date: 01/18/2006 09:28:51 ******/
 
 SET ANSI_NULLS ON
 
@@ -448,7 +448,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[deleteProject]    Script Date: 01/17/2006 21:24:08 ******/
+/****** Object:  StoredProcedure [dbo].[deleteProject]    Script Date: 01/18/2006 09:28:52 ******/
 
 SET ANSI_NULLS ON
 
@@ -488,7 +488,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[deleteResource]    Script Date: 01/17/2006 21:24:09 ******/
+/****** Object:  StoredProcedure [dbo].[deleteResource]    Script Date: 01/18/2006 09:28:52 ******/
 
 SET ANSI_NULLS ON
 
@@ -528,7 +528,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[deleteRole]    Script Date: 01/17/2006 21:24:09 ******/
+/****** Object:  StoredProcedure [dbo].[deleteRole]    Script Date: 01/18/2006 09:28:52 ******/
 
 SET ANSI_NULLS ON
 
@@ -562,7 +562,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[existsProject]    Script Date: 01/17/2006 21:24:10 ******/
+/****** Object:  StoredProcedure [dbo].[existsProject]    Script Date: 01/18/2006 09:28:53 ******/
 
 SET ANSI_NULLS ON
 
@@ -586,7 +586,9 @@ EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE dbo.existsProject
 
 AS
 
-	SELECT COUNT(*) FROM Projects WHERE Id=@id
+	SELECT COUNT(*) 
+
+	FROM Projects WHERE Id=@id
 
 	RETURN
 
@@ -596,7 +598,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[existsResource]    Script Date: 01/17/2006 21:24:10 ******/
+/****** Object:  StoredProcedure [dbo].[existsResource]    Script Date: 01/18/2006 09:28:53 ******/
 
 SET ANSI_NULLS ON
 
@@ -620,7 +622,9 @@ EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE dbo.existsResource
 
 AS
 
-	SELECT COUNT(*) FROM Resources WHERE Id=@id
+	SELECT COUNT(*) 
+
+	FROM Resources WHERE Id=@id
 
 	RETURN
 
@@ -632,7 +636,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getProject]    Script Date: 01/17/2006 21:24:10 ******/
+/****** Object:  StoredProcedure [dbo].[getProject]    Script Date: 01/18/2006 09:28:54 ******/
 
 SET ANSI_NULLS ON
 
@@ -676,7 +680,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getProjects]    Script Date: 01/17/2006 21:24:11 ******/
+/****** Object:  StoredProcedure [dbo].[getProjects]    Script Date: 01/18/2006 09:28:54 ******/
 
 SET ANSI_NULLS ON
 
@@ -704,7 +708,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getResource]    Script Date: 01/17/2006 21:24:11 ******/
+/****** Object:  StoredProcedure [dbo].[getResource]    Script Date: 01/18/2006 09:28:54 ******/
 
 SET ANSI_NULLS ON
 
@@ -748,7 +752,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getResources]    Script Date: 01/17/2006 21:24:11 ******/
+/****** Object:  StoredProcedure [dbo].[getResources]    Script Date: 01/18/2006 09:28:55 ******/
 
 SET ANSI_NULLS ON
 
@@ -776,7 +780,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[getRoles]    Script Date: 01/17/2006 21:24:12 ******/
+/****** Object:  StoredProcedure [dbo].[getRoles]    Script Date: 01/18/2006 09:28:55 ******/
 
 SET ANSI_NULLS ON
 
@@ -804,7 +808,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[updateAssignment]    Script Date: 01/17/2006 21:24:12 ******/
+/****** Object:  StoredProcedure [dbo].[updateAssignment]    Script Date: 01/18/2006 09:28:55 ******/
 
 SET ANSI_NULLS ON
 
@@ -870,7 +874,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[updateProject]    Script Date: 01/17/2006 21:24:13 ******/
+/****** Object:  StoredProcedure [dbo].[updateProject]    Script Date: 01/18/2006 09:28:56 ******/
 
 SET ANSI_NULLS ON
 
@@ -896,7 +900,7 @@ EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE updateProject
 
 		@ended datetime,
 
-		@description text,
+		@description varchar(MAX),
 
 		@lastChanged timestamp,
 
@@ -940,7 +944,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[updateResource]    Script Date: 01/17/2006 21:24:13 ******/
+/****** Object:  StoredProcedure [dbo].[updateResource]    Script Date: 01/18/2006 09:28:57 ******/
 
 SET ANSI_NULLS ON
 

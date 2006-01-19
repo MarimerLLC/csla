@@ -103,7 +103,7 @@ Namespace Windows
         ctl.Enabled = False
         AddHandler binding.Format, AddressOf ReturnEmpty
 
-        ' clear the control property
+        ' clear the value displayed by the control
         Dim propertyInfo As PropertyInfo = _
           ctl.GetType.GetProperty(binding.PropertyName, _
             BindingFlags.FlattenHierarchy Or _
@@ -150,18 +150,9 @@ Namespace Windows
 
     Private Function GetEmptyValue(ByVal desiredType As Type) As Object
 
-      Dim result As Object
-      If desiredType.Equals(GetType(String)) Then
-        result = ""
-
-      ElseIf desiredType.Equals(GetType(Date)) Then
-        result = Now
-
-      ElseIf desiredType.IsPrimitive Then
-        result = 0
-
-      Else
-        result = Nothing
+      Dim result As Object = Nothing
+      If desiredType.IsValueType Then
+        result = Activator.CreateInstance(desiredType)
       End If
       Return result
 

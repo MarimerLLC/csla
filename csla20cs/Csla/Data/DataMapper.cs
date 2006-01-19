@@ -163,7 +163,7 @@ namespace Csla.Data
       }
     }
 
-    static PropertyInfo[] GetSourceProperties(Type sourceType)
+    private static PropertyInfo[] GetSourceProperties(Type sourceType)
     {
       List<PropertyInfo> result = new List<PropertyInfo>();
       PropertyDescriptorCollection props =
@@ -176,17 +176,17 @@ namespace Csla.Data
 
     #endregion
 
-    static void SetValue(
+    private static void SetValue(
       object target, string propertyName, object value)
     {
       PropertyInfo propertyInfo =
         target.GetType().GetProperty(propertyName);
-      Type pType = 
-        Utilities.GetPropertyType(propertyInfo.PropertyType);
       if (value == null)
         propertyInfo.SetValue(target, value, null);
       else
       {
+        Type pType =
+          Utilities.GetPropertyType(propertyInfo.PropertyType);
         if (pType.Equals(value.GetType()))
         {
           // types match, just copy value

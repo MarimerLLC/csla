@@ -112,7 +112,7 @@ namespace Csla.Windows
         binding.Format += 
           new ConvertEventHandler(ReturnEmpty);
 
-        // clear the control property
+        // clear the value displayed by the control
         PropertyInfo propertyInfo = 
           ctl.GetType().GetProperty(binding.PropertyName,
           BindingFlags.FlattenHierarchy |
@@ -168,15 +168,9 @@ namespace Csla.Windows
 
     private object GetEmptyValue(Type desiredType)
     {
-      object result;
-      if (desiredType.Equals(typeof(string)))
-        result = string.Empty;
-      else if (desiredType.Equals(typeof(DateTime)))
-        result = DateTime.Now;
-      else if (desiredType.IsPrimitive)
-        result = 0;
-      else
-        result = null;
+      object result = null;
+      if (desiredType.IsValueType)
+        result = Activator.CreateInstance(desiredType);
       return result;
     }
 

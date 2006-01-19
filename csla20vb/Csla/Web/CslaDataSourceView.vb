@@ -61,7 +61,7 @@ Namespace Web
 
       ' get the object from the page
       Dim args As New SelectObjectArgs
-      mOwner.DoSelect(args)
+      mOwner.OnSelectObject(args)
       Dim obj As Object = args.BusinessObject
 
       Dim result As Object
@@ -120,7 +120,7 @@ Namespace Web
 
       ' tell the page to insert the object
       Dim args As New InsertObjectArgs(values)
-      mOwner.DoInsert(args)
+      mOwner.OnInsertObject(args)
       Return args.RowsAffected
 
     End Function
@@ -144,7 +144,7 @@ Namespace Web
 
       ' tell the page to delete the object
       Dim args As New DeleteObjectArgs(keys, oldValues)
-      mOwner.DoDelete(args)
+      mOwner.OnDeleteObject(args)
       Return args.RowsAffected
 
     End Function
@@ -168,7 +168,7 @@ Namespace Web
 
       ' tell the page to update the object
       Dim args As New UpdateObjectArgs(keys, values, oldValues)
-      mOwner.DoUpdate(args)
+      mOwner.OnUpdateObject(args)
       Return args.RowsAffected
 
     End Function

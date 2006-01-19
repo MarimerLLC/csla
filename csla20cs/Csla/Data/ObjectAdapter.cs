@@ -127,28 +127,37 @@ namespace Csla.Data
 
     #region GetColumns
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
     private List<string> GetColumns(object source)
     {
+      List<string> result;
+      // first handle DataSet/DataTable
       object innerSource;
-      if (source is IListSource)
-        innerSource = ((IListSource)source).GetList();
+      IListSource iListSource = source as IListSource;
+      if (iListSource != null)
+        innerSource = iListSource.GetList();
       else
         innerSource = source;
 
-      if (innerSource is DataView)
-        return ScanDataView((DataView)innerSource);
-      else if (innerSource is IEnumerable)
-      {
-        Type childType = Utilities.GetChildItemType(
-          innerSource.GetType());
-        return ScanObject(childType);
-      }
+      DataView dataView = innerSource as DataView;
+      if (dataView != null)
+        result = ScanDataView(dataView);
       else
       {
-        // the source is a regular object
-        return ScanObject(innerSource.GetType());
+        // now handle lists/arrays/collections
+        IEnumerable iEnumerable = innerSource as IEnumerable;
+        if (iEnumerable != null)
+        {
+          Type childType = Utilities.GetChildItemType(
+            innerSource.GetType());
+          result = ScanObject(childType);
+        }
+        else
+        {
+          // the source is a regular object
+          result = ScanObject(innerSource.GetType());
+        }
       }
+      return result;
     }
 
     private List<string> ScanDataView(DataView ds)
@@ -158,37 +167,6 @@ namespace Csla.Data
         result.Add(ds.Table.Columns[field].ColumnName);
       return result;
     }
-
-    //private List<string> ScanIList(IList ds)
-    //{
-    //  if (ds.Count > 0)
-    //  {
-    //    // retrieve the first item from the list
-    //    object obj = ds[0];
-
-    //    if (obj is ValueType && obj.GetType().IsPrimitive)
-    //    {
-    //      // the value is a primitive value type
-    //      List<string> result = new List<string>();
-    //      result.Add("Value");
-    //      return result;
-    //    }
-    //    else if (obj is string)
-    //    {
-    //      // the value is a simple string
-    //      List<string> result = new List<string>();
-    //      result.Add("Text");
-    //      return result;
-    //    }
-    //    else
-    //    {
-    //      // the value is a complex Structure or object
-    //      return ScanObject(obj.GetType());
-    //    }
-    //  }
-    //  else
-    //    return new List<string>();
-    //}
 
     private List<string> ScanObject(Type sourceType)
     {
@@ -216,62 +194,71 @@ namespace Csla.Data
 
     #region GetField
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
     private static string GetField(object obj, string fieldName)
     {
-      if (obj is DataRowView)
+      string result;
+      DataRowView dataRowView = obj as DataRowView;
+      if (dataRowView != null)
       {
         // this is a DataRowView from a DataView
-        return ((DataRowView)obj)[fieldName].ToString();
+        result = dataRowView[fieldName].ToString();
       }
       else if (obj is ValueType && obj.GetType().IsPrimitive)
       {
         // this is a primitive value type
-        return obj.ToString();
-      }
-      else if (obj is string)
-      {
-        // this is a simple string
-        return (string)obj;
+        result = obj.ToString();
       }
       else
       {
-        // this is an object or Structure
-        try
+        string tmp = obj as string;
+        if (tmp != null)
         {
-          Type sourceType = obj.GetType();
-
-          // see if the field is a property
-          PropertyInfo prop = sourceType.GetProperty(fieldName);
-
-          if ((prop == null) || (!prop.CanRead))
+          // this is a simple string
+          result = (string)obj;
+        }
+        else
+        {
+          // this is an object or Structure
+          try
           {
-            // no readable property of that name exists - check for a field
-            FieldInfo field = sourceType.GetField(fieldName);
-            if (field == null)
+            Type sourceType = obj.GetType();
+
+            // see if the field is a property
+            PropertyInfo prop = sourceType.GetProperty(fieldName);
+
+            if ((prop == null) || (!prop.CanRead))
             {
-              // no field exists either, throw an exception
-              throw new DataException(
-                Resources.NoSuchValueExistsException + " " + fieldName);
+              // no readable property of that name exists - 
+              // check for a field
+              FieldInfo field = sourceType.GetField(fieldName);
+              if (field == null)
+              {
+                // no field exists either, throw an exception
+                throw new DataException(
+                  Resources.NoSuchValueExistsException +
+                  " " + fieldName);
+              }
+              else
+              {
+                // got a field, return its value
+                result = field.GetValue(obj).ToString();
+              }
             }
             else
             {
-              // got a field, return its value
-              return field.GetValue(obj).ToString();
+              // found a property, return its value
+              result = prop.GetValue(obj, null).ToString();
             }
           }
-          else
+          catch (Exception ex)
           {
-            // found a property, return its value
-            return prop.GetValue(obj, null).ToString();
+            throw new DataException(
+              Resources.ErrorReadingValueException +
+              " " + fieldName, ex);
           }
         }
-        catch (Exception ex)
-        {
-          throw new DataException(
-            Resources.ErrorReadingValueException + " " + fieldName, ex);
-        }
       }
+      return result;
     }
 
     #endregion

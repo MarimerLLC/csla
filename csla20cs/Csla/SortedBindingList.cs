@@ -71,7 +71,7 @@ namespace Csla
       private IList<T> _list;
       private List<ListItem> _sortIndex;
       private ListSortDirection _sortOrder;
-      private int index;
+      private int _index;
 
       public SortedEnumerator(
         IList<T> list, 
@@ -86,21 +86,21 @@ namespace Csla
 
       public T Current
       {
-        get { return _list[_sortIndex[index].BaseIndex]; }
+        get { return _list[_sortIndex[_index].BaseIndex]; }
       }
 
       Object System.Collections.IEnumerator.Current
       {
-        get { return _list[_sortIndex[index].BaseIndex]; }
+        get { return _list[_sortIndex[_index].BaseIndex]; }
       }
 
       public bool MoveNext()
       {
         if (_sortOrder == ListSortDirection.Ascending)
         {
-          if (index < _sortIndex.Count - 1)
+          if (_index < _sortIndex.Count - 1)
           {
-            index++;
+            _index++;
             return true;
           }
           else
@@ -108,9 +108,9 @@ namespace Csla
         }
         else
         {
-          if (index > 0)
+          if (_index > 0)
           {
-            index--;
+            _index--;
             return true;
           }
           else
@@ -121,10 +121,12 @@ namespace Csla
       public void Reset()
       {
         if (_sortOrder == ListSortDirection.Ascending)
-          index = -1;
+          _index = -1;
         else
-          index = _sortIndex.Count;
+          _index = _sortIndex.Count;
       }
+
+      #region IDisposable Support
 
       private bool _disposedValue = false; // To detect redundant calls.
 
@@ -142,14 +144,17 @@ namespace Csla
         _disposedValue = true;
       }
 
-      #region IDisposable Support
-
       // this code added to correctly implement the disposable pattern.
       public void Dispose()
       {
         // Do not change this code.  Put cleanup code in Dispose(bool disposing) above.
         Dispose(true);
         GC.SuppressFinalize(this);
+      }
+
+      ~SortedEnumerator()
+      {
+        Dispose(false);
       }
 
       #endregion
@@ -596,9 +601,9 @@ namespace Csla
       set
       {
         if (_sorted)
-          _list[OriginalIndex(index)] = (T)value;
+          _list[OriginalIndex(index)] = value;
         else
-          _list[index] = (T)value;
+          _list[index] = value;
       }
     }
 
@@ -610,8 +615,10 @@ namespace Csla
     private bool _sorted;
     private bool _initiatedLocally;
     private PropertyDescriptor _sortBy;
-    private ListSortDirection _sortOrder = ListSortDirection.Ascending;
-    private List<ListItem> _sortIndex = new List<ListItem>();
+    private ListSortDirection _sortOrder = 
+      ListSortDirection.Ascending;
+    private List<ListItem> _sortIndex = 
+      new List<ListItem>();
 
 
     /// <summary>
@@ -626,7 +633,8 @@ namespace Csla
       {
         _supportsBinding = true;
         _bindingList = (IBindingList)_list;
-        _bindingList.ListChanged += new ListChangedEventHandler(SourceChanged);
+        _bindingList.ListChanged += 
+          new ListChangedEventHandler(SourceChanged);
       }
     }
 
@@ -648,13 +656,16 @@ namespace Csla
                 newKey = newItem;
 
               if (_sortOrder == ListSortDirection.Ascending)
-                _sortIndex.Add(new ListItem(newKey, e.NewIndex));
+                _sortIndex.Add(
+                  new ListItem(newKey, e.NewIndex));
               else
-                _sortIndex.Insert(0, new ListItem(newKey, e.NewIndex));
+                _sortIndex.Insert(0, 
+                  new ListItem(newKey, e.NewIndex));
               if (!_initiatedLocally)
                 OnListChanged(
                   new ListChangedEventArgs(
-                  ListChangedType.ItemAdded, SortedIndex(e.NewIndex)));
+                  ListChangedType.ItemAdded, 
+                  SortedIndex(e.NewIndex)));
             }
             else
               DoSort();

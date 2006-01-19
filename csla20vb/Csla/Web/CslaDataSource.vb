@@ -124,7 +124,7 @@ Namespace Web
     ''' <summary>
     ''' Raises the SelectObject event.
     ''' </summary>
-    Friend Sub DoSelect(ByVal e As SelectObjectArgs)
+    Friend Sub OnSelectObject(ByVal e As SelectObjectArgs)
 
       RaiseEvent SelectObject(Me, e)
 
@@ -133,7 +133,7 @@ Namespace Web
     ''' <summary>
     ''' Raises the InsertObject event.
     ''' </summary>
-    Friend Sub DoInsert(ByVal e As InsertObjectArgs)
+    Friend Sub OnInsertObject(ByVal e As InsertObjectArgs)
 
       RaiseEvent InsertObject(Me, e)
 
@@ -142,7 +142,7 @@ Namespace Web
     ''' <summary>
     ''' Raises the UpdateObject event.
     ''' </summary>
-    Friend Sub DoUpdate(ByVal e As UpdateObjectArgs)
+    Friend Sub OnUpdateObject(ByVal e As UpdateObjectArgs)
 
       RaiseEvent UpdateObject(Me, e)
 
@@ -151,7 +151,7 @@ Namespace Web
     ''' <summary>
     ''' Raises the DeleteObject event.
     ''' </summary>
-    Friend Sub DoDelete(ByVal e As DeleteObjectArgs)
+    Friend Sub OnDeleteObject(ByVal e As DeleteObjectArgs)
 
       RaiseEvent DeleteObject(Me, e)
 

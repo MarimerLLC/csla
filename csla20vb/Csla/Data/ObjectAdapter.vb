@@ -9,8 +9,6 @@ Namespace Data
   ''' </summary>
   Public Class ObjectAdapter
 
-    'Private mColumns As New ArrayList
-
     ''' <summary>
     ''' Fills the DataSet with data from an object or collection.
     ''' </summary>
@@ -132,29 +130,38 @@ Namespace Data
 
 #Region " GetColumns "
 
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")> _
-    Private Function GetColumns(ByVal source As Object) As List(Of String)
+    Private Function GetColumns( _
+      ByVal source As Object) As List(Of String)
 
+      Dim result As List(Of String)
+      ' first handle DataSet/DataTable
       Dim innerSource As Object
-
-      If TypeOf source Is IListSource Then
-        innerSource = CType(source, IListSource).GetList
+      Dim iListSource As IListSource = TryCast(source, IListSource)
+      If iListSource IsNot Nothing Then
+        innerSource = iListSource.GetList
 
       Else
         innerSource = source
       End If
 
-      If TypeOf innerSource Is DataView Then
-        Return ScanDataView(CType(innerSource, DataView))
+      Dim dataView As DataView = TryCast(innerSource, DataView)
+      If dataView IsNot Nothing Then
+        result = ScanDataView(CType(innerSource, DataView))
+      End If
 
-      ElseIf TypeOf innerSource Is IEnumerable Then
-        Dim childType As Type = Utilities.GetChildItemType(innerSource.GetType)
-        Return ScanObject(childType)
+      ' now handle lists/arrays/collections
+      Dim iEnumerable As IEnumerable = _
+        TryCast(innerSource, IEnumerable)
+      If iEnumerable IsNot Nothing Then
+        Dim childType As Type = _
+          Utilities.GetChildItemType(innerSource.GetType)
+        result = ScanObject(childType)
 
       Else
         ' they gave us a regular object
-        Return ScanObject(innerSource.GetType)
+        result = ScanObject(innerSource.GetType)
       End If
+      Return result
 
     End Function
 
@@ -170,28 +177,6 @@ Namespace Data
       Return result
 
     End Function
-
-    'Private Sub ScanIList(ByVal ds As IList)
-
-    '  If ds.Count > 0 Then
-    '    ' retrieve the first item from the list
-    '    Dim obj As Object = ds.Item(0)
-
-    '    If TypeOf obj Is ValueType AndAlso obj.GetType.IsPrimitive Then
-    '      ' the value is a primitive value type
-    '      mColumns.Add("Value")
-
-    '    ElseIf TypeOf obj Is String Then
-    '      ' the value is a simple string
-    '      mColumns.Add("Text")
-
-    '    Else
-    '      ' we have a complex Structure or object
-    '      ScanObject(obj)
-    '    End If
-    '  End If
-
-    'End Sub
 
     Private Function ScanObject(ByVal sourceType As Type) As List(Of String)
 
@@ -223,53 +208,59 @@ Namespace Data
 
 #Region " GetField "
 
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")> _
     Private Shared Function GetField(ByVal obj As Object, ByVal fieldName As String) As String
 
-      If TypeOf obj Is DataRowView Then
+      Dim result As String
+      Dim dataRowView As DataRowView = TryCast(obj, DataRowView)
+      If dataRowView IsNot Nothing Then
         ' this is a DataRowView from a DataView
-        Return CType(obj, DataRowView).Item(fieldName).ToString
+        result = dataRowView.Item(fieldName).ToString
 
       ElseIf TypeOf obj Is ValueType AndAlso obj.GetType.IsPrimitive Then
         ' this is a primitive value type
-        Return obj.ToString
-
-      ElseIf TypeOf obj Is String Then
-        ' this is a simple string
-        Return CStr(obj)
+        result = obj.ToString
 
       Else
-        ' this is an object or Structure
-        Try
-          Dim sourcetype As Type = obj.GetType
+        Dim tmp As String = TryCast(obj, String)
+        If tmp IsNot Nothing Then
+          ' this is a simple string
+          result = obj.ToString
 
-          ' see if the field is a property
-          Dim prop As PropertyInfo = sourcetype.GetProperty(fieldName)
+        Else
+          ' this is an object or Structure
+          Try
+            Dim sourcetype As Type = obj.GetType
 
-          If prop Is Nothing OrElse Not prop.CanRead Then
-            ' no readable property of that name exists - check for a field
-            Dim field As FieldInfo = sourcetype.GetField(fieldName)
+            ' see if the field is a property
+            Dim prop As PropertyInfo = sourcetype.GetProperty(fieldName)
 
-            If field Is Nothing Then
-              ' no field exists either, throw an exception
-              Throw New System.Data.DataException( _
-                My.Resources.NoSuchValueExistsException & " " & fieldName)
+            If prop Is Nothing OrElse Not prop.CanRead Then
+              ' no readable property of that name exists - check for a field
+              Dim field As FieldInfo = sourcetype.GetField(fieldName)
+
+              If field Is Nothing Then
+                ' no field exists either, throw an exception
+                Throw New System.Data.DataException( _
+                  My.Resources.NoSuchValueExistsException & " " & fieldName)
+
+              Else
+                ' got a field, return its value
+                result = field.GetValue(obj).ToString
+              End If
 
             Else
-              ' got a field, return its value
-              Return field.GetValue(obj).ToString
+              ' found a property, return its value
+              result = prop.GetValue(obj, Nothing).ToString
             End If
 
-          Else
-            ' found a property, return its value
-            Return prop.GetValue(obj, Nothing).ToString
-          End If
-
-        Catch ex As Exception
-          Throw New System.Data.DataException( _
-            My.Resources.ErrorReadingValueException & " " & fieldName, ex)
-        End Try
+          Catch ex As Exception
+            Throw New System.Data.DataException( _
+              My.Resources.ErrorReadingValueException & " " & fieldName, ex)
+          End Try
+        End If
       End If
+      Return result
+
     End Function
 
 #End Region

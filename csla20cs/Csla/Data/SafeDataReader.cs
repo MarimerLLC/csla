@@ -114,16 +114,12 @@ namespace Csla.Data
     /// <param name="i">The column number within the datareader.</param>
     public Csla.SmartDate GetSmartDate(string name)
     {
-      return GetSmartDate(_dataReader.GetOrdinal(name));
+      return GetSmartDate(_dataReader.GetOrdinal(name), true);
     }
 
     public virtual Csla.SmartDate GetSmartDate(int i)
     {
-      if (_dataReader.IsDBNull(i))
-        return new Csla.SmartDate(false);
-
-      else
-        return new Csla.SmartDate(_dataReader.GetDateTime(i), false);
+      return GetSmartDate(i, true);
     }
 
     /// <summary>
@@ -142,13 +138,14 @@ namespace Csla.Data
       return GetSmartDate(_dataReader.GetOrdinal(name), minIsEmpty);
     }
 
-    public virtual Csla.SmartDate GetSmartDate(int i, bool minIsEmpty)
+    public virtual Csla.SmartDate GetSmartDate(
+      int i, bool minIsEmpty)
     {
       if (_dataReader.IsDBNull(i))
         return new Csla.SmartDate(minIsEmpty);
-
       else
-        return new Csla.SmartDate(_dataReader.GetDateTime(i), minIsEmpty);
+        return new Csla.SmartDate(
+          _dataReader.GetDateTime(i), minIsEmpty);
     }
 
     /// <summary>

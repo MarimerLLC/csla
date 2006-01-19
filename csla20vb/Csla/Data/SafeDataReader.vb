@@ -136,12 +136,9 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">The column number within the datareader.</param>
     Public Overridable Function GetSmartDate(ByVal i As Integer) As SmartDate
-      If mDataReader.IsDBNull(i) Then
-        Return New SmartDate(True)
 
-      Else
-        Return New SmartDate(mDataReader.GetDateTime(i), True)
-      End If
+      Return GetSmartDate(i, True)
+
     End Function
 
     ''' <summary>

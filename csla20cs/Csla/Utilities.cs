@@ -61,23 +61,25 @@ namespace Csla
     /// </summary>
     public static Type GetChildItemType(Type listType)
     {
+      Type result = null;
       if (listType.IsArray)
-        return listType.GetElementType();
-
-      DefaultMemberAttribute indexer =
-        (DefaultMemberAttribute)Attribute.GetCustomAttribute(
-        listType,
-        typeof(DefaultMemberAttribute));
-      if (indexer != null)
+        result = listType.GetElementType();
+      else
       {
-        foreach (PropertyInfo prop in listType.GetProperties(
-          BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy))
-        {
-          if (prop.Name == indexer.MemberName)
-            return Utilities.GetPropertyType(prop.PropertyType);
-        }
+        DefaultMemberAttribute indexer =
+          (DefaultMemberAttribute)Attribute.GetCustomAttribute(
+          listType, typeof(DefaultMemberAttribute));
+        if (indexer != null)
+          foreach (PropertyInfo prop in listType.GetProperties(
+            BindingFlags.Public | 
+            BindingFlags.Instance | 
+            BindingFlags.FlattenHierarchy))
+          {
+            if (prop.Name == indexer.MemberName)
+              result = Utilities.GetPropertyType(prop.PropertyType);
+          }
       }
-      return null;
+      return result;
     }
   }
 

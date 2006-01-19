@@ -57,7 +57,7 @@ namespace Csla.Web
     {
       // get the object from the page
       SelectObjectArgs args = new SelectObjectArgs();
-      _owner.DoSelect(args);
+      _owner.OnSelectObject(args);
       object obj = args.BusinessObject;
 
       object result;
@@ -116,7 +116,7 @@ namespace Csla.Web
       // tell the page to insert the object
       InsertObjectArgs args = 
         new InsertObjectArgs(values);
-      _owner.DoInsert(args);
+      _owner.OnInsertObject(args);
       return args.RowsAffected;
     }
 
@@ -141,7 +141,7 @@ namespace Csla.Web
       
       // tell the page to delete the object
       DeleteObjectArgs args = new DeleteObjectArgs(keys, oldValues);
-      _owner.DoDelete(args);
+      _owner.OnDeleteObject(args);
       return args.RowsAffected;
     }
 
@@ -165,7 +165,7 @@ namespace Csla.Web
     {
       // tell the page to update the object
       UpdateObjectArgs args = new UpdateObjectArgs(keys, values, oldValues);
-      _owner.DoUpdate(args);
+      _owner.OnUpdateObject(args);
       return args.RowsAffected;
     }
 

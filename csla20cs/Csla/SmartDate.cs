@@ -147,7 +147,7 @@ namespace Csla
     public string Text
     {
       get { return DateToString(this.Date, FormatString, !_emptyIsMax); }
-      set { this.Date = StringToDate(value, !_emptyIsMax); }
+      set { this.Date = Parse(value, !_emptyIsMax); }
     }
 
     #endregion
@@ -294,9 +294,9 @@ namespace Csla
     /// </remarks>
     /// <param name="Value">The text representation of the date.</param>
     /// <returns>A Date value.</returns>
-    public static DateTime StringToDate(string value)
+    public static DateTime Parse(string value)
     {
-      return StringToDate(value, true);
+      return Parse(value, true);
     }
 
     /// <summary>
@@ -310,7 +310,7 @@ namespace Csla
     /// <param name="Value">The text representation of the date.</param>
     /// <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     /// <returns>A Date value.</returns>
-    public static DateTime StringToDate(string value, bool emptyIsMin)
+    public static DateTime Parse(string value, bool emptyIsMin)
     {
       DateTime tmp;
       if (String.IsNullOrEmpty(value))
@@ -430,7 +430,7 @@ namespace Csla
     /// <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
     public int CompareTo(string value)
     {
-      return this.Date.CompareTo(StringToDate(value, !_emptyIsMax));
+      return this.Date.CompareTo(Parse(value, !_emptyIsMax));
     }
 
     /// <summary>

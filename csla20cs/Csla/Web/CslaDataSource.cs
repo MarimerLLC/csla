@@ -117,7 +117,7 @@ namespace Csla.Web
     /// <summary>
     /// Raises the SelectObject event.
     /// </summary>
-    internal void DoSelect(SelectObjectArgs e)
+    internal void OnSelectObject(SelectObjectArgs e)
     {
       if (SelectObject != null)
         SelectObject(this, e);
@@ -126,7 +126,7 @@ namespace Csla.Web
     /// <summary>
     /// Raises the InsertObject event.
     /// </summary>
-    internal void DoInsert(InsertObjectArgs e)
+    internal void OnInsertObject(InsertObjectArgs e)
     {
       if (InsertObject != null)
         InsertObject(this, e);
@@ -135,7 +135,7 @@ namespace Csla.Web
     /// <summary>
     /// Raises the UpdateObject event.
     /// </summary>
-    internal void DoUpdate(UpdateObjectArgs e)
+    internal void OnUpdateObject(UpdateObjectArgs e)
     {
       if (UpdateObject != null)
         UpdateObject(this, e);
@@ -144,7 +144,7 @@ namespace Csla.Web
     /// <summary>
     /// Raises the DeleteObject event.
     /// </summary>
-    internal void DoDelete(DeleteObjectArgs e)
+    internal void OnDeleteObject(DeleteObjectArgs e)
     {
       if (DeleteObject != null)
         DeleteObject(this, e);

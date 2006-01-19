@@ -72,7 +72,7 @@ Public Class SortedBindingList(Of T)
     Private mList As IList(Of T)
     Private mSortIndex As List(Of ListItem)
     Private mSortOrder As ListSortDirection
-    Private index As Integer
+    Private mIndex As Integer
 
     Public Sub New(ByVal list As IList(Of T), ByVal sortIndex As List(Of ListItem), ByVal direction As ListSortDirection)
       mList = list
@@ -83,20 +83,20 @@ Public Class SortedBindingList(Of T)
 
     Public ReadOnly Property Current() As T Implements System.Collections.Generic.IEnumerator(Of T).Current
       Get
-        Return mList(mSortIndex(index).BaseIndex)
+        Return mList(mSortIndex(mIndex).BaseIndex)
       End Get
     End Property
 
     Private ReadOnly Property CurrentItem() As Object Implements System.Collections.IEnumerator.Current
       Get
-        Return mList(mSortIndex(index).BaseIndex)
+        Return mList(mSortIndex(mIndex).BaseIndex)
       End Get
     End Property
 
     Public Function MoveNext() As Boolean Implements System.Collections.IEnumerator.MoveNext
       If mSortOrder = ListSortDirection.Ascending Then
-        If index < mSortIndex.Count - 1 Then
-          index += 1
+        If mIndex < mSortIndex.Count - 1 Then
+          mIndex += 1
           Return True
 
         Else
@@ -104,8 +104,8 @@ Public Class SortedBindingList(Of T)
         End If
 
       Else
-        If index > 0 Then
-          index -= 1
+        If mIndex > 0 Then
+          mIndex -= 1
           Return True
 
         Else
@@ -117,11 +117,13 @@ Public Class SortedBindingList(Of T)
 
     Public Sub Reset() Implements System.Collections.IEnumerator.Reset
       If mSortOrder = ListSortDirection.Ascending Then
-        index = -1
+        mIndex = -1
       Else
-        index = mSortIndex.Count
+        mIndex = mSortIndex.Count
       End If
     End Sub
+
+#Region " IDisposable Support "
 
     Private disposedValue As Boolean = False    ' To detect redundant calls
 
@@ -137,13 +139,17 @@ Public Class SortedBindingList(Of T)
       Me.disposedValue = True
     End Sub
 
-#Region " IDisposable Support "
     ' This code added by Visual Basic to correctly implement the disposable pattern.
     Public Sub Dispose() Implements IDisposable.Dispose
       ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
       Dispose(True)
       GC.SuppressFinalize(Me)
     End Sub
+
+    Protected Overrides Sub Finalize()
+      Dispose(False)
+    End Sub
+
 #End Region
 
   End Class
@@ -574,7 +580,7 @@ Public Class SortedBindingList(Of T)
       If mSorted Then
         mList(OriginalIndex(index)) = value
       Else
-        mList(index) = CType(value, T)
+        mList(index) = value
       End If
     End Set
   End Property

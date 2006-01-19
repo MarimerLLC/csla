@@ -264,6 +264,32 @@ Public Structure SmartDate
 #Region " Conversion Functions "
 
   ''' <summary>
+  ''' Converts a string value into a SmartDate.
+  ''' </summary>
+  ''' <param name="value">String containing the date value.</param>
+  ''' <returns>A new SmartDate containing the date value.</returns>
+  ''' <remarks>
+  ''' EmptyIsMin will default to true.
+  ''' </remarks>
+  Public Shared Function Parse(ByVal value As String) As SmartDate
+
+    Return New SmartDate(value)
+
+  End Function
+
+  ''' <summary>
+  ''' Converts a string value into a SmartDate.
+  ''' </summary>
+  ''' <param name="value">String containing the date value.</param>
+  ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  ''' <returns>A new SmartDate containing the date value.</returns>
+  Public Shared Function Parse(ByVal value As String, ByVal emptyIsMin As Boolean) As SmartDate
+
+    Return New SmartDate(value, emptyIsMin)
+
+  End Function
+
+  ''' <summary>
   ''' Converts a text date representation into a Date value.
   ''' </summary>
   ''' <remarks>

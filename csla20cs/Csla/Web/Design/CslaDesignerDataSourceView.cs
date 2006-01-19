@@ -55,12 +55,17 @@ namespace Csla.Web.Design
         {
           if (col.DataType.Equals(typeof(string)))
             values[colIndex] = "abc";
+          else if (col.DataType.Equals(typeof(DateTime)))
+            values[colIndex] = DateTime.Today.ToShortDateString();
           else if (col.DataType.Equals(typeof(bool)))
             values[colIndex] = false;
           else if (col.DataType.IsPrimitive)
             values[colIndex] = index;
           else if (col.DataType.Equals(typeof(Guid)))
             values[colIndex] = Guid.Empty;
+          else if (col.DataType.IsValueType)
+            values[colIndex] =
+              Activator.CreateInstance(col.DataType);
           else
             values[colIndex] = null;
           colIndex++;

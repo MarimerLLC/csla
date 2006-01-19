@@ -51,12 +51,17 @@ Namespace Web.Design
         For Each col As DataColumn In result.Columns
           If col.DataType.Equals(GetType(String)) Then
             values(colIndex) = "abc"
+          ElseIf col.DataType.Equals(GetType(Date)) Then
+            values(colIndex) = Today.ToShortDateString
           ElseIf col.DataType.Equals(GetType(Boolean)) Then
             values(colIndex) = False
           ElseIf col.DataType.IsPrimitive Then
             values(colIndex) = index
           ElseIf col.DataType.Equals(GetType(Guid)) Then
             values(colIndex) = Guid.Empty
+          ElseIf col.DataType.IsValueType Then
+            values(colIndex) = _
+              Activator.CreateInstance(col.DataType)
           Else
             values(colIndex) = Nothing
           End If

@@ -25,7 +25,7 @@ namespace Csla
     /// <summary>
     /// Creates a new SmartDate object.
     /// </summary>
-    /// <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+    /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     public SmartDate(bool emptyIsMin)
     {
       _emptyIsMax = !emptyIsMin;
@@ -147,7 +147,7 @@ namespace Csla
     public string Text
     {
       get { return DateToString(this.Date, FormatString, !_emptyIsMax); }
-      set { this.Date = Parse(value, !_emptyIsMax); }
+      set { this.Date = StringToDate(value, !_emptyIsMax); }
     }
 
     #endregion
@@ -286,6 +286,30 @@ namespace Csla
     #region Conversion Functions
 
     /// <summary>
+    /// Converts a string value into a SmartDate.
+    /// </summary>
+    /// <param name="value">String containing the date value.</param>
+    /// <returns>A new SmartDate containing the date value.</returns>
+    /// <remarks>
+    /// EmptyIsMin will default to true.
+    /// </remarks>
+    public static SmartDate Parse(string value)
+    {
+      return new SmartDate(value);
+    }
+
+    /// <summary>
+    /// Converts a string value into a SmartDate.
+    /// </summary>
+    /// <param name="value">String containing the date value.</param>
+    /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+    /// <returns>A new SmartDate containing the date value.</returns>
+    public static SmartDate Parse(string value, bool emptyIsMin)
+    {
+      return new SmartDate(value, emptyIsMin);
+    }
+
+    /// <summary>
     /// Converts a text date representation into a Date value.
     /// </summary>
     /// <remarks>
@@ -294,9 +318,9 @@ namespace Csla
     /// </remarks>
     /// <param name="Value">The text representation of the date.</param>
     /// <returns>A Date value.</returns>
-    public static DateTime Parse(string value)
+    public static DateTime StringToDate(string value)
     {
-      return Parse(value, true);
+      return StringToDate(value, true);
     }
 
     /// <summary>
@@ -310,7 +334,7 @@ namespace Csla
     /// <param name="Value">The text representation of the date.</param>
     /// <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     /// <returns>A Date value.</returns>
-    public static DateTime Parse(string value, bool emptyIsMin)
+    public static DateTime StringToDate(string value, bool emptyIsMin)
     {
       DateTime tmp;
       if (String.IsNullOrEmpty(value))
@@ -321,7 +345,7 @@ namespace Csla
           return DateTime.MaxValue;
       }
       else if (DateTime.TryParse(value, out tmp))
-        return tmp; //DateTime.Parse(value);
+        return tmp; 
       else
       {
         string ldate = value.Trim().ToLower();
@@ -430,7 +454,7 @@ namespace Csla
     /// <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
     public int CompareTo(string value)
     {
-      return this.Date.CompareTo(Parse(value, !_emptyIsMax));
+      return this.Date.CompareTo(StringToDate(value, !_emptyIsMax));
     }
 
     /// <summary>

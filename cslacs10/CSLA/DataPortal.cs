@@ -253,13 +253,16 @@ namespace CSLA
       }
     }
 
-    private static Server.ServicedDataPortal.DataPortal ServicedPortal(bool forceLocal)
+    private static Server.ServicedDataPortal.DataPortal 
+      ServicedPortal(bool forceLocal)
     {
       if(!forceLocal & _portalRemote)
       {
         // return remote instance
-        return (Server.ServicedDataPortal.DataPortal)Activator.GetObject(
-          typeof(Server.ServicedDataPortal.DataPortal), SERVICED_PORTAL_SERVER);
+        return 
+          (Server.ServicedDataPortal.DataPortal)Activator.GetObject(
+            typeof(Server.ServicedDataPortal.DataPortal), 
+            SERVICED_PORTAL_SERVER);
       }
       else
       {

@@ -233,9 +233,7 @@ namespace CSLA
     #region Server-side DataPortal
 
     static Server.DataPortal _portal;
-    static Server.ServicedDataPortal.DataPortal _servicedPortal;
     static Server.DataPortal _remotePortal;
-    static Server.ServicedDataPortal.DataPortal _remoteServicedPortal;
 
     private static Server.DataPortal Portal(bool forceLocal)
     {
@@ -260,17 +258,13 @@ namespace CSLA
       if(!forceLocal & _portalRemote)
       {
         // return remote instance
-        if(_remoteServicedPortal == null)
-          _remoteServicedPortal = (Server.ServicedDataPortal.DataPortal)Activator.GetObject(
-            typeof(Server.ServicedDataPortal.DataPortal), SERVICED_PORTAL_SERVER);
-        return _remoteServicedPortal;
+        return (Server.ServicedDataPortal.DataPortal)Activator.GetObject(
+          typeof(Server.ServicedDataPortal.DataPortal), SERVICED_PORTAL_SERVER);
       }
       else
       {
         // return local instance
-        if(_servicedPortal == null)
-          _servicedPortal = new Server.ServicedDataPortal.DataPortal();
-        return _servicedPortal;
+        return new Server.ServicedDataPortal.DataPortal();
       }
     }
 

@@ -388,11 +388,9 @@ namespace CSLA
     {
       int pos = 0;
       foreach(BusinessBase item in List)
-      {
         if (ReferenceEquals(sender,item))
           break;
-        pos++;
-      }
+      pos++;
       this.OnListChanged(new System.ComponentModel.ListChangedEventArgs(System.ComponentModel.ListChangedType.ItemChanged,pos));
     }
 

@@ -392,8 +392,8 @@ Public MustInherit Class BusinessCollectionBase
     For Each item As BusinessBase In List
       If ReferenceEquals(sender, item) Then
         Exit For
-        pos += 1
       End If
+      pos += 1
     Next
     Me.OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
       System.ComponentModel.ListChangedType.ItemChanged, pos))

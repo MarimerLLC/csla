@@ -119,7 +119,7 @@ namespace ProjectTracker.Library
 
     private void Fetch(string nameFilter)
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())

@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
 using Csla;
 using Csla.Data;
 
@@ -150,7 +147,7 @@ namespace ProjectTracker.Library
         StartDateGTEndDate, "Ended");
     }
 
-    bool StartDateGTEndDate(
+    private bool StartDateGTEndDate(
       object target, Csla.Validation.RuleArgs e)
     {
       if (_started > _ended)
@@ -280,7 +277,7 @@ namespace ProjectTracker.Library
 
     private void DataPortal_Fetch(Criteria criteria)
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -310,7 +307,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -328,7 +325,7 @@ namespace ProjectTracker.Library
     {
       if (base.IsDirty)
       {
-        using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+        using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
         {
           cn.Open();
           using (SqlCommand cm = cn.CreateCommand())
@@ -346,7 +343,7 @@ namespace ProjectTracker.Library
     private void DoInsertUpdate(SqlCommand cm)
     {
       cm.CommandType = CommandType.StoredProcedure;
-      cm.Parameters.AddWithValue("@id", _id.ToString());
+      cm.Parameters.AddWithValue("@id", _id);
       cm.Parameters.AddWithValue("@name", _name);
       cm.Parameters.AddWithValue("@started", _started.DBValue);
       cm.Parameters.AddWithValue("@ended", _ended.DBValue);
@@ -365,7 +362,6 @@ namespace ProjectTracker.Library
     protected override void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(new Criteria(_id));
-      MarkNew();
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
@@ -373,7 +369,7 @@ namespace ProjectTracker.Library
     {
       Criteria crit = (Criteria)criteria;
 
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -416,7 +412,7 @@ namespace ProjectTracker.Library
 
       protected override void DataPortal_Execute()
       {
-        using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+        using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
         {
           cn.Open();
           using (SqlCommand cm = cn.CreateCommand())

@@ -48,7 +48,7 @@ Public Class RoleList
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandType = CommandType.StoredProcedure

@@ -81,7 +81,7 @@ namespace ProjectTracker.Library.Admin
       ValidationRules.AddRule(NoDuplicates, "Id");
     }
 
-    bool NoDuplicates(object target, Csla.Validation.RuleArgs e)
+    private bool NoDuplicates(object target, Csla.Validation.RuleArgs e)
     {
       Roles parent = (Roles)this.Parent;
       foreach (Role item in parent)

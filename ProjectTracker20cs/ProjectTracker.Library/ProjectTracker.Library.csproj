@@ -41,7 +41,7 @@
     <Compile Include="Admin\Role.cs" />
     <Compile Include="Admin\Roles.cs" />
     <Compile Include="Assignment.cs" />
-    <Compile Include="DataBase.cs" />
+    <Compile Include="Database.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="ProjectList.cs" />
     <Compile Include="ProjectResource.cs" />

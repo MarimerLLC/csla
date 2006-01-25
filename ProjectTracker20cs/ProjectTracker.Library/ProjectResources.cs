@@ -80,12 +80,18 @@ namespace ProjectTracker.Library
       MarkAsChild();
     }
 
+    private ProjectResources(SafeDataReader dr)
+    {
+      MarkAsChild();
+      Fetch(dr);
+    }
+
     #endregion
 
     #region Data Access
 
     // called to load data from the database
-    private ProjectResources(SafeDataReader dr)
+    private void Fetch(SafeDataReader dr)
     {
       MarkAsChild();
       while (dr.Read())

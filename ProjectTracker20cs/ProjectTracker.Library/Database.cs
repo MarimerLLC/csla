@@ -5,9 +5,9 @@ using System.Configuration;
 
 namespace ProjectTracker.Library
 {
-    public static class DataBase
+    public static class Database
     {
-      public static string DbConn
+      public static string PTrackerConnection
       {
         get 
         { 
@@ -16,7 +16,7 @@ namespace ProjectTracker.Library
         }
       }
 
-      public static string SecurityConn
+      public static string SecurityConnection
       {
         get { return System.Configuration.ConfigurationManager.ConnectionStrings["Security"].ConnectionString; }
       }

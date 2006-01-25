@@ -139,7 +139,7 @@ Namespace Admin
 
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
-      Using cn As New SqlConnection(DataBase.DbConn)
+      Using cn As New SqlConnection(Database.PTrackerConnection)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
           cm.CommandType = CommandType.StoredProcedure
@@ -160,7 +160,7 @@ Namespace Admin
     <Transactional(TransactionalTypes.TransactionScope)> _
     Protected Overrides Sub DataPortal_Update()
 
-      Using cn As New SqlConnection(DataBase.DbConn)
+      Using cn As New SqlConnection(Database.PTrackerConnection)
         cn.Open()
         For Each item As Role In DeletedList
           item.DeleteSelf(cn)

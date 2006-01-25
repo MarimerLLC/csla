@@ -90,7 +90,7 @@ namespace ProjectTracker.Library.Security
     private void DataPortal_Fetch(Criteria criteria)
     {
       using (SqlConnection cn =
-        new SqlConnection(DataBase.SecurityConn))
+        new SqlConnection(Database.SecurityConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())

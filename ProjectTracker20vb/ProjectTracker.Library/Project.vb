@@ -255,7 +255,7 @@ Public Class Project
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandType = CommandType.StoredProcedure
@@ -285,7 +285,7 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Insert()
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandText = "addProject"
@@ -301,7 +301,7 @@ Public Class Project
   Protected Overrides Sub DataPortal_Update()
 
     If MyBase.IsDirty Then
-      Using cn As New SqlConnection(DataBase.DbConn)
+      Using cn As New SqlConnection(Database.PTrackerConnection)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
           cm.CommandText = "updateProject"
@@ -319,7 +319,7 @@ Public Class Project
 
     With cm
       .CommandType = CommandType.StoredProcedure
-      .Parameters.AddWithValue("@id", mId.ToString)
+      .Parameters.AddWithValue("@id", mId)
       .Parameters.AddWithValue("@name", mName)
       .Parameters.AddWithValue("@started", mStarted.DBValue)
       .Parameters.AddWithValue("@ended", mEnded.DBValue)
@@ -345,7 +345,7 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
@@ -391,7 +391,7 @@ Public Class Project
 
     Protected Overrides Sub DataPortal_Execute()
 
-      Using cn As New SqlConnection(DataBase.DbConn)
+      Using cn As New SqlConnection(Database.PTrackerConnection)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
           cm.CommandType = CommandType.Text

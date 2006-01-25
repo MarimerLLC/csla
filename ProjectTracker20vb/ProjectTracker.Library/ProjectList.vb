@@ -109,7 +109,7 @@ Private Class Criteria
 
   Private Sub Fetch(ByVal nameFilter As String)
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm

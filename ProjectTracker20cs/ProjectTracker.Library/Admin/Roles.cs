@@ -128,7 +128,7 @@ namespace ProjectTracker.Library.Admin
 
     private void DataPortal_Fetch(Criteria criteria)
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -150,7 +150,7 @@ namespace ProjectTracker.Library.Admin
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         foreach (Role item in DeletedList)

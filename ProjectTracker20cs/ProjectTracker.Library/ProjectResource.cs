@@ -123,16 +123,14 @@ namespace ProjectTracker.Library
 
     #region Factory Methods
 
-    internal static ProjectResource 
-      NewProjectResource(int resourceId)
+    internal static ProjectResource NewProjectResource(int resourceId)
     {
       return new ProjectResource(
         Resource.GetResource(resourceId), 
         RoleList.DefaultRole());
     }
 
-    internal static ProjectResource 
-      GetResource(SafeDataReader dr)
+    internal static ProjectResource GetResource(SafeDataReader dr)
     {
       return new ProjectResource(dr);
     }
@@ -141,10 +139,6 @@ namespace ProjectTracker.Library
     {
       MarkAsChild();
     }
-
-    #endregion
-
-    #region Data Access
 
     private ProjectResource(Resource resource, int role)
     {
@@ -159,6 +153,15 @@ namespace ProjectTracker.Library
     private ProjectResource(SafeDataReader dr)
     {
       MarkAsChild();
+      Fetch(dr);
+    }
+
+    #endregion
+
+    #region Data Access
+
+    private void Fetch(SafeDataReader dr)
+    {
       _resourceId = dr.GetInt32("ResourceId");
       _lastName = dr.GetString("LastName");
       _firstName = dr.GetString("FirstName");
@@ -173,7 +176,7 @@ namespace ProjectTracker.Library
       // if we're not dirty then don't update the database
       if (!this.IsDirty) return;
 
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         _timestamp = Assignment.AddAssignment(
@@ -187,7 +190,7 @@ namespace ProjectTracker.Library
       // if we're not dirty then don't update the database
       if (!this.IsDirty) return;
 
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         _timestamp = Assignment.UpdateAssignment(
@@ -204,7 +207,7 @@ namespace ProjectTracker.Library
       // if we're new then don't update the database
       if (this.IsNew) return;
 
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         Assignment.RemoveAssignment(cn, project.Id, _resourceId);

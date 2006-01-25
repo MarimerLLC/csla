@@ -156,7 +156,7 @@ Public Class ProjectResource
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       mTimestamp = Assignment.AddAssignment( _
         cn, project.Id, mResourceId, mAssigned, mRole)
@@ -170,7 +170,7 @@ Public Class ProjectResource
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       mTimestamp = Assignment.UpdateAssignment( _
         cn, project.Id, mResourceId, mAssigned, mRole, mTimestamp)
@@ -187,7 +187,7 @@ Public Class ProjectResource
     ' if we're new then don't update the database
     If Me.IsNew Then Exit Sub
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Assignment.RemoveAssignment(cn, project.Id, mResourceId)
       MarkNew()

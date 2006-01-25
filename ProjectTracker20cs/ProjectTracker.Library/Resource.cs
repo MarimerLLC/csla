@@ -219,7 +219,7 @@ namespace ProjectTracker.Library
 
     private void DataPortal_Fetch(Criteria criteria)
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -249,7 +249,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -279,7 +279,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         if (base.IsDirty)
@@ -310,18 +310,13 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
-      if (!this.IsNew)
-      {
-        // we're not new, so get rid of our data
-        DataPortal_Delete(new Criteria(_id));
-        MarkNew();
-      }
+      DataPortal_Delete(new Criteria(_id));
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     private void DataPortal_Delete(Criteria criteria)
     {
-      using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
         using (SqlCommand cm = cn.CreateCommand())
@@ -364,7 +359,7 @@ namespace ProjectTracker.Library
 
       protected override void DataPortal_Execute()
       {
-        using (SqlConnection cn = new SqlConnection(DataBase.DbConn))
+        using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
         {
           cn.Open();
           using (SqlCommand cm = cn.CreateCommand())

@@ -217,7 +217,7 @@ Private Class Criteria
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
@@ -247,7 +247,7 @@ Private Class Criteria
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Insert()
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
@@ -280,7 +280,7 @@ Private Class Criteria
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Update()
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       If MyBase.IsDirty Then
         Using cm As SqlCommand = cn.CreateCommand
@@ -312,17 +312,14 @@ Private Class Criteria
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
-    If Not Me.IsNew Then
-      ' we're not new, so get rid of our data
-      DataPortal_Delete(New Criteria(mId))
-    End If
+    DataPortal_Delete(New Criteria(mId))
 
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
   Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
 
-    Using cn As New SqlConnection(DataBase.DbConn)
+    Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
         With cm
@@ -367,7 +364,7 @@ Private Class Criteria
 
     Protected Overrides Sub DataPortal_Execute()
 
-      Using cn As New SqlConnection(DataBase.DbConn)
+      Using cn As New SqlConnection(Database.PTrackerConnection)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
           cm.CommandType = CommandType.Text

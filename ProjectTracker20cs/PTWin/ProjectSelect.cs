@@ -46,8 +46,8 @@ namespace PTWin
 
     private void DisplayList(ProjectList list)
     {
-      Csla.SortedBindingList<ProjectList.ProjectInfo> sortedList =
-        new Csla.SortedBindingList<ProjectList.ProjectInfo>(list);
+      Csla.SortedBindingList<ProjectInfo> sortedList =
+        new Csla.SortedBindingList<ProjectInfo>(list);
       sortedList.ApplySort("Name", ListSortDirection.Ascending);
       this.projectListBindingSource.DataSource = sortedList;
     }

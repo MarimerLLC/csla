@@ -56,6 +56,7 @@
     <Compile Include="Admin\Roles.vb" />
     <Compile Include="Assignment.vb" />
     <Compile Include="Database.vb" />
+    <Compile Include="ProjectInfo.vb" />
     <Compile Include="ProjectList.vb" />
     <Compile Include="ProjectResource.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -78,6 +79,7 @@
     <Compile Include="Resource.vb" />
     <Compile Include="ResourceAssignment.vb" />
     <Compile Include="ResourceAssignments.vb" />
+    <Compile Include="ResourceInfo.vb" />
     <Compile Include="ResourceList.vb" />
     <Compile Include="RoleList.vb" />
     <Compile Include="Security\PTIdentity.vb" />

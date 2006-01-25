@@ -10,56 +10,8 @@ namespace ProjectTracker.Library
 {
   [Serializable()]
   public class ProjectList : 
-    ReadOnlyListBase<ProjectList, ProjectList.ProjectInfo>
+    ReadOnlyListBase<ProjectList, ProjectInfo>
   {
-    #region ProjectInfo Class
-
-    [Serializable()]
-    public class ProjectInfo :
-      ReadOnlyBase<ProjectInfo>
-    {
-      #region Business Methods
-
-      private Guid _id;
-      private string _name;
-
-      public Guid Id
-      {
-        get { return _id; }
-      }
-
-      public string Name
-      {
-        get { return _name; }
-      }
-
-      protected override object GetIdValue()
-      {
-        return _id;
-      }
-
-      public override string ToString()
-      {
-        return _name;
-      }
-      
-      #endregion
-
-      #region Constructors
-
-      private ProjectInfo()
-      { /* require use of factory methods */ }
-
-      internal ProjectInfo(Guid id, string name)
-      {
-        _id = id;
-        _name = name;
-      }
-      #endregion
-    }
-
-    #endregion
-
     #region Factory Methods
 
     /// <summary>

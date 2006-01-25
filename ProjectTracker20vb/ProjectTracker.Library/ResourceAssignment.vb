@@ -4,6 +4,8 @@ Imports System.Data.SqlClient
 Public Class ResourceAssignment
   Inherits BusinessBase(Of ResourceAssignment)
 
+  Implements IHoldRoles
+
 #Region " Business Methods "
 
   Private mProjectId As Guid = Guid.Empty
@@ -33,7 +35,7 @@ Public Class ResourceAssignment
     End Get
   End Property
 
-  Public Property Role() As Integer
+  Public Property Role() As Integer Implements IHoldRoles.Role
     Get
       CanReadProperty(True)
       Return mRole

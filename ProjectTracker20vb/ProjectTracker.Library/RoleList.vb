@@ -8,7 +8,14 @@ Public Class RoleList
 
   Public Shared Function DefaultRole() As Integer
 
-    Return GetList.Items(0).Key
+    Dim list As RoleList = GetList()
+    If list.Count > 0 Then
+      Return list.Items(0).Key
+
+    Else
+      Throw New NullReferenceException( _
+        "No roles available; default role can not be returned")
+    End If
 
   End Function
 

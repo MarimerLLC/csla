@@ -14,7 +14,12 @@ namespace ProjectTracker.Library
 
     public static int DefaultRole()
     {
-      return GetList().Items[0].Key;
+      RoleList list = GetList();
+      if (list.Count > 0)
+        return list.Items[0].Key;
+      else
+        throw new NullReferenceException(
+          "No roles available; default role can not be returned");
     }
 
     #endregion

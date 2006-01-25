@@ -32,7 +32,7 @@ public class PTService : System.Web.Services.WebService
     {
       ProjectList list = ProjectList.GetProjectList();
       List<ProjectInfo> result = new List<ProjectInfo>();
-      foreach (ProjectList.ProjectInfo item in list)
+      foreach (ProjectTracker.Library.ProjectInfo item in list)
       {
         ProjectInfo info = new ProjectInfo();
         Csla.Data.DataMapper.Map(item, info);
@@ -156,9 +156,10 @@ public class PTService : System.Web.Services.WebService
     {
       ResourceList list = ResourceList.GetResourceList();
       List<ResourceInfo> result = new List<ResourceInfo>();
-      foreach (ResourceList.ResourceInfo item in list)
+      foreach (ProjectTracker.Library.ResourceInfo item in list)
       {
-        ResourceInfo info = new ResourceInfo();
+        ResourceInfo info = 
+          new ResourceInfo();
         Csla.Data.DataMapper.Map(item, info);
         result.Add(info);
       }

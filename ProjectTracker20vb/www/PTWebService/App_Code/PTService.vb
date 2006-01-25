@@ -28,7 +28,7 @@ Public Class PTService
     Try
       Dim list As ProjectList = ProjectList.GetProjectList
       Dim result As New List(Of ProjectInfo)
-      For Each item As ProjectList.ProjectInfo In list
+      For Each item As ProjectTracker.Library.ProjectInfo In list
         Dim info As New ProjectInfo
         Csla.Data.DataMapper.Map(item, info)
         result.Add(info)
@@ -145,7 +145,7 @@ Public Class PTService
     Try
       Dim list As ResourceList = ResourceList.GetResourceList
       Dim result As New List(Of ResourceInfo)
-      For Each item As ResourceList.ResourceInfo In list
+      For Each item As ProjectTracker.Library.ResourceInfo In list
         Dim info As New ResourceInfo
         Csla.Data.DataMapper.Map(item, info)
         result.Add(info)

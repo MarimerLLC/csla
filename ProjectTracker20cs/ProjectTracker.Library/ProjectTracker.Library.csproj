@@ -43,6 +43,7 @@
     <Compile Include="Assignment.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Project.cs" />
+    <Compile Include="ProjectInfo.cs" />
     <Compile Include="ProjectList.cs" />
     <Compile Include="ProjectResource.cs" />
     <Compile Include="ProjectResources.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="Resource.cs" />
     <Compile Include="ResourceAssignment.cs" />
     <Compile Include="ResourceAssignments.cs" />
+    <Compile Include="ResourceInfo.cs" />
     <Compile Include="ResourceList.cs" />
     <Compile Include="RoleList.cs" />
     <Compile Include="Security\PTIdentity.cs" />

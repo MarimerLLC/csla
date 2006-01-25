@@ -84,7 +84,7 @@ namespace PTWin
       // 
       // projectListBindingSource
       // 
-      this.projectListBindingSource.DataSource = typeof(ProjectTracker.Library.ProjectList.ProjectInfo);
+      this.projectListBindingSource.DataSource = typeof(ProjectTracker.Library.ProjectInfo);
       // 
       // TableLayoutPanel1
       // 

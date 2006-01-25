@@ -4,6 +4,8 @@ Imports System.Data.SqlClient
 Public Class ProjectResource
   Inherits BusinessBase(Of ProjectResource)
 
+  Implements IHoldRoles
+
 #Region " Business Methods "
 
   Private mResourceId As Integer
@@ -51,7 +53,7 @@ Public Class ProjectResource
     End Get
   End Property
 
-  Public Property Role() As Integer
+  Public Property Role() As Integer Implements IHoldRoles.Role
     Get
       CanReadProperty(True)
       Return mRole

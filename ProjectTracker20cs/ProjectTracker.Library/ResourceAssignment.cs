@@ -7,7 +7,7 @@ using Csla.Data;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ResourceAssignment : BusinessBase<ResourceAssignment>
+  public class ResourceAssignment : BusinessBase<ResourceAssignment>, IHoldRoles
   {
     #region Business Methods
 

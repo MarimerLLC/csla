@@ -10,6 +10,11 @@ using System.Reflection;
 
 namespace ProjectTracker.Library
 {
+  internal interface IHoldRoles
+  {
+    int Role { get; set;}
+  }
+
   internal static class Assignment
   {
 
@@ -30,15 +35,7 @@ namespace ProjectTracker.Library
     /// </summary>
     public static bool ValidRole(object target, RuleArgs e)
     {
-      int role = -1;
-      PropertyInfo p = 
-        target.GetType().GetProperty(e.PropertyName);
-      role = (int)p.GetValue(target, null);
-
-      //if (target is ProjectResource)
-      //  role = ((ProjectResource)target).Role;
-      //else if (target is ResourceAssignment)
-      //  role = ((ResourceAssignment)target).Role;
+      int role = ((IHoldRoles)target).Role;
 
       if (RoleList.GetList().ContainsKey(role))
         return true;

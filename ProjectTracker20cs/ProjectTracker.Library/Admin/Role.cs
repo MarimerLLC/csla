@@ -28,8 +28,10 @@ namespace ProjectTracker.Library.Admin
           Roles parent = (Roles)this.Parent;
           int max = 0;
           foreach (Role item in parent)
+          {
             if (item.Id > max)
               max = item.Id;
+          }
           _id = max + 1;
         }
         return _id;

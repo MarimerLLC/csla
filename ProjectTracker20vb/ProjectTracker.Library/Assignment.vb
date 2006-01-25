@@ -2,6 +2,10 @@ Imports System.Data.SqlClient
 Imports Csla.Validation
 Imports System.Reflection
 
+Friend Interface IHoldRoles
+  Property Role() As Integer
+End Interface
+
 Friend Module Assignment
 
 #Region " Business Methods "
@@ -22,10 +26,7 @@ Friend Module Assignment
   ''' </summary>
   Public Function ValidRole(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
-    Dim role As Integer = -1
-    Dim p As PropertyInfo = _
-      target.GetType.GetProperty(e.PropertyName)
-    role = CInt(p.GetValue(target, Nothing))
+    Dim role As Integer = CType(target, IHoldRoles).Role
 
     If RoleList.GetList.ContainsKey(role) Then
       Return True

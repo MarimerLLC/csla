@@ -11,7 +11,7 @@ Public Class ResourceSelect
 
   Private Sub OK_Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OK_Button.Click
 
-    mResourceId = CType(Me.ResourceListListBox.SelectedValue, ResourceList.ResourceInfo).Id
+    mResourceId = CType(Me.ResourceListListBox.SelectedValue, ResourceInfo).Id
     Me.DialogResult = System.Windows.Forms.DialogResult.OK
     Me.Close()
 

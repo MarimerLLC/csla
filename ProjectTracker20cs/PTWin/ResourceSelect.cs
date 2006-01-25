@@ -25,7 +25,7 @@ namespace PTWin
     private void OK_Button_Click(object sender, EventArgs e)
     {
       _resourceId = 
-        ((ResourceList.ResourceInfo)
+        ((ResourceInfo)
          this.ResourceListListBox.SelectedValue).Id;
       this.DialogResult = DialogResult.OK;
       this.Close();

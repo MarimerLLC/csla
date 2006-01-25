@@ -9,7 +9,7 @@ namespace ProjectTracker.Library
 {
   [Serializable()]
   public class ProjectResource : 
-    BusinessBase<ProjectResource>
+    BusinessBase<ProjectResource>, IHoldRoles
   {
     #region Business Methods
 

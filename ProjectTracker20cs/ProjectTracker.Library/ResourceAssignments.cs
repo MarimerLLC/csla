@@ -86,12 +86,15 @@ namespace ProjectTracker.Library
 
     private ResourceAssignments(SafeDataReader dr)
     {
+      RaiseListChangedEvents = false;
       while (dr.Read())
         this.Add(ResourceAssignment.GetResourceAssignment(dr));
+      RaiseListChangedEvents = true;
     }
 
     internal void Update(SqlConnection cn, Resource resource)
     {
+      RaiseListChangedEvents = false;
       // update (thus deleting) any deleted child objects
       foreach (ResourceAssignment item in DeletedList)
         item.DeleteSelf(cn, resource);
@@ -106,6 +109,7 @@ namespace ProjectTracker.Library
         else
           item.Update(cn, resource);
       }
+      RaiseListChangedEvents = true;
     }
 
     #endregion

@@ -93,13 +93,15 @@ namespace ProjectTracker.Library
     // called to load data from the database
     private void Fetch(SafeDataReader dr)
     {
-      MarkAsChild();
+      this.RaiseListChangedEvents = false;
       while (dr.Read())
         this.Add(ProjectResource.GetResource(dr));
+      this.RaiseListChangedEvents = true;
     }
 
     internal void Update(Project project)
     {
+      this.RaiseListChangedEvents = false;
       // update (thus deleting) any deleted child objects
       foreach (ProjectResource obj in DeletedList)
         obj.DeleteSelf(project);
@@ -114,6 +116,7 @@ namespace ProjectTracker.Library
         else
           obj.Update(project);
       }
+      this.RaiseListChangedEvents = true;
     }
 
     #endregion

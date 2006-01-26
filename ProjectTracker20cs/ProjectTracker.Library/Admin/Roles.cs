@@ -128,6 +128,7 @@ namespace ProjectTracker.Library.Admin
 
     private void DataPortal_Fetch(Criteria criteria)
     {
+      RaiseListChangedEvents = false;
       using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
@@ -137,19 +138,17 @@ namespace ProjectTracker.Library.Admin
           cm.CommandText = "getRoles";
 
           using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
-          {
             while (dr.Read())
-            {
               this.Add(Role.GetRole(dr));
-            }
-          }
         }
       }
+      RaiseListChangedEvents = true;
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
+      this.RaiseListChangedEvents = false;
       using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
@@ -167,6 +166,7 @@ namespace ProjectTracker.Library.Admin
             item.Update(cn);
         }
       }
+      this.RaiseListChangedEvents = true;
     }
 
     #endregion

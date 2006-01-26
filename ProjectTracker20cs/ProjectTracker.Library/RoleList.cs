@@ -58,6 +58,7 @@ namespace ProjectTracker.Library
 
     private void DataPortal_Fetch(Criteria criteria)
     {
+      this.RaiseListChangedEvents = false;
       using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
@@ -79,6 +80,7 @@ namespace ProjectTracker.Library
           }
         }
       }
+      this.RaiseListChangedEvents = true;
     }
 
     #endregion

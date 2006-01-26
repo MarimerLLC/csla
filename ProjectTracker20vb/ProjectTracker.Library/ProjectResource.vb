@@ -121,9 +121,12 @@ Public Class ProjectResource
 
   End Sub
 
-#End Region
+  Private Sub New(ByVal dr As SafeDataReader)
 
-#Region " Data Access "
+    MarkAsChild()
+    Fetch(dr)
+
+  End Sub
 
   Private Sub New(ByVal resource As Resource, ByVal role As Integer)
 
@@ -138,9 +141,12 @@ Public Class ProjectResource
 
   End Sub
 
-  Private Sub New(ByVal dr As SafeDataReader)
+#End Region
 
-    MarkAsChild()
+#Region " Data Access "
+
+  Private Sub Fetch(ByVal dr As SafeDataReader)
+
     With dr
       mResourceId = .GetInt32("ResourceId")
       mLastName = .GetString("LastName")

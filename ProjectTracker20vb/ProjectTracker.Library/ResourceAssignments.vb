@@ -85,20 +85,30 @@ Public Class ResourceAssignments
 
   End Sub
 
+  Private Sub New(ByVal dr As SafeDataReader)
+
+    MarkAsChild()
+    Fetch(dr)
+
+  End Sub
+
 #End Region
 
 #Region " Data Access "
 
-  Private Sub New(ByVal dr As SafeDataReader)
+  Private Sub Fetch(ByVal dr As SafeDataReader)
 
+    Me.RaiseListChangedEvents = False
     While dr.Read()
       Me.Add(ResourceAssignment.GetResourceAssignment(dr))
     End While
+    Me.RaiseListChangedEvents = True
 
   End Sub
 
   Friend Sub Update(ByVal cn As SqlConnection, ByVal resource As Resource)
 
+    Me.RaiseListChangedEvents = False
     ' update (thus deleting) any deleted child objects
     For Each item As ResourceAssignment In DeletedList
       item.DeleteSelf(cn, resource)
@@ -115,6 +125,7 @@ Public Class ResourceAssignments
         item.Update(cn, resource)
       End If
     Next
+    Me.RaiseListChangedEvents = True
 
   End Sub
 

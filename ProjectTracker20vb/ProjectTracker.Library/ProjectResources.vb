@@ -89,24 +89,31 @@ Public Class ProjectResources
 
   End Sub
 
+  Private Sub New(ByVal dr As SafeDataReader)
+
+    MarkAsChild()
+    Fetch(dr)
+
+  End Sub
+
 #End Region
 
 #Region " Data Access "
 
-  ' called to load data from the database
-  Private Sub New(ByVal dr As SafeDataReader)
+  Private Sub Fetch(ByVal dr As SafeDataReader)
 
-    MarkAsChild()
+    Me.RaiseListChangedEvents = False
     While dr.Read()
       Me.Add(ProjectResource.GetResource(dr))
     End While
+    Me.RaiseListChangedEvents = True
 
   End Sub
 
   Friend Sub Update(ByVal project As Project)
 
+    Me.RaiseListChangedEvents = False
     Dim obj As ProjectResource
-
     ' update (thus deleting) any deleted child objects
     For Each obj In DeletedList
       obj.DeleteSelf(project)
@@ -123,6 +130,7 @@ Public Class ProjectResources
         obj.Update(project)
       End If
     Next
+    Me.RaiseListChangedEvents = True
 
   End Sub
 

@@ -139,6 +139,7 @@ Namespace Admin
 
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
+      Me.RaiseListChangedEvents = False
       Using cn As New SqlConnection(Database.PTrackerConnection)
         cn.Open()
         Using cm As SqlCommand = cn.CreateCommand
@@ -154,12 +155,14 @@ Namespace Admin
           End Using
         End Using
       End Using
+      Me.RaiseListChangedEvents = True
 
     End Sub
 
     <Transactional(TransactionalTypes.TransactionScope)> _
     Protected Overrides Sub DataPortal_Update()
 
+      Me.RaiseListChangedEvents = False
       Using cn As New SqlConnection(Database.PTrackerConnection)
         cn.Open()
         For Each item As Role In DeletedList
@@ -176,6 +179,7 @@ Namespace Admin
           End If
         Next
       End Using
+      Me.RaiseListChangedEvents = True
 
     End Sub
 

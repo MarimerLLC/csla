@@ -105,9 +105,12 @@ Public Class ResourceAssignment
 
   End Sub
 
-#End Region
+  Private Sub New(ByVal dr As SafeDataReader)
 
-#Region " Data Access "
+    MarkAsChild()
+    Fetch(dr)
+
+  End Sub
 
   Private Sub New(ByVal project As Project, ByVal role As Integer)
 
@@ -119,9 +122,12 @@ Public Class ResourceAssignment
 
   End Sub
 
-  Private Sub New(ByVal dr As SafeDataReader)
+#End Region
 
-    MarkAsChild()
+#Region " Data Access "
+
+  Private Sub Fetch(ByVal dr As SafeDataReader)
+
     With dr
       mProjectId = .GetGuid("ProjectId")
       mProjectName = .GetString("Name")

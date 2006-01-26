@@ -42,7 +42,7 @@ namespace PTWin
       this.EditRolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.LoginToolStripLabel = new System.Windows.Forms.ToolStripLabel();
       this.LoginToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.DocumentsToolStringDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+      this.DocumentsToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
       this.Panel1 = new System.Windows.Forms.Panel();
       this.StatusStrip1 = new System.Windows.Forms.StatusStrip();
       this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -58,7 +58,7 @@ namespace PTWin
             this.AdminToolStripDropDownButton,
             this.LoginToolStripLabel,
             this.LoginToolStripButton,
-            this.DocumentsToolStringDropDownButton});
+            this.DocumentsToolStripDropDownButton});
       this.toolStrip1.Location = new System.Drawing.Point(0, 0);
       this.toolStrip1.Name = "toolStrip1";
       this.toolStrip1.Size = new System.Drawing.Size(827, 25);
@@ -163,15 +163,15 @@ namespace PTWin
       this.LoginToolStripButton.Text = "Login";
       this.LoginToolStripButton.Click += new System.EventHandler(this.LoginToolStripButton_Click);
       // 
-      // DocumentsToolStringDropDownButton
+      // DocumentsToolStripDropDownButton
       // 
-      this.DocumentsToolStringDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.DocumentsToolStringDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("DocumentsToolStringDropDownButton.Image")));
-      this.DocumentsToolStringDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.DocumentsToolStringDropDownButton.Name = "DocumentsToolStringDropDownButton";
-      this.DocumentsToolStringDropDownButton.Size = new System.Drawing.Size(73, 22);
-      this.DocumentsToolStringDropDownButton.Text = "Documents";
-      this.DocumentsToolStringDropDownButton.DropDownOpening += new System.EventHandler(this.DocumentsToolStringDropDownButton_DropDownOpening);
+      this.DocumentsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.DocumentsToolStripDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("DocumentsToolStripDropDownButton.Image")));
+      this.DocumentsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.DocumentsToolStripDropDownButton.Name = "DocumentsToolStripDropDownButton";
+      this.DocumentsToolStripDropDownButton.Size = new System.Drawing.Size(73, 22);
+      this.DocumentsToolStripDropDownButton.Text = "Documents";
+      this.DocumentsToolStripDropDownButton.DropDownOpening += new System.EventHandler(this.DocumentsToolStripDropDownButton_DropDownOpening);
       // 
       // Panel1
       // 
@@ -181,7 +181,6 @@ namespace PTWin
       this.Panel1.Name = "Panel1";
       this.Panel1.Size = new System.Drawing.Size(827, 393);
       this.Panel1.TabIndex = 2;
-      this.Panel1.Resize += new System.EventHandler(this.Panel1_Resize);
       // 
       // StatusStrip1
       // 
@@ -233,7 +232,7 @@ namespace PTWin
     internal System.Windows.Forms.ToolStripMenuItem DeleteResourceToolStripMenuItem;
     internal System.Windows.Forms.ToolStripDropDownButton AdminToolStripDropDownButton;
     internal System.Windows.Forms.ToolStripMenuItem EditRolesToolStripMenuItem;
-    internal System.Windows.Forms.ToolStripDropDownButton DocumentsToolStringDropDownButton;
+    internal System.Windows.Forms.ToolStripDropDownButton DocumentsToolStripDropDownButton;
     internal System.Windows.Forms.Panel Panel1;
     internal System.Windows.Forms.StatusStrip StatusStrip1;
     internal System.Windows.Forms.ToolStripStatusLabel StatusLabel;

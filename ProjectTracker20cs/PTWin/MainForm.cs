@@ -32,7 +32,7 @@ namespace PTWin
       else
         DoLogin();
       if (DocumentCount == 0)
-        this.DocumentsToolStringDropDownButton.Enabled = false;
+        this.DocumentsToolStripDropDownButton.Enabled = false;
       ApplyAuthorizationRules();
     }
 
@@ -180,7 +180,7 @@ namespace PTWin
         }
       }
 
-      // the project wasn't already loaded
+      // the resource wasn't already loaded
       // so load it and display the new winpart
       using (StatusBusy busy = new StatusBusy("Loading resource..."))
       {
@@ -342,7 +342,7 @@ namespace PTWin
       // notify all documents
       foreach (Control ctl in Panel1.Controls)
         if (ctl is WinPart)
-          ((WinPart)ctl).PrincipalChanged(this, EventArgs.Empty);
+          ((WinPart)ctl).OnCurrentPrincipalChanged(this, EventArgs.Empty);
     }
 
     #endregion
@@ -360,11 +360,9 @@ namespace PTWin
       part.CloseWinPart += new EventHandler(CloseWinPart);
       part.BackColor = toolStrip1.BackColor;
       Panel1.Controls.Add(part);
-      this.DocumentsToolStringDropDownButton.Enabled = true;
+      this.DocumentsToolStripDropDownButton.Enabled = true;
       ShowWinPart(part);
     }
-
-    private static Point _topLeft = new Point(0, 0);
 
     /// <summary>
     /// Make the specified WinPart the 
@@ -373,32 +371,20 @@ namespace PTWin
     /// <param name="part">The WinPart control to display.</param>
     private void ShowWinPart(WinPart part)
     {
-      part.Location = _topLeft;
-      part.Size = Panel1.ClientSize;
+      part.Dock = DockStyle.Fill;
       part.Visible = true;
       part.BringToFront();
       this.Text = "Project Tracker - " + part.ToString();
     }
 
     /// <summary>
-    /// Resize all WinPart controls when the
-    /// container control is resized.
-    /// </summary>
-    private void Panel1_Resize(object sender, EventArgs e)
-    {
-      foreach (Control ctl in Panel1.Controls)
-        if (ctl is WinPart)
-          ctl.Size = Panel1.ClientSize;
-    }
-
-    /// <summary>
     /// Populate the Documents dropdown list.
     /// </summary>
-    private void DocumentsToolStringDropDownButton_DropDownOpening(
+    private void DocumentsToolStripDropDownButton_DropDownOpening(
       object sender, EventArgs e)
     {
       ToolStripItemCollection items = 
-        DocumentsToolStringDropDownButton.DropDownItems;
+        DocumentsToolStripDropDownButton.DropDownItems;
       foreach (ToolStripItem item in items)
         item.Click -= new EventHandler(DocumentClick);
       items.Clear();
@@ -418,7 +404,7 @@ namespace PTWin
     /// </summary>
     private void DocumentClick(object sender, EventArgs e)
     {
-      WinPart ctl = ((ToolStripItem)sender).Tag as WinPart;
+      WinPart ctl = (WinPart)((ToolStripItem)sender).Tag;
       ShowWinPart(ctl);
     }
 
@@ -451,7 +437,7 @@ namespace PTWin
       part.Dispose();
       if (DocumentCount == 0)
       {
-        this.DocumentsToolStringDropDownButton.Enabled = false;
+        this.DocumentsToolStripDropDownButton.Enabled = false;
         this.Text = "Project Tracker";
       }
       else

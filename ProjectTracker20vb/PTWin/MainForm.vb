@@ -148,7 +148,7 @@ Public Class MainForm
       End If
     Next
 
-    ' the project wasn't already loaded
+    ' the resource wasn't already loaded
     ' so load it and display the new winpart
     Using busy As New StatusBusy("Loading resource...")
       Try
@@ -293,7 +293,7 @@ Public Class MainForm
     ' notify all documents
     For Each ctl As Control In Panel1.Controls
       If TypeOf ctl Is WinPart Then
-        CType(ctl, WinPart).PrincipalChanged(Me, EventArgs.Empty)
+        CType(ctl, WinPart).OnCurrentPrincipalChanged(Me, EventArgs.Empty)
       End If
     Next
 
@@ -313,25 +313,12 @@ Public Class MainForm
 
   End Sub
 
-  Private Shared TopLeft As New Point(0, 0)
-
   Private Sub ShowWinPart(ByVal part As WinPart)
 
-    part.Location = TopLeft
-    part.Size = Panel1.ClientSize
+    part.Dock = DockStyle.Fill
     part.Visible = True
     part.BringToFront()
     Me.Text = "Project Tracker - " & part.ToString
-
-  End Sub
-
-  Private Sub Panel1_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Panel1.Resize
-
-    For Each ctl As Control In Panel1.Controls
-      If TypeOf ctl Is WinPart Then
-        ctl.Size = Panel1.ClientSize
-      End If
-    Next
 
   End Sub
 

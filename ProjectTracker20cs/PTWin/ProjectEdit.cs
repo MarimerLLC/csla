@@ -57,7 +57,7 @@ namespace PTWin
         !canEdit;
     }
 
-    private void SaveProject()
+    private void SaveProject(bool rebind)
     {
       using (StatusBusy busy = new StatusBusy("Saving..."))
       {
@@ -70,13 +70,14 @@ namespace PTWin
         {
           _project = temp.Save();
           _project.BeginEdit();
-          // rebind the UI
-          this.projectBindingSource.DataSource = null;
-          this.resourcesBindingSource.DataSource = null;
-          this.projectBindingSource.DataSource = _project;
-          this.resourcesBindingSource.DataSource = 
-            _project.Resources;
-          ApplyAuthorizationRules();
+          if (rebind)
+          {
+            // rebind the UI
+            this.projectBindingSource.DataSource = null;
+            this.resourcesBindingSource.DataSource = null;
+            this.projectBindingSource.DataSource = _project;
+            ApplyAuthorizationRules();
+          }
         }
         catch (Csla.DataPortalException ex)
         {
@@ -114,13 +115,13 @@ namespace PTWin
 
     private void OKButton_Click(object sender, EventArgs e)
     {
-      SaveProject();
+      SaveProject(false);
       this.Close();
     }
 
     private void ApplyButton_Click(object sender, EventArgs e)
     {
-      SaveProject();
+      SaveProject(true);
     }
 
     private void Cancel_Button_Click(object sender, EventArgs e)
@@ -138,7 +139,22 @@ namespace PTWin
     {
       ResourceSelect dlg = new ResourceSelect();
       if (dlg.ShowDialog() == DialogResult.OK)
-        _project.Resources.Assign(dlg.ResourceId);
+        try
+        {
+          _project.Resources.Assign(dlg.ResourceId);
+        }
+        catch (InvalidOperationException ex)
+        {
+          MessageBox.Show(ex.ToString(),
+            "Error Assigning", MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.ToString(),
+            "Error Assigning", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
+        }
     }
 
     private void UnassignButton_Click(object sender, EventArgs e)

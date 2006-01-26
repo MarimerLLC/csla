@@ -19,7 +19,9 @@ Public Class RolesEdit
         MessageBoxIcon.Exclamation)
     End Try
 
-    Me.RolesBindingSource.DataSource = mRoles
+    If mRoles IsNot Nothing Then
+      Me.RolesBindingSource.DataSource = mRoles
+    End If
 
   End Sub
 
@@ -35,9 +37,7 @@ Public Class RolesEdit
     Dim temp As Admin.Roles = mRoles.Clone
     Try
       mRoles = temp.Save
-      ' rebind the UI
-      Me.RolesBindingSource.DataSource = Nothing
-      Me.RolesBindingSource.DataSource = mRoles
+      Me.Close()
 
     Catch ex As Csla.DataPortalException
       MessageBox.Show(ex.BusinessException.ToString, _
@@ -52,7 +52,6 @@ Public Class RolesEdit
     Finally
       Me.RolesBindingSource.RaiseListChangedEvents = True
     End Try
-    Me.Close()
 
   End Sub
 

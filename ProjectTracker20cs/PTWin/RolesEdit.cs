@@ -37,7 +37,8 @@ namespace PTWin
           "Data load error", MessageBoxButtons.OK,
           MessageBoxIcon.Exclamation);
       }
-      this.rolesBindingSource.DataSource = _roles;
+      if (_roles != null)
+        this.rolesBindingSource.DataSource = _roles;
     }
 
     protected internal override object GetIdValue()
@@ -52,9 +53,7 @@ namespace PTWin
       try
       {
         _roles = temp.Save();
-        // rebind the UI
-        this.rolesBindingSource.DataSource = null;
-        this.rolesBindingSource.DataSource = _roles;
+        this.Close();
       }
       catch (Csla.DataPortalException ex)
       {
@@ -71,7 +70,6 @@ namespace PTWin
       {
         this.rolesBindingSource.RaiseListChangedEvents = true;
       }
-      this.Close();
     }
 
     private void CancelButton_Click(object sender, EventArgs e)

@@ -19,6 +19,22 @@ namespace PTWin
       get { return _resource; }
     }
 
+    public ResourceEdit(Resource resource)
+    {
+      InitializeComponent();
+
+      _resource = resource;
+      _resource.BeginEdit();
+
+      this.CurrentPrincipalChanged += new EventHandler(ResourceEdit_CurrentPrincipalChanged);
+      _resource.PropertyChanged += new PropertyChangedEventHandler(mResource_PropertyChanged);
+
+      this.RoleListBindingSource.DataSource = RoleList.GetList();
+      this.ResourceBindingSource.DataSource = _resource;
+
+      ApplyAuthorizationRules();
+    }
+
     #region WinPart Code
 
     protected internal override object GetIdValue()
@@ -54,7 +70,7 @@ namespace PTWin
       this.AssignmentsDataGridView.Columns[3].ReadOnly = !canEdit;
     }
 
-    private void SaveResource()
+    private void SaveResource(bool rebind)
     {
       using (StatusBusy busy = new StatusBusy("Saving..."))
       {
@@ -69,12 +85,14 @@ namespace PTWin
         {
           _resource = temp.Save();
           _resource.BeginEdit();
-          // rebind the UI
-          this.ResourceBindingSource.DataSource = null;
-          this.AssignmentsBindingSource.DataSource = null;
-          this.ResourceBindingSource.DataSource = _resource;
-          this.AssignmentsBindingSource.DataSource = _resource.Assignments;
-          ApplyAuthorizationRules();
+          if (rebind)
+          {
+            // rebind the UI
+            this.ResourceBindingSource.DataSource = null;
+            this.AssignmentsBindingSource.DataSource = null;
+            this.ResourceBindingSource.DataSource = _resource;
+            ApplyAuthorizationRules();
+          }
         }
         catch (Csla.DataPortalException ex)
         {
@@ -96,32 +114,15 @@ namespace PTWin
       }
     }
 
-    public ResourceEdit(Resource resource)
-    {
-      InitializeComponent();
-
-      _resource = resource;
-      _resource.BeginEdit();
-
-      this.CurrentPrincipalChanged += new EventHandler(ResourceEdit_CurrentPrincipalChanged);
-      _resource.PropertyChanged += new PropertyChangedEventHandler(mResource_PropertyChanged);
-
-      this.RoleListBindingSource.DataSource = RoleList.GetList();
-      this.ResourceBindingSource.DataSource = _resource;
-      this.AssignmentsBindingSource.DataSource = _resource.Assignments;
-
-      ApplyAuthorizationRules();
-    }
-
     private void OKButton_Click(object sender, EventArgs e)
     {
-      SaveResource();
+      SaveResource(false);
       this.Close();
     }
 
     private void ApplyButton_Click(object sender, EventArgs e)
     {
-      SaveResource();
+      SaveResource(true);
     }
 
     private void Cancel_Button_Click(object sender, EventArgs e)
@@ -139,7 +140,22 @@ namespace PTWin
     {
       ProjectSelect dlg = new ProjectSelect();
       if (dlg.ShowDialog() == DialogResult.OK)
-        _resource.Assignments.AssignTo(dlg.ProjectId);
+        try
+        {
+          _resource.Assignments.AssignTo(dlg.ProjectId);
+        }
+        catch (InvalidOperationException ex)
+        {
+          MessageBox.Show(ex.ToString(),
+            "Error Assigning", MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.ToString(),
+            "Error Assigning", MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation);
+        }
     }
 
     private void UnassignButton_Click(object sender, EventArgs e)

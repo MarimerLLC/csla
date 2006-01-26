@@ -27,13 +27,11 @@ namespace PTWin
       _resourceId = 
         ((ResourceInfo)
          this.ResourceListListBox.SelectedValue).Id;
-      this.DialogResult = DialogResult.OK;
       this.Close();
     }
 
     private void Cancel_Button_Click(object sender, EventArgs e)
     {
-      this.DialogResult = DialogResult.Cancel;
       this.Close();
     }
 

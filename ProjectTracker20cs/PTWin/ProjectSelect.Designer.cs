@@ -104,6 +104,7 @@ namespace PTWin
       // OK_Button
       // 
       this.OK_Button.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.OK_Button.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.OK_Button.Location = new System.Drawing.Point(3, 3);
       this.OK_Button.Name = "OK_Button";
       this.OK_Button.Size = new System.Drawing.Size(67, 23);
@@ -138,6 +139,7 @@ namespace PTWin
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "ProjectSelect";
+      this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Select Project";
       this.Load += new System.EventHandler(this.ProjectSelect_Load);

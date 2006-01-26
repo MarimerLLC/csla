@@ -30,12 +30,12 @@ namespace PTWin
     {
       this.components = new System.ComponentModel.Container();
       this.ResourceListListBox = new System.Windows.Forms.ListBox();
+      this.ResourceListBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.TableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.OK_Button = new System.Windows.Forms.Button();
       this.Cancel_Button = new System.Windows.Forms.Button();
-      this.ResourceListBindingSource = new System.Windows.Forms.BindingSource(this.components);
-      this.TableLayoutPanel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.ResourceListBindingSource)).BeginInit();
+      this.TableLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // ResourceListListBox
@@ -48,6 +48,10 @@ namespace PTWin
       this.ResourceListListBox.Name = "ResourceListListBox";
       this.ResourceListListBox.Size = new System.Drawing.Size(416, 264);
       this.ResourceListListBox.TabIndex = 4;
+      // 
+      // ResourceListBindingSource
+      // 
+      this.ResourceListBindingSource.DataSource = typeof(ProjectTracker.Library.ResourceList);
       // 
       // TableLayoutPanel1
       // 
@@ -67,6 +71,7 @@ namespace PTWin
       // OK_Button
       // 
       this.OK_Button.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.OK_Button.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.OK_Button.Location = new System.Drawing.Point(3, 3);
       this.OK_Button.Name = "OK_Button";
       this.OK_Button.Size = new System.Drawing.Size(67, 23);
@@ -85,10 +90,6 @@ namespace PTWin
       this.Cancel_Button.Text = "Cancel";
       this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
       // 
-      // ResourceListBindingSource
-      // 
-      this.ResourceListBindingSource.DataSource = typeof(ProjectTracker.Library.ResourceList);
-      // 
       // ResourceSelect
       // 
       this.ClientSize = new System.Drawing.Size(443, 323);
@@ -98,11 +99,12 @@ namespace PTWin
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "ResourceSelect";
+      this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "ResourceSelect";
       this.Load += new System.EventHandler(this.ResourceSelect_Load);
-      this.TableLayoutPanel1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.ResourceListBindingSource)).EndInit();
+      this.TableLayoutPanel1.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }

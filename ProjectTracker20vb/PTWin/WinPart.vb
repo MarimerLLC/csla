@@ -63,13 +63,7 @@ Public Class WinPart
 
   Protected Event CurrentPrincipalChanged As EventHandler
 
-  Friend Sub PrincipalChanged(ByVal sender As Object, ByVal e As EventArgs)
-
-    OnCurrentPrincipalChanged(sender, e)
-
-  End Sub
-
-  Protected Overridable Sub OnCurrentPrincipalChanged(ByVal sender As Object, ByVal e As EventArgs)
+  Protected Friend Overridable Sub OnCurrentPrincipalChanged(ByVal sender As Object, ByVal e As EventArgs)
 
     RaiseEvent CurrentPrincipalChanged(sender, e)
 

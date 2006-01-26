@@ -68,12 +68,7 @@ namespace PTWin
 
     public event EventHandler CurrentPrincipalChanged;
 
-    internal void PrincipalChanged(object sender, EventArgs e)
-    {
-      OnCurrentPrincipalChanged(sender, e);
-    }
-
-    protected virtual void OnCurrentPrincipalChanged(
+    protected internal virtual void OnCurrentPrincipalChanged(
       object sender, EventArgs e)
     {
       if (CurrentPrincipalChanged != null)

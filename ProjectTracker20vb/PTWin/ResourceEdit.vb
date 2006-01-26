@@ -11,6 +11,20 @@ Public Class ResourceEdit
     End Get
   End Property
 
+  Public Sub New(ByVal resource As Resource)
+
+    InitializeComponent()
+
+    mResource = resource
+    mResource.BeginEdit()
+
+    Me.RoleListBindingSource.DataSource = RoleList.GetList
+    Me.ResourceBindingSource.DataSource = mResource
+
+    ApplyAuthorizationRules()
+
+  End Sub
+
 #Region " WinPart Code "
 
   Protected Overrides Function GetIdValue() As Object
@@ -54,7 +68,7 @@ Public Class ResourceEdit
 
   End Sub
 
-  Private Sub SaveResource()
+  Private Sub SaveResource(ByVal rebind As Boolean)
 
     Using busy As New StatusBusy("Saving...")
       ' stop the flow of events
@@ -67,12 +81,13 @@ Public Class ResourceEdit
       Try
         mResource = temp.Save
         mResource.BeginEdit()
-        ' rebind the UI
-        Me.ResourceBindingSource.DataSource = Nothing
-        Me.AssignmentsBindingSource.DataSource = Nothing
-        Me.ResourceBindingSource.DataSource = mResource
-        Me.AssignmentsBindingSource.DataSource = mResource.Assignments
-        ApplyAuthorizationRules()
+        If rebind Then
+          ' rebind the UI
+          Me.ResourceBindingSource.DataSource = Nothing
+          Me.AssignmentsBindingSource.DataSource = Nothing
+          Me.ResourceBindingSource.DataSource = mResource
+          ApplyAuthorizationRules()
+        End If
 
       Catch ex As Csla.DataPortalException
         MessageBox.Show(ex.BusinessException.ToString, _
@@ -93,25 +108,10 @@ Public Class ResourceEdit
 
   End Sub
 
-  Public Sub New(ByVal resource As Resource)
-
-    InitializeComponent()
-
-    mResource = resource
-    mResource.BeginEdit()
-
-    Me.RoleListBindingSource.DataSource = RoleList.GetList
-    Me.ResourceBindingSource.DataSource = mResource
-    Me.AssignmentsBindingSource.DataSource = mResource.Assignments
-
-    ApplyAuthorizationRules()
-
-  End Sub
-
   Private Sub OKButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles OKButton.Click
 
-    SaveResource()
+    SaveResource(False)
     Me.Close()
 
   End Sub
@@ -119,7 +119,7 @@ Public Class ResourceEdit
   Private Sub ApplyButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles ApplyButton.Click
 
-    SaveResource()
+    SaveResource(True)
 
   End Sub
 
@@ -143,7 +143,19 @@ Public Class ResourceEdit
 
     Dim dlg As New ProjectSelect
     If dlg.ShowDialog = DialogResult.OK Then
-      mResource.Assignments.AssignTo(dlg.ProjectId)
+      Try
+        mResource.Assignments.AssignTo(dlg.ProjectId)
+
+      Catch ex As InvalidOperationException
+        MessageBox.Show(ex.ToString, _
+          "Error assigning", MessageBoxButtons.OK, _
+          MessageBoxIcon.Information)
+
+      Catch ex As Exception
+        MessageBox.Show(ex.ToString, _
+          "Error assigning", MessageBoxButtons.OK, _
+          MessageBoxIcon.Exclamation)
+      End Try
     End If
 
   End Sub

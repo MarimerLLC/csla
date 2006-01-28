@@ -276,23 +276,23 @@ namespace Csla.Test.Authorization
             Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
         }
 
-        [TestMethod()]
-        public void TestAuthorizationAfterClone()
-        {
-            Csla.ApplicationContext.GlobalContext.Clear();
-            Csla.Test.Security.TestPrincipal.SimulateLogin();
+        //[TestMethod()]
+        //public void TestAuthorizationAfterClone()
+        //{
+        //    Csla.ApplicationContext.GlobalContext.Clear();
+        //    Csla.Test.Security.TestPrincipal.SimulateLogin();
 
-            PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+        //    PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
 
-            //should work because we are now logged in as an admin
-            pr.FirstName = "something";
-            string something = pr.FirstName;
+        //    //should work because we are now logged in as an admin
+        //    pr.FirstName = "something";
+        //    string something = pr.FirstName;
 
-            //The permissions should persist across a cloning
-            PermissionsRoot prClone = pr.Clone();
-            pr.FirstName = "something";
-            something = pr.FirstName;
-        }
+        //    //The permissions should persist across a cloning
+        //    PermissionsRoot prClone = pr.Clone();
+        //    pr.FirstName = "something";
+        //    something = pr.FirstName;
+        //}
 
 
     }

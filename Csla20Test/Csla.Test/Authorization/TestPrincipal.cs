@@ -31,13 +31,13 @@ namespace Csla.Test.Security
             //System.Threading.Thread.CurrentPrincipal = null;
         }
 
-        public static void SetUnAuthenticatedPrincipal()
-        {
-            TestIdentity identity = new TestIdentity();
-            TestPrincipal principal = new TestPrincipal(identity);
+        //public static void SetUnAuthenticatedPrincipal()
+        //{
+        //    TestIdentity identity = new TestIdentity();
+        //    TestPrincipal principal = new TestPrincipal(identity);
 
-            Csla.ApplicationContext.User = principal;
-            //System.Threading.Thread.CurrentPrincipal = principal;
-        }
+        //    Csla.ApplicationContext.User = principal;
+        //    //System.Threading.Thread.CurrentPrincipal = principal;
+        //}
     }
 }

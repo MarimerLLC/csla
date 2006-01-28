@@ -7,9 +7,15 @@
           DataSourceID="ResourceDataSource" Height="50px"
           Width="440px" DataKeyNames="Id">
           <Fields>
-            <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False" />
-            <asp:BoundField DataField="LastName" HeaderText="LastName" SortExpression="LastName" />
-            <asp:BoundField DataField="FirstName" HeaderText="FirstName" SortExpression="FirstName" />
+            <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" Visible="False" >
+              <ControlStyle Width="95%" />
+            </asp:BoundField>
+            <asp:BoundField DataField="LastName" HeaderText="LastName" SortExpression="LastName" >
+              <ControlStyle Width="95%" />
+            </asp:BoundField>
+            <asp:BoundField DataField="FirstName" HeaderText="FirstName" SortExpression="FirstName" >
+              <ControlStyle Width="95%" />
+            </asp:BoundField>
             <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" ShowInsertButton="True" />
           </Fields>
         </asp:DetailsView>

@@ -2,7 +2,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div>
       <strong>Resources:</strong><br />
-      <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ResourceListDataSource" DataKeyNames="Id" OnSelectedIndexChanged="GridView1_SelectedIndexChanged" OnRowDeleted="GridView1_RowDeleted" >
+      <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ResourceListDataSource" DataKeyNames="Id" OnRowDeleted="GridView1_RowDeleted" >
         <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
         <Columns>
           <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id"

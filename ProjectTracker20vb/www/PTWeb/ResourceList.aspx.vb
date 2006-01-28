@@ -37,15 +37,6 @@ Partial Class ResourceList
 
   End Sub
 
-  Protected Sub GridView1_SelectedIndexChanged( _
-    ByVal sender As Object, ByVal e As System.EventArgs) _
-    Handles GridView1.SelectedIndexChanged
-
-    Dim idString As String = GridView1.SelectedDataKey.Value.ToString
-    Response.Redirect("ResourceEdit.aspx?id=" & idString)
-
-  End Sub
-
   Protected Sub GridView1_RowDeleted( _
     ByVal sender As Object, _
     ByVal e As System.Web.UI.WebControls.GridViewDeletedEventArgs) _

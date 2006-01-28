@@ -34,14 +34,6 @@ public partial class ProjectList : System.Web.UI.Page
 
   #region GridView1
 
-  protected void GridView1_SelectedIndexChanged(
-    object sender, EventArgs e)
-  {
-    // allow user to view or edit selected project
-    string idString = GridView1.SelectedDataKey.Value.ToString();
-    Response.Redirect("ProjectEdit.aspx?id=" + idString);
-  }
-
   protected void GridView1_RowDeleted(object sender, GridViewDeletedEventArgs e)
   {
     Session["currentObject"] = null;

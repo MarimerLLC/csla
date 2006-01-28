@@ -36,12 +36,6 @@ public partial class ResourceList : System.Web.UI.Page
     Response.Redirect("ResourceEdit.aspx");
   }
 
-  protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
-  {
-    string idString = GridView1.SelectedDataKey.Value.ToString();
-    Response.Redirect("ResourceEdit.aspx?id=" + idString);
-  }
-
   protected void GridView1_RowDeleted(object sender, GridViewDeletedEventArgs e)
   {
     Session["currentObject"] = null;

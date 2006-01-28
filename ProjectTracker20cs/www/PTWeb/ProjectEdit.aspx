@@ -10,19 +10,27 @@
           OnItemInserted="DetailsView1_ItemInserted" OnItemUpdated="DetailsView1_ItemUpdated">
           <Fields>
             <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id"
-              InsertVisible="False" />
-            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" />
-            <asp:BoundField DataField="Started" HeaderText="Started" SortExpression="Started" />
-            <asp:BoundField DataField="Ended" HeaderText="Ended" SortExpression="Ended" />
+              InsertVisible="False" >
+              <ItemStyle Width="100%" />
+            </asp:BoundField>
+            <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name" >
+              <ControlStyle Width="95%" />
+            </asp:BoundField>
+            <asp:BoundField DataField="Started" HeaderText="Started" SortExpression="Started" >
+              <ControlStyle Width="95%" />
+            </asp:BoundField>
+            <asp:BoundField DataField="Ended" HeaderText="Ended" SortExpression="Ended" >
+              <ControlStyle Width="95%" />
+            </asp:BoundField>
             <asp:TemplateField HeaderText="Description" SortExpression="Description">
               <EditItemTemplate>
-                <asp:TextBox ID="TextBox1" TextMode="MultiLine" Width="100%" runat="server" Text='<%# Bind("Description") %>'></asp:TextBox>
+                <asp:TextBox ID="TextBox1" TextMode="MultiLine" Width="95%" runat="server" Text='<%# Bind("Description") %>'></asp:TextBox>
               </EditItemTemplate>
               <InsertItemTemplate>
-                <asp:TextBox ID="TextBox1" TextMode="MultiLine" Width="100%" runat="server" Text='<%# Bind("Description") %>'></asp:TextBox>
+                <asp:TextBox ID="TextBox1" TextMode="MultiLine" Width="95%" runat="server" Text='<%# Bind("Description") %>'></asp:TextBox>
               </InsertItemTemplate>
               <ItemTemplate>
-                <asp:TextBox ID="TextBox1" TextMode="MultiLine" ReadOnly="true" Width="100%" runat="server"
+                <asp:TextBox ID="TextBox1" TextMode="MultiLine" ReadOnly="true" Width="95%" runat="server"
                   Text='<%# Bind("Description") %>'></asp:TextBox>
               </ItemTemplate>
             </asp:TemplateField>

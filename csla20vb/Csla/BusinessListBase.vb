@@ -48,9 +48,7 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
       ' run through all the child objects
       ' and if any are dirty then the
       ' collection is dirty
-      Dim Child As C
-
-      For Each Child In Me
+      For Each Child As C In Me
         If Child.IsDirty Then Return True
       Next
       Return False

@@ -88,10 +88,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:7411/PTWebService/PTService.asmx">
+    <WebReferenceUrl Include="http://localhost/PTWebServicecs/PTService.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\PTService\</RelPath>
-      <UpdateFromURL>http://localhost:7411/PTWebService/PTService.asmx</UpdateFromURL>
+      <UpdateFromURL>http://localhost/PTWebServicecs/PTService.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
@@ -102,7 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Web References\PTService\ProjectInfo.datasource">
+    <None Include="Web References\PTService\ProjectData.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\PTService\PTService.disco" />
@@ -111,7 +111,7 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Web References\PTService\ResourceInfo.datasource">
+    <None Include="Web References\PTService\ResourceData.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\PTService\RoleInfo.datasource">

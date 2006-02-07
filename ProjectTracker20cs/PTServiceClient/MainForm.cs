@@ -20,20 +20,20 @@ namespace PTServiceClient
     {
       using (PTService.PTService svc = new PTService.PTService())
       {
-        this.ProjectInfoBindingSource.DataSource = 
+        this.ProjectDataBindingSource.DataSource = 
           svc.GetProjectList();
-        this.ResourceInfoBindingSource.DataSource = 
+        this.ResourceDataBindingSource.DataSource = 
           svc.GetResourceList();
-        this.RoleInfoBindingSource.DataSource = 
+        this.RoleDataBindingSource.DataSource = 
           svc.GetRoles();
       }
     }
 
-    private void ProjectInfoDataGridView_SelectionChanged(object sender, EventArgs e)
+    private void ProjectDataDataGridView_SelectionChanged(object sender, EventArgs e)
     {
-      if (this.ProjectInfoDataGridView.SelectedRows.Count > 0)
+      if (this.ProjectDataDataGridView.SelectedRows.Count > 0)
       {
-        string projectId = this.ProjectInfoDataGridView.SelectedRows[0].Cells[0].Value.ToString();
+        string projectId = this.ProjectDataDataGridView.SelectedRows[0].Cells[0].Value.ToString();
         if (projectId != this.IdLabel1.Text)
         {
           using (PTService.PTService svc = new PTService.PTService())
@@ -73,7 +73,7 @@ namespace PTServiceClient
             this.DescriptionTextBox.Text);
         }
         // refresh project list
-        this.ProjectInfoBindingSource.DataSource = svc.GetProjectList();
+        this.ProjectDataBindingSource.DataSource = svc.GetProjectList();
       }
     }
 
@@ -119,10 +119,10 @@ namespace PTServiceClient
       }
     }
 
-    private void ResourceInfoDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    private void ResourceDataDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
     {
-      ResourceName dlg = new ResourceName(this.ResourceInfoDataGridView.SelectedRows[0].Cells[0].Value.ToString(),
-        this.ResourceInfoDataGridView.SelectedRows[0].Cells[1].Value.ToString());
+      ResourceName dlg = new ResourceName(this.ResourceDataDataGridView.SelectedRows[0].Cells[0].Value.ToString(),
+        this.ResourceDataDataGridView.SelectedRows[0].Cells[1].Value.ToString());
       if (dlg.ShowDialog() == DialogResult.OK)
       {
         using (PTService.PTService svc = new PTService.PTService())
@@ -134,7 +134,7 @@ namespace PTServiceClient
           string lastName = dlg.LastNameTextBox.Text;
           svc.ChangeResourceName(resourceId, firstName, lastName);
           // refresh the resource list.
-          this.ResourceInfoBindingSource.DataSource = svc.GetResourceList();
+          this.ResourceDataBindingSource.DataSource = svc.GetResourceList();
         }
       }
     }
@@ -143,8 +143,8 @@ namespace PTServiceClient
     {
       PTService.CslaCredentials credentials = 
         new PTService.CslaCredentials();
-      credentials.Username = "rocky";
-      credentials.Password = "lhotka";
+      credentials.Username = usernameTextBox.Text;
+      credentials.Password = passwordTextBox.Text;
       svc.CslaCredentialsValue = credentials;
     }
   }

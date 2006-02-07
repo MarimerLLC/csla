@@ -23,7 +23,7 @@ public class PTService : System.Web.Services.WebService
   #region Projects
 
   [WebMethod(Description="Get a list of projects")]
-  public ProjectInfo[] GetProjectList()
+  public ProjectData[] GetProjectList()
   {
     // anonymous access allowed
     Security.UseAnonymous();
@@ -31,10 +31,10 @@ public class PTService : System.Web.Services.WebService
     try
     {
       ProjectList list = ProjectList.GetProjectList();
-      List<ProjectInfo> result = new List<ProjectInfo>();
-      foreach (ProjectTracker.Library.ProjectInfo item in list)
+      List<ProjectData> result = new List<ProjectData>();
+      foreach (ProjectInfo item in list)
       {
-        ProjectInfo info = new ProjectInfo();
+        ProjectData info = new ProjectData();
         Csla.Data.DataMapper.Map(item, info);
         result.Add(info);
       }
@@ -51,7 +51,7 @@ public class PTService : System.Web.Services.WebService
   }
 
   [WebMethod(Description="Get a project")]
-  public ProjectInfo GetProject(ProjectRequest request)
+  public ProjectData GetProject(ProjectRequest request)
   {
     // anonymous access allowed
     Security.UseAnonymous();
@@ -59,11 +59,11 @@ public class PTService : System.Web.Services.WebService
     try
     {
       Project proj = Project.GetProject(request.Id);
-      ProjectInfo result = new ProjectInfo();
+      ProjectData result = new ProjectData();
       Csla.Data.DataMapper.Map(proj, result, "Resources");
       foreach (ProjectResource resource in proj.Resources)
       {
-        ProjectResourceInfo info = new ProjectResourceInfo();
+        ProjectResourceData info = new ProjectResourceData();
         Csla.Data.DataMapper.Map(resource, info, "FullName");
         result.AddResource(info);
       }
@@ -81,7 +81,7 @@ public class PTService : System.Web.Services.WebService
 
   [WebMethod(Description="Add a project")]
   [SoapHeader("Credentials")]
-  public ProjectInfo AddProject(
+  public ProjectData AddProject(
     string name, string started, string ended, string description)
   {
     // user credentials required
@@ -96,7 +96,7 @@ public class PTService : System.Web.Services.WebService
       proj.Description = description;
       proj = proj.Save();
 
-      ProjectInfo result = new ProjectInfo();
+      ProjectData result = new ProjectData();
       Csla.Data.DataMapper.Map(proj, result, "Resources");
       return result;
     }
@@ -112,7 +112,7 @@ public class PTService : System.Web.Services.WebService
 
   [WebMethod(Description = "Edit a project")]
   [SoapHeader("Credentials")]
-  public ProjectInfo EditProject(Guid id, string name,
+  public ProjectData EditProject(Guid id, string name,
     string started, string ended,
     string description)
   {
@@ -128,7 +128,7 @@ public class PTService : System.Web.Services.WebService
       proj.Description = description;
       proj = proj.Save();
 
-      ProjectInfo result = new ProjectInfo();
+      ProjectData result = new ProjectData();
       Csla.Data.DataMapper.Map(proj, result, "Resources");
       return result;
     }
@@ -147,7 +147,7 @@ public class PTService : System.Web.Services.WebService
   #region Resources
 
   [WebMethod(Description="Get a list of resources")]
-  public ResourceInfo[] GetResourceList()
+  public ResourceData[] GetResourceList()
   {
     // anonymous access allowed
     Security.UseAnonymous();
@@ -155,11 +155,11 @@ public class PTService : System.Web.Services.WebService
     try
     {
       ResourceList list = ResourceList.GetResourceList();
-      List<ResourceInfo> result = new List<ResourceInfo>();
+      List<ResourceData> result = new List<ResourceData>();
       foreach (ProjectTracker.Library.ResourceInfo item in list)
       {
-        ResourceInfo info = 
-          new ResourceInfo();
+        ResourceData info = 
+          new ResourceData();
         Csla.Data.DataMapper.Map(item, info);
         result.Add(info);
       }
@@ -176,7 +176,7 @@ public class PTService : System.Web.Services.WebService
   }
 
   [WebMethod(Description="Get a resource")]
-  public ResourceInfo GetResource(ResourceRequest request)
+  public ResourceData GetResource(ResourceRequest request)
   {
     // anonymous access allowed
     Security.UseAnonymous();
@@ -184,12 +184,12 @@ public class PTService : System.Web.Services.WebService
     try
     {
       Resource res = Resource.GetResource(request.Id);
-      ResourceInfo result = new ResourceInfo();
+      ResourceData result = new ResourceData();
       result.Id = res.Id;
       result.Name = res.FullName;
       foreach (ResourceAssignment resource in res.Assignments)
       {
-        ResourceAssignmentInfo info = new ResourceAssignmentInfo();
+        ResourceAssignmentData info = new ResourceAssignmentData();
         Csla.Data.DataMapper.Map(resource, info);
         result.AddProject(info);
       }
@@ -207,7 +207,7 @@ public class PTService : System.Web.Services.WebService
 
   [WebMethod(Description="Change a resource's name")]
   [SoapHeader("Credentials")]
-  public ResourceInfo ChangeResourceName(int id,
+  public ResourceData ChangeResourceName(int id,
     string firstName, string lastName)
   {
      // user credentials required.
@@ -220,7 +220,7 @@ public class PTService : System.Web.Services.WebService
       res.LastName = lastName;
       res = res.Save();
 
-      ResourceInfo result = new ResourceInfo();
+      ResourceData result = new ResourceData();
       result.Id = res.Id;
       result.Name = string.Format("{1}, {0}", res.FirstName, res.LastName);
       return result;

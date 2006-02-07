@@ -57,7 +57,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\RemotingHost\", "www
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWebService\", "www\PTWebService\", "{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}"
 	ProjectSection(WebsiteProperties) = preProject
-		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
+		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;{B390C88E-66FD-4E84-8149-29852AFA8723}|EnterpriseServicesHostcs.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/PTWebService"
 		Debug.AspNetCompiler.PhysicalPath = "www\PTWebService\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\PTWebService\"

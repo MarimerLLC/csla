@@ -125,9 +125,9 @@ namespace PTServiceClient.PTService {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetProjectList", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ProjectInfo[] GetProjectList() {
+        public ProjectData[] GetProjectList() {
             object[] results = this.Invoke("GetProjectList", new object[0]);
-            return ((ProjectInfo[])(results[0]));
+            return ((ProjectData[])(results[0]));
         }
         
         /// <remarks/>
@@ -152,10 +152,10 @@ namespace PTServiceClient.PTService {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetProject", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ProjectInfo GetProject(ProjectRequest request) {
+        public ProjectData GetProject(ProjectRequest request) {
             object[] results = this.Invoke("GetProject", new object[] {
                         request});
-            return ((ProjectInfo)(results[0]));
+            return ((ProjectData)(results[0]));
         }
         
         /// <remarks/>
@@ -182,13 +182,13 @@ namespace PTServiceClient.PTService {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("CslaCredentialsValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/AddProject", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ProjectInfo AddProject(string name, string started, string ended, string description) {
+        public ProjectData AddProject(string name, string started, string ended, string description) {
             object[] results = this.Invoke("AddProject", new object[] {
                         name,
                         started,
                         ended,
                         description});
-            return ((ProjectInfo)(results[0]));
+            return ((ProjectData)(results[0]));
         }
         
         /// <remarks/>
@@ -218,14 +218,14 @@ namespace PTServiceClient.PTService {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("CslaCredentialsValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/EditProject", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ProjectInfo EditProject(System.Guid id, string name, string started, string ended, string description) {
+        public ProjectData EditProject(System.Guid id, string name, string started, string ended, string description) {
             object[] results = this.Invoke("EditProject", new object[] {
                         id,
                         name,
                         started,
                         ended,
                         description});
-            return ((ProjectInfo)(results[0]));
+            return ((ProjectData)(results[0]));
         }
         
         /// <remarks/>
@@ -255,9 +255,9 @@ namespace PTServiceClient.PTService {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetResourceList", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResourceInfo[] GetResourceList() {
+        public ResourceData[] GetResourceList() {
             object[] results = this.Invoke("GetResourceList", new object[0]);
-            return ((ResourceInfo[])(results[0]));
+            return ((ResourceData[])(results[0]));
         }
         
         /// <remarks/>
@@ -282,10 +282,10 @@ namespace PTServiceClient.PTService {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetResource", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResourceInfo GetResource(ResourceRequest request) {
+        public ResourceData GetResource(ResourceRequest request) {
             object[] results = this.Invoke("GetResource", new object[] {
                         request});
-            return ((ResourceInfo)(results[0]));
+            return ((ResourceData)(results[0]));
         }
         
         /// <remarks/>
@@ -312,12 +312,12 @@ namespace PTServiceClient.PTService {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("CslaCredentialsValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/ChangeResourceName", RequestNamespace="http://ws.lhotka.net/", ResponseNamespace="http://ws.lhotka.net/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResourceInfo ChangeResourceName(int id, string firstName, string lastName) {
+        public ResourceData ChangeResourceName(int id, string firstName, string lastName) {
             object[] results = this.Invoke("ChangeResourceName", new object[] {
                         id,
                         firstName,
                         lastName});
-            return ((ResourceInfo)(results[0]));
+            return ((ResourceData)(results[0]));
         }
         
         /// <remarks/>
@@ -527,7 +527,7 @@ namespace PTServiceClient.PTService {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://ws.lhotka.net/")]
-    public partial class ResourceAssignmentInfo {
+    public partial class ResourceAssignmentData {
         
         private System.Guid projectIdField;
         
@@ -584,13 +584,13 @@ namespace PTServiceClient.PTService {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://ws.lhotka.net/")]
-    public partial class ResourceInfo {
+    public partial class ResourceData {
         
         private int idField;
         
         private string nameField;
         
-        private ResourceAssignmentInfo[] resourceAssignmentsField;
+        private ResourceAssignmentData[] resourceAssignmentsField;
         
         /// <remarks/>
         public int Id {
@@ -613,7 +613,7 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ResourceAssignmentInfo[] ResourceAssignments {
+        public ResourceAssignmentData[] ResourceAssignments {
             get {
                 return this.resourceAssignmentsField;
             }
@@ -650,7 +650,7 @@ namespace PTServiceClient.PTService {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://ws.lhotka.net/")]
-    public partial class ProjectResourceInfo {
+    public partial class ProjectResourceData {
         
         private int resourceIdField;
         
@@ -719,7 +719,7 @@ namespace PTServiceClient.PTService {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://ws.lhotka.net/")]
-    public partial class ProjectInfo {
+    public partial class ProjectData {
         
         private System.Guid idField;
         
@@ -731,7 +731,7 @@ namespace PTServiceClient.PTService {
         
         private string descriptionField;
         
-        private ProjectResourceInfo[] projectResourcesField;
+        private ProjectResourceData[] projectResourcesField;
         
         /// <remarks/>
         public System.Guid Id {
@@ -784,7 +784,7 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ProjectResourceInfo[] ProjectResources {
+        public ProjectResourceData[] ProjectResources {
             get {
                 return this.projectResourcesField;
             }
@@ -812,10 +812,10 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ProjectInfo[] Result {
+        public ProjectData[] Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((ProjectInfo[])(this.results[0]));
+                return ((ProjectData[])(this.results[0]));
             }
         }
     }
@@ -838,10 +838,10 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ProjectInfo Result {
+        public ProjectData Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((ProjectInfo)(this.results[0]));
+                return ((ProjectData)(this.results[0]));
             }
         }
     }
@@ -864,10 +864,10 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ProjectInfo Result {
+        public ProjectData Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((ProjectInfo)(this.results[0]));
+                return ((ProjectData)(this.results[0]));
             }
         }
     }
@@ -890,10 +890,10 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ProjectInfo Result {
+        public ProjectData Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((ProjectInfo)(this.results[0]));
+                return ((ProjectData)(this.results[0]));
             }
         }
     }
@@ -916,10 +916,10 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ResourceInfo[] Result {
+        public ResourceData[] Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((ResourceInfo[])(this.results[0]));
+                return ((ResourceData[])(this.results[0]));
             }
         }
     }
@@ -942,10 +942,10 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ResourceInfo Result {
+        public ResourceData Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((ResourceInfo)(this.results[0]));
+                return ((ResourceData)(this.results[0]));
             }
         }
     }
@@ -968,10 +968,10 @@ namespace PTServiceClient.PTService {
         }
         
         /// <remarks/>
-        public ResourceInfo Result {
+        public ResourceData Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((ResourceInfo)(this.results[0]));
+                return ((ResourceData)(this.results[0]));
             }
         }
     }

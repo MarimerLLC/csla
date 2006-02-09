@@ -349,7 +349,7 @@ namespace Csla.Validation
 
       if (!result)
       {
-        e.Description = string.Format("{0} can not exceed {1}",
+        e.Description = string.Format("{0} can not be less than {1}",
           e.PropertyName, min.ToString());
         return false;
       }

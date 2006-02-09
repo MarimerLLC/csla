@@ -276,7 +276,7 @@ Namespace Validation
       End If
 
       If Not result Then
-        e.Description = String.Format("{0} can not exceed {1}", _
+        e.Description = String.Format("{0} can not be less than {1}", _
           e.PropertyName, min.ToString)
         Return False
 
@@ -297,9 +297,9 @@ Namespace Validation
         End Get
       End Property
 
-      Public Sub New(ByVal propertyName As String, ByVal MinValue As T)
+      Public Sub New(ByVal propertyName As String, ByVal minValue As T)
         MyBase.New(propertyName)
-        mMinValue = MinValue
+        mMinValue = minValue
       End Sub
 
       ''' <summary>

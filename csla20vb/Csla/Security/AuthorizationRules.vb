@@ -1,3 +1,5 @@
+Imports System.ComponentModel
+
 Namespace Security
 
   ''' <summary>
@@ -10,7 +12,8 @@ Namespace Security
 
     Private mRules As Dictionary(Of String, RolesForProperty)
 
-    Private ReadOnly Property Rules() As Dictionary(Of String, RolesForProperty)
+    Private ReadOnly Property Rules() _
+      As Dictionary(Of String, RolesForProperty)
       Get
         If mRules Is Nothing Then
           mRules = New Dictionary(Of String, RolesForProperty)
@@ -29,7 +32,7 @@ Namespace Security
     ''' Name of the object property.</param>
     ''' <param name="access">Desired access type.</param>
     ''' <returns>An string array of roles.</returns>
-    <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Public Function GetRolesForProperty(ByVal propertyName As String, _
       ByVal access As AccessType) As String()
 
@@ -48,7 +51,8 @@ Namespace Security
 
     End Function
 
-    Private Function GetRolesForProperty(ByVal propertyName As String) As RolesForProperty
+    Private Function GetRolesForProperty( _
+      ByVal propertyName As String) As RolesForProperty
 
       Dim currentRoles As RolesForProperty = Nothing
       If Not Rules.ContainsKey(propertyName) Then
@@ -66,7 +70,8 @@ Namespace Security
 
 #Region " Add Roles "
 
-    Public Sub AllowRead(ByVal propertyName As String, ByVal ParamArray roles() As String)
+    Public Sub AllowRead( _
+      ByVal propertyName As String, ByVal ParamArray roles() As String)
 
       Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
       For Each item As String In roles
@@ -106,7 +111,8 @@ Namespace Security
 
 #Region " Check Roles "
 
-    Public Function HasReadAllowedRoles(ByVal propertyName As String) As Boolean
+    Public Function HasReadAllowedRoles( _
+      ByVal propertyName As String) As Boolean
 
       Return (GetRolesForProperty(propertyName).ReadAllowed.Count > 0)
 
@@ -114,7 +120,8 @@ Namespace Security
 
     Public Function IsReadAllowed(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName).IsReadAllowed(ApplicationContext.User)
+      Return GetRolesForProperty(propertyName). _
+        IsReadAllowed(ApplicationContext.User)
 
     End Function
 

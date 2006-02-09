@@ -7,7 +7,8 @@ Imports Csla.Core
 ''' </summary>
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
-Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
+Public MustInherit Class ReadOnlyListBase( _
+  Of T As ReadOnlyListBase(Of T, C), C)
   Inherits Core.ReadOnlyBindingList(Of C)
 
   Implements Csla.Core.IReadOnlyCollection

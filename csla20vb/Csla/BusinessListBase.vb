@@ -3,7 +3,8 @@ Imports Csla.Core
 
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
-Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C As Core.BusinessBase)
+Public MustInherit Class BusinessListBase( _
+  Of T As BusinessListBase(Of T, C), C As Core.BusinessBase)
   Inherits System.ComponentModel.BindingList(Of C)
 
   Implements Core.IEditableCollection
@@ -201,7 +202,6 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
       child.UndoChanges()
       ' if item is below its point of addition, remove
       If child.EditLevelAdded > mEditLevel Then
-        'list.Remove(Child)
         RemoveAt(index)
       End If
     Next
@@ -220,7 +220,8 @@ Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C A
     Next
   End Sub
 
-  Private Sub AcceptChanges() Implements Core.IEditableCollection.AcceptChanges
+  Private Sub AcceptChanges() _
+    Implements Core.IEditableCollection.AcceptChanges
     Dim child As C
     Dim index As Integer
 

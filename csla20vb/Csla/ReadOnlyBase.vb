@@ -94,7 +94,8 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' reading and writing properties of the object. Typically these
   ''' values are added once when the business object is instantiated.
   ''' </remarks>
-  Protected ReadOnly Property AuthorizationRules() As Security.AuthorizationRules
+  Protected ReadOnly Property AuthorizationRules() _
+    As Security.AuthorizationRules
     Get
       Return mAuthorizationRules
     End Get

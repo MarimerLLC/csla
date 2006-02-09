@@ -1,19 +1,23 @@
 Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 
-Friend Module ObjectCloner
+Namespace Core
 
-  Public Function Clone(ByVal obj As Object) As Object
+  Friend Module ObjectCloner
 
-    Using buffer As New MemoryStream()
-      Dim formatter As New BinaryFormatter()
+    Public Function Clone(ByVal obj As Object) As Object
 
-      formatter.Serialize(buffer, obj)
-      buffer.Position = 0
-      Dim temp As Object = formatter.Deserialize(buffer)
-      Return temp
-    End Using
+      Using buffer As New MemoryStream()
+        Dim formatter As New BinaryFormatter()
 
-  End Function
+        formatter.Serialize(buffer, obj)
+        buffer.Position = 0
+        Dim temp As Object = formatter.Deserialize(buffer)
+        Return temp
+      End Using
 
-End Module
+    End Function
+
+  End Module
+
+End Namespace

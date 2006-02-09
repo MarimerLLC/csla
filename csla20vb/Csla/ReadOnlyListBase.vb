@@ -1,4 +1,5 @@
 Imports System.ComponentModel
+Imports Csla.Core
 
 ''' <summary>
 ''' This is the base class from which readonly collections

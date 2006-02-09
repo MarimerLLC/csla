@@ -1,5 +1,6 @@
 Imports System.Reflection
 Imports System.ComponentModel
+Imports Csla.Core
 
 ''' <summary>
 ''' This is a base class from which readonly business classes

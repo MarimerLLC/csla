@@ -57,7 +57,6 @@ Namespace Core
       Dim currentType As Type = Me.GetType
       Dim state As New HybridDictionary()
       Dim fields() As FieldInfo
-      Dim field As FieldInfo
       Dim fieldName As String
 
       Do
@@ -67,7 +66,7 @@ Namespace Core
                                 BindingFlags.Instance Or _
                                 BindingFlags.Public)
 
-        For Each field In fields
+        For Each field As FieldInfo In fields
           ' make sure we process only our variables
           If field.DeclaringType Is currentType Then
             ' see if this field is marked as not undoable
@@ -75,7 +74,8 @@ Namespace Core
               ' the field is undoable, so it needs to be processed
               Dim value As Object = field.GetValue(Me)
 
-              If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType) Then
+              If GetType(Csla.Core.IUndoableObject). _
+                  IsAssignableFrom(field.FieldType) Then
                 ' make sure the variable has a value
                 If Not value Is Nothing Then
                   ' this is a child object, cascade the call
@@ -160,7 +160,8 @@ Namespace Core
                 ' the field is undoable, so restore its value
                 Dim value As Object = field.GetValue(Me)
 
-                If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType) Then
+                If GetType(Csla.Core.IUndoableObject). _
+                  IsAssignableFrom(field.FieldType) Then
                   ' this is a child object, cascade the call
                   ' first make sure the variable has a value
                   If Not value Is Nothing Then
@@ -201,7 +202,9 @@ Namespace Core
     ''' to the object's state.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub AcceptChanges() Implements IUndoableObject.AcceptChanges
+    Protected Friend Sub AcceptChanges() _
+      Implements IUndoableObject.AcceptChanges
+
       If EditLevel > 0 Then
         mStateStack.Pop()
 
@@ -221,7 +224,8 @@ Namespace Core
               ' see if the field is undoable or not
               If Not NotUndoableField(field) Then
                 ' the field is undoable so see if it is editable
-                If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType) Then
+                If GetType(Csla.Core.IUndoableObject). _
+                  IsAssignableFrom(field.FieldType) Then
                   Dim value As Object = field.GetValue(Me)
                   ' make sure the variable has a value
                   If Not value Is Nothing Then

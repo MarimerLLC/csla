@@ -212,11 +212,13 @@ Namespace Core
     ''' directly from the property to be checked.
     ''' </para>
     ''' </remarks>
-    <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+    <System.Runtime.CompilerServices.MethodImpl( _
+      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Protected Sub PropertyHasChanged()
 
       Dim propertyName As String = _
-        New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
+        New System.Diagnostics.StackTrace(). _
+        GetFrame(1).GetMethod.Name.Substring(4)
       PropertyHasChanged(propertyName)
 
     End Sub
@@ -299,7 +301,8 @@ Namespace Core
     ''' reading and writing properties of the object. Typically these
     ''' values are added once when the business object is instantiated.
     ''' </remarks>
-    Protected ReadOnly Property AuthorizationRules() As Security.AuthorizationRules
+    Protected ReadOnly Property AuthorizationRules() _
+      As Security.AuthorizationRules
       Get
         If mAuthorizationRules Is Nothing Then
           mAuthorizationRules = New Security.AuthorizationRules
@@ -333,11 +336,13 @@ Namespace Core
     Public Function CanReadProperty(ByVal throwOnFalse As Boolean) As Boolean
 
       Dim propertyName As String = _
-        New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
+        New System.Diagnostics.StackTrace(). _
+        GetFrame(1).GetMethod.Name.Substring(4)
       Dim result As Boolean = CanReadProperty(propertyName)
       If throwOnFalse AndAlso result = False Then
         Throw New System.Security.SecurityException( _
-          String.Format("{0} ({1})", My.Resources.PropertyGetNotAllowed, propertyName))
+          String.Format("{0} ({1})", _
+          My.Resources.PropertyGetNotAllowed, propertyName))
       End If
       Return result
 
@@ -390,7 +395,8 @@ Namespace Core
     ''' </para>
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Public Overridable Function CanReadProperty(ByVal propertyName As String) As Boolean
+    Public Overridable Function CanReadProperty( _
+      ByVal propertyName As String) As Boolean
 
       Dim result As Boolean = True
       If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
@@ -564,7 +570,8 @@ Namespace Core
     ''' call should be honored, so we have extra code to detect this
     ''' and do nothing for subsquent calls.
     ''' </remarks>
-    Private Sub IEditableObject_BeginEdit() Implements System.ComponentModel.IEditableObject.BeginEdit
+    Private Sub IEditableObject_BeginEdit() _
+      Implements System.ComponentModel.IEditableObject.BeginEdit
 
       If Not mBindingEdit Then
         BeginEdit()
@@ -582,11 +589,13 @@ Namespace Core
     ''' should be honored. We include extra code to detect this and do
     ''' nothing for subsequent calls.
     ''' </remarks>
-    Private Sub IEditableObject_CancelEdit() Implements System.ComponentModel.IEditableObject.CancelEdit
+    Private Sub IEditableObject_CancelEdit() _
+      Implements System.ComponentModel.IEditableObject.CancelEdit
 
       If mBindingEdit Then
         CancelEdit()
-        If IsNew AndAlso mNeverCommitted AndAlso EditLevel <= EditLevelAdded Then
+        If IsNew AndAlso mNeverCommitted AndAlso _
+          EditLevel <= EditLevelAdded Then
           ' we're new and no EndEdit or ApplyEdit has ever been
           ' called on us, and now we've been canceled back to 
           ' where we were added so we should have ourselves  
@@ -610,7 +619,8 @@ Namespace Core
     ''' nothing for subsequent calls.
     ''' </remarks>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")> _
-    Private Sub IEditableObject_EndEdit() Implements System.ComponentModel.IEditableObject.EndEdit
+    Private Sub IEditableObject_EndEdit() _
+      Implements System.ComponentModel.IEditableObject.EndEdit
 
       If mBindingEdit Then
         ApplyEdit()
@@ -817,7 +827,8 @@ Namespace Core
     ''' easily call the <see cref="M:Csla.BrokenRules.Assert(System.String,System.String,System.Boolean)" /> 
     ''' method to mark rules as broken and unbroken.
     ''' </remarks>
-    Protected ReadOnly Property ValidationRules() As Validation.ValidationRules
+    Protected ReadOnly Property ValidationRules() _
+      As Validation.ValidationRules
       Get
         If mValidationRules Is Nothing Then
           mValidationRules = New Validation.ValidationRules(Me)
@@ -871,7 +882,8 @@ Namespace Core
     ''' <returns>A <see cref="T:Csla.Validation.RulesCollection" /> object.</returns>
     <Browsable(False)> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Public Overridable ReadOnly Property BrokenRulesCollection() As Validation.BrokenRulesCollection
+    Public Overridable ReadOnly Property BrokenRulesCollection() _
+      As Validation.BrokenRulesCollection
       Get
         Return ValidationRules.GetBrokenRules
       End Get
@@ -974,7 +986,8 @@ Namespace Core
 
 #Region " IDataErrorInfo "
 
-    Private ReadOnly Property [Error]() As String Implements System.ComponentModel.IDataErrorInfo.Error
+    Private ReadOnly Property [Error]() As String _
+      Implements System.ComponentModel.IDataErrorInfo.Error
       Get
         If Not IsValid Then
           Return ValidationRules.GetBrokenRules.ToString
@@ -985,7 +998,8 @@ Namespace Core
       End Get
     End Property
 
-    Private ReadOnly Property Item(ByVal columnName As String) As String Implements System.ComponentModel.IDataErrorInfo.Item
+    Private ReadOnly Property Item(ByVal columnName As String) As String _
+      Implements System.ComponentModel.IDataErrorInfo.Item
       Get
         Dim result As String = ""
         If Not IsValid Then
@@ -1017,7 +1031,8 @@ Namespace Core
     ''' after deserialization is complete.
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub OnDeserialized(ByVal context As StreamingContext)
+    Protected Overridable Sub OnDeserialized( _
+      ByVal context As StreamingContext)
 
       ' do nothing - this is here so a subclass
       ' could override if needed

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Csla.Validation.ValidationRules" Collapsed="true">
+    <Position X="2" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Validation\ValidationRules.vb</FileName>
+      <HashCode>AAAAAAAAAAAAACAAAAgAAAIIAgAAABAgAAgAABAAgAI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.RuleArgs" Collapsed="true">
+    <Position X="3.25" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Validation\RuleArgs.vb</FileName>
+      <HashCode>AAAAAAAQAAAgAAAEAAAEAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.ValidationException" Collapsed="true">
+    <Position X="3.25" Y="3.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Validation\ValidationException.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.RuleMethod" Collapsed="true">
+    <Position X="5.25" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Validation\RuleMethod.vb</FileName>
+      <HashCode>AQAAhAAAAAAIAAAEAAAAAAAEAAAAAAAABAAAABAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.BrokenRulesCollection" Collapsed="true">
+    <Position X="5.25" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Validation\BrokenRulesCollection.vb</FileName>
+      <HashCode>AAIAAAAAAAAAAAAEIAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Validation.BrokenRule" Collapsed="true">
+    <Position X="6.75" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Validation\BrokenRule.vb</FileName>
+      <HashCode>AQQABAAQAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Delegate Name="Csla.Validation.RuleHandler" Collapsed="true">
+    <Position X="3.25" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Validation\RuleHandler.vb</FileName>
+      <HashCode>AAAAAAAQAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Delegate>
+  <Module Name="Csla.Validation.CommonRules" Collapsed="true">
+    <Position X="2" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Validation\CommonRules.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAgEAAAAQA=</HashCode>
+    </TypeIdentifier>
+  </Module>
+</ClassDiagram>

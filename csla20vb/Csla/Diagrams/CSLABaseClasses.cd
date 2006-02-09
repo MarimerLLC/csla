@@ -12,23 +12,23 @@
     <Position X="3" Y="1" Width="2.25" />
     <TypeIdentifier>
       <FileName>BusinessListBase.vb</FileName>
-      <HashCode>AkAAAohACAAABAJAEAgBGCgAQAKAAAEEIAIBUIAgCFA=</HashCode>
+      <HashCode>AkAAAolACAAQFAJAEAgBGAgAAAKAAAEEIAABUIAgCFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Csla.ReadOnlyListBase(Of T)" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="3" Y="2" Width="2.25" />
+  <Class Name="Csla.ReadOnlyListBase(Of T, C)" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3" Y="2.25" Width="2.25" />
     <TypeIdentifier>
       <FileName>ReadOnlyListBase.vb</FileName>
-      <HashCode>AAAAAAgAAAAABABAEAABAAAAAAAAAAEAAAIAAAAACFA=</HashCode>
+      <HashCode>AAAAAAgAAAAQBABAEAABAAAAAAAAAAEAAAAAAAAACFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.NameValueListBase(Of K, V)" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="3" Y="3" Width="2.25" />
+    <Position X="3" Y="3.5" Width="2.25" />
     <TypeIdentifier>
       <FileName>NameValueListBase.vb</FileName>
-      <HashCode>AAAAAAgAAAAEBARAEAABAAAAAAAAAAEAAAIgAAAACFA=</HashCode>
+      <HashCode>AAAAAAgAAAAUBARAEAABAAAAAAAAAAEAAAAgAAAACFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -38,12 +38,13 @@
       <FileName>CommandBase.vb</FileName>
       <HashCode>AAAAAAgAAAAABABAEAAAAAAAAAAAAAEAAAAAAAAACEI=</HashCode>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.ReadOnlyBase(Of T)" Collapsed="true">
-    <Position X="0.5" Y="2" Width="2.25" />
+    <Position X="0.5" Y="2.25" Width="2.25" />
     <TypeIdentifier>
       <FileName>ReadOnlyBase.vb</FileName>
-      <HashCode>AAAAAAgAAAAABABAEAABAAAEAABgAAEAAAIAAAAACFA=</HashCode>
+      <HashCode>AAAAAAgAAAAQBABEkAAJAAAEAABgAIEAAAAAAAAAiFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

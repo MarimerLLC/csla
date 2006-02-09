@@ -89,7 +89,8 @@ Namespace Validation
     ''' The property name on the target object where the rule implementation can retrieve
     ''' the value to be validated.
     ''' </param>
-    Public Sub AddRule(ByVal handler As RuleHandler, ByVal propertyName As String)
+    Public Sub AddRule( _
+      ByVal handler As RuleHandler, ByVal propertyName As String)
 
       ' get the list of rules for the property
       Dim list As List(Of RuleMethod) = GetRulesForProperty(propertyName)

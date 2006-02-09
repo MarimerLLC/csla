@@ -1,6 +1,7 @@
 Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.ComponentModel
+Imports Csla.Core
 
 ''' <summary>
 ''' This is the base class from which readonly name/value

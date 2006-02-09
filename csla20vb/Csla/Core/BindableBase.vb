@@ -23,21 +23,35 @@ Namespace Core
     ''' <summary>
     ''' Implements a serialization-safe IsDirtyChanged event.
     ''' </summary>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-    Public Custom Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
+    <System.Diagnostics.CodeAnalysis.SuppressMessage( _
+      "Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+    Public Custom Event PropertyChanged As PropertyChangedEventHandler _
+              Implements INotifyPropertyChanged.PropertyChanged
       AddHandler(ByVal value As PropertyChangedEventHandler)
-        If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-          mSerializableHandlers = DirectCast(System.Delegate.Combine(mSerializableHandlers, value), PropertyChangedEventHandler)
+        If value.Method.IsPublic AndAlso _
+          (value.Method.DeclaringType.IsSerializable OrElse _
+          value.Method.IsStatic) Then
+          mSerializableHandlers = _
+            DirectCast(System.Delegate.Combine( _
+              mSerializableHandlers, value), PropertyChangedEventHandler)
         Else
-          mNonSerializableHandlers = DirectCast(System.Delegate.Combine(mNonSerializableHandlers, value), PropertyChangedEventHandler)
+          mNonSerializableHandlers = _
+            DirectCast(System.Delegate.Combine( _
+              mNonSerializableHandlers, value), PropertyChangedEventHandler)
         End If
       End AddHandler
 
       RemoveHandler(ByVal value As PropertyChangedEventHandler)
-        If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-          mSerializableHandlers = DirectCast(System.Delegate.Remove(mSerializableHandlers, value), PropertyChangedEventHandler)
+        If value.Method.IsPublic AndAlso _
+          (value.Method.DeclaringType.IsSerializable OrElse _
+          value.Method.IsStatic) Then
+          mSerializableHandlers = DirectCast( _
+            System.Delegate.Remove( _
+              mSerializableHandlers, value), PropertyChangedEventHandler)
         Else
-          mNonSerializableHandlers = DirectCast(System.Delegate.Remove(mNonSerializableHandlers, value), PropertyChangedEventHandler)
+          mNonSerializableHandlers = DirectCast( _
+            System.Delegate.Remove( _
+              mNonSerializableHandlers, value), PropertyChangedEventHandler)
         End If
       End RemoveHandler
 
@@ -83,7 +97,8 @@ Namespace Core
       Dim properties() As PropertyInfo = _
         Me.GetType.GetProperties(BindingFlags.Public Or BindingFlags.Instance)
       For Each item As PropertyInfo In properties
-        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(item.Name))
+        RaiseEvent PropertyChanged( _
+          Me, New PropertyChangedEventArgs(item.Name))
       Next
 
     End Sub
@@ -98,7 +113,8 @@ Namespace Core
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnPropertyChanged(ByVal propertyName As String)
-      RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+      RaiseEvent PropertyChanged( _
+        Me, New PropertyChangedEventArgs(propertyName))
     End Sub
 
   End Class

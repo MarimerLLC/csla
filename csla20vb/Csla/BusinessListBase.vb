@@ -1,4 +1,5 @@
 Imports System.ComponentModel
+Imports Csla.Core
 
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _

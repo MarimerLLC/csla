@@ -13,6 +13,7 @@ Namespace Validation
   ''' return False if the data is invalid.
   ''' </para>
   ''' </remarks>
-  Public Delegate Function RuleHandler(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+  Public Delegate Function RuleHandler( _
+    ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
 End Namespace

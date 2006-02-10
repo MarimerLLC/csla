@@ -74,7 +74,7 @@ namespace PTWin
           {
             // rebind the UI
             this.projectBindingSource.DataSource = null;
-            this.resourcesBindingSource.DataSource = null;
+            this.resourcesBindingSource.DataSource = this.projectBindingSource;
             this.projectBindingSource.DataSource = _project;
             ApplyAuthorizationRules();
           }

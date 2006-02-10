@@ -82,7 +82,7 @@ Public Class ProjectEdit
         If rebind Then
           ' rebind the UI
           Me.ProjectBindingSource.DataSource = Nothing
-          Me.ResourcesBindingSource.DataSource = Nothing
+          Me.ResourcesBindingSource.DataSource = Me.ProjectBindingSource
           Me.ProjectBindingSource.DataSource = mProject
           ApplyAuthorizationRules()
         End If
@@ -101,7 +101,6 @@ Public Class ProjectEdit
         Me.ProjectBindingSource.RaiseListChangedEvents = True
         Me.ResourcesBindingSource.RaiseListChangedEvents = True
       End Try
-
     End Using
 
   End Sub

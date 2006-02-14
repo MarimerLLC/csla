@@ -142,12 +142,14 @@ Public Module DataPortal
     Dim result As Server.DataPortalResult
 
     Dim method As MethodInfo = _
-      MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria)
+      MethodCaller.GetMethod( _
+        MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria)
 
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
 
-    Dim dpContext As New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
+    Dim dpContext As New Server.DataPortalContext( _
+      GetPrincipal, proxy.IsServerRemote)
 
     OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
@@ -364,7 +366,8 @@ Public Module DataPortal
   Private mLocalPortal As DataPortalClient.IDataPortalProxy
   Private mPortal As DataPortalClient.IDataPortalProxy
 
-  Private Function GetDataPortalProxy(ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
+  Private Function GetDataPortalProxy( _
+    ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
 
     If forceLocal Then
       If mLocalPortal Is Nothing Then
@@ -380,8 +383,10 @@ Public Module DataPortal
           mPortal = New DataPortalClient.LocalProxy
 
         Else
-          Dim typeName As String = proxyTypeName.Substring(0, proxyTypeName.IndexOf(",")).Trim
-          Dim assemblyName As String = proxyTypeName.Substring(proxyTypeName.IndexOf(",") + 1).Trim
+          Dim typeName As String = _
+            proxyTypeName.Substring(0, proxyTypeName.IndexOf(",")).Trim
+          Dim assemblyName As String = _
+            proxyTypeName.Substring(proxyTypeName.IndexOf(",") + 1).Trim
           mPortal = DirectCast(Activator.CreateInstance(assemblyName, _
             typeName).Unwrap, DataPortalClient.IDataPortalProxy)
         End If

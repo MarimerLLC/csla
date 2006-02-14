@@ -113,15 +113,18 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <returns>A new object containing the saved values.</returns>
   Public Overridable Function Save() As T
     If Me.IsChild Then
-      Throw New NotSupportedException(My.Resources.NoSaveChildException)
+      Throw New NotSupportedException( _
+        My.Resources.NoSaveChildException)
     End If
 
     If EditLevel > 0 Then
-      Throw New Validation.ValidationException(My.Resources.NoSaveEditingException)
+      Throw New Validation.ValidationException( _
+        My.Resources.NoSaveEditingException)
     End If
 
     If Not IsValid Then
-      Throw New Validation.ValidationException(My.Resources.NoSaveInvalidException)
+      Throw New Validation.ValidationException( _
+        My.Resources.NoSaveInvalidException)
     End If
 
     If IsDirty Then

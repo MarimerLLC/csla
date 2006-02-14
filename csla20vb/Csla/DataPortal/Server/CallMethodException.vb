@@ -22,7 +22,8 @@ Namespace Server
       MessageId:="System.String.Format(System.String,System.Object,System.Object,System.Object)")> _
     Public Overrides ReadOnly Property StackTrace() As String
       Get
-        Return String.Format("{0}{1}{2}", mInnerStackTrace, vbCrLf, MyBase.StackTrace)
+        Return String.Format("{0}{1}{2}", _
+          mInnerStackTrace, vbCrLf, MyBase.StackTrace)
       End Get
     End Property
 

@@ -900,7 +900,8 @@ Namespace Core
     ''' <param name="Criteria">An object containing criteria values.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)
-      Throw New NotSupportedException(My.Resources.CreateNotSupportedException)
+      Throw New NotSupportedException( _
+        My.Resources.CreateNotSupportedException)
     End Sub
 
     ''' <summary>

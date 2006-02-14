@@ -32,7 +32,8 @@ Friend Module MethodCaller
   End Function
 
   Public Function CallMethod(ByVal obj As Object, _
-    ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) As Object
+    ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) _
+    As Object
 
     ' call a Public method on the object
     Dim result As Object
@@ -49,7 +50,8 @@ Friend Module MethodCaller
   End Function
 
   Public Function GetMethod(ByVal objectType As Type, _
-    ByVal method As String, ByVal ParamArray parameters() As Object) As MethodInfo
+    ByVal method As String, ByVal ParamArray parameters() As Object) _
+    As MethodInfo
 
     Dim flags As BindingFlags = _
       BindingFlags.FlattenHierarchy Or _
@@ -117,7 +119,8 @@ Friend Module MethodCaller
       Catch ex As AmbiguousMatchException
         Dim methods() As MethodInfo = objectType.GetMethods
         For Each m As MethodInfo In methods
-          If m.Name = method AndAlso m.GetParameters.Length = parameters.Length Then
+          If m.Name = method AndAlso _
+          m.GetParameters.Length = parameters.Length Then
             result = m
             Exit For
           End If

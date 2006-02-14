@@ -184,7 +184,7 @@ Public Class Project
     If Not CanAddObject() Then
       Throw New System.Security.SecurityException("User not authorized to add a project")
     End If
-    Return DataPortal.Create(Of Project)(Nothing)
+    Return DataPortal.Create(Of Project)()
 
   End Function
 

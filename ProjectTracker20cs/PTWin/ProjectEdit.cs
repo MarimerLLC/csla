@@ -108,7 +108,6 @@ namespace PTWin
 
       this.roleListBindingSource.DataSource = RoleList.GetList();
       this.projectBindingSource.DataSource = _project;
-      this.resourcesBindingSource.DataSource = _project.Resources;
 
       ApplyAuthorizationRules();
     }

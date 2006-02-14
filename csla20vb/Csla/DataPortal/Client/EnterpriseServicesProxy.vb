@@ -4,9 +4,13 @@ Namespace DataPortalClient
 
     Implements DataPortalClient.IDataPortalProxy
 
-    Protected MustOverride Function GetServerObject() As Server.Hosts.EnterpriseServicesPortal
+    Protected MustOverride Function GetServerObject() As _
+      Server.Hosts.EnterpriseServicesPortal
 
-    Public Overridable Function Create(ByVal objectType As System.Type, ByVal criteria As Object, ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Create
+    Public Function Create( _
+      ByVal objectType As System.Type, ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Create
 
       Dim svc As Server.Hosts.EnterpriseServicesPortal = GetServerObject()
       Try
@@ -20,7 +24,10 @@ Namespace DataPortalClient
 
     End Function
 
-    Public Overridable Function Fetch(ByVal criteria As Object, ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Fetch
+    Public Function Fetch( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Fetch
 
       Dim svc As Server.Hosts.EnterpriseServicesPortal = GetServerObject()
       Try
@@ -34,7 +41,10 @@ Namespace DataPortalClient
 
     End Function
 
-    Public Overridable Function Update(ByVal obj As Object, ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Update
+    Public Function Update( _
+      ByVal obj As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Update
 
       Dim svc As Server.Hosts.EnterpriseServicesPortal = GetServerObject()
       Try
@@ -48,7 +58,10 @@ Namespace DataPortalClient
 
     End Function
 
-    Public Overridable Function Delete(ByVal criteria As Object, ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Delete
+    Public Function Delete( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Delete
 
       Dim svc As Server.Hosts.EnterpriseServicesPortal = GetServerObject()
       Try
@@ -62,7 +75,8 @@ Namespace DataPortalClient
 
     End Function
 
-    Public Overridable ReadOnly Property IsServerRemote() As Boolean Implements IDataPortalProxy.IsServerRemote
+    Public ReadOnly Property IsServerRemote() As Boolean _
+      Implements IDataPortalProxy.IsServerRemote
       Get
         Return True
       End Get

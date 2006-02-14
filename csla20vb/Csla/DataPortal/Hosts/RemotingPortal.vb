@@ -9,28 +9,41 @@ Namespace Server.Hosts
 
     Implements Server.IDataPortalServer
 
-    Public Function Create(ByVal objectType As System.Type, ByVal criteria As Object, ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Create
+    Public Function Create( _
+      ByVal objectType As System.Type, _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Create
 
       Dim portal As New Server.DataPortal
       Return portal.Create(objectType, criteria, context)
 
     End Function
 
-    Public Function Fetch(ByVal criteria As Object, ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Fetch
+    Public Function Fetch( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Fetch
 
       Dim portal As New Server.DataPortal
       Return portal.Fetch(criteria, context)
 
     End Function
 
-    Public Function Update(ByVal obj As Object, ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Update
+    Public Function Update( _
+      ByVal obj As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Update
 
       Dim portal As New Server.DataPortal
       Return portal.Update(obj, context)
 
     End Function
 
-    Public Function Delete(ByVal criteria As Object, ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Delete
+    Public Function Delete( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Delete
 
       Dim portal As New Server.DataPortal
       Return portal.Delete(criteria, context)

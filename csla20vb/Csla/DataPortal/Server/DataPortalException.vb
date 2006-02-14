@@ -30,7 +30,9 @@ Namespace Server
       End Get
     End Property
 
-    Public Sub New(ByVal message As String, ByVal ex As Exception, ByVal result As DataPortalResult)
+    Public Sub New( _
+      ByVal message As String, ByVal ex As Exception, _
+      ByVal result As DataPortalResult)
 
       MyBase.New(message, ex)
       mInnerStackTrace = ex.StackTrace

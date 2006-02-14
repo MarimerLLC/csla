@@ -22,10 +22,10 @@ Namespace Server
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A populated business object.</returns>
     Public Function Create( _
-      ByVal objectType As Type, _
+      ByVal objectType As System.Type, _
       ByVal criteria As Object, _
-      ByVal context As DataPortalContext) As DataPortalResult _
-      Implements IDataPortalServer.Create
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Create
 
       Try
         SetContext(context)
@@ -70,7 +70,10 @@ Namespace Server
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Object containing context data from client.</param>
     ''' <returns>A populated business object.</returns>
-    Public Function Fetch(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Fetch
+    Public Function Fetch( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Fetch
 
       Try
         SetContext(context)
@@ -78,7 +81,9 @@ Namespace Server
         Dim result As DataPortalResult
 
         Dim method As MethodInfo = _
-          MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria)
+          MethodCaller.GetMethod( _
+            MethodCaller.GetObjectType(criteria), _
+            "DataPortal_Fetch", criteria)
 
         Select Case TransactionalType(method)
           Case TransactionalTypes.EnterpriseServices
@@ -116,9 +121,10 @@ Namespace Server
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A reference to the newly updated object.</returns>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-    Public Function Update(ByVal obj As Object, _
-      ByVal context As DataPortalContext) As DataPortalResult _
-      Implements IDataPortalServer.Update
+    Public Function Update( _
+      ByVal obj As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Update
 
       Try
         SetContext(context)
@@ -182,7 +188,10 @@ Namespace Server
     ''' </summary>
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Context data from the client.</param>
-    Public Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Delete
+    Public Function Delete( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Delete
 
       Try
         SetContext(context)
@@ -233,11 +242,13 @@ Namespace Server
 
       ' set the app context to the value we got from the
       ' client
-      ApplicationContext.SetContext(context.ClientContext, context.GlobalContext)
+      ApplicationContext.SetContext( _
+        context.ClientContext, context.GlobalContext)
 
       ' set the context value so everyone knows the
       ' code is running on the server
-      ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server)
+      ApplicationContext.SetExecutionLocation( _
+        ApplicationContext.ExecutionLocations.Server)
 
       ' set the thread's culture to match the client
       System.Threading.Thread.CurrentThread.CurrentCulture = _
@@ -249,7 +260,8 @@ Namespace Server
         ' When using integrated security, Principal must be Nothing 
         If context.Principal Is Nothing Then
           ' Set .NET to use integrated security 
-          AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal)
+          AppDomain.CurrentDomain.SetPrincipalPolicy( _
+            PrincipalPolicy.WindowsPrincipal)
           Exit Sub
 
         Else
@@ -265,7 +277,8 @@ Namespace Server
 
         Else
           Throw New System.Security.SecurityException( _
-            My.Resources.BusinessPrincipalException & " " & CType(context.Principal, Object).ToString())
+            My.Resources.BusinessPrincipalException & " " & _
+            CType(context.Principal, Object).ToString())
         End If
 
       Else
@@ -298,13 +311,15 @@ Namespace Server
 
     End Function
 
-    Private Shared Function TransactionalType(ByVal method As MethodInfo) As TransactionalTypes
+    Private Shared Function TransactionalType( _
+      ByVal method As MethodInfo) As TransactionalTypes
 
       Dim result As TransactionalTypes
       If IsTransactionalMethod(method) Then
         Dim attrib As TransactionalAttribute = _
-          DirectCast(Attribute.GetCustomAttribute(method, GetType(TransactionalAttribute)), _
-          TransactionalAttribute)
+          DirectCast(Attribute.GetCustomAttribute( _
+            method, GetType(TransactionalAttribute)), _
+            TransactionalAttribute)
         result = attrib.TransactionType
 
       Else

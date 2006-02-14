@@ -28,7 +28,11 @@ Namespace Server
     ''' the object.</param>
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A populated business object.</returns>
-    Public Function Create(ByVal objectType As System.Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Create
+    Public Function Create( _
+      ByVal objectType As System.Type, _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Create
 
       Dim result As DataPortalResult
       Using tr As New TransactionScope
@@ -55,7 +59,10 @@ Namespace Server
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Object containing context data from client.</param>
     ''' <returns>A populated business object.</returns>
-    Public Function Fetch(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Fetch
+    Public Function Fetch( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Fetch
 
       Dim result As DataPortalResult
       Using tr As New TransactionScope
@@ -81,7 +88,10 @@ Namespace Server
     ''' <param name="obj">A reference to the object being updated.</param>
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A reference to the newly updated object.</returns>
-    Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Update
+    Public Function Update( _
+      ByVal obj As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Update
 
       Dim result As DataPortalResult
       Using tr As New TransactionScope
@@ -106,7 +116,10 @@ Namespace Server
     ''' </remarks>
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Context data from the client.</param>
-    Public Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Delete
+    Public Function Delete( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Delete
 
       Dim result As DataPortalResult
       Using tr As New TransactionScope

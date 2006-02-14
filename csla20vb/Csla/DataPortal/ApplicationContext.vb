@@ -90,7 +90,8 @@ Public Module ApplicationContext
       Return CType(Thread.GetData(slot), HybridDictionary)
 
     Else
-      Return CType(HttpContext.Current.Items("Csla.ClientContext"), HybridDictionary)
+      Return CType(HttpContext.Current.Items("Csla.ClientContext"), _
+        HybridDictionary)
     End If
 
   End Function
@@ -134,7 +135,9 @@ Public Module ApplicationContext
 
   End Sub
 
-  Friend Sub SetContext(ByVal clientContext As HybridDictionary, ByVal globalContext As HybridDictionary)
+  Friend Sub SetContext( _
+    ByVal clientContext As HybridDictionary, _
+    ByVal globalContext As HybridDictionary)
 
     SetClientContext(clientContext)
     SetGlobalContext(globalContext)
@@ -210,8 +213,8 @@ Public Module ApplicationContext
   ''' </remarks>
   Public ReadOnly Property DataPortalProxy() As String
     Get
-      Dim result As String = ConfigurationManager.AppSettings("CslaDataPortalProxy")
-      'Dim result As String = My.Settings.CslaDataPortalProxy
+      Dim result As String = _
+        ConfigurationManager.AppSettings("CslaDataPortalProxy")
       If Len(result) = 0 Then
         result = "Local"
       End If

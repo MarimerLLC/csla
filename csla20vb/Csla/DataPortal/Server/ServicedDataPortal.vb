@@ -27,7 +27,11 @@ Namespace Server
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A populated business object.</returns>
     <AutoComplete(True)> _
-    Public Function Create(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Create
+    Public Function Create( _
+      ByVal objectType As System.Type, _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Create
 
       Dim portal As New SimpleDataPortal
       Return portal.Create(objectType, criteria, context)
@@ -46,7 +50,10 @@ Namespace Server
     ''' <param name="context">Object containing context data from client.</param>
     ''' <returns>A populated business object.</returns>
     <AutoComplete(True)> _
-    Public Function Fetch(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Fetch
+    Public Function Fetch( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Fetch
 
       Dim portal As New SimpleDataPortal
       Return portal.Fetch(criteria, context)
@@ -65,7 +72,10 @@ Namespace Server
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A reference to the newly updated object.</returns>
     <AutoComplete(True)> _
-    Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Update
+    Public Function Update( _
+      ByVal obj As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Update
 
       Dim portal As New SimpleDataPortal
       Return portal.Update(obj, context)
@@ -83,7 +93,10 @@ Namespace Server
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Context data from the client.</param>
     <AutoComplete(True)> _
-    Public Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Delete
+    Public Function Delete( _
+      ByVal criteria As Object, _
+      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
+      Implements Server.IDataPortalServer.Delete
 
       Dim portal As New SimpleDataPortal
       Return portal.Delete(criteria, context)

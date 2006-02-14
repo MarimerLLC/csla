@@ -1,10 +1,19 @@
 Namespace Server
 
   Public Interface IDataPortalServer
-    Function Create(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult
-    Function Fetch(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult
-    Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As DataPortalResult
-    Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult
+    Function Create( _
+      ByVal objectType As Type, _
+      ByVal criteria As Object, _
+      ByVal context As DataPortalContext) As DataPortalResult
+    Function Fetch( _
+      ByVal criteria As Object, _
+      ByVal context As DataPortalContext) As DataPortalResult
+    Function Update( _
+      ByVal obj As Object, _
+      ByVal context As DataPortalContext) As DataPortalResult
+    Function Delete( _
+      ByVal criteria As Object, _
+      ByVal context As DataPortalContext) As DataPortalResult
   End Interface
 
 End Namespace

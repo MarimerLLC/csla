@@ -1,66 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Font Name="Tahoma" Size="8.25" />
-  <Class Name="Csla.DataPortal" Collapsed="true">
-    <Position X="0.5" Y="3.25" Width="1.75" />
-    <TypeIdentifier>
-      <FileName>DataPortal\Client\DataPortal.vb</FileName>
-      <HashCode>AAQCAAAQABCAAAQAAAFAAgAAIAEgIEAAAAAIAAADAAA=</HashCode>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Csla.CriteriaBase" Collapsed="true">
-    <Position X="2.5" Y="2.5" Width="1.75" />
-    <TypeIdentifier>
-      <FileName>DataPortal\CriteriaBase.vb</FileName>
-      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Csla.ApplicationContext" Collapsed="true">
-    <Position X="2.5" Y="1" Width="1.75" />
-    <TypeIdentifier>
-      <FileName>DataPortal\ApplicationContext.vb</FileName>
-      <HashCode>IAAAAACAAAIAAABAiCAAAgBAAAAgAAAAAAAAAAJAAAA=</HashCode>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Csla.Server.DataPortal" Collapsed="true">
-    <Position X="4.5" Y="3.25" Width="1.75" />
+    <Position X="7" Y="3" Width="1.75" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\DataPortal.vb</FileName>
-      <HashCode>AEQCAAAAAAKAAAAAQAEAAAAAAAEAAEAAAAQAAAAAAAA=</HashCode>
+      <HashCode>AEQAAAAAAAIAAAAAQAEAAAAAAAEAAEAAAAQAAAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Csla.Server.DataPortalContext" Collapsed="true">
-    <Position X="2.5" Y="1.75" Width="1.75" />
-    <TypeIdentifier>
-      <FileName>DataPortal\Server\DataPortalContext.vb</FileName>
-      <HashCode>AAAQAAAAAAAAAAAAADAAAAAECAAAAAAoAAAAAAIAAAA=</HashCode>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Csla.Server.DataPortalResult" Collapsed="true">
-    <Position X="2.5" Y="4" Width="1.75" />
-    <TypeIdentifier>
-      <FileName>DataPortal\Server\DataPortalResult.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAADAAAAAAAAAAEAAAAAAAAAAAAAI=</HashCode>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Csla.Server.DataPortalException" Collapsed="true">
-    <Position X="2.5" Y="4.75" Width="1.75" />
-    <TypeIdentifier>
-      <FileName>DataPortal\Server\DataPortalException.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAgAAABAAAAQgAACAAAAAAAAAAAAAAAA=</HashCode>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Csla.Server.SimpleDataPortal" Collapsed="true">
-    <Position X="8.75" Y="3.25" Width="1.75" />
+    <Position X="9" Y="3" Width="1.75" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\SimpleDataPortal.vb</FileName>
-      <HashCode>AAQAAAAAAACAgAAAAAEAAAAAAAEAAEAAAAAAAIAAAIA=</HashCode>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAIAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.TransactionalDataPortal" Collapsed="true">
-    <Position X="6.5" Y="4.25" Width="2" />
+    <Position X="7.75" Y="4" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\TransactionalDataPortal.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
@@ -68,32 +26,73 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.ServicedDataPortal" Collapsed="true">
-    <Position X="6.5" Y="2.25" Width="2" />
+    <Position X="7.75" Y="2" Width="2" />
     <TypeIdentifier>
       <FileName>DataPortal\Server\ServicedDataPortal.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Csla.TransactionalAttribute" Collapsed="true">
-    <Position X="4.5" Y="5.75" Width="2" />
+  <Class Name="Csla.Server.Hosts.EnterpriseServicesPortal" Collapsed="true">
+    <Position X="4.75" Y="1.5" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\TransactionalAttribute.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>DataPortal\Hosts\EnterpriseServicesPortal.vb</FileName>
+      <HashCode>AAQAAAAAAAAAAAAIAAEAAAAAAAEAAEABAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.DataPortalClient.EnterpriseServicesProxy" Collapsed="true">
+    <Position X="2.5" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Client\EnterpriseServicesProxy.vb</FileName>
+      <HashCode>AAQAAAAAAAAAAAAAAAEIAAAAAAEAAEQAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.DataPortalClient.LocalProxy" Collapsed="true">
+    <Position X="2.5" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Client\LocalProxy.vb</FileName>
+      <HashCode>AAQAAAAAAAAAAAAAAAEIAAAAAAEgAEAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.DataPortalClient.RemotingProxy" Collapsed="true">
+    <Position X="2.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Client\RemotingProxy.vb</FileName>
+      <HashCode>AAQAAAAAAAAAAAAAAAEIAAAAAAEgAEAAAAAAAAABAIA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.DataPortalClient.WebServicesProxy" Collapsed="true">
+    <Position X="2.5" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Client\WebServicesProxy.vb</FileName>
+      <HashCode>AAQAAAAAAAAAABAAAAEIAAAAACFAAEAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Server.Hosts.RemotingPortal" Collapsed="true">
+    <Position X="4.75" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Hosts\RemotingPortal.vb</FileName>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Server.Hosts.WebServicePortal" Collapsed="true">
+    <Position X="4.75" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>DataPortal\Hosts\WebServicePortal.vb</FileName>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAACFAAEAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Csla.RunLocalAttribute" Collapsed="true">
-    <Position X="0.5" Y="5.75" Width="1.75" />
+  <Module Name="Csla.DataPortal" Collapsed="true">
+    <Position X="0.5" Y="3" Width="1.75" />
     <TypeIdentifier>
-      <FileName>DataPortal\RunLocalAttribute.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataPortal\Client\DataPortal.vb</FileName>
+      <HashCode>AAQAAAAAABAAAAQAAAFAAgAAIAEgIEAAAAAIAAADAAA=</HashCode>
     </TypeIdentifier>
-  </Class>
-  <Enum Name="Csla.TransactionalTypes" Collapsed="true">
-    <Position X="6.75" Y="6" Width="1.75" />
-    <TypeIdentifier>
-      <FileName>DataPortal\TransactionalTypes.vb</FileName>
-      <HashCode>AAAAAAAgQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
-    </TypeIdentifier>
-  </Enum>
+  </Module>
 </ClassDiagram>

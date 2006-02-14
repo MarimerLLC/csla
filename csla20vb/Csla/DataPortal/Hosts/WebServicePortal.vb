@@ -150,7 +150,8 @@ Namespace Server.Hosts
     <WebMethod()> _
     Public Function Fetch(ByVal requestData As Byte()) As Byte()
 
-      Dim request As FetchRequest = DirectCast(Deserialize(requestData), FetchRequest)
+      Dim request As FetchRequest = _
+        DirectCast(Deserialize(requestData), FetchRequest)
 
       Dim portal As New Server.DataPortal
       Dim result As Object

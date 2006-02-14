@@ -82,13 +82,16 @@ Namespace Server
     ''' </summary>
     ''' <param name="principal">The current Principal object.</param>
     ''' <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
-    Public Sub New(ByVal principal As IPrincipal, ByVal isRemotePortal As Boolean)
+    Public Sub New( _
+      ByVal principal As IPrincipal, ByVal isRemotePortal As Boolean)
 
       If isRemotePortal Then
         mPrincipal = principal
         mRemotePortal = isRemotePortal
-        mClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name
-        mClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name
+        mClientCulture = _
+          System.Threading.Thread.CurrentThread.CurrentCulture.Name
+        mClientUICulture = _
+          System.Threading.Thread.CurrentThread.CurrentUICulture.Name
         mClientContext = Csla.ApplicationContext.GetClientContext
         mGlobalContext = Csla.ApplicationContext.GetGlobalContext
       End If

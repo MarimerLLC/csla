@@ -79,7 +79,8 @@ Public Module DataPortal
 
   End Function
 
-  Private Function Create(ByVal objectType As Type, ByVal criteria As Object) As Object
+  Private Function Create( _
+    ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
 
@@ -89,7 +90,8 @@ Public Module DataPortal
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
 
-    Dim dpContext As New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
+    Dim dpContext As New Server.DataPortalContext( _
+      GetPrincipal, proxy.IsServerRemote)
 
     OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 

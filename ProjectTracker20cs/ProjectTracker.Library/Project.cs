@@ -213,7 +213,7 @@ namespace ProjectTracker.Library
       if (!CanAddObject())
         throw new System.Security.SecurityException(
           "User not authorized to add a project");
-      return DataPortal.Create<Project>(null);
+      return DataPortal.Create<Project>();
     }
 
     public static Project GetProject(Guid id)
@@ -365,10 +365,8 @@ namespace ProjectTracker.Library
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Delete(object criteria)
+    private void DataPortal_Delete(Criteria criteria)
     {
-      Criteria crit = (Criteria)criteria;
-
       using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
@@ -376,7 +374,7 @@ namespace ProjectTracker.Library
         {
           cm.CommandType = CommandType.StoredProcedure;
           cm.CommandText = "deleteProject";
-          cm.Parameters.AddWithValue("@id", crit.Id);
+          cm.Parameters.AddWithValue("@id", criteria.Id);
           cm.ExecuteNonQuery();
         }
       }

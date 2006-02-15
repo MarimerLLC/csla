@@ -23,9 +23,11 @@ Namespace Validation
     Public Function StringRequired( _
       ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
-      Dim value As String = CStr(CallByName(target, e.PropertyName, CallType.Get))
+      Dim value As String = _
+        CStr(CallByName(target, e.PropertyName, CallType.Get))
       If Len(value) = 0 Then
-        e.Description = e.PropertyName & " required"
+        e.Description = _
+          String.Format(My.Resources.StringRequiredRule, e.PropertyName)
         Return False
 
       Else
@@ -55,8 +57,10 @@ Namespace Validation
       ByVal e As RuleArgs) As Boolean
 
       Dim max As Integer = DirectCast(e, MaxLengthRuleArgs).MaxLength
-      If Len(CallByName(target, e.PropertyName, CallType.Get).ToString) > max Then
-        e.Description = e.PropertyName & " can not exceed " & max & " characters"
+      If Len(CallByName( _
+          target, e.PropertyName, CallType.Get).ToString) > max Then
+        e.Description = _
+          String.Format(My.Resources.StringMaxLengthRule, e.PropertyName, max)
         Return False
       Else
         Return True
@@ -96,7 +100,7 @@ Namespace Validation
       Dim max As Integer = CType(e, IntegerMaxValueRuleArgs).MaxValue
       Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
       If value > max Then
-        e.Description = String.Format("{0} can not exceed {1}", _
+        e.Description = String.Format(My.Resources.MaxValueRule, _
           e.PropertyName, max.ToString)
         Return False
       Else
@@ -185,7 +189,7 @@ Namespace Validation
       End If
 
       If Not result Then
-        e.Description = String.Format("{0} can not exceed {1}", _
+        e.Description = String.Format(My.Resources.MaxValueRule, _
           e.PropertyName, max.ToString)
         Return False
 
@@ -276,7 +280,7 @@ Namespace Validation
       End If
 
       If Not result Then
-        e.Description = String.Format("{0} can not be less than {1}", _
+        e.Description = String.Format(My.Resources.MinValueRule, _
           e.PropertyName, min.ToString)
         Return False
 

@@ -187,6 +187,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} can not exceed {1}.
+        /// </summary>
+        internal static string MaxValueRule {
+            get {
+                return ResourceManager.GetString("MaxValueRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to method call failed.
         /// </summary>
         internal static string MethodCallFailed {
@@ -201,6 +210,15 @@ namespace Csla.Properties {
         internal static string MethodNotImplemented {
             get {
                 return ResourceManager.GetString("MethodNotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can not be less than {1}.
+        /// </summary>
+        internal static string MinValueRule {
+            get {
+                return ResourceManager.GetString("MinValueRule", resourceCulture);
             }
         }
         
@@ -399,6 +417,24 @@ namespace Csla.Properties {
         internal static string SmartDateYesterday {
             get {
                 return ResourceManager.GetString("SmartDateYesterday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can not exceed {1} characters.
+        /// </summary>
+        internal static string StringMaxLengthRule {
+            get {
+                return ResourceManager.GetString("StringMaxLengthRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} required.
+        /// </summary>
+        internal static string StringRequiredRule {
+            get {
+                return ResourceManager.GetString("StringRequiredRule", resourceCulture);
             }
         }
         

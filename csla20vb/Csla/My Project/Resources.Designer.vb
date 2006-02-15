@@ -187,6 +187,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to {0} can not exceed {1}.
+        '''</summary>
+        Friend ReadOnly Property MaxValueRule() As String
+            Get
+                Return ResourceManager.GetString("MaxValueRule", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to method call failed.
         '''</summary>
         Friend ReadOnly Property MethodCallFailed() As String
@@ -201,6 +210,15 @@ Namespace My.Resources
         Friend ReadOnly Property MethodNotImplemented() As String
             Get
                 Return ResourceManager.GetString("MethodNotImplemented", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to {0} can not be less than {1}.
+        '''</summary>
+        Friend ReadOnly Property MinValueRule() As String
+            Get
+                Return ResourceManager.GetString("MinValueRule", resourceCulture)
             End Get
         End Property
         
@@ -399,6 +417,24 @@ Namespace My.Resources
         Friend ReadOnly Property SmartDateYesterday() As String
             Get
                 Return ResourceManager.GetString("SmartDateYesterday", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to {0} can not exceed {1} characters.
+        '''</summary>
+        Friend ReadOnly Property StringMaxLengthRule() As String
+            Get
+                Return ResourceManager.GetString("StringMaxLengthRule", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to {0} required.
+        '''</summary>
+        Friend ReadOnly Property StringRequiredRule() As String
+            Get
+                Return ResourceManager.GetString("StringRequiredRule", resourceCulture)
             End Get
         End Property
         

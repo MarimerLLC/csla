@@ -482,4 +482,28 @@
 
   </data>
 
+  <data name="MaxValueRule" xml:space="preserve">
+
+    <value>{0} can not exceed {1}</value>
+
+  </data>
+
+  <data name="MinValueRule" xml:space="preserve">
+
+    <value>{0} can not be less than {1}</value>
+
+  </data>
+
+  <data name="StringMaxLengthRule" xml:space="preserve">
+
+    <value>{0} can not exceed {1} characters</value>
+
+  </data>
+
+  <data name="StringRequiredRule" xml:space="preserve">
+
+    <value>{0} required</value>
+
+  </data>
+
 </root>

@@ -26,7 +26,7 @@ namespace Csla.Validation
         target, e.PropertyName, CallType.Get);
       if (string.IsNullOrEmpty(value))
       {
-        e.Description = e.PropertyName + " required";
+        e.Description = string.Format(Resources.StringRequiredRule, e.PropertyName);
         return false;
       }
       return true;
@@ -58,7 +58,7 @@ namespace Csla.Validation
       if (!String.IsNullOrEmpty(value) && (value.Length > max))
       {
         e.Description = String.Format(
-          "{0} can not exceed {1} characters", 
+          Resources.StringMaxLengthRule, 
           e.PropertyName, max.ToString());
         return false;
       }
@@ -100,7 +100,7 @@ namespace Csla.Validation
       int value = (int)Utilities.CallByName(target, e.PropertyName, CallType.Get);
       if (value > max)
       {
-        e.Description = String.Format("{0} can not exceed {1}",
+        e.Description = String.Format(Resources.MaxValueRule,
           e.PropertyName, max.ToString());
         return false;
       }
@@ -224,7 +224,7 @@ namespace Csla.Validation
 
       if (!result)
       {
-        e.Description = string.Format("{0} can not exceed {1}", 
+        e.Description = string.Format(Resources.MaxValueRule, 
           e.PropertyName, max.ToString());
         return false;
       }
@@ -349,7 +349,7 @@ namespace Csla.Validation
 
       if (!result)
       {
-        e.Description = string.Format("{0} can not be less than {1}",
+        e.Description = string.Format(Resources.MinValueRule,
           e.PropertyName, min.ToString());
         return false;
       }

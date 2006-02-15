@@ -104,6 +104,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' </summary>
   <Serializable()> _
   Public Class NameValuePair
+
     Private mKey As K
     Private mValue As V
 

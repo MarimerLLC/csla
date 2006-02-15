@@ -68,7 +68,8 @@ Public MustInherit Class CommandBase
   ''' Override this method to implement any server-side code
   ''' that is to be run when the command is executed.
   ''' </summary>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> Protected Overridable Sub DataPortal_Execute()
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+  Protected Overridable Sub DataPortal_Execute()
     Throw New NotSupportedException(My.Resources.ExecuteNotSupportedException)
   End Sub
 
@@ -79,7 +80,8 @@ Public MustInherit Class CommandBase
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke( _
+    ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -90,7 +92,8 @@ Public MustInherit Class CommandBase
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete( _
+    ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -102,7 +105,8 @@ Public MustInherit Class CommandBase
   ''' <param name="ex">The Exception thrown during processing.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+  Protected Overridable Sub DataPortal_OnDataPortalException( _
+    ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
   End Sub
 

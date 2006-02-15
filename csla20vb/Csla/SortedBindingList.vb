@@ -38,7 +38,8 @@ Public Class SortedBindingList(Of T)
       mBaseIndex = baseIndex
     End Sub
 
-    Public Function CompareTo(ByVal other As ListItem) As Integer Implements System.IComparable(Of ListItem).CompareTo
+    Public Function CompareTo(ByVal other As ListItem) As Integer _
+      Implements System.IComparable(Of ListItem).CompareTo
 
       Dim target As Object = other.Key
 
@@ -67,6 +68,7 @@ Public Class SortedBindingList(Of T)
 #Region " Sorted enumerator "
 
   Private Class SortedEnumerator
+
     Implements IEnumerator(Of T)
 
     Private mList As IList(Of T)
@@ -74,26 +76,34 @@ Public Class SortedBindingList(Of T)
     Private mSortOrder As ListSortDirection
     Private mIndex As Integer
 
-    Public Sub New(ByVal list As IList(Of T), ByVal sortIndex As List(Of ListItem), ByVal direction As ListSortDirection)
+    Public Sub New( _
+      ByVal list As IList(Of T), _
+      ByVal sortIndex As List(Of ListItem), _
+      ByVal direction As ListSortDirection)
+
       mList = list
       mSortIndex = sortIndex
       mSortOrder = direction
       Reset()
     End Sub
 
-    Public ReadOnly Property Current() As T Implements System.Collections.Generic.IEnumerator(Of T).Current
+    Public ReadOnly Property Current() As T _
+      Implements System.Collections.Generic.IEnumerator(Of T).Current
       Get
         Return mList(mSortIndex(mIndex).BaseIndex)
       End Get
     End Property
 
-    Private ReadOnly Property CurrentItem() As Object Implements System.Collections.IEnumerator.Current
+    Private ReadOnly Property CurrentItem() As Object _
+      Implements System.Collections.IEnumerator.Current
       Get
         Return mList(mSortIndex(mIndex).BaseIndex)
       End Get
     End Property
 
-    Public Function MoveNext() As Boolean Implements System.Collections.IEnumerator.MoveNext
+    Public Function MoveNext() As Boolean _
+    Implements System.Collections.IEnumerator.MoveNext
+
       If mSortOrder = ListSortDirection.Ascending Then
         If mIndex < mSortIndex.Count - 1 Then
           mIndex += 1
@@ -139,9 +149,11 @@ Public Class SortedBindingList(Of T)
       Me.disposedValue = True
     End Sub
 
-    ' This code added by Visual Basic to correctly implement the disposable pattern.
+    ' This code added by Visual Basic to 
+    ' correctly implement the disposable pattern.
     Public Sub Dispose() Implements IDisposable.Dispose
-      ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
+      ' Do not change this code.  
+      ' Put cleanup code in Dispose(ByVal disposing As Boolean) above.
       Dispose(True)
       GC.SuppressFinalize(Me)
     End Sub
@@ -199,7 +211,8 @@ Public Class SortedBindingList(Of T)
 
 #Region " IEnumerable(Of T) "
 
-  Public Function GetEnumerator() As System.Collections.Generic.IEnumerator(Of T) _
+  Public Function GetEnumerator() As _
+    System.Collections.Generic.IEnumerator(Of T) _
     Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
 
     If mSorted Then
@@ -226,7 +239,8 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
-  Public Function AddNew() As Object Implements System.ComponentModel.IBindingList.AddNew
+  Public Function AddNew() As Object _
+    Implements System.ComponentModel.IBindingList.AddNew
 
     Dim result As Object
 
@@ -248,7 +262,8 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
-  Public ReadOnly Property AllowEdit() As Boolean Implements System.ComponentModel.IBindingList.AllowEdit
+  Public ReadOnly Property AllowEdit() As Boolean _
+    Implements System.ComponentModel.IBindingList.AllowEdit
     Get
       If mSupportsBinding Then
         Return mBindingList.AllowEdit
@@ -292,13 +307,16 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   ''' <param name="propertyName">The text name of the property on which to sort.</param>
   ''' <param name="direction">The direction to sort the data.</param>
-  Public Sub ApplySort(ByVal propertyName As String, ByVal direction As System.ComponentModel.ListSortDirection)
+  Public Sub ApplySort( _
+    ByVal propertyName As String, _
+    ByVal direction As System.ComponentModel.ListSortDirection)
 
     mSortBy = Nothing
 
     If Len(propertyName) > 0 Then
       Dim itemType As Type = GetType(T)
-      For Each prop As PropertyDescriptor In TypeDescriptor.GetProperties(itemType)
+      For Each prop As PropertyDescriptor In _
+              TypeDescriptor.GetProperties(itemType)
         If prop.Name = propertyName Then
           mSortBy = prop
           Exit For
@@ -315,7 +333,11 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   ''' <param name="property">A PropertyDescriptor for the property on which to sort.</param>
   ''' <param name="direction">The direction to sort the data.</param>
-  Public Sub ApplySort(ByVal [property] As System.ComponentModel.PropertyDescriptor, ByVal direction As System.ComponentModel.ListSortDirection) Implements System.ComponentModel.IBindingList.ApplySort
+  Public Sub ApplySort( _
+    ByVal [property] As System.ComponentModel.PropertyDescriptor, _
+    ByVal direction As System.ComponentModel.ListSortDirection) _
+    Implements System.ComponentModel.IBindingList.ApplySort
+
     mSortBy = [property]
     mSortOrder = direction
     DoSort()
@@ -398,7 +420,9 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Returns the direction of the current sort.
   ''' </summary>
-  Public ReadOnly Property SortDirection() As System.ComponentModel.ListSortDirection Implements System.ComponentModel.IBindingList.SortDirection
+  Public ReadOnly Property SortDirection() As _
+    System.ComponentModel.ListSortDirection _
+    Implements System.ComponentModel.IBindingList.SortDirection
     Get
       Return mSortOrder
     End Get
@@ -454,7 +478,9 @@ Public Class SortedBindingList(Of T)
     CopyTo(CType(array, T()), index)
   End Sub
 
-  Public ReadOnly Property Count() As Integer Implements System.Collections.ICollection.Count, System.Collections.Generic.ICollection(Of T).Count
+  Public ReadOnly Property Count() As Integer _
+    Implements System.Collections.ICollection.Count, _
+    System.Collections.Generic.ICollection(Of T).Count
     Get
       Return mList.Count
     End Get
@@ -474,6 +500,7 @@ Public Class SortedBindingList(Of T)
 
   Private Function GetItemEnumerator() As System.Collections.IEnumerator _
     Implements System.Collections.IEnumerable.GetEnumerator
+
     Return GetEnumerator()
   End Function
 
@@ -506,11 +533,15 @@ Public Class SortedBindingList(Of T)
     Return IndexOf(CType(value, T))
   End Function
 
-  Public Sub Insert(ByVal index As Integer, ByVal item As T) Implements System.Collections.Generic.IList(Of T).Insert
+  Public Sub Insert(ByVal index As Integer, ByVal item As T) _
+    Implements System.Collections.Generic.IList(Of T).Insert
+
     mList.Insert(index, item)
   End Sub
 
-  Private Sub Insert(ByVal index As Integer, ByVal value As Object) Implements System.Collections.IList.Insert
+  Private Sub Insert(ByVal index As Integer, ByVal value As Object) _
+    Implements System.Collections.IList.Insert
+
     Insert(index, CType(value, T))
   End Sub
 
@@ -526,7 +557,8 @@ Public Class SortedBindingList(Of T)
     End Get
   End Property
 
-  Private Property Item1(ByVal index As Integer) As Object Implements System.Collections.IList.Item
+  Private Property Item1(ByVal index As Integer) As Object _
+    Implements System.Collections.IList.Item
     Get
       Return Me(index)
     End Get
@@ -544,7 +576,8 @@ Public Class SortedBindingList(Of T)
   End Sub
 
   Public Sub RemoveAt(ByVal index As Integer) _
-    Implements System.Collections.IList.RemoveAt, System.Collections.Generic.IList(Of T).RemoveAt
+    Implements System.Collections.IList.RemoveAt, _
+    System.Collections.Generic.IList(Of T).RemoveAt
 
     If mSorted Then
       mInitiatedLocally = True
@@ -559,7 +592,8 @@ Public Class SortedBindingList(Of T)
           item.BaseIndex -= 1
         End If
       Next
-      OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
+      OnListChanged( _
+        New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
       mInitiatedLocally = False
 
     Else
@@ -568,7 +602,8 @@ Public Class SortedBindingList(Of T)
 
   End Sub
 
-  Default Public Overloads Property Item(ByVal index As Integer) As T Implements System.Collections.Generic.IList(Of T).Item
+  Default Public Overloads Property Item(ByVal index As Integer) As T _
+    Implements System.Collections.Generic.IList(Of T).Item
     Get
       If mSorted Then
         Return mList(OriginalIndex(index))
@@ -612,7 +647,8 @@ Public Class SortedBindingList(Of T)
 
   End Sub
 
-  Private Sub SourceChanged(ByVal sender As Object, ByVal e As ListChangedEventArgs)
+  Private Sub SourceChanged( _
+    ByVal sender As Object, ByVal e As ListChangedEventArgs)
 
     If mSorted Then
       Select Case e.ListChangedType
@@ -633,7 +669,9 @@ Public Class SortedBindingList(Of T)
               mSortIndex.Insert(0, New ListItem(newKey, e.NewIndex))
             End If
             If Not mInitiatedLocally Then
-              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemAdded, SortedIndex(e.NewIndex)))
+              OnListChanged( _
+                New ListChangedEventArgs( _
+                  ListChangedType.ItemAdded, SortedIndex(e.NewIndex)))
             End If
 
           Else
@@ -643,7 +681,9 @@ Public Class SortedBindingList(Of T)
         Case ListChangedType.ItemChanged
           ' an item changed - just relay the event with
           ' a translated index value
-          OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, SortedIndex(e.NewIndex)))
+          OnListChanged( _
+            New ListChangedEventArgs( _
+              ListChangedType.ItemChanged, SortedIndex(e.NewIndex)))
 
         Case ListChangedType.ItemDeleted
           If Not mInitiatedLocally Then

@@ -83,7 +83,6 @@ Namespace Data
       ' get an IList and copy the data
       CopyData(dt, GetIList(source), columns)
 
-
     End Sub
 
 #Region " DataCopyIList "
@@ -106,7 +105,9 @@ Namespace Data
     End Function
 
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
-    Private Sub CopyData(ByVal dt As DataTable, ByVal ds As IList, ByVal columns As List(Of String))
+    Private Sub CopyData( _
+      ByVal dt As DataTable, _
+      ByVal ds As IList, ByVal columns As List(Of String))
 
       ' load the data into the DataTable
       dt.BeginLoadData()
@@ -158,7 +159,7 @@ Namespace Data
         result = ScanObject(childType)
 
       Else
-        ' they gave us a regular object
+        ' the source is a regular object
         result = ScanObject(innerSource.GetType)
       End If
       Return result
@@ -208,7 +209,8 @@ Namespace Data
 
 #Region " GetField "
 
-    Private Shared Function GetField(ByVal obj As Object, ByVal fieldName As String) As String
+    Private Shared Function GetField( _
+      ByVal obj As Object, ByVal fieldName As String) As String
 
       Dim result As String
       Dim dataRowView As DataRowView = TryCast(obj, DataRowView)

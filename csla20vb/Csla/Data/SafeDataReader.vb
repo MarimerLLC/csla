@@ -33,7 +33,9 @@ Namespace Data
     ''' <remarks>
     ''' Returns empty string for null.
     ''' </remarks>
-    Public Overridable Function GetString(ByVal i As Integer) As String Implements IDataReader.GetString
+    Public Overridable Function GetString(ByVal i As Integer) As String _
+      Implements IDataReader.GetString
+
       If mDataReader.IsDBNull(i) Then
         Return ""
       Else
@@ -151,7 +153,9 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">The column number within the datareader.</param>
     ''' <param name="MinIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
-    Public Overridable Function GetSmartDate(ByVal i As Integer, ByVal minIsEmpty As Boolean) As SmartDate
+    Public Overridable Function GetSmartDate( _
+      ByVal i As Integer, ByVal minIsEmpty As Boolean) As SmartDate
+
       If mDataReader.IsDBNull(i) Then
         Return New SmartDate(minIsEmpty)
 
@@ -183,7 +187,9 @@ Namespace Data
     ''' </remarks>
     ''' <param name="name">The name of the column.</param>
     ''' <param name="minIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
-    Public Function GetSmartDate(ByVal name As String, ByVal minIsEmpty As Boolean) As SmartDate
+    Public Function GetSmartDate( _
+      ByVal name As String, ByVal minIsEmpty As Boolean) As SmartDate
+
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetSmartDate(index, minIsEmpty)
     End Function
@@ -249,7 +255,9 @@ Namespace Data
     ''' <summary>
     ''' Gets a boolean value from the datareader.
     ''' </summary>
-    Public Overridable Function GetBoolean(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.GetBoolean
+    Public Overridable Function GetBoolean(ByVal i As Integer) As Boolean _
+      Implements System.Data.IDataReader.GetBoolean
+
       If mDataReader.IsDBNull(i) Then
         Return False
       Else
@@ -376,7 +384,9 @@ Namespace Data
     ''' <summary>
     ''' Gets a date value from the datareader.
     ''' </summary>
-    Public Overridable Function GetDateTime(ByVal i As Integer) As Date Implements System.Data.IDataReader.GetDateTime
+    Public Overridable Function GetDateTime(ByVal i As Integer) As Date _
+      Implements System.Data.IDataReader.GetDateTime
+
       If mDataReader.IsDBNull(i) Then
         Return Date.MinValue
       Else
@@ -493,7 +503,9 @@ Namespace Data
     ''' <summary>
     ''' Gets an ordinal value from the datareader.
     ''' </summary>
-    Public Function GetOrdinal(ByVal name As String) As Integer Implements System.Data.IDataReader.GetOrdinal
+    Public Function GetOrdinal(ByVal name As String) As Integer _
+      Implements System.Data.IDataReader.GetOrdinal
+
       Return mDataReader.GetOrdinal(name)
     End Function
 

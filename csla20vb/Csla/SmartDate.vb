@@ -12,8 +12,9 @@ Public Structure SmartDate
   Implements IComparable
 
   Private mDate As Date
-  Private mInitialized As Boolean
   Private mEmptyIsMax As Boolean
+  Private mFormat As String
+  Private mInitialized As Boolean
 
 #Region " Constructors "
 
@@ -82,8 +83,6 @@ Public Structure SmartDate
 
 #Region " Text Support "
 
-  Private mFormat As String
-
   ''' <summary>
   ''' Gets or sets the format string used to format a date
   ''' value when it is returned as text.
@@ -101,7 +100,7 @@ Public Structure SmartDate
       Return mFormat
     End Get
     Set(ByVal value As String)
-      mFormat = Value
+      mFormat = value
     End Set
   End Property
 
@@ -283,7 +282,8 @@ Public Structure SmartDate
   ''' <param name="value">String containing the date value.</param>
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   ''' <returns>A new SmartDate containing the date value.</returns>
-  Public Shared Function Parse(ByVal value As String, ByVal emptyIsMin As Boolean) As SmartDate
+  Public Shared Function Parse( _
+    ByVal value As String, ByVal emptyIsMin As Boolean) As SmartDate
 
     Return New SmartDate(value, emptyIsMin)
 
@@ -313,7 +313,8 @@ Public Structure SmartDate
   ''' <param name="Value">The text representation of the date.</param>
   ''' <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   ''' <returns>A Date value.</returns>
-  Public Shared Function StringToDate(ByVal value As String, ByVal emptyIsMin As Boolean) As Date
+  Public Shared Function StringToDate( _
+    ByVal value As String, ByVal emptyIsMin As Boolean) As Date
 
     If Len(value) = 0 Then
       If emptyIsMin Then
@@ -356,7 +357,9 @@ Public Structure SmartDate
   ''' <param name="Value">The date value to convert.</param>
   ''' <param name="FormatString">The format string used to format the date into text.</param>
   ''' <returns>Text representation of the date value.</returns>
-  Public Shared Function DateToString(ByVal value As Date, ByVal formatString As String) As String
+  Public Shared Function DateToString( _
+    ByVal value As Date, ByVal formatString As String) As String
+
     Return DateToString(value, formatString, True)
   End Function
 
@@ -373,7 +376,10 @@ Public Structure SmartDate
   ''' <param name="FormatString">The format string used to format the date into text.</param>
   ''' <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   ''' <returns>Text representation of the date value.</returns>
-  Public Shared Function DateToString(ByVal value As Date, ByVal formatString As String, ByVal emptyIsMin As Boolean) As String
+  Public Shared Function DateToString( _
+    ByVal value As Date, ByVal formatString As String, _
+    ByVal emptyIsMin As Boolean) As String
+
     If emptyIsMin AndAlso value = Date.MinValue Then
       Return ""
     ElseIf Not emptyIsMin AndAlso value = Date.MaxValue Then
@@ -483,11 +489,15 @@ Public Structure SmartDate
 
 #Region " Operators "
 
-  Public Shared Operator =(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+  Public Shared Operator =( _
+    ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+
     Return obj1.Equals(obj2)
   End Operator
 
-  Public Shared Operator <>(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+  Public Shared Operator <>( _
+    ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+
     Return Not obj1.Equals(obj2)
   End Operator
 
@@ -507,23 +517,33 @@ Public Structure SmartDate
     Return Not obj1.Equals(obj2)
   End Operator
 
-  Public Shared Operator +(ByVal start As SmartDate, ByVal span As TimeSpan) As SmartDate
+  Public Shared Operator +( _
+    ByVal start As SmartDate, ByVal span As TimeSpan) As SmartDate
+
     Return New SmartDate(start.Add(span), start.EmptyIsMin)
   End Operator
 
-  Public Shared Operator -(ByVal start As SmartDate, ByVal span As TimeSpan) As SmartDate
+  Public Shared Operator -( _
+    ByVal start As SmartDate, ByVal span As TimeSpan) As SmartDate
+
     Return New SmartDate(start.Subtract(span), start.EmptyIsMin)
   End Operator
 
-  Public Shared Operator -(ByVal start As SmartDate, ByVal finish As SmartDate) As TimeSpan
+  Public Shared Operator -( _
+    ByVal start As SmartDate, ByVal finish As SmartDate) As TimeSpan
+
     Return start.Subtract(finish.Date)
   End Operator
 
-  Public Shared Operator >(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+  Public Shared Operator >( _
+    ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+
     Return obj1.CompareTo(obj2) > 0
   End Operator
 
-  Public Shared Operator <(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+  Public Shared Operator <( _
+    ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
+
     Return obj1.CompareTo(obj2) < 0
   End Operator
 

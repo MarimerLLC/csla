@@ -19,9 +19,12 @@ Namespace Windows
       container.Add(Me)
     End Sub
 
-    Public Function CanExtend(ByVal extendee As Object) As Boolean Implements IExtenderProvider.CanExtend
+    Public Function CanExtend( _
+      ByVal extendee As Object) As Boolean _
+      Implements IExtenderProvider.CanExtend
 
-      If IsPropertyImplemented(extendee, "ReadOnly") OrElse IsPropertyImplemented(extendee, "Enabled") Then
+      If IsPropertyImplemented(extendee, "ReadOnly") OrElse _
+          IsPropertyImplemented(extendee, "Enabled") Then
         Return True
 
       Else
@@ -30,7 +33,8 @@ Namespace Windows
 
     End Function
 
-    Public Function GetApplyAuthorization(ByVal source As Control) As Boolean
+    Public Function GetApplyAuthorization( _
+      ByVal source As Control) As Boolean
 
       If mSources.ContainsKey(source) Then
         Return mSources.Item(source)
@@ -41,7 +45,8 @@ Namespace Windows
 
     End Function
 
-    Public Sub SetApplyAuthorization(ByVal source As Control, ByVal value As Boolean)
+    Public Sub SetApplyAuthorization( _
+      ByVal source As Control, ByVal value As Boolean)
 
       If mSources.ContainsKey(source) Then
         mSources.Item(source) = value

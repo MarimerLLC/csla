@@ -55,8 +55,11 @@ Namespace Data
     ''' The key names in the dictionary must match the property names on the target
     ''' object. Target properties may not be readonly or indexed.
     ''' </remarks>
-    Public Sub Map(ByVal source As System.Collections.IDictionary, ByVal target As Object, _
-      ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
+    Public Sub Map( _
+      ByVal source As System.Collections.IDictionary, _
+      ByVal target As Object, _
+      ByVal suppressExceptions As Boolean, _
+      ByVal ParamArray ignoreList() As String)
 
       Dim ignore As New List(Of String)(ignoreList)
       For Each propertyName As String In source.Keys
@@ -137,8 +140,11 @@ Namespace Data
     ''' to false are ignored.
     ''' </para>
     ''' </remarks>
-    Public Sub Map(ByVal source As Object, ByVal target As Object, _
-      ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
+    Public Sub Map( _
+      ByVal source As Object, _
+      ByVal target As Object, _
+      ByVal suppressExceptions As Boolean, _
+      ByVal ParamArray ignoreList() As String)
 
       Dim ignore As New List(Of String)(ignoreList)
       Dim sourceProperties As PropertyInfo() = _
@@ -162,7 +168,8 @@ Namespace Data
 
     End Sub
 
-    Private Function GetSourceProperties(ByVal sourceType As Type) As PropertyInfo()
+    Private Function GetSourceProperties( _
+      ByVal sourceType As Type) As PropertyInfo()
 
       Dim result As New Generic.List(Of PropertyInfo)
       Dim props As PropertyDescriptorCollection = _
@@ -178,7 +185,9 @@ Namespace Data
 
 #End Region
 
-    Private Sub SetValue(ByVal target As Object, ByVal propertyName As String, ByVal value As Object)
+    Private Sub SetValue( _
+      ByVal target As Object, ByVal propertyName As String, _
+      ByVal value As Object)
 
       Dim propertyInfo As PropertyInfo = _
         target.GetType.GetProperty(propertyName)

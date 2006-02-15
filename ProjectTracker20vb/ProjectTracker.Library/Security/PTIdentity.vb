@@ -32,19 +32,22 @@ Namespace Security
     Private mIsAuthenticated As Boolean
     Private mName As String = ""
 
-    Public ReadOnly Property AuthenticationType() As String Implements System.Security.Principal.IIdentity.AuthenticationType
+    Public ReadOnly Property AuthenticationType() As String _
+      Implements System.Security.Principal.IIdentity.AuthenticationType
       Get
         Return "Csla"
       End Get
     End Property
 
-    Public ReadOnly Property IsAuthenticated() As Boolean Implements System.Security.Principal.IIdentity.IsAuthenticated
+    Public ReadOnly Property IsAuthenticated() As Boolean _
+      Implements System.Security.Principal.IIdentity.IsAuthenticated
       Get
         Return mIsAuthenticated
       End Get
     End Property
 
-    Public ReadOnly Property Name() As String Implements System.Security.Principal.IIdentity.Name
+    Public ReadOnly Property Name() As String _
+      Implements System.Security.Principal.IIdentity.Name
       Get
         Return mName
       End Get
@@ -55,7 +58,7 @@ Namespace Security
 #Region " Constructors "
 
     Private Sub New()
-
+      ' require use of factory methods
     End Sub
 
 #End Region
@@ -95,7 +98,8 @@ Namespace Security
 
     End Function
 
-    Friend Shared Function GetIdentity(ByVal username As String, ByVal password As String) As PTIdentity
+    Friend Shared Function GetIdentity( _
+      ByVal username As String, ByVal password As String) As PTIdentity
 
       Return DataPortal.Fetch(Of PTIdentity)(New Criteria(username, password))
 

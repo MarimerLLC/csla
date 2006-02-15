@@ -8,13 +8,15 @@ Namespace Security
 
     Private mIdentity As IIdentity
 
-    Public Overridable ReadOnly Property Identity() As IIdentity Implements IPrincipal.Identity
+    Public Overridable ReadOnly Property Identity() As IIdentity _
+      Implements IPrincipal.Identity
       Get
         Return mIdentity
       End Get
     End Property
 
-    Public Overridable Function IsInRole(ByVal role As String) As Boolean Implements IPrincipal.IsInRole
+    Public Overridable Function IsInRole(ByVal role As String) As Boolean _
+      Implements IPrincipal.IsInRole
 
       Return False
 

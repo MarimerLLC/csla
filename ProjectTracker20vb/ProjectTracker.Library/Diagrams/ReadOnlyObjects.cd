@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="ProjectTracker.Library.ProjectList" Collapsed="true">
+    <Position X="3.5" Y="2.75" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>ProjectList.vb</FileName>
+      <HashCode>AAAAAAAAAAAABEAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjectTracker.Library.ResourceList" Collapsed="true">
+    <Position X="6.25" Y="2.75" Width="2.75" />
+    <TypeIdentifier>
+      <FileName>ResourceList.vb</FileName>
+      <HashCode>AAAAAAAAAAAABAAAgAAAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.ReadOnlyListBase(Of T, C)" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="2" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ProjectTracker.Library.RoleList" Collapsed="true">
+    <Position X="0.75" Y="5.25" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>RoleList.vb</FileName>
+      <HashCode>AAABAAAAAAAABAAAAAAAAAAAAAAAAABAAAAAAAAAEAI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.NameValueListBase(Of K, V)" Collapsed="true">
+    <Position X="0.75" Y="4" Width="2.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+</ClassDiagram>

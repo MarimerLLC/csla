@@ -368,6 +368,33 @@ namespace Csla
       base.RemoveItem(index);
     }
 
+    /// <summary>
+    /// Clears the collection, moving all active
+    /// items to the deleted list.
+    /// </summary>
+    protected override void ClearItems()
+    {
+      while (base.Count > 0) RemoveItem(0);
+      base.ClearItems();
+    }
+
+    /// <summary>
+    /// Replaces the item at the specified index with
+    /// the specified item, first moving the original
+    /// item to the deleted list.
+    /// </summary>
+    /// <param name="index">The zero-based index of the item to replace.</param>
+    /// <param name="item">
+    /// The new value for the item at the specified index. 
+    /// The value can be null for reference types.
+    /// </param>
+    /// <remarks></remarks>
+    protected override void SetItem(int index, C item)
+    {
+      DeleteChild(this[index]);
+      base.SetItem(index, item);
+    }
+
     #endregion
 
     #region Edit level tracking

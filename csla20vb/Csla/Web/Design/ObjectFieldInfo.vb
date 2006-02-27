@@ -33,7 +33,8 @@ Namespace Web.Design
     Private Sub GetDataObjectAttribute()
 
       Dim attribute As DataObjectFieldAttribute = _
-          CType(mField.Attributes.Item(GetType(DataObjectFieldAttribute)), DataObjectFieldAttribute)
+          CType(mField.Attributes.Item(GetType(DataObjectFieldAttribute)), _
+          DataObjectFieldAttribute)
       If (Not attribute Is Nothing) Then
         With attribute
           mPrimaryKey = .PrimaryKey
@@ -48,7 +49,8 @@ Namespace Web.Design
     ''' <summary>
     ''' Gets the data type of the property.
     ''' </summary>
-    Public ReadOnly Property DataType() As System.Type Implements System.Web.UI.Design.IDataSourceFieldSchema.DataType
+    Public ReadOnly Property DataType() As System.Type _
+      Implements System.Web.UI.Design.IDataSourceFieldSchema.DataType
       Get
         Return Utilities.GetPropertyType(mField.PropertyType)
       End Get
@@ -111,7 +113,8 @@ Namespace Web.Design
     ''' <summary>
     ''' Gets the property name.
     ''' </summary>
-    Public ReadOnly Property Name() As String Implements System.Web.UI.Design.IDataSourceFieldSchema.Name
+    Public ReadOnly Property Name() As String _
+      Implements System.Web.UI.Design.IDataSourceFieldSchema.Name
       Get
         Return mField.Name
       End Get
@@ -128,7 +131,8 @@ Namespace Web.Design
     ''' the <see cref="DataObjectFieldAttribute">DataObjectField</see>
     ''' attribute on the property.
     ''' </remarks>
-    Public ReadOnly Property Nullable() As Boolean Implements System.Web.UI.Design.IDataSourceFieldSchema.Nullable
+    Public ReadOnly Property Nullable() As Boolean _
+      Implements System.Web.UI.Design.IDataSourceFieldSchema.Nullable
       Get
         Dim t As Type = Me.mField.PropertyType
         If Not t.IsValueType OrElse mIsNullable Then
@@ -160,7 +164,8 @@ Namespace Web.Design
     ''' the <see cref="DataObjectFieldAttribute">DataObjectField</see>
     ''' attribute on the property.
     ''' </remarks>
-    Public ReadOnly Property PrimaryKey() As Boolean Implements System.Web.UI.Design.IDataSourceFieldSchema.PrimaryKey
+    Public ReadOnly Property PrimaryKey() As Boolean _
+      Implements System.Web.UI.Design.IDataSourceFieldSchema.PrimaryKey
       Get
         Return mPrimaryKey
       End Get
@@ -170,7 +175,8 @@ Namespace Web.Design
     ''' Gets the property's scale.
     ''' </summary>
     ''' <returns>Always returns -1.</returns>
-    Public ReadOnly Property Scale() As Integer Implements System.Web.UI.Design.IDataSourceFieldSchema.Scale
+    Public ReadOnly Property Scale() As Integer _
+      Implements System.Web.UI.Design.IDataSourceFieldSchema.Scale
       Get
         Return -1
       End Get

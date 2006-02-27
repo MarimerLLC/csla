@@ -50,7 +50,9 @@ Namespace Web.Design
     ''' <see cref="BrowsableAttribute">Browsable</see> attribute
     ''' is False.
     ''' </remarks>
-    Public Function GetFields() As System.Web.UI.Design.IDataSourceFieldSchema() Implements System.Web.UI.Design.IDataSourceViewSchema.GetFields
+    Public Function GetFields() As _
+      System.Web.UI.Design.IDataSourceFieldSchema() _
+      Implements System.Web.UI.Design.IDataSourceViewSchema.GetFields
 
       Dim result As New Generic.List(Of ObjectFieldInfo)
       Dim t As Type = CslaDataSource.GetType(mTypeAssemblyName, mTypeName)
@@ -58,7 +60,8 @@ Namespace Web.Design
         ' this is a list so get the item type
         t = Utilities.GetChildItemType(t)
       End If
-      Dim props As PropertyDescriptorCollection = TypeDescriptor.GetProperties(t)
+      Dim props As PropertyDescriptorCollection = _
+        TypeDescriptor.GetProperties(t)
       For Each item As PropertyDescriptor In props
         If item.IsBrowsable Then
           result.Add(New ObjectFieldInfo(item))

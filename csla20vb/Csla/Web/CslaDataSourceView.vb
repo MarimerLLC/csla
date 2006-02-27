@@ -57,7 +57,8 @@ Namespace Web
 #Region " Select "
 
     Protected Overrides Function ExecuteSelect( _
-      ByVal arguments As System.Web.UI.DataSourceSelectArguments) As System.Collections.IEnumerable
+      ByVal arguments As System.Web.UI.DataSourceSelectArguments) As _
+      System.Collections.IEnumerable
 
       ' get the object from the page
       Dim args As New SelectObjectArgs
@@ -116,7 +117,8 @@ Namespace Web
       End Get
     End Property
 
-    Protected Overrides Function ExecuteInsert(ByVal values As System.Collections.IDictionary) As Integer
+    Protected Overrides Function ExecuteInsert( _
+      ByVal values As System.Collections.IDictionary) As Integer
 
       ' tell the page to insert the object
       Dim args As New InsertObjectArgs(values)

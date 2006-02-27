@@ -58,7 +58,7 @@ Namespace Windows
 
     Public Sub ResetControlAuthorization()
 
-      For Each item As System.Collections.Generic.KeyValuePair(Of Control, Boolean) In mSources
+      For Each item As KeyValuePair(Of Control, Boolean) In mSources
         If item.Value Then
           ' apply authorization rules
           ApplyAuthorizationRules(item.Key)
@@ -75,26 +75,34 @@ Namespace Windows
           Dim bs As BindingSource = CType(binding.DataSource, BindingSource)
           ' get the BusinessObject if appropriate
           If TypeOf bs.DataSource Is Csla.Core.BusinessBase Then
-            Dim ds As Csla.Core.BusinessBase = CType(bs.DataSource, Csla.Core.BusinessBase)
+            Dim ds As Csla.Core.BusinessBase = _
+              CType(bs.DataSource, Csla.Core.BusinessBase)
             ' get the object property name
-            Dim propertyName As String = binding.BindingMemberInfo.BindingField
+            Dim propertyName As String = _
+              binding.BindingMemberInfo.BindingField
 
-            ApplyReadRules(control, binding, propertyName, ds.CanReadProperty(propertyName))
-            ApplyWriteRules(control, binding, propertyName, ds.CanWriteProperty(propertyName))
+            ApplyReadRules(control, binding, propertyName, _
+              ds.CanReadProperty(propertyName))
+            ApplyWriteRules(control, binding, propertyName, _
+              ds.CanWriteProperty(propertyName))
 
           ElseIf TypeOf bs.DataSource Is Csla.Core.IReadOnlyObject Then
-            Dim ds As Csla.Core.IReadOnlyObject = CType(bs.DataSource, Csla.Core.IReadOnlyObject)
+            Dim ds As Csla.Core.IReadOnlyObject = _
+              CType(bs.DataSource, Csla.Core.IReadOnlyObject)
             ' get the object property name
-            Dim propertyName As String = binding.BindingMemberInfo.BindingField
+            Dim propertyName As String = _
+              binding.BindingMemberInfo.BindingField
 
-            ApplyReadRules(control, binding, propertyName, ds.CanReadProperty(propertyName))
+            ApplyReadRules(control, binding, propertyName, _
+              ds.CanReadProperty(propertyName))
           End If
         End If
       Next
 
     End Sub
 
-    Private Sub ApplyReadRules(ByVal ctl As Control, ByVal binding As Binding, _
+    Private Sub ApplyReadRules( _
+      ByVal ctl As Control, ByVal binding As Binding, _
       ByVal propertyName As String, ByVal canRead As Boolean)
 
       ' enable/disable reading of the value
@@ -124,7 +132,9 @@ Namespace Windows
 
     End Sub
 
-    Private Sub ApplyWriteRules(ByVal ctl As Control, ByVal binding As Binding, ByVal propertyName As String, ByVal canWrite As Boolean)
+    Private Sub ApplyWriteRules( _
+      ByVal ctl As Control, ByVal binding As Binding, _
+      ByVal propertyName As String, ByVal canWrite As Boolean)
 
       If TypeOf (ctl) Is Label Then Exit Sub
 
@@ -135,7 +145,8 @@ Namespace Windows
           BindingFlags.Instance Or _
           BindingFlags.Public)
       If propertyInfo IsNot Nothing Then
-        Dim couldWrite As Boolean = Not CBool(propertyInfo.GetValue(ctl, New Object() {}))
+        Dim couldWrite As Boolean = _
+          Not CBool(propertyInfo.GetValue(ctl, New Object() {}))
         propertyInfo.SetValue(ctl, Not canWrite, New Object() {})
         If Not couldWrite AndAlso canWrite Then binding.ReadValue()
 
@@ -147,7 +158,8 @@ Namespace Windows
 
     End Sub
 
-    Private Sub ReturnEmpty(ByVal sender As Object, ByVal e As ConvertEventArgs)
+    Private Sub ReturnEmpty( _
+      ByVal sender As Object, ByVal e As ConvertEventArgs)
 
       e.Value = GetEmptyValue(e.DesiredType)
 

@@ -99,7 +99,8 @@ Namespace Web
     ''' <param name="assemblyName">(Optional) Assembly name containing the type.</param>
     ''' <param name="typeName">Full type name of the class.</param>
     ''' <remarks></remarks>
-    Friend Overloads Shared Function [GetType](ByVal assemblyName As String, ByVal typeName As String) As Type
+    Friend Overloads Shared Function [GetType]( _
+      ByVal assemblyName As String, ByVal typeName As String) As Type
 
       If Len(assemblyName) > 0 Then
         Dim asm As Assembly = Assembly.Load(assemblyName)

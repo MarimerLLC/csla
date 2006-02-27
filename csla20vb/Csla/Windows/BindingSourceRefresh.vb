@@ -22,7 +22,8 @@ Namespace Windows
       container.Add(Me)
     End Sub
 
-    Public Function CanExtend(ByVal extendee As Object) As Boolean Implements IExtenderProvider.CanExtend
+    Public Function CanExtend(ByVal extendee As Object) As Boolean _
+      Implements IExtenderProvider.CanExtend
 
       If TypeOf extendee Is BindingSource Then
         Return True
@@ -41,7 +42,9 @@ Namespace Windows
       End If
     End Function
 
-    Public Sub SetReadValuesOnChange(ByVal source As BindingSource, ByVal value As Boolean)
+    Public Sub SetReadValuesOnChange( _
+      ByVal source As BindingSource, ByVal value As Boolean)
+
       If mSources.ContainsKey(source) Then
         mSources.Item(source) = value
       Else
@@ -56,7 +59,9 @@ Namespace Windows
       End If
     End Sub
 
-    Private Sub Source_BindingComplete(ByVal sender As Object, ByVal e As BindingCompleteEventArgs)
+    Private Sub Source_BindingComplete( _
+      ByVal sender As Object, ByVal e As BindingCompleteEventArgs)
+
       e.Binding.ReadValue()
     End Sub
 

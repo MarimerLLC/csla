@@ -86,9 +86,8 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property Schema() As IDataSourceViewSchema
       Get
-        'Return New TypeSchema(CslaDataSource.GetType( _
-        '  mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)).GetViews(0)
-        Return New ObjectSchema(mOwner.DataSourceControl.TypeAssemblyName, _
+        Return New ObjectSchema( _
+          mOwner.DataSourceControl.TypeAssemblyName, _
           mOwner.DataSourceControl.TypeName).GetViews(0)
       End Get
     End Property
@@ -157,9 +156,12 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanUpdate() As Boolean
       Get
-        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(CslaDataSource.GetType( _
-            mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)) Then
+        Dim objType As Type = CslaDataSource.GetType( _
+          mOwner.DataSourceControl.TypeAssemblyName, _
+          mOwner.DataSourceControl.TypeName)
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objType) Then
           Return True
+
         Else
           Return False
         End If

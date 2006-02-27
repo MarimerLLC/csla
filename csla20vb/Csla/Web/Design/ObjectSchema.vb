@@ -30,8 +30,12 @@ Namespace Web.Design
     ''' Returns a single element array containing the
     ''' schema for the CSLA .NET business object.
     ''' </summary>
-    Public Function GetViews() As System.Web.UI.Design.IDataSourceViewSchema() Implements System.Web.UI.Design.IDataSourceSchema.GetViews
-      Return New IDataSourceViewSchema() {New ObjectViewSchema(mTypeAssemblyName, mTypeName)}
+    Public Function GetViews() As _
+      System.Web.UI.Design.IDataSourceViewSchema() _
+      Implements System.Web.UI.Design.IDataSourceSchema.GetViews
+
+      Return New IDataSourceViewSchema() _
+        {New ObjectViewSchema(mTypeAssemblyName, mTypeName)}
     End Function
 
   End Class

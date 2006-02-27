@@ -113,8 +113,9 @@ Partial Class ProjectEdit
 
 #Region " ProjectDataSource "
 
-  Protected Sub ProjectDataSource_DeleteObject(ByVal sender As Object, _
-    ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectDataSource.DeleteObject
+  Protected Sub ProjectDataSource_DeleteObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) _
+    Handles ProjectDataSource.DeleteObject
 
     Try
       Project.DeleteProject(New Guid(e.Keys("Id").ToString))
@@ -132,8 +133,9 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub ProjectDataSource_InsertObject(ByVal sender As Object, _
-    ByVal e As Csla.Web.InsertObjectArgs) Handles ProjectDataSource.InsertObject
+  Protected Sub ProjectDataSource_InsertObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.InsertObjectArgs) _
+    Handles ProjectDataSource.InsertObject
 
     Dim obj As Project = GetProject()
     Csla.Data.DataMapper.Map(e.Values, obj, "Id")
@@ -178,7 +180,9 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub ResourcesDataSource_UpdateObject(ByVal sender As Object, ByVal e As Csla.Web.UpdateObjectArgs) Handles ResourcesDataSource.UpdateObject
+  Protected Sub ResourcesDataSource_UpdateObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.UpdateObjectArgs) _
+    Handles ResourcesDataSource.UpdateObject
 
     Dim obj As Project = GetProject()
     Dim res As ProjectResource

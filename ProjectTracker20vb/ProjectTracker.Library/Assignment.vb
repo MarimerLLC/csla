@@ -1,4 +1,3 @@
-Imports System.Data.SqlClient
 Imports Csla.Validation
 Imports System.Reflection
 

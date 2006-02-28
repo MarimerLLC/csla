@@ -1,5 +1,3 @@
-Imports System.Data.SqlClient
-
 <Serializable()> _
 Public Class ProjectResources
   Inherits BusinessListBase(Of ProjectResources, ProjectResource)

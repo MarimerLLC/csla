@@ -49,6 +49,7 @@
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
     <Import Include="System.Data" />
+    <Import Include="System.Data.SqlClient" />
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>

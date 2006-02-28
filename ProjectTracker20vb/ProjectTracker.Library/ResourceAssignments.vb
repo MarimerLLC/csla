@@ -1,5 +1,3 @@
-Imports System.Data.SqlClient
-
 <Serializable()> _
 Public Class ResourceAssignments
   Inherits BusinessListBase(Of ResourceAssignments, ResourceAssignment)

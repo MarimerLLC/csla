@@ -1,5 +1,3 @@
-Imports System.Data.SqlClient
-
 <Serializable()> _
 Public Class ResourceAssignment
   Inherits BusinessBase(Of ResourceAssignment)
@@ -147,7 +145,7 @@ Public Class ResourceAssignment
     mTimestamp = Assignment.AddAssignment( _
       cn, mProjectId, resource.Id, mAssigned, mRole)
     MarkOld()
-    
+
   End Sub
 
   Friend Sub Update(ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)

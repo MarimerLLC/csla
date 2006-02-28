@@ -1,6 +1,3 @@
-Imports System.Data.SqlClient
-Imports CSLA.Data
-
 <Serializable()> _
 Public Class ProjectInfo
   Inherits ReadOnlyBase(Of ProjectInfo)

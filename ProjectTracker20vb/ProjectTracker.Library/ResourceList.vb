@@ -1,6 +1,3 @@
-Imports System.Data.SqlClient
-Imports CSLA.Data
-
 <Serializable()> _
 Public Class ResourceList
   Inherits ReadOnlyListBase(Of ResourceList, ResourceInfo)

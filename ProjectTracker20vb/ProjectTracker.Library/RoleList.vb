@@ -1,5 +1,3 @@
-Imports System.Data.SqlClient
-
 <Serializable()> _
 Public Class RoleList
   Inherits NameValueListBase(Of Integer, String)

@@ -1,5 +1,3 @@
-Imports System.Data.SqlClient
-
 <Serializable()> _
 Public Class Project
   Inherits BusinessBase(Of Project)
@@ -16,6 +14,7 @@ Public Class Project
   Private mResources As ProjectResources = _
     ProjectResources.NewProjectResources()
 
+  <System.ComponentModel.DataObjectField(True, True)> _
   Public ReadOnly Property Id() As Guid
     Get
       CanReadProperty(True)
@@ -109,8 +108,10 @@ Public Class Project
 
   Protected Overrides Sub AddBusinessRules()
 
-    ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, "Name")
-    ValidationRules.AddRule(AddressOf Validation.CommonRules.StringMaxLength, _
+    ValidationRules.AddRule( _
+      AddressOf Validation.CommonRules.StringRequired, "Name")
+    ValidationRules.AddRule( _
+      AddressOf Validation.CommonRules.StringMaxLength, _
       New Validation.CommonRules.MaxLengthRuleArgs("Name", 50))
 
     ValidationRules.AddRule(AddressOf StartDateGTEndDate, "Started")
@@ -118,7 +119,8 @@ Public Class Project
 
   End Sub
 
-  Private Function StartDateGTEndDate(ByVal target As Object, ByVal e As Validation.RuleArgs) As Boolean
+  Private Function StartDateGTEndDate( _
+    ByVal target As Object, ByVal e As Validation.RuleArgs) As Boolean
 
     If mStarted > mEnded Then
       e.Description = "Start date can't be after end date"

@@ -4,10 +4,11 @@ Public Class CommandObject
 
 #Region " Authorization Rules "
 
-  Public Shared Function CanExecuteObject() As Boolean
+  Public Shared Function CanExecuteCommand() As Boolean
 
     ' to see if user is authorized
-    Return Csla.ApplicationContext.User.IsInRole("")
+    'Return Csla.ApplicationContext.User.IsInRole("")
+    Return True
 
   End Function
 
@@ -41,7 +42,7 @@ Public Class CommandObject
 
     Dim cmd As New CommandObject
     cmd.BeforeServer()
-    cmd = DataPortal.Fetch(Of CommandObject)(cmd)
+    cmd = DataPortal.Execute(Of CommandObject)(cmd)
     cmd.AfterServer()
     Return cmd.Result
 

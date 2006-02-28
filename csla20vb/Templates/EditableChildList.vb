@@ -10,7 +10,9 @@ Public Class EditableChildList
     Return New EditableChildList
   End Function
 
-  Friend Shared Function GetEditableChildList(ByVal dr As SqlDataReader) As EditableChildList
+  Friend Shared Function GetEditableChildList( _
+    ByVal dr As SqlDataReader) As EditableChildList
+
     Return New EditableChildList(dr)
   End Function
 
@@ -29,14 +31,17 @@ Public Class EditableChildList
 
   Private Sub Fetch(ByVal dr As SqlDataReader)
 
+    RaiseListChangedEvents = False
     While dr.Read
       Add(EditableChild.GetEditableChild(dr))
     End While
+    RaiseListChangedEvents = True
 
   End Sub
 
-  Friend Sub Update()
+  Friend Sub Update(ByVal parent As Object)
 
+    RaiseListChangedEvents = False
     For Each item As EditableChild In DeletedList
       item.DeleteSelf()
     Next
@@ -44,12 +49,13 @@ Public Class EditableChildList
 
     For Each item As EditableChild In Me
       If item.IsNew Then
-        item.Insert()
+        item.Insert(parent)
 
       Else
-        item.Update()
+        item.Update(parent)
       End If
     Next
+    RaiseListChangedEvents = True
 
   End Sub
 

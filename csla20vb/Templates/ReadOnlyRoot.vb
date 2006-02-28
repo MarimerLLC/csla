@@ -31,7 +31,9 @@ Public Class ReadOnlyRoot
   End Sub
 
   Public Shared Function CanGetObject() As Boolean
-    Return ApplicationContext.User.IsInRole("")
+    ' TODO: customize to check user role
+    'Return ApplicationContext.User.IsInRole("")
+    Return True
   End Function
 
 #End Region

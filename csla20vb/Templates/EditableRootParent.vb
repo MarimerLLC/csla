@@ -134,12 +134,12 @@ Public Class EditableRootParent
 
   Protected Overrides Sub DataPortal_Insert()
     ' insert values
-    mChildren.Update()
+    mChildren.Update(Me)
   End Sub
 
   Protected Overrides Sub DataPortal_Update()
     ' update values
-    mChildren.Update()
+    mChildren.Update(Me)
   End Sub
 
   Protected Overrides Sub DataPortal_DeleteSelf()

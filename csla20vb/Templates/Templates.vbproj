@@ -56,6 +56,7 @@
     <Compile Include="EditableRootList.vb" />
     <Compile Include="EditableRootParent.vb" />
     <Compile Include="NameValueList.vb" />
+    <Compile Include="ReadOnlyChild.vb" />
     <Compile Include="ReadOnlyList.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -73,6 +74,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ReadOnlyRoot.vb" />
+    <Compile Include="SwitchableObject.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

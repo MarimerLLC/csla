@@ -7,18 +7,22 @@ Public Class EditableRootList
 #Region " Authorization Rules "
 
   Public Shared Function CanAddObject() As Boolean
+    ' TODO: customize to check user role
     Return ApplicationContext.User.IsInRole("")
   End Function
 
   Public Shared Function CanGetObject() As Boolean
+    ' TODO: customize to check user role
     Return ApplicationContext.User.IsInRole("")
   End Function
 
   Public Shared Function CanEditObject() As Boolean
+    ' TODO: customize to check user role
     Return ApplicationContext.User.IsInRole("")
   End Function
 
   Public Shared Function CanDeleteObject() As Boolean
+    ' TODO: customize to check user role
     Return ApplicationContext.User.IsInRole("")
   End Function
 
@@ -55,19 +59,22 @@ Public Class EditableRootList
     End Sub
   End Class
 
-  Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
     ' TODO: load values
+    RaiseListChangedEvents = False
     Using dr As SqlDataReader = Nothing
       While dr.Read
         Add(EditableChild.GetEditableChild(dr))
       End While
     End Using
+    RaiseListChangedEvents = True
 
   End Sub
 
   Protected Overrides Sub DataPortal_Update()
 
+    RaiseListChangedEvents = False
     For Each item As EditableChild In DeletedList
       item.DeleteSelf()
     Next
@@ -75,12 +82,13 @@ Public Class EditableRootList
 
     For Each item As EditableChild In Me
       If item.IsNew Then
-        item.Insert()
+        item.Insert(Me)
 
       Else
-        item.Update()
+        item.Update(Me)
       End If
     Next
+    RaiseListChangedEvents = True
 
   End Sub
 

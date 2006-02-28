@@ -1,6 +1,8 @@
+Imports System.Data.SqlClient
+
 <Serializable()> _
-Public Class EditableRoot
-  Inherits BusinessBase(Of EditableRoot)
+Public Class SwitchableObject
+  Inherits BusinessBase(Of SwitchableObject)
 
 #Region " Business Methods "
 
@@ -67,20 +69,32 @@ Public Class EditableRoot
 
 #Region " Factory Methods "
 
-  Public Shared Function NewEditableRoot() As EditableRoot
-    Return DataPortal.Create(Of EditableRoot)()
+  Public Shared Function NewSwitchable() As SwitchableObject
+    Return DataPortal.Create(Of SwitchableObject)(New RootCriteria())
   End Function
 
-  Public Shared Function GetEditableRoot(ByVal id As Integer) As EditableRoot
-    Return DataPortal.Create(Of EditableRoot)(New Criteria(id))
+  Friend Shared Function NewSwitchableChild() As SwitchableObject
+    Return DataPortal.Create(Of SwitchableObject)(New ChildCriteria())
   End Function
 
-  Public Shared Sub DeleteEditableRoot(ByVal id As Integer)
-    DataPortal.Delete(New Criteria(id))
-  End Sub
+  Public Shared Function GetSwitchableRoot( _
+    ByVal id As Integer) As SwitchableObject
+
+    Return DataPortal.Create(Of SwitchableObject)(New RootCriteria(id))
+  End Function
+
+  Friend Shared Function GetSwitchableChild( _
+    ByVal dr As SqlDataReader) As SwitchableObject
+
+    Return New SwitchableObject(dr)
+  End Function
 
   Private Sub New()
     ' require use of factory methods
+  End Sub
+
+  Private Sub New(ByVal dr As SqlDataReader)
+    Fetch(dr)
   End Sub
 
 #End Region
@@ -88,7 +102,7 @@ Public Class EditableRoot
 #Region " Data Access "
 
   <Serializable()> _
-  Private Class Criteria
+  Private Class RootCriteria
     Private mId As Integer
     Public ReadOnly Property Id() As Integer
       Get
@@ -98,14 +112,43 @@ Public Class EditableRoot
     Public Sub New(ByVal id As Integer)
       mId = id
     End Sub
+    Public Sub New()
+
+    End Sub
   End Class
 
-  Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
-    ' load default values
+  <Serializable()> _
+  Private Class ChildCriteria
+
+  End Class
+
+  Private Overloads Sub DataPortal_Create(ByVal criteria As RootCriteria)
+    DoCreate()
   End Sub
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
-    ' load values
+  Private Overloads Sub DataPortal_Create(ByVal criteria As ChildCriteria)
+    MarkAsChild()
+    DoCreate()
+  End Sub
+
+  Private Sub DoCreate()
+    ' load default values from database here
+  End Sub
+
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As RootCriteria)
+    ' TODO: create data reader to load values
+    Using dr As SqlDataReader = Nothing
+      DoFetch(dr)
+    End Using
+  End Sub
+
+  Private Sub Fetch(ByVal dr As SqlDataReader)
+    MarkAsChild()
+    DoFetch(dr)
+  End Sub
+
+  Private Sub DoFetch(ByVal dr As SqlDataReader)
+    ' TODO: load values
   End Sub
 
   Protected Overrides Sub DataPortal_Insert()
@@ -117,10 +160,10 @@ Public Class EditableRoot
   End Sub
 
   Protected Overrides Sub DataPortal_DeleteSelf()
-    DataPortal_Delete(New Criteria(mId))
+    DataPortal_Delete(New RootCriteria(mId))
   End Sub
 
-  Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
+  Private Overloads Sub DataPortal_Delete(ByVal criteria As RootCriteria)
     ' delete values
   End Sub
 

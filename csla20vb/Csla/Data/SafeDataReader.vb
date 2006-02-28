@@ -612,6 +612,11 @@ Namespace Data
       Dispose(True)
       GC.SuppressFinalize(Me)
     End Sub
+
+    Protected Overrides Sub Finalize()
+      Dispose(False)
+    End Sub
+
 #End Region
 
   End Class

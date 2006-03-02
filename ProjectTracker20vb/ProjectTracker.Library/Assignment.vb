@@ -23,7 +23,8 @@ Friend Module Assignment
   ''' Ensure the Role property value exists
   ''' in RoleList
   ''' </summary>
-  Public Function ValidRole(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+  Public Function ValidRole( _
+    ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
     Dim role As Integer = CType(target, IHoldRoles).Role
 
@@ -42,8 +43,9 @@ Friend Module Assignment
 #Region " Data Access "
 
   Public Function AddAssignment( _
-    ByVal cn As SqlConnection, ByVal projectId As Guid, ByVal resourceId As Integer, _
-    ByVal assigned As SmartDate, ByVal role As Integer) As Byte()
+    ByVal cn As SqlConnection, ByVal projectId As Guid, _
+    ByVal resourceId As Integer, ByVal assigned As SmartDate, _
+    ByVal role As Integer) As Byte()
 
     Using cm As SqlCommand = cn.CreateCommand()
       cm.CommandText = "addAssignment"
@@ -54,8 +56,9 @@ Friend Module Assignment
   End Function
 
   Public Function UpdateAssignment(ByVal cn As SqlConnection, _
-    ByVal projectId As Guid, ByVal resourceId As Integer, ByVal assigned As SmartDate, _
-    ByVal newRole As Integer, ByVal timestamp() As Byte) As Byte()
+    ByVal projectId As Guid, ByVal resourceId As Integer, _
+    ByVal assigned As SmartDate, ByVal newRole As Integer, _
+    ByVal timestamp() As Byte) As Byte()
 
     Using cm As SqlCommand = cn.CreateCommand()
       cm.CommandText = "updateAssignment"
@@ -67,7 +70,8 @@ Friend Module Assignment
   End Function
 
   Private Function DoAddUpdate(ByVal cm As SqlCommand, _
-    ByVal projectId As Guid, ByVal resourceId As Integer, ByVal assigned As SmartDate, _
+    ByVal projectId As Guid, ByVal resourceId As Integer, _
+    ByVal assigned As SmartDate, _
     ByVal newRole As Integer) As Byte()
 
     cm.CommandType = CommandType.StoredProcedure
@@ -86,7 +90,8 @@ Friend Module Assignment
   End Function
 
   Public Sub RemoveAssignment( _
-    ByVal cn As SqlConnection, ByVal projectId As Guid, ByVal resourceId As Integer)
+    ByVal cn As SqlConnection, ByVal projectId As Guid, _
+    ByVal resourceId As Integer)
 
     Using cm As SqlCommand = cn.CreateCommand()
       cm.CommandType = CommandType.StoredProcedure

@@ -18,11 +18,13 @@ Public Class ProjectResources
   Public Sub Assign(ByVal resourceId As Integer)
 
     If Not Contains(resourceId) Then
-      Dim resource As ProjectResource = ProjectResource.NewProjectResource(resourceId)
+      Dim resource As ProjectResource = _
+        ProjectResource.NewProjectResource(resourceId)
       Me.Add(resource)
 
     Else
-      Throw New InvalidOperationException("Resource already assigned to project")
+      Throw _
+        New InvalidOperationException("Resource already assigned to project")
     End If
 
   End Sub
@@ -111,16 +113,15 @@ Public Class ProjectResources
   Friend Sub Update(ByVal project As Project)
 
     Me.RaiseListChangedEvents = False
-    Dim obj As ProjectResource
     ' update (thus deleting) any deleted child objects
-    For Each obj In DeletedList
+    For Each obj As ProjectResource In DeletedList
       obj.DeleteSelf(project)
     Next
     ' now that they are deleted, remove them from memory too
     DeletedList.Clear()
 
     ' add/update any current child objects
-    For Each obj In Me
+    For Each obj As ProjectResource In Me
       If obj.IsNew Then
         obj.Insert(project)
 

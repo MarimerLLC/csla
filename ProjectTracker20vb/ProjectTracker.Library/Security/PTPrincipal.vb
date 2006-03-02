@@ -10,7 +10,8 @@ Namespace Security
       MyBase.New(identity)
     End Sub
 
-    Public Shared Function Login(ByVal username As String, ByVal password As String) As Boolean
+    Public Shared Function Login( _
+      ByVal username As String, ByVal password As String) As Boolean
 
       Dim identity As PTIdentity = PTIdentity.GetIdentity(username, password)
       If identity.IsAuthenticated Then

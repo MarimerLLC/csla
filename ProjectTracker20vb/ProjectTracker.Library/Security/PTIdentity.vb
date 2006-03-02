@@ -1,4 +1,3 @@
-Imports System.Data.SqlClient
 Imports System.Security.Principal
 
 Namespace Security
@@ -8,6 +7,8 @@ Namespace Security
     Inherits ReadOnlyBase(Of PTIdentity)
 
     Implements IIdentity
+
+#Region " Business Methods "
 
     Protected Overrides Function GetIdValue() As Object
 
@@ -55,39 +56,6 @@ Namespace Security
 
 #End Region
 
-#Region " Constructors "
-
-    Private Sub New()
-      ' require use of factory methods
-    End Sub
-
-#End Region
-
-#Region " Criteria "
-
-    <Serializable()> _
-    Private Class Criteria
-
-      Private mUsername As String
-      Public ReadOnly Property Username() As String
-        Get
-          Return mUsername
-        End Get
-      End Property
-
-      Private mPassword As String
-      Public ReadOnly Property Password() As String
-        Get
-          Return mPassword
-        End Get
-      End Property
-
-      Public Sub New(ByVal username As String, ByVal password As String)
-        mUsername = username
-        mPassword = password
-      End Sub
-    End Class
-
 #End Region
 
 #Region " Factory Methods "
@@ -105,9 +73,37 @@ Namespace Security
 
     End Function
 
+    Private Sub New()
+      ' require use of factory methods
+    End Sub
+
 #End Region
 
 #Region " Data Access "
+
+    <Serializable()> _
+    Private Class Criteria
+
+      Private mUsername As String
+      Private mPassword As String
+
+      Public ReadOnly Property Username() As String
+        Get
+          Return mUsername
+        End Get
+      End Property
+
+      Public ReadOnly Property Password() As String
+        Get
+          Return mPassword
+        End Get
+      End Property
+
+      Public Sub New(ByVal username As String, ByVal password As String)
+        mUsername = username
+        mPassword = password
+      End Sub
+    End Class
 
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
@@ -131,6 +127,7 @@ Namespace Security
             Else
               mName = ""
               mIsAuthenticated = False
+              mRoles.Clear()
             End If
           End Using
         End Using

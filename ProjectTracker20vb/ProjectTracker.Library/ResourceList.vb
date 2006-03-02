@@ -32,6 +32,7 @@ Public Class ResourceList
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
+    RaiseListChangedEvents = False
     Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
       Using cm As SqlCommand = cn.CreateCommand
@@ -51,6 +52,7 @@ Public Class ResourceList
         End With
       End Using
     End Using
+    RaiseListChangedEvents = True
 
   End Sub
 

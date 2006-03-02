@@ -26,7 +26,8 @@ Public Class RoleList
   Public Shared Function GetList() As RoleList
 
     If mList Is Nothing Then
-      mList = DataPortal.Fetch(Of RoleList)(New Criteria(GetType(RoleList)))
+      mList = DataPortal.Fetch(Of RoleList) _
+        (New Criteria(GetType(RoleList)))
     End If
     Return mList
 

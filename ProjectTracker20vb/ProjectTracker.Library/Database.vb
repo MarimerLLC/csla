@@ -1,14 +1,16 @@
+Imports System.Configuration.ConfigurationManager
+
 Public Module Database
 
   Public ReadOnly Property PTrackerConnection() As String
     Get
-      Return System.Configuration.ConfigurationManager.ConnectionStrings("PTracker").ConnectionString
+      Return ConnectionStrings("PTracker").ConnectionString
     End Get
   End Property
 
   Public ReadOnly Property SecurityConnection() As String
     Get
-      Return System.Configuration.ConfigurationManager.ConnectionStrings("Security").ConnectionString
+      Return ConnectionStrings("Security").ConnectionString
     End Get
   End Property
 

@@ -137,7 +137,7 @@ Public Class ResourceAssignment
 
   End Sub
 
-  Friend Sub Insert(ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)
+  Friend Sub Insert(ByVal cn As SqlConnection, ByVal resource As Resource)
 
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
@@ -148,7 +148,8 @@ Public Class ResourceAssignment
 
   End Sub
 
-  Friend Sub Update(ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)
+  Friend Sub Update( _
+    ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)
 
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub

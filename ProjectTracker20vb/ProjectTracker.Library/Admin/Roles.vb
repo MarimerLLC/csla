@@ -1,5 +1,3 @@
-Imports System.Data.SqlClient
-
 Namespace Admin
 
   ''' <summary>
@@ -112,7 +110,8 @@ Namespace Admin
 
       ' see if save is allowed
       If Not CanEditObject() Then
-        Throw New System.Security.SecurityException("User not authorized to save roles")
+        Throw New System.Security.SecurityException( _
+          "User not authorized to save roles")
       End If
 
       ' do the save
@@ -129,7 +128,8 @@ Namespace Admin
     Protected Overrides Sub DataPortal_OnDataPortalInvokeComplete( _
       ByVal e As Csla.DataPortalEventArgs)
 
-      If ApplicationContext.ExecutionLocation = ApplicationContext.ExecutionLocations.Server Then
+      If ApplicationContext.ExecutionLocation = _
+        ApplicationContext.ExecutionLocations.Server Then
         ' this runs on the server and invalidates
         ' the RoleList cache
         RoleList.InvalidateCache()

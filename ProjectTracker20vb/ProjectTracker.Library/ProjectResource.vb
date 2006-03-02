@@ -39,7 +39,8 @@ Public Class ProjectResource
       If CanReadProperty("FirstName") AndAlso CanReadProperty("LastName") Then
         Return LastName & ", " & FirstName
       Else
-        Throw New System.Security.SecurityException("Property read not allowed")
+        Throw _
+          New System.Security.SecurityException("Property read not allowed")
       End If
     End Get
   End Property
@@ -101,13 +102,16 @@ Public Class ProjectResource
 
 #Region " Factory Methods "
 
-  Friend Shared Function NewProjectResource(ByVal resourceId As Integer) As ProjectResource
+  Friend Shared Function NewProjectResource( _
+    ByVal resourceId As Integer) As ProjectResource
 
-    Return New ProjectResource(Resource.GetResource(resourceId), RoleList.DefaultRole)
+    Return New ProjectResource( _
+      Resource.GetResource(resourceId), RoleList.DefaultRole)
 
   End Function
 
-  Friend Shared Function GetResource(ByVal dr As SafeDataReader) As ProjectResource
+  Friend Shared Function GetResource( _
+    ByVal dr As SafeDataReader) As ProjectResource
 
     Return New ProjectResource(dr)
 

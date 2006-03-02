@@ -184,7 +184,8 @@ Public Class Project
   Public Shared Function NewProject() As Project
 
     If Not CanAddObject() Then
-      Throw New System.Security.SecurityException("User not authorized to add a project")
+      Throw New System.Security.SecurityException( _
+        "User not authorized to add a project")
     End If
     Return DataPortal.Create(Of Project)()
 
@@ -193,7 +194,8 @@ Public Class Project
   Public Shared Function GetProject(ByVal id As Guid) As Project
 
     If Not CanGetObject() Then
-      Throw New System.Security.SecurityException("User not authorized to view a project")
+      Throw New System.Security.SecurityException( _
+        "User not authorized to view a project")
     End If
     Return DataPortal.Fetch(Of Project)(New Criteria(id))
 
@@ -202,7 +204,8 @@ Public Class Project
   Public Shared Sub DeleteProject(ByVal id As Guid)
 
     If Not CanDeleteObject() Then
-      Throw New System.Security.SecurityException("User not authorized to remove a project")
+      Throw New System.Security.SecurityException( _
+        "User not authorized to remove a project")
     End If
     DataPortal.Delete(New Criteria(id))
 
@@ -211,13 +214,16 @@ Public Class Project
   Public Overrides Function Save() As Project
 
     If IsDeleted AndAlso Not CanDeleteObject() Then
-      Throw New System.Security.SecurityException("User not authorized to remove a project")
+      Throw New System.Security.SecurityException( _
+        "User not authorized to remove a project")
 
     ElseIf IsNew AndAlso Not CanAddObject() Then
-      Throw New System.Security.SecurityException("User not authorized to add a project")
+      Throw New System.Security.SecurityException( _
+        "User not authorized to add a project")
 
     ElseIf Not CanEditObject() Then
-      Throw New System.Security.SecurityException("User not authorized to update a project")
+      Throw New System.Security.SecurityException( _
+        "User not authorized to update a project")
     End If
     Return MyBase.Save
 

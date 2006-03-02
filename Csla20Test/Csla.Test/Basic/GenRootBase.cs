@@ -5,7 +5,7 @@ using System.Text;
 namespace Csla.Test.Basic
 {
     [Serializable()]
-    public class GenRootBase : BusinessBase<GenRoot>
+    public abstract class GenRootBase : BusinessBase<GenRoot>
     {
         private string _data = "";
 

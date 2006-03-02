@@ -120,7 +120,8 @@ Public Class Project
   End Sub
 
   Private Function StartDateGTEndDate( _
-    ByVal target As Object, ByVal e As Validation.RuleArgs) As Boolean
+    ByVal target As Object, _
+    ByVal e As Validation.RuleArgs) As Boolean
 
     If mStarted > mEnded Then
       e.Description = "Start date can't be after end date"

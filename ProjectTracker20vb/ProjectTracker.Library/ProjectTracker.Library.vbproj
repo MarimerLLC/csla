@@ -95,6 +95,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Diagrams\Assignment.cd" />
     <None Include="Diagrams\EditableObjects.cd" />
     <None Include="Diagrams\ReadOnlyObjects.cd" />
     <None Include="Diagrams\Security.cd" />

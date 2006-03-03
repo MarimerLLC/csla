@@ -1,9 +1,13 @@
+Imports ProjectTracker.Library.Admin
+
 Public Class RolesEdit
   Inherits WinPart
 
   Private mRoles As Admin.Roles
 
-  Private Sub RolesEdit_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+  Private Sub RolesEdit_Load( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles MyBase.Load
 
     Try
       mRoles = Admin.Roles.GetRoles
@@ -31,7 +35,9 @@ Public Class RolesEdit
 
   End Function
 
-  Private Sub SaveButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveButton.Click
+  Private Sub SaveButton_Click( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles SaveButton.Click
 
     Me.RolesBindingSource.RaiseListChangedEvents = False
     Dim temp As Admin.Roles = mRoles.Clone
@@ -55,9 +61,21 @@ Public Class RolesEdit
 
   End Sub
 
-  Private Sub CancelButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CancelButton.Click
+  Private Sub CancelButton_Click( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles CancelButton.Click
 
     Me.Close()
+
+  End Sub
+
+  Private Sub RolesEdit_CurrentPrincipalChanged( _
+    ByVal sender As Object, ByVal e As System.EventArgs) _
+    Handles Me.CurrentPrincipalChanged
+
+    If Not Roles.CanEditObject Then
+      Me.Close()
+    End If
 
   End Sub
 

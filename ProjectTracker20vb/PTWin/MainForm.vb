@@ -1,6 +1,8 @@
 Public Class MainForm
 
-  Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+  Private Sub MainForm_Load( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles MyBase.Load
 
     If Csla.ApplicationContext.AuthenticationType = "Windows" Then
       AppDomain.CurrentDomain.SetPrincipalPolicy( _
@@ -18,7 +20,9 @@ Public Class MainForm
 
 #Region " Projects "
 
-  Private Sub NewProjectToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewProjectToolStripMenuItem.Click
+  Private Sub NewProjectToolStripMenuItem_Click( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles NewProjectToolStripMenuItem.Click
 
     Using busy As New StatusBusy("Creating project...")
       AddWinPart(New ProjectEdit(Project.NewProject))
@@ -122,7 +126,9 @@ Public Class MainForm
 
   End Sub
 
-  Private Sub EditResourceToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles EditResourceToolStripMenuItem.Click
+  Private Sub EditResourceToolStripMenuItem_Click( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles EditResourceToolStripMenuItem.Click
 
     Dim dlg As New ResourceSelect
     dlg.Text = "Edit Resource"
@@ -168,7 +174,9 @@ Public Class MainForm
 
   End Sub
 
-  Private Sub DeleteResourceToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DeleteResourceToolStripMenuItem.Click
+  Private Sub DeleteResourceToolStripMenuItem_Click( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles DeleteResourceToolStripMenuItem.Click
 
     Dim dlg As New ResourceSelect
     dlg.Text = "Delete Resource"
@@ -270,9 +278,6 @@ Public Class MainForm
 
     If Me.LoginToolStripButton.Text = "Login" Then
       LoginForm.ShowDialog(Me)
-
-    Else
-      ProjectTracker.Library.Security.PTPrincipal.Logout()
     End If
 
     Dim user As System.Security.Principal.IPrincipal = _
@@ -322,9 +327,12 @@ Public Class MainForm
 
   End Sub
 
-  Private Sub DocumentsToolStripDropDownButton_DropDownOpening(ByVal sender As Object, ByVal e As System.EventArgs) Handles DocumentsToolStripDropDownButton.DropDownOpening
+  Private Sub DocumentsToolStripDropDownButton_DropDownOpening( _
+    ByVal sender As Object, ByVal e As System.EventArgs) _
+    Handles DocumentsToolStripDropDownButton.DropDownOpening
 
-    Dim items As ToolStripItemCollection = DocumentsToolStripDropDownButton.DropDownItems
+    Dim items As ToolStripItemCollection = _
+      DocumentsToolStripDropDownButton.DropDownItems
     For Each item As ToolStripItem In items
       RemoveHandler item.Click, AddressOf DocumentClick
     Next
@@ -383,6 +391,17 @@ Public Class MainForm
         End If
       Next
     End If
+
+  End Sub
+
+  Private Sub Panel1_Resize( _
+    ByVal sender As Object, ByVal e As System.EventArgs) Handles Panel1.Resize
+
+    For Each ctl As Control In Panel1.Controls
+      If TypeOf ctl Is WinPart Then
+        ctl.Size = Panel1.ClientSize
+      End If
+    Next
 
   End Sub
 

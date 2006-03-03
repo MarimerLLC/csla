@@ -20,7 +20,6 @@ Public Class ProjectEdit
 
     Me.RoleListBindingSource.DataSource = RoleList.GetList
     Me.ProjectBindingSource.DataSource = mProject
-    'Me.ResourcesBindingSource.DataSource = mProject.Resources
 
     ApplyAuthorizationRules()
 
@@ -40,7 +39,9 @@ Public Class ProjectEdit
 
   End Function
 
-  Private Sub ProjectEdit_CurrentPrincipalChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.CurrentPrincipalChanged
+  Private Sub ProjectEdit_CurrentPrincipalChanged( _
+    ByVal sender As Object, ByVal e As System.EventArgs) _
+    Handles Me.CurrentPrincipalChanged
 
     ApplyAuthorizationRules()
 
@@ -60,6 +61,8 @@ Public Class ProjectEdit
     Me.OKButton.Enabled = canEdit
     Me.ApplyButton.Enabled = canEdit
     Me.Cancel_Button.Enabled = canEdit
+    Me.AssignButton.Enabled = canEdit
+    Me.UnassignButton.Enabled = canEdit
 
     ' enable/disable role column in grid
     Me.ResourcesDataGridView.Columns(2).ReadOnly = Not canEdit
@@ -168,8 +171,10 @@ Public Class ProjectEdit
 
   End Sub
 
-  Private Sub ResourcesDataGridView_CellContentClick(ByVal sender As System.Object, _
-    ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles ResourcesDataGridView.CellContentClick
+  Private Sub ResourcesDataGridView_CellContentClick( _
+    ByVal sender As System.Object, _
+    ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) _
+    Handles ResourcesDataGridView.CellContentClick
 
     If e.ColumnIndex = 1 And e.RowIndex > -1 Then
       Dim resourceId As Integer = _

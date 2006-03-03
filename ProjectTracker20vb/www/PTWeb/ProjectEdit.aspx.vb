@@ -10,11 +10,10 @@ Partial Class ProjectEdit
     AssignView = 1
   End Enum
 
-  Protected Sub Page_Load(ByVal sender As Object, _
-    ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub Page_Load( _
+    ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
-      Session("currentObject") = Nothing
       ApplyAuthorizationRules()
 
     Else
@@ -25,9 +24,9 @@ Partial Class ProjectEdit
 
   Private Sub ApplyAuthorizationRules()
 
-    Dim obj As Project = GetProject()
     ' project display
     If Project.CanEditObject Then
+      Dim obj As Project = GetProject()
       If obj.IsNew Then
         Me.DetailsView1.DefaultMode = DetailsViewMode.Insert
 
@@ -40,16 +39,19 @@ Partial Class ProjectEdit
       Me.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly
       Me.AddResourceButton.Visible = False
     End If
-    Me.DetailsView1.Rows(Me.DetailsView1.Rows.Count - 1).Visible = Project.CanEditObject
+    Me.DetailsView1.Rows(Me.DetailsView1.Rows.Count - 1).Visible = _
+      Project.CanEditObject
 
     ' resources display
-    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = Project.CanEditObject
+    Me.GridView1.Columns(Me.GridView1.Columns.Count - 1).Visible = _
+      Project.CanEditObject
 
   End Sub
 
 #Region " Project DetailsView "
 
-  Protected Sub DetailsView1_ItemInserted(ByVal sender As Object, _
+  Protected Sub DetailsView1_ItemInserted( _
+    ByVal sender As Object, _
     ByVal e As System.Web.UI.WebControls.DetailsViewInsertedEventArgs) _
     Handles DetailsView1.ItemInserted
 
@@ -58,7 +60,8 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub DetailsView1_ItemUpdated(ByVal sender As Object, _
+  Protected Sub DetailsView1_ItemUpdated( _
+    ByVal sender As Object, _
     ByVal e As System.Web.UI.WebControls.DetailsViewUpdatedEventArgs) _
     Handles DetailsView1.ItemUpdated
 
@@ -66,7 +69,8 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub DetailsView1_ItemDeleted(ByVal sender As Object, _
+  Protected Sub DetailsView1_ItemDeleted( _
+    ByVal sender As Object, _
     ByVal e As System.Web.UI.WebControls.DetailsViewDeletedEventArgs) _
     Handles DetailsView1.ItemDeleted
 
@@ -78,15 +82,17 @@ Partial Class ProjectEdit
 
 #Region " Resource Grid "
 
-  Protected Sub AddResourceButton_Click(ByVal sender As Object, _
-    ByVal e As System.EventArgs) Handles AddResourceButton.Click
+  Protected Sub AddResourceButton_Click( _
+    ByVal sender As Object, ByVal e As System.EventArgs) _
+    Handles AddResourceButton.Click
 
     Me.MultiView1.ActiveViewIndex = Views.AssignView
 
   End Sub
 
-  Protected Sub GridView2_SelectedIndexChanged(ByVal sender As Object, _
-    ByVal e As System.EventArgs) Handles GridView2.SelectedIndexChanged
+  Protected Sub GridView2_SelectedIndexChanged( _
+    ByVal sender As Object, ByVal e As System.EventArgs) _
+    Handles GridView2.SelectedIndexChanged
 
     Dim obj As Project = GetProject()
     Try
@@ -102,8 +108,9 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub CancelAssignButton_Click(ByVal sender As Object, _
-    ByVal e As System.EventArgs) Handles CancelAssignButton.Click
+  Protected Sub CancelAssignButton_Click( _
+    ByVal sender As Object, ByVal e As System.EventArgs) _
+    Handles CancelAssignButton.Click
 
     Me.MultiView1.ActiveViewIndex = Views.MainView
 
@@ -143,8 +150,9 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub ProjectDataSource_SelectObject(ByVal sender As Object, _
-    ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectDataSource.SelectObject
+  Protected Sub ProjectDataSource_SelectObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) _
+    Handles ProjectDataSource.SelectObject
 
     e.BusinessObject = GetProject()
 
@@ -163,8 +171,9 @@ Partial Class ProjectEdit
 
 #Region " ResourcesDataSource "
 
-  Protected Sub ResourcesDataSource_DeleteObject(ByVal sender As Object, _
-    ByVal e As Csla.Web.DeleteObjectArgs) Handles ResourcesDataSource.DeleteObject
+  Protected Sub ResourcesDataSource_DeleteObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) _
+    Handles ResourcesDataSource.DeleteObject
 
     Dim obj As Project = GetProject()
     Dim rid As Integer = CInt(e.Keys("ResourceId"))
@@ -173,7 +182,9 @@ Partial Class ProjectEdit
 
   End Sub
 
-  Protected Sub ResourcesDataSource_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles ResourcesDataSource.SelectObject
+  Protected Sub ResourcesDataSource_SelectObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) _
+    Handles ResourcesDataSource.SelectObject
 
     Dim obj As Project = GetProject()
     e.BusinessObject = obj.Resources
@@ -185,9 +196,8 @@ Partial Class ProjectEdit
     Handles ResourcesDataSource.UpdateObject
 
     Dim obj As Project = GetProject()
-    Dim res As ProjectResource
     Dim rid As Integer = CInt(e.Keys("ResourceId"))
-    res = obj.Resources.GetItem(rid)
+    Dim res As ProjectResource = obj.Resources.GetItem(rid)
     Csla.Data.DataMapper.Map(e.Values, res)
     e.RowsAffected = SaveProject(obj)
 
@@ -197,8 +207,9 @@ Partial Class ProjectEdit
 
 #Region " ResourceListDataSource "
 
-  Protected Sub ResourceListDataSource_SelectObject(ByVal sender As Object, _
-    ByVal e As Csla.Web.SelectObjectArgs) Handles ResourceListDataSource.SelectObject
+  Protected Sub ResourceListDataSource_SelectObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) _
+    Handles ResourceListDataSource.SelectObject
 
     e.BusinessObject = ProjectTracker.Library.ResourceList.GetResourceList
 
@@ -208,8 +219,9 @@ Partial Class ProjectEdit
 
 #Region " RoleListDataSource "
 
-  Protected Sub RoleListDataSource_SelectObject(ByVal sender As Object, _
-    ByVal e As Csla.Web.SelectObjectArgs) Handles RoleListDataSource.SelectObject
+  Protected Sub RoleListDataSource_SelectObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) _
+    Handles RoleListDataSource.SelectObject
 
     e.BusinessObject = RoleList.GetList
 
@@ -220,16 +232,19 @@ Partial Class ProjectEdit
   Private Function GetProject() As Project
 
     Dim businessObject As Object = Session("currentObject")
-    If businessObject Is Nothing OrElse Not TypeOf businessObject Is Project Then
+    If businessObject Is Nothing OrElse _
+        Not TypeOf businessObject Is Project Then
       Try
         Dim idString As String = Request.QueryString("id")
         If Not String.IsNullOrEmpty(idString) Then
           Dim id As New Guid(idString)
           businessObject = Project.GetProject(id)
+
         Else
           businessObject = Project.NewProject
-          Session("currentObject") = businessObject
         End If
+        Session("currentObject") = businessObject
+
       Catch ex As System.Security.SecurityException
         Response.Redirect("ProjectList.aspx")
       End Try
@@ -254,8 +269,10 @@ Partial Class ProjectEdit
           project.BrokenRulesCollection(0).Description)
 
       Else
-        For Each rule As Csla.Validation.BrokenRule In project.BrokenRulesCollection
-          message.AppendFormat("* {0}: {1}<br/>", rule.Property, rule.Description)
+        For Each rule As Csla.Validation.BrokenRule In _
+            project.BrokenRulesCollection
+          message.AppendFormat( _
+            "* {0}: {1}<br/>", rule.Property, rule.Description)
         Next
       End If
       Me.ErrorLabel.Text = message.ToString

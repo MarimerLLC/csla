@@ -5,11 +5,10 @@ Imports ProjectTracker.Library
 Partial Class ProjectList
   Inherits System.Web.UI.Page
 
-  Protected Sub Page_Load(ByVal sender As Object, _
-    ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub Page_Load( _
+    ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
-      Session("currentObject") = Nothing
       ApplyAuthorizationRules()
 
     Else
@@ -39,9 +38,11 @@ Partial Class ProjectList
 
   End Sub
 
-  Protected Sub NewProjectButton_Click(ByVal sender As Object, _
-    ByVal e As System.EventArgs) Handles NewProjectButton.Click
+  Protected Sub NewProjectButton_Click( _
+    ByVal sender As Object, ByVal e As System.EventArgs) _
+    Handles NewProjectButton.Click
 
+    'allow user to add a new project
     Response.Redirect("ProjectEdit.aspx")
 
   End Sub
@@ -50,15 +51,29 @@ Partial Class ProjectList
 
 #Region " ProjectListDataSource "
 
-  Protected Sub ProjectListDataSource_DeleteObject(ByVal sender As Object, _
-    ByVal e As Csla.Web.DeleteObjectArgs) Handles ProjectListDataSource.DeleteObject
+  Protected Sub ProjectListDataSource_DeleteObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.DeleteObjectArgs) _
+    Handles ProjectListDataSource.DeleteObject
 
-    ProjectTracker.Library.Project.DeleteProject(New Guid(e.Keys("Id").ToString))
+    Try
+      ProjectTracker.Library.Project.DeleteProject( _
+        New Guid(e.Keys("Id").ToString))
+      e.RowsAffected = 1
+
+    Catch ex As Csla.DataPortalException
+      Me.ErrorLabel.Text = ex.BusinessException.Message
+      e.RowsAffected = 0
+
+    Catch ex As Exception
+      Me.ErrorLabel.Text = ex.Message
+      e.RowsAffected = 0
+    End Try
 
   End Sub
 
-  Protected Sub ProjectListDataSource_SelectObject(ByVal sender As Object, _
-    ByVal e As Csla.Web.SelectObjectArgs) Handles ProjectListDataSource.SelectObject
+  Protected Sub ProjectListDataSource_SelectObject( _
+    ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) _
+    Handles ProjectListDataSource.SelectObject
 
     e.BusinessObject = GetProjectList()
 
@@ -69,7 +84,8 @@ Partial Class ProjectList
   Private Function GetProjectList() As ProjectTracker.Library.ProjectList
 
     Dim businessObject As Object = Session("currentObject")
-    If businessObject Is Nothing OrElse Not TypeOf businessObject Is ProjectList Then
+    If businessObject Is Nothing OrElse _
+        Not TypeOf businessObject Is ProjectList Then
       businessObject = ProjectTracker.Library.ProjectList.GetProjectList
       Session("currentObject") = businessObject
     End If

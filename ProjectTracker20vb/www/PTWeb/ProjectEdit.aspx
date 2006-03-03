@@ -18,18 +18,22 @@
             <ControlStyle Width="95%" />
             <ItemStyle Width="95%" />
           </asp:BoundField>
-          <asp:TemplateField HeaderText="Description" SortExpression="Description">
+          <asp:TemplateField HeaderText="Description" 
+            SortExpression="Description">
             <EditItemTemplate>
-              <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("Description") %>' TextMode="MultiLine"
-                Width="95%"></asp:TextBox>
+              <asp:TextBox ID="TextBox1" TextMode="MultiLine"
+                Width="95%" runat="server" 
+                Text='<%# Bind("Description") %>'></asp:TextBox>
             </EditItemTemplate>
             <InsertItemTemplate>
-              <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("Description") %>' TextMode="MultiLine"
-                Width="95%"></asp:TextBox>
+              <asp:TextBox ID="TextBox1" TextMode="MultiLine"
+                Width="95%" runat="server" 
+                Text='<%# Bind("Description") %>'></asp:TextBox>
             </InsertItemTemplate>
             <ItemTemplate>
-              <asp:TextBox ID="TextBox2" runat="server" ReadOnly="True" Text='<%# Bind("Description") %>'
-                TextMode="MultiLine" Width="95%"></asp:TextBox>
+              <asp:TextBox ID="TextBox2" TextMode="MultiLine" 
+                ReadOnly="True" Width="95%" runat="server"
+                Text='<%# Bind("Description") %>'></asp:TextBox>
             </ItemTemplate>
           </asp:TemplateField>
           <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" ShowInsertButton="True" />
@@ -44,13 +48,17 @@
           <asp:BoundField DataField="Assigned" HeaderText="Assigned" ReadOnly="True" SortExpression="Assigned" />
           <asp:TemplateField HeaderText="Role" SortExpression="Role">
             <EditItemTemplate>
-              <asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="RoleListDataSource"
-                DataTextField="Value" DataValueField="Key" SelectedValue='<%# Bind("Role") %>'>
+              <asp:DropDownList ID="DropDownList1" runat="server" 
+                DataSourceID="RoleListDataSource"
+                DataTextField="Value" DataValueField="Key" 
+                SelectedValue='<%# Bind("Role") %>'>
               </asp:DropDownList>
             </EditItemTemplate>
             <ItemTemplate>
-              <asp:DropDownList ID="DropDownList2" runat="server" DataSourceID="RoleListDataSource"
-                DataTextField="Value" DataValueField="Key" Enabled="False" SelectedValue='<%# Bind("Role") %>'>
+              <asp:DropDownList ID="DropDownList2" runat="server" 
+                DataSourceID="RoleListDataSource"
+                DataTextField="Value" DataValueField="Key" 
+                Enabled="False" SelectedValue='<%# Bind("Role") %>'>
               </asp:DropDownList>
             </ItemTemplate>
           </asp:TemplateField>

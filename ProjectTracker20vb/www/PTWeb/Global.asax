@@ -29,39 +29,21 @@
     
   End Sub
   
-  Protected Sub Application_AcquireRequestState(ByVal sender As Object, ByVal e As System.EventArgs)
+  Protected Sub Application_AcquireRequestState( _
+    ByVal sender As Object, ByVal e As System.EventArgs)
 
-    If Csla.ApplicationContext.AuthenticationType <> "Windows" Then
-      ReloadPrincipal()
-    End If
-    
-  End Sub
-
-  ''' <summary>
-  ''' Reload the principal from Session if Session
-  ''' is available and if there's a principal 
-  ''' object already in there.  
-  ''' </summary>
-  Private Sub ReloadPrincipal()
-    
-    Dim principal As System.Security.Principal.IPrincipal = Nothing
+    Dim principal As System.Security.Principal.IPrincipal
     Try
       principal = _
         CType(Session("CslaPrincipal"), System.Security.Principal.IPrincipal)
 
     Catch
-      ' do nothing - this really shouldn't happen
-      ' but it does on the first login.aspx call
-      ' because Session isn't set up yet for some reason
+      principal = Nothing
     End Try
     
     If principal Is Nothing Then
       ' didn't get a principal from Session, so
       ' set it to an unauthenticted PTPrincipal
-
-      ' setting an unauthenticated principal when running
-      ' under the VShost causes serialization issues
-      ' and isn't strictly necessary anyway
       ProjectTracker.Library.Security.PTPrincipal.Logout()
       
     Else
@@ -69,7 +51,6 @@
       Csla.ApplicationContext.User = principal
     End If
 
-    
   End Sub
 
 </script>

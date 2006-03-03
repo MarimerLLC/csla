@@ -51,6 +51,8 @@ namespace PTWin
       this.OKButton.Enabled = canEdit;
       this.ApplyButton.Enabled = canEdit;
       this.Cancel_Button.Enabled = canEdit;
+      this.AssignButton.Enabled = canEdit;
+      this.UnassignButton.Enabled = canEdit;
 
       // enable/disable role column in grid
       this.ResourcesDataGridView.Columns[2].ReadOnly = 

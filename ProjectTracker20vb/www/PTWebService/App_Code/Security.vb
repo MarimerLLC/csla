@@ -1,15 +1,11 @@
 Option Strict On
 
 Imports Microsoft.VisualBasic
+Imports ProjectTracker.Library.Security
 
 Friend Module Security
 
   Public Sub UseAnonymous()
-
-    ' setting an unauthenticated principal when running
-    ' under the VShost causes serialization issues
-    ' and isn't strictly necessary anyway
-    If UrlIsHostedByVS(HttpContext.Current.Request.Url) Then Exit Sub
 
     ProjectTracker.Library.Security.PTPrincipal.Logout()
 
@@ -23,10 +19,10 @@ Friend Module Security
     End If
 
     ' set to unauthenticated principal
-    ProjectTracker.Library.Security.PTPrincipal.Logout()
+    PTPrincipal.Logout()
 
     With credentials
-      ProjectTracker.Library.Security.PTPrincipal.Login(.Username, .Password)
+      PTPrincipal.Login(.Username, .Password)
     End With
 
     If Not Csla.ApplicationContext.User.Identity.IsAuthenticated Then
@@ -35,17 +31,5 @@ Friend Module Security
     End If
 
   End Sub
-
-  Private Function UrlIsHostedByVS(ByVal uri As System.Uri) As Boolean
-
-    If uri.Port >= 1024 _
-      AndAlso _
-      String.Compare(uri.Host, "localHost", System.StringComparison.OrdinalIgnoreCase) = 0 Then
-
-      Return True
-    End If
-    Return False
-
-  End Function
 
 End Module

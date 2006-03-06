@@ -127,9 +127,9 @@ Namespace PTService
         
         '''<remarks/>
         <System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetProjectList", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function GetProjectList() As ProjectInfo()
+        Public Function GetProjectList() As ProjectData()
             Dim results() As Object = Me.Invoke("GetProjectList", New Object(-1) {})
-            Return CType(results(0),ProjectInfo())
+            Return CType(results(0),ProjectData())
         End Function
         
         '''<remarks/>
@@ -154,9 +154,9 @@ Namespace PTService
         
         '''<remarks/>
         <System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetProject", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function GetProject(ByVal request As ProjectRequest) As ProjectInfo
+        Public Function GetProject(ByVal request As ProjectRequest) As ProjectData
             Dim results() As Object = Me.Invoke("GetProject", New Object() {request})
-            Return CType(results(0),ProjectInfo)
+            Return CType(results(0),ProjectData)
         End Function
         
         '''<remarks/>
@@ -182,9 +182,9 @@ Namespace PTService
         '''<remarks/>
         <System.Web.Services.Protocols.SoapHeaderAttribute("CslaCredentialsValue"),  _
          System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/AddProject", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function AddProject(ByVal name As String, ByVal started As String, ByVal ended As String, ByVal description As String) As ProjectInfo
+        Public Function AddProject(ByVal name As String, ByVal started As String, ByVal ended As String, ByVal description As String) As ProjectData
             Dim results() As Object = Me.Invoke("AddProject", New Object() {name, started, ended, description})
-            Return CType(results(0),ProjectInfo)
+            Return CType(results(0),ProjectData)
         End Function
         
         '''<remarks/>
@@ -210,9 +210,9 @@ Namespace PTService
         '''<remarks/>
         <System.Web.Services.Protocols.SoapHeaderAttribute("CslaCredentialsValue"),  _
          System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/EditProject", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function EditProject(ByVal id As System.Guid, ByVal name As String, ByVal started As String, ByVal ended As String, ByVal description As String) As ProjectInfo
+        Public Function EditProject(ByVal id As System.Guid, ByVal name As String, ByVal started As String, ByVal ended As String, ByVal description As String) As ProjectData
             Dim results() As Object = Me.Invoke("EditProject", New Object() {id, name, started, ended, description})
-            Return CType(results(0),ProjectInfo)
+            Return CType(results(0),ProjectData)
         End Function
         
         '''<remarks/>
@@ -237,9 +237,9 @@ Namespace PTService
         
         '''<remarks/>
         <System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetResourceList", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function GetResourceList() As ResourceInfo()
+        Public Function GetResourceList() As ResourceData()
             Dim results() As Object = Me.Invoke("GetResourceList", New Object(-1) {})
-            Return CType(results(0),ResourceInfo())
+            Return CType(results(0),ResourceData())
         End Function
         
         '''<remarks/>
@@ -264,9 +264,9 @@ Namespace PTService
         
         '''<remarks/>
         <System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetResource", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function GetResource(ByVal request As ResourceRequest) As ResourceInfo
+        Public Function GetResource(ByVal request As ResourceRequest) As ResourceData
             Dim results() As Object = Me.Invoke("GetResource", New Object() {request})
-            Return CType(results(0),ResourceInfo)
+            Return CType(results(0),ResourceData)
         End Function
         
         '''<remarks/>
@@ -292,9 +292,9 @@ Namespace PTService
         '''<remarks/>
         <System.Web.Services.Protocols.SoapHeaderAttribute("CslaCredentialsValue"),  _
          System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/ChangeResourceName", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function ChangeResourceName(ByVal id As Integer, ByVal firstName As String, ByVal lastName As String) As ResourceInfo
+        Public Function ChangeResourceName(ByVal id As Integer, ByVal firstName As String, ByVal lastName As String) As ResourceData
             Dim results() As Object = Me.Invoke("ChangeResourceName", New Object() {id, firstName, lastName})
-            Return CType(results(0),ResourceInfo)
+            Return CType(results(0),ResourceData)
         End Function
         
         '''<remarks/>
@@ -346,9 +346,9 @@ Namespace PTService
         
         '''<remarks/>
         <System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://ws.lhotka.net/GetRoles", RequestNamespace:="http://ws.lhotka.net/", ResponseNamespace:="http://ws.lhotka.net/", Use:=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle:=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)>  _
-        Public Function GetRoles() As RoleInfo()
+        Public Function GetRoles() As RoleData()
             Dim results() As Object = Me.Invoke("GetRoles", New Object(-1) {})
-            Return CType(results(0),RoleInfo())
+            Return CType(results(0),RoleData())
         End Function
         
         '''<remarks/>
@@ -444,7 +444,7 @@ Namespace PTService
      System.Diagnostics.DebuggerStepThroughAttribute(),  _
      System.ComponentModel.DesignerCategoryAttribute("code"),  _
      System.Xml.Serialization.XmlTypeAttribute([Namespace]:="http://ws.lhotka.net/")>  _
-    Partial Public Class RoleInfo
+    Partial Public Class RoleData
         
         Private idField As Integer
         
@@ -498,7 +498,7 @@ Namespace PTService
      System.Diagnostics.DebuggerStepThroughAttribute(),  _
      System.ComponentModel.DesignerCategoryAttribute("code"),  _
      System.Xml.Serialization.XmlTypeAttribute([Namespace]:="http://ws.lhotka.net/")>  _
-    Partial Public Class ResourceAssignmentInfo
+    Partial Public Class ResourceAssignmentData
         
         Private projectIdField As System.Guid
         
@@ -555,13 +555,13 @@ Namespace PTService
      System.Diagnostics.DebuggerStepThroughAttribute(),  _
      System.ComponentModel.DesignerCategoryAttribute("code"),  _
      System.Xml.Serialization.XmlTypeAttribute([Namespace]:="http://ws.lhotka.net/")>  _
-    Partial Public Class ResourceInfo
+    Partial Public Class ResourceData
         
         Private idField As Integer
         
         Private nameField As String
         
-        Private resourceAssignmentsField() As ResourceAssignmentInfo
+        Private resourceAssignmentsField() As ResourceAssignmentData
         
         '''<remarks/>
         Public Property Id() As Integer
@@ -584,7 +584,7 @@ Namespace PTService
         End Property
         
         '''<remarks/>
-        Public Property ResourceAssignments() As ResourceAssignmentInfo()
+        Public Property ResourceAssignments() As ResourceAssignmentData()
             Get
                 Return Me.resourceAssignmentsField
             End Get
@@ -621,7 +621,7 @@ Namespace PTService
      System.Diagnostics.DebuggerStepThroughAttribute(),  _
      System.ComponentModel.DesignerCategoryAttribute("code"),  _
      System.Xml.Serialization.XmlTypeAttribute([Namespace]:="http://ws.lhotka.net/")>  _
-    Partial Public Class ProjectResourceInfo
+    Partial Public Class ProjectResourceData
         
         Private resourceIdField As Integer
         
@@ -690,7 +690,7 @@ Namespace PTService
      System.Diagnostics.DebuggerStepThroughAttribute(),  _
      System.ComponentModel.DesignerCategoryAttribute("code"),  _
      System.Xml.Serialization.XmlTypeAttribute([Namespace]:="http://ws.lhotka.net/")>  _
-    Partial Public Class ProjectInfo
+    Partial Public Class ProjectData
         
         Private idField As System.Guid
         
@@ -702,7 +702,7 @@ Namespace PTService
         
         Private descriptionField As String
         
-        Private projectResourcesField() As ProjectResourceInfo
+        Private projectResourcesField() As ProjectResourceData
         
         '''<remarks/>
         Public Property Id() As System.Guid
@@ -755,7 +755,7 @@ Namespace PTService
         End Property
         
         '''<remarks/>
-        Public Property ProjectResources() As ProjectResourceInfo()
+        Public Property ProjectResources() As ProjectResourceData()
             Get
                 Return Me.projectResourcesField
             End Get
@@ -784,10 +784,10 @@ Namespace PTService
         End Sub
         
         '''<remarks/>
-        Public ReadOnly Property Result() As ProjectInfo()
+        Public ReadOnly Property Result() As ProjectData()
             Get
                 Me.RaiseExceptionIfNecessary
-                Return CType(Me.results(0),ProjectInfo())
+                Return CType(Me.results(0),ProjectData())
             End Get
         End Property
     End Class
@@ -811,10 +811,10 @@ Namespace PTService
         End Sub
         
         '''<remarks/>
-        Public ReadOnly Property Result() As ProjectInfo
+        Public ReadOnly Property Result() As ProjectData
             Get
                 Me.RaiseExceptionIfNecessary
-                Return CType(Me.results(0),ProjectInfo)
+                Return CType(Me.results(0),ProjectData)
             End Get
         End Property
     End Class
@@ -838,10 +838,10 @@ Namespace PTService
         End Sub
         
         '''<remarks/>
-        Public ReadOnly Property Result() As ProjectInfo
+        Public ReadOnly Property Result() As ProjectData
             Get
                 Me.RaiseExceptionIfNecessary
-                Return CType(Me.results(0),ProjectInfo)
+                Return CType(Me.results(0),ProjectData)
             End Get
         End Property
     End Class
@@ -865,10 +865,10 @@ Namespace PTService
         End Sub
         
         '''<remarks/>
-        Public ReadOnly Property Result() As ProjectInfo
+        Public ReadOnly Property Result() As ProjectData
             Get
                 Me.RaiseExceptionIfNecessary
-                Return CType(Me.results(0),ProjectInfo)
+                Return CType(Me.results(0),ProjectData)
             End Get
         End Property
     End Class
@@ -892,10 +892,10 @@ Namespace PTService
         End Sub
         
         '''<remarks/>
-        Public ReadOnly Property Result() As ResourceInfo()
+        Public ReadOnly Property Result() As ResourceData()
             Get
                 Me.RaiseExceptionIfNecessary
-                Return CType(Me.results(0),ResourceInfo())
+                Return CType(Me.results(0),ResourceData())
             End Get
         End Property
     End Class
@@ -919,10 +919,10 @@ Namespace PTService
         End Sub
         
         '''<remarks/>
-        Public ReadOnly Property Result() As ResourceInfo
+        Public ReadOnly Property Result() As ResourceData
             Get
                 Me.RaiseExceptionIfNecessary
-                Return CType(Me.results(0),ResourceInfo)
+                Return CType(Me.results(0),ResourceData)
             End Get
         End Property
     End Class
@@ -946,10 +946,10 @@ Namespace PTService
         End Sub
         
         '''<remarks/>
-        Public ReadOnly Property Result() As ResourceInfo
+        Public ReadOnly Property Result() As ResourceData
             Get
                 Me.RaiseExceptionIfNecessary
-                Return CType(Me.results(0),ResourceInfo)
+                Return CType(Me.results(0),ResourceData)
             End Get
         End Property
     End Class
@@ -977,10 +977,10 @@ Namespace PTService
         End Sub
         
         '''<remarks/>
-        Public ReadOnly Property Result() As RoleInfo()
+        Public ReadOnly Property Result() As RoleData()
             Get
                 Me.RaiseExceptionIfNecessary
-                Return CType(Me.results(0),RoleInfo())
+                Return CType(Me.results(0),RoleData())
             End Get
         End Property
     End Class

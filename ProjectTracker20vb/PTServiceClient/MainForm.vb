@@ -1,6 +1,8 @@
 Public Class MainForm
 
-  Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+  Private Sub MainForm_Load( _
+    ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Handles MyBase.Load
 
     Using svc As New PTService.PTService
       Me.ProjectInfoBindingSource.DataSource = svc.GetProjectList
@@ -76,7 +78,8 @@ Public Class MainForm
       SetCredentials(svc)
       Try
         ' do the assignment
-        svc.AssignResource(CInt(Me.ResourceIdLabel.Text), New Guid(Me.ProjectIdLabel.Text))
+        svc.AssignResource( _
+          CInt(Me.ResourceIdLabel.Text), New Guid(Me.ProjectIdLabel.Text))
         ' refresh the detail view
         Dim request As New PTService.ProjectRequest
         request.Id = New Guid(Me.ProjectIdLabel.Text)
@@ -112,8 +115,8 @@ Public Class MainForm
   Private Sub SetCredentials(ByVal svc As PTService.PTService)
 
     Dim credentials As New PTService.CslaCredentials
-    credentials.Username = "rocky"
-    credentials.Password = "lhotka"
+    credentials.Username = UsernameTextBox.Text
+    credentials.Password = PasswordTextBox.Text
     svc.CslaCredentialsValue = credentials
 
   End Sub

@@ -141,7 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Web References\PTService\ProjectInfo.datasource">
+    <None Include="Web References\PTService\ProjectData.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\PTService\PTService.disco" />
@@ -149,10 +149,10 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
-    <None Include="Web References\PTService\ResourceInfo.datasource">
+    <None Include="Web References\PTService\ResourceData.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\PTService\RoleInfo.datasource">
+    <None Include="Web References\PTService\RoleData.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
   </ItemGroup>

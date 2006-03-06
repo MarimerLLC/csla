@@ -9,31 +9,31 @@
       <s:element name="GetProjectListResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="GetProjectListResult" type="tns:ArrayOfProjectInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectListResult" type="tns:ArrayOfProjectData" />
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:complexType name="ArrayOfProjectInfo">
+      <s:complexType name="ArrayOfProjectData">
         <s:sequence>
-          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectInfo" nillable="true" type="tns:ProjectInfo" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectData" nillable="true" type="tns:ProjectData" />
         </s:sequence>
       </s:complexType>
-      <s:complexType name="ProjectInfo">
+      <s:complexType name="ProjectData">
         <s:sequence>
           <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
           <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="Started" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="Ended" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
-          <s:element minOccurs="0" maxOccurs="1" name="ProjectResources" type="tns:ArrayOfProjectResourceInfo" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProjectResources" type="tns:ArrayOfProjectResourceData" />
         </s:sequence>
       </s:complexType>
-      <s:complexType name="ArrayOfProjectResourceInfo">
+      <s:complexType name="ArrayOfProjectResourceData">
         <s:sequence>
-          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectResourceInfo" nillable="true" type="tns:ProjectResourceInfo" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectResourceData" nillable="true" type="tns:ProjectResourceData" />
         </s:sequence>
       </s:complexType>
-      <s:complexType name="ProjectResourceInfo">
+      <s:complexType name="ProjectResourceData">
         <s:sequence>
           <s:element minOccurs="1" maxOccurs="1" name="ResourceId" type="s:int" />
           <s:element minOccurs="0" maxOccurs="1" name="FirstName" type="s:string" />
@@ -57,7 +57,7 @@
       <s:element name="GetProjectResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="GetProjectResult" type="tns:ProjectInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectResult" type="tns:ProjectData" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -74,7 +74,7 @@
       <s:element name="AddProjectResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="AddProjectResult" type="tns:ProjectInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="AddProjectResult" type="tns:ProjectData" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -100,7 +100,7 @@
       <s:element name="EditProjectResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="EditProjectResult" type="tns:ProjectInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="EditProjectResult" type="tns:ProjectData" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -110,28 +110,28 @@
       <s:element name="GetResourceListResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="GetResourceListResult" type="tns:ArrayOfResourceInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="GetResourceListResult" type="tns:ArrayOfResourceData" />
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:complexType name="ArrayOfResourceInfo">
+      <s:complexType name="ArrayOfResourceData">
         <s:sequence>
-          <s:element minOccurs="0" maxOccurs="unbounded" name="ResourceInfo" nillable="true" type="tns:ResourceInfo" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ResourceData" nillable="true" type="tns:ResourceData" />
         </s:sequence>
       </s:complexType>
-      <s:complexType name="ResourceInfo">
+      <s:complexType name="ResourceData">
         <s:sequence>
           <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
           <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
-          <s:element minOccurs="0" maxOccurs="1" name="ResourceAssignments" type="tns:ArrayOfResourceAssignmentInfo" />
+          <s:element minOccurs="0" maxOccurs="1" name="ResourceAssignments" type="tns:ArrayOfResourceAssignmentData" />
         </s:sequence>
       </s:complexType>
-      <s:complexType name="ArrayOfResourceAssignmentInfo">
+      <s:complexType name="ArrayOfResourceAssignmentData">
         <s:sequence>
-          <s:element minOccurs="0" maxOccurs="unbounded" name="ResourceAssignmentInfo" nillable="true" type="tns:ResourceAssignmentInfo" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ResourceAssignmentData" nillable="true" type="tns:ResourceAssignmentData" />
         </s:sequence>
       </s:complexType>
-      <s:complexType name="ResourceAssignmentInfo">
+      <s:complexType name="ResourceAssignmentData">
         <s:sequence>
           <s:element minOccurs="1" maxOccurs="1" name="ProjectId" type="s1:guid" />
           <s:element minOccurs="0" maxOccurs="1" name="ProjectName" type="s:string" />
@@ -154,7 +154,7 @@
       <s:element name="GetResourceResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="GetResourceResult" type="tns:ResourceInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="GetResourceResult" type="tns:ResourceData" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -170,7 +170,7 @@
       <s:element name="ChangeResourceNameResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="ChangeResourceNameResult" type="tns:ResourceInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="ChangeResourceNameResult" type="tns:ResourceData" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -191,16 +191,16 @@
       <s:element name="GetRolesResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="GetRolesResult" type="tns:ArrayOfRoleInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="GetRolesResult" type="tns:ArrayOfRoleData" />
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:complexType name="ArrayOfRoleInfo">
+      <s:complexType name="ArrayOfRoleData">
         <s:sequence>
-          <s:element minOccurs="0" maxOccurs="unbounded" name="RoleInfo" nillable="true" type="tns:RoleInfo" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="RoleData" nillable="true" type="tns:RoleData" />
         </s:sequence>
       </s:complexType>
-      <s:complexType name="RoleInfo">
+      <s:complexType name="RoleData">
         <s:sequence>
           <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
           <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />

@@ -11,7 +11,7 @@ namespace Csla
 
   /// <summary>
   /// This is the client-side DataPortal as described in
-  /// Chapter 5.
+  /// Chapter 4.
   /// </summary>
   public static class DataPortal
   {
@@ -234,7 +234,7 @@ namespace Csla
     }
     
     /// <summary>
-    /// Called by the <see cref="Csla.BusinessBase.Save" /> method to
+    /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
     /// </summary>
     /// <remarks>
@@ -254,7 +254,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Called by the <see cref="M:Csla.BusinessBase.Save" /> method to
+    /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
     /// </summary>
     /// <remarks>
@@ -319,7 +319,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Called by a <c>Shared</c> method in the business class to cause
+    /// Called by a Shared (static in C#) method in the business class to cause
     /// immediate deletion of a specific object from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>

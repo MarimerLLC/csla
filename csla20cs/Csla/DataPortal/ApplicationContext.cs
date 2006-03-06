@@ -16,17 +16,14 @@ namespace Csla
     #region User
 
     /// <summary>
-    /// Gets or sets the current .NET principal object
-    /// on either the thread or HttpContext
-    /// as appropriate.
+    /// Get or set the current <see cref="IPrincipal" />
+    /// object representing the user's identity.
     /// </summary>
     /// <remarks>
-    /// This method should always be used instead
-    /// of directly using either Thread.CurrentPrincipal
-    /// or HttpContext, as it automatically switches
-    /// to use the appropriate source depending on
-    /// whether the code is running within ASP.NET
-    /// or not.
+    /// This is discussed in Chapter 5. When running
+    /// under IIS the HttpContext.Current.User value
+    /// is used, otherwise the current Thread.CurrentPrincipal
+    /// value is used.
     /// </remarks>
     public static IPrincipal User
     {

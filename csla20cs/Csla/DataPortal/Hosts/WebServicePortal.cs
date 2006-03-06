@@ -18,25 +18,38 @@ namespace Csla.Server.Hosts
 
     #region Request classes
 
+    /// <summary>
+    /// Request message for creating
+    /// a new business object.
+    /// </summary>
     [Serializable()]
     public class CreateRequest
     {
-
       private Type _objectType;
+      private object _criteria;
+      private Server.DataPortalContext _context;
+
+      /// <summary>
+      /// Type of business object to create.
+      /// </summary>
       public Type ObjectType
       {
         get { return _objectType; }
         set { _objectType = value; }
       }
 
-      private object _criteria;
+      /// <summary>
+      /// Criteria object describing business object.
+      /// </summary>
       public object Criteria
       {
         get { return _criteria; }
         set { _criteria = value; }
       }
 
-      private Server.DataPortalContext _context;
+      /// <summary>
+      /// Data portal context from client.
+      /// </summary>
       public Server.DataPortalContext Context
       {
         get { return _context; }
@@ -44,17 +57,28 @@ namespace Csla.Server.Hosts
       }
     }
 
+    /// <summary>
+    /// Request message for retrieving
+    /// an existing business object.
+    /// </summary>
     [Serializable()]
     public class FetchRequest
     {
       private object _criteria;
+      private Server.DataPortalContext _context;
+
+      /// <summary>
+      /// Criteria object describing business object.
+      /// </summary>
       public object Criteria
       {
         get { return _criteria; }
         set { _criteria = value; }
       }
 
-      private Server.DataPortalContext _context;
+      /// <summary>
+      /// Data portal context from client.
+      /// </summary>
       public Server.DataPortalContext Context
       {
         get { return _context; }
@@ -62,17 +86,28 @@ namespace Csla.Server.Hosts
       }
     }
 
+    /// <summary>
+    /// Request message for updating
+    /// a business object.
+    /// </summary>
     [Serializable()]
     public class UpdateRequest
     {
       private object _object;
+      private Server.DataPortalContext _context;
+
+      /// <summary>
+      /// Business object to be updated.
+      /// </summary>
       public object Object
       {
         get { return _object; }
         set { _object = value; }
       }
 
-      private Server.DataPortalContext _context;
+      /// <summary>
+      /// Data portal context from client.
+      /// </summary>
       public Server.DataPortalContext Context
       {
         get { return _context; }
@@ -80,17 +115,28 @@ namespace Csla.Server.Hosts
       }
     }
 
+    /// <summary>
+    /// Request message for deleting
+    /// a business object.
+    /// </summary>
     [Serializable()]
     public class DeleteRequest
     {
       private object _criteria;
+      private Server.DataPortalContext _context;
+
+      /// <summary>
+      /// Criteria object describing business object.
+      /// </summary>
       public object Criteria
       {
         get { return _criteria; }
         set { _criteria = value; }
       }
 
-      private Server.DataPortalContext _context;
+      /// <summary>
+      /// Data portal context from client.
+      /// </summary>
       public Server.DataPortalContext Context
       {
         get { return _context; }
@@ -100,6 +146,11 @@ namespace Csla.Server.Hosts
 
     #endregion
 
+    /// <summary>
+    /// Create a new business object.
+    /// </summary>
+    /// <param name="requestData">Byte stream containing <see cref="CreateRequest" />.</param>
+    /// <returns>Byte stream containing resulting object data.</returns>
     [WebMethod()]
     public byte[] Create(byte[] requestData)
     {
@@ -118,6 +169,11 @@ namespace Csla.Server.Hosts
       return Serialize(result);
     }
 
+    /// <summary>
+    /// Get an existing business object.
+    /// </summary>
+    /// <param name="requestData">Byte stream containing <see cref="FetchRequest" />.</param>
+    /// <returns>Byte stream containing resulting object data.</returns>
     [WebMethod()]
     public byte[] Fetch(byte[] requestData)
     {
@@ -136,6 +192,11 @@ namespace Csla.Server.Hosts
       return Serialize(result);
     }
 
+    /// <summary>
+    /// Update a business object.
+    /// </summary>
+    /// <param name="requestData">Byte stream containing <see cref="UpdateRequest" />.</param>
+    /// <returns>Byte stream containing resulting object data.</returns>
     [WebMethod()]
     public byte[] Update(byte[] requestData)
     {
@@ -154,6 +215,11 @@ namespace Csla.Server.Hosts
       return Serialize(result);
     }
 
+    /// <summary>
+    /// Delete a business object.
+    /// </summary>
+    /// <param name="requestData">Byte stream containing <see cref="DeleteRequest" />.</param>
+    /// <returns>Byte stream containing resulting object data.</returns>
     [WebMethod()]
     public byte[] Delete(byte[] requestData)
     {

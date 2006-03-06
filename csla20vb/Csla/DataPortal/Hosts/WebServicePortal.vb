@@ -18,10 +18,20 @@ Namespace Server.Hosts
 
 #Region " Request classes "
 
+    ''' <summary>
+    ''' Request message for creating
+    ''' a new business object.
+    ''' </summary>
     <Serializable()> _
     Public Class CreateRequest
 
       Private mObjectType As Type
+      Private mCriteria As Object
+      Private mContext As Server.DataPortalContext
+
+      ''' <summary>
+      ''' Type of business object to create.
+      ''' </summary>
       Public Property ObjectType() As Type
         Get
           Return mObjectType
@@ -31,7 +41,9 @@ Namespace Server.Hosts
         End Set
       End Property
 
-      Private mCriteria As Object
+      ''' <summary>
+      ''' Criteria object describing business object.
+      ''' </summary>
       Public Property Criteria() As Object
         Get
           Return mCriteria
@@ -41,7 +53,9 @@ Namespace Server.Hosts
         End Set
       End Property
 
-      Private mContext As Server.DataPortalContext
+      ''' <summary>
+      ''' Data portal context from client.
+      ''' </summary>
       Public Property Context() As Server.DataPortalContext
         Get
           Return mContext
@@ -53,10 +67,19 @@ Namespace Server.Hosts
 
     End Class
 
+    ''' <summary>
+    ''' Request message for retrieving
+    ''' an existing business object.
+    ''' </summary>
     <Serializable()> _
     Public Class FetchRequest
 
       Private mCriteria As Object
+      Private mContext As Server.DataPortalContext
+
+      ''' <summary>
+      ''' Criteria object describing business object.
+      ''' </summary>
       Public Property Criteria() As Object
         Get
           Return mCriteria
@@ -66,7 +89,9 @@ Namespace Server.Hosts
         End Set
       End Property
 
-      Private mContext As Server.DataPortalContext
+      ''' <summary>
+      ''' Data portal context from client.
+      ''' </summary>
       Public Property Context() As Server.DataPortalContext
         Get
           Return mContext
@@ -78,10 +103,19 @@ Namespace Server.Hosts
 
     End Class
 
+    ''' <summary>
+    ''' Request message for updating
+    ''' a business object.
+    ''' </summary>
     <Serializable()> _
     Public Class UpdateRequest
 
       Private mObject As Object
+      Private mContext As Server.DataPortalContext
+
+      ''' <summary>
+      ''' Business object to be updated.
+      ''' </summary>
       Public Property [Object]() As Object
         Get
           Return mObject
@@ -91,7 +125,9 @@ Namespace Server.Hosts
         End Set
       End Property
 
-      Private mContext As Server.DataPortalContext
+      ''' <summary>
+      ''' Data portal context from client.
+      ''' </summary>
       Public Property Context() As Server.DataPortalContext
         Get
           Return mContext
@@ -103,10 +139,19 @@ Namespace Server.Hosts
 
     End Class
 
+    ''' <summary>
+    ''' Request message for deleting
+    ''' a business object.
+    ''' </summary>
     <Serializable()> _
     Public Class DeleteRequest
 
       Private mCriteria As Object
+      Private mContext As Server.DataPortalContext
+
+      ''' <summary>
+      ''' Criteria object describing business object.
+      ''' </summary>
       Public Property Criteria() As Object
         Get
           Return mCriteria
@@ -116,7 +161,9 @@ Namespace Server.Hosts
         End Set
       End Property
 
-      Private mContext As Server.DataPortalContext
+      ''' <summary>
+      ''' Data portal context from client.
+      ''' </summary>
       Public Property Context() As Server.DataPortalContext
         Get
           Return mContext
@@ -130,6 +177,11 @@ Namespace Server.Hosts
 
 #End Region
 
+    ''' <summary>
+    ''' Create a new business object.
+    ''' </summary>
+    ''' <param name="requestData">Byte stream containing <see cref="CreateRequest" />.</param>
+    ''' <returns>Byte stream containing resulting object data.</returns>
     <WebMethod()> _
     Public Function Create(ByVal requestData As Byte()) As Byte()
 
@@ -147,6 +199,11 @@ Namespace Server.Hosts
 
     End Function
 
+    ''' <summary>
+    ''' Get an existing business object.
+    ''' </summary>
+    ''' <param name="requestData">Byte stream containing <see cref="FetchRequest" />.</param>
+    ''' <returns>Byte stream containing resulting object data.</returns>
     <WebMethod()> _
     Public Function Fetch(ByVal requestData As Byte()) As Byte()
 
@@ -165,6 +222,11 @@ Namespace Server.Hosts
 
     End Function
 
+    ''' <summary>
+    ''' Update a business object.
+    ''' </summary>
+    ''' <param name="requestData">Byte stream containing <see cref="UpdateRequest" />.</param>
+    ''' <returns>Byte stream containing resulting object data.</returns>
     <WebMethod()> _
     Public Function Update(ByVal requestData As Byte()) As Byte()
 
@@ -182,6 +244,11 @@ Namespace Server.Hosts
 
     End Function
 
+    ''' <summary>
+    ''' Delete a business object.
+    ''' </summary>
+    ''' <param name="requestData">Byte stream containing <see cref="DeleteRequest" />.</param>
+    ''' <returns>Byte stream containing resulting object data.</returns>
     <WebMethod()> _
     Public Function Delete(ByVal requestData As Byte()) As Byte()
 

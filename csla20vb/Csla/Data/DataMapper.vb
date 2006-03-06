@@ -3,6 +3,11 @@ Imports System.ComponentModel
 
 Namespace Data
 
+  ''' <summary>
+  ''' Map data from a source into a target object
+  ''' by copying public property values.
+  ''' </summary>
+  ''' <remarks></remarks>
   Public Module DataMapper
 
 #Region " Map From IDictionary "
@@ -50,7 +55,7 @@ Namespace Data
     ''' <param name="target">An object with properties to be set from the dictionary.</param>
     ''' <param name="ignoreList">A list of property names to ignore. 
     ''' These properties will not be set on the target object.</param>
-    ''' <param name="suppressExceptions">If True, any exceptions will be supressed.</param>
+    ''' <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
     ''' <remarks>
     ''' The key names in the dictionary must match the property names on the target
     ''' object. Target properties may not be readonly or indexed.
@@ -128,7 +133,7 @@ Namespace Data
     ''' <param name="target">An object with properties to be set from the dictionary.</param>
     ''' <param name="ignoreList">A list of property names to ignore. 
     ''' These properties will not be set on the target object.</param>
-    ''' <param name="suppressExceptions">If True, any exceptions will be supressed.</param>
+    ''' <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
     ''' <remarks>
     ''' <para>
     ''' The property names and types of the source object must match the property names and types

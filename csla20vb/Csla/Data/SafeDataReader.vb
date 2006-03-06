@@ -12,6 +12,11 @@ Namespace Data
 
     Private mDataReader As IDataReader
 
+    ''' <summary>
+    ''' Get a reference to the underlying data reader
+    ''' object that actually contains the data from
+    ''' the data source.
+    ''' </summary>
     Protected ReadOnly Property DataReader() As IDataReader
       Get
         Return mDataReader
@@ -33,6 +38,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns empty string for null.
     ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetString(ByVal i As Integer) As String _
       Implements IDataReader.GetString
 
@@ -47,8 +53,9 @@ Namespace Data
     ''' Gets a string value from the datareader.
     ''' </summary>
     ''' <remarks>
-    ''' Returns "" for null.
+    ''' Returns empty string for null.
     ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetString(ByVal name As String) As String
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetString(index)
@@ -57,9 +64,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a value of type <see cref="System.Object" /> from the datareader.
     ''' </summary>
-    ''' <remarks>
-    ''' Returns Nothing for null.
-    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetValue(ByVal i As Integer) As Object Implements IDataReader.GetValue
       If mDataReader.IsDBNull(i) Then
         Return Nothing
@@ -71,9 +76,7 @@ Namespace Data
     ''' <summary>
     ''' Gets a value of type <see cref="System.Object" /> from the datareader.
     ''' </summary>
-    ''' <remarks>
-    ''' Returns Nothing for null.
-    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetValue(ByVal name As String) As Object
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetValue(index)
@@ -85,6 +88,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns 0 for null.
     ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetInt32(ByVal i As Integer) As Integer Implements IDataReader.GetInt32
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -99,6 +103,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns 0 for null.
     ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetInt32(ByVal name As String) As Integer
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetInt32(index)
@@ -110,6 +115,7 @@ Namespace Data
     ''' <remarks>
     ''' Returns 0 for null.
     ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetDouble(ByVal i As Integer) As Double Implements IDataReader.GetDouble
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -124,19 +130,20 @@ Namespace Data
     ''' <remarks>
     ''' Returns 0 for null.
     ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetDouble(ByVal name As String) As Double
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetDouble(index)
     End Function
 
     ''' <summary>
-    ''' Gets a <see cref="T:Csla.SmartDate" /> from the datareader.
+    ''' Gets a <see cref="SmartDate" /> from the datareader.
     ''' </summary>
     ''' <remarks>
     ''' A null is converted into the min possible date
     ''' See Chapter 5 for more details on the SmartDate class.
     ''' </remarks>
-    ''' <param name="i">The column number within the datareader.</param>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetSmartDate(ByVal i As Integer) As SmartDate
 
       Return GetSmartDate(i, True)
@@ -144,15 +151,17 @@ Namespace Data
     End Function
 
     ''' <summary>
-    ''' Gets a <see cref="T:Csla.SmartDate" /> from the datareader.
+    ''' Gets a <see cref="SmartDate" /> from the datareader.
     ''' </summary>
     ''' <remarks>
     ''' A null is converted into either the min or max possible date
     ''' depending on the MinIsEmpty parameter. See Chapter 5 for more
     ''' details on the SmartDate class.
     ''' </remarks>
-    ''' <param name="i">The column number within the datareader.</param>
-    ''' <param name="MinIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
+    ''' <param name="i">Ordinal column position of the value.</param>
+    ''' <param name="MinIsEmpty">
+    ''' A flag indicating whether the min or max value 
+    ''' of a data means an empty date.</param>
     Public Overridable Function GetSmartDate( _
       ByVal i As Integer, ByVal minIsEmpty As Boolean) As SmartDate
 
@@ -165,28 +174,30 @@ Namespace Data
     End Function
 
     ''' <summary>
-    ''' Gets a <see cref="T:Csla.SmartDate" /> from the datareader.
+    ''' Gets a <see cref="SmartDate" /> from the datareader.
     ''' </summary>
     ''' <remarks>
     ''' A null is converted into min possible date
     ''' See Chapter 5 for more details on the SmartDate class.
     ''' </remarks>
-    ''' <param name="name">The name of the column.</param>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetSmartDate(ByVal name As String) As SmartDate
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetSmartDate(index, True)
     End Function
 
     ''' <summary>
-    ''' Gets a <see cref="T:Csla.SmartDate" /> from the datareader.
+    ''' Gets a <see cref="SmartDate" /> from the datareader.
     ''' </summary>
     ''' <remarks>
     ''' A null is converted into either the min or max possible date
     ''' depending on the MinIsEmpty parameter. See Chapter 5 for more
     ''' details on the SmartDate class.
     ''' </remarks>
-    ''' <param name="name">The name of the column.</param>
-    ''' <param name="minIsEmpty">A flag indicating whether the min or max value of a data means an empty date.</param>
+    ''' <param name="name">Name of the column containing the value.</param>
+    ''' <param name="minIsEmpty">
+    ''' A flag indicating whether the min or max 
+    ''' value of a data means an empty date.</param>
     Public Function GetSmartDate( _
       ByVal name As String, ByVal minIsEmpty As Boolean) As SmartDate
 
@@ -197,6 +208,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a Guid value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns Guid.Empty for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetGuid(ByVal i As Integer) As Guid Implements IDataReader.GetGuid
       If mDataReader.IsDBNull(i) Then
         Return Guid.Empty
@@ -208,6 +223,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a Guid value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns Guid.Empty for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetGuid(ByVal name As String) As Guid
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetGuid(index)
@@ -255,6 +274,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a boolean value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns <see langword="false" /> for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetBoolean(ByVal i As Integer) As Boolean _
       Implements System.Data.IDataReader.GetBoolean
 
@@ -268,6 +291,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a boolean value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns <see langword="false" /> for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetBoolean(ByVal name As String) As Boolean
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetBoolean(index)
@@ -276,6 +303,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a byte value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetByte(ByVal i As Integer) As Byte Implements System.Data.IDataReader.GetByte
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -287,6 +318,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a byte value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetByte(ByVal name As String) As Byte
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetByte(index)
@@ -295,6 +330,10 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetBytes method of the underlying datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetBytes(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetBytes
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -306,6 +345,10 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetBytes method of the underlying datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetBytes(ByVal name As String, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetBytes(index, fieldOffset, buffer, bufferoffset, length)
@@ -314,6 +357,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a char value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns Char.MinValue for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetChar(ByVal i As Integer) As Char Implements System.Data.IDataReader.GetChar
       If mDataReader.IsDBNull(i) Then
         Return Char.MinValue
@@ -327,6 +374,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a char value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns Char.MinValue for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetChar(ByVal name As String) As Char
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetChar(index)
@@ -335,6 +386,10 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetChars method of the underlying datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetChars(ByVal i As Integer, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetChars
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -346,6 +401,10 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetChars method of the underlying datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetChars(ByVal name As String, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetChars(index, fieldoffset, buffer, bufferoffset, length)
@@ -354,6 +413,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetData method of the underlying datareader.
     ''' </summary>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetData(ByVal i As Integer) As System.Data.IDataReader Implements System.Data.IDataReader.GetData
       Return mDataReader.GetData(i)
     End Function
@@ -361,6 +421,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetData method of the underlying datareader.
     ''' </summary>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetData(ByVal name As String) As System.Data.IDataReader
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetData(index)
@@ -369,6 +430,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetDataTypeName method of the underlying datareader.
     ''' </summary>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetDataTypeName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetDataTypeName
       Return mDataReader.GetDataTypeName(i)
     End Function
@@ -376,6 +438,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetDataTypeName method of the underlying datareader.
     ''' </summary>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetDataTypeName(ByVal name As String) As String
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetDataTypeName(index)
@@ -384,6 +447,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a date value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns DateTime.MinValue for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetDateTime(ByVal i As Integer) As Date _
       Implements System.Data.IDataReader.GetDateTime
 
@@ -397,6 +464,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a date value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns DateTime.MinValue for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetDateTime(ByVal name As String) As Date
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetDateTime(index)
@@ -405,6 +476,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a decimal value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetDecimal(ByVal i As Integer) As Decimal Implements System.Data.IDataReader.GetDecimal
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -416,6 +491,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a decimal value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetDecimal(ByVal name As String) As Decimal
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetDecimal(index)
@@ -424,6 +503,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetFieldType method of the underlying datareader.
     ''' </summary>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetFieldType(ByVal i As Integer) As System.Type Implements System.Data.IDataReader.GetFieldType
       Return mDataReader.GetFieldType(i)
     End Function
@@ -431,6 +511,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetFieldType method of the underlying datareader.
     ''' </summary>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetFieldType(ByVal name As String) As System.Type
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetFieldType(index)
@@ -439,6 +520,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a Single value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetFloat(ByVal i As Integer) As Single Implements System.Data.IDataReader.GetFloat
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -450,6 +535,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a Single value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetFloat(ByVal name As String) As Single
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetFloat(index)
@@ -458,6 +547,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a Short value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetInt16(ByVal i As Integer) As Short Implements System.Data.IDataReader.GetInt16
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -469,6 +562,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a Short value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetInt16(ByVal name As String) As Short
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetInt16(index)
@@ -477,6 +574,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a Long value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetInt64(ByVal i As Integer) As Long Implements System.Data.IDataReader.GetInt64
       If mDataReader.IsDBNull(i) Then
         Return 0
@@ -488,6 +589,10 @@ Namespace Data
     ''' <summary>
     ''' Gets a Long value from the datareader.
     ''' </summary>
+    ''' <remarks>
+    ''' Returns 0 for null.
+    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetInt64(ByVal name As String) As Long
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.GetInt64(index)
@@ -496,6 +601,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetName method of the underlying datareader.
     ''' </summary>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetName
       Return mDataReader.GetName(i)
     End Function
@@ -503,6 +609,7 @@ Namespace Data
     ''' <summary>
     ''' Gets an ordinal value from the datareader.
     ''' </summary>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function GetOrdinal(ByVal name As String) As Integer _
       Implements System.Data.IDataReader.GetOrdinal
 
@@ -542,6 +649,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the IsDBNull method of the underlying datareader.
     ''' </summary>
+    ''' <param name="name">Name of the column containing the value.</param>
     Public Function IsDBNull(ByVal name As String) As Boolean
       Dim index As Integer = Me.GetOrdinal(name)
       Return Me.IsDBNull(index)
@@ -550,9 +658,7 @@ Namespace Data
     ''' <summary>
     ''' Returns a value from the datareader.
     ''' </summary>
-    ''' <remarks>
-    ''' Returns Nothing if the value is null.
-    ''' </remarks>
+    ''' <param name="name">Name of the column containing the value.</param>
     Default Public Overloads ReadOnly Property Item(ByVal name As String) As Object Implements System.Data.IDataReader.Item
       Get
         Dim value As Object = mDataReader.Item(name)
@@ -567,9 +673,7 @@ Namespace Data
     ''' <summary>
     ''' Returns a value from the datareader.
     ''' </summary>
-    ''' <remarks>
-    ''' Returns Nothing if the value is null.
-    ''' </remarks>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Default Public Overridable Overloads ReadOnly Property Item(ByVal i As Integer) As Object Implements System.Data.IDataReader.Item
       Get
         If mDataReader.IsDBNull(i) Then

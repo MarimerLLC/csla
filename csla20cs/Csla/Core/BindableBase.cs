@@ -5,8 +5,8 @@ using System.Reflection;
 namespace Csla.Core
 {
   /// <summary>
-  /// This base class declares the IsDirtyChanged event
-  /// to be NonSerialized so serialization will work.
+  /// This class implements INotifyPropertyChanged
+  /// in a serialization-safe manner.
   /// </summary>
   [Serializable()]
   public abstract class BindableBase : System.ComponentModel.INotifyPropertyChanged
@@ -21,7 +21,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Implements a serialization-safe IsDirtyChanged event.
+    /// Implements a serialization-safe PropertyChanged event.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", 
       "CA1062:ValidateArgumentsOfPublicMethods")]
@@ -56,7 +56,7 @@ namespace Csla.Core
     /// for all object properties.
     /// </summary>
     /// <remarks>
-    /// This method exists for backward compatibility with
+    /// This method is for backward compatibility with
     /// CSLA .NET 1.x.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -70,7 +70,7 @@ namespace Csla.Core
     /// for all object properties.
     /// </summary>
     /// <remarks>
-    /// This method is automatically called by MarkDirty
+    /// This method is automatically called by MarkDirty.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnUnknownPropertyChanged()
@@ -86,7 +86,6 @@ namespace Csla.Core
     /// Call this method to raise the PropertyChanged event
     /// for a specific property.
     /// </summary>
-    /// <param name="propertyName">The name of the property.</param>
     /// <remarks>
     /// This method may be called by properties in the business
     /// class to indicate the change in a specific property.

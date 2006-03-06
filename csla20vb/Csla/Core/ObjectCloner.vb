@@ -5,6 +5,14 @@ Namespace Core
 
   Friend Module ObjectCloner
 
+    ''' <summary>
+    ''' Clones an object by using the
+    ''' <see cref="BinaryFormatter" />.
+    ''' </summary>
+    ''' <param name="obj">The object to clone.</param>
+    ''' <remarks>
+    ''' The object to be cloned must be serializable.
+    ''' </remarks>
     Public Function Clone(ByVal obj As Object) As Object
 
       Using buffer As New MemoryStream()

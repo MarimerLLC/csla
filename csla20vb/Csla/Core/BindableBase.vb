@@ -4,8 +4,8 @@ Imports System.Reflection
 Namespace Core
 
   ''' <summary>
-  ''' This base class declares the IsDirtyChanged event
-  ''' to be NonSerialized so serialization will work.
+  ''' This class implements INotifyPropertyChanged
+  ''' in a serialization-safe manner.
   ''' </summary>
   <Serializable()> _
   Public MustInherit Class BindableBase
@@ -21,7 +21,7 @@ Namespace Core
     Private mSerializableHandlers As PropertyChangedEventHandler
 
     ''' <summary>
-    ''' Implements a serialization-safe IsDirtyChanged event.
+    ''' Implements a serialization-safe PropertyChanged event.
     ''' </summary>
     <System.Diagnostics.CodeAnalysis.SuppressMessage( _
       "Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
@@ -89,7 +89,7 @@ Namespace Core
     ''' for all object properties.
     ''' </summary>
     ''' <remarks>
-    ''' This method is automatically called by MarkDirty
+    ''' This method is automatically called by MarkDirty.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnUnknownPropertyChanged()

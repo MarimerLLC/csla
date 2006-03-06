@@ -3,15 +3,14 @@ using Csla.Properties;
 
 namespace Csla.Core
 {
-
   /// <summary>
-  /// A readonly version of BindingList(Of T)
+  /// A readonly version of BindingList<T>
   /// </summary>
-  /// <typeparam name="T">Type of item contained in the list.</typeparam>
+  /// <typeparam name="C">Type of item contained in the list.</typeparam>
   /// <remarks>
-  /// This is a subclass of BindingList(Of T) that implements
+  /// This is a subclass of BindingList<T> that implements
   /// a readonly list, preventing adding and removing of items
-  /// from the list. Use the Protected IsReadOnly property
+  /// from the list. Use the IsReadOnly property
   /// to unlock the list for loading/unloading data.
   /// </remarks>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
@@ -23,7 +22,7 @@ namespace Csla.Core
     private bool _isReadOnly = true;
 
     /// <summary>
-    /// Gets a value indicating whether the list is readonly.
+    /// Gets or sets a value indicating whether the list is readonly.
     /// </summary>
     /// <remarks>
     /// Subclasses can set this value to unlock the collection

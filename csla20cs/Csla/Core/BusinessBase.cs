@@ -8,18 +8,11 @@ namespace Csla.Core
 {
 
   /// <summary>
-  /// This is the base class from which most business objects
-  /// will be derived.
+  /// This is the non-generic base class from which most
+  /// business objects will be derived.
   /// </summary>
   /// <remarks>
-  /// <para>
-  /// This class is the core of the CSLA .NET framework. To create
-  /// a business object, inherit from this class.
-  /// </para><para>
-  /// Please refer to 'Expert C# 2005 Business Objects' for
-  /// full details on the use of this base class to create business
-  /// objects.
-  /// </para>
+  /// See Chapter 3 for details.
   /// </remarks>
   [Serializable()]
   public abstract class BusinessBase : Csla.Core.UndoableBase,
@@ -49,11 +42,12 @@ namespace Csla.Core
     /// <see langword="false" /> if it is a pre-existing object.
     /// </summary>
     /// <remarks>
-    /// An object is considered to be new if its data doesn't correspond to
-    /// data in the database. In other words, if the data values in this particular
+    /// An object is considered to be new if its primary identifying (key) value 
+    /// doesn't correspond to data in the database. In other words, 
+    /// if the data values in this particular
     /// object have not yet been saved to the database the object is considered to
     /// be new. Likewise, if the object's data has been deleted from the database
-    /// then the object is considererd to be new.
+    /// then the object is considered to be new.
     /// </remarks>
     /// <returns>A value indicating if this object is new.</returns>
     [Browsable(false)]
@@ -70,7 +64,8 @@ namespace Csla.Core
     /// property is part of the support for deferred deletion, where an object
     /// can be marked for deletion, but isn't actually deleted until the object
     /// is saved to the database. This property indicates whether or not the
-    /// current object has been marked for deletion. If it is true, the object will
+    /// current object has been marked for deletion. If it is <see langword="true" />
+    /// , the object will
     /// be deleted when it is saved to the database, otherwise it will be inserted
     /// or updated by the save operation.
     /// </remarks>
@@ -95,10 +90,7 @@ namespace Csla.Core
     /// Once an object's data has been saved to the database (inserted or updated)
     /// the dirty flag is cleared and the object is considered unchanged. Objects
     /// newly loaded from the database are also considered unchanged.
-    /// </para><para>
-    /// This property should always be data bound in Windows Forms interfaces
-    /// to trigger automatica updates of any changed data in the business
-    /// object. See Chapter 4 for details.</para>
+    /// </para>
     /// </remarks>
     /// <returns>A value indicating if this object's data has been changed.</returns>
     [Browsable(false)]
@@ -113,10 +105,10 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Newly created objects are marked new by default. You should call
-    ///  this method in the implementation of DataPortal_Update when the
-    ///  object is deleted (due to being marked for deletion) to indicate
-    ///  that the object no longer reflects data in the database.
+    /// Newly created objects are marked new by default. You should call
+    /// this method in the implementation of DataPortal_Update when the
+    /// object is deleted (due to being marked for deletion) to indicate
+    /// that the object no longer reflects data in the database.
     /// </para><para>
     /// If you override this method, make sure to call the base
     /// implementation after executing your new code.
@@ -193,22 +185,10 @@ namespace Csla.Core
     /// <summary>
     /// Marks an object as being dirty, or changed.
     /// </summary>
-    /// <param name="suppressEvent">A boolean value indicating if the PropertyChanged
-    /// event should fire.</param>
-    /// <remarks>
-    /// <para>
-    /// You should call this method in your business logic any time
-    /// the object's internal data changes. Any time any instance
-    /// variable changes within the object, this method should be called
-    /// to tell CSLA .NET that the object's data has been changed.
-    /// </para><para>
-    /// Marking an object as dirty does two things. First it ensures
-    /// that CSLA .NET will properly save the object as appropriate. Second,
-    /// it causes CSLA .NET to tell Windows Forms data binding that the
-    /// object's data has changed so any bound controls will update to
-    /// reflect the new values.
-    /// </para>
-    /// </remarks>
+    /// <param name="supressEvent">
+    /// <see langword="true" /> to supress the PropertyChanged event that is otherwise
+    /// raised to indicate that the object's state has changed.
+    /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkDirty(bool suppressEvent)
     {
@@ -246,7 +226,6 @@ namespace Csla.Core
     /// Performs processing required when a property
     /// has changed.
     /// </summary>
-    /// <param name="propertyName">The name of the property.</param>
     /// <remarks>
     /// This method calls CheckRules(propertyName), MarkDirty and
     /// OnPropertyChanged(propertyName). MarkDirty is called such
@@ -275,19 +254,16 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns True if this object is both dirty and valid.
+    /// Returns <see langword="true" /> if this object is both dirty and valid.
     /// </summary>
     /// <remarks>
     /// An object is considered dirty (changed) if 
-    /// <see cref="Csla.BusinessBase.IsDirty" /> returns True. It is
-    /// considered valid if <see cref="Csla.BusinessBase.IsValid" /> 
-    /// returns True. The IsSavable property is
-    /// a combination of these two properties. It is provided specifically to
-    /// enable easy binding to a Save or OK button on a form so that button
-    /// can automatically enable/disable as the object's state changes between
-    /// being savable and not savable. 
+    /// <see cref="P:Csla.BusinessBase.IsDirty" /> returns <see langword="true" />. It is
+    /// considered valid if IsValid
+    /// returns <see langword="true" />. The IsSavable property is
+    /// a combination of these two properties. 
     /// </remarks>
-    /// <returns>A value indicating if this object is new.</returns>
+    /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
     public virtual bool IsSavable
     {
@@ -299,7 +275,7 @@ namespace Csla.Core
     #region Authorization
 
     [NotUndoable()]
-    private Security.AuthorizationRules _authorizationRules; 
+    private Security.AuthorizationRules _authorizationRules;
 
     /// <summary>
     /// Override this method to add authorization
@@ -330,25 +306,12 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns True if the user is allowed to read the
+    /// Returns <see langword="true" /> if the user is allowed to read the
     /// calling property.
     /// </summary>
-    /// <returns>True if read is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can read. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are denied read access. All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have read access.
-    /// </para>
-    /// </remarks>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
     /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>    
+    /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public bool CanReadProperty(bool throwOnFalse)
@@ -365,23 +328,28 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns True if the user is allowed to read the
+    /// Returns <see langword="true" /> if the user is allowed to read the
     /// calling property.
     /// </summary>
-    /// <returns>True if read is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can read. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are denied read access. All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have read access.
-    /// </para>
-    /// </remarks>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <param name="propertyName">Name of the property to read.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    public bool CanReadProperty(string propertyName, bool throwOnFalse)
+    {
+      bool result = CanReadProperty(propertyName);
+      if (throwOnFalse && result == false)
+        throw new System.Security.SecurityException(
+          String.Format("{0} ({1})",
+          Resources.PropertyGetNotAllowed, propertyName));
+      return result;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public bool CanReadProperty()
     {
@@ -391,11 +359,11 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns True if the user is allowed to read the
+    /// Returns <see langword="true" /> if the user is allowed to read the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
-    /// <returns>True if read is allowed.</returns>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
     /// <remarks>
     /// <para>
     /// If a list of allowed roles is provided then only users in those
@@ -430,23 +398,10 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns True if the user is allowed to write the
+    /// Returns <see langword="true" /> if the user is allowed to write the
     /// calling property.
     /// </summary>
-    /// <returns>True if write is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can write. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are denied write access. All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have write access.
-    /// </para>
-    /// </remarks>
+    /// <returns><see langword="true" /> if write is allowed.</returns>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -461,23 +416,27 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns True if the user is allowed to write the
+    /// Returns <see langword="true" /> if the user is allowed to write the
     /// calling property.
     /// </summary>
-    /// <returns>True if write is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can write. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are denied write access. All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have write access.
-    /// </para>
-    /// </remarks>
+    /// <returns><see langword="true" /> if write is allowed.</returns>
+    /// <param name="propertyName">Name of the property to write.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    public bool CanWriteProperty(string propertyName, bool throwOnFalse)
+    {
+      bool result = CanWriteProperty(propertyName);
+      if (throwOnFalse && result == false)
+        throw new System.Security.SecurityException(
+          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
+      return result;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if write is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public bool CanWriteProperty()
     {
@@ -486,11 +445,11 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns True if the user is allowed to write the
+    /// Returns <see langword="true" /> if the user is allowed to write the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to write.</param>
-    /// <returns>True if write is allowed.</returns>
+    /// <returns><see langword="true" /> if write is allowed.</returns>
     /// <remarks>
     /// <para>
     /// If a list of allowed roles is provided then only users in those
@@ -548,8 +507,8 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Used by <see cref="Csla.BusinessCollectionBase" /> as a
-    /// child object is created to tell the child object about its
+    /// Used by BusinessListBase as a child object is 
+    /// created to tell the child object about its
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
@@ -587,8 +546,8 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// Data binding may call this method many times. Only the first
-    /// call to either System.ComponentModel.IEditableObject.CancelEdit or 
-    /// <see cref="System.ComponentModel.IEditableObject_EndEdit">IEditableObject.EndEdit</see>
+    /// call to either IEditableObject.CancelEdit or 
+    /// IEditableObject.EndEdit
     /// should be honored. We include extra code to detect this and do
     /// nothing for subsequent calls.
     /// </remarks>
@@ -615,7 +574,7 @@ namespace Csla.Core
     /// <remarks>
     /// Data binding may call this method many times. Only the first
     /// call to either IEditableObject.EndEdit or 
-    /// <see cref="System.ComponentModel.IEditableObject_CancelEdit">IEditableObject.CancelEdit</see>
+    /// IEditableObject.CancelEdit
     /// should be honored. We include extra code to detect this and do
     /// nothing for subsequent calls.
     /// </remarks>
@@ -636,15 +595,15 @@ namespace Csla.Core
     /// <para>
     /// When this method is called the object takes a snapshot of
     /// its current state (the values of its variables). This snapshot
-    /// can be restored by calling <see cref="Csla.BusinessBase.CancelEdit" />
-    /// or committed by calling <see cref="Csla.BusinessBase.ApplyEdit" />.
+    /// can be restored by calling CancelEdit
+    /// or committed by calling ApplyEdit.
     /// </para><para>
     /// This is a nested operation. Each call to BeginEdit adds a new
     /// snapshot of the object's state to a stack. You should ensure that 
     /// for each call to BeginEdit there is a corresponding call to either 
     /// CancelEdit or ApplyEdit to remove that snapshot from the stack.
     /// </para><para>
-    /// See Chapters 2 and 4 for details on n-level undo and state stacking.
+    /// See Chapters 2 and 3 for details on n-level undo and state stacking.
     /// </para>
     /// </remarks>
     public void BeginEdit()
@@ -660,14 +619,21 @@ namespace Csla.Core
     /// <remarks>
     /// Calling this method causes the most recently taken snapshot of the 
     /// object's state to be restored. This resets the object's values
-    /// to the point of the last <see cref="Csla.BusinessBase.BeginEdit" />
-    /// call.
+    /// to the point of the last BeginEdit call.
     /// </remarks>
     public void CancelEdit()
     {
       UndoChanges();
     }
 
+    /// <summary>
+    /// Called when an undo operation has completed.
+    /// </summary>
+    /// <remarks>
+    /// This method resets the object as a result of
+    /// deserialization and raises PropertyChanged events
+    /// to notify data binding that the object has changed.
+    /// </remarks>
     protected override void UndoChangesComplete()
     {
       _bindingEdit = false;
@@ -683,8 +649,7 @@ namespace Csla.Core
     /// <remarks>
     /// Calling this method causes the most recently taken snapshot of the 
     /// object's state to be discarded, thus committing any changes made
-    /// to the object's state since the last <see cref="Csla.BusinessBase.BeginEdit" />
-    /// call.
+    /// to the object's state since the last BeginEdit call.
     /// </remarks>
     public void ApplyEdit()
     {
@@ -700,6 +665,9 @@ namespace Csla.Core
     [NotUndoable()]
     private bool _isChild;
 
+    /// <summary>
+    /// Returns <see langword="true" /> if this is a child (non-root) object.
+    /// </summary>
     protected internal bool IsChild
     {
       get { return _isChild; }
@@ -708,20 +676,6 @@ namespace Csla.Core
     /// <summary>
     /// Marks the object as being a child object.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// By default all business objects are 'parent' objects. This means
-    /// that they can be directly retrieved and updated into the database.
-    /// </para><para>
-    /// We often also need child objects. These are objects which are contained
-    /// within other objects. For instance, a parent Invoice object will contain
-    /// child LineItem objects.
-    /// </para><para>
-    /// To create a child object, the MarkAsChild method must be called as the
-    /// object is created. Please see Chapter 7 for details on the use of the
-    /// MarkAsChild method.
-    /// </para>
-    /// </remarks>
     protected void MarkAsChild()
     {
       _isChild = true;
@@ -743,10 +697,7 @@ namespace Csla.Core
     /// is saved to the database. This method is called by the UI developer to
     /// mark the object for deletion.
     /// </para><para>
-    /// To 'undelete' an object, use <see cref="M:Csla.BusinessBase.BeginEdit" /> before
-    /// calling the Delete method. You can then use <see cref="M:Csla.BusinessBase.CancelEdit" />
-    /// later to reset the object's state to its original values. This will include resetting
-    /// the deleted flag to False.
+    /// To 'undelete' an object, use n-level undo as discussed in Chapters 2 and 3.
     /// </para>
     /// </remarks>
     public void Delete()
@@ -757,8 +708,10 @@ namespace Csla.Core
       MarkDeleted();
     }
 
-    // allow the parent object to delete us
-    // (internal scope)
+    /// <summary>
+    /// Called by a parent object to mark the child
+    /// for deferred deletion.
+    /// </summary>
     internal void DeleteChild()
     {
       if (!this.IsChild)
@@ -776,8 +729,14 @@ namespace Csla.Core
     // cancels below that level we can be destroyed
     private int _editLevelAdded;
 
-    // allow the collection object to use the
-    // edit level as needed (internal scope)
+    /// <summary>
+    /// Gets or sets the current edit level of the
+    /// object.
+    /// </summary>
+    /// <remarks>
+    /// Allow the collection object to use the
+    /// edit level as needed.
+    /// </remarks>
     internal int EditLevelAdded
     {
       get { return _editLevelAdded; }
@@ -792,6 +751,7 @@ namespace Csla.Core
     {
       return GetClone();
     }
+
     /// <summary>
     /// Creates a clone of the object.
     /// </summary>
@@ -815,8 +775,8 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// This property is used within your business logic so you can
-    /// easily call the <see cref="Csla.BrokenRules.Assert(System.String,System.String,System.Boolean)" /> 
-    /// method to mark rules as broken and unbroken.
+    /// easily call the AddRule() method to associate validation
+    /// rules with your object's properties.
     /// </remarks>
     protected Validation.ValidationRules ValidationRules
     {
@@ -834,10 +794,9 @@ namespace Csla.Core
     /// rules.
     /// </summary>
     /// <remarks>
-    /// You should call AddBusinessRules from your object's
-    /// constructor methods so the rules are set up when
-    /// your object is created. This method will be automatically
-    /// called, if needed, when your object is serialized.
+    /// AddBusinessRules is automatically called by CSLA .NET
+    /// when your object should associate validation rules
+    /// with its properties.
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
@@ -845,13 +804,12 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the object is currently valid, 
-    /// <see langword="false" /> if the object has broken rules or is 
-    /// otherwise invalid.
+    /// Returns <see langword="true" /> if the object is currently valid, <see langword="false" /> if the
+    /// object has broken rules or is otherwise invalid.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By default this property relies on the underling <see cref="Csla.Validation.ValidationRules" />
+    /// By default this property relies on the underling ValidationRules
     /// object to track whether any business rules are currently broken for this object.
     /// </para><para>
     /// You can override this property to provide more sophisticated
@@ -872,7 +830,7 @@ namespace Csla.Core
     /// Provides access to the readonly collection of broken business rules
     /// for this object.
     /// </summary>
-    /// <returns>A <see cref="Csla.Validation.RulesCollection" /> object.</returns>
+    /// <returns>A Csla.Validation.RulesCollection object.</returns>
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual Validation.BrokenRulesCollection BrokenRulesCollection
@@ -888,6 +846,11 @@ namespace Csla.Core
     /// Override this method to load a new business object with default
     /// values from the database.
     /// </summary>
+    /// <remarks>
+    /// Normally you will overload this method to accept a strongly-typed
+    /// criteria parameter, rather than overriding the method with a
+    /// loosely-typed criteria parameter.
+    /// </remarks>
     /// <param name="Criteria">An object containing criteria values.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Create(object criteria)
@@ -899,6 +862,11 @@ namespace Csla.Core
     /// Override this method to allow retrieval of an existing business
     /// object based on data in the database.
     /// </summary>
+    /// <remarks>
+    /// Normally you will overload this method to accept a strongly-typed
+    /// criteria parameter, rather than overriding the method with a
+    /// loosely-typed criteria parameter.
+    /// </remarks>
     /// <param name="Criteria">An object containing criteria values to identify the object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Fetch(object criteria)
@@ -947,7 +915,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_xyz method.
+    /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -959,7 +927,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_xyz method.
+    /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]

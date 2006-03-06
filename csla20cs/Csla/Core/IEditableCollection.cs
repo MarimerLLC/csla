@@ -6,7 +6,7 @@ namespace Csla.Core
   /// </summary>
   /// <remarks>
   /// It is strongly recommended that the implementations
-  /// of the methods in this interface be made private
+  /// of the methods in this interface be made Private
   /// so as to not clutter up the native interface of
   /// the collection objects.
   /// </remarks>

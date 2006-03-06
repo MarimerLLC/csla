@@ -7,7 +7,7 @@ Namespace Core
   ''' <remarks>
   ''' This is a subclass of BindingList(Of T) that implements
   ''' a readonly list, preventing adding and removing of items
-  ''' from the list. Use the Protected IsReadOnly property
+  ''' from the list. Use the IsReadOnly property
   ''' to unlock the list for loading/unloading data.
   ''' </remarks>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
@@ -20,7 +20,7 @@ Namespace Core
     Private mIsReadOnly As Boolean = True
 
     ''' <summary>
-    ''' Gets a value indicating whether the list is readonly.
+    ''' Gets or sets a value indicating whether the list is readonly.
     ''' </summary>
     ''' <remarks>
     ''' Subclasses can set this value to unlock the collection

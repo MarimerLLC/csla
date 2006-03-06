@@ -6,6 +6,14 @@ namespace Csla.Core
 {
   internal static class ObjectCloner
   {
+    /// <summary>
+    /// Clones an object by using the
+    /// <see cref="BinaryFormatter" />.
+    /// </summary>
+    /// <param name="obj">The object to clone.</param>
+    /// <remarks>
+    /// The object to be cloned must be serializable.
+    /// </remarks>
     public static object Clone(object obj)
     {
       using (MemoryStream buffer = new MemoryStream())

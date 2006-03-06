@@ -5,8 +5,7 @@ namespace Csla.Core
   /// in n-level undo within the CSLA .NET framework.
   /// </summary>
   /// <remarks>
-  /// This interface is used by 
-  /// <see cref="UndoableBase">UndoableBase</see>
+  /// This interface is used by Csla.Core.UndoableBase
   /// to initiate begin, cancel and apply edit operations.
   /// </remarks>
   public interface IUndoableObject : IBusinessObject

@@ -11,13 +11,9 @@ using System.ComponentModel;
 namespace Csla.Core
 {
   /// <summary>
-  /// Implements n-level undo capabilities
+  /// Implements n-level undo capabilities as
+  /// described in Chapters 2 and 3.
   /// </summary>
-  /// <remarks>
-  /// You should not directly derive from this class. Your
-  /// business classes should derive from
-  /// <see cref="Csla.BusinessBase<T>" />.
-  /// </remarks>
   [Serializable()]
   public abstract class UndoableBase : Csla.Core.BindableBase, Csla.Core.IUndoableObject
   {
@@ -58,6 +54,7 @@ namespace Csla.Core
     /// This method is invoked after the CopyState
     /// operation is complete.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void CopyStateComplete()
     {
     }
@@ -128,6 +125,7 @@ namespace Csla.Core
     /// This method is invoked after the UndoChanges
     /// operation is complete.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void UndoChangesComplete()
     {
     }
@@ -207,6 +205,7 @@ namespace Csla.Core
     /// This method is invoked after the AcceptChanges
     /// operation is complete.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void AcceptChangesComplete()
     {
     }

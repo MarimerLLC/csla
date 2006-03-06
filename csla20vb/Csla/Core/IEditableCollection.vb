@@ -1,6 +1,6 @@
 Namespace Core
 
-''' <summary>
+  ''' <summary>
   ''' Defines the common methods required by all
   ''' editable CSLA collection objects.
   ''' </summary>

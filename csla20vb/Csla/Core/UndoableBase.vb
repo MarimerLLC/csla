@@ -8,13 +8,9 @@ Imports System.ComponentModel
 Namespace Core
 
   ''' <summary>
-  ''' Implements n-level undo capabilities.
+  ''' Implements n-level undo capabilities as
+  ''' described in Chapters 2 and 3.
   ''' </summary>
-  ''' <remarks>
-  ''' You should not directly derive from this class. Your
-  ''' business classes should derive from
-  ''' <see cref="Csla.BusinessBase(Of T)" />.
-  ''' </remarks>
   <Serializable()> _
   Public MustInherit Class UndoableBase
     Inherits Csla.Core.BindableBase
@@ -43,6 +39,7 @@ Namespace Core
     ''' This method is invoked after the CopyState
     ''' operation is complete.
     ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub CopyStateComplete()
 
     End Sub
@@ -112,6 +109,7 @@ Namespace Core
     ''' This method is invoked after the UndoChanges
     ''' operation is complete.
     ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub UndoChangesComplete()
 
     End Sub
@@ -188,6 +186,7 @@ Namespace Core
     ''' This method is invoked after the AcceptChanges
     ''' operation is complete.
     ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub AcceptChangesComplete()
 
     End Sub

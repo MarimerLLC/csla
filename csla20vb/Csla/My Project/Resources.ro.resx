@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <root>
 
@@ -238,329 +238,329 @@
 
   <data name="ClearInvalidException" xml:space="preserve">
 
-    <value>Clear is an invalid operation</value>
+    <value>Clear este o operatie invalida</value>
 
-    <comment>Clear este o operatie invalida</comment>
+    <comment>Clear is an invalid operation</comment>
 
   </data>
 
   <data name="InsertInvalidException" xml:space="preserve">
 
-    <value>Insert is an invalid operation</value>
+    <value>Insert este o operatie invalida</value>
 
-    <comment>Insert este o operatie invalida</comment>
+    <comment>Insert is an invalid operation</comment>
 
   </data>
 
   <data name="RemoveInvalidException" xml:space="preserve">
 
-    <value>Remove is an invalid operation</value>
+    <value>Remove nu e o peratie valida</value>
 
-    <comment>Remove nu e o peratie valida</comment>
+    <comment>Remove is an invalid operation</comment>
 
   </data>
 
   <data name="ChangeInvalidException" xml:space="preserve">
 
-    <value>Changing an element is an invalid operation</value>
+    <value>Schimbarea unui element este o operatie invalida</value>
 
-    <comment>Schimbarea unui element este o operatie invalida</comment>
+    <comment>Changing an element is an invalid operation</comment>
 
   </data>
 
   <data name="ParentSetException" xml:space="preserve">
 
-    <value>Parent value can only be set for child objects</value>
+    <value>Valoarea Parent poate fi setata doar pentru obiectele copil</value>
 
-    <comment>Valoarea Parent poate fi setata doar pentru obiectele copil</comment>
+    <comment>Parent value can only be set for child objects</comment>
 
   </data>
 
   <data name="ChildDeleteException" xml:space="preserve">
 
-    <value>Can not directly mark a child object for deletion - use its parent collection</value>
+    <value>Nu se poate marca direct un copil pentru stergere - utilizati colectia sa parinte</value>
 
-    <comment>Nu se poate marca direct un copil pentru stergere - utilizati colectia sa parinte</comment>
+    <comment>Can not directly mark a child object for deletion - use its parent collection</comment>
 
   </data>
 
   <data name="NoDeleteRootException" xml:space="preserve">
 
-    <value>Invalid for root objects - use Delete instead</value>
+    <value>Invalid pentru obiecte root - utilizati Delete</value>
 
-    <comment>Invalid pentru obiecte root - utilizati Delete</comment>
+    <comment>Invalid for root objects - use Delete instead</comment>
 
   </data>
 
   <data name="NoSaveChildException" xml:space="preserve">
 
-    <value>Can not directly save a child object</value>
+    <value>Nu se poate salva direct un obiect copil</value>
 
-    <comment>Nu se poate salva direct un obiect copil</comment>
+    <comment>Can not directly save a child object</comment>
 
   </data>
 
   <data name="NoSaveEditingException" xml:space="preserve">
 
-    <value>Object is still being edited and can not be saved</value>
+    <value>Obiectul se editeaza inca si nu poate fi salvat</value>
 
-    <comment>Obiectul se editeaza inca si nu poate fi salvat</comment>
+    <comment>Object is still being edited and can not be saved</comment>
 
   </data>
 
   <data name="NoSaveInvalidException" xml:space="preserve">
 
-    <value>Object is not valid and can not be saved</value>
+    <value>Obiectul nu e valid si nu poate fi salvat</value>
 
-    <comment>Obiectul nu e valid si nu poate fi salvat</comment>
+    <comment>Object is not valid and can not be saved</comment>
 
   </data>
 
   <data name="CreateNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - create not allowed</value>
+    <value>Crearea nu e operatie permisa</value>
 
-    <comment>Crearea nu e operatie permisa</comment>
+    <comment>Invalid operation - create not allowed</comment>
 
   </data>
 
   <data name="FetchNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - fetch not allowed</value>
+    <value>Operatie invalida - umplerea nu e permisa</value>
 
-    <comment>Operatie invalida - umplerea nu e permisa</comment>
+    <comment>Invalid operation - fetch not allowed</comment>
 
   </data>
 
   <data name="UpdateNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - update not allowed</value>
+    <value>operatie invalida  - update nu e permis</value>
 
-    <comment>operatie invalida  - update nu e permis</comment>
+    <comment>Invalid operation - update not allowed</comment>
 
   </data>
 
   <data name="DeleteNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - delete not allowed</value>
+    <value>Stergerea nu e o operatie permisa</value>
 
-    <comment>Stergerea nu e o operatie permisa</comment>
+    <comment>Invalid operation - delete not allowed</comment>
 
   </data>
 
   <data name="NoBeginEditChildException" xml:space="preserve">
 
-    <value>BeginEdit is not valid on a child object</value>
+    <value>BeginEdit nu e valid pe un obiect copil</value>
 
-    <comment>BeginEdit nu e valid pe un obiect copil</comment>
+    <comment>BeginEdit is not valid on a child object</comment>
 
   </data>
 
   <data name="NoCancelEditChildException" xml:space="preserve">
 
-    <value>CancelEdit is not valid on a child object</value>
+    <value>CancelEdit nu e valid pe un obiect copil</value>
 
-    <comment>CancelEdit nu e valid pe un obiect copil</comment>
+    <comment>CancelEdit is not valid on a child object</comment>
 
   </data>
 
   <data name="NoApplyEditChildException" xml:space="preserve">
 
-    <value>ApplyEdit is not valid on a child object</value>
+    <value>ApplyEdit nu e valid pe un obiect copil</value>
 
-    <comment>ApplyEdit nu e valid pe un obiect copil</comment>
+    <comment>ApplyEdit is not valid on a child object</comment>
 
   </data>
 
   <data name="NoSuchValueExistsException" xml:space="preserve">
 
-    <value>No such value exists:</value>
+    <value>Nu exista valoarea :</value>
 
-    <comment>Nu exista valoarea :</comment>
+    <comment>No such value exists:</comment>
 
   </data>
 
   <data name="ErrorReadingValueException" xml:space="preserve">
 
-    <value>Error reading value:</value>
+    <value>Eroare la citirea </value>
 
-    <comment>Eroare la citirea </comment>
+    <comment>Error reading value:</comment>
 
   </data>
 
   <data name="StringToDateException" xml:space="preserve">
 
-    <value>String value can not be converted to a date</value>
+    <value>valoarea stringului nu poate fi convertita la data</value>
 
-    <comment>valoarea stringului nu poate fi convertita la data</comment>
+    <comment>String value can not be converted to a date</comment>
 
   </data>
 
   <data name="ValueNotSmartDateException" xml:space="preserve">
 
-    <value>Value is not a SmartDate</value>
+    <value>Valoare nu e de tipul SmartDate</value>
 
-    <comment>Valoare nu e de tipul SmartDate</comment>
+    <comment>Value is not a SmartDate</comment>
 
   </data>
 
   <data name="NoPrincipalAllowedException" xml:space="preserve">
 
-    <value>No principal object should be passed to DataPortal when using Windows integrated security</value>
+    <value>Nu trebuie trecut un obiect Principal la DataProtal cind utilizati Windows Integrated security</value>
 
-    <comment>Nu trebuie trecut un obiect Principal la DataProtal cind utilizati Windows Integrated security</comment>
+    <comment>No principal object should be passed to DataPortal when using Windows integrated security</comment>
 
   </data>
 
   <data name="BusinessPrincipalException" xml:space="preserve">
 
-    <value>Principal must be of type BusinessPrincipal, not</value>
+    <value>principal trebuie sa fie de tipul BussinesPrincipal, nu </value>
 
-    <comment>principal trebuie sa fie de tipul BussinesPrincipal, nu </comment>
+    <comment>Principal must be of type BusinessPrincipal, not</comment>
 
   </data>
 
   <data name="SmartDateT" xml:space="preserve">
 
-    <value>t</value>
+    <value>a</value>
 
-    <comment>a</comment>
+    <comment>t</comment>
 
   </data>
 
   <data name="SmartDateToday" xml:space="preserve">
 
-    <value>today</value>
+    <value>azi</value>
 
-    <comment>azi</comment>
+    <comment>today</comment>
 
   </data>
 
   <data name="SmartDateY" xml:space="preserve">
 
-    <value>y</value>
+    <value>i</value>
 
-    <comment>i</comment>
+    <comment>y</comment>
 
   </data>
 
   <data name="SmartDateYesterday" xml:space="preserve">
 
-    <value>yesterday</value>
+    <value>ieri</value>
 
-    <comment>ieri</comment>
+    <comment>yesterday</comment>
 
   </data>
 
   <data name="SmartDateTom" xml:space="preserve">
 
-    <value>tom</value>
+    <value>miine</value>
 
-    <comment>miine</comment>
+    <comment>tom</comment>
 
   </data>
 
   <data name="SmartDateTomorrow" xml:space="preserve">
 
-    <value>tomorrow</value>
+    <value>miine</value>
 
-    <comment>miine</comment>
+    <comment>tomorrow</comment>
 
   </data>
 
   <data name="Failed" xml:space="preserve">
 
-    <value>failed</value>
+    <value>Eroare</value>
 
-    <comment>Eroare</comment>
+    <comment>failed</comment>
 
   </data>
 
   <data name="FailedOnServer" xml:space="preserve">
 
-    <value>failed on the server</value>
+    <value>Eroare la server</value>
 
-    <comment>Eroare la server</comment>
+    <comment>failed on the server</comment>
 
   </data>
 
   <data name="MethodCallFailed" xml:space="preserve">
 
-    <value>method call failed</value>
+    <value>Chemarea metodei a produs eroare</value>
 
-    <comment>Chemarea metodei a produs eroare</comment>
+    <comment>method call failed</comment>
 
   </data>
 
   <data name="MethodNotImplemented" xml:space="preserve">
 
-    <value>not implemented</value>
+    <value>Methoda nu e implementata</value>
 
-    <comment>Methoda nu e implementata</comment>
+    <comment>not implemented</comment>
 
   </data>
 
   <data name="ExecuteNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - execute not allowed</value>
+    <value>Operatie invalida - executia nu e permisa</value>
 
-    <comment>Operatie invalida - executia nu e permisa</comment>
+    <comment>Invalid operation - execute not allowed</comment>
 
   </data>
 
   <data name="InsertNotSupportedException" xml:space="preserve">
 
-    <value>Invalid operation - insert not allowed</value>
+    <value>Operatie invalida - insert nu e permis</value>
 
-    <comment>Operatie invalida - insert nu e permis</comment>
+    <comment>Invalid operation - insert not allowed</comment>
 
   </data>
 
   <data name="GetIdValueCantBeNull" xml:space="preserve">
 
-    <value>GetIdValue must not return Nothing</value>
+    <value>GetIdValue nu poate intoarce Nothing</value>
 
-    <comment>GetIdValue nu poate intoarce Nothing</comment>
+    <comment>GetIdValue must not return Nothing</comment>
 
   </data>
 
   <data name="PropertyGetNotAllowed" xml:space="preserve">
 
-    <value>Property get not allowed</value>
+    <value>Proprietatea nu admite get</value>
 
-    <comment>Proprietatea nu admite get</comment>
+    <comment>Property get not allowed</comment>
 
   </data>
 
   <data name="PropertySetNotAllowed" xml:space="preserve">
 
-    <value>Property set not allowed</value>
+    <value>Proprietatea nu admite set</value>
 
-    <comment>Proprietatea nu admite set</comment>
+    <comment>Property set not allowed</comment>
 
   </data>
 
   <data name="NothingNotValid" xml:space="preserve">
 
-    <value>Argument must not be Nothing</value>
+    <value>Argumetul trebuie sa nu fie Nothing</value>
 
-    <comment>Argumetul trebuie sa nu fie Nothing</comment>
+    <comment>Argument must not be Nothing</comment>
 
   </data>
 
   <data name="PrimitiveTypeRequired" xml:space="preserve">
 
-    <value>Type parameter must be a primitive type</value>
+    <value>Parametru Type trebuie sa fie un type "primitiv"</value>
 
-    <comment>Parametru Type trebuie sa fie un type "primitiv"</comment>
+    <comment>Type parameter must be a primitive type</comment>
 
   </data>
 
   <data name="PropertyCopyFailed" xml:space="preserve">
 
-    <value>Property copy failed</value>
+    <value>Copierea proprietatii a dat eroare</value>
 
-    <comment>Copierea proprietatii a dat eroare</comment>
+    <comment>Property copy failed</comment>
 
   </data>
 

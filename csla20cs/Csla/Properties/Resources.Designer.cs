@@ -358,6 +358,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} does not match regular expression.
+        /// </summary>
+        internal static string RegExMatchRule {
+            get {
+                return ResourceManager.GetString("RegExMatchRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove is an invalid operation.
         /// </summary>
         internal static string RemoveInvalidException {

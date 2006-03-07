@@ -1,5 +1,6 @@
 using System;
 using Csla.Properties;
+using System.Text.RegularExpressions;
 
 namespace Csla.Validation
 {
@@ -382,6 +383,91 @@ namespace Csla.Validation
     }
 
     #endregion
+
+    #region RegEx
+
+    /// <summary>
+    /// Rule that checks to make sure a value
+    /// matches a given regex pattern.
+    /// </summary>
+    /// <param name="target">Object containing the data to validate</param>
+    /// <param name="e">RegExRuleArgs parameter specifying the name of the 
+    /// property to validate and the regex pattern.</param>
+    /// <returns>False if the rule is broken</returns>
+    /// <remarks>
+    /// This implementation uses late binding.
+    /// </remarks>
+    public static bool RegExMatch(object target, RuleArgs e)
+    {
+      Regex rx = ((RegExRuleArgs)e).RegEx;
+      if (!rx.IsMatch(Utilities.CallByName(target, e.PropertyName, CallType.Get).ToString()))
+      {
+        e.Description = String.Format(Resources.RegExMatchRule, e.PropertyName);
+        return false;
+      }
+      else
+        return true;
+    }
+
+    public enum RegExPatterns
+    {
+      SSN,
+      Email
+    }
+
+    public class RegExRuleArgs : RuleArgs
+    {
+      Regex _regEx;
+
+      public Regex RegEx
+      {
+        get { return _regEx; }
+      }
+
+      public RegExRuleArgs(string propertyName, RegExPatterns pattern)
+        :
+        base(propertyName)
+      {
+        _regEx = new Regex(GetPattern(pattern));
+      }
+
+      public RegExRuleArgs(string propertyName, string pattern)
+        :
+        base(propertyName)
+      {
+        _regEx = new Regex(pattern);
+      }
+
+      public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regex)
+        :
+        base(propertyName)
+      {
+        _regEx = regex;
+      }
+
+      /// <summary>
+      /// Returns a string representation of the object.
+      /// </summary>
+      public override string ToString()
+      {
+        return base.ToString() + "!" + _regEx.ToString();
+      }
+
+      public static string GetPattern(RegExPatterns pattern)
+      {
+        switch (pattern)
+        {
+          case RegExPatterns.SSN:
+            return @"^\d{3}-\d{2}-\d{4}$";
+          case RegExPatterns.Email:
+            return @"\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b";
+          default:
+            return string.Empty;
+        }
+      }
+    }
+
+#endregion
 
   }
 }

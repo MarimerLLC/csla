@@ -506,4 +506,10 @@
 
   </data>
 
+  <data name="RegExMatchRule" xml:space="preserve">
+
+    <value>{0} does not match regular expression</value>
+
+  </data>
+
 </root>

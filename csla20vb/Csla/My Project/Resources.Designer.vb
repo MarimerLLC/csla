@@ -358,6 +358,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to {0} does not match regular expression.
+        '''</summary>
+        Friend ReadOnly Property RegExMatchRule() As String
+            Get
+                Return ResourceManager.GetString("RegExMatchRule", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Remove is an invalid operation.
         '''</summary>
         Friend ReadOnly Property RemoveInvalidException() As String

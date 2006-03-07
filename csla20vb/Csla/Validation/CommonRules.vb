@@ -1,3 +1,5 @@
+Imports System.Text.RegularExpressions
+
 Namespace Validation
 
   ''' <summary>
@@ -311,6 +313,88 @@ Namespace Validation
       ''' </summary>
       Public Overrides Function ToString() As String
         Return MyBase.ToString & "!" & mMinValue.ToString
+      End Function
+
+    End Class
+
+#End Region
+
+#Region " RegEx "
+
+    ''' <summary>
+    ''' Rule that checks to make sure a value
+    ''' matches a given regex pattern.
+    ''' </summary>
+    ''' <param name="target">Object containing the data to validate</param>
+    ''' <param name="e">RegExRuleArgs parameter specifying the name of the 
+    ''' property to validate and the regex pattern.</param>
+    ''' <returns>False if the rule is broken</returns>
+    ''' <remarks>
+    ''' This implementation uses late binding.
+    ''' </remarks>
+    Public Function RegExMatch(ByVal target As Object, _
+      ByVal e As RuleArgs) As Boolean
+
+      Dim rx As Regex = DirectCast(e, RegExRuleArgs).RegEx
+      If Not rx.IsMatch(CallByName( _
+          target, e.PropertyName, CallType.Get).ToString) Then
+        e.Description = _
+          String.Format(My.Resources.RegExMatchRule, e.PropertyName)
+        Return False
+      Else
+        Return True
+      End If
+    End Function
+
+    Public Enum RegExPatterns
+      SSN
+      Email
+    End Enum
+
+    Public Class RegExRuleArgs
+      Inherits RuleArgs
+
+      Private mRegEx As Regex
+
+      Public ReadOnly Property RegEx() As Regex
+        Get
+          Return mRegEx
+        End Get
+      End Property
+
+      Public Sub New(ByVal propertyName As String, ByVal pattern As RegExPatterns)
+        MyBase.New(propertyName)
+        mRegEx = New Regex(GetPattern(pattern))
+      End Sub
+
+      Public Sub New(ByVal propertyName As String, ByVal pattern As String)
+        MyBase.New(propertyName)
+        mRegEx = New Regex(pattern)
+      End Sub
+
+      Public Sub New(ByVal propertyName As String, ByVal regEx As Regex)
+        MyBase.New(propertyName)
+        mRegEx = regEx
+      End Sub
+
+      ''' <summary>
+      ''' Returns a string representation of the object.
+      ''' </summary>
+      Public Overrides Function ToString() As String
+        Return MyBase.ToString & "!" & mRegEx.ToString
+      End Function
+
+      Public Shared Function GetPattern(ByVal pattern As RegExPatterns) As String
+        Select Case pattern
+          Case RegExPatterns.SSN
+            Return "^\d{3}-\d{2}-\d{4}$"
+
+          Case RegExPatterns.Email
+            Return "\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b"
+
+          Case Else
+            Return ""
+        End Select
       End Function
 
     End Class

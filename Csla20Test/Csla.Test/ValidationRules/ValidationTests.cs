@@ -214,5 +214,23 @@ namespace Csla.Test.ValidationRules
             Assert.AreEqual(true, root.IsValid, "Should be valid");
             Assert.AreEqual(0, root.BrokenRulesCollection.Count);
         }
+
+      [TestMethod()]
+      public void RegExSSN()
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        HasRegEx root = new HasRegEx();
+
+        root.Ssn = "555-55-5555";
+        root.Ssn2 = "555-55-5555";
+        Assert.IsTrue(root.IsValid, "Ssn should be valid");
+        
+        root.Ssn = "555-55-5555d";
+        Assert.IsFalse(root.IsValid, "Ssn should not be valid");
+
+        root.Ssn = "555-55-5555";
+        root.Ssn2 = "555-55-5555d";
+        Assert.IsFalse(root.IsValid, "Ssn should not be valid");
+      }
     }
 }

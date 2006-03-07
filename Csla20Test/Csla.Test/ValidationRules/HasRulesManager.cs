@@ -28,6 +28,7 @@ namespace Csla.Test.ValidationRules
             }
         }
 
+
         protected override void AddBusinessRules()
         {
             ValidationRules.AddRule(NameRequired, "Name");

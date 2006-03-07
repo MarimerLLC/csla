@@ -110,6 +110,7 @@
     <Compile Include="Serialization\TestEventSink.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
+    <Compile Include="ValidationRules\HasRegEx.cs" />
     <Compile Include="ValidationRules\HasRulesManager.cs" />
     <Compile Include="ValidationRules\HasRulesManager2.cs" />
     <Compile Include="ValidationRules\MaxLengthArgs.cs" />

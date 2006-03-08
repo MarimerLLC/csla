@@ -74,21 +74,6 @@ namespace Csla.Validation
       _ruleName = _handler.Method.Name + "!" + _args.ToString();
     }
 
-    ///// <summary>
-    ///// Creates and initializes the rule.
-    ///// </summary>
-    ///// <param name="target">Reference to the object containing the data to validate.</param>
-    ///// <param name="handler">The address of the method implementing the rule.</param>
-    ///// <param name="args">A RuleArgs object.</param>
-    ///// <param name="ruleName">A unique name for this rule.</param>
-    //public RuleMethod(object target, RuleHandler handler, RuleArgs args, string ruleName)
-    //{
-    //  _target = target;
-    //  _handler = handler;
-    //  _ruleName = ruleName;
-    //  _args = args;
-    //}
-
     /// <summary>
     /// Invokes the rule to validate the data.
     /// </summary>

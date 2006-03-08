@@ -4,7 +4,6 @@ using System.Text;
 
 namespace Csla.Server
 {
-
   /// <summary>
   /// Returns data from the server-side DataPortal to the 
   /// client-side DataPortal. Intended for internal CSLA .NET
@@ -16,11 +15,19 @@ namespace Csla.Server
     private object _returnObject;
     private HybridDictionary _globalContext;
 
+    /// <summary>
+    /// The business object being returned from
+    /// the server.
+    /// </summary>
     public object ReturnObject
     {
       get { return _returnObject; }
     }
 
+    /// <summary>
+    /// The global context being returned from
+    /// the server.
+    /// </summary>
     public HybridDictionary GlobalContext
     {
       get { return _globalContext; }

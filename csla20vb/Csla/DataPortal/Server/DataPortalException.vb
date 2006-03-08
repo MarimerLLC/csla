@@ -23,6 +23,10 @@ Namespace Server
       End Get
     End Property
 
+    ''' <summary>
+    ''' Get the server-side stack trace from the
+    ''' original exception.
+    ''' </summary>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId:="System.String.Format(System.String,System.Object,System.Object,System.Object)")> _
     Public Overrides ReadOnly Property StackTrace() As String
       Get

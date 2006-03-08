@@ -3,6 +3,10 @@ Imports Csla.Server
 
 Friend Module MethodCaller
 
+  ''' <summary>
+  ''' Uses reflection to dynamically invoke a method
+  ''' if that method is implemented on the target object.
+  ''' </summary>
   Public Function CallMethodIfImplemented(ByVal obj As Object, _
     ByVal method As String, ByVal ParamArray parameters() As Object) As Object
 
@@ -17,6 +21,11 @@ Friend Module MethodCaller
 
   End Function
 
+  ''' <summary>
+  ''' Uses reflection to dynamically invoke a method,
+  ''' throwing an exception if it is not
+  ''' implemented on the target object.
+  ''' </summary>
   Public Function CallMethod(ByVal obj As Object, _
     ByVal method As String, ByVal ParamArray parameters() As Object) As Object
 
@@ -31,6 +40,11 @@ Friend Module MethodCaller
 
   End Function
 
+  ''' <summary>
+  ''' Uses reflection to dynamically invoke a method,
+  ''' throwing an exception if it is not implemented
+  ''' on the target object.
+  ''' </summary>
   Public Function CallMethod(ByVal obj As Object, _
     ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) _
     As Object
@@ -49,6 +63,10 @@ Friend Module MethodCaller
 
   End Function
 
+  ''' <summary>
+  ''' Uses reflection to locate a matching method
+  ''' on the target object.
+  ''' </summary>
   Public Function GetMethod(ByVal objectType As Type, _
     ByVal method As String, ByVal ParamArray parameters() As Object) _
     As MethodInfo
@@ -135,6 +153,10 @@ Friend Module MethodCaller
 
   End Function
 
+  ''' <summary>
+  ''' Returns a business object type based on
+  ''' the supplied criteria object.
+  ''' </summary>
   Public Function GetObjectType(ByVal criteria As Object) As Type
 
     If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then

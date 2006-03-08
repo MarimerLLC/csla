@@ -4,7 +4,6 @@ Namespace Server
   ''' Interface implemented by server-side data portal
   ''' components.
   ''' </summary>
-  ''' <remarks></remarks>
   Public Interface IDataPortalServer
     ''' <summary>
     ''' Create a new business object.

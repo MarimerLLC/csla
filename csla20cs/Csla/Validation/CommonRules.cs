@@ -9,16 +9,16 @@ namespace Csla.Validation
     #region StringRequired
 
     /// <summary>
-    /// Rule ensuring a String value contains one or more
+    /// Rule ensuring a string value contains one or more
     /// characters.
     /// </summary>
     /// <param name="target">Object containing the data to validate</param>
-    /// <param name="e">Arguments parameter specifying the name of the String
+    /// <param name="e">Arguments parameter specifying the name of the string
     /// property to validate</param>
-    /// <returns>False if the rule is broken</returns>
+    /// <returns><see langword="false" /> if the rule is broken</returns>
     /// <remarks>
     /// This implementation uses late binding, and will only work
-    /// against String property values.
+    /// against string property values.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public static bool StringRequired(object target, RuleArgs e)
@@ -38,16 +38,16 @@ namespace Csla.Validation
     #region StringMaxLength
 
     /// <summary>
-    /// Rule ensuring a String value doesn't exceed
+    /// Rule ensuring a string value doesn't exceed
     /// a specified length.
     /// </summary>
     /// <param name="target">Object containing the data to validate</param>
-    /// <param name="e">Arguments parameter specifying the name of the String
+    /// <param name="e">Arguments parameter specifying the name of the string
     /// property to validate</param>
-    /// <returns>False if the rule is broken</returns>
+    /// <returns><see langword="false" /> if the rule is broken</returns>
     /// <remarks>
     /// This implementation uses late binding, and will only work
-    /// against String property values.
+    /// against string property values.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public static bool StringMaxLength(
@@ -66,15 +66,27 @@ namespace Csla.Validation
       return true;
     }
 
+    /// <summary>
+    /// Custom <see cref="RuleArgs" /> object required by the
+    /// <see cref="StringMaxLength" /> rule method.
+    /// </summary>
     public class MaxLengthRuleArgs : RuleArgs
     {
       private int _maxLength;
 
+      /// <summary>
+      /// Get the max length for the string.
+      /// </summary>
       public int MaxLength
       {
         get { return _maxLength; }
       }
 
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="maxLength">Max length of characters allowed.</param>
       public MaxLengthRuleArgs(
         string propertyName, int maxLength)
         : base(propertyName)
@@ -95,6 +107,14 @@ namespace Csla.Validation
 
     #region IntegerMaxValue
 
+    /// <summary>
+    /// Rule ensuring an integer value doesn't exceed
+    /// a specified value.
+    /// </summary>
+    /// <param name="target">Object containing the data to validate.</param>
+    /// <param name="e">Arguments parameter specifying the name of the
+    /// property to validate.</param>
+    /// <returns><see langword="false"/> if the rule is broken.</returns>
     public static bool IntegerMaxValue(object target, RuleArgs e)
     {
       int max = ((IntegerMaxValueRuleArgs)e).MaxValue;
@@ -108,15 +128,27 @@ namespace Csla.Validation
       return true;
     }
 
+    /// <summary>
+    /// Custom <see cref="RuleArgs" /> object required by the
+    /// <see cref="IntegerMaxValue" /> rule method.
+    /// </summary>
     public class IntegerMaxValueRuleArgs : RuleArgs
     {
       private int _maxValue;
 
+      /// <summary>
+      /// Get the max value for the property.
+      /// </summary>
       public int MaxValue
       {
         get { return _maxValue; }
       }
 
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property.</param>
+      /// <param name="maxValue">Maximum allowed value for the property.</param>
       public IntegerMaxValueRuleArgs(string propertyName, int maxValue)
         : base(propertyName)
       {
@@ -134,8 +166,78 @@ namespace Csla.Validation
 
     #endregion
 
+    #region IntegerMinValue
+
+    /// <summary>
+    /// Rule ensuring an integer value doesn't go below
+    /// a specified value.
+    /// </summary>
+    /// <param name="target">Object containing the data to validate.</param>
+    /// <param name="e">Arguments parameter specifying the name of the
+    /// property to validate.</param>
+    /// <returns><see langword="false"/> if the rule is broken.</returns>
+    public static bool IntegerMinValue(object target, RuleArgs e)
+    {
+      int min = ((IntegerMinValueRuleArgs)e).MinValue;
+      int value = (int)Utilities.CallByName(target, e.PropertyName, CallType.Get);
+      if (value < min)
+      {
+        e.Description = String.Format(Resources.MinValueRule,
+          e.PropertyName, min.ToString());
+        return false;
+      }
+      return true;
+    }
+
+    /// <summary>
+    /// Custom <see cref="RuleArgs" /> object required by the
+    /// <see cref="IntegerMinValue" /> rule method.
+    /// </summary>
+    public class IntegerMinValueRuleArgs : RuleArgs
+    {
+      private int _minValue;
+
+      /// <summary>
+      /// Get the min value for the property.
+      /// </summary>
+      public int MinValue
+      {
+        get { return _minValue; }
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property.</param>
+      /// <param name="minValue">Minimum allowed value for the property.</param>
+      public IntegerMinValueRuleArgs(string propertyName, int minValue)
+        : base(propertyName)
+      {
+        _minValue = minValue;
+      }
+
+      /// <summary>
+      /// Return a string representation of the object.
+      /// </summary>
+      public override string ToString()
+      {
+        return base.ToString() + "!" + _minValue.ToString();
+      }
+    }
+
+    #endregion
+
     #region MaxValue
 
+    /// <summary>
+    /// Rule ensuring that a numeric value
+    /// doesn't exceed a specified maximum.
+    /// </summary>
+    /// <typeparam name="T">Type of the property to validate.</typeparam>
+    /// <param name="target">Object containing value to validate.</param>
+    /// <param name="e">Arguments variable specifying the
+    /// name of the property to validate, along with the max
+    /// allowed value.</param>
     public static bool MaxValue<T>(object target, RuleArgs e)
     {
       T max = (T)((MaxValueRuleArgs<T>)e).MaxValue;
@@ -233,15 +335,28 @@ namespace Csla.Validation
         return true;
     }
 
+    /// <summary>
+    /// Custom <see cref="RuleArgs" /> object required by the
+    /// <see cref="MaxValue" /> rule method.
+    /// </summary>
+    /// <typeparam name="T">Type of the property to validate.</typeparam>
     public class MaxValueRuleArgs<T> : RuleArgs
     {
       T _maxValue;
 
+      /// <summary>
+      /// Get the max value for the property.
+      /// </summary>
       public T MaxValue
       {
         get { return _maxValue; }
       }
 
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property.</param>
+      /// <param name="maxValue">Maximum allowed value for the property.</param>
       public MaxValueRuleArgs(string propertyName, T maxValue)
         : base(propertyName)
       {
@@ -261,6 +376,15 @@ namespace Csla.Validation
 
     #region MinValue
 
+    /// <summary>
+    /// Rule ensuring that a numeric value
+    /// doesn't exceed a specified minimum.
+    /// </summary>
+    /// <typeparam name="T">Type of the property to validate.</typeparam>
+    /// <param name="target">Object containing value to validate.</param>
+    /// <param name="e">Arguments variable specifying the
+    /// name of the property to validate, along with the min
+    /// allowed value.</param>
     public static bool MinValue<T>(object target, RuleArgs e)
     {
       T min = (T)((MinValueRuleArgs<T>)e).MinValue;
@@ -358,15 +482,28 @@ namespace Csla.Validation
         return true;
     }
 
+    /// <summary>
+    /// Custom <see cref="RuleArgs" /> object required by the
+    /// <see cref="MinValue" /> rule method.
+    /// </summary>
+    /// <typeparam name="T">Type of the property to validate.</typeparam>
     public class MinValueRuleArgs<T> : RuleArgs
     {
       T _minValue;
 
+      /// <summary>
+      /// Get the min value for the property.
+      /// </summary>
       public T MinValue
       {
         get { return _minValue; }
       }
 
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property.</param>
+      /// <param name="minValue">Minimum allowed value for the property.</param>
       public MinValueRuleArgs(string propertyName, T minValue)
         : base(propertyName)
       {
@@ -409,21 +546,43 @@ namespace Csla.Validation
         return true;
     }
 
+    /// <summary>
+    /// List of built-in regex patterns.
+    /// </summary>
     public enum RegExPatterns
     {
+      /// <summary>
+      /// US Social Security number pattern.
+      /// </summary>
       SSN,
+      /// <summary>
+      /// Email address pattern.
+      /// </summary>
       Email
     }
 
+    /// <summary>
+    /// Custom <see cref="RuleArgs" /> object required by the
+    /// <see cref="RegExMatch" /> rule method.
+    /// </summary>
     public class RegExRuleArgs : RuleArgs
     {
       Regex _regEx;
 
+      /// <summary>
+      /// The <see cref="RegEx"/> object used to validate
+      /// the property.
+      /// </summary>
       public Regex RegEx
       {
         get { return _regEx; }
       }
 
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="pattern">Built-in regex pattern to use.</param>
       public RegExRuleArgs(string propertyName, RegExPatterns pattern)
         :
         base(propertyName)
@@ -431,6 +590,11 @@ namespace Csla.Validation
         _regEx = new Regex(GetPattern(pattern));
       }
 
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="pattern">Custom regex pattern to use.</param>
       public RegExRuleArgs(string propertyName, string pattern)
         :
         base(propertyName)
@@ -438,6 +602,11 @@ namespace Csla.Validation
         _regEx = new Regex(pattern);
       }
 
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="regEx"><see cref="RegEx"/> object to use.</param>
       public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regex)
         :
         base(propertyName)
@@ -453,6 +622,9 @@ namespace Csla.Validation
         return base.ToString() + "!" + _regEx.ToString();
       }
 
+      /// <summary>
+      /// Returns the specified built-in regex pattern.
+      /// </summary>
       public static string GetPattern(RegExPatterns pattern)
       {
         switch (pattern)

@@ -7,7 +7,7 @@ Namespace Server
   ''' <summary>
   ''' Implements the server-side DataPortal 
   ''' message router as discussed
-  ''' in Chapter 5.
+  ''' in Chapter 4.
   ''' </summary>
   Public Class DataPortal
 
@@ -16,11 +16,13 @@ Namespace Server
 #Region " Data Access "
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to create a new object.
+    ''' Create a new business object.
     ''' </summary>
-    ''' <param name="criteria">Object-specific criteria.</param>
-    ''' <param name="context">Context data from the client.</param>
-    ''' <returns>A populated business object.</returns>
+    ''' <param name="objectType">Type of business object to create.</param>
+    ''' <param name="criteria">Criteria object describing business object.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     Public Function Create( _
       ByVal objectType As System.Type, _
       ByVal criteria As Object, _
@@ -65,11 +67,12 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataProtal to retrieve an object.
+    ''' Get an existing business object.
     ''' </summary>
-    ''' <param name="criteria">Object-specific criteria.</param>
-    ''' <param name="context">Object containing context data from client.</param>
-    ''' <returns>A populated business object.</returns>
+    ''' <param name="criteria">Criteria object describing business object.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     Public Function Fetch( _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
@@ -115,11 +118,12 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to update an object.
+    ''' Update a business object.
     ''' </summary>
-    ''' <param name="obj">A reference to the object being updated.</param>
-    ''' <param name="context">Context data from the client.</param>
-    ''' <returns>A reference to the newly updated object.</returns>
+    ''' <param name="obj">Business object to update.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
     Public Function Update( _
       ByVal obj As Object, _
@@ -184,10 +188,12 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to delete an object.
+    ''' Delete a business object.
     ''' </summary>
-    ''' <param name="criteria">Object-specific criteria.</param>
-    ''' <param name="context">Context data from the client.</param>
+    ''' <param name="criteria">Criteria object describing business object.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     Public Function Delete( _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _

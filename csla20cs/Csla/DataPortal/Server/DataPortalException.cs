@@ -24,6 +24,10 @@ namespace Csla.Server
       get { return _result; }
     }
 
+    /// <summary>
+    /// Get the server-side stack trace from the
+    /// original exception.
+    /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
     public override string StackTrace
     {

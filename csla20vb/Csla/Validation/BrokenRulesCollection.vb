@@ -14,12 +14,12 @@ Namespace Validation
     Inherits Core.ReadOnlyBindingList(Of BrokenRule)
 
     ''' <summary>
-    ''' Returns the first <see cref="T:Csla.BrokenRules.BrokenRule" /> object
+    ''' Returns the first <see cref="BrokenRule" /> object
     ''' corresponding to the specified property.
     ''' </summary>
     ''' <remarks>
     ''' Code in a business object or UI can also use this value to retrieve
-    ''' the first broken rule in <see cref="T:Csla.BrokenRules" /> that corresponds
+    ''' the first broken rule in <see cref="BrokenRulesCollection" /> that corresponds
     ''' to a specfic Property on the object.
     ''' </remarks>
     ''' <param name="property">The name of the property affected by the rule.</param>
@@ -68,7 +68,7 @@ Namespace Validation
 
     ''' <summary>
     ''' Returns the text of all broken rule descriptions, each
-    ''' separated by a NewLine.
+    ''' separated by a <see cref="Environment.NewLine" />.
     ''' </summary>
     ''' <returns>The text of all broken rule descriptions.</returns>
     Public Overrides Function ToString() As String

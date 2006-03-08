@@ -3,14 +3,12 @@ using System.Transactions;
 
 namespace Csla.Server
 {
-
   /// <summary>
   /// Implements the server-side Serviced 
-  /// DataPortal described in Chapter 5.
+  /// DataPortal described in Chapter 4.
   /// </summary>
   public class TransactionalDataPortal : IDataPortalServer
   {
-
     /// <summary>
     /// Wraps a Create call in a TransactionScope
     /// </summary>

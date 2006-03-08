@@ -122,49 +122,15 @@ Namespace Validation
 
     End Sub
 
-    '''' <summary>
-    '''' Adds a rule to the list of rules to be enforced.
-    '''' </summary>
-    '''' <remarks>
-    '''' <para>
-    '''' A rule is implemented by a method which conforms to the 
-    '''' method signature defined by the RuleHandler delegate.
-    '''' </para><para>
-    '''' The ruleName is used to group all the rules that apply
-    '''' to a specific field, property or concept. All rules applying
-    '''' to the field or property should have the same rule name. When
-    '''' rules are checked, they can be checked globally or for a 
-    '''' specific ruleName.
-    '''' </para><para>
-    '''' The propertyName may be used by the method that implements the rule
-    '''' in order to retrieve the value to be validated. If the rule
-    '''' implementation is inside the target object then it probably has
-    '''' direct access to all data. However, if the rule implementation
-    '''' is outside the target object then it will need to use reflection
-    '''' or CallByName to dynamically invoke this property to retrieve
-    '''' the value to be validated.
-    '''' </para>
-    '''' </remarks>
-    '''' <param name="handler">The method that implements the rule.</param>
-    '''' <param name="args">
-    '''' A RuleArgs object specifying the property name and other arguments
-    '''' passed to the rule method
-    '''' </param>
-    '''' <param name="ruleName">Unique name for the rule.</param>
-    'Public Sub AddRule(ByVal handler As RuleHandler, ByVal args As RuleArgs, ByVal ruleName As String)
-
-    '  ' get the list of rules for the property
-    '  Dim list As List(Of RuleMethod) = GetRulesForProperty(args.PropertyName)
-
-    '  ' we have the list, add our new rule
-    '  list.Add(New RuleMethod(mTarget, handler, args, ruleName))
-
-    'End Sub
-
 #End Region
 
 #Region " Checking Rules "
 
+    ''' <summary>
+    ''' Invokes all rule methods associated with
+    ''' the specified property.
+    ''' </summary>
+    ''' <param name="propertyName">The name of the property to validate.</param>
     Public Sub CheckRules(ByVal propertyName As String)
 
       Dim list As List(Of RuleMethod)
@@ -186,6 +152,10 @@ Namespace Validation
 
     End Sub
 
+    ''' <summary>
+    ''' Invokes all rule methods for all properties
+    ''' in the object.
+    ''' </summary>
     Public Sub CheckRules()
 
       ' get the rules for each rule name
@@ -214,9 +184,7 @@ Namespace Validation
 
     ''' <summary>
     ''' Returns a value indicating whether there are any broken rules
-    ''' at this time. If there are broken rules, the business object
-    ''' is assumed to be invalid and False is returned. If there are no
-    ''' broken business rules True is returned.
+    ''' at this time. 
     ''' </summary>
     ''' <returns>A value indicating whether any rules are broken.</returns>
     Friend ReadOnly Property IsValid() As Boolean

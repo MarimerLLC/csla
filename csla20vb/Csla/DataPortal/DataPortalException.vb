@@ -49,6 +49,10 @@ Public Class DataPortalException
     End Get
   End Property
 
+  ''' <summary>
+  ''' Get the combined stack trace from the server
+  ''' and client.
+  ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId:="System.String.Format(System.String,System.Object,System.Object,System.Object)")> _
   Public Overrides ReadOnly Property StackTrace() As String
     Get

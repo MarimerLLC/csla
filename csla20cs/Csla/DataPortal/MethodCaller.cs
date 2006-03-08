@@ -8,7 +8,10 @@ namespace Csla
 {
   internal static class MethodCaller
   {
-
+    /// <summary>
+    /// Uses reflection to dynamically invoke a method
+    /// if that method is implemented on the target object.
+    /// </summary>
     public static object CallMethodIfImplemented(
       object obj, string method, params object[] parameters)
     {
@@ -19,6 +22,11 @@ namespace Csla
         return null;
     }
 
+    /// <summary>
+    /// Uses reflection to dynamically invoke a method,
+    /// throwing an exception if it is not
+    /// implemented on the target object.
+    /// </summary>
     public static object CallMethod(
       object obj, string method, params object[] parameters)
     {
@@ -29,6 +37,11 @@ namespace Csla
       return CallMethod(obj, info, parameters);
     }
 
+    /// <summary>
+    /// Uses reflection to dynamically invoke a method,
+    /// throwing an exception if it is not
+    /// implemented on the target object.
+    /// </summary>
     public static object CallMethod(
       object obj, MethodInfo info, params object[] parameters)
     {
@@ -46,6 +59,10 @@ namespace Csla
       return result;
     }
 
+    /// <summary>
+    /// Uses reflection to locate a matching method
+    /// on the target object.
+    /// </summary>
     public static MethodInfo GetMethod(
       Type objectType, string method, params object[] parameters)
     {
@@ -134,6 +151,10 @@ namespace Csla
       return result;
     }
 
+    /// <summary>
+    /// Returns a business object type based on
+    /// the supplied criteria object.
+    /// </summary>
     public static Type GetObjectType(object criteria)
     {
       if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))

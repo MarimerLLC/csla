@@ -70,6 +70,18 @@ Namespace Security
 
 #Region " Add Roles "
 
+    ''' <summary>
+    ''' Specify the roles allowed to read a given
+    ''' property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
+    ''' <param name="roles">List of roles granted read access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
     Public Sub AllowRead( _
       ByVal propertyName As String, ByVal ParamArray roles() As String)
 
@@ -80,6 +92,18 @@ Namespace Security
 
     End Sub
 
+    ''' <summary>
+    ''' Specify the roles denied read access to 
+    ''' a given property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
+    ''' <param name="roles">List of roles denied read access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
     Public Sub DenyRead(ByVal propertyName As String, ByVal ParamArray roles() As String)
 
       Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
@@ -89,6 +113,18 @@ Namespace Security
 
     End Sub
 
+    ''' <summary>
+    ''' Specify the roles allowed to write a given
+    ''' property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
+    ''' <param name="roles">List of roles granted write access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
     Public Sub AllowWrite(ByVal propertyName As String, ByVal ParamArray roles() As String)
 
       Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
@@ -98,6 +134,18 @@ Namespace Security
 
     End Sub
 
+    ''' <summary>
+    ''' Specify the roles denied write access to 
+    ''' a given property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
+    ''' <param name="roles">List of roles denied write access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
     Public Sub DenyWrite(ByVal propertyName As String, ByVal ParamArray roles() As String)
 
       Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
@@ -111,6 +159,11 @@ Namespace Security
 
 #Region " Check Roles "
 
+    ''' <summary>
+    ''' Indicates whether the property has a list
+    ''' of roles granted read access.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
     Public Function HasReadAllowedRoles( _
       ByVal propertyName As String) As Boolean
 
@@ -118,6 +171,12 @@ Namespace Security
 
     End Function
 
+    ''' <summary>
+    ''' Indicates whether the current user as defined by
+    ''' <see cref="Csla.ApplicationContext.User" />
+    ''' is explicitly allowed to read the property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
     Public Function IsReadAllowed(ByVal propertyName As String) As Boolean
 
       Return GetRolesForProperty(propertyName). _
@@ -125,36 +184,69 @@ Namespace Security
 
     End Function
 
+    ''' <summary>
+    ''' Indicates whether the property has a list
+    ''' of roles denied read access.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
     Public Function HasReadDeniedRoles(ByVal propertyName As String) As Boolean
 
       Return (GetRolesForProperty(propertyName).ReadDenied.Count > 0)
 
     End Function
 
+    ''' <summary>
+    ''' Indicates whether the current user as defined by
+    ''' <see cref="Csla.ApplicationContext.User" />
+    ''' is explicitly denied read access to the property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
     Public Function IsReadDenied(ByVal propertyName As String) As Boolean
 
       Return GetRolesForProperty(propertyName).IsReadDenied(ApplicationContext.User)
 
     End Function
 
+    ''' <summary>
+    ''' Indicates whether the property has a list
+    ''' of roles granted write access.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
     Public Function HasWriteAllowedRoles(ByVal propertyName As String) As Boolean
 
       Return (GetRolesForProperty(propertyName).WriteAllowed.Count > 0)
 
     End Function
 
+    ''' <summary>
+    ''' Indicates whether the current user as defined by
+    ''' <see cref="Csla.ApplicationContext.User" />
+    ''' is explicitly allowed to set the property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
     Public Function IsWriteAllowed(ByVal propertyName As String) As Boolean
 
       Return GetRolesForProperty(propertyName).IsWriteAllowed(ApplicationContext.User)
 
     End Function
 
+    ''' <summary>
+    ''' Indicates whether the property has a list
+    ''' of roles denied write access.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
     Public Function HasWriteDeniedRoles(ByVal propertyName As String) As Boolean
 
       Return (GetRolesForProperty(propertyName).WriteDenied.Count > 0)
 
     End Function
 
+    ''' <summary>
+    ''' Indicates whether the current user as defined by
+    ''' <see cref="Csla.ApplicationContext.User" />
+    ''' is explicitly denied write access to the property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
     Public Function IsWriteDenied(ByVal propertyName As String) As Boolean
 
       Return GetRolesForProperty(propertyName).IsWriteDenied(ApplicationContext.User)

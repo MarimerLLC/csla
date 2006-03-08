@@ -9,13 +9,6 @@ namespace Csla.Server
   /// Provides consistent context information between the client
   /// and server DataPortal objects. 
   /// </summary>
-  /// <remarks>
-  /// The context includes the current 
-  /// <see cref="Csla.Security.BusinessPrincipal" />
-  /// object if CSLA security is being used. It also includes a
-  /// flag indicating whether the server-side DataPortal is running
-  /// locally or remotely.
-  /// </remarks>
   [Serializable()]
   public class DataPortalContext
   {
@@ -27,12 +20,22 @@ namespace Csla.Server
     private HybridDictionary _globalContext;
 
     /// <summary>
-    /// The current <see cref="Csla.Security.BusinessPrincipal" />
+    /// The current principal object
     /// if CSLA security is being used.
     /// </summary>
     public IPrincipal Principal
     {
       get { return _principal; }
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the 
+    /// server-side DataPortal is running
+    /// on a remote server via remoting.
+    /// </summary>
+    public bool IsRemotePortal
+    {
+      get { return _remotePortal; }
     }
 
     /// <summary>
@@ -52,16 +55,6 @@ namespace Csla.Server
     {
       get { return _clientUICulture; }
     }
-
-    /// <summary>
-    /// Returns True if the server-side DataPortal is running
-    /// on a remote server via remoting.
-    /// </summary>
-    public bool IsRemotePortal
-    {
-      get { return _remotePortal; }
-    }
-
     internal HybridDictionary ClientContext
     {
       get { return _clientContext; }

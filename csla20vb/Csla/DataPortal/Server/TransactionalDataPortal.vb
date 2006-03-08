@@ -4,7 +4,7 @@ Namespace Server
 
   ''' <summary>
   ''' Implements the server-side Serviced 
-  ''' DataPortal described in Chapter 5.
+  ''' DataPortal described in Chapter 4.
   ''' </summary>
   Public Class TransactionalDataPortal
 
@@ -46,7 +46,7 @@ Namespace Server
 
 
     ''' <summary>
-    ''' Called by the client-side DataProtal to retrieve an object.
+    ''' Wraps a Fetch call in a TransactionScope
     ''' </summary>
     ''' <remarks>
     ''' This method delegates to 
@@ -75,7 +75,7 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to update an object.
+    ''' Wraps an Update call in a TransactionScope
     ''' </summary>
     ''' <remarks>
     ''' This method delegates to 
@@ -104,7 +104,7 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to delete an object.
+    ''' Wraps a Delete call in a TransactionScope
     ''' </summary>
     ''' <remarks>
     ''' This method delegates to 

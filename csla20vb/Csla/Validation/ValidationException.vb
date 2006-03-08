@@ -18,7 +18,7 @@ Namespace Validation
 
     ''' <summary>
     ''' Initializes a new instance of the 
-    ''' <see cref="T:Csla.ValidationException" /> class
+    ''' <see cref="ValidationException" /> class
     ''' with a specified error message.
     ''' </summary>
     Public Sub New(ByVal message As String)

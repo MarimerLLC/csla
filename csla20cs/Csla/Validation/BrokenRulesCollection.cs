@@ -16,17 +16,17 @@ namespace Csla.Validation
   {
 
     /// <summary>
-    /// Returns the first <see cref="T:Csla.BrokenRules.BrokenRule" /> object
+    /// Returns the first <see cref="BrokenRule" /> object
     /// corresponding to the specified property.
     /// </summary>
     /// <remarks>
     /// Code in a business object or UI can also use this value to retrieve
-    /// the first broken rule in <see cref="T:Csla.BrokenRules" /> that corresponds
-    /// to a specfic Property on the object.
+    /// the first broken rule in <see cref="BrokenRulesCollection" /> that corresponds
+    /// to a specfic property on the object.
     /// </remarks>
     /// <param name="property">The name of the property affected by the rule.</param>
     /// <returns>
-    /// The first BrokenRule object corresponding to the specified property, or Nothing if 
+    /// The first BrokenRule object corresponding to the specified property, or null if 
     /// there are no rules defined for the property.
     /// </returns>
     public BrokenRule GetFirstBrokenRule(string property)
@@ -66,7 +66,7 @@ namespace Csla.Validation
 
     /// <summary>
     /// Returns the text of all broken rule descriptions, each
-    /// separated by a NewLine.
+    /// separated by a <see cref="Environment.NewLine" />.
     /// </summary>
     /// <returns>The text of all broken rule descriptions.</returns>
     public override string ToString()

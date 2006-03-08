@@ -86,23 +86,6 @@ Namespace Validation
 
     End Sub
 
-    '''' <summary>
-    '''' Creates and initializes the rule.
-    '''' </summary>
-    '''' <param name="target">Reference to the object containing the data to validate.</param>
-    '''' <param name="handler">The address of the method implementing the rule.</param>
-    '''' <param name="args">A RuleArgs object.</param>
-    '''' <param name="ruleName">A unique name for this rule.</param>
-    'Public Sub New(ByVal target As Object, ByVal handler As RuleHandler, _
-    '  ByVal args As RuleArgs, ByVal ruleName As String)
-
-    '  mTarget = target
-    '  mHandler = handler
-    '  mRuleName = ruleName
-    '  mArgs = args
-
-    'End Sub
-
     ''' <summary>
     ''' Invokes the rule to validate the data.
     ''' </summary>

@@ -13,12 +13,20 @@ Namespace Server
     Private mReturnObject As Object
     Private mGlobalContext As HybridDictionary
 
+    ''' <summary>
+    ''' The business object being returned from
+    ''' the server.
+    ''' </summary>
     Public ReadOnly Property ReturnObject() As Object
       Get
         Return mReturnObject
       End Get
     End Property
 
+    ''' <summary>
+    ''' The global context being returned from
+    ''' the server.
+    ''' </summary>
     Public ReadOnly Property GlobalContext() As HybridDictionary
       Get
         Return mGlobalContext

@@ -1,6 +1,6 @@
 ''' <summary>
-''' Allows us to mark the DataPortal_XYZ methods in our business
-''' classes as transactional.
+''' Marks a DataPortal_XYZ method to run within
+''' the specified transactional context.
 ''' </summary>
 ''' <remarks>
 ''' <para>
@@ -30,10 +30,21 @@ Public NotInheritable Class TransactionalAttribute
 
   Private mType As TransactionalTypes
 
+  ''' <summary>
+  ''' Marks a method to run within a COM+
+  ''' transactional context.
+  ''' </summary>
   Public Sub New()
     mType = TransactionalTypes.EnterpriseServices
   End Sub
 
+  ''' <summary>
+  ''' Marks a method to run within the specified
+  ''' type of transactional context.
+  ''' </summary>
+  ''' <param name="transactionType">
+  ''' Specifies the transactional context within which the
+  ''' method should run.</param>
   Public Sub New(ByVal transactionType As TransactionalTypes)
     mType = transactionType
   End Sub

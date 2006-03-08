@@ -5,7 +5,7 @@ Namespace Server
 
   ''' <summary>
   ''' Implements the server-side Serviced 
-  ''' DataPortal described in Chapter 5.
+  ''' DataPortal described in Chapter 4.
   ''' </summary>
   <Transaction(TransactionOption.Required)> _
   <EventTrackingEnabled(True)> _
@@ -16,14 +16,19 @@ Namespace Server
     Implements IDataPortalServer
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to create a new object.
+    ''' Wraps a Create call in a ServicedComponent.
     ''' </summary>
     ''' <remarks>
-    ''' This method runs in a distributed transactional context
-    ''' within Enterprise Services. To indicate failure and trigger
-    ''' a rollback your code must throw an exception.
+    ''' This method delegates to 
+    ''' <see cref="SimpleDataPortal">SimpleDataPortal</see>
+    ''' but wraps that call within a COM+ transaction
+    ''' to provide transactional support.
     ''' </remarks>
-    ''' <param name="criteria">Object-specific criteria.</param>
+    ''' <param name="objectType">A <see cref="Type">Type</see> object
+    ''' indicating the type of business object to be created.</param>
+    ''' <param name="criteria">A custom criteria object providing any
+    ''' extra information that may be required to properly create
+    ''' the object.</param>
     ''' <param name="context">Context data from the client.</param>
     ''' <returns>A populated business object.</returns>
     <AutoComplete(True)> _
@@ -39,12 +44,13 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataProtal to retrieve an object.
+    ''' Wraps a Fetch call in a ServicedComponent.
     ''' </summary>
     ''' <remarks>
-    ''' This method runs in a distributed transactional context
-    ''' within Enterprise Services. To indicate failure and trigger
-    ''' a rollback your code must throw an exception.
+    ''' This method delegates to 
+    ''' <see cref="SimpleDataPortal">SimpleDataPortal</see>
+    ''' but wraps that call within a COM+ transaction
+    ''' to provide transactional support.
     ''' </remarks>
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Object containing context data from client.</param>
@@ -61,12 +67,13 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to update an object.
+    ''' Wraps an Update call in a ServicedComponent.
     ''' </summary>
     ''' <remarks>
-    ''' This method runs in a distributed transactional context
-    ''' within Enterprise Services. To indicate failure and trigger
-    ''' a rollback your code must throw an exception.
+    ''' This method delegates to 
+    ''' <see cref="SimpleDataPortal">SimpleDataPortal</see>
+    ''' but wraps that call within a COM+ transaction
+    ''' to provide transactional support.
     ''' </remarks>
     ''' <param name="obj">A reference to the object being updated.</param>
     ''' <param name="context">Context data from the client.</param>
@@ -83,15 +90,18 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to delete an object.
+    ''' Wraps a Delete call in a ServicedComponent.
     ''' </summary>
     ''' <remarks>
-    ''' This method runs in a distributed transactional context
-    ''' within Enterprise Services. To indicate failure and trigger
-    ''' a rollback your code must throw an exception.
+    ''' This method delegates to 
+    ''' <see cref="SimpleDataPortal">SimpleDataPortal</see>
+    ''' but wraps that call within a COM+ transaction
+    ''' to provide transactional support.
     ''' </remarks>
-    ''' <param name="criteria">Object-specific criteria.</param>
-    ''' <param name="context">Context data from the client.</param>
+    ''' <param name="criteria">Criteria object describing business object.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     <AutoComplete(True)> _
     Public Function Delete( _
       ByVal criteria As Object, _

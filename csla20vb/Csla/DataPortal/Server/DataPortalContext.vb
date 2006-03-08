@@ -8,13 +8,6 @@ Namespace Server
   ''' Provides consistent context information between the client
   ''' and server DataPortal objects. 
   ''' </summary>
-  ''' <remarks>
-  ''' The context includes the current 
-  ''' <see cref="T:Csla.Security.BusinessPrincipal" />
-  ''' object if CSLA security is being used. It also includes a
-  ''' flag indicating whether the server-side DataPortal is running
-  ''' locally or remotely.
-  ''' </remarks>
   <Serializable()> _
   Public Class DataPortalContext
 
@@ -26,7 +19,7 @@ Namespace Server
     Private mGlobalContext As HybridDictionary
 
     ''' <summary>
-    ''' The current <see cref="T:Csla.Security.BusinessPrincipal" />
+    ''' The current principal object
     ''' if CSLA security is being used.
     ''' </summary>
     Public ReadOnly Property Principal() As IPrincipal
@@ -36,7 +29,8 @@ Namespace Server
     End Property
 
     ''' <summary>
-    ''' Returns True if the server-side DataPortal is running
+    ''' Returns <see langword="true" /> if the 
+    ''' server-side DataPortal is running
     ''' on a remote server via remoting.
     ''' </summary>
     Public ReadOnly Property IsRemotePortal() As Boolean

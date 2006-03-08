@@ -9,7 +9,7 @@ namespace Csla.Server
   /// <summary>
   /// Implements the server-side DataPortal 
   /// message router as discussed
-  /// in Chapter 5.
+  /// in Chapter 4.
   /// </summary>
   public class DataPortal : IDataPortalServer
   {
@@ -17,11 +17,13 @@ namespace Csla.Server
     #region Data Access
 
     /// <summary>
-    /// Called by the client-side DataPortal to create a new object.
+    /// Create a new business object.
     /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <param name="context">Context data from the client.</param>
-    /// <returns>A populated business object.</returns>
+    /// <param name="objectType">Type of business object to create.</param>
+    /// <param name="criteria">Criteria object describing business object.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
     public DataPortalResult Create(
       Type objectType, object criteria, DataPortalContext context)
     {
@@ -69,11 +71,12 @@ namespace Csla.Server
     }
 
     /// <summary>
-    /// Called by the client-side DataProtal to retrieve an object.
+    /// Get an existing business object.
     /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <param name="context">Object containing context data from client.</param>
-    /// <returns>A populated business object.</returns>
+    /// <param name="criteria">Criteria object describing business object.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
     public DataPortalResult Fetch(object criteria, DataPortalContext context)
     {
       try
@@ -117,11 +120,12 @@ namespace Csla.Server
     }
 
     /// <summary>
-    /// Called by the client-side DataPortal to update an object.
+    /// Update a business object.
     /// </summary>
-    /// <param name="obj">A reference to the object being updated.</param>
-    /// <param name="context">Context data from the client.</param>
-    /// <returns>A reference to the newly updated object.</returns>
+    /// <param name="obj">Business object to update.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public DataPortalResult Update(object obj, DataPortalContext context)
     {
@@ -183,10 +187,12 @@ namespace Csla.Server
     }
 
     /// <summary>
-    /// Called by the client-side DataPortal to delete an object.
+    /// Delete a business object.
     /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <param name="context">Context data from the client.</param>
+    /// <param name="criteria">Criteria object describing business object.</param>
+    /// <param name="context">
+    /// <see cref="Server.DataPortalContext" /> object passed to the server.
+    /// </param>
     public DataPortalResult Delete(object criteria, DataPortalContext context)
     {
       try

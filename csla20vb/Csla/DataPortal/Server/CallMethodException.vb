@@ -17,6 +17,13 @@ Namespace Server
 
     Private mInnerStackTrace As String
 
+    ''' <summary>
+    ''' Get the stack trace from the original
+    ''' exception.
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", _
       "CA1305:SpecifyIFormatProvider", _
       MessageId:="System.String.Format(System.String,System.Object,System.Object,System.Object)")> _

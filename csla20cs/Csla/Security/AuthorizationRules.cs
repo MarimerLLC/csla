@@ -71,6 +71,18 @@ namespace Csla.Security
 
     #region Add Roles
 
+    /// <summary>
+    /// Specify the roles allowed to read a given
+    /// property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="roles">List of roles granted read access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
     public void AllowRead(string propertyName, params string[] roles)
     {
       RolesForProperty currentRoles = GetRolesForProperty(propertyName);
@@ -80,6 +92,18 @@ namespace Csla.Security
       }
     }
 
+    /// <summary>
+    /// Specify the roles denied read access to 
+    /// a given property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="roles">List of roles denied read access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
     public void DenyRead(string propertyName, params string[] roles)
     {
       RolesForProperty currentRoles = GetRolesForProperty(propertyName);
@@ -89,6 +113,18 @@ namespace Csla.Security
       }
     }
 
+    /// <summary>
+    /// Specify the roles allowed to write a given
+    /// property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="roles">List of roles granted write access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
     public void AllowWrite(string propertyName, params string[] roles)
     {
       RolesForProperty currentRoles = GetRolesForProperty(propertyName);
@@ -98,6 +134,18 @@ namespace Csla.Security
       }
     }
 
+    /// <summary>
+    /// Specify the roles denied write access to 
+    /// a given property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="roles">List of roles denied write access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
     public void DenyWrite(string propertyName, params string[] roles)
     {
       RolesForProperty currentRoles = GetRolesForProperty(propertyName);
@@ -111,42 +159,86 @@ namespace Csla.Security
 
     #region Check Roles
 
+    /// <summary>
+    /// Indicates whether the property has a list
+    /// of roles granted read access.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
     public bool HasReadAllowedRoles(string propertyName)
     {
       return (GetRolesForProperty(propertyName).ReadAllowed.Count > 0);
     }
 
+    /// <summary>
+    /// Indicates whether the current user as defined by
+    /// <see cref="Csla.ApplicationContext.User" />
+    /// is explicitly allowed to read the property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
     public bool IsReadAllowed(string propertyName)
     {
       return GetRolesForProperty(
         propertyName).IsReadAllowed(ApplicationContext.User);
     }
 
+    /// <summary>
+    /// Indicates whether the property has a list
+    /// of roles denied read access.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
     public bool HasReadDeniedRoles(string propertyName)
     {
       return (GetRolesForProperty(propertyName).ReadDenied.Count > 0);
     }
 
+    /// <summary>
+    /// Indicates whether the current user as defined by
+    /// <see cref="Csla.ApplicationContext.User" />
+    /// is explicitly denied read access to the property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
     public bool IsReadDenied(string propertyName)
     {
       return GetRolesForProperty(propertyName).IsReadDenied(ApplicationContext.User);
     }
 
+    /// <summary>
+    /// Indicates whether the property has a list
+    /// of roles granted write access.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
     public bool HasWriteAllowedRoles(string propertyName)
     {
       return (GetRolesForProperty(propertyName).WriteAllowed.Count > 0);
     }
 
+    /// <summary>
+    /// Indicates whether the current user as defined by
+    /// <see cref="Csla.ApplicationContext.User" />
+    /// is explicitly allowed to set the property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
     public bool IsWriteAllowed(string propertyName)
     {
       return GetRolesForProperty(propertyName).IsWriteAllowed(ApplicationContext.User);
     }
 
+    /// <summary>
+    /// Indicates whether the property has a list
+    /// of roles denied write access.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
     public bool HasWriteDeniedRoles(string propertyName)
     {
       return (GetRolesForProperty(propertyName).WriteDenied.Count > 0);
     }
 
+    /// <summary>
+    /// Indicates whether the current user as defined by
+    /// <see cref="Csla.ApplicationContext.User" />
+    /// is explicitly denied write access to the property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
     public bool IsWriteDenied(string propertyName)
     {
       return GetRolesForProperty(propertyName).IsWriteDenied(ApplicationContext.User);

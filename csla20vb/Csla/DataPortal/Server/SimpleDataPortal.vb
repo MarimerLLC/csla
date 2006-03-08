@@ -6,7 +6,7 @@ Namespace Server
 
   ''' <summary>
   ''' Implements the server-side DataPortal as discussed
-  ''' in Chapter 5.
+  ''' in Chapter 4.
   ''' </summary>
   Public Class SimpleDataPortal
 
@@ -15,11 +15,13 @@ Namespace Server
 #Region " Data Access "
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to create a new object.
+    ''' Create a new business object.
     ''' </summary>
-    ''' <param name="criteria">Object-specific criteria.</param>
-    ''' <param name="context">Context data from the client.</param>
-    ''' <returns>A populated business object.</returns>
+    ''' <param name="objectType">Type of business object to create.</param>
+    ''' <param name="criteria">Criteria object describing business object.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
     Public Function Create( _
@@ -69,11 +71,12 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataProtal to retrieve an object.
+    ''' Get an existing business object.
     ''' </summary>
-    ''' <param name="criteria">Object-specific criteria.</param>
-    ''' <param name="context">Object containing context data from client.</param>
-    ''' <returns>A populated business object.</returns>
+    ''' <param name="criteria">Criteria object describing business object.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
     Public Function Fetch( _
@@ -122,11 +125,12 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to update an object.
+    ''' Update a business object.
     ''' </summary>
-    ''' <param name="obj">A reference to the object being updated.</param>
-    ''' <param name="context">Context data from the client.</param>
-    ''' <returns>A reference to the newly updated object.</returns>
+    ''' <param name="obj">Business object to update.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")> _
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
     Public Function Update( _
@@ -200,10 +204,12 @@ Namespace Server
     End Function
 
     ''' <summary>
-    ''' Called by the client-side DataPortal to delete an object.
+    ''' Delete a business object.
     ''' </summary>
-    ''' <param name="criteria">Object-specific criteria.</param>
-    ''' <param name="context">Context data from the client.</param>
+    ''' <param name="criteria">Criteria object describing business object.</param>
+    ''' <param name="context">
+    ''' <see cref="Server.DataPortalContext" /> object passed to the server.
+    ''' </param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
     Public Function Delete( _
       ByVal criteria As Object, _

@@ -3,8 +3,8 @@ using System;
 namespace Csla
 {
   /// <summary>
-  /// Allows us to mark the DataPortal_XYZ methods in our business
-  /// classes as transactional.
+  /// Marks a DataPortal_XYZ method to run within
+  /// the specified transactional context.
   /// </summary>
   /// <remarks>
   /// <para>
@@ -33,11 +33,22 @@ namespace Csla
   {
     private TransactionalTypes _type;
 
+    /// <summary>
+    /// Marks a method to run within a COM+
+    /// transactional context.
+    /// </summary>
     public TransactionalAttribute()
     {
       _type = TransactionalTypes.EnterpriseServices;
     }
 
+    /// <summary>
+    /// Marks a method to run within the specified
+    /// type of transactional context.
+    /// </summary>
+    /// <param name="transactionType">
+    /// Specifies the transactional context within which the
+    /// method should run.</param>
     public TransactionalAttribute(TransactionalTypes transactionType)
     {
       _type = transactionType;

@@ -299,6 +299,18 @@ namespace CSLA
       }
     }
 
+    static private string ALWAYS_IMPERSONATE
+    {
+      get
+      {
+        string tmp = ConfigurationSettings.AppSettings["AlwaysImpersonate"];
+        if (tmp != null)
+          return tmp.ToLower();
+        else
+          return "false";
+      }
+    }
+
     static private System.Security.Principal.IPrincipal GetPrincipal()
     {
       if(AUTHENTICATION == "Windows")
@@ -364,7 +376,7 @@ namespace CSLA
         // that uses the binary formatter
         Hashtable properties = new Hashtable();
         properties["name"] = "HttpBinary";
-        if(AUTHENTICATION == "Windows")
+        if(AUTHENTICATION == "Windows" || ALWAYS_IMPERSONATE == "true")
         {
           // make sure we pass the user's Windows credentials
           // to the server

@@ -277,6 +277,10 @@ Public Class DataPortal
     Return ConfigurationSettings.AppSettings("Authentication")
   End Function
 
+  Private Shared Function ALWAYS_IMPERSONATE() As String
+    Return ConfigurationSettings.AppSettings("AlwaysImpersonate").ToLower
+  End Function
+
   Private Shared Function GetPrincipal() As System.Security.Principal.IPrincipal
     If AUTHENTICATION() = "Windows" Then
       ' Windows integrated security 
@@ -343,7 +347,7 @@ Public Class DataPortal
       Dim properties As New Hashtable
       properties("name") = "HttpBinary"
 
-      If AUTHENTICATION() = "Windows" Then
+      If AUTHENTICATION() = "Windows" OrElse ALWAYS_IMPERSONATE() = "true" Then
         ' make sure we pass the user's Windows credentials
         ' to the server
         properties("useDefaultCredentials") = True

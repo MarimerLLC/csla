@@ -676,12 +676,12 @@ Public MustInherit Class BusinessCollectionBase
   Protected Overridable Sub Deserialized() _
     Implements CSLA.Serialization.ISerializationNotification.Deserialized
 
-    Dim child As Serialization.ISerializationNotification
-    For Each child In list
+    For Each child As Serialization.ISerializationNotification In list
       child.Deserialized()
       DirectCast(child, BusinessBase).SetParent(Me)
+      AddHandler CType(child, BusinessBase).IsDirtyChanged, AddressOf OnChildIsDirty
     Next
-    For Each child In deletedList
+    For Each child As Serialization.ISerializationNotification In deletedList
       child.Deserialized()
       DirectCast(child, BusinessBase).SetParent(Me)
     Next

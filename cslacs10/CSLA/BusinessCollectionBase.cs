@@ -667,6 +667,7 @@ namespace CSLA
       {
         child.Deserialized();
         ((BusinessBase)child).SetParent(this);
+        ((BusinessBase)child).IsDirtyChanged += new EventHandler(OnChildIsDirty);
       }
       foreach(Serialization.ISerializationNotification child in deletedList)
       {

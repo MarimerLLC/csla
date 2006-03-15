@@ -50,11 +50,6 @@ namespace PTServiceClient
       this.ResourceDataBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.GroupBox1 = new System.Windows.Forms.GroupBox();
       this.ProjectResourcesDataGridView = new System.Windows.Forms.DataGridView();
-      this.DataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.DataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.DataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.DataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.DataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.RoleDataBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.ProjectResourcesBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.ProjectDetailBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -81,6 +76,11 @@ namespace PTServiceClient
       this.usernameTextBox = new System.Windows.Forms.TextBox();
       this.label7 = new System.Windows.Forms.Label();
       this.passwordTextBox = new System.Windows.Forms.TextBox();
+      this.DataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.DataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.DataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.DataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.DataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewComboBoxColumn();
       DescriptionLabel = new System.Windows.Forms.Label();
       EndedLabel = new System.Windows.Forms.Label();
       StartedLabel = new System.Windows.Forms.Label();
@@ -304,45 +304,6 @@ namespace PTServiceClient
       this.ProjectResourcesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
       this.ProjectResourcesDataGridView.Size = new System.Drawing.Size(313, 220);
       this.ProjectResourcesDataGridView.TabIndex = 12;
-      // 
-      // DataGridViewTextBoxColumn4
-      // 
-      this.DataGridViewTextBoxColumn4.DataPropertyName = "ResourceId";
-      this.DataGridViewTextBoxColumn4.HeaderText = "ResourceId";
-      this.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4";
-      this.DataGridViewTextBoxColumn4.ReadOnly = true;
-      this.DataGridViewTextBoxColumn4.Visible = false;
-      // 
-      // DataGridViewTextBoxColumn3
-      // 
-      this.DataGridViewTextBoxColumn3.DataPropertyName = "LastName";
-      this.DataGridViewTextBoxColumn3.HeaderText = "LastName";
-      this.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3";
-      this.DataGridViewTextBoxColumn3.ReadOnly = true;
-      // 
-      // DataGridViewTextBoxColumn5
-      // 
-      this.DataGridViewTextBoxColumn5.DataPropertyName = "FirstName";
-      this.DataGridViewTextBoxColumn5.HeaderText = "FirstName";
-      this.DataGridViewTextBoxColumn5.Name = "DataGridViewTextBoxColumn5";
-      this.DataGridViewTextBoxColumn5.ReadOnly = true;
-      // 
-      // DataGridViewTextBoxColumn10
-      // 
-      this.DataGridViewTextBoxColumn10.DataPropertyName = "Assigned";
-      this.DataGridViewTextBoxColumn10.HeaderText = "Assigned";
-      this.DataGridViewTextBoxColumn10.Name = "DataGridViewTextBoxColumn10";
-      this.DataGridViewTextBoxColumn10.ReadOnly = true;
-      // 
-      // DataGridViewTextBoxColumn11
-      // 
-      this.DataGridViewTextBoxColumn11.DataPropertyName = "Role";
-      this.DataGridViewTextBoxColumn11.DataSource = this.RoleDataBindingSource;
-      this.DataGridViewTextBoxColumn11.HeaderText = "Role";
-      this.DataGridViewTextBoxColumn11.Name = "DataGridViewTextBoxColumn11";
-      this.DataGridViewTextBoxColumn11.ReadOnly = true;
-      this.DataGridViewTextBoxColumn11.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-      this.DataGridViewTextBoxColumn11.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
       // 
       // RoleDataBindingSource
       // 
@@ -577,6 +538,47 @@ namespace PTServiceClient
       this.passwordTextBox.Size = new System.Drawing.Size(127, 20);
       this.passwordTextBox.TabIndex = 19;
       // 
+      // DataGridViewTextBoxColumn4
+      // 
+      this.DataGridViewTextBoxColumn4.DataPropertyName = "ResourceId";
+      this.DataGridViewTextBoxColumn4.HeaderText = "ResourceId";
+      this.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4";
+      this.DataGridViewTextBoxColumn4.ReadOnly = true;
+      this.DataGridViewTextBoxColumn4.Visible = false;
+      // 
+      // DataGridViewTextBoxColumn3
+      // 
+      this.DataGridViewTextBoxColumn3.DataPropertyName = "LastName";
+      this.DataGridViewTextBoxColumn3.HeaderText = "LastName";
+      this.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3";
+      this.DataGridViewTextBoxColumn3.ReadOnly = true;
+      // 
+      // DataGridViewTextBoxColumn5
+      // 
+      this.DataGridViewTextBoxColumn5.DataPropertyName = "FirstName";
+      this.DataGridViewTextBoxColumn5.HeaderText = "FirstName";
+      this.DataGridViewTextBoxColumn5.Name = "DataGridViewTextBoxColumn5";
+      this.DataGridViewTextBoxColumn5.ReadOnly = true;
+      // 
+      // DataGridViewTextBoxColumn10
+      // 
+      this.DataGridViewTextBoxColumn10.DataPropertyName = "Assigned";
+      this.DataGridViewTextBoxColumn10.HeaderText = "Assigned";
+      this.DataGridViewTextBoxColumn10.Name = "DataGridViewTextBoxColumn10";
+      this.DataGridViewTextBoxColumn10.ReadOnly = true;
+      // 
+      // DataGridViewTextBoxColumn11
+      // 
+      this.DataGridViewTextBoxColumn11.DataPropertyName = "Role";
+      this.DataGridViewTextBoxColumn11.DataSource = this.RoleDataBindingSource;
+      this.DataGridViewTextBoxColumn11.DisplayMember = "Name";
+      this.DataGridViewTextBoxColumn11.HeaderText = "Role";
+      this.DataGridViewTextBoxColumn11.Name = "DataGridViewTextBoxColumn11";
+      this.DataGridViewTextBoxColumn11.ReadOnly = true;
+      this.DataGridViewTextBoxColumn11.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+      this.DataGridViewTextBoxColumn11.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+      this.DataGridViewTextBoxColumn11.ValueMember = "Id";
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -617,19 +619,14 @@ namespace PTServiceClient
 
     #endregion
 
-    internal System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn3;
     internal System.Windows.Forms.Label Label3;
     internal System.Windows.Forms.Label Label2;
     internal System.Windows.Forms.Label Label1;
-    internal System.Windows.Forms.DataGridViewComboBoxColumn DataGridViewTextBoxColumn11;
     internal System.Windows.Forms.BindingSource RoleDataBindingSource;
     internal System.Windows.Forms.BindingSource ProjectResourcesBindingSource;
     internal System.Windows.Forms.BindingSource ProjectDetailBindingSource;
-    internal System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn5;
-    internal System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn10;
     internal System.Windows.Forms.Label Label5;
     internal System.Windows.Forms.Label Label4;
-    internal System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn4;
     internal System.Windows.Forms.Label NameLabel2;
     internal System.Windows.Forms.BindingSource ProjectDataBindingSource;
     internal System.Windows.Forms.Button AssignToProjectButton;
@@ -660,6 +657,11 @@ namespace PTServiceClient
     private System.Windows.Forms.TextBox usernameTextBox;
     private System.Windows.Forms.Label label7;
     private System.Windows.Forms.TextBox passwordTextBox;
+    private System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn4;
+    private System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn3;
+    private System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn5;
+    private System.Windows.Forms.DataGridViewTextBoxColumn DataGridViewTextBoxColumn10;
+    private System.Windows.Forms.DataGridViewComboBoxColumn DataGridViewTextBoxColumn11;
   }
 }
 

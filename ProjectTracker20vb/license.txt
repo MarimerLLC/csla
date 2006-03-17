@@ -4,14 +4,14 @@ The CSLA .NET framework is Copyright 2006 by Rockford Lhotka.
 
 You can use this Software for any noncommercial purpose, including 
 distributing derivative works. You can use this Software for any commercial 
-purpose other than you may not use it in whole or in part to create a 
+purpose other than you may not use it, in whole or in part, to create a 
 commercial framework product. 
 
 In short, you can use CSLA .NET and modify it to create other commercial or 
 business software, you just can't take the framework itself, modify it and 
 sell it as a product. 
 
-In return, we simply require that you agree: 
+In return, the owner simply requires that you agree: 
 
 This Software License Agreement ("Agreement") is effective 
 upon your use of CSLA .NET ("Software").

@@ -364,7 +364,9 @@ namespace Csla
     {
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
-      DeleteChild(this[index]);
+      C child = this[index];
+      DeleteChild(child);
+      child.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
       base.RemoveItem(index);
     }
 
@@ -391,7 +393,7 @@ namespace Csla
     /// <remarks></remarks>
     protected override void SetItem(int index, C item)
     {
-      DeleteChild(this[index]);
+      RemoveItem(index);
       base.SetItem(index, item);
     }
 
@@ -470,13 +472,32 @@ namespace Csla
 
     #endregion
 
+    #region Cascade Child events
+
+    private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      for (int index = 0; index < Count; index++)
+      {
+        if (ReferenceEquals(this[index], sender))
+        {
+          OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+          return;
+        }
+      }
+    }
+
+    #endregion
+
     #region Serialization Notification
 
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
       foreach (Core.BusinessBase child in this)
+      {
         child.SetParent(this);
+        child.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+      }
       foreach (Core.BusinessBase child in DeletedList)
         child.SetParent(this);
       OnDeserialized(context);

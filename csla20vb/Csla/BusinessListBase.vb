@@ -336,7 +336,9 @@ Public MustInherit Class BusinessListBase( _
   Protected Overrides Sub RemoveItem(ByVal index As Integer)
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
-    DeleteChild(Me(index))
+    Dim child As C = Me(index)
+    DeleteChild(child)
+    RemoveHandler child.PropertyChanged, AddressOf Child_PropertyChanged
     MyBase.RemoveItem(index)
   End Sub
 
@@ -363,7 +365,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </param>
   ''' <remarks></remarks>
   Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As C)
-    DeleteChild(Me(index))
+    RemoveItem(index)
     MyBase.SetItem(index, item)
   End Sub
 
@@ -449,6 +451,23 @@ Public MustInherit Class BusinessListBase( _
 
 #End Region
 
+#Region " Cascade Child events "
+
+  Private Sub Child_PropertyChanged(ByVal sender As Object, _
+    ByVal e As System.ComponentModel.PropertyChangedEventArgs)
+
+    For index As Integer = 0 To Count - 1
+      If ReferenceEquals(Me(index), sender) Then
+        OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+          ComponentModel.ListChangedType.ItemChanged, index))
+        Exit For
+      End If
+    Next
+
+  End Sub
+
+#End Region
+
 #Region " Serialization Notification "
 
   <OnDeserialized()> _
@@ -456,6 +475,7 @@ Public MustInherit Class BusinessListBase( _
 
     For Each child As Core.BusinessBase In Me
       child.SetParent(Me)
+      AddHandler child.PropertyChanged, AddressOf Child_PropertyChanged
     Next
     For Each child As Core.BusinessBase In DeletedList
       child.SetParent(Me)

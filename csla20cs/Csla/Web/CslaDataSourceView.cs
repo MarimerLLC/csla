@@ -98,6 +98,10 @@ namespace Csla.Web
 
     #region Insert
 
+    /// <summary>
+    /// Gets a value indicating whether the data source can
+    /// insert data.
+    /// </summary>
     public override bool CanInsert
     {
       get
@@ -124,6 +128,10 @@ namespace Csla.Web
 
     #region Delete
 
+    /// <summary>
+    /// Gets a value indicating whether the data source can
+    /// delete data.
+    /// </summary>
     public override bool CanDelete
     {
       get
@@ -149,6 +157,10 @@ namespace Csla.Web
 
     #region Update
 
+    /// <summary>
+    /// Gets a value indicating whether the data source can
+    /// update data.
+    /// </summary>
     public override bool CanUpdate
     {
       get
@@ -173,16 +185,29 @@ namespace Csla.Web
 
     #region Other Operations
 
+    /// <summary>
+    /// Gets a value indicating whether the data source supports
+    /// paging of the data. Always returns <see langword="false"/>.
+    /// </summary>
     public override bool CanPage
     {
       get { return false; }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the data source can
+    /// retrieve the total number of rows of data. Always
+    /// returns <see langword="true"/>.
+    /// </summary>
     public override bool CanRetrieveTotalRowCount
     {
       get { return true; }
     }
 
+    /// <summary>
+    /// Gets a alue indicating whether the data source supports
+    /// sorting of the data. Always returns <see langword="false"/>.
+    /// </summary>
     public override bool CanSort
     {
       get { return false; }

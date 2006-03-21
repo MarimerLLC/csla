@@ -1,6 +1,12 @@
 Imports System.ComponentModel
 Imports Csla.Core
 
+''' <summary>
+''' This is the base class from which most business collections
+''' or lists will be derived.
+''' </summary>
+''' <typeparam name="T">Type of the business object being defined.</typeparam>
+''' <typeparam name="C">Type of the child objects contained in the list.</typeparam>
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
 Public MustInherit Class BusinessListBase( _
@@ -21,27 +27,8 @@ Public MustInherit Class BusinessListBase( _
 #Region " IsDirty, IsValid "
 
   ''' <summary>
-  ''' Returns True if this object's data has been changed.
+  ''' Gets a value indicating whether this object's data has been changed.
   ''' </summary>
-  ''' <remarks>
-  ''' <para>
-  ''' When an object's data is changed, CSLA .NET makes note of that change
-  ''' and considers the object to be 'dirty' or changed. This value is used to
-  ''' optimize data updates, since an unchanged object does not need to be
-  ''' updated into the database. All new objects are considered dirty. All objects
-  ''' marked for deletion are considered dirty.
-  ''' </para><para>
-  ''' Once an object's data has been saved to the database (inserted or updated)
-  ''' the dirty flag is cleared and the object is considered unchanged. Objects
-  ''' newly loaded from the database are also considered unchanged.
-  ''' </para>
-  ''' <para>
-  ''' If any child object within the collection is dirty then the collection
-  ''' is considered to be dirty. If all child objects are unchanged, then the
-  ''' collection is not dirty.
-  ''' </para>
-  ''' </remarks>
-  ''' <returns>A value indicating if this object's data has been changed.</returns>
   Public ReadOnly Property IsDirty() As Boolean
     Get
       ' any deletions make us dirty
@@ -58,26 +45,9 @@ Public MustInherit Class BusinessListBase( _
   End Property
 
   ''' <summary>
-  ''' Returns True if the object is currently valid, False if the
-  ''' object has broken rules or is otherwise invalid.
+  ''' Gets a value indicating whether this object is currently in
+  ''' a valid state (has no broken validation rules).
   ''' </summary>
-  ''' <remarks>
-  ''' <para>
-  ''' By default this property relies on the underling <see cref="Validation.ValidationRules" />
-  ''' object to track whether any business rules are currently broken for this object.
-  ''' </para><para>
-  ''' You can override this property to provide more sophisticated
-  ''' implementations of the behavior. For instance, you should always override
-  ''' this method if your object has child objects, since the validity of this object
-  ''' is affected by the validity of all child objects.
-  ''' </para>
-  ''' <para>
-  ''' If any child object within the collection is invalid then the collection
-  ''' is considered to be invalid. If all child objects are valid, then the
-  ''' collection is valid.
-  ''' </para>
-  ''' </remarks>
-  ''' <returns>A value indicating if the object is currently valid.</returns>
   Public Overridable ReadOnly Property IsValid() As Boolean
     Get
       ' run through all the child objects
@@ -101,15 +71,15 @@ Public MustInherit Class BusinessListBase( _
   ''' <para>
   ''' When this method is called the object takes a snapshot of
   ''' its current state (the values of its variables). This snapshot
-  ''' can be restored by calling <see cref="M:Csla.Core.BusinessBase.CancelEdit" />
-  ''' or committed by calling <see cref="M:Csla.Core.BusinessBase.ApplyEdit" />.
+  ''' can be restored by calling <see cref="CancelEdit" />
+  ''' or committed by calling <see cref="ApplyEdit" />.
   ''' </para><para>
   ''' This is a nested operation. Each call to BeginEdit adds a new
   ''' snapshot of the object's state to a stack. You should ensure that 
   ''' for each call to BeginEdit there is a corresponding call to either 
   ''' CancelEdit or ApplyEdit to remove that snapshot from the stack.
   ''' </para><para>
-  ''' See Chapters 2 and 4 for details on n-level undo and state stacking.
+  ''' See Chapters 2 and 3 for details on n-level undo and state stacking.
   ''' </para><para>
   ''' This method triggers the copying of all child object states.
   ''' </para>
@@ -130,7 +100,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <remarks>
   ''' Calling this method causes the most recently taken snapshot of the 
   ''' object's state to be restored. This resets the object's values
-  ''' to the point of the last <see cref="M:Csla.BusinessCollectionBase.BeginEdit" />
+  ''' to the point of the last <see cref="BeginEdit" />
   ''' call.
   ''' <para>
   ''' This method triggers an undo in all child objects.
@@ -153,9 +123,10 @@ Public MustInherit Class BusinessListBase( _
   ''' Calling this method causes the most recently taken snapshot of the 
   ''' object's state to be discarded, thus committing any changes made
   ''' to the object's state since the last 
-  ''' <see cref="M:Csla.BusinessCollectionBase.BeginEdit" /> call.
+  ''' <see cref="BeginEdit" /> call.
   ''' <para>
-  ''' This method triggers an ApplyEdit in all child objects.
+  ''' This method triggers an <see cref="Core.BusinessBase.ApplyEdit"/>
+  '''  in all child objects.
   ''' </para>
   ''' </remarks>
   Public Sub ApplyEdit()
@@ -290,7 +261,7 @@ Public MustInherit Class BusinessListBase( _
   End Sub
 
   ''' <summary>
-  ''' Returns True if the internal deleted list
+  ''' Returns <see langword="true"/> if the internal deleted list
   ''' contains the specified child object.
   ''' </summary>
   ''' <param name="item">Child object to check.</param>
@@ -509,11 +480,11 @@ Public MustInherit Class BusinessListBase( _
   ''' objects to be inserted, updated or deleted within the database based on the
   ''' each object's current state.
   ''' </para><para>
-  ''' All this is contingent on <see cref="P:Csla.BusinessCollectionBase.IsDirty" />. If
-  ''' this value is False, no data operation occurs. It is also contingent on
-  ''' <see cref="P:Csla.BusinessCollectionBase.IsValid" />. If this value is False an
-  ''' exception will be thrown to indicate that the UI attempted to save an
-  ''' invalid object.
+  ''' All this is contingent on <see cref="IsDirty" />. If
+  ''' this value is <see langword="false"/>, no data operation occurs. 
+  ''' It is also contingent on <see cref="IsValid" />. If this value is 
+  ''' <see langword="false"/> an exception will be thrown to 
+  ''' indicate that the UI attempted to save an invalid object.
   ''' </para><para>
   ''' It is important to note that this method returns a new version of the
   ''' business collection that contains any data updated during the save operation.

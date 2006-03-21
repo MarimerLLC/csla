@@ -5,6 +5,7 @@ namespace Csla
 {
   internal static class Utilities
   {
+    #region Replacements for VB runtime functionality
 
     public static bool IsNumeric(object value)
     {
@@ -42,9 +43,11 @@ namespace Csla
       return null;
     }
 
+    #endregion
+
     /// <summary>
     /// Returns a property's type, dealing with
-    /// Nullable(Of T) if necessary.
+    /// Nullable<T> if necessary.
     /// </summary>
     public static Type GetPropertyType(Type propertyType)
     {
@@ -82,8 +85,6 @@ namespace Csla
       return result;
     }
   }
-
-
   internal enum CallType
   {
     Get,

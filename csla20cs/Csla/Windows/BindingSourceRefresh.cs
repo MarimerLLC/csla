@@ -9,6 +9,11 @@ using System.Windows.Forms;
 
 namespace Csla.Windows
 {
+  /// <summary>
+  /// Windows Forms extender control that resolves the
+  /// data refresh issue with data bound detail controls
+  /// as discussed in Chapter 5.
+  /// </summary>
   [DesignerCategory("")]
   [ProvideProperty("ReadValuesOnChange", typeof(BindingSource))]
   public class BindingSourceRefresh : Component, IExtenderProvider
@@ -21,6 +26,14 @@ namespace Csla.Windows
       container.Add(this);
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the extender control
+    /// can extend the specified control.
+    /// </summary>
+    /// <param name="extendee">The control to be extended.</param>
+    /// <remarks>
+    /// This control only extends <see cref="BindingSource"/> controls.
+    /// </remarks>
     public bool CanExtend(object extendee)
     {
       if (extendee is BindingSource)
@@ -28,6 +41,11 @@ namespace Csla.Windows
       return false;
     }
 
+    /// <summary>
+    /// Gets the value of the custom ReadValuesOnChange extender
+    /// property added to extended controls.
+    /// </summary>
+    /// <param name="source">Control being extended.</param>
     public bool GetReadValuesOnChange(BindingSource source)
     {
       if (_sources.ContainsKey(source))
@@ -35,6 +53,13 @@ namespace Csla.Windows
       return false;
     }
 
+    /// <summary>
+    /// Sets the value of the custom ReadValuesOnChange extender
+    /// property added to extended controls.
+    /// </summary>
+    /// <param name="source">Control being extended.</param>
+    /// <param name="value">New value of property.</param>
+    /// <remarks></remarks>
     public void SetReadValuesOnChange(
       BindingSource source, bool value)
     {

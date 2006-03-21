@@ -1,5 +1,6 @@
 ''' <summary>
-''' Allows us to mark fields that should not be copied as part of the undo process
+''' Marks a field to indicate that the value should not 
+''' be copied as part of the undo process.
 ''' </summary>
 ''' <remarks>
 ''' Marking a variable with this attribute will cause the n-level

@@ -6,7 +6,12 @@ using System.Reflection;
 
 namespace Csla.Windows
 {
-
+  /// <summary>
+  /// Windows Forms extender control that automatically
+  /// enables and disables detail form controls based
+  /// on the authorization settings from a CSLA .NET 
+  /// business object.
+  /// </summary>
   [DesignerCategory("")]
   [ProvideProperty("ApplyAuthorization", typeof(Control))]
   public class ReadWriteAuthorization : Component, IExtenderProvider
@@ -18,6 +23,15 @@ namespace Csla.Windows
     public ReadWriteAuthorization(IContainer container)
     { container.Add(this); }
 
+    /// <summary>
+    /// Gets a value indicating whether the extender control
+    /// can extend the specified control.
+    /// </summary>
+    /// <param name="extendee">The control to be extended.</param>
+    /// <remarks>
+    /// Any control implementing either a ReadOnly property or
+    /// Enabled property can be extended.
+    /// </remarks>
     public bool CanExtend(object extendee)
     {
       if (IsPropertyImplemented(extendee, "ReadOnly") 
@@ -27,6 +41,11 @@ namespace Csla.Windows
         return false;
     }
 
+    /// <summary>
+    /// Gets the custom ApplyAuthorization extender
+    /// property added to extended controls.
+    /// </summary>
+    /// <param name="source">Control being extended.</param>
     public bool GetApplyAuthorization(Control source)
     {
       if (_sources.ContainsKey(source))
@@ -35,6 +54,12 @@ namespace Csla.Windows
         return false;
     }
 
+    /// <summary>
+    /// Sets the custom ApplyAuthorization extender
+    /// property added to extended controls.
+    /// </summary>
+    /// <param name="source">Control being extended.</param>
+    /// <param name="value">New value of property.</param>
     public void SetApplyAuthorization(Control source, bool value)
     {
       if (_sources.ContainsKey(source))
@@ -43,6 +68,19 @@ namespace Csla.Windows
         _sources.Add(source, value);
     }
 
+    /// <summary>
+    /// Causes the ReadWriteAuthorization control
+    /// to apply authorization rules from the business
+    /// object to all extended controls on the form.
+    /// </summary>
+    /// <remarks>
+    /// Call this method to refresh the display of detail
+    /// controls on the form any time the authorization
+    /// rules may have changed. Examples include: after
+    /// a user logs in or out, and after an object has
+    /// been updated, inserted, deleted or retrieved
+    /// from the database.
+    /// </remarks>
     public void ResetControlAuthorization()
     {
       foreach (KeyValuePair<Control, bool> item in _sources)

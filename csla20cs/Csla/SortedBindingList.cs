@@ -8,8 +8,12 @@ namespace Csla
 {
 
   /// <summary>
-  /// Provides a sorted view into an existing IList(Of T).
+  /// Provides a sorted view into an existing IList<T>.
   /// </summary>
+  /// <typeparam name="T">
+  /// Type of child object contained by
+  /// the original list or collection.
+  /// </typeparam>
   public class SortedBindingList<T> : 
     IList<T>, IBindingList, IEnumerable<T>
   {
@@ -209,6 +213,10 @@ namespace Csla
 
     #region IEnumerable<T>
 
+    /// <summary>
+    /// Returns an enumerator for the list, honoring
+    /// any sort that is active at the time.
+    /// </summary>
     public IEnumerator<T> GetEnumerator()
     {
       if (_sorted)
@@ -371,7 +379,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns True if the view is currently sorted.
+    /// Gets a value indicating whether the view is currently sorted.
     /// </summary>
     public bool IsSorted
     {
@@ -385,7 +393,8 @@ namespace Csla
     /// This event is raised if the underling IList object's data changes
     /// (assuming the underling IList also implements the IBindingList
     /// interface). It is also raised if the sort property or direction
-    /// is changed to indicate that the view's data has changed.
+    /// is changed to indicate that the view's data has changed. See
+    /// Chapter 5 for details.
     /// </remarks>
     public event ListChangedEventHandler ListChanged;
 
@@ -429,7 +438,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns True since this object does raise the
+    /// Returns <see langword="true"/> since this object does raise the
     /// ListChanged event.
     /// </summary>
     public bool SupportsChangeNotification
@@ -452,13 +461,16 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns True. Sorting is supported.
+    /// Returns <see langword="true"/>. Sorting is supported.
     /// </summary>
     public bool SupportsSorting
     {
       get { return true; }
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public void CopyTo(T[] array, int arrayIndex)
     {
       _list.CopyTo(array, arrayIndex);
@@ -469,6 +481,9 @@ namespace Csla
       CopyTo((T[])array, index);
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public int Count
     {
       get { return _list.Count; }
@@ -489,6 +504,9 @@ namespace Csla
       return GetEnumerator();
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public void Add(T item)
     {
       _list.Add(item);
@@ -500,11 +518,17 @@ namespace Csla
       return SortedIndex(_list.Count - 1);
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public void Clear()
     {
       _list.Clear();
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public bool Contains(T item)
     {
       return _list.Contains(item);
@@ -515,6 +539,9 @@ namespace Csla
       return Contains((T)value);
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public int IndexOf(T item)
     {
       return _list.IndexOf(item);
@@ -525,6 +552,9 @@ namespace Csla
       return IndexOf((T)value);
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public void Insert(int index, T item)
     {
       _list.Insert(index, item);
@@ -540,6 +570,9 @@ namespace Csla
       get { return false; }
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public bool IsReadOnly
     {
       get { return _list.IsReadOnly; }
@@ -557,6 +590,9 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Implemented by IList source object.
+    /// </summary>
     public bool Remove(T item)
     {
       return _list.Remove(item);
@@ -567,6 +603,15 @@ namespace Csla
       Remove((T)value);
     }
 
+    /// <summary>
+    /// Removes the child object at the specified index
+    /// in the list, resorting the display as needed.
+    /// </summary>
+    /// <param name="index">The index of the object to remove.</param>
+    /// <remarks>
+    /// See Chapter 5 for details on how and why the list is
+    /// altered during the remove process.
+    /// </remarks>
     public void RemoveAt(int index)
     {
       if (_sorted)
@@ -589,6 +634,11 @@ namespace Csla
         _list.RemoveAt(index);
     }
 
+    /// <summary>
+    /// Gets the child item at the specified index in the list,
+    /// honoring the sort order of the items.
+    /// </summary>
+    /// <param name="index">The index of the item in the sorted list.</param>
     public T this[int index]
     {
       get

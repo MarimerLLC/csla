@@ -9,6 +9,11 @@ Imports System.Windows.Forms
 
 Namespace Windows
 
+  ''' <summary>
+  ''' Windows Forms extender control that resolves the
+  ''' data refresh issue with data bound detail controls
+  ''' as discussed in Chapter 5.
+  ''' </summary>
   <DesignerCategory("")> _
   <ProvideProperty("ReadValuesOnChange", GetType(BindingSource))> _
   Public Class BindingSourceRefresh
@@ -22,6 +27,14 @@ Namespace Windows
       container.Add(Me)
     End Sub
 
+    ''' <summary>
+    ''' Gets a value indicating whether the extender control
+    ''' can extend the specified control.
+    ''' </summary>
+    ''' <param name="extendee">The control to be extended.</param>
+    ''' <remarks>
+    ''' This control only extends <see cref="BindingSource"/> controls.
+    ''' </remarks>
     Public Function CanExtend(ByVal extendee As Object) As Boolean _
       Implements IExtenderProvider.CanExtend
 
@@ -34,6 +47,11 @@ Namespace Windows
 
     End Function
 
+    ''' <summary>
+    ''' Gets the value of the custom ReadValuesOnChange extender
+    ''' property added to extended controls.
+    ''' </summary>
+    ''' <param name="source">Control being extended.</param>
     Public Function GetReadValuesOnChange(ByVal source As BindingSource) As Boolean
       If mSources.ContainsKey(source) Then
         Return mSources.Item(source)
@@ -42,6 +60,13 @@ Namespace Windows
       End If
     End Function
 
+    ''' <summary>
+    ''' Sets the value of the custom ReadValuesOnChange extender
+    ''' property added to extended controls.
+    ''' </summary>
+    ''' <param name="source">Control being extended.</param>
+    ''' <param name="value">New value of property.</param>
+    ''' <remarks></remarks>
     Public Sub SetReadValuesOnChange( _
       ByVal source As BindingSource, ByVal value As Boolean)
 

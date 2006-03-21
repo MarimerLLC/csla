@@ -111,7 +111,7 @@ namespace Csla
     /// </summary>
     /// <remarks>
     /// The format string should follow the requirements for the
-    /// .NET String.Format() statement.
+    /// .NET <see cref="System.String.Format"/> statement.
     /// </remarks>
     /// <value>A format string.</value>
     public string FormatString
@@ -139,11 +139,10 @@ namespace Csla
     /// </para><para>
     /// When the date value is retrieved via this property, the text
     /// is formatted by using the format specified by the 
-    /// <see cref="P:Csla.SmartDate.FormatString" /> property. The default is the
-    /// "Short Date" format.
+    /// <see cref="FormatString" /> property. The default is the
+    /// short date format (d).
     /// </para>
     /// </remarks>
-    /// <returns></returns>
     public string Text
     {
       get { return DateToString(this.Date, FormatString, !_emptyIsMax); }
@@ -188,7 +187,8 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns True if the object is equal to this SmartDate.
+    /// Compares this object to another <see cref="SmartDate"/>
+    /// for equality.
     /// </summary>
     public override bool Equals(object obj)
     {
@@ -225,8 +225,8 @@ namespace Csla
     /// </summary>
     /// <remarks>
     /// <para>
-    /// If the SmartDate contains an empty date, this returns DBNull. Otherwise
-    /// the actual date value is returned as type Date.
+    /// If the SmartDate contains an empty date, this returns <see cref="DBNull"/>.
+    /// Otherwise the actual date value is returned as type Date.
     /// </para><para>
     /// This property is very useful when setting parameter values for
     /// a Command object, since it automatically stores null values into
@@ -253,9 +253,8 @@ namespace Csla
     #region Empty Dates
 
     /// <summary>
-    /// Indicates whether this object contains an empty date.
+    /// Gets a value indicating whether this object contains an empty date.
     /// </summary>
-    /// <returns>True if the date is empty.</returns>
     public bool IsEmpty
     {
       get
@@ -268,14 +267,14 @@ namespace Csla
     }
 
     /// <summary>
-    /// Indicates whether an empty date is the min or max possible date value.
+    /// Gets a value indicating whether an empty date is the 
+    /// min or max possible date value.
     /// </summary>
     /// <remarks>
     /// Whether an empty date is considered to be the smallest or largest possible
     /// date is only important for comparison operations. This allows you to
     /// compare an empty date with a real date and get a meaningful result.
     /// </remarks>
-    /// <returns>True if an empty date is the smallest date, False if it is the largest.</returns>
     public bool EmptyIsMin
     {
       get { return !_emptyIsMax; }
@@ -291,7 +290,7 @@ namespace Csla
     /// <param name="value">String containing the date value.</param>
     /// <returns>A new SmartDate containing the date value.</returns>
     /// <remarks>
-    /// EmptyIsMin will default to true.
+    /// EmptyIsMin will default to <see langword="true"/>.
     /// </remarks>
     public static SmartDate Parse(string value)
     {
@@ -415,7 +414,7 @@ namespace Csla
     /// Compares one SmartDate to another.
     /// </summary>
     /// <remarks>
-    /// This method works the same as the CompareTo method
+    /// This method works the same as the <see cref="DateTime.CompareTo"/> method
     /// on the Date datetype, with the exception that it
     /// understands the concept of empty date values.
     /// </remarks>
@@ -433,7 +432,7 @@ namespace Csla
     /// Compares one SmartDate to another.
     /// </summary>
     /// <remarks>
-    /// This method works the same as the CompareTo method
+    /// This method works the same as the <see cref="DateTime.CompareTo"/> method
     /// on the Date datetype, with the exception that it
     /// understands the concept of empty date values.
     /// </remarks>

@@ -4,6 +4,10 @@ Imports System.Reflection
 ''' <summary>
 ''' Provides a sorted view into an existing IList(Of T).
 ''' </summary>
+''' <typeparam name="T">
+''' Type of child object contained by
+''' the original list or collection.
+''' </typeparam>
 Public Class SortedBindingList(Of T)
 
   Implements IList(Of T)
@@ -211,6 +215,10 @@ Public Class SortedBindingList(Of T)
 
 #Region " IEnumerable(Of T) "
 
+  ''' <summary>
+  ''' Returns an enumerator for the list, honoring
+  ''' any sort that is active at the time.
+  ''' </summary>
   Public Function GetEnumerator() As _
     System.Collections.Generic.IEnumerator(Of T) _
     Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
@@ -378,7 +386,7 @@ Public Class SortedBindingList(Of T)
   End Function
 
   ''' <summary>
-  ''' Returns True if the view is currently sorted.
+  ''' Gets a value indicating whether the view is currently sorted.
   ''' </summary>
   Public ReadOnly Property IsSorted() As Boolean Implements System.ComponentModel.IBindingList.IsSorted
     Get
@@ -393,7 +401,8 @@ Public Class SortedBindingList(Of T)
   ''' This event is raised if the underling IList object's data changes
   ''' (assuming the underling IList also implements the IBindingList
   ''' interface). It is also raised if the sort property or direction
-  ''' is changed to indicate that the view's data has changed.
+  ''' is changed to indicate that the view's data has changed. See
+  ''' Chapter 5 for details.
   ''' </remarks>
   Public Event ListChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ListChangedEventArgs) Implements System.ComponentModel.IBindingList.ListChanged
 
@@ -438,7 +447,7 @@ Public Class SortedBindingList(Of T)
   End Property
 
   ''' <summary>
-  ''' Returns True since this object does raise the
+  ''' Returns <see langword="true"/> since this object does raise the
   ''' ListChanged event.
   ''' </summary>
   Public ReadOnly Property SupportsChangeNotification() As Boolean Implements System.ComponentModel.IBindingList.SupportsChangeNotification
@@ -462,7 +471,7 @@ Public Class SortedBindingList(Of T)
   End Property
 
   ''' <summary>
-  ''' Returns True. Sorting is supported.
+  ''' Returns <see langword="true"/>. Sorting is supported.
   ''' </summary>
   Public ReadOnly Property SupportsSorting() As Boolean Implements System.ComponentModel.IBindingList.SupportsSorting
     Get
@@ -470,6 +479,9 @@ Public Class SortedBindingList(Of T)
     End Get
   End Property
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public Sub CopyTo(ByVal array() As T, ByVal arrayIndex As Integer) Implements System.Collections.Generic.ICollection(Of T).CopyTo
     mList.CopyTo(array, arrayIndex)
   End Sub
@@ -478,6 +490,9 @@ Public Class SortedBindingList(Of T)
     CopyTo(CType(array, T()), index)
   End Sub
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public ReadOnly Property Count() As Integer _
     Implements System.Collections.ICollection.Count, _
     System.Collections.Generic.ICollection(Of T).Count
@@ -504,6 +519,9 @@ Public Class SortedBindingList(Of T)
     Return GetEnumerator()
   End Function
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public Sub Add(ByVal item As T) Implements System.Collections.Generic.ICollection(Of T).Add
     mList.Add(item)
   End Sub
@@ -513,10 +531,16 @@ Public Class SortedBindingList(Of T)
     Return SortedIndex(mList.Count - 1)
   End Function
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public Sub Clear() Implements System.Collections.IList.Clear, System.Collections.Generic.ICollection(Of T).Clear
     mList.Clear()
   End Sub
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public Function Contains(ByVal item As T) As Boolean Implements System.Collections.Generic.ICollection(Of T).Contains
     Return mList.Contains(item)
   End Function
@@ -525,6 +549,9 @@ Public Class SortedBindingList(Of T)
     Return Contains(CType(value, T))
   End Function
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public Function IndexOf(ByVal item As T) As Integer Implements System.Collections.Generic.IList(Of T).IndexOf
     Return mList.IndexOf(item)
   End Function
@@ -533,6 +560,9 @@ Public Class SortedBindingList(Of T)
     Return IndexOf(CType(value, T))
   End Function
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public Sub Insert(ByVal index As Integer, ByVal item As T) _
     Implements System.Collections.Generic.IList(Of T).Insert
 
@@ -551,6 +581,9 @@ Public Class SortedBindingList(Of T)
     End Get
   End Property
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public ReadOnly Property IsReadOnly() As Boolean Implements System.Collections.IList.IsReadOnly, System.Collections.Generic.ICollection(Of T).IsReadOnly
     Get
       Return mList.IsReadOnly
@@ -567,6 +600,9 @@ Public Class SortedBindingList(Of T)
     End Set
   End Property
 
+  ''' <summary>
+  ''' Implemented by IList source object.
+  ''' </summary>
   Public Function Remove(ByVal item As T) As Boolean Implements System.Collections.Generic.ICollection(Of T).Remove
     Return mList.Remove(item)
   End Function
@@ -575,6 +611,15 @@ Public Class SortedBindingList(Of T)
     Remove(CType(value, T))
   End Sub
 
+  ''' <summary>
+  ''' Removes the child object at the specified index
+  ''' in the list, resorting the display as needed.
+  ''' </summary>
+  ''' <param name="index">The index of the object to remove.</param>
+  ''' <remarks>
+  ''' See Chapter 5 for details on how and why the list is
+  ''' altered during the remove process.
+  ''' </remarks>
   Public Sub RemoveAt(ByVal index As Integer) _
     Implements System.Collections.IList.RemoveAt, _
     System.Collections.Generic.IList(Of T).RemoveAt
@@ -602,6 +647,11 @@ Public Class SortedBindingList(Of T)
 
   End Sub
 
+  ''' <summary>
+  ''' Gets the child item at the specified index in the list,
+  ''' honoring the sort order of the items.
+  ''' </summary>
+  ''' <param name="index">The index of the item in the sorted list.</param>
   Default Public Overloads Property Item(ByVal index As Integer) As T _
     Implements System.Collections.Generic.IList(Of T).Item
     Get

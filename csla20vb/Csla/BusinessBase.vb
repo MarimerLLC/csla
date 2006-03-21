@@ -12,18 +12,37 @@
 ''' objects.
 ''' </para>
 ''' </remarks>
+''' <typeparam name="T">Type of the business object being defined.</typeparam>
 <Serializable()> _
 Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   Inherits Core.BusinessBase
 
 #Region " Object ID Value "
 
+  ''' <summary>
+  ''' Override this method to return a unique identifying
+  ''' value for this object.
+  ''' </summary>
+  ''' <remarks>
+  ''' If you can not provide a unique identifying value, it
+  ''' is best if you can generate such a unique value (even
+  ''' temporarily). If you can not do that, then return 
+  ''' <see langword="Nothing"/> and then manually override the
+  ''' <see cref="Equals"/>, <see cref="GetHashCode"/> and
+  ''' <see cref="ToString"/> methods in your business object.
+  ''' </remarks>
   Protected MustOverride Function GetIdValue() As Object
 
 #End Region
 
 #Region " System.Object Overrides "
 
+  ''' <summary>
+  ''' Compares this object for equality with another object, using
+  ''' the results of <see cref="GetIdValue"/> to determine
+  ''' equality.
+  ''' </summary>
+  ''' <param name="obj">The object to be compared.</param>
   Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
 
     If TypeOf obj Is T Then
@@ -39,6 +58,10 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   End Function
 
+  ''' <summary>
+  ''' Returns a hash code value for this object, based on
+  ''' the results of <see cref="GetIdValue"/>.
+  ''' </summary>
   Public Overrides Function GetHashCode() As Integer
 
     Dim id As Object = GetIdValue()
@@ -49,6 +72,11 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   End Function
 
+  ''' <summary>
+  ''' Returns a text representation of this object by
+  ''' returning the <see cref="GetIdValue"/> value
+  ''' in text form.
+  ''' </summary>
   Public Overrides Function ToString() As String
 
     Dim id As Object = GetIdValue()
@@ -88,14 +116,15 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' to be inserted, updated or deleted within the database based on the
   ''' object's current state.
   ''' </para><para>
-  ''' If <see cref="P:Csla.BusinessBase.IsDeleted" /> is True the object
-  ''' will be deleted. Otherwise, if <see cref="P:Csla.BusinessBase.IsNew" /> 
-  ''' is True the object will be inserted. Otherwise the object's data will 
-  ''' be updated in the database.
+  ''' If <see cref="Core.BusinessBase.IsDeleted" /> is <see langword="true"/>
+  ''' the object will be deleted. Otherwise, if <see cref="Core.BusinessBase.IsNew" /> 
+  ''' is <see langword="true"/> the object will be inserted. 
+  ''' Otherwise the object's data will be updated in the database.
   ''' </para><para>
-  ''' All this is contingent on <see cref="P:Csla.BusinessBase.IsDirty" />. If
-  ''' this value is False, no data operation occurs. It is also contingent on
-  ''' <see cref="P:Csla.BusinessBase.IsValid" />. If this value is False an
+  ''' All this is contingent on <see cref="Core.BusinessBase.IsDirty" />. If
+  ''' this value is <see langword="false"/>, no data operation occurs. 
+  ''' It is also contingent on <see cref="Core.BusinessBase.IsValid" />. 
+  ''' If this value is <see langword="false"/> an
   ''' exception will be thrown to indicate that the UI attempted to save an
   ''' invalid object.
   ''' </para><para>
@@ -137,11 +166,11 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   ''' <summary>
   ''' Saves the object to the database, forcing
-  ''' IsNew to False and IsDirty to True.
+  ''' IsNew to <see langword="false"/> and IsDirty to True.
   ''' </summary>
   ''' <param name="forceUpdate">
-  ''' If True, triggers overriding IsNew and IsDirty. 
-  ''' If False then it is the same as calling Save().
+  ''' If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+  ''' If <see langword="false"/> then it is the same as calling Save().
   ''' </param>
   ''' <returns>A new object containing the saved values.</returns>
   ''' <remarks>

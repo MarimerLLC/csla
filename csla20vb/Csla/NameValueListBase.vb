@@ -7,15 +7,6 @@ Imports Csla.Core
 ''' This is the base class from which readonly name/value
 ''' collections should be derived.
 ''' </summary>
-''' <remarks>
-''' To implement a name/value collection:
-''' <list>
-''' <item>Inherit from this base class</item>
-''' <item>Implement a Private constructor</item>
-''' <item>Implement a factory method using the supplied Criteria class</item>
-''' <item>Override <see cref="M:DataPortal_Fetch">DataPortal_Fetch</see></item>
-''' </list>
-''' </remarks>
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")> _
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
@@ -31,6 +22,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' Returns the value corresponding to the
   ''' specified key.
   ''' </summary>
+  ''' <param name="key">Key value for which to retrieve a value.</param>
   Public Function Value(ByVal key As K) As V
 
     For Each item As NameValuePair In Me
@@ -44,8 +36,10 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
   ''' <summary>
   ''' Returns the key corresponding to the
-  ''' specified value.
+  ''' first occurance of the specified value
+  ''' in the list.
   ''' </summary>
+  ''' <param name="value">Value for which to retrieve the key.</param>
   Public Function Key(ByVal value As V) As K
 
     For Each item As NameValuePair In Me
@@ -58,7 +52,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   End Function
 
   ''' <summary>
-  ''' Returns True if the list contains the
+  ''' Gets a value indicating whether the list contains the
   ''' specified key.
   ''' </summary>
   Public Function ContainsKey(ByVal key As K) As Boolean
@@ -73,7 +67,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   End Function
 
   ''' <summary>
-  ''' Returns True if the list contains the
+  ''' Gets a value indicating whether the list contains the
   ''' specified value.
   ''' </summary>
   Public Function ContainsValue(ByVal value As V) As Boolean
@@ -224,7 +218,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
   ''' <summary>
   ''' Called by the server-side DataPortal prior to calling the 
-  ''' requested DataPortal_xyz method.
+  ''' requested DataPortal_XYZ method.
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
@@ -235,7 +229,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
   ''' <summary>
   ''' Called by the server-side DataPortal after calling the 
-  ''' requested DataPortal_xyz method.
+  ''' requested DataPortal_XYZ method.
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _

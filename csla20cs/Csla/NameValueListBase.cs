@@ -11,15 +11,6 @@ namespace Csla
   /// This is the base class from which readonly name/value
   /// collections should be derived.
   /// </summary>
-  /// <remarks>
-  /// To implement a name/value collection:
-  /// <list>
-  /// <item>Inherit from this base class</item>
-  /// <item>Implement a Private constructor</item>
-  /// <item>Implement a factory method using the supplied Criteria class</item>
-  /// <item>Override <see cref="DataPortal_Fetch" /></item>
-  /// </list>
-  /// </remarks>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
@@ -34,6 +25,7 @@ namespace Csla
     /// Returns the value corresponding to the
     /// specified key.
     /// </summary>
+    /// <param name="key">Key value for which to retrieve a value.</param>
     public V Value(K key)
     {
       foreach (NameValuePair item in this)
@@ -44,8 +36,10 @@ namespace Csla
 
     /// <summary>
     /// Returns the key corresponding to the
-    /// specified value.
+    /// first occurance of the specified value
+    /// in the list.
     /// </summary>
+    /// <param name="value">Value for which to retrieve the key.</param>
     public K Key(V value)
     {
       foreach (NameValuePair item in this)
@@ -55,7 +49,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns True if the list contains the
+    /// Gets a value indicating whether the list contains the
     /// specified key.
     /// </summary>
     public bool ContainsKey(K key)
@@ -67,7 +61,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns True if the list contains the
+    /// Gets a value indicating whether the list contains the
     /// specified value.
     /// </summary>
     public bool ContainsValue(V value)
@@ -203,7 +197,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_xyz method.
+    /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -215,7 +209,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_xyz method.
+    /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]

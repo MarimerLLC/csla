@@ -6,6 +6,12 @@ Imports System.Reflection
 
 Namespace Windows
 
+  ''' <summary>
+  ''' Windows Forms extender control that automatically
+  ''' enables and disables detail form controls based
+  ''' on the authorization settings from a CSLA .NET 
+  ''' business object.
+  ''' </summary>
   <DesignerCategory("")> _
   <ProvideProperty("ApplyAuthorization", GetType(Control))> _
   Public Class ReadWriteAuthorization
@@ -19,6 +25,15 @@ Namespace Windows
       container.Add(Me)
     End Sub
 
+    ''' <summary>
+    ''' Gets a value indicating whether the extender control
+    ''' can extend the specified control.
+    ''' </summary>
+    ''' <param name="extendee">The control to be extended.</param>
+    ''' <remarks>
+    ''' Any control implementing either a ReadOnly property or
+    ''' Enabled property can be extended.
+    ''' </remarks>
     Public Function CanExtend( _
       ByVal extendee As Object) As Boolean _
       Implements IExtenderProvider.CanExtend
@@ -33,6 +48,11 @@ Namespace Windows
 
     End Function
 
+    ''' <summary>
+    ''' Gets the custom ApplyAuthorization extender
+    ''' property added to extended controls.
+    ''' </summary>
+    ''' <param name="source">Control being extended.</param>
     Public Function GetApplyAuthorization( _
       ByVal source As Control) As Boolean
 
@@ -45,6 +65,12 @@ Namespace Windows
 
     End Function
 
+    ''' <summary>
+    ''' Sets the custom ApplyAuthorization extender
+    ''' property added to extended controls.
+    ''' </summary>
+    ''' <param name="source">Control being extended.</param>
+    ''' <param name="value">New value of property.</param>
     Public Sub SetApplyAuthorization( _
       ByVal source As Control, ByVal value As Boolean)
 
@@ -56,6 +82,19 @@ Namespace Windows
 
     End Sub
 
+    ''' <summary>
+    ''' Causes the ReadWriteAuthorization control
+    ''' to apply authorization rules from the business
+    ''' object to all extended controls on the form.
+    ''' </summary>
+    ''' <remarks>
+    ''' Call this method to refresh the display of detail
+    ''' controls on the form any time the authorization
+    ''' rules may have changed. Examples include: after
+    ''' a user logs in or out, and after an object has
+    ''' been updated, inserted, deleted or retrieved
+    ''' from the database.
+    ''' </remarks>
     Public Sub ResetControlAuthorization()
 
       For Each item As KeyValuePair(Of Control, Boolean) In mSources

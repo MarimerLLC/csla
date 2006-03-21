@@ -89,7 +89,7 @@ Public Structure SmartDate
   ''' </summary>
   ''' <remarks>
   ''' The format string should follow the requirements for the
-  ''' .NET String.Format() statement.
+  ''' .NET <see cref="System.String.Format"/> statement.
   ''' </remarks>
   ''' <value>A format string.</value>
   Public Property FormatString() As String
@@ -115,11 +115,10 @@ Public Structure SmartDate
   ''' </para><para>
   ''' When the date value is retrieved via this property, the text
   ''' is formatted by using the format specified by the 
-  ''' <see cref="P:Csla.SmartDate.FormatString" /> property. The default is the
-  ''' "Short Date" format.
+  ''' <see cref="FormatString" /> property. The default is the
+  ''' short date format (d).
   ''' </para>
   ''' </remarks>
-  ''' <returns></returns>
   Public Property Text() As String
     Get
       Return DateToString(Me.Date, FormatString, Not mEmptyIsMax)
@@ -162,7 +161,8 @@ Public Structure SmartDate
   End Function
 
   ''' <summary>
-  ''' Returns True if the object is equal to this SmartDate.
+  ''' Compares this object to another <see cref="SmartDate"/>
+  ''' for equality.
   ''' </summary>
   Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
 
@@ -202,8 +202,8 @@ Public Structure SmartDate
   ''' </summary>
   ''' <remarks>
   ''' <para>
-  ''' If the SmartDate contains an empty date, this returns DBNull. Otherwise
-  ''' the actual date value is returned as type Date.
+  ''' If the SmartDate contains an empty date, this returns <see cref="DBNull"/>.
+  ''' Otherwise the actual date value is returned as type Date.
   ''' </para><para>
   ''' This property is very useful when setting parameter values for
   ''' a Command object, since it automatically stores null values into
@@ -230,9 +230,8 @@ Public Structure SmartDate
 #Region " Empty Dates "
 
   ''' <summary>
-  ''' Indicates whether this object contains an empty date.
+  ''' Gets a value indicating whether this object contains an empty date.
   ''' </summary>
-  ''' <returns>True if the date is empty.</returns>
   Public ReadOnly Property IsEmpty() As Boolean
     Get
       If Not mEmptyIsMax Then
@@ -244,14 +243,14 @@ Public Structure SmartDate
   End Property
 
   ''' <summary>
-  ''' Indicates whether an empty date is the min or max possible date value.
+  ''' Gets a value indicating whether an empty date is the 
+  ''' min or max possible date value.
   ''' </summary>
   ''' <remarks>
   ''' Whether an empty date is considered to be the smallest or largest possible
   ''' date is only important for comparison operations. This allows you to
   ''' compare an empty date with a real date and get a meaningful result.
   ''' </remarks>
-  ''' <returns>True if an empty date is the smallest date, False if it is the largest.</returns>
   Public ReadOnly Property EmptyIsMin() As Boolean
     Get
       Return Not mEmptyIsMax
@@ -268,7 +267,7 @@ Public Structure SmartDate
   ''' <param name="value">String containing the date value.</param>
   ''' <returns>A new SmartDate containing the date value.</returns>
   ''' <remarks>
-  ''' EmptyIsMin will default to true.
+  ''' EmptyIsMin will default to <see langword="true"/>.
   ''' </remarks>
   Public Shared Function Parse(ByVal value As String) As SmartDate
 
@@ -397,7 +396,7 @@ Public Structure SmartDate
   ''' Compares one SmartDate to another.
   ''' </summary>
   ''' <remarks>
-  ''' This method works the same as the CompareTo method
+  ''' This method works the same as the <see cref="DateTime.CompareTo"/> method
   ''' on the Date datetype, with the exception that it
   ''' understands the concept of empty date values.
   ''' </remarks>
@@ -415,7 +414,7 @@ Public Structure SmartDate
   ''' Compares one SmartDate to another.
   ''' </summary>
   ''' <remarks>
-  ''' This method works the same as the CompareTo method
+  ''' This method works the same as the <see cref="DateTime.CompareTo"/> method
   ''' on the Date datetype, with the exception that it
   ''' understands the concept of empty date values.
   ''' </remarks>

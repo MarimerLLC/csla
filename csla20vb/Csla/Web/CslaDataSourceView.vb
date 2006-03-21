@@ -106,6 +106,10 @@ Namespace Web
 
 #Region " Insert "
 
+    ''' <summary>
+    ''' Gets a value indicating whether the data source can
+    ''' insert data.
+    ''' </summary>
     Public Overrides ReadOnly Property CanInsert() As Boolean
       Get
         If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
@@ -131,6 +135,10 @@ Namespace Web
 
 #Region " Delete "
 
+    ''' <summary>
+    ''' Gets a value indicating whether the data source can
+    ''' delete data.
+    ''' </summary>
     Public Overrides ReadOnly Property CanDelete() As Boolean
       Get
         If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
@@ -155,6 +163,10 @@ Namespace Web
 
 #Region " Update "
 
+    ''' <summary>
+    ''' Gets a value indicating whether the data source can
+    ''' update data.
+    ''' </summary>
     Public Overrides ReadOnly Property CanUpdate() As Boolean
       Get
         If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
@@ -179,18 +191,31 @@ Namespace Web
 
 #Region " Other Operations "
 
+    ''' <summary>
+    ''' Gets a value indicating whether the data source supports
+    ''' paging of the data. Always returns <see langword="false"/>.
+    ''' </summary>
     Public Overrides ReadOnly Property CanPage() As Boolean
       Get
         Return False
       End Get
     End Property
 
+    ''' <summary>
+    ''' Gets a value indicating whether the data source can
+    ''' retrieve the total number of rows of data. Always
+    ''' returns <see langword="true"/>.
+    ''' </summary>
     Public Overrides ReadOnly Property CanRetrieveTotalRowCount() As Boolean
       Get
         Return True
       End Get
     End Property
 
+    ''' <summary>
+    ''' Gets a alue indicating whether the data source supports
+    ''' sorting of the data. Always returns <see langword="false"/>.
+    ''' </summary>
     Public Overrides ReadOnly Property CanSort() As Boolean
       Get
         Return False

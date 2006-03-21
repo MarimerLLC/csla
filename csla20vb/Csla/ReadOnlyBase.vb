@@ -19,12 +19,30 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
 #Region " Object ID Value "
 
+  ''' <summary>
+  ''' Override this method to return a unique identifying
+  ''' vlaue for this object.
+  ''' </summary>
+  ''' <remarks>
+  ''' If you can not provide a unique identifying value, it
+  ''' is best if you can generate such a unique value (even
+  ''' temporarily). If you can not do that, then return 
+  ''' <see langword="Nothing"/> and then manually override the
+  ''' <see cref="Equals"/>, <see cref="GetHashCode"/> and
+  ''' <see cref="ToString"/> methods in your business object.
+  ''' </remarks>
   Protected MustOverride Function GetIdValue() As Object
 
 #End Region
 
 #Region " System.Object Overrides "
 
+  ''' <summary>
+  ''' Compares this object for equality with another object, using
+  ''' the results of <see cref="GetIdValue"/> to determine
+  ''' equality.
+  ''' </summary>
+  ''' <param name="obj">The object to be compared.</param>
   Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
 
     If TypeOf obj Is T Then
@@ -40,6 +58,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   End Function
 
+  ''' <summary>
+  ''' Returns a hash code value for this object, based on
+  ''' the results of <see cref="GetIdValue"/>.
+  ''' </summary>
   Public Overrides Function GetHashCode() As Integer
 
     Dim id As Object = GetIdValue()
@@ -50,6 +72,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   End Function
 
+  ''' <summary>
+  ''' Returns a text representation of this object by
+  ''' returning the <see cref="GetIdValue"/> value
+  ''' in text form.
+  ''' </summary>
   Public Overrides Function ToString() As String
 
     Dim id As Object = GetIdValue()
@@ -102,10 +129,67 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   End Property
 
   ''' <summary>
-  ''' Returns True if the user is allowed to read the
+  ''' Returns <see langword="true" /> if the user is allowed to read the
   ''' calling property.
   ''' </summary>
-  ''' <returns>True if read is allowed.</returns>
+  ''' <returns><see langword="true" /> if read is allowed.</returns>
+  ''' <param name="throwOnFalse">Indicates whether a negative
+  ''' result should cause an exception.</param>
+  <System.Runtime.CompilerServices.MethodImpl( _
+    System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+  Public Function CanReadProperty(ByVal throwOnFalse As Boolean) As Boolean
+
+    Dim propertyName As String = _
+      New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
+    Dim result As Boolean = CanReadProperty(propertyName)
+    If throwOnFalse AndAlso result = False Then
+      Throw New System.Security.SecurityException( _
+        String.Format("{0} ({1})", _
+        My.Resources.PropertyGetNotAllowed, propertyName))
+    End If
+    Return result
+
+  End Function
+
+  ''' <summary>
+  ''' Returns <see langword="true" /> if the user is allowed to read the
+  ''' calling property.
+  ''' </summary>
+  ''' <returns><see langword="true" /> if read is allowed.</returns>
+  ''' <param name="propertyName">Name of the property to read.</param>
+  ''' <param name="throwOnFalse">Indicates whether a negative
+  ''' result should cause an exception.</param>
+  Public Function CanReadProperty(ByVal propertyName As String, ByVal throwOnFalse As Boolean) As Boolean
+
+    Dim result As Boolean = CanReadProperty(propertyName)
+    If throwOnFalse AndAlso result = False Then
+      Throw New System.Security.SecurityException( _
+        String.Format("{0} ({1})", _
+        My.Resources.PropertyGetNotAllowed, propertyName))
+    End If
+    Return result
+
+  End Function
+
+  ''' <summary>
+  ''' Returns <see langword="true" /> if the user is allowed to read the
+  ''' calling property.
+  ''' </summary>
+  ''' <returns><see langword="true" /> if read is allowed.</returns>
+  Public Function CanReadProperty() As Boolean
+
+    Dim propertyName As String = _
+      New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
+    Return CanReadProperty(propertyName)
+
+  End Function
+
+  ''' <summary>
+  ''' Returns <see langword="true" /> if the user is allowed to read the
+  ''' specified property.
+  ''' </summary>
+  ''' <param name="propertyName">Name of the property to read.</param>
+  ''' <returns><see langword="true" /> if read is allowed.</returns>
   ''' <remarks>
   ''' <para>
   ''' If a list of allowed roles is provided then only users in those
@@ -118,57 +202,6 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' If neither a list of allowed nor denied roles is provided then
   ''' all users will have read access.
   ''' </para>
-  ''' </remarks>
-  ''' <param name="throwOnFalse">Indicates whether a negative
-  ''' result should cause an exception.</param>
-  <System.Runtime.CompilerServices.MethodImpl( _
-    System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
-  Public Function CanReadProperty(ByVal throwOnFalse As Boolean) As Boolean
-
-    Dim propertyName As String = _
-      New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
-    Dim result As Boolean = CanReadProperty(propertyName)
-    If throwOnFalse AndAlso result = False Then
-      Throw New System.Security.SecurityException(My.Resources.PropertyGetNotAllowed)
-    End If
-    Return result
-
-  End Function
-
-  ''' <summary>
-  ''' Returns True if the user is allowed to read the
-  ''' calling property.
-  ''' </summary>
-  ''' <returns>True if read is allowed.</returns>
-  ''' <remarks>
-  ''' <para>
-  ''' If and only if the user is in a role explicitly denied 
-  ''' access and NOT in a role that explicitly
-  ''' allows access they will be denied read access to the property.
-  ''' </para><para>
-  ''' This implementation uses System.Diagnostics.StackTrace to
-  ''' determine the name of the current property, and so must be called
-  ''' directly from the property to be checked.
-  ''' </para>
-  ''' </remarks>
-  Public Function CanReadProperty() As Boolean
-
-    Dim propertyName As String = _
-      New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
-    Return CanReadProperty(propertyName)
-
-  End Function
-
-  ''' <summary>
-  ''' Returns True if the user is allowed to read the
-  ''' specified property.
-  ''' </summary>
-  ''' <param name="propertyName">Name of the property to read.</param>
-  ''' <returns>True if read is allowed.</returns>
-  ''' <remarks>
-  ''' If and only if the user is in a role explicitly denied 
-  ''' access and NOT in a role that explicitly
-  ''' allows access they will be denied read access to the property.
   ''' </remarks>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Public Overridable Function CanReadProperty( _
@@ -264,7 +297,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   ''' <summary>
   ''' Called by the server-side DataPortal prior to calling the 
-  ''' requested DataPortal_xyz method.
+  ''' requested DataPortal_XYZ method.
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
@@ -275,7 +308,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   ''' <summary>
   ''' Called by the server-side DataPortal after calling the 
-  ''' requested DataPortal_xyz method.
+  ''' requested DataPortal_XYZ method.
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _

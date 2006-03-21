@@ -21,12 +21,30 @@ namespace Csla
   {
     #region Object ID Value
 
+    /// <summary>
+    /// Override this method to return a unique identifying
+    /// vlaue for this object.
+    /// </summary>
+    /// <remarks>
+    /// If you can not provide a unique identifying value, it
+    /// is best if you can generate such a unique value (even
+    /// temporarily). If you can not do that, then return 
+    /// <see langword="Nothing"/> and then manually override the
+    /// <see cref="Equals"/>, <see cref="GetHashCode"/> and
+    /// <see cref="ToString"/> methods in your business object.
+    /// </remarks>
     protected abstract object GetIdValue();
 
     #endregion
 
     #region System.Object Overrides
 
+    /// <summary>
+    /// Compares this object for equality with another object, using
+    /// the results of <see cref="GetIdValue"/> to determine
+    /// equality.
+    /// </summary>
+    /// <param name="obj">The object to be compared.</param>
     public override bool Equals(object obj)
     {
       if (obj is T)
@@ -40,6 +58,10 @@ namespace Csla
         return false;
     }
 
+    /// <summary>
+    /// Returns a hash code value for this object, based on
+    /// the results of <see cref="GetIdValue"/>.
+    /// </summary>
     public override int GetHashCode()
     {
       object id = GetIdValue();
@@ -48,6 +70,11 @@ namespace Csla
       return id.GetHashCode();
     }
 
+    /// <summary>
+    /// Returns a text representation of this object by
+    /// returning the <see cref="GetIdValue"/> value
+    /// in text form.
+    /// </summary>
     public override string ToString()
     {
       object id = GetIdValue();
@@ -97,10 +124,62 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns True if the user is allowed to read the
+    /// Returns <see langword="true" /> if the user is allowed to read the
     /// calling property.
     /// </summary>
-    /// <returns>True if read is allowed.</returns>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    [System.Runtime.CompilerServices.MethodImpl(
+      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    public bool CanReadProperty(bool throwOnFalse)
+    {
+      string propertyName =
+        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      bool result = CanReadProperty(propertyName);
+      if (throwOnFalse && result == false)
+        throw new System.Security.SecurityException(
+          string.Format("{0} ({1})",
+          Resources.PropertyGetNotAllowed, propertyName));
+      return result;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <param name="propertyName">Name of the property to read.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    public bool CanReadProperty(string propertyName, bool throwOnFalse)
+    {
+      bool result = CanReadProperty(propertyName);
+      if (throwOnFalse && result == false)
+        throw new System.Security.SecurityException(
+          string.Format("{0} ({1})",
+          Resources.PropertyGetNotAllowed, propertyName));
+      return result;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
+    public bool CanReadProperty()
+    {
+      string propertyName = 
+        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      return CanReadProperty(propertyName);
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// specified property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property to read.</param>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
     /// <remarks>
     /// <para>
     /// If a list of allowed roles is provided then only users in those
@@ -113,54 +192,6 @@ namespace Csla
     /// If neither a list of allowed nor denied roles is provided then
     /// all users will have read access.
     /// </para>
-    /// </remarks>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>    
-    [System.Runtime.CompilerServices.MethodImpl(
-      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    public bool CanReadProperty(bool throwOnFalse)
-    {
-      string propertyName =
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      bool result = CanReadProperty(propertyName);
-      if (throwOnFalse && result == false)
-        throw new System.Security.SecurityException(Resources.PropertyGetNotAllowed);
-      return result;
-    }
-
-    /// <summary>
-    /// Returns True if the user is allowed to read the
-    /// calling property.
-    /// </summary>
-    /// <returns>True if read is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If and only if the user is in a role explicitly denied 
-    /// access and NOT in a role that explicitly
-    /// allows access they will be denied read access to the property.
-    /// </para><para>
-    /// This implementation uses System.Diagnostics.StackTrace to
-    /// determine the name of the current property, and so must be called
-    /// directly from the property to be checked.
-    /// </para>
-    /// </remarks>
-    public bool CanReadProperty()
-    {
-      string propertyName = 
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      return CanReadProperty(propertyName);
-    }
-
-    /// <summary>
-    /// Returns True if the user is allowed to read the
-    /// specified property.
-    /// </summary>
-    /// <param name="propertyName">Name of the property to read.</param>
-    /// <returns>True if read is allowed.</returns>
-    /// <remarks>
-    /// If and only if the user is in a role explicitly denied 
-    /// access and NOT in a role that explicitly
-    /// allows access they will be denied read access to the property.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanReadProperty(string propertyName)

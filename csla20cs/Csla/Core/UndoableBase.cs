@@ -169,6 +169,7 @@ namespace Csla.Core
               BindingFlags.Public);
           foreach (FieldInfo field in fields)
           {
+            // make sure we process only our variables
             if (field.DeclaringType == currentType)
             {
               // see if the field is undoable or not
@@ -237,18 +238,22 @@ namespace Csla.Core
               BindingFlags.Public);
           foreach (FieldInfo field in fields)
           {
-            // see if the field is undoable or not
-            if (!NotUndoableField(field))
+            // make sure we process only our variables
+            if (field.DeclaringType == currentType)
             {
-              // the field is undoable so see if it is a child object
-              if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
+              // see if the field is undoable or not
+              if (!NotUndoableField(field))
               {
-                object value = field.GetValue(this);
-                // make sure the variable has a value
-                if (value != null)
+                // the field is undoable so see if it is a child object
+                if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
                 {
-                  // it is a child object so cascade the call
-                  ((Core.IUndoableObject)value).AcceptChanges();
+                  object value = field.GetValue(this);
+                  // make sure the variable has a value
+                  if (value != null)
+                  {
+                    // it is a child object so cascade the call
+                    ((Core.IUndoableObject)value).AcceptChanges();
+                  }
                 }
               }
             }

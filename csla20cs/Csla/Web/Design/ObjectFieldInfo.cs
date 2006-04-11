@@ -135,7 +135,7 @@ namespace Csla.Web.Design
         if (!t.IsValueType || _isNullable)
           return true;
         if (t.IsGenericType)
-          return (t.GetGenericTypeDefinition() == typeof(Nullable));
+          return (t.GetGenericTypeDefinition() == typeof(Nullable<>));
         return false;
       }
     }

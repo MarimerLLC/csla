@@ -53,7 +53,7 @@ namespace Csla
     {
       Type type = propertyType;
       if (type.IsGenericType &&
-        (type.GetGenericTypeDefinition() == typeof(Nullable)))
+        (type.GetGenericTypeDefinition() == typeof(Nullable<>)))
         return type.GetGenericArguments()[0];
       return type;
     }

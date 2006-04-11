@@ -10,7 +10,7 @@ Friend Module Utilities
 
     Dim type As Type = propertyType
     If (type.IsGenericType AndAlso _
-      (type.GetGenericTypeDefinition Is GetType(Nullable))) Then
+      (type.GetGenericTypeDefinition Is GetType(Nullable(Of )))) Then
 
       Return type.GetGenericArguments(0)
     End If

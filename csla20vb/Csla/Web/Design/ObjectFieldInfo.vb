@@ -139,7 +139,7 @@ Namespace Web.Design
           Return True
         End If
         If t.IsGenericType Then
-          Return (t.GetGenericTypeDefinition Is GetType(Nullable))
+          Return (t.GetGenericTypeDefinition Is GetType(Nullable(Of )))
         End If
         Return False
       End Get

@@ -63,30 +63,28 @@ Namespace Web
       ' get the object from the page
       Dim args As New SelectObjectArgs
       mOwner.OnSelectObject(args)
-      Dim obj As Object = args.BusinessObject
+      Dim result As Object = args.BusinessObject
 
-      Dim result As Object
       If arguments.RetrieveTotalRowCount Then
-        If obj Is Nothing Then
-          result = 0
+        Dim rowCount As Integer
+        If result Is Nothing Then
+          rowCount = 0
 
-        ElseIf TypeOf obj Is IList Then
-          result = CType(obj, IList).Count
+        ElseIf TypeOf result Is IList Then
+          rowCount = CType(result, IList).Count
 
-        ElseIf TypeOf obj Is IEnumerable Then
-          Dim temp As IEnumerable = CType(obj, IEnumerable)
+        ElseIf TypeOf result Is IEnumerable Then
+          Dim temp As IEnumerable = CType(result, IEnumerable)
           Dim count As Integer = 0
           For Each item As Object In temp
             count += 1
           Next
-          result = count
+          rowCount = count
 
         Else
-          result = 1
+          rowCount = 1
         End If
-
-      Else
-        result = obj
+        arguments.TotalRowCount = rowCount
       End If
 
       ' if the result isn't IEnumerable then

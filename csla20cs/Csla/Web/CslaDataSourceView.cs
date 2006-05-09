@@ -58,28 +58,27 @@ namespace Csla.Web
       // get the object from the page
       SelectObjectArgs args = new SelectObjectArgs();
       _owner.OnSelectObject(args);
-      object obj = args.BusinessObject;
+      object result = args.BusinessObject;
 
-      object result;
       if (arguments.RetrieveTotalRowCount)
       {
-        if (obj == null)
-          result = 0;
-        else if (obj is IList)
-          result = ((IList)obj).Count;
-        else if (obj is IEnumerable)
+        int rowCount;
+        if (result == null)
+          rowCount = 0;
+        else if (result is IList)
+          rowCount = ((IList)result).Count;
+        else if (result is IEnumerable)
         {
-          IEnumerable temp = (IEnumerable)obj;
+          IEnumerable temp = (IEnumerable)result;
           int count = 0;
           foreach (object item in temp)
             count++;
-          result = count;
+          rowCount = count;
         }
         else
-          result = 1;
+          rowCount = 1;
+        arguments.TotalRowCount = rowCount;
       }
-      else
-        result = obj;
 
       // if the result isn't IEnumerable then
       // wrap it in a collection

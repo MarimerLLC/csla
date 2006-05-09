@@ -605,7 +605,7 @@ namespace Csla
 
     public static bool operator <=(SmartDate obj1, string obj2)
     {
-      return obj1.CompareTo(obj2) < 0;
+      return obj1.CompareTo(obj2) <= 0;
     }
 
     #endregion

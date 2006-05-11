@@ -199,7 +199,7 @@ Friend Module MethodCaller
         'equal number of parameters, check if the same types
         Dim match As Boolean = True
         For index As Integer = 0 To pars.Length - 1
-          If pars(index).ParameterType Is types(index) Then
+          If Not pars(index).ParameterType Is types(index) Then
             match = False
             Exit For
           End If

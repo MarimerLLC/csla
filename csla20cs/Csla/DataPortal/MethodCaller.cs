@@ -125,8 +125,9 @@ namespace Csla
         {
           // at least one param has a real value
           // so search for a strongly typed match
-          result = objectType.GetMethod(method, flags, null,
-            CallingConventions.Any, types.ToArray(), null);
+          //result = objectType.GetMethod(method, flags, null,
+          //  CallingConventions.Any, types.ToArray(), null);
+          result = FindMethod(objectType, method, types.ToArray());
         }
       }
 
@@ -169,6 +170,49 @@ namespace Csla
         // based on the nested class scheme in the book
         return criteria.GetType().DeclaringType;
       }
+    }
+
+    /// <summary>
+    /// Returns information about the specified
+    /// method, even if the parameter types are
+    /// generic and are located in an abstract
+    /// generic base class.
+    /// </summary>
+    public static MethodInfo FindMethod(Type objType, string method, Type[] types)
+    {
+      if (objType == null) return null;
+
+      BindingFlags oneLevelFlags =
+            BindingFlags.DeclaredOnly | BindingFlags.Instance |
+            BindingFlags.Public | BindingFlags.NonPublic;
+      MethodInfo m = objType.GetMethod(method, oneLevelFlags);
+
+      if (m != null)
+      {
+        ParameterInfo[] pars = m.GetParameters();
+        if (pars.Length == 0 && types.Length == 0)
+          return m;     // no parameters is a match
+
+        if (pars.Length == types.Length)
+        {
+          //equal number of parameters, check if the same type.
+          bool match = true;
+
+          for (int i = 0; i < pars.Length; i++)
+          {
+            if (pars[i].ParameterType != types[i])
+            {
+              match = false;
+              break;
+            }
+          }
+          if (match) //found method
+            return m;
+
+        }
+      }
+      //not found, get next level down
+      return FindMethod(objType.BaseType, method, types);
     }
   }
 }

@@ -124,8 +124,9 @@ Friend Module MethodCaller
       Else
         ' at least one param has a real value
         ' so search for a strongly typed match
-        result = objectType.GetMethod(method, flags, Nothing, _
-          CallingConventions.Any, types.ToArray, Nothing)
+        'result = objectType.GetMethod(method, flags, Nothing, _
+        '  CallingConventions.Any, types.ToArray, Nothing)
+        result = FindMethod(objectType, method, types.ToArray)
       End If
     End If
 
@@ -169,6 +170,48 @@ Friend Module MethodCaller
       ' based on the nested class scheme in the book
       Return criteria.GetType.DeclaringType
     End If
+
+  End Function
+
+  ''' <summary>
+  ''' Returns information about the specified
+  ''' method, even if the parameter types are
+  ''' generic and are located in an abstract
+  ''' generic base class.
+  ''' </summary>
+  Public Function FindMethod(ByVal objType As Type, ByVal method As String, ByVal types As Type()) As MethodInfo
+
+    If objType Is Nothing Then Return Nothing
+
+    Dim oneLevelFlags As BindingFlags = _
+          BindingFlags.DeclaredOnly Or BindingFlags.Instance Or _
+          BindingFlags.Public Or BindingFlags.NonPublic
+    Dim m As MethodInfo = objType.GetMethod(method, oneLevelFlags)
+
+    If m IsNot Nothing Then
+      Dim pars As ParameterInfo() = m.GetParameters
+      If pars.Length = 0 AndAlso types.Length = 0 Then
+        ' no parameters is a match
+        Return m
+      End If
+
+      If pars.Length = types.Length Then
+        'equal number of parameters, check if the same types
+        Dim match As Boolean = True
+        For index As Integer = 0 To pars.Length - 1
+          If pars(index).ParameterType Is types(index) Then
+            match = False
+            Exit For
+          End If
+        Next
+        If match Then
+          ' parameters match
+          Return m
+        End If
+      End If
+    End If
+    'not found, get next level down
+    Return FindMethod(objType.BaseType, method, types)
 
   End Function
 

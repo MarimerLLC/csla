@@ -215,6 +215,7 @@ namespace ProjectTracker.Library
     private void DataPortal_Create(Criteria criteria)
     {
       // nothing to initialize
+      ValidationRules.CheckRules();
     }
 
     private void DataPortal_Fetch(Criteria criteria)

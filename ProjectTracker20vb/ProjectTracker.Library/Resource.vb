@@ -210,6 +210,7 @@ Private Class Criteria
   <RunLocal()> _
   Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
     ' nothing to initialize
+    ValidationRules.CheckRules()
   End Sub
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)

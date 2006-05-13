@@ -181,37 +181,22 @@ Friend Module MethodCaller
   ''' </summary>
   Public Function FindMethod(ByVal objType As Type, ByVal method As String, ByVal types As Type()) As MethodInfo
 
-    If objType Is Nothing Then Return Nothing
-
     Dim oneLevelFlags As BindingFlags = _
-          BindingFlags.DeclaredOnly Or BindingFlags.Instance Or _
-          BindingFlags.Public Or BindingFlags.NonPublic
-    Dim m As MethodInfo = objType.GetMethod(method, oneLevelFlags)
+      BindingFlags.DeclaredOnly Or BindingFlags.Instance Or _
+      BindingFlags.Public Or BindingFlags.NonPublic
 
-    If m IsNot Nothing Then
-      Dim pars As ParameterInfo() = m.GetParameters
-      If pars.Length = 0 AndAlso types.Length = 0 Then
-        ' no parameters is a match
-        Return m
+    Dim info As MethodInfo = Nothing
+    Do
+      ' find for a strongly typed match
+      info = objType.GetMethod(method, oneLevelFlags, Nothing, types, Nothing)
+      If info IsNot Nothing Then
+        Exit Do ' match found
       End If
 
-      If pars.Length = types.Length Then
-        'equal number of parameters, check if the same types
-        Dim match As Boolean = True
-        For index As Integer = 0 To pars.Length - 1
-          If Not pars(index).ParameterType Is types(index) Then
-            match = False
-            Exit For
-          End If
-        Next
-        If match Then
-          ' parameters match
-          Return m
-        End If
-      End If
-    End If
-    'not found, get next level down
-    Return FindMethod(objType.BaseType, method, types)
+      objType = objType.BaseType
+    Loop While objType IsNot Nothing
+
+    Return info
 
   End Function
 

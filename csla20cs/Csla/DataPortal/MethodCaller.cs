@@ -180,39 +180,22 @@ namespace Csla
     /// </summary>
     public static MethodInfo FindMethod(Type objType, string method, Type[] types)
     {
-      if (objType == null) return null;
-
       BindingFlags oneLevelFlags =
             BindingFlags.DeclaredOnly | BindingFlags.Instance |
             BindingFlags.Public | BindingFlags.NonPublic;
-      MethodInfo m = objType.GetMethod(method, oneLevelFlags);
 
-      if (m != null)
+      MethodInfo info = null;
+      do
       {
-        ParameterInfo[] pars = m.GetParameters();
-        if (pars.Length == 0 && types.Length == 0)
-          return m;     // no parameters is a match
+        //find for a strongly typed match
+        info = objType.GetMethod(method, oneLevelFlags, null, types, null);
+        if (info != null)
+          break;  //match found
 
-        if (pars.Length == types.Length)
-        {
-          //equal number of parameters, check if the same type.
-          bool match = true;
+        objType = objType.BaseType;
+      } while (objType != null);
 
-          for (int i = 0; i < pars.Length; i++)
-          {
-            if (pars[i].ParameterType != types[i])
-            {
-              match = false;
-              break;
-            }
-          }
-          if (match) //found method
-            return m;
-
-        }
-      }
-      //not found, get next level down
-      return FindMethod(objType.BaseType, method, types);
+      return info;
     }
   }
 }

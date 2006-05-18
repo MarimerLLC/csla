@@ -44,7 +44,7 @@ namespace Csla.Web.Design
       }
       _dataType = Utilities.GetPropertyType(
           field.PropertyType);
-      _isReadOnly = !field.IsReadOnly;
+      _isReadOnly = field.IsReadOnly;
       _name = field.Name;
 
       // nullable

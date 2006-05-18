@@ -59,8 +59,9 @@ Namespace Validation
       ByVal e As RuleArgs) As Boolean
 
       Dim max As Integer = DirectCast(e, MaxLengthRuleArgs).MaxLength
-      If Len(CallByName( _
-          target, e.PropertyName, CallType.Get).ToString) > max Then
+      Dim value As String = _
+        CStr(CallByName(target, e.PropertyName, CallType.Get))
+      If Len(value) > max Then
         e.Description = _
           String.Format(My.Resources.StringMaxLengthRule, e.PropertyName, max)
         Return False

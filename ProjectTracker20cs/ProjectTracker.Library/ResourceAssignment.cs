@@ -19,6 +19,7 @@ namespace ProjectTracker.Library
 
     public Guid ProjectId
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
@@ -28,6 +29,7 @@ namespace ProjectTracker.Library
 
     public string ProjectName
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
@@ -37,6 +39,7 @@ namespace ProjectTracker.Library
 
     public string Assigned
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
@@ -46,11 +49,13 @@ namespace ProjectTracker.Library
 
     public int Role
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
         return _role;
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);

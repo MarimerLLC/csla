@@ -27,14 +27,17 @@
           <Default>newPropertyValue</Default>
         </Object>
       </Declarations>
-      <Code Language="CSharp" Kind="method decl"><![CDATA[$PropertyType$ $PrivateVariable$;
+      <Code Language="CSharp" Kind="method decl">
+  <![CDATA[$PropertyType$ $PrivateVariable$;
 public $PropertyType$ $PropertyName$
 {
+  [System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)]
   get
   {
     CanReadProperty(true) ;
     return $PrivateVariable$;
   }
+  [System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)]
   set
   {
     CanWriteProperty(true);

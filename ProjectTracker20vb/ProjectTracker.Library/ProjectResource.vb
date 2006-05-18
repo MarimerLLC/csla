@@ -14,6 +14,7 @@ Public Class ProjectResource
   Private mTimestamp(7) As Byte
 
   Public ReadOnly Property ResourceId() As Integer
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mResourceId
@@ -21,6 +22,7 @@ Public Class ProjectResource
   End Property
 
   Public ReadOnly Property FirstName() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mFirstName
@@ -28,6 +30,7 @@ Public Class ProjectResource
   End Property
 
   Public ReadOnly Property LastName() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mLastName
@@ -35,6 +38,7 @@ Public Class ProjectResource
   End Property
 
   Public ReadOnly Property FullName() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       If CanReadProperty("FirstName") AndAlso CanReadProperty("LastName") Then
         Return LastName & ", " & FirstName
@@ -46,6 +50,7 @@ Public Class ProjectResource
   End Property
 
   Public ReadOnly Property Assigned() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mAssigned.Text
@@ -53,10 +58,12 @@ Public Class ProjectResource
   End Property
 
   Public Property Role() As Integer Implements IHoldRoles.Role
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mRole
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As Integer)
       CanWriteProperty(True)
       If Not mRole.Equals(value) Then

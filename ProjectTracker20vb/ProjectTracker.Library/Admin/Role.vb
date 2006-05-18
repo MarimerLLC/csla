@@ -14,6 +14,7 @@ Namespace Admin
     Private mTimestamp(7) As Byte
 
     Public Property Id() As Integer
+      <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
       Get
         CanReadProperty(True)
         If Not mIdSet Then
@@ -30,6 +31,7 @@ Namespace Admin
         End If
         Return mId
       End Get
+      <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
       Set(ByVal value As Integer)
         CanWriteProperty(True)
         If Not mId.Equals(value) Then
@@ -41,10 +43,12 @@ Namespace Admin
     End Property
 
     Public Property Name() As String
+      <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
       Get
         CanReadProperty(True)
         Return mName
       End Get
+      <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
       Set(ByVal value As String)
         CanWriteProperty(True)
         If Not mName.Equals(value) Then

@@ -13,6 +13,7 @@ Public Class ResourceAssignment
   Private mTimestamp(7) As Byte
 
   Public ReadOnly Property ProjectId() As Guid
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mProjectId
@@ -20,6 +21,7 @@ Public Class ResourceAssignment
   End Property
 
   Public ReadOnly Property ProjectName() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mProjectName
@@ -27,6 +29,7 @@ Public Class ResourceAssignment
   End Property
 
   Public ReadOnly Property Assigned() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mAssigned.Text
@@ -34,10 +37,12 @@ Public Class ResourceAssignment
   End Property
 
   Public Property Role() As Integer Implements IHoldRoles.Role
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mRole
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As Integer)
       CanWriteProperty(True)
       If Not mRole.Equals(value) Then

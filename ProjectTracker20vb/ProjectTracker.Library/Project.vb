@@ -16,6 +16,7 @@ Public Class Project
 
   <System.ComponentModel.DataObjectField(True, True)> _
   Public ReadOnly Property Id() As Guid
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mId
@@ -23,10 +24,12 @@ Public Class Project
   End Property
 
   Public Property Name() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mName
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal Value As String)
       CanWriteProperty(True)
       If mName <> Value Then
@@ -37,10 +40,12 @@ Public Class Project
   End Property
 
   Public Property Started() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mStarted.Text
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal Value As String)
       CanWriteProperty(True)
       If mStarted <> Value Then
@@ -52,10 +57,12 @@ Public Class Project
   End Property
 
   Public Property Ended() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mEnded.Text
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal Value As String)
       CanWriteProperty(True)
       If mEnded <> Value Then
@@ -67,10 +74,12 @@ Public Class Project
   End Property
 
   Public Property Description() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mDescription
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal Value As String)
       CanWriteProperty(True)
       If mDescription <> Value Then

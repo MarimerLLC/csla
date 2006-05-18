@@ -24,6 +24,7 @@ namespace ProjectTracker.Library
     [System.ComponentModel.DataObjectField(true, true)]
     public Guid Id
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
@@ -33,11 +34,13 @@ namespace ProjectTracker.Library
 
     public string Name
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
         return _name;
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);
@@ -52,11 +55,13 @@ namespace ProjectTracker.Library
 
     public string Started
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
         return _started.Text;
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);
@@ -72,11 +77,13 @@ namespace ProjectTracker.Library
 
     public string Ended
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
         return _ended.Text;
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);
@@ -92,11 +99,13 @@ namespace ProjectTracker.Library
 
     public string Description
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
           return _description;
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);

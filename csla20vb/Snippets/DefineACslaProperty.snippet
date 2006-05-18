@@ -29,12 +29,15 @@
           <Default>newPropertyValue</Default>
         </Object>
       </Declarations>
-      <Code Language="VB" Kind="method decl"><![CDATA[Private $PrivateVariable$ As $PropertyType$
+      <Code Language="VB" Kind="method decl">
+  <![CDATA[Private $PrivateVariable$ As $PropertyType$
 Public Property $PropertyName$() As $PropertyType$
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
         CanReadProperty(True) 
         Return $PrivateVariable$ 
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As $PropertyType$)
         CanWriteProperty(True)
         If Not $PrivateVariable$.Equals(value) Then

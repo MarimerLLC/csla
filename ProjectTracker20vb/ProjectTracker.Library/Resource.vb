@@ -13,6 +13,7 @@ Public Class Resource
     ResourceAssignments.NewResourceAssignments()
 
   Public ReadOnly Property Id() As Integer
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mId
@@ -20,10 +21,12 @@ Public Class Resource
   End Property
 
   Public Property LastName() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mLastName
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As String)
       CanWriteProperty(True)
       If mLastName <> value Then
@@ -34,10 +37,12 @@ Public Class Resource
   End Property
 
   Public Property FirstName() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mFirstName
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As String)
       CanWriteProperty(True)
       If mFirstName <> value Then
@@ -48,6 +53,7 @@ Public Class Resource
   End Property
 
   Public ReadOnly Property FullName() As String
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       If CanReadProperty("FirstName") AndAlso CanReadProperty("LastName") Then
         Return mLastName & ", " & mFirstName

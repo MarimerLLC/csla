@@ -29,8 +29,10 @@
           <Default>newPropertyValue</Default>
         </Object>
       </Declarations>
-      <Code Language="VB" Kind="method decl"><![CDATA[Private $PrivateVariable$ As $PropertyType$
+      <Code Language="VB" Kind="method decl">
+  <![CDATA[Private $PrivateVariable$ As $PropertyType$
 Public ReadOnly Property $PropertyName$() As $PropertyType$
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
         CanReadProperty(True)
         Return $PrivateVariable$ 

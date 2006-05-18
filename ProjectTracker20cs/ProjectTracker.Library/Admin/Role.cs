@@ -18,6 +18,7 @@ namespace ProjectTracker.Library.Admin
     [System.ComponentModel.DataObjectField(true, true)]
     public int Id
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
@@ -36,6 +37,7 @@ namespace ProjectTracker.Library.Admin
         }
         return _id;
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);
@@ -50,11 +52,13 @@ namespace ProjectTracker.Library.Admin
 
     public string Name
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
         return _name;
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);

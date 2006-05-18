@@ -124,7 +124,7 @@ public partial class ProjectEdit : System.Web.UI.Page
   {
     try
     {
-      Project.DeleteProject(new Guid(e.Keys["id"].ToString()));
+      Project.DeleteProject(new Guid(e.Keys["Id"].ToString()));
       Session["currentObject"] = null;
       e.RowsAffected = 1;
     }

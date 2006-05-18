@@ -50,7 +50,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
       If id Is Nothing Then
         Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
       End If
-      Return DirectCast(obj, T).GetIdValue.Equals(id)
+      Return id.Equals(DirectCast(obj, T).GetIdValue)
 
     Else
       Return False

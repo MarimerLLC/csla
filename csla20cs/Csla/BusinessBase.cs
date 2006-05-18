@@ -57,7 +57,7 @@ namespace Csla
         object id = GetIdValue();
         if (id == null)
           throw new ArgumentException(Resources.GetIdValueCantBeNull);
-        return ((T)obj).GetIdValue().Equals(id);
+        return id.Equals(((T)obj).GetIdValue());
       }
       else
         return false;

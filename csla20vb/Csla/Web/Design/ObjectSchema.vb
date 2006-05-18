@@ -34,8 +34,11 @@ Namespace Web.Design
       System.Web.UI.Design.IDataSourceViewSchema() _
       Implements System.Web.UI.Design.IDataSourceSchema.GetViews
 
-      Return New IDataSourceViewSchema() _
+      Dim result As IDataSourceViewSchema()
+      result = New IDataSourceViewSchema() _
         {New ObjectViewSchema(mTypeAssemblyName, mTypeName)}
+      Return result
+
     End Function
 
   End Class

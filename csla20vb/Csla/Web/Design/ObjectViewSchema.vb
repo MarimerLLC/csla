@@ -9,6 +9,7 @@ Namespace Web.Design
   ''' Object providing schema information for a
   ''' business object.
   ''' </summary>
+  <Serializable()> _
   Public Class ObjectViewSchema
     Implements IDataSourceViewSchema
 
@@ -55,18 +56,26 @@ Namespace Web.Design
       Implements System.Web.UI.Design.IDataSourceViewSchema.GetFields
 
       Dim result As New Generic.List(Of ObjectFieldInfo)
-      Dim t As Type = CslaDataSource.GetType(mTypeAssemblyName, mTypeName)
-      If GetType(IEnumerable).IsAssignableFrom(t) Then
-        ' this is a list so get the item type
-        t = Utilities.GetChildItemType(t)
-      End If
-      Dim props As PropertyDescriptorCollection = _
-        TypeDescriptor.GetProperties(t)
-      For Each item As PropertyDescriptor In props
-        If item.IsBrowsable Then
-          result.Add(New ObjectFieldInfo(item))
-        End If
-      Next
+      Dim fulltrust As System.Security.NamedPermissionSet = _
+        New System.Security.NamedPermissionSet("FullTrust")
+      Dim tempDomain As AppDomain = AppDomain.CreateDomain( _
+        "__temp", _
+        AppDomain.CurrentDomain.Evidence, _
+        AppDomain.CurrentDomain.SetupInformation, _
+        fulltrust, _
+        New System.Security.Policy.StrongName() {})
+      Try
+        ' load the TypeLoader object in the temp AppDomain
+        Dim thisAssembly As Assembly = Assembly.GetExecutingAssembly
+        Dim loader As TypeLoader = _
+          DirectCast(tempDomain.CreateInstanceFromAndUnwrap( _
+            thisAssembly.CodeBase, GetType(TypeLoader).FullName), TypeLoader)
+        result = loader.GetFields(mTypeAssemblyName, mTypeName)
+
+      Finally
+        AppDomain.Unload(tempDomain)
+      End Try
+
       Return result.ToArray
 
     End Function

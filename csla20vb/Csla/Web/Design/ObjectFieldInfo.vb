@@ -9,14 +9,19 @@ Namespace Web.Design
   ''' Contains schema information for a single
   ''' object property.
   ''' </summary>
+  <Serializable()> _
   Public Class ObjectFieldInfo
+
     Implements System.Web.UI.Design.IDataSourceFieldSchema
 
-    Private mField As PropertyDescriptor
+    Private mDataType As Type
     Private mPrimaryKey As Boolean
     Private mIsIdentity As Boolean
     Private mIsNullable As Boolean
     Private mLength As Integer
+    Private mIsReadOnly As Boolean
+    Private mName As String
+    Private mNullable As Boolean
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -25,15 +30,8 @@ Namespace Web.Design
     ''' describing the property.</param>
     Public Sub New(ByVal field As PropertyDescriptor)
 
-      mField = field
-      GetDataObjectAttribute()
-
-    End Sub
-
-    Private Sub GetDataObjectAttribute()
-
       Dim attribute As DataObjectFieldAttribute = _
-          CType(mField.Attributes.Item(GetType(DataObjectFieldAttribute)), _
+          CType(field.Attributes.Item(GetType(DataObjectFieldAttribute)), _
           DataObjectFieldAttribute)
       If (Not attribute Is Nothing) Then
         With attribute
@@ -42,6 +40,20 @@ Namespace Web.Design
           mIsNullable = .IsNullable
           mLength = .Length
         End With
+      End If
+      mDataType = Utilities.GetPropertyType(field.PropertyType)
+      mIsReadOnly = field.IsReadOnly
+      mName = field.Name
+
+      Dim t As Type = field.PropertyType
+      If Not t.IsValueType OrElse mIsNullable Then
+        mNullable = True
+
+      ElseIf t.IsGenericType Then
+        mNullable = (t.GetGenericTypeDefinition Is GetType(Nullable(Of )))
+
+      Else
+        mNullable = False
       End If
 
     End Sub
@@ -52,7 +64,7 @@ Namespace Web.Design
     Public ReadOnly Property DataType() As System.Type _
       Implements System.Web.UI.Design.IDataSourceFieldSchema.DataType
       Get
-        Return Utilities.GetPropertyType(mField.PropertyType)
+        Return mDataType
       End Get
     End Property
 
@@ -77,7 +89,7 @@ Namespace Web.Design
     ''' </summary>
     Public ReadOnly Property IsReadOnly() As Boolean Implements System.Web.UI.Design.IDataSourceFieldSchema.IsReadOnly
       Get
-        Return mField.IsReadOnly
+        Return mIsReadOnly
       End Get
     End Property
 
@@ -116,7 +128,7 @@ Namespace Web.Design
     Public ReadOnly Property Name() As String _
       Implements System.Web.UI.Design.IDataSourceFieldSchema.Name
       Get
-        Return mField.Name
+        Return mName
       End Get
     End Property
 
@@ -134,14 +146,7 @@ Namespace Web.Design
     Public ReadOnly Property Nullable() As Boolean _
       Implements System.Web.UI.Design.IDataSourceFieldSchema.Nullable
       Get
-        Dim t As Type = Me.mField.PropertyType
-        If Not t.IsValueType OrElse mIsNullable Then
-          Return True
-        End If
-        If t.IsGenericType Then
-          Return (t.GetGenericTypeDefinition Is GetType(Nullable(Of )))
-        End If
-        Return False
+        Return mNullable
       End Get
     End Property
 

@@ -1,4 +1,5 @@
 Imports System.Text.RegularExpressions
+Imports System.Reflection
 
 Namespace Validation
 
@@ -242,61 +243,15 @@ Namespace Validation
     ''' <param name="e">Arguments variable specifying the
     ''' name of the property to validate, along with the max
     ''' allowed value.</param>
-    Public Function MaxValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+    Public Function MaxValue(Of T As IComparable)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
-      Dim max As Object = CType(e, MaxValueRuleArgs(Of T)).MaxValue
-      Dim value As Object = CallByName(target, e.PropertyName, CallType.Get)
-      Dim result As Boolean
-      Dim pType As Type = GetType(T)
-      If pType.IsPrimitive Then
-        If pType.Equals(GetType(Integer)) Then
-          result = (CInt(value) <= CInt(max))
+      Dim pi As PropertyInfo = target.GetType.GetProperty(e.PropertyName)
+      Dim value As T = DirectCast(pi.GetValue(target, Nothing), T)
+      Dim max As T = DirectCast(e, MaxValueRuleArgs(Of T)).MaxValue
 
-        ElseIf pType.Equals(GetType(Boolean)) Then
-          result = (CBool(value) <= CBool(max))
-
-        ElseIf pType.Equals(GetType(Single)) Then
-          result = (CSng(value) <= CSng(max))
-
-        ElseIf pType.Equals(GetType(Double)) Then
-          result = (CDbl(value) <= CDbl(max))
-
-        ElseIf pType.Equals(GetType(Byte)) Then
-          result = (CByte(value) <= CByte(max))
-
-        ElseIf pType.Equals(GetType(Char)) Then
-          result = (CChar(value) <= CChar(max))
-
-        ElseIf pType.Equals(GetType(Short)) Then
-          result = (CShort(value) <= CShort(max))
-
-        ElseIf pType.Equals(GetType(Long)) Then
-          result = (CLng(value) <= CLng(max))
-
-        ElseIf pType.Equals(GetType(UShort)) Then
-          result = (CUShort(value) <= CUShort(max))
-
-        ElseIf pType.Equals(GetType(UInteger)) Then
-          result = (CUInt(value) <= CUInt(max))
-
-        ElseIf pType.Equals(GetType(ULong)) Then
-          result = (CULng(value) <= CULng(max))
-
-        ElseIf pType.Equals(GetType(SByte)) Then
-          result = (CSByte(value) <= CSByte(max))
-
-        Else
-          Throw New ArgumentException(My.Resources.PrimitiveTypeRequired)
-        End If
-
-      Else  ' not primitive
-        Throw New ArgumentException(My.Resources.PrimitiveTypeRequired)
-      End If
-
-      If Not result Then
-        e.Description = String.Format(My.Resources.MaxValueRule, _
-          e.PropertyName, max.ToString)
-        Return False
+      Dim result As Integer = value.CompareTo(max)
+      If result = 1 Then
+        e.Description = String.Format(My.Resources.MaxValueRule, e.PropertyName, max.ToString)
 
       Else
         Return True
@@ -312,7 +267,7 @@ Namespace Validation
     Public Class MaxValueRuleArgs(Of T)
       Inherits RuleArgs
 
-      Private mMaxValue As T
+      Private mMaxValue As T = Nothing
 
       ''' <summary>
       ''' Get the max value for the property.
@@ -355,61 +310,15 @@ Namespace Validation
     ''' <param name="e">Arguments variable specifying the
     ''' name of the property to validate, along with the min
     ''' allowed value.</param>
-    Public Function MinValue(Of T)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+    Public Function MinValue(Of T As IComparable)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
-      Dim min As Object = CType(e, MinValueRuleArgs(Of T)).MinValue
-      Dim value As Object = CallByName(target, e.PropertyName, CallType.Get)
-      Dim result As Boolean
-      Dim pType As Type = GetType(T)
-      If pType.IsPrimitive Then
-        If pType.Equals(GetType(Integer)) Then
-          result = (CInt(value) >= CInt(min))
+      Dim pi As PropertyInfo = target.GetType.GetProperty(e.PropertyName)
+      Dim value As T = DirectCast(pi.GetValue(target, Nothing), T)
+      Dim min As T = DirectCast(e, MinValueRuleArgs(Of T)).MinValue
 
-        ElseIf pType.Equals(GetType(Boolean)) Then
-          result = (CBool(value) >= CBool(min))
-
-        ElseIf pType.Equals(GetType(Single)) Then
-          result = (CSng(value) >= CSng(min))
-
-        ElseIf pType.Equals(GetType(Double)) Then
-          result = (CDbl(value) >= CDbl(min))
-
-        ElseIf pType.Equals(GetType(Byte)) Then
-          result = (CByte(value) >= CByte(min))
-
-        ElseIf pType.Equals(GetType(Char)) Then
-          result = (CChar(value) >= CChar(min))
-
-        ElseIf pType.Equals(GetType(Short)) Then
-          result = (CShort(value) >= CShort(min))
-
-        ElseIf pType.Equals(GetType(Long)) Then
-          result = (CLng(value) >= CLng(min))
-
-        ElseIf pType.Equals(GetType(UShort)) Then
-          result = (CUShort(value) >= CUShort(min))
-
-        ElseIf pType.Equals(GetType(UInteger)) Then
-          result = (CUInt(value) >= CUInt(min))
-
-        ElseIf pType.Equals(GetType(ULong)) Then
-          result = (CULng(value) >= CULng(min))
-
-        ElseIf pType.Equals(GetType(SByte)) Then
-          result = (CSByte(value) >= CSByte(min))
-
-        Else
-          Throw New ArgumentException(My.Resources.PrimitiveTypeRequired)
-        End If
-
-      Else  ' not primitive
-        Throw New ArgumentException(My.Resources.PrimitiveTypeRequired)
-      End If
-
-      If Not result Then
-        e.Description = String.Format(My.Resources.MinValueRule, _
-          e.PropertyName, min.ToString)
-        Return False
+      Dim result As Integer = value.CompareTo(min)
+      If result = -1 Then
+        e.Description = String.Format(My.Resources.MinValueRule, e.PropertyName, min.ToString)
 
       Else
         Return True
@@ -425,7 +334,7 @@ Namespace Validation
     Public Class MinValueRuleArgs(Of T)
       Inherits RuleArgs
 
-      Private mMinValue As T
+      Private mMinValue As T = Nothing
 
       ''' <summary>
       ''' Get the min value for the property.

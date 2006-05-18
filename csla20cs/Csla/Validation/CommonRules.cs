@@ -1,6 +1,7 @@
 using System;
 using Csla.Properties;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace Csla.Validation
 {
@@ -238,94 +239,14 @@ namespace Csla.Validation
     /// <param name="e">Arguments variable specifying the
     /// name of the property to validate, along with the max
     /// allowed value.</param>
-    public static bool MaxValue<T>(object target, RuleArgs e)
+    public static bool MaxValue<T>(object target, RuleArgs e) where T: IComparable
     {
-      T max = (T)((MaxValueRuleArgs<T>)e).MaxValue;
-      T value = (T)Utilities.CallByName(
-        target, e.PropertyName, CallType.Get);
-      bool result;
-      Type pType = typeof(T);
-      if (pType.IsPrimitive)
-      {
-        if (pType.Equals(typeof(int)))
-        {
-          int v1 = Convert.ToInt32(value);
-          int v2 = Convert.ToInt32(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(bool)))
-        {
-          bool v1 = Convert.ToBoolean(value);
-          bool v2 = Convert.ToBoolean(max);
-          result = (v1 = v2);
-        }
-        else if (pType.Equals(typeof(float)))
-        {
-          float v1 = Convert.ToSingle(value);
-          float v2 = Convert.ToSingle(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(double)))
-        {
-          double v1 = Convert.ToDouble(value);
-          double v2 = Convert.ToDouble(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(byte)))
-        {
-          byte v1 = Convert.ToByte(value);
-          byte v2 = Convert.ToByte(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(char)))
-        {
-          char v1 = Convert.ToChar(value);
-          char v2 = Convert.ToChar(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(short)))
-        {
-          short v1 = Convert.ToInt16(value);
-          short v2 = Convert.ToInt16(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(long)))
-        {
-          long v1 = Convert.ToInt64(value);
-          long v2 = Convert.ToInt64(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(ushort)))
-        {
-          ushort v1 = Convert.ToUInt16(value);
-          ushort v2 = Convert.ToUInt16(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(uint)))
-        {
-          uint v1 = Convert.ToUInt32(value);
-          uint v2 = Convert.ToUInt32(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(ulong)))
-        {
-          ulong v1 = Convert.ToUInt64(value);
-          ulong v2 = Convert.ToUInt64(max);
-          result = (v1 <= v2);
-        }
-        else if (pType.Equals(typeof(sbyte)))
-        {
-          sbyte v1 = Convert.ToSByte(value);
-          sbyte v2 = Convert.ToSByte(max);
-          result = (v1 <= v2);
-        }
-        else
-          throw new ArgumentException(Resources.PrimitiveTypeRequired);
-      }
-      else  // not primitive
-        throw new ArgumentException(Resources.PrimitiveTypeRequired);
+      PropertyInfo pi = target.GetType().GetProperty(e.PropertyName);
+      T value = (T)pi.GetValue(target, null);
+      T max = ((MaxValueRuleArgs<T>)e).MaxValue;
 
-      if (!result)
+      int result = value.CompareTo(max);
+      if (result == 1)
       {
         e.Description = string.Format(Resources.MaxValueRule, 
           e.PropertyName, max.ToString());
@@ -342,7 +263,7 @@ namespace Csla.Validation
     /// <typeparam name="T">Type of the property to validate.</typeparam>
     public class MaxValueRuleArgs<T> : RuleArgs
     {
-      T _maxValue;
+      T _maxValue = default(T);
 
       /// <summary>
       /// Get the max value for the property.
@@ -385,94 +306,14 @@ namespace Csla.Validation
     /// <param name="e">Arguments variable specifying the
     /// name of the property to validate, along with the min
     /// allowed value.</param>
-    public static bool MinValue<T>(object target, RuleArgs e)
+    public static bool MinValue<T>(object target, RuleArgs e) where T: IComparable
     {
-      T min = (T)((MinValueRuleArgs<T>)e).MinValue;
-      T value = (T)Utilities.CallByName(
-        target, e.PropertyName, CallType.Get);
-      bool result;
-      Type pType = typeof(T);
-      if (pType.IsPrimitive)
-      {
-        if (pType.Equals(typeof(int)))
-        {
-          int v1 = Convert.ToInt32(value);
-          int v2 = Convert.ToInt32(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(bool)))
-        {
-          bool v1 = Convert.ToBoolean(value);
-          bool v2 = Convert.ToBoolean(min);
-          result = (v1 = v2);
-        }
-        else if (pType.Equals(typeof(float)))
-        {
-          float v1 = Convert.ToSingle(value);
-          float v2 = Convert.ToSingle(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(double)))
-        {
-          double v1 = Convert.ToDouble(value);
-          double v2 = Convert.ToDouble(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(byte)))
-        {
-          byte v1 = Convert.ToByte(value);
-          byte v2 = Convert.ToByte(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(char)))
-        {
-          char v1 = Convert.ToChar(value);
-          char v2 = Convert.ToChar(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(short)))
-        {
-          short v1 = Convert.ToInt16(value);
-          short v2 = Convert.ToInt16(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(long)))
-        {
-          long v1 = Convert.ToInt64(value);
-          long v2 = Convert.ToInt64(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(ushort)))
-        {
-          ushort v1 = Convert.ToUInt16(value);
-          ushort v2 = Convert.ToUInt16(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(uint)))
-        {
-          uint v1 = Convert.ToUInt32(value);
-          uint v2 = Convert.ToUInt32(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(ulong)))
-        {
-          ulong v1 = Convert.ToUInt64(value);
-          ulong v2 = Convert.ToUInt64(min);
-          result = (v1 >= v2);
-        }
-        else if (pType.Equals(typeof(sbyte)))
-        {
-          sbyte v1 = Convert.ToSByte(value);
-          sbyte v2 = Convert.ToSByte(min);
-          result = (v1 >= v2);
-        }
-        else
-          throw new ArgumentException(Resources.PrimitiveTypeRequired);
-      }
-      else  // not primitive
-        throw new ArgumentException(Resources.PrimitiveTypeRequired);
+      PropertyInfo pi = target.GetType().GetProperty(e.PropertyName);
+      T value = (T)pi.GetValue(target, null);
+      T min = ((MinValueRuleArgs<T>)e).MinValue;
 
-      if (!result)
+      int result = value.CompareTo(min);
+      if (result == -1)
       {
         e.Description = string.Format(Resources.MinValueRule,
           e.PropertyName, min.ToString());
@@ -489,7 +330,7 @@ namespace Csla.Validation
     /// <typeparam name="T">Type of the property to validate.</typeparam>
     public class MinValueRuleArgs<T> : RuleArgs
     {
-      T _minValue;
+      T _minValue = default(T);
 
       /// <summary>
       /// Get the min value for the property.

@@ -112,38 +112,38 @@ namespace Csla.Test.SafeDataReader
         //    cn.Close();
         //}
 
-        [TestMethod()]
-        public void RetrieveBinaryObjectFromDB()
-        {
-            SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-            SqlCommand cm = cn.CreateCommand();
-            cm.CommandText = "SELECT BINARYFIELD FROM MultiDataTypes WHERE CHARFIELD='z'";
+        //[TestMethod()]
+        //public void RetrieveBinaryObjectFromDB()
+        //{
+        //    SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+        //    SqlCommand cm = cn.CreateCommand();
+        //    cm.CommandText = "SELECT BINARYFIELD FROM MultiDataTypes WHERE CHARFIELD='z'";
             
-            byte[] byteArray = new Byte[7000];
-            long longValue;
+        //    byte[] byteArray = new Byte[7000];
+        //    long longValue;
 
-            cn.Open();
-            using (cm)
-            {
-                using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
-                {
-                    dr.Read();
-                    longValue = dr.GetBytes("BINARYFIELD", 0, byteArray, 0, 7000);
-                    dr.Close();
-                }
-            }
-            cn.Close();
+        //    cn.Open();
+        //    using (cm)
+        //    {
+        //        using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
+        //        {
+        //            dr.Read();
+        //            longValue = dr.GetBytes("BINARYFIELD", 0, byteArray, 0, 7000);
+        //            dr.Close();
+        //        }
+        //    }
+        //    cn.Close();
 
-            System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
-            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter =
-                new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+        //    System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
+        //    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter =
+        //        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 
-            object obj = formatter.Deserialize(stream);
-            Csla.Test.DataPortal.TransactionalRoot root = (Csla.Test.DataPortal.TransactionalRoot)(obj);
+        //    object obj = formatter.Deserialize(stream);
+        //    Csla.Test.DataPortal.TransactionalRoot root = (Csla.Test.DataPortal.TransactionalRoot)(obj);
 
-            Assert.AreEqual("Bill", root.FirstName);
-            Assert.AreEqual("Johnson", root.LastName);
-        }
+        //    Assert.AreEqual("Bill", root.FirstName);
+        //    Assert.AreEqual("Johnson", root.LastName);
+        //}
 
         [TestMethod()]
         public void GetSchemaTable()

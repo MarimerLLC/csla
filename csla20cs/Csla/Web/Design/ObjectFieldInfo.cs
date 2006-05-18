@@ -13,13 +13,17 @@ namespace Csla.Web.Design
   /// Contains schema information for a single
   /// object property.
   /// </summary>
+  [Serializable]
   public class ObjectFieldInfo : IDataSourceFieldSchema
   {
-    private PropertyDescriptor _field;
+    private Type _dataType;
     private bool _primaryKey;
     private bool _isIdentity;
     private bool _isNullable;
     private int _length;
+    private bool _isReadOnly;
+    private string _name;
+    private bool _nullable;
 
     /// <summary>
     /// Creates an instance of the object.
@@ -28,21 +32,31 @@ namespace Csla.Web.Design
     /// describing the property.</param>
     public ObjectFieldInfo(PropertyDescriptor field)
     {
-      _field = field;
-      GetDataObjectAttributes();
-    }
-
-    private void GetDataObjectAttributes()
-    {
       DataObjectFieldAttribute attribute =
         (DataObjectFieldAttribute)
-        _field.Attributes[typeof(DataObjectFieldAttribute)];
+        field.Attributes[typeof(DataObjectFieldAttribute)];
       if (attribute != null)
       {
         _primaryKey = attribute.PrimaryKey;
         _isIdentity = attribute.IsIdentity;
         _isNullable = attribute.IsNullable;
         _length = attribute.Length;
+      }
+      _dataType = Utilities.GetPropertyType(
+          field.PropertyType);
+      _isReadOnly = !field.IsReadOnly;
+      _name = field.Name;
+
+      // nullable
+      Type t = field.PropertyType;
+      if (!t.IsValueType || _isNullable)
+        _nullable = true;
+      else
+      {
+        if (t.IsGenericType)
+          _nullable = (t.GetGenericTypeDefinition() == typeof(Nullable<>));
+        else
+          _nullable = false;
       }
     }
 
@@ -53,8 +67,7 @@ namespace Csla.Web.Design
     {
       get
       {
-        return Utilities.GetPropertyType(
-          _field.PropertyType);
+        return _dataType;
       }
     }
 
@@ -78,7 +91,7 @@ namespace Csla.Web.Design
     /// </summary>
     public bool IsReadOnly
     {
-      get { return !_field.IsReadOnly; }
+      get { return _isReadOnly; }
     }
 
     /// <summary>
@@ -113,7 +126,7 @@ namespace Csla.Web.Design
     /// </summary>
     public string Name
     {
-      get { return _field.Name; }
+      get { return _name; }
     }
 
     /// <summary>
@@ -130,14 +143,7 @@ namespace Csla.Web.Design
     public bool Nullable
     {
       get
-      {
-        Type t = _field.PropertyType;
-        if (!t.IsValueType || _isNullable)
-          return true;
-        if (t.IsGenericType)
-          return (t.GetGenericTypeDefinition() == typeof(Nullable<>));
-        return false;
-      }
+      { return _nullable; }
     }
 
     /// <summary>

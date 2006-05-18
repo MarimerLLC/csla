@@ -700,7 +700,7 @@ namespace Csla
             if (e.NewIndex == _list.Count - 1)
             {
               object newKey;
-              if (_sortBy == null)
+              if (_sortBy != null)
                 newKey = _sortBy.GetValue(newItem);
               else
                 newKey = newItem;

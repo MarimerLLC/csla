@@ -89,8 +89,21 @@ namespace Csla
 
     protected ReadOnlyBase()
     {
+      Initialize();
       AddAuthorizationRules();
     }
+
+    #endregion
+
+    #region Initialize
+
+    /// <summary>
+    /// Override this method to set up event handlers so user
+    /// code in a partial class can respond to events raised by
+    /// generated code.
+    /// </summary>
+    protected virtual void Initialize()
+    { /* allows subclass to initialize events before any other activity occurs */ }
 
     #endregion
 

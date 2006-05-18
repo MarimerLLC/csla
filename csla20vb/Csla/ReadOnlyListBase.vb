@@ -18,6 +18,22 @@ Public MustInherit Class ReadOnlyListBase( _
 
   Protected Sub New()
 
+    Initialize()
+
+  End Sub
+
+#End Region
+
+#Region " Initialize "
+
+  ''' <summary>
+  ''' Override this method to set up event handlers so user
+  ''' code in a partial class can respond to events raised by
+  ''' generated code.
+  ''' </summary>
+  Protected Overridable Sub Initialize()
+    ' allows a generated class to set up events to be
+    ' handled by a partial class containing user code
   End Sub
 
 #End Region

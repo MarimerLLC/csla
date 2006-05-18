@@ -93,8 +93,23 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Protected Sub New()
 
+    Initialize()
     AddAuthorizationRules()
 
+  End Sub
+
+#End Region
+
+#Region " Initialize "
+
+  ''' <summary>
+  ''' Override this method to set up event handlers so user
+  ''' code in a partial class can respond to events raised by
+  ''' generated code.
+  ''' </summary>
+  Protected Overridable Sub Initialize()
+    ' allows a generated class to set up events to be
+    ' handled by a partial class containing user code
   End Sub
 
 #End Region

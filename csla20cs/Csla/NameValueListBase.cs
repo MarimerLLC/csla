@@ -214,7 +214,7 @@ namespace Csla
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void DataPortal_OndataPortalInvoke(DataPortalEventArgs e)
+    protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
 
     }

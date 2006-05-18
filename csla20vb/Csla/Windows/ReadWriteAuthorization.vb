@@ -120,9 +120,9 @@ Namespace Windows
             Dim propertyName As String = _
               binding.BindingMemberInfo.BindingField
 
-            ApplyReadRules(control, binding, propertyName, _
+            ApplyReadRules(control, binding, _
               ds.CanReadProperty(propertyName))
-            ApplyWriteRules(control, binding, propertyName, _
+            ApplyWriteRules(control, binding, _
               ds.CanWriteProperty(propertyName))
 
           ElseIf TypeOf bs.DataSource Is Csla.Core.IReadOnlyObject Then
@@ -132,7 +132,7 @@ Namespace Windows
             Dim propertyName As String = _
               binding.BindingMemberInfo.BindingField
 
-            ApplyReadRules(control, binding, propertyName, _
+            ApplyReadRules(control, binding, _
               ds.CanReadProperty(propertyName))
           End If
         End If
@@ -142,7 +142,7 @@ Namespace Windows
 
     Private Sub ApplyReadRules( _
       ByVal ctl As Control, ByVal binding As Binding, _
-      ByVal propertyName As String, ByVal canRead As Boolean)
+      ByVal canRead As Boolean)
 
       ' enable/disable reading of the value
       If canRead Then
@@ -173,7 +173,7 @@ Namespace Windows
 
     Private Sub ApplyWriteRules( _
       ByVal ctl As Control, ByVal binding As Binding, _
-      ByVal propertyName As String, ByVal canWrite As Boolean)
+      ByVal canWrite As Boolean)
 
       If TypeOf (ctl) Is Label Then Exit Sub
 

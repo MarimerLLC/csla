@@ -112,10 +112,10 @@ namespace Csla.Windows
               (Csla.Core.BusinessBase)bs.DataSource;
 
             ApplyReadRules(
-              control, binding, propertyName,
+              control, binding,
               ds.CanReadProperty(propertyName));
             ApplyWriteRules(
-              control, binding, propertyName,
+              control, binding,
               ds.CanWriteProperty(propertyName));
           }
           else if (bs.DataSource is Csla.Core.IReadOnlyObject)
@@ -124,7 +124,7 @@ namespace Csla.Windows
               (Csla.Core.IReadOnlyObject)bs.DataSource;
 
             ApplyReadRules(
-              control, binding, propertyName,
+              control, binding,
               ds.CanReadProperty(propertyName));
           }
         }
@@ -133,7 +133,7 @@ namespace Csla.Windows
 
     private void ApplyReadRules(
       Control ctl, Binding binding, 
-      string propertyName, bool canRead)
+      bool canRead)
     {
       // enable/disable reading of the value
       if (canRead)
@@ -169,7 +169,7 @@ namespace Csla.Windows
 
     private void ApplyWriteRules(
       Control ctl, Binding binding, 
-      string propertyName, bool canWrite)
+      bool canWrite)
     {
       if (ctl is Label) return;
 

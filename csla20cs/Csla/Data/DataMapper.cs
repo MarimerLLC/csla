@@ -73,7 +73,7 @@ namespace Csla.Data
         {
           try
           {
-            SetValue(target, propertyName, source[propertyName]);
+            SetPropertyValue(target, propertyName, source[propertyName]);
           }
           catch (Exception ex)
           {
@@ -159,7 +159,7 @@ namespace Csla.Data
         {
           try
           {
-            SetValue(
+            SetPropertyValue(
               target, propertyName, 
               sourceProperty.GetValue(source, null));
           }
@@ -187,7 +187,14 @@ namespace Csla.Data
 
     #endregion
 
-    private static void SetValue(
+    /// <summary>
+    /// Sets an object's property with the specified value,
+    /// coercing that value to the appropriate type if possible.
+    /// </summary>
+    /// <param name="target">Object containing the property to set.</param>
+    /// <param name="propertyName">Name of the property to set.</param>
+    /// <param name="value">Value to set into the property.</param>
+    public static void SetPropertyValue(
       object target, string propertyName, object value)
     {
       PropertyInfo propertyInfo =
@@ -198,7 +205,9 @@ namespace Csla.Data
       {
         Type pType =
           Utilities.GetPropertyType(propertyInfo.PropertyType);
-        if (pType.Equals(value.GetType()))
+        Type vType =
+          Utilities.GetPropertyType(value.GetType());
+        if (pType.Equals(vType))
         {
           // types match, just copy value
           propertyInfo.SetValue(target, value, null);
@@ -209,6 +218,8 @@ namespace Csla.Data
           if (pType.Equals(typeof(Guid)))
             propertyInfo.SetValue(
               target, new Guid(value.ToString()), null);
+          else if (pType.IsEnum && vType.Equals(typeof(string)))
+            propertyInfo.SetValue(target, Enum.Parse(pType, value.ToString()), null);
           else
             propertyInfo.SetValue(
               target, Convert.ChangeType(value, pType), null);

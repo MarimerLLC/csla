@@ -70,7 +70,7 @@ Namespace Data
       For Each propertyName As String In source.Keys
         If Not ignore.Contains(propertyName) Then
           Try
-            SetValue(target, propertyName, source.Item(propertyName))
+            SetPropertyValue(target, propertyName, source.Item(propertyName))
 
           Catch ex As Exception
             If Not suppressExceptions Then
@@ -158,7 +158,7 @@ Namespace Data
         Dim propertyName As String = sourceProperty.Name
         If Not ignore.Contains(propertyName) Then
           Try
-            SetValue(target, propertyName, _
+            SetPropertyValue(target, propertyName, _
               sourceProperty.GetValue(source, Nothing))
 
           Catch ex As Exception
@@ -190,18 +190,26 @@ Namespace Data
 
 #End Region
 
-    Private Sub SetValue( _
+    ''' <summary>
+    ''' Sets an object's property with the specified value,
+    ''' coercing that value to the appropriate type if possible.
+    ''' </summary>
+    ''' <param name="target">Object containing the property to set.</param>
+    ''' <param name="propertyName">Name of the property to set.</param>
+    ''' <param name="value">Value to set into the property.</param>
+    Public Sub SetPropertyValue( _
       ByVal target As Object, ByVal propertyName As String, _
       ByVal value As Object)
 
       Dim propertyInfo As PropertyInfo = _
         target.GetType.GetProperty(propertyName)
-      Dim pType As Type = Utilities.GetPropertyType(propertyInfo.PropertyType)
       If value Is Nothing Then
         propertyInfo.SetValue(target, value, Nothing)
 
       Else
-        If pType.Equals(value.GetType) Then
+        Dim pType As Type = Utilities.GetPropertyType(propertyInfo.PropertyType)
+        Dim vType As Type = Utilities.GetPropertyType(value.GetType)
+        If pType.Equals(vType) Then
           ' types match, just copy value
           propertyInfo.SetValue(target, value, Nothing)
 
@@ -209,6 +217,10 @@ Namespace Data
           ' types don't match, try to coerce types
           If pType.Equals(GetType(Guid)) Then
             propertyInfo.SetValue(target, New Guid(value.ToString), Nothing)
+
+          ElseIf pType.IsEnum AndAlso vType.Equals(GetType(String)) Then
+            propertyInfo.SetValue( _
+              target, System.Enum.Parse(pType, value.ToString), Nothing)
 
           Else
             propertyInfo.SetValue(target, _

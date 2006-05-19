@@ -33,7 +33,7 @@ namespace Csla.DataPortalClient
       Hashtable properties = new Hashtable();
       properties["name"] = "HttpBinary";
 
-      if (ApplicationContext.AuthenticationType == "Windows")
+      if (ApplicationContext.AuthenticationType == "Windows" || AlwaysImpersonate)
       {
         // make sure we pass the user's Windows credentials
         // to the server
@@ -44,6 +44,16 @@ namespace Csla.DataPortalClient
         formatter = new BinaryClientFormatterSinkProvider();
       HttpChannel channel = new HttpChannel(properties, formatter, null);
       ChannelServices.RegisterChannel(channel, EncryptChannel);
+    }
+
+    private static bool AlwaysImpersonate
+    {
+      get
+      {
+        bool result =
+          (ConfigurationManager.AppSettings["AlwaysImpersonate"] == "true");
+        return AlwaysImpersonate;
+      }
     }
 
     private static bool EncryptChannel

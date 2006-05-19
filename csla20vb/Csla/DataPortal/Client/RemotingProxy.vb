@@ -31,7 +31,7 @@ Namespace DataPortalClient
       Dim properties As New Hashtable
       properties("name") = "HttpBinary"
 
-      If ApplicationContext.AuthenticationType = "Windows" Then
+      If ApplicationContext.AuthenticationType = "Windows" OrElse AlwaysImpersonate Then
         ' make sure we pass the user's Windows credentials
         ' to the server
         properties("useDefaultCredentials") = True
@@ -44,6 +44,14 @@ Namespace DataPortalClient
       ChannelServices.RegisterChannel(channel, EncryptChannel)
 
     End Sub
+
+    Private Shared ReadOnly Property AlwaysImpersonate() As Boolean
+      Get
+        Dim result As Boolean = _
+          (ConfigurationManager.AppSettings("CslaAlwaysImpersonate") = "true")
+        Return result
+      End Get
+    End Property
 
     Private Shared ReadOnly Property EncryptChannel() As Boolean
       Get

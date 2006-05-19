@@ -75,6 +75,7 @@
     <Compile Include="Basic\NameValueListObj.cs" />
     <Compile Include="Basic\ReadOnlyList.cs" />
     <Compile Include="Basic\Root.cs" />
+    <Compile Include="DataMapper\DataMapperTests.cs" />
     <Compile Include="DataPortalTestDatabaseDataSet.cs">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
     </Compile>

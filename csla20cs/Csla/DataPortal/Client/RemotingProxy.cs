@@ -52,7 +52,7 @@ namespace Csla.DataPortalClient
       {
         bool result =
           (ConfigurationManager.AppSettings["AlwaysImpersonate"] == "true");
-        return AlwaysImpersonate;
+        return result;
       }
     }
 

@@ -106,6 +106,10 @@
     <Compile Include="DataPortal\DpRoot.cs" />
     <Compile Include="DPException\DataPortalExceptionTests.cs" />
     <Compile Include="IO\IOTests.cs" />
+    <Compile Include="LazyLoad\AChild.cs" />
+    <Compile Include="LazyLoad\AChildList.cs" />
+    <Compile Include="LazyLoad\AParent.cs" />
+    <Compile Include="LazyLoad\LazyLoadTests.cs" />
     <Compile Include="Nullable\NullableObject.cs" />
     <Compile Include="Nullable\NullableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

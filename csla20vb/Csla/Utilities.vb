@@ -12,7 +12,8 @@ Friend Module Utilities
     If (type.IsGenericType AndAlso _
       (type.GetGenericTypeDefinition Is GetType(Nullable(Of )))) Then
 
-      Return type.GetGenericArguments(0)
+      Return Nullable.GetUnderlyingType(type)
+      'Return type.GetGenericArguments(0)
     End If
 
     Return type

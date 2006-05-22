@@ -69,7 +69,6 @@ namespace Csla.Core
       Type currentType = this.GetType();
       HybridDictionary state = new HybridDictionary();
       FieldInfo[] fields;
-      string fieldName;
 
       do
       {
@@ -93,7 +92,12 @@ namespace Csla.Core
               if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
               {
                 // make sure the variable has a value
-                if (value != null)
+                if (value == null)
+                {
+                  // variable has no value - store that fact
+                  state.Add(GetFieldName(field), null);
+                }
+                else
                 {
                   // this is a child object, cascade the call
                   ((Core.IUndoableObject)value).CopyState();
@@ -102,8 +106,7 @@ namespace Csla.Core
               else
               {
                 // this is a normal field, simply trap the value
-                fieldName = field.DeclaringType.Name + "!" + field.Name;
-                state.Add(fieldName, value);
+                state.Add(GetFieldName(field), value);
               }
             }
           }
@@ -158,7 +161,6 @@ namespace Csla.Core
 
         Type currentType = this.GetType();
         FieldInfo[] fields;
-        string fieldName;
 
         do
         {
@@ -180,18 +182,27 @@ namespace Csla.Core
 
                 if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
                 {
-                  // make sure the variable has a value
-                  if (value != null)
+                  // this is a child object
+                  // see if the previous value was empty
+                  if (state.Contains(GetFieldName(field)))
                   {
-                    // this is a child object, cascade the call.
-                    ((Core.IUndoableObject)value).UndoChanges();
+                    // previous value was empty - restore to empty
+                    field.SetValue(this, null);
+                  }
+                  else
+                  {
+                    // make sure the variable has a value
+                    if (value != null)
+                    {
+                      // this is a child object, cascade the call.
+                      ((Core.IUndoableObject)value).UndoChanges();
+                    }
                   }
                 }
                 else
                 {
                   // this is a regular field, restore its value
-                  fieldName = field.DeclaringType.Name + "!" + field.Name;
-                  field.SetValue(this, state[fieldName]);
+                  field.SetValue(this, state[GetFieldName(field)]);
                 }
               }
             }
@@ -269,6 +280,11 @@ namespace Csla.Core
     private static bool NotUndoableField(FieldInfo field)
     {
       return Attribute.IsDefined(field, typeof(NotUndoableAttribute));
+    }
+
+    private static string GetFieldName(FieldInfo field)
+    {
+      return field.DeclaringType.Name + "!" + field.Name;
     }
 
     #endregion

@@ -54,7 +54,6 @@ Namespace Core
       Dim currentType As Type = Me.GetType
       Dim state As New HybridDictionary()
       Dim fields() As FieldInfo
-      Dim fieldName As String
 
       Do
         ' get the list of fields in this type
@@ -74,15 +73,18 @@ Namespace Core
               If GetType(Csla.Core.IUndoableObject). _
                   IsAssignableFrom(field.FieldType) Then
                 ' make sure the variable has a value
-                If Not value Is Nothing Then
+                If value Is Nothing Then
+                  ' variable has no value - store that fact
+                  state.Add(GetFieldName(field), Nothing)
+
+                Else
                   ' this is a child object, cascade the call
                   DirectCast(value, IUndoableObject).CopyState()
                 End If
 
               Else
                 ' this is a normal field, simply trap the value
-                fieldName = field.DeclaringType.Name & "!" & field.Name
-                state.Add(fieldName, value)
+                state.Add(GetFieldName(field), value)
 
               End If
 
@@ -141,7 +143,6 @@ Namespace Core
         Dim currentType As Type = Me.GetType
         Dim fields() As FieldInfo
         Dim field As FieldInfo
-        Dim fieldName As String
 
 
         Do
@@ -160,16 +161,23 @@ Namespace Core
 
                 If GetType(Csla.Core.IUndoableObject). _
                   IsAssignableFrom(field.FieldType) Then
-                  ' this is a child object, cascade the call
-                  ' first make sure the variable has a value
-                  If Not value Is Nothing Then
-                    DirectCast(value, IUndoableObject).UndoChanges()
+                  ' this is a child object
+                  ' see if the previous value was empty
+                  If state.Contains(GetFieldName(field)) Then
+                    ' previous value was empty - restore to empty
+                    field.SetValue(Me, Nothing)
+
+                  Else
+                    ' make sure the variable has a value
+                    If Not value Is Nothing Then
+                      ' cascade the call
+                      DirectCast(value, IUndoableObject).UndoChanges()
+                    End If
                   End If
 
                 Else
                   ' this is a regular field, restore its value
-                  fieldName = field.DeclaringType.Name & "!" & field.Name
-                  field.SetValue(Me, state.Item(fieldName))
+                  field.SetValue(Me, state.Item(GetFieldName(field)))
                 End If
               End If
             End If
@@ -250,6 +258,12 @@ Namespace Core
     Private Shared Function NotUndoableField(ByVal field As FieldInfo) As Boolean
 
       Return Attribute.IsDefined(field, GetType(NotUndoableAttribute))
+
+    End Function
+
+    Private Function GetFieldName(ByVal field As FieldInfo) As String
+
+      Return field.DeclaringType.Name & "!" & field.Name
 
     End Function
 

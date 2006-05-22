@@ -1,14 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif
 
 namespace Csla.Test.DataMapper
 {
-  [TestFixture]
+  [TestClass]
   public class DataMapperTests
   {
-    [Test]
+    [TestMethod]
     public void NumericTypes()
     {
       DataMapTarget target = new DataMapTarget();
@@ -26,7 +36,7 @@ namespace Csla.Test.DataMapper
       Assert.AreEqual(target.MyBool, false, "Bool should be false");
     }
 
-    [Test]
+    [TestMethod]
     public void NullableTypes()
     {
       DataMapTarget target = new DataMapTarget();
@@ -38,7 +48,7 @@ namespace Csla.Test.DataMapper
       Assert.AreEqual(target.MyNInt, null, "Int should be null");
     }
 
-    [Test]
+    [TestMethod]
     public void EnumTypes()
     {
       DataMapTarget target = new DataMapTarget();

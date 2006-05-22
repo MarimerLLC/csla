@@ -363,6 +363,16 @@ Public MustInherit Class BusinessListBase( _
   ' keep track of how many edit levels we have
   Private mEditLevel As Integer
 
+  ''' <summary>
+  ''' Returns the current edit level of the object.
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected ReadOnly Property EditLevel() As Integer
+    Get
+      Return mEditLevel
+    End Get
+  End Property
+
 #End Region
 
 #Region " IsChild "

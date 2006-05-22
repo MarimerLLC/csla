@@ -381,6 +381,15 @@ namespace Csla
     // keep track of how many edit levels we have
     private int _editLevel;
 
+    /// <summary>
+    /// Returns the current edit level of the object.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected int EditLevel
+    {
+      get { return _editLevel; }
+    }
+
     #endregion
 
     #region IsChild

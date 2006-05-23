@@ -14,6 +14,7 @@ Namespace Core
   Public MustInherit Class BusinessBase
     Inherits UndoableBase
 
+    Implements IEditableBusinessObject
     Implements System.ComponentModel.IEditableObject
     Implements ICloneable
     Implements IDataErrorInfo
@@ -86,7 +87,7 @@ Namespace Core
     ''' </remarks>
     ''' <returns>A value indicating if this object is marked for deletion.</returns>
     <Browsable(False)> _
-    Public ReadOnly Property IsDeleted() As Boolean
+    Public ReadOnly Property IsDeleted() As Boolean Implements IEditableBusinessObject.IsDeleted
       Get
         Return mIsDeleted
       End Get
@@ -110,7 +111,7 @@ Namespace Core
     ''' </remarks>
     ''' <returns>A value indicating if this object's data has been changed.</returns>
     <Browsable(False)> _
-    Public Overridable ReadOnly Property IsDirty() As Boolean
+    Public Overridable ReadOnly Property IsDirty() As Boolean Implements IEditableBusinessObject.IsDirty
       Get
         Return mIsDirty
       End Get
@@ -543,7 +544,7 @@ Namespace Core
     ''' parent.
     ''' </summary>
     ''' <param name="parent">A reference to the parent collection object.</param>
-    Friend Sub SetParent(ByVal parent As Core.IEditableCollection)
+    Friend Sub SetParent(ByVal parent As Core.IEditableCollection) Implements IEditableBusinessObject.SetParent
 
       If Not IsChild Then
         Throw New InvalidOperationException(My.Resources.ParentSetException)
@@ -753,7 +754,7 @@ Namespace Core
     ''' Called by a parent object to mark the child
     ''' for deferred deletion.
     ''' </summary>
-    Friend Sub DeleteChild()
+    Friend Sub DeleteChild() Implements IEditableBusinessObject.DeleteChild
       If Not Me.IsChild Then
         Throw New NotSupportedException(My.Resources.NoDeleteRootException)
       End If
@@ -779,7 +780,7 @@ Namespace Core
     ''' Allow the collection object to use the
     ''' edit level as needed.
     ''' </remarks>
-    Friend Property EditLevelAdded() As Integer
+    Friend Property EditLevelAdded() As Integer Implements IEditableBusinessObject.EditLevelAdded
       Get
         Return mEditLevelAdded
       End Get
@@ -866,7 +867,7 @@ Namespace Core
     ''' </remarks>
     ''' <returns>A value indicating if the object is currently valid.</returns>
     <Browsable(False)> _
-    Public Overridable ReadOnly Property IsValid() As Boolean
+    Public Overridable ReadOnly Property IsValid() As Boolean Implements IEditableBusinessObject.IsValid
       Get
         Return ValidationRules.IsValid
       End Get

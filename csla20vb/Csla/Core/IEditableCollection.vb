@@ -15,7 +15,7 @@ Namespace Core
   Public Interface IEditableCollection
     Inherits IUndoableObject
 
-    Sub RemoveChild(ByVal child As Core.BusinessBase)
+    Sub RemoveChild(ByVal child As Core.IEditableBusinessObject)
   End Interface
 
 End Namespace

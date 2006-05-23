@@ -15,7 +15,8 @@ namespace Csla.Core
   /// See Chapter 3 for details.
   /// </remarks>
   [Serializable()]
-  public abstract class BusinessBase : Csla.Core.UndoableBase,
+  public abstract class BusinessBase : 
+    Csla.Core.UndoableBase, IEditableBusinessObject,
     System.ComponentModel.IEditableObject, System.ComponentModel.IDataErrorInfo, 
     ICloneable
   {
@@ -1015,6 +1016,32 @@ namespace Csla.Core
     {
       // do nothing - this is here so a subclass
       // could override if needed
+    }
+
+    #endregion
+
+    #region IEditableBusinessObject Members
+
+    int IEditableBusinessObject.EditLevelAdded
+    {
+      get
+      {
+        return this.EditLevelAdded;
+      }
+      set
+      {
+        this.EditLevelAdded = value;
+      }
+    }
+
+    void IEditableBusinessObject.DeleteChild()
+    {
+      this.DeleteChild();
+    }
+
+    void IEditableBusinessObject.SetParent(IEditableCollection parent)
+    {
+      this.SetParent(parent);
     }
 
     #endregion

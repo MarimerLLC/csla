@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessListBase.vb" />
+    <Compile Include="Core\IEditableBusinessObject.vb" />
     <Compile Include="Core\IUndoableObject.vb" />
     <Compile Include="Core\IBusinessObject.vb" />
     <Compile Include="Core\ICommandObject.vb" />

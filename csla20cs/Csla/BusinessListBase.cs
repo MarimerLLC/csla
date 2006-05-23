@@ -15,10 +15,11 @@ namespace Csla
   [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
-  public abstract class BusinessListBase<T, C> : System.ComponentModel.BindingList<C>,
+  public abstract class BusinessListBase<T, C> : 
+      System.ComponentModel.BindingList<C>,
       Core.IEditableCollection, ICloneable
     where T : BusinessListBase<T, C>
-    where C : Core.BusinessBase
+    where C : Core.IEditableBusinessObject
   {
 
     #region Constructors
@@ -315,7 +316,7 @@ namespace Csla
     /// wants to be removed from the collection.
     /// </summary>
     /// <param name="child">The child object to remove.</param>
-    void Core.IEditableCollection.RemoveChild(Csla.Core.BusinessBase child)
+    void Core.IEditableCollection.RemoveChild(Csla.Core.IEditableBusinessObject child)
     {
       Remove((C)child);
     }
@@ -343,7 +344,9 @@ namespace Csla
       // being deleted, so do the deletion work
       C child = this[index];
       DeleteChild(child);
-      child.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+      INotifyPropertyChanged c = child as INotifyPropertyChanged;
+      if (c != null)
+        c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
       base.RemoveItem(index);
     }
 
@@ -479,12 +482,14 @@ namespace Csla
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
-      foreach (Core.BusinessBase child in this)
+      foreach (Core.IEditableBusinessObject child in this)
       {
         child.SetParent(this);
-        child.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+        INotifyPropertyChanged c = child as INotifyPropertyChanged;
+        if (c != null)
+          c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
       }
-      foreach (Core.BusinessBase child in DeletedList)
+      foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
       OnDeserialized(context);
     }

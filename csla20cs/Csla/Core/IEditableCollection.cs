@@ -14,6 +14,6 @@ namespace Csla.Core
     "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
   public interface IEditableCollection : IUndoableObject
   {
-    void RemoveChild(Core.BusinessBase child);
+    void RemoveChild(Core.IEditableBusinessObject child);
   }
 }

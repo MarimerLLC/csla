@@ -10,7 +10,7 @@ Imports Csla.Core
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
 Public MustInherit Class BusinessListBase( _
-  Of T As BusinessListBase(Of T, C), C As Core.BusinessBase)
+  Of T As BusinessListBase(Of T, C), C As Core.IEditableBusinessObject)
   Inherits System.ComponentModel.BindingList(Of C)
 
   Implements Core.IEditableCollection
@@ -297,7 +297,7 @@ Public MustInherit Class BusinessListBase( _
   ''' wants to be removed from the collection.
   ''' </summary>
   ''' <param name="child">The child object to remove.</param>
-  Private Sub RemoveChild(ByVal child As Core.BusinessBase) _
+  Private Sub RemoveChild(ByVal child As Core.IEditableBusinessObject) _
     Implements Core.IEditableCollection.RemoveChild
 
     Remove(DirectCast(child, C))
@@ -325,7 +325,10 @@ Public MustInherit Class BusinessListBase( _
     ' being deleted, so do the deletion work
     Dim child As C = Me(index)
     DeleteChild(child)
-    RemoveHandler child.PropertyChanged, AddressOf Child_PropertyChanged
+    Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(child, System.ComponentModel.INotifyPropertyChanged)
+    If c IsNot Nothing Then
+      RemoveHandler c.PropertyChanged, AddressOf Child_PropertyChanged
+    End If
     MyBase.RemoveItem(index)
   End Sub
 
@@ -470,11 +473,14 @@ Public MustInherit Class BusinessListBase( _
   <OnDeserialized()> _
   Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
 
-    For Each child As Core.BusinessBase In Me
+    For Each child As Core.IEditableBusinessObject In Me
       child.SetParent(Me)
-      AddHandler child.PropertyChanged, AddressOf Child_PropertyChanged
+      Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(child, System.ComponentModel.INotifyPropertyChanged)
+      If c IsNot Nothing Then
+        AddHandler c.PropertyChanged, AddressOf Child_PropertyChanged
+      End If
     Next
-    For Each child As Core.BusinessBase In DeletedList
+    For Each child As Core.IEditableBusinessObject In DeletedList
       child.SetParent(Me)
     Next
     OnDeserialized(context)

@@ -84,7 +84,7 @@ Public Class ResourceEdit
         If rebind Then
           ' rebind the UI
           Me.ResourceBindingSource.DataSource = Nothing
-          Me.AssignmentsBindingSource.DataSource = Nothing
+          Me.AssignmentsBindingSource.DataSource = Me.ResourceBindingSource
           Me.ResourceBindingSource.DataSource = mResource
           ApplyAuthorizationRules()
         End If

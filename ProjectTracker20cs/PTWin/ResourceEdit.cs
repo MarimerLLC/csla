@@ -89,7 +89,7 @@ namespace PTWin
           {
             // rebind the UI
             this.ResourceBindingSource.DataSource = null;
-            this.AssignmentsBindingSource.DataSource = null;
+            this.AssignmentsBindingSource.DataSource = this.ResourceBindingSource;
             this.ResourceBindingSource.DataSource = _resource;
             ApplyAuthorizationRules();
           }

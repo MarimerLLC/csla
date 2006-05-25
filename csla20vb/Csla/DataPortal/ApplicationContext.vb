@@ -42,6 +42,10 @@ Public Module ApplicationContext
 
 #Region " Client/Global Context "
 
+  Private mSyncClientContext As New Object
+  Private Const mClientContextName As String = "Csla.ClientContext"
+  Private Const mGlobalContextName As String = "Csla.GlobalContext"
+
   ''' <summary>
   ''' Returns the application-specific context data provided
   ''' by the client.
@@ -58,12 +62,14 @@ Public Module ApplicationContext
   ''' </remarks>
   Public ReadOnly Property ClientContext() As HybridDictionary
     Get
-      Dim ctx As HybridDictionary = GetClientContext()
-      If ctx Is Nothing Then
-        ctx = New HybridDictionary
-        SetClientContext(ctx)
-      End If
-      Return ctx
+      SyncLock mSyncClientContext
+        Dim ctx As HybridDictionary = GetClientContext()
+        If ctx Is Nothing Then
+          ctx = New HybridDictionary
+          SetClientContext(ctx)
+        End If
+        Return ctx
+      End SyncLock
     End Get
   End Property
 
@@ -94,15 +100,22 @@ Public Module ApplicationContext
 
   Friend Function GetClientContext() As HybridDictionary
 
-    If HttpContext.Current Is Nothing Then
-      Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot("Csla.ClientContext")
-      Return CType(Thread.GetData(slot), HybridDictionary)
+    SyncLock mSyncClientContext
+      If HttpContext.Current Is Nothing Then
+        If ExecutionLocation = ExecutionLocations.Client Then
+          Return CType(AppDomain.CurrentDomain.GetData(mClientContextName), HybridDictionary)
 
-    Else
-      Return CType(HttpContext.Current.Items("Csla.ClientContext"), _
-        HybridDictionary)
-    End If
+        Else
+          Dim slot As System.LocalDataStoreSlot = _
+            Thread.GetNamedDataSlot(mClientContextName)
+          Return CType(Thread.GetData(slot), HybridDictionary)
+        End If
+
+      Else
+        Return CType(HttpContext.Current.Items(mClientContextName), _
+          HybridDictionary)
+      End If
+    End SyncLock
 
   End Function
 
@@ -110,25 +123,32 @@ Public Module ApplicationContext
 
     If HttpContext.Current Is Nothing Then
       Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot("Csla.GlobalContext")
+        Thread.GetNamedDataSlot(mGlobalContextName)
       Return CType(Thread.GetData(slot), HybridDictionary)
 
     Else
-      Return CType(HttpContext.Current.Items("Csla.GlobalContext"), HybridDictionary)
+      Return CType(HttpContext.Current.Items(mGlobalContextName), HybridDictionary)
     End If
 
   End Function
 
   Private Sub SetClientContext(ByVal clientContext As HybridDictionary)
 
-    If HttpContext.Current Is Nothing Then
-      Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot("Csla.ClientContext")
-      Threading.Thread.SetData(slot, clientContext)
+    SyncLock mSyncClientContext
+      If HttpContext.Current Is Nothing Then
+        If ExecutionLocation = ExecutionLocations.Client Then
+          AppDomain.CurrentDomain.SetData(mClientContextName, clientContext)
 
-    Else
-      HttpContext.Current.Items("Csla.ClientContext") = clientContext
-    End If
+        Else
+          Dim slot As System.LocalDataStoreSlot = _
+            Thread.GetNamedDataSlot(mClientContextName)
+          Threading.Thread.SetData(slot, clientContext)
+        End If
+
+      Else
+        HttpContext.Current.Items(mClientContextName) = clientContext
+      End If
+    End SyncLock
 
   End Sub
 
@@ -136,11 +156,11 @@ Public Module ApplicationContext
 
     If HttpContext.Current Is Nothing Then
       Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot("Csla.GlobalContext")
+        Thread.GetNamedDataSlot(mGlobalContextName)
       Threading.Thread.SetData(slot, globalContext)
 
     Else
-      HttpContext.Current.Items("Csla.GlobalContext") = globalContext
+      HttpContext.Current.Items(mGlobalContextName) = globalContext
     End If
 
   End Sub

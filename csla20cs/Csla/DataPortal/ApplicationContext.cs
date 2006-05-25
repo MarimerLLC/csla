@@ -46,6 +46,10 @@ namespace Csla
 
     #region Client/Global Context
 
+    private static object _syncClientContext = new object();
+    private const string _clientContextName = "Csla.ClientContext";
+    private const string _globalContextName = "Csla.GlobalContext";
+
     /// <summary>
     /// Returns the application-specific context data provided
     /// by the client.
@@ -64,13 +68,16 @@ namespace Csla
     {
       get
       {
-        HybridDictionary ctx = GetClientContext();
-        if (ctx == null)
+        lock (_syncClientContext)
         {
-          ctx = new HybridDictionary();
-          SetClientContext(ctx);
+          HybridDictionary ctx = GetClientContext();
+          if (ctx == null)
+          {
+            ctx = new HybridDictionary();
+            SetClientContext(ctx);
+          }
+          return ctx;
         }
-        return ctx;
       }
     }
 
@@ -104,48 +111,64 @@ namespace Csla
 
     internal static HybridDictionary GetClientContext()
     {
-      if (HttpContext.Current == null)
+      lock (_syncClientContext)
       {
-        LocalDataStoreSlot slot = 
-          Thread.GetNamedDataSlot("Csla.ClientContext");
-        return (HybridDictionary)Thread.GetData(slot);
+        if (HttpContext.Current == null)
+        {
+          if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
+            return (HybridDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
+          else
+          {
+            LocalDataStoreSlot slot =
+              Thread.GetNamedDataSlot(_clientContextName);
+            return (HybridDictionary)Thread.GetData(slot);
+          }
+        }
+        else
+          return (HybridDictionary)
+            HttpContext.Current.Items[_clientContextName];
       }
-      else
-        return (HybridDictionary)
-          HttpContext.Current.Items["Csla.ClientContext"];
     }
 
     internal static HybridDictionary GetGlobalContext()
     {
       if (HttpContext.Current == null)
       {
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         return (HybridDictionary)Thread.GetData(slot);
       }
       else
-        return (HybridDictionary)HttpContext.Current.Items["Csla.GlobalContext"];
+        return (HybridDictionary)HttpContext.Current.Items[_globalContextName];
     }
 
     private static void SetClientContext(HybridDictionary clientContext)
     {
-      if (HttpContext.Current == null)
+      lock (_syncClientContext)
       {
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.ClientContext");
-        Thread.SetData(slot, clientContext);
+        if (HttpContext.Current == null)
+        {
+          if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
+            AppDomain.CurrentDomain.SetData(_clientContextName, clientContext);
+          else
+          {
+            LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
+            Thread.SetData(slot, clientContext);
+          }
+        }
+        else
+          HttpContext.Current.Items[_clientContextName] = clientContext;
       }
-      else
-        HttpContext.Current.Items["Csla.ClientContext"] = clientContext;
     }
 
     internal static void SetGlobalContext(HybridDictionary globalContext)
     {
       if (HttpContext.Current == null)
       {
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot("Csla.GlobalContext");
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         Thread.SetData(slot, globalContext);
       }
       else
-        HttpContext.Current.Items["Csla.GlobalContext"] = globalContext;
+        HttpContext.Current.Items[_globalContextName] = globalContext;
     }
 
     internal static void SetContext(

@@ -472,7 +472,7 @@ Namespace Validation
             Return "^\d{3}-\d{2}-\d{4}$"
 
           Case RegExPatterns.Email
-            Return "\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b"
+            Return "^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$"
 
           Case Else
             Return ""

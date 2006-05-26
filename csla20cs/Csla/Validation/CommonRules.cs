@@ -473,7 +473,7 @@ namespace Csla.Validation
           case RegExPatterns.SSN:
             return @"^\d{3}-\d{2}-\d{4}$";
           case RegExPatterns.Email:
-            return @"\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b";
+            return @"^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$";
           default:
             return string.Empty;
         }

@@ -246,15 +246,15 @@ Namespace Server
       ' do nothing
       If Not context.IsRemotePortal Then Exit Sub
 
-      ' set the app context to the value we got from the
-      ' client
-      ApplicationContext.SetContext( _
-        context.ClientContext, context.GlobalContext)
-
       ' set the context value so everyone knows the
       ' code is running on the server
       ApplicationContext.SetExecutionLocation( _
         ApplicationContext.ExecutionLocations.Server)
+
+      ' set the app context to the value we got from the
+      ' client
+      ApplicationContext.SetContext( _
+        context.ClientContext, context.GlobalContext)
 
       ' set the thread's culture to match the client
       System.Threading.Thread.CurrentThread.CurrentCulture = _

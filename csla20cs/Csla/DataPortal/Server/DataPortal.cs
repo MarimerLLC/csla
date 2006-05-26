@@ -245,13 +245,13 @@ namespace Csla.Server
       // do nothing
       if (!context.IsRemotePortal) return;
 
-      // set the app context to the value we got from the
-      // client
-      ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
-
       // set the context value so everyone knows the
       // code is running on the server
       ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
+
+      // set the app context to the value we got from the
+      // client
+      ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
       System.Threading.Thread.CurrentThread.CurrentCulture = 

@@ -3,10 +3,18 @@ using System.Reflection;
 
 namespace Csla
 {
-  internal static class Utilities
+  /// <summary>
+  /// Contains utility methods used by the
+  /// CSLA .NET framework.
+  /// </summary>
+  public static class Utilities
   {
     #region Replacements for VB runtime functionality
 
+    /// <summary>
+    /// Determines whether the specified
+    /// value can be converted to a valid number.
+    /// </summary>
     public static bool IsNumeric(object value)
     {
       double dbl;
@@ -14,6 +22,15 @@ namespace Csla
         System.Globalization.NumberFormatInfo.InvariantInfo, out dbl);
     }
 
+    /// <summary>
+    /// Allows late bound invocation of
+    /// properties and methods.
+    /// </summary>
+    /// <param name="target">Object implementing the property or method.</param>
+    /// <param name="methodName">Name of the property or method.</param>
+    /// <param name="callType">Specifies how to invoke the property or method.</param>
+    /// <param name="args">List of arguments to pass to the method.</param>
+    /// <returns>The result of the property or method invocation.</returns>
     public static object CallByName(
       object target, string methodName, CallType callType, 
       params object[] args)
@@ -85,7 +102,12 @@ namespace Csla
       return result;
     }
   }
-  internal enum CallType
+
+  /// <summary>
+  /// Valid options for calling a property or method
+  /// via the <see cref="Csla.Utilities.CallByName"/> method.
+  /// </summary>
+  public enum CallType
   {
     Get,
     Let,

@@ -1,6 +1,10 @@
 Imports System.Reflection
 
-Friend Module Utilities
+''' <summary>
+''' Contains utility methods used by the
+''' CSLA .NET framework.
+''' </summary>
+Public Module Utilities
 
   ''' <summary>
   ''' Returns a property's type, dealing with

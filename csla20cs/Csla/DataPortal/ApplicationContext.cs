@@ -62,6 +62,11 @@ namespace Csla
     /// Note that data in this context is transferred from
     /// the client to the server. No data is transferred from
     /// the server to the client.
+    /// </para><para>
+    /// This property is thread safe in a Windows client
+    /// setting and on an application server. It is not guaranteed
+    /// to be thread safe within the context of an ASP.NET
+    /// client setting (i.e. in your ASP.NET UI).
     /// </para>
     /// </remarks>
     public static HybridDictionary ClientContext
@@ -111,23 +116,21 @@ namespace Csla
 
     internal static HybridDictionary GetClientContext()
     {
-      lock (_syncClientContext)
+      if (HttpContext.Current == null)
       {
-        if (HttpContext.Current == null)
-        {
-          if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
+        if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
+          lock (_syncClientContext)
             return (HybridDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
-          else
-          {
-            LocalDataStoreSlot slot =
-              Thread.GetNamedDataSlot(_clientContextName);
-            return (HybridDictionary)Thread.GetData(slot);
-          }
-        }
         else
-          return (HybridDictionary)
-            HttpContext.Current.Items[_clientContextName];
+        {
+          LocalDataStoreSlot slot =
+            Thread.GetNamedDataSlot(_clientContextName);
+          return (HybridDictionary)Thread.GetData(slot);
+        }
       }
+      else
+        return (HybridDictionary)
+          HttpContext.Current.Items[_clientContextName];
     }
 
     internal static HybridDictionary GetGlobalContext()
@@ -143,21 +146,19 @@ namespace Csla
 
     private static void SetClientContext(HybridDictionary clientContext)
     {
-      lock (_syncClientContext)
+      if (HttpContext.Current == null)
       {
-        if (HttpContext.Current == null)
-        {
-          if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
+        if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
+          lock (_syncClientContext)
             AppDomain.CurrentDomain.SetData(_clientContextName, clientContext);
-          else
-          {
-            LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
-            Thread.SetData(slot, clientContext);
-          }
-        }
         else
-          HttpContext.Current.Items[_clientContextName] = clientContext;
+        {
+          LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
+          Thread.SetData(slot, clientContext);
+        }
       }
+      else
+        HttpContext.Current.Items[_clientContextName] = clientContext;
     }
 
     internal static void SetGlobalContext(HybridDictionary globalContext)

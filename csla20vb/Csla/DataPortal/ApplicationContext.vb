@@ -58,6 +58,11 @@ Public Module ApplicationContext
   ''' Note that data in this context is transferred from
   ''' the client to the server. No data is transferred from
   ''' the server to the client.
+  ''' </para><para>
+  ''' This property is thread safe in a Windows client
+  ''' setting and on an application server. It is not guaranteed
+  ''' to be thread safe within the context of an ASP.NET
+  ''' client setting (i.e. in your ASP.NET UI).
   ''' </para>
   ''' </remarks>
   Public ReadOnly Property ClientContext() As HybridDictionary
@@ -100,22 +105,22 @@ Public Module ApplicationContext
 
   Friend Function GetClientContext() As HybridDictionary
 
-    SyncLock mSyncClientContext
-      If HttpContext.Current Is Nothing Then
-        If ExecutionLocation = ExecutionLocations.Client Then
+    If HttpContext.Current Is Nothing Then
+      If ExecutionLocation = ExecutionLocations.Client Then
+        SyncLock mSyncClientContext
           Return CType(AppDomain.CurrentDomain.GetData(mClientContextName), HybridDictionary)
-
-        Else
-          Dim slot As System.LocalDataStoreSlot = _
-            Thread.GetNamedDataSlot(mClientContextName)
-          Return CType(Thread.GetData(slot), HybridDictionary)
-        End If
+        End SyncLock
 
       Else
-        Return CType(HttpContext.Current.Items(mClientContextName), _
-          HybridDictionary)
+        Dim slot As System.LocalDataStoreSlot = _
+          Thread.GetNamedDataSlot(mClientContextName)
+        Return CType(Thread.GetData(slot), HybridDictionary)
       End If
-    End SyncLock
+
+    Else
+      Return CType(HttpContext.Current.Items(mClientContextName), _
+        HybridDictionary)
+    End If
 
   End Function
 
@@ -134,21 +139,21 @@ Public Module ApplicationContext
 
   Private Sub SetClientContext(ByVal clientContext As HybridDictionary)
 
-    SyncLock mSyncClientContext
-      If HttpContext.Current Is Nothing Then
-        If ExecutionLocation = ExecutionLocations.Client Then
+    If HttpContext.Current Is Nothing Then
+      If ExecutionLocation = ExecutionLocations.Client Then
+        SyncLock mSyncClientContext
           AppDomain.CurrentDomain.SetData(mClientContextName, clientContext)
-
-        Else
-          Dim slot As System.LocalDataStoreSlot = _
-            Thread.GetNamedDataSlot(mClientContextName)
-          Threading.Thread.SetData(slot, clientContext)
-        End If
+        End SyncLock
 
       Else
-        HttpContext.Current.Items(mClientContextName) = clientContext
+        Dim slot As System.LocalDataStoreSlot = _
+          Thread.GetNamedDataSlot(mClientContextName)
+        Threading.Thread.SetData(slot, clientContext)
       End If
-    End SyncLock
+
+    Else
+      HttpContext.Current.Items(mClientContextName) = clientContext
+    End If
 
   End Sub
 

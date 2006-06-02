@@ -127,7 +127,7 @@ namespace Csla
     /// <param name="ex">The Exception thrown during processing.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e)
+    protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
 
     }

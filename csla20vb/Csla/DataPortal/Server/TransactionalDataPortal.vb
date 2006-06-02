@@ -56,10 +56,12 @@ Namespace Server
     ''' to provide transactional support via
     ''' System.Transactions.
     ''' </remarks>
+    ''' <param name="objectType">Type of business object to retrieve.</param>
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Object containing context data from client.</param>
     ''' <returns>A populated business object.</returns>
     Public Function Fetch( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Fetch
@@ -67,7 +69,7 @@ Namespace Server
       Dim result As DataPortalResult
       Using tr As New TransactionScope
         Dim portal As New SimpleDataPortal
-        result = portal.Fetch(criteria, context)
+        result = portal.Fetch(objectType, criteria, context)
         tr.Complete()
       End Using
       Return result

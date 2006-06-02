@@ -52,17 +52,19 @@ Namespace Server
     ''' but wraps that call within a COM+ transaction
     ''' to provide transactional support.
     ''' </remarks>
+    ''' <param name="objectType">Type of business object to retrieve.</param>
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Object containing context data from client.</param>
     ''' <returns>A populated business object.</returns>
     <AutoComplete(True)> _
     Public Function Fetch( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Fetch
 
       Dim portal As New SimpleDataPortal
-      Return portal.Fetch(criteria, context)
+      Return portal.Fetch(objectType, criteria, context)
 
     End Function
 

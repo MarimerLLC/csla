@@ -74,8 +74,21 @@ Namespace Server.Hosts
     <Serializable()> _
     Public Class FetchRequest
 
+      Private mObjectType As Type
       Private mCriteria As Object
       Private mContext As Server.DataPortalContext
+
+      ''' <summary>
+      ''' Type of business object to create.
+      ''' </summary>
+      Public Property ObjectType() As Type
+        Get
+          Return mObjectType
+        End Get
+        Set(ByVal value As Type)
+          mObjectType = value
+        End Set
+      End Property
 
       ''' <summary>
       ''' Criteria object describing business object.
@@ -213,7 +226,7 @@ Namespace Server.Hosts
       Dim portal As New Server.DataPortal
       Dim result As Object
       Try
-        result = portal.Fetch(request.Criteria, request.Context)
+        result = portal.Fetch(request.ObjectType, request.Criteria, request.Context)
 
       Catch ex As Exception
         result = ex

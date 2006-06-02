@@ -129,7 +129,22 @@ Public Module DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
   Public Function Fetch(Of T)(ByVal criteria As Object) As T
 
-    Return DirectCast(Fetch(criteria), T)
+    Return DirectCast(Fetch(GetType(T), criteria), T)
+
+  End Function
+
+  ''' <summary>
+  ''' Called by a factory method in a business class to retrieve
+  ''' an object, which is loaded with values from the database.
+  ''' </summary>
+  ''' <typeparam name="T">Specific type of the business object.</typeparam>
+  ''' <returns>An object populated with values from the database.</returns>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
+  Public Function Fetch(Of T)() As T
+
+    Return DirectCast(Fetch(GetType(T), Nothing), T)
 
   End Function
 
@@ -141,11 +156,17 @@ Public Module DataPortal
   ''' <returns>An object populated with values from the database.</returns>
   Public Function Fetch(ByVal criteria As Object) As Object
 
+    Return Fetch(MethodCaller.GetObjectType(criteria), criteria)
+
+  End Function
+
+  Private Function Fetch( _
+    ByVal objectType As Type, ByVal criteria As Object) As Object
+
     Dim result As Server.DataPortalResult
 
     Dim method As MethodInfo = _
-      MethodCaller.GetMethod( _
-        MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria)
+      MethodCaller.GetMethod(objectType, "DataPortal_Fetch", criteria)
 
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
@@ -156,7 +177,7 @@ Public Module DataPortal
     OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
     Try
-      result = proxy.Fetch(criteria, dpContext)
+      result = proxy.Fetch(objectType, criteria, dpContext)
 
     Catch ex As Server.DataPortalException
       result = ex.Result

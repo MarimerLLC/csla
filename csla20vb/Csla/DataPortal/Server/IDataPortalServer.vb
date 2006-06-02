@@ -20,11 +20,13 @@ Namespace Server
     ''' <summary>
     ''' Get an existing business object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to retrieve.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Function Fetch( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As DataPortalContext) As DataPortalResult
     ''' <summary>

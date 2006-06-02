@@ -99,16 +99,18 @@ Namespace DataPortalClient
     ''' Called by <see cref="DataPortal" /> to load an
     ''' existing business object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to retrieve.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Public Function Fetch( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Fetch
 
-      Return Portal.Fetch(criteria, context)
+      Return Portal.Fetch(objectType, criteria, context)
 
     End Function
 

@@ -73,6 +73,7 @@ Namespace Server
     ''' <summary>
     ''' Get an existing business object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to retrieve.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
@@ -80,6 +81,7 @@ Namespace Server
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
     Public Function Fetch( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Fetch
@@ -88,7 +90,7 @@ Namespace Server
 
       Try
         ' create an instance of the business object
-        obj = CreateBusinessObject(criteria)
+        obj = Activator.CreateInstance(objectType, True)
 
         ' tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented( _

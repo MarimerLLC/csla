@@ -86,9 +86,7 @@ Namespace Server
         Dim result As DataPortalResult
 
         Dim method As MethodInfo = _
-          MethodCaller.GetMethod( _
-            MethodCaller.GetObjectType(criteria), _
-            "DataPortal_Fetch", criteria)
+          MethodCaller.GetMethod(objectType, "DataPortal_Fetch", criteria)
 
         Select Case TransactionalType(method)
           Case TransactionalTypes.EnterpriseServices

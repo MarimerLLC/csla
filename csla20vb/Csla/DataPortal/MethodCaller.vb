@@ -175,6 +175,11 @@ Friend Module MethodCaller
 
   End Function
 
+  ''' <summary>
+  ''' Returns information about the specified
+  ''' method, finding the method based purely
+  ''' on the method name and number of parameters.
+  ''' </summary>
   Public Function FindMethod(ByVal objType As Type, ByVal method As String, ByVal parameterCount As Integer) As MethodInfo
 
     ' walk up the inheritance hierarchy looking

@@ -106,6 +106,7 @@
     <Compile Include="DataPortal\DataPortalTests.cs" />
     <Compile Include="DataPortal\DpRoot.cs" />
     <Compile Include="DPException\DataPortalExceptionTests.cs" />
+    <Compile Include="IO\DPMethodOverloadTests.cs" />
     <Compile Include="IO\IOTests.cs" />
     <Compile Include="LazyLoad\AChild.cs" />
     <Compile Include="LazyLoad\AChildList.cs" />

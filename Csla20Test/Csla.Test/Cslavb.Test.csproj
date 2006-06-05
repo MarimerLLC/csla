@@ -109,6 +109,7 @@
     <Compile Include="DataPortal\StronglyTypedDP.cs" />
     <Compile Include="DataPortal\TransactionalRoot.cs" />
     <Compile Include="DPException\DataPortalExceptionTests.cs" />
+    <Compile Include="IO\DPMethodOverloadTests.cs" />
     <Compile Include="IO\IOTests.cs" />
     <Compile Include="LazyLoad\AChild.cs" />
     <Compile Include="LazyLoad\AChildList.cs" />

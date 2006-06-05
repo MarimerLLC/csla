@@ -78,19 +78,20 @@ namespace Csla.Server
     /// <summary>
     /// Get an existing business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    public DataPortalResult Fetch(object criteria, DataPortalContext context)
+    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       object obj = null;
       try
       {
-        // create an instance of the business object
-        obj = CreateBusinessObject(criteria);
+        // create an instance of the business object.
+        obj = Activator.CreateInstance(objectType, true);
 
         // tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented(

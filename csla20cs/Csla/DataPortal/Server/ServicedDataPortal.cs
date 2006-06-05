@@ -46,14 +46,15 @@ namespace Csla.Server
     /// but wraps that call within a COM+ transaction
     /// to provide transactional support.
     /// </remarks>
+    /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Object containing context data from client.</param>
     /// <returns>A populated business object.</returns>
     [AutoComplete(true)]
-    public DataPortalResult Fetch(object criteria, DataPortalContext context)
+    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       SimpleDataPortal portal = new SimpleDataPortal();
-      return portal.Fetch(criteria, context);
+      return portal.Fetch(objectType, criteria, context);
     }
 
     /// <summary>

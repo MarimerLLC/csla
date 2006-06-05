@@ -42,14 +42,15 @@ namespace Csla.Server.Hosts
     /// <summary>
     /// Get an existing business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public virtual DataPortalResult Fetch(object criteria, DataPortalContext context)
+    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       Server.DataPortal portal = new Server.DataPortal();
-      return portal.Fetch(criteria, context);
+      return portal.Fetch(objectType, criteria, context);
     }
 
     /// <summary>

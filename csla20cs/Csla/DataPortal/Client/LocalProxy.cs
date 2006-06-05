@@ -32,13 +32,14 @@ namespace Csla.DataPortalClient
     /// Called by <see cref="DataPortal" /> to load an
     /// existing business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Fetch(object criteria, DataPortalContext context)
+    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
-      return _portal.Fetch(criteria, context);
+      return _portal.Fetch(objectType, criteria, context);
     }
 
     /// <summary>

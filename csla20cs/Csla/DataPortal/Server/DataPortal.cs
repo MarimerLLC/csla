@@ -73,11 +73,12 @@ namespace Csla.Server
     /// <summary>
     /// Get an existing business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Fetch(object criteria, DataPortalContext context)
+    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       try
       {
@@ -86,7 +87,7 @@ namespace Csla.Server
         DataPortalResult result;
 
         MethodInfo method = MethodCaller.GetMethod(
-          MethodCaller.GetObjectType(criteria), "DataPortal_Fetch", criteria);
+          objectType, "DataPortal_Fetch", criteria);
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -95,7 +96,7 @@ namespace Csla.Server
             portal = new ServicedDataPortal();
             try
             {
-              result = portal.Fetch(criteria, context);
+              result = portal.Fetch(objectType, criteria, context);
             }
             finally
             {
@@ -104,11 +105,11 @@ namespace Csla.Server
             break;
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal();
-            result = portal.Fetch(criteria, context);
+            result = portal.Fetch(objectType, criteria, context);
             break;
           default:
             portal = new SimpleDataPortal();
-            result = portal.Fetch(criteria, context);
+            result = portal.Fetch(objectType, criteria, context);
             break;
         }
         return result;

@@ -135,7 +135,21 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static T Fetch<T>(object criteria)
     {
-      return (T)Fetch(criteria);
+      return (T)Fetch(typeof(T), criteria);
+    }
+
+    /// <summary>
+    /// Called by a factory method in a business class to retrieve
+    /// an object, which is loaded with values from the database.
+    /// </summary>
+    /// <typeparam name="T">Specific type of the business object.</typeparam>
+    /// <returns>An object populated with values from the database.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+    public static T Fetch<T>()
+    {
+      return (T)Fetch(typeof(T), null);
     }
 
     /// <summary>
@@ -146,11 +160,15 @@ namespace Csla
     /// <returns>An object populated with values from the database.</returns>
     public static object Fetch(object criteria)
     {
+      return Fetch(MethodCaller.GetObjectType(criteria), criteria);
+    }
+
+    private static object Fetch(Type objectType, object criteria)
+    {
       Server.DataPortalResult result;
 
       MethodInfo method = MethodCaller.GetMethod(
-        MethodCaller.GetObjectType(criteria), 
-        "DataPortal_Fetch", criteria);
+        objectType, "DataPortal_Fetch", criteria);
 
       DataPortalClient.IDataPortalProxy proxy;
       proxy = GetDataPortalProxy(RunLocal(method));
@@ -163,7 +181,7 @@ namespace Csla
 
       try
       {
-        result = proxy.Fetch(criteria, dpContext);
+        result = proxy.Fetch(objectType, criteria, dpContext);
       }
       catch (Server.DataPortalException ex)
       {

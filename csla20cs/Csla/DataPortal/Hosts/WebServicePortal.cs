@@ -64,8 +64,18 @@ namespace Csla.Server.Hosts
     [Serializable()]
     public class FetchRequest
     {
+      private Type _objectType;
       private object _criteria;
       private Server.DataPortalContext _context;
+
+      /// <summary>
+      /// Type of business object to create.
+      /// </summary>
+      public Type ObjectType
+      {
+        get { return _objectType; }
+        set { _objectType = value; }
+      }
 
       /// <summary>
       /// Criteria object describing business object.
@@ -183,7 +193,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Fetch(request.Criteria, request.Context);
+        result = portal.Fetch(request.ObjectType, request.Criteria, request.Context);
       }
       catch (Exception ex)
       {

@@ -8,6 +8,18 @@ namespace Csla
 {
   internal static class MethodCaller
   {
+    const BindingFlags allLevelFlags =
+      BindingFlags.FlattenHierarchy |
+      BindingFlags.Instance |
+      BindingFlags.Public |
+      BindingFlags.NonPublic;
+
+    const BindingFlags oneLevelFlags =
+      BindingFlags.DeclaredOnly |
+      BindingFlags.Instance |
+      BindingFlags.Public |
+      BindingFlags.NonPublic;
+
     /// <summary>
     /// Uses reflection to dynamically invoke a method
     /// if that method is implemented on the target object.
@@ -66,68 +78,30 @@ namespace Csla
     public static MethodInfo GetMethod(
       Type objectType, string method, params object[] parameters)
     {
-      BindingFlags flags =
-        BindingFlags.FlattenHierarchy |
-        BindingFlags.Instance |
-        BindingFlags.Public |
-        BindingFlags.NonPublic;
-
       MethodInfo result = null;
 
       // try to find a strongly typed match
       if (parameters.Length > 0)
       {
         // put all param types into a list of Type
-        bool paramsAllNothing = true;
         List<Type> types = new List<Type>();
         foreach (object item in parameters)
         {
           if (item == null)
             types.Add(typeof(object));
           else
-          {
             types.Add(item.GetType());
-            paramsAllNothing = false;
-          }
         }
 
-        if (paramsAllNothing)
-        {
-          // all params are null so we have
-          // no type info to go on
-          BindingFlags oneLevelFlags =
-            BindingFlags.DeclaredOnly |
-            BindingFlags.Instance |
-            BindingFlags.Public |
-            BindingFlags.NonPublic;
-          Type[] typesArray = types.ToArray();
+        // first see if there's a matching method
+        // where all params match types
+        result = FindMethod(objectType, method, types.ToArray());
 
-          // walk up the inheritance hierarchy looking
-          // for a method with the right number of
-          // parameters
-          Type currentType = objectType;
-          do
-          {
-            MethodInfo info = currentType.GetMethod(method, oneLevelFlags);
-            if (info != null)
-            {
-              if (info.GetParameters().Length == parameters.Length)
-              {
-                // got a match so use it
-                result = info;
-                break;
-              }
-            }
-            currentType = currentType.BaseType;
-          } while (currentType != null);
-        }
-        else
+        if (result == null)
         {
-          // at least one param has a real value
-          // so search for a strongly typed match
-          //result = objectType.GetMethod(method, flags, null,
-          //  CallingConventions.Any, types.ToArray(), null);
-          result = FindMethod(objectType, method, types.ToArray());
+          // no match found - so look for any method
+          // with the right number of parameters
+          result = FindMethod(objectType, method, parameters.Length);
         }
       }
 
@@ -135,7 +109,7 @@ namespace Csla
       if (result == null)
       {
         try
-        { result = objectType.GetMethod(method, flags); }
+        { result = objectType.GetMethod(method, allLevelFlags); }
         catch (AmbiguousMatchException)
         {
           MethodInfo[] methods = objectType.GetMethods();
@@ -180,10 +154,6 @@ namespace Csla
     /// </summary>
     public static MethodInfo FindMethod(Type objType, string method, Type[] types)
     {
-      BindingFlags oneLevelFlags =
-            BindingFlags.DeclaredOnly | BindingFlags.Instance |
-            BindingFlags.Public | BindingFlags.NonPublic;
-
       MethodInfo info = null;
       do
       {
@@ -196,6 +166,35 @@ namespace Csla
       } while (objType != null);
 
       return info;
+    }
+
+    /// <summary>
+    /// Returns information about the specified
+    /// method, finding the method based purely
+    /// on the method name and number of parameters.
+    /// </summary>
+    public static MethodInfo FindMethod(Type objType, string method, int parameterCount)
+    {
+      // walk up the inheritance hierarchy looking
+      // for a method with the right number of
+      // parameters
+      MethodInfo result = null;
+      Type currentType = objType;
+      do
+      {
+        MethodInfo info = currentType.GetMethod(method, oneLevelFlags);
+        if (info != null)
+        {
+          if (info.GetParameters().Length == parameterCount)
+          {
+            // got a match so use it
+            result = info;
+            break;
+          }
+        }
+        currentType = currentType.BaseType;
+      } while (currentType != null);
+      return result;
     }
   }
 }

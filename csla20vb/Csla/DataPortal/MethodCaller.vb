@@ -3,6 +3,18 @@ Imports Csla.Server
 
 Friend Module MethodCaller
 
+  Private Const allLevelFlags As BindingFlags = _
+    BindingFlags.FlattenHierarchy Or _
+    BindingFlags.Instance Or _
+    BindingFlags.Public Or _
+    BindingFlags.NonPublic
+
+  Private Const oneLevelFlags As BindingFlags = _
+      BindingFlags.DeclaredOnly Or _
+      BindingFlags.Instance Or _
+      BindingFlags.Public Or _
+      BindingFlags.NonPublic
+
   ''' <summary>
   ''' Uses reflection to dynamically invoke a method
   ''' if that method is implemented on the target object.
@@ -71,18 +83,11 @@ Friend Module MethodCaller
     ByVal method As String, ByVal ParamArray parameters() As Object) _
     As MethodInfo
 
-    Dim flags As BindingFlags = _
-      BindingFlags.FlattenHierarchy Or _
-      BindingFlags.Instance Or _
-      BindingFlags.Public Or _
-      BindingFlags.NonPublic
-
     Dim result As MethodInfo = Nothing
 
     ' try to find a strongly typed match
     If parameters.Length > 0 Then
       ' put all param types into an array of Type
-      Dim paramsAllNothing As Boolean = True
       Dim types As New List(Of Type)
       For Each item As Object In parameters
         If item Is Nothing Then
@@ -90,50 +95,24 @@ Friend Module MethodCaller
 
         Else
           types.Add(item.GetType)
-          paramsAllNothing = False
         End If
       Next
 
-      If paramsAllNothing Then
-        ' all params are Nothing so we have
-        ' no type info to go on
-        Dim oneLevelFlags As BindingFlags = _
-          BindingFlags.DeclaredOnly Or _
-          BindingFlags.Instance Or _
-          BindingFlags.Public Or _
-          BindingFlags.NonPublic
-        Dim typesArray() As Type = types.ToArray
+      ' first see if there's a matching method
+      ' where all params match types
+      result = FindMethod(objectType, method, types.ToArray)
 
-        ' walk up the inheritance hierarchy looking
-        ' for a method with the right number of
-        ' parameters
-        Dim currentType As Type = objectType
-        Do
-          Dim info As MethodInfo = _
-            currentType.GetMethod(method, oneLevelFlags)
-          If info IsNot Nothing Then
-            If info.GetParameters.Length = parameters.Length Then
-              ' got a match so use it
-              result = info
-              Exit Do
-            End If
-          End If
-          currentType = currentType.BaseType
-        Loop Until currentType Is Nothing
-
-      Else
-        ' at least one param has a real value
-        ' so search for a strongly typed match
-        'result = objectType.GetMethod(method, flags, Nothing, _
-        '  CallingConventions.Any, types.ToArray, Nothing)
-        result = FindMethod(objectType, method, types.ToArray)
+      If result Is Nothing Then
+        ' no match found - so look for any method
+        ' with the right number of parameters
+        result = FindMethod(objectType, method, parameters.Length)
       End If
     End If
 
     ' no strongly typed match found, get default
     If result Is Nothing Then
       Try
-        result = objectType.GetMethod(method, flags)
+        result = objectType.GetMethod(method, allLevelFlags)
 
       Catch ex As AmbiguousMatchException
         Dim methods() As MethodInfo = objectType.GetMethods
@@ -181,10 +160,6 @@ Friend Module MethodCaller
   ''' </summary>
   Public Function FindMethod(ByVal objType As Type, ByVal method As String, ByVal types As Type()) As MethodInfo
 
-    Dim oneLevelFlags As BindingFlags = _
-      BindingFlags.DeclaredOnly Or BindingFlags.Instance Or _
-      BindingFlags.Public Or BindingFlags.NonPublic
-
     Dim info As MethodInfo = Nothing
     Do
       ' find for a strongly typed match
@@ -197,6 +172,30 @@ Friend Module MethodCaller
     Loop While objType IsNot Nothing
 
     Return info
+
+  End Function
+
+  Public Function FindMethod(ByVal objType As Type, ByVal method As String, ByVal parameterCount As Integer) As MethodInfo
+
+    ' walk up the inheritance hierarchy looking
+    ' for a method with the right number of
+    ' parameters
+    Dim result As MethodInfo = Nothing
+    Dim currentType As Type = objType
+    Do
+      Dim info As MethodInfo = _
+        currentType.GetMethod(method, oneLevelFlags)
+      If info IsNot Nothing Then
+        If info.GetParameters.Length = parameterCount Then
+          ' got a match so use it
+          result = info
+          Exit Do
+        End If
+      End If
+      currentType = currentType.BaseType
+    Loop Until currentType Is Nothing
+
+    Return result
 
   End Function
 

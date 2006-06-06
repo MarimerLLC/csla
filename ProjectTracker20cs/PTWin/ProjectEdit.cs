@@ -66,10 +66,11 @@ namespace PTWin
         this.projectBindingSource.RaiseListChangedEvents = false;
         this.resourcesBindingSource.RaiseListChangedEvents = false;
         // do the save
-        Project temp = _project.Clone();
-        temp.ApplyEdit();
+        this.projectBindingSource.EndEdit();
+        this.resourcesBindingSource.EndEdit();
         try
         {
+          Project temp = _project.Clone();
           _project = temp.Save();
           _project.BeginEdit();
           if (rebind)

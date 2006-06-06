@@ -40,8 +40,9 @@ Public Class RolesEdit
     Handles SaveButton.Click
 
     Me.RolesBindingSource.RaiseListChangedEvents = False
-    Dim temp As Admin.Roles = mRoles.Clone
+    Me.RolesBindingSource.EndEdit()
     Try
+      Dim temp As Admin.Roles = mRoles.Clone
       mRoles = temp.Save
       Me.Close()
 

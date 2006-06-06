@@ -77,12 +77,12 @@ namespace PTWin
         // stop the flow of events
         this.ResourceBindingSource.RaiseListChangedEvents = false;
         this.AssignmentsBindingSource.RaiseListChangedEvents = false;
-
         // do the save
-        Resource temp = Resource.Clone();
-        temp.ApplyEdit();
+        this.ResourceBindingSource.EndEdit();
+        this.AssignmentsBindingSource.EndEdit();
         try
         {
+          Resource temp = Resource.Clone();
           _resource = temp.Save();
           _resource.BeginEdit();
           if (rebind)

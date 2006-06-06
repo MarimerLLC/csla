@@ -74,11 +74,11 @@ Public Class ResourceEdit
       ' stop the flow of events
       Me.ResourceBindingSource.RaiseListChangedEvents = False
       Me.AssignmentsBindingSource.RaiseListChangedEvents = False
-
+      Me.ResourceBindingSource.EndEdit()
+      Me.AssignmentsBindingSource.EndEdit()
       ' do the save
-      Dim temp As Resource = mResource.Clone
-      temp.ApplyEdit()
       Try
+        Dim temp As Resource = mResource.Clone
         mResource = temp.Save
         mResource.BeginEdit()
         If rebind Then

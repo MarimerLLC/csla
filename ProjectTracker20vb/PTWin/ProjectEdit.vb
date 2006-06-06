@@ -75,11 +75,11 @@ Public Class ProjectEdit
       ' stop the flow of events
       Me.ProjectBindingSource.RaiseListChangedEvents = False
       Me.ResourcesBindingSource.RaiseListChangedEvents = False
-
+      Me.ProjectBindingSource.EndEdit()
+      Me.ResourcesBindingSource.EndEdit()
       ' do the save
-      Dim temp As Project = mProject.Clone
-      temp.ApplyEdit()
       Try
+        Dim temp As Project = mProject.Clone
         mProject = temp.Save
         mProject.BeginEdit()
         If rebind Then
@@ -181,6 +181,18 @@ Public Class ProjectEdit
         CInt(Me.ResourcesDataGridView.Rows(e.RowIndex).Cells(0).Value)
       MainForm.ShowEditResource(resourceId)
     End If
+
+  End Sub
+
+  Private Sub ProjectBindingSource_CurrentItemChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ProjectBindingSource.CurrentItemChanged
+
+    Me.OKButton.Enabled = mProject.IsSavable
+
+  End Sub
+
+  Private Sub ResourcesBindingSource_CurrentItemChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ResourcesBindingSource.CurrentItemChanged
+
+    Me.OKButton.Enabled = mProject.IsSavable
 
   End Sub
 

@@ -11,11 +11,10 @@ namespace Csla.Test.DataPortalTest
     public class SingleOverloadTest
     {
         [Test]
-        [ExpectedException(typeof(System.Reflection.AmbiguousMatchException))]
         public void TestDpCreate()
         {
             SingleOverload test = SingleOverload.NewObject();
-            Assert.AreEqual("Created", ApplicationContext.GlobalContext["SingleOverload"]);
+            Assert.AreEqual("Created0", ApplicationContext.GlobalContext["SingleOverload"]);
         }
         [Test]
         public void TestDpCreateWithCriteria()

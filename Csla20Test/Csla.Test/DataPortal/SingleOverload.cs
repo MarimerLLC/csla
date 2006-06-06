@@ -90,6 +90,13 @@ namespace Csla.Test.DataPortalTest
             { _id = id; }
         }
 
+        private void DataPortal_Create(object criteria)
+        {
+          _id = 0;
+          Csla.ApplicationContext.GlobalContext.Clear();
+          ApplicationContext.GlobalContext.Add("SingleOverload", "Created0");
+        }
+
         private void DataPortal_Create(Criteria criteria)
         {
             _id = 0;

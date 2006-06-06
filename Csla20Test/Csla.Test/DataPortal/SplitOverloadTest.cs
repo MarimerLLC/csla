@@ -11,7 +11,6 @@ namespace Csla.Test.DataPortalTest
     public class SplitOverloadTest
     {
         [Test]
-        [ExpectedException(typeof(System.Reflection.AmbiguousMatchException))]
         public void TestDpCreate()
         {
             SplitOverload test = SplitOverload.NewObject();

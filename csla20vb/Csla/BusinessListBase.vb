@@ -323,13 +323,19 @@ Public MustInherit Class BusinessListBase( _
   Protected Overrides Sub RemoveItem(ByVal index As Integer)
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
+    CopyToDeletedList(index)
+    MyBase.RemoveItem(index)
+  End Sub
+
+  Private Sub CopyToDeletedList(ByVal index As Integer)
+
     Dim child As C = Me(index)
     DeleteChild(child)
     Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(child, System.ComponentModel.INotifyPropertyChanged)
     If c IsNot Nothing Then
       RemoveHandler c.PropertyChanged, AddressOf Child_PropertyChanged
     End If
-    MyBase.RemoveItem(index)
+
   End Sub
 
   ''' <summary>
@@ -355,7 +361,11 @@ Public MustInherit Class BusinessListBase( _
   ''' </param>
   ''' <remarks></remarks>
   Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As C)
-    RemoveItem(index)
+    ' copy the original object to the deleted list,
+    ' marking as deleted, etc.
+    CopyToDeletedList(index)
+    ' replace the original object with this new
+    ' object
     MyBase.SetItem(index, item)
   End Sub
 

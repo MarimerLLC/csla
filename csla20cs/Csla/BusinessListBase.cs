@@ -342,12 +342,17 @@ namespace Csla
     {
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
+      CopyToDeletedList(index);
+      base.RemoveItem(index);
+    }
+
+    private void CopyToDeletedList(int index)
+    {
       C child = this[index];
       DeleteChild(child);
       INotifyPropertyChanged c = child as INotifyPropertyChanged;
       if (c != null)
         c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
-      base.RemoveItem(index);
     }
 
     /// <summary>
@@ -373,7 +378,11 @@ namespace Csla
     /// <remarks></remarks>
     protected override void SetItem(int index, C item)
     {
-      RemoveItem(index);
+      // copy the original object to the deleted list,
+      // marking as deleted, etc.
+      CopyToDeletedList(index);
+      // replace the original object with this new
+      // object
       base.SetItem(index, item);
     }
 

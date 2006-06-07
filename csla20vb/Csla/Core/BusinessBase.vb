@@ -66,7 +66,7 @@ Namespace Core
     ''' </remarks>
     ''' <returns>A value indicating if this object is new.</returns>
     <Browsable(False)> _
-    Public ReadOnly Property IsNew() As Boolean
+    Public ReadOnly Property IsNew() As Boolean Implements IEditableBusinessObject.IsNew
       Get
         Return mIsNew
       End Get
@@ -283,7 +283,7 @@ Namespace Core
     ''' </remarks>
     ''' <returns>A value indicating if this object is both dirty and valid.</returns>
     <Browsable(False)> _
-    Public Overridable ReadOnly Property IsSavable() As Boolean
+    Public Overridable ReadOnly Property IsSavable() As Boolean Implements IEditableBusinessObject.IsSavable
       Get
         Return IsDirty AndAlso IsValid
       End Get

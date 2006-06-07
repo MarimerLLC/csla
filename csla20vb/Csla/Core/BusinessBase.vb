@@ -741,7 +741,7 @@ Namespace Core
     ''' To 'undelete' an object, use n-level undo as discussed in Chapters 2 and 3.
     ''' </para>
     ''' </remarks>
-    Public Sub Delete()
+    Public Overridable Sub Delete()
       If Me.IsChild Then
         Throw New NotSupportedException(My.Resources.ChildDeleteException)
       End If

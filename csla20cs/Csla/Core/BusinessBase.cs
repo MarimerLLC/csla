@@ -714,7 +714,7 @@ namespace Csla.Core
     /// To 'undelete' an object, use n-level undo as discussed in Chapters 2 and 3.
     /// </para>
     /// </remarks>
-    public void Delete()
+    public virtual void Delete()
     {
       if (this.IsChild)
         throw new NotSupportedException(Resources.ChildDeleteException);

@@ -58,6 +58,7 @@ Public Class RolesEdit
 
     Finally
       Me.RolesBindingSource.RaiseListChangedEvents = True
+      Me.RolesBindingSource.ResetBindings(False)
     End Try
 
   End Sub

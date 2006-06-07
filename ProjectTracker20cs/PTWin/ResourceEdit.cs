@@ -110,6 +110,8 @@ namespace PTWin
         {
           this.ResourceBindingSource.RaiseListChangedEvents = true;
           this.AssignmentsBindingSource.RaiseListChangedEvents = true;
+          this.ResourceBindingSource.ResetBindings(false);
+          this.AssignmentsBindingSource.ResetBindings(false);
         }
       }
     }

@@ -70,6 +70,7 @@ namespace PTWin
       finally
       {
         this.rolesBindingSource.RaiseListChangedEvents = true;
+        this.rolesBindingSource.ResetBindings(false);
       }
     }
 

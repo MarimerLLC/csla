@@ -103,6 +103,8 @@ Public Class ProjectEdit
       Finally
         Me.ProjectBindingSource.RaiseListChangedEvents = True
         Me.ResourcesBindingSource.RaiseListChangedEvents = True
+        Me.ProjectBindingSource.ResetBindings(False)
+        Me.ResourcesBindingSource.ResetBindings(False)
       End Try
     End Using
 

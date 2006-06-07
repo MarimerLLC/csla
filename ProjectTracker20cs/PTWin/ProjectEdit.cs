@@ -98,6 +98,8 @@ namespace PTWin
         {
           this.projectBindingSource.RaiseListChangedEvents = true;
           this.resourcesBindingSource.RaiseListChangedEvents = true;
+          this.projectBindingSource.ResetBindings(false);
+          this.resourcesBindingSource.ResetBindings(false);
         }
       }
     }

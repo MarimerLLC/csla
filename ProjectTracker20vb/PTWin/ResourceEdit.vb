@@ -102,6 +102,8 @@ Public Class ResourceEdit
       Finally
         Me.ResourceBindingSource.RaiseListChangedEvents = True
         Me.AssignmentsBindingSource.RaiseListChangedEvents = True
+        Me.ResourceBindingSource.ResetBindings(False)
+        Me.AssignmentsBindingSource.ResetBindings(False)
       End Try
 
     End Using

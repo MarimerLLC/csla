@@ -67,6 +67,7 @@
     <Compile Include="Basic\BasicTests.cs" />
     <Compile Include="Basic\Child.cs" />
     <Compile Include="Basic\Children.cs" />
+    <Compile Include="Basic\CollectionTests.cs" />
     <Compile Include="Basic\CommandObject.cs" />
     <Compile Include="Basic\GenRoot.cs" />
     <Compile Include="Basic\GenRootBase.cs" />

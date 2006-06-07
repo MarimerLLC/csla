@@ -73,6 +73,7 @@
     <Compile Include="Basic\ReadOnlyList.cs" />
     <Compile Include="Basic\Root.cs" />
     <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
+    <Compile Include="Basic\CollectionTests.cs" />
     <Compile Include="DataMapper\DataMapperTests.cs" />
     <Compile Include="DataPortal\ChildEntity.cs" />
     <Compile Include="DataPortal\ChildEntityList.cs" />

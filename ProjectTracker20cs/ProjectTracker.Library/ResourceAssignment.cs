@@ -174,7 +174,7 @@ namespace ProjectTracker.Library
       if (!this.IsDirty) return;
 
       // if we're new then don't update the database
-      if (!this.IsNew) return;
+      if (this.IsNew) return;
 
       Assignment.RemoveAssignment(cn, _projectId, resource.Id);
       MarkNew();

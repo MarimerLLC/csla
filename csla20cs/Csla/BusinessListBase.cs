@@ -380,7 +380,8 @@ namespace Csla
     {
       // copy the original object to the deleted list,
       // marking as deleted, etc.
-      CopyToDeletedList(index);
+      if (!ReferenceEquals((C)this[index], item))
+        CopyToDeletedList(index);
       // replace the original object with this new
       // object
       base.SetItem(index, item);

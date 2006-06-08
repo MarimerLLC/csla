@@ -363,7 +363,9 @@ Public MustInherit Class BusinessListBase( _
   Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As C)
     ' copy the original object to the deleted list,
     ' marking as deleted, etc.
-    CopyToDeletedList(index)
+    If Not ReferenceEquals(DirectCast(Me(index), C), item) Then
+      CopyToDeletedList(index)
+    End If
     ' replace the original object with this new
     ' object
     MyBase.SetItem(index, item)

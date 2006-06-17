@@ -277,7 +277,7 @@ namespace ProjectTracker.Library
     }
 
     [RunLocal()]
-    private void DataPortal_Create(Criteria criteria)
+    private void DataPortal_Create(object criteria)
     {
       _id = Guid.NewGuid();
       _started.Date = DateTime.Today;

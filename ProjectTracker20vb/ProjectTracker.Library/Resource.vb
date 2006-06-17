@@ -214,7 +214,7 @@ Private Class Criteria
   End Class
 
   <RunLocal()> _
-  Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
+  Private Overloads Sub DataPortal_Create(ByVal criteria As Object)
     ' nothing to initialize
     ValidationRules.CheckRules()
   End Sub

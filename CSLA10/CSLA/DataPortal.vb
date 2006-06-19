@@ -278,7 +278,7 @@ Public Class DataPortal
   End Function
 
   Private Shared Function ALWAYS_IMPERSONATE() As String
-    Return ConfigurationSettings.AppSettings("AlwaysImpersonate").ToLower
+    Return LCase(ConfigurationSettings.AppSettings("AlwaysImpersonate"))
   End Function
 
   Private Shared Function GetPrincipal() As System.Security.Principal.IPrincipal

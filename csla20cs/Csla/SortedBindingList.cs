@@ -544,7 +544,7 @@ namespace Csla
     /// </summary>
     public int IndexOf(T item)
     {
-      return _list.IndexOf(item);
+      return SortedIndex(_list.IndexOf(item));
     }
 
     int System.Collections.IList.IndexOf(object value)

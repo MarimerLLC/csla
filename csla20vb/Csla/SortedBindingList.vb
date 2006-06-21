@@ -553,7 +553,7 @@ Public Class SortedBindingList(Of T)
   ''' Implemented by IList source object.
   ''' </summary>
   Public Function IndexOf(ByVal item As T) As Integer Implements System.Collections.Generic.IList(Of T).IndexOf
-    Return mList.IndexOf(item)
+    Return SortedIndex(mList.IndexOf(item))
   End Function
 
   Private Function IndexOf(ByVal value As Object) As Integer Implements System.Collections.IList.IndexOf

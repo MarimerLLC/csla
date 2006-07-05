@@ -15,13 +15,24 @@ namespace Csla.Web.Design
   /// </summary>
   public class TypeLoader : MarshalByRefObject
   {
+    /// <summary>
+    /// Gets a list of
+    /// <see cref="ObjectFieldInfo"/> describing
+    /// the most recent version of the specified
+    /// assembly and class.
+    /// </summary>
+    /// <param name="originalPath">Path to the assembly
+    /// as determined by Visual Studio</param>
+    /// <param name="assemblyName">Name of the assembly</param>
+    /// <param name="typeName">Name of the type</param>
+    /// <returns></returns>
     public List<ObjectFieldInfo> GetFields(
-      string assemblyName, string typeName)
+      string originalPath, string assemblyName, string typeName)
     {
       List<ObjectFieldInfo> result =
         new List<ObjectFieldInfo>();
 
-      Type t = GetType(assemblyName, typeName);
+      Type t = GetType(originalPath, assemblyName, typeName);
       if (typeof(IEnumerable).IsAssignableFrom(t))
       {
         // this is a list so get the item type
@@ -41,10 +52,11 @@ namespace Csla.Web.Design
     /// corresponding to the business type specified.
     /// </summary>
     private static Type GetType(
-      string assemblyName, string typeName)
+      string originalPath, string assemblyName, string typeName)
     {
-      Assembly thisAssembly = Assembly.GetExecutingAssembly();
-      string assemblyPath = GetCodeBase(thisAssembly.CodeBase);
+      //Assembly thisAssembly = Assembly.GetExecutingAssembly();
+      //string assemblyPath = GetCodeBase(thisAssembly.CodeBase);
+      string assemblyPath = GetCodeBase(originalPath);
 
       Assembly asm = Assembly.LoadFrom(assemblyPath + assemblyName + ".dll");
       Type result = asm.GetType(typeName, true, true);

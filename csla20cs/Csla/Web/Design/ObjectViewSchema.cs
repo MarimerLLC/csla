@@ -59,6 +59,9 @@ namespace Csla.Web.Design
       List<ObjectFieldInfo> result = 
         new List<ObjectFieldInfo>();
 
+      string originalPath = GetOriginalPath(
+        _typeAssemblyName, _typeName);
+
       System.Security.NamedPermissionSet fulltrust =
         new System.Security.NamedPermissionSet("FullTrust");
       AppDomain tempDomain = AppDomain.CreateDomain(
@@ -91,13 +94,20 @@ namespace Csla.Web.Design
         //  if (item.IsBrowsable)
         //    result.Add(new ObjectFieldInfo(item));
         result = loader.GetFields(
-          _typeAssemblyName, _typeName);
+          originalPath, _typeAssemblyName, _typeName);
       }
       finally
       {
         AppDomain.Unload(tempDomain);
       }
       return result.ToArray();
+    }
+
+    private string GetOriginalPath(string assemblyName, string typeName)
+    {
+      Type t = CslaDataSource.GetType(assemblyName, typeName);
+      Assembly asm = t.Assembly;
+      return asm.CodeBase;
     }
 
     /// <summary>

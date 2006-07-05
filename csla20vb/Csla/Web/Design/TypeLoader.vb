@@ -14,11 +14,25 @@ Namespace Web.Design
   Public Class TypeLoader
     Inherits MarshalByRefObject
 
-    Public Function GetFields(ByVal assemblyName As String, ByVal typeName As String) As List(Of ObjectFieldInfo)
+    ''' <summary>
+    ''' Gets a list of
+    ''' <see cref="ObjectFieldInfo"/> describing
+    ''' the most recent version of the specified
+    ''' assembly and class.
+    ''' </summary>
+    ''' <param name="originalPath">Path to the assembly
+    ''' as determined by Visual Studio</param>
+    ''' <param name="assemblyName">Name of the assembly</param>
+    ''' <param name="typeName">Name of the type</param>
+    ''' <returns></returns>
+    Public Function GetFields( _
+      ByVal originalPath As String, _
+      ByVal assemblyName As String, _
+      ByVal typeName As String) As List(Of ObjectFieldInfo)
 
       Dim result As New List(Of ObjectFieldInfo)
 
-      Dim t As Type = TypeLoader.GetType(assemblyName, typeName)
+      Dim t As Type = TypeLoader.GetType(originalPath, assemblyName, typeName)
       If GetType(IEnumerable).IsAssignableFrom(t) Then
         ' this is a list so get the item type
         t = Utilities.GetChildItemType(t)
@@ -40,10 +54,12 @@ Namespace Web.Design
       ''' corresponding to the business type specified.
       ''' </summary>
     Private Overloads Shared Function [GetType]( _
+      ByVal originalPath As String, _
       ByVal assemblyName As String, ByVal typeName As String) As Type
 
-      Dim thisAssembly As Assembly = Assembly.GetExecutingAssembly
-      Dim assemblyPath As String = GetCodeBase(thisAssembly.CodeBase)
+      'Dim thisAssembly As Assembly = Assembly.GetExecutingAssembly
+      'Dim assemblyPath As String = GetCodeBase(thisAssembly.CodeBase)
+      Dim assemblyPath As String = GetCodeBase(originalPath)
 
       Dim asm As Assembly = Assembly.LoadFrom(assemblyPath + assemblyName + ".dll")
       Dim result As Type = asm.GetType(typeName, True, True)

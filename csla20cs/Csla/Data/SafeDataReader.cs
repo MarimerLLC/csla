@@ -293,7 +293,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="name">Name of the column containing the value.</param>
     public byte GetByte(string name)
     {
       return GetByte(_dataReader.GetOrdinal(name));
@@ -305,7 +305,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="i">Ordinal column position of the value.</param>
     public virtual byte GetByte(int i)
     {
       if (_dataReader.IsDBNull(i))

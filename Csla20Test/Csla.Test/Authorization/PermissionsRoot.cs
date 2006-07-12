@@ -17,6 +17,7 @@ namespace Csla.Test.Security
 
         public string FirstName
         {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             get
             {
                 if (CanReadProperty())
@@ -28,6 +29,7 @@ namespace Csla.Test.Security
                     throw new System.Security.SecurityException("Property get not allowed");
                 }
             }
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             set
             {
                 if (CanWriteProperty())

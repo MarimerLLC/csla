@@ -18,6 +18,7 @@ namespace Csla.Test.Basic
 
         public string Data
         {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             get
             {
                 if (CanReadProperty())
@@ -29,6 +30,7 @@ namespace Csla.Test.Basic
                     throw new System.Security.SecurityException("Property get not allowed");
                 }
             }
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             set
             {
                 if (CanWriteProperty())
@@ -50,6 +52,7 @@ namespace Csla.Test.Basic
 
         public int CreatedDomain
         {
+          [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
           get 
           {
             CanReadProperty(true);

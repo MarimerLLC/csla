@@ -19,6 +19,7 @@ namespace Csla.Test.DataPortal
 
         public string Data
         {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             get
             {
                 if (CanReadProperty())
@@ -30,6 +31,7 @@ namespace Csla.Test.DataPortal
                     throw new System.Security.SecurityException("Property get not allowed");
                 }
             }
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             set
             {
                 if (CanWriteProperty())
@@ -174,6 +176,7 @@ namespace Csla.Test.DataPortal
 
         public string DenyReadOnProperty
         {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             get
             {
                 if (CanReadProperty())
@@ -209,6 +212,7 @@ namespace Csla.Test.DataPortal
 
         public string DenyReadWriteOnProperty
         {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             get
             {
                 if (CanReadProperty())
@@ -218,6 +222,7 @@ namespace Csla.Test.DataPortal
                     return "[DenyReadWriteOnProperty] Can't read property";
             }
 
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             set
             {
                 if (CanWriteProperty())
@@ -230,6 +235,7 @@ namespace Csla.Test.DataPortal
 
         public string AllowReadWriteOnProperty
         {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             get
             {
                 if (CanReadProperty())
@@ -239,6 +245,7 @@ namespace Csla.Test.DataPortal
                     throw new System.Security.SecurityException("Should be allowed 5");
             }
 
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             set
             {
                 if (CanWriteProperty())

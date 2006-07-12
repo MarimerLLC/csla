@@ -30,6 +30,7 @@ namespace Csla.Test.DataBinding
 
         public string Data
         {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             get
             {
                 if (CanReadProperty())
@@ -41,6 +42,7 @@ namespace Csla.Test.DataBinding
                     throw new System.Security.SecurityException("Property get not allowed");
                 }
             }
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
             set
             {
                 if (CanWriteProperty())

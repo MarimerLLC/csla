@@ -10,7 +10,9 @@ namespace Csla.Test.ValidationRules
 
     public string Ssn
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get { CanReadProperty(true); return _ssn; }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);
@@ -26,7 +28,9 @@ namespace Csla.Test.ValidationRules
 
     public string Ssn2
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get { CanReadProperty(true); return _ssn2; }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);

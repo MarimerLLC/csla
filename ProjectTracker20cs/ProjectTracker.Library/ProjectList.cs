@@ -71,6 +71,7 @@ namespace ProjectTracker.Library
 
     private void Fetch(string nameFilter)
     {
+      this.RaiseListChangedEvents = false;
       using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
@@ -94,6 +95,7 @@ namespace ProjectTracker.Library
           }
         }
       }
+      this.RaiseListChangedEvents = true;
     }
 
     #endregion

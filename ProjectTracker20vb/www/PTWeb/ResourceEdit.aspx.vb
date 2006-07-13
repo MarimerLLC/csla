@@ -54,7 +54,9 @@ Partial Class ResourceEdit
     Handles DetailsView1.ItemInserted
 
     Dim resource As Resource = GetResource()
-    Response.Redirect("resourceEdit.aspx?id=" & resource.Id.ToString)
+    If Not resource.IsNew Then
+      Response.Redirect("resourceEdit.aspx?id=" & resource.Id.ToString)
+    End If
 
   End Sub
 

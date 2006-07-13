@@ -56,7 +56,9 @@ Partial Class ProjectEdit
     Handles DetailsView1.ItemInserted
 
     Dim project As Project = GetProject()
-    Response.Redirect("ProjectEdit.aspx?id=" & project.Id.ToString)
+    If Not project.IsNew Then
+      Response.Redirect("ProjectEdit.aspx?id=" & project.Id.ToString)
+    End If
 
   End Sub
 

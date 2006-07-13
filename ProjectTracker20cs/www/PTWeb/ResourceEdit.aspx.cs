@@ -58,7 +58,8 @@ public partial class ResourceEdit : System.Web.UI.Page
   protected void DetailsView1_ItemInserted(object sender, DetailsViewInsertedEventArgs e)
   {
     Resource resource = GetResource();
-    Response.Redirect("ResourceEdit.aspx?id=" + resource.Id.ToString());
+    if (!resource.IsNew)
+      Response.Redirect("ResourceEdit.aspx?id=" + resource.Id.ToString());
   }
 
   protected void DetailsView1_ItemUpdated(object sender, DetailsViewUpdatedEventArgs e)

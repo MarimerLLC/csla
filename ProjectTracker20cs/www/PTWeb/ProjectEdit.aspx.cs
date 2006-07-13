@@ -62,7 +62,8 @@ public partial class ProjectEdit : System.Web.UI.Page
     object sender, DetailsViewInsertedEventArgs e)
   {
     Project project = GetProject();
-    Response.Redirect("ProjectEdit.aspx?id=" + project.Id.ToString());
+    if (!project.IsNew)
+      Response.Redirect("ProjectEdit.aspx?id=" + project.Id.ToString());
   }
 
   protected void DetailsView1_ItemUpdated(

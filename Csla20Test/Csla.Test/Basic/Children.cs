@@ -38,5 +38,10 @@ namespace Csla.Test.Basic
             //prevent direct creation
             this.MarkAsChild();
         }
+
+        public int DeletedCount
+        {
+          get { return this.DeletedList.Count; }
+        }
     }
 }

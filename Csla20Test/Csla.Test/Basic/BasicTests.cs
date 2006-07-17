@@ -191,7 +191,8 @@ namespace Csla.Test.Basic
             root.Children.Add("B");
             root.Children.Add("C");
             root.Children.Clear();
-            Assert.AreEqual(0, root.Children.Count);
+            Assert.AreEqual(0, root.Children.Count, "Count should be 0");
+            Assert.AreEqual(3, root.Children.DeletedCount, "Deleted count should be 3");
         }
 
         [TestMethod]

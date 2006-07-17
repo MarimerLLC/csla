@@ -31,7 +31,7 @@ namespace Csla.Test.SortedBindingList
             Assert.AreEqual(44, sortedList[2]);
             Assert.AreEqual(8, sortedList.Count);
             Assert.AreEqual(true, sortedList.Contains(56));
-            Assert.AreEqual(2, sortedList.IndexOf(56));
+            Assert.AreEqual(4, sortedList.IndexOf(56));
             Assert.AreEqual(true, sortedList.IsReadOnly);
             Assert.AreEqual(true, sortedList.IsSorted);
 

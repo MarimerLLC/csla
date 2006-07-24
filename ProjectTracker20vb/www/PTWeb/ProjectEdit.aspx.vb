@@ -50,6 +50,19 @@ Partial Class ProjectEdit
 
 #Region " Project DetailsView "
 
+  Protected Sub DetailsView1_ItemCreated( _
+    ByVal sender As Object, ByVal e As System.EventArgs) Handles DetailsView1.ItemCreated
+
+    Dim obj As Project = GetProject()
+
+    CType(DetailsView1.Rows(0).Cells(1).Controls(0), TextBox).Text = obj.Id.ToString
+    CType(DetailsView1.Rows(1).Cells(1).Controls(0), TextBox).Text = obj.Name
+    CType(DetailsView1.Rows(2).Cells(1).Controls(0), TextBox).Text = obj.Started
+    CType(DetailsView1.Rows(3).Cells(1).Controls(0), TextBox).Text = obj.Ended
+    CType(DetailsView1.FindControl("TextBox1"), System.Web.UI.WebControls.TextBox).Text = obj.Description
+
+  End Sub
+
   Protected Sub DetailsView1_ItemInserted( _
     ByVal sender As Object, _
     ByVal e As System.Web.UI.WebControls.DetailsViewInsertedEventArgs) _
@@ -58,6 +71,9 @@ Partial Class ProjectEdit
     Dim project As Project = GetProject()
     If Not project.IsNew Then
       Response.Redirect("ProjectEdit.aspx?id=" & project.Id.ToString)
+
+    Else
+      e.KeepInInsertMode = True
     End If
 
   End Sub

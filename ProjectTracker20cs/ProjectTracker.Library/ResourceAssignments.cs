@@ -80,11 +80,17 @@ namespace ProjectTracker.Library
       MarkAsChild();
     }
 
+    private ResourceAssignments(SafeDataReader dr)
+    {
+      MarkAsChild();
+      Fetch(dr);
+    }
+
     #endregion
 
     #region Data Access
 
-    private ResourceAssignments(SafeDataReader dr)
+    private void Fetch(SafeDataReader dr)
     {
       RaiseListChangedEvents = false;
       while (dr.Read())

@@ -72,7 +72,12 @@ Namespace Admin
 
       ValidationRules.AddRule( _
         AddressOf Csla.Validation.CommonRules.StringRequired, "Name")
-      ValidationRules.AddRule(AddressOf NoDuplicates, "Id")
+
+    End Sub
+
+    Protected Overrides Sub AddInstanceBusinessRules()
+
+      ValidationRules.AddInstanceRule(AddressOf NoDuplicates, "Id")
 
     End Sub
 

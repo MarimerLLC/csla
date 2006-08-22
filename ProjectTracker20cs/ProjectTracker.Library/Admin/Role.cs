@@ -84,7 +84,11 @@ namespace ProjectTracker.Library.Admin
     {
       ValidationRules.AddRule(
         Csla.Validation.CommonRules.StringRequired, "Name");
-      ValidationRules.AddRule(NoDuplicates, "Id");
+    }
+
+    protected override void AddInstanceBusinessRules()
+    {
+      ValidationRules.AddInstanceRule(NoDuplicates, "Id");
     }
 
     private bool NoDuplicates(object target, Csla.Validation.RuleArgs e)

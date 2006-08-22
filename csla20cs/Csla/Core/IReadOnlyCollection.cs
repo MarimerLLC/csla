@@ -8,7 +8,7 @@ namespace Csla.Core
   /// Interface implemented by all read-only collection
   /// classes.
   /// </summary>
-  interface IReadOnlyCollection : IBusinessObject
+  public interface IReadOnlyCollection : IBusinessObject
   {
   }
 }

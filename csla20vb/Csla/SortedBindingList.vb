@@ -761,17 +761,23 @@ Public Class SortedBindingList(Of T)
   End Function
 
   Private Function SortedIndex(ByVal originalIndex As Integer) As Integer
+
     Dim result As Integer
-    For index As Integer = 0 To mSortIndex.Count - 1
-      If mSortIndex(index).BaseIndex = originalIndex Then
-        result = index
-        Exit For
+    If mSorted Then
+      For index As Integer = 0 To mSortIndex.Count - 1
+        If mSortIndex(index).BaseIndex = originalIndex Then
+          result = index
+          Exit For
+        End If
+      Next
+      If mSortOrder = ListSortDirection.Descending Then
+        result = mSortIndex.Count - 1 - result
       End If
-    Next
-    If mSortOrder = ListSortDirection.Descending Then
-      result = mSortIndex.Count - 1 - result
+    Else
+      result = originalIndex
     End If
     Return result
+
   End Function
 
 End Class

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using Csla.Properties;
 
 namespace Csla
@@ -20,8 +21,8 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   [Serializable()]
-  public abstract class BusinessBase<T> : 
-    Core.BusinessBase where T : BusinessBase<T>
+  public abstract class BusinessBase<T> :
+    Core.BusinessBase, Core.ISavable where T : BusinessBase<T>
   {
 
     #region Object ID Value
@@ -142,6 +143,7 @@ namespace Csla
     /// <returns>A new object containing the saved values.</returns>
     public virtual T Save()
     {
+      T result;
       if (this.IsChild)
         throw new NotSupportedException(Resources.NoSaveChildException);
       if (EditLevel > 0)
@@ -149,9 +151,11 @@ namespace Csla
       if (!IsValid)
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
       if (IsDirty)
-        return (T)DataPortal.Update(this);
+        result = (T)DataPortal.Update(this);
       else
-        return (T)this;
+        result = (T)this;
+      OnSaved(result);
+      return result;
     }
 
     /// <summary>
@@ -183,5 +187,66 @@ namespace Csla
 
     #endregion
 
+    #region ISavable Members
+
+    object Csla.Core.ISavable.Save()
+    {
+      return Save();
+    }
+
+
+    [NonSerialized()]
+    private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
+    private EventHandler<Csla.Core.SavedEventArgs> _serializableSavedHandlers;
+    
+    /// <summary>
+    /// Event raised when an object has been saved.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+      "CA1062:ValidateArgumentsOfPublicMethods")]
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved
+    {
+      add
+      {
+        if (value.Method.IsPublic &&
+           (value.Method.DeclaringType.IsSerializable ||
+            value.Method.IsStatic))
+          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Combine(_serializableSavedHandlers, value);
+        else
+          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Combine(_nonSerializableSavedHandlers, value);
+      }
+      remove
+      {
+        if (value.Method.IsPublic &&
+           (value.Method.DeclaringType.IsSerializable ||
+            value.Method.IsStatic))
+          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Remove(_serializableSavedHandlers, value);
+        else
+          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Remove(_nonSerializableSavedHandlers, value);
+      }
+    }
+
+    /// <summary>
+    /// Raises the Saved event, indicating that the
+    /// object has been saved, and providing a reference
+    /// to the new object instance.
+    /// </summary>
+    /// <param name="newObject">The new object instance.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void OnSaved(T newObject)
+    {
+      if (_nonSerializableSavedHandlers != null)
+        _nonSerializableSavedHandlers.Invoke(this,
+          new Csla.Core.SavedEventArgs(newObject));
+      if (_serializableSavedHandlers != null)
+        _serializableSavedHandlers.Invoke(this,
+          new Csla.Core.SavedEventArgs(newObject));
+    }
+
+    #endregion
   }
 }

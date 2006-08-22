@@ -16,8 +16,8 @@ namespace Csla.Core
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
     "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
-  public abstract class ReadOnlyBindingList<C> : 
-    System.ComponentModel.BindingList<C>, Core.IBusinessObject
+  public abstract class ReadOnlyBindingList<C> :
+    Core.ExtendedBindingList<C>, Core.IBusinessObject
   {
     private bool _isReadOnly = true;
 

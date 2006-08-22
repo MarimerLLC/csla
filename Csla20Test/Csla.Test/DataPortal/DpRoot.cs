@@ -100,7 +100,7 @@ namespace Csla.Test.DataPortal
         private DpRoot()
         {
             //prevent direct creation
-            AddAuthRules();
+            //AddAuthRules();
         }
 
         #endregion 
@@ -160,7 +160,7 @@ namespace Csla.Test.DataPortal
 
         #region "Authorization Rules"
 
-        private void AddAuthRules()
+        protected override void AddAuthorizationRules()
         {
             string role = "Admin";
 

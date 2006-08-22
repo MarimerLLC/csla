@@ -8,11 +8,13 @@ Namespace Validation
     Private mRuleName As String
     Private mDescription As String
     Private mProperty As String
+    Private mSeverity As RuleSeverity
 
-    Friend Sub New(ByVal rule As RuleMethod)
+    Friend Sub New(ByVal rule As IRuleMethod)
       mRuleName = rule.RuleName
       mDescription = rule.RuleArgs.Description
       mProperty = rule.RuleArgs.PropertyName
+      mSeverity = rule.RuleArgs.Severity
     End Sub
 
     ''' <summary>
@@ -42,6 +44,18 @@ Namespace Validation
     Public ReadOnly Property [Property]() As String
       Get
         Return mProperty
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Gets the severity of the broken rule.
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property Severity() As RuleSeverity
+      Get
+        Return mSeverity
       End Get
     End Property
 

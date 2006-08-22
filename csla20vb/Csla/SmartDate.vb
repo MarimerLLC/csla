@@ -12,76 +12,163 @@ Public Structure SmartDate
   Implements IComparable
 
   Private mDate As Date
-  Private mEmptyIsMax As Boolean
+  Private mEmptyValue As EmptyValue
   Private mFormat As String
+  Private Shared mDefaultFormat As String
   Private mInitialized As Boolean
 
+#Region " EmptyValue enum "
+
+  ''' <summary>
+  ''' Indicates the empty value of a
+  ''' SmartDate.
+  ''' </summary>
+  Public Enum EmptyValue
+    ''' <summary>
+    ''' Indicates that an empty SmartDate
+    ''' is the smallest date.
+    ''' </summary>
+    MinDate
+    ''' <summary>
+    ''' Indicates that an empty SmartDate
+    ''' is the largest date.
+    ''' </summary>
+    MaxDate
+  End Enum
+
+#End Region
+
 #Region " Constructors "
+
+  Shared Sub New()
+    mDefaultFormat = "d"
+  End Sub
 
   ''' <summary>
   ''' Creates a new SmartDate object.
   ''' </summary>
-  ''' <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal emptyIsMin As Boolean)
-    mEmptyIsMax = Not emptyIsMin
-    If Not mEmptyIsMax Then
+    mEmptyValue = GetEmptyValue(emptyIsMin)
+    SetEmptyDate(mEmptyValue)
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal emptyValue As EmptyValue)
+    mEmptyValue = emptyValue
+    SetEmptyDate(mEmptyValue)
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <remarks>
+  ''' The SmartDate created will use the min possible
+  ''' date to represent an empty date.
+  ''' </remarks>
+  ''' <param name="value">The initial value of the object.</param>
+  Public Sub New(ByVal value As Date)
+    mEmptyValue = EmptyValue.MinDate
+    Me.Date = value
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="value">The initial value of the object.</param>
+  ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal value As Date, ByVal emptyIsMin As Boolean)
+    mEmptyValue = GetEmptyValue(emptyIsMin)
+    Me.Date = value
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="value">The initial value of the object.</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal value As Date, ByVal emptyValue As EmptyValue)
+    mEmptyValue = emptyValue
+    Me.Date = value
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <remarks>
+  ''' The SmartDate created will use the min possible
+  ''' date to represent an empty date.
+  ''' </remarks>
+  ''' <param name="value">The initial value of the object (as text).</param>
+  Public Sub New(ByVal value As String)
+    mEmptyValue = EmptyValue.MinDate
+    Me.Text = value
+    mInitialized = True
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="value">The initial value of the object (as text).</param>
+  ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal value As String, ByVal emptyIsMin As Boolean)
+    mEmptyValue = GetEmptyValue(emptyIsMin)
+    Me.Text = value
+    mInitialized = True
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="value">The initial value of the object (as text).</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal value As String, ByVal emptyValue As EmptyValue)
+    mEmptyValue = emptyValue
+    Me.Text = value
+    mInitialized = True
+  End Sub
+
+  Private Shared Function GetEmptyValue(ByVal emptyIsMin As Boolean) As EmptyValue
+    If emptyIsMin Then
+      Return EmptyValue.MinDate
+    Else
+      Return EmptyValue.MaxDate
+    End If
+  End Function
+
+  Private Sub SetEmptyDate(ByVal emptyValue As EmptyValue)
+    If emptyValue = SmartDate.EmptyValue.MinDate Then
       Me.Date = Date.MinValue
+
     Else
       Me.Date = Date.MaxValue
     End If
   End Sub
 
-  ''' <summary>
-  ''' Creates a new SmartDate object.
-  ''' </summary>
-  ''' <remarks>
-  ''' The SmartDate created will use the min possible
-  ''' date to represent an empty date.
-  ''' </remarks>
-  ''' <param name="Value">The initial value of the object.</param>
-  Public Sub New(ByVal value As Date)
-    mEmptyIsMax = False
-    Me.Date = value
-  End Sub
-
-  ''' <summary>
-  ''' Creates a new SmartDate object.
-  ''' </summary>
-  ''' <param name="Value">The initial value of the object.</param>
-  ''' <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
-  Public Sub New(ByVal value As Date, ByVal emptyIsMin As Boolean)
-    mEmptyIsMax = Not emptyIsMin
-    Me.Date = value
-  End Sub
-
-  ''' <summary>
-  ''' Creates a new SmartDate object.
-  ''' </summary>
-  ''' <remarks>
-  ''' The SmartDate created will use the min possible
-  ''' date to represent an empty date.
-  ''' </remarks>
-  ''' <param name="Value">The initial value of the object (as text).</param>
-  Public Sub New(ByVal value As String)
-    mEmptyIsMax = False
-    Me.Text = value
-    mInitialized = True
-  End Sub
-
-  ''' <summary>
-  ''' Creates a new SmartDate object.
-  ''' </summary>
-  ''' <param name="Value">The initial value of the object (as text).</param>
-  ''' <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
-  Public Sub New(ByVal value As String, ByVal emptyIsMin As Boolean)
-    mEmptyIsMax = Not emptyIsMin
-    Me.Text = value
-    mInitialized = True
-  End Sub
-
 #End Region
 
 #Region " Text Support "
+
+  ''' <summary>
+  ''' Sets the global default format string used by all new
+  ''' SmartDate values going forward.
+  ''' </summary>
+  ''' <remarks>
+  ''' The default global format string is "d" unless this
+  ''' method is called to change that value. Existing SmartDate
+  ''' values are unaffected by this method, only SmartDate
+  ''' values created after calling this method are affected.
+  ''' </remarks>
+  ''' <param name="formatString">
+  ''' The format string should follow the requirements for the
+  ''' .NET System.String.Format statement.
+  ''' </param>
+  Public Shared Sub SetDefaultFormatString(ByVal formatString As String)
+    mDefaultFormat = formatString
+  End Sub
 
   ''' <summary>
   ''' Gets or sets the format string used to format a date
@@ -95,7 +182,7 @@ Public Structure SmartDate
   Public Property FormatString() As String
     Get
       If mFormat Is Nothing Then
-        mFormat = "d"
+        mFormat = mDefaultFormat
       End If
       Return mFormat
     End Get
@@ -121,10 +208,10 @@ Public Structure SmartDate
   ''' </remarks>
   Public Property Text() As String
     Get
-      Return DateToString(Me.Date, FormatString, Not mEmptyIsMax)
+      Return DateToString(Me.Date, FormatString, mEmptyValue)
     End Get
     Set(ByVal value As String)
-      Me.Date = StringToDate(value, Not mEmptyIsMax)
+      Me.Date = StringToDate(value, mEmptyValue)
     End Set
   End Property
 
@@ -158,6 +245,16 @@ Public Structure SmartDate
   ''' </summary>
   Public Overrides Function ToString() As String
     Return Me.Text
+  End Function
+
+  ''' <summary>
+  ''' Returns a text representation of the date value.
+  ''' </summary>
+  ''' <param name="format">
+  ''' A standard .NET format string.
+  ''' </param>
+  Public Overloads Function ToString(ByVal format As String) As String
+    Return DateToString(Me.Date, format, mEmptyValue)
   End Function
 
   ''' <summary>
@@ -234,7 +331,7 @@ Public Structure SmartDate
   ''' </summary>
   Public ReadOnly Property IsEmpty() As Boolean
     Get
-      If Not mEmptyIsMax Then
+      If mEmptyValue = EmptyValue.MinDate Then
         Return Me.Date.Equals(Date.MinValue)
       Else
         Return Me.Date.Equals(Date.MaxValue)
@@ -253,7 +350,7 @@ Public Structure SmartDate
   ''' </remarks>
   Public ReadOnly Property EmptyIsMin() As Boolean
     Get
-      Return Not mEmptyIsMax
+      Return mEmptyValue = EmptyValue.MinDate
     End Get
   End Property
 
@@ -295,10 +392,10 @@ Public Structure SmartDate
   ''' An empty string is assumed to represent an empty date. An empty date
   ''' is returned as the MinValue of the Date datatype.
   ''' </remarks>
-  ''' <param name="Value">The text representation of the date.</param>
+  ''' <param name="value">The text representation of the date.</param>
   ''' <returns>A Date value.</returns>
   Public Shared Function StringToDate(ByVal value As String) As Date
-    Return StringToDate(value, True)
+    Return StringToDate(value, EmptyValue.MinDate)
   End Function
 
   ''' <summary>
@@ -309,14 +406,32 @@ Public Structure SmartDate
   ''' is returned as the MinValue or MaxValue of the Date datatype depending
   ''' on the EmptyIsMin parameter.
   ''' </remarks>
-  ''' <param name="Value">The text representation of the date.</param>
-  ''' <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  ''' <param name="value">The text representation of the date.</param>
+  ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   ''' <returns>A Date value.</returns>
   Public Shared Function StringToDate( _
     ByVal value As String, ByVal emptyIsMin As Boolean) As Date
 
+    Return StringToDate(value, GetEmptyValue(emptyIsMin))
+
+  End Function
+
+  ''' <summary>
+  ''' Converts a text date representation into a Date value.
+  ''' </summary>
+  ''' <remarks>
+  ''' An empty string is assumed to represent an empty date. An empty date
+  ''' is returned as the MinValue or MaxValue of the Date datatype depending
+  ''' on the EmptyIsMin parameter.
+  ''' </remarks>
+  ''' <param name="value">The text representation of the date.</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  ''' <returns>A Date value.</returns>
+  Public Shared Function StringToDate( _
+    ByVal value As String, ByVal emptyValue As EmptyValue) As Date
+
     If Len(value) = 0 Then
-      If emptyIsMin Then
+      If emptyValue = SmartDate.EmptyValue.MinDate Then
         Return Date.MinValue
 
       Else
@@ -353,13 +468,13 @@ Public Structure SmartDate
   ''' method returns an empty string. Otherwise it returns the date
   ''' value formatted based on the FormatString parameter.
   ''' </remarks>
-  ''' <param name="Value">The date value to convert.</param>
-  ''' <param name="FormatString">The format string used to format the date into text.</param>
+  ''' <param name="value">The date value to convert.</param>
+  ''' <param name="formatString">The format string used to format the date into text.</param>
   ''' <returns>Text representation of the date value.</returns>
   Public Shared Function DateToString( _
     ByVal value As Date, ByVal formatString As String) As String
 
-    Return DateToString(value, formatString, True)
+    Return DateToString(value, formatString, EmptyValue.MinDate)
   End Function
 
   ''' <summary>
@@ -371,21 +486,47 @@ Public Structure SmartDate
   ''' method returns an empty string. Otherwise it returns the date
   ''' value formatted based on the FormatString parameter.
   ''' </remarks>
-  ''' <param name="Value">The date value to convert.</param>
-  ''' <param name="FormatString">The format string used to format the date into text.</param>
-  ''' <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  ''' <param name="value">The date value to convert.</param>
+  ''' <param name="formatString">The format string used to format the date into text.</param>
+  ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   ''' <returns>Text representation of the date value.</returns>
   Public Shared Function DateToString( _
     ByVal value As Date, ByVal formatString As String, _
     ByVal emptyIsMin As Boolean) As String
 
-    If emptyIsMin AndAlso value = Date.MinValue Then
-      Return ""
-    ElseIf Not emptyIsMin AndAlso value = Date.MaxValue Then
-      Return ""
-    Else
-      Return String.Format("{0:" + formatString + "}", value)
+    Return DateToString(value, formatString, GetEmptyValue(emptyIsMin))
+
+  End Function
+
+  ''' <summary>
+  ''' Converts a date value into a text representation.
+  ''' </summary>
+  ''' <remarks>
+  ''' Whether the date value is considered empty is determined by
+  ''' the EmptyIsMin parameter value. If the date is empty, this
+  ''' method returns an empty string. Otherwise it returns the date
+  ''' value formatted based on the FormatString parameter.
+  ''' </remarks>
+  ''' <param name="value">The date value to convert.</param>
+  ''' <param name="formatString">The format string used to format the date into text.</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  ''' <returns>Text representation of the date value.</returns>
+  Public Shared Function DateToString( _
+    ByVal value As Date, ByVal formatString As String, _
+    ByVal emptyValue As EmptyValue) As String
+
+    If emptyValue = SmartDate.EmptyValue.MinDate Then
+      If value = Date.MinValue Then
+        Return ""
+      End If
+
+    Else ' maxdate is empty
+      If value = Date.MaxValue Then
+        Return ""
+      End If
     End If
+    Return String.Format("{0:" + formatString + "}", value)
+
   End Function
 
 #End Region
@@ -438,7 +579,7 @@ Public Structure SmartDate
   ''' <param name="Value">The date to which we are being compared.</param>
   ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
   Public Function CompareTo(ByVal value As String) As Integer
-    Return Me.Date.CompareTo(StringToDate(value, Not mEmptyIsMax))
+    Return Me.Date.CompareTo(StringToDate(value, mEmptyValue))
   End Function
 
   ''' <summary>

@@ -102,14 +102,13 @@ namespace Csla.Windows
         {
           BindingSource bs =
             (BindingSource)binding.DataSource;
-          // get the object property name
-          string propertyName =
-            binding.BindingMemberInfo.BindingField;
           // get the BusinessObject if appropriate
-          if (bs.DataSource is Csla.Core.BusinessBase)
+          Csla.Security.IAuthorizeReadWrite ds = bs.DataSource as Csla.Security.IAuthorizeReadWrite;
+          if (ds != null)
           {
-            Csla.Core.BusinessBase ds =
-              (Csla.Core.BusinessBase)bs.DataSource;
+            // get the object property name
+            string propertyName =
+              binding.BindingMemberInfo.BindingField;
 
             ApplyReadRules(
               control, binding,
@@ -117,15 +116,6 @@ namespace Csla.Windows
             ApplyWriteRules(
               control, binding,
               ds.CanWriteProperty(propertyName));
-          }
-          else if (bs.DataSource is Csla.Core.IReadOnlyObject)
-          {
-            Csla.Core.IReadOnlyObject ds =
-              (Csla.Core.IReadOnlyObject)bs.DataSource;
-
-            ApplyReadRules(
-              control, binding,
-              ds.CanReadProperty(propertyName));
           }
         }
       }

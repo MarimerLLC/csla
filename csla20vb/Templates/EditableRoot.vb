@@ -8,10 +8,12 @@ Public Class EditableRoot
   Private mId As Integer
 
   Public Property Id() As Integer
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mId
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As Integer)
       CanWriteProperty(True)
       If mId <> value Then
@@ -72,7 +74,7 @@ Public Class EditableRoot
   End Function
 
   Public Shared Function GetEditableRoot(ByVal id As Integer) As EditableRoot
-    Return DataPortal.Create(Of EditableRoot)(New Criteria(id))
+    Return DataPortal.Fetch(Of EditableRoot)(New Criteria(id))
   End Function
 
   Public Shared Sub DeleteEditableRoot(ByVal id As Integer)

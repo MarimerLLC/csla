@@ -1,0 +1,17 @@
+<project SchemaVersion="1.3">
+    <assemblies>
+        <assembly location=".\Csla\bin\Debug\Csla.dll" documentation=".\Csla\bin\Debug\Csla.xml" />
+    </assemblies>
+    <documenters>
+        <documenter name="MSDN">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="HtmlHelpName" value="csla" />
+            <property name="Title" value="Rockford Lhotka's CSLA .NET" />
+            <property name="ShowVisualBasic" value="True" />
+            <property name="ShowMissingSummaries" value="True" />
+            <property name="ShowMissingParams" value="True" />
+            <property name="CopyrightText" value="Copyright 2006 (c) Rockford Lhotka" />
+            <property name="CopyrightHref" value="http://www.lhotka.net/cslanet/license.aspx" />
+        </documenter>
+    </documenters>
+</project>

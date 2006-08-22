@@ -16,11 +16,13 @@ namespace Templates
 
     public int id
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
         CanReadProperty(true);
         return _id;
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);

@@ -21,6 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <DocumentationFile>bin\Debug\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,7 +50,11 @@
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BusinessBase.cs" />
+    <Compile Include="Core\ExtendedBindingList.cs" />
     <Compile Include="Core\IEditableBusinessObject.cs" />
+    <Compile Include="Core\IExtendedBindingList.cs" />
+    <Compile Include="Core\IParent.cs" />
+    <Compile Include="Core\ISavable.cs" />
     <Compile Include="Core\IUndoableObject.cs" />
     <Compile Include="Core\IBusinessObject.cs" />
     <Compile Include="Core\ICommandObject.cs" />
@@ -58,6 +63,8 @@
     <Compile Include="Core\IReadOnlyObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />
     <Compile Include="Core\ReadOnlyBindingList.cs" />
+    <Compile Include="Core\RemovingItemEventArgs.cs" />
+    <Compile Include="Core\SavedEventArgs.cs" />
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="DataPortal\ApplicationContext.cs" />
     <Compile Include="DataPortal\Client\DataPortal.cs" />
@@ -91,8 +98,13 @@
     <Compile Include="Data\DataMapper.cs" />
     <Compile Include="Data\ObjectAdapter.cs" />
     <Compile Include="Data\SafeDataReader.cs" />
+    <Compile Include="DefaultFilter.cs" />
+    <Compile Include="EditableRootListBase.cs" />
     <Compile Include="EnterpriseServicesSettings.cs" />
+    <Compile Include="FilteredBindingList.cs" />
+    <Compile Include="FilterProvider.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IFilterable.cs" />
     <Compile Include="NameValueListBase.cs" />
     <Compile Include="NotUndoableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,19 +122,27 @@
     <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="Security\AccessType.cs" />
     <Compile Include="Security\AuthorizationRules.cs" />
+    <Compile Include="Security\AuthorizationRulesManager.cs" />
     <Compile Include="Security\BusinessPrincipalBase.cs" />
+    <Compile Include="Security\IAuthorizeReadWrite.cs" />
     <Compile Include="Security\RolesForProperty.cs" />
+    <Compile Include="Security\SharedAuthorizationRules.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="SortedBindingList.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Validation\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRulesCollection.cs" />
     <Compile Include="Validation\CommonRules.cs" />
+    <Compile Include="Validation\IRuleMethod.cs" />
     <Compile Include="Validation\RuleArgs.cs" />
     <Compile Include="Validation\RuleHandler.cs" />
     <Compile Include="Validation\RuleMethod.cs" />
+    <Compile Include="Validation\RuleSeverity.cs" />
+    <Compile Include="Validation\RulesList.cs" />
+    <Compile Include="Validation\SharedValidationRules.cs" />
     <Compile Include="Validation\ValidationException.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
+    <Compile Include="Validation\ValidationRulesManager.cs" />
     <Compile Include="Web References\WebServiceHost\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -136,6 +156,7 @@
     <Compile Include="Web\Design\ObjectSchema.cs" />
     <Compile Include="Web\Design\ObjectViewSchema.cs" />
     <Compile Include="Web\Design\TypeLoader.cs" />
+    <Compile Include="Web\IReportTotalRowCount.cs" />
     <Compile Include="Windows\BindingSourceRefresh.cs">
       <SubType>Component</SubType>
     </Compile>

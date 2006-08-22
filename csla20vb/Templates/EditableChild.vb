@@ -10,10 +10,12 @@ Public Class EditableChild
   Private mId As Integer
 
   Public Property Id() As Integer
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mId
     End Get
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As Integer)
       CanWriteProperty(True)
       If mId <> value Then

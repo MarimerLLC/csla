@@ -103,7 +103,7 @@ Namespace Validation
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.ToString & "!" & mMaxLength.ToString
+        Return MyBase.ToString & "?maxLength=" & mMaxLength.ToString
       End Function
 
     End Class
@@ -164,7 +164,7 @@ Namespace Validation
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.ToString & "!" & mMaxValue.ToString
+        Return MyBase.ToString & "?maxValue=" & mMaxValue.ToString
       End Function
 
     End Class
@@ -225,7 +225,7 @@ Namespace Validation
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.ToString & "!" & mMinValue.ToString
+        Return MyBase.ToString & "?minValue=" & mMinValue.ToString
       End Function
 
     End Class
@@ -292,7 +292,7 @@ Namespace Validation
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.ToString & "!" & mMaxValue.ToString
+        Return MyBase.ToString & "?maxValue=" & mMaxValue.ToString
       End Function
 
     End Class
@@ -359,7 +359,7 @@ Namespace Validation
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.ToString & "!" & mMinValue.ToString
+        Return MyBase.ToString & "?minValue=" & mMinValue.ToString
       End Function
 
     End Class
@@ -460,7 +460,7 @@ Namespace Validation
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.ToString & "!" & mRegEx.ToString
+        Return MyBase.ToString & "?regex=" & System.Web.HttpUtility.UrlEncode(mRegEx.ToString)
       End Function
 
       ''' <summary>

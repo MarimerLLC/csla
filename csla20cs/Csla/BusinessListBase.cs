@@ -15,9 +15,9 @@ namespace Csla
   [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
-  public abstract class BusinessListBase<T, C> : 
-      System.ComponentModel.BindingList<C>,
-      Core.IEditableCollection, ICloneable
+  public abstract class BusinessListBase<T, C> :
+      Core.ExtendedBindingList<C>,
+      Core.IEditableCollection, ICloneable, Core.ISavable, Core.IParent
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -52,8 +52,10 @@ namespace Csla
     {
       get
       {
-        // any deletions make us dirty
-        if (DeletedList.Count > 0) return true;
+        // any non-new deletions make us dirty
+        foreach (C item in DeletedList)
+          if (!item.IsNew)
+            return true;
 
         // run through all the child objects
         // and if any are dirty then then
@@ -155,6 +157,24 @@ namespace Csla
         throw new NotSupportedException(Resources.NoApplyEditChildException);
 
       AcceptChanges();
+    }
+
+    void Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
+    {
+      EditChildComplete(child);
+    }
+
+    /// <summary>
+    /// Override this method to be notified when a child object's
+    /// <see cref="Core.BusinessBase.ApplyEdit" /> method has
+    /// completed.
+    /// </summary>
+    /// <param name="child">The child object that was edited.</param>
+    protected virtual void EditChildComplete(Core.IEditableBusinessObject child)
+    {
+
+      // do nothing, we don't really care
+      // when a child has its edits applied
     }
 
     #endregion
@@ -317,6 +337,16 @@ namespace Csla
     /// </summary>
     /// <param name="child">The child object to remove.</param>
     void Core.IEditableCollection.RemoveChild(Csla.Core.IEditableBusinessObject child)
+    {
+      Remove((C)child);
+    }
+
+    /// <summary>
+    /// This method is called by a child object when it
+    /// wants to be removed from the collection.
+    /// </summary>
+    /// <param name="child">The child object to remove.</param>
+    void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
     {
       Remove((C)child);
     }
@@ -492,6 +522,7 @@ namespace Csla
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
+      OnDeserialized(context);
       foreach (Core.IEditableBusinessObject child in this)
       {
         child.SetParent(this);
@@ -501,7 +532,6 @@ namespace Csla
       }
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
-      OnDeserialized(context);
     }
 
     /// <summary>
@@ -548,6 +578,7 @@ namespace Csla
     /// <returns>A new object containing the saved values.</returns>
     public virtual T Save()
     {
+      T result;
       if (this.IsChild)
         throw new NotSupportedException(Resources.NoSaveChildException);
 
@@ -558,9 +589,11 @@ namespace Csla
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
 
       if (IsDirty)
-        return (T)DataPortal.Update(this);
+        result = (T)DataPortal.Update(this);
       else
-        return (T)this;
+        result = (T)this;
+      OnSaved(result);
+      return result;
     }
 
     /// <summary>
@@ -643,5 +676,61 @@ namespace Csla
     }
 
     #endregion
+
+    #region ISavable Members
+
+    object Csla.Core.ISavable.Save()
+    {
+      return Save();
+    }
+
+    [NonSerialized()]
+    private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
+    private EventHandler<Csla.Core.SavedEventArgs> _serializableSavedHandlers;
+
+    /// <summary>
+    /// Event raised when an object has been saved.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+      "CA1062:ValidateArgumentsOfPublicMethods")]
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved
+    {
+      add
+      {
+        if (value.Method.IsPublic &&
+           (value.Method.DeclaringType.IsSerializable ||
+            value.Method.IsStatic))
+          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Combine(_serializableSavedHandlers, value);
+        else
+          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Combine(_nonSerializableSavedHandlers, value);
+      }
+      remove
+      {
+        if (value.Method.IsPublic &&
+           (value.Method.DeclaringType.IsSerializable ||
+            value.Method.IsStatic))
+          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Remove(_serializableSavedHandlers, value);
+        else
+          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Remove(_nonSerializableSavedHandlers, value);
+      }
+    }
+
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void OnSaved(T newObject)
+    {
+      if (_nonSerializableSavedHandlers != null)
+        _nonSerializableSavedHandlers.Invoke(this,
+          new Csla.Core.SavedEventArgs(newObject));
+      if (_serializableSavedHandlers != null)
+        _serializableSavedHandlers.Invoke(this,
+          new Csla.Core.SavedEventArgs(newObject));
+    }
+
+    #endregion
+
   }
 }

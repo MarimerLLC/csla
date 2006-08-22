@@ -105,8 +105,9 @@ namespace Csla.Web.Design
 
     private string GetOriginalPath(string assemblyName, string typeName)
     {
-      Type t = CslaDataSource.GetType(assemblyName, typeName);
-      Assembly asm = t.Assembly;
+      //Type t = CslaDataSource.GetType(assemblyName, typeName);
+      //Assembly asm = t.Assembly;
+      Assembly asm = CslaDataSource.GetAssembly(assemblyName);
       return asm.CodeBase;
     }
 

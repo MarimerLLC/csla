@@ -7,6 +7,7 @@ namespace Csla.Validation
 {
   public static class CommonRules
   {
+
     #region StringRequired
 
     /// <summary>
@@ -34,7 +35,7 @@ namespace Csla.Validation
       return true;
     }
 
-    #endregion 
+    #endregion
 
     #region StringMaxLength
 
@@ -60,7 +61,7 @@ namespace Csla.Validation
       if (!String.IsNullOrEmpty(value) && (value.Length > max))
       {
         e.Description = String.Format(
-          Resources.StringMaxLengthRule, 
+          Resources.StringMaxLengthRule,
           e.PropertyName, max.ToString());
         return false;
       }
@@ -100,7 +101,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "!" + _maxLength.ToString();
+        return base.ToString() + "?maxLength=" + _maxLength.ToString();
       }
     }
 
@@ -161,7 +162,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "!" + _maxValue.ToString();
+        return base.ToString() + "?maxValue=" + _maxValue.ToString();
       }
     }
 
@@ -222,7 +223,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "!" + _minValue.ToString();
+        return base.ToString() + "?minValue=" + _minValue.ToString();
       }
     }
 
@@ -239,7 +240,7 @@ namespace Csla.Validation
     /// <param name="e">Arguments variable specifying the
     /// name of the property to validate, along with the max
     /// allowed value.</param>
-    public static bool MaxValue<T>(object target, RuleArgs e) where T: IComparable
+    public static bool MaxValue<T>(object target, RuleArgs e) where T : IComparable
     {
       PropertyInfo pi = target.GetType().GetProperty(e.PropertyName);
       T value = (T)pi.GetValue(target, null);
@@ -248,7 +249,7 @@ namespace Csla.Validation
       int result = value.CompareTo(max);
       if (result == 1)
       {
-        e.Description = string.Format(Resources.MaxValueRule, 
+        e.Description = string.Format(Resources.MaxValueRule,
           e.PropertyName, max.ToString());
         return false;
       }
@@ -287,9 +288,9 @@ namespace Csla.Validation
       /// <summary>
       /// Returns a string representation of the object.
       /// </summary>
-      public override string ToString() 
+      public override string ToString()
       {
-        return base.ToString() + "!" + _maxValue.ToString();
+        return base.ToString() + "?maxValue=" + _maxValue.ToString();
       }
     }
 
@@ -306,7 +307,7 @@ namespace Csla.Validation
     /// <param name="e">Arguments variable specifying the
     /// name of the property to validate, along with the min
     /// allowed value.</param>
-    public static bool MinValue<T>(object target, RuleArgs e) where T: IComparable
+    public static bool MinValue<T>(object target, RuleArgs e) where T : IComparable
     {
       PropertyInfo pi = target.GetType().GetProperty(e.PropertyName);
       T value = (T)pi.GetValue(target, null);
@@ -356,7 +357,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "!" + _minValue.ToString();
+        return base.ToString() + "?minValue=" + _minValue.ToString();
       }
     }
 
@@ -455,12 +456,12 @@ namespace Csla.Validation
         _regEx = regex;
       }
 
-      /// <summary>
+      /// <summary>f
       /// Returns a string representation of the object.
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "!" + _regEx.ToString();
+        return base.ToString() + "?regex=" + _regEx.ToString();
       }
 
       /// <summary>
@@ -480,7 +481,7 @@ namespace Csla.Validation
       }
     }
 
-#endregion
+    #endregion
 
   }
 }

@@ -18,14 +18,21 @@ Namespace Core
     Implements System.ComponentModel.IEditableObject
     Implements ICloneable
     Implements IDataErrorInfo
+    Implements Csla.Security.IAuthorizeReadWrite
 
 #Region " Constructors "
 
     Protected Sub New()
 
       Initialize()
-      AddBusinessRules()
-      AddAuthorizationRules()
+      AddInstanceBusinessRules()
+      If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
+        AddBusinessRules()
+      End If
+      AddInstanceAuthorizationRules()
+      If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+        AddAuthorizationRules()
+      End If
 
     End Sub
 
@@ -294,12 +301,41 @@ Namespace Core
 #Region " Authorization "
 
     <NotUndoable()> _
+    <NonSerialized()> _
+    Private mReadResultCache As Dictionary(Of String, Boolean)
+    <NotUndoable()> _
+    <NonSerialized()> _
+    Private mWriteResultCache As Dictionary(Of String, Boolean)
+    <NotUndoable()> _
+    <NonSerialized()> _
+    Private mLastPrincipal As System.Security.Principal.IPrincipal
+
+    <NotUndoable()> _
+    <NonSerialized()> _
     Private mAuthorizationRules As Security.AuthorizationRules
 
     ''' <summary>
     ''' Override this method to add authorization
     ''' rules for your object's properties.
     ''' </summary>
+    ''' <remarks>
+    ''' AddAuthorizationRules is automatically called by CSLA .NET
+    ''' when your object should associate per-instance authorization roles
+    ''' with its properties.
+    ''' </remarks>
+    Protected Overridable Sub AddInstanceAuthorizationRules()
+
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to add per-type
+    ''' authorization rules for your type's properties.
+    ''' </summary>
+    ''' <remarks>
+    ''' AddSharedAuthorizationRules is automatically called by CSLA .NET
+    ''' when your object should associate per-type authorization roles
+    ''' with its properties.
+    ''' </remarks>
     Protected Overridable Sub AddAuthorizationRules()
 
     End Sub
@@ -317,7 +353,7 @@ Namespace Core
       As Security.AuthorizationRules
       Get
         If mAuthorizationRules Is Nothing Then
-          mAuthorizationRules = New Security.AuthorizationRules
+          mAuthorizationRules = New Security.AuthorizationRules(Me.GetType)
         End If
         Return mAuthorizationRules
       End Get
@@ -402,21 +438,32 @@ Namespace Core
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Public Overridable Function CanReadProperty( _
-      ByVal propertyName As String) As Boolean
+      ByVal propertyName As String) As Boolean Implements Csla.Security.IAuthorizeReadWrite.CanReadProperty
 
       Dim result As Boolean = True
-      If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
-        ' some users are explicitly granted read access
-        ' in which case all other users are denied
-        If Not AuthorizationRules.IsReadAllowed(propertyName) Then
-          result = False
-        End If
 
-      ElseIf AuthorizationRules.HasReadDeniedRoles(propertyName) Then
-        ' some users are explicitly denied read access
-        If AuthorizationRules.IsReadDenied(propertyName) Then
-          result = False
+      VerifyAuthorizationCache()
+
+      If mReadResultCache.ContainsKey(propertyName) Then
+        ' cache contains value - get cached value
+        result = mReadResultCache(propertyName)
+
+      Else
+        If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
+          ' some users are explicitly granted read access
+          ' in which case all other users are denied
+          If Not AuthorizationRules.IsReadAllowed(propertyName) Then
+            result = False
+          End If
+
+        ElseIf AuthorizationRules.HasReadDeniedRoles(propertyName) Then
+          ' some users are explicitly denied read access
+          If AuthorizationRules.IsReadDenied(propertyName) Then
+            result = False
+          End If
         End If
+        ' store value in cache
+        mReadResultCache(propertyName) = result
       End If
       Return result
 
@@ -496,25 +543,53 @@ Namespace Core
     ''' </para>
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Public Overridable Function CanWriteProperty(ByVal propertyName As String) As Boolean
+    Public Overridable Function CanWriteProperty( _
+      ByVal propertyName As String) As Boolean Implements Csla.Security.IAuthorizeReadWrite.CanWriteProperty
 
       Dim result As Boolean = True
-      If AuthorizationRules.HasWriteAllowedRoles(propertyName) Then
-        ' some users are explicitly granted write access
-        ' in which case all other users are denied
-        If Not AuthorizationRules.IsWriteAllowed(propertyName) Then
-          result = False
-        End If
 
-      ElseIf AuthorizationRules.HasWriteDeniedRoles(propertyName) Then
-        ' some users are explicitly denied write access
-        If AuthorizationRules.IsWriteDenied(propertyName) Then
-          result = False
+      VerifyAuthorizationCache()
+
+      If mWriteResultCache.ContainsKey(propertyName) Then
+        ' cache contains value - get cached value
+        result = mWriteResultCache(propertyName)
+
+      Else
+        If AuthorizationRules.HasWriteAllowedRoles(propertyName) Then
+          ' some users are explicitly granted write access
+          ' in which case all other users are denied
+          If Not AuthorizationRules.IsWriteAllowed(propertyName) Then
+            result = False
+          End If
+
+        ElseIf AuthorizationRules.HasWriteDeniedRoles(propertyName) Then
+          ' some users are explicitly denied write access
+          If AuthorizationRules.IsWriteDenied(propertyName) Then
+            result = False
+          End If
         End If
+        mWriteResultCache(propertyName) = result
       End If
       Return result
 
     End Function
+
+    Private Sub VerifyAuthorizationCache()
+
+      If mReadResultCache Is Nothing Then
+        mReadResultCache = New Dictionary(Of String, Boolean)
+      End If
+      If mWriteResultCache Is Nothing Then
+        mWriteResultCache = New Dictionary(Of String, Boolean)
+      End If
+      If Not ReferenceEquals(Csla.ApplicationContext.User, mLastPrincipal) Then
+        ' the principal has changed - reset the cache
+        mReadResultCache.Clear()
+        mWriteResultCache.Clear()
+        mLastPrincipal = Csla.ApplicationContext.User
+      End If
+
+    End Sub
 
 #End Region
 
@@ -522,7 +597,7 @@ Namespace Core
 
     <NotUndoable()> _
     <NonSerialized()> _
-    Private mParent As Core.IEditableCollection
+    Private mParent As Core.IParent
 
     ''' <summary>
     ''' Provide access to the parent reference for use
@@ -532,7 +607,7 @@ Namespace Core
     ''' This value will be Nothing for root objects.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected ReadOnly Property Parent() As Core.IEditableCollection
+    Protected ReadOnly Property Parent() As Core.IParent
       Get
         Return mParent
       End Get
@@ -544,11 +619,8 @@ Namespace Core
     ''' parent.
     ''' </summary>
     ''' <param name="parent">A reference to the parent collection object.</param>
-    Friend Sub SetParent(ByVal parent As Core.IEditableCollection) Implements IEditableBusinessObject.SetParent
+    Friend Sub SetParent(ByVal parent As Core.IParent) Implements IEditableBusinessObject.SetParent
 
-      If Not IsChild Then
-        Throw New InvalidOperationException(My.Resources.ParentSetException)
-      End If
       mParent = parent
 
     End Sub
@@ -679,7 +751,10 @@ Namespace Core
 
       mBindingEdit = False
       ValidationRules.SetTarget(Me)
-      AddBusinessRules()
+      AddInstanceBusinessRules()
+      If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
+        AddBusinessRules()
+      End If
       OnUnknownPropertyChanged()
       MyBase.UndoChangesComplete()
 
@@ -697,6 +772,19 @@ Namespace Core
       mBindingEdit = False
       mNeverCommitted = False
       AcceptChanges()
+    End Sub
+
+    ''' <summary>
+    ''' Notifies the parent object (if any) that this
+    ''' child object's edits have been accepted.
+    ''' </summary>
+    Protected Overrides Sub AcceptChangesComplete()
+
+      If Parent IsNot Nothing Then
+        Parent.ApplyEditChild(Me)
+      End If
+      MyBase.AcceptChangesComplete()
+
     End Sub
 
 #End Region
@@ -741,7 +829,7 @@ Namespace Core
     ''' To 'undelete' an object, use n-level undo as discussed in Chapters 2 and 3.
     ''' </para>
     ''' </remarks>
-    Public Overridable Sub Delete()
+    Public Overridable Sub Delete() Implements IEditableBusinessObject.Delete
       If Me.IsChild Then
         Throw New NotSupportedException(My.Resources.ChildDeleteException)
       End If
@@ -842,9 +930,23 @@ Namespace Core
     ''' rules.
     ''' </summary>
     ''' <remarks>
-    ''' AddBusinessRules is automatically called by CSLA .NET
-    ''' when your object should associate validation rules
-    ''' with its properties.
+    ''' This method is automatically called by CSLA .NET
+    ''' when your object should associate per-instance
+    ''' validation rules with its properties.
+    ''' </remarks>
+    Protected Overridable Sub AddInstanceBusinessRules()
+
+    End Sub
+
+    ''' <summary>
+    ''' Override this method in your business class to
+    ''' be notified when you need to set up shared 
+    ''' business rules.
+    ''' </summary>
+    ''' <remarks>
+    ''' This method is automatically called by CSLA .NET
+    ''' when your object should associate per-type 
+    ''' validation rules with its properties.
     ''' </remarks>
     Protected Overridable Sub AddBusinessRules()
 
@@ -1004,7 +1106,7 @@ Namespace Core
       Implements System.ComponentModel.IDataErrorInfo.Error
       Get
         If Not IsValid Then
-          Return ValidationRules.GetBrokenRules.ToString
+          Return ValidationRules.GetBrokenRules.ToString(Validation.RuleSeverity.Error)
 
         Else
           Return ""
@@ -1034,9 +1136,16 @@ Namespace Core
     <OnDeserialized()> _
     Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
 
-      ValidationRules.SetTarget(Me)
-      AddBusinessRules()
       OnDeserialized(context)
+      ValidationRules.SetTarget(Me)
+      AddInstanceBusinessRules()
+      If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
+        AddBusinessRules()
+      End If
+      AddInstanceAuthorizationRules()
+      If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+        AddAuthorizationRules()
+      End If
 
     End Sub
 

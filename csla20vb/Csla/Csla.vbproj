@@ -62,13 +62,19 @@
   <ItemGroup>
     <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessListBase.vb" />
+    <Compile Include="Core\ExtendedBindingList.vb" />
     <Compile Include="Core\IEditableBusinessObject.vb" />
+    <Compile Include="Core\IExtendedBindingList.vb" />
+    <Compile Include="Core\IParent.vb" />
+    <Compile Include="Core\ISavable.vb" />
     <Compile Include="Core\IUndoableObject.vb" />
     <Compile Include="Core\IBusinessObject.vb" />
     <Compile Include="Core\ICommandObject.vb" />
     <Compile Include="Core\IReadOnlyCollection.vb" />
     <Compile Include="Core\IReadOnlyObject.vb" />
     <Compile Include="Core\ObjectCloner.vb" />
+    <Compile Include="Core\RemovingItemEventArgs.vb" />
+    <Compile Include="Core\SavedEventArgs.vb" />
     <Compile Include="DataPortal\Client\EnterpriseServicesProxy.vb" />
     <Compile Include="DataPortal\Client\IDataPortalProxy.vb" />
     <Compile Include="DataPortal\Client\LocalProxy.vb" />
@@ -87,18 +93,30 @@
     <Compile Include="DataPortal\Server\TransactionalDataPortal.vb" />
     <Compile Include="DataPortal\TransactionalTypes.vb" />
     <Compile Include="Data\DataMapper.vb" />
+    <Compile Include="DefaultFilter.vb" />
+    <Compile Include="EditableRootListBase.vb" />
     <Compile Include="EnterpriseServicesSettings.vb" />
+    <Compile Include="FilteredBindingList.vb" />
+    <Compile Include="FilterProvider.vb" />
     <Compile Include="GlobalSuppressions.vb" />
+    <Compile Include="IFilterable.vb" />
     <Compile Include="Security\AccessType.vb" />
+    <Compile Include="Security\AuthorizationRulesManager.vb" />
+    <Compile Include="Security\IAuthorizeReadWrite.vb" />
+    <Compile Include="Security\SharedAuthorizationRules.vb" />
     <Compile Include="Utilities.vb" />
     <Compile Include="Validation\CommonRules.vb" />
     <Compile Include="Core\BindableBase.vb" />
     <Compile Include="Security\RolesForProperty.vb" />
     <Compile Include="Validation\BrokenRule.vb" />
+    <Compile Include="Validation\IRuleMethod.vb" />
     <Compile Include="Validation\RuleArgs.vb" />
     <Compile Include="Validation\RuleHandler.vb" />
     <Compile Include="Validation\BrokenRulesCollection.vb" />
     <Compile Include="Validation\RuleMethod.vb" />
+    <Compile Include="Validation\RuleSeverity.vb" />
+    <Compile Include="Validation\RulesList.vb" />
+    <Compile Include="Validation\SharedValidationRules.vb" />
     <Compile Include="Validation\ValidationRules.vb" />
     <Compile Include="Core\BusinessBase.vb" />
     <Compile Include="Core\IEditableCollection.vb" />
@@ -142,6 +160,7 @@
     <Compile Include="Core\UndoableBase.vb" />
     <Compile Include="SortedBindingList.vb" />
     <Compile Include="Validation\ValidationException.vb" />
+    <Compile Include="Validation\ValidationRulesManager.vb" />
     <Compile Include="Web References\WebServiceHost\Reference.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

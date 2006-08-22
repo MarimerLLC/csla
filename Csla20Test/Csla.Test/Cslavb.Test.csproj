@@ -62,6 +62,8 @@
     <Compile Include="AppDomainTests\AppDomainTests.cs" />
     <Compile Include="Authorization\AuthTests.cs" />
     <Compile Include="Authorization\PermissionsRoot.cs" />
+    <Compile Include="Authorization\PerTypeAuthClasses.cs" />
+    <Compile Include="Authorization\PerTypeAuthorization.cs" />
     <Compile Include="Authorization\TestIdentity.cs" />
     <Compile Include="Authorization\TestPrincipal.cs" />
     <Compile Include="Basic\BasicTests.cs" />
@@ -110,6 +112,9 @@
     <Compile Include="DataPortal\StronglyTypedDP.cs" />
     <Compile Include="DataPortal\TransactionalRoot.cs" />
     <Compile Include="DPException\DataPortalExceptionTests.cs" />
+    <Compile Include="EditableRootList\EditableRootListTests.cs" />
+    <Compile Include="EditableRootList\ERitem.cs" />
+    <Compile Include="EditableRootList\ERlist.cs" />
     <Compile Include="IO\DPMethodOverloadTests.cs" />
     <Compile Include="IO\IOTests.cs" />
     <Compile Include="LazyLoad\AChild.cs" />
@@ -133,10 +138,16 @@
     <Compile Include="Serialization\TestEventSink.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
+    <Compile Include="ValidationRules\HasPerTypeClasses.cs" />
+    <Compile Include="ValidationRules\HasPerTypeRules.cs" />
     <Compile Include="ValidationRules\HasRegEx.cs" />
     <Compile Include="ValidationRules\HasRulesManager.cs" />
     <Compile Include="ValidationRules\HasRulesManager2.cs" />
     <Compile Include="ValidationRules\MaxLengthArgs.cs" />
+    <Compile Include="ValidationRules\SeverityClasses.cs" />
+    <Compile Include="ValidationRules\SeverityTests.cs" />
+    <Compile Include="ValidationRules\ShortCircuitClasses.cs" />
+    <Compile Include="ValidationRules\ShortCircuitTests.cs" />
     <Compile Include="ValidationRules\ValidationTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -16,6 +16,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Implements ICloneable
   Implements Core.IReadOnlyObject
+  Implements Csla.Security.IAuthorizeReadWrite
 
 #Region " Object ID Value "
 
@@ -94,7 +95,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Protected Sub New()
 
     Initialize()
-    AddAuthorizationRules()
+    AddInstanceAuthorizationRules()
+    If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+      AddAuthorizationRules()
+    End If
 
   End Sub
 
@@ -117,12 +121,33 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 #Region " Authorization "
 
   <NotUndoable()> _
-  Private mAuthorizationRules As New Security.AuthorizationRules
+  <NonSerialized()> _
+  Private mReadResultCache As Dictionary(Of String, Boolean)
+  <NotUndoable()> _
+  <NonSerialized()> _
+  Private mLastPrincipal As System.Security.Principal.IPrincipal
+
+  <NotUndoable()> _
+  <NonSerialized()> _
+  Private mAuthorizationRules As New Security.AuthorizationRules(Me.GetType)
 
   ''' <summary>
   ''' Override this method to add authorization
   ''' rules for your object's properties.
   ''' </summary>
+  Protected Overridable Sub AddInstanceAuthorizationRules()
+
+  End Sub
+
+  ''' <summary>
+  ''' Override this method to add per-type
+  ''' authorization rules for your type's properties.
+  ''' </summary>
+  ''' <remarks>
+  ''' AddSharedAuthorizationRules is automatically called by CSLA .NET
+  ''' when your object should associate per-type authorization roles
+  ''' with its properties.
+  ''' </remarks>
   Protected Overridable Sub AddAuthorizationRules()
 
   End Sub
@@ -221,25 +246,56 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Public Overridable Function CanReadProperty( _
     ByVal propertyName As String) As Boolean _
-    Implements Core.IReadOnlyObject.CanReadProperty
+    Implements Core.IReadOnlyObject.CanReadProperty, Csla.Security.IAuthorizeReadWrite.CanReadProperty
 
     Dim result As Boolean = True
-    If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
-      ' some users are explicitly granted read access
-      ' in which case all other users are denied
-      If Not AuthorizationRules.IsReadAllowed(propertyName) Then
-        result = False
-      End If
 
-    ElseIf AuthorizationRules.HasReadDeniedRoles(propertyName) Then
-      ' some users are explicitly denied read access
-      If AuthorizationRules.IsReadDenied(propertyName) Then
-        result = False
+    VerifyAuthorizationCache()
+
+    If mReadResultCache.ContainsKey(propertyName) Then
+      ' cache contains value - get cached value
+      result = mReadResultCache(propertyName)
+
+    Else
+      If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
+        ' some users are explicitly granted read access
+        ' in which case all other users are denied
+        If Not AuthorizationRules.IsReadAllowed(propertyName) Then
+          result = False
+        End If
+
+      ElseIf AuthorizationRules.HasReadDeniedRoles(propertyName) Then
+        ' some users are explicitly denied read access
+        If AuthorizationRules.IsReadDenied(propertyName) Then
+          result = False
+        End If
       End If
+      ' store value in cache
+      mReadResultCache(propertyName) = result
     End If
     Return result
 
   End Function
+
+  Private Function CanWriteProperty(ByVal propertyName As String) As Boolean _
+    Implements Security.IAuthorizeReadWrite.CanWriteProperty
+
+    Return False
+
+  End Function
+
+  Private Sub VerifyAuthorizationCache()
+
+    If mReadResultCache Is Nothing Then
+      mReadResultCache = New Dictionary(Of String, Boolean)
+    End If
+    If Not ReferenceEquals(Csla.ApplicationContext.User, mLastPrincipal) Then
+      ' the principal has changed - reset the cache
+      mReadResultCache.Clear()
+      mLastPrincipal = Csla.ApplicationContext.User
+    End If
+
+  End Sub
 
 #End Region
 

@@ -11,10 +11,12 @@ Imports Csla.Core
 <Serializable()> _
 Public MustInherit Class BusinessListBase( _
   Of T As BusinessListBase(Of T, C), C As Core.IEditableBusinessObject)
-  Inherits System.ComponentModel.BindingList(Of C)
+  Inherits Core.ExtendedBindingList(Of C)
 
   Implements Core.IEditableCollection
   Implements ICloneable
+  Implements ISavable
+  Implements IParent
 
 #Region " Constructors "
 
@@ -47,8 +49,12 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   Public ReadOnly Property IsDirty() As Boolean
     Get
-      ' any deletions make us dirty
-      If DeletedList.Count > 0 Then Return True
+      ' any non-new deletions make us dirty
+      For Each item As C In DeletedList
+        If Not item.IsNew Then
+          Return True
+        End If
+      Next
 
       ' run through all the child objects
       ' and if any are dirty then the
@@ -152,6 +158,20 @@ Public MustInherit Class BusinessListBase( _
     End If
 
     AcceptChanges()
+  End Sub
+
+  ''' <summary>
+  ''' Override this method to be notified when a child object's
+  ''' <see cref="Core.BusinessBase.ApplyEdit" /> method has
+  ''' completed.
+  ''' </summary>
+  ''' <param name="child">The child object that was edited.</param>
+  Protected Overridable Sub EditChildComplete( _
+    ByVal child As Core.IEditableBusinessObject) _
+    Implements Core.IParent.ApplyEditChild
+
+    ' do nothing, we don't really care
+    ' when a child has its edits applied
   End Sub
 
 #End Region
@@ -298,7 +318,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   ''' <param name="child">The child object to remove.</param>
   Private Sub RemoveChild(ByVal child As Core.IEditableBusinessObject) _
-    Implements Core.IEditableCollection.RemoveChild
+    Implements Core.IEditableCollection.RemoveChild, IParent.RemoveChild
 
     Remove(DirectCast(child, C))
 
@@ -471,12 +491,30 @@ Public MustInherit Class BusinessListBase( _
     For index As Integer = 0 To Count - 1
       If ReferenceEquals(Me(index), sender) Then
         OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
-          ComponentModel.ListChangedType.ItemChanged, index))
+          ComponentModel.ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)))
         Exit For
       End If
     Next
 
   End Sub
+
+  Private Shared mPropertyDescriptors As PropertyDescriptorCollection
+
+  Private Function GetPropertyDescriptor(ByVal propertyName As String) As PropertyDescriptor
+
+    If mPropertyDescriptors Is Nothing Then
+      mPropertyDescriptors = TypeDescriptor.GetProperties(Me.GetType)
+    End If
+    Dim result As PropertyDescriptor = Nothing
+    For Each desc As PropertyDescriptor In mPropertyDescriptors
+      If desc.Name = propertyName Then
+        result = desc
+        Exit For
+      End If
+    Next
+    Return result
+
+  End Function
 
 #End Region
 
@@ -485,6 +523,7 @@ Public MustInherit Class BusinessListBase( _
   <OnDeserialized()> _
   Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
 
+    OnDeserialized(context)
     For Each child As Core.IEditableBusinessObject In Me
       child.SetParent(Me)
       Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(child, System.ComponentModel.INotifyPropertyChanged)
@@ -495,7 +534,6 @@ Public MustInherit Class BusinessListBase( _
     For Each child As Core.IEditableBusinessObject In DeletedList
       child.SetParent(Me)
     Next
-    OnDeserialized(context)
 
   End Sub
 
@@ -556,12 +594,16 @@ Public MustInherit Class BusinessListBase( _
       Throw New Validation.ValidationException(My.Resources.NoSaveInvalidException)
     End If
 
+    Dim result As T
     If IsDirty Then
-      Return DirectCast(DataPortal.Update(Me), T)
+      result = DirectCast(DataPortal.Update(Me), T)
 
     Else
-      Return DirectCast(Me, T)
+      result = DirectCast(Me, T)
     End If
+
+    OnSaved(result)
+    Return result
 
   End Function
 
@@ -634,6 +676,60 @@ Public MustInherit Class BusinessListBase( _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+
+  End Sub
+
+#End Region
+
+#Region " ISavable implementation "
+
+  Private Function ISavable_Save() As Object Implements ISavable.Save
+    Return Save()
+  End Function
+
+  <NonSerialized()> _
+  Private mNonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  Private mSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+
+  ''' <summary>
+  ''' Event raised when an object has been saved.
+  ''' </summary>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+  Public Custom Event Saved As EventHandler(Of Csla.Core.SavedEventArgs) Implements Core.ISavable.Saved
+    AddHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
+      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
+        mSerializableSavedHandlers = CType(System.Delegate.Combine(mSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+      Else
+        mNonSerializableSavedHandlers = CType(System.Delegate.Combine(mNonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+      End If
+    End AddHandler
+    RemoveHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
+      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
+        mSerializableSavedHandlers = CType(System.Delegate.Remove(mSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+      Else
+        mNonSerializableSavedHandlers = CType(System.Delegate.Remove(mNonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+      End If
+    End RemoveHandler
+    RaiseEvent(ByVal sender As System.Object, ByVal e As Csla.Core.SavedEventArgs)
+      If Not mNonSerializableSavedHandlers Is Nothing Then
+        mNonSerializableSavedHandlers.Invoke(Me, e)
+      End If
+      If Not mSerializableSavedHandlers Is Nothing Then
+        mSerializableSavedHandlers.Invoke(Me, e)
+      End If
+    End RaiseEvent
+  End Event
+
+  ''' <summary>
+  ''' Raises the Saved event, indicating that the
+  ''' object has been saved, and providing a reference
+  ''' to the new object instance.
+  ''' </summary>
+  ''' <param name="newObject">The new object instance.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub OnSaved(ByVal newObject As T)
+
+    RaiseEvent Saved(Me, New Csla.Core.SavedEventArgs(newObject))
 
   End Sub
 

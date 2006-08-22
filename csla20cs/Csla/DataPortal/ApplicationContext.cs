@@ -44,6 +44,61 @@ namespace Csla
 
     #endregion
 
+    #region LocalContext
+
+    private const string _localContextName = "Csla.LocalContext";
+
+    /// <summary>
+    /// Returns the application-specific context data that
+    /// is local to the current AppDomain.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The return value is a HybridDictionary. If one does
+    /// not already exist, and empty one is created and returned.
+    /// </para><para>
+    /// Note that data in this context is NOT transferred to and from
+    /// the client and server.
+    /// </para>
+    /// </remarks>
+    public static HybridDictionary LocalContext
+    {
+      get
+      {
+        HybridDictionary ctx = GetLocalContext();
+        if (ctx == null)
+        {
+          ctx = new HybridDictionary();
+          SetLocalContext(ctx);
+        }
+        return ctx;
+      }
+    }
+
+    private static HybridDictionary GetLocalContext()
+    {
+      if (HttpContext.Current == null)
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
+        return (HybridDictionary)Thread.GetData(slot);
+      }
+      else
+        return (HybridDictionary)HttpContext.Current.Items[_localContextName];
+    }
+
+    private static void SetLocalContext(HybridDictionary LocalContext)
+    {
+      if (HttpContext.Current == null)
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
+        Thread.SetData(slot, LocalContext);
+      }
+      else
+        HttpContext.Current.Items[_localContextName] = LocalContext;
+    }
+
+    #endregion
+
     #region Client/Global Context
 
     private static object _syncClientContext = new object();

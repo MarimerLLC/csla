@@ -13,12 +13,14 @@ namespace Csla.Validation
     private string _ruleName;
     private string _description;
     private string _property;
+    private RuleSeverity _severity;
 
-    internal BrokenRule(RuleMethod rule)
+    internal BrokenRule(IRuleMethod rule)
     {
       _ruleName = rule.RuleName;
       _description = rule.RuleArgs.Description;
       _property = rule.RuleArgs.PropertyName;
+      _severity = rule.RuleArgs.Severity;
     }
 
     /// <summary>
@@ -46,6 +48,17 @@ namespace Csla.Validation
     public string Property
     {
       get { return _property; }
+    }
+
+    /// <summary>
+    /// Gets the severity of the broken rule.
+    /// </summary>
+    /// <value></value>
+    /// <returns></returns>
+    /// <remarks></remarks>
+    public RuleSeverity Severity
+    {
+      get { return _severity; }
     }
   }
 }

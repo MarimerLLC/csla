@@ -17,10 +17,38 @@ namespace Csla
   {
     private DateTime _date;
     private bool _initialized;
-    private bool _emptyIsMax;
+    private EmptyValue _emptyValue;
     private string _format;
+    private static string _defaultFormat;
+
+    #region EmptyValue enum
+
+    /// <summary>
+    /// Indicates the empty value of a
+    /// SmartDate.
+    /// </summary>
+    public enum EmptyValue
+    {
+      /// <summary>
+      /// Indicates that an empty SmartDate
+      /// is the smallest date.
+      /// </summary>
+      MinDate,
+      /// <summary>
+      /// Indicates that an empty SmartDate
+      /// is the largest date.
+      /// </summary>
+      MaxDate
+    }
+
+    #endregion
 
     #region Constructors
+
+    static SmartDate()
+    {
+      _defaultFormat = "d";
+    }
 
     /// <summary>
     /// Creates a new SmartDate object.
@@ -28,15 +56,26 @@ namespace Csla
     /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     public SmartDate(bool emptyIsMin)
     {
-      _emptyIsMax = !emptyIsMin;
+      _emptyValue = GetEmptyValue(emptyIsMin);
       _format = null;
       _initialized = false;
       // provide a dummy value to allow real initialization
       _date = DateTime.MinValue;
-      if (!_emptyIsMax)
-        Date = DateTime.MinValue;
-      else
-        Date = DateTime.MaxValue;
+      SetEmptyDate(_emptyValue);
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+    public SmartDate(EmptyValue emptyValue)
+    {
+      _emptyValue = emptyValue;
+      _format = null;
+      _initialized = false;
+      // provide a dummy value to allow real initialization
+      _date = DateTime.MinValue;
+      SetEmptyDate(_emptyValue);
     }
 
     /// <summary>
@@ -46,10 +85,10 @@ namespace Csla
     /// The SmartDate created will use the min possible
     /// date to represent an empty date.
     /// </remarks>
-    /// <param name="Value">The initial value of the object.</param>
+    /// <param name="value">The initial value of the object.</param>
     public SmartDate(DateTime value)
     {
-      _emptyIsMax = false;
+      _emptyValue = Csla.SmartDate.EmptyValue.MinDate;
       _format = null;
       _initialized = false;
       _date = DateTime.MinValue;
@@ -59,11 +98,25 @@ namespace Csla
     /// <summary>
     /// Creates a new SmartDate object.
     /// </summary>
-    /// <param name="Value">The initial value of the object.</param>
-    /// <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+    /// <param name="value">The initial value of the object.</param>
+    /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     public SmartDate(DateTime value, bool emptyIsMin)
     {
-      _emptyIsMax = !emptyIsMin;
+      _emptyValue = GetEmptyValue(emptyIsMin);
+      _format = null;
+      _initialized = false;
+      _date = DateTime.MinValue;
+      Date = value;
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
+    /// <param name="value">The initial value of the object.</param>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+    public SmartDate(DateTime value, EmptyValue emptyValue)
+    {
+      _emptyValue = emptyValue;
       _format = null;
       _initialized = false;
       _date = DateTime.MinValue;
@@ -77,10 +130,10 @@ namespace Csla
     /// The SmartDate created will use the min possible
     /// date to represent an empty date.
     /// </remarks>
-    /// <param name="Value">The initial value of the object (as text).</param>
+    /// <param name="value">The initial value of the object (as text).</param>
     public SmartDate(string value)
     {
-      _emptyIsMax = false;
+      _emptyValue = EmptyValue.MinDate;
       _format = null;
       _initialized = true;
       _date = DateTime.MinValue;
@@ -90,15 +143,45 @@ namespace Csla
     /// <summary>
     /// Creates a new SmartDate object.
     /// </summary>
-    /// <param name="Value">The initial value of the object (as text).</param>
-    /// <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+    /// <param name="value">The initial value of the object (as text).</param>
+    /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     public SmartDate(string value, bool emptyIsMin)
     {
-      _emptyIsMax = !emptyIsMin;
+      _emptyValue = GetEmptyValue(emptyIsMin);
       _format = null;
       _initialized = true;
       _date = DateTime.MinValue;
       this.Text = value;
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
+    /// <param name="value">The initial value of the object (as text).</param>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+    public SmartDate(string value, EmptyValue emptyValue)
+    {
+      _emptyValue = emptyValue;
+      _format = null;
+      _initialized = true;
+      _date = DateTime.MinValue;
+      this.Text = value;
+    }
+
+    private static EmptyValue GetEmptyValue(bool emptyIsMin)
+    {
+      if (emptyIsMin)
+        return EmptyValue.MinDate;
+      else
+        return EmptyValue.MaxDate;
+    }
+
+    private void SetEmptyDate(EmptyValue emptyValue)
+    {
+      if (emptyValue == SmartDate.EmptyValue.MinDate)
+        this.Date = DateTime.MinValue;
+      else
+        this.Date = DateTime.MaxValue;
     }
 
     #endregion
@@ -106,12 +189,31 @@ namespace Csla
     #region Text Support
 
     /// <summary>
+    /// Sets the global default format string used by all new
+    /// SmartDate values going forward.
+    /// </summary>
+    /// <remarks>
+    /// The default global format string is "d" unless this
+    /// method is called to change that value. Existing SmartDate
+    /// values are unaffected by this method, only SmartDate
+    /// values created after calling this method are affected.
+    /// </remarks>
+    /// <param name="formatString">
+    /// The format string should follow the requirements for the
+    /// .NET System.String.Format statement.
+    /// </param>
+    public static void SetDefaultFormatString(string formatString)
+    {
+      _defaultFormat = formatString;
+    }
+
+    /// <summary>
     /// Gets or sets the format string used to format a date
     /// value when it is returned as text.
     /// </summary>
     /// <remarks>
     /// The format string should follow the requirements for the
-    /// .NET <see cref="System.String.Format"/> statement.
+    /// .NET System.String.Format statement.
     /// </remarks>
     /// <value>A format string.</value>
     public string FormatString
@@ -119,7 +221,7 @@ namespace Csla
       get
       {
         if (_format == null)
-          _format = "d";
+          _format = _defaultFormat;
         return _format;
       }
       set
@@ -145,8 +247,8 @@ namespace Csla
     /// </remarks>
     public string Text
     {
-      get { return DateToString(this.Date, FormatString, !_emptyIsMax); }
-      set { this.Date = StringToDate(value, !_emptyIsMax); }
+      get { return DateToString(this.Date, FormatString, _emptyValue); }
+      set { this.Date = StringToDate(value, _emptyValue); }
     }
 
     #endregion
@@ -184,6 +286,17 @@ namespace Csla
     public override string ToString()
     {
       return this.Text;
+    }
+
+    /// <summary>
+    /// Returns a text representation of the date value.
+    /// </summary>
+    /// <param name="format">
+    /// A standard .NET format string.
+    /// </param>
+    public string ToString(string format)
+    {
+      return DateToString(this.Date, format, _emptyValue);
     }
 
     /// <summary>
@@ -259,7 +372,7 @@ namespace Csla
     {
       get
       {
-        if (!_emptyIsMax)
+        if (_emptyValue == EmptyValue.MinDate)
           return this.Date.Equals(DateTime.MinValue);
         else
           return this.Date.Equals(DateTime.MaxValue);
@@ -277,7 +390,7 @@ namespace Csla
     /// </remarks>
     public bool EmptyIsMin
     {
-      get { return !_emptyIsMax; }
+      get { return (_emptyValue == EmptyValue.MinDate); }
     }
 
     #endregion
@@ -315,11 +428,27 @@ namespace Csla
     /// An empty string is assumed to represent an empty date. An empty date
     /// is returned as the MinValue of the Date datatype.
     /// </remarks>
-    /// <param name="Value">The text representation of the date.</param>
+    /// <param name="value">The text representation of the date.</param>
     /// <returns>A Date value.</returns>
     public static DateTime StringToDate(string value)
     {
       return StringToDate(value, true);
+    }
+
+        /// <summary>
+    /// Converts a text date representation into a Date value.
+    /// </summary>
+    /// <remarks>
+    /// An empty string is assumed to represent an empty date. An empty date
+    /// is returned as the MinValue or MaxValue of the Date datatype depending
+    /// on the EmptyIsMin parameter.
+    /// </remarks>
+    /// <param name="value">The text representation of the date.</param>
+    /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+    /// <returns>A Date value.</returns>
+    public static DateTime StringToDate(string value, bool emptyIsMin)
+    {
+      return StringToDate(value, GetEmptyValue(emptyIsMin));
     }
 
     /// <summary>
@@ -330,15 +459,15 @@ namespace Csla
     /// is returned as the MinValue or MaxValue of the Date datatype depending
     /// on the EmptyIsMin parameter.
     /// </remarks>
-    /// <param name="Value">The text representation of the date.</param>
-    /// <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+    /// <param name="value">The text representation of the date.</param>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
     /// <returns>A Date value.</returns>
-    public static DateTime StringToDate(string value, bool emptyIsMin)
+    public static DateTime StringToDate(string value, EmptyValue emptyValue)
     {
       DateTime tmp;
       if (String.IsNullOrEmpty(value))
       {
-        if (emptyIsMin)
+        if (emptyValue == EmptyValue.MinDate)
           return DateTime.MinValue;
         else
           return DateTime.MaxValue;
@@ -373,8 +502,8 @@ namespace Csla
     /// method returns an empty string. Otherwise it returns the date
     /// value formatted based on the FormatString parameter.
     /// </remarks>
-    /// <param name="Value">The date value to convert.</param>
-    /// <param name="FormatString">The format string used to format the date into text.</param>
+    /// <param name="value">The date value to convert.</param>
+    /// <param name="formatString">The format string used to format the date into text.</param>
     /// <returns>Text representation of the date value.</returns>
     public static string DateToString(
       DateTime value, string formatString)
@@ -391,19 +520,43 @@ namespace Csla
     /// method returns an empty string. Otherwise it returns the date
     /// value formatted based on the FormatString parameter.
     /// </remarks>
-    /// <param name="Value">The date value to convert.</param>
-    /// <param name="FormatString">The format string used to format the date into text.</param>
-    /// <param name="EmptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+    /// <param name="value">The date value to convert.</param>
+    /// <param name="formatString">The format string used to format the date into text.</param>
+    /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     /// <returns>Text representation of the date value.</returns>
     public static string DateToString(
       DateTime value, string formatString, bool emptyIsMin)
     {
-      if (emptyIsMin && value == DateTime.MinValue)
-        return string.Empty;
-      else if (!emptyIsMin && value == DateTime.MaxValue)
-        return string.Empty;
+      return DateToString(value, formatString, GetEmptyValue(emptyIsMin));
+    }
+
+    /// <summary>
+    /// Converts a date value into a text representation.
+    /// </summary>
+    /// <remarks>
+    /// Whether the date value is considered empty is determined by
+    /// the EmptyIsMin parameter value. If the date is empty, this
+    /// method returns an empty string. Otherwise it returns the date
+    /// value formatted based on the FormatString parameter.
+    /// </remarks>
+    /// <param name="value">The date value to convert.</param>
+    /// <param name="formatString">The format string used to format the date into text.</param>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+    /// <returns>Text representation of the date value.</returns>
+    public static string DateToString(
+      DateTime value, string formatString, EmptyValue emptyValue)
+    {
+      if (emptyValue == EmptyValue.MinDate)
+      {
+        if (value == DateTime.MinValue)
+          return string.Empty;
+      }
       else
-        return string.Format("{0:" + formatString + "}", value);
+      {
+        if (value == DateTime.MaxValue)
+          return string.Empty;
+      }
+      return string.Format("{0:" + formatString + "}", value);
     }
 
     #endregion
@@ -414,11 +567,11 @@ namespace Csla
     /// Compares one SmartDate to another.
     /// </summary>
     /// <remarks>
-    /// This method works the same as the <see cref="DateTime.CompareTo"/> method
+    /// This method works the same as the DateTime.CompareTo method
     /// on the Date datetype, with the exception that it
     /// understands the concept of empty date values.
     /// </remarks>
-    /// <param name="Value">The date to which we are being compared.</param>
+    /// <param name="value">The date to which we are being compared.</param>
     /// <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
     public int CompareTo(SmartDate value)
     {
@@ -432,11 +585,11 @@ namespace Csla
     /// Compares one SmartDate to another.
     /// </summary>
     /// <remarks>
-    /// This method works the same as the <see cref="DateTime.CompareTo"/> method
+    /// This method works the same as the DateTime.CompareTo method
     /// on the Date datetype, with the exception that it
     /// understands the concept of empty date values.
     /// </remarks>
-    /// <param name="obj">The date to which we are being compared.</param>
+    /// <param name="value">The date to which we are being compared.</param>
     /// <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
     int IComparable.CompareTo(object value)
     {
@@ -449,17 +602,17 @@ namespace Csla
     /// <summary>
     /// Compares a SmartDate to a text date value.
     /// </summary>
-    /// <param name="Value">The date to which we are being compared.</param>
+    /// <param name="value">The date to which we are being compared.</param>
     /// <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
     public int CompareTo(string value)
     {
-      return this.Date.CompareTo(StringToDate(value, !_emptyIsMax));
+      return this.Date.CompareTo(StringToDate(value, _emptyValue));
     }
 
     /// <summary>
     /// Compares a SmartDate to a date value.
     /// </summary>
-    /// <param name="Value">The date to which we are being compared.</param>
+    /// <param name="value">The date to which we are being compared.</param>
     /// <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
     public int CompareTo(DateTime value)
     {

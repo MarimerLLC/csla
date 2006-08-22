@@ -109,7 +109,12 @@ Namespace Core
     ''' parent.
     ''' </summary>
     ''' <param name="parent">A reference to the parent collection object.</param>
-    Sub SetParent(ByVal parent As IEditableCollection)
+    Sub SetParent(ByVal parent As IParent)
+    ''' <summary>
+    ''' Marks the object for deletion. The object will be deleted as part of the
+    ''' next save operation.
+    ''' </summary>
+    Sub Delete()
 
   End Interface
 

@@ -178,11 +178,14 @@ namespace Csla.Web.Design
 
     /// <summary>
     /// Gets a value indicating whether the data source supports
-    /// paging.
+    /// paging of the data.
     /// </summary>
     public override bool CanPage
     {
-      get { return false; }
+      get 
+      {
+        return _owner.DataSourceControl.TypeSupportsPaging; 
+      }
     }
 
     /// <summary>
@@ -191,7 +194,10 @@ namespace Csla.Web.Design
     /// </summary>
     public override bool CanSort
     {
-      get { return false; }
+      get
+      {
+        return _owner.DataSourceControl.TypeSupportsSorting;
+      }
     }
   }
 }

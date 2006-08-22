@@ -87,6 +87,43 @@ namespace Csla.Web
     }
 
     /// <summary>
+    /// Get or set a value indicating whether the
+    /// business object data source supports paging.
+    /// </summary>
+    /// <remarks>
+    /// To support paging, the business object
+    /// (collection) must implement 
+    /// <see cref="IReportTotalRowCount"/>.
+    /// </remarks>
+    public bool TypeSupportsPaging
+    {
+      get { return ((CslaDataSourceView)this.GetView("Default")).TypeSupportsPaging; }
+      set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsPaging = value; }
+    }
+
+    /// <summary>
+    /// Get or set a value indicating whether the
+    /// business object data source supports sorting.
+    /// </summary>
+    public bool TypeSupportsSorting
+    {
+      get { return ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting; }
+      set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting = value; }
+    }
+
+    /// <summary>
+    /// Returns a <see cref="Assembly"/> object based on the
+    /// assembly name provided.
+    /// </summary>
+    /// <param name="assemblyName">(Optional) Assembly name containing the type.</param>
+    /// <remarks></remarks>
+    internal static Assembly GetAssembly(
+      string assemblyName)
+    {
+      return Assembly.Load(assemblyName);
+    }
+
+    /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the
     /// assembly and type information provided.
     /// </summary>

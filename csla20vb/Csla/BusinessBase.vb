@@ -1,3 +1,5 @@
+Imports System.ComponentModel
+
 ''' <summary>
 ''' This is the base class from which most business objects
 ''' will be derived.
@@ -16,6 +18,8 @@
 <Serializable()> _
 Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   Inherits Core.BusinessBase
+
+  Implements Core.ISavable
 
 #Region " Object ID Value "
 
@@ -141,6 +145,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' </remarks>
   ''' <returns>A new object containing the saved values.</returns>
   Public Overridable Function Save() As T
+
     If Me.IsChild Then
       Throw New NotSupportedException( _
         My.Resources.NoSaveChildException)
@@ -156,12 +161,20 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
         My.Resources.NoSaveInvalidException)
     End If
 
+    Dim result As T
     If IsDirty Then
-      Return DirectCast(DataPortal.Update(Me), T)
+      result = DirectCast(DataPortal.Update(Me), T)
     Else
-      Return DirectCast(Me, T)
+      result = DirectCast(Me, T)
     End If
 
+    OnSaved(result)
+    Return result
+
+  End Function
+
+  Private Function ISavable_Save() As Object Implements Core.ISavable.Save
+    Return Save()
   End Function
 
   ''' <summary>
@@ -190,6 +203,52 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
     Return Me.Save()
 
   End Function
+
+  <NonSerialized()> _
+  Private mNonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  Private mSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+
+  ''' <summary>
+  ''' Event raised when an object has been saved.
+  ''' </summary>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+  Public Custom Event Saved As EventHandler(Of Csla.Core.SavedEventArgs) Implements Core.ISavable.Saved
+    AddHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
+      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
+        mSerializableSavedHandlers = CType(System.Delegate.Combine(mSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+      Else
+        mNonSerializableSavedHandlers = CType(System.Delegate.Combine(mNonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+      End If
+    End AddHandler
+    RemoveHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
+      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
+        mSerializableSavedHandlers = CType(System.Delegate.Remove(mSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+      Else
+        mNonSerializableSavedHandlers = CType(System.Delegate.Remove(mNonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+      End If
+    End RemoveHandler
+    RaiseEvent(ByVal sender As System.Object, ByVal e As Csla.Core.SavedEventArgs)
+      If Not mNonSerializableSavedHandlers Is Nothing Then
+        mNonSerializableSavedHandlers.Invoke(Me, e)
+      End If
+      If Not mSerializableSavedHandlers Is Nothing Then
+        mSerializableSavedHandlers.Invoke(Me, e)
+      End If
+    End RaiseEvent
+  End Event
+
+  ''' <summary>
+  ''' Raises the Saved event, indicating that the
+  ''' object has been saved, and providing a reference
+  ''' to the new object instance.
+  ''' </summary>
+  ''' <param name="newObject">The new object instance.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub OnSaved(ByVal newObject As T)
+
+    RaiseEvent Saved(Me, New Csla.Core.SavedEventArgs(newObject))
+
+  End Sub
 
 #End Region
 

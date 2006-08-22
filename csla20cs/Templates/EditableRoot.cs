@@ -15,11 +15,13 @@ namespace Templates
 
     public int id
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get 
       {
         CanReadProperty(true);
         return _id; 
       }
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
         CanWriteProperty(true);
@@ -95,7 +97,7 @@ namespace Templates
 
     public static EditableRoot GetEditableRoot(int id)
     {
-      return DataPortal.Create<EditableRoot>(new Criteria(id));
+      return DataPortal.Fetch<EditableRoot>(new Criteria(id));
     }
 
     public static void DeleteEditableRoot(int id)

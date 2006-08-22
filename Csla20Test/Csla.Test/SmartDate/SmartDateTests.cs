@@ -189,6 +189,8 @@ namespace Csla.Test.SmartDate
         {
             Csla.SmartDate d2 = new Csla.SmartDate(true);
             Csla.SmartDate d3 = new Csla.SmartDate(false);
+            Csla.SmartDate d4 = new Csla.SmartDate(Csla.SmartDate.EmptyValue.MinDate);
+            Csla.SmartDate d5 = new Csla.SmartDate(Csla.SmartDate.EmptyValue.MaxDate);
 
             Assert.IsTrue(d2.Equals(d3), "Empty dates should be equal");
             Assert.IsTrue(Csla.SmartDate.Equals(d2, d3), "Empty dates should be equal (shared)");
@@ -198,6 +200,9 @@ namespace Csla.Test.SmartDate
 
             Assert.IsTrue(d2.Date.Equals(DateTime.MinValue), "Should be DateTime.MinValue");
             Assert.IsTrue(d3.Date.Equals(DateTime.MaxValue), "Should be DateTime.MaxValue");
+
+            Assert.IsTrue(d4.Date.Equals(DateTime.MinValue), "Should be DateTime.MinValue (d4)");
+            Assert.IsTrue(d5.Date.Equals(DateTime.MaxValue), "Should be DateTime.MaxValue (d5)");
 
             d2.Date = new DateTime(2005, 1, 1);
             d3 = new Csla.SmartDate(d2.Date, d2.EmptyIsMin);

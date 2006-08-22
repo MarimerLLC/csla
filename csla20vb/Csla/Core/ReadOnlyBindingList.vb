@@ -13,7 +13,7 @@ Namespace Core
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
   <Serializable()> _
   Public MustInherit Class ReadOnlyBindingList(Of C)
-    Inherits System.ComponentModel.BindingList(Of C)
+    Inherits Core.ExtendedBindingList(Of C)
 
     Implements Core.IBusinessObject
 

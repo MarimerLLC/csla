@@ -7,6 +7,7 @@ Public Class ReadOnlyRoot
   Private mId As Integer
 
   Public ReadOnly Property Id() As Integer
+    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
       CanReadProperty(True)
       Return mId

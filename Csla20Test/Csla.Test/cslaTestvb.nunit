@@ -2,7 +2,6 @@
   <Settings activeconfig="Debug" />
   <Config name="Debug" binpathtype="Auto">
     <assembly path="bin\vb\Debug\Csla.Test.dll" />
-    <assembly path="DataBinding\DataBindingApp\bin\Debug\DataBindingApp.exe" />
   </Config>
   <Config name="Release" binpathtype="Auto" />
 </NUnitProject>

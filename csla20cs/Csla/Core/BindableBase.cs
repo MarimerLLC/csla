@@ -70,16 +70,14 @@ namespace Csla.Core
     /// for all object properties.
     /// </summary>
     /// <remarks>
-    /// This method is automatically called by MarkDirty.
+    /// This method is automatically called by MarkDirty. It
+    /// actually raises PropertyChanged for an empty string,
+    /// which tells data binding to refresh all properties.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnUnknownPropertyChanged()
     {
-      PropertyInfo [] properties = 
-        this.GetType().GetProperties(
-        BindingFlags.Public | BindingFlags.Instance);
-      foreach (PropertyInfo item in properties)
-        OnPropertyChanged(item.Name);
+      OnPropertyChanged(string.Empty);
     }
 
     /// <summary>
@@ -93,15 +91,11 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnPropertyChanged(string propertyName)
     {
-      PropertyChangedEventHandler nonSerializableHandlers =
-        _nonSerializableHandlers;
-      if (nonSerializableHandlers != null)
-        nonSerializableHandlers.Invoke(this,
+      if (_nonSerializableHandlers != null)
+        _nonSerializableHandlers.Invoke(this,
           new PropertyChangedEventArgs(propertyName));
-      PropertyChangedEventHandler serializableHandlers =
-        _serializableHandlers;
-      if (serializableHandlers != null)
-        serializableHandlers.Invoke(this,
+      if (_serializableHandlers != null)
+        _serializableHandlers.Invoke(this,
           new PropertyChangedEventArgs(propertyName));
     }
   }

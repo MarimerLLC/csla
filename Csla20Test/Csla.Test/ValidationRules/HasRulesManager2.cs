@@ -29,10 +29,10 @@ namespace Csla.Test.ValidationRules
             }
         }
 
-        protected override void AddBusinessRules()
+        protected override void AddInstanceBusinessRules()
         {
-            ValidationRules.AddRule(NameRequired, "Name");
-            ValidationRules.AddRule(NameLength, new MaxLengthArgs("Name", 10));
+            ValidationRules.AddInstanceRule(NameRequired, "Name");
+            ValidationRules.AddInstanceRule(NameLength, new MaxLengthArgs("Name", 10));
             //ValidationRules.CheckRules();
         }
 

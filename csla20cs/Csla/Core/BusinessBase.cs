@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.ComponentModel;
 using System.Runtime.Serialization;
@@ -18,7 +19,7 @@ namespace Csla.Core
   public abstract class BusinessBase : 
     Csla.Core.UndoableBase, IEditableBusinessObject,
     System.ComponentModel.IEditableObject, System.ComponentModel.IDataErrorInfo, 
-    ICloneable
+    ICloneable, Csla.Security.IAuthorizeReadWrite
   {
 
     #region Constructors
@@ -26,8 +27,12 @@ namespace Csla.Core
     protected BusinessBase()
     {
       Initialize();
-      AddBusinessRules();
-      AddAuthorizationRules();
+      AddInstanceBusinessRules();
+      if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
+        AddBusinessRules();
+      AddInstanceAuthorizationRules();
+      if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+        AddAuthorizationRules();
     }
 
     #endregion
@@ -289,12 +294,42 @@ namespace Csla.Core
     #region Authorization
 
     [NotUndoable()]
+    [NonSerialized()]
+    private Dictionary<string, bool> _readResultCache;
+    [NotUndoable()]
+    [NonSerialized()]
+    private Dictionary<string, bool> _writeResultCache;
+    [NotUndoable()]
+    [NonSerialized()]
+    private System.Security.Principal.IPrincipal _lastPrincipal;
+
+    [NotUndoable()]
+    [NonSerialized()]
     private Security.AuthorizationRules _authorizationRules;
 
     /// <summary>
     /// Override this method to add authorization
     /// rules for your object's properties.
     /// </summary>
+    /// <remarks>
+    /// AddInstanceAuthorizationRules is automatically called by CSLA .NET
+    /// when your object should associate per-instance authorization roles
+    /// with its properties.
+    /// </remarks>
+    protected virtual void AddInstanceAuthorizationRules()
+    {
+
+    }
+
+    /// <summary>
+    /// Override this method to add per-type
+    /// authorization rules for your type's properties.
+    /// </summary>
+    /// <remarks>
+    /// AddAuthorizationRules is automatically called by CSLA .NET
+    /// when your object should associate per-type authorization roles
+    /// with its properties.
+    /// </remarks>
     protected virtual void AddAuthorizationRules()
     {
 
@@ -312,10 +347,10 @@ namespace Csla.Core
     protected Security.AuthorizationRules AuthorizationRules
     {
       get 
-      { 
+      {
         if (_authorizationRules == null)
-          _authorizationRules = new Security.AuthorizationRules();
-        return _authorizationRules; 
+          _authorizationRules = new Security.AuthorizationRules(this.GetType());
+        return _authorizationRules;
       }
     }
 
@@ -395,18 +430,31 @@ namespace Csla.Core
     public virtual bool CanReadProperty(string propertyName)
     {
       bool result = true;
-      if (AuthorizationRules.HasReadAllowedRoles(propertyName))
+
+      VerifyAuthorizationCache();
+
+      if (_readResultCache.ContainsKey(propertyName))
       {
-        // some users are explicitly granted read access
-        // in which case all other users are denied.
-        if (!AuthorizationRules.IsReadAllowed(propertyName))
-          result = false;
+        // cache contains value - get cached value
+        result = _readResultCache[propertyName];
       }
-      else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
+      else
       {
-        // some users are explicitly denied read access.
-        if (AuthorizationRules.IsReadDenied(propertyName))
-          result = false;
+        if (AuthorizationRules.HasReadAllowedRoles(propertyName))
+        {
+          // some users are explicitly granted read access
+          // in which case all other users are denied
+          if (!AuthorizationRules.IsReadAllowed(propertyName))
+            result = false;
+        }
+        else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
+        {
+          // some users are explicitly denied read access
+          if (AuthorizationRules.IsReadDenied(propertyName))
+            result = false;
+        }
+        // store value in cache
+        _readResultCache[propertyName] = result;
       }
       return result;
     }
@@ -481,22 +529,47 @@ namespace Csla.Core
     public virtual bool CanWriteProperty(string propertyName)
     {
       bool result = true;
-      if (AuthorizationRules.GetRolesForProperty(
-        propertyName, Csla.Security.AccessType.WriteAllowed).Length > 0)
+
+      VerifyAuthorizationCache();
+
+      if (_writeResultCache.ContainsKey(propertyName))
       {
-        // some users are explicitly granted write access
-        // in which case all other users are denied
-        if (!AuthorizationRules.IsWriteAllowed(propertyName))
-          result = false;
+        // cache contains value - get cached value
+        result = _writeResultCache[propertyName];
       }
-      else if (AuthorizationRules.GetRolesForProperty(
-        propertyName, Csla.Security.AccessType.WriteDenied).Length > 0)
+      else
       {
-        // some users are explicitly denied write access
-        if (AuthorizationRules.IsWriteDenied(propertyName))
-          result = false;
+        if (this.AuthorizationRules.HasWriteAllowedRoles(propertyName))
+        {
+          // some users are explicitly granted write access
+          // in which case all other users are denied
+          if (!AuthorizationRules.IsWriteAllowed(propertyName))
+            result = false;
+        }
+        else if (AuthorizationRules.HasWriteDeniedRoles(propertyName))
+        {
+          // some users are explicitly denied write access
+          if (AuthorizationRules.IsWriteDenied(propertyName))
+            result = false;
+        }
+        _writeResultCache[propertyName] = result;
       }
       return result;
+    }
+
+    private void VerifyAuthorizationCache()
+    {
+      if (_readResultCache == null)
+        _readResultCache = new Dictionary<string, bool>();
+      if (_writeResultCache == null)
+        _writeResultCache = new Dictionary<string, bool>();
+      if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
+      {
+        // the principal has changed - reset the cache
+        _readResultCache.Clear();
+        _writeResultCache.Clear();
+        _lastPrincipal = Csla.ApplicationContext.User;
+      }
     }
 
     #endregion
@@ -505,7 +578,7 @@ namespace Csla.Core
 
     [NotUndoable()]
     [NonSerialized()]
-    private Core.IEditableCollection _parent;
+    private Core.IParent _parent;
 
     /// <summary>
     /// Provide access to the parent reference for use
@@ -515,7 +588,7 @@ namespace Csla.Core
     /// This value will be Nothing for root objects.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected Core.IEditableCollection Parent
+    protected Core.IParent Parent
     {
       get { return _parent; }
     }
@@ -526,10 +599,8 @@ namespace Csla.Core
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    internal void SetParent(Core.IEditableCollection parent)
+    internal void SetParent(Core.IParent parent)
     {
-      if (!IsChild)
-        throw new InvalidOperationException(Resources.ParentSetException);
       _parent = parent;
     }
 
@@ -652,7 +723,9 @@ namespace Csla.Core
     {
       _bindingEdit = false;
       ValidationRules.SetTarget(this);
-      AddBusinessRules();
+      AddInstanceBusinessRules();
+      if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
+        AddBusinessRules();
       OnUnknownPropertyChanged();
       base.UndoChangesComplete();
     }
@@ -670,6 +743,17 @@ namespace Csla.Core
       _bindingEdit = false;
       _neverCommitted = false;
       AcceptChanges();
+    }
+
+    /// <summary>
+    /// Notifies the parent object (if any) that this
+    /// child object's edits have been accepted.
+    /// </summary>
+    protected override void AcceptChangesComplete()
+    {
+      if (Parent != null)
+        Parent.ApplyEditChild(this);
+      base.AcceptChangesComplete();
     }
 
     #endregion
@@ -808,9 +892,24 @@ namespace Csla.Core
     /// rules.
     /// </summary>
     /// <remarks>
-    /// AddBusinessRules is automatically called by CSLA .NET
-    /// when your object should associate validation rules
-    /// with its properties.
+    /// This method is automatically called by CSLA .NET
+    /// when your object should associate per-instance
+    /// validation rules with its properties.
+    /// </remarks>
+    protected virtual void AddInstanceBusinessRules()
+    {
+
+    }
+
+    /// <summary>
+    /// Override this method in your business class to
+    /// be notified when you need to set up shared 
+    /// business rules.
+    /// </summary>
+    /// <remarks>
+    /// This method is automatically called by CSLA .NET
+    /// when your object should associate per-type 
+    /// validation rules with its properties.
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
@@ -1002,9 +1101,14 @@ namespace Csla.Core
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
-      ValidationRules.SetTarget(this);
-      AddBusinessRules();
       OnDeserialized(context);
+      ValidationRules.SetTarget(this);
+      AddInstanceBusinessRules();
+      if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
+        AddBusinessRules();
+      AddInstanceAuthorizationRules();
+      if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+        AddAuthorizationRules();
     }
 
     /// <summary>
@@ -1039,7 +1143,7 @@ namespace Csla.Core
       this.DeleteChild();
     }
 
-    void IEditableBusinessObject.SetParent(IEditableCollection parent)
+    void IEditableBusinessObject.SetParent(IParent parent)
     {
       this.SetParent(parent);
     }

@@ -40,6 +40,62 @@ Public Module ApplicationContext
 
 #End Region
 
+#Region " Local Context "
+
+  Private Const mLocalContextName As String = "Csla.LocalContext"
+
+  ''' <summary>
+  ''' Returns the application-specific context data that
+  ''' is local to the current AppDomain.
+  ''' </summary>
+  ''' <remarks>
+  ''' <para>
+  ''' The return value is a HybridDictionary. If one does
+  ''' not already exist, and empty one is created and returned.
+  ''' </para><para>
+  ''' Note that data in this context is NOT transferred to and from
+  ''' the client and server.
+  ''' </para>
+  ''' </remarks>
+  Public ReadOnly Property LocalContext() As HybridDictionary
+    Get
+      Dim ctx As HybridDictionary = GetLocalContext()
+      If ctx Is Nothing Then
+        ctx = New HybridDictionary
+        SetLocalContext(ctx)
+      End If
+      Return ctx
+    End Get
+  End Property
+
+  Private Function GetLocalContext() As HybridDictionary
+
+    If HttpContext.Current Is Nothing Then
+      Dim slot As System.LocalDataStoreSlot = _
+        Thread.GetNamedDataSlot(mLocalContextName)
+      Return CType(Thread.GetData(slot), HybridDictionary)
+
+    Else
+      Return CType(HttpContext.Current.Items(mLocalContextName), HybridDictionary)
+    End If
+
+  End Function
+
+  Private Sub SetLocalContext(ByVal globalContext As HybridDictionary)
+
+    If HttpContext.Current Is Nothing Then
+      Dim slot As System.LocalDataStoreSlot = _
+        Thread.GetNamedDataSlot(mlocalContextName)
+      Threading.Thread.SetData(slot, LocalContext)
+
+    Else
+      HttpContext.Current.Items(mLocalContextName) = LocalContext
+    End If
+
+  End Sub
+
+#End Region
+
 #Region " Client/Global Context "
 
   Private mSyncClientContext As New Object

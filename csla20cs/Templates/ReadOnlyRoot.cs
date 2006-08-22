@@ -15,6 +15,7 @@ namespace Templates
 
     public int Id
     {
+      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get 
       {
         CanReadProperty(true);

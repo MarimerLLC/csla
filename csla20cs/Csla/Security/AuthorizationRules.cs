@@ -14,62 +14,121 @@ namespace Csla.Security
   [Serializable()]
   public class AuthorizationRules
   {
-    private Dictionary<string, RolesForProperty> _rules;
 
-    private Dictionary<string, RolesForProperty> Rules
+    private Type _businessObjectType;
+    private AuthorizationRulesManager _typeRules;
+    private AuthorizationRulesManager _instanceRules;
+
+    /// <summary>
+    /// Creates an instance of the object, initializing
+    /// it with the business object type.
+    /// </summary>
+    public AuthorizationRules(Type businessObjectType)
+    {
+      _businessObjectType = businessObjectType;
+    }
+
+    private AuthorizationRulesManager InstanceRules
     {
       get
       {
-        if (_rules == null)
-          _rules = new Dictionary<string, RolesForProperty>();
-        return _rules;
+        if (_instanceRules == null)
+          _instanceRules = new AuthorizationRulesManager();
+        return _instanceRules;
       }
     }
 
-    #region Get Roles
+    private AuthorizationRulesManager TypeRules
+    {
+      get
+      {
+        if (_typeRules == null)
+          _typeRules = new AuthorizationRulesManager();
+        return _typeRules;
+      }
+    }
+
+    #region Add Per-Instance Roles
 
     /// <summary>
-    /// Returns a list of roles for the property
-    /// and requested access type.
+    /// Specify the roles allowed to read a given
+    /// property.
     /// </summary>
-    /// <param name="propertyName">
-    /// Name of the object property.</param>
-    /// <param name="access">Desired access type.</param>
-    /// <returns>An string array of roles.</returns>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public string[] GetRolesForProperty(string propertyName, AccessType access)
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="roles">List of roles granted read access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void InstanceAllowRead(string propertyName, params string[] roles)
     {
-      RolesForProperty currentRoles = GetRolesForProperty(propertyName);
-      switch (access)
-      {
-        case AccessType.ReadAllowed :
-          return currentRoles.ReadAllowed.ToArray();
-        case AccessType.ReadDenied :
-          return currentRoles.ReadDenied.ToArray();
-        case AccessType.WriteAllowed :
-          return currentRoles.WriteAllowed.ToArray();
-        case AccessType.WriteDenied :
-          return currentRoles.WriteDenied.ToArray();
-      }
-      return null;
+      RolesForProperty currentRoles = InstanceRules.GetRolesForProperty(propertyName);
+      foreach (string item in roles)
+        currentRoles.ReadAllowed.Add(item);
     }
 
-    private RolesForProperty GetRolesForProperty(string propertyName)
+    /// <summary>
+    /// Specify the roles denied read access to 
+    /// a given property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="roles">List of roles denied read access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void InstanceDenyRead(string propertyName, params string[] roles)
     {
-      RolesForProperty currentRoles = null;
-      if (!Rules.ContainsKey(propertyName))
-      {
-        currentRoles = new RolesForProperty();
-        Rules.Add(propertyName, currentRoles);
-      }
-      else
-        currentRoles = Rules[propertyName];
-      return currentRoles;
+      RolesForProperty currentRoles = InstanceRules.GetRolesForProperty(propertyName);
+      foreach (string item in roles)
+        currentRoles.ReadDenied.Add(item);
+    }
+
+    /// <summary>
+    /// Specify the roles allowed to write a given
+    /// property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="roles">List of roles granted write access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void InstanceAllowWrite(string propertyName, params string[] roles)
+    {
+      RolesForProperty currentRoles = InstanceRules.GetRolesForProperty(propertyName);
+      foreach (string item in roles)
+        currentRoles.WriteAllowed.Add(item);
+    }
+
+    /// <summary>
+    /// Specify the roles denied write access to 
+    /// a given property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="roles">List of roles denied write access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void InstanceDenyWrite(string propertyName, params string[] roles)
+    {
+      RolesForProperty currentRoles = InstanceRules.GetRolesForProperty(propertyName);
+      foreach (string item in roles)
+        currentRoles.WriteDenied.Add(item);
     }
 
     #endregion
 
-    #region Add Roles
+    #region Add Per-Type Roles
 
     /// <summary>
     /// Specify the roles allowed to read a given
@@ -85,11 +144,9 @@ namespace Csla.Security
     /// </remarks>
     public void AllowRead(string propertyName, params string[] roles)
     {
-      RolesForProperty currentRoles = GetRolesForProperty(propertyName);
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyName);
       foreach (string item in roles)
-      {
         currentRoles.ReadAllowed.Add(item);
-      }
     }
 
     /// <summary>
@@ -106,11 +163,9 @@ namespace Csla.Security
     /// </remarks>
     public void DenyRead(string propertyName, params string[] roles)
     {
-      RolesForProperty currentRoles = GetRolesForProperty(propertyName);
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyName);
       foreach (string item in roles)
-      {
         currentRoles.ReadDenied.Add(item);
-      }
     }
 
     /// <summary>
@@ -127,11 +182,9 @@ namespace Csla.Security
     /// </remarks>
     public void AllowWrite(string propertyName, params string[] roles)
     {
-      RolesForProperty currentRoles = GetRolesForProperty(propertyName);
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyName);
       foreach (string item in roles)
-      {
         currentRoles.WriteAllowed.Add(item);
-      }
     }
 
     /// <summary>
@@ -148,11 +201,9 @@ namespace Csla.Security
     /// </remarks>
     public void DenyWrite(string propertyName, params string[] roles)
     {
-      RolesForProperty currentRoles = GetRolesForProperty(propertyName);
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyName);
       foreach (string item in roles)
-      {
         currentRoles.WriteDenied.Add(item);
-      }
     }
 
     #endregion
@@ -166,7 +217,9 @@ namespace Csla.Security
     /// <param name="propertyName">Name of the property.</param>
     public bool HasReadAllowedRoles(string propertyName)
     {
-      return (GetRolesForProperty(propertyName).ReadAllowed.Count > 0);
+      if (InstanceRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0)
+        return true;
+      return TypeRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0;
     }
 
     /// <summary>
@@ -177,8 +230,10 @@ namespace Csla.Security
     /// <param name="propertyName">Name of the property.</param>
     public bool IsReadAllowed(string propertyName)
     {
-      return GetRolesForProperty(
-        propertyName).IsReadAllowed(ApplicationContext.User);
+      System.Security.Principal.IPrincipal user = ApplicationContext.User;
+      if (InstanceRules.GetRolesForProperty(propertyName).IsReadAllowed(user))
+        return true;
+      return TypeRules.GetRolesForProperty(propertyName).IsReadAllowed(user);
     }
 
     /// <summary>
@@ -188,7 +243,9 @@ namespace Csla.Security
     /// <param name="propertyName">Name of the property.</param>
     public bool HasReadDeniedRoles(string propertyName)
     {
-      return (GetRolesForProperty(propertyName).ReadDenied.Count > 0);
+      if (InstanceRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0)
+        return true;
+      return TypeRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0;
     }
 
     /// <summary>
@@ -199,7 +256,10 @@ namespace Csla.Security
     /// <param name="propertyName">Name of the property.</param>
     public bool IsReadDenied(string propertyName)
     {
-      return GetRolesForProperty(propertyName).IsReadDenied(ApplicationContext.User);
+      System.Security.Principal.IPrincipal user = ApplicationContext.User;
+      if (InstanceRules.GetRolesForProperty(propertyName).IsReadDenied(user))
+        return true;
+      return TypeRules.GetRolesForProperty(propertyName).IsReadDenied(user);
     }
 
     /// <summary>
@@ -209,7 +269,9 @@ namespace Csla.Security
     /// <param name="propertyName">Name of the property.</param>
     public bool HasWriteAllowedRoles(string propertyName)
     {
-      return (GetRolesForProperty(propertyName).WriteAllowed.Count > 0);
+      if (InstanceRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0)
+        return true;
+      return TypeRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0;
     }
 
     /// <summary>
@@ -220,7 +282,10 @@ namespace Csla.Security
     /// <param name="propertyName">Name of the property.</param>
     public bool IsWriteAllowed(string propertyName)
     {
-      return GetRolesForProperty(propertyName).IsWriteAllowed(ApplicationContext.User);
+      System.Security.Principal.IPrincipal user = ApplicationContext.User;
+      if (InstanceRules.GetRolesForProperty(propertyName).IsWriteAllowed(user))
+        return true;
+      return TypeRules.GetRolesForProperty(propertyName).IsWriteAllowed(user);
     }
 
     /// <summary>
@@ -230,7 +295,9 @@ namespace Csla.Security
     /// <param name="propertyName">Name of the property.</param>
     public bool HasWriteDeniedRoles(string propertyName)
     {
-      return (GetRolesForProperty(propertyName).WriteDenied.Count > 0);
+      if (InstanceRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0)
+        return true;
+      return TypeRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0;
     }
 
     /// <summary>
@@ -241,9 +308,13 @@ namespace Csla.Security
     /// <param name="propertyName">Name of the property.</param>
     public bool IsWriteDenied(string propertyName)
     {
-      return GetRolesForProperty(propertyName).IsWriteDenied(ApplicationContext.User);
+      System.Security.Principal.IPrincipal user = ApplicationContext.User;
+      if (InstanceRules.GetRolesForProperty(propertyName).IsWriteDenied(user))
+        return true;
+      return TypeRules.GetRolesForProperty(propertyName).IsWriteDenied(user);
     }
 
     #endregion
+
   }
 }

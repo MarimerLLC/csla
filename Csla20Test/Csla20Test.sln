@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslacs.Test", "Csla.Test\Cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslavb.Test", "Csla.Test\Cslavb.Test.csproj", "{002E4164-CFAF-4923-BEBB-B3A11281AB48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBindingApp", "Csla.Test\DataBinding\DataBindingApp\DataBindingApp.csproj", "{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -37,16 +35,6 @@ Global
 		{002E4164-CFAF-4923-BEBB-B3A11281AB48}.Release|Any CPU.Build.0 = Release|Any CPU
 		{002E4164-CFAF-4923-BEBB-B3A11281AB48}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{002E4164-CFAF-4923-BEBB-B3A11281AB48}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Release|.NET.ActiveCfg = Release|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{11CB7081-AF5C-48E3-9829-19B81C7EFB7D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

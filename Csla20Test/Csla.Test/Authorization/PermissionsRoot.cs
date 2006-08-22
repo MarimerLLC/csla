@@ -41,17 +41,24 @@ namespace Csla.Test.Security
                     throw new System.Security.SecurityException("Property set not allowed");
                 }
             }
-        }
+          }
 
-        #region "Constructors"
+          #region Authorization
 
-        private PermissionsRoot()
-        {
-            //require use of factory methods
-
+          protected override void AddAuthorizationRules()
+          {
             this.AuthorizationRules.AllowRead("FirstName", "Admin");
             this.AuthorizationRules.AllowWrite("FirstName", "Admin");
-        }
+          }
+
+          #endregion
+
+          #region "Constructors"
+
+          private PermissionsRoot()
+          {
+              //require use of factory methods
+          }
 
         #endregion
 

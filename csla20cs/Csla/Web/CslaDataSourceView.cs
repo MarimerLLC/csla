@@ -15,6 +15,8 @@ namespace Csla.Web
     private CslaDataSource _owner;
     private string _typeName;
     private string _typeAssemblyName;
+    private bool _typeSupportsPaging;
+    private bool _typeSupportsSorting;
 
     /// <summary>
     /// Creates an instance of the object.
@@ -50,6 +52,31 @@ namespace Csla.Web
       set { _typeAssemblyName = value; }
     }
 
+    /// <summary>
+    /// Get or set a value indicating whether the
+    /// business object data source supports paging.
+    /// </summary>
+    /// <remarks>
+    /// To support paging, the business object
+    /// (collection) must implement 
+    /// <see cref="IReportTotalRowCount"/>.
+    /// </remarks>
+    public bool TypeSupportsPaging
+    {
+      get { return _typeSupportsPaging; }
+      set { _typeSupportsPaging = value; }
+    }
+
+    /// <summary>
+    /// Get or set a value indicating whether the
+    /// business object data source supports sorting.
+    /// </summary>
+    public bool TypeSupportsSorting
+    {
+      get { return _typeSupportsSorting; }
+      set { _typeSupportsSorting = value; }
+    }
+
     #region Select
 
     protected override System.Collections.IEnumerable 
@@ -65,6 +92,8 @@ namespace Csla.Web
         int rowCount;
         if (result == null)
           rowCount = 0;
+        else if (result is IReportTotalRowCount)
+          rowCount = ((IReportTotalRowCount)result).TotalRowCount;
         else if (result is IList)
           rowCount = ((IList)result).Count;
         else if (result is IEnumerable)
@@ -186,11 +215,14 @@ namespace Csla.Web
 
     /// <summary>
     /// Gets a value indicating whether the data source supports
-    /// paging of the data. Always returns <see langword="false"/>.
+    /// paging of the data.
     /// </summary>
     public override bool CanPage
     {
-      get { return false; }
+      get 
+      {
+        return _typeSupportsPaging;
+      }
     }
 
     /// <summary>
@@ -209,7 +241,10 @@ namespace Csla.Web
     /// </summary>
     public override bool CanSort
     {
-      get { return false; }
+      get 
+      {
+        return _typeSupportsSorting;
+      }
     }
 
     #endregion

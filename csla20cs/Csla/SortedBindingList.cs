@@ -756,16 +756,21 @@ namespace Csla
     private int SortedIndex(int originalIndex)
     {
       int result = 0;
-      for (int index = 0; index < _sortIndex.Count; index++)
+      if (_sorted)
       {
-        if (_sortIndex[index].BaseIndex == originalIndex)
+        for (int index = 0; index < _sortIndex.Count; index++)
         {
-          result = index;
-          break;
+          if (_sortIndex[index].BaseIndex == originalIndex)
+          {
+            result = index;
+            break;
+          }
         }
+        if (_sortOrder == ListSortDirection.Descending)
+          result = _sortIndex.Count - 1 - result;
       }
-      if (_sortOrder == ListSortDirection.Descending)
-        result = _sortIndex.Count - 1 - result;
+      else
+        result = originalIndex;
       return result;
        
     }

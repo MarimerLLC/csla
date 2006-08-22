@@ -56,15 +56,11 @@ Namespace Core
       End RemoveHandler
 
       RaiseEvent(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-        Dim nonSerializableHandlers As PropertyChangedEventHandler = _
-          mNonSerializableHandlers
-        If nonSerializableHandlers IsNot Nothing Then
-          nonSerializableHandlers.Invoke(sender, e)
+        If mNonSerializableHandlers IsNot Nothing Then
+          mNonSerializableHandlers.Invoke(sender, e)
         End If
-        Dim serializableHandlers As PropertyChangedEventHandler = _
-          mSerializableHandlers
-        If serializableHandlers IsNot Nothing Then
-          serializableHandlers.Invoke(sender, e)
+        If mSerializableHandlers IsNot Nothing Then
+          mSerializableHandlers.Invoke(sender, e)
         End If
       End RaiseEvent
     End Event
@@ -89,17 +85,14 @@ Namespace Core
     ''' for all object properties.
     ''' </summary>
     ''' <remarks>
-    ''' This method is automatically called by MarkDirty.
+    ''' This method is automatically called by MarkDirty. It actually
+    ''' raises a PropertyChanged event for an empty string, which
+    ''' tells data binding to refresh all properties.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnUnknownPropertyChanged()
 
-      Dim properties() As PropertyInfo = _
-        Me.GetType.GetProperties(BindingFlags.Public Or BindingFlags.Instance)
-      For Each item As PropertyInfo In properties
-        RaiseEvent PropertyChanged( _
-          Me, New PropertyChangedEventArgs(item.Name))
-      Next
+      RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(""))
 
     End Sub
 

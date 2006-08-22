@@ -7,68 +7,132 @@ Namespace Security
   ''' for each property.
   ''' </summary>
   ''' <remarks></remarks>
-  <Serializable()> _
   Public Class AuthorizationRules
 
-    Private mRules As Dictionary(Of String, RolesForProperty)
+    Private mBusinessObjectType As Type
+    Private mTypeRules As AuthorizationRulesManager
+    Private mInstanceRules As AuthorizationRulesManager
 
-    Private ReadOnly Property Rules() _
-      As Dictionary(Of String, RolesForProperty)
+    ''' <summary>
+    ''' Creates an instance of the object, initializing
+    ''' it with the business object type.
+    ''' </summary>
+    Public Sub New(ByVal businessObjectType As Type)
+
+      mBusinessObjectType = businessObjectType
+
+    End Sub
+
+    Private ReadOnly Property InstanceRules() _
+      As AuthorizationRulesManager
       Get
-        If mRules Is Nothing Then
-          mRules = New Dictionary(Of String, RolesForProperty)
+        If mInstanceRules Is Nothing Then
+          mInstanceRules = New AuthorizationRulesManager
         End If
-        Return mRules
+        Return mInstanceRules
       End Get
     End Property
 
-#Region " Get Roles "
+    Private ReadOnly Property TypeRules() _
+      As AuthorizationRulesManager
+      Get
+        If mTypeRules Is Nothing Then
+          mTypeRules = SharedAuthorizationRules.GetManager(mBusinessObjectType, True)
+        End If
+        Return mTypeRules
+      End Get
+    End Property
+
+#Region " Add Per-Instance Roles "
 
     ''' <summary>
-    ''' Returns a list of roles for the property
-    ''' and requested access type.
+    ''' Specify the roles allowed to read a given
+    ''' property.
     ''' </summary>
-    ''' <param name="propertyName">
-    ''' Name of the object property.</param>
-    ''' <param name="access">Desired access type.</param>
-    ''' <returns>An string array of roles.</returns>
-    <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Public Function GetRolesForProperty(ByVal propertyName As String, _
-      ByVal access As AccessType) As String()
+    ''' <param name="propertyName">Name of the property.</param>
+    ''' <param name="roles">List of roles granted read access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub InstanceAllowRead( _
+      ByVal propertyName As String, ByVal ParamArray roles() As String)
 
-      Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
-      Select Case access
-        Case AccessType.ReadAllowed
-          Return currentRoles.ReadAllowed.ToArray
-        Case AccessType.ReadDenied
-          Return currentRoles.ReadDenied.ToArray
-        Case AccessType.WriteAllowed
-          Return currentRoles.WriteAllowed.ToArray
-        Case AccessType.WriteDenied
-          Return currentRoles.WriteDenied.ToArray
-      End Select
-      Return Nothing
+      Dim currentRoles As RolesForProperty = InstanceRules.GetRolesForProperty(propertyName)
+      For Each item As String In roles
+        currentRoles.ReadAllowed.Add(item)
+      Next
 
-    End Function
+    End Sub
 
-    Private Function GetRolesForProperty( _
-      ByVal propertyName As String) As RolesForProperty
+    ''' <summary>
+    ''' Specify the roles denied read access to 
+    ''' a given property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
+    ''' <param name="roles">List of roles denied read access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub InstanceDenyRead(ByVal propertyName As String, ByVal ParamArray roles() As String)
 
-      Dim currentRoles As RolesForProperty = Nothing
-      If Not Rules.ContainsKey(propertyName) Then
-        currentRoles = New RolesForProperty
-        Rules.Add(propertyName, currentRoles)
+      Dim currentRoles As RolesForProperty = InstanceRules.GetRolesForProperty(propertyName)
+      For Each item As String In roles
+        currentRoles.ReadDenied.Add(item)
+      Next
 
-      Else
-        currentRoles = Rules.Item(propertyName)
-      End If
-      Return currentRoles
+    End Sub
 
-    End Function
+    ''' <summary>
+    ''' Specify the roles allowed to write a given
+    ''' property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
+    ''' <param name="roles">List of roles granted write access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub InstanceAllowWrite(ByVal propertyName As String, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = InstanceRules.GetRolesForProperty(propertyName)
+      For Each item As String In roles
+        currentRoles.WriteAllowed.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles denied write access to 
+    ''' a given property.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the property.</param>
+    ''' <param name="roles">List of roles denied write access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub InstanceDenyWrite(ByVal propertyName As String, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = InstanceRules.GetRolesForProperty(propertyName)
+      For Each item As String In roles
+        currentRoles.WriteDenied.Add(item)
+      Next
+
+    End Sub
 
 #End Region
 
-#Region " Add Roles "
+#Region " Add Per-Type Roles "
 
     ''' <summary>
     ''' Specify the roles allowed to read a given
@@ -85,7 +149,7 @@ Namespace Security
     Public Sub AllowRead( _
       ByVal propertyName As String, ByVal ParamArray roles() As String)
 
-      Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyName)
       For Each item As String In roles
         currentRoles.ReadAllowed.Add(item)
       Next
@@ -106,7 +170,7 @@ Namespace Security
     ''' </remarks>
     Public Sub DenyRead(ByVal propertyName As String, ByVal ParamArray roles() As String)
 
-      Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyName)
       For Each item As String In roles
         currentRoles.ReadDenied.Add(item)
       Next
@@ -127,7 +191,7 @@ Namespace Security
     ''' </remarks>
     Public Sub AllowWrite(ByVal propertyName As String, ByVal ParamArray roles() As String)
 
-      Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyName)
       For Each item As String In roles
         currentRoles.WriteAllowed.Add(item)
       Next
@@ -148,7 +212,7 @@ Namespace Security
     ''' </remarks>
     Public Sub DenyWrite(ByVal propertyName As String, ByVal ParamArray roles() As String)
 
-      Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyName)
       For Each item As String In roles
         currentRoles.WriteDenied.Add(item)
       Next
@@ -167,7 +231,15 @@ Namespace Security
     Public Function HasReadAllowedRoles( _
       ByVal propertyName As String) As Boolean
 
-      Return (GetRolesForProperty(propertyName).ReadAllowed.Count > 0)
+      Dim result As Boolean
+      If InstanceRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0 Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(propertyName).ReadAllowed.Count > 0
+      End If
+
+      Return result
 
     End Function
 
@@ -179,8 +251,15 @@ Namespace Security
     ''' <param name="propertyName">Name of the property.</param>
     Public Function IsReadAllowed(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName). _
-        IsReadAllowed(ApplicationContext.User)
+      Dim result As Boolean
+      Dim user As System.Security.Principal.IPrincipal = ApplicationContext.User
+      If InstanceRules.GetRolesForProperty(propertyName).IsReadAllowed(user) Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(propertyName).IsReadAllowed(user)
+      End If
+      Return result
 
     End Function
 
@@ -191,7 +270,14 @@ Namespace Security
     ''' <param name="propertyName">Name of the property.</param>
     Public Function HasReadDeniedRoles(ByVal propertyName As String) As Boolean
 
-      Return (GetRolesForProperty(propertyName).ReadDenied.Count > 0)
+      Dim result As Boolean
+      If InstanceRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0 Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(propertyName).ReadDenied.Count > 0
+      End If
+      Return result
 
     End Function
 
@@ -203,7 +289,15 @@ Namespace Security
     ''' <param name="propertyName">Name of the property.</param>
     Public Function IsReadDenied(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName).IsReadDenied(ApplicationContext.User)
+      Dim result As Boolean
+      Dim user As System.Security.Principal.IPrincipal = ApplicationContext.User
+      If InstanceRules.GetRolesForProperty(propertyName).IsReadDenied(user) Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(propertyName).IsReadDenied(user)
+      End If
+      Return result
 
     End Function
 
@@ -214,7 +308,14 @@ Namespace Security
     ''' <param name="propertyName">Name of the property.</param>
     Public Function HasWriteAllowedRoles(ByVal propertyName As String) As Boolean
 
-      Return (GetRolesForProperty(propertyName).WriteAllowed.Count > 0)
+      Dim result As Boolean
+      If InstanceRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0 Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(propertyName).WriteAllowed.Count > 0
+      End If
+      Return result
 
     End Function
 
@@ -226,7 +327,15 @@ Namespace Security
     ''' <param name="propertyName">Name of the property.</param>
     Public Function IsWriteAllowed(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName).IsWriteAllowed(ApplicationContext.User)
+      Dim result As Boolean
+      Dim user As System.Security.Principal.IPrincipal = ApplicationContext.User
+      If InstanceRules.GetRolesForProperty(propertyName).IsWriteAllowed(user) Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(propertyName).IsWriteAllowed(user)
+      End If
+      Return result
 
     End Function
 
@@ -237,7 +346,14 @@ Namespace Security
     ''' <param name="propertyName">Name of the property.</param>
     Public Function HasWriteDeniedRoles(ByVal propertyName As String) As Boolean
 
-      Return (GetRolesForProperty(propertyName).WriteDenied.Count > 0)
+      Dim result As Boolean
+      If InstanceRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0 Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(propertyName).WriteDenied.Count > 0
+      End If
+      Return result
 
     End Function
 
@@ -249,7 +365,15 @@ Namespace Security
     ''' <param name="propertyName">Name of the property.</param>
     Public Function IsWriteDenied(ByVal propertyName As String) As Boolean
 
-      Return GetRolesForProperty(propertyName).IsWriteDenied(ApplicationContext.User)
+      Dim result As Boolean
+      Dim user As System.Security.Principal.IPrincipal = ApplicationContext.User
+      If InstanceRules.GetRolesForProperty(propertyName).IsWriteDenied(user) Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(propertyName).IsWriteDenied(user)
+      End If
+      Return result
 
     End Function
 

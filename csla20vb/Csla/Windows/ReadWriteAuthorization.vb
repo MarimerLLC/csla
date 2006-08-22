@@ -113,9 +113,9 @@ Namespace Windows
         If TypeOf binding.DataSource Is BindingSource Then
           Dim bs As BindingSource = CType(binding.DataSource, BindingSource)
           ' get the BusinessObject if appropriate
-          If TypeOf bs.DataSource Is Csla.Core.BusinessBase Then
-            Dim ds As Csla.Core.BusinessBase = _
-              CType(bs.DataSource, Csla.Core.BusinessBase)
+          Dim ds As Csla.Security.IAuthorizeReadWrite = _
+            TryCast(bs.DataSource, Csla.Security.IAuthorizeReadWrite)
+          If ds IsNot Nothing Then
             ' get the object property name
             Dim propertyName As String = _
               binding.BindingMemberInfo.BindingField
@@ -124,16 +124,6 @@ Namespace Windows
               ds.CanReadProperty(propertyName))
             ApplyWriteRules(control, binding, _
               ds.CanWriteProperty(propertyName))
-
-          ElseIf TypeOf bs.DataSource Is Csla.Core.IReadOnlyObject Then
-            Dim ds As Csla.Core.IReadOnlyObject = _
-              CType(bs.DataSource, Csla.Core.IReadOnlyObject)
-            ' get the object property name
-            Dim propertyName As String = _
-              binding.BindingMemberInfo.BindingField
-
-            ApplyReadRules(control, binding, _
-              ds.CanReadProperty(propertyName))
           End If
         End If
       Next

@@ -128,9 +128,24 @@ namespace Csla.Test.SortedBindingList
             }        
         }
 
-        //[TestMethod()]
-        //public void Find()
-        //{ }
+      [TestMethod]
+      public void IndexOf()
+      {
+        List<string> list = new List<string>();
 
+        string barney = "Barney";
+        string charlie = "Charlie";
+        string zeke = "Zeke";
+
+        list.AddRange(new string[] { charlie, barney, zeke });
+
+        SortedBindingList<string> sortedList = new SortedBindingList<string>(list);
+
+        Assert.AreEqual(1, sortedList.IndexOf(barney), "Unsorted index should be 1");
+
+        sortedList.ApplySort(string.Empty, System.ComponentModel.ListSortDirection.Ascending);
+
+        Assert.AreEqual(1, sortedList.IndexOf(charlie), "Sorted index should be 1");
+      }
     }
 }

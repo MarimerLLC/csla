@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.ComponentModel;
 using Csla.Properties;
@@ -16,7 +17,7 @@ namespace Csla
   /// should only implement readonly properties.
   /// </remarks>
   [Serializable()]
-  public abstract class ReadOnlyBase<T> : ICloneable, Core.IReadOnlyObject
+  public abstract class ReadOnlyBase<T> : ICloneable, Core.IReadOnlyObject, Csla.Security.IAuthorizeReadWrite
     where T : ReadOnlyBase<T>
   {
     #region Object ID Value
@@ -89,8 +90,11 @@ namespace Csla
 
     protected ReadOnlyBase()
     {
+      _authorizationRules = new Csla.Security.AuthorizationRules(this.GetType());
       Initialize();
-      AddAuthorizationRules();
+      AddInstanceAuthorizationRules();
+      if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+        AddAuthorizationRules();
     }
 
     #endregion
@@ -110,13 +114,35 @@ namespace Csla
     #region Authorization
 
     [NotUndoable()]
-    private Security.AuthorizationRules _authorizationRules = 
-      new Security.AuthorizationRules();
+    [NonSerialized()]
+    private Dictionary<string, bool> _readResultCache;
+    [NotUndoable()]
+    [NonSerialized()]
+    private System.Security.Principal.IPrincipal _lastPrincipal;
+
+    [NotUndoable()]
+    [NonSerialized()]
+    private Security.AuthorizationRules _authorizationRules;
+
 
     /// <summary>
     /// Override this method to add authorization
     /// rules for your object's properties.
     /// </summary>
+    protected virtual void AddInstanceAuthorizationRules()
+    {
+
+    }
+
+    /// <summary>
+    /// Override this method to add per-type
+    /// authorization rules for your type's properties.
+    /// </summary>
+    /// <remarks>
+    /// AddSharedAuthorizationRules is automatically called by CSLA .NET
+    /// when your object should associate per-type authorization roles
+    /// with its properties.
+    /// </remarks>
     protected virtual void AddAuthorizationRules()
     {
 
@@ -210,20 +236,50 @@ namespace Csla
     public virtual bool CanReadProperty(string propertyName)
     {
       bool result = true;
-      if (AuthorizationRules.HasReadAllowedRoles(propertyName))
+
+      VerifyAuthorizationCache();
+
+      if (_readResultCache.ContainsKey(propertyName))
       {
-        // some users are explicitly granted read access
-        // in which case all other users are denied.
-        if (!AuthorizationRules.IsReadAllowed(propertyName))
-          result = false;
+        // cache contains value - get cached value
+        result = _readResultCache[propertyName];
       }
-      else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
+      else
       {
-        // some users are explicitly denied read access.
-        if (AuthorizationRules.IsReadDenied(propertyName))
-          result = false;
+        if (AuthorizationRules.HasReadAllowedRoles(propertyName))
+        {
+          // some users are explicitly granted read access
+          // in which case all other users are denied.
+          if (!AuthorizationRules.IsReadAllowed(propertyName))
+            result = false;
+        }
+        else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
+        {
+          // some users are explicitly denied read access.
+          if (AuthorizationRules.IsReadDenied(propertyName))
+            result = false;
+        }
+        // store value in cache
+        _readResultCache[propertyName] = result;
       }
       return result;
+    }
+
+    bool Csla.Security.IAuthorizeReadWrite.CanWriteProperty(string propertyName)
+    {
+      return false;
+    }
+
+    private void VerifyAuthorizationCache()
+    {
+      if (_readResultCache == null)
+        _readResultCache = new Dictionary<string, bool>();
+      if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
+      {
+        // the principal has changed - reset the cache
+        _readResultCache.Clear();
+        _lastPrincipal = Csla.ApplicationContext.User;
+      }
     }
 
     #endregion

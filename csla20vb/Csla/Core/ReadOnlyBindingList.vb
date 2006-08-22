@@ -37,9 +37,11 @@ Namespace Core
     End Property
 
     Protected Sub New()
+      Me.RaiseListChangedEvents = False
       AllowEdit = False
       AllowRemove = False
       AllowNew = False
+      Me.RaiseListChangedEvents = True
     End Sub
 
     ''' <summary>

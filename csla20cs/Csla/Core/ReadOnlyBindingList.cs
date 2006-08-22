@@ -37,9 +37,11 @@ namespace Csla.Core
 
     protected ReadOnlyBindingList()
     {
+      this.RaiseListChangedEvents = false;
       AllowEdit = false;
       AllowRemove = false;
       AllowNew = false;
+      this.RaiseListChangedEvents = true;
     }
 
     /// <summary>

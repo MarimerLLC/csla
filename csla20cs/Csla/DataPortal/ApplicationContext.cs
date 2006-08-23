@@ -235,9 +235,13 @@ namespace Csla
       SetGlobalContext(globalContext);
     }
 
+    /// <summary>
+    /// Clears all context collections.
+    /// </summary>
     public static void Clear()
     {
       SetContext(null, null);
+      SetLocalContext(null);
     }
 
     #endregion
@@ -328,7 +332,13 @@ namespace Csla
     /// </summary>
     public enum ExecutionLocations
     {
+      /// <summary>
+      /// The code is executing on the client.
+      /// </summary>
       Client,
+      /// <summary>
+      /// The code is executing on the application server.
+      /// </summary>
       Server
     }
 

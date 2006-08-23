@@ -236,13 +236,13 @@ Public Module ApplicationContext
   End Sub
 
   ''' <summary>
-  ''' Clears both global and client context
-  ''' values.
+  ''' Clears all context values.
   ''' </summary>
   ''' <remarks></remarks>
   Public Sub Clear()
 
     SetContext(Nothing, Nothing)
+    SetLocalContext(Nothing)
 
   End Sub
 
@@ -340,7 +340,13 @@ Public Module ApplicationContext
   ''' Enum representing the locations code can execute.
   ''' </summary>
   Public Enum ExecutionLocations
+    ''' <summary>
+    ''' The code is executing on the client.
+    ''' </summary>
     Client
+    ''' <summary>
+    ''' The code is executing on the application server.
+    ''' </summary>
     Server
   End Enum
 

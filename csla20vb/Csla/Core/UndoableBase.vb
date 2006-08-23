@@ -21,6 +21,10 @@ Namespace Core
     <NotUndoable()> _
     Private mStateStack As New Stack(Of Byte())
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <remarks></remarks>
     Protected Sub New()
 
     End Sub

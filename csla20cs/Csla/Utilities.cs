@@ -64,7 +64,7 @@ namespace Csla
 
     /// <summary>
     /// Returns a property's type, dealing with
-    /// Nullable<T> if necessary.
+    /// Nullable(Of T) if necessary.
     /// </summary>
     public static Type GetPropertyType(Type propertyType)
     {
@@ -109,9 +109,21 @@ namespace Csla
   /// </summary>
   public enum CallType
   {
+    /// <summary>
+    /// Gets a value from a property.
+    /// </summary>
     Get,
+    /// <summary>
+    /// Sets a value into a property.
+    /// </summary>
     Let,
+    /// <summary>
+    /// Invokes a method.
+    /// </summary>
     Method,
+    /// <summary>
+    /// Sets a value into a property.
+    /// </summary>
     Set
   }
 }

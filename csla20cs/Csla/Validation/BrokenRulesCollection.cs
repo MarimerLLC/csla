@@ -94,6 +94,17 @@ namespace Csla.Validation
       return null;
     }
 
+    /// <summary>
+    /// Returns the first <see cref="BrokenRule"/> object
+    /// corresponding to the specified property
+    /// and severity.
+    /// </summary>
+    /// <param name="property">The name of the property affected by the rule.</param>
+    /// <param name="severity">The severity of broken rule to return.</param>
+    /// <returns>
+    /// The first BrokenRule object corresponding to the specified property, or Nothing
+    /// (null in C#) if there are no rules defined for the property.
+    /// </returns>
     public BrokenRule GetFirstMessage(string property, RuleSeverity severity)
     {
       foreach (BrokenRule item in this)

@@ -21,6 +21,9 @@ namespace Csla.Core
     [NotUndoable()]
     private Stack<byte[]> _stateStack = new Stack<byte[]>();
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected UndoableBase()
     {
 

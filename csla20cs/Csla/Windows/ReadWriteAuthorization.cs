@@ -20,6 +20,10 @@ namespace Csla.Windows
     private Dictionary<Control, bool> _sources = 
       new Dictionary<Control, bool>();
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="container">The container of the control.</param>
     public ReadWriteAuthorization(IContainer container)
     { container.Add(this); }
 

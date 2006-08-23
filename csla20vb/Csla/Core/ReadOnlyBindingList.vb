@@ -36,6 +36,9 @@ Namespace Core
       End Set
     End Property
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
     Protected Sub New()
       Me.RaiseListChangedEvents = False
       AllowEdit = False

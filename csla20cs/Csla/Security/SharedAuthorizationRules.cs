@@ -109,6 +109,7 @@ namespace Csla.Security
     /// property.
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
+    /// <param name="objectType">Type of the business object.</param>
     /// <param name="roles">List of roles granted read access.</param>
     /// <remarks>
     /// This method may be called multiple times, with the roles in
@@ -128,6 +129,7 @@ namespace Csla.Security
     /// a given property.
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
+    /// <param name="objectType">Type of the business object.</param>
     /// <param name="roles">List of roles denied read access.</param>
     /// <remarks>
     /// This method may be called multiple times, with the roles in
@@ -147,6 +149,7 @@ namespace Csla.Security
     /// property.
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
+    /// <param name="objectType">Type of the business object.</param>
     /// <param name="roles">List of roles granted write access.</param>
     /// <remarks>
     /// This method may be called multiple times, with the roles in
@@ -166,6 +169,7 @@ namespace Csla.Security
     /// a given property.
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
+    /// <param name="objectType">Type of the business object.</param>
     /// <param name="roles">List of roles denied write access.</param>
     /// <remarks>
     /// This method may be called multiple times, with the roles in

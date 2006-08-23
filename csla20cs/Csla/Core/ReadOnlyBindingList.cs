@@ -35,6 +35,9 @@ namespace Csla.Core
       protected set { _isReadOnly = value; }
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected ReadOnlyBindingList()
     {
       this.RaiseListChangedEvents = false;

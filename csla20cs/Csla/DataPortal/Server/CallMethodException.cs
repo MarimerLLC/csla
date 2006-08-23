@@ -33,18 +33,34 @@ namespace Csla.Server
       }
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="message">Message text describing the exception.</param>
+    /// <param name="ex">Inner exception object.</param>
     public CallMethodException(string message, Exception ex)
       : base(message, ex)
     {
       _innerStackTrace = ex.StackTrace;
     }
 
+    /// <summary>
+    /// Creates an instance of the object for deserialization.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="context">Serialiation context.</param>
     protected CallMethodException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
       : base(info, context)
     {
       _innerStackTrace = info.GetString("_innerStackTrace");
     }
 
+
+    /// <summary>
+    /// Serializes the object.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="context">Serialization context.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
     [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]

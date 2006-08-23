@@ -334,11 +334,15 @@ Namespace Data
     ''' Returns 0 for null.
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
-    Public Overridable Function GetBytes(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetBytes
+    ''' <param name="buffer">Array containing the data.</param>
+    ''' <param name="bufferOffset">Offset position within the buffer.</param>
+    ''' <param name="fieldOffset">Offset position within the field.</param>
+    ''' <param name="length">Length of data to read.</param>
+    Public Overridable Function GetBytes(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferOffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetBytes
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetBytes(i, fieldOffset, buffer, bufferoffset, length)
+        Return mDataReader.GetBytes(i, fieldOffset, buffer, bufferOffset, length)
       End If
     End Function
 
@@ -349,9 +353,13 @@ Namespace Data
     ''' Returns 0 for null.
     ''' </remarks>
     ''' <param name="name">Name of the column containing the value.</param>
-    Public Function GetBytes(ByVal name As String, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferoffset As Integer, ByVal length As Integer) As Long
+    ''' <param name="buffer">Array containing the data.</param>
+    ''' <param name="bufferOffset">Offset position within the buffer.</param>
+    ''' <param name="fieldOffset">Offset position within the field.</param>
+    ''' <param name="length">Length of data to read.</param>
+    Public Function GetBytes(ByVal name As String, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferOffset As Integer, ByVal length As Integer) As Long
       Dim index As Integer = Me.GetOrdinal(name)
-      Return Me.GetBytes(index, fieldOffset, buffer, bufferoffset, length)
+      Return Me.GetBytes(index, fieldOffset, buffer, bufferOffset, length)
     End Function
 
     ''' <summary>
@@ -390,11 +398,15 @@ Namespace Data
     ''' Returns 0 for null.
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
-    Public Overridable Function GetChars(ByVal i As Integer, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetChars
+    ''' <param name="buffer">Array containing the data.</param>
+    ''' <param name="bufferOffset">Offset position within the buffer.</param>
+    ''' <param name="fieldOffset">Offset position within the field.</param>
+    ''' <param name="length">Length of data to read.</param>
+    Public Overridable Function GetChars(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Char, ByVal bufferOffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetChars
       If mDataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetChars(i, fieldoffset, buffer, bufferoffset, length)
+        Return mDataReader.GetChars(i, fieldOffset, buffer, bufferOffset, length)
       End If
     End Function
 
@@ -405,9 +417,13 @@ Namespace Data
     ''' Returns 0 for null.
     ''' </remarks>
     ''' <param name="name">Name of the column containing the value.</param>
-    Public Function GetChars(ByVal name As String, ByVal fieldoffset As Long, ByVal buffer() As Char, ByVal bufferoffset As Integer, ByVal length As Integer) As Long
+    ''' <param name="buffer">Array containing the data.</param>
+    ''' <param name="bufferOffset">Offset position within the buffer.</param>
+    ''' <param name="fieldOffset">Offset position within the field.</param>
+    ''' <param name="length">Length of data to read.</param>
+    Public Function GetChars(ByVal name As String, ByVal fieldOffset As Long, ByVal buffer() As Char, ByVal bufferOffset As Integer, ByVal length As Integer) As Long
       Dim index As Integer = Me.GetOrdinal(name)
-      Return Me.GetChars(index, fieldoffset, buffer, bufferoffset, length)
+      Return Me.GetChars(index, fieldOffset, buffer, bufferOffset, length)
     End Function
 
     ''' <summary>
@@ -697,7 +713,11 @@ Namespace Data
 
     Private disposedValue As Boolean     ' To detect redundant calls
 
-    ' IDisposable
+    ''' <summary>
+    ''' Disposes the object.
+    ''' </summary>
+    ''' <param name="disposing">True if called by
+    ''' the public Dispose method.</param>
     Protected Overridable Sub Dispose(ByVal disposing As Boolean)
       If Not Me.disposedValue Then
         If disposing Then
@@ -710,13 +730,18 @@ Namespace Data
       Me.disposedValue = True
     End Sub
 
-    ' This code added by Visual Basic to correctly implement the disposable pattern.
+    ''' <summary>
+    ''' Disposes the object.
+    ''' </summary>
     Public Sub Dispose() Implements IDisposable.Dispose
       ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
       Dispose(True)
       GC.SuppressFinalize(Me)
     End Sub
 
+    ''' <summary>
+    ''' Object finalizer.
+    ''' </summary>
     Protected Overrides Sub Finalize()
       Dispose(False)
     End Sub

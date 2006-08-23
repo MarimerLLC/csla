@@ -34,6 +34,11 @@ Namespace Server
       End Get
     End Property
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="message">Message text describing the exception.</param>
+    ''' <param name="ex">Inner exception object.</param>
     Public Sub New(ByVal message As String, ByVal ex As Exception)
 
       MyBase.New(message, ex)
@@ -41,6 +46,11 @@ Namespace Server
 
     End Sub
 
+    ''' <summary>
+    ''' Creates an instance of the object for deserialization.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
+    ''' <param name="context">Serialiation context.</param>
     Protected Sub New( _
       ByVal info As System.Runtime.Serialization.SerializationInfo, _
       ByVal context As System.Runtime.Serialization.StreamingContext)
@@ -50,6 +60,11 @@ Namespace Server
 
     End Sub
 
+    ''' <summary>
+    ''' Serializes the object.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
+    ''' <param name="context">Serialization context.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", _
       "CA1062:ValidateArgumentsOfPublicMethods")> _
     <SecurityPermission(SecurityAction.LinkDemand, _

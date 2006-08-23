@@ -148,8 +148,10 @@ namespace ProjectTracker.Library
       MarkOld();
     }
 
-    internal void Insert(SqlConnection cn, Resource resource)
+    internal void Insert(Resource resource)
     {
+      SqlConnection cn = (SqlConnection)ApplicationContext.LocalContext["cn"];
+
       // if we're not dirty then don't update the database
       if (!this.IsDirty) return;
 
@@ -158,8 +160,10 @@ namespace ProjectTracker.Library
       MarkOld();
     }
 
-    internal void Update(SqlConnection cn, Resource resource)
+    internal void Update(Resource resource)
     {
+      SqlConnection cn = (SqlConnection)ApplicationContext.LocalContext["cn"];
+
       // if we're not dirty then don't update the database
       if (!this.IsDirty) return;
 
@@ -168,8 +172,10 @@ namespace ProjectTracker.Library
       MarkOld();
     }
 
-    internal void DeleteSelf(SqlConnection cn, Resource resource)
+    internal void DeleteSelf(Resource resource)
     {
+      SqlConnection cn = (SqlConnection)ApplicationContext.LocalContext["cn"];
+
       // if we're not dirty then don't update the database
       if (!this.IsDirty) return;
 

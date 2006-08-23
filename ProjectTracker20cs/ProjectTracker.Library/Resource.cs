@@ -259,6 +259,7 @@ namespace ProjectTracker.Library
       using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
+        ApplicationContext.LocalContext["cn"] = cn;
         using (SqlCommand cm = cn.CreateCommand())
         {
           cm.CommandType = CommandType.StoredProcedure;
@@ -279,7 +280,10 @@ namespace ProjectTracker.Library
           _timestamp = (byte[])cm.Parameters["@newLastChanged"].Value;
         }
         // update child objects
-        _assignments.Update(cn, this);
+        _assignments.Update(this);
+        // removing of item only needed for local data portal
+        if (ApplicationContext.ExecutionLocation==ApplicationContext.ExecutionLocations.Client)
+          ApplicationContext.LocalContext.Remove("cn");
       }
     }
 
@@ -289,6 +293,7 @@ namespace ProjectTracker.Library
       using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
       {
         cn.Open();
+        ApplicationContext.LocalContext["cn"] = cn;
         if (base.IsDirty)
         {
           using (SqlCommand cm = cn.CreateCommand())
@@ -310,7 +315,10 @@ namespace ProjectTracker.Library
           }
         }
         // update child objects
-        _assignments.Update(cn, this);
+        _assignments.Update(this);
+        // removing of item only needed for local data portal
+        if (ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Client)
+          ApplicationContext.LocalContext.Remove("cn");
       }
     }
 

@@ -98,12 +98,12 @@ namespace ProjectTracker.Library
       RaiseListChangedEvents = true;
     }
 
-    internal void Update(SqlConnection cn, Resource resource)
+    internal void Update(Resource resource)
     {
       RaiseListChangedEvents = false;
       // update (thus deleting) any deleted child objects
       foreach (ResourceAssignment item in DeletedList)
-        item.DeleteSelf(cn, resource);
+        item.DeleteSelf(resource);
       // now that they are deleted, remove them from memory too
       DeletedList.Clear();
 
@@ -111,9 +111,9 @@ namespace ProjectTracker.Library
       foreach (ResourceAssignment item in this)
       {
         if (item.IsNew)
-          item.Insert(cn, resource);
+          item.Insert(resource);
         else
-          item.Update(cn, resource);
+          item.Update(resource);
       }
       RaiseListChangedEvents = true;
     }

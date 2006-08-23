@@ -14,6 +14,11 @@ namespace Csla.Core
     "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
   public interface IEditableCollection : IUndoableObject
   {
+    /// <summary>
+    /// Removes the specified child from the parent
+    /// collection.
+    /// </summary>
+    /// <param name="child">Child object to be removed.</param>
     void RemoveChild(Core.IEditableBusinessObject child);
   }
 }

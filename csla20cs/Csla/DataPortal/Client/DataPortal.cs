@@ -54,7 +54,7 @@ namespace Csla
     /// values from the database.
     /// </summary>
     /// <typeparam name="T">Specific type of the business object.</typeparam>
-    /// <param name="Criteria">Object-specific criteria.</param>
+    /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
     public static T Create<T>(object criteria)
     {
@@ -78,7 +78,7 @@ namespace Csla
     /// a new object, which is loaded with default
     /// values from the database.
     /// </summary>
-    /// <param name="Criteria">Object-specific criteria.</param>
+    /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
@@ -128,7 +128,7 @@ namespace Csla
     /// an object, which is loaded with values from the database.
     /// </summary>
     /// <typeparam name="T">Specific type of the business object.</typeparam>
-    /// <param name="Criteria">Object-specific criteria.</param>
+    /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
@@ -156,7 +156,7 @@ namespace Csla
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
-    /// <param name="Criteria">Object-specific criteria.</param>
+    /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
     public static object Fetch(object criteria)
     {

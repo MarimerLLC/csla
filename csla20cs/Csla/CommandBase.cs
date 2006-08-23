@@ -33,6 +33,9 @@ namespace Csla
 
     #region Constructors
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected CommandBase()
     {
       Initialize();

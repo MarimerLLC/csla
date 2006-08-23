@@ -23,6 +23,10 @@ Namespace Windows
 
     Private mSources As New Dictionary(Of BindingSource, Boolean)
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="container">Container of the control.</param>
     Public Sub New(ByVal container As System.ComponentModel.IContainer)
       container.Add(Me)
     End Sub

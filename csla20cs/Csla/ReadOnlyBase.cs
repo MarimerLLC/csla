@@ -88,6 +88,9 @@ namespace Csla
 
     #region Constructors
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected ReadOnlyBase()
     {
       _authorizationRules = new Csla.Security.AuthorizationRules(this.GetType());
@@ -327,7 +330,7 @@ namespace Csla
     /// Override this method to allow retrieval of an existing business
     /// object based on data in the database.
     /// </summary>
-    /// <param name="Criteria">An object containing criteria values to identify the object.</param>
+    /// <param name="criteria">An object containing criteria values to identify the object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Fetch(object criteria)
     {

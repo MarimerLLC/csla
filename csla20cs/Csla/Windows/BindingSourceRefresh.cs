@@ -21,6 +21,10 @@ namespace Csla.Windows
 
     private Dictionary<BindingSource, bool> _sources = new Dictionary<BindingSource, bool>();
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="container">Container of the control.</param>
     public BindingSourceRefresh(IContainer container)
     {
       container.Add(this);

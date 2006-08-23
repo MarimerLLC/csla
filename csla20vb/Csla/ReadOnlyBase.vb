@@ -92,6 +92,9 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
 #Region " Constructors "
 
+  ''' <summary>
+  ''' Creates an instance of the object.
+  ''' </summary>
   Protected Sub New()
 
     Initialize()
@@ -347,7 +350,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' Override this method to allow retrieval of an existing business
   ''' object based on data in the database.
   ''' </summary>
-  ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
+  ''' <param name="criteria">An object containing criteria values to identify the object.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   Protected Overridable Sub DataPortal_Fetch(ByVal criteria As Object)
     Throw New NotSupportedException(My.Resources.FetchNotSupportedException)

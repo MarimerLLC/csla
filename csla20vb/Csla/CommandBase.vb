@@ -29,6 +29,9 @@ Public MustInherit Class CommandBase
 
 #Region " Constructors "
 
+  ''' <summary>
+  ''' Creates an instance of the object.
+  ''' </summary>
   Protected Sub New()
 
     Initialize()

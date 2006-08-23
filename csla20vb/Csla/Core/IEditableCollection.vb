@@ -15,6 +15,11 @@ Namespace Core
   Public Interface IEditableCollection
     Inherits IUndoableObject
 
+    ''' <summary>
+    ''' Removes the specified child from the parent
+    ''' collection.
+    ''' </summary>
+    ''' <param name="child">Child object to be removed.</param>
     Sub RemoveChild(ByVal child As Core.IEditableBusinessObject)
   End Interface
 

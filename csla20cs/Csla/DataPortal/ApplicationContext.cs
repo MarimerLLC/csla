@@ -86,15 +86,15 @@ namespace Csla
         return (HybridDictionary)HttpContext.Current.Items[_localContextName];
     }
 
-    private static void SetLocalContext(HybridDictionary LocalContext)
+    private static void SetLocalContext(HybridDictionary localContext)
     {
       if (HttpContext.Current == null)
       {
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
-        Thread.SetData(slot, LocalContext);
+        Thread.SetData(slot, localContext);
       }
       else
-        HttpContext.Current.Items[_localContextName] = LocalContext;
+        HttpContext.Current.Items[_localContextName] = localContext;
     }
 
     #endregion

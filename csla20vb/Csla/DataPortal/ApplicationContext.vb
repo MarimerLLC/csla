@@ -81,15 +81,15 @@ Public Module ApplicationContext
 
   End Function
 
-  Private Sub SetLocalContext(ByVal globalContext As HybridDictionary)
+  Private Sub SetLocalContext(ByVal localContext As HybridDictionary)
 
     If HttpContext.Current Is Nothing Then
       Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot(mlocalContextName)
-      Threading.Thread.SetData(slot, LocalContext)
+        Thread.GetNamedDataSlot(mLocalContextName)
+      Threading.Thread.SetData(slot, localContext)
 
     Else
-      HttpContext.Current.Items(mLocalContextName) = LocalContext
+      HttpContext.Current.Items(mLocalContextName) = localContext
     End If
 
   End Sub

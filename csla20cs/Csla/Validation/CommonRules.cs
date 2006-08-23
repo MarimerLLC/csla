@@ -456,7 +456,7 @@ namespace Csla.Validation
         :
         base(propertyName)
       {
-        _regEx = regex;
+        _regEx = regEx;
       }
 
       /// <summary>f

@@ -877,6 +877,13 @@ Namespace Core
       End Set
     End Property
 
+    Private ReadOnly Property IEditableBusinessObject_EditLevel() As Integer _
+        Implements IEditableBusinessObject.EditLevel
+      Get
+        Return Me.EditLevel
+      End Get
+    End Property
+
 #End Region
 
 #Region " ICloneable "

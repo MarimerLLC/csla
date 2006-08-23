@@ -1,3 +1,4 @@
+Imports System
 Imports System.ComponentModel
 
 ''' <summary>
@@ -33,6 +34,8 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
 #Region " SaveItem Methods "
 
+  Private mActivelySaving As Boolean
+
   ''' <summary>
   ''' Saves the specified item in the list.
   ''' </summary>
@@ -65,8 +68,25 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' </remarks>
   Public Overridable Sub SaveItem(ByVal index As Integer)
 
+    mActivelySaving = True
+    Dim raiseEvents As Boolean = Me.RaiseListChangedEvents
+    Me.RaiseListChangedEvents = False
+
     Dim item As T = Me.Item(index)
+    Dim editLevel As Integer = item.EditLevel
+    ' commit all changes
+    For tmp As Integer = 1 To editLevel
+      item.AcceptChanges()
+    Next
+    ' do the save
     Me.Item(index) = DirectCast(item.Save, T)
+    ' restore edit level to previous level
+    For tmp As Integer = 1 To editLevel
+      item.CopyState()
+    Next
+
+    Me.RaiseListChangedEvents = raiseEvents
+    mActivelySaving = False
 
   End Sub
 
@@ -88,7 +108,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
     ' delete item from database
     Dim item As T = Me.Item(index)
     item.Delete()
-    item.Save()
+    SaveItem(index)
 
     ' disconnect event handler if necessary
     Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(item, System.ComponentModel.INotifyPropertyChanged)
@@ -106,7 +126,9 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
   Private Sub ApplyEditChild(ByVal child As Core.IEditableBusinessObject) Implements Core.IParent.ApplyEditChild
 
-    SaveItem(CType(child, T))
+    If Not mActivelySaving AndAlso child.EditLevel = 0 Then
+      SaveItem(CType(child, T))
+    End If
 
   End Sub
 

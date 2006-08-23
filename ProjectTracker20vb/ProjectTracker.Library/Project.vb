@@ -57,7 +57,6 @@ Public Class Project
       CanWriteProperty(True)
       If mStarted <> Value Then
         mStarted.Text = Value
-        ValidationRules.CheckRules("Ended")
         PropertyHasChanged()
       End If
     End Set
@@ -74,7 +73,6 @@ Public Class Project
       CanWriteProperty(True)
       If mEnded <> Value Then
         mEnded.Text = Value
-        ValidationRules.CheckRules("Started")
         PropertyHasChanged()
       End If
     End Set
@@ -132,6 +130,9 @@ Public Class Project
 
     ValidationRules.AddRule(Of Project)(AddressOf StartDateGTEndDate(Of Project), "Started")
     ValidationRules.AddRule(Of Project)(AddressOf StartDateGTEndDate(Of Project), "Ended")
+
+    ValidationRules.AddDependantProperty("Started", "Ended")
+    ValidationRules.AddDependantProperty("Ended", "Started")
 
   End Sub
 

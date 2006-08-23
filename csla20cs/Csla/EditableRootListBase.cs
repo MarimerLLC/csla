@@ -38,6 +38,8 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
 
 #region  SaveItem Methods 
 
+  private bool _activelySaving;
+
   /// <summary>
   /// Saves the specified item in the list.
   /// </summary>
@@ -71,8 +73,23 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
   /// </remarks>
   public virtual void SaveItem(int index)
   {
+    _activelySaving = true;
+    bool raisingEvents = this.RaiseListChangedEvents;
+    this.RaiseListChangedEvents = false;
+
     T item = this[index];
+    int editLevel = item.EditLevel;
+    // commit all changes
+    for (int tmp = 1; tmp <= editLevel; tmp++)
+      item.AcceptChanges();
+    // do the save
     this[index] = (T)item.Save();
+    // restore edit level to previous level
+    for (int tmp = 1; tmp <= editLevel; tmp++)
+      item.CopyState();
+
+    this.RaiseListChangedEvents = raisingEvents;
+    _activelySaving = false;
   }
 
 #endregion
@@ -95,7 +112,7 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
     // delete item from database
     T item = this[index];
     item.Delete();
-    item.Save();
+    SaveItem(index);
 
     // disconnect event handler if necessary
     System.ComponentModel.INotifyPropertyChanged c = item as System.ComponentModel.INotifyPropertyChanged;
@@ -114,9 +131,8 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
 
   public void ApplyEditChild(Core.IEditableBusinessObject child)
   {
-
-    SaveItem((T)child);
-
+    if (!_activelySaving && child.EditLevel==0)
+      SaveItem((T)child);
   }
 
   public void RemoveChild(Core.IEditableBusinessObject child)

@@ -102,6 +102,10 @@ namespace Csla.Core
     /// </remarks>
     int EditLevelAdded { get; set;}
     /// <summary>
+    /// Gets the current edit level of the object.
+    /// </summary>
+    int EditLevel { get; }
+    /// <summary>
     /// Called by a parent object to mark the child
     /// for deferred deletion.
     /// </summary>

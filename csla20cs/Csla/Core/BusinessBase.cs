@@ -841,6 +841,14 @@ namespace Csla.Core
       set { _editLevelAdded = value; }
     }
 
+    int IEditableBusinessObject.EditLevel
+    {
+      get
+      {
+        return this.EditLevel;
+      }
+    }
+
     #endregion
 
     #region ICloneable

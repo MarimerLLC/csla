@@ -75,7 +75,6 @@ namespace ProjectTracker.Library
         if (_started != value)
         {
           _started.Text = value;
-          ValidationRules.CheckRules("Ended");
           PropertyHasChanged();
         }
       }
@@ -97,7 +96,6 @@ namespace ProjectTracker.Library
         if (_ended != value)
         {
           _ended.Text = value;
-          ValidationRules.CheckRules("Started");
           PropertyHasChanged();
         }
       }
@@ -160,6 +158,9 @@ namespace ProjectTracker.Library
         StartDateGTEndDate<Project>, "Started");
       ValidationRules.AddRule<Project>(
         StartDateGTEndDate<Project>, "Ended");
+
+      ValidationRules.AddDependantProperty("Started", "Ended");
+      ValidationRules.AddDependantProperty("Ended", "Started");
     }
 
     private static bool StartDateGTEndDate<T>(

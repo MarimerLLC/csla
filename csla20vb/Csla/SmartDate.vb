@@ -627,102 +627,214 @@ Public Structure SmartDate
 
 #End Region
 
-#Region " Operators "
+#Region "Operators"
 
-  Public Shared Operator =( _
-    ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
-
+  ''' <summary>
+  ''' Equality operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator =(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
     Return obj1.Equals(obj2)
   End Operator
 
-  Public Shared Operator <>( _
-    ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
-
+  ''' <summary>
+  ''' Inequality operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator <>(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
     Return Not obj1.Equals(obj2)
   End Operator
 
-  Public Shared Operator =(ByVal obj1 As SmartDate, ByVal obj2 As Date) As Boolean
+  ''' <summary>
+  ''' Equality operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator =(ByVal obj1 As SmartDate, ByVal obj2 As DateTime) As Boolean
     Return obj1.Equals(obj2)
   End Operator
 
-  Public Shared Operator <>(ByVal obj1 As SmartDate, ByVal obj2 As Date) As Boolean
+  ''' <summary>
+  ''' Inequality operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator <>(ByVal obj1 As SmartDate, ByVal obj2 As DateTime) As Boolean
     Return Not obj1.Equals(obj2)
   End Operator
 
+  ''' <summary>
+  ''' Equality operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
   Public Shared Operator =(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
     Return obj1.Equals(obj2)
   End Operator
 
+  ''' <summary>
+  ''' Inequality operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
   Public Shared Operator <>(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
     Return Not obj1.Equals(obj2)
   End Operator
 
-  Public Shared Operator +( _
-    ByVal start As SmartDate, ByVal span As TimeSpan) As SmartDate
-
+  ''' <summary>
+  ''' Addition operator
+  ''' </summary>
+  ''' <param name="start">Original date/time</param>
+  ''' <param name="span">Span to add</param>
+  ''' <returns></returns>
+  Public Shared Operator +(ByVal start As SmartDate, ByVal span As TimeSpan) As SmartDate
     Return New SmartDate(start.Add(span), start.EmptyIsMin)
   End Operator
 
-  Public Shared Operator -( _
-    ByVal start As SmartDate, ByVal span As TimeSpan) As SmartDate
-
+  ''' <summary>
+  ''' Subtraction operator
+  ''' </summary>
+  ''' <param name="start">Original date/time</param>
+  ''' <param name="span">Span to subtract</param>
+  ''' <returns></returns>
+  Public Shared Operator -(ByVal start As SmartDate, ByVal span As TimeSpan) As SmartDate
     Return New SmartDate(start.Subtract(span), start.EmptyIsMin)
   End Operator
 
-  Public Shared Operator -( _
-    ByVal start As SmartDate, ByVal finish As SmartDate) As TimeSpan
-
+  ''' <summary>
+  ''' Subtraction operator
+  ''' </summary>
+  ''' <param name="start">Original date/time</param>
+  ''' <param name="finish">Second date/time</param>
+  ''' <returns></returns>
+  Public Shared Operator -(ByVal start As SmartDate, ByVal finish As SmartDate) As TimeSpan
     Return start.Subtract(finish.Date)
   End Operator
 
-  Public Shared Operator >( _
-    ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
-
+  ''' <summary>
+  ''' Greater than operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator >(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
     Return obj1.CompareTo(obj2) > 0
   End Operator
 
-  Public Shared Operator <( _
-    ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
-
+  ''' <summary>
+  ''' Less than operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator <(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
     Return obj1.CompareTo(obj2) < 0
   End Operator
 
-  Public Shared Operator >(ByVal obj1 As SmartDate, ByVal obj2 As Date) As Boolean
+  ''' <summary>
+  ''' Greater than operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator >(ByVal obj1 As SmartDate, ByVal obj2 As DateTime) As Boolean
     Return obj1.CompareTo(obj2) > 0
   End Operator
 
-  Public Shared Operator <(ByVal obj1 As SmartDate, ByVal obj2 As Date) As Boolean
+  ''' <summary>
+  ''' Less than operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator <(ByVal obj1 As SmartDate, ByVal obj2 As DateTime) As Boolean
     Return obj1.CompareTo(obj2) < 0
   End Operator
 
+  ''' <summary>
+  ''' Greater than operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
   Public Shared Operator >(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
     Return obj1.CompareTo(obj2) > 0
   End Operator
 
+  ''' <summary>
+  ''' Less than operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
   Public Shared Operator <(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
     Return obj1.CompareTo(obj2) < 0
   End Operator
 
+  ''' <summary>
+  ''' Greater than or equals operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
   Public Shared Operator >=(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
     Return obj1.CompareTo(obj2) >= 0
   End Operator
 
+  ''' <summary>
+  ''' Less than or equals operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
   Public Shared Operator <=(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
     Return obj1.CompareTo(obj2) <= 0
   End Operator
 
-  Public Shared Operator >=(ByVal obj1 As SmartDate, ByVal obj2 As Date) As Boolean
+  ''' <summary>
+  ''' Greater than or equals operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator >=(ByVal obj1 As SmartDate, ByVal obj2 As DateTime) As Boolean
     Return obj1.CompareTo(obj2) >= 0
   End Operator
 
-  Public Shared Operator <=(ByVal obj1 As SmartDate, ByVal obj2 As Date) As Boolean
+  ''' <summary>
+  ''' Less than or equals operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
+  Public Shared Operator <=(ByVal obj1 As SmartDate, ByVal obj2 As DateTime) As Boolean
     Return obj1.CompareTo(obj2) <= 0
   End Operator
 
+  ''' <summary>
+  ''' Greater than or equals operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
   Public Shared Operator >=(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
     Return obj1.CompareTo(obj2) >= 0
   End Operator
 
+  ''' <summary>
+  ''' Less than or equals operator
+  ''' </summary>
+  ''' <param name="obj1">First object</param>
+  ''' <param name="obj2">Second object</param>
+  ''' <returns></returns>
   Public Shared Operator <=(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
     Return obj1.CompareTo(obj2) <= 0
   End Operator

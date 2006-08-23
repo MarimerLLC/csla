@@ -656,106 +656,232 @@ namespace Csla
 
     #region Operators
 
+    /// <summary>
+    /// Equality operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator ==(SmartDate obj1, SmartDate obj2)
     {
       return obj1.Equals(obj2);
     }
 
+    /// <summary>
+    /// Inequality operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator !=(SmartDate obj1, SmartDate obj2)
     {
       return !obj1.Equals(obj2);
     }
 
+    /// <summary>
+    /// Equality operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator ==(SmartDate obj1, DateTime obj2)
     {
       return obj1.Equals(obj2);
     }
 
+    /// <summary>
+    /// Inequality operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator !=(SmartDate obj1, DateTime obj2)
     {
       return !obj1.Equals(obj2);
     }
 
+    /// <summary>
+    /// Equality operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator ==(SmartDate obj1, string obj2)
     {
       return obj1.Equals(obj2);
     }
 
+    /// <summary>
+    /// Inequality operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator !=(SmartDate obj1, string obj2)
     {
       return !obj1.Equals(obj2);
     }
 
+    /// <summary>
+    /// Addition operator
+    /// </summary>
+    /// <param name="start">Original date/time</param>
+    /// <param name="span">Span to add</param>
+    /// <returns></returns>
     public static SmartDate operator +(SmartDate start, TimeSpan span)
     {
       return new SmartDate(start.Add(span), start.EmptyIsMin);
     }
 
+    /// <summary>
+    /// Subtraction operator
+    /// </summary>
+    /// <param name="start">Original date/time</param>
+    /// <param name="span">Span to subtract</param>
+    /// <returns></returns>
     public static SmartDate operator -(SmartDate start, TimeSpan span)
     {
       return new SmartDate(start.Subtract(span), start.EmptyIsMin);
     }
 
+    /// <summary>
+    /// Subtraction operator
+    /// </summary>
+    /// <param name="start">Original date/time</param>
+    /// <param name="finish">Second date/time</param>
+    /// <returns></returns>
     public static TimeSpan operator -(SmartDate start, SmartDate finish)
     {
       return start.Subtract(finish.Date);
     }
 
+    /// <summary>
+    /// Greater than operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator >(SmartDate obj1, SmartDate obj2)
     {
       return obj1.CompareTo(obj2) > 0;
     }
 
+    /// <summary>
+    /// Less than operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator <(SmartDate obj1, SmartDate obj2)
     {
       return obj1.CompareTo(obj2) < 0;
     }
 
+    /// <summary>
+    /// Greater than operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator >(SmartDate obj1, DateTime obj2)
     {
       return obj1.CompareTo(obj2) > 0;
     }
 
+    /// <summary>
+    /// Less than operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator <(SmartDate obj1, DateTime obj2)
     {
       return obj1.CompareTo(obj2) < 0;
     }
 
+    /// <summary>
+    /// Greater than operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator >(SmartDate obj1, string obj2)
     {
       return obj1.CompareTo(obj2) > 0;
     }
 
+    /// <summary>
+    /// Less than operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator <(SmartDate obj1, string obj2)
     {
       return obj1.CompareTo(obj2) < 0;
     }
 
+    /// <summary>
+    /// Greater than or equals operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator >=(SmartDate obj1, SmartDate obj2)
     {
       return obj1.CompareTo(obj2) >= 0;
     }
 
+    /// <summary>
+    /// Less than or equals operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator <=(SmartDate obj1, SmartDate obj2)
     {
       return obj1.CompareTo(obj2) <= 0;
     }
 
+    /// <summary>
+    /// Greater than or equals operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator >=(SmartDate obj1, DateTime obj2)
     {
       return obj1.CompareTo(obj2) >= 0;
     }
 
+    /// <summary>
+    /// Less than or equals operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator <=(SmartDate obj1, DateTime obj2)
     {
       return obj1.CompareTo(obj2) <= 0;
     }
 
+    /// <summary>
+    /// Greater than or equals operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator >=(SmartDate obj1, string obj2)
     {
       return obj1.CompareTo(obj2) >= 0;
     }
 
+    /// <summary>
+    /// Less than or equals operator
+    /// </summary>
+    /// <param name="obj1">First object</param>
+    /// <param name="obj2">Second object</param>
+    /// <returns></returns>
     public static bool operator <=(SmartDate obj1, string obj2)
     {
       return obj1.CompareTo(obj2) <= 0;

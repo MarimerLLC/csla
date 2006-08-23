@@ -104,12 +104,12 @@ Public Class ResourceAssignments
 
   End Sub
 
-  Friend Sub Update(ByVal cn As SqlConnection, ByVal resource As Resource)
+  Friend Sub Update(ByVal resource As Resource)
 
     Me.RaiseListChangedEvents = False
     ' update (thus deleting) any deleted child objects
     For Each item As ResourceAssignment In DeletedList
-      item.DeleteSelf(cn, resource)
+      item.DeleteSelf(resource)
     Next
     ' now that they are deleted, remove them from memory too
     DeletedList.Clear()
@@ -117,10 +117,10 @@ Public Class ResourceAssignments
     ' add/update any current child objects
     For Each item As ResourceAssignment In Me
       If item.IsNew Then
-        item.Insert(cn, resource)
+        item.Insert(resource)
 
       Else
-        item.Update(cn, resource)
+        item.Update(resource)
       End If
     Next
     Me.RaiseListChangedEvents = True

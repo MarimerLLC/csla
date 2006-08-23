@@ -253,6 +253,7 @@ Private Class Criteria
 
     Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
+      ApplicationContext.LocalContext("cn") = cn
       Using cm As SqlCommand = cn.CreateCommand
         With cm
           .CommandType = CommandType.StoredProcedure
@@ -274,9 +275,13 @@ Private Class Criteria
           End With
 
           ' update child objects
-          mAssignments.Update(cn, Me)
+          mAssignments.Update(Me)
         End With
       End Using
+      ' removing of item only needed for local data portal
+      If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
+        ApplicationContext.LocalContext.Remove("cn")
+      End If
     End Using
 
   End Sub
@@ -286,6 +291,7 @@ Private Class Criteria
 
     Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
+      ApplicationContext.LocalContext("cn") = cn
       If MyBase.IsDirty Then
         Using cm As SqlCommand = cn.CreateCommand
           With cm
@@ -308,7 +314,11 @@ Private Class Criteria
         End Using
       End If
       ' update child objects
-      mAssignments.Update(cn, Me)
+      mAssignments.Update(Me)
+      ' removing of item only needed for local data portal
+      If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
+        ApplicationContext.LocalContext.Remove("cn")
+      End If
     End Using
 
   End Sub

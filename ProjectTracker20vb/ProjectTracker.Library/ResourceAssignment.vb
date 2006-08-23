@@ -142,7 +142,10 @@ Public Class ResourceAssignment
 
   End Sub
 
-  Friend Sub Insert(ByVal cn As SqlConnection, ByVal resource As Resource)
+  Friend Sub Insert(ByVal resource As Resource)
+
+    Dim cn As SqlClient.SqlConnection = _
+      CType(ApplicationContext.LocalContext("cn"), SqlClient.SqlConnection)
 
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
@@ -153,8 +156,10 @@ Public Class ResourceAssignment
 
   End Sub
 
-  Friend Sub Update( _
-    ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)
+  Friend Sub Update(ByVal resource As Resource)
+
+    Dim cn As SqlClient.SqlConnection = _
+      CType(ApplicationContext.LocalContext("cn"), SqlClient.SqlConnection)
 
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
@@ -165,8 +170,10 @@ Public Class ResourceAssignment
 
   End Sub
 
-  Friend Sub DeleteSelf(ByVal cn As SqlClient.SqlConnection, ByVal resource As Resource)
+  Friend Sub DeleteSelf(ByVal resource As Resource)
 
+    Dim cn As SqlClient.SqlConnection = _
+      CType(ApplicationContext.LocalContext("cn"), SqlClient.SqlConnection)
     ' if we're not dirty then don't update the database
     If Not Me.IsDirty Then Exit Sub
 

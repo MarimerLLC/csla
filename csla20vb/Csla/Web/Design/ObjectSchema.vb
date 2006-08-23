@@ -19,6 +19,13 @@ Namespace Web.Design
     Private mTypeAssemblyName As String = ""
     Private mTypeName As String = ""
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="assemblyName">Assembly containing
+    ''' the type.</param>
+    ''' <param name="typeName">Type name for
+    ''' which the schema should be generated.</param>
     Public Sub New(ByVal assemblyName As String, ByVal typeName As String)
 
       mTypeAssemblyName = assemblyName

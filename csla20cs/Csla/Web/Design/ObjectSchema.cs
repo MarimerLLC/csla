@@ -23,6 +23,13 @@ namespace Csla.Web.Design
     private string _typeAssemblyName = string.Empty;
     private string _typeName = string.Empty;
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="assemblyName">Assembly containing
+    /// the type.</param>
+    /// <param name="typeName">Type name for
+    /// which the schema should be generated.</param>
     public ObjectSchema(string assemblyName, string typeName)
     {
       _typeAssemblyName = assemblyName;

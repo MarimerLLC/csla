@@ -25,7 +25,7 @@ namespace Csla.Data
     /// Initializes the SafeDataReader object to use data from
     /// the provided DataReader object.
     /// </summary>
-    /// <param name="DataReader">The source DataReader object containing the data.</param>
+    /// <param name="dataReader">The source DataReader object containing the data.</param>
     public SafeDataReader(IDataReader dataReader)
     {
       _dataReader = dataReader;
@@ -37,7 +37,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns empty string for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="name">Name of the column containing the value.</param>
     public string GetString(string name)
     {
       return GetString(_dataReader.GetOrdinal(name));
@@ -49,7 +49,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns empty string for null.
     /// </remarks>
-    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="i">Ordinal column position of the value.</param>
     public virtual string GetString(int i)
     {
       if (_dataReader.IsDBNull(i))
@@ -62,7 +62,7 @@ namespace Csla.Data
     /// <summary>
     /// Gets a value of type <see cref="System.Object" /> from the datareader.
     /// </summary>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="name">Name of the column containing the value.</param>
     public object GetValue(string name)
     {
       return GetValue(_dataReader.GetOrdinal(name));
@@ -71,7 +71,7 @@ namespace Csla.Data
     /// <summary>
     /// Gets a value of type <see cref="System.Object" /> from the datareader.
     /// </summary>
-    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="i">Ordinal column position of the value.</param>
     public virtual object GetValue(int i)
     {
       if (_dataReader.IsDBNull(i))
@@ -86,7 +86,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="name">Name of the column containing the value.</param>
     public int GetInt32(string name)
     {
       return GetInt32(_dataReader.GetOrdinal(name));
@@ -98,7 +98,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="i">Ordinal column position of the value.</param>
     public virtual int GetInt32(int i)
     {
       if (_dataReader.IsDBNull(i))
@@ -113,7 +113,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="name">Name of the column containing the value.</param>
     public double GetDouble(string name)
     {
       return GetDouble(_dataReader.GetOrdinal(name));
@@ -125,7 +125,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="i">Ordinal column position of the value.</param>
     public virtual double GetDouble(int i)
     {
       if (_dataReader.IsDBNull(i))
@@ -177,6 +177,13 @@ namespace Csla.Data
       return GetSmartDate(_dataReader.GetOrdinal(name), minIsEmpty);
     }
 
+    /// <summary>
+    /// Gets a <see cref="SmartDate"/> from the datareader.
+    /// </summary>
+    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="minIsEmpty">
+    /// A flag indicating whether the min or max 
+    /// value of a data means an empty date.</param>
     public virtual Csla.SmartDate GetSmartDate(
       int i, bool minIsEmpty)
     {
@@ -193,7 +200,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns Guid.Empty for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="name">Name of the column containing the value.</param>
     public System.Guid GetGuid(string name)
     {
       return GetGuid(_dataReader.GetOrdinal(name));
@@ -205,7 +212,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns Guid.Empty for null.
     /// </remarks>
-    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="i">Ordinal column position of the value.</param>
     public virtual System.Guid GetGuid(int i)
     {
       if (_dataReader.IsDBNull(i))
@@ -266,7 +273,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns <see langword="false" /> for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="name">Name of the column containing the value.</param>
     public bool GetBoolean(string name)
     {
       return GetBoolean(_dataReader.GetOrdinal(name));
@@ -278,7 +285,7 @@ namespace Csla.Data
     /// <remarks>
     /// Returns <see langword="false" /> for null.
     /// </remarks>
-    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="i">Ordinal column position of the value.</param>
     public virtual bool GetBoolean(int i)
     {
       if (_dataReader.IsDBNull(i))
@@ -321,10 +328,14 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="buffer">Array containing the data.</param>
+    /// <param name="bufferOffset">Offset position within the buffer.</param>
+    /// <param name="fieldOffset">Offset position within the field.</param>
+    /// <param name="length">Length of data to read.</param>
     public Int64 GetBytes(string name, Int64 fieldOffset,
-      byte[] buffer, int bufferoffset, int length)
+      byte[] buffer, int bufferOffset, int length)
     {
-      return GetBytes(_dataReader.GetOrdinal(name), fieldOffset, buffer, bufferoffset, length);
+      return GetBytes(_dataReader.GetOrdinal(name), fieldOffset, buffer, bufferOffset, length);
     }
 
     /// <summary>
@@ -334,13 +345,17 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="buffer">Array containing the data.</param>
+    /// <param name="bufferOffset">Offset position within the buffer.</param>
+    /// <param name="fieldOffset">Offset position within the field.</param>
+    /// <param name="length">Length of data to read.</param>
     public virtual Int64 GetBytes(int i, Int64 fieldOffset,
-      byte[] buffer, int bufferoffset, int length)
+      byte[] buffer, int bufferOffset, int length)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
       else
-        return _dataReader.GetBytes(i, fieldOffset, buffer, bufferoffset, length);
+        return _dataReader.GetBytes(i, fieldOffset, buffer, bufferOffset, length);
     }
 
     /// <summary>
@@ -381,10 +396,14 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
-    public Int64 GetChars(string name, Int64 fieldoffset,
-      char[] buffer, int bufferoffset, int length)
+    /// <param name="buffer">Array containing the data.</param>
+    /// <param name="bufferOffset">Offset position within the buffer.</param>
+    /// <param name="fieldOffset">Offset position within the field.</param>
+    /// <param name="length">Length of data to read.</param>
+    public Int64 GetChars(string name, Int64 fieldOffset,
+      char[] buffer, int bufferOffset, int length)
     {
-      return GetChars(_dataReader.GetOrdinal(name), fieldoffset, buffer, bufferoffset, length);
+      return GetChars(_dataReader.GetOrdinal(name), fieldOffset, buffer, bufferOffset, length);
     }
 
     /// <summary>
@@ -394,13 +413,17 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="i">Ordinal column position of the value.</param>
-    public virtual Int64 GetChars(int i, Int64 fieldoffset,
-      char[] buffer, int bufferoffset, int length)
+    /// <param name="buffer">Array containing the data.</param>
+    /// <param name="bufferOffset">Offset position within the buffer.</param>
+    /// <param name="fieldOffset">Offset position within the field.</param>
+    /// <param name="length">Length of data to read.</param>
+    public virtual Int64 GetChars(int i, Int64 fieldOffset,
+      char[] buffer, int bufferOffset, int length)
     {
       if (_dataReader.IsDBNull(i))
         return 0;
       else
-        return _dataReader.GetChars(i, fieldoffset, buffer, bufferoffset, length);
+        return _dataReader.GetChars(i, fieldOffset, buffer, bufferOffset, length);
     }
 
     /// <summary>
@@ -641,7 +664,7 @@ namespace Csla.Data
     /// <summary>
     /// Invokes the IsDBNull method of the underlying datareader.
     /// </summary>
-    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="i">Ordinal column position of the value.</param>
     public virtual bool IsDBNull(int i)
     {
       return _dataReader.IsDBNull(i);
@@ -692,7 +715,11 @@ namespace Csla.Data
 
     private bool _disposedValue; // To detect redundant calls
 
-    // IDisposable
+    /// <summary>
+    /// Disposes the object.
+    /// </summary>
+    /// <param name="disposing">True if called by
+    /// the public Dispose method.</param>
     protected virtual void Dispose(bool disposing)
     {
       if (!_disposedValue)
@@ -708,12 +735,22 @@ namespace Csla.Data
       _disposedValue = true;
     }
 
-    // This code added by Visual Basic to correctly implement the disposable pattern.
+    /// <summary>
+    /// Disposes the object.
+    /// </summary>
     public void Dispose()
     {
       // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
       Dispose(true);
       GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Object finalizer.
+    /// </summary>
+    ~SafeDataReader()
+    {
+      Dispose(false);
     }
 
     #endregion

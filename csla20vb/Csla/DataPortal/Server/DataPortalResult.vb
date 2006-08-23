@@ -33,12 +33,20 @@ Namespace Server
       End Get
     End Property
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
     Public Sub New()
 
       mGlobalContext = ApplicationContext.GetGlobalContext
 
     End Sub
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="returnObject">Object to return as part
+    ''' of the result.</param>
     Public Sub New(ByVal returnObject As Object)
 
       mReturnObject = returnObject

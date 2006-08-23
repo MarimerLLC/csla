@@ -35,6 +35,10 @@ Namespace Security
 
     End Function
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="identity">Identity object for the user.</param>
     Protected Sub New(ByVal identity As IIdentity)
 
       mIdentity = identity

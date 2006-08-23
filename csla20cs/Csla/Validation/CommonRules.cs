@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace Csla.Validation
 {
+  /// <summary>
+  /// Implements common business rules.
+  /// </summary>
   public static class CommonRules
   {
 
@@ -449,7 +452,7 @@ namespace Csla.Validation
       /// </summary>
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="regEx"><see cref="RegEx"/> object to use.</param>
-      public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regex)
+      public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regEx)
         :
         base(propertyName)
       {

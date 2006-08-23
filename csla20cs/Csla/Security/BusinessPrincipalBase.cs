@@ -31,6 +31,10 @@ namespace Csla.Security
       return false;
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="identity">Identity object for the user.</param>
     protected BusinessPrincipalBase(IIdentity identity)
     {
       _identity = identity;

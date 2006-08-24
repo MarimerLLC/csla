@@ -261,6 +261,7 @@ Public Structure SmartDate
   ''' Compares this object to another <see cref="SmartDate"/>
   ''' for equality.
   ''' </summary>
+  ''' <param name="obj">Object to compare for equality.</param>
   Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
 
     If TypeOf obj Is SmartDate Then
@@ -541,7 +542,7 @@ Public Structure SmartDate
   ''' on the Date datetype, with the exception that it
   ''' understands the concept of empty date values.
   ''' </remarks>
-  ''' <param name="Value">The date to which we are being compared.</param>
+  ''' <param name="calue">The date to which we are being compared.</param>
   ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
   Public Function CompareTo(ByVal value As SmartDate) As Integer
     If Me.IsEmpty AndAlso value.IsEmpty Then
@@ -576,7 +577,7 @@ Public Structure SmartDate
   ''' <summary>
   ''' Compares a SmartDate to a text date value.
   ''' </summary>
-  ''' <param name="Value">The date to which we are being compared.</param>
+  ''' <param name="value">The date to which we are being compared.</param>
   ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
   Public Function CompareTo(ByVal value As String) As Integer
     Return Me.Date.CompareTo(StringToDate(value, mEmptyValue))
@@ -585,7 +586,7 @@ Public Structure SmartDate
   ''' <summary>
   ''' Compares a SmartDate to a date value.
   ''' </summary>
-  ''' <param name="Value">The date to which we are being compared.</param>
+  ''' <param name="value">The date to which we are being compared.</param>
   ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
   Public Function CompareTo(ByVal value As Date) As Integer
     Return Me.Date.CompareTo(value)
@@ -595,6 +596,7 @@ Public Structure SmartDate
   ''' <summary>
   ''' Adds a TimeSpan onto the object.
   ''' </summary>
+  ''' <param name="value">Span to add to the date.</param>
   Public Function Add(ByVal value As TimeSpan) As Date
     If IsEmpty Then
       Return Me.Date
@@ -606,6 +608,7 @@ Public Structure SmartDate
   ''' <summary>
   ''' Subtracts a TimeSpan from the object.
   ''' </summary>
+  ''' <param name="value">Span to subtract from the date.</param>
   Public Function Subtract(ByVal value As TimeSpan) As Date
     If IsEmpty Then
       Return Me.Date
@@ -617,6 +620,7 @@ Public Structure SmartDate
   ''' <summary>
   ''' Subtracts a Date from the object.
   ''' </summary>
+  ''' <param name="value">Date to subtract from the date.</param>
   Public Function Subtract(ByVal value As Date) As TimeSpan
     If IsEmpty Then
       Return TimeSpan.Zero

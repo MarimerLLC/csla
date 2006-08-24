@@ -9,6 +9,8 @@ namespace Csla
   /// <summary>
   /// Provides a filtered view into an existing IList(Of T).
   /// </summary>
+  /// <typeparam name="T">The type of the objects contained
+  /// in the original list.</typeparam>
   public class FilteredBindingList<T> :
     IList<T>, IBindingList, IEnumerable<T>,
     ICancelAddNew
@@ -197,6 +199,8 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="property">Property on which
+    /// to build the index.</param>
     public void AddIndex(PropertyDescriptor property)
     {
       if (_supportsBinding)
@@ -304,6 +308,9 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="key">Key value for which to search.</param>
+    /// <param name="property">Property to search for the key
+    /// value.</param>
     public int Find(PropertyDescriptor property, object key)
     {
       if (_supportsBinding)
@@ -350,6 +357,8 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="property">Property for which the
+    /// index should be removed.</param>
     public void RemoveIndex(PropertyDescriptor property)
     {
       if (_supportsBinding)

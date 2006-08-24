@@ -223,6 +223,7 @@ Namespace Validation
     ''' The property name on the target object where the rule implementation can retrieve
     ''' the value to be validated.
     ''' </param>
+    ''' <typeparam name="T">Type of the business object to be validated.</typeparam>
     Public Sub AddInstanceRule(Of T)( _
       ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyName As String)
 
@@ -255,6 +256,7 @@ Namespace Validation
     ''' <param name="priority">
     ''' The priority of the rule, where lower numbers are processed first.
     ''' </param>
+    ''' <typeparam name="T">Type of the business object to be validated.</typeparam>
     Public Sub AddInstanceRule(Of T)( _
       ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyName As String, _
       ByVal priority As Integer)

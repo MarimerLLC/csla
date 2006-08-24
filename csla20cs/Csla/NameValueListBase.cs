@@ -11,6 +11,8 @@ namespace Csla
   /// This is the base class from which readonly name/value
   /// collections should be derived.
   /// </summary>
+  /// <typeparam name="K">Type of the key values.</typeparam>
+  /// <typeparam name="V">Type of the values.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
@@ -52,6 +54,7 @@ namespace Csla
     /// Gets a value indicating whether the list contains the
     /// specified key.
     /// </summary>
+    /// <param name="key">Key value for which to search.</param>
     public bool ContainsKey(K key)
     {
       foreach (NameValuePair item in this)
@@ -64,6 +67,7 @@ namespace Csla
     /// Gets a value indicating whether the list contains the
     /// specified value.
     /// </summary>
+    /// <param name="value">Value for which to search.</param>
     public bool ContainsValue(V value)
     {
       foreach (NameValuePair item in this)

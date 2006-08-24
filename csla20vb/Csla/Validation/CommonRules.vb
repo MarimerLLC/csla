@@ -466,6 +466,7 @@ Namespace Validation
       ''' <summary>
       ''' Returns the specified built-in regex pattern.
       ''' </summary>
+      ''' <param name="pattern">Pattern to return.</param>
       Public Shared Function GetPattern(ByVal pattern As RegExPatterns) As String
         Select Case pattern
           Case RegExPatterns.SSN

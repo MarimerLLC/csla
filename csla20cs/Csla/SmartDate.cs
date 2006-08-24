@@ -303,6 +303,7 @@ namespace Csla
     /// Compares this object to another <see cref="SmartDate"/>
     /// for equality.
     /// </summary>
+    /// <param name="obj">Object to compare for equality.</param>
     public override bool Equals(object obj)
     {
       if (obj is SmartDate)
@@ -622,6 +623,7 @@ namespace Csla
     /// <summary>
     /// Adds a TimeSpan onto the object.
     /// </summary>
+    /// <param name="value">Span to add to the date.</param>
     public DateTime Add(TimeSpan value)
     {
       if (IsEmpty)
@@ -633,6 +635,7 @@ namespace Csla
     /// <summary>
     /// Subtracts a TimeSpan from the object.
     /// </summary>
+    /// <param name="value">Span to subtract from the date.</param>
     public DateTime Subtract(TimeSpan value)
     {
       if (IsEmpty)
@@ -644,6 +647,7 @@ namespace Csla
     /// <summary>
     /// Subtracts a DateTime from the object.
     /// </summary>
+    /// <param name="value">Date to subtract from the date.</param>
     public TimeSpan Subtract(DateTime value)
     {
       if (IsEmpty)

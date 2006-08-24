@@ -213,6 +213,7 @@ namespace Csla.Validation
     /// The property name on the target object where the rule implementation can retrieve
     /// the value to be validated.
     /// </param>
+    /// <typeparam name="T">Type of the business object to be validated.</typeparam>
     public void AddInstanceRule<T>(RuleHandler<T, RuleArgs> handler, string propertyName)
     {
       GetInstanceRules(true).AddRule<T, RuleArgs>(handler, new RuleArgs(propertyName), 0);
@@ -243,6 +244,7 @@ namespace Csla.Validation
     /// <param name="priority">
     /// The priority of the rule, where lower numbers are processed first.
     /// </param>
+    /// <typeparam name="T">Type of the business object to be validated.</typeparam>
     public void AddInstanceRule<T>(RuleHandler<T, RuleArgs> handler, string propertyName, int priority)
     {
       GetInstanceRules(true).AddRule<T, RuleArgs>(handler, new RuleArgs(propertyName), priority);

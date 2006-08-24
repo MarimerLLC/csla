@@ -17,6 +17,10 @@ Namespace Security
     ''' Creates an instance of the object, initializing
     ''' it with the business object type.
     ''' </summary>
+    ''' <param name="businessObjectType">
+    ''' Type of the business object to which the rules
+    ''' apply.
+    ''' </param>
     Public Sub New(ByVal businessObjectType As Type)
 
       mBusinessObjectType = businessObjectType

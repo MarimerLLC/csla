@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace Csla.Server.Hosts
 {
   // in asmx use web directive like
-  // <%@ WebService Class="Csla.Server.Hosts.WebServicePortal" %?
+  // <%@ WebService Class="Csla.Server.Hosts.WebServicePortal" %>
   /// <summary>
   /// Exposes server-side DataPortal functionality
   /// through Web Services (asmx).

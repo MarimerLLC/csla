@@ -100,6 +100,8 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
   /// Gives the new object a parent reference to this
   /// list.
   /// </summary>
+  /// <param name="index">Index at which to insert the item.</param>
+  /// <param name="item">Item to insert.</param>
   protected override void InsertItem(int index, T item)
   {
     item.SetParent(this);
@@ -186,6 +188,7 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
   /// This method is called on a newly deserialized object
   /// after deserialization is complete.
   /// </summary>
+  /// <param name="context">Serialization context object.</param>
   [EditorBrowsable(EditorBrowsableState.Advanced)]
   protected virtual void OnDeserialized(StreamingContext context)
   {

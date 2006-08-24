@@ -470,6 +470,7 @@ namespace Csla.Validation
       /// <summary>
       /// Returns the specified built-in regex pattern.
       /// </summary>
+      /// <param name="pattern">Pattern to return.</param>
       public static string GetPattern(RegExPatterns pattern)
       {
         switch (pattern)

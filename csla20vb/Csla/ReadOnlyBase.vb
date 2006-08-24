@@ -11,6 +11,7 @@ Imports Csla.Core
 ''' deleting. Any business classes derived from this base class
 ''' should only implement readonly properties.
 ''' </remarks>
+''' <typeparam name="T">Type of the business object.</typeparam>
 <Serializable()> _
 Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 

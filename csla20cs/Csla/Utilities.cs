@@ -66,6 +66,8 @@ namespace Csla
     /// Returns a property's type, dealing with
     /// Nullable(Of T) if necessary.
     /// </summary>
+    /// <param name="propertyType">Type of the
+    /// property as returned by reflection.</param>
     public static Type GetPropertyType(Type propertyType)
     {
       Type type = propertyType;
@@ -79,6 +81,7 @@ namespace Csla
     /// Returns the type of child object
     /// contained in a collection or list.
     /// </summary>
+    /// <param name="listType">Type of the list.</param>
     public static Type GetChildItemType(Type listType)
     {
       Type result = null;

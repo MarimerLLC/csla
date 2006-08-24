@@ -238,6 +238,8 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="property">Property on which
+  ''' to build the index.</param>
   Public Sub AddIndex(ByVal [property] As System.ComponentModel.PropertyDescriptor) Implements System.ComponentModel.IBindingList.AddIndex
     If mSupportsBinding Then
       mBindingList.AddIndex([property])
@@ -377,6 +379,9 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="key">Key value for which to search.</param>
+  ''' <param name="property">Property to search for the key
+  ''' value.</param>
   Public Function Find(ByVal [property] As System.ComponentModel.PropertyDescriptor, ByVal key As Object) As Integer Implements System.ComponentModel.IBindingList.Find
     If mSupportsBinding Then
       Return mBindingList.Find([property], key)
@@ -417,6 +422,8 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="property">Property for which the
+  ''' index should be removed.</param>
   Public Sub RemoveIndex(ByVal [property] As System.ComponentModel.PropertyDescriptor) Implements System.ComponentModel.IBindingList.RemoveIndex
     If mSupportsBinding Then
       mBindingList.RemoveIndex([property])
@@ -486,6 +493,8 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="array">Array to receive the data.</param>
+  ''' <param name="arrayIndex">Starting array index.</param>
   Public Sub CopyTo(ByVal array() As T, ByVal arrayIndex As Integer) Implements System.Collections.Generic.ICollection(Of T).CopyTo
     mList.CopyTo(array, arrayIndex)
   End Sub
@@ -526,6 +535,7 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="item">Item to add to the list.</param>
   Public Sub Add(ByVal item As T) Implements System.Collections.Generic.ICollection(Of T).Add
     mList.Add(item)
   End Sub
@@ -545,6 +555,7 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="item">Item for which to search.</param>
   Public Function Contains(ByVal item As T) As Boolean Implements System.Collections.Generic.ICollection(Of T).Contains
     Return mList.Contains(item)
   End Function
@@ -556,6 +567,7 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="item">Item for which to search.</param>
   Public Function IndexOf(ByVal item As T) As Integer Implements System.Collections.Generic.IList(Of T).IndexOf
     Return SortedIndex(mList.IndexOf(item))
   End Function
@@ -567,6 +579,9 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="index">Index at
+  ''' which to insert the item.</param>
+  ''' <param name="item">Item to insert.</param>
   Public Sub Insert(ByVal index As Integer, ByVal item As T) _
     Implements System.Collections.Generic.IList(Of T).Insert
 
@@ -607,6 +622,7 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="item">Item to be removed.</param>
   Public Function Remove(ByVal item As T) As Boolean Implements System.Collections.Generic.ICollection(Of T).Remove
     Return mList.Remove(item)
   End Function

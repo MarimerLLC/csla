@@ -98,6 +98,8 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' Gives the new object a parent reference to this
   ''' list.
   ''' </summary>
+  ''' <param name="index">Index at which to insert the item.</param>
+  ''' <param name="item">Item to insert.</param>
   Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As T)
     item.SetParent(Me)
     MyBase.InsertItem(index, item)
@@ -181,6 +183,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' This method is called on a newly deserialized object
   ''' after deserialization is complete.
   ''' </summary>
+  ''' <param name="context">Serialization context object.</param>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overridable Sub OnDeserialized(ByVal context As StreamingContext)
 

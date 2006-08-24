@@ -7,6 +7,8 @@ Imports System.Collections
 ''' <summary>
 ''' Provides a filtered view into an existing IList(Of T).
 ''' </summary>
+''' <typeparam name="T">The type of the objects contained
+''' in the original list.</typeparam>
 Public Class FilteredBindingList(Of T)
   Implements IList(Of T), IBindingList, IEnumerable(Of T), ICancelAddNew
 
@@ -183,6 +185,8 @@ Public Class FilteredBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="property">Property on which
+  ''' to build the index.</param>
   Public Sub AddIndex(ByVal [property] As PropertyDescriptor) Implements IBindingList.AddIndex
     If mSupportsBinding Then
       mBindingList.AddIndex([property])
@@ -282,6 +286,9 @@ Public Class FilteredBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="key">Key value for which to search.</param>
+  ''' <param name="property">Property to search for the key
+  ''' value.</param>
   Public Function Find(ByVal [property] As PropertyDescriptor, ByVal key As Object) As Integer Implements IBindingList.Find
     If mSupportsBinding Then
       Return mBindingList.Find([property], key)
@@ -327,6 +334,8 @@ Public Class FilteredBindingList(Of T)
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
+  ''' <param name="property">Property for which the
+  ''' index should be removed.</param>
   Public Sub RemoveIndex(ByVal [property] As PropertyDescriptor) Implements IBindingList.RemoveIndex
     If mSupportsBinding Then
       mBindingList.RemoveIndex([property])

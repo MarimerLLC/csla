@@ -8,6 +8,8 @@ namespace Csla
   /// This is the base class from which readonly collections
   /// of readonly objects should be derived.
   /// </summary>
+  /// <typeparam name="T">Type of the list class.</typeparam>
+  /// <typeparam name="C">Type of child objects contained in the list.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]

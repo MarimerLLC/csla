@@ -7,6 +7,8 @@ Imports Csla.Core
 ''' This is the base class from which readonly name/value
 ''' collections should be derived.
 ''' </summary>
+''' <typeparam name="K">Type of the key values.</typeparam>
+''' <typeparam name="V">Type of the values.</typeparam>
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")> _
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
@@ -55,6 +57,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' Gets a value indicating whether the list contains the
   ''' specified key.
   ''' </summary>
+  ''' <param name="key">Key value for which to search.</param>
   Public Function ContainsKey(ByVal key As K) As Boolean
 
     For Each item As NameValuePair In Me
@@ -70,6 +73,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' Gets a value indicating whether the list contains the
   ''' specified value.
   ''' </summary>
+  ''' <param name="value">Value for which to search.</param>
   Public Function ContainsValue(ByVal value As V) As Boolean
 
     For Each item As NameValuePair In Me

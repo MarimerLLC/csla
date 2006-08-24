@@ -10,6 +10,8 @@ Public Module Utilities
   ''' Returns a property's type, dealing with
   ''' Nullable(Of T) if necessary.
   ''' </summary>
+  ''' <param name="propertyType">Type of the
+  ''' property as returned by reflection.</param>
   Public Function GetPropertyType(ByVal propertyType As Type) As Type
 
     Dim type As Type = propertyType
@@ -17,7 +19,6 @@ Public Module Utilities
       (type.GetGenericTypeDefinition Is GetType(Nullable(Of )))) Then
 
       Return Nullable.GetUnderlyingType(type)
-      'Return type.GetGenericArguments(0)
     End If
 
     Return type
@@ -28,6 +29,7 @@ Public Module Utilities
   ''' Returns the type of child object
   ''' contained in a collection or list.
   ''' </summary>
+  ''' <param name="listType">Type of the list.</param>
   Public Function GetChildItemType(ByVal listType As Type) As Type
 
     Dim result As Type = Nothing

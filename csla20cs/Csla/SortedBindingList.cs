@@ -232,6 +232,8 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="property">Property on which
+    /// to build the index.</param>
     public void AddIndex(PropertyDescriptor property)
     {
       if (_supportsBinding)
@@ -370,6 +372,9 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="key">Key value for which to search.</param>
+    /// <param name="property">Property to search for the key
+    /// value.</param>
     public int Find(PropertyDescriptor property, object key)
     {
       if (_supportsBinding)
@@ -411,6 +416,8 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="property">Property for which the
+    /// index should be removed.</param>
     public void RemoveIndex(PropertyDescriptor property)
     {
       if (_supportsBinding)
@@ -475,6 +482,8 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="array">Array to receive the data.</param>
+    /// <param name="arrayIndex">Starting array index.</param>
     public void CopyTo(T[] array, int arrayIndex)
     {
       _list.CopyTo(array, arrayIndex);
@@ -511,6 +520,7 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="item">Item to add to the list.</param>
     public void Add(T item)
     {
       _list.Add(item);
@@ -533,6 +543,7 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="item">Item for which to search.</param>
     public bool Contains(T item)
     {
       return _list.Contains(item);
@@ -546,6 +557,7 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="item">Item for which to search.</param>
     public int IndexOf(T item)
     {
       return SortedIndex(_list.IndexOf(item));
@@ -559,6 +571,9 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="index">Index at
+    /// which to insert the item.</param>
+    /// <param name="item">Item to insert.</param>
     public void Insert(int index, T item)
     {
       _list.Insert(index, item);
@@ -597,6 +612,7 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
+    /// <param name="item">Item to be removed.</param>
     public bool Remove(T item)
     {
       return _list.Remove(item);

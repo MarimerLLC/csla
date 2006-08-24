@@ -337,6 +337,10 @@ namespace Csla
     /// </remarks>
     public event ListChangedEventHandler ListChanged;
 
+    /// <summary>
+    /// Raises the ListChanged event.
+    /// </summary>
+    /// <param name="e">Parameter for the event.</param>
     protected void OnListChanged(ListChangedEventArgs e)
     {
       if (ListChanged != null)
@@ -428,6 +432,12 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Copies the contents of the list to
+    /// an array.
+    /// </summary>
+    /// <param name="array">Array to receive the data.</param>
+    /// <param name="arrayIndex">Starting array index.</param>
     public void CopyTo(T[] array, int arrayIndex)
     {
       _list.CopyTo(array, arrayIndex);
@@ -438,6 +448,9 @@ namespace Csla
       CopyTo((T[])array, index);
     }
 
+    /// <summary>
+    /// Gets the number of items in the list.
+    /// </summary>
     public int Count
     {
       get 
@@ -464,6 +477,10 @@ namespace Csla
       return GetEnumerator();
     }
 
+    /// <summary>
+    /// Adds an item to the list.
+    /// </summary>
+    /// <param name="item">Item to be added.</param>
     public void Add(T item)
     {
       _list.Add(item);
@@ -479,11 +496,21 @@ namespace Csla
         return 0;
     }
 
+    /// <summary>
+    /// Clears the list.
+    /// </summary>
     public void Clear()
     {
       _list.Clear();
     }
 
+    /// <summary>
+    /// Determines whether the specified
+    /// item is contained in the list.
+    /// </summary>
+    /// <param name="item">Item to find.</param>
+    /// <returns><see langword="true"/> if the item is
+    /// contained in the list.</returns>
     public bool Contains(T item)
     {
       return _list.Contains(item);
@@ -494,9 +521,16 @@ namespace Csla
       return Contains((T)value);
     }
 
+    /// <summary>
+    /// Gets the 0-based index of an
+    /// item in the list.
+    /// </summary>
+    /// <param name="item">The item to find.</param>
+    /// <returns>0-based index of the item
+    /// in the list.</returns>
     public int IndexOf(T item)
     {
-      return _list.IndexOf(item);
+      return FilteredIndex(_list.IndexOf(item));
     }
 
     int System.Collections.IList.IndexOf(object value)
@@ -801,16 +835,20 @@ namespace Csla
     private int FilteredIndex(int originalIndex)
     {
       int result = -1;
-      for (int index = 0; index < _filterIndex.Count; index++)
+      if (_filtered)
       {
-        if (_filterIndex[index].BaseIndex == originalIndex)
+        for (int index = 0; index < _filterIndex.Count; index++)
         {
-          result = index;
-          break;
+          if (_filterIndex[index].BaseIndex == originalIndex)
+          {
+            result = index;
+            break;
+          }
         }
       }
+      else
+        result = originalIndex;
       return result;
-       
     }
 
     #region ICancelAddNew Members

@@ -314,6 +314,10 @@ Public Class FilteredBindingList(Of T)
   ''' </remarks>
   Public Event ListChanged As ListChangedEventHandler Implements IBindingList.ListChanged
 
+  ''' <summary>
+  ''' Raises the ListChanged event.
+  ''' </summary>
+  ''' <param name="e">Parameter for the event.</param>
   Protected Sub OnListChanged(ByVal e As ListChangedEventArgs)
     If Not ListChangedEvent Is Nothing Then
       RaiseEvent ListChanged(Me, e)
@@ -402,6 +406,12 @@ Public Class FilteredBindingList(Of T)
     End Get
   End Property
 
+  ''' <summary>
+  ''' Copies the contents of the list to
+  ''' an array.
+  ''' </summary>
+  ''' <param name="array">Array to receive the data.</param>
+  ''' <param name="arrayIndex">Starting array index.</param>
   Public Sub CopyTo(ByVal array As T(), ByVal arrayIndex As Integer) Implements IList(Of T).CopyTo
     mList.CopyTo(array, arrayIndex)
   End Sub
@@ -410,6 +420,9 @@ Public Class FilteredBindingList(Of T)
     CopyTo(CType(array, T()), index)
   End Sub
 
+  ''' <summary>
+  ''' Gets the number of items in the list.
+  ''' </summary>
   Public ReadOnly Property Count() As Integer Implements IList(Of T).Count, IBindingList.Count
     Get
       If mFiltered Then
@@ -436,6 +449,10 @@ Public Class FilteredBindingList(Of T)
     Return GetEnumerator()
   End Function
 
+  ''' <summary>
+  ''' Adds an item to the list.
+  ''' </summary>
+  ''' <param name="item">Item to be added.</param>
   Public Sub Add(ByVal item As T) Implements IList(Of T).Add
     mList.Add(item)
   End Sub
@@ -450,10 +467,20 @@ Public Class FilteredBindingList(Of T)
     End If
   End Function
 
+  ''' <summary>
+  ''' Clears the list.
+  ''' </summary>
   Public Sub Clear() Implements IList(Of T).Clear, IBindingList.Clear
     mList.Clear()
   End Sub
 
+  ''' <summary>
+  ''' Determines whether the specified
+  ''' item is contained in the list.
+  ''' </summary>
+  ''' <param name="item">Item to find.</param>
+  ''' <returns><see langword="true"/> if the item is
+  ''' contained in the list.</returns>
   Public Function Contains(ByVal item As T) As Boolean Implements IList(Of T).Contains
     Return mList.Contains(item)
   End Function
@@ -462,8 +489,15 @@ Public Class FilteredBindingList(Of T)
     Return Contains(CType(value, T))
   End Function
 
+  ''' <summary>
+  ''' Gets the 0-based index of an
+  ''' item in the list.
+  ''' </summary>
+  ''' <param name="item">The item to find.</param>
+  ''' <returns>0-based index of the item
+  ''' in the list.</returns>
   Public Function IndexOf(ByVal item As T) As Integer Implements IList(Of T).IndexOf
-    Return mList.IndexOf(item)
+    Return FilteredIndex(mList.IndexOf(item))
   End Function
 
   Private Function IndexOf(ByVal value As Object) As Integer Implements System.Collections.IList.IndexOf
@@ -729,15 +763,21 @@ Public Class FilteredBindingList(Of T)
   End Function
 
   Private Function FilteredIndex(ByVal originalIndex As Integer) As Integer
+
     Dim result As Integer = -1
-    Dim index As Integer = 0
-    Do While index < mFilterIndex.Count
-      If mFilterIndex(index).BaseIndex = originalIndex Then
-        result = index
-        Exit Do
-      End If
-      index += 1
-    Loop
+    If mFiltered Then
+      Dim index As Integer = 0
+      Do While index < mFilterIndex.Count
+        If mFilterIndex(index).BaseIndex = originalIndex Then
+          result = index
+          Exit Do
+        End If
+        index += 1
+      Loop
+
+    Else
+      result = originalIndex
+    End If
     Return result
 
   End Function

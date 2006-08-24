@@ -542,7 +542,7 @@ Public Structure SmartDate
   ''' on the Date datetype, with the exception that it
   ''' understands the concept of empty date values.
   ''' </remarks>
-  ''' <param name="calue">The date to which we are being compared.</param>
+  ''' <param name="value">The date to which we are being compared.</param>
   ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
   Public Function CompareTo(ByVal value As SmartDate) As Integer
     If Me.IsEmpty AndAlso value.IsEmpty Then

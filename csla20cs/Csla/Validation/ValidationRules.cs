@@ -552,7 +552,8 @@ namespace Csla.Validation
 
     /// <summary>
     /// Invokes all rule methods associated with
-    /// the specified property.
+    /// the specified property and any 
+    /// dependant properties.
     /// </summary>
     /// <param name="propertyName">The name of the property to validate.</param>
     public void CheckRules(string propertyName)
@@ -569,7 +570,24 @@ namespace Csla.Validation
           List<IRuleMethod> list = rulesList.GetList(true);
           if (list != null)
             CheckRules(list);
+          List<string> dependancies = rulesList.GetDependancyList(false);
+          if (dependancies != null)
+            foreach (string dependantProperty in dependancies)
+              CheckRules(rules, dependantProperty);
         }
+      }
+    }
+
+    private void CheckRules(ValidationRulesManager rules, string propertyName)
+    {
+      // get the rules list for this property
+      RulesList rulesList = rules.GetRulesForProperty(propertyName, false);
+      if (rulesList != null)
+      {
+        // get the actual list of rules (sorted by priority)
+        List<IRuleMethod> list = rulesList.GetList(true);
+        if (list != null)
+          CheckRules(list);
       }
     }
 

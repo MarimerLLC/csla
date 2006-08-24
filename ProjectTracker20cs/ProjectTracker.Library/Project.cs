@@ -284,7 +284,7 @@ namespace ProjectTracker.Library
     }
 
     [RunLocal()]
-    private void DataPortal_Create(object criteria)
+    protected override void DataPortal_Create(object criteria)
     {
       _id = Guid.NewGuid();
       _started.Date = DateTime.Today;

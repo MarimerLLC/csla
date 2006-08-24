@@ -273,11 +273,10 @@ Private Class Criteria
             mId = CInt(.Parameters("@newId").Value)
             mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
           End With
-
-          ' update child objects
-          mAssignments.Update(Me)
         End With
       End Using
+      ' update child objects
+      mAssignments.Update(Me)
       ' removing of item only needed for local data portal
       If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
         ApplicationContext.LocalContext.Remove("cn")

@@ -63,6 +63,12 @@ namespace Csla
       get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="message">Text describing the exception.</param>
+    /// <param name="businessObject">The business object
+    /// as it was at the time of the exception.</param>
     public DataPortalException(string message, object businessObject)
       : base(message)
     {
@@ -70,6 +76,13 @@ namespace Csla
       _businessObject = businessObject;
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="message">Text describing the exception.</param>
+    /// <param name="ex">Inner exception.</param>
+    /// <param name="businessObject">The business object
+    /// as it was at the time of the exception.</param>
     public DataPortalException(string message, Exception ex, object businessObject)
       : base(message, ex)
     {
@@ -77,6 +90,11 @@ namespace Csla
       _businessObject = businessObject;
     }
 
+    /// <summary>
+    /// Creates an instance of the object for serialization.
+    /// </summary>
+    /// <param name="info">Serialiation info object.</param>
+    /// <param name="context">Serialization context object.</param>
     protected DataPortalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
       : base(info, context)
     {
@@ -84,6 +102,11 @@ namespace Csla
       _innerStackTrace = info.GetString("_innerStackTrace");
     }
 
+    /// <summary>
+    /// Serializes the object.
+    /// </summary>
+    /// <param name="info">Serialiation info object.</param>
+    /// <param name="context">Serialization context object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
     [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]

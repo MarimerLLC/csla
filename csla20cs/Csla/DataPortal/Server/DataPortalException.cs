@@ -35,6 +35,12 @@ namespace Csla.Server
         _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="message">Text describing the exception.</param>
+    /// <param name="ex">Inner exception.</param>
+    /// <param name="result">The data portal result object.</param>
     public DataPortalException(
       string message, Exception ex, DataPortalResult result)
       : base(message, ex)
@@ -43,6 +49,11 @@ namespace Csla.Server
       _result = result;
     }
 
+    /// <summary>
+    /// Creates an instance of the object for serialization.
+    /// </summary>
+    /// <param name="info">Serialiation info object.</param>
+    /// <param name="context">Serialization context object.</param>
     protected DataPortalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
       : base(info, context)
     {
@@ -51,6 +62,11 @@ namespace Csla.Server
       _innerStackTrace = info.GetString("_innerStackTrace");
     }
 
+    /// <summary>
+    /// Serializes the object.
+    /// </summary>
+    /// <param name="info">Serialiation info object.</param>
+    /// <param name="context">Serialization context object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.LinkDemand, Flags = System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
     [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Demand, Flags = System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]

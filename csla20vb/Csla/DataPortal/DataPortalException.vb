@@ -60,6 +60,12 @@ Public Class DataPortalException
     End Get
   End Property
 
+  ''' <summary>
+  ''' Creates an instance of the object.
+  ''' </summary>
+  ''' <param name="message">Text describing the exception.</param>
+  ''' <param name="businessObject">The business object
+  ''' as it was at the time of the exception.</param>
   Public Sub New(ByVal message As String, ByVal businessObject As Object)
 
     MyBase.New(message)
@@ -68,6 +74,13 @@ Public Class DataPortalException
 
   End Sub
 
+  ''' <summary>
+  ''' Creates an instance of the object.
+  ''' </summary>
+  ''' <param name="message">Text describing the exception.</param>
+  ''' <param name="ex">Inner exception.</param>
+  ''' <param name="businessObject">The business object
+  ''' as it was at the time of the exception.</param>
   Public Sub New(ByVal message As String, ByVal ex As Exception, ByVal businessObject As Object)
 
     MyBase.New(message, ex)
@@ -76,6 +89,11 @@ Public Class DataPortalException
 
   End Sub
 
+  ''' <summary>
+  ''' Creates an instance of the object for serialization.
+  ''' </summary>
+  ''' <param name="info">Serialiation info object.</param>
+  ''' <param name="context">Serialization context object.</param>
   Protected Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
 
     MyBase.New(info, context)
@@ -84,6 +102,11 @@ Public Class DataPortalException
 
   End Sub
 
+  ''' <summary>
+  ''' Serializes the object.
+  ''' </summary>
+  ''' <param name="info">Serialiation info object.</param>
+  ''' <param name="context">Serialization context object.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <SecurityPermission(SecurityAction.LinkDemand, _
     Flags:=SecurityPermissionFlag.SerializationFormatter)> _

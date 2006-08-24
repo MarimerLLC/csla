@@ -15,6 +15,9 @@ namespace Csla.Core
     private PropertyChangedEventHandler _nonSerializableHandlers;
     private PropertyChangedEventHandler _serializableHandlers;
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected BindableBase()
     {
 

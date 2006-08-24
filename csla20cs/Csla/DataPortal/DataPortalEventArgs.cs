@@ -19,6 +19,12 @@ namespace Csla
       get { return _dataPortalContext; }
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="dataPortalContext">
+    /// Data portal context object.
+    /// </param>
     public DataPortalEventArgs(Server.DataPortalContext dataPortalContext)
     {
       _dataPortalContext = dataPortalContext;

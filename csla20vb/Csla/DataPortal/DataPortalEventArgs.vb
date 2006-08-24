@@ -17,6 +17,12 @@ Public Class DataPortalEventArgs
     End Get
   End Property
 
+  ''' <summary>
+  ''' Creates an instance of the object.
+  ''' </summary>
+  ''' <param name="dataPortalContext">
+  ''' Data portal context object.
+  ''' </param>
   Public Sub New(ByVal dataPortalContext As Server.DataPortalContext)
     mDataPortalContext = dataPortalContext
   End Sub

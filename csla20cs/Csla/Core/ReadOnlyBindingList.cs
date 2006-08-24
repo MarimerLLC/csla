@@ -4,11 +4,11 @@ using Csla.Properties;
 namespace Csla.Core
 {
   /// <summary>
-  /// A readonly version of BindingList<T>
+  /// A readonly version of BindingList(Of T)
   /// </summary>
   /// <typeparam name="C">Type of item contained in the list.</typeparam>
   /// <remarks>
-  /// This is a subclass of BindingList<T> that implements
+  /// This is a subclass of BindingList(Of T) that implements
   /// a readonly list, preventing adding and removing of items
   /// from the list. Use the IsReadOnly property
   /// to unlock the list for loading/unloading data.

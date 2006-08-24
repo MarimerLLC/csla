@@ -22,6 +22,10 @@ Namespace Core
 
 #Region " Constructors "
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <remarks></remarks>
     Protected Sub New()
 
       Initialize()
@@ -206,14 +210,14 @@ Namespace Core
     ''' <summary>
     ''' Marks an object as being dirty, or changed.
     ''' </summary>
-    ''' <param name="supressEvent">
+    ''' <param name="suppressEvent">
     ''' <see langword="true" /> to supress the PropertyChanged event that is otherwise
     ''' raised to indicate that the object's state has changed.
     ''' </param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Sub MarkDirty(ByVal supressEvent As Boolean)
+    Protected Sub MarkDirty(ByVal suppressEvent As Boolean)
       mIsDirty = True
-      If Not supressEvent Then
+      If Not suppressEvent Then
         OnUnknownPropertyChanged()
       End If
     End Sub
@@ -1009,7 +1013,7 @@ Namespace Core
     ''' criteria parameter, rather than overriding the method with a
     ''' loosely-typed criteria parameter.
     ''' </remarks>
-    ''' <param name="Criteria">An object containing criteria values.</param>
+    ''' <param name="criteria">An object containing criteria values.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)
       Throw New NotSupportedException( _
@@ -1025,7 +1029,7 @@ Namespace Core
     ''' criteria parameter, rather than overriding the method with a
     ''' loosely-typed criteria parameter.
     ''' </remarks>
-    ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
+    ''' <param name="criteria">An object containing criteria values to identify the object.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     Protected Overridable Sub DataPortal_Fetch(ByVal criteria As Object)
       Throw New NotSupportedException(My.Resources.FetchNotSupportedException)
@@ -1065,7 +1069,7 @@ Namespace Core
     ''' criteria parameter, rather than overriding the method with a
     ''' loosely-typed criteria parameter.
     ''' </remarks>
-    ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
+    ''' <param name="criteria">An object containing criteria values to identify the object.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     Protected Overridable Sub DataPortal_Delete(ByVal criteria As Object)
       Throw New NotSupportedException(My.Resources.DeleteNotSupportedException)

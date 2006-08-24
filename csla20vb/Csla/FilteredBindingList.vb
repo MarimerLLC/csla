@@ -165,6 +165,9 @@ Public Class FilteredBindingList(Of T)
 
 #Region "IEnumerable<T>"
 
+  ''' <summary>
+  ''' Gets an enumerator object.
+  ''' </summary>
   Public Function GetEnumerator() As IEnumerator(Of T) Implements IEnumerable(Of T).GetEnumerator
     If mFiltered Then
       Return New FilteredEnumerator(mList, mFilterIndex)
@@ -240,6 +243,12 @@ Public Class FilteredBindingList(Of T)
     End Get
   End Property
 
+  ''' <summary>
+  ''' Sorts the list if the original list
+  ''' supports sorting.
+  ''' </summary>
+  ''' <param name="property">Property on which to sort.</param>
+  ''' <param name="direction">Direction of the sort.</param>
   Public Sub ApplySort(ByVal [property] As PropertyDescriptor, ByVal direction As ListSortDirection) Implements IBindingList.ApplySort
     If SupportsSorting Then
       mBindingList.ApplySort([property], direction)

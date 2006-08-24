@@ -12,8 +12,7 @@ namespace Csla.Validation
   {
 
     /// <summary>
-    /// Initializes a new instance of the 
-    /// <see cref="Csla.ValidationException" /> class.
+    /// Creates an instance of the object.
     /// </summary>
     public ValidationException()
     {
@@ -21,10 +20,9 @@ namespace Csla.Validation
     }
 
     /// <summary>
-    /// Initializes a new instance of the 
-    /// <see cref="Csla.ValidationException" /> class
-    /// with a specified error message.
+    /// Creates an instance of the object.
     /// </summary>
+    /// <param name="message">Message describing the exception.</param>
     public ValidationException(string message)
       : base(message)
     {
@@ -32,22 +30,21 @@ namespace Csla.Validation
     }
 
     /// <summary>
-    /// Initializes a new instance of the 
-    /// <see cref="Csla.ValidationException" /> class
-    /// with a specified error message and a reference to the 
-    /// inner exception that is the cause of this exception.
+    /// Creates an instance of the object.
     /// </summary>
-    public ValidationException(string message, Exception innerException)
+    /// <param name="message">Message describing the exception.</param>
+    /// <param name="innerException">Inner exception object.</param>
+   public ValidationException(string message, Exception innerException)
       : base(message, innerException)
     {
 
     }
 
     /// <summary>
-    /// Initializes a new instance of the 
-    /// <see cref="Csla.ValidationException" /> class
-    /// with serialized data.
+    /// Creates an instance of the object for serialization.
     /// </summary>
+    /// <param name="context">Serialization context.</param>
+    /// <param name="info">Serialization info.</param>
     protected ValidationException(System.Runtime.Serialization.SerializationInfo info,
         System.Runtime.Serialization.StreamingContext context)
       : base(info, context)

@@ -178,6 +178,10 @@ namespace Csla
 
     #region IEnumerable<T>
 
+    /// <summary>
+    /// Gets an enumerator object.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator<T> GetEnumerator()
     {
       if (_filtered)
@@ -256,6 +260,12 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Sorts the list if the original list
+    /// supports sorting.
+    /// </summary>
+    /// <param name="property">Property on which to sort.</param>
+    /// <param name="direction">Direction of the sort.</param>
     public void ApplySort(
       PropertyDescriptor property, ListSortDirection direction)
     {

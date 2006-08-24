@@ -34,6 +34,12 @@ Namespace Server
       End Get
     End Property
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="message">Text describing the exception.</param>
+    ''' <param name="ex">Inner exception.</param>
+    ''' <param name="result">The data portal result object.</param>
     Public Sub New( _
       ByVal message As String, ByVal ex As Exception, _
       ByVal result As DataPortalResult)
@@ -44,6 +50,11 @@ Namespace Server
 
     End Sub
 
+    ''' <summary>
+    ''' Creates an instance of the object for serialization.
+    ''' </summary>
+    ''' <param name="info">Serialiation info object.</param>
+    ''' <param name="context">Serialization context object.</param>
     Protected Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.New(info, context)
@@ -52,6 +63,11 @@ Namespace Server
 
     End Sub
 
+    ''' <summary>
+    ''' Serializes the object.
+    ''' </summary>
+    ''' <param name="info">Serialiation info object.</param>
+    ''' <param name="context">Serialization context object.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> <SecurityPermission(SecurityAction.LinkDemand, _
       Flags:=SecurityPermissionFlag.SerializationFormatter)> _
     <SecurityPermission(SecurityAction.Demand, _

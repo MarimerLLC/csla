@@ -9,18 +9,16 @@ Namespace Validation
     Inherits Exception
 
     ''' <summary>
-    ''' Initializes a new instance of the 
-    ''' <see cref="T:Csla.ValidationException" /> class.
+    ''' Creates an instance of the object.
     ''' </summary>
     Public Sub New()
 
     End Sub
 
     ''' <summary>
-    ''' Initializes a new instance of the 
-    ''' <see cref="ValidationException" /> class
-    ''' with a specified error message.
+    ''' Creates an instance of the object.
     ''' </summary>
+    ''' <param name="message">Message describing the exception.</param>
     Public Sub New(ByVal message As String)
 
       MyBase.New(message)
@@ -28,11 +26,10 @@ Namespace Validation
     End Sub
 
     ''' <summary>
-    ''' Initializes a new instance of the 
-    ''' <see cref="T:Csla.ValidationException" /> class
-    ''' with a specified error message and a reference to the 
-    ''' inner exception that is the cause of this exception.
+    ''' Creates an instance of the object.
     ''' </summary>
+    ''' <param name="message">Message describing the exception.</param>
+    ''' <param name="innerException">Inner exception object.</param>
     Public Sub New(ByVal message As String, ByVal innerException As Exception)
 
       MyBase.New(message, innerException)
@@ -40,10 +37,10 @@ Namespace Validation
     End Sub
 
     ''' <summary>
-    ''' Initializes a new instance of the 
-    ''' <see cref="T:Csla.ValidationException" /> class
-    ''' with serialized data.
+    ''' Creates an instance of the object for serialization.
     ''' </summary>
+    ''' <param name="context">Serialization context.</param>
+    ''' <param name="info">Serialization info.</param>
     Protected Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, _
       ByVal context As System.Runtime.Serialization.StreamingContext)
 

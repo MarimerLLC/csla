@@ -24,6 +24,9 @@ namespace Csla.Core
 
     #region Constructors
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected BusinessBase()
     {
       Initialize();
@@ -204,7 +207,7 @@ namespace Csla.Core
     /// <summary>
     /// Marks an object as being dirty, or changed.
     /// </summary>
-    /// <param name="supressEvent">
+    /// <param name="suppressEvent">
     /// <see langword="true" /> to supress the PropertyChanged event that is otherwise
     /// raised to indicate that the object's state has changed.
     /// </param>
@@ -972,7 +975,7 @@ namespace Csla.Core
     /// criteria parameter, rather than overriding the method with a
     /// loosely-typed criteria parameter.
     /// </remarks>
-    /// <param name="Criteria">An object containing criteria values.</param>
+    /// <param name="criteria">An object containing criteria values.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Create(object criteria)
     {
@@ -988,7 +991,7 @@ namespace Csla.Core
     /// criteria parameter, rather than overriding the method with a
     /// loosely-typed criteria parameter.
     /// </remarks>
-    /// <param name="Criteria">An object containing criteria values to identify the object.</param>
+    /// <param name="criteria">An object containing criteria values to identify the object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Fetch(object criteria)
     {
@@ -1027,7 +1030,7 @@ namespace Csla.Core
     /// <summary>
     /// Override this method to allow immediate deletion of a business object.
     /// </summary>
-    /// <param name="Criteria">An object containing criteria values to identify the object.</param>
+    /// <param name="criteria">An object containing criteria values to identify the object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Delete(object criteria)
     {

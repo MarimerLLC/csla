@@ -12,6 +12,10 @@ Namespace Core
 
     Implements System.ComponentModel.INotifyPropertyChanged
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <remarks></remarks>
     Protected Sub New()
 
     End Sub

@@ -56,6 +56,13 @@ Namespace Web
 
 #Region " Select "
 
+    ''' <summary>
+    ''' Implements the select behavior for
+    ''' the control by raising the 
+    ''' <see cref="CslaDataSource.SelectObject"/> event.
+    ''' </summary>
+    ''' <param name="arguments">Arguments object.</param>
+    ''' <returns>The data returned from the select.</returns>
     Protected Overrides Function ExecuteSelect( _
       ByVal arguments As System.Web.UI.DataSourceSelectArguments) As _
       System.Collections.IEnumerable
@@ -119,6 +126,14 @@ Namespace Web
       End Get
     End Property
 
+    ''' <summary>
+    ''' Implements the insert behavior for
+    ''' the control by raising the 
+    ''' <see cref="CslaDataSource.InsertObject"/> event.
+    ''' </summary>
+    ''' <param name="values">The values from
+    ''' the UI that are to be inserted.</param>
+    ''' <returns>The number of rows affected.</returns>
     Protected Overrides Function ExecuteInsert( _
       ByVal values As System.Collections.IDictionary) As Integer
 
@@ -148,6 +163,16 @@ Namespace Web
       End Get
     End Property
 
+    ''' <summary>
+    ''' Implements the delete behavior for
+    ''' the control by raising the 
+    ''' <see cref="CslaDataSource.DeleteObject"/> event.
+    ''' </summary>
+    ''' <param name="keys">The key values from
+    ''' the UI that are to be deleted.</param>
+    ''' <param name="oldValues">The old values
+    ''' from the UI.</param>
+    ''' <returns>The number of rows affected.</returns>
     Protected Overrides Function ExecuteDelete(ByVal keys As System.Collections.IDictionary, ByVal oldValues As System.Collections.IDictionary) As Integer
 
       ' tell the page to delete the object
@@ -176,6 +201,18 @@ Namespace Web
       End Get
     End Property
 
+    ''' <summary>
+    ''' Implements the update behavior for
+    ''' the control by raising the 
+    ''' <see cref="CslaDataSource.UpdateObject"/> event.
+    ''' </summary>
+    ''' <param name="keys">The key values from the UI
+    ''' that identify the object to be updated.</param>
+    ''' <param name="values">The values from
+    ''' the UI that are to be inserted.</param>
+    ''' <param name="oldValues">The old values
+    ''' from the UI.</param>
+    ''' <returns>The number of rows affected.</returns>
     Protected Overrides Function ExecuteUpdate(ByVal keys As System.Collections.IDictionary, ByVal values As System.Collections.IDictionary, ByVal oldValues As System.Collections.IDictionary) As Integer
 
       ' tell the page to update the object

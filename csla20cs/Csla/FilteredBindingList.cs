@@ -538,6 +538,12 @@ namespace Csla
       return IndexOf((T)value);
     }
 
+    /// <summary>
+    /// Inserts an item into the list.
+    /// </summary>
+    /// <param name="index">Index at
+    /// which to insert the item.</param>
+    /// <param name="item">Item to insert.</param>
     public void Insert(int index, T item)
     {
       _list.Insert(index, item);
@@ -553,6 +559,10 @@ namespace Csla
       get { return false; }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the list
+    /// is read-only.
+    /// </summary>
     public bool IsReadOnly
     {
       get { return _list.IsReadOnly; }
@@ -570,6 +580,12 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Removes an item from the list.
+    /// </summary>
+    /// <param name="item">Item to remove.</param>
+    /// <returns><see langword="true"/> if the 
+    /// remove succeeds.</returns>
     public bool Remove(T item)
     {
       return _list.Remove(item);
@@ -580,6 +596,11 @@ namespace Csla
       Remove((T)value);
     }
 
+    /// <summary>
+    /// Removes an item from the list.
+    /// </summary>
+    /// <param name="index">Index of item
+    /// to be removed.</param>
     public void RemoveAt(int index)
     {
       if (_filtered)
@@ -590,6 +611,12 @@ namespace Csla
         _list.RemoveAt(index);
     }
 
+    /// <summary>
+    /// Gets or sets the item at 
+    /// the specified index.
+    /// </summary>
+    /// <param name="index">Index of the item.</param>
+    /// <returns>Item at the specified index.</returns>
     public T this[int index]
     {
       get
@@ -737,6 +764,11 @@ namespace Csla
       DoFilter();
     }
 
+    /// <summary>
+    /// Removes the filter from the list,
+    /// so the view reflects the state of
+    /// the original list.
+    /// </summary>
     public void RemoveFilter()
     {
       UnDoFilter();

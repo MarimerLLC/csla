@@ -20,7 +20,7 @@ namespace Csla.Security
     private List<string> _writeDenied = new List<string>();
 
     /// <summary>
-    /// Returns a List<string> containing the list
+    /// Returns a List(Of string) containing the list
     /// of roles allowed read access.
     /// </summary>
     public List<string> ReadAllowed
@@ -29,7 +29,7 @@ namespace Csla.Security
     }
 
     /// <summary>
-    /// Returns a List<string> containing the list
+    /// Returns a List(Of string) containing the list
     /// of roles denied read access.
     /// </summary>
     public List<string> ReadDenied
@@ -38,7 +38,7 @@ namespace Csla.Security
     }
 
     /// <summary>
-    /// Returns a List<string> containing the list
+    /// Returns a List(Of string) containing the list
     /// of roles allowed write access.
     /// </summary>
     public List<string> WriteAllowed
@@ -47,7 +47,7 @@ namespace Csla.Security
     }
 
     /// <summary>
-    /// Returns a List<string> containing the list
+    /// Returns a List(Of string) containing the list
     /// of roles denied write access.
     /// </summary>
     public List<string> WriteDenied

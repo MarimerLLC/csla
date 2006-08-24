@@ -79,6 +79,13 @@ namespace Csla.Web
 
     #region Select
 
+    /// <summary>
+    /// Implements the select behavior for
+    /// the control by raising the 
+    /// <see cref="CslaDataSource.SelectObject"/> event.
+    /// </summary>
+    /// <param name="arguments">Arguments object.</param>
+    /// <returns>The data returned from the select.</returns>
     protected override System.Collections.IEnumerable 
       ExecuteSelect(DataSourceSelectArguments arguments)
     {
@@ -142,6 +149,14 @@ namespace Csla.Web
       }
     }
 
+    /// <summary>
+    /// Implements the insert behavior for
+    /// the control by raising the 
+    /// <see cref="CslaDataSource.InsertObject"/> event.
+    /// </summary>
+    /// <param name="values">The values from
+    /// the UI that are to be inserted.</param>
+    /// <returns>The number of rows affected.</returns>
     protected override int ExecuteInsert(
       IDictionary values)
     {
@@ -172,6 +187,16 @@ namespace Csla.Web
       }
     }
 
+    /// <summary>
+    /// Implements the delete behavior for
+    /// the control by raising the 
+    /// <see cref="CslaDataSource.DeleteObject"/> event.
+    /// </summary>
+    /// <param name="keys">The key values from
+    /// the UI that are to be deleted.</param>
+    /// <param name="oldValues">The old values
+    /// from the UI.</param>
+    /// <returns>The number of rows affected.</returns>
     protected override int ExecuteDelete(IDictionary keys, IDictionary oldValues)
     {
       
@@ -201,6 +226,18 @@ namespace Csla.Web
       }
     }
 
+    /// <summary>
+    /// Implements the update behavior for
+    /// the control by raising the 
+    /// <see cref="CslaDataSource.UpdateObject"/> event.
+    /// </summary>
+    /// <param name="keys">The key values from the UI
+    /// that identify the object to be updated.</param>
+    /// <param name="values">The values from
+    /// the UI that are to be inserted.</param>
+    /// <param name="oldValues">The old values
+    /// from the UI.</param>
+    /// <returns>The number of rows affected.</returns>
     protected override int ExecuteUpdate(IDictionary keys, IDictionary values, IDictionary oldValues)
     {
       // tell the page to update the object

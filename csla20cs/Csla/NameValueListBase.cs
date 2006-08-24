@@ -76,6 +76,9 @@ namespace Csla
 
     #region Constructors
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected NameValueListBase()
     {
       Initialize();
@@ -122,6 +125,11 @@ namespace Csla
         get { return _value; }
       }
 
+      /// <summary>
+      /// Creates an instance of the object.
+      /// </summary>
+      /// <param name="key">The key.</param>
+      /// <param name="value">The value.</param>
       public NameValuePair(K key, V value)
       {
         _key = key;
@@ -170,6 +178,13 @@ namespace Csla
     [Serializable()]
     protected class Criteria : CriteriaBase
     {
+      /// <summary>
+      /// Creates an instance of the object.
+      /// </summary>
+      /// <param name="collectionType">
+      /// The <see cref="Type"/> of the business
+      /// collection class.
+      /// </param>
       public Criteria(Type collectionType)
         : base(collectionType)
       { }
@@ -189,7 +204,7 @@ namespace Csla
     /// Override this method to allow retrieval of an existing business
     /// object based on data in the database.
     /// </summary>
-    /// <param name="Criteria">An object containing criteria values to identify the object.</param>
+    /// <param name="criteria">An object containing criteria values to identify the object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Fetch(object criteria)
     {

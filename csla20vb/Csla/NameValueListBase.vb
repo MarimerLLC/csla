@@ -85,6 +85,10 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
 #Region " Constructors "
 
+  ''' <summary>
+  ''' Creates an instance of the object.
+  ''' </summary>
+  ''' <remarks></remarks>
   Protected Sub New()
 
     Initialize()
@@ -139,6 +143,11 @@ Public MustInherit Class NameValueListBase(Of K, V)
       End Set
     End Property
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="key">The key.</param>
+    ''' <param name="value">The value.</param>
     Public Sub New(ByVal key As K, ByVal value As V)
       mKey = key
       mValue = value
@@ -199,6 +208,13 @@ Public MustInherit Class NameValueListBase(Of K, V)
   Protected Class Criteria
     Inherits CriteriaBase
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="collectionType">
+    ''' The <see cref="Type"/> of the business
+    ''' collection class.
+    ''' </param>
     Public Sub New(ByVal collectionType As Type)
       MyBase.New(collectionType)
     End Sub
@@ -217,7 +233,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' Override this method to allow retrieval of an existing business
   ''' object based on data in the database.
   ''' </summary>
-  ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
+  ''' <param name="criteria">An object containing criteria values to identify the object.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   Protected Overridable Sub DataPortal_Fetch(ByVal criteria As Object)
     Throw New NotSupportedException(My.Resources.FetchNotSupportedException)

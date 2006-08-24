@@ -504,6 +504,12 @@ Public Class FilteredBindingList(Of T)
     Return IndexOf(CType(value, T))
   End Function
 
+  ''' <summary>
+  ''' Inserts an item into the list.
+  ''' </summary>
+  ''' <param name="index">Index at
+  ''' which to insert the item.</param>
+  ''' <param name="item">Item to insert.</param>
   Public Sub Insert(ByVal index As Integer, ByVal item As T) Implements IList(Of T).Insert
     mList.Insert(index, item)
   End Sub
@@ -518,6 +524,10 @@ Public Class FilteredBindingList(Of T)
     End Get
   End Property
 
+  ''' <summary>
+  ''' Gets a value indicating whether the list
+  ''' is read-only.
+  ''' </summary>
   Public ReadOnly Property IsReadOnly() As Boolean Implements IList(Of T).IsReadOnly, IBindingList.IsReadOnly
     Get
       Return mList.IsReadOnly
@@ -533,6 +543,12 @@ Public Class FilteredBindingList(Of T)
     End Set
   End Property
 
+  ''' <summary>
+  ''' Removes an item from the list.
+  ''' </summary>
+  ''' <param name="item">Item to remove.</param>
+  ''' <returns><see langword="true"/> if the 
+  ''' remove succeeds.</returns>
   Public Function Remove(ByVal item As T) As Boolean Implements IList(Of T).Remove
     Return mList.Remove(item)
   End Function
@@ -541,6 +557,11 @@ Public Class FilteredBindingList(Of T)
     Remove(CType(value, T))
   End Sub
 
+  ''' <summary>
+  ''' Removes an item from the list.
+  ''' </summary>
+  ''' <param name="index">Index of item
+  ''' to be removed.</param>
   Public Sub RemoveAt(ByVal index As Integer) Implements IList(Of T).RemoveAt, IBindingList.RemoveAt
     If mFiltered Then
       mList.RemoveAt(OriginalIndex(index))
@@ -549,6 +570,13 @@ Public Class FilteredBindingList(Of T)
     End If
   End Sub
 
+  ''' <summary>
+  ''' Gets or sets the 
+  ''' item at the specified
+  ''' index.
+  ''' </summary>
+  ''' <param name="index">Index of the item.</param>
+  ''' <returns>Item at the specified index.</returns>
   Default Public Property Item(ByVal index As Integer) As T Implements IList(Of T).Item
     Get
       If mFiltered Then
@@ -684,6 +712,11 @@ Public Class FilteredBindingList(Of T)
     DoFilter()
   End Sub
 
+  ''' <summary>
+  ''' Removes the filter from the list,
+  ''' so the view reflects the state of
+  ''' the original list.
+  ''' </summary>
   Public Sub RemoveFilter()
     UnDoFilter()
   End Sub

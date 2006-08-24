@@ -437,13 +437,13 @@ Public Class Project
 
 #Region " ISTartEnd "
 
-  Public ReadOnly Property IStartEnd_Ended() As Csla.SmartDate Implements IStartEnd.Ended
+  Private ReadOnly Property IStartEnd_Ended() As Csla.SmartDate Implements IStartEnd.Ended
     Get
       Return mEnded
     End Get
   End Property
 
-  Public ReadOnly Property IStartEnd_Started() As Csla.SmartDate Implements IStartEnd.Started
+  Private ReadOnly Property IStartEnd_Started() As Csla.SmartDate Implements IStartEnd.Started
     Get
       Return mStarted
     End Get

@@ -113,15 +113,8 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanDelete() As Boolean
       Get
-        Dim objectType As Type = CslaDataSource.GetType( _
-            mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)
-        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objectType) Then
-          Return True
-        ElseIf objectType.GetMethod("Remove") IsNot Nothing Then
-          Return True
-        Else
-          Return False
-        End If
+        Return TypeLoader.CanDelete( _
+          mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)
       End Get
     End Property
 
@@ -136,12 +129,8 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanInsert() As Boolean
       Get
-        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(CslaDataSource.GetType( _
-            mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)) Then
-          Return True
-        Else
-          Return False
-        End If
+        Return TypeLoader.CanInsert( _
+          mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)
       End Get
     End Property
 
@@ -156,15 +145,8 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanUpdate() As Boolean
       Get
-        Dim objType As Type = CslaDataSource.GetType( _
-          mOwner.DataSourceControl.TypeAssemblyName, _
-          mOwner.DataSourceControl.TypeName)
-        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objType) Then
-          Return True
-
-        Else
-          Return False
-        End If
+        Return TypeLoader.CanUpdate( _
+          mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)
       End Get
     End Property
 

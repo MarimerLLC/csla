@@ -55,40 +55,7 @@ Namespace Web.Design
       System.Web.UI.Design.IDataSourceFieldSchema() _
       Implements System.Web.UI.Design.IDataSourceViewSchema.GetFields
 
-      Dim result As New Generic.List(Of ObjectFieldInfo)
-
-      Dim originalPath As String = GetOriginalPath( _
-        mTypeAssemblyName, mTypeName)
-
-      Dim fulltrust As System.Security.NamedPermissionSet = _
-        New System.Security.NamedPermissionSet("FullTrust")
-      Dim tempDomain As AppDomain = AppDomain.CreateDomain( _
-        "__temp", _
-        AppDomain.CurrentDomain.Evidence, _
-        AppDomain.CurrentDomain.SetupInformation, _
-        fulltrust, _
-        New System.Security.Policy.StrongName() {})
-      Try
-        ' load the TypeLoader object in the temp AppDomain
-        Dim thisAssembly As Assembly = Assembly.GetExecutingAssembly
-        Dim loader As TypeLoader = _
-          DirectCast(tempDomain.CreateInstanceFromAndUnwrap( _
-            thisAssembly.CodeBase, GetType(TypeLoader).FullName), TypeLoader)
-        result = loader.GetFields(originalPath, mTypeAssemblyName, mTypeName)
-
-      Finally
-        AppDomain.Unload(tempDomain)
-      End Try
-
-      Return result.ToArray
-
-    End Function
-
-    Private Function GetOriginalPath(ByVal assemblyName As String, ByVal typeName As String) As String
-
-      Dim t As Type = CslaDataSource.GetType(assemblyName, typeName)
-      Dim asm As Assembly = t.Assembly
-      Return asm.CodeBase
+      Return TypeLoader.GetFields(mTypeAssemblyName, mTypeName)
 
     End Function
 

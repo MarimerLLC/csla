@@ -24,6 +24,9 @@ namespace Csla
 
     #region Constructors
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected BusinessListBase()
     {
       Initialize();
@@ -354,6 +357,8 @@ namespace Csla
     /// <summary>
     /// Sets the edit level of the child object as it is added.
     /// </summary>
+    /// <param name="index">Index of the item to insert.</param>
+    /// <param name="item">Item to insert.</param>
     protected override void InsertItem(int index, C item)
     {
       // when an object is inserted we assume it is
@@ -368,6 +373,7 @@ namespace Csla
     /// Marks the child object for deletion and moves it to
     /// the collection of deleted objects.
     /// </summary>
+    /// <param name="index">Index of the item to remove.</param>
     protected override void RemoveItem(int index)
     {
       // when an object is 'removed' it is really
@@ -600,7 +606,7 @@ namespace Csla
     /// Override this method to load a new business object with default
     /// values from the database.
     /// </summary>
-    /// <param name="Criteria">An object containing criteria values.</param>
+    /// <param name="criteria">An object containing criteria values.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Create(object criteria)
     {
@@ -611,7 +617,7 @@ namespace Csla
     /// Override this method to allow retrieval of an existing business
     /// object based on data in the database.
     /// </summary>
-    /// <param name="Criteria">An object containing criteria values to identify the object.</param>
+    /// <param name="criteria">An object containing criteria values to identify the object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Fetch(object criteria)
     {
@@ -631,7 +637,7 @@ namespace Csla
     /// <summary>
     /// Override this method to allow immediate deletion of a business object.
     /// </summary>
-    /// <param name="Criteria">An object containing criteria values to identify the object.</param>
+    /// <param name="criteria">An object containing criteria values to identify the object.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Delete(object criteria)
     {
@@ -719,6 +725,12 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Raises the <see cref="Saved"/> event, indicating that the
+    /// object has been saved, and providing a reference
+    /// to the new object instance.
+    /// </summary>
+    /// <param name="newObject">The new object instance.</param>
     [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnSaved(T newObject)
     {

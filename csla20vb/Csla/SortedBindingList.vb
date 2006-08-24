@@ -406,6 +406,10 @@ Public Class SortedBindingList(Of T)
   ''' </remarks>
   Public Event ListChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ListChangedEventArgs) Implements System.ComponentModel.IBindingList.ListChanged
 
+  ''' <summary>
+  ''' Raises the <see cref="ListChanged"/> event.
+  ''' </summary>
+  ''' <param name="e">Event arguments.</param>
   Protected Sub OnListChanged(ByVal e As System.ComponentModel.ListChangedEventArgs)
     RaiseEvent ListChanged(Me, e)
   End Sub

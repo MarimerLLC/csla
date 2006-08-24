@@ -75,6 +75,8 @@ Namespace Core
     ''' <summary>
     ''' Prevents insertion of items into the collection.
     ''' </summary>
+    ''' <param name="index">Index at which to insert the item.</param>
+    ''' <param name="item">Item to insert.</param>
     Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As C)
       If Not IsReadOnly Then
         MyBase.InsertItem(index, item)
@@ -87,6 +89,7 @@ Namespace Core
     ''' Removes the item at the specified index if the collection is
     ''' not in readonly mode.
     ''' </summary>
+    ''' <param name="index">Index of the item to remove.</param>
     Protected Overrides Sub RemoveItem(ByVal index As Integer)
       If Not IsReadOnly Then
         Dim oldValue As Boolean = AllowRemove
@@ -104,6 +107,8 @@ Namespace Core
     ''' specified item if the collection is not in
     ''' readonly mode.
     ''' </summary>
+    ''' <param name="index">Index of the item to replace.</param>
+    ''' <param name="item">New item for the list.</param>
     Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As C)
       If Not IsReadOnly Then
         MyBase.SetItem(index, item)

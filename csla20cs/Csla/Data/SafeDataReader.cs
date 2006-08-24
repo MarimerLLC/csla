@@ -645,6 +645,8 @@ namespace Csla.Data
     /// <summary>
     /// Invokes the GetValues method of the underlying datareader.
     /// </summary>
+    /// <param name="values">An array of System.Object to
+    /// copy the values into.</param>
     public int GetValues(object[] values)
     {
       return _dataReader.GetValues(values);

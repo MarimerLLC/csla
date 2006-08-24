@@ -248,6 +248,8 @@ namespace Csla.Core
     /// Performs processing required when a property
     /// has changed.
     /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// has changed.</param>
     /// <remarks>
     /// This method calls CheckRules(propertyName), MarkDirty and
     /// OnPropertyChanged(propertyName). MarkDirty is called such
@@ -1126,6 +1128,7 @@ namespace Csla.Core
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
     /// </summary>
+    /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(StreamingContext context)
     {

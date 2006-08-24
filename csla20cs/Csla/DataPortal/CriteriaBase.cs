@@ -25,6 +25,8 @@ namespace Csla
     /// Initializes CriteriaBase with the type of
     /// business object to be created by the DataPortal.
     /// </summary>
+    /// <param name="type">The type of the
+    /// business object the data portal should create.</param>
     protected CriteriaBase(Type type)
     {
       _objectType = type;

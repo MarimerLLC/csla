@@ -21,6 +21,8 @@ Public MustInherit Class CriteriaBase
   ''' Initializes CriteriaBase with the type of
   ''' business object to be created by the DataPortal.
   ''' </summary>
+  ''' <param name="type">The type of the
+  ''' business object the data portal should create.</param>
   Protected Sub New(ByVal type As Type)
     mObjectType = type
   End Sub

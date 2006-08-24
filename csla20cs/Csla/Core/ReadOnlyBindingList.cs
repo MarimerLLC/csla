@@ -77,6 +77,8 @@ namespace Csla.Core
     /// <summary>
     /// Prevents insertion of items into the collection.
     /// </summary>
+    /// <param name="index">Index at which to insert the item.</param>
+    /// <param name="item">Item to insert.</param>
     protected override void InsertItem(int index, C item)
     {
       if (!IsReadOnly)
@@ -89,6 +91,7 @@ namespace Csla.Core
     /// Removes the item at the specified index if the collection is
     /// not in readonly mode.
     /// </summary>
+    /// <param name="index">Index of the item to remove.</param>
     protected override void RemoveItem(int index)
     {
       if (!IsReadOnly)
@@ -107,6 +110,8 @@ namespace Csla.Core
     /// specified item if the collection is not in
     /// readonly mode.
     /// </summary>
+    /// <param name="index">Index of the item to replace.</param>
+    /// <param name="item">New item for the list.</param>
     protected override void SetItem(int index, C item)
     {
       if (!IsReadOnly)

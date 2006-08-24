@@ -72,7 +72,7 @@ namespace Csla.Core
     /// Call this method to raise the PropertyChanged event
     /// for all object properties.
     /// </summary>
-    /// <remarks>
+   /// <remarks>
     /// This method is automatically called by MarkDirty. It
     /// actually raises PropertyChanged for an empty string,
     /// which tells data binding to refresh all properties.
@@ -87,6 +87,8 @@ namespace Csla.Core
     /// Call this method to raise the PropertyChanged event
     /// for a specific property.
     /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// has changed.</param>
     /// <remarks>
     /// This method may be called by properties in the business
     /// class to indicate the change in a specific property.

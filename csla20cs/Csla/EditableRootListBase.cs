@@ -106,9 +106,13 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
     base.InsertItem(index, item);
   }
 
+  /// <summary>
+  /// Removes an item from the list.
+  /// </summary>
+  /// <param name="index">Index of the item
+  /// to be removed.</param>
   protected override void RemoveItem(int index)
   {
-
     // delete item from database
     T item = this[index];
     item.Delete();
@@ -122,20 +126,19 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
     }
 
     base.RemoveItem(index);
-
   }
 
 #endregion
 
 #region  IParent Members 
 
-  public void ApplyEditChild(Core.IEditableBusinessObject child)
+  void Csla.Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
   {
     if (!_activelySaving && child.EditLevel==0)
       SaveItem((T)child);
   }
 
-  public void RemoveChild(Core.IEditableBusinessObject child)
+  void Csla.Core.IParent.RemoveChild(Core.IEditableBusinessObject child)
   {
     // do nothing, removal of a child is handled by
     // the RemoveItem override
@@ -206,7 +209,7 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
   /// Override this method to allow retrieval of an existing business
   /// object based on data in the database.
   /// </summary>
-  /// <param name="Criteria">An object containing criteria values to identify the object.</param>
+  /// <param name="criteria">An object containing criteria values to identify the object.</param>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId="Member")]
   protected virtual void DataPortal_Fetch(object criteria)
   {

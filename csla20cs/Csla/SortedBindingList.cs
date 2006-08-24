@@ -8,7 +8,7 @@ namespace Csla
 {
 
   /// <summary>
-  /// Provides a sorted view into an existing IList<T>.
+  /// Provides a sorted view into an existing IList(Of T).
   /// </summary>
   /// <typeparam name="T">
   /// Type of child object contained by
@@ -398,6 +398,10 @@ namespace Csla
     /// </remarks>
     public event ListChangedEventHandler ListChanged;
 
+    /// <summary>
+    /// Raises the <see cref="ListChanged"/> event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected void OnListChanged(ListChangedEventArgs e)
     {
       if (ListChanged != null)

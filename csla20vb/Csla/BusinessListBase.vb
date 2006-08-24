@@ -20,6 +20,10 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " Constructors "
 
+  ''' <summary>
+  ''' Creates an instance of the object.
+  ''' </summary>
+  ''' <remarks></remarks>
   Protected Sub New()
 
     Initialize()
@@ -327,6 +331,8 @@ Public MustInherit Class BusinessListBase( _
   ''' <summary>
   ''' Sets the edit level of the child object as it is added.
   ''' </summary>
+  ''' <param name="index">Index of the item to insert.</param>
+  ''' <param name="item">Item to insert.</param>
   Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As C)
     ' when an object is inserted we assume it is
     ' a new object and so the edit level when it was
@@ -340,6 +346,7 @@ Public MustInherit Class BusinessListBase( _
   ''' Marks the child object for deletion and moves it to
   ''' the collection of deleted objects.
   ''' </summary>
+  ''' <param name="index">Index of the item to remove.</param>
   Protected Overrides Sub RemoveItem(ByVal index As Integer)
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
@@ -611,7 +618,7 @@ Public MustInherit Class BusinessListBase( _
   ''' Override this method to load a new business object with default
   ''' values from the database.
   ''' </summary>
-  ''' <param name="Criteria">An object containing criteria values.</param>
+  ''' <param name="criteria">An object containing criteria values.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)
     Throw New NotSupportedException(My.Resources.CreateNotSupportedException)
@@ -621,7 +628,7 @@ Public MustInherit Class BusinessListBase( _
   ''' Override this method to allow retrieval of an existing business
   ''' object based on data in the database.
   ''' </summary>
-  ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
+  ''' <param name="criteria">An object containing criteria values to identify the object.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   Protected Overridable Sub DataPortal_Fetch(ByVal criteria As Object)
     Throw New NotSupportedException(My.Resources.FetchNotSupportedException)
@@ -639,7 +646,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <summary>
   ''' Override this method to allow immediate deletion of a business object.
   ''' </summary>
-  ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
+  ''' <param name="criteria">An object containing criteria values to identify the object.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   Protected Overridable Sub DataPortal_Delete(ByVal criteria As Object)
     Throw New NotSupportedException(My.Resources.DeleteNotSupportedException)
@@ -721,7 +728,7 @@ Public MustInherit Class BusinessListBase( _
   End Event
 
   ''' <summary>
-  ''' Raises the Saved event, indicating that the
+  ''' Raises the <see cref="Saved"/> event, indicating that the
   ''' object has been saved, and providing a reference
   ''' to the new object instance.
   ''' </summary>

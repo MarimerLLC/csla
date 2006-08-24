@@ -156,6 +156,9 @@ namespace Csla
       return Core.ObjectCloner.Clone(this);
     }
 
+    /// <summary>
+    /// Creates a clone of the object.
+    /// </summary>
     public NameValueListBase<K, V> Clone()
     {
       return (NameValueListBase<K, V>)GetClone();

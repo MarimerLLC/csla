@@ -104,6 +104,8 @@ Namespace Core
     ''' Call this method to raise the PropertyChanged event
     ''' for a specific property.
     ''' </summary>
+    ''' <param name="propertyName">Name of the property that
+    ''' has changed.</param>
     ''' <remarks>
     ''' This method may be called by properties in the business
     ''' class to indicate the change in a specific property.

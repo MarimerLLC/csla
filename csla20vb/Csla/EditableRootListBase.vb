@@ -103,6 +103,11 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
     MyBase.InsertItem(index, item)
   End Sub
 
+  ''' <summary>
+  ''' Removes an item from the list.
+  ''' </summary>
+  ''' <param name="index">Index of the item
+  ''' to be removed.</param>
   Protected Overrides Sub RemoveItem(ByVal index As Integer)
 
     ' delete item from database
@@ -197,7 +202,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' Override this method to allow retrieval of an existing business
   ''' object based on data in the database.
   ''' </summary>
-  ''' <param name="Criteria">An object containing criteria values to identify the object.</param>
+  ''' <param name="criteria">An object containing criteria values to identify the object.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   Protected Overridable Sub DataPortal_Fetch(ByVal criteria As Object)
     Throw New NotSupportedException(My.Resources.FetchNotSupportedException)

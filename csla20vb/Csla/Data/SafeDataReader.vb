@@ -27,7 +27,7 @@ Namespace Data
     ''' Initializes the SafeDataReader object to use data from
     ''' the provided DataReader object.
     ''' </summary>
-    ''' <param name="DataReader">The source DataReader object containing the data.</param>
+    ''' <param name="dataReader">The source DataReader object containing the data.</param>
     Public Sub New(ByVal dataReader As IDataReader)
       mDataReader = dataReader
     End Sub
@@ -159,7 +159,7 @@ Namespace Data
     ''' details on the SmartDate class.
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
-    ''' <param name="MinIsEmpty">
+    ''' <param name="minIsEmpty">
     ''' A flag indicating whether the min or max value 
     ''' of a data means an empty date.</param>
     Public Overridable Function GetSmartDate( _
@@ -642,6 +642,8 @@ Namespace Data
     ''' <summary>
     ''' Invokes the GetValues method of the underlying datareader.
     ''' </summary>
+    ''' <param name="values">An array of System.Object to
+    ''' copy the values into.</param>
     Public Function GetValues(ByVal values() As Object) As Integer Implements System.Data.IDataReader.GetValues
       Return mDataReader.GetValues(values)
     End Function
@@ -658,6 +660,7 @@ Namespace Data
     ''' <summary>
     ''' Invokes the IsDBNull method of the underlying datareader.
     ''' </summary>
+    ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function IsDBNull(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.IsDBNull
       Return mDataReader.IsDBNull(i)
     End Function

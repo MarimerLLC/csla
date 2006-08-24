@@ -7,7 +7,7 @@
       <asp:View ID="MainView" runat="server">
         <asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="536px" AutoGenerateRows="False"
           DataSourceID="ProjectDataSource" DataKeyNames="Id" OnItemDeleted="DetailsView1_ItemDeleted"
-          OnItemInserted="DetailsView1_ItemInserted" OnItemUpdated="DetailsView1_ItemUpdated">
+          OnItemInserted="DetailsView1_ItemInserted" OnItemUpdated="DetailsView1_ItemUpdated" OnItemCreated="DetailsView1_ItemCreated">
           <Fields>
             <asp:BoundField DataField="Id" HeaderText="Id" ReadOnly="True" SortExpression="Id"
               InsertVisible="False" >

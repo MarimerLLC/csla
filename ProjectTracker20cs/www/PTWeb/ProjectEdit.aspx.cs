@@ -58,6 +58,18 @@ public partial class ProjectEdit : System.Web.UI.Page
 
   #region Project DetailsView
 
+  protected void DetailsView1_ItemCreated(object sender, EventArgs e)
+  {
+    if (DetailsView1.DefaultMode == DetailsViewMode.Insert)
+    {
+      Project obj = GetProject();
+      ((TextBox)DetailsView1.Rows[1].Cells[1].Controls[0]).Text = obj.Name;
+      ((TextBox)DetailsView1.Rows[2].Cells[1].Controls[0]).Text = obj.Started;
+      ((TextBox)DetailsView1.Rows[3].Cells[1].Controls[0]).Text = obj.Ended;
+      ((TextBox)DetailsView1.FindControl("TextBox1")).Text = obj.Description;
+    }
+  }
+
   protected void DetailsView1_ItemInserted(
     object sender, DetailsViewInsertedEventArgs e)
   {

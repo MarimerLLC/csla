@@ -112,18 +112,6 @@ namespace Csla.Web
     }
 
     /// <summary>
-    /// Returns a <see cref="Assembly"/> object based on the
-    /// assembly name provided.
-    /// </summary>
-    /// <param name="assemblyName">(Optional) Assembly name containing the type.</param>
-    /// <remarks></remarks>
-    internal static Assembly GetAssembly(
-      string assemblyName)
-    {
-      return Assembly.Load(assemblyName);
-    }
-
-    /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the
     /// assembly and type information provided.
     /// </summary>

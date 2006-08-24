@@ -118,15 +118,8 @@ namespace Csla.Web.Design
     {
       get
       {
-        Type objectType = CslaDataSource.GetType(
-          _owner.DataSourceControl.TypeAssemblyName, 
-          _owner.DataSourceControl.TypeName);
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
-          return true;
-        else if (objectType.GetMethod("Remove") != null)
-          return true;
-        else
-          return false;
+        return TypeLoader.CanDelete(
+          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName);
       }
     }
 
@@ -143,13 +136,8 @@ namespace Csla.Web.Design
     {
       get
       {
-        Type objectType = CslaDataSource.GetType(
-          _owner.DataSourceControl.TypeAssemblyName,
-          _owner.DataSourceControl.TypeName);
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
-          return true;
-        else
-          return false;
+        return TypeLoader.CanInsert(
+          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName);
       }
     }
 
@@ -166,13 +154,8 @@ namespace Csla.Web.Design
     {
       get
       {
-        Type objectType = CslaDataSource.GetType(
-          _owner.DataSourceControl.TypeAssemblyName,
-          _owner.DataSourceControl.TypeName);
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
-          return true;
-        else
-          return false;
+        return TypeLoader.CanUpdate(
+          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName);
       }
     }
 

@@ -5,6 +5,8 @@ using System.Text;
 using System.ComponentModel;
 using System.Reflection;
 using System.IO;
+using System.Web.UI;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {
@@ -15,6 +17,156 @@ namespace Csla.Web.Design
   /// </summary>
   public class TypeLoader : MarshalByRefObject
   {
+    #region static methods for primary AppDomain
+
+    /// <summary>
+    /// Gets a list of
+    /// <see cref="ObjectFieldInfo"/> describing
+    /// the most recent version of the specified
+    /// assembly and class.
+    /// </summary>
+    /// <param name="assemblyName">Name of the assembly</param>
+    /// <param name="typeName">Name of the type</param>
+    /// <returns></returns>
+    public static IDataSourceFieldSchema[] GetFields(
+      string assemblyName, string typeName)
+    {
+      List<ObjectFieldInfo> result =
+        new List<ObjectFieldInfo>();
+
+      string originalPath = GetOriginalPath(
+        assemblyName, typeName);
+
+      AppDomain tempDomain = GetTemporaryAppDomain();
+      try
+      {
+        result = GetTypeLoader(tempDomain).GetFields(
+          originalPath, assemblyName, typeName);
+      }
+      finally
+      {
+        AppDomain.Unload(tempDomain);
+      }
+      return result.ToArray();
+    }
+
+    /// <summary>
+    /// Get a value indicating whether data binding can directly
+    /// delete the object.
+    /// </summary>
+    /// <param name="assemblyName">Name of the assembly</param>
+    /// <param name="typeName">Name of the type</param>
+    public static bool CanDelete(
+      string assemblyName, string typeName)
+    {
+      bool result;
+
+      string originalPath = GetOriginalPath(
+        assemblyName, typeName);
+
+      AppDomain tempDomain = GetTemporaryAppDomain();
+      try
+      {
+        result = GetTypeLoader(tempDomain).CanDelete(
+          originalPath, assemblyName, typeName);
+      }
+      finally
+      {
+        AppDomain.Unload(tempDomain);
+      }
+      return result;
+
+    }
+
+    /// <summary>
+    /// Get a value indicating whether data binding can directly
+    /// insert an instance of the object.
+    /// </summary>
+    /// <param name="assemblyName">Name of the assembly</param>
+    /// <param name="typeName">Name of the type</param>
+    public static bool CanInsert(
+      string assemblyName, string typeName)
+    {
+      bool result;
+
+      string originalPath = GetOriginalPath(
+        assemblyName, typeName);
+
+      AppDomain tempDomain = GetTemporaryAppDomain();
+      try
+      {
+        result = GetTypeLoader(tempDomain).CanInsert(
+          originalPath, assemblyName, typeName);
+      }
+      finally
+      {
+        AppDomain.Unload(tempDomain);
+      }
+      return result;
+
+    }
+
+    /// <summary>
+    /// Get a value indicating whether data binding can directly
+    /// update or edit the object.
+    /// </summary>
+    /// <param name="assemblyName">Name of the assembly</param>
+    /// <param name="typeName">Name of the type</param>
+    public static bool CanUpdate(
+      string assemblyName, string typeName)
+    {
+      bool result;
+
+      string originalPath = GetOriginalPath(
+        assemblyName, typeName);
+
+      AppDomain tempDomain = GetTemporaryAppDomain();
+      try
+      {
+        result = GetTypeLoader(tempDomain).CanUpdate(
+          originalPath, assemblyName, typeName);
+      }
+      finally
+      {
+        AppDomain.Unload(tempDomain);
+      }
+      return result;
+
+    }
+
+    private static TypeLoader GetTypeLoader(AppDomain tempDomain)
+    {
+      // load the TypeLoader object in the temp AppDomain
+      Assembly thisAssembly = Assembly.GetExecutingAssembly();
+      TypeLoader loader =
+        (TypeLoader)tempDomain.CreateInstanceFromAndUnwrap(
+          thisAssembly.CodeBase, typeof(TypeLoader).FullName);
+      return loader;
+    }
+
+    private static AppDomain GetTemporaryAppDomain()
+    {
+      System.Security.NamedPermissionSet fulltrust =
+        new System.Security.NamedPermissionSet("FullTrust");
+      AppDomain tempDomain = AppDomain.CreateDomain(
+        "__CslaDataSource__temp",
+        AppDomain.CurrentDomain.Evidence,
+        AppDomain.CurrentDomain.SetupInformation,
+        fulltrust,
+        new System.Security.Policy.StrongName[] { });
+      return tempDomain;
+    }
+
+    private static string GetOriginalPath(string assemblyName, string typeName)
+    {
+      Assembly asm = Assembly.Load(assemblyName);
+      return asm.CodeBase;
+    }
+
+    #endregion
+
+    #region Implementation for temporary AppDomain
+
     /// <summary>
     /// Gets a list of
     /// <see cref="ObjectFieldInfo"/> describing
@@ -45,6 +197,62 @@ namespace Csla.Web.Design
           result.Add(new ObjectFieldInfo(item));
 
       return result;
+    }
+
+    /// <summary>
+    /// Get a value indicating whether data binding can directly
+    /// delete the object.
+    /// </summary>
+    /// <param name="originalPath">Path to the assembly
+    /// as determined by Visual Studio</param>
+    /// <param name="assemblyName">Name of the assembly</param>
+    /// <param name="typeName">Name of the type</param>
+    public bool CanDelete(
+      string originalPath, string assemblyName, string typeName)
+    {
+      Type objectType = GetType(originalPath, assemblyName, typeName);
+      if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+        return true;
+      else if (objectType.GetMethod("Remove") != null)
+        return true;
+      else
+        return false;
+    }
+
+    /// <summary>
+    /// Get a value indicating whether data binding can directly
+    /// insert an instance of the object.
+    /// </summary>
+    /// <param name="originalPath">Path to the assembly
+    /// as determined by Visual Studio</param>
+    /// <param name="assemblyName">Name of the assembly</param>
+    /// <param name="typeName">Name of the type</param>
+    public bool CanInsert(
+      string originalPath, string assemblyName, string typeName)
+    {
+      Type objectType = GetType(originalPath, assemblyName, typeName);
+      if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+        return true;
+      else
+        return false;
+    }
+
+    /// <summary>
+    /// Get a value indicating whether data binding can directly
+    /// update or edit the object.
+    /// </summary>
+    /// <param name="originalPath">Path to the assembly
+    /// as determined by Visual Studio</param>
+    /// <param name="assemblyName">Name of the assembly</param>
+    /// <param name="typeName">Name of the type</param>
+    public bool CanUpdate(
+      string originalPath, string assemblyName, string typeName)
+    {
+      Type objectType = GetType(originalPath, assemblyName, typeName);
+      if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+          return true;
+        else
+          return false;
     }
 
     /// <summary>
@@ -113,5 +321,7 @@ namespace Csla.Web.Design
       else
         return null;
     }
+
+    #endregion
   }
 }

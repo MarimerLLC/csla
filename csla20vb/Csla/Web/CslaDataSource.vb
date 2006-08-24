@@ -93,6 +93,37 @@ Namespace Web
     End Property
 
     ''' <summary>
+    ''' Get or set a value indicating whether the
+    ''' business object data source supports paging.
+    ''' </summary>
+    ''' <remarks>
+    ''' To support paging, the business object
+    ''' (collection) must implement 
+    ''' <see cref="IReportTotalRowCount"/>.
+    ''' </remarks>
+    Public Property TypeSupportsPaging() As Boolean
+      Get
+        Return CType(Me.GetView("Default"), CslaDataSourceView).TypeSupportsPaging
+      End Get
+      Set(ByVal value As Boolean)
+        CType(Me.GetView("Default"), CslaDataSourceView).TypeSupportsPaging = Value
+      End Set
+    End Property
+
+    ''' <summary>
+    ''' Get or set a value indicating whether the
+    ''' business object data source supports sorting.
+    ''' </summary>
+    Public Property TypeSupportsSorting() As Boolean
+      Get
+        Return (CType(Me.GetView("Default"), CslaDataSourceView)).TypeSupportsSorting
+      End Get
+      Set(ByVal value As Boolean)
+        CType(Me.GetView("Default"), CslaDataSourceView).TypeSupportsSorting = Value
+      End Set
+    End Property
+
+    ''' <summary>
     ''' Returns a <see cref="Type">Type</see> object based on the
     ''' assembly and type information provided.
     ''' </summary>

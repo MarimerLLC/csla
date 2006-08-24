@@ -156,7 +156,7 @@ Namespace Web.Design
     ''' </summary>
     Public Overrides ReadOnly Property CanPage() As Boolean
       Get
-        Return False
+        Return mOwner.DataSourceControl.TypeSupportsPaging
       End Get
     End Property
 
@@ -166,7 +166,7 @@ Namespace Web.Design
     ''' </summary>
     Public Overrides ReadOnly Property CanSort() As Boolean
       Get
-        Return False
+        Return mOwner.DataSourceControl.TypeSupportsSorting
       End Get
     End Property
 

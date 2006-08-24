@@ -12,6 +12,8 @@ Namespace Web
     Private mOwner As CslaDataSource
     Private mTypeName As String
     Private mTypeAssemblyName As String
+    Private mTypeSupportsPaging As Boolean
+    Private mTypeSupportsSorting As Boolean
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -54,6 +56,37 @@ Namespace Web
       End Set
     End Property
 
+    ''' <summary>
+    ''' Get or set a value indicating whether the
+    ''' business object data source supports paging.
+    ''' </summary>
+    ''' <remarks>
+    ''' To support paging, the business object
+    ''' (collection) must implement 
+    ''' <see cref="IReportTotalRowCount"/>.
+    ''' </remarks>
+    Public Property TypeSupportsPaging() As Boolean
+      Get
+        Return mTypeSupportsPaging
+      End Get
+      Set(ByVal value As Boolean)
+        mTypeSupportsPaging = value
+      End Set
+    End Property
+
+    ''' <summary>
+    ''' Get or set a value indicating whether the
+    ''' business object data source supports sorting.
+    ''' </summary>
+    Public Property TypeSupportsSorting() As Boolean
+      Get
+        Return mTypeSupportsSorting
+      End Get
+      Set(ByVal value As Boolean)
+        mTypeSupportsSorting = value
+      End Set
+    End Property
+
 #Region " Select "
 
     ''' <summary>
@@ -76,6 +109,9 @@ Namespace Web
         Dim rowCount As Integer
         If result Is Nothing Then
           rowCount = 0
+
+        ElseIf TypeOf result Is IReportTotalRowCount Then
+          rowCount = CType(result, IReportTotalRowCount).TotalRowCount
 
         ElseIf TypeOf result Is IList Then
           rowCount = CType(result, IList).Count
@@ -232,7 +268,7 @@ Namespace Web
     ''' </summary>
     Public Overrides ReadOnly Property CanPage() As Boolean
       Get
-        Return False
+        Return mTypeSupportsPaging
       End Get
     End Property
 
@@ -253,7 +289,7 @@ Namespace Web
     ''' </summary>
     Public Overrides ReadOnly Property CanSort() As Boolean
       Get
-        Return False
+        Return mTypeSupportsSorting
       End Get
     End Property
 

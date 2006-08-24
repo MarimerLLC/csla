@@ -53,13 +53,14 @@ Partial Class ProjectEdit
   Protected Sub DetailsView1_ItemCreated( _
     ByVal sender As Object, ByVal e As System.EventArgs) Handles DetailsView1.ItemCreated
 
-    Dim obj As Project = GetProject()
+    If DetailsView1.DefaultMode = DetailsViewMode.Insert Then
+      Dim obj As Project = GetProject()
 
-    CType(DetailsView1.Rows(0).Cells(1).Controls(0), TextBox).Text = obj.Id.ToString
-    CType(DetailsView1.Rows(1).Cells(1).Controls(0), TextBox).Text = obj.Name
-    CType(DetailsView1.Rows(2).Cells(1).Controls(0), TextBox).Text = obj.Started
-    CType(DetailsView1.Rows(3).Cells(1).Controls(0), TextBox).Text = obj.Ended
-    CType(DetailsView1.FindControl("TextBox1"), System.Web.UI.WebControls.TextBox).Text = obj.Description
+      CType(DetailsView1.Rows(1).Cells(1).Controls(0), TextBox).Text = obj.Name
+      CType(DetailsView1.Rows(2).Cells(1).Controls(0), TextBox).Text = obj.Started
+      CType(DetailsView1.Rows(3).Cells(1).Controls(0), TextBox).Text = obj.Ended
+      CType(DetailsView1.FindControl("TextBox1"), System.Web.UI.WebControls.TextBox).Text = obj.Description
+    End If
 
   End Sub
 

@@ -61,5 +61,14 @@ namespace Csla.Test.ValidationRules
       root = new HasPerTypeRules();
       Assert.AreEqual(1, (int)ApplicationContext.GlobalContext["Shared"], "Rules should init just once");
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void BadNonStaticRuleMethod()
+    {
+      // creating the object should trigger AddBusinessRules()
+      // which should fail due to the bad exception
+      HasBadSharedRule bad = new HasBadSharedRule();
+    }
   }
 }

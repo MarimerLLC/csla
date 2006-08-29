@@ -138,6 +138,7 @@
     <Compile Include="Serialization\TestEventSink.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
+    <Compile Include="ValidationRules\HasBadSharedRule.cs" />
     <Compile Include="ValidationRules\HasPerTypeClasses.cs" />
     <Compile Include="ValidationRules\HasPerTypeRules.cs" />
     <Compile Include="ValidationRules\HasRegEx.cs" />

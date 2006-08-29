@@ -440,7 +440,7 @@ Public Module DataPortal
 
   Private Function RunLocal(ByVal method As MethodInfo) As Boolean
 
-    Return Attribute.IsDefined(method, GetType(RunLocalAttribute))
+    Return Attribute.IsDefined(method, GetType(RunLocalAttribute), False)
 
   End Function
 

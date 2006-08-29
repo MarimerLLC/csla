@@ -434,7 +434,7 @@ namespace Csla
 
     private static bool RunLocal(MethodInfo method)
     {
-      return Attribute.IsDefined(method, typeof(RunLocalAttribute));
+      return Attribute.IsDefined(method, typeof(RunLocalAttribute), false);
     }
 
     #endregion

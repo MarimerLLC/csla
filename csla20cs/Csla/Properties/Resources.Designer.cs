@@ -187,6 +187,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid rule method (instance methods of the target object not allowed).
+        /// </summary>
+        internal static string InvalidRuleMethodException {
+            get {
+                return ResourceManager.GetString("InvalidRuleMethodException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} can not exceed {1}.
         /// </summary>
         internal static string MaxValueRule {

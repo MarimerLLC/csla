@@ -512,4 +512,10 @@
 
   </data>
 
+  <data name="InvalidRuleMethodException" xml:space="preserve">
+
+    <value>Invalid rule method (instance methods of the target object not allowed)</value>
+
+  </data>
+
 </root>

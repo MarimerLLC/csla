@@ -83,10 +83,10 @@ Namespace Validation
           Else
             ' both have values - consolidate into instance rules
             mRulesToCheck = instanceRules
-                        For Each de As Generic.KeyValuePair(Of String, RulesList) In typeRules.RulesDictionary
-                            Dim instanceList As List(Of IRuleMethod) = mRulesToCheck.GetRulesForProperty(de.Key, True).GetList(False)
-                            instanceList.AddRange(de.Value.GetList(False))
-                        Next
+            For Each de As Generic.KeyValuePair(Of String, RulesList) In typeRules.RulesDictionary
+              Dim instanceList As List(Of IRuleMethod) = mRulesToCheck.GetRulesForProperty(de.Key, True).GetList(False)
+              instanceList.AddRange(de.Value.GetList(False))
+            Next
           End If
         End If
         Return mRulesToCheck
@@ -380,6 +380,7 @@ Namespace Validation
     Public Sub AddRule( _
       ByVal handler As RuleHandler, ByVal propertyName As String)
 
+      ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, New RuleArgs(propertyName), 0)
 
     End Sub
@@ -412,6 +413,7 @@ Namespace Validation
     Public Sub AddRule( _
       ByVal handler As RuleHandler, ByVal propertyName As String, ByVal priority As Integer)
 
+      ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, New RuleArgs(propertyName), priority)
 
     End Sub
@@ -441,6 +443,7 @@ Namespace Validation
     Public Sub AddRule(Of T)( _
       ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyName As String)
 
+      ValidateHandler(handler)
       GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, New RuleArgs(propertyName), 0)
 
     End Sub
@@ -473,6 +476,7 @@ Namespace Validation
     Public Sub AddRule(Of T)( _
       ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyName As String, ByVal priority As Integer)
 
+      ValidateHandler(handler)
       GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, New RuleArgs(propertyName), priority)
 
     End Sub
@@ -491,6 +495,7 @@ Namespace Validation
     ''' </param>
     Public Sub AddRule(ByVal handler As RuleHandler, ByVal args As RuleArgs)
 
+      ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, args, 0)
 
     End Sub
@@ -512,6 +517,7 @@ Namespace Validation
     ''' </param>
     Public Sub AddRule(ByVal handler As RuleHandler, ByVal args As RuleArgs, ByVal priority As Integer)
 
+      ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, args, priority)
 
     End Sub
@@ -533,6 +539,7 @@ Namespace Validation
     Public Sub AddRule(Of T, R As RuleArgs)( _
       ByVal handler As RuleHandler(Of T, R), ByVal args As R)
 
+      ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, args, 0)
 
     End Sub
@@ -557,10 +564,31 @@ Namespace Validation
     Public Sub AddRule(Of T, R As RuleArgs)( _
       ByVal handler As RuleHandler(Of T, R), ByVal args As R, ByVal priority As Integer)
 
+      ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, args, priority)
 
     End Sub
 
+    Private Function ValidateHandler(ByVal handler As RuleHandler) As Boolean
+
+      Return ValidateHandler(handler.Method)
+
+    End Function
+
+    Private Function ValidateHandler(Of T, R As RuleArgs)(ByVal handler As RuleHandler(Of T, R)) As Boolean
+
+      Return ValidateHandler(handler.Method)
+
+    End Function
+
+    Private Function ValidateHandler(ByVal method As System.Reflection.MethodInfo) As Boolean
+
+      If Not method.IsStatic AndAlso method.DeclaringType.Equals(mTarget.GetType) Then
+        Throw New InvalidOperationException(My.Resources.InvalidRuleMethodException)
+      End If
+      Return True
+
+    End Function
 #End Region
 
 #Region " Adding per-type dependencies "

@@ -330,7 +330,7 @@ namespace Csla.Validation
 
     #endregion
 
-    #region Adding Sharing Rules
+    #region Adding Per-Type Rules
 
     /// <summary>
     /// Adds a rule to the list of rules to be enforced.
@@ -356,6 +356,7 @@ namespace Csla.Validation
     /// </param>
     public void AddRule(RuleHandler handler, string propertyName)
     {
+      ValidateHandler(handler);
       GetTypeRules(true).AddRule(handler, new RuleArgs(propertyName), 0);
     }
 
@@ -386,6 +387,7 @@ namespace Csla.Validation
     /// </param>
     public void AddRule(RuleHandler handler, string propertyName, int priority)
     {
+      ValidateHandler(handler);
       GetTypeRules(true).AddRule(handler, new RuleArgs(propertyName), priority);
     }
 
@@ -413,6 +415,7 @@ namespace Csla.Validation
     /// </param>
     public void AddRule<T>(RuleHandler<T, RuleArgs> handler, string propertyName)
     {
+      ValidateHandler(handler);
       GetTypeRules(true).AddRule<T, RuleArgs>(handler, new RuleArgs(propertyName), 0);
     }
 
@@ -443,6 +446,7 @@ namespace Csla.Validation
     /// </param>
     public void AddRule<T>(RuleHandler<T, RuleArgs> handler, string propertyName, int priority)
     {
+      ValidateHandler(handler);
       GetTypeRules(true).AddRule<T, RuleArgs>(handler, new RuleArgs(propertyName), priority);
     }
 
@@ -460,6 +464,7 @@ namespace Csla.Validation
     /// </param>
     public void AddRule(RuleHandler handler, RuleArgs args)
     {
+      ValidateHandler(handler);
       GetTypeRules(true).AddRule(handler, args, 0);
     }
 
@@ -480,6 +485,7 @@ namespace Csla.Validation
     /// </param>
     public void AddRule(RuleHandler handler, RuleArgs args, int priority)
     {
+      ValidateHandler(handler);
       GetTypeRules(true).AddRule(handler, args, priority);
     }
 
@@ -499,6 +505,7 @@ namespace Csla.Validation
     /// </param>
     public void AddRule<T, R>(RuleHandler<T, R> handler, R args) where R : RuleArgs
     {
+      ValidateHandler(handler);
       GetTypeRules(true).AddRule(handler, args, 0);
     }
 
@@ -521,7 +528,25 @@ namespace Csla.Validation
     /// </param>
     public void AddRule<T, R>(RuleHandler<T, R> handler, R args, int priority) where R : RuleArgs
     {
+      ValidateHandler(handler);
       GetTypeRules(true).AddRule(handler, args, priority);
+    }
+
+    private bool ValidateHandler(RuleHandler handler)
+    {
+      return ValidateHandler(handler.Method);
+    }
+
+    private bool ValidateHandler<T, R>(RuleHandler<T, R> handler) where R : RuleArgs
+    {
+      return ValidateHandler(handler.Method);
+    }
+
+    private bool ValidateHandler(System.Reflection.MethodInfo method)
+    {
+      if (!method.IsStatic && method.DeclaringType.Equals(_target.GetType()))
+        throw new InvalidOperationException(Properties.Resources.InvalidRuleMethodException);
+      return true;
     }
 
     #endregion

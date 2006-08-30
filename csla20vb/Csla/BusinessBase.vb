@@ -101,7 +101,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <returns>
   ''' A new object containing the exact data of the original object.
   ''' </returns>
-  Public Overridable Function Clone() As T
+  Public Overloads Function Clone() As T
 
     Return DirectCast(GetClone(), T)
 

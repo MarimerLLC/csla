@@ -65,7 +65,7 @@ namespace Csla
     /// <returns>
     /// A new object containing the exact data of the original object.
     /// </returns>
-    public virtual T Clone()
+    public T Clone()
     {
       return (T)GetClone();
     }

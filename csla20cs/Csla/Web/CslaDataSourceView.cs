@@ -59,7 +59,7 @@ namespace Csla.Web
     /// <remarks>
     /// To support paging, the business object
     /// (collection) must implement 
-    /// <see cref="IReportTotalRowCount"/>.
+    /// <see cref="Csla.Core.IReportTotalRowCount"/>.
     /// </remarks>
     public bool TypeSupportsPaging
     {
@@ -99,8 +99,8 @@ namespace Csla.Web
         int rowCount;
         if (result == null)
           rowCount = 0;
-        else if (result is IReportTotalRowCount)
-          rowCount = ((IReportTotalRowCount)result).TotalRowCount;
+        else if (result is Csla.Core.IReportTotalRowCount)
+          rowCount = ((Csla.Core.IReportTotalRowCount)result).TotalRowCount;
         else if (result is IList)
           rowCount = ((IList)result).Count;
         else if (result is IEnumerable)

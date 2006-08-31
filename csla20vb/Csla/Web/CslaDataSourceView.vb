@@ -63,7 +63,7 @@ Namespace Web
     ''' <remarks>
     ''' To support paging, the business object
     ''' (collection) must implement 
-    ''' <see cref="IReportTotalRowCount"/>.
+    ''' <see cref="Csla.Core.IReportTotalRowCount"/>.
     ''' </remarks>
     Public Property TypeSupportsPaging() As Boolean
       Get
@@ -110,8 +110,8 @@ Namespace Web
         If result Is Nothing Then
           rowCount = 0
 
-        ElseIf TypeOf result Is IReportTotalRowCount Then
-          rowCount = CType(result, IReportTotalRowCount).TotalRowCount
+        ElseIf TypeOf result Is Csla.Core.IReportTotalRowCount Then
+          rowCount = CType(result, Csla.Core.IReportTotalRowCount).TotalRowCount
 
         ElseIf TypeOf result Is IList Then
           rowCount = CType(result, IList).Count

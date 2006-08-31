@@ -99,7 +99,7 @@ Namespace Web
     ''' <remarks>
     ''' To support paging, the business object
     ''' (collection) must implement 
-    ''' <see cref="IReportTotalRowCount"/>.
+    ''' <see cref="Csla.Core.IReportTotalRowCount"/>.
     ''' </remarks>
     Public Property TypeSupportsPaging() As Boolean
       Get

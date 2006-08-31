@@ -60,6 +60,7 @@
     <Compile Include="Core\IEditableBusinessObject.vb" />
     <Compile Include="Core\IExtendedBindingList.vb" />
     <Compile Include="Core\IParent.vb" />
+    <Compile Include="Core\IReportTotalRowCount.vb" />
     <Compile Include="Core\ISavable.vb" />
     <Compile Include="Core\IUndoableObject.vb" />
     <Compile Include="Core\IBusinessObject.vb" />
@@ -168,7 +169,6 @@
     <Compile Include="Web\Design\ObjectSchema.vb" />
     <Compile Include="Web\Design\ObjectViewSchema.vb" />
     <Compile Include="Web\Design\TypeLoader.vb" />
-    <Compile Include="Web\IReportTotalRowCount.vb" />
     <Compile Include="Windows\BindingSourceRefresh.vb" />
     <Compile Include="Windows\ReadWriteAuthorization.vb" />
   </ItemGroup>

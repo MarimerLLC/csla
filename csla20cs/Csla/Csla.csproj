@@ -54,6 +54,7 @@
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
     <Compile Include="Core\IParent.cs" />
+    <Compile Include="Core\IReportTotalRowCount.cs" />
     <Compile Include="Core\ISavable.cs" />
     <Compile Include="Core\IUndoableObject.cs" />
     <Compile Include="Core\IBusinessObject.cs" />
@@ -156,7 +157,6 @@
     <Compile Include="Web\Design\ObjectSchema.cs" />
     <Compile Include="Web\Design\ObjectViewSchema.cs" />
     <Compile Include="Web\Design\TypeLoader.cs" />
-    <Compile Include="Web\IReportTotalRowCount.cs" />
     <Compile Include="Windows\BindingSourceRefresh.cs">
       <SubType>Component</SubType>
     </Compile>

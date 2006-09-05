@@ -10,6 +10,8 @@ Namespace Web
   ''' CSLA .NET business objects as data sources.
   ''' </summary>
   <Designer(GetType(Csla.Web.Design.CslaDataSourceDesigner))> _
+  <DisplayName("Csla.DataSource")> _
+  <Description("CSLA .NET Data Source Control")> _
   <ToolboxData("<{0}:CslaDataSource runat=""server""></{0}:CslaDataSource>")> _
   Public Class CslaDataSource
     Inherits DataSourceControl
@@ -106,7 +108,7 @@ Namespace Web
         Return CType(Me.GetView("Default"), CslaDataSourceView).TypeSupportsPaging
       End Get
       Set(ByVal value As Boolean)
-        CType(Me.GetView("Default"), CslaDataSourceView).TypeSupportsPaging = Value
+        CType(Me.GetView("Default"), CslaDataSourceView).TypeSupportsPaging = value
       End Set
     End Property
 
@@ -119,7 +121,7 @@ Namespace Web
         Return (CType(Me.GetView("Default"), CslaDataSourceView)).TypeSupportsSorting
       End Get
       Set(ByVal value As Boolean)
-        CType(Me.GetView("Default"), CslaDataSourceView).TypeSupportsSorting = Value
+        CType(Me.GetView("Default"), CslaDataSourceView).TypeSupportsSorting = value
       End Set
     End Property
 

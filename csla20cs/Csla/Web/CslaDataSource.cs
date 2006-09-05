@@ -12,6 +12,8 @@ namespace Csla.Web
   /// CSLA .NET business objects as data sources.
   /// </summary>
   [Designer(typeof(Csla.Web.Design.CslaDataSourceDesigner))]
+  [DisplayName("Csla.DataSource")]
+  [Description("CSLA .NET Data Source Control")]
   [ToolboxData("<{0}:CslaDataSource runat=\"server\"></{0}:CslaDataSource>")]
   public class CslaDataSource : DataSourceControl
   {

@@ -68,25 +68,29 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' </remarks>
   Public Overridable Sub SaveItem(ByVal index As Integer)
 
-    mActivelySaving = True
     Dim raiseEvents As Boolean = Me.RaiseListChangedEvents
     Me.RaiseListChangedEvents = False
 
+    mActivelySaving = True
     Dim item As T = Me.Item(index)
     Dim editLevel As Integer = item.EditLevel
     ' commit all changes
     For tmp As Integer = 1 To editLevel
       item.AcceptChanges()
     Next
-    ' do the save
-    Me.Item(index) = DirectCast(item.Save, T)
-    ' restore edit level to previous level
-    For tmp As Integer = 1 To editLevel
-      item.CopyState()
-    Next
+    Try
+      ' do the save
+      Me.Item(index) = DirectCast(item.Save, T)
 
-    Me.RaiseListChangedEvents = raiseEvents
-    mActivelySaving = False
+    Finally
+      ' restore edit level to previous level
+      For tmp As Integer = 1 To editLevel
+        item.CopyState()
+      Next
+
+      mActivelySaving = False
+      Me.RaiseListChangedEvents = raiseEvents
+    End Try
 
   End Sub
 

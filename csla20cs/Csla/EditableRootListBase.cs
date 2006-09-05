@@ -73,23 +73,29 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
   /// </remarks>
   public virtual void SaveItem(int index)
   {
-    _activelySaving = true;
     bool raisingEvents = this.RaiseListChangedEvents;
     this.RaiseListChangedEvents = false;
+
+    _activelySaving = true;
 
     T item = this[index];
     int editLevel = item.EditLevel;
     // commit all changes
     for (int tmp = 1; tmp <= editLevel; tmp++)
       item.AcceptChanges();
-    // do the save
-    this[index] = (T)item.Save();
-    // restore edit level to previous level
-    for (int tmp = 1; tmp <= editLevel; tmp++)
-      item.CopyState();
-
-    this.RaiseListChangedEvents = raisingEvents;
-    _activelySaving = false;
+    try
+    {
+      // do the save
+      this[index] = (T)item.Save();
+    }
+    finally
+    {
+      // restore edit level to previous level
+      for (int tmp = 1; tmp <= editLevel; tmp++)
+        item.CopyState();
+      _activelySaving = false;
+      this.RaiseListChangedEvents = raisingEvents;
+    }
   }
 
 #endregion
@@ -152,8 +158,7 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
 
   private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
   {
-    int count = this.Count;
-    for (int index = 0; index < count; index++)
+    for (int index = 0; index < this.Count; index++)
     {
       if (ReferenceEquals(this[index], sender))
       {

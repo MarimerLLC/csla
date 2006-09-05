@@ -250,7 +250,7 @@ namespace Csla.Validation
       T max = ((MaxValueRuleArgs<T>)e).MaxValue;
 
       int result = value.CompareTo(max);
-      if (result == 1)
+      if (result >= 1)
       {
         e.Description = string.Format(Resources.MaxValueRule,
           e.PropertyName, max.ToString());
@@ -317,7 +317,7 @@ namespace Csla.Validation
       T min = ((MinValueRuleArgs<T>)e).MinValue;
 
       int result = value.CompareTo(min);
-      if (result == -1)
+      if (result <= -1)
       {
         e.Description = string.Format(Resources.MinValueRule,
           e.PropertyName, min.ToString());

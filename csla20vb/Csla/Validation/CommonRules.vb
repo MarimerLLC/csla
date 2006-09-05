@@ -250,7 +250,7 @@ Namespace Validation
       Dim max As T = DirectCast(e, MaxValueRuleArgs(Of T)).MaxValue
 
       Dim result As Integer = value.CompareTo(max)
-      If result = 1 Then
+      If result >= 1 Then
         e.Description = String.Format(My.Resources.MaxValueRule, e.PropertyName, max.ToString)
 
       Else
@@ -317,7 +317,7 @@ Namespace Validation
       Dim min As T = DirectCast(e, MinValueRuleArgs(Of T)).MinValue
 
       Dim result As Integer = value.CompareTo(min)
-      If result = -1 Then
+      If result <= -1 Then
         e.Description = String.Format(My.Resources.MinValueRule, e.PropertyName, min.ToString)
 
       Else

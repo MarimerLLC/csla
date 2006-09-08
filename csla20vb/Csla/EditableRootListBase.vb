@@ -118,8 +118,12 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
     ' delete item from database
     Dim item As T = Me.Item(index)
-    item.Delete()
-    SaveItem(index)
+
+    ' only delete/save the item if it is not new
+    If Not item.IsNew Then
+      item.Delete()
+      SaveItem(index)
+    End If
 
     ' disconnect event handler if necessary
     Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(item, System.ComponentModel.INotifyPropertyChanged)

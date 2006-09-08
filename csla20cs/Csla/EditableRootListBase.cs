@@ -123,8 +123,13 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
   {
     // delete item from database
     T item = this[index];
-    item.Delete();
-    SaveItem(index);
+
+    // only delete/save the item if it is not new
+    if (!item.IsNew)
+    {
+      item.Delete();
+      SaveItem(index);
+    }
 
     // disconnect event handler if necessary
     System.ComponentModel.INotifyPropertyChanged c = item as System.ComponentModel.INotifyPropertyChanged;

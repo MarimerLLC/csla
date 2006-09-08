@@ -218,7 +218,7 @@ namespace Csla
       else
         result = default(T);
 
-      _newItem = (T)result;
+      //_newItem = (T)result;
       return result;
     }
 
@@ -870,7 +870,10 @@ namespace Csla
 
     private int OriginalIndex(int filteredIndex)
     {
-      return _filterIndex[filteredIndex].BaseIndex;
+      if (_filtered)
+        return _filterIndex[filteredIndex].BaseIndex;
+      else
+        return filteredIndex;
     }
 
     private int FilteredIndex(int originalIndex)
@@ -894,17 +897,33 @@ namespace Csla
 
     #region ICancelAddNew Members
 
-    private T _newItem;
+    //private T _newItem;
+
+    //void ICancelAddNew.CancelNew(int itemIndex)
+    //{
+    //  if (_newItem != null)
+    //    Remove(_newItem);
+    //}
+
+    //void ICancelAddNew.EndNew(int itemIndex)
+    //{
+    //  // do nothing
+    //}
 
     void ICancelAddNew.CancelNew(int itemIndex)
     {
-      if (_newItem != null)
-        Remove(_newItem);
+      ICancelAddNew can = _list as ICancelAddNew;
+      if (can != null)
+        can.CancelNew(itemIndex);
+      else
+        _list.RemoveAt(itemIndex);
     }
 
     void ICancelAddNew.EndNew(int itemIndex)
     {
-      // do nothing
+      ICancelAddNew can = _list as ICancelAddNew;
+      if (can != null)
+        can.EndNew(itemIndex);
     }
 
     #endregion

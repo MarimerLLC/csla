@@ -13,6 +13,7 @@ Public Class SortedBindingList(Of T)
   Implements IList(Of T)
   Implements IBindingList
   Implements IEnumerable(Of T)
+  Implements ICancelAddNew
 
 #Region " ListItem class "
 
@@ -799,5 +800,30 @@ Public Class SortedBindingList(Of T)
     Return result
 
   End Function
+
+#Region " ICancelAddNew "
+
+  Public Sub CancelNew(ByVal itemIndex As Integer) Implements System.ComponentModel.ICancelAddNew.CancelNew
+
+    Dim can As ICancelAddNew = TryCast(mList, ICancelAddNew)
+    If can IsNot Nothing Then
+      can.CancelNew(itemIndex)
+
+    Else
+      mList.RemoveAt(itemIndex)
+    End If
+
+  End Sub
+
+  Public Sub EndNew(ByVal itemIndex As Integer) Implements System.ComponentModel.ICancelAddNew.EndNew
+
+    Dim can As ICancelAddNew = TryCast(mList, ICancelAddNew)
+    If can IsNot Nothing Then
+      can.EndNew(itemIndex)
+    End If
+
+  End Sub
+
+#End Region
 
 End Class

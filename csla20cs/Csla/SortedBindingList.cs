@@ -15,7 +15,7 @@ namespace Csla
   /// the original list or collection.
   /// </typeparam>
   public class SortedBindingList<T> : 
-    IList<T>, IBindingList, IEnumerable<T>
+    IList<T>, IBindingList, IEnumerable<T>, ICancelAddNew
   {
 
     #region ListItem class
@@ -767,10 +767,15 @@ namespace Csla
 
     private int OriginalIndex(int sortedIndex)
     {
-      if (_sortOrder == ListSortDirection.Ascending)
-        return _sortIndex[sortedIndex].BaseIndex;
+      if (_sorted)
+      {
+        if (_sortOrder == ListSortDirection.Ascending)
+          return _sortIndex[sortedIndex].BaseIndex;
+        else
+          return _sortIndex[_sortIndex.Count - 1 - sortedIndex].BaseIndex;
+      }
       else
-        return _sortIndex[_sortIndex.Count - 1 - sortedIndex].BaseIndex;
+        return sortedIndex;
     }
 
     private int SortedIndex(int originalIndex)
@@ -794,5 +799,25 @@ namespace Csla
       return result;
        
     }
+
+    #region ICancelAddNew Members
+
+    void ICancelAddNew.CancelNew(int itemIndex)
+    {
+      ICancelAddNew can = _list as ICancelAddNew;
+      if (can != null)
+        can.CancelNew(itemIndex);
+      else
+        _list.RemoveAt(itemIndex);
+    }
+
+    void ICancelAddNew.EndNew(int itemIndex)
+    {
+      ICancelAddNew can = _list as ICancelAddNew;
+      if (can != null)
+        can.EndNew(itemIndex);
+    }
+
+    #endregion
   }
 }

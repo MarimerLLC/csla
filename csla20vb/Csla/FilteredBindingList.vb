@@ -10,7 +10,11 @@ Imports System.Collections
 ''' <typeparam name="T">The type of the objects contained
 ''' in the original list.</typeparam>
 Public Class FilteredBindingList(Of T)
-  Implements IList(Of T), IBindingList, IEnumerable(Of T), ICancelAddNew
+
+  Implements IList(Of T)
+  Implements IBindingList
+  Implements IEnumerable(Of T)
+  Implements ICancelAddNew
 
 #Region "ListItem class"
 
@@ -204,7 +208,6 @@ Public Class FilteredBindingList(Of T)
       result = Nothing
     End If
 
-    mNewItem = CType(result, T)
     Return result
   End Function
 
@@ -826,16 +829,25 @@ Public Class FilteredBindingList(Of T)
 
 #Region " ICancelAddNew Members "
 
-  Private mNewItem As T
+  Public Sub CancelNew(ByVal itemIndex As Integer) Implements System.ComponentModel.ICancelAddNew.CancelNew
 
-  Private Sub CancelNew(ByVal itemIndex As Integer) Implements ICancelAddNew.CancelNew
-    If Not mNewItem Is Nothing Then
-      Remove(mNewItem)
+    Dim can As ICancelAddNew = TryCast(mList, ICancelAddNew)
+    If can IsNot Nothing Then
+      can.CancelNew(itemIndex)
+
+    Else
+      mList.RemoveAt(itemIndex)
     End If
+
   End Sub
 
-  Private Sub EndNew(ByVal itemIndex As Integer) Implements ICancelAddNew.EndNew
-    ' do nothing
+  Public Sub EndNew(ByVal itemIndex As Integer) Implements System.ComponentModel.ICancelAddNew.EndNew
+
+    Dim can As ICancelAddNew = TryCast(mList, ICancelAddNew)
+    If can IsNot Nothing Then
+      can.EndNew(itemIndex)
+    End If
+
   End Sub
 
 #End Region

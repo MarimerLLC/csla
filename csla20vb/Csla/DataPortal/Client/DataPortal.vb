@@ -102,8 +102,9 @@ Public Module DataPortal
       If proxy.IsServerRemote Then
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
-      Throw New DataPortalException("DataPortal.Create " & _
-        My.Resources.Failed, ex.InnerException, result.ReturnObject)
+      Throw New DataPortalException( _
+        String.Format("DataPortal.Create {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+        ex.InnerException, result.ReturnObject)
     End Try
 
     If proxy.IsServerRemote Then
@@ -182,8 +183,9 @@ Public Module DataPortal
       If proxy.IsServerRemote Then
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
-      Throw New DataPortalException("DataPortal.Fetch " & _
-        My.Resources.Failed, ex.InnerException, result.ReturnObject)
+      Throw New DataPortalException( _
+        String.Format("DataPortal.Fetch {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+        ex.InnerException, result.ReturnObject)
     End Try
 
     If proxy.IsServerRemote Then
@@ -324,8 +326,9 @@ Public Module DataPortal
       If proxy.IsServerRemote Then
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
-      Throw New DataPortalException("DataPortal.Update " & _
-        My.Resources.Failed, ex.InnerException, result.ReturnObject)
+      Throw New DataPortalException( _
+        String.Format("DataPortal.Update {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+        ex.InnerException, result.ReturnObject)
     End Try
 
     If proxy.IsServerRemote Then
@@ -368,8 +371,9 @@ Public Module DataPortal
       If proxy.IsServerRemote Then
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
-      Throw New DataPortalException("DataPortal.Delete " & _
-        My.Resources.Failed, ex.InnerException, result.ReturnObject)
+      Throw New DataPortalException( _
+        String.Format("DataPortal.Delete {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+        ex.InnerException, result.ReturnObject)
     End Try
 
     If proxy.IsServerRemote Then

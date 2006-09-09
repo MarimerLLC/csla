@@ -61,7 +61,7 @@ Public Module DataPortal
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <returns>A new object, populated with default values.</returns>
   Public Function Create(Of T)() As T
-    Return DirectCast(Create(GetType(T), Nothing), T)
+    Return DirectCast(Create(GetType(T), 1), T)
   End Function
 
   ''' <summary>
@@ -84,8 +84,7 @@ Public Module DataPortal
 
     Dim result As Server.DataPortalResult
 
-    Dim method As MethodInfo = _
-      MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria)
+    Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
 
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
@@ -144,7 +143,7 @@ Public Module DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
   Public Function Fetch(Of T)() As T
 
-    Return DirectCast(Fetch(GetType(T), Nothing), T)
+    Return DirectCast(Fetch(GetType(T), 1), T)
 
   End Function
 
@@ -165,9 +164,8 @@ Public Module DataPortal
 
     Dim result As Server.DataPortalResult
 
-    Dim method As MethodInfo = _
-      MethodCaller.GetMethod(objectType, "DataPortal_Fetch", criteria)
-
+    Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
+    
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
 

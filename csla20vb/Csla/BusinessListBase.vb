@@ -618,9 +618,8 @@ Public MustInherit Class BusinessListBase( _
   ''' Override this method to load a new business object with default
   ''' values from the database.
   ''' </summary>
-  ''' <param name="criteria">An object containing criteria values.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
-  Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)
+  Protected Overridable Sub DataPortal_Create()
     Throw New NotSupportedException(My.Resources.CreateNotSupportedException)
   End Sub
 

@@ -1010,14 +1010,8 @@ Namespace Core
     ''' Override this method to load a new business object with default
     ''' values from the database.
     ''' </summary>
-    ''' <remarks>
-    ''' Normally you will overload this method to accept a strongly-typed
-    ''' criteria parameter, rather than overriding the method with a
-    ''' loosely-typed criteria parameter.
-    ''' </remarks>
-    ''' <param name="criteria">An object containing criteria values.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
-    Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)
+    Protected Overridable Sub DataPortal_Create()
       Throw New NotSupportedException( _
         My.Resources.CreateNotSupportedException)
     End Sub

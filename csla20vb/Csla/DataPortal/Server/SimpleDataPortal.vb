@@ -42,7 +42,15 @@ Namespace Server
           New DataPortalEventArgs(context))
 
         ' tell the business object to fetch its data
-        MethodCaller.CallMethod(obj, "DataPortal_Create", criteria)
+        Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
+        If TypeOf criteria Is Integer Then
+          ' an "Integer" criteria is a special flag indicating
+          ' that criteria is empty and should not be used
+          MethodCaller.CallMethod(obj, method)
+
+        Else
+          MethodCaller.CallMethod(obj, method, criteria)
+        End If
 
         ' mark the object as new
         MethodCaller.CallMethodIfImplemented(obj, "MarkNew")
@@ -98,7 +106,15 @@ Namespace Server
           New DataPortalEventArgs(context))
 
         ' tell the business object to fetch its data
-        MethodCaller.CallMethod(obj, "DataPortal_Fetch", criteria)
+        Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
+        If TypeOf criteria Is Integer Then
+          ' an "Integer" criteria is a special flag indicating
+          ' that criteria is empty and should not be used
+          MethodCaller.CallMethod(obj, method)
+
+        Else
+          MethodCaller.CallMethod(obj, method, criteria)
+        End If
 
         ' mark the object as old
         MethodCaller.CallMethodIfImplemented(obj, "MarkOld")

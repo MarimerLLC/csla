@@ -15,6 +15,59 @@ Friend Module MethodCaller
       BindingFlags.Public Or _
       BindingFlags.NonPublic
 
+
+  ''' <summary>
+  ''' Gets a reference to the DataPortal_Create method for
+  ''' the specified business object type.
+  ''' </summary>
+  ''' <param name="objectType">Type of the business object.</param>
+  ''' <param name="criteria">Criteria parameter value.</param>
+  ''' <remarks>
+  ''' If the criteria parameter value is an integer, that is a special
+  ''' flag indicating that the parameter should be considered missing
+  ''' (not Nothing/null - just not there).
+  ''' </remarks>
+  Public Function GetCreateMethod(ByVal objectType As Type, ByVal criteria As Object) As MethodInfo
+
+    Dim method As MethodInfo
+    If TypeOf criteria Is Integer Then
+      ' an "Integer" criteria is a special flag indicating
+      ' that criteria is empty and should not be used
+      method = MethodCaller.GetMethod(objectType, "DataPortal_Create")
+
+    Else
+      method = MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria)
+    End If
+    Return method
+
+  End Function
+
+  ''' <summary>
+  ''' Gets a reference to the DataPortal_Fetch method for
+  ''' the specified business object type.
+  ''' </summary>
+  ''' <param name="objectType">Type of the business object.</param>
+  ''' <param name="criteria">Criteria parameter value.</param>
+  ''' <remarks>
+  ''' If the criteria parameter value is an integer, that is a special
+  ''' flag indicating that the parameter should be considered missing
+  ''' (not Nothing/null - just not there).
+  ''' </remarks>
+  Public Function GetFetchMethod(ByVal objectType As Type, ByVal criteria As Object) As MethodInfo
+
+    Dim method As MethodInfo
+    If TypeOf criteria Is Integer Then
+      ' an "Integer" criteria is a special flag indicating
+      ' that criteria is empty and should not be used
+      method = MethodCaller.GetMethod(objectType, "DataPortal_Fetch")
+
+    Else
+      method = MethodCaller.GetMethod(objectType, "DataPortal_Fetch", criteria)
+    End If
+    Return method
+
+  End Function
+
   ''' <summary>
   ''' Uses reflection to dynamically invoke a method
   ''' if that method is implemented on the target object.
@@ -86,28 +139,28 @@ Friend Module MethodCaller
     Dim result As MethodInfo = Nothing
 
     ' try to find a strongly typed match
-    If parameters.Length > 0 Then
-      ' put all param types into an array of Type
-      Dim types As New List(Of Type)
-      For Each item As Object In parameters
-        If item Is Nothing Then
-          types.Add(GetType(Object))
+    'If parameters.Length > 0 Then
+    ' put all param types into an array of Type
+    Dim types As New List(Of Type)
+    For Each item As Object In parameters
+      If item Is Nothing Then
+        types.Add(GetType(Object))
 
-        Else
-          types.Add(item.GetType)
-        End If
-      Next
-
-      ' first see if there's a matching method
-      ' where all params match types
-      result = FindMethod(objectType, method, types.ToArray)
-
-      If result Is Nothing Then
-        ' no match found - so look for any method
-        ' with the right number of parameters
-        result = FindMethod(objectType, method, parameters.Length)
+      Else
+        types.Add(item.GetType)
       End If
+    Next
+
+    ' first see if there's a matching method
+    ' where all params match types
+    result = FindMethod(objectType, method, types.ToArray)
+
+    If result Is Nothing Then
+      ' no match found - so look for any method
+      ' with the right number of parameters
+      result = FindMethod(objectType, method, parameters.Length)
     End If
+    'End If
 
     ' no strongly typed match found, get default
     If result Is Nothing Then

@@ -70,7 +70,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public static T Create<T>()
     {
-      return (T)Create(typeof(T), null);
+      return (T)Create(typeof(T), 1);
     }
 
     /// <summary>
@@ -91,8 +91,7 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = 
-        MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria);
+      MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
 
       DataPortalClient.IDataPortalProxy proxy;
       proxy = GetDataPortalProxy(RunLocal(method));
@@ -149,7 +148,7 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static T Fetch<T>()
     {
-      return (T)Fetch(typeof(T), null);
+      return (T)Fetch(typeof(T), 1);
     }
 
     /// <summary>
@@ -167,8 +166,7 @@ namespace Csla
     {
       Server.DataPortalResult result;
 
-      MethodInfo method = MethodCaller.GetMethod(
-        objectType, "DataPortal_Fetch", criteria);
+      MethodInfo method = MethodCaller.GetFetchMethod(objectType, criteria);
 
       DataPortalClient.IDataPortalProxy proxy;
       proxy = GetDataPortalProxy(RunLocal(method));

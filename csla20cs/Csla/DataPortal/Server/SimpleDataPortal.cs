@@ -39,9 +39,12 @@ namespace Csla.Server
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context));
 
-        // tell the business object to fetch its data
-        MethodCaller.CallMethod(
-          obj, "DataPortal_Create", criteria);
+        // tell the business object to create its data
+        MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
+        if (criteria is int)
+          MethodCaller.CallMethod(obj, method);
+        else
+          MethodCaller.CallMethod(obj, method, criteria);
 
         // mark the object as new
         MethodCaller.CallMethodIfImplemented(
@@ -99,8 +102,11 @@ namespace Csla.Server
           new DataPortalEventArgs(context));
 
         // tell the business object to fetch its data
-        MethodCaller.CallMethod(
-          obj, "DataPortal_Fetch", criteria);
+        MethodInfo method = MethodCaller.GetFetchMethod(objectType, criteria);
+        if (criteria is int)
+          MethodCaller.CallMethod(obj, method);
+        else
+          MethodCaller.CallMethod(obj, method, criteria);
 
         // mark the object as old
         MethodCaller.CallMethodIfImplemented(

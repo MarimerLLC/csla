@@ -606,9 +606,8 @@ namespace Csla
     /// Override this method to load a new business object with default
     /// values from the database.
     /// </summary>
-    /// <param name="criteria">An object containing criteria values.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Create(object criteria)
+    protected virtual void DataPortal_Create()
     {
       throw new NotSupportedException(Resources.CreateNotSupportedException);
     }

@@ -33,8 +33,7 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = MethodCaller.GetMethod(
-          objectType, "DataPortal_Create", criteria);
+        MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
 
         IDataPortalServer portal;
         switch (TransactionalType(method))
@@ -86,8 +85,7 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = MethodCaller.GetMethod(
-          objectType, "DataPortal_Fetch", criteria);
+        MethodInfo method = MethodCaller.GetFetchMethod(objectType, criteria);
 
         IDataPortalServer portal;
         switch (TransactionalType(method))

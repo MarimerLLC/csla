@@ -977,9 +977,8 @@ namespace Csla.Core
     /// criteria parameter, rather than overriding the method with a
     /// loosely-typed criteria parameter.
     /// </remarks>
-    /// <param name="criteria">An object containing criteria values.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Create(object criteria)
+    protected virtual void DataPortal_Create()
     {
       throw new NotSupportedException(Resources.CreateNotSupportedException);
     }

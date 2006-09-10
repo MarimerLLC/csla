@@ -21,6 +21,56 @@ namespace Csla
       BindingFlags.NonPublic;
 
     /// <summary>
+    /// Gets a reference to the DataPortal_Create method for
+    /// the specified business object type.
+    /// </summary>
+    /// <param name="objectType">Type of the business object.</param>
+    /// <param name="criteria">Criteria parameter value.</param>
+    /// <remarks>
+    /// If the criteria parameter value is an integer, that is a special
+    /// flag indicating that the parameter should be considered missing
+    /// (not Nothing/null - just not there).
+    /// </remarks>
+    public static MethodInfo GetCreateMethod(Type objectType, object criteria)
+    {
+      MethodInfo method = null;
+      if (criteria is int)
+      {
+        // an "Integer" criteria is a special flag indicating
+        // that criteria is empty and should not be used
+        method = MethodCaller.GetMethod(objectType, "DataPortal_Create");
+      }
+      else
+        method = MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria);
+      return method;
+    }
+
+    /// <summary>
+    /// Gets a reference to the DataPortal_Fetch method for
+    /// the specified business object type.
+    /// </summary>
+    /// <param name="objectType">Type of the business object.</param>
+    /// <param name="criteria">Criteria parameter value.</param>
+    /// <remarks>
+    /// If the criteria parameter value is an integer, that is a special
+    /// flag indicating that the parameter should be considered missing
+    /// (not Nothing/null - just not there).
+    /// </remarks>
+    public static MethodInfo GetFetchMethod(Type objectType, object criteria)
+    {
+      MethodInfo method = null;
+      if (criteria is int)
+      {
+        // an "Integer" criteria is a special flag indicating
+        // that criteria is empty and should not be used
+        method = MethodCaller.GetMethod(objectType, "DataPortal_Fetch");
+      }
+      else
+        method = MethodCaller.GetMethod(objectType, "DataPortal_Fetch", criteria);
+      return method;
+    }
+
+    /// <summary>
     /// Uses reflection to dynamically invoke a method
     /// if that method is implemented on the target object.
     /// </summary>

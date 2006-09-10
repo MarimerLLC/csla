@@ -111,7 +111,8 @@ namespace Csla
         if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
         throw new DataPortalException(
-          "DataPortal.Create " + Resources.Failed, ex.InnerException, result.ReturnObject);
+          string.Format("DataPortal.Create {0} ({1})", Resources.Failed, ex.InnerException.InnerException), 
+          ex.InnerException, result.ReturnObject);
       }
 
       if (proxy.IsServerRemote)
@@ -186,8 +187,9 @@ namespace Csla
         result = ex.Result;
         if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
-        throw new DataPortalException("DataPortal.Fetch " + 
-          Resources.Failed, ex.InnerException, result.ReturnObject);
+        throw new DataPortalException(
+          String.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, ex.InnerException.InnerException), 
+          ex.InnerException, result.ReturnObject);
       }
 
       if (proxy.IsServerRemote)
@@ -322,8 +324,9 @@ namespace Csla
         result = ex.Result;
         if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
-        throw new DataPortalException("DataPortal.Update " + 
-          Resources.Failed, ex.InnerException, result.ReturnObject);
+        throw new DataPortalException(
+          String.Format("DataPortal.Update {0} ({1})", Resources.Failed, ex.InnerException.InnerException), 
+          ex.InnerException, result.ReturnObject);
       }
 
       if (proxy.IsServerRemote)
@@ -363,7 +366,9 @@ namespace Csla
         result = ex.Result;
         if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
-        throw new DataPortalException("DataPortal.Delete " + Resources.Failed, ex.InnerException, result.ReturnObject);
+        throw new DataPortalException(
+          String.Format("DataPortal.Delete {0} ({1})", Resources.Failed, ex.InnerException.InnerException), 
+          ex.InnerException, result.ReturnObject);
       }
 
       if (proxy.IsServerRemote)

@@ -93,7 +93,7 @@ namespace Csla.Test.DataPortal
             }
             catch (Exception ex)
             {
-                Assert.AreEqual("DataPortal.Update failed", ex.Message);
+              Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Invalid exception message");
             }
 
             //within the DataPortal_Insert method, two commands are run to insert data into
@@ -168,7 +168,7 @@ namespace Csla.Test.DataPortal
             }
             catch (Exception ex)
             {
-                Assert.AreEqual("DataPortal.Update failed", ex.Message);
+              Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Invalid exception message");
             }
 
             //within the DataPortal_Insert method, two commands are run to insert data into

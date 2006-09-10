@@ -82,7 +82,7 @@ namespace Csla.Test.Security
         #endregion
 
         [RunLocal()]
-        protected override void DataPortal_Create(object criteria)
+        protected override void DataPortal_Create()
         {
             _firstName = "default value"; //for now...
         }

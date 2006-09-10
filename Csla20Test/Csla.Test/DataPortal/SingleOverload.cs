@@ -48,7 +48,7 @@ namespace Csla.Test.DataPortalTest
         }
         public static SingleOverload NewObjectWithCriteria()
         {
-          return Csla.DataPortal.Create<SingleOverload>(new Criteria1(0));
+          return Csla.DataPortal.Create<SingleOverload>(new OtherCriteria(0));
         }
 
         public static SingleOverload GetObject(int id)
@@ -81,18 +81,18 @@ namespace Csla.Test.DataPortalTest
         }
 
         [Serializable()]
-        private class Criteria1
+        private class OtherCriteria
         {
             private int _id;
             public int Id
             {
                 get { return _id; }
             }
-            public Criteria1(int id)
+            public OtherCriteria(int id)
             { _id = id; }
         }
 
-        private void DataPortal_Create(object criteria)
+        protected override void DataPortal_Create()
         {
           _id = 0;
           Csla.ApplicationContext.GlobalContext.Clear();
@@ -106,7 +106,7 @@ namespace Csla.Test.DataPortalTest
             ApplicationContext.GlobalContext.Add("SingleOverload", "Created");
         }
 
-        private void DataPortal_Create(Criteria1 criteria)
+        private void DataPortal_Create(OtherCriteria criteria)
         {
             _id = 0;
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -119,7 +119,7 @@ namespace Csla.Test.DataPortalTest
             Csla.ApplicationContext.GlobalContext.Clear();
             ApplicationContext.GlobalContext.Add("SingleOverload", "Fetched");
         }
-        private void DataPortal_Fetch(Criteria1 criteria)
+        private void DataPortal_Fetch(OtherCriteria criteria)
         {
             _id = criteria.Id;
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -130,7 +130,7 @@ namespace Csla.Test.DataPortalTest
             Csla.ApplicationContext.GlobalContext.Clear();
             ApplicationContext.GlobalContext.Add("SingleOverload", "Deleted");
         }
-        private void DataPortal_Delete(Criteria1 criteria)
+        private void DataPortal_Delete(OtherCriteria criteria)
         {
             Csla.ApplicationContext.GlobalContext.Clear();
             ApplicationContext.GlobalContext.Add("SingleOverload", "Deleted1");

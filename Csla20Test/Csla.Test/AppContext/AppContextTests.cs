@@ -364,7 +364,7 @@ namespace Csla.Test.AppContext
             {
                 root = (ExceptionRoot)ex.BusinessObject;
                 Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
-                Assert.AreEqual("DataPortal.Create failed", ex.Message, "Exception message incorrect");
+                Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
             }
 
             Assert.AreEqual("<new>", root.Data, "Business object not returned");
@@ -387,7 +387,7 @@ namespace Csla.Test.AppContext
             {
                 root = (ExceptionRoot)ex.BusinessObject;
                 Assert.AreEqual("Fail fetch", ex.GetBaseException().Message, "Base exception message incorrect");
-                Assert.AreEqual("DataPortal.Fetch failed", ex.Message, "Exception message incorrect");
+                Assert.IsTrue(ex.Message.StartsWith("DataPortal.Fetch failed"), "Exception message incorrect");
             }
 
             Assert.AreEqual("fail", root.Data, "Business object not returned");
@@ -411,7 +411,7 @@ namespace Csla.Test.AppContext
             {
                 root = (ExceptionRoot)ex.BusinessObject;
                 Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
-                Assert.AreEqual("DataPortal.Create failed", ex.Message, "Exception message incorrect");
+                Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
             }
 
             root.Data = "boom";
@@ -425,7 +425,7 @@ namespace Csla.Test.AppContext
             {
                 root = (ExceptionRoot)ex.BusinessObject;
                 Assert.AreEqual("Fail insert", ex.GetBaseException().Message, "Base exception message incorrect");
-                Assert.AreEqual("DataPortal.Update failed", ex.Message, "Exception message incorrect");
+                Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Exception message incorrect");
             }
 
             Assert.AreEqual("boom", root.Data, "Business object not returned");
@@ -450,7 +450,7 @@ namespace Csla.Test.AppContext
             {
                 root = (ExceptionRoot)ex.BusinessObject;
                 Assert.AreEqual("Fail delete", ex.GetBaseException().Message, "Base exception message incorrect");
-                Assert.AreEqual("DataPortal.Delete failed", ex.Message, "Exception message incorrect");
+                Assert.IsTrue(ex.Message.StartsWith("DataPortal.Delete failed"), "Exception message incorrect");
             }
             Assert.IsNull(root, "Business object returned");
             Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");

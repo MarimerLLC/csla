@@ -74,7 +74,7 @@ namespace Csla.Test.AppContext
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail fetch");
     }
-    protected override void DataPortal_Create(object criteria)
+    private void DataPortal_Create(object criteria)
     {
       Criteria crit = criteria as Criteria;
       this._Data = crit.Data;

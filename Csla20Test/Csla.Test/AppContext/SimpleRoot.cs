@@ -91,7 +91,7 @@ namespace Csla.Test.AppContext
         /// Handles new DataPortal Create calls
         /// </summary>
         /// <param name="criteria"></param>
-        protected override void DataPortal_Create(object criteria)
+        private void DataPortal_Create(object criteria)
         {
             Criteria crit = criteria as Criteria;
             this._Data = crit.Data;

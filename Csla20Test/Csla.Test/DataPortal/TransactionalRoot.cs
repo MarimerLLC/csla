@@ -126,7 +126,7 @@ namespace Csla.Test.DataPortal
         #region "Data Access"
 
         [RunLocal()]
-        protected override void DataPortal_Create(object criteria)
+        protected override void DataPortal_Create()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
             Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Created");

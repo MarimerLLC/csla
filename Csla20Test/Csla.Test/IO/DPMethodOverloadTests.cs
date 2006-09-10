@@ -53,6 +53,18 @@ namespace Csla.Test.IO
     }
 
     [TestMethod]
+    public void FetchNullCriteria()
+    {
+      Csla.ApplicationContext.GlobalContext.Clear();
+
+      TestBizObj obj;
+
+      obj = TestBizObj.GetNullCriteria();
+      Assert.IsNotNull(obj, "Failed to get object with null criteria");
+      Assert.AreEqual("Null criteria", Csla.ApplicationContext.GlobalContext["Fetch"], "Null criteria expected");
+    }
+
+    [TestMethod]
     public void FetchNoCriteria()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -116,6 +128,11 @@ namespace Csla.Test.IO
       return Csla.DataPortal.Fetch<TestBizObj>();
     }
 
+    public static TestBizObj GetNullCriteria()
+    {
+      return Csla.DataPortal.Fetch<TestBizObj>(null);
+    }
+
     public static TestBizObj GetCriteria()
     {
       return Csla.DataPortal.Fetch<TestBizObj>(new Criteria());
@@ -136,10 +153,15 @@ namespace Csla.Test.IO
     {
     }
 
-    protected override void DataPortal_Create(object criteria)
+    protected override void DataPortal_Create()
+    {
+      Csla.ApplicationContext.GlobalContext["Create"] = "No criteria";
+    }
+
+    private void DataPortal_Create(object criteria)
     {
       if (criteria == null)
-        Csla.ApplicationContext.GlobalContext["Create"] = "No criteria";
+        Csla.ApplicationContext.GlobalContext["Create"] = "null criteria";
       else
         Csla.ApplicationContext.GlobalContext["Create"] = "Other criteria";
     }
@@ -149,10 +171,15 @@ namespace Csla.Test.IO
       Csla.ApplicationContext.GlobalContext["Create"] = "Criteria";
     }
 
+    private void DataPortal_Fetch()
+    {
+      Csla.ApplicationContext.GlobalContext["Fetch"] = "No criteria";
+    }
+
     protected override void DataPortal_Fetch(object criteria)
     {
       if (criteria == null)
-        Csla.ApplicationContext.GlobalContext["Fetch"] = "No criteria";
+        Csla.ApplicationContext.GlobalContext["Fetch"] = "Null criteria";
       else
         Csla.ApplicationContext.GlobalContext["Fetch"] = "Other criteria";
     }

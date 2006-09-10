@@ -75,7 +75,7 @@ namespace Csla.Test.Nullable
             AddBusinessRules();
         }
 
-        protected override void DataPortal_Create(object criteria)
+        private void DataPortal_Create(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
             _name = crit._name;

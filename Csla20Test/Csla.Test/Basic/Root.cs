@@ -111,7 +111,7 @@ namespace Csla.Test.Basic
             //prevent direct creation
         }
 
-        protected override void DataPortal_Create(object criteria)
+        private void DataPortal_Create(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;

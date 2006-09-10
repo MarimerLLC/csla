@@ -76,7 +76,7 @@ namespace Csla.Test.DataPortalTest
             { _id = id; }
         }
 
-        private void DataPortal_Create(object criteria)
+        protected override void DataPortal_Create()
         {
             _id = 0;
             Csla.ApplicationContext.GlobalContext.Clear();

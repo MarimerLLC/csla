@@ -113,7 +113,7 @@ namespace Csla.Test.DataPortal
 
         #region "DataPortal"
 
-        protected override void DataPortal_Create(object criteria)
+        private void DataPortal_Create(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;

@@ -131,35 +131,34 @@ namespace Csla
       MethodInfo result = null;
 
       // try to find a strongly typed match
-      if (parameters.Length > 0)
+      // put all param types into a list of Type
+      List<Type> types = new List<Type>();
+      foreach (object item in parameters)
       {
-        // put all param types into a list of Type
-        List<Type> types = new List<Type>();
-        foreach (object item in parameters)
-        {
-          if (item == null)
-            types.Add(typeof(object));
-          else
-            types.Add(item.GetType());
-        }
+        if (item == null)
+          types.Add(typeof(object));
+        else
+          types.Add(item.GetType());
+      }
 
-        // first see if there's a matching method
-        // where all params match types
-        result = FindMethod(objectType, method, types.ToArray());
+      // first see if there's a matching method
+      // where all params match types
+      result = FindMethod(objectType, method, types.ToArray());
 
-        if (result == null)
-        {
-          // no match found - so look for any method
-          // with the right number of parameters
-          result = FindMethod(objectType, method, parameters.Length);
-        }
+      if (result == null)
+      {
+        // no match found - so look for any method
+        // with the right number of parameters
+        result = FindMethod(objectType, method, parameters.Length);
       }
 
       // no strongly typed match found, get default
       if (result == null)
       {
         try
-        { result = objectType.GetMethod(method, allLevelFlags); }
+        { 
+          result = objectType.GetMethod(method, allLevelFlags); 
+        }
         catch (AmbiguousMatchException)
         {
           MethodInfo[] methods = objectType.GetMethods();

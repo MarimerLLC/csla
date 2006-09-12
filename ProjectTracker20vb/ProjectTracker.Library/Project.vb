@@ -271,7 +271,7 @@ Public Class Project
   End Class
 
   <RunLocal()> _
-  Private Overloads Sub DataPortal_Create(ByVal criteria As Object)
+  Protected Overrides Sub DataPortal_Create()
 
     mId = Guid.NewGuid
     Started = CStr(Today)

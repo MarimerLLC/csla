@@ -218,7 +218,7 @@ namespace ProjectTracker.Library
     }
 
     [RunLocal()]
-    protected override void DataPortal_Create(object criteria)
+    protected override void DataPortal_Create()
     {
       // nothing to initialize
       ValidationRules.CheckRules();

@@ -41,6 +41,8 @@ Public Module DataPortal
 
 #Region " Data Access methods "
 
+  Private Const EmptyCriteria As Integer = 1
+
   ''' <summary>
   ''' Called by a factory method in a business class to create 
   ''' a new object, which is loaded with default
@@ -61,7 +63,7 @@ Public Module DataPortal
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <returns>A new object, populated with default values.</returns>
   Public Function Create(Of T)() As T
-    Return DirectCast(Create(GetType(T), 1), T)
+    Return DirectCast(Create(GetType(T), EmptyCriteria), T)
   End Function
 
   ''' <summary>
@@ -144,7 +146,7 @@ Public Module DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
   Public Function Fetch(Of T)() As T
 
-    Return DirectCast(Fetch(GetType(T), 1), T)
+    Return DirectCast(Fetch(GetType(T), EmptyCriteria), T)
 
   End Function
 

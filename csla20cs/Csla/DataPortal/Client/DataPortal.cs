@@ -48,7 +48,7 @@ namespace Csla
 
     #region Data Access methods
 
-    private static const int CriteriaEmpty = 1;
+    private const int CriteriaEmpty = 1;
 
     /// <summary>
     /// Called by a factory method in a business class to create 

@@ -482,4 +482,40 @@
 
   </data>
 
+  <data name="InvalidRuleMethodException" xml:space="preserve">
+
+    <value>Ugyldig regel metode (instans metoder af target objekt er ikke tilladt)</value>
+
+  </data>
+
+  <data name="MaxValueRule" xml:space="preserve">
+
+    <value>{0} kan ikke være større end {1}</value>
+
+  </data>
+
+  <data name="MinValueRule" xml:space="preserve">
+
+    <value>{0} kan ikke være mindre end {1}</value>
+
+  </data>
+
+  <data name="RegExMatchRule" xml:space="preserve">
+
+    <value>{0} passer ikke på det regulære udtryk</value>
+
+  </data>
+
+  <data name="StringMaxLengthRule" xml:space="preserve">
+
+    <value>{0} kan ikke være længere end {1} tegn</value>
+
+  </data>
+
+  <data name="StringRequiredRule" xml:space="preserve">
+
+    <value>{0} er påkrævet</value>
+
+  </data>
+
 </root>

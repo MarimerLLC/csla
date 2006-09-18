@@ -179,6 +179,9 @@
     <EmbeddedResource Include="My Project\Resources.bs.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.ca-ES.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.da.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

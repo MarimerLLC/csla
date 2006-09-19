@@ -204,7 +204,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   End Function
 
-  <NonSerialized()> _
+  <NonSerialized(), NotUndoable()> _
   Private mNonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
   Private mSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
 

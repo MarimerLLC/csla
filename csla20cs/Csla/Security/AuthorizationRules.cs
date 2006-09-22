@@ -47,7 +47,7 @@ namespace Csla.Security
       get
       {
         if (_typeRules == null)
-          _typeRules = new AuthorizationRulesManager();
+          _typeRules = SharedAuthorizationRules.GetManager(_businessObjectType, true);
         return _typeRules;
       }
     }

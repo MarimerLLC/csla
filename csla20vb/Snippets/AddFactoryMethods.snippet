@@ -36,7 +36,7 @@
       <Code Language="VB"><![CDATA[#Region " Factory Methods "
 
 Public Shared Function New$ClassName$() As $ClassName$
-  Return DataPortal.Create(Of $ClassName$)(Nothing)
+  Return DataPortal.Create(Of $ClassName$)()
 End Function
 
 Public Shared Function Get$ClassName$(ByVal $IdName$ As $IdType$) As $ClassName$

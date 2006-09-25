@@ -42,7 +42,7 @@ Public Class ReadOnlyRoot
 #Region " Factory Methods "
 
   Public Shared Function GetReadOnlyRoot(ByVal id As Integer) As ReadOnlyRoot
-    Return DataPortal.Create(Of ReadOnlyRoot)(New Criteria(id))
+    Return DataPortal.Fetch(Of ReadOnlyRoot)(New Criteria(id))
   End Function
 
   Private Sub New()

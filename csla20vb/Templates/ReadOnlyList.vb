@@ -43,7 +43,7 @@ Public Class ReadOnlyList
     End Sub
   End Class
 
-  Protected Overrides Sub DataPortal_Fetch(ByVal criteria As Object)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
     RaiseListChangedEvents = False
     IsReadOnly = False

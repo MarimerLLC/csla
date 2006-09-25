@@ -75,7 +75,7 @@ Public Class EditableChild
 
 #Region " Data Access "
 
-  Protected Overrides Sub DataPortal_Create(ByVal criteria As Object)
+  Protected Overrides Sub DataPortal_Create()
     ' TODO: load default values, or remove method
   End Sub
 

@@ -90,7 +90,7 @@ namespace Templates
 
     #region Data Access
 
-    protected override void DataPortal_Create(object criteria)
+    protected override void DataPortal_Create()
     {
       // TODO: load default values, or remove method
     }

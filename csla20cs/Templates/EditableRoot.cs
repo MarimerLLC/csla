@@ -124,7 +124,7 @@ namespace Templates
       { _id = id; }
     }
 
-    private void DataPortal_Create(Criteria criteria)
+    protected override void DataPortal_Create()
     {
       // TODO: load default values
     }

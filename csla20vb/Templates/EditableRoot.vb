@@ -102,7 +102,7 @@ Public Class EditableRoot
     End Sub
   End Class
 
-  Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
+  Protected Overrides Sub DataPortal_Create()
     ' load default values
   End Sub
 

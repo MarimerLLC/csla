@@ -16,7 +16,6 @@ Public Class ProjectEdit
     InitializeComponent()
 
     mProject = project
-    mProject.BeginEdit()
 
     Me.RoleListBindingSource.DataSource = RoleList.GetList
     Me.ProjectBindingSource.DataSource = mProject
@@ -81,7 +80,6 @@ Public Class ProjectEdit
       Try
         Dim temp As Project = mProject.Clone
         mProject = temp.Save
-        mProject.BeginEdit()
         If rebind Then
           ' rebind the UI
           Me.ProjectBindingSource.DataSource = Nothing

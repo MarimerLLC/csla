@@ -72,7 +72,6 @@ namespace PTWin
         {
           Project temp = _project.Clone();
           _project = temp.Save();
-          _project.BeginEdit();
           if (rebind)
           {
             // rebind the UI
@@ -109,7 +108,6 @@ namespace PTWin
       InitializeComponent();
 
       _project = project;
-      _project.BeginEdit();
 
       this.roleListBindingSource.DataSource = RoleList.GetList();
       this.projectBindingSource.DataSource = _project;

@@ -24,7 +24,6 @@ namespace PTWin
       InitializeComponent();
 
       _resource = resource;
-      _resource.BeginEdit();
 
       this.CurrentPrincipalChanged += new EventHandler(ResourceEdit_CurrentPrincipalChanged);
       _resource.PropertyChanged += new PropertyChangedEventHandler(mResource_PropertyChanged);
@@ -84,7 +83,6 @@ namespace PTWin
         {
           Resource temp = Resource.Clone();
           _resource = temp.Save();
-          _resource.BeginEdit();
           if (rebind)
           {
             // rebind the UI

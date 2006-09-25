@@ -16,7 +16,6 @@ Public Class ResourceEdit
     InitializeComponent()
 
     mResource = resource
-    mResource.BeginEdit()
 
     Me.RoleListBindingSource.DataSource = RoleList.GetList
     Me.ResourceBindingSource.DataSource = mResource
@@ -80,7 +79,6 @@ Public Class ResourceEdit
       Try
         Dim temp As Resource = mResource.Clone
         mResource = temp.Save
-        mResource.BeginEdit()
         If rebind Then
           ' rebind the UI
           Me.ResourceBindingSource.DataSource = Nothing

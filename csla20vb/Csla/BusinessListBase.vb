@@ -498,30 +498,12 @@ Public MustInherit Class BusinessListBase( _
     For index As Integer = 0 To Count - 1
       If ReferenceEquals(Me(index), sender) Then
         OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
-          ComponentModel.ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)))
+          ComponentModel.ListChangedType.ItemChanged, index))
         Exit For
       End If
     Next
 
   End Sub
-
-  Private Shared mPropertyDescriptors As PropertyDescriptorCollection
-
-  Private Function GetPropertyDescriptor(ByVal propertyName As String) As PropertyDescriptor
-
-    If mPropertyDescriptors Is Nothing Then
-      mPropertyDescriptors = TypeDescriptor.GetProperties(Me.GetType)
-    End If
-    Dim result As PropertyDescriptor = Nothing
-    For Each desc As PropertyDescriptor In mPropertyDescriptors
-      If desc.Name = propertyName Then
-        result = desc
-        Exit For
-      End If
-    Next
-    Return result
-
-  End Function
 
 #End Region
 

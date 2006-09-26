@@ -694,7 +694,9 @@ Public MustInherit Class BusinessListBase( _
   End Function
 
   <NonSerialized()> _
+  <NotUndoable()> _
   Private mNonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  <NotUndoable()> _
   Private mSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
 
   ''' <summary>

@@ -195,8 +195,10 @@ namespace Csla
     }
 
 
-    [NonSerialized, NotUndoable]
+    [NonSerialized]
+    [NotUndoable]
     private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
+    [NotUndoable]
     private EventHandler<Csla.Core.SavedEventArgs> _serializableSavedHandlers;
     
     /// <summary>

@@ -261,7 +261,7 @@ Namespace Core
     ''' that no event is raised for IsDirty, so only the specific
     ''' property changed event for the current property is raised.
     ''' </remarks>
-    Protected Sub PropertyHasChanged(ByVal propertyName As String)
+    Protected Overridable Sub PropertyHasChanged(ByVal propertyName As String)
 
       ValidationRules.CheckRules(propertyName)
       MarkDirty(True)

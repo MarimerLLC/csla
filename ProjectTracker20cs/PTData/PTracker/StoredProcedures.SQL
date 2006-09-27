@@ -84,9 +84,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[exist
 
 DROP PROCEDURE [dbo].[existsResource]
 
-		@resourceId varchar(10),
-
-
+GO
 
 /****** Object:  StoredProcedure [dbo].[getProject]    Script Date: 01/18/2006 09:28:48 ******/
 

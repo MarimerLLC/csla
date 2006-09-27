@@ -96,6 +96,7 @@ public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Cor
       _activelySaving = false;
       this.RaiseListChangedEvents = raisingEvents;
     }
+    this.OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
   }
 
 #endregion

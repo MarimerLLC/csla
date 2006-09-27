@@ -91,6 +91,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
       mActivelySaving = False
       Me.RaiseListChangedEvents = raiseEvents
     End Try
+    Me.OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
 
   End Sub
 

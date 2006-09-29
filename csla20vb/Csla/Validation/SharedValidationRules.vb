@@ -47,28 +47,6 @@ Namespace Validation
 
     End Function
 
-    ''' <summary>
-    ''' Adds a rule to the list of rules to be enforced.
-    ''' </summary>
-    ''' <remarks>
-    ''' A rule is implemented by a method which conforms to the 
-    ''' method signature defined by the RuleHandler delegate.
-    ''' </remarks>
-    ''' <param name="handler">The method that implements the rule.</param>
-    ''' <param name="objectType">
-    ''' Type of business object for which the rule applies.
-    ''' </param>
-    ''' <param name="args">
-    ''' A RuleArgs object specifying the property name and other arguments
-    ''' passed to the rule method
-    ''' </param>
-    Public Sub AddRule( _
-      ByVal handler As RuleHandler, ByVal objectType As Type, ByVal args As RuleArgs)
-
-      GetManager(objectType, True).AddRule(handler, args, 0)
-
-    End Sub
-
   End Module
 
 End Namespace

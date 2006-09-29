@@ -47,25 +47,5 @@ namespace Csla.Validation
     {
       return _managers.ContainsKey(objectType);
     }
-
-    /// <summary>
-    /// Adds a rule to the list of rules to be enforced.
-    /// </summary>
-    /// <remarks>
-    /// A rule is implemented by a method which conforms to the 
-    /// method signature defined by the RuleHandler delegate.
-    /// </remarks>
-    /// <param name="handler">The method that implements the rule.</param>
-    /// <param name="objectType">
-    /// Type of business object for which the rule applies.
-    /// </param>
-    /// <param name="args">
-    /// A RuleArgs object specifying the property name and other arguments
-    /// passed to the rule method
-    /// </param>
-    public static void AddRule(RuleHandler handler, Type objectType, RuleArgs args)
-    {
-      GetManager(objectType, true).AddRule(handler, args, 0);
-    }
   }
 }

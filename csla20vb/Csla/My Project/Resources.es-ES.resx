@@ -482,4 +482,40 @@
 
   </data>
 
+  <data name="InvalidRuleMethodException" xml:space="preserve">
+
+    <value>Método de regla no válido (no se permiten métodos de instancia del objeto de destino)</value>
+
+  </data>
+
+  <data name="MaxValueRule" xml:space="preserve">
+
+    <value>{0} no puede ser superior a {1}</value>
+
+  </data>
+
+  <data name="MinValueRule" xml:space="preserve">
+
+    <value>{0} no puede ser menor que {1}</value>
+
+  </data>
+
+  <data name="RegExMatchRule" xml:space="preserve">
+
+    <value>{0} no coincide con una expresión regular</value>
+
+  </data>
+
+  <data name="StringMaxLengthRule" xml:space="preserve">
+
+    <value>{0} no puede exceder {1} caracteres</value>
+
+  </data>
+
+  <data name="StringRequiredRule" xml:space="preserve">
+
+    <value>{0} es requerido</value>
+
+  </data>
+
 </root>

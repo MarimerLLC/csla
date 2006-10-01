@@ -1,401 +1,557 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <root>
 
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <!-- 
 
-		<xsd:element name="root" msdata:IsDataSet="true">
+    Microsoft ResX Schema 
 
-			<xsd:complexType>
+    
 
-				<xsd:choice maxOccurs="unbounded">
+    Version 2.0
 
-					<xsd:element name="data">
+    
 
-						<xsd:complexType>
+    The primary goals of this format is to allow a simple XML format 
 
-							<xsd:sequence>
+    that is mostly human readable. The generation and parsing of the 
 
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+    various data types are done through the TypeConverter classes 
 
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+    associated with the data types.
 
-							</xsd:sequence>
+    
 
-							<xsd:attribute name="name" type="xsd:string" />
+    Example:
 
-							<xsd:attribute name="type" type="xsd:string" />
+    
 
-							<xsd:attribute name="mimetype" type="xsd:string" />
+    ... ado.net/XML headers & schema ...
 
-						</xsd:complexType>
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
 
-					</xsd:element>
+    <resheader name="version">2.0</resheader>
 
-					<xsd:element name="resheader">
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
 
-						<xsd:complexType>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
 
-							<xsd:sequence>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
 
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
 
-							</xsd:sequence>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
 
-							<xsd:attribute name="name" type="xsd:string" use="required" />
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
 
-						</xsd:complexType>
+    </data>
 
-					</xsd:element>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
 
-				</xsd:choice>
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
 
-			</xsd:complexType>
+        <comment>This is a comment</comment>
 
-		</xsd:element>
+    </data>
 
-	</xsd:schema>
+                
 
-	<resheader name="ResMimeType">
+    There are any number of "resheader" rows that contain simple 
 
-		<value>text/microsoft-resx</value>
+    name/value pairs.
 
-	</resheader>
+    
 
-	<resheader name="Version">
+    Each data row contains a name, and value. The row also contains a 
 
-		<value>1.0.0.0</value>
+    type or mimetype. Type corresponds to a .NET class that support 
 
-	</resheader>
+    text/value conversion through the TypeConverter architecture. 
 
-	<resheader name="Reader">
+    Classes that don't support this are serialized and stored with the 
 
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    mimetype set.
 
-	</resheader>
+    
 
-	<resheader name="Writer">
+    The mimetype is used for serialized objects, and tells the 
 
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    ResXResourceReader how to depersist the object. This is currently not 
 
-	</resheader>
+    extensible. For a given mimetype the value must be set accordingly:
 
-	<data name="ClearInvalidException" type="System.String">
+    
 
-		<value>Clear (blanking) er en ugyldig operasjon</value>
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
 
-	</data>
+    that the ResXResourceWriter will generate, however the reader can 
 
-	<data name="InsertInvalidException" type="System.String">
+    read any of the formats listed below.
 
-		<value>Insert (legg inn) er en ugyldig operasjon</value>
+    
 
-	</data>
+    mimetype: application/x-microsoft.net.object.binary.base64
 
-	<data name="RemoveInvalidException" type="System.String">
+    value   : The object must be serialized with 
 
-		<value>Remove (fjern) er en ugyldig operasjon</value>
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
 
-	</data>
+            : and then encoded with base64 encoding.
 
-	<data name="ChangeInvalidException" type="System.String">
+    
 
-		<value>Endring av et element er en ugyldig operasjon</value>
+    mimetype: application/x-microsoft.net.object.soap.base64
 
-	</data>
+    value   : The object must be serialized with 
 
-	<data name="ParentSetException" type="System.String">
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
 
-		<value>Parent (foreldre) verdi kan kun bli satt av Child (barne) objekter</value>
+            : and then encoded with base64 encoding.
 
-	</data>
 
-	<data name="ChildDeleteException" type="System.String">
 
-		<value>Child (barne) objektet kan ikke markeres for sletting direkte - benytt Parent Collection (foreldre listen)</value>
+    mimetype: application/x-microsoft.net.object.bytearray.base64
 
-	</data>
+    value   : The object must be serialized into a byte array 
 
-	<data name="NoDeleteRootException" type="System.String">
+            : using a System.ComponentModel.TypeConverter
 
-		<value>Ugyldig for Root (rot) objekter - benytt Delete (slett) istedet</value>
+            : and then encoded with base64 encoding.
 
-	</data>
+    -->
 
-	<data name="NoSaveChildException" type="System.String">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
 
-		<value>Et Child (barne) objekt kan ikke lagres direkte</value>
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
 
-	</data>
+    <xsd:element name="root" msdata:IsDataSet="true">
 
-	<data name="NoSaveEditingException" type="System.String">
+      <xsd:complexType>
 
-		<value>Objektet redigeres fortsatt og kan ikke lagres</value>
+        <xsd:choice maxOccurs="unbounded">
 
-	</data>
+          <xsd:element name="metadata">
 
-	<data name="NoSaveInvalidException" type="System.String">
+            <xsd:complexType>
 
-		<value>Objektet er ugyldig og kan ikke lagres</value>
+              <xsd:sequence>
 
-	</data>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
 
-	<data name="CreateNotSupportedException" type="System.String">
+              </xsd:sequence>
 
-		<value>Ugyldig operasjon - Create (opprett) er ikke tillatt</value>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
 
-	</data>
+              <xsd:attribute name="type" type="xsd:string" />
 
-	<data name="FetchNotSupportedException" type="System.String">
+              <xsd:attribute name="mimetype" type="xsd:string" />
 
-		<value>Ugyldig operasjon - Fetch (hent) er ikke tillatt</value>
+              <xsd:attribute ref="xml:space" />
 
-	</data>
+            </xsd:complexType>
 
-	<data name="UpdateNotSupportedException" type="System.String">
+          </xsd:element>
 
-		<value>Ugyldig operasjon - Update (oppdater) er ikke tillatt</value>
+          <xsd:element name="assembly">
 
-	</data>
+            <xsd:complexType>
 
-	<data name="DeleteNotSupportedException" type="System.String">
+              <xsd:attribute name="alias" type="xsd:string" />
 
-		<value>Ugyildig operasjon - Delete (slett) er ikke tillatt</value>
+              <xsd:attribute name="name" type="xsd:string" />
 
-	</data>
+            </xsd:complexType>
 
-	<data name="NoBeginEditChildException" type="System.String">
+          </xsd:element>
 
-		<value>BeginEdit er ugyldig paa et Child (barne) objekt</value>
+          <xsd:element name="data">
 
-	</data>
+            <xsd:complexType>
 
-	<data name="NoCancelEditChildException" type="System.String">
+              <xsd:sequence>
 
-		<value>CancelEdit er ugyldig paa et Child (barne) objekt</value>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
 
-	</data>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
 
-	<data name="NoApplyEditChildException" type="System.String">
+              </xsd:sequence>
 
-		<value>ApplyEdit er ugyldig paa et Child (barne) objekt</value>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
 
-	</data>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
 
-	<data name="NoSuchValueExistsException" type="System.String">
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
 
-		<value>En slik verdi eksisterer ikke:</value>
+              <xsd:attribute ref="xml:space" />
 
-	</data>
+            </xsd:complexType>
 
-	<data name="ErrorReadingValueException" type="System.String">
+          </xsd:element>
 
-		<value>Feil ved lesing av verdi:</value>
+          <xsd:element name="resheader">
 
-	</data>
+            <xsd:complexType>
 
-	<data name="NoInsertReadOnlyException" type="System.String">
+              <xsd:sequence>
 
-		<value>Insert (legg inn) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
 
-	</data>
+              </xsd:sequence>
 
-	<data name="NoRemoveReadOnlyException" type="System.String">
+              <xsd:attribute name="name" type="xsd:string" use="required" />
 
-		<value>Remove (fjern) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
+            </xsd:complexType>
 
-	</data>
+          </xsd:element>
 
-	<data name="NoClearReadOnlyException" type="System.String">
+        </xsd:choice>
 
-		<value>Clear (blank) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
+      </xsd:complexType>
 
-	</data>
+    </xsd:element>
 
-	<data name="NoChangeReadOnlyException" type="System.String">
+  </xsd:schema>
 
-		<value>Verdier kan ikke endres i en Read-Only Collection (uredigerbar liste)</value>
+  <resheader name="resmimetype">
 
-	</data>
+    <value>text/microsoft-resx</value>
 
-	<data name="StringToDateException" type="System.String">
+  </resheader>
 
-		<value>String-verdien kan ikke konverteres til  Date (en dato)</value>
+  <resheader name="version">
 
-	</data>
+    <value>2.0</value>
 
-	<data name="ValueNotSmartDateException" type="System.String">
+  </resheader>
 
-		<value>Verdien er ikke en SmartDate</value>
+  <resheader name="reader">
 
-	</data>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 
-	<data name="InvalidDateException" type="System.String">
+  </resheader>
 
-		<value>Verdien maa vaere en gyldig dato</value>
+  <resheader name="writer">
 
-	</data>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 
-	<data name="SortingNotSupportedException" type="System.String">
+  </resheader>
 
-		<value>Sortering er ikke stoettet i denne listen</value>
+  <data name="ClearInvalidException" xml:space="preserve">
 
-	</data>
+    <value>Clear (blanking) er en ugyldig operasjon</value>
 
-	<data name="SearchingNotSupportedException" type="System.String">
+  </data>
 
-		<value>Soek er ikke stoettet i denne listen</value>
+  <data name="InsertInvalidException" xml:space="preserve">
 
-	</data>
+    <value>Insert (legg inn) er en ugyldig operasjon</value>
 
-	<data name="AddItemException" type="System.String">
+  </data>
 
-		<value>Det er ikke tillatt aa legge til verdier</value>
+  <data name="RemoveInvalidException" xml:space="preserve">
 
-	</data>
+    <value>Remove (fjern) er en ugyldig operasjon</value>
 
-	<data name="NoPrincipalAllowedException" type="System.String">
+  </data>
 
-		<value>Ingen Principal objekter skal sendes til DataPortalen Windows Integrated Security benyttes</value>
+  <data name="ChangeInvalidException" xml:space="preserve">
 
-	</data>
+    <value>Endring av et element er en ugyldig operasjon</value>
 
-	<data name="BusinessPrincipalException" type="System.String">
+  </data>
 
-		<value>Principal maa vaere av typen BusinessPrincipal, ikke </value>
+  <data name="ParentSetException" xml:space="preserve">
 
-	</data>
+    <value>Parent (foreldre) verdi kan kun bli satt av Child (barne) objekter</value>
 
-	<data name="NoMatchException" type="System.String">
+  </data>
 
-		<value>Ingen tilsvarende verdi eksisterer i listen</value>
+  <data name="ChildDeleteException" xml:space="preserve">
 
-	</data>
+    <value>Child (barne) objektet kan ikke markeres for sletting direkte - benytt Parent Collection (foreldrelisten)</value>
 
-	<data name="SecurityDataBase" type="System.String">
+  </data>
 
-		<value>Sikkerhet</value>
+  <data name="NoDeleteRootException" xml:space="preserve">
 
-	</data>
+    <value>Ugyldig for Root (rot) objekter - benytt Delete (slett) istedet</value>
 
-	<data name="SecurityStoredProcedure" type="System.String">
+  </data>
 
-		<value>Login</value>
+  <data name="NoSaveChildException" xml:space="preserve">
 
-	</data>
+    <value>Et Child (barne) objekt kan ikke lagres direkte</value>
 
-	<data name="SecurityUserParam" type="System.String">
+  </data>
 
-		<value>@user</value>
+  <data name="NoSaveEditingException" xml:space="preserve">
 
-	</data>
+    <value>Objektet redigeres fortsatt og kan ikke lagres</value>
 
-	<data name="SecurityPasswordParam" type="System.String">
+  </data>
 
-		<value>@pw</value>
+  <data name="NoSaveInvalidException" xml:space="preserve">
 
-	</data>
+    <value>Objektet er ugyldig og kan ikke lagres</value>
 
-	<data name="SmartDateT" type="System.String">
+  </data>
 
-		<value>t</value>
+  <data name="CreateNotSupportedException" xml:space="preserve">
 
-	</data>
+    <value>Ugyldig operasjon - Create (opprett) er ikke tillatt</value>
 
-	<data name="SmartDateToday" type="System.String">
+  </data>
 
-		<value>today (idag)</value>
+  <data name="FetchNotSupportedException" xml:space="preserve">
 
-	</data>
+    <value>Ugyldig operasjon - Fetch (hent) er ikke tillatt</value>
 
-	<data name="SmartDateY" type="System.String">
+  </data>
 
-		<value>y</value>
+  <data name="UpdateNotSupportedException" xml:space="preserve">
 
-	</data>
+    <value>Ugyldig operasjon - Update (oppdater) er ikke tillatt</value>
 
-	<data name="SmartDateYesterday" type="System.String">
+  </data>
 
-		<value>yesterday</value>
+  <data name="DeleteNotSupportedException" xml:space="preserve">
 
-	</data>
+    <value>Ugyildig operasjon - Delete (slett) er ikke tillatt</value>
 
-	<data name="SmartDateTom" type="System.String">
+  </data>
 
-		<value>tom</value>
+  <data name="NoBeginEditChildException" xml:space="preserve">
 
-	</data>
+    <value>BeginEdit er ugyldig på et Child (barne) objekt</value>
 
-	<data name="SmartDateTomorrow" type="System.String">
+  </data>
 
-		<value>tomorrow</value>
+  <data name="NoCancelEditChildException" xml:space="preserve">
 
-	</data>
+    <value>CancelEdit er ugyldig på et Child (barne) objekt</value>
 
-	<data name="BatchQueueJobCompleted" type="System.String">
+  </data>
 
-		<value>Batch jobben er fullfoert</value>
+  <data name="NoApplyEditChildException" xml:space="preserve">
 
-	</data>
+    <value>ApplyEdit er ugyldig på et Child (barne) objekt</value>
 
-	<data name="BatchQueueJobPrefix" type="System.String">
+  </data>
 
-		<value>Batch jobb:</value>
+  <data name="NoSuchValueExistsException" xml:space="preserve">
 
-	</data>
+    <value>En slik verdi eksisterer ikke:</value>
 
-	<data name="BatchQueueJobObjectPrefix" type="System.String">
+  </data>
 
-		<value>Jobb objekt:</value>
+  <data name="ErrorReadingValueException" xml:space="preserve">
 
-	</data>
+    <value>Feil ved lesing av verdi:</value>
 
-	<data name="BatchQueueJobFailed" type="System.String">
+  </data>
 
-		<value>Batch jobb ble ikke fullfoert pga en feil under utfoeringen</value>
+  <data name="NoInsertReadOnlyException" xml:space="preserve">
 
-	</data>
+    <value>Insert (legg inn) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
 
-	<data name="BatchQueueProcStarted" type="System.String">
+  </data>
 
-		<value>Batch koe prosessoren har startet</value>
+  <data name="NoRemoveReadOnlyException" xml:space="preserve">
 
-	</data>
+    <value>Remove (fjern) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
 
-	<data name="BatchQueueProcName" type="System.String">
+  </data>
 
-		<value>Navn:</value>
+  <data name="NoClearReadOnlyException" xml:space="preserve">
 
-	</data>
+    <value>Clear (blank) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
 
-	<data name="BatchQueueProcPort" type="System.String">
+  </data>
 
-		<value>Port:</value>
+  <data name="NoChangeReadOnlyException" xml:space="preserve">
 
-	</data>
+    <value>Verdier kan ikke endres i en Read-Only Collection (uredigerbar liste)</value>
 
-	<data name="BatchQueueProcQueue" type="System.String">
+  </data>
 
-		<value>Koe:</value>
+  <data name="StringToDateException" xml:space="preserve">
 
-	</data>
+    <value>String-verdien kan ikke konverteres til  Date (en dato)</value>
 
-	<data name="BatchQueueProcMaxJobs" type="System.String">
+  </data>
 
-		<value>Max antall jobber:</value>
+  <data name="ValueNotSmartDateException" xml:space="preserve">
 
-	</data>
+    <value>Verdien er ikke en SmartDate</value>
 
-	<data name="Failed" type="System.String">
+  </data>
 
-		<value>Feilet</value>
+  <data name="InvalidDateException" xml:space="preserve">
 
-	</data>
+    <value>Verdien må være en gyldig dato</value>
 
-	<data name="FailedOnServer" type="System.String">
+  </data>
 
-		<value>Feilet paa serveren</value>
+  <data name="SortingNotSupportedException" xml:space="preserve">
 
-	</data>
+    <value>Sortering er ikke støttet i denne listen</value>
+
+  </data>
+
+  <data name="SearchingNotSupportedException" xml:space="preserve">
+
+    <value>Søk er ikke støttet i denne listen</value>
+
+  </data>
+
+  <data name="AddItemException" xml:space="preserve">
+
+    <value>Det er ikke tillatt å legge til verdier</value>
+
+  </data>
+
+  <data name="NoPrincipalAllowedException" xml:space="preserve">
+
+    <value>Ingen Principal objekter skal sendes til DataPortalen Windows Integrated Security benyttes</value>
+
+  </data>
+
+  <data name="BusinessPrincipalException" xml:space="preserve">
+
+    <value>Principal må vaere av typen BusinessPrincipal, ikke </value>
+
+  </data>
+
+  <data name="NoMatchException" xml:space="preserve">
+
+    <value>Ingen tilsvarende verdi eksisterer i listen</value>
+
+  </data>
+
+  <data name="SecurityDataBase" xml:space="preserve">
+
+    <value>Sikkerhet</value>
+
+  </data>
+
+  <data name="SecurityStoredProcedure" xml:space="preserve">
+
+    <value>Login</value>
+
+  </data>
+
+  <data name="SecurityUserParam" xml:space="preserve">
+
+    <value>@user</value>
+
+  </data>
+
+  <data name="SecurityPasswordParam" xml:space="preserve">
+
+    <value>@pw</value>
+
+  </data>
+
+  <data name="SmartDateT" xml:space="preserve">
+
+    <value>t</value>
+
+  </data>
+
+  <data name="SmartDateToday" xml:space="preserve">
+
+    <value>today (idag)</value>
+
+  </data>
+
+  <data name="SmartDateY" xml:space="preserve">
+
+    <value>y (år)</value>
+
+  </data>
+
+  <data name="SmartDateYesterday" xml:space="preserve">
+
+    <value>yesterday (igår)</value>
+
+  </data>
+
+  <data name="SmartDateTom" xml:space="preserve">
+
+    <value>tom</value>
+
+  </data>
+
+  <data name="SmartDateTomorrow" xml:space="preserve">
+
+    <value>tomorrow (imorgen)</value>
+
+  </data>
+
+  <data name="BatchQueueJobCompleted" xml:space="preserve">
+
+    <value>Batch jobben er fullført</value>
+
+  </data>
+
+  <data name="BatchQueueJobPrefix" xml:space="preserve">
+
+    <value>Batch jobb:</value>
+
+  </data>
+
+  <data name="BatchQueueJobObjectPrefix" xml:space="preserve">
+
+    <value>Jobb objekt:</value>
+
+  </data>
+
+  <data name="BatchQueueJobFailed" xml:space="preserve">
+
+    <value>Batch-jobben ble ikke fullført pga en feil under utføringen</value>
+
+  </data>
+
+  <data name="BatchQueueProcStarted" xml:space="preserve">
+
+    <value>Batchkø prosessoren har startet</value>
+
+  </data>
+
+  <data name="BatchQueueProcName" xml:space="preserve">
+
+    <value>Navn:</value>
+
+  </data>
+
+  <data name="BatchQueueProcPort" xml:space="preserve">
+
+    <value>Port:</value>
+
+  </data>
+
+  <data name="BatchQueueProcQueue" xml:space="preserve">
+
+    <value>Koe:</value>
+
+  </data>
+
+  <data name="BatchQueueProcMaxJobs" xml:space="preserve">
+
+    <value>Max antall jobber:</value>
+
+  </data>
+
+  <data name="Failed" xml:space="preserve">
+
+    <value>Feilet</value>
+
+  </data>
+
+  <data name="FailedOnServer" xml:space="preserve">
+
+    <value>Feilet på serveren</value>
+
+  </data>
 
 </root>

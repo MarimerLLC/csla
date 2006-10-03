@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using Csla.Properties;
 
 namespace Csla
@@ -94,7 +95,6 @@ namespace Csla
     /// </summary>
     protected ReadOnlyBase()
     {
-      _authorizationRules = new Csla.Security.AuthorizationRules(this.GetType());
       Initialize();
       AddInstanceAuthorizationRules();
       if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
@@ -163,7 +163,12 @@ namespace Csla
     /// </remarks>
     protected Security.AuthorizationRules AuthorizationRules
     {
-      get { return _authorizationRules; }
+      get
+      {
+        if (_authorizationRules == null)
+          _authorizationRules = new Security.AuthorizationRules(this.GetType());
+        return _authorizationRules;
+      }
     }
 
     /// <summary>
@@ -388,6 +393,31 @@ namespace Csla
     protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
 
+    }
+
+    #endregion
+
+    #region Serialization Notification
+
+    [OnDeserialized()]
+    private void OnDeserializedHandler(StreamingContext context)
+    {
+      OnDeserialized(context);
+      AddInstanceAuthorizationRules();
+      if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+        AddAuthorizationRules();
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    /// <param name="context">Serialization context object.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnDeserialized(StreamingContext context)
+    {
+      // do nothing - this is here so a subclass
+      // could override if needed
     }
 
     #endregion

@@ -133,7 +133,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   <NotUndoable()> _
   <NonSerialized()> _
-  Private mAuthorizationRules As New Security.AuthorizationRules(Me.GetType)
+  Private mAuthorizationRules As Security.AuthorizationRules
 
   ''' <summary>
   ''' Override this method to add authorization
@@ -168,6 +168,9 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Protected ReadOnly Property AuthorizationRules() _
     As Security.AuthorizationRules
     Get
+      If mAuthorizationRules Is Nothing Then
+        mAuthorizationRules = New Security.AuthorizationRules(Me.GetType)
+      End If
       Return mAuthorizationRules
     End Get
   End Property
@@ -401,6 +404,35 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+
+  End Sub
+
+#End Region
+
+#Region " Serialization Notification "
+
+  <OnDeserialized()> _
+  Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
+
+    OnDeserialized(context)
+    AddInstanceAuthorizationRules()
+    If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+      AddAuthorizationRules()
+    End If
+
+  End Sub
+
+  ''' <summary>
+  ''' This method is called on a newly deserialized object
+  ''' after deserialization is complete.
+  ''' </summary>
+  ''' <param name="context">Serialization context object.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub OnDeserialized( _
+    ByVal context As StreamingContext)
+
+    ' do nothing - this is here so a subclass
+    ' could override if needed
 
   End Sub
 

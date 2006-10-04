@@ -90,7 +90,7 @@ Namespace Validation
               Dim dependancy As List(Of String) = _
                 de.Value.GetDependancyList(False)
               If dependancy IsNot Nothing Then
-                rules.GetDependancyList(False).AddRange(dependancy)
+                rules.GetDependancyList(True).AddRange(dependancy)
               End If
             Next
           End If

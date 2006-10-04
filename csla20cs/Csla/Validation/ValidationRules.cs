@@ -90,7 +90,7 @@ namespace Csla.Validation
               instanceList.AddRange(de.Value.GetList(false));
               List<string> dependancy = de.Value.GetDependancyList(false);
               if (dependancy != null)
-                rules.GetDependancyList(false).AddRange(dependancy);
+                rules.GetDependancyList(true).AddRange(dependancy);
             }
           }
         }

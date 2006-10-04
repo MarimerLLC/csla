@@ -87,7 +87,11 @@ Namespace Validation
               Dim rules As RulesList = mRulesToCheck.GetRulesForProperty(de.Key, True)
               Dim instanceList As List(Of IRuleMethod) = rules.GetList(False)
               instanceList.AddRange(de.Value.GetList(False))
-              rules.GetDependancyList(False).AddRange(de.Value.GetDependancyList(False))
+              Dim dependancy As List(Of String) = _
+                de.Value.GetDependancyList(False)
+              If dependancy IsNot Nothing Then
+                rules.GetDependancyList(False).AddRange(dependancy)
+              End If
             Next
           End If
         End If

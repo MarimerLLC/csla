@@ -88,7 +88,9 @@ namespace Csla.Validation
               RulesList rules = _rulesToCheck.GetRulesForProperty(de.Key, true);
               List<IRuleMethod> instanceList = rules.GetList(false);
               instanceList.AddRange(de.Value.GetList(false));
-              rules.GetDependancyList(false).AddRange(de.Value.GetDependancyList(false));
+              List<string> dependancy = de.Value.GetDependancyList(false);
+              if (dependancy != null)
+                rules.GetDependancyList(false).AddRange(dependancy);
             }
           }
         }

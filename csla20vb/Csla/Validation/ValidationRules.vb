@@ -84,8 +84,10 @@ Namespace Validation
             ' both have values - consolidate into instance rules
             mRulesToCheck = instanceRules
             For Each de As Generic.KeyValuePair(Of String, RulesList) In typeRules.RulesDictionary
-              Dim instanceList As List(Of IRuleMethod) = mRulesToCheck.GetRulesForProperty(de.Key, True).GetList(False)
+              Dim rules As RulesList = mRulesToCheck.GetRulesForProperty(de.Key, True)
+              Dim instanceList As List(Of IRuleMethod) = rules.GetList(False)
               instanceList.AddRange(de.Value.GetList(False))
+              rules.GetDependancyList(False).AddRange(de.Value.GetDependancyList(False))
             Next
           End If
         End If

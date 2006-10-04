@@ -85,8 +85,10 @@ namespace Csla.Validation
             _rulesToCheck = instanceRules;
             foreach (KeyValuePair<string, RulesList> de in typeRules.RulesDictionary)
             {
-              List<IRuleMethod> instanceList = _rulesToCheck.GetRulesForProperty(de.Key, true).GetList(false);
+              RulesList rules = _rulesToCheck.GetRulesForProperty(de.Key, true);
+              List<IRuleMethod> instanceList = rules.GetList(false);
               instanceList.AddRange(de.Value.GetList(false));
+              rules.GetDependancyList(false).AddRange(de.Value.GetDependancyList(false));
             }
           }
         }

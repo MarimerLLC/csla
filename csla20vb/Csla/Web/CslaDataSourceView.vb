@@ -134,7 +134,9 @@ Namespace Web
       ' wrap it in a collection
       If Not TypeOf result Is IEnumerable Then
         Dim list As New ArrayList
-        list.Add(result)
+        If result IsNot Nothing Then
+          list.Add(result)
+        End If
         result = list
       End If
 

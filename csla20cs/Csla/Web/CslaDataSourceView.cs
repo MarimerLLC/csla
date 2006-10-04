@@ -121,7 +121,8 @@ namespace Csla.Web
       if (!(result is IEnumerable))
       {
         ArrayList list = new ArrayList();
-        list.Add(result);
+        if (result != null)
+          list.Add(result);
         result = list;
       }
 

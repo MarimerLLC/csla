@@ -48,7 +48,7 @@ namespace ProjectTracker.Library
               ResourceInfo info = new ResourceInfo(dr);
               this.Add(info);
             }
-            IsReadOnly = false;
+            IsReadOnly = true;
           }
         }
       }

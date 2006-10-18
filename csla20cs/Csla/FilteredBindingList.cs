@@ -314,7 +314,7 @@ namespace Csla
     public int Find(PropertyDescriptor property, object key)
     {
       if (_supportsBinding)
-        return _bindingList.Find(property, key);
+        return FilteredIndex(_bindingList.Find(property, key));
       else
         return -1;
     }

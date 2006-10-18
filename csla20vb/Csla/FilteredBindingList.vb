@@ -294,7 +294,7 @@ Public Class FilteredBindingList(Of T)
   ''' value.</param>
   Public Function Find(ByVal [property] As PropertyDescriptor, ByVal key As Object) As Integer Implements IBindingList.Find
     If mSupportsBinding Then
-      Return mBindingList.Find([property], key)
+      Return FilteredIndex(mBindingList.Find([property], key))
     Else
       Return -1
     End If

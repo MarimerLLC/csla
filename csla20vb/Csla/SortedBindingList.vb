@@ -385,7 +385,7 @@ Public Class SortedBindingList(Of T)
   ''' value.</param>
   Public Function Find(ByVal [property] As System.ComponentModel.PropertyDescriptor, ByVal key As Object) As Integer Implements System.ComponentModel.IBindingList.Find
     If mSupportsBinding Then
-      Return mBindingList.Find([property], key)
+      Return SortedIndex(mBindingList.Find([property], key))
     Else
       Return -1
     End If

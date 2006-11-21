@@ -648,16 +648,24 @@ Public Class SortedBindingList(Of T)
     If mSorted Then
       mInitiatedLocally = True
       Dim baseIndex As Integer = OriginalIndex(index)
+
       ' remove the item from the source list
       mList.RemoveAt(baseIndex)
+
       ' delete the corresponding value in the sort index
-      mSortIndex.RemoveAt(index)
+      If mSortOrder = ListSortDirection.Ascending Then
+        mSortIndex.RemoveAt(index)
+      Else
+        mSortIndex.RemoveAt(mSortIndex.Count - 1 - index)
+      End If
+
       ' now fix up all index pointers in the sort index
       For Each item As ListItem In mSortIndex
         If item.BaseIndex > baseIndex Then
           item.BaseIndex -= 1
         End If
       Next
+
       OnListChanged( _
         New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
       mInitiatedLocally = False

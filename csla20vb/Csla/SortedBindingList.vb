@@ -52,7 +52,10 @@ Public Class SortedBindingList(Of T)
         Return DirectCast(Key, IComparable).CompareTo(target)
 
       Else
-        If Key.Equals(target) Then
+        If Key Is Nothing Then
+          Return 0
+
+        ElseIf Key.Equals(target) Then
           Return 0
 
         Else

@@ -52,7 +52,9 @@ namespace Csla
 
         else
         {
-          if (Key.Equals(target))
+          if (Key == null)
+            return 0;
+          else if (Key.Equals(target))
             return 0;
           else
             return Key.ToString().CompareTo(target.ToString());

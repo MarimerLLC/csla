@@ -22,33 +22,6 @@ Namespace Security
 
 #Region " Get Roles "
 
-    ''' <summary>
-    ''' Returns a list of roles for the property
-    ''' and requested access type.
-    ''' </summary>
-    ''' <param name="propertyName">
-    ''' Name of the object property.</param>
-    ''' <param name="access">Desired access type.</param>
-    ''' <returns>An string array of roles.</returns>
-    <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Public Function GetRolesForProperty(ByVal propertyName As String, _
-      ByVal access As AccessType) As String()
-
-      Dim currentRoles As RolesForProperty = GetRolesForProperty(propertyName)
-      Select Case access
-        Case AccessType.ReadAllowed
-          Return currentRoles.ReadAllowed.ToArray
-        Case AccessType.ReadDenied
-          Return currentRoles.ReadDenied.ToArray
-        Case AccessType.WriteAllowed
-          Return currentRoles.WriteAllowed.ToArray
-        Case AccessType.WriteDenied
-          Return currentRoles.WriteDenied.ToArray
-      End Select
-      Return Nothing
-
-    End Function
-
     Friend Function GetRolesForProperty( _
       ByVal propertyName As String) As RolesForProperty
 

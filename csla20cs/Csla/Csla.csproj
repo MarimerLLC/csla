@@ -105,7 +105,6 @@
     <Compile Include="FilteredBindingList.cs" />
     <Compile Include="FilterProvider.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IFilterable.cs" />
     <Compile Include="NameValueListBase.cs" />
     <Compile Include="NotUndoableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -94,7 +94,6 @@
     <Compile Include="FilteredBindingList.vb" />
     <Compile Include="FilterProvider.vb" />
     <Compile Include="GlobalSuppressions.vb" />
-    <Compile Include="IFilterable.vb" />
     <Compile Include="Security\AccessType.vb" />
     <Compile Include="Security\AuthorizationRulesManager.vb" />
     <Compile Include="Security\IAuthorizeReadWrite.vb" />

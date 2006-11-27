@@ -240,11 +240,15 @@
 
 		<value>leeg maken is een ongeldige bewerking</value>
 
+		<comment>Clear is an invalid operation</comment>
+
 	</data>
 
 	<data name="InsertInvalidException" xml:space="preserve">
 
 		<value>toevoegen is een ongeldige bewerking</value>
+
+		<comment>Insert is an invalid operation</comment>
 
 	</data>
 
@@ -252,11 +256,15 @@
 
 		<value>Verwijderen is een ongeldige bewerking</value>
 
+		<comment>Remove is an invalid operation</comment>
+
 	</data>
 
 	<data name="ChangeInvalidException" xml:space="preserve">
 
 		<value>Het wijzigen van een element is een ongeldige bewerking</value>
+
+		<comment>Changing an element is an invalid operation</comment>
 
 	</data>
 
@@ -264,11 +272,15 @@
 
 		<value>Parent waarde kan alleen voor child objecten gewijzigd worden</value>
 
+		<comment>Parent comment can only be set for child objects</comment>
+
 	</data>
 
 	<data name="ChildDeleteException" xml:space="preserve">
 
 		<value>Kan geen child object markeren om te verwijderen - gebruik de parent collectie</value>
+
+		<comment>Can not directly mark a child object for deletion - use its parent collection</comment>
 
 	</data>
 
@@ -276,11 +288,15 @@
 
 		<value>Niet toegestaan voor root objecten - gebruik verwijderen</value>
 
+		<comment>Invalid for root objects - use Delete instead</comment>
+
 	</data>
 
 	<data name="NoSaveChildException" xml:space="preserve">
 
 		<value>Het is niet toegestaan om een rechtstreeks een child object te bewaren</value>
+
+		<comment>Can not directly save a child object</comment>
 
 	</data>
 
@@ -288,11 +304,15 @@
 
 		<value>Object wordt nog gewijzigd - bewaren is niet toegestaan</value>
 
+		<comment>Object is still being edited and can not be saved</comment>
+
 	</data>
 
 	<data name="NoSaveInvalidException" xml:space="preserve">
 
 		<value>Validatie van het object is niet geldig - bewaren is niet toegestaan</value>
+
+		<comment>Object is not valid and can not be saved</comment>
 
 	</data>
 
@@ -300,11 +320,15 @@
 
 		<value>ongeldige bewerking - aanmaken is niet toegestaan</value>
 
+		<comment>Invalid operation - create not allowed</comment>
+
 	</data>
 
 	<data name="FetchNotSupportedException" xml:space="preserve">
 
 		<value>ongeldige bewerking - ophalen is niet toegestaan</value>
+
+		<comment>Invalid operation - fetch not allowed</comment>
 
 	</data>
 
@@ -312,11 +336,15 @@
 
 		<value>ongeldige bewerking - wijzigen is niet toegestaan</value>
 
+		<comment>Invalid operation - update not allowed</comment>
+
 	</data>
 
 	<data name="DeleteNotSupportedException" xml:space="preserve">
 
 		<value>ongeldige bewerking - verwijderen is niet toegestaan</value>
+
+		<comment>Invalid operation - delete not allowed</comment>
 
 	</data>
 
@@ -324,11 +352,15 @@
 
 		<value>BeginEdit is een ongeldige bewerking voor een child object</value>
 
+		<comment>BeginEdit is not valid on a child object</comment>
+
 	</data>
 
 	<data name="NoCancelEditChildException" xml:space="preserve">
 
 		<value>CancelEdit is een ongeldige bewerking voor een child object</value>
+
+		<comment>CancelEdit is not valid on a child object</comment>
 
 	</data>
 
@@ -336,11 +368,15 @@
 
 		<value>ApplyEdit is een ongeldige bewerking voor een child object</value>
 
+		<comment>ApplyEdit is not valid on a child object</comment>
+
 	</data>
 
 	<data name="NoSuchValueExistsException" xml:space="preserve">
 
 		<value>de volgende waarde bestaat niet:</value>
+
+		<comment>No such comment exists:</comment>
 
 	</data>
 
@@ -348,11 +384,15 @@
 
 		<value>Fout tijdens het lezen van de waarde:</value>
 
+		<comment>Error reading comment:</comment>
+
 	</data>
 
 	<data name="StringToDateException" xml:space="preserve">
 
 		<value>Een string waarde kan niet geconverteerd worden naar een datum waarde</value>
+
+		<comment>String comment can not be converted to a date</comment>
 
 	</data>
 
@@ -360,11 +400,15 @@
 
 		<value>Waarde is geen SmartDate</value>
 
+		<comment>comment is not a SmartDate</comment>
+
 	</data>
 
 	<data name="NoPrincipalAllowedException" xml:space="preserve">
 
 		<value>Er mag geen principal object naar de DataPortal gestuurd worden wanneer men gebruik maakt van Windows integrated security</value>
+
+		<comment>No principal object should be passed to DataPortal when using Windows integrated security</comment>
 
 	</data>
 
@@ -372,11 +416,15 @@
 
 		<value>Principal moet type BusinessPrincipal zijn, niet:</value>
 
+		<comment>Principal must be of type BusinessPrincipal, not</comment>
+
 	</data>
 
 	<data name="SmartDateT" xml:space="preserve">
 
 		<value>v</value>
+
+		<comment>t</comment>
 
 	</data>
 
@@ -384,11 +432,15 @@
 
 		<value>vandaag</value>
 
+		<comment>today</comment>
+
 	</data>
 
 	<data name="SmartDateY" xml:space="preserve">
 
 		<value>g</value>
+
+		<comment>y</comment>
 
 	</data>
 
@@ -396,11 +448,15 @@
 
 		<value>gisteren</value>
 
+		<comment>yesterday</comment>
+
 	</data>
 
 	<data name="SmartDateTom" xml:space="preserve">
 
 		<value>mor</value>
+
+		<comment>tom</comment>
 
 	</data>
 
@@ -408,11 +464,15 @@
 
 		<value>morgen</value>
 
+		<comment>tomorrow</comment>
+
 	</data>
 
 	<data name="Failed" xml:space="preserve">
 
 		<value>mislukt</value>
+
+		<comment>failed</comment>
 
 	</data>
 
@@ -420,11 +480,15 @@
 
 		<value>mislukt op de server</value>
 
+		<comment>failed on the server</comment>
+
 	</data>
 
 	<data name="MethodCallFailed" xml:space="preserve">
 
 		<value>methode aanroepen mislukt</value>
+
+		<comment>method call failed</comment>
 
 	</data>
 
@@ -432,11 +496,15 @@
 
 		<value>niet geimplementeerd</value>
 
+		<comment>not implemented</comment>
+
 	</data>
 
 	<data name="ExecuteNotSupportedException" xml:space="preserve">
 
 		<value>ongeldige bewerking - uitvoeren is niet toegestaan</value>
+
+		<comment>Invalid operation - execute not allowed</comment>
 
 	</data>
 
@@ -444,11 +512,15 @@
 
 		<value>ongeldige bewerking - toevoegen is niet toegestaan</value>
 
+		<comment>Invalid operation - insert not allowed</comment>
+
 	</data>
 
 	<data name="GetIdValueCantBeNull" xml:space="preserve">
 
 		<value>GetIdValue mag geen Nothing(leeg) retourneren</value>
+
+		<comment>GetIdcomment must not return Nothing</comment>
 
 	</data>
 
@@ -456,11 +528,15 @@
 
 		<value>Property get is niet toegestaan</value>
 
+		<comment>Property get not allowed</comment>
+
 	</data>
 
 	<data name="PropertySetNotAllowed" xml:space="preserve">
 
 		<value>Property set is niet toegestaan</value>
+
+		<comment>Property set not allowed</comment>
 
 	</data>
 
@@ -468,25 +544,63 @@
 
 		<value>Argument mag niet Nothing(leeg) zijn</value>
 
+		<comment>Argument must not be Nothing</comment>
+
 	</data>
 
 	<data name="PrimitiveTypeRequired" xml:space="preserve">
 
 		<value>Type parameter mag alleen een primitief type zijn</value>
 
+		<comment>Type parameter must be a primitive type</comment>
+
 	</data>
 
 	<data name="PropertyCopyFailed" xml:space="preserve">
 
-		<value>Kopiëren van de property is mislukt
+		<value>Kopiëren van de property is mislukt</value>
 
-Kopiëren
+		<comment>Property copy failed</comment>
 
-Kopiëren
+	</data>
 
-Kopiëren
+	<data name="MaxValueRule" xml:space="preserve">
 
-kopieren property is mislukt</value>
+		<value>{0} kan niet groter zijn dan {1}</value>
+
+		<comment>{0} can not exceed {1}</comment>
+
+	</data>
+
+	<data name="MinValueRule" xml:space="preserve">
+
+		<value>{0} kan niet kleiner zijn dan {1}</value>
+
+		<comment>{0} can not be less than {1}</comment>
+
+	</data>
+
+	<data name="StringMaxLengthRule" xml:space="preserve">
+
+		<value>{0} kan niet meer als {1} karakters hebben</value>
+
+		<comment>{0} can not exceed {1} characters</comment>
+
+	</data>
+
+	<data name="StringRequiredRule" xml:space="preserve">
+
+		<value>{0} verplicht</value>
+
+		<comment>{0} required</comment>
+
+	</data>
+
+	<data name="RegExMatchRule" xml:space="preserve">
+
+		<value>{0} komt niet overeen met de regular expression</value>
+
+		<comment>{0} does not match regular expression</comment>
 
 	</data>
 

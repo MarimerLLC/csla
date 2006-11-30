@@ -238,7 +238,7 @@
 
 	<data name="ClearInvalidException" xml:space="preserve">
 
-		<value>Clear ist eine ungültige Operation </value>
+		<value>Clear ist eine ungÃ¼ltige Operation </value>
 
 		<comment>Clear is an invalid operation</comment>
 
@@ -246,7 +246,7 @@
 
 	<data name="InsertInvalidException" xml:space="preserve">
 
-		<value>Einfügen ist eine ungültige Operation</value>
+		<value>EinfÃ¼gen ist eine ungÃ¼ltige Operation</value>
 
 		<comment>Insert is an invalid operation</comment>
 
@@ -254,7 +254,7 @@
 
 	<data name="RemoveInvalidException" xml:space="preserve">
 
-		<value>Entfernen ist eine ungültige Operation</value>
+		<value>Entfernen ist eine ungÃ¼ltige Operation</value>
 
 		<comment>Remove is an invalid operation</comment>
 
@@ -262,7 +262,7 @@
 
 	<data name="ChangeInvalidException" xml:space="preserve">
 
-		<value>Ändern eines Elementes ist eine ungültige Operation</value>
+		<value>Ã„ndern eines Elementes ist eine ungÃ¼ltige Operation</value>
 
 		<comment>Changing an element is an invalid operation</comment>
 
@@ -270,7 +270,7 @@
 
 	<data name="ParentSetException" xml:space="preserve">
 
-		<value>Elternwert kann nur für Kindobjekte gesetzt werden</value>
+		<value>Elternwert kann nur fÃ¼r Kindobjekte gesetzt werden</value>
 
 		<comment>Parent comment can only be set for child objects</comment>
 
@@ -278,7 +278,7 @@
 
 	<data name="ChildDeleteException" xml:space="preserve">
 
-		<value>kann ein Kindobjekt nicht direkt zum Löschen markieren - benutzen Sie die Eltern Liste</value>
+		<value>kann ein Kindobjekt nicht direkt zum LÃ¶schen markieren - benutzen Sie die Eltern Liste</value>
 
 		<comment>Can not directly mark a child object for deletion - use its parent collection</comment>
 
@@ -286,7 +286,7 @@
 
 	<data name="NoDeleteRootException" xml:space="preserve">
 
-		<value>ungültig für Root Objekte - stattdessen löschen </value>
+		<value>ungÃ¼ltig fÃ¼r Root Objekte - stattdessen lÃ¶schen </value>
 
 		<comment>Invalid for root objects - use Delete instead</comment>
 
@@ -310,7 +310,7 @@
 
 	<data name="NoSaveInvalidException" xml:space="preserve">
 
-		<value>Objekt ist ungültig und kann nicht gespeichert werden</value>
+		<value>Objekt ist ungÃ¼ltig und kann nicht gespeichert werden</value>
 
 		<comment>Object is not valid and can not be saved</comment>
 
@@ -318,7 +318,7 @@
 
 	<data name="CreateNotSupportedException" xml:space="preserve">
 
-		<value>Ungültige Operation - Erzeugen nicht erlaubt</value>
+		<value>UngÃ¼ltige Operation - Erzeugen nicht erlaubt</value>
 
 		<comment>Invalid operation - create not allowed</comment>
 
@@ -326,7 +326,7 @@
 
 	<data name="FetchNotSupportedException" xml:space="preserve">
 
-		<value>Ungültige Operation - Abrufen nicht erlaubt</value>
+		<value>UngÃ¼ltige Operation - Abrufen nicht erlaubt</value>
 
 		<comment>Invalid operation - fetch not allowed</comment>
 
@@ -334,7 +334,7 @@
 
 	<data name="UpdateNotSupportedException" xml:space="preserve">
 
-		<value>Ungültige Operation - Aktualisieren nicht erlaubt</value>
+		<value>UngÃ¼ltige Operation - Aktualisieren nicht erlaubt</value>
 
 		<comment>Invalid operation - update not allowed</comment>
 
@@ -342,7 +342,7 @@
 
 	<data name="DeleteNotSupportedException" xml:space="preserve">
 
-		<value>Ungültige Operation - Löschen nicht erlaubt</value>
+		<value>UngÃ¼ltige Operation - LÃ¶schen nicht erlaubt</value>
 
 		<comment>Invalid operation - delete not allowed</comment>
 
@@ -406,7 +406,7 @@
 
 	<data name="NoPrincipalAllowedException" xml:space="preserve">
 
-		<value>Bei Windows Authentifizierung sollte kein Principal Objekt zu DataPortal übergeben werden </value>
+		<value>Bei Windows Authentifizierung sollte kein Principal Objekt zu DataPortal Ã¼bergeben werden </value>
 
 		<comment>No principal object should be passed to DataPortal when using Windows integrated security</comment>
 
@@ -502,7 +502,7 @@
 
 	<data name="ExecuteNotSupportedException" xml:space="preserve">
 
-		<value>ungülitge Operation - Ausführen nicht erlaubt</value>
+		<value>ungÃ¼litge Operation - AusfÃ¼hren nicht erlaubt</value>
 
 		<comment>Invalid operation - execute not allowed</comment>
 
@@ -510,7 +510,7 @@
 
 	<data name="InsertNotSupportedException" xml:space="preserve">
 
-		<value>ungülitge Operation - Einfügen nicht erlaubt</value>
+		<value>ungÃ¼litge Operation - EinfÃ¼gen nicht erlaubt</value>
 
 		<comment>Invalid operation - insert not allowed</comment>
 
@@ -518,7 +518,7 @@
 
 	<data name="GetIdValueCantBeNull" xml:space="preserve">
 
-		<value>GetIdValue darf nicht Nothing zurückgeben</value>
+		<value>GetIdValue darf nicht Nothing zurÃ¼ckgeben</value>
 
 		<comment>GetIdcomment must not return Nothing</comment>
 
@@ -566,7 +566,7 @@
 
 	<data name="MaxValueRule" xml:space="preserve">
 
-		<value>{0} kann nicht größer sein als {1}</value>
+		<value>{0} kann nicht grÃ¶sser sein als {1}</value>
 
 		<comment>{0} can not exceed {1}</comment>
 

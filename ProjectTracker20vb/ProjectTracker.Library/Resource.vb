@@ -258,21 +258,19 @@ Private Class Criteria
         With cm
           .CommandType = CommandType.StoredProcedure
           .CommandText = "addResource"
-          With cm
-            .Parameters.AddWithValue("@lastName", mLastName)
-            .Parameters.AddWithValue("@firstName", mFirstName)
-            Dim param As New SqlParameter("@newId", SqlDbType.Int)
-            param.Direction = ParameterDirection.Output
-            .Parameters.Add(param)
-            param = New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
-            param.Direction = ParameterDirection.Output
-            .Parameters.Add(param)
+          .Parameters.AddWithValue("@lastName", mLastName)
+          .Parameters.AddWithValue("@firstName", mFirstName)
+          Dim param As New SqlParameter("@newId", SqlDbType.Int)
+          param.Direction = ParameterDirection.Output
+          .Parameters.Add(param)
+          param = New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
+          param.Direction = ParameterDirection.Output
+          .Parameters.Add(param)
 
-            .ExecuteNonQuery()
+          .ExecuteNonQuery()
 
-            mId = CInt(.Parameters("@newId").Value)
-            mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
-          End With
+          mId = CInt(.Parameters("@newId").Value)
+          mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
         End With
       End Using
       ' update child objects

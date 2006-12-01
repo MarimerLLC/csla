@@ -55,7 +55,7 @@ Public Class ResourceEdit
     Me.ReadWriteAuthorization1.ResetControlAuthorization()
 
     Dim canEdit As Boolean = _
-      ProjectTracker.Library.Project.CanEditObject
+      ProjectTracker.Library.Resource.CanEditObject
 
     ' enable/disable appropriate buttons
     Me.OKButton.Enabled = canEdit

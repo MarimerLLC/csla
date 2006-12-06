@@ -715,13 +715,12 @@ Namespace Validation
           Else
             ' the rule is broken
             BrokenRulesList.Add(rule)
-            Dim args As RuleArgs = rule.RuleArgs
-            If args.Severity = RuleSeverity.Error Then
+            If rule.RuleArgs.Severity = RuleSeverity.Error Then
               previousRuleBroken = True
             End If
-            If args.StopProcessing Then
-              shortCircuited = True
-            End If
+          End If
+          If rule.RuleArgs.StopProcessing Then
+            shortCircuited = True
           End If
         End If
       Next

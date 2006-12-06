@@ -670,12 +670,11 @@ namespace Csla.Validation
           {
             // the rule is broken
             BrokenRulesList.Add(rule);
-            RuleArgs args = rule.RuleArgs;
-            if (args.Severity == RuleSeverity.Error)
+            if (rule.RuleArgs.Severity == RuleSeverity.Error)
               previousRuleBroken = true;
-            if (args.StopProcessing)
-              shortCircuited = true;
           }
+          if (rule.RuleArgs.StopProcessing)
+            shortCircuited = true;
         }
       }
     }

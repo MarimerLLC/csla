@@ -755,7 +755,7 @@ Public Class FilteredBindingList(Of T)
           OnListChanged(New ListChangedEventArgs(e.ListChangedType, filteredIndexValue))
 
         Case ListChangedType.ItemChanged
-          listIndex = e.OldIndex
+          listIndex = e.NewIndex
           ' update index value
           filteredIndexValue = FilteredIndex(listIndex)
           If filteredIndexValue <> -1 Then

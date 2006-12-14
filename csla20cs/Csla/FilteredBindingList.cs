@@ -812,7 +812,7 @@ namespace Csla
             break;
 
           case ListChangedType.ItemChanged:
-            listIndex = e.OldIndex;
+            listIndex = e.NewIndex;
             // update index value
             filteredIndex = FilteredIndex(listIndex);
             if (filteredIndex != -1)

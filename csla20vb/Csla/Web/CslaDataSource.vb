@@ -234,36 +234,80 @@ Namespace Web
       End Get
     End Property
 
+    ''' <summary>
+    ''' Gets the property name for the sort if only one
+    ''' property/column name is specified.
+    ''' </summary>
+    ''' <remarks>
+    ''' If multiple properties/columns are specified
+    ''' for the sort, you must parse the value from
+    ''' <see cref="SortExpression"/> to find all the
+    ''' property names and sort directions for the sort.
+    ''' </remarks>
     Public ReadOnly Property SortProperty() As String
       Get
         Return mSortProperty
       End Get
     End Property
 
+    ''' <summary>
+    ''' Gets the sort direction for the sort if only
+    ''' one property/column name is specified.
+    ''' </summary>
+    ''' <remarks>
+    ''' If multiple properties/columns are specified
+    ''' for the sort, you must parse the value from
+    ''' <see cref="SortExpression"/> to find all the
+    ''' property names and sort directions for the sort.
+    ''' </remarks>
     Public ReadOnly Property SortDirection() As ListSortDirection
       Get
         Return mSortDirection
       End Get
     End Property
 
+    ''' <summary>
+    ''' Gets the index for the first row that will be
+    ''' displayed. This should be the first row in
+    ''' the resulting collection set into the
+    ''' <see cref="BusinessObject"/> property.
+    ''' </summary>
     Public ReadOnly Property StartRowIndex() As Integer
       Get
         Return mStartRowIndex
       End Get
     End Property
 
+    ''' <summary>
+    ''' Gets the maximum number of rows that
+    ''' should be returned as a result of this
+    ''' query. For paged collections, this is the
+    ''' page size.
+    ''' </summary>
     Public ReadOnly Property MaximumRows() As Integer
       Get
         Return mMaximumRows
       End Get
     End Property
 
+    ''' <summary>
+    ''' Gets a value indicating whether the
+    ''' query should return the total row count
+    ''' through the
+    ''' <see cref="Csla.Core.IReportTotalRowCount"/>
+    ''' interface.
+    ''' </summary>
     Public ReadOnly Property RetrieveTotalRowCount() As Boolean
       Get
         Return mRetrieveTotalRowCount
       End Get
     End Property
 
+    ''' <summary>
+    ''' Creates an instance of the object, initializing
+    ''' it with values from data binding.
+    ''' </summary>
+    ''' <param name="args">Values provided from data binding.</param>
     Public Sub New(ByVal args As System.Web.UI.DataSourceSelectArguments)
 
       mStartRowIndex = args.StartRowIndex

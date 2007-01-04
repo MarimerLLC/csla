@@ -90,7 +90,7 @@ namespace Csla.Web
       ExecuteSelect(DataSourceSelectArguments arguments)
     {
       // get the object from the page
-      SelectObjectArgs args = new SelectObjectArgs();
+      SelectObjectArgs args = new SelectObjectArgs(arguments);
       _owner.OnSelectObject(args);
       object result = args.BusinessObject;
 

@@ -196,10 +196,17 @@ Namespace Web
   ''' <summary>
   ''' Argument object used in the SelectObject event.
   ''' </summary>
+  <Serializable()> _
   Public Class SelectObjectArgs
     Inherits EventArgs
 
     Private mBusinessObject As Object
+    Private mSortExpression As String
+    Private mSortProperty As String
+    Private mSortDirection As ListSortDirection
+    Private mStartRowIndex As Integer
+    Private mMaximumRows As Integer
+    Private mRetrieveTotalRowCount As Boolean
 
     ''' <summary>
     ''' Get or set a reference to the business object
@@ -215,6 +222,67 @@ Namespace Web
         mBusinessObject = value
       End Set
     End Property
+
+    ''' <summary>
+    ''' Gets the sort expression that should be used to
+    ''' sort the data being returned to the data source
+    ''' control.
+    ''' </summary>
+    Public ReadOnly Property SortExpression() As String
+      Get
+        Return mSortExpression
+      End Get
+    End Property
+
+    Public ReadOnly Property SortProperty() As String
+      Get
+        Return mSortProperty
+      End Get
+    End Property
+
+    Public ReadOnly Property SortDirection() As ListSortDirection
+      Get
+        Return mSortDirection
+      End Get
+    End Property
+
+    Public ReadOnly Property StartRowIndex() As Integer
+      Get
+        Return mStartRowIndex
+      End Get
+    End Property
+
+    Public ReadOnly Property MaximumRows() As Integer
+      Get
+        Return mMaximumRows
+      End Get
+    End Property
+
+    Public ReadOnly Property RetrieveTotalRowCount() As Boolean
+      Get
+        Return mRetrieveTotalRowCount
+      End Get
+    End Property
+
+    Public Sub New(ByVal args As System.Web.UI.DataSourceSelectArguments)
+
+      mStartRowIndex = args.StartRowIndex
+      mMaximumRows = args.MaximumRows
+      mRetrieveTotalRowCount = args.RetrieveTotalRowCount
+
+      mSortExpression = args.SortExpression
+      If Not String.IsNullOrEmpty(mSortExpression) Then
+        If Right(mSortExpression, 5) = " DESC" Then
+          mSortProperty = Left(mSortExpression, mSortExpression.Length - 5)
+          mSortDirection = ListSortDirection.Descending
+
+        Else
+          mSortProperty = args.SortExpression
+          mSortDirection = ListSortDirection.Ascending
+        End If
+      End If
+
+    End Sub
 
   End Class
 

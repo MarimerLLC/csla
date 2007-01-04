@@ -101,7 +101,7 @@ Namespace Web
       System.Collections.IEnumerable
 
       ' get the object from the page
-      Dim args As New SelectObjectArgs
+      Dim args As New SelectObjectArgs(arguments)
       mOwner.OnSelectObject(args)
       Dim result As Object = args.BusinessObject
 

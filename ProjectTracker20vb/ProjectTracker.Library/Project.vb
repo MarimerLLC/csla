@@ -131,8 +131,7 @@ Public Class Project
     ValidationRules.AddRule(Of Project)(AddressOf StartDateGTEndDate(Of Project), "Started")
     ValidationRules.AddRule(Of Project)(AddressOf StartDateGTEndDate(Of Project), "Ended")
 
-    ValidationRules.AddDependantProperty("Started", "Ended")
-    ValidationRules.AddDependantProperty("Ended", "Started")
+    ValidationRules.AddDependantProperty("Started", "Ended", True)
 
   End Sub
 

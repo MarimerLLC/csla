@@ -622,6 +622,40 @@ Namespace Validation
 
     End Sub
 
+    ''' <summary>
+    ''' Adds a property to the list of dependencies for
+    ''' the specified property
+    ''' </summary>
+    ''' <param name="propertyName">
+    ''' The name of the property.
+    ''' </param>
+    ''' <param name="dependantPropertyName">
+    ''' The name of the depandent property.
+    ''' </param>
+    ''' <param name="isBidirectional">
+    ''' If <see langword="true"/> then a 
+    ''' reverse dependancy is also established
+    ''' from dependantPropertyName to propertyName.
+    ''' </param>
+    ''' <remarks>
+    ''' When rules are checked for propertyName, they will
+    ''' also be checked for any dependant properties associated
+    ''' with that property. If isBidirectional is 
+    ''' <see langword="true"/> then an additional association
+    ''' is set up so when rules are checked for
+    ''' dependantPropertyName the rules for propertyName
+    ''' will also be checked.
+    ''' </remarks>
+    Public Sub AddDependantProperty(ByVal propertyName As String, ByVal dependantPropertyName As String, ByVal isBidirectional As Boolean)
+
+      dim mgr as ValidationRulesManager=GetTypeRules(True)
+      mgr.AddDependantProperty(propertyName, dependantPropertyName)
+      If isBidirectional Then
+        mgr.AddDependantProperty(dependantPropertyName, propertyName)
+      End If
+
+    End Sub
+
 #End Region
 
 #Region " Checking Rules "

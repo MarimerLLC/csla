@@ -579,6 +579,42 @@ namespace Csla.Validation
       GetTypeRules(true).AddDependantProperty(propertyName, dependantPropertyName);
     }
 
+    /// <summary>
+    /// Adds a property to the list of dependencies for
+    /// the specified property
+    /// </summary>
+    /// <param name="propertyName">
+    /// The name of the property.
+    /// </param>
+    /// <param name="dependantPropertyName">
+    /// The name of the depandent property.
+    /// </param>
+    /// <param name="isBidirectional">
+    /// If <see langword="true"/> then a 
+    /// reverse dependancy is also established
+    /// from dependantPropertyName to propertyName.
+    /// </param>
+    /// <remarks>
+    /// When rules are checked for propertyName, they will
+    /// also be checked for any dependant properties associated
+    /// with that property. If isBidirectional is 
+    /// <see langword="true"/> then an additional association
+    /// is set up so when rules are checked for
+    /// dependantPropertyName the rules for propertyName
+    /// will also be checked.
+    /// </remarks>
+    public void AddDependantProperty(string propertyName, string dependantPropertyName, bool isBidirectional)
+    {
+
+      ValidationRulesManager mgr = GetTypeRules(true);
+      mgr.AddDependantProperty(propertyName, dependantPropertyName);
+      if (isBidirectional)
+      {
+        mgr.AddDependantProperty(dependantPropertyName, propertyName);
+      }
+
+    }
+
     #endregion
 
     #region Checking Rules

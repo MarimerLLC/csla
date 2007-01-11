@@ -72,7 +72,8 @@ Namespace Validation
 
       mHandler = handler
       mArgs = args
-      mRuleName = "rule://" & mHandler.Method.Name & "/" & mArgs.ToString
+      mRuleName = _
+        String.Format("rule://{0}/{1}", mHandler.Method.Name, mArgs.ToString)
 
     End Sub
 
@@ -208,7 +209,8 @@ Namespace Validation
 
       mHandler = handler
       mArgs = args
-      mRuleName = "rule://" & mHandler.Method.Name & "/" & mArgs.ToString
+      mRuleName = _
+        String.Format("rule://{0}/{1}", mHandler.Method.Name, mArgs.ToString)
 
     End Sub
 

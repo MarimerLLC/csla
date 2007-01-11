@@ -67,7 +67,7 @@ namespace Csla.Validation
     {
       _handler = handler;
       _args = args;
-      _ruleName = "rule://" + _handler.Method.Name + "/" + _args.ToString();
+      _ruleName = string.Format(@"rule://{0}/{1}", _handler.Method.Name, _args.ToString());
     }
 
     /// <summary>
@@ -191,7 +191,7 @@ namespace Csla.Validation
     {
       _handler = handler;
       _args = args;
-      _ruleName = "rule://" + _handler.Method.Name + "/" + _args.ToString();
+      _ruleName = string.Format(@"rule://{0}/{1}", _handler.Method.Name, _args.ToString());
     }
 
     /// <summary>

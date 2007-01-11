@@ -24,15 +24,18 @@ namespace Csla.Validation
     /// a new instance of the object if one doesn't exist.</param>
     internal static ValidationRulesManager GetManager(Type objectType, bool create)
     {
-      ValidationRulesManager result = null;
-      if (_managers.ContainsKey(objectType))
-        result = _managers[objectType];
-      else if (create)
+      lock (_managers)
       {
-        result = new ValidationRulesManager();
-        _managers.Add(objectType, result);
+        ValidationRulesManager result = null;
+        if (_managers.ContainsKey(objectType))
+          result = _managers[objectType];
+        else if (create)
+        {
+          result = new ValidationRulesManager();
+          _managers.Add(objectType, result);
+        }
+        return result;
       }
-      return result;
     }
 
     /// <summary>
@@ -45,7 +48,10 @@ namespace Csla.Validation
     /// <returns><see langword="true" /> if rules exist for the type.</returns>
     public static bool RulesExistFor(Type objectType)
     {
-      return _managers.ContainsKey(objectType);
+      lock (_managers)
+      {
+        return _managers.ContainsKey(objectType);
+      }
     }
   }
 }

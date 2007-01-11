@@ -770,6 +770,7 @@ namespace Csla
       PropertyDescriptor property, object filter)
     {
       _filterBy = property;
+      _filter = filter;
       DoFilter();
     }
 

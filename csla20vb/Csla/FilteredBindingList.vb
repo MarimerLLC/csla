@@ -721,6 +721,7 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="filter">The filter criteria.</param>
   Public Sub ApplyFilter(ByVal [property] As PropertyDescriptor, ByVal filter As Object)
     mFilterBy = [property]
+    mFilter = filter
     DoFilter()
   End Sub
 

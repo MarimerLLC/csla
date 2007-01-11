@@ -123,8 +123,8 @@ namespace Csla.Validation
       Remove(rule);
       IsReadOnly = false;
       BrokenRule item = new BrokenRule(rule);
-      Add(item);
       IncrementCount(item);
+      Add(item);
       IsReadOnly = true;
     }
 

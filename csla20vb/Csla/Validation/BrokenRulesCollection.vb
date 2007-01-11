@@ -135,8 +135,8 @@ Namespace Validation
 
       IsReadOnly = False
       Dim item As New BrokenRule(rule)
-      Add(item)
       IncrementCount(item)
+      Add(item)
       IsReadOnly = True
 
     End Sub

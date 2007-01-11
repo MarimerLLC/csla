@@ -6,14 +6,8 @@ using Csla.Data;
 
 namespace ProjectTracker.Library
 {
-  public interface IStartEnd
-  {
-    SmartDate Started { get; }
-    SmartDate Ended { get; }
-  }
-
   [Serializable()]
-  public class Project : BusinessBase<Project>, IStartEnd
+  public class Project : BusinessBase<Project>
   {
     #region Business Methods
 
@@ -159,14 +153,13 @@ namespace ProjectTracker.Library
       ValidationRules.AddRule<Project>(
         StartDateGTEndDate<Project>, "Ended");
 
-      ValidationRules.AddDependantProperty("Started", "Ended");
-      ValidationRules.AddDependantProperty("Ended", "Started");
+      ValidationRules.AddDependantProperty("Started", "Ended", true);
     }
 
     private static bool StartDateGTEndDate<T>(
-      T target, Csla.Validation.RuleArgs e) where T : IStartEnd
+      T target, Csla.Validation.RuleArgs e) where T : Project
     {
-      if (target.Started > target.Ended)
+      if (target._started > target._ended)
       {
         e.Description = 
           "Start date can't be after end date";
@@ -443,19 +436,5 @@ namespace ProjectTracker.Library
 
     #endregion
 
-  
-#region IStartEnd
-
-    SmartDate  IStartEnd.Started
-    {
-	    get { return _started; }
-    }
-
-    SmartDate  IStartEnd.Ended
-    {
-	    get { return _ended; }
-    }
-
-#endregion
   }
 }

@@ -655,19 +655,21 @@ Public Class SortedBindingList(Of T)
       ' remove the item from the source list
       mList.RemoveAt(baseIndex)
 
-      ' delete the corresponding value in the sort index
-      If mSortOrder = ListSortDirection.Ascending Then
-        mSortIndex.RemoveAt(index)
-      Else
-        mSortIndex.RemoveAt(mSortIndex.Count - 1 - index)
-      End If
-
-      ' now fix up all index pointers in the sort index
-      For Each item As ListItem In mSortIndex
-        If item.BaseIndex > baseIndex Then
-          item.BaseIndex -= 1
+      If mList.Count <> mSortIndex.Count Then
+        ' delete the corresponding value in the sort index
+        If mSortOrder = ListSortDirection.Ascending Then
+          mSortIndex.RemoveAt(index)
+        Else
+          mSortIndex.RemoveAt(mSortIndex.Count - 1 - index)
         End If
-      Next
+
+        ' now fix up all index pointers in the sort index
+        For Each item As ListItem In mSortIndex
+          If item.BaseIndex > baseIndex Then
+            item.BaseIndex -= 1
+          End If
+        Next
+      End If
 
       OnListChanged( _
         New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
@@ -775,7 +777,9 @@ Public Class SortedBindingList(Of T)
         Case Else
           ' for anything other than add, delete or change
           ' just re-sort the list
-          DoSort()
+          If Not mInitiatedLocally Then
+            DoSort()
+          End If
       End Select
 
     Else

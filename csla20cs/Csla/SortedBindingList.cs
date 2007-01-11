@@ -644,17 +644,20 @@ namespace Csla
         // remove the item from the source list
         _list.RemoveAt(baseIndex);
 
-        // delete the corresponding value in the sort index
-        if (_sortOrder == ListSortDirection.Ascending)
-          _sortIndex.RemoveAt(index);
-        else
-          _sortIndex.RemoveAt(_sortIndex.Count - 1 - index);
-        
-        // now fix up all index pointers in the sort index
-        foreach (ListItem item in _sortIndex)
-          if (item.BaseIndex > baseIndex)
-            item.BaseIndex -= 1;
-        
+        if (_list.Count != _sortIndex.Count)
+        {
+          // delete the corresponding value in the sort index
+          if (_sortOrder == ListSortDirection.Ascending)
+            _sortIndex.RemoveAt(index);
+          else
+            _sortIndex.RemoveAt(_sortIndex.Count - 1 - index);
+
+          // now fix up all index pointers in the sort index
+          foreach (ListItem item in _sortIndex)
+            if (item.BaseIndex > baseIndex)
+              item.BaseIndex -= 1;
+        }
+
         OnListChanged(new ListChangedEventArgs(
           ListChangedType.ItemDeleted, index));
         _initiatedLocally = false;
@@ -766,7 +769,8 @@ namespace Csla
           default:
             // for anything other than add, delete or change
             // just re-sort the list
-            DoSort();
+            if (!_initiatedLocally)
+              DoSort();
             break;
         }
       }

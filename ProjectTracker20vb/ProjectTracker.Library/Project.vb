@@ -1,13 +1,6 @@
-Friend Interface IStartEnd
-  ReadOnly Property Started() As SmartDate
-  ReadOnly Property Ended() As SmartDate
-End Interface
-
 <Serializable()> _
 Public Class Project
   Inherits BusinessBase(Of Project)
-
-  Implements IStartEnd
 
 #Region " Business Methods "
 
@@ -135,11 +128,11 @@ Public Class Project
 
   End Sub
 
-  Private Shared Function StartDateGTEndDate(Of T As IStartEnd)( _
+  Private Shared Function StartDateGTEndDate(Of T As Project)( _
     ByVal target As T, _
     ByVal e As Validation.RuleArgs) As Boolean
 
-    If target.Started > target.Ended Then
+    If target.mStarted > target.mEnded Then
       e.Description = "Start date can't be after end date"
       Return False
 
@@ -431,22 +424,6 @@ Public Class Project
     End Sub
 
   End Class
-
-#End Region
-
-#Region " ISTartEnd "
-
-  Private ReadOnly Property IStartEnd_Ended() As Csla.SmartDate Implements IStartEnd.Ended
-    Get
-      Return mEnded
-    End Get
-  End Property
-
-  Private ReadOnly Property IStartEnd_Started() As Csla.SmartDate Implements IStartEnd.Started
-    Get
-      Return mStarted
-    End Get
-  End Property
 
 #End Region
 

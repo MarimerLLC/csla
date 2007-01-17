@@ -19,8 +19,14 @@ namespace Csla.Validation
     {
       if (applySort && !_sorted)
       {
-        _list.Sort();
-        _sorted = true;
+        lock (_list)
+        {
+          if (applySort && !_sorted)
+          {
+            _list.Sort();
+            _sorted = true;
+          }
+        }
       }
       return _list;
     }

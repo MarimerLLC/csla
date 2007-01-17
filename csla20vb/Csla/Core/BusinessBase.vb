@@ -31,11 +31,19 @@ Namespace Core
       Initialize()
       AddInstanceBusinessRules()
       If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-        AddBusinessRules()
+        SyncLock Me.GetType
+          If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
+            AddBusinessRules()
+          End If
+        End SyncLock
       End If
       AddInstanceAuthorizationRules()
       If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-        AddAuthorizationRules()
+        SyncLock Me.GetType
+          If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+            AddAuthorizationRules()
+          End If
+        End SyncLock
       End If
 
     End Sub
@@ -759,7 +767,11 @@ Namespace Core
       ValidationRules.SetTarget(Me)
       AddInstanceBusinessRules()
       If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-        AddBusinessRules()
+        SyncLock Me.GetType
+          If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
+            AddBusinessRules()
+          End If
+        End SyncLock
       End If
       OnUnknownPropertyChanged()
       MyBase.UndoChangesComplete()
@@ -1147,11 +1159,19 @@ Namespace Core
       ValidationRules.SetTarget(Me)
       AddInstanceBusinessRules()
       If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-        AddBusinessRules()
+        SyncLock Me.GetType
+          If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
+            AddBusinessRules()
+          End If
+        End SyncLock
       End If
       AddInstanceAuthorizationRules()
       If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-        AddAuthorizationRules()
+        SyncLock Me.GetType
+          If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+            AddAuthorizationRules()
+          End If
+        End SyncLock
       End If
 
     End Sub

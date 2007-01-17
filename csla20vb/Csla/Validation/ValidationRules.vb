@@ -110,7 +110,9 @@ Namespace Validation
       Dim result As New List(Of String)
       Dim rules As ValidationRulesManager = RulesToCheck
       For Each de As Generic.KeyValuePair(Of String, RulesList) In rules.RulesDictionary
-        For Each rule As IRuleMethod In de.Value.GetList(False)
+        Dim list As List(Of IRuleMethod) = de.Value.GetList(False)
+        For i As Integer = 0 To list.Count - 1
+          Dim rule As IRuleMethod = list(i)
           result.Add(CObj(rule).ToString)
         Next
       Next
@@ -681,7 +683,8 @@ Namespace Validation
           End If
           Dim dependancies As List(Of String) = rulesList.GetDependancyList(False)
           If dependancies IsNot Nothing Then
-            For Each dependantProperty As String In dependancies
+            For i As Integer = 0 To dependancies.Count - 1
+              Dim dependantProperty As String = dependancies(i)
               CheckRules(rules, dependantProperty)
             Next
           End If
@@ -729,7 +732,8 @@ Namespace Validation
       Dim previousRuleBroken As Boolean
       Dim shortCircuited As Boolean
 
-      For Each rule As IRuleMethod In list
+      For index As Integer = 0 To list.Count - 1
+        Dim rule As IRuleMethod = list(index)
         ' see if short-circuiting should kick in
         If Not shortCircuited AndAlso (previousRuleBroken AndAlso rule.Priority > mProcessThroughPriority) Then
           shortCircuited = True

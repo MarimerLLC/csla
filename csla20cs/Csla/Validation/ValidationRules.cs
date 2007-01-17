@@ -618,7 +618,6 @@ namespace Csla.Validation
       {
         mgr.AddDependantProperty(dependantPropertyName, propertyName);
       }
-
     }
 
     #endregion
@@ -764,4 +763,3 @@ namespace Csla.Validation
 
   }
 }
-  

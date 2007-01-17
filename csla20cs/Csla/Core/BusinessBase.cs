@@ -32,10 +32,22 @@ namespace Csla.Core
       Initialize();
       AddInstanceBusinessRules();
       if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-        AddBusinessRules();
+      {
+        lock (this.GetType())
+        {
+          if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
+            AddBusinessRules();
+        }
+      }
       AddInstanceAuthorizationRules();
       if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-        AddAuthorizationRules();
+      {
+        lock (this.GetType())
+        {
+          if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+            AddAuthorizationRules();
+        }
+      }
     }
 
     #endregion
@@ -730,7 +742,13 @@ namespace Csla.Core
       ValidationRules.SetTarget(this);
       AddInstanceBusinessRules();
       if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-        AddBusinessRules();
+      {
+        lock (this.GetType())
+        {
+          if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
+            AddBusinessRules();
+        }
+      }
       OnUnknownPropertyChanged();
       base.UndoChangesComplete();
     }
@@ -1117,10 +1135,22 @@ namespace Csla.Core
       ValidationRules.SetTarget(this);
       AddInstanceBusinessRules();
       if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-        AddBusinessRules();
+      {
+        lock (this.GetType())
+        {
+          if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
+            AddBusinessRules();
+        }
+      }
       AddInstanceAuthorizationRules();
       if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-        AddAuthorizationRules();
+      {
+        lock (this.GetType())
+        {
+          if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+            AddAuthorizationRules();
+        }
+      }
     }
 
     /// <summary>

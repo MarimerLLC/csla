@@ -16,8 +16,12 @@ Namespace Validation
     Public Function GetList(ByVal applySort As Boolean) As List(Of IRuleMethod)
 
       If applySort AndAlso Not mSorted Then
-        mList.Sort()
-        mSorted = True
+        SyncLock mList
+          If applySort AndAlso Not mSorted Then
+            mList.Sort()
+            mSorted = True
+          End If
+        End SyncLock
       End If
       Return mList
 

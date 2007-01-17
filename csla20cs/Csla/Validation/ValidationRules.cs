@@ -109,8 +109,14 @@ namespace Csla.Validation
       List<string> result = new List<string>();
       ValidationRulesManager rules = RulesToCheck;
       foreach (KeyValuePair<string, RulesList> de in rules.RulesDictionary)
-        foreach (IRuleMethod rule in de.Value.GetList(false))
+      {
+        List<IRuleMethod> list = de.Value.GetList(false);
+        for (int i = 0; i < list.Count; i++)
+        {
+          IRuleMethod rule = list[i];
           result.Add(rule.ToString());
+        }
+      }
       return result.ToArray();
     }
 
@@ -641,8 +647,13 @@ namespace Csla.Validation
             CheckRules(list);
           List<string> dependancies = rulesList.GetDependancyList(false);
           if (dependancies != null)
-            foreach (string dependantProperty in dependancies)
+          {
+            for (int i = 0; i < dependancies.Count; i++)
+            {
+              string dependantProperty = dependancies[i];
               CheckRules(rules, dependantProperty);
+            }
+          }
         }
       }
     }
@@ -668,8 +679,10 @@ namespace Csla.Validation
     {
       ValidationRulesManager rules = RulesToCheck;
       if (rules != null)
+      {
         foreach (KeyValuePair<string, RulesList> de in rules.RulesDictionary)
           CheckRules(de.Value.GetList(true));
+      }
     }
 
     /// <summary>
@@ -682,8 +695,9 @@ namespace Csla.Validation
       bool previousRuleBroken = false;
       bool shortCircuited = false;
 
-      foreach (IRuleMethod rule in list)
+      for (int index = 0; index < list.Count; index++)
       {
+        IRuleMethod rule = list[index];
         // see if short-circuiting should kick in
         if (!shortCircuited && (previousRuleBroken && rule.Priority > _processThroughPriority))
           shortCircuited = true;

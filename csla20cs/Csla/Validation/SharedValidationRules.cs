@@ -10,7 +10,8 @@ namespace Csla.Validation
   /// </summary>
   internal static class SharedValidationRules
   {
-    private static Dictionary<Type, ValidationRulesManager> _managers = new Dictionary<Type, ValidationRulesManager>();
+    private static Dictionary<Type, ValidationRulesManager> _managers = 
+      new Dictionary<Type, ValidationRulesManager>();
 
     /// <summary>
     /// Gets the <see cref="ValidationRulesManager"/> for the 
@@ -24,18 +25,16 @@ namespace Csla.Validation
     /// a new instance of the object if one doesn't exist.</param>
     internal static ValidationRulesManager GetManager(Type objectType, bool create)
     {
-      lock (_managers)
+      ValidationRulesManager result = null;
+      if (!_managers.TryGetValue(objectType, out result) && create)
       {
-        ValidationRulesManager result = null;
-        if (_managers.ContainsKey(objectType))
-          result = _managers[objectType];
-        else if (create)
+        lock (_managers)
         {
           result = new ValidationRulesManager();
           _managers.Add(objectType, result);
         }
-        return result;
       }
+      return result;
     }
 
     /// <summary>
@@ -48,10 +47,7 @@ namespace Csla.Validation
     /// <returns><see langword="true" /> if rules exist for the type.</returns>
     public static bool RulesExistFor(Type objectType)
     {
-      lock (_managers)
-      {
-        return _managers.ContainsKey(objectType);
-      }
+      return _managers.ContainsKey(objectType);
     }
   }
 }

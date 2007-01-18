@@ -118,7 +118,7 @@ Namespace Windows
           Dim bs As BindingSource = CType(binding.DataSource, BindingSource)
           ' get the BusinessObject if appropriate
           Dim ds As Csla.Security.IAuthorizeReadWrite = _
-            TryCast(bs.DataSource, Csla.Security.IAuthorizeReadWrite)
+            TryCast(bs.Current, Csla.Security.IAuthorizeReadWrite)
           If ds IsNot Nothing Then
             ' get the object property name
             Dim propertyName As String = _

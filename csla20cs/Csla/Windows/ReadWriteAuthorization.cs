@@ -107,7 +107,8 @@ namespace Csla.Windows
           BindingSource bs =
             (BindingSource)binding.DataSource;
           // get the BusinessObject if appropriate
-          Csla.Security.IAuthorizeReadWrite ds = bs.DataSource as Csla.Security.IAuthorizeReadWrite;
+          Csla.Security.IAuthorizeReadWrite ds = 
+            bs.Current as Csla.Security.IAuthorizeReadWrite;
           if (ds != null)
           {
             // get the object property name

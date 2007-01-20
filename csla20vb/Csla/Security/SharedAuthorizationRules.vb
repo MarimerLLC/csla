@@ -24,17 +24,14 @@ Namespace Security
     Friend Function GetManager(ByVal objectType As Type, ByVal create As Boolean) _
       As AuthorizationRulesManager
 
-      SyncLock mManagers
-        Dim result As AuthorizationRulesManager = Nothing
-        If mManagers.ContainsKey(objectType) Then
-          result = mManagers.Item(objectType)
-
-        ElseIf create Then
+      Dim result As AuthorizationRulesManager = Nothing
+      If Not mManagers.TryGetValue(objectType, result) AndAlso create Then
+        SyncLock mManagers
           result = New AuthorizationRulesManager
           mManagers.Add(objectType, result)
-        End If
-        Return result
-      End SyncLock
+        End SyncLock
+      End If
+      Return result
 
     End Function
 
@@ -48,9 +45,7 @@ Namespace Security
     ''' <returns><see langword="true" /> if rules exist for the type.</returns>
     Public Function RulesExistFor(ByVal objectType As Type) As Boolean
 
-      SyncLock mManagers
-        Return mManagers.ContainsKey(objectType)
-      End SyncLock
+      Return mManagers.ContainsKey(objectType)
 
     End Function
 

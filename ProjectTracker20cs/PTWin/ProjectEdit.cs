@@ -128,12 +128,14 @@ namespace PTWin
 
     private void Cancel_Button_Click(object sender, EventArgs e)
     {
-      _project.CancelEdit();
+      this.projectBindingSource.CancelEdit();
+      this.resourcesBindingSource.CancelEdit();
     }
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
-      _project.CancelEdit();
+      this.projectBindingSource.CancelEdit();
+      this.resourcesBindingSource.CancelEdit();
       this.Close();
     }
 

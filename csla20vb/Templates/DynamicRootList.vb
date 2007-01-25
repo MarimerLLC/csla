@@ -2,7 +2,7 @@ Imports System.Data.SqlClient
 
 <Serializable()> _
 Public Class DynamicRootList
-  Inherits DynamicRootListBase(Of DynamicRootList, EditableRoot)
+  Inherits EditableRootListBase(Of DynamicRootList, EditableRoot)
 
 #Region " Authorization Rules "
 

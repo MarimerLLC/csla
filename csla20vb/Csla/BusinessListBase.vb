@@ -213,7 +213,13 @@ Public MustInherit Class BusinessListBase( _
       child.UndoChanges()
       ' if item is below its point of addition, remove
       If child.EditLevelAdded > mEditLevel Then
-        RemoveAt(index)
+        Dim oldAllowRemove As Boolean = Me.AllowRemove
+        Try
+          Me.AllowRemove = True
+          RemoveAt(index)
+        Finally
+          Me.AllowRemove = oldAllowRemove
+        End Try
       End If
     Next
 

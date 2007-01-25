@@ -228,7 +228,18 @@ namespace Csla
         child.UndoChanges();
         // if item is below its point of addition, remove
         if (child.EditLevelAdded > _editLevel)
-          RemoveAt(index);
+        {
+          bool oldAllowRemove = this.AllowRemove;
+          try
+          {
+            this.AllowRemove = true;
+            RemoveAt(index);
+          }
+          finally
+          {
+            this.AllowRemove = oldAllowRemove;
+          }
+        }
       }
 
       // cancel edit on all deleted items

@@ -746,12 +746,11 @@ namespace Csla
     [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnSaved(T newObject)
     {
+      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject);
       if (_nonSerializableSavedHandlers != null)
-        _nonSerializableSavedHandlers.Invoke(this,
-          new Csla.Core.SavedEventArgs(newObject));
+        _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)
-        _serializableSavedHandlers.Invoke(this,
-          new Csla.Core.SavedEventArgs(newObject));
+        _serializableSavedHandlers.Invoke(this, args);
     }
 
     #endregion

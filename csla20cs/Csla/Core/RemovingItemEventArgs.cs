@@ -8,7 +8,6 @@ namespace Csla.Core
   /// Contains event data for the RemovingItem
   /// event.
   /// </summary>
-  [Serializable]
   public class RemovingItemEventArgs : EventArgs
   {
     private object _removingItem;

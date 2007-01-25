@@ -48,7 +48,7 @@ namespace Csla
 
     #region Data Access methods
 
-    private const int CriteriaEmpty = 1;
+    private const int EmptyCriteria = 1;
 
     /// <summary>
     /// Called by a factory method in a business class to create 
@@ -72,7 +72,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public static T Create<T>()
     {
-      return (T)Create(typeof(T), CriteriaEmpty);
+      return (T)Create(typeof(T), EmptyCriteria);
     }
 
     /// <summary>
@@ -151,7 +151,7 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static T Fetch<T>()
     {
-      return (T)Fetch(typeof(T), CriteriaEmpty);
+      return (T)Fetch(typeof(T), EmptyCriteria);
     }
 
     /// <summary>

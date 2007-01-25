@@ -262,8 +262,6 @@ namespace Csla.Web.Design
     private static Type GetType(
       string originalPath, string assemblyName, string typeName)
     {
-      //Assembly thisAssembly = Assembly.GetExecutingAssembly();
-      //string assemblyPath = GetCodeBase(thisAssembly.CodeBase);
       string assemblyPath = GetCodeBase(originalPath);
 
       Assembly asm = Assembly.LoadFrom(assemblyPath + assemblyName + ".dll");

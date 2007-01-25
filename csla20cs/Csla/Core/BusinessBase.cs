@@ -1102,7 +1102,8 @@ namespace Csla.Core
       get
       {
         if (!IsValid)
-          return ValidationRules.GetBrokenRules().ToString();
+          return ValidationRules.GetBrokenRules().ToString(
+            Csla.Validation.RuleSeverity.Error);
         else
           return String.Empty;
       }

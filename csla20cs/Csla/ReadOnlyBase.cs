@@ -98,7 +98,13 @@ namespace Csla
       Initialize();
       AddInstanceAuthorizationRules();
       if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-        AddAuthorizationRules();
+      {
+        lock (this.GetType())
+        {
+          if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+            AddAuthorizationRules();
+        }
+      }
     }
 
     #endregion
@@ -405,7 +411,13 @@ namespace Csla
       OnDeserialized(context);
       AddInstanceAuthorizationRules();
       if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-        AddAuthorizationRules();
+      {
+        lock (this.GetType())
+        {
+          if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+            AddAuthorizationRules();
+        }
+      }
     }
 
     /// <summary>

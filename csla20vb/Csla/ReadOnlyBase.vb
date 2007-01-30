@@ -101,7 +101,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     Initialize()
     AddInstanceAuthorizationRules()
     If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-      AddAuthorizationRules()
+      SyncLock Me.GetType
+        If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+          AddAuthorizationRules()
+        End If
+      End SyncLock
     End If
 
   End Sub
@@ -417,7 +421,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     OnDeserialized(context)
     AddInstanceAuthorizationRules()
     If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-      AddAuthorizationRules()
+      SyncLock Me.GetType
+        If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+          AddAuthorizationRules()
+        End If
+      End SyncLock
     End If
 
   End Sub

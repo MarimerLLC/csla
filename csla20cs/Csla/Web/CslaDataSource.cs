@@ -187,12 +187,12 @@ namespace Csla.Web
   {
 
     private object _businessObject;
-    private string mSortExpression;
-    private string mSortProperty;
-    private ListSortDirection mSortDirection;
-    private int mStartRowIndex;
-    private int mMaximumRows;
-    private bool mRetrieveTotalRowCount;
+    private string _sortExpression;
+    private string _sortProperty;
+    private ListSortDirection _sortDirection;
+    private int _startRowIndex;
+    private int _maximumRows;
+    private bool _retrieveTotalRowCount;
 
     /// <summary>
     /// Get or set a reference to the business object
@@ -215,7 +215,7 @@ namespace Csla.Web
     {
       get
       {
-        return mSortExpression;
+        return _sortExpression;
       }
     }
 
@@ -233,7 +233,7 @@ namespace Csla.Web
     {
       get
       {
-        return mSortProperty;
+        return _sortProperty;
       }
     }
 
@@ -251,7 +251,7 @@ namespace Csla.Web
     {
       get
       {
-        return mSortDirection;
+        return _sortDirection;
       }
     }
 
@@ -265,7 +265,7 @@ namespace Csla.Web
     {
       get
       {
-        return mStartRowIndex;
+        return _startRowIndex;
       }
     }
 
@@ -279,7 +279,7 @@ namespace Csla.Web
     {
       get
       {
-        return mMaximumRows;
+        return _maximumRows;
       }
     }
 
@@ -294,7 +294,7 @@ namespace Csla.Web
     {
       get
       {
-        return mRetrieveTotalRowCount;
+        return _retrieveTotalRowCount;
       }
     }
 
@@ -306,23 +306,24 @@ namespace Csla.Web
     public SelectObjectArgs(System.Web.UI.DataSourceSelectArguments args)
     {
 
-      mStartRowIndex = args.StartRowIndex;
-      mMaximumRows = args.MaximumRows;
-      mRetrieveTotalRowCount = args.RetrieveTotalRowCount;
+      _startRowIndex = args.StartRowIndex;
+      _maximumRows = args.MaximumRows;
+      _retrieveTotalRowCount = args.RetrieveTotalRowCount;
 
-      mSortExpression = args.SortExpression;
-      if (!(string.IsNullOrEmpty(mSortExpression)))
+      _sortExpression = args.SortExpression;
+      if (!(string.IsNullOrEmpty(_sortExpression)))
       {
-        if (mSortExpression.Substring(mSortExpression.Length - 5) == " DESC")
+        if (_sortExpression.Length >= 5 && 
+          _sortExpression.Substring(_sortExpression.Length - 5) == " DESC")
         {
-          mSortProperty = mSortExpression.Substring(0, mSortExpression.Length - 5);
-          mSortDirection = ListSortDirection.Descending;
+          _sortProperty = _sortExpression.Substring(0, _sortExpression.Length - 5);
+          _sortDirection = ListSortDirection.Descending;
 
         }
         else
         {
-          mSortProperty = args.SortExpression;
-          mSortDirection = ListSortDirection.Ascending;
+          _sortProperty = args.SortExpression;
+          _sortDirection = ListSortDirection.Ascending;
         }
       }
 

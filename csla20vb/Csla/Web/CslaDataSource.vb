@@ -316,7 +316,7 @@ Namespace Web
 
       mSortExpression = args.SortExpression
       If Not String.IsNullOrEmpty(mSortExpression) Then
-        If Right(mSortExpression, 5) = " DESC" Then
+        If Len(mSortExpression) >= 5 AndAlso Right(mSortExpression, 5) = " DESC" Then
           mSortProperty = Left(mSortExpression, mSortExpression.Length - 5)
           mSortDirection = ListSortDirection.Descending
 

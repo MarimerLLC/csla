@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandObject.cs" />
+    <Compile Include="DynamicRootList.cs" />
     <Compile Include="EditableChild.cs" />
     <Compile Include="EditableChildList.cs" />
     <Compile Include="EditableRoot.cs" />

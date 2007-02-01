@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandObject.vb" />
+    <Compile Include="DynamicRootList.vb" />
     <Compile Include="EditableChild.vb" />
     <Compile Include="EditableChildList.vb" />
     <Compile Include="EditableRoot.vb" />

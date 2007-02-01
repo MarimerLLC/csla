@@ -1,9 +1,10 @@
 using System;
 using System.Data.SqlClient;
+using Csla;
 
 [Serializable()]
 public class DynamicRootList : 
-  EditableRootListBase<DynamicRootList, EditableRoot>
+  EditableRootListBase<EditableRoot>
 {
 
 #region  Authorization Rules 

@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("CSLA .NET Framework")> 
 <Assembly: AssemblyCompany("Rockford Lhotka")> 
 <Assembly: AssemblyProduct("CSLA .NET")> 
-<Assembly: AssemblyCopyright("Copyright © Rockford Lhotka 2007")> 
+<Assembly: AssemblyCopyright("Copyright © 2007 Rockford Lhotka")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: CLSCompliant(True)> 
@@ -36,4 +36,4 @@ Imports System.Runtime.InteropServices
 '<Assembly: AssemblyVersion("1.0.0.0")> 
 <Assembly: AssemblyFileVersion("1.0.0.0")> 
 
-<Assembly: AssemblyVersionAttribute("2.1.3.0")> 
+<Assembly: AssemblyVersionAttribute("2.1.4.0")> 

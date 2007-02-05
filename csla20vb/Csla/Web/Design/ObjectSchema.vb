@@ -18,6 +18,7 @@ Namespace Web.Design
 
     Private mTypeAssemblyName As String = ""
     Private mTypeName As String = ""
+    Private mDesigner As CslaDataSourceDesigner
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -26,12 +27,14 @@ Namespace Web.Design
     ''' the type.</param>
     ''' <param name="typeName">Type name for
     ''' which the schema should be generated.</param>
-    Public Sub New(ByVal assemblyName As String, ByVal typeName As String)
+    Public Sub New(ByVal designer As CslaDataSourceDesigner, ByVal assemblyName As String, ByVal typeName As String)
 
       mTypeAssemblyName = assemblyName
       mTypeName = typeName
+      mDesigner = designer
 
     End Sub
+
 
     ''' <summary>
     ''' Returns a single element array containing the
@@ -43,7 +46,7 @@ Namespace Web.Design
 
       Dim result As IDataSourceViewSchema()
       result = New IDataSourceViewSchema() _
-        {New ObjectViewSchema(mTypeAssemblyName, mTypeName)}
+        {New ObjectViewSchema(mDesigner, mTypeAssemblyName, mTypeName)}
       Return result
 
     End Function

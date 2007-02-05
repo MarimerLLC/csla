@@ -25,6 +25,11 @@ Namespace Web.Design
 
     End Sub
 
+    Friend ReadOnly Property Site() As System.ComponentModel.ISite
+      Get
+        Return mControl.Site
+      End Get
+    End Property
     ''' <summary>
     ''' Returns the default view for this designer.
     ''' </summary>

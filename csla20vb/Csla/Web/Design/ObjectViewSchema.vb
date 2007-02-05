@@ -1,6 +1,7 @@
 Imports System.Web.UI
 Imports System.Web.UI.Design
 Imports System.ComponentModel
+Imports System.ComponentModel.Design
 Imports System.Reflection
 
 Namespace Web.Design
@@ -15,6 +16,7 @@ Namespace Web.Design
 
     Private mTypeAssemblyName As String = ""
     Private mTypeName As String = ""
+    Private mDesigner As CslaDataSourceDesigner
 
     ''' <summary>
     ''' Create an instance of the object.
@@ -23,10 +25,11 @@ Namespace Web.Design
     ''' the business class for which to generate the schema.</param>
     ''' <param name="typeName">The business class for
     ''' which to generate the schema.</param>
-    Public Sub New(ByVal assemblyName As String, ByVal typeName As String)
+    Public Sub New(ByVal site As CslaDataSourceDesigner, ByVal assemblyName As String, ByVal typeName As String)
 
       mTypeAssemblyName = assemblyName
       mTypeName = typeName
+      mDesigner = site
 
     End Sub
 
@@ -37,8 +40,11 @@ Namespace Web.Design
     ''' <remarks>This schema object only returns
     ''' schema for the object itself, so GetChildren will
     ''' always return Nothing (null in C#).</remarks>
-    Public Function GetChildren() As System.Web.UI.Design.IDataSourceViewSchema() Implements System.Web.UI.Design.IDataSourceViewSchema.GetChildren
+    Public Function GetChildren() As System.Web.UI.Design.IDataSourceViewSchema() _
+      Implements System.Web.UI.Design.IDataSourceViewSchema.GetChildren
+
       Return Nothing
+
     End Function
 
     ''' <summary>
@@ -55,7 +61,29 @@ Namespace Web.Design
       System.Web.UI.Design.IDataSourceFieldSchema() _
       Implements System.Web.UI.Design.IDataSourceViewSchema.GetFields
 
-      Return TypeLoader.GetFields(mTypeAssemblyName, mTypeName)
+      Dim typeService As ITypeResolutionService = Nothing
+
+      Dim result As List(Of ObjectFieldInfo) = New List(Of ObjectFieldInfo)()
+      If mDesigner IsNot Nothing Then
+        typeService = DirectCast( _
+          mDesigner.Site.GetService( _
+          GetType(ITypeResolutionService)), ITypeResolutionService)
+
+        Dim objectType As Type = typeService.GetType(mTypeName, True, False)
+
+        If GetType(IEnumerable).IsAssignableFrom(objectType) Then
+          ' this is a list so get the item type
+          objectType = Utilities.GetChildItemType(objectType)
+        End If
+        Dim props As PropertyDescriptorCollection = TypeDescriptor.GetProperties(objectType)
+        For Each item As PropertyDescriptor In props
+          If item.IsBrowsable Then
+            result.Add(New ObjectFieldInfo(item))
+          End If
+        Next item
+      End If
+
+      Return result.ToArray()
 
     End Function
 

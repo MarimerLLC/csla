@@ -1,6 +1,7 @@
 Imports System.Web.UI
 Imports System.Web.UI.Design
 Imports System.ComponentModel
+Imports System.ComponentModel.Design
 Imports System.Reflection
 
 Namespace Web.Design
@@ -86,7 +87,7 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property Schema() As IDataSourceViewSchema
       Get
-        Return New ObjectSchema( _
+        Return New ObjectSchema(mOwner, _
           mOwner.DataSourceControl.TypeAssemblyName, _
           mOwner.DataSourceControl.TypeName).GetViews(0)
       End Get
@@ -102,6 +103,18 @@ Namespace Web.Design
       End Get
     End Property
 
+    Private Function GetObjectType() As Type
+
+      Dim typeService As ITypeResolutionService
+      typeService = DirectCast( _
+        mOwner.Site.GetService( _
+        GetType(ITypeResolutionService)), ITypeResolutionService)
+      Dim result As Type = _
+        typeService.GetType(Me.mOwner.DataSourceControl.TypeName, True, False)
+      Return result
+
+    End Function
+
     ''' <summary>
     ''' Get a value indicating whether data binding can directly
     ''' delete the object.
@@ -113,8 +126,14 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanDelete() As Boolean
       Get
-        Return TypeLoader.CanDelete( _
-          mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)
+        Dim objectType As Type = GetObjectType()
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objectType) Then
+          Return True
+        ElseIf Not objectType.GetMethod("Remove") Is Nothing Then
+          Return True
+        Else
+          Return False
+        End If
       End Get
     End Property
 
@@ -129,8 +148,12 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanInsert() As Boolean
       Get
-        Return TypeLoader.CanInsert( _
-          mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)
+        Dim objectType As Type = GetObjectType()
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objectType) Then
+          Return True
+        Else
+          Return False
+        End If
       End Get
     End Property
 
@@ -145,8 +168,12 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property CanUpdate() As Boolean
       Get
-        Return TypeLoader.CanUpdate( _
-          mOwner.DataSourceControl.TypeAssemblyName, mOwner.DataSourceControl.TypeName)
+        Dim objectType As Type = GetObjectType()
+        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objectType) Then
+          Return True
+        Else
+          Return False
+        End If
       End Get
     End Property
 

@@ -2,10 +2,10 @@ using System;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.ComponentModel;
+using Csla.Web;
 
 namespace Csla.Web.Design
 {
-
   /// <summary>
   /// Implements designer support for CslaDataSource.
   /// </summary>
@@ -26,6 +26,13 @@ namespace Csla.Web.Design
       _control = (CslaDataSource)component;
     }
 
+    internal System.ComponentModel.ISite Site
+    {
+      get
+      {
+        return _control.Site;
+      }
+    }
     /// <summary>
     /// Returns the default view for this designer.
     /// </summary>
@@ -37,7 +44,9 @@ namespace Csla.Web.Design
     public override DesignerDataSourceView GetView(string viewName)
     {
       if (_view == null)
+      {
         _view = new CslaDesignerDataSourceView(this, "Default");
+      }
       return _view;
     }
 
@@ -68,7 +77,10 @@ namespace Csla.Web.Design
     /// </summary>
     public override bool CanRefreshSchema
     {
-      get { return true; }
+      get
+      {
+        return true;
+      }
     }
 
     /// <summary>
@@ -77,7 +89,10 @@ namespace Csla.Web.Design
     /// </summary>
     public override bool AllowResize
     {
-      get { return false; }
+      get
+      {
+        return false;
+      }
     }
 
     /// <summary>
@@ -86,8 +101,10 @@ namespace Csla.Web.Design
     /// </summary>
     internal CslaDataSource DataSourceControl
     {
-      get { return _control; }
+      get
+      {
+        return _control;
+      }
     }
-
   }
 }

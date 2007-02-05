@@ -1,35 +1,42 @@
 using System;
-using System.Data;
+using System.Collections;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
+using Csla;
+using Csla.Web.Design;
 
 namespace Csla.Web.Design
 {
+
   /// <summary>
   /// Object providing schema information for a
   /// business object.
   /// </summary>
-  [Serializable]
+  [Serializable()]
   public class ObjectViewSchema : IDataSourceViewSchema
   {
-    private string _typeAssemblyName = string.Empty;
-    private string _typeName = string.Empty;
+
+    private string _typeAssemblyName = "";
+    private string _typeName = "";
+    private CslaDataSourceDesigner _designer;
 
     /// <summary>
     /// Create an instance of the object.
     /// </summary>
     /// <param name="assemblyName">The assembly containing
     /// the business class for which to generate the schema.</param>
+    /// <param name="site">Site containing the control.</param>
     /// <param name="typeName">The business class for
     /// which to generate the schema.</param>
-    public ObjectViewSchema(string assemblyName, string typeName)
+    public ObjectViewSchema(CslaDataSourceDesigner site, string assemblyName, string typeName)
     {
       _typeAssemblyName = assemblyName;
       _typeName = typeName;
+      _designer = site;
     }
 
     /// <summary>
@@ -39,7 +46,7 @@ namespace Csla.Web.Design
     /// <remarks>This schema object only returns
     /// schema for the object itself, so GetChildren will
     /// always return Nothing (null in C#).</remarks>
-    public IDataSourceViewSchema[] GetChildren()
+    public System.Web.UI.Design.IDataSourceViewSchema[] GetChildren()
     {
       return null;
     }
@@ -54,9 +61,33 @@ namespace Csla.Web.Design
     /// <see cref="BrowsableAttribute">Browsable</see> attribute
     /// is False.
     /// </remarks>
-    public IDataSourceFieldSchema[] GetFields()
+    public System.Web.UI.Design.IDataSourceFieldSchema[] GetFields()
     {
-      return TypeLoader.GetFields(_typeAssemblyName, _typeName);
+      ITypeResolutionService typeService = null;
+
+      List<ObjectFieldInfo> result = new List<ObjectFieldInfo>();
+      if (_designer != null)
+      {
+        typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
+
+        Type objectType = typeService.GetType(_typeName, true, false);
+
+        if (typeof(IEnumerable).IsAssignableFrom(objectType))
+        {
+          // this is a list so get the item type
+          objectType = Utilities.GetChildItemType(objectType);
+        }
+        PropertyDescriptorCollection props = TypeDescriptor.GetProperties(objectType);
+        foreach (PropertyDescriptor item in props)
+        {
+          if (item.IsBrowsable)
+          {
+            result.Add(new ObjectFieldInfo(item));
+          }
+        }
+      }
+
+      return result.ToArray();
     }
 
     /// <summary>
@@ -64,8 +95,10 @@ namespace Csla.Web.Design
     /// </summary>
     public string Name
     {
-      get { return "Default"; }
+      get
+      {
+        return "Default";
+      }
     }
-
   }
 }

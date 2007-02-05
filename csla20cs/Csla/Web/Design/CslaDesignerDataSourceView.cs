@@ -1,15 +1,14 @@
 using System;
-using System.Data;
+using System.Collections;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
+using System.Data;
 
 namespace Csla.Web.Design
 {
-
   /// <summary>
   /// Object responsible for providing details about
   /// data binding to a specific CSLA .NET object.
@@ -36,15 +35,16 @@ namespace Csla.Web.Design
     /// to create.</param>
     /// <param name="isSampleData">Returns True if the data
     /// is sample data.</param>
-    public override System.Collections.IEnumerable 
-      GetDesignTimeData(int minimumRows, out bool isSampleData)
+    public override IEnumerable GetDesignTimeData(int minimumRows, out bool isSampleData)
     {
       IDataSourceViewSchema schema = this.Schema;
       DataTable result = new DataTable();
 
       // create the columns
       foreach (IDataSourceFieldSchema item in schema.GetFields())
+      {
         result.Columns.Add(item.Name, item.DataType);
+      }
 
       // create sample data
       for (int index = 1; index <= minimumRows; index++)
@@ -55,8 +55,8 @@ namespace Csla.Web.Design
         {
           if (col.DataType.Equals(typeof(string)))
             values[colIndex] = "abc";
-          else if (col.DataType.Equals(typeof(DateTime)))
-            values[colIndex] = DateTime.Today.ToShortDateString();
+          else if (col.DataType.Equals(typeof(System.DateTime)))
+            values[colIndex] = System.DateTime.Today.ToShortDateString();
           else if (col.DataType.Equals(typeof(bool)))
             values[colIndex] = false;
           else if (col.DataType.IsPrimitive)
@@ -64,17 +64,16 @@ namespace Csla.Web.Design
           else if (col.DataType.Equals(typeof(Guid)))
             values[colIndex] = Guid.Empty;
           else if (col.DataType.IsValueType)
-            values[colIndex] =
-              Activator.CreateInstance(col.DataType);
+            values[colIndex] = Activator.CreateInstance(col.DataType);
           else
             values[colIndex] = null;
-          colIndex++;
+          colIndex += 1;
         }
         result.LoadDataRow(values, LoadOption.OverwriteChanges);
       }
 
       isSampleData = true;
-      return result.DefaultView as IEnumerable;
+      return (IEnumerable)result.DefaultView;
     }
 
     /// <summary>
@@ -91,7 +90,8 @@ namespace Csla.Web.Design
       get
       {
         return new ObjectSchema(
-          _owner.DataSourceControl.TypeAssemblyName,
+          _owner, 
+          _owner.DataSourceControl.TypeAssemblyName, 
           _owner.DataSourceControl.TypeName).GetViews()[0];
       }
     }
@@ -102,7 +102,18 @@ namespace Csla.Web.Design
     /// </summary>
     public override bool CanRetrieveTotalRowCount
     {
-      get { return true; }
+      get
+      {
+        return true;
+      }
+    }
+
+    private Type GetObjectType()
+    {
+      ITypeResolutionService typeService = null;
+      typeService = (ITypeResolutionService)(_owner.Site.GetService(typeof(ITypeResolutionService)));
+      Type result = typeService.GetType(this._owner.DataSourceControl.TypeName, true, false);
+      return result;
     }
 
     /// <summary>
@@ -118,8 +129,19 @@ namespace Csla.Web.Design
     {
       get
       {
-        return TypeLoader.CanDelete(
-          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName);
+        Type objectType = GetObjectType();
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+        {
+          return true;
+        }
+        else if (objectType.GetMethod("Remove") != null)
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
     }
 
@@ -136,8 +158,15 @@ namespace Csla.Web.Design
     {
       get
       {
-        return TypeLoader.CanInsert(
-          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName);
+        Type objectType = GetObjectType();
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
     }
 
@@ -154,20 +183,27 @@ namespace Csla.Web.Design
     {
       get
       {
-        return TypeLoader.CanUpdate(
-          _owner.DataSourceControl.TypeAssemblyName, _owner.DataSourceControl.TypeName);
+        Type objectType = GetObjectType();
+        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
     }
 
     /// <summary>
     /// Gets a value indicating whether the data source supports
-    /// paging of the data.
+    /// paging.
     /// </summary>
     public override bool CanPage
     {
-      get 
+      get
       {
-        return _owner.DataSourceControl.TypeSupportsPaging; 
+        return _owner.DataSourceControl.TypeSupportsPaging;
       }
     }
 
@@ -184,4 +220,3 @@ namespace Csla.Web.Design
     }
   }
 }
-

@@ -155,7 +155,6 @@
     <Compile Include="Web\Design\ObjectFieldInfo.cs" />
     <Compile Include="Web\Design\ObjectSchema.cs" />
     <Compile Include="Web\Design\ObjectViewSchema.cs" />
-    <Compile Include="Web\Design\TypeLoader.cs" />
     <Compile Include="Windows\BindingSourceRefresh.cs">
       <SubType>Component</SubType>
     </Compile>

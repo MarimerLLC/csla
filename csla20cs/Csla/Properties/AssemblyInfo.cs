@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rockford Lhotka")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © Rockford Lhotka 2007")]
+[assembly: AssemblyCopyright("Copyright © 2007 Rockford Lhotka")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,5 +34,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("2.1.3.0")]
+[assembly: AssemblyVersion("2.1.4.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

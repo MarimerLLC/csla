@@ -16,8 +16,6 @@ namespace Csla.Web.Design
   /// </remarks>
   public class ObjectSchema : IDataSourceSchema
   {
-
-    private string _typeAssemblyName = "";
     private string _typeName = "";
     private CslaDataSourceDesigner _designer;
 
@@ -25,13 +23,10 @@ namespace Csla.Web.Design
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="designer">Data source designer object.</param>
-    /// <param name="assemblyName">Assembly containing
-    /// the type.</param>
     /// <param name="typeName">Type name for
     /// which the schema should be generated.</param>
-    public ObjectSchema(CslaDataSourceDesigner designer, string assemblyName, string typeName)
+    public ObjectSchema(CslaDataSourceDesigner designer, string typeName)
     {
-      _typeAssemblyName = assemblyName;
       _typeName = typeName;
       _designer = designer;
     }
@@ -44,7 +39,7 @@ namespace Csla.Web.Design
     public System.Web.UI.Design.IDataSourceViewSchema[] GetViews()
     {
       IDataSourceViewSchema[] result = null;
-      result = new IDataSourceViewSchema[] { new ObjectViewSchema(_designer, _typeAssemblyName, _typeName) };
+      result = new IDataSourceViewSchema[] { new ObjectViewSchema(_designer, _typeName) };
       return result;
     }
   }

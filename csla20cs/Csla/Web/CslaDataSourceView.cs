@@ -42,17 +42,6 @@ namespace Csla.Web
     }
 
     /// <summary>
-    /// Get or set the name of the assembly containing the 
-    /// business object class to be used as a data source.
-    /// </summary>
-    /// <value>Assembly name containing the business class.</value>
-    public string TypeAssemblyName
-    {
-      get { return _typeAssemblyName; }
-      set { _typeAssemblyName = value; }
-    }
-
-    /// <summary>
     /// Get or set a value indicating whether the
     /// business object data source supports paging.
     /// </summary>

@@ -36,6 +36,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Transactions" />
@@ -150,11 +151,21 @@
     </Compile>
     <Compile Include="Web\CslaDataSource.cs" />
     <Compile Include="Web\CslaDataSourceView.cs" />
+    <Compile Include="Web\DeleteObjectArgs.cs" />
+    <Compile Include="Web\Design\CslaDataSourceConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Web\Design\CslaDataSourceConfiguration.Designer.cs">
+      <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Web\Design\CslaDataSourceDesigner.cs" />
     <Compile Include="Web\Design\CslaDesignerDataSourceView.cs" />
     <Compile Include="Web\Design\ObjectFieldInfo.cs" />
     <Compile Include="Web\Design\ObjectSchema.cs" />
     <Compile Include="Web\Design\ObjectViewSchema.cs" />
+    <Compile Include="Web\InsertObjectArgs.cs" />
+    <Compile Include="Web\SelectObjectArgs.cs" />
+    <Compile Include="Web\UpdateObjectArgs.cs" />
     <Compile Include="Windows\BindingSourceRefresh.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -234,6 +245,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.zh-CHS.resx">
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Web\Design\CslaDataSourceConfiguration.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

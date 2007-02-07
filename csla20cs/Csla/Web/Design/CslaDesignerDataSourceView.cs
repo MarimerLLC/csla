@@ -91,7 +91,6 @@ namespace Csla.Web.Design
       {
         return new ObjectSchema(
           _owner, 
-          _owner.DataSourceControl.TypeAssemblyName, 
           _owner.DataSourceControl.TypeName).GetViews()[0];
       }
     }
@@ -110,9 +109,17 @@ namespace Csla.Web.Design
 
     private Type GetObjectType()
     {
-      ITypeResolutionService typeService = null;
-      typeService = (ITypeResolutionService)(_owner.Site.GetService(typeof(ITypeResolutionService)));
-      Type result = typeService.GetType(this._owner.DataSourceControl.TypeName, true, false);
+      Type result;
+      try
+      {
+        ITypeResolutionService typeService = null;
+        typeService = (ITypeResolutionService)(_owner.Site.GetService(typeof(ITypeResolutionService)));
+        result = typeService.GetType(this._owner.DataSourceControl.TypeName, true, false);
+      }
+      catch
+      {
+        result = typeof(object);
+      }
       return result;
     }
 

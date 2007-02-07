@@ -19,22 +19,17 @@ namespace Csla.Web.Design
   [Serializable()]
   public class ObjectViewSchema : IDataSourceViewSchema
   {
-
-    private string _typeAssemblyName = "";
     private string _typeName = "";
     private CslaDataSourceDesigner _designer;
 
     /// <summary>
     /// Create an instance of the object.
     /// </summary>
-    /// <param name="assemblyName">The assembly containing
-    /// the business class for which to generate the schema.</param>
     /// <param name="site">Site containing the control.</param>
     /// <param name="typeName">The business class for
     /// which to generate the schema.</param>
-    public ObjectViewSchema(CslaDataSourceDesigner site, string assemblyName, string typeName)
+    public ObjectViewSchema(CslaDataSourceDesigner site, string typeName)
     {
-      _typeAssemblyName = assemblyName;
       _typeName = typeName;
       _designer = site;
     }
@@ -64,27 +59,32 @@ namespace Csla.Web.Design
     public System.Web.UI.Design.IDataSourceFieldSchema[] GetFields()
     {
       ITypeResolutionService typeService = null;
-
       List<ObjectFieldInfo> result = new List<ObjectFieldInfo>();
+
       if (_designer != null)
       {
-        typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
-
-        Type objectType = typeService.GetType(_typeName, true, false);
-
-        if (typeof(IEnumerable).IsAssignableFrom(objectType))
+        Type objectType = null;
+        try
         {
-          // this is a list so get the item type
-          objectType = Utilities.GetChildItemType(objectType);
-        }
-        PropertyDescriptorCollection props = TypeDescriptor.GetProperties(objectType);
-        foreach (PropertyDescriptor item in props)
-        {
-          if (item.IsBrowsable)
+          typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
+          objectType = typeService.GetType(_typeName, true, false);
+
+          if (typeof(IEnumerable).IsAssignableFrom(objectType))
           {
-            result.Add(new ObjectFieldInfo(item));
+            // this is a list so get the item type
+            objectType = Utilities.GetChildItemType(objectType);
+          }
+          PropertyDescriptorCollection props = TypeDescriptor.GetProperties(objectType);
+          foreach (PropertyDescriptor item in props)
+          {
+            if (item.IsBrowsable)
+            {
+              result.Add(new ObjectFieldInfo(item));
+            }
           }
         }
+        catch
+        { /* do nothing - just swallow exception */ }
       }
 
       return result.ToArray();

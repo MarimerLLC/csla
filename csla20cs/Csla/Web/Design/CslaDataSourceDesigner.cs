@@ -2,6 +2,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.ComponentModel;
+using System.Windows.Forms.Design;
 using Csla.Web;
 
 namespace Csla.Web.Design
@@ -12,7 +13,7 @@ namespace Csla.Web.Design
   public class CslaDataSourceDesigner : DataSourceDesigner
   {
 
-    private CslaDataSource _control = null;
+    private DataSourceControl _control = null;
     private CslaDesignerDataSourceView _view = null;
 
     /// <summary>
@@ -23,7 +24,7 @@ namespace Csla.Web.Design
     public override void Initialize(IComponent component)
     {
       base.Initialize(component);
-      _control = (CslaDataSource)component;
+      _control = (DataSourceControl)component;
     }
 
     internal System.ComponentModel.ISite Site
@@ -84,6 +85,52 @@ namespace Csla.Web.Design
     }
 
     /// <summary>
+    /// Invoke the design time configuration
+    /// support provided by the control.
+    /// </summary>
+    public override void Configure()
+    {
+      InvokeTransactedChange(_control, ConfigureCallback, null, "ConfigureDataSource");
+    }
+
+    private bool ConfigureCallback(object context)
+    {
+      bool result = false;
+      string oldTypeName = ((CslaDataSource)DataSourceControl).TypeName;
+
+      IUIService uiService = (IUIService)_control.Site.GetService(typeof(IUIService));
+      CslaDataSourceConfiguration cfg = new CslaDataSourceConfiguration(_control, oldTypeName);
+      if (uiService.ShowDialog(cfg) == System.Windows.Forms.DialogResult.OK)
+      {
+        SuppressDataSourceEvents();
+        try
+        {
+          ((CslaDataSource)DataSourceControl).TypeName = cfg.TypeName;
+          OnDataSourceChanged(EventArgs.Empty);
+          result = true;
+        }
+        finally
+        {
+          ResumeDataSourceEvents();
+        }
+      }
+      cfg.Dispose();
+      return result;
+    }
+
+    /// <summary>
+    /// Get a value indicating whether this control
+    /// supports design time configuration.
+    /// </summary>
+    public override bool CanConfigure
+    {
+      get
+      {
+        return true;
+      }
+    }
+
+    /// <summary>
     /// Get a value indicating whether the control can
     /// be resized.
     /// </summary>
@@ -103,7 +150,7 @@ namespace Csla.Web.Design
     {
       get
       {
-        return _control;
+        return (CslaDataSource)_control;
       }
     }
   }

@@ -231,6 +231,9 @@
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>522, 75</value>
   </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Configure CslaDataSource</value>
   </data>

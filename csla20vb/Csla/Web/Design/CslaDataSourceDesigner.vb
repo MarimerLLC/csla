@@ -1,6 +1,7 @@
 Imports System.Web.UI
 Imports System.Web.UI.Design
 Imports System.ComponentModel
+Imports System.Windows.Forms.Design
 
 Namespace Web.Design
 
@@ -10,7 +11,7 @@ Namespace Web.Design
   Public Class CslaDataSourceDesigner
     Inherits DataSourceDesigner
 
-    Private mControl As CslaDataSource = Nothing
+    Private mControl As DataSourceControl = Nothing
     Private mView As CslaDesignerDataSourceView = Nothing
 
     ''' <summary>
@@ -21,7 +22,7 @@ Namespace Web.Design
     Public Overrides Sub Initialize(ByVal component As IComponent)
 
       MyBase.Initialize(component)
-      mControl = CType(component, CslaDataSource)
+      mControl = CType(component, DataSourceControl)
 
     End Sub
 
@@ -81,6 +82,48 @@ Namespace Web.Design
     End Property
 
     ''' <summary>
+    ''' Invoke the design time configuration
+    ''' support provided by the control.
+    ''' </summary>
+    Public Overrides Sub Configure()
+
+      InvokeTransactedChange(mControl, AddressOf ConfigureCallback, Nothing, "ConfigureDataSource")
+
+    End Sub
+
+    Private Function ConfigureCallback(ByVal context As Object) As Boolean
+
+      Dim result As Boolean = False
+      Dim oldTypeName As String = (CType(DataSourceControl, CslaDataSource)).TypeName
+
+      Dim uiService As IUIService = CType(mControl.Site.GetService(GetType(IUIService)), IUIService)
+      Dim cfg As CslaDataSourceConfiguration = New CslaDataSourceConfiguration(mControl, oldTypeName)
+      If uiService.ShowDialog(cfg) = System.Windows.Forms.DialogResult.OK Then
+        SuppressDataSourceEvents()
+        Try
+          CType(DataSourceControl, CslaDataSource).TypeName = cfg.TypeName
+          OnDataSourceChanged(EventArgs.Empty)
+          result = True
+        Finally
+          ResumeDataSourceEvents()
+        End Try
+      End If
+      cfg.Dispose()
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Get a value indicating whether this control
+    ''' supports design time configuration.
+    ''' </summary>
+    Public Overrides ReadOnly Property CanConfigure() As Boolean
+      Get
+        Return True
+      End Get
+    End Property
+
+    ''' <summary>
     ''' Get a value indicating whether the control can
     ''' be resized.
     ''' </summary>
@@ -96,7 +139,7 @@ Namespace Web.Design
     ''' </summary>
     Friend ReadOnly Property DataSourceControl() As CslaDataSource
       Get
-        Return mControl
+        Return DirectCast(mControl, CslaDataSource)
       End Get
     End Property
 

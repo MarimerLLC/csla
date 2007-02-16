@@ -14,20 +14,16 @@ Namespace Web.Design
   Public Class ObjectViewSchema
     Implements IDataSourceViewSchema
 
-    Private mTypeAssemblyName As String = ""
     Private mTypeName As String = ""
     Private mDesigner As CslaDataSourceDesigner
 
     ''' <summary>
     ''' Create an instance of the object.
     ''' </summary>
-    ''' <param name="assemblyName">The assembly containing
-    ''' the business class for which to generate the schema.</param>
     ''' <param name="typeName">The business class for
     ''' which to generate the schema.</param>
-    Public Sub New(ByVal site As CslaDataSourceDesigner, ByVal assemblyName As String, ByVal typeName As String)
+    Public Sub New(ByVal site As CslaDataSourceDesigner, ByVal typeName As String)
 
-      mTypeAssemblyName = assemblyName
       mTypeName = typeName
       mDesigner = site
 
@@ -62,27 +58,34 @@ Namespace Web.Design
       Implements System.Web.UI.Design.IDataSourceViewSchema.GetFields
 
       Dim typeService As ITypeResolutionService = Nothing
+      Dim result As New List(Of ObjectFieldInfo)()
 
-      Dim result As List(Of ObjectFieldInfo) = New List(Of ObjectFieldInfo)()
       If mDesigner IsNot Nothing Then
-        typeService = DirectCast( _
-          mDesigner.Site.GetService( _
-          GetType(ITypeResolutionService)), ITypeResolutionService)
+        Dim objectType As Type
+        Try
+          If mDesigner IsNot Nothing Then
+            typeService = DirectCast( _
+              mDesigner.Site.GetService( _
+              GetType(ITypeResolutionService)), ITypeResolutionService)
 
-        Dim objectType As Type = typeService.GetType(mTypeName, True, False)
+            objectType = typeService.GetType(mTypeName, True, False)
 
-        If GetType(IEnumerable).IsAssignableFrom(objectType) Then
-          ' this is a list so get the item type
-          objectType = Utilities.GetChildItemType(objectType)
-        End If
-        Dim props As PropertyDescriptorCollection = TypeDescriptor.GetProperties(objectType)
-        For Each item As PropertyDescriptor In props
-          If item.IsBrowsable Then
-            result.Add(New ObjectFieldInfo(item))
+            If GetType(IEnumerable).IsAssignableFrom(objectType) Then
+              ' this is a list so get the item type
+              objectType = Utilities.GetChildItemType(objectType)
+            End If
+            Dim props As PropertyDescriptorCollection = TypeDescriptor.GetProperties(objectType)
+            For Each item As PropertyDescriptor In props
+              If item.IsBrowsable Then
+                result.Add(New ObjectFieldInfo(item))
+              End If
+            Next item
           End If
-        Next item
-      End If
 
+        Catch
+          ' do nothing - just swallow exception
+        End Try
+      End If
       Return result.ToArray()
 
     End Function

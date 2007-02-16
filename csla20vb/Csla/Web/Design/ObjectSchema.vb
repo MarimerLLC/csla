@@ -16,20 +16,16 @@ Namespace Web.Design
   Public Class ObjectSchema
     Implements IDataSourceSchema
 
-    Private mTypeAssemblyName As String = ""
     Private mTypeName As String = ""
     Private mDesigner As CslaDataSourceDesigner
 
     ''' <summary>
     ''' Creates an instance of the object.
     ''' </summary>
-    ''' <param name="assemblyName">Assembly containing
-    ''' the type.</param>
     ''' <param name="typeName">Type name for
     ''' which the schema should be generated.</param>
-    Public Sub New(ByVal designer As CslaDataSourceDesigner, ByVal assemblyName As String, ByVal typeName As String)
+    Public Sub New(ByVal designer As CslaDataSourceDesigner, ByVal typeName As String)
 
-      mTypeAssemblyName = assemblyName
       mTypeName = typeName
       mDesigner = designer
 
@@ -46,7 +42,7 @@ Namespace Web.Design
 
       Dim result As IDataSourceViewSchema()
       result = New IDataSourceViewSchema() _
-        {New ObjectViewSchema(mDesigner, mTypeAssemblyName, mTypeName)}
+        {New ObjectViewSchema(mDesigner, mTypeName)}
       Return result
 
     End Function

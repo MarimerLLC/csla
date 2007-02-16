@@ -88,7 +88,6 @@ Namespace Web.Design
     Public Overrides ReadOnly Property Schema() As IDataSourceViewSchema
       Get
         Return New ObjectSchema(mOwner, _
-          mOwner.DataSourceControl.TypeAssemblyName, _
           mOwner.DataSourceControl.TypeName).GetViews(0)
       End Get
     End Property
@@ -105,12 +104,17 @@ Namespace Web.Design
 
     Private Function GetObjectType() As Type
 
-      Dim typeService As ITypeResolutionService
-      typeService = DirectCast( _
-        mOwner.Site.GetService( _
-        GetType(ITypeResolutionService)), ITypeResolutionService)
-      Dim result As Type = _
-        typeService.GetType(Me.mOwner.DataSourceControl.TypeName, True, False)
+      Dim result As Type
+      Try
+        Dim typeService As ITypeResolutionService
+        typeService = DirectCast( _
+          mOwner.Site.GetService( _
+          GetType(ITypeResolutionService)), ITypeResolutionService)
+        result = typeService.GetType(Me.mOwner.DataSourceControl.TypeName, True, False)
+
+      Catch ex As Exception
+        result = GetType(Object)
+      End Try
       Return result
 
     End Function

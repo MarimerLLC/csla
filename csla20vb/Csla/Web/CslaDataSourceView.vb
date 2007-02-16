@@ -43,20 +43,6 @@ Namespace Web
     End Property
 
     ''' <summary>
-    ''' Get or set the name of the assembly containing the 
-    ''' business object class to be used as a data source.
-    ''' </summary>
-    ''' <value>Assembly name containing the business class.</value>
-    Public Property TypeAssemblyName() As String
-      Get
-        Return mTypeAssemblyName
-      End Get
-      Set(ByVal value As String)
-        mTypeAssemblyName = value
-      End Set
-    End Property
-
-    ''' <summary>
     ''' Get or set a value indicating whether the
     ''' business object data source supports paging.
     ''' </summary>

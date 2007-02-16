@@ -1,0 +1,79 @@
+Imports System.ComponentModel.Design
+Imports System.windows.Forms
+Imports System.Web.UI
+
+Namespace Web.Design
+
+  ''' <summary>
+  ''' CslaDataSource configuration form.
+  ''' </summary>
+  ''' <remarks></remarks>
+  Public Class CslaDataSourceConfiguration
+
+    Private mControl As DataSourceControl
+
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    Public Sub New()
+
+      ' This call is required by the Windows Form Designer.
+      InitializeComponent()
+
+    End Sub
+
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="control">Reference to the data source control.</param>
+    ''' <param name="oldTypeName">Existing type name.</param>
+    Public Sub New(ByVal control As DataSourceControl, ByVal oldTypeName As String)
+
+      Me.New()
+      mControl = control
+      DiscoverTypes()
+      Me.TypeComboBox.Text = oldTypeName
+
+    End Sub
+
+    ''' <summary>
+    ''' Gets the type name entered by the user.
+    ''' </summary>
+    Public ReadOnly Property TypeName() As String
+      Get
+        Return Me.TypeComboBox.Text
+      End Get
+    End Property
+
+    Private Sub DiscoverTypes()
+      ' try to get a reference to the type discovery service
+      Dim discovery As ITypeDiscoveryService = Nothing
+      If Not mControl.Site Is Nothing Then
+        discovery = CType(mControl.Site.GetService(GetType(ITypeDiscoveryService)), ITypeDiscoveryService)
+      End If
+
+      If Not discovery Is Nothing Then
+        ' saves the cursor and sets the wait cursor
+        Dim previousCursor As Cursor = Cursor.Current
+        Cursor.Current = Cursors.WaitCursor
+        Try
+          ' gets all types using the type discovery service
+          Dim types As ICollection = discovery.GetTypes(GetType(Object), True)
+          TypeComboBox.BeginUpdate()
+          TypeComboBox.Items.Clear()
+          ' adds the types to the list
+          For Each type As Type In types
+            If type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(",")) <> "Csla" AndAlso GetType(Csla.Core.IBusinessObject).IsAssignableFrom(type) Then
+              TypeComboBox.Items.Add(type.FullName)
+            End If
+          Next type
+        Finally
+          Cursor.Current = previousCursor
+          TypeComboBox.EndUpdate()
+        End Try
+      End If
+    End Sub
+
+  End Class
+
+End Namespace

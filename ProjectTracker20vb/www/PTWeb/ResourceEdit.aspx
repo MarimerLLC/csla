@@ -54,13 +54,13 @@
         </asp:MultiView>
         <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
       <csla:CslaDataSource ID="ResourceDataSource" runat="server"
-        TypeName="ProjectTracker.Library.Resource" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
-        <csla:CslaDataSource ID="AssignmentsDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library" TypeName="ProjectTracker.Library.ResourceAssignments">
+        TypeName="ProjectTracker.Library.Resource, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False"></csla:CslaDataSource>
+        <csla:CslaDataSource ID="AssignmentsDataSource" runat="server" TypeName="ProjectTracker.Library.ResourceAssignments, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False">
         </csla:CslaDataSource>
       <csla:CslaDataSource ID="RoleListDataSource" runat="server"
-        TypeName="ProjectTracker.Library.RoleList" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
-        <csla:CslaDataSource ID="ProjectListDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library"
-          TypeName="ProjectTracker.Library.ProjectList">
+        TypeName="ProjectTracker.Library.RoleList, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False"></csla:CslaDataSource>
+        <csla:CslaDataSource ID="ProjectListDataSource" runat="server"
+          TypeName="ProjectTracker.Library.ProjectList, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False">
         </csla:CslaDataSource>
        </div>
 </asp:Content>

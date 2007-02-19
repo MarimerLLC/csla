@@ -16,7 +16,7 @@
         </asp:GridView>
         <asp:LinkButton ID="NewProjectButton" runat="server">New project</asp:LinkButton>
         <csla:CslaDataSource ID="ProjectListDataSource" runat="server"
-          TypeName="ProjectTracker.Library.ProjectList" TypeAssemblyName="ProjectTracker.Library"></csla:CslaDataSource>
+          TypeName="ProjectTracker.Library.ProjectList, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False"></csla:CslaDataSource>
         <br />
         <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label></div>
 </asp:Content>

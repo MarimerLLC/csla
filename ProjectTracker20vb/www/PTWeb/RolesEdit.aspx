@@ -38,9 +38,8 @@
       </asp:MultiView><br />
   <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
         &nbsp;&nbsp;
-    <csla:CslaDataSource ID="RolesDataSource" runat="server" 
-      TypeAssemblyName="ProjectTracker.Library"
-      TypeName="ProjectTracker.Library.Admin.Roles">
+    <csla:CslaDataSource ID="RolesDataSource" runat="server"
+      TypeName="ProjectTracker.Library.Admin.Roles, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False">
     </csla:CslaDataSource>
       </div>
 </asp:Content>

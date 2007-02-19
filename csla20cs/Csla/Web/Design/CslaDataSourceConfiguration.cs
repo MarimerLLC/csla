@@ -72,7 +72,10 @@ namespace Csla.Web.Design
             if (type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(",")) != "Csla" &&
               typeof(Csla.Core.IBusinessObject).IsAssignableFrom(type))
             {
-              TypeComboBox.Items.Add(type.FullName);
+              string name = type.AssemblyQualifiedName;
+              if (name.Substring(name.Length - 19, 19) == "PublicKeyToken=null")
+                name = name.Substring(0, name.IndexOf(",", name.IndexOf(",") + 1));
+              TypeComboBox.Items.Add(name);
             }
           }
         }

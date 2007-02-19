@@ -13,8 +13,8 @@ namespace Csla.Web
   {
 
     private CslaDataSource _owner;
-    private string _typeName;
     private string _typeAssemblyName;
+    private string _typeName;
     private bool _typeSupportsPaging;
     private bool _typeSupportsSorting;
 
@@ -28,6 +28,16 @@ namespace Csla.Web
       : base(owner, viewName)
     {
       _owner = owner;
+    }
+
+    /// <summary>
+    /// Get or set the name of the assembly (no longer used).
+    /// </summary>
+    /// <value>Obsolete - do not use.</value>
+    public string TypeAssemblyName
+    {
+      get { return _typeAssemblyName; }
+      set { _typeAssemblyName = value; }
     }
 
     /// <summary>

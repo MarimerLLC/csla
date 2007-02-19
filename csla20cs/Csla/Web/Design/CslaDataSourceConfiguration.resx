@@ -151,7 +151,7 @@
     <value>Top, Right</value>
   </data>
   <data name="okButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>435, 12</value>
+    <value>562, 12</value>
   </data>
   <data name="okButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -178,7 +178,7 @@
     <value>Top, Right</value>
   </data>
   <data name="cancelButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>435, 41</value>
+    <value>562, 41</value>
   </data>
   <data name="cancelButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -201,11 +201,14 @@
   <data name="&gt;&gt;cancelButton.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="TypeComboBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
   <data name="TypeComboBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>122, 14</value>
   </data>
   <data name="TypeComboBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>305, 21</value>
+    <value>429, 21</value>
   </data>
   <data name="TypeComboBox.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -229,7 +232,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>522, 75</value>
+    <value>649, 75</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterParent</value>

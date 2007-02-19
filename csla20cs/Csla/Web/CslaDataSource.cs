@@ -72,15 +72,16 @@ namespace Csla.Web
     /// <value>Obsolete - do not use.</value>
     public string TypeAssemblyName
     {
-      get { return string.Empty; }
-      set { /* do nothing */ }
+      get { return ((CslaDataSourceView)this.GetView("Default")).TypeAssemblyName; }
+      set { ((CslaDataSourceView)this.GetView("Default")).TypeAssemblyName = value; }
     }
 
     /// <summary>
     /// Get or set the full type name of the business object
     /// class to be used as a data source.
     /// </summary>
-    /// <value>Full type name of the business class.</value>
+    /// <value>Full type name of the business class,
+    /// including assembly name.</value>
     public string TypeName
     {
       get { return ((CslaDataSourceView)this.GetView("Default")).TypeName; }
@@ -116,19 +117,18 @@ namespace Csla.Web
     /// Returns a <see cref="Type">Type</see> object based on the
     /// assembly and type information provided.
     /// </summary>
-    /// <param name="assemblyName">(Optional) Assembly name containing the type.</param>
-    /// <param name="typeName">Full type name of the class.</param>
+    /// <param name="typeAssemblyName">Optional assembly name.</param>
+    /// <param name="typeName">Full type name of the class,
+    /// including assembly name.</param>
     /// <remarks></remarks>
     internal static Type GetType(
-      string assemblyName, string typeName)
+      string typeAssemblyName, string typeName)
     {
-      if (!string.IsNullOrEmpty(assemblyName))
-      {
-        Assembly asm = Assembly.Load(assemblyName);
-        return asm.GetType(typeName, true, true);
-      }
-      else
+      if (string.IsNullOrEmpty(typeAssemblyName))
         return Type.GetType(typeName, true, true);
+      else
+        return Type.GetType(string.Format(
+          "{0}, {1}", typeName, typeAssemblyName), true, true);
     }
 
     /// <summary>

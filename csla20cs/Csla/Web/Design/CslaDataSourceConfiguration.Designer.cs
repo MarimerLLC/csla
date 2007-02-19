@@ -56,8 +56,8 @@ namespace Csla.Web.Design
       // 
       // TypeComboBox
       // 
-      this.TypeComboBox.FormattingEnabled = true;
       resources.ApplyResources(this.TypeComboBox, "TypeComboBox");
+      this.TypeComboBox.FormattingEnabled = true;
       this.TypeComboBox.Name = "TypeComboBox";
       // 
       // CslaDataSourceConfiguration
@@ -71,7 +71,6 @@ namespace Csla.Web.Design
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
       this.Controls.Add(this.label2);
-      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "CslaDataSourceConfiguration";

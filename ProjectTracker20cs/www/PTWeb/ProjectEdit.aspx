@@ -79,23 +79,20 @@
           </Columns>
         </asp:GridView>
         <asp:LinkButton ID="CancelAssignButton" runat="server" OnClick="CancelAssignButton_Click">Cancel</asp:LinkButton><br />
-        <csla:CslaDataSource ID="ResourceListDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library"
-          TypeName="ProjectTracker.Library.ResourceList" OnSelectObject="ResourceListDataSource_SelectObject">
+        <csla:CslaDataSource ID="ResourceListDataSource" runat="server"
+          TypeName="ProjectTracker.Library.ResourceList, ProjectTracker.Library" OnSelectObject="ResourceListDataSource_SelectObject" TypeSupportsPaging="False" TypeSupportsSorting="False">
         </csla:CslaDataSource>
       </asp:View>
     </asp:MultiView>
     <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
-    &nbsp;<csla:CslaDataSource ID="ProjectDataSource" runat="server" TypeName="ProjectTracker.Library.Project"
-      TypeAssemblyName="ProjectTracker.Library" OnDeleteObject="ProjectDataSource_DeleteObject"
+    &nbsp;<csla:CslaDataSource ID="ProjectDataSource" runat="server" TypeName="ProjectTracker.Library.Project, ProjectTracker.Library" OnDeleteObject="ProjectDataSource_DeleteObject"
       OnInsertObject="ProjectDataSource_InsertObject" OnSelectObject="ProjectDataSource_SelectObject"
-      OnUpdateObject="ProjectDataSource_UpdateObject">
+      OnUpdateObject="ProjectDataSource_UpdateObject" TypeSupportsPaging="False" TypeSupportsSorting="False">
     </csla:CslaDataSource>
-    <csla:CslaDataSource ID="ResourcesDataSource" runat="server" TypeName="ProjectTracker.Library.ProjectResources"
-      TypeAssemblyName="ProjectTracker.Library" OnDeleteObject="ResourcesDataSource_DeleteObject"
-      OnSelectObject="ResourcesDataSource_SelectObject" OnUpdateObject="ResourcesDataSource_UpdateObject">
+    <csla:CslaDataSource ID="ResourcesDataSource" runat="server" TypeName="ProjectTracker.Library.ProjectResources, ProjectTracker.Library" OnDeleteObject="ResourcesDataSource_DeleteObject"
+      OnSelectObject="ResourcesDataSource_SelectObject" OnUpdateObject="ResourcesDataSource_UpdateObject" TypeSupportsPaging="False" TypeSupportsSorting="False">
     </csla:CslaDataSource>
-    <csla:CslaDataSource ID="RoleListDataSource" runat="server" TypeName="ProjectTracker.Library.RoleList"
-      TypeAssemblyName="ProjectTracker.Library" OnSelectObject="RoleListDataSource_SelectObject">
+    <csla:CslaDataSource ID="RoleListDataSource" runat="server" TypeName="ProjectTracker.Library.RoleList, ProjectTracker.Library" OnSelectObject="RoleListDataSource_SelectObject" TypeSupportsPaging="False" TypeSupportsSorting="False">
     </csla:CslaDataSource>
     <br />
   </div>

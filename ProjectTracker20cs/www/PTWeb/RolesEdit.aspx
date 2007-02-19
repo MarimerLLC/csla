@@ -38,13 +38,12 @@
     </asp:MultiView>
     <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
     &nbsp;&nbsp;
-    <csla:CslaDataSource ID="RolesDataSource" runat="server" 
-      TypeAssemblyName="ProjectTracker.Library"
-      TypeName="ProjectTracker.Library.Admin.Roles" 
+    <csla:CslaDataSource ID="RolesDataSource" runat="server"
+      TypeName="ProjectTracker.Library.Admin.Roles, ProjectTracker.Library" 
       OnDeleteObject="RolesDataSource_DeleteObject"
       OnInsertObject="RolesDataSource_InsertObject" 
       OnSelectObject="RolesDataSource_SelectObject"
-      OnUpdateObject="RolesDataSource_UpdateObject">
+      OnUpdateObject="RolesDataSource_UpdateObject" TypeSupportsPaging="False" TypeSupportsSorting="False">
     </csla:CslaDataSource>
   </div>
 </asp:Content>

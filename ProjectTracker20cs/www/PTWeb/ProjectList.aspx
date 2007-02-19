@@ -25,10 +25,9 @@
     <br />
     <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label>
     <csla:CslaDataSource ID="ProjectListDataSource" runat="server" 
-      TypeName="ProjectTracker.Library.ProjectList"
-      TypeAssemblyName="ProjectTracker.Library" 
+      TypeName="ProjectTracker.Library.ProjectList, ProjectTracker.Library" 
       OnDeleteObject="ProjectListDataSource_DeleteObject"
-      OnSelectObject="ProjectListDataSource_SelectObject">
+      OnSelectObject="ProjectListDataSource_SelectObject" TypeSupportsPaging="False" TypeSupportsSorting="False">
     </csla:CslaDataSource>
     <br />
   </div>

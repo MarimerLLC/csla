@@ -54,13 +54,13 @@
         </asp:MultiView>
         <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
       <csla:CslaDataSource ID="ResourceDataSource" runat="server"
-        TypeName="ProjectTracker.Library.Resource" TypeAssemblyName="ProjectTracker.Library" OnDeleteObject="ResourceDataSource_DeleteObject" OnInsertObject="ResourceDataSource_InsertObject" OnSelectObject="ResourceDataSource_SelectObject" OnUpdateObject="ResourceDataSource_UpdateObject"></csla:CslaDataSource>
+        TypeName="ProjectTracker.Library.Resource, ProjectTracker.Library" OnDeleteObject="ResourceDataSource_DeleteObject" OnInsertObject="ResourceDataSource_InsertObject" OnSelectObject="ResourceDataSource_SelectObject" OnUpdateObject="ResourceDataSource_UpdateObject" TypeSupportsPaging="False" TypeSupportsSorting="False"></csla:CslaDataSource>
       <csla:CslaDataSource ID="AssignmentsDataSource" runat="server"
-        TypeName="ProjectTracker.Library.ResourceAssignments" TypeAssemblyName="ProjectTracker.Library" OnDeleteObject="AssignmentsDataSource_DeleteObject" OnSelectObject="AssignmentsDataSource_SelectObject" OnUpdateObject="AssignmentsDataSource_UpdateObject"></csla:CslaDataSource>
+        TypeName="ProjectTracker.Library.ResourceAssignments, ProjectTracker.Library" OnDeleteObject="AssignmentsDataSource_DeleteObject" OnSelectObject="AssignmentsDataSource_SelectObject" OnUpdateObject="AssignmentsDataSource_UpdateObject" TypeSupportsPaging="False" TypeSupportsSorting="False"></csla:CslaDataSource>
       <csla:CslaDataSource ID="RoleListDataSource" runat="server"
-        TypeName="ProjectTracker.Library.RoleList" TypeAssemblyName="ProjectTracker.Library" OnSelectObject="RoleListDataSource_SelectObject"></csla:CslaDataSource>
-        <csla:CslaDataSource ID="ProjectListDataSource" runat="server" TypeAssemblyName="ProjectTracker.Library"
-          TypeName="ProjectTracker.Library.ProjectList" OnSelectObject="ProjectListDataSource_SelectObject">
+        TypeName="ProjectTracker.Library.RoleList, ProjectTracker.Library" OnSelectObject="RoleListDataSource_SelectObject" TypeSupportsPaging="False" TypeSupportsSorting="False"></csla:CslaDataSource>
+        <csla:CslaDataSource ID="ProjectListDataSource" runat="server"
+          TypeName="ProjectTracker.Library.ProjectList, ProjectTracker.Library" OnSelectObject="ProjectListDataSource_SelectObject" TypeSupportsPaging="False" TypeSupportsSorting="False">
         </csla:CslaDataSource>
        </div>
 </asp:Content>

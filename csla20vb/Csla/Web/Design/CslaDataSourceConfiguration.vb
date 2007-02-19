@@ -46,6 +46,7 @@ Namespace Web.Design
     End Property
 
     Private Sub DiscoverTypes()
+
       ' try to get a reference to the type discovery service
       Dim discovery As ITypeDiscoveryService = Nothing
       If Not mControl.Site Is Nothing Then
@@ -63,15 +64,30 @@ Namespace Web.Design
           TypeComboBox.Items.Clear()
           ' adds the types to the list
           For Each type As Type In types
-            If type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(",")) <> "Csla" AndAlso GetType(Csla.Core.IBusinessObject).IsAssignableFrom(type) Then
-              TypeComboBox.Items.Add(type.FullName)
+            If type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(",")) <> "Csla" AndAlso _
+                  GetType(Csla.Core.IBusinessObject).IsAssignableFrom(type) Then
+              Dim name As String = type.AssemblyQualifiedName
+              If name.Substring(name.Length - 19, 19) = "PublicKeyToken=null" Then
+                name = name.Substring(0, name.IndexOf(",", name.IndexOf(",") + 1))
+              End If
+              TypeComboBox.Items.Add(name)
             End If
           Next type
+
         Finally
           Cursor.Current = previousCursor
           TypeComboBox.EndUpdate()
         End Try
       End If
+
+    End Sub
+
+    Private Sub OkButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) _
+      Handles OkButton.Click
+
+      Me.DialogResult = System.Windows.Forms.DialogResult.OK
+      Hide()
+
     End Sub
 
   End Class

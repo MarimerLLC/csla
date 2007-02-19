@@ -72,10 +72,10 @@ Namespace Web
     ''' <value>Obsolete - do not use.</value>
     Public Property TypeAssemblyName() As String
       Get
-        Return ""
+        Return CType(Me.GetView("Default"), CslaDataSourceView).TypeAssemblyName
       End Get
       Set(ByVal value As String)
-        ' do nothing
+        CType(Me.GetView("Default"), CslaDataSourceView).TypeAssemblyName = value
       End Set
     End Property
 
@@ -83,7 +83,8 @@ Namespace Web
     ''' Get or set the full type name of the business object
     ''' class to be used as a data source.
     ''' </summary>
-    ''' <value>Full type name of the business class.</value>
+    ''' <value>Full type name of the business class,
+    ''' including assembly name.</value>
     Public Property TypeName() As String
       Get
         Return CType(Me.GetView("Default"), CslaDataSourceView).TypeName
@@ -128,18 +129,20 @@ Namespace Web
     ''' Returns a <see cref="Type">Type</see> object based on the
     ''' assembly and type information provided.
     ''' </summary>
-    ''' <param name="assemblyName">(Optional) Assembly name containing the type.</param>
-    ''' <param name="typeName">Full type name of the class.</param>
+    ''' <param name="typeAssemblyName">Optional assembly name.</param>
+    ''' <param name="typeName">Full type name of the class,
+    ''' including assembly name.</param>
     ''' <remarks></remarks>
     Friend Overloads Shared Function [GetType]( _
-      ByVal assemblyName As String, ByVal typeName As String) As Type
+      ByVal typeAssemblyName As String, _
+      ByVal typeName As String) As Type
 
-      If Len(assemblyName) > 0 Then
-        Dim asm As Assembly = Assembly.Load(assemblyName)
-        Return asm.GetType(typeName, True, True)
+      If String.IsNullOrEmpty(typeAssemblyName) Then
+        Return Type.GetType(typeName, True, True)
 
       Else
-        Return Type.GetType(typeName, True, True)
+        Return Type.GetType( _
+          String.Format("{0}, {1}", typeName, typeAssemblyName), True, True)
       End If
 
     End Function

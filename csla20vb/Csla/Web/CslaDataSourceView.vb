@@ -10,8 +10,8 @@ Namespace Web
     Inherits DataSourceView
 
     Private mOwner As CslaDataSource
-    Private mTypeName As String
     Private mTypeAssemblyName As String
+    Private mTypeName As String
     Private mTypeSupportsPaging As Boolean
     Private mTypeSupportsSorting As Boolean
 
@@ -27,6 +27,19 @@ Namespace Web
       mOwner = owner
 
     End Sub
+
+    ''' <summary>
+    ''' Get or set the name of the assembly (no longer used).
+    ''' </summary>
+    ''' <value>Obsolete - do not use.</value>
+    Public Property TypeAssemblyName() As String
+      Get
+        Return mTypeAssemblyName
+      End Get
+      Set(ByVal value As String)
+        mTypeAssemblyName = value
+      End Set
+    End Property
 
     ''' <summary>
     ''' Get or set the full type name of the business object

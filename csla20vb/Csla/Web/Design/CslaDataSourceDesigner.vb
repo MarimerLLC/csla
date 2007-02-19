@@ -94,16 +94,25 @@ Namespace Web.Design
     Private Function ConfigureCallback(ByVal context As Object) As Boolean
 
       Dim result As Boolean = False
-      Dim oldTypeName As String = (CType(DataSourceControl, CslaDataSource)).TypeName
+      Dim oldTypeName As String
+      If String.IsNullOrEmpty(CType(DataSourceControl, CslaDataSource).TypeAssemblyName) Then
+        oldTypeName = (CType(DataSourceControl, CslaDataSource)).TypeName
+
+      Else
+        oldTypeName = String.Format("{0}, {1}", _
+          CType(DataSourceControl, CslaDataSource).TypeName, CType(DataSourceControl, CslaDataSource).TypeAssemblyName)
+      End If
 
       Dim uiService As IUIService = CType(mControl.Site.GetService(GetType(IUIService)), IUIService)
       Dim cfg As CslaDataSourceConfiguration = New CslaDataSourceConfiguration(mControl, oldTypeName)
       If uiService.ShowDialog(cfg) = System.Windows.Forms.DialogResult.OK Then
         SuppressDataSourceEvents()
         Try
+          CType(DataSourceControl, CslaDataSource).TypeAssemblyName = ""
           CType(DataSourceControl, CslaDataSource).TypeName = cfg.TypeName
           OnDataSourceChanged(EventArgs.Empty)
           result = True
+
         Finally
           ResumeDataSourceEvents()
         End Try

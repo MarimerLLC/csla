@@ -28,7 +28,7 @@ Namespace Web.Design
       Me.Label1 = New System.Windows.Forms.Label
       Me.TypeComboBox = New System.Windows.Forms.ComboBox
       Me.OkButton = New System.Windows.Forms.Button
-      Me.CancelButton = New System.Windows.Forms.Button
+      Me.CancelBtn = New System.Windows.Forms.Button
       Me.SuspendLayout()
       '
       'Label1
@@ -38,8 +38,8 @@ Namespace Web.Design
       '
       'TypeComboBox
       '
-      Me.TypeComboBox.FormattingEnabled = True
       resources.ApplyResources(Me.TypeComboBox, "TypeComboBox")
+      Me.TypeComboBox.FormattingEnabled = True
       Me.TypeComboBox.Name = "TypeComboBox"
       '
       'OkButton
@@ -48,25 +48,24 @@ Namespace Web.Design
       Me.OkButton.Name = "OkButton"
       Me.OkButton.UseVisualStyleBackColor = True
       '
-      'CancelButton
+      'CancelBtn
       '
-      Me.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-      resources.ApplyResources(Me.CancelButton, "CancelButton")
-      Me.CancelButton.Name = "CancelButton"
-      Me.CancelButton.UseVisualStyleBackColor = True
+      resources.ApplyResources(Me.CancelBtn, "CancelBtn")
+      Me.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel
+      Me.CancelBtn.Name = "CancelBtn"
+      Me.CancelBtn.UseVisualStyleBackColor = True
       '
       'CslaDataSourceConfiguration
       '
       Me.AcceptButton = Me.OkButton
       resources.ApplyResources(Me, "$this")
       Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-      Me.CancelButton = Me.CancelButton
+      Me.CancelButton = Me.CancelBtn
       Me.ControlBox = False
-      Me.Controls.Add(Me.CancelButton)
+      Me.Controls.Add(Me.CancelBtn)
       Me.Controls.Add(Me.OkButton)
       Me.Controls.Add(Me.TypeComboBox)
       Me.Controls.Add(Me.Label1)
-      Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
       Me.MaximizeBox = False
       Me.MinimizeBox = False
       Me.Name = "CslaDataSourceConfiguration"
@@ -78,7 +77,7 @@ Namespace Web.Design
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents TypeComboBox As System.Windows.Forms.ComboBox
     Friend WithEvents OkButton As System.Windows.Forms.Button
-    Friend WithEvents CancelButton As System.Windows.Forms.Button
+    Friend WithEvents CancelBtn As System.Windows.Forms.Button
   End Class
 
 End Namespace

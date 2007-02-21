@@ -389,13 +389,13 @@ namespace Csla
     {
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
-      CopyToDeletedList(index);
+      C child = this[index];
       base.RemoveItem(index);
+      CopyToDeletedList(child);
     }
 
-    private void CopyToDeletedList(int index)
+    private void CopyToDeletedList(C child)
     {
-      C child = this[index];
       DeleteChild(child);
       INotifyPropertyChanged c = child as INotifyPropertyChanged;
       if (c != null)
@@ -427,11 +427,14 @@ namespace Csla
     {
       // copy the original object to the deleted list,
       // marking as deleted, etc.
-      if (!ReferenceEquals((C)this[index], item))
-        CopyToDeletedList(index);
+      C child = default(C);
+      if (!ReferenceEquals(this[index], item))
+        child = this[index];
       // replace the original object with this new
       // object
       base.SetItem(index, item);
+      if (child != null)
+        CopyToDeletedList(child);
     }
 
     #endregion

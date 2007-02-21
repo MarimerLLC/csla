@@ -109,13 +109,15 @@ Namespace Validation
 
       Dim result As New List(Of String)
       Dim rules As ValidationRulesManager = RulesToCheck
-      For Each de As Generic.KeyValuePair(Of String, RulesList) In rules.RulesDictionary
-        Dim list As List(Of IRuleMethod) = de.Value.GetList(False)
-        For i As Integer = 0 To list.Count - 1
-          Dim rule As IRuleMethod = list(i)
-          result.Add(CObj(rule).ToString)
+      If rules IsNot Nothing Then
+        For Each de As Generic.KeyValuePair(Of String, RulesList) In rules.RulesDictionary
+          Dim list As List(Of IRuleMethod) = de.Value.GetList(False)
+          For i As Integer = 0 To list.Count - 1
+            Dim rule As IRuleMethod = list(i)
+            result.Add(CObj(rule).ToString)
+          Next
         Next
-      Next
+      End If
       Return result.ToArray
 
     End Function

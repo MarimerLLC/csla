@@ -287,7 +287,7 @@ namespace Csla.Test.Basic
             Assert.AreEqual(false, root.Children.Contains(c3), "collection should not contain c3");
             Assert.AreEqual(true, root.Children.ContainsDeleted(c3), "Deleted collection should contain c3");
         }
-    }
+      }
 
     public class FormSimulator
     {

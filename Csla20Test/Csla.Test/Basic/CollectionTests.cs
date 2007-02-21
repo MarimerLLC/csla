@@ -31,6 +31,14 @@ namespace Csla.Test.Basic
       Assert.AreEqual(newItem, list[2], "Last item should be newItem");
       Assert.AreEqual(true, list.ContainsDeleted(oldItem), "Deleted list should have old item");
     }
+
+    [TestMethod]
+    public void RootListGetRuleDescriptions()
+    {
+      RootList list = new RootList();
+      RootListChild child = list.AddNew();
+      string[] rules = child.GetRuleDescriptions();
+    }
   }
 
   [Serializable]

@@ -74,6 +74,7 @@
     <Compile Include="Basic\NameValueListObj.cs" />
     <Compile Include="Basic\ReadOnlyList.cs" />
     <Compile Include="Basic\Root.cs" />
+    <Compile Include="Basic\RootList.cs" />
     <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
     <Compile Include="Basic\CollectionTests.cs" />
     <Compile Include="DataMapper\DataMapperTests.cs" />

@@ -108,13 +108,16 @@ namespace Csla.Validation
     {
       List<string> result = new List<string>();
       ValidationRulesManager rules = RulesToCheck;
-      foreach (KeyValuePair<string, RulesList> de in rules.RulesDictionary)
+      if (rules != null)
       {
-        List<IRuleMethod> list = de.Value.GetList(false);
-        for (int i = 0; i < list.Count; i++)
+        foreach (KeyValuePair<string, RulesList> de in rules.RulesDictionary)
         {
-          IRuleMethod rule = list[i];
-          result.Add(rule.ToString());
+          List<IRuleMethod> list = de.Value.GetList(false);
+          for (int i = 0; i < list.Count; i++)
+          {
+            IRuleMethod rule = list[i];
+            result.Add(rule.ToString());
+          }
         }
       }
       return result.ToArray();

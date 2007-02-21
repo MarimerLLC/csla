@@ -356,13 +356,13 @@ Public MustInherit Class BusinessListBase( _
   Protected Overrides Sub RemoveItem(ByVal index As Integer)
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
-    CopyToDeletedList(index)
+    Dim child As C = Me(index)
     MyBase.RemoveItem(index)
+    CopyToDeletedList(child)
   End Sub
 
-  Private Sub CopyToDeletedList(ByVal index As Integer)
+  Private Sub CopyToDeletedList(ByVal child As C)
 
-    Dim child As C = Me(index)
     DeleteChild(child)
     Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(child, System.ComponentModel.INotifyPropertyChanged)
     If c IsNot Nothing Then
@@ -396,12 +396,16 @@ Public MustInherit Class BusinessListBase( _
   Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As C)
     ' copy the original object to the deleted list,
     ' marking as deleted, etc.
+    Dim child As C = Nothing
     If Not ReferenceEquals(DirectCast(Me(index), C), item) Then
-      CopyToDeletedList(index)
+      child = Me(index)
     End If
     ' replace the original object with this new
     ' object
     MyBase.SetItem(index, item)
+    If child IsNot Nothing Then
+      CopyToDeletedList(child)
+    End If
   End Sub
 
 #End Region

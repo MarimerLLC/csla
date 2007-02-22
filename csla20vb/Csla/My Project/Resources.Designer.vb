@@ -160,7 +160,7 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to GetIdValue must not return Nothing.
+        '''  Looks up a localized string similar to Business object must supply a non-null ID value in GetIdValue.
         '''</summary>
         Friend ReadOnly Property GetIdValueCantBeNull() As String
             Get
@@ -313,7 +313,7 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Argument must not be Nothing.
+        '''  Looks up a localized string similar to Argument must not be null.
         '''</summary>
         Friend ReadOnly Property NothingNotValid() As String
             Get
@@ -462,6 +462,15 @@ Namespace My.Resources
         Friend ReadOnly Property StringToDateException() As String
             Get
                 Return ResourceManager.GetString("StringToDateException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Failed to load type &apos;{0}&apos;.
+        '''</summary>
+        Friend ReadOnly Property TypeLoadException() As String
+            Get
+                Return ResourceManager.GetString("TypeLoadException", resourceCulture)
             End Get
         End Property
         

@@ -125,6 +125,8 @@ Namespace Web
       End Set
     End Property
 
+    Private Shared mTypeCache As New Dictionary(Of String, Type)
+
     ''' <summary>
     ''' Returns a <see cref="Type">Type</see> object based on the
     ''' assembly and type information provided.
@@ -137,13 +139,35 @@ Namespace Web
       ByVal typeAssemblyName As String, _
       ByVal typeName As String) As Type
 
-      If String.IsNullOrEmpty(typeAssemblyName) Then
-        Return Type.GetType(typeName, True, True)
+      Dim result As Type = Nothing
+      If Not String.IsNullOrEmpty(typeAssemblyName) Then
+        ' explicit assembly name provided
+        result = Type.GetType( _
+          String.Format("{0}, {1}", typeName, typeAssemblyName), True, True)
+
+      ElseIf typeName.IndexOf(",") > 0 Then
+        ' assembly qualified type name provided
+        result = Type.GetType(typeName, True, True)
 
       Else
-        Return Type.GetType( _
-          String.Format("{0}, {1}", typeName, typeAssemblyName), True, True)
+        ' no assembly name provided
+        result= mTypeCache(typeName)
+        If result Is Nothing Then
+          For Each asm As Assembly In AppDomain.CurrentDomain.GetAssemblies
+            result = asm.GetType(typeName, False, True)
+            If result IsNot Nothing Then
+              mTypeCache.Add(typeName, result)
+              Exit For
+            End If
+          Next
+        End If
       End If
+
+      If result Is Nothing Then
+        Throw New TypeLoadException(String.Format(My.Resources.TypeLoadException, typeName))
+      End If
+
+      Return result
 
     End Function
 

@@ -3,6 +3,7 @@ using System.Web.UI;
 using System.Web.UI.Design;
 using System.ComponentModel;
 using System.Reflection;
+using Csla.Properties;
 
 namespace Csla.Web
 {
@@ -113,6 +114,9 @@ namespace Csla.Web
       set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting = value; }
     }
 
+    private static System.Collections.Generic.Dictionary<string,Type> _typeCache = 
+      new System.Collections.Generic.Dictionary<string,Type>();
+
     /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the
     /// assembly and type information provided.
@@ -124,11 +128,38 @@ namespace Csla.Web
     internal static Type GetType(
       string typeAssemblyName, string typeName)
     {
-      if (string.IsNullOrEmpty(typeAssemblyName))
-        return Type.GetType(typeName, true, true);
-      else
-        return Type.GetType(string.Format(
+      Type result = null;
+      if (!string.IsNullOrEmpty(typeAssemblyName))
+      {
+        // explicit assembly name provided
+        result = Type.GetType(string.Format(
           "{0}, {1}", typeName, typeAssemblyName), true, true);
+      }
+      else if (typeName.IndexOf(",") > 0)
+      {
+        // assembly qualified type name provided
+        result = Type.GetType(typeName, true, true);
+      }
+      else
+      {
+        // no assembly name provided
+        result = _typeCache[typeName];
+        if (result == null)
+          foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+          {
+            result = asm.GetType(typeName, false, true);
+            if (result != null)
+            {
+              _typeCache.Add(typeName, result);
+              break;
+            }
+          }
+      }
+
+      if (result == null)
+        throw new TypeLoadException(String.Format(Resources.TypeLoadException, typeName));
+
+      return result;
     }
 
     /// <summary>

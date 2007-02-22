@@ -258,4 +258,7 @@
   <data name="InvalidRuleMethodException" xml:space="preserve">
     <value>Invalid rule method (instance methods of the target object not allowed)</value>
   </data>
+  <data name="TypeLoadException" xml:space="preserve">
+    <value>Failed to load type '{0}'</value>
+  </data>
 </root>

@@ -160,7 +160,7 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Business object must supply a non-null ID value in GetIdValue.
+        ///   Looks up a localized string similar to GetIdValue must not return Nothing.
         /// </summary>
         internal static string GetIdValueCantBeNull {
             get {
@@ -313,7 +313,7 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Argument must not be null.
+        ///   Looks up a localized string similar to Argument must not be Nothing.
         /// </summary>
         internal static string NothingNotValid {
             get {
@@ -462,6 +462,15 @@ namespace Csla.Properties {
         internal static string StringToDateException {
             get {
                 return ResourceManager.GetString("StringToDateException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load type &apos;{0}&apos;.
+        /// </summary>
+        internal static string TypeLoadException {
+            get {
+                return ResourceManager.GetString("TypeLoadException", resourceCulture);
             }
         }
         

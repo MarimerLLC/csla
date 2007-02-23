@@ -2,10 +2,18 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTWin", "PTWin\PTWin.vbproj", "{0B7DE01B-4270-41D7-89CE-0CD175958394}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ProjectTracker.Library", "ProjectTracker.Library\ProjectTracker.Library.vbproj", "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWeb\", "www\PTWeb\", "{D60D64FB-3B54-4A4C-A697-32E2D2C8AA22}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWeb\", "www\PTWeb", "{D60D64FB-3B54-4A4C-A697-32E2D2C8AA22}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;{424C335A-9CC1-4AAA-9733-44F6C6A808C6}|EnterpriseServicesHostvb.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/PTWeb"
@@ -22,12 +30,17 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWeb\", "www\PTWeb\
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "3230"
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
 Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "PTData", "PTData\PTData.dbp", "{2480976C-1317-4730-8FB7-D2AC35DFDDF8}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\RemotingHost\", "www\RemotingHost\", "{ECDE95B8-25D9-4284-A4F4-1B88D665F15C}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\RemotingHost\", "www\RemotingHost", "{ECDE95B8-25D9-4284-A4F4-1B88D665F15C}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/RemotingHost"
@@ -48,7 +61,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\RemotingHost\", "www
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebServicesHost\", "www\WebServicesHost\", "{6F58060F-4C96-4E57-A7A1-A784881D830D}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebServicesHost\", "www\WebServicesHost", "{6F58060F-4C96-4E57-A7A1-A784881D830D}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/WebServicesHost"
@@ -70,8 +83,12 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebServicesHost\", "
 	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "EnterpriseServicesHostvb", "EnterpriseServicesHostvb\EnterpriseServicesHostvb.vbproj", "{424C335A-9CC1-4AAA-9733-44F6C6A808C6}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWebService\", "www\PTWebService\", "{F935E36F-1676-4101-8066-6F37BA3F2AFD}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWebService\", "www\PTWebService", "{F935E36F-1676-4101-8066-6F37BA3F2AFD}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/PTWebService"
@@ -88,10 +105,15 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWebService\", "www
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "3233"
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTServiceClient", "PTServiceClient\PTServiceClient.vbproj", "{6CB45E45-6BED-4333-97CB-7EAD725DE984}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

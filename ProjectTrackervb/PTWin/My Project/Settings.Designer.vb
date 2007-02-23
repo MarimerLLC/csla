@@ -57,8 +57,8 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=.\SQLEXPRESS;AttachDbFilename=""D:\Visual Studio Projects\csla20\Proje"& _ 
-            "ctTracker20vb\PTData\PTracker.mdf"";Integrated Security=True;User Instance=True")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=.\SQLEXPRESS;AttachDbFilename=""C:\Visual Studio Projects\csla\Project"& _ 
+            "Trackervb\PTData\PTracker.mdf"";Integrated Security=True;User Instance=True")>  _
         Public ReadOnly Property PTrackerConnectionString() As String
             Get
                 Return CType(Me("PTrackerConnectionString"),String)

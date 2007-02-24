@@ -13,7 +13,7 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ProjectTracker.Library", "P
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWeb\", "www\PTWeb", "{D60D64FB-3B54-4A4C-A697-32E2D2C8AA22}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWeb\", "www\PTWeb\", "{D60D64FB-3B54-4A4C-A697-32E2D2C8AA22}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;{424C335A-9CC1-4AAA-9733-44F6C6A808C6}|EnterpriseServicesHostvb.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/PTWeb"
@@ -40,7 +40,7 @@ Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "PTData", "PTData\PTData.dbp
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\RemotingHost\", "www\RemotingHost", "{ECDE95B8-25D9-4284-A4F4-1B88D665F15C}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\RemotingHost\", "www\RemotingHost\", "{ECDE95B8-25D9-4284-A4F4-1B88D665F15C}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/RemotingHost"
@@ -61,7 +61,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\RemotingHost\", "www
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebServicesHost\", "www\WebServicesHost", "{6F58060F-4C96-4E57-A7A1-A784881D830D}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebServicesHost\", "www\WebServicesHost\", "{6F58060F-4C96-4E57-A7A1-A784881D830D}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/WebServicesHost"
@@ -88,7 +88,7 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "EnterpriseServicesHostvb", 
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWebService\", "www\PTWebService", "{F935E36F-1676-4101-8066-6F37BA3F2AFD}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWebService\", "www\PTWebService\", "{F935E36F-1676-4101-8066-6F37BA3F2AFD}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/PTWebService"
@@ -113,6 +113,27 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTServiceClient", "PTServic
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WcfHost\", "www\WcfHost\", "{227E9BBA-BA4D-4791-88DD-B7F04724F303}"
+	ProjectSection(WebsiteProperties) = preProject
+		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/WcfHost"
+		Debug.AspNetCompiler.PhysicalPath = "www\WcfHost\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\WcfHost\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/WcfHost"
+		Release.AspNetCompiler.PhysicalPath = "www\WcfHost\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\WcfHost\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "4216"
+		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
 Global
@@ -205,6 +226,16 @@ Global
 		{6CB45E45-6BED-4333-97CB-7EAD725DE984}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6CB45E45-6BED-4333-97CB-7EAD725DE984}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6CB45E45-6BED-4333-97CB-7EAD725DE984}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Debug|.NET.ActiveCfg = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Debug|.NET.Build.0 = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Debug|Any CPU.ActiveCfg = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Debug|Mixed Platforms.ActiveCfg = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Debug|Mixed Platforms.Build.0 = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Release|.NET.ActiveCfg = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Release|.NET.Build.0 = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Release|Any CPU.ActiveCfg = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
+		{227E9BBA-BA4D-4791-88DD-B7F04724F303}.Release|Mixed Platforms.Build.0 = Debug|.NET
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

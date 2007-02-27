@@ -4,8 +4,7 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using Csla.Serialization;
 using System.ComponentModel;
 
 namespace Csla.Core
@@ -120,7 +119,8 @@ namespace Csla.Core
       // serialize the state and stack it
       using (MemoryStream buffer = new MemoryStream())
       {
-        BinaryFormatter formatter = new BinaryFormatter();
+        ISerializationFormatter formatter =
+          SerializationFormatterFactory.GetFormatter();
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
@@ -158,7 +158,8 @@ namespace Csla.Core
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          BinaryFormatter formatter = new BinaryFormatter();
+          ISerializationFormatter formatter =
+            SerializationFormatterFactory.GetFormatter();
           state = (HybridDictionary)formatter.Deserialize(buffer);
         }
 

@@ -328,6 +328,73 @@ namespace Csla
     }
 
     /// <summary>
+    /// Gets the serialization formatter type used by CSLA .NET
+    /// for all explicit object serialization (such as cloning,
+    /// n-level undo, etc).
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// If you use the DataContract and DataMember attributes
+    /// to specify how your objects should be serialized then
+    /// you <b>must</b> change this setting to use the
+    /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
+    /// NetDataContractSerializer</see> option. The default is to
+    /// use the standard Microsoft .NET 
+    /// <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/>.
+    /// </para>
+    /// <para>
+    /// This setting does <b>not affect</b> the serialization
+    /// formatters used by the various data portal channels.
+    /// </para>
+    /// <para>
+    /// If you are using the Remoting, Web Services or 
+    /// Enterprise Services technologies, they will use the
+    /// BinaryFormatter regardless of this setting, and will
+    /// <b>fail to work</b> if you attempt to use the
+    /// DataContract and DataMember attributes when building
+    /// your business objects.
+    /// </para>
+    /// <para>
+    /// If you want to use DataContract and DataMember, and
+    /// you want a remote data portal server, you <b>must</b>
+    /// use the WCF data portal channel, or create your own
+    /// custom channel that uses the
+    /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
+    /// NetDataContractSerializer</see> provided as part of WCF.
+    /// </para>
+    /// </remarks>
+    public static SerializationFormatters SerializationFormatter
+    {
+      get
+      {
+        string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+        if (string.IsNullOrEmpty(tmp))
+          tmp = "BinaryFormatter";
+        return (SerializationFormatters)
+          Enum.Parse(typeof(SerializationFormatters), tmp);
+      }
+    }
+
+    /// <summary>
+    /// Enum representing the serialization formatters
+    /// supported by CSLA .NET.
+    /// </summary>
+    public enum SerializationFormatters
+    {
+      /// <summary>
+      /// Use the standard Microsoft .NET
+      /// <see cref="BinaryFormatter"/>.
+      /// </summary>
+      BinaryFormatter,
+      /// <summary>
+      /// Use the Microsoft .NET 3.0
+      /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
+      /// NetDataContractSerializer</see> provided as part of WCF.
+      /// </summary>
+      NetDataContractSerializer
+    }
+
+    /// <summary>
     /// Enum representing the locations code can execute.
     /// </summary>
     public enum ExecutionLocations

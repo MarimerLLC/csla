@@ -140,6 +140,10 @@
     <Compile Include="Security\IAuthorizeReadWrite.cs" />
     <Compile Include="Security\RolesForProperty.cs" />
     <Compile Include="Security\SharedAuthorizationRules.cs" />
+    <Compile Include="Serialization\BinaryFormatterWrapper.cs" />
+    <Compile Include="Serialization\ISerializationFormatter.cs" />
+    <Compile Include="Serialization\NetDataContractSerializerWrapper.cs" />
+    <Compile Include="Serialization\SerializationFormatterFactory.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="SortedBindingList.cs" />
     <Compile Include="Utilities.cs" />

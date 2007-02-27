@@ -50,6 +50,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -133,6 +134,7 @@
     <Compile Include="Authorization\TestIdentity.cs" />
     <Compile Include="Authorization\TestPrincipal.cs" />
     <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />
+    <Compile Include="Serialization\DCRoot.cs" />
     <Compile Include="Serialization\nonSerializableEventHandler.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />

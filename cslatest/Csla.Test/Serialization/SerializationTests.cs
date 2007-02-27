@@ -214,5 +214,50 @@ namespace Csla.Test.Serialization
             Csla.ApplicationContext.GlobalContext["PublicStaticOnIsDirtyChanged"] = 
                 "PublicStaticOnIsDirtyChanged";
         }
+
+      [TestMethod]
+      public void DCClone()
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = 
+          "NetDataContractSerializer";
+        Assert.AreEqual(
+          Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer, 
+          Csla.ApplicationContext.SerializationFormatter,
+          "Formatter should be NetDataContractSerializer");
+
+        DCRoot root = new DCRoot();
+        root.Data = 123;
+        DCRoot clone = root.Clone();
+
+        Assert.IsFalse(ReferenceEquals(root,clone), "Object instance should be different");
+        Assert.AreEqual(root.Data, clone.Data, "Data should match");
+        Assert.IsTrue(root.IsDirty, "Root IsDirty should be true");
+        Assert.IsTrue(clone.IsDirty, "Clone IsDirty should be true");
+      }
+
+      [TestMethod]
+      public void DCEditLevels()
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
+          "NetDataContractSerializer";
+        Assert.AreEqual(
+          Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer,
+          Csla.ApplicationContext.SerializationFormatter,
+          "Formatter should be NetDataContractSerializer");
+
+        DCRoot root = new DCRoot();
+        root.BeginEdit();
+        root.Data = 123;
+        root.CancelEdit();
+
+        Assert.AreEqual(0, root.Data, "Data should be 0");
+
+        root.BeginEdit();
+        root.Data = 123;
+        root.ApplyEdit();
+
+        Assert.AreEqual(123, root.Data, "Data should be 123");
+      }
+    
     }
 }

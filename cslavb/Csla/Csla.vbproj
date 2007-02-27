@@ -111,6 +111,10 @@
     <Compile Include="Security\AuthorizationRulesManager.vb" />
     <Compile Include="Security\IAuthorizeReadWrite.vb" />
     <Compile Include="Security\SharedAuthorizationRules.vb" />
+    <Compile Include="Serialization\BinaryFormatterWrapper.vb" />
+    <Compile Include="Serialization\ISerializationFormatter.vb" />
+    <Compile Include="Serialization\NetDataContractSerializerWrapper.vb" />
+    <Compile Include="Serialization\SerializationFormatterFactory.vb" />
     <Compile Include="Utilities.vb" />
     <Compile Include="Validation\CommonRules.vb" />
     <Compile Include="Core\BindableBase.vb" />

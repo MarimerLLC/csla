@@ -1,9 +1,8 @@
 Imports System.Reflection
 Imports System.IO
 Imports System.Collections.Specialized
-Imports System.Runtime.Serialization
-Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.ComponentModel
+Imports Csla.Serialization
 
 Namespace Core
 
@@ -103,7 +102,7 @@ Namespace Core
 
       ' serialize the state and stack it
       Using buffer As New MemoryStream
-        Dim formatter As New BinaryFormatter
+        Dim formatter As ISerializationFormatter = SerializationFormatterFactory.GetFormatter
         formatter.Serialize(buffer, state)
         mStateStack.Push(buffer.ToArray)
       End Using
@@ -139,7 +138,7 @@ Namespace Core
         Dim state As HybridDictionary
         Using buffer As New MemoryStream(mStateStack.Pop())
           buffer.Position = 0
-          Dim formatter As New BinaryFormatter()
+          Dim formatter As ISerializationFormatter = SerializationFormatterFactory.GetFormatter
           state = _
             CType(formatter.Deserialize(buffer), HybridDictionary)
         End Using

@@ -191,6 +191,7 @@
     <Compile Include="Windows\ReadWriteAuthorization.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Wpf\ValidationPanel.cs" />
     <Compile Include="Wpf\IdentityConverter.cs" />
   </ItemGroup>
   <ItemGroup>

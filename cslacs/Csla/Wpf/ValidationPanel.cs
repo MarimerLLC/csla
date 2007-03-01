@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace Csla.Wpf
 {
@@ -44,12 +45,12 @@ namespace Csla.Wpf
       _loaded = true;
     }
 
-    void ErrorDisplayContainer_LostFocus(object sender, RoutedEventArgs e)
+    private void ErrorDisplayContainer_LostFocus(object sender, RoutedEventArgs e)
     {
       ErrorScan();
     }
 
-    void ErrorDisplayContainer_GotFocus(object sender, RoutedEventArgs e)
+    private void ErrorDisplayContainer_GotFocus(object sender, RoutedEventArgs e)
     {
       ErrorScan();
     }
@@ -122,49 +123,71 @@ namespace Csla.Wpf
       for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
       {
         Visual childVisual = (Visual)VisualTreeHelper.GetChild(visual, i);
-        if (childVisual.GetType().Equals(typeof(TextBox)))
+        MemberInfo[] sharedMembers = childVisual.GetType().GetMembers(
+          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+        foreach (MemberInfo member in sharedMembers)
         {
-          TextBox ctl = (TextBox)childVisual;
-          Binding bnd = BindingOperations.GetBinding(ctl, TextBox.TextProperty);
-          _bindings.Add(new BindingInfo(bnd, (FrameworkElement)childVisual, TextBox.TextProperty));
-          ((FrameworkElement)childVisual).GotFocus += new RoutedEventHandler(ErrorDisplayContainer_GotFocus);
+          DependencyProperty prop = null;
+          if (member.MemberType == MemberTypes.Field)
+            prop = ((FieldInfo)member).GetValue(childVisual) as DependencyProperty;
+          else if (member.MemberType == MemberTypes.Property)
+            prop = ((PropertyInfo)member).GetValue(childVisual, null) as DependencyProperty;
+
+          if (prop != null)
+          {
+            Binding bnd = BindingOperations.GetBinding(childVisual, prop);
+            if (bnd != null)
+            {
+              _bindings.Add(new BindingInfo(bnd, (FrameworkElement)childVisual, prop));
+              ((FrameworkElement)childVisual).GotFocus += new RoutedEventHandler(ErrorDisplayContainer_GotFocus);
+            }
+          }
         }
         FindBindings(childVisual);
       }
     }
-  }
 
-  internal class BindingInfo
-  {
-    private Binding _bindingObject;
+    #region BindingInfo Class
 
-    public Binding BindingObject
+    /// <summary>
+    /// Contains details about each binding that
+    /// are required to handle the validation
+    /// processing.
+    /// </summary>
+    private class BindingInfo
     {
-      get { return _bindingObject; }
-      set { _bindingObject = value; }
+      private Binding _bindingObject;
+
+      public Binding BindingObject
+      {
+        get { return _bindingObject; }
+        set { _bindingObject = value; }
+      }
+
+      private FrameworkElement _element;
+
+      public FrameworkElement Element
+      {
+        get { return _element; }
+        set { _element = value; }
+      }
+
+      private DependencyProperty _property;
+
+      public DependencyProperty Property
+      {
+        get { return _property; }
+        set { _property = value; }
+      }
+
+      public BindingInfo(Binding binding, FrameworkElement element, DependencyProperty property)
+      {
+        _bindingObject = binding;
+        _element = element;
+        _property = property;
+      }
     }
 
-    private FrameworkElement _element;
-
-    public FrameworkElement Element
-    {
-      get { return _element; }
-      set { _element = value; }
-    }
-
-    private DependencyProperty _property;
-
-    public DependencyProperty Property
-    {
-      get { return _property; }
-      set { _property = value; }
-    }
-	
-    public BindingInfo(Binding binding, FrameworkElement element, DependencyProperty property)
-    {
-      _bindingObject = binding;
-      _element = element;
-      _property = property;
-    }
+    #endregion
   }
 }

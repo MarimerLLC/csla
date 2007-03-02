@@ -33,24 +33,24 @@ namespace Csla.Wpf
     /// </summary>
     public ValidationPanel()
     {
-      this.DataContextChanged += new DependencyPropertyChangedEventHandler(ErrorDisplayContainer_DataContextChanged);
-      this.Loaded += new RoutedEventHandler(ErrorDisplayContainer_Loaded);
+      this.DataContextChanged += new DependencyPropertyChangedEventHandler(ValidationPanel_DataContextChanged);
+      this.Loaded += new RoutedEventHandler(ValidationPanel_Loaded);
     }
 
-    private void ErrorDisplayContainer_Loaded(object sender, RoutedEventArgs e)
+    private void ValidationPanel_Loaded(object sender, RoutedEventArgs e)
     {
-      ((FrameworkElement)this).LostFocus += new RoutedEventHandler(ErrorDisplayContainer_LostFocus);
+      ((FrameworkElement)this).LostFocus += new RoutedEventHandler(ValidationPanel_LostFocus);
       _haveRecentChange = true;
       ErrorScan();
       _loaded = true;
     }
 
-    private void ErrorDisplayContainer_LostFocus(object sender, RoutedEventArgs e)
+    private void ValidationPanel_LostFocus(object sender, RoutedEventArgs e)
     {
       ErrorScan();
     }
 
-    private void ErrorDisplayContainer_GotFocus(object sender, RoutedEventArgs e)
+    private void ValidationPanel_GotFocus(object sender, RoutedEventArgs e)
     {
       ErrorScan();
     }
@@ -60,7 +60,7 @@ namespace Csla.Wpf
       _haveRecentChange = true;
     }
 
-    private void ErrorDisplayContainer_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    private void ValidationPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
       INotifyPropertyChanged oldContext = e.OldValue as INotifyPropertyChanged;
       INotifyPropertyChanged newContext = e.NewValue as INotifyPropertyChanged;
@@ -139,7 +139,7 @@ namespace Csla.Wpf
             if (bnd != null)
             {
               _bindings.Add(new BindingInfo(bnd, (FrameworkElement)childVisual, prop));
-              ((FrameworkElement)childVisual).GotFocus += new RoutedEventHandler(ErrorDisplayContainer_GotFocus);
+              ((FrameworkElement)childVisual).GotFocus += new RoutedEventHandler(ValidationPanel_GotFocus);
             }
           }
         }

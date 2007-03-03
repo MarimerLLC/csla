@@ -16,7 +16,7 @@ namespace Csla.Wpf
   {
     private Type _objectType = null;
     private string _factoryMethod = string.Empty;
-    private List<string> _factoryParameters = new List<string>();
+    private List<object> _factoryParameters = new List<object>();
     private bool _isAsynchronous;
 
     /// <summary>
@@ -152,12 +152,12 @@ namespace Csla.Wpf
         set { _factoryMethod = value; }
       }
 
-      private List<string> _factoryParameters;
+      private List<object> _factoryParameters;
 
-      public List<string> FactoryParameters
+      public List<object> FactoryParameters
       {
         get { return _factoryParameters; }
-        set { _factoryParameters = new List<string>(value); }
+        set { _factoryParameters = new List<object>(value); }
       }
     }
 

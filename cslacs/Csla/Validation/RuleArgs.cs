@@ -79,6 +79,58 @@ namespace Csla.Validation
     }
 
     /// <summary>
+    /// Creates an instance of RuleArgs.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to be validated.</param>
+    /// <param name="severity">Initial default severity for the rule.</param>
+    /// <remarks>
+    /// <para>
+    /// The <b>severity</b> parameter defines only the initial default 
+    /// severity value. If the rule changes this value by setting
+    /// e.Severity, then that new value will become the default for all
+    /// subsequent rule invocations.
+    /// </para><para>
+    /// To avoid confusion, it is recommended that the 
+    /// <b>severity</b> constructor parameter 
+    /// only be used for rule methods that do not explicitly set
+    /// e.Severity.
+    /// </para>
+    /// </remarks>
+    public RuleArgs(string propertyName, RuleSeverity severity)
+      : this(propertyName)
+    {
+      _severity = severity;
+    }
+
+    /// <summary>
+    /// Creates an instance of RuleArgs.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to be validated.</param>
+    /// <param name="severity">The default severity for the rule.</param>
+    /// <param name="stopProcessing">
+    /// Initial default value for the StopProcessing property.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// The <b>severity</b> and <b>stopProcessing</b> parameters 
+    /// define only the initial default values. If the rule 
+    /// changes these values by setting e.Severity or
+    /// e.StopProcessing, then the new values will become 
+    /// the default for all subsequent rule invocations.
+    /// </para><para>
+    /// To avoid confusion, It is recommended that the 
+    /// <b>severity</b> and <b>stopProcessing</b> constructor 
+    /// parameters only be used for rule methods that do 
+    /// not explicitly set e.Severity or e.StopProcessing.
+    /// </para>
+    /// </remarks>
+    public RuleArgs(string propertyName, RuleSeverity severity, bool stopProcessing)
+      : this(propertyName, severity)
+    {
+      _stopProcessing = stopProcessing;
+    }
+
+    /// <summary>
     /// Return a string representation of the object.
     /// </summary>
     public override string ToString()

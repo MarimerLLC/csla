@@ -131,19 +131,10 @@ namespace Csla
       MethodInfo result = null;
 
       // try to find a strongly typed match
-      // put all param types into a list of Type
-      List<Type> types = new List<Type>();
-      foreach (object item in parameters)
-      {
-        if (item == null)
-          types.Add(typeof(object));
-        else
-          types.Add(item.GetType());
-      }
 
       // first see if there's a matching method
       // where all params match types
-      result = FindMethod(objectType, method, types.ToArray());
+      result = FindMethod(objectType, method, GetParameterTypes(parameters));
 
       if (result == null)
       {
@@ -175,17 +166,28 @@ namespace Csla
       return result;
     }
 
+    internal static Type[] GetParameterTypes(object[] parameters)
+    {
+      List<Type> result = new List<Type>();
+      foreach (object item in parameters)
+        if (item == null)
+          result.Add(typeof(object));
+        else
+          result.Add(item.GetType());
+      return result.ToArray();
+    }
+
     /// <summary>
     /// Returns a business object type based on
     /// the supplied criteria object.
     /// </summary>
     public static Type GetObjectType(object criteria)
     {
-      if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
+      if (criteria.GetType().IsSubclassOf(typeof(Csla.Server.ICriteria)))
       {
         // get the type of the actual business object
-        // from CriteriaBase 
-        return ((CriteriaBase)criteria).ObjectType;
+        // from ICriteria
+        return ((Csla.Server.ICriteria)criteria).ObjectType;
       }
       else
       {

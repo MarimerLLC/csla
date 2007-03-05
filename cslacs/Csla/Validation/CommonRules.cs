@@ -110,6 +110,76 @@ namespace Csla.Validation
 
     #endregion
 
+    #region StringMinLength
+
+    /// <summary>
+    /// Rule ensuring a string value has a
+    /// minimum length.
+    /// </summary>
+    /// <param name="target">Object containing the data to validate</param>
+    /// <param name="e">Arguments parameter specifying the name of the string
+    /// property to validate</param>
+    /// <returns><see langword="false" /> if the rule is broken</returns>
+    /// <remarks>
+    /// This implementation uses late binding, and will only work
+    /// against string property values.
+    /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+    public static bool StringMinLength(
+      object target, RuleArgs e)
+    {
+      int min = ((MinLengthRuleArgs)e).MinLength;
+      string value = (string)Utilities.CallByName(
+        target, e.PropertyName, CallType.Get);
+      if (!String.IsNullOrEmpty(value) && (value.Length < min))
+      {
+        e.Description = String.Format(
+          Resources.StringMinLengthRule,
+          e.PropertyName, min.ToString());
+        return false;
+      }
+      return true;
+    }
+
+    /// <summary>
+    /// Custom <see cref="RuleArgs" /> object required by the
+    /// <see cref="StringMinLength" /> rule method.
+    /// </summary>
+    public class MinLengthRuleArgs : RuleArgs
+    {
+      private int _minLength;
+
+      /// <summary>
+      /// Get the min length for the string.
+      /// </summary>
+      public int MinLength
+      {
+        get { return _minLength; }
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="minLength">min length of characters allowed.</param>
+      public MinLengthRuleArgs(
+        string propertyName, int minLength)
+        : base(propertyName)
+      {
+        _minLength = minLength;
+      }
+
+      /// <summary>
+      /// Return a string representation of the object.
+      /// </summary>
+      public override string ToString()
+      {
+        return base.ToString() + "?MinLength=" + _minLength.ToString();
+      }
+    }
+
+    #endregion
+
     #region IntegerMaxValue
 
     /// <summary>

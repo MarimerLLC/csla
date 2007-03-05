@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Data;
 using System.Reflection;
+using Csla.Properties;
 
 namespace Csla.Wpf
 {
@@ -101,18 +102,43 @@ namespace Csla.Wpf
       QueryRequest request = (QueryRequest)state;
       object result = null;
       Exception exceptionResult = null;
+      object[] parameters = request.FactoryParameters.ToArray();
 
       try
       {
         // get factory method info
+        BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
         MethodInfo factory = request.ObjectType.GetMethod(
-          request.FactoryMethod,
-          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+          request.FactoryMethod, flags, null, 
+          MethodCaller.GetParameterTypes(parameters), null);
+
+        if (factory == null)
+        {
+          // strongly typed factory couldn't be found
+          // so find one with the correct number of
+          // parameters 
+          int parameterCount = parameters.Length;
+          MethodInfo[] methods = request.ObjectType.GetMethods(flags);
+          foreach (MethodInfo method in methods)
+            if (method.Name == request.FactoryMethod && method.GetParameters().Length == parameterCount)
+            {
+              factory = method;
+              break;
+            }
+        }
+
+        if (factory == null)
+        {
+          // no matching factory could be found
+          // so throw exception
+          throw new InvalidOperationException(
+            string.Format(Resources.NoSuchFactoryMethod, request.FactoryMethod));
+        }
 
         // invoke factory method
         try
         {
-          result = factory.Invoke(null, request.FactoryParameters.ToArray());
+          result = factory.Invoke(null, parameters);
         }
         catch (Csla.DataPortalException ex)
         {

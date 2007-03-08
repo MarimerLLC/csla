@@ -183,11 +183,11 @@ namespace Csla
     /// </summary>
     public static Type GetObjectType(object criteria)
     {
-      if (criteria.GetType().IsSubclassOf(typeof(Csla.Server.ICriteria)))
+      if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
       {
         // get the type of the actual business object
         // from ICriteria
-        return ((Csla.Server.ICriteria)criteria).ObjectType;
+        return ((CriteriaBase)criteria).ObjectType;
       }
       else
       {

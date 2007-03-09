@@ -451,8 +451,20 @@ namespace Csla.Validation
     /// </remarks>
     public static bool RegExMatch(object target, RuleArgs e)
     {
-      Regex rx = ((RegExRuleArgs)e).RegEx;
-      if (!rx.IsMatch(Utilities.CallByName(target, e.PropertyName, CallType.Get).ToString()))
+      bool ruleSatisfied = false;
+
+      object value = Utilities.CallByName(target, e.PropertyName, CallType.Get);
+      if (value == null)
+      {
+        ruleSatisfied = ((RegExRuleArgs)e).NullResult;
+      }
+      else
+      {
+        Regex rx = ((RegExRuleArgs)e).RegEx;
+        ruleSatisfied = rx.IsMatch(value.ToString());
+      }
+
+      if (!ruleSatisfied)
       {
         e.Description = String.Format(Resources.RegExMatchRule, e.PropertyName);
         return false;
@@ -483,6 +495,7 @@ namespace Csla.Validation
     public class RegExRuleArgs : RuleArgs
     {
       Regex _regEx;
+      bool _nullResult;
 
       /// <summary>
       /// The <see cref="RegEx"/> object used to validate
@@ -494,15 +507,27 @@ namespace Csla.Validation
       }
 
       /// <summary>
+      /// Gets a value indicating whether a null value
+      /// means the rule will return true or false.
+      /// </summary>
+      public bool NullResult
+      {
+        get
+        {
+          return _nullResult;
+        }
+      }
+
+      /// <summary>
       /// Creates a new object.
       /// </summary>
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="pattern">Built-in regex pattern to use.</param>
       public RegExRuleArgs(string propertyName, RegExPatterns pattern)
-        :
-        base(propertyName)
+        : base(propertyName)
       {
         _regEx = new Regex(GetPattern(pattern));
+        _nullResult = false;
       }
 
       /// <summary>
@@ -511,10 +536,10 @@ namespace Csla.Validation
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="pattern">Custom regex pattern to use.</param>
       public RegExRuleArgs(string propertyName, string pattern)
-        :
-        base(propertyName)
+        : base(propertyName)
       {
         _regEx = new Regex(pattern);
+        _nullResult = false;
       }
 
       /// <summary>
@@ -523,10 +548,59 @@ namespace Csla.Validation
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="regEx"><see cref="RegEx"/> object to use.</param>
       public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regEx)
-        :
-        base(propertyName)
+        : base(propertyName)
       {
         _regEx = regEx;
+        _nullResult = false;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="pattern">Built-in regex pattern to use.</param>
+      /// <param name="nullResult">
+      /// Value indicating whether a null property value should
+      /// result in the rule automatically returning true or false.
+      /// </param>
+      public RegExRuleArgs(string propertyName, RegExPatterns pattern, bool nullResult)
+        : base(propertyName)
+      {
+        _regEx = new Regex(GetPattern(pattern));
+        _nullResult = false;
+        _nullResult = nullResult;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="pattern">Custom regex pattern to use.</param>
+      /// <param name="nullResult">
+      /// Value indicating whether a null property value should
+      /// result in the rule automatically returning true or false.
+      /// </param>
+      public RegExRuleArgs(string propertyName, string pattern, bool nullResult)
+        : base(propertyName)
+      {
+        _regEx = new Regex(pattern);
+        _nullResult = nullResult;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="regEx"><see cref="RegEx"/> object to use.</param>
+      /// <param name="nullResult">
+      /// Value indicating whether a null property value should
+      /// result in the rule automatically returning true or false.
+      /// </param>
+      public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regEx, bool nullResult)
+        : base(propertyName)
+      {
+        _regEx = regEx;
+        _nullResult = nullResult;
       }
 
       /// <summary>f
@@ -534,7 +608,8 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "?regex=" + _regEx.ToString();
+        return base.ToString() + 
+          string.Format(@"?regex={0}&null={1}", _regEx.ToString(), _nullResult.ToString());
       }
 
       /// <summary>

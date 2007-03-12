@@ -155,6 +155,7 @@
     <Compile Include="Validation\CommonRules.cs" />
     <Compile Include="Validation\IRuleMethod.cs" />
     <Compile Include="Validation\RuleArgs.cs" />
+    <Compile Include="Validation\RuleDescription.cs" />
     <Compile Include="Validation\RuleHandler.cs" />
     <Compile Include="Validation\RuleMethod.cs" />
     <Compile Include="Validation\RuleSeverity.cs" />

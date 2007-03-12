@@ -125,6 +125,7 @@
     <Compile Include="Validation\BrokenRule.vb" />
     <Compile Include="Validation\IRuleMethod.vb" />
     <Compile Include="Validation\RuleArgs.vb" />
+    <Compile Include="Validation\RuleDescription.vb" />
     <Compile Include="Validation\RuleHandler.vb" />
     <Compile Include="Validation\BrokenRulesCollection.vb" />
     <Compile Include="Validation\RuleMethod.vb" />

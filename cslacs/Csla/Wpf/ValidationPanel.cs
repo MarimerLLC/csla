@@ -37,6 +37,17 @@ namespace Csla.Wpf
       this.Loaded += new RoutedEventHandler(ValidationPanel_Loaded);
     }
 
+    /// <summary>
+    /// Force the panel to refresh all validation
+    /// error status information for all controls
+    /// it contains.
+    /// </summary>
+    public void Refresh()
+    {
+      _haveRecentChange = true;
+      ErrorScan();
+    }
+
     private void ValidationPanel_Loaded(object sender, RoutedEventArgs e)
     {
       ((FrameworkElement)this).LostFocus += new RoutedEventHandler(ValidationPanel_LostFocus);
@@ -57,6 +68,8 @@ namespace Csla.Wpf
 
     private void DataContext_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
+      // note that there's been a change, so the 
+      // next scan will perform validation
       _haveRecentChange = true;
     }
 
@@ -77,10 +90,7 @@ namespace Csla.Wpf
       _dataSource = e.NewValue as IDataErrorInfo;
 
       if (_loaded)
-      {
-        _haveRecentChange = true;
-        ErrorScan();
-      }
+        Refresh();
     }
 
     private void ErrorScan()

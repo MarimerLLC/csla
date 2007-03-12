@@ -357,8 +357,11 @@ Public MustInherit Class BusinessListBase( _
     ' when an object is 'removed' it is really
     ' being deleted, so do the deletion work
     Dim child As C = Me(index)
+    Me.RaiseListChangedEvents = False
     MyBase.RemoveItem(index)
+    Me.RaiseListChangedEvents = True
     CopyToDeletedList(child)
+    OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
   End Sub
 
   Private Sub CopyToDeletedList(ByVal child As C)
@@ -402,10 +405,13 @@ Public MustInherit Class BusinessListBase( _
     End If
     ' replace the original object with this new
     ' object
+    Me.RaiseListChangedEvents = False
     MyBase.SetItem(index, item)
+    Me.RaiseListChangedEvents = True
     If child IsNot Nothing Then
       CopyToDeletedList(child)
     End If
+    OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
   End Sub
 
 #End Region

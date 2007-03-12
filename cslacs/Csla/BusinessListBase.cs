@@ -390,8 +390,11 @@ namespace Csla
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
       C child = this[index];
+      this.RaiseListChangedEvents = false;
       base.RemoveItem(index);
+      this.RaiseListChangedEvents = true;
       CopyToDeletedList(child);
+      OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
     }
 
     private void CopyToDeletedList(C child)
@@ -432,9 +435,12 @@ namespace Csla
         child = this[index];
       // replace the original object with this new
       // object
+      this.RaiseListChangedEvents = false;
       base.SetItem(index, item);
+      this.RaiseListChangedEvents = true;
       if (child != null)
         CopyToDeletedList(child);
+      OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
     }
 
     #endregion

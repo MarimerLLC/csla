@@ -261,4 +261,7 @@
   <data name="TypeLoadException" xml:space="preserve">
     <value>Failed to load type '{0}'</value>
   </data>
+  <data name="StringMinLengthRule" xml:space="preserve">
+    <value>{0} can not be less than {1} characters</value>
+  </data>
 </root>

@@ -110,6 +110,75 @@ Namespace Validation
 
 #End Region
 
+#Region " StringMinLength "
+
+    ''' <summary>
+    ''' Rule ensuring a string value doesn't exceed
+    ''' a specified length.
+    ''' </summary>
+    ''' <param name="target">Object containing the data to validate</param>
+    ''' <param name="e">Arguments parameter specifying the name of the string
+    ''' property to validate</param>
+    ''' <returns><see langword="false" /> if the rule is broken</returns>
+    ''' <remarks>
+    ''' This implementation uses late binding, and will only work
+    ''' against string property values.
+    ''' </remarks>
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+    Public Function StringMinLength(ByVal target As Object, _
+      ByVal e As RuleArgs) As Boolean
+
+      Dim min As Integer = DirectCast(e, MinLengthRuleArgs).MinLength
+      Dim value As String = _
+        CStr(CallByName(target, e.PropertyName, CallType.Get))
+      If Len(value) < min Then
+        e.Description = _
+          String.Format(My.Resources.StringMinLengthRule, e.PropertyName, min)
+        Return False
+      Else
+        Return True
+      End If
+    End Function
+
+    ''' <summary>
+    ''' Custom <see cref="RuleArgs" /> object required by the
+    ''' <see cref="StringMinLength" /> rule method.
+    ''' </summary>
+    Public Class MinLengthRuleArgs
+      Inherits RuleArgs
+
+      Private mMinLength As Integer
+
+      ''' <summary>
+      ''' Get the Min length for the string.
+      ''' </summary>
+      Public ReadOnly Property MinLength() As Integer
+        Get
+          Return mMinLength
+        End Get
+      End Property
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
+      ''' <param name="propertyName">Name of the property to validate.</param>
+      ''' <param name="minLength">Min length of characters allowed.</param>
+      Public Sub New(ByVal propertyName As String, ByVal minLength As Integer)
+        MyBase.New(propertyName)
+        mMinLength = minLength
+      End Sub
+
+      ''' <summary>
+      ''' Returns a string representation of the object.
+      ''' </summary>
+      Public Overrides Function ToString() As String
+        Return MyBase.ToString & "?MinLength=" & mMinLength.ToString
+      End Function
+
+    End Class
+
+#End Region
+
 #Region " IntegerMaxValue "
 
     ''' <summary>
@@ -414,7 +483,39 @@ Namespace Validation
     Public Class RegExRuleArgs
       Inherits RuleArgs
 
+#Region " NullResultOptions "
+
+      ''' <summary>
+      ''' List of options for the NullResult
+      ''' property.
+      ''' </summary>
+      Public Enum NullResultOptions
+        ''' <summary>
+        ''' Indicates that a null value
+        ''' should always result in the 
+        ''' rule returning false.
+        ''' </summary>
+        ReturnFalse
+        ''' <summary>
+        ''' Indicates that a null value
+        ''' should always result in the 
+        ''' rule returning true.
+        ''' </summary>
+        ReturnTrue
+        ''' <summary>
+        ''' Indicates that a null value
+        ''' should be converted to an
+        ''' empty string before the
+        ''' regular expression is
+        ''' evaluated.
+        ''' </summary>
+        ConvertToEmptyString
+      End Enum
+
+#End Region
+
       Private mRegEx As Regex
+      Private mNullResult As NullResultOptions
 
       ''' <summary>
       ''' The <see cref="RegEx"/> object used to validate
@@ -427,6 +528,16 @@ Namespace Validation
       End Property
 
       ''' <summary>
+      ''' Gets a value indicating whether a null value
+      ''' means the rule will return true or false.
+      ''' </summary>
+      Public ReadOnly Property NullResult() As NullResultOptions
+        Get
+          Return mNullResult
+        End Get
+      End Property
+
+      ''' <summary>
       ''' Creates a new object.
       ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
@@ -434,6 +545,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal pattern As RegExPatterns)
         MyBase.New(propertyName)
         mRegEx = New Regex(GetPattern(pattern))
+        mNullResult = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
@@ -444,6 +556,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal pattern As String)
         MyBase.New(propertyName)
         mRegEx = New Regex(pattern)
+        mNullResult = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
@@ -451,16 +564,63 @@ Namespace Validation
       ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="regEx"><see cref="RegEx"/> object to use.</param>
-      Public Sub New(ByVal propertyName As String, ByVal regEx As Regex)
+      Public Sub New(ByVal propertyName As String, ByVal regEx As System.Text.RegularExpressions.Regex)
         MyBase.New(propertyName)
         mRegEx = regEx
+        mNullResult = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
+      ''' <param name="propertyName">Name of the property to validate.</param>
+      ''' <param name="pattern">Built-in regex pattern to use.</param>
+      ''' <param name="nullResult">
+      ''' Value indicating how a null value should be
+      ''' handled by the rule method.
+      ''' </param>
+      Public Sub New(ByVal propertyName As String, ByVal pattern As RegExPatterns, ByVal nullResult As NullResultOptions)
+        MyBase.New(propertyName)
+        mRegEx = New Regex(GetPattern(pattern))
+        mNullResult = nullResult
+      End Sub
+
+      ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
+      ''' <param name="propertyName">Name of the property to validate.</param>
+      ''' <param name="pattern">Custom regex pattern to use.</param>
+      ''' <param name="nullResult">
+      ''' Value indicating how a null value should be
+      ''' handled by the rule method.
+      ''' </param>
+      Public Sub New(ByVal propertyName As String, ByVal pattern As String, ByVal nullResult As NullResultOptions)
+        MyBase.New(propertyName)
+        mRegEx = New Regex(pattern)
+        mNullResult = nullResult
+      End Sub
+
+      ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
+      ''' <param name="propertyName">Name of the property to validate.</param>
+      ''' <param name="regEx"><see cref="RegEx"/> object to use.</param>
+      ''' <param name="nullResult">
+      ''' Value indicating how a null value should be
+      ''' handled by the rule method.
+      ''' </param>
+      Public Sub New(ByVal propertyName As String, ByVal regEx As System.Text.RegularExpressions.Regex, ByVal nullResult As NullResultOptions)
+        MyBase.New(propertyName)
+        mRegEx = regEx
+        mNullResult = nullResult
+      End Sub
+
+      ''' <summary>f
       ''' Returns a string representation of the object.
       ''' </summary>
       Public Overrides Function ToString() As String
-        Return MyBase.ToString & "?regex=" & System.Web.HttpUtility.UrlEncode(mRegEx.ToString)
+        Return MyBase.ToString() & String.Format("?regex={0}&null={1}", _
+          mRegEx.ToString(), mNullResult.ToString())
       End Function
 
       ''' <summary>

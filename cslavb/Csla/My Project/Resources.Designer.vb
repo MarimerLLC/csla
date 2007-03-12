@@ -448,6 +448,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to {0} can not be less than {1} characters.
+        '''</summary>
+        Friend ReadOnly Property StringMinLengthRule() As String
+            Get
+                Return ResourceManager.GetString("StringMinLengthRule", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to {0} required.
         '''</summary>
         Friend ReadOnly Property StringRequiredRule() As String

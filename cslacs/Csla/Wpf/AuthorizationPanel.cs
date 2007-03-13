@@ -28,6 +28,15 @@ namespace Csla.Wpf
     private bool _loaded;
     private IAuthorizeReadWrite _dataSource;
 
+    // Define DependencyProperty
+    private static readonly DependencyProperty VisibilityModeProperty = 
+      DependencyProperty.Register(
+        "NotVisibleMode", 
+        typeof(VisibilityMode), 
+        typeof(AuthorizationPanel), 
+        new FrameworkPropertyMetadata(VisibilityMode.Hidden), 
+        new ValidateValueCallback(IsValidVisibilityMode));
+
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -35,6 +44,28 @@ namespace Csla.Wpf
     {
       this.DataContextChanged += new DependencyPropertyChangedEventHandler(AuthorizationPanel_DataContextChanged);
       this.Loaded += new RoutedEventHandler(AuthorizationPanel_Loaded);
+    }
+
+    // Define method to validate the value
+    private static bool IsValidVisibilityMode(object o)
+    {
+      return (o is VisibilityMode);
+    }
+
+    /// <summary>
+    /// Gets or sets the value controlling how controls
+    /// bound to non-readable properties will be rendered.
+    /// </summary>
+    public VisibilityMode NotVisibleMode
+    {
+      get
+      {
+        return (VisibilityMode)base.GetValue(VisibilityModeProperty);
+      }
+      set
+      {
+        base.SetValue(VisibilityModeProperty, value);
+      }
     }
 
     private void AuthorizationPanel_Loaded(object sender, RoutedEventArgs e)
@@ -117,52 +148,32 @@ namespace Csla.Wpf
       bool canRead = _dataSource.CanReadProperty(bnd.Path.Path);
 
       if (canRead)
-        ctl.Visibility = Visibility.Visible;
+        switch (NotVisibleMode)
+        {
+          case VisibilityMode.Collapsed:
+            if (ctl.Visibility == Visibility.Collapsed)
+              ctl.Visibility = Visibility.Visible;
+            break;
+          case VisibilityMode.Hidden:
+            if (ctl.Visibility == Visibility.Hidden)
+              ctl.Visibility = Visibility.Visible;
+            break;
+          default:
+            break;
+        }
       else
-        ctl.Visibility = Visibility.Hidden;
+        switch (NotVisibleMode)
+        {
+          case VisibilityMode.Collapsed:
+            ctl.Visibility = Visibility.Collapsed;
+            break;
+          case VisibilityMode.Hidden:
+            ctl.Visibility = Visibility.Hidden;
+            break;
+          default:
+            break;
+        }
     }
 
-    #region BindingInfo Class
-
-    /// <summary>
-    /// Contains details about each binding that
-    /// are required to handle the validation
-    /// processing.
-    /// </summary>
-    private class BindingInfo
-    {
-      private Binding _bindingObject;
-
-      public Binding BindingObject
-      {
-        get { return _bindingObject; }
-        set { _bindingObject = value; }
-      }
-
-      private FrameworkElement _element;
-
-      public FrameworkElement Element
-      {
-        get { return _element; }
-        set { _element = value; }
-      }
-
-      private DependencyProperty _property;
-
-      public DependencyProperty Property
-      {
-        get { return _property; }
-        set { _property = value; }
-      }
-
-      public BindingInfo(Binding binding, FrameworkElement element, DependencyProperty property)
-      {
-        _bindingObject = binding;
-        _element = element;
-        _property = property;
-      }
-    }
-
-    #endregion
   }
 }

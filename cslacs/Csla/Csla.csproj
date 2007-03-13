@@ -196,6 +196,7 @@
     <Compile Include="Wpf\CslaDataProvider.cs" />
     <Compile Include="Wpf\ValidationPanel.cs" />
     <Compile Include="Wpf\IdentityConverter.cs" />
+    <Compile Include="Wpf\VisibilityMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />

@@ -153,6 +153,7 @@
     <Compile Include="Validation\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRulesCollection.cs" />
     <Compile Include="Validation\CommonRules.cs" />
+    <Compile Include="Validation\DecoratedRuleArgs.cs" />
     <Compile Include="Validation\IRuleMethod.cs" />
     <Compile Include="Validation\RuleArgs.cs" />
     <Compile Include="Validation\RuleDescription.cs" />

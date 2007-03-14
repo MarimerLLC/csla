@@ -87,7 +87,10 @@ namespace Csla.Wpf
         newContext.PropertyChanged += new PropertyChangedEventHandler(DataContext_PropertyChanged);
 
       // store a ref to the data source if it is IDataErrorInfo
-      _dataSource = e.NewValue as IDataErrorInfo;
+      if (e.NewValue is DataSourceProvider)
+        _dataSource = ((DataSourceProvider)e.NewValue).Data as IDataErrorInfo;
+      else
+        _dataSource = e.NewValue as IDataErrorInfo;
 
       if (_loaded)
         Refresh();

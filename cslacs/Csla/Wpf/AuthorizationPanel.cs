@@ -77,7 +77,10 @@ namespace Csla.Wpf
     private void AuthorizationPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
       // store a ref to the data source if it is IAuthorizeReadWrite
-      _dataSource = e.NewValue as IAuthorizeReadWrite;
+      if (e.NewValue is DataSourceProvider)
+        _dataSource = ((DataSourceProvider)e.NewValue).Data as IAuthorizeReadWrite;
+      else
+        _dataSource = e.NewValue as IAuthorizeReadWrite;
 
       if (_loaded)
         Refresh();

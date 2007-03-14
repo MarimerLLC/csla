@@ -139,7 +139,11 @@ namespace Csla.Wpf
       if (newContext != null)
         newContext.PropertyChanged += new PropertyChangedEventHandler(DataContext_PropertyChanged);
 
-      _dataSource = e.NewValue as IEditableBusinessObject;
+      // store a ref to the data source if it is IEditableBusinessObject
+      if (e.NewValue is DataSourceProvider)
+        _dataSource = ((DataSourceProvider)e.NewValue).Data as IEditableBusinessObject;
+      else
+        _dataSource = e.NewValue as IEditableBusinessObject;
 
       if (_dataSource != null)
         StatusScan();

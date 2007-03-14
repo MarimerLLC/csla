@@ -306,5 +306,30 @@ namespace Csla.Validation
       get { return _decorations[key]; }
       set { _decorations[key] = value; }
     }
+
+    /// <summary>
+    /// Return a string representation of
+    /// the object using the rule:// URI
+    /// format.
+    /// </summary>
+    public override string ToString()
+    {
+      StringBuilder sb = new StringBuilder();
+      sb.Append(base.ToString());
+      if (_decorations.Count > 0)
+      {
+        sb.Append("?");
+        bool first = true;
+        foreach (System.Collections.Generic.KeyValuePair<string, object> item in _decorations)
+        {
+          if (first)
+            first = false;
+          else
+            sb.Append("&");
+          sb.AppendFormat("{0}={1}", item.Key, item.Value.ToString());
+        }
+      }
+      return sb.ToString();
+    }
   }
 }

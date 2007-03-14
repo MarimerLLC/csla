@@ -117,14 +117,6 @@ namespace Csla.Validation
       {
         this["Format"] = format;
       }
-
-      /// <summary>
-      /// Return a string representation of the object.
-      /// </summary>
-      public override string ToString()
-      {
-        return base.ToString() + "?maxLength=" + MaxLength.ToString();
-      }
     }
 
     #endregion
@@ -206,14 +198,6 @@ namespace Csla.Validation
       {
         this["Format"] = format;
       }
-
-      /// <summary>
-      /// Return a string representation of the object.
-      /// </summary>
-      public override string ToString()
-      {
-        return base.ToString() + "?MinLength=" + MinLength.ToString();
-      }
     }
 
     #endregion
@@ -285,14 +269,6 @@ namespace Csla.Validation
       {
         this["Format"] = format;
       }
-
-      /// <summary>
-      /// Return a string representation of the object.
-      /// </summary>
-      public override string ToString()
-      {
-        return base.ToString() + "?maxValue=" + MaxValue.ToString();
-      }
     }
 
     #endregion
@@ -363,14 +339,6 @@ namespace Csla.Validation
         : this(propertyName, minValue)
       {
         this["Format"] = format;
-      }
-
-      /// <summary>
-      /// Return a string representation of the object.
-      /// </summary>
-      public override string ToString()
-      {
-        return base.ToString() + "?minValue=" + MinValue.ToString();
       }
     }
 
@@ -449,14 +417,6 @@ namespace Csla.Validation
       {
         this["Format"] = format;
       }
-
-      /// <summary>
-      /// Returns a string representation of the object.
-      /// </summary>
-      public override string ToString()
-      {
-        return base.ToString() + "?maxValue=" + MaxValue.ToString();
-      }
     }
 
     #endregion
@@ -533,14 +493,6 @@ namespace Csla.Validation
         : this(propertyName, minValue)
       {
         this["Format"] = format;
-      }
-
-      /// <summary>
-      /// Returns a string representation of the object.
-      /// </summary>
-      public override string ToString()
-      {
-        return base.ToString() + "?minValue=" + MinValue.ToString();
       }
     }
 
@@ -749,15 +701,6 @@ namespace Csla.Validation
       {
         this["RegEx"] = regEx;
         this["NullOption"] = nullResult;
-      }
-
-      /// <summary>f
-      /// Returns a string representation of the object.
-      /// </summary>
-      public override string ToString()
-      {
-        return base.ToString() + 
-          string.Format(@"?regex={0}&null={1}", RegEx.ToString(), NullResult.ToString());
       }
 
       /// <summary>

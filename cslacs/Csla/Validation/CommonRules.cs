@@ -32,7 +32,7 @@ namespace Csla.Validation
         target, e.PropertyName, CallType.Get);
       if (string.IsNullOrEmpty(value))
       {
-        e.Description = string.Format(Resources.StringRequiredRule, e.PropertyName);
+        e.Description = string.Format(Resources.StringRequiredRule, RuleArgs.GetPropertyName(e));
         return false;
       }
       return true;
@@ -58,14 +58,21 @@ namespace Csla.Validation
     public static bool StringMaxLength(
       object target, RuleArgs e)
     {
-      int max = ((MaxLengthRuleArgs)e).MaxLength;
+      DecoratedRuleArgs args = (DecoratedRuleArgs)e;
+      int max = (int)args["MaxLength"];
       string value = (string)Utilities.CallByName(
         target, e.PropertyName, CallType.Get);
       if (!String.IsNullOrEmpty(value) && (value.Length > max))
       {
+        string format = (string)args["Format"];
+        string outValue;
+        if (string.IsNullOrEmpty(format))
+          outValue = max.ToString();
+        else
+          outValue = max.ToString(format);
         e.Description = String.Format(
           Resources.StringMaxLengthRule,
-          e.PropertyName, max.ToString());
+          RuleArgs.GetPropertyName(e), outValue);
         return false;
       }
       return true;
@@ -75,16 +82,14 @@ namespace Csla.Validation
     /// Custom <see cref="RuleArgs" /> object required by the
     /// <see cref="StringMaxLength" /> rule method.
     /// </summary>
-    public class MaxLengthRuleArgs : RuleArgs
+    public class MaxLengthRuleArgs : DecoratedRuleArgs
     {
-      private int _maxLength;
-
       /// <summary>
       /// Get the max length for the string.
       /// </summary>
       public int MaxLength
       {
-        get { return _maxLength; }
+        get { return (int)this["MaxLength"]; }
       }
 
       /// <summary>
@@ -96,7 +101,21 @@ namespace Csla.Validation
         string propertyName, int maxLength)
         : base(propertyName)
       {
-        _maxLength = maxLength;
+        this["MaxLength"] = maxLength;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="maxLength">Max length of characters allowed.</param>
+      /// <param name="format">Format string for the max length
+      /// value in the broken rule string.</param>
+      public MaxLengthRuleArgs(
+        string propertyName, int maxLength, string format)
+        : this(propertyName, maxLength)
+      {
+        this["Format"] = format;
       }
 
       /// <summary>
@@ -104,7 +123,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "?maxLength=" + _maxLength.ToString();
+        return base.ToString() + "?maxLength=" + MaxLength.ToString();
       }
     }
 
@@ -128,14 +147,21 @@ namespace Csla.Validation
     public static bool StringMinLength(
       object target, RuleArgs e)
     {
-      int min = ((MinLengthRuleArgs)e).MinLength;
+      DecoratedRuleArgs args = (DecoratedRuleArgs)e;
+      int min = (int)args["MinLength"];
       string value = (string)Utilities.CallByName(
         target, e.PropertyName, CallType.Get);
       if (!String.IsNullOrEmpty(value) && (value.Length < min))
       {
+        string format = (string)args["Format"];
+        string outValue;
+        if (string.IsNullOrEmpty(format))
+          outValue = min.ToString();
+        else
+          outValue = min.ToString(format);
         e.Description = String.Format(
           Resources.StringMinLengthRule,
-          e.PropertyName, min.ToString());
+          RuleArgs.GetPropertyName(e), outValue);
         return false;
       }
       return true;
@@ -145,16 +171,14 @@ namespace Csla.Validation
     /// Custom <see cref="RuleArgs" /> object required by the
     /// <see cref="StringMinLength" /> rule method.
     /// </summary>
-    public class MinLengthRuleArgs : RuleArgs
+    public class MinLengthRuleArgs : DecoratedRuleArgs
     {
-      private int _minLength;
-
       /// <summary>
       /// Get the min length for the string.
       /// </summary>
       public int MinLength
       {
-        get { return _minLength; }
+        get { return (int)this["MinLength"]; }
       }
 
       /// <summary>
@@ -166,7 +190,21 @@ namespace Csla.Validation
         string propertyName, int minLength)
         : base(propertyName)
       {
-        _minLength = minLength;
+        this["MinLength"] = minLength;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property to validate.</param>
+      /// <param name="minLength">min length of characters allowed.</param>
+      /// <param name="format">Format string for the min length
+      /// value in the broken rule string.</param>
+      public MinLengthRuleArgs(
+        string propertyName, int minLength, string format)
+        : this(propertyName, minLength)
+      {
+        this["Format"] = format;
       }
 
       /// <summary>
@@ -174,7 +212,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "?MinLength=" + _minLength.ToString();
+        return base.ToString() + "?MinLength=" + MinLength.ToString();
       }
     }
 
@@ -192,12 +230,19 @@ namespace Csla.Validation
     /// <returns><see langword="false"/> if the rule is broken.</returns>
     public static bool IntegerMaxValue(object target, RuleArgs e)
     {
-      int max = ((IntegerMaxValueRuleArgs)e).MaxValue;
+      DecoratedRuleArgs args = (DecoratedRuleArgs)e;
+      int max = (int)args["MaxValue"];
       int value = (int)Utilities.CallByName(target, e.PropertyName, CallType.Get);
       if (value > max)
       {
+        string format = (string)args["Format"];
+        string outValue;
+        if (string.IsNullOrEmpty(format))
+          outValue = max.ToString();
+        else
+          outValue = max.ToString(format);
         e.Description = String.Format(Resources.MaxValueRule,
-          e.PropertyName, max.ToString());
+          RuleArgs.GetPropertyName(e), max.ToString());
         return false;
       }
       return true;
@@ -207,16 +252,14 @@ namespace Csla.Validation
     /// Custom <see cref="RuleArgs" /> object required by the
     /// <see cref="IntegerMaxValue" /> rule method.
     /// </summary>
-    public class IntegerMaxValueRuleArgs : RuleArgs
+    public class IntegerMaxValueRuleArgs : DecoratedRuleArgs
     {
-      private int _maxValue;
-
       /// <summary>
       /// Get the max value for the property.
       /// </summary>
       public int MaxValue
       {
-        get { return _maxValue; }
+        get { return (int)this["MaxValue"]; }
       }
 
       /// <summary>
@@ -227,7 +270,20 @@ namespace Csla.Validation
       public IntegerMaxValueRuleArgs(string propertyName, int maxValue)
         : base(propertyName)
       {
-        _maxValue = maxValue;
+        this["MaxValue"] = maxValue;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property.</param>
+      /// <param name="maxValue">Maximum allowed value for the property.</param>
+      /// <param name="format">Format string for the max value
+      /// value in the broken rule string.</param>
+      public IntegerMaxValueRuleArgs(string propertyName, int maxValue, string format)
+        : this(propertyName, maxValue)
+      {
+        this["Format"] = format;
       }
 
       /// <summary>
@@ -235,7 +291,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "?maxValue=" + _maxValue.ToString();
+        return base.ToString() + "?maxValue=" + MaxValue.ToString();
       }
     }
 
@@ -253,12 +309,19 @@ namespace Csla.Validation
     /// <returns><see langword="false"/> if the rule is broken.</returns>
     public static bool IntegerMinValue(object target, RuleArgs e)
     {
-      int min = ((IntegerMinValueRuleArgs)e).MinValue;
+      DecoratedRuleArgs args = (DecoratedRuleArgs)e;
+      int min = (int)args["MinValue"];
       int value = (int)Utilities.CallByName(target, e.PropertyName, CallType.Get);
       if (value < min)
       {
+        string format = (string)args["Format"];
+        string outValue;
+        if (string.IsNullOrEmpty(format))
+          outValue = min.ToString();
+        else
+          outValue = min.ToString(format);
         e.Description = String.Format(Resources.MinValueRule,
-          e.PropertyName, min.ToString());
+          RuleArgs.GetPropertyName(e), outValue);
         return false;
       }
       return true;
@@ -268,16 +331,14 @@ namespace Csla.Validation
     /// Custom <see cref="RuleArgs" /> object required by the
     /// <see cref="IntegerMinValue" /> rule method.
     /// </summary>
-    public class IntegerMinValueRuleArgs : RuleArgs
+    public class IntegerMinValueRuleArgs : DecoratedRuleArgs
     {
-      private int _minValue;
-
       /// <summary>
       /// Get the min value for the property.
       /// </summary>
       public int MinValue
       {
-        get { return _minValue; }
+        get { return (int)this["MinValue"]; }
       }
 
       /// <summary>
@@ -288,7 +349,20 @@ namespace Csla.Validation
       public IntegerMinValueRuleArgs(string propertyName, int minValue)
         : base(propertyName)
       {
-        _minValue = minValue;
+        this["MinValue"] = minValue;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property.</param>
+      /// <param name="minValue">Minimum allowed value for the property.</param>
+      /// <param name="format">Format string for the min value
+      /// value in the broken rule string.</param>
+      public IntegerMinValueRuleArgs(string propertyName, int minValue, string format)
+        : this(propertyName, minValue)
+      {
+        this["Format"] = format;
       }
 
       /// <summary>
@@ -296,7 +370,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "?minValue=" + _minValue.ToString();
+        return base.ToString() + "?minValue=" + MinValue.ToString();
       }
     }
 
@@ -315,15 +389,22 @@ namespace Csla.Validation
     /// allowed value.</param>
     public static bool MaxValue<T>(object target, RuleArgs e) where T : IComparable
     {
+      DecoratedRuleArgs args = (DecoratedRuleArgs)e;
       PropertyInfo pi = target.GetType().GetProperty(e.PropertyName);
       T value = (T)pi.GetValue(target, null);
-      T max = ((MaxValueRuleArgs<T>)e).MaxValue;
+      T max = (T)args["MaxValue"];
 
       int result = value.CompareTo(max);
       if (result >= 1)
       {
+        string format = (string)args["Format"];
+        string outValue;
+        if (string.IsNullOrEmpty(format))
+          outValue = max.ToString();
+        else
+          outValue = string.Format(string.Format("{{0:{0}}}", format), max);
         e.Description = string.Format(Resources.MaxValueRule,
-          e.PropertyName, max.ToString());
+          RuleArgs.GetPropertyName(e), outValue);
         return false;
       }
       else
@@ -335,16 +416,14 @@ namespace Csla.Validation
     /// <see cref="MaxValue" /> rule method.
     /// </summary>
     /// <typeparam name="T">Type of the property to validate.</typeparam>
-    public class MaxValueRuleArgs<T> : RuleArgs
+    public class MaxValueRuleArgs<T> : DecoratedRuleArgs
     {
-      T _maxValue = default(T);
-
       /// <summary>
       /// Get the max value for the property.
       /// </summary>
       public T MaxValue
       {
-        get { return _maxValue; }
+        get { return (T)this["MaxValue"]; }
       }
 
       /// <summary>
@@ -355,7 +434,20 @@ namespace Csla.Validation
       public MaxValueRuleArgs(string propertyName, T maxValue)
         : base(propertyName)
       {
-        _maxValue = maxValue;
+        this["MaxValue"] = maxValue;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property.</param>
+      /// <param name="maxValue">Maximum allowed value for the property.</param>
+      /// <param name="format">Format string for the max value
+      /// value in the broken rule string.</param>
+      public MaxValueRuleArgs(string propertyName, T maxValue, string format)
+        : this(propertyName, maxValue)
+      {
+        this["Format"] = format;
       }
 
       /// <summary>
@@ -363,7 +455,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "?maxValue=" + _maxValue.ToString();
+        return base.ToString() + "?maxValue=" + MaxValue.ToString();
       }
     }
 
@@ -382,15 +474,22 @@ namespace Csla.Validation
     /// allowed value.</param>
     public static bool MinValue<T>(object target, RuleArgs e) where T : IComparable
     {
+      DecoratedRuleArgs args = (DecoratedRuleArgs)e;
       PropertyInfo pi = target.GetType().GetProperty(e.PropertyName);
       T value = (T)pi.GetValue(target, null);
-      T min = ((MinValueRuleArgs<T>)e).MinValue;
+      T min = (T)args["MinValue"];
 
       int result = value.CompareTo(min);
       if (result <= -1)
       {
+        string format = (string)args["Format"];
+        string outValue;
+        if (string.IsNullOrEmpty(format))
+          outValue = min.ToString();
+        else
+          outValue = string.Format(string.Format("{{0:{0}}}", format), min);
         e.Description = string.Format(Resources.MinValueRule,
-          e.PropertyName, min.ToString());
+          RuleArgs.GetPropertyName(e), outValue);
         return false;
       }
       else
@@ -402,16 +501,14 @@ namespace Csla.Validation
     /// <see cref="MinValue" /> rule method.
     /// </summary>
     /// <typeparam name="T">Type of the property to validate.</typeparam>
-    public class MinValueRuleArgs<T> : RuleArgs
+    public class MinValueRuleArgs<T> : DecoratedRuleArgs
     {
-      T _minValue = default(T);
-
       /// <summary>
       /// Get the min value for the property.
       /// </summary>
       public T MinValue
       {
-        get { return _minValue; }
+        get { return (T)this["MinValue"]; }
       }
 
       /// <summary>
@@ -422,7 +519,20 @@ namespace Csla.Validation
       public MinValueRuleArgs(string propertyName, T minValue)
         : base(propertyName)
       {
-        _minValue = minValue;
+        this["MinValue"] = minValue;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyName">Name of the property.</param>
+      /// <param name="minValue">Minimum allowed value for the property.</param>
+      /// <param name="format">Format string for the min value
+      /// value in the broken rule string.</param>
+      public MinValueRuleArgs(string propertyName, T minValue, string format)
+        : this(propertyName, minValue)
+      {
+        this["Format"] = format;
       }
 
       /// <summary>
@@ -430,7 +540,7 @@ namespace Csla.Validation
       /// </summary>
       public override string ToString()
       {
-        return base.ToString() + "?minValue=" + _minValue.ToString();
+        return base.ToString() + "?minValue=" + MinValue.ToString();
       }
     }
 
@@ -452,28 +562,31 @@ namespace Csla.Validation
     public static bool RegExMatch(object target, RuleArgs e)
     {
       bool ruleSatisfied = false;
-      RegExRuleArgs args = (RegExRuleArgs)e;
+      DecoratedRuleArgs args = (DecoratedRuleArgs)e;
+      RegExRuleArgs.NullResultOptions nullOption =
+        (RegExRuleArgs.NullResultOptions)args["NullOption"];
+      Regex expression = (Regex)args["RegEx"];
 
       object value = Utilities.CallByName(target, e.PropertyName, CallType.Get);
-      if (value == null && args.NullResult == RegExRuleArgs.NullResultOptions.ConvertToEmptyString)
+      if (value == null && nullOption == RegExRuleArgs.NullResultOptions.ConvertToEmptyString)
           value=string.Empty;
 
       if (value == null)
       {
         // if the value is null at this point
         // then return the pre-defined result value
-        ruleSatisfied = (args.NullResult == RegExRuleArgs.NullResultOptions.ReturnTrue);
+        ruleSatisfied = (nullOption == RegExRuleArgs.NullResultOptions.ReturnTrue);
       }
       else
       {
         // the value is not null, so run the 
         // regular expression
-        ruleSatisfied = args.RegEx.IsMatch(value.ToString());
+        ruleSatisfied = expression.IsMatch(value.ToString());
       }
 
       if (!ruleSatisfied)
       {
-        e.Description = String.Format(Resources.RegExMatchRule, e.PropertyName);
+        e.Description = String.Format(Resources.RegExMatchRule, RuleArgs.GetPropertyName(e));
         return false;
       }
       else
@@ -499,7 +612,7 @@ namespace Csla.Validation
     /// Custom <see cref="RuleArgs" /> object required by the
     /// <see cref="RegExMatch" /> rule method.
     /// </summary>
-    public class RegExRuleArgs : RuleArgs
+    public class RegExRuleArgs : DecoratedRuleArgs
     {
       #region NullResultOptions
 
@@ -533,16 +646,13 @@ namespace Csla.Validation
 
       #endregion
 
-      Regex _regEx;
-      NullResultOptions _nullResult;
-
       /// <summary>
       /// The <see cref="RegEx"/> object used to validate
       /// the property.
       /// </summary>
       public Regex RegEx
       {
-        get { return _regEx; }
+        get { return (Regex)this["RegEx"]; }
       }
 
       /// <summary>
@@ -553,7 +663,7 @@ namespace Csla.Validation
       {
         get
         {
-          return _nullResult;
+          return (NullResultOptions)this["NullOption"];
         }
       }
 
@@ -565,8 +675,8 @@ namespace Csla.Validation
       public RegExRuleArgs(string propertyName, RegExPatterns pattern)
         : base(propertyName)
       {
-        _regEx = new Regex(GetPattern(pattern));
-        _nullResult = NullResultOptions.ReturnFalse;
+        this["RegEx"] = new Regex(GetPattern(pattern));
+        this["NullOption"] = NullResultOptions.ReturnFalse;
       }
 
       /// <summary>
@@ -577,8 +687,8 @@ namespace Csla.Validation
       public RegExRuleArgs(string propertyName, string pattern)
         : base(propertyName)
       {
-        _regEx = new Regex(pattern);
-        _nullResult = NullResultOptions.ReturnFalse;
+        this["RegEx"] = new Regex(pattern);
+        this["NullOption"] = NullResultOptions.ReturnFalse;
       }
 
       /// <summary>
@@ -589,8 +699,8 @@ namespace Csla.Validation
       public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regEx)
         : base(propertyName)
       {
-        _regEx = regEx;
-        _nullResult = NullResultOptions.ReturnFalse;
+        this["RegEx"] = regEx;
+        this["NullOption"] = NullResultOptions.ReturnFalse;
       }
 
       /// <summary>
@@ -605,8 +715,8 @@ namespace Csla.Validation
       public RegExRuleArgs(string propertyName, RegExPatterns pattern, NullResultOptions nullResult)
         : base(propertyName)
       {
-        _regEx = new Regex(GetPattern(pattern));
-        _nullResult = nullResult;
+        this["RegEx"] = new Regex(GetPattern(pattern));
+        this["NullOption"] = nullResult;
       }
 
       /// <summary>
@@ -621,8 +731,8 @@ namespace Csla.Validation
       public RegExRuleArgs(string propertyName, string pattern, NullResultOptions nullResult)
         : base(propertyName)
       {
-        _regEx = new Regex(pattern);
-        _nullResult = nullResult;
+        this["RegEx"] = new Regex(pattern);
+        this["NullOption"] = nullResult;
       }
 
       /// <summary>
@@ -637,8 +747,8 @@ namespace Csla.Validation
       public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regEx, NullResultOptions nullResult)
         : base(propertyName)
       {
-        _regEx = regEx;
-        _nullResult = nullResult;
+        this["RegEx"] = regEx;
+        this["NullOption"] = nullResult;
       }
 
       /// <summary>f
@@ -647,7 +757,7 @@ namespace Csla.Validation
       public override string ToString()
       {
         return base.ToString() + 
-          string.Format(@"?regex={0}&null={1}", _regEx.ToString(), _nullResult.ToString());
+          string.Format(@"?regex={0}&null={1}", RegEx.ToString(), NullResult.ToString());
       }
 
       /// <summary>

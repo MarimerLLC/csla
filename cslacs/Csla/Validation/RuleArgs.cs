@@ -10,6 +10,7 @@ namespace Csla.Validation
   public class RuleArgs
   {
     private string _propertyName;
+    private string _propertyFriendlyName;
     private string _description;
     private RuleSeverity _severity = RuleSeverity.Error;
     private bool _stopProcessing;
@@ -20,6 +21,17 @@ namespace Csla.Validation
     public string PropertyName
     {
       get { return _propertyName; }
+    }
+
+    /// <summary>
+    /// Gets or sets a friendly name for the property, which
+    /// will be used in place of the property name when
+    /// creating the broken rule description string.
+    /// </summary>
+    public string PropertyFriendlyName
+    {
+      get { return _propertyFriendlyName; }
+      set { _propertyFriendlyName = value; }
     }
 
     /// <summary>
@@ -82,6 +94,19 @@ namespace Csla.Validation
     /// Creates an instance of RuleArgs.
     /// </summary>
     /// <param name="propertyName">The name of the property to be validated.</param>
+    /// <param name="friendlyName">A friendly name for the property, which
+    /// will be used in place of the property name when
+    /// creating the broken rule description string.</param>
+    public RuleArgs(string propertyName, string friendlyName)
+    {
+      _propertyName = propertyName;
+      _propertyFriendlyName = friendlyName;
+    }
+
+    /// <summary>
+    /// Creates an instance of RuleArgs.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to be validated.</param>
     /// <param name="severity">Initial default severity for the rule.</param>
     /// <remarks>
     /// <para>
@@ -98,6 +123,33 @@ namespace Csla.Validation
     /// </remarks>
     public RuleArgs(string propertyName, RuleSeverity severity)
       : this(propertyName)
+    {
+      _severity = severity;
+    }
+
+    /// <summary>
+    /// Creates an instance of RuleArgs.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to be validated.</param>
+    /// <param name="friendlyName">A friendly name for the property, which
+    /// will be used in place of the property name when
+    /// creating the broken rule description string.</param>
+    /// <param name="severity">Initial default severity for the rule.</param>
+    /// <remarks>
+    /// <para>
+    /// The <b>severity</b> parameter defines only the initial default 
+    /// severity value. If the rule changes this value by setting
+    /// e.Severity, then that new value will become the default for all
+    /// subsequent rule invocations.
+    /// </para><para>
+    /// To avoid confusion, it is recommended that the 
+    /// <b>severity</b> constructor parameter 
+    /// only be used for rule methods that do not explicitly set
+    /// e.Severity.
+    /// </para>
+    /// </remarks>
+    public RuleArgs(string propertyName, string friendlyName, RuleSeverity severity)
+      : this(propertyName, friendlyName)
     {
       _severity = severity;
     }
@@ -131,11 +183,63 @@ namespace Csla.Validation
     }
 
     /// <summary>
+    /// Creates an instance of RuleArgs.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to be validated.</param>
+    /// <param name="friendlyName">A friendly name for the property, which
+    /// will be used in place of the property name when
+    /// creating the broken rule description string.</param>
+    /// <param name="severity">The default severity for the rule.</param>
+    /// <param name="stopProcessing">
+    /// Initial default value for the StopProcessing property.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// The <b>severity</b> and <b>stopProcessing</b> parameters 
+    /// define only the initial default values. If the rule 
+    /// changes these values by setting e.Severity or
+    /// e.StopProcessing, then the new values will become 
+    /// the default for all subsequent rule invocations.
+    /// </para><para>
+    /// To avoid confusion, It is recommended that the 
+    /// <b>severity</b> and <b>stopProcessing</b> constructor 
+    /// parameters only be used for rule methods that do 
+    /// not explicitly set e.Severity or e.StopProcessing.
+    /// </para>
+    /// </remarks>
+    public RuleArgs(string propertyName, string friendlyName, RuleSeverity severity, bool stopProcessing)
+      : this(propertyName, friendlyName, severity)
+    {
+      _stopProcessing = stopProcessing;
+    }
+
+    /// <summary>
     /// Return a string representation of the object.
     /// </summary>
     public override string ToString()
     {
       return _propertyName;
+    }
+
+    /// <summary>
+    /// Gets the property name from the RuleArgs
+    /// object, using the friendly name if one
+    /// is defined.
+    /// </summary>
+    /// <param name="e">Object from which to 
+    /// extract the name.</param>
+    /// <returns>
+    /// The friendly property name if it exists,
+    /// otherwise the property name itself.
+    /// </returns>
+    public static string GetPropertyName(RuleArgs e)
+    {
+      string propName;
+      if (string.IsNullOrEmpty(e.PropertyFriendlyName))
+        propName = e.PropertyName;
+      else
+        propName = e.PropertyFriendlyName;
+      return propName;
     }
   }
 }

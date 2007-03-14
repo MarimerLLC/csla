@@ -102,6 +102,7 @@ namespace Csla.Validation
         : base(propertyName)
       {
         this["MaxLength"] = maxLength;
+        this["Format"] = string.Empty;
       }
 
       /// <summary>
@@ -113,8 +114,9 @@ namespace Csla.Validation
       /// value in the broken rule string.</param>
       public MaxLengthRuleArgs(
         string propertyName, int maxLength, string format)
-        : this(propertyName, maxLength)
+        : base(propertyName)
       {
+        this["MaxLength"] = maxLength;
         this["Format"] = format;
       }
     }
@@ -183,6 +185,7 @@ namespace Csla.Validation
         : base(propertyName)
       {
         this["MinLength"] = minLength;
+        this["Format"] = string.Empty;
       }
 
       /// <summary>
@@ -194,8 +197,9 @@ namespace Csla.Validation
       /// value in the broken rule string.</param>
       public MinLengthRuleArgs(
         string propertyName, int minLength, string format)
-        : this(propertyName, minLength)
+        : base(propertyName)
       {
+        this["MinLength"] = minLength;
         this["Format"] = format;
       }
     }
@@ -255,6 +259,7 @@ namespace Csla.Validation
         : base(propertyName)
       {
         this["MaxValue"] = maxValue;
+        this["Format"] = string.Empty;
       }
 
       /// <summary>
@@ -265,8 +270,9 @@ namespace Csla.Validation
       /// <param name="format">Format string for the max value
       /// value in the broken rule string.</param>
       public IntegerMaxValueRuleArgs(string propertyName, int maxValue, string format)
-        : this(propertyName, maxValue)
+        : base(propertyName)
       {
+        this["MaxValue"] = maxValue;
         this["Format"] = format;
       }
     }
@@ -326,6 +332,7 @@ namespace Csla.Validation
         : base(propertyName)
       {
         this["MinValue"] = minValue;
+        this["Format"] = string.Empty;
       }
 
       /// <summary>
@@ -336,8 +343,9 @@ namespace Csla.Validation
       /// <param name="format">Format string for the min value
       /// value in the broken rule string.</param>
       public IntegerMinValueRuleArgs(string propertyName, int minValue, string format)
-        : this(propertyName, minValue)
+        : base(propertyName)
       {
+        this["MinValue"] = minValue;
         this["Format"] = format;
       }
     }
@@ -403,6 +411,7 @@ namespace Csla.Validation
         : base(propertyName)
       {
         this["MaxValue"] = maxValue;
+        this["Format"] = string.Empty;
       }
 
       /// <summary>
@@ -413,8 +422,9 @@ namespace Csla.Validation
       /// <param name="format">Format string for the max value
       /// value in the broken rule string.</param>
       public MaxValueRuleArgs(string propertyName, T maxValue, string format)
-        : this(propertyName, maxValue)
+        : base(propertyName)
       {
+        this["MaxValue"] = maxValue;
         this["Format"] = format;
       }
     }
@@ -480,6 +490,7 @@ namespace Csla.Validation
         : base(propertyName)
       {
         this["MinValue"] = minValue;
+        this["Format"] = string.Empty;
       }
 
       /// <summary>
@@ -490,8 +501,9 @@ namespace Csla.Validation
       /// <param name="format">Format string for the min value
       /// value in the broken rule string.</param>
       public MinValueRuleArgs(string propertyName, T minValue, string format)
-        : this(propertyName, minValue)
+        : base(propertyName)
       {
+        this["MinValue"] = minValue;
         this["Format"] = format;
       }
     }

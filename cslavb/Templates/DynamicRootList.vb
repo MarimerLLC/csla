@@ -2,7 +2,18 @@ Imports System.Data.SqlClient
 
 <Serializable()> _
 Public Class DynamicRootList
-  Inherits EditableRootListBase(Of EditableRoot)
+  Inherits EditableRootListBase(Of DynamicRoot)
+
+#Region " Business Methods "
+
+  Protected Overrides Function AddNewCore() As Object
+
+    Dim item As DynamicRoot = DynamicRoot.NewDynamicRoot
+    Add(item)
+    Return item
+
+  End Function
+#End Region
 
 #Region " Authorization Rules "
 
@@ -30,6 +41,7 @@ Public Class DynamicRootList
 
   Private Sub New()
     ' require use of factory methods
+    AllowNew = True
   End Sub
 
 #End Region
@@ -42,7 +54,7 @@ Public Class DynamicRootList
     RaiseListChangedEvents = False
     Using dr As SqlDataReader = Nothing
       While dr.Read
-        Add(EditableRoot.GetEditableRoot(dr))
+        Add(DynamicRoot.GetDynamicRoot(dr))
       End While
     End Using
     RaiseListChangedEvents = True

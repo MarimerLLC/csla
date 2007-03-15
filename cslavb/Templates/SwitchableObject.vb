@@ -169,6 +169,21 @@ Public Class SwitchableObject
     ' delete values
   End Sub
 
+  Friend Sub Insert(ByVal parent As Object)
+    ' TODO: insert values
+    MarkOld()
+  End Sub
+
+  Friend Sub Update(ByVal parent As Object)
+    ' TODO: update values
+    MarkOld()
+  End Sub
+
+  Friend Sub DeleteSelf()
+    ' TODO: delete values
+    MarkNew()
+  End Sub
+
 #End Region
 
 End Class

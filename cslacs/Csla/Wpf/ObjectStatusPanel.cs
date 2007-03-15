@@ -125,7 +125,7 @@ namespace Csla.Wpf
     /// </summary>
     protected override void DataObjectChanged()
     {
-      StatusScan();
+      Refresh();
     }
 
     /// <summary>
@@ -135,10 +135,37 @@ namespace Csla.Wpf
     /// </summary>
     protected override void DataPropertyChanged(PropertyChangedEventArgs e)
     {
-      StatusScan();
+      Refresh();
     }
 
-    private void StatusScan()
+    /// <summary>
+    /// This method is called if the data
+    /// object is an IBindingList, and the 
+    /// ListChanged event was raised by
+    /// the data object.
+    /// </summary>
+    protected override void DataBindingListChanged(ListChangedEventArgs e)
+    {
+      Refresh();
+    }
+
+    /// <summary>
+    /// This method is called if the data
+    /// object is an INotifyCollectionChanged, 
+    /// and the CollectionChanged event was 
+    /// raised by the data object.
+    /// </summary>
+    protected override void DataObservableCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      Refresh();
+    }
+
+    /// <summary>
+    /// Refreshes the control's property
+    /// values to reflect the values of
+    /// the underlying business object.
+    /// </summary>
+    public void Refresh()
     {
       IEditableBusinessObject source = DataObject as IEditableBusinessObject;
       if (source != null)
@@ -167,6 +194,30 @@ namespace Csla.Wpf
         {
           IsValid = source.IsValid;
           OnPropertyChanged("IsValid");
+        }
+      }
+      else
+      {
+        IEditableCollection sourceList = DataObject as IEditableCollection;
+        if (sourceList != null)
+        {
+          if (IsDirty != sourceList.IsDirty)
+          {
+            IsDirty = sourceList.IsDirty;
+            OnPropertyChanged("IsDirty");
+          }
+          if (IsValid != sourceList.IsValid)
+          {
+            IsValid = sourceList.IsValid;
+            OnPropertyChanged("IsValid");
+          }
+          if (IsSavable != sourceList.IsSavable)
+          {
+            IsSavable = sourceList.IsSavable;
+            OnPropertyChanged("IsSavable");
+          }
+          IsDeleted = false;
+          IsNew = false;
         }
       }
     }

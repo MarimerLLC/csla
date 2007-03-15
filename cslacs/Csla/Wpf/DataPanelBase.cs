@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -53,6 +54,27 @@ namespace Csla.Wpf
     protected virtual void DataPropertyChanged(PropertyChangedEventArgs e)
     {
       // may be overridden by subclass
+    }
+
+    /// <summary>
+    /// This method is called if the data
+    /// object is an IBindingList, and the 
+    /// ListChanged event was raised by
+    /// the data object.
+    /// </summary>
+    protected virtual void DataBindingListChanged(ListChangedEventArgs e)
+    {
+      // may be overridden by subclass
+    }
+
+    /// <summary>
+    /// This method is called if the data
+    /// object is an INotifyCollectionChanged, 
+    /// and the CollectionChanged event was 
+    /// raised by the data object.
+    /// </summary>
+    protected virtual void DataObservableCollectionChanged(NotifyCollectionChangedEventArgs e)
+    {
     }
 
     /// <summary>
@@ -118,37 +140,41 @@ namespace Csla.Wpf
     private void UnHookDataContextEvents(object oldValue)
     {
       // unhook any old event handling
-      INotifyPropertyChanged oldContext = null;
+      object oldContext = null;
 
       DataSourceProvider provider = oldValue as DataSourceProvider;
       if (provider == null)
       {
-        oldContext = oldValue as INotifyPropertyChanged;
+        oldContext = oldValue;
       }
       else
       {
         provider.DataChanged -= new EventHandler(DataProvider_DataChanged);
-        oldContext = provider.Data as INotifyPropertyChanged;
+        oldContext = provider.Data;
       }
-      UnHookPropertyChanged(oldContext);
+      UnHookPropertyChanged(oldContext as INotifyPropertyChanged);
+      UnHookBindingListChanged(oldContext as IBindingList);
+      UnHookObservableListChanged(oldContext as INotifyCollectionChanged);
     }
 
     private void HookDataContextEvents(object newValue)
     {
       // hook any new event
-      INotifyPropertyChanged newContext = null;
+      object newContext = null;
 
       DataSourceProvider provider = newValue as DataSourceProvider;
       if (provider == null)
       {
-        newContext = newValue as INotifyPropertyChanged;
+        newContext = newValue;
       }
       else
       {
         provider.DataChanged += new EventHandler(DataProvider_DataChanged);
-        newContext = provider.Data as INotifyPropertyChanged;
+        newContext = provider.Data;
       }
-      HookPropertyChanged(newContext);
+      HookPropertyChanged(newContext as INotifyPropertyChanged);
+      HookBindingListChanged(newContext as IBindingList);
+      HookObservableListChanged(newContext as INotifyCollectionChanged);
     }
 
     private void UnHookPropertyChanged(INotifyPropertyChanged oldContext)
@@ -163,6 +189,32 @@ namespace Csla.Wpf
         newContext.PropertyChanged += new PropertyChangedEventHandler(DataObject_PropertyChanged);
     }
 
+    private void UnHookBindingListChanged(IBindingList oldContext)
+    {
+      if (oldContext != null)
+        oldContext.ListChanged -= new ListChangedEventHandler(DataObject_ListChanged);
+    }
+
+    private void HookBindingListChanged(IBindingList newContext)
+    {
+      if (newContext != null)
+        newContext.ListChanged += new ListChangedEventHandler(DataObject_ListChanged);
+    }
+
+    private void UnHookObservableListChanged(INotifyCollectionChanged oldContext)
+    {
+      if (oldContext != null)
+        oldContext.CollectionChanged -=
+          new NotifyCollectionChangedEventHandler(DataObject_CollectionChanged);
+    }
+
+    private void HookObservableListChanged(INotifyCollectionChanged newContext)
+    {
+      if (newContext != null)
+        newContext.CollectionChanged +=
+          new NotifyCollectionChangedEventHandler(DataObject_CollectionChanged);
+    }
+
     private void Panel_Loaded(object sender, RoutedEventArgs e)
     {
       _loaded = true;
@@ -173,6 +225,16 @@ namespace Csla.Wpf
     private void DataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       DataPropertyChanged(e);
+    }
+
+    private void DataObject_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      DataBindingListChanged(e);
+    }
+
+    private void DataObject_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      DataObservableCollectionChanged(e);
     }
   }
 }

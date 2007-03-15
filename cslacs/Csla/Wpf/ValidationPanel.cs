@@ -71,6 +71,29 @@ namespace Csla.Wpf
     }
 
     /// <summary>
+    /// This method is called if the data
+    /// object is an IBindingList, and the 
+    /// ListChanged event was raised by
+    /// the data object.
+    /// </summary>
+    protected override void DataBindingListChanged(ListChangedEventArgs e)
+    {
+      Refresh();
+    }
+
+    /// <summary>
+    /// This method is called if the data
+    /// object is an INotifyCollectionChanged, 
+    /// and the CollectionChanged event was 
+    /// raised by the data object.
+    /// </summary>
+    protected override void DataObservableCollectionChanged(
+      System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      Refresh();
+    }
+
+    /// <summary>
     /// This method is called when the data
     /// object to which the control is bound
     /// has changed.
@@ -146,7 +169,7 @@ namespace Csla.Wpf
           if (prop != null)
           {
             Binding bnd = BindingOperations.GetBinding(childVisual, prop);
-            if (bnd != null)
+            if (bnd != null && bnd.RelativeSource == null && bnd.Path != null)
             {
               _bindings.Add(new BindingInfo(bnd, (FrameworkElement)childVisual, prop));
               ((FrameworkElement)childVisual).GotFocus += new RoutedEventHandler(ValidationPanel_GotFocus);

@@ -99,7 +99,7 @@ namespace Csla.Wpf
           if (prop != null)
           {
             Binding bnd = BindingOperations.GetBinding(childVisual, prop);
-            if (bnd != null && bnd.RelativeSource == null)
+            if (bnd != null && bnd.RelativeSource == null && bnd.Path != null)
             {
               SetRead(bnd, (UIElement)childVisual, source);
               SetWrite(bnd, (UIElement)childVisual, source);

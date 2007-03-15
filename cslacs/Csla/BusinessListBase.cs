@@ -46,7 +46,7 @@ namespace Csla
 
     #endregion
 
-    #region IsDirty, IsValid
+    #region IsDirty, IsValid, IsSavable
 
     /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
@@ -86,6 +86,16 @@ namespace Csla
             return false;
         return true;
       }
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if this object is both dirty and valid.
+    /// </summary>
+    /// <returns>A value indicating if this object is both dirty and valid.</returns>
+    [Browsable(false)]
+    public virtual bool IsSavable
+    {
+      get { return (IsDirty && IsValid); }
     }
 
     #endregion

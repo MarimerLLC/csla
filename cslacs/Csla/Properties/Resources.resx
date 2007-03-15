@@ -261,4 +261,10 @@
   <data name="TypeLoadException" xml:space="preserve">
     <value>Failed to load type '{0}'</value>
   </data>
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>No such factory method:{0}</value>
+  </data>
+  <data name="StringMinLengthRule" xml:space="preserve">
+    <value>{0} must be at least {1} characters</value>
+  </data>
 </root>

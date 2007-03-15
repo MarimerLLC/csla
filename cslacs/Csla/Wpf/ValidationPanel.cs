@@ -22,18 +22,15 @@ namespace Csla.Wpf
   /// information provided by the data binding
   /// context.
   /// </summary>
-  public class ValidationPanel : Decorator
+  public class ValidationPanel : DataPanelBase
   {
-    private bool _loaded;
-    private IDataErrorInfo _dataSource;
     private bool _haveRecentChange;
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates a new instance of the object.
     /// </summary>
     public ValidationPanel()
     {
-      this.DataContextChanged += new DependencyPropertyChangedEventHandler(ValidationPanel_DataContextChanged);
       this.Loaded += new RoutedEventHandler(ValidationPanel_Loaded);
     }
 
@@ -48,12 +45,48 @@ namespace Csla.Wpf
       ErrorScan();
     }
 
+    /// <summary>
+    /// Reload all the binding information for the 
+    /// controls contained within the
+    /// ErrorDisplayContainer, and refresh
+    /// the validation status.
+    /// </summary>
+    public void ReloadBindings()
+    {
+      _bindings.Clear();
+      FindBindings(this);
+      Refresh();
+    }
+
+    /// <summary>
+    /// This method is called when a property
+    /// of the data object to which the 
+    /// control is bound has changed.
+    /// </summary>
+    protected override void DataPropertyChanged(PropertyChangedEventArgs e)
+    {
+      // note that there's been a change, so the 
+      // next scan will perform validation
+      _haveRecentChange = true;
+    }
+
+    /// <summary>
+    /// This method is called when the data
+    /// object to which the control is bound
+    /// has changed.
+    /// </summary>
+    protected override void DataObjectChanged()
+    {
+      ReloadBindings();
+    }
+
+    #region Trigger Validation
+
     private void ValidationPanel_Loaded(object sender, RoutedEventArgs e)
     {
       ((FrameworkElement)this).LostFocus += new RoutedEventHandler(ValidationPanel_LostFocus);
       _haveRecentChange = true;
       ErrorScan();
-      _loaded = true;
     }
 
     private void ValidationPanel_LostFocus(object sender, RoutedEventArgs e)
@@ -66,48 +99,23 @@ namespace Csla.Wpf
       ErrorScan();
     }
 
-    private void DataContext_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      // note that there's been a change, so the 
-      // next scan will perform validation
-      _haveRecentChange = true;
-    }
+    #endregion
 
-    private void ValidationPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      INotifyPropertyChanged oldContext = e.OldValue as INotifyPropertyChanged;
-      INotifyPropertyChanged newContext = e.NewValue as INotifyPropertyChanged;
-
-      // unhook any old event handling
-      if (oldContext != null)
-        oldContext.PropertyChanged -= new PropertyChangedEventHandler(DataContext_PropertyChanged);
-
-      // hook any new event
-      if (newContext != null)
-        newContext.PropertyChanged += new PropertyChangedEventHandler(DataContext_PropertyChanged);
-
-      // store a ref to the data source if it is IDataErrorInfo
-      if (e.NewValue is DataSourceProvider)
-        _dataSource = ((DataSourceProvider)e.NewValue).Data as IDataErrorInfo;
-      else
-        _dataSource = e.NewValue as IDataErrorInfo;
-
-      if (_loaded)
-        Refresh();
-    }
+    #region Validation implementation
 
     private void ErrorScan()
     {
-      if (_haveRecentChange && _dataSource != null)
+      IDataErrorInfo source = DataObject as IDataErrorInfo;
+      if (_haveRecentChange && source != null)
       {
         _haveRecentChange = false;
         if (_bindings.Count == 0)
           ReloadBindings();
 
-        if (_dataSource != null && _bindings.Count > 0)
+        if (source != null && _bindings.Count > 0)
           foreach (BindingInfo item in _bindings)
           {
-            string text = _dataSource[item.BindingObject.Path.Path];
+            string text = source[item.BindingObject.Path.Path];
             BindingExpression expression = item.Element.GetBindingExpression(item.Property);
             ValidationError error = new ValidationError(new ExceptionValidationRule(), expression, text, null);
             if (string.IsNullOrEmpty(text))
@@ -119,17 +127,6 @@ namespace Csla.Wpf
     }
 
     private List<BindingInfo> _bindings = new List<BindingInfo>();
-
-    /// <summary>
-    /// Reload all the binding information for the 
-    /// controls contained within the
-    /// ErrorDisplayContainer.
-    /// </summary>
-    public void ReloadBindings()
-    {
-      _bindings.Clear();
-      FindBindings(this);
-    }
 
     private void FindBindings(Visual visual)
     {
@@ -200,6 +197,8 @@ namespace Csla.Wpf
         _property = property;
       }
     }
+
+    #endregion
 
     #endregion
   }

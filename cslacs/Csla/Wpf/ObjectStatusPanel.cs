@@ -29,10 +29,8 @@ namespace Csla.Wpf
   /// that supports WFP data binding against those
   /// values.
   /// </remarks>
-  public class ObjectStatusPanel : Decorator, INotifyPropertyChanged
+  public class ObjectStatusPanel : DataPanelBase, INotifyPropertyChanged
   {
-    private IEditableBusinessObject _dataSource;
-
     #region INotifyPropertyChanged
 
     /// <summary>
@@ -121,66 +119,53 @@ namespace Csla.Wpf
     #endregion
 
     /// <summary>
-    /// Create an instance of the object.
+    /// This method is called when the data
+    /// object to which the control is bound
+    /// has changed.
     /// </summary>
-    public ObjectStatusPanel()
+    protected override void DataObjectChanged()
     {
-      this.DataContextChanged += new DependencyPropertyChangedEventHandler(ObjectStatusPanel_DataContextChanged);
+      StatusScan();
     }
 
-    void ObjectStatusPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      INotifyPropertyChanged oldContext = e.OldValue as INotifyPropertyChanged;
-      INotifyPropertyChanged newContext = e.NewValue as INotifyPropertyChanged;
-
-      if (oldContext != null)
-        oldContext.PropertyChanged -= new PropertyChangedEventHandler(DataContext_PropertyChanged);
-
-      if (newContext != null)
-        newContext.PropertyChanged += new PropertyChangedEventHandler(DataContext_PropertyChanged);
-
-      // store a ref to the data source if it is IEditableBusinessObject
-      if (e.NewValue is DataSourceProvider)
-        _dataSource = ((DataSourceProvider)e.NewValue).Data as IEditableBusinessObject;
-      else
-        _dataSource = e.NewValue as IEditableBusinessObject;
-
-      if (_dataSource != null)
-        StatusScan();
-    }
-
-    private void DataContext_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    /// <summary>
+    /// This method is called when a property
+    /// of the data object to which the 
+    /// control is bound has changed.
+    /// </summary>
+    protected override void DataPropertyChanged(PropertyChangedEventArgs e)
     {
       StatusScan();
     }
 
     private void StatusScan()
     {
-      if (_dataSource != null)
+      IEditableBusinessObject source = DataObject as IEditableBusinessObject;
+      if (source != null)
       {
-        if (IsDeleted != _dataSource.IsDeleted)
+        if (IsDeleted != source.IsDeleted)
         {
-          IsDeleted = _dataSource.IsDeleted;
+          IsDeleted = source.IsDeleted;
           OnPropertyChanged("IsDeleted");
         }
-        if (IsDirty != _dataSource.IsDirty)
+        if (IsDirty != source.IsDirty)
         {
-          IsDirty = _dataSource.IsDirty;
+          IsDirty = source.IsDirty;
           OnPropertyChanged("IsDirty");
         }
-        if (IsNew != _dataSource.IsNew)
+        if (IsNew != source.IsNew)
         {
-          IsNew = _dataSource.IsNew;
+          IsNew = source.IsNew;
           OnPropertyChanged("IsNew");
         }
-        if (IsSavable != _dataSource.IsSavable)
+        if (IsSavable != source.IsSavable)
         {
-          IsSavable = _dataSource.IsSavable;
+          IsSavable = source.IsSavable;
           OnPropertyChanged("IsSavable");
         }
-        if (IsValid != _dataSource.IsValid)
+        if (IsValid != source.IsValid)
         {
-          IsValid = _dataSource.IsValid;
+          IsValid = source.IsValid;
           OnPropertyChanged("IsValid");
         }
       }

@@ -23,28 +23,18 @@ namespace Csla.Wpf
   /// information provided by the data binding
   /// context.
   /// </summary>
-  public class AuthorizationPanel : Decorator
+  public class AuthorizationPanel : DataPanelBase
   {
-    private bool _loaded;
-    private IAuthorizeReadWrite _dataSource;
+    #region NotVisibleMode property
 
     // Define DependencyProperty
-    private static readonly DependencyProperty VisibilityModeProperty = 
+    private static readonly DependencyProperty NotVisibleModeProperty = 
       DependencyProperty.Register(
         "NotVisibleMode", 
         typeof(VisibilityMode), 
         typeof(AuthorizationPanel), 
         new FrameworkPropertyMetadata(VisibilityMode.Hidden), 
         new ValidateValueCallback(IsValidVisibilityMode));
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    public AuthorizationPanel()
-    {
-      this.DataContextChanged += new DependencyPropertyChangedEventHandler(AuthorizationPanel_DataContextChanged);
-      this.Loaded += new RoutedEventHandler(AuthorizationPanel_Loaded);
-    }
 
     // Define method to validate the value
     private static bool IsValidVisibilityMode(object o)
@@ -60,30 +50,24 @@ namespace Csla.Wpf
     {
       get
       {
-        return (VisibilityMode)base.GetValue(VisibilityModeProperty);
+        return (VisibilityMode)base.GetValue(NotVisibleModeProperty);
       }
       set
       {
-        base.SetValue(VisibilityModeProperty, value);
+        base.SetValue(NotVisibleModeProperty, value);
       }
     }
 
-    private void AuthorizationPanel_Loaded(object sender, RoutedEventArgs e)
+    #endregion
+
+    /// <summary>
+    /// This method is called when the data
+    /// object to which the control is bound
+    /// has changed.
+    /// </summary>
+    protected override void DataObjectChanged()
     {
       Refresh();
-      _loaded = true;
-    }
-
-    private void AuthorizationPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      // store a ref to the data source if it is IAuthorizeReadWrite
-      if (e.NewValue is DataSourceProvider)
-        _dataSource = ((DataSourceProvider)e.NewValue).Data as IAuthorizeReadWrite;
-      else
-        _dataSource = e.NewValue as IAuthorizeReadWrite;
-
-      if (_loaded)
-        Refresh();
     }
 
     /// <summary>
@@ -92,11 +76,12 @@ namespace Csla.Wpf
     /// </summary>
     public void Refresh()
     {
-      if (_dataSource != null)
-        FindBindings(this);
+      IAuthorizeReadWrite source = DataObject as IAuthorizeReadWrite;
+      if (source != null)
+        FindBindings(this, source);
     }
 
-    private void FindBindings(Visual visual)
+    private void FindBindings(Visual visual, IAuthorizeReadWrite source)
     {
       for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
       {
@@ -116,18 +101,18 @@ namespace Csla.Wpf
             Binding bnd = BindingOperations.GetBinding(childVisual, prop);
             if (bnd != null && bnd.RelativeSource == null)
             {
-              SetRead(bnd, (UIElement)childVisual);
-              SetWrite(bnd, (UIElement)childVisual);
+              SetRead(bnd, (UIElement)childVisual, source);
+              SetWrite(bnd, (UIElement)childVisual, source);
             }
           }
         }
-        FindBindings(childVisual);
+        FindBindings(childVisual, source);
       }
     }
 
-    private void SetWrite(Binding bnd, UIElement ctl)
+    private void SetWrite(Binding bnd, UIElement ctl, IAuthorizeReadWrite source)
     {
-      bool canWrite = _dataSource.CanWriteProperty(bnd.Path.Path);
+      bool canWrite = source.CanWriteProperty(bnd.Path.Path);
 
       // enable/disable writing of the value
       PropertyInfo propertyInfo =
@@ -146,9 +131,9 @@ namespace Csla.Wpf
       }
     }
 
-    private void SetRead(Binding bnd, UIElement ctl)
+    private void SetRead(Binding bnd, UIElement ctl, IAuthorizeReadWrite source)
     {
-      bool canRead = _dataSource.CanReadProperty(bnd.Path.Path);
+      bool canRead = source.CanReadProperty(bnd.Path.Path);
 
       if (canRead)
         switch (NotVisibleMode)
@@ -177,6 +162,5 @@ namespace Csla.Wpf
             break;
         }
     }
-
   }
 }

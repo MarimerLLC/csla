@@ -4,10 +4,21 @@ using Csla;
 
 [Serializable()]
 public class DynamicRootList : 
-  EditableRootListBase<EditableRoot>
+  EditableRootListBase<DynamicRoot>
 {
 
-#region  Authorization Rules 
+  #region Business Methods
+
+  protected override object AddNewCore()
+  {
+    DynamicRoot item = DynamicRoot.NewDynamicRoot();
+    Add(item);
+    return item;
+  }
+
+  #endregion
+
+  #region  Authorization Rules
 
   public static bool CanGetObject()
   {
@@ -38,6 +49,7 @@ public class DynamicRootList :
   private DynamicRootList()
   {
     // require use of factory methods
+    AllowNew = true;
   }
 
 #endregion
@@ -53,7 +65,7 @@ public class DynamicRootList :
     {
       while (dr.Read())
       {
-        Add(EditableRoot.GetEditableRoot(dr));
+        Add(DynamicRoot.GetDynamicRoot(dr));
       }
     }
     RaiseListChangedEvents = true;

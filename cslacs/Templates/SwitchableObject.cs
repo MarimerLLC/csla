@@ -206,6 +206,25 @@ namespace Templates
       // TODO: delete values
     }
 
+    internal void Insert(object parent)
+    {
+      // TODO: insert values
+      MarkOld();
+    }
+
+    internal void Update(object parent)
+    {
+      // TODO: update values
+      MarkOld();
+    }
+
+    internal void DeleteSelf()
+    {
+      // TODO: delete values
+      MarkNew();
+    }
+
+
     #endregion
   }
 }

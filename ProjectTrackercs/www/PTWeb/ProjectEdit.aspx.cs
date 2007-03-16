@@ -23,6 +23,7 @@ public partial class ProjectEdit : System.Web.UI.Page
   {
     if (!Page.IsPostBack)
     {
+      Session["currentObject"] = null;
       ApplyAuthorizationRules();
     }
     else

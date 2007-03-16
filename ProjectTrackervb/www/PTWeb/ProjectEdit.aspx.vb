@@ -14,6 +14,7 @@ Partial Class ProjectEdit
     ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
     If Not IsPostBack Then
+      Session("currentObject") = Nothing
       ApplyAuthorizationRules()
 
     Else

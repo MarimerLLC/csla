@@ -54,7 +54,7 @@ namespace Csla.Wpf
     public void ReloadBindings()
     {
       _bindings.Clear();
-      FindBindings(this);
+      base.FindChildBindings();
       Refresh();
     }
 
@@ -151,33 +151,10 @@ namespace Csla.Wpf
 
     private List<BindingInfo> _bindings = new List<BindingInfo>();
 
-    private void FindBindings(Visual visual)
+    protected override void FoundBinding(Binding bnd, FrameworkElement control, DependencyProperty prop)
     {
-      for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
-      {
-        Visual childVisual = (Visual)VisualTreeHelper.GetChild(visual, i);
-        MemberInfo[] sharedMembers = childVisual.GetType().GetMembers(
-          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-        foreach (MemberInfo member in sharedMembers)
-        {
-          DependencyProperty prop = null;
-          if (member.MemberType == MemberTypes.Field)
-            prop = ((FieldInfo)member).GetValue(childVisual) as DependencyProperty;
-          else if (member.MemberType == MemberTypes.Property)
-            prop = ((PropertyInfo)member).GetValue(childVisual, null) as DependencyProperty;
-
-          if (prop != null)
-          {
-            Binding bnd = BindingOperations.GetBinding(childVisual, prop);
-            if (bnd != null && bnd.RelativeSource == null && bnd.Path != null)
-            {
-              _bindings.Add(new BindingInfo(bnd, (FrameworkElement)childVisual, prop));
-              ((FrameworkElement)childVisual).GotFocus += new RoutedEventHandler(ValidationPanel_GotFocus);
-            }
-          }
-        }
-        FindBindings(childVisual);
-      }
+      _bindings.Add(new BindingInfo(bnd, control, prop));
+      control.GotFocus += new RoutedEventHandler(ValidationPanel_GotFocus);
     }
 
     #region BindingInfo Class

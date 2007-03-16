@@ -60,6 +60,8 @@ namespace Csla.Wpf
 
     #endregion
 
+    IAuthorizeReadWrite _source;
+
     /// <summary>
     /// This method is called when the data
     /// object to which the control is bound
@@ -76,38 +78,15 @@ namespace Csla.Wpf
     /// </summary>
     public void Refresh()
     {
-      IAuthorizeReadWrite source = DataObject as IAuthorizeReadWrite;
-      if (source != null)
-        FindBindings(this, source);
+      _source = DataObject as IAuthorizeReadWrite;
+      if (_source != null)
+        base.FindChildBindings();
     }
 
-    private void FindBindings(Visual visual, IAuthorizeReadWrite source)
+    protected override void FoundBinding(Binding bnd, FrameworkElement control, DependencyProperty prop)
     {
-      for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
-      {
-        Visual childVisual = (Visual)VisualTreeHelper.GetChild(visual, i);
-        MemberInfo[] sharedMembers = childVisual.GetType().GetMembers(
-          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-        foreach (MemberInfo member in sharedMembers)
-        {
-          DependencyProperty prop = null;
-          if (member.MemberType == MemberTypes.Field)
-            prop = ((FieldInfo)member).GetValue(childVisual) as DependencyProperty;
-          else if (member.MemberType == MemberTypes.Property)
-            prop = ((PropertyInfo)member).GetValue(childVisual, null) as DependencyProperty;
-
-          if (prop != null)
-          {
-            Binding bnd = BindingOperations.GetBinding(childVisual, prop);
-            if (bnd != null && bnd.RelativeSource == null && bnd.Path != null)
-            {
-              SetRead(bnd, (UIElement)childVisual, source);
-              SetWrite(bnd, (UIElement)childVisual, source);
-            }
-          }
-        }
-        FindBindings(childVisual, source);
-      }
+      SetRead(bnd, (UIElement)control, _source);
+      SetWrite(bnd, (UIElement)control, _source);
     }
 
     private void SetWrite(Binding bnd, UIElement ctl, IAuthorizeReadWrite source)

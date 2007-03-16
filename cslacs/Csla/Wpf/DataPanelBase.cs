@@ -236,5 +236,54 @@ namespace Csla.Wpf
     {
       DataObservableCollectionChanged(e);
     }
+
+    /// <summary>
+    /// Scans all child controls of this panel
+    /// for object bindings, and calls
+    /// <see cref="FoundBinding"/> for each
+    /// binding found.
+    /// </summary>
+    protected void FindChildBindings()
+    {
+      FindBindings(this);
+    }
+
+    private void FindBindings(Visual visual)
+    {
+      for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
+      {
+        Visual childVisual = (Visual)VisualTreeHelper.GetChild(visual, i);
+        MemberInfo[] sharedMembers = childVisual.GetType().GetMembers(
+          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+        foreach (MemberInfo member in sharedMembers)
+        {
+          DependencyProperty prop = null;
+          if (member.MemberType == MemberTypes.Field)
+            prop = ((FieldInfo)member).GetValue(childVisual) as DependencyProperty;
+          else if (member.MemberType == MemberTypes.Property)
+            prop = ((PropertyInfo)member).GetValue(childVisual, null) as DependencyProperty;
+
+          if (prop != null)
+          {
+            Binding bnd = BindingOperations.GetBinding(childVisual, prop);
+            if (bnd != null && bnd.RelativeSource == null && bnd.Path != null && string.IsNullOrEmpty(bnd.ElementName))
+              FoundBinding(bnd, (FrameworkElement)childVisual, prop);
+          }
+        }
+        FindBindings(childVisual);
+      }
+    }
+
+    /// <summary>
+    /// Called by
+    /// <see cref="FindChildBindings"/> each
+    /// time an object binding is found.
+    /// </summary>
+    /// <param name="bnd">The Binding object.</param>
+    /// <param name="control">The control containing the binding.</param>
+    /// <param name="prop">The data bound DependencyProperty.</param>
+    protected virtual void FoundBinding(Binding bnd, FrameworkElement control, DependencyProperty prop)
+    {
+    }
   }
 }

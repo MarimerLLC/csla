@@ -83,6 +83,14 @@ namespace Csla.Wpf
         base.FindChildBindings();
     }
 
+    /// <summary>
+    /// Check the read and write status
+    /// of the control based on the current
+    /// user's authorization.
+    /// </summary>
+    /// <param name="bnd">The Binding object.</param>
+    /// <param name="control">The control containing the binding.</param>
+    /// <param name="prop">The data bound DependencyProperty.</param>
     protected override void FoundBinding(Binding bnd, FrameworkElement control, DependencyProperty prop)
     {
       SetRead(bnd, (UIElement)control, _source);

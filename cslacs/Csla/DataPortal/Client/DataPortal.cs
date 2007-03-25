@@ -19,6 +19,13 @@ namespace Csla
     #region DataPortal events
 
     /// <summary>
+    /// Raised by DataPortal before it starts
+    /// setting up to call a server-side
+    /// DataPortal method.
+    /// </summary>
+    public static event Action<System.Object> DataPortalInitInvoke;
+
+    /// <summary>
     /// Raised by DataPortal prior to calling the 
     /// requested server-side DataPortal method.
     /// </summary>
@@ -29,6 +36,13 @@ namespace Csla
     /// server-side DataPortal method call is complete.
     /// </summary>
     public static event Action<DataPortalEventArgs> DataPortalInvokeComplete;
+
+    private static void OnDataPortalInitInvoke(object e)
+    {
+      Action<System.Object> action = DataPortalInitInvoke;
+      if (action != null)
+        action(e);
+    }
 
     private static void OnDataPortalInvoke(DataPortalEventArgs e)
     {
@@ -97,6 +111,8 @@ namespace Csla
 
       DataPortalClient.IDataPortalProxy proxy;
       proxy = GetDataPortalProxy(RunLocal(method));
+
+      OnDataPortalInitInvoke(null);
 
       Server.DataPortalContext dpContext = 
         new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -173,6 +189,8 @@ namespace Csla
 
       DataPortalClient.IDataPortalProxy proxy;
       proxy = GetDataPortalProxy(RunLocal(method));
+
+      OnDataPortalInitInvoke(null);
 
       Server.DataPortalContext dpContext = 
         new Server.DataPortalContext(GetPrincipal(), 
@@ -312,6 +330,8 @@ namespace Csla
       DataPortalClient.IDataPortalProxy proxy;
       proxy = GetDataPortalProxy(RunLocal(method));
 
+      OnDataPortalInitInvoke(null);
+
       Server.DataPortalContext dpContext = 
         new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
@@ -354,6 +374,8 @@ namespace Csla
 
       DataPortalClient.IDataPortalProxy proxy;
       proxy = GetDataPortalProxy(RunLocal(method));
+
+      OnDataPortalInitInvoke(null);
 
       Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 

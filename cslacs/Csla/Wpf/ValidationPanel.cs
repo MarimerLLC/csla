@@ -109,7 +109,7 @@ namespace Csla.Wpf
     {
       ((FrameworkElement)this).LostFocus += new RoutedEventHandler(ValidationPanel_LostFocus);
       _haveRecentChange = true;
-      ErrorScan();
+      //ErrorScan();
     }
 
     private void ValidationPanel_LostFocus(object sender, RoutedEventArgs e)
@@ -151,6 +151,13 @@ namespace Csla.Wpf
 
     private List<BindingInfo> _bindings = new List<BindingInfo>();
 
+    /// <summary>
+    /// Store the binding for use in
+    /// validation processing.
+    /// </summary>
+    /// <param name="bnd">The Binding object.</param>
+    /// <param name="control">The control containing the binding.</param>
+    /// <param name="prop">The data bound DependencyProperty.</param>
     protected override void FoundBinding(Binding bnd, FrameworkElement control, DependencyProperty prop)
     {
       _bindings.Add(new BindingInfo(bnd, control, prop));

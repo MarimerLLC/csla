@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Data;
@@ -17,8 +18,22 @@ namespace Csla.Wpf
   {
     private Type _objectType = null;
     private string _factoryMethod = string.Empty;
-    private List<object> _factoryParameters = new List<object>();
+    private ObservableCollection<object> _factoryParameters;
     private bool _isAsynchronous;
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    public CslaDataProvider()
+    {
+      _factoryParameters = new ObservableCollection<object>();
+      _factoryParameters.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
+    }
+
+    void _factoryParameters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      BeginQuery();
+    }
 
     /// <summary>
     /// Gets or sets the type of object 
@@ -86,6 +101,8 @@ namespace Csla.Wpf
     /// </summary>
     protected override void BeginQuery()
     {
+      if (this.IsRefreshDeferred)
+        return;
       QueryRequest request = new QueryRequest();
       request.ObjectType = _objectType;
       request.FactoryMethod = _factoryMethod;
@@ -102,7 +119,7 @@ namespace Csla.Wpf
       QueryRequest request = (QueryRequest)state;
       object result = null;
       Exception exceptionResult = null;
-      object[] parameters = request.FactoryParameters.ToArray();
+      object[] parameters = new List<object>(request.FactoryParameters).ToArray();
 
       try
       {
@@ -178,12 +195,13 @@ namespace Csla.Wpf
         set { _factoryMethod = value; }
       }
 
-      private List<object> _factoryParameters;
+      private ObservableCollection<object> _factoryParameters;
 
-      public List<object> FactoryParameters
+      public ObservableCollection<object> FactoryParameters
       {
         get { return _factoryParameters; }
-        set { _factoryParameters = new List<object>(value); }
+        set { _factoryParameters = 
+          new ObservableCollection<object>(new List<object>(value)); }
       }
     }
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="8f073a4b-2bfc-43cd-9915-a2f365f2ac9d" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1812/PTWcfService/PTService.svc?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="PTService.xsd" MetadataType="Schema" ID="980abf77-ec6a-41c9-ae8e-855220290071" SourceId="1" SourceUrl="http://localhost:1812/PTWcfService/PTService.svc?xsd=xsd1" />
+    <MetadataFile FileName="PTService1.xsd" MetadataType="Schema" ID="0401f141-e6e2-4f89-8830-7c51e78b5dca" SourceId="1" SourceUrl="http://localhost:1812/PTWcfService/PTService.svc?xsd=xsd2" />
+    <MetadataFile FileName="PTService.wsdl" MetadataType="Wsdl" ID="f1e4c0fe-5ce6-4acf-a070-b94d1369d5e1" SourceId="1" SourceUrl="http://localhost:1812/PTWcfService/PTService.svc?wsdl" />
+    <MetadataFile FileName="PTService2.xsd" MetadataType="Schema" ID="90ae094d-45d5-483c-b3bf-22464c4af5b5" SourceId="1" SourceUrl="http://localhost:1812/PTWcfService/PTService.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

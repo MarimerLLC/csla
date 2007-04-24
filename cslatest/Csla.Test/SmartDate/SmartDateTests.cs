@@ -22,6 +22,9 @@ namespace Csla.Test.SmartDate
         [TestMethod()]
         public void TestSmartDateConstructors()
         {
+            System.Threading.Thread.CurrentThread.CurrentUICulture = 
+              new System.Globalization.CultureInfo("en-US");
+
             DateTime now = DateTime.Now;
             Csla.SmartDate d = new Csla.SmartDate(now);
             Assert.AreEqual(now, d.Date);
@@ -80,6 +83,9 @@ namespace Csla.Test.SmartDate
         [TestMethod]
         public void TestConverters()
         {
+            System.Threading.Thread.CurrentThread.CurrentUICulture =
+              new System.Globalization.CultureInfo("en-US");
+
             DateTime d = Csla.SmartDate.StringToDate("1/1/2005");
             Assert.AreEqual("1/1/2005", d.ToShortDateString());
             d = Csla.SmartDate.StringToDate("january-1-2005");
@@ -187,6 +193,9 @@ namespace Csla.Test.SmartDate
         [TestMethod()]
         public void Comparison()
         {
+            System.Threading.Thread.CurrentThread.CurrentUICulture =
+              new System.Globalization.CultureInfo("en-US");
+
             Csla.SmartDate d2 = new Csla.SmartDate(true);
             Csla.SmartDate d3 = new Csla.SmartDate(false);
             Csla.SmartDate d4 = new Csla.SmartDate(Csla.SmartDate.EmptyValue.MinDate);

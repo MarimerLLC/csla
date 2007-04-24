@@ -328,16 +328,16 @@ namespace Csla
 
     private void UnDeleteChild(C child)
     {
+      // since the object is no longer deleted, remove it from
+      // the deleted collection
+      DeletedList.Remove(child);
+
       // we are inserting an _existing_ object so
       // we need to preserve the object's editleveladded value
       // because it will be changed by the normal add process
       int saveLevel = child.EditLevelAdded;
       Add(child);
       child.EditLevelAdded = saveLevel;
-
-      // since the object is no longer deleted, remove it from
-      // the deleted collection
-      DeletedList.Remove(child);
     }
 
     /// <summary>

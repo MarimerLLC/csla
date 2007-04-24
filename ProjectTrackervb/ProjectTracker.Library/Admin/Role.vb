@@ -70,27 +70,24 @@ Namespace Admin
 
     Protected Overrides Sub AddBusinessRules()
 
+      ValidationRules.AddRule(Of Role)(AddressOf NoDuplicates, "Id")
       ValidationRules.AddRule( _
         AddressOf Csla.Validation.CommonRules.StringRequired, "Name")
 
     End Sub
 
-    Protected Overrides Sub AddInstanceBusinessRules()
-
-      ValidationRules.AddInstanceRule(AddressOf NoDuplicates, "Id")
-
-    End Sub
-
-    Private Function NoDuplicates(ByVal target As Object, _
+    Private Shared Function NoDuplicates(Of T As Role)(ByVal target As T, _
       ByVal e As Csla.Validation.RuleArgs) As Boolean
 
-      Dim parent As Roles = CType(Me.Parent, Roles)
-      For Each item As Role In parent
-        If item.Id = mId AndAlso Not ReferenceEquals(item, Me) Then
-          e.Description = "Role Id must be unique"
-          Return False
-        End If
-      Next
+      Dim parent As Roles = CType(target.Parent, Roles)
+      If parent IsNot Nothing Then
+        For Each item As Role In parent
+          If item.Id = target.mId AndAlso Not ReferenceEquals(item, target) Then
+            e.Description = "Role Id must be unique"
+            Return False
+          End If
+        Next
+      End If
       Return True
 
     End Function
@@ -125,6 +122,14 @@ Namespace Admin
     Private Sub New()
 
       MarkAsChild()
+      ValidationRules.CheckRules()
+
+    End Sub
+
+    Private Sub New(ByVal dr As Csla.Data.SafeDataReader)
+
+      MarkAsChild()
+      Fetch(dr)
 
     End Sub
 
@@ -132,9 +137,8 @@ Namespace Admin
 
 #Region " Data Access "
 
-    Private Sub New(ByVal dr As Csla.Data.SafeDataReader)
+    Private Sub Fetch(ByVal dr As Csla.Data.SafeDataReader)
 
-      MarkAsChild()
       With dr
         mId = .GetInt32("id")
         mIdSet = True
@@ -206,7 +210,7 @@ Namespace Admin
       Using cm As SqlCommand = cn.CreateCommand
         cm.CommandType = CommandType.StoredProcedure
         cm.CommandText = "deleteRole"
-        cm.Parameters.AddWithValue("@id", Id)
+        cm.Parameters.AddWithValue("@id", id)
         cm.ExecuteNonQuery()
       End Using
 

@@ -82,24 +82,23 @@ namespace ProjectTracker.Library.Admin
 
     protected override void AddBusinessRules()
     {
+      ValidationRules.AddRule<Role>(NoDuplicates, "Id");
       ValidationRules.AddRule(
         Csla.Validation.CommonRules.StringRequired, "Name");
     }
 
-    protected override void AddInstanceBusinessRules()
+    private static bool NoDuplicates<T>(T target, Csla.Validation.RuleArgs e) where T: Role
     {
-      ValidationRules.AddInstanceRule(NoDuplicates, "Id");
-    }
-
-    private bool NoDuplicates(object target, Csla.Validation.RuleArgs e)
-    {
-      Roles parent = (Roles)this.Parent;
-      foreach (Role item in parent)
-        if (item.Id == _id && !ReferenceEquals(item, this))
-        {
-          e.Description = "Role Id must be unique";
-          return false;
-        }
+      Roles parent = (Roles)target.Parent;
+      if (parent != null)
+      {
+        foreach (Role item in parent)
+          if (item.Id == target._id && !ReferenceEquals(item, target))
+          {
+            e.Description = "Role Id must be unique";
+            return false;
+          }
+      }
       return true;
     }
 
@@ -133,15 +132,21 @@ namespace ProjectTracker.Library.Admin
     private Role()
     {
       MarkAsChild();
+      ValidationRules.CheckRules();
+    }
+
+    private Role(Csla.Data.SafeDataReader dr)
+    {
+      MarkAsChild();
+      Fetch(dr);
     }
 
     #endregion
 
     #region Data Access
 
-    private Role(Csla.Data.SafeDataReader dr)
+    private void Fetch(Csla.Data.SafeDataReader dr)
     {
-      MarkAsChild();
       _id = dr.GetInt32("id");
       _idSet = true;
       _name = dr.GetString("name");

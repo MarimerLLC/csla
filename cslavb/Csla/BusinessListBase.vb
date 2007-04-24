@@ -294,6 +294,11 @@ Public MustInherit Class BusinessListBase( _
   End Sub
 
   Private Sub UnDeleteChild(ByVal child As C)
+
+    ' since the object is no longer deleted, remove it from
+    ' the deleted collection
+    DeletedList.Remove(child)
+
     ' we are inserting an _existing_ object so
     ' we need to preserve the object's editleveladded value
     ' because it will be changed by the normal add process
@@ -301,9 +306,6 @@ Public MustInherit Class BusinessListBase( _
     Add(child)
     child.EditLevelAdded = SaveLevel
 
-    ' since the object is no longer deleted, remove it from
-    ' the deleted collection
-    DeletedList.Remove(child)
   End Sub
 
   ''' <summary>

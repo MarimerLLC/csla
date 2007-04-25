@@ -138,13 +138,19 @@ namespace Csla.Wpf
         if (source != null && _bindings.Count > 0)
           foreach (BindingInfo item in _bindings)
           {
-            string text = source[item.BindingObject.Path.Path];
             BindingExpression expression = item.Element.GetBindingExpression(item.Property);
-            ValidationError error = new ValidationError(new ExceptionValidationRule(), expression, text, null);
-            if (string.IsNullOrEmpty(text))
-              System.Windows.Controls.Validation.ClearInvalid(expression);
-            else
-              System.Windows.Controls.Validation.MarkInvalid(expression, error);
+            if (expression != null)
+            {
+              string text = source[item.BindingObject.Path.Path];
+              if (string.IsNullOrEmpty(text))
+                System.Windows.Controls.Validation.ClearInvalid(expression);
+              else
+              {
+                ValidationError error = 
+                  new ValidationError(new ExceptionValidationRule(), expression, text, null);
+                System.Windows.Controls.Validation.MarkInvalid(expression, error);
+              }
+            }
           }
       }
     }

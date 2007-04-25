@@ -559,8 +559,13 @@ namespace Csla
       {
         if (ReferenceEquals(this[index], sender))
         {
-          OnListChanged(new ListChangedEventArgs(
-            ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)));
+          PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+          if (descriptor != null)
+            OnListChanged(new ListChangedEventArgs(
+              ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)));
+          else
+            OnListChanged(new ListChangedEventArgs(
+              ListChangedType.ItemChanged, index));
           return;
         }
       }

@@ -4,7 +4,8 @@
     xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
     xmlns:system="clr-namespace:System;assembly=mscorlib" 
     xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library"  
-    Title="ProjectList">
+    KeepAlive="True"
+    Title="Project List">
     <Page.Resources>
       <csla:CslaDataProvider x:Key="ProjectList"
                              ObjectType="{x:Type PTracker:ProjectList}"

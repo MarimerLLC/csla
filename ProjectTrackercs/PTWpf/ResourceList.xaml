@@ -1,8 +1,17 @@
 ﻿<Page x:Class="PTWpf.ResourceList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="ResourceList">
-    <Grid>
+    xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
+    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library"  
+    Title="Resource List">
+    <Page.Resources>
+      <csla:CslaDataProvider x:Key="ResourceList"
+                             ObjectType="{x:Type PTracker:ResourceList}"
+                             FactoryMethod="GetResourceList"
+                             IsAsynchronous="False">
+      </csla:CslaDataProvider>
+    </Page.Resources>
+    <Grid DataContext="{Binding Source={StaticResource ResourceList}}">
       <StackPanel FlowDirection="LeftToRight">
         <StackPanel.Resources>
           <Style TargetType="{x:Type TextBlock}">

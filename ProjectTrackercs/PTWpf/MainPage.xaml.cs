@@ -25,6 +25,9 @@ namespace PTWpf
     {
       InitializeComponent();
 
+      ProjectTracker.Library.Security.PTPrincipal.Logout();
+      _principal = (ProjectTracker.Library.Security.PTPrincipal)Csla.ApplicationContext.User;
+
       _mainForm = this;
       _mainFrame = frame1;
 
@@ -38,11 +41,22 @@ namespace PTWpf
       Csla.DataPortal.DataPortalInitInvoke += new Action<object>(DataPortal_DataPortalInitInvoke);
     }
 
+    private static ProjectTracker.Library.Security.PTPrincipal _principal;
+
+    /// <summary>
+    /// This method ensures that the thread about to do
+    /// data access has a valid PTPrincipal object, and is
+    /// needed because of the way WPF doesn't move the 
+    /// main thread's principal object to other threads
+    /// automatically.
+    /// </summary>
+    /// <param name="obj"></param>
     void DataPortal_DataPortalInitInvoke(object obj)
     {
-      if (Csla.ApplicationContext.User is System.Security.Principal.GenericPrincipal)
+      if (!(Csla.ApplicationContext.User is ProjectTracker.Library.Security.PTPrincipal))
       {
-        ProjectTracker.Library.Security.PTPrincipal.Logout();
+        Csla.ApplicationContext.User = _principal;
+        //ProjectTracker.Library.Security.PTPrincipal.Logout();
       }
     }
 

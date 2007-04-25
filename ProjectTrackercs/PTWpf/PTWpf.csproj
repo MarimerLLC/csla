@@ -70,6 +70,9 @@
     <Page Include="ResourceList.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="RolesEdit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Compile Include="Application.xaml.cs">
       <DependentUpon>Application.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -107,6 +110,9 @@
     </Compile>
     <Compile Include="ResourceList.xaml.cs">
       <DependentUpon>ResourceList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RolesEdit.xaml.cs">
+      <DependentUpon>RolesEdit.xaml</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

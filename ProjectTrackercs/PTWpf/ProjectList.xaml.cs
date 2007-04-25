@@ -24,20 +24,8 @@ namespace PTWpf
     public ProjectList()
     {
       InitializeComponent();
-
-      //ProjectTracker.Library.ProjectList list = null;
-      //try
-      //{
-      //  list =
-      //    ProjectTracker.Library.ProjectList.GetProjectList();
-      //}
-      //catch (Exception ex)
-      //{
-      //  MessageBox.Show(ex.ToString());
-      //}
-      //this.DataContext = list;
     }
-
+    
     void ShowProject(object sender, EventArgs e)
     {
       ProjectTracker.Library.ProjectInfo item =

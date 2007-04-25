@@ -49,6 +49,13 @@
             </ListBoxItem>
           </ListBox>
         </Expander>
+        <Expander IsExpanded="True" Header="Admin">
+          <ListBox>
+            <ListBoxItem>
+              <Hyperlink NavigateUri="RolesEdit.xaml" TargetName="frame1">Edit roles</Hyperlink>
+            </ListBoxItem>
+          </ListBox>
+        </Expander>
         <StackPanel>
           <ListBox>
             <ListBoxItem>

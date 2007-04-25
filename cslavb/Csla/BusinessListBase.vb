@@ -527,8 +527,15 @@ Public MustInherit Class BusinessListBase( _
 
     For index As Integer = 0 To Count - 1
       If ReferenceEquals(Me(index), sender) Then
-        OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
-          ComponentModel.ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)))
+        Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
+        If descriptor IsNot Nothing Then
+          OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+            ComponentModel.ListChangedType.ItemChanged, index, descriptor))
+
+        Else
+          OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+            ComponentModel.ListChangedType.ItemChanged, index))
+        End If
         Exit For
       End If
     Next

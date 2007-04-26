@@ -18,8 +18,7 @@ namespace ProjectTracker.Library
     private string _description = string.Empty;
     private byte[] _timestamp = new byte[8];
 
-    private ProjectResources _resources =
-      ProjectResources.NewProjectResources();
+    private ProjectResources _resources;
 
     [System.ComponentModel.DataObjectField(true, true)]
     public Guid Id
@@ -242,7 +241,15 @@ namespace ProjectTracker.Library
     }
 
     private Project()
-    { /* require use of factory methods */ }
+    {
+      _resources = ProjectResources.NewProjectResources();
+      _resources.ListChanged += new System.ComponentModel.ListChangedEventHandler(_resources_ListChanged);
+    }
+
+    void _resources_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
+    {
+      OnPropertyChanged(null);
+    }
 
     public override Project Save()
     {
@@ -307,7 +314,9 @@ namespace ProjectTracker.Library
 
             // load child objects
             dr.NextResult();
+            _resources.ListChanged -= new System.ComponentModel.ListChangedEventHandler(_resources_ListChanged);
             _resources = ProjectResources.GetProjectResources(dr);
+            _resources.ListChanged += new System.ComponentModel.ListChangedEventHandler(_resources_ListChanged);
           }
         }
       }
@@ -387,6 +396,11 @@ namespace ProjectTracker.Library
           cm.ExecuteNonQuery();
         }
       }
+    }
+
+    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    {
+      _resources.ListChanged += new System.ComponentModel.ListChangedEventHandler(_resources_ListChanged);
     }
 
     #endregion

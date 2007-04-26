@@ -19,7 +19,7 @@ namespace ProjectTracker.Library
     private string _firstName = string.Empty;
     private byte[] _timestamp = new byte[8];
 
-    private ResourceAssignments _assignments = ResourceAssignments.NewResourceAssignments();
+    private ResourceAssignments _assignments; 
 
     [System.ComponentModel.DataObjectField(true, true)]
     public int Id
@@ -198,7 +198,15 @@ namespace ProjectTracker.Library
     }
 
     private Resource()
-    { /* require use of factory methods */ }
+    {
+      _assignments = ResourceAssignments.NewResourceAssignments();
+      _assignments.ListChanged += new System.ComponentModel.ListChangedEventHandler(_assignments_ListChanged);
+    }
+
+    void _assignments_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
+    {
+      OnUnknownPropertyChanged();
+    }
 
     #endregion
 
@@ -246,8 +254,10 @@ namespace ProjectTracker.Library
 
             // load child objects
             dr.NextResult();
+            _assignments.ListChanged -= new System.ComponentModel.ListChangedEventHandler(_assignments_ListChanged);
             _assignments = 
               ResourceAssignments.GetResourceAssignments(dr);
+            _assignments.ListChanged += new System.ComponentModel.ListChangedEventHandler(_assignments_ListChanged);
           }
         }
       }
@@ -342,6 +352,11 @@ namespace ProjectTracker.Library
           cm.ExecuteNonQuery();
         }
       }
+    }
+
+    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    {
+      _assignments.ListChanged += new System.ComponentModel.ListChangedEventHandler(_assignments_ListChanged);
     }
 
     #endregion

@@ -34,6 +34,8 @@ namespace PTWpf
       project.BeginEdit();
 
       this.DataContext = project;
+
+      ApplyAuthorization();
     }
 
     void SetTitle(Project project)
@@ -89,8 +91,11 @@ namespace PTWpf
       ProjectTracker.Library.ProjectResource item =
         (ProjectTracker.Library.ProjectResource)ResourceListBox.SelectedItem;
 
-      ResourceEdit frm = new ResourceEdit(Resource.GetResource(item.ResourceId));
-      MainPage.ShowPage(frm);
+      if (item != null)
+      {
+        ResourceEdit frm = new ResourceEdit(Resource.GetResource(item.ResourceId));
+        MainPage.ShowPage(frm);
+      }
     }
 
     void TestClick(object sender, EventArgs e)
@@ -98,17 +103,28 @@ namespace PTWpf
       this.NameTextBox.Text = string.Empty;
     }
 
-    #region IRefresh Members
-
-    public void Refresh()
+    void ApplyAuthorization()
     {
       this.AuthPanel.Refresh();
+      if (Project.CanEditObject())
+        this.ResourceListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
+      else
+        this.ResourceListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
+    }
+
+    #region IRefresh Members
+
+    /// <summary>
+    /// Called by MainPage when the currently
+    /// logged in user changes.
+    /// </summary>
+    public void Refresh()
+    {
+      ApplyAuthorization();
       Project project = (Project)this.DataContext;
-      if (project.IsDirty)
-      {
-        project.CancelEdit();
+      project.CancelEdit();
+      if (Project.CanEditObject())
         project.BeginEdit();
-      }
     }
 
     #endregion

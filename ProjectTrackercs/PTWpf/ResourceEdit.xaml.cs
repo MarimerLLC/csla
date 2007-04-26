@@ -34,6 +34,8 @@ namespace PTWpf
       resource.BeginEdit();
 
       this.DataContext = resource;
+
+      ApplyAuthorization();
     }
 
     void SetTitle(Resource resource)
@@ -89,21 +91,67 @@ namespace PTWpf
       ProjectTracker.Library.ResourceAssignment item =
         (ProjectTracker.Library.ResourceAssignment)ProjectListBox.SelectedItem;
 
-      ProjectEdit frm = new ProjectEdit(Project.GetProject(item.ProjectId));
-      MainPage.ShowPage(frm);
+      if (item != null)
+      {
+        ProjectEdit frm = new ProjectEdit(Project.GetProject(item.ProjectId));
+        MainPage.ShowPage(frm);
+      }
+    }
+
+    void Assign(object sender, EventArgs e)
+    {
+      ProjectSelect dlg = new ProjectSelect();
+      if ((bool)dlg.ShowDialog())
+      {
+        Guid id = dlg.ProjectId;
+        Resource resource = (Resource)this.DataContext;
+        try
+        {
+          resource.Assignments.AssignTo(id);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(
+            ex.Message, 
+            "Assignment error", 
+            MessageBoxButton.OK, 
+            MessageBoxImage.Information);
+        }
+      }
+    }
+
+    void Unassign(object sender, EventArgs e)
+    {
+      Button btn = (Button)sender;
+      Guid id = (Guid)btn.Tag;
+      Resource resource = (Resource)this.DataContext;
+      resource.Assignments.Remove(id);
+    }
+
+    void ApplyAuthorization()
+    {
+      this.AuthPanel.Refresh();
+      if (Resource.CanEditObject())
+      {
+        this.ProjectListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
+        this.AssignButton.IsEnabled = true;
+      }
+      else
+      {
+        this.ProjectListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
+        this.AssignButton.IsEnabled = false;
+      }
     }
 
     #region IRefresh Members
 
     public void Refresh()
     {
-      this.AuthPanel.Refresh();
+      ApplyAuthorization();
       Resource resource = (Resource)this.DataContext;
-      if (resource.IsDirty)
-      {
         resource.CancelEdit();
+      if (Resource.CanEditObject())
         resource.BeginEdit();
-      }
     }
 
     #endregion

@@ -1,0 +1,52 @@
+﻿<Window x:Class="PTWpf.ProjectSelect"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
+    xmlns:system="clr-namespace:System;assembly=mscorlib" 
+    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library"  
+    Title="Select Project" Height="373" Width="330"
+    ShowInTaskbar="False" ResizeMode="NoResize">
+    <Window.Resources>
+      <csla:CslaDataProvider x:Key="ProjectList"
+                             ObjectType="{x:Type PTracker:ProjectList}"
+                             FactoryMethod="GetProjectList"
+                             IsAsynchronous="True">
+        <csla:CslaDataProvider.FactoryParameters>
+          <system:String>&lt;enter name&gt;</system:String>
+        </csla:CslaDataProvider.FactoryParameters>
+      </csla:CslaDataProvider>
+    </Window.Resources>
+    <Grid DataContext="{Binding Source={StaticResource ProjectList}}">
+      <StackPanel FlowDirection="LeftToRight">
+        <StackPanel.Resources>
+          <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="3,5"/>
+          </Style>
+          <Style TargetType="{x:Type ListBox}">
+            <Setter Property="Margin" Value="3,5"/>
+          </Style>
+          <Style TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="3,5"/>
+          </Style>
+        </StackPanel.Resources>
+        <TextBlock>Projects:</TextBlock>
+        <DockPanel>
+          <TextBlock>Name:</TextBlock>
+          <TextBox Name="NameTextBox" AutoWordSelection="True">
+            <TextBox.Text>
+              <Binding Source="{StaticResource ProjectList}" 
+                Path="FactoryParameters[0]" 
+                BindsDirectlyToSource="true" 
+                UpdateSourceTrigger="PropertyChanged">
+              </Binding>
+          </TextBox.Text>
+        </TextBox>
+        </DockPanel>
+        <ListBox Name="ProjectListBox" ItemsSource="{Binding}" MouseDoubleClick="ProjectSelected" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+          <Button Click="OkButton" IsDefault="True">OK</Button>
+          <Button Click="CancelButton" IsCancel="True">Cancel</Button>
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+</Window>

@@ -56,7 +56,6 @@ namespace PTWpf
       if (!(Csla.ApplicationContext.User is ProjectTracker.Library.Security.PTPrincipal))
       {
         Csla.ApplicationContext.User = _principal;
-        //ProjectTracker.Library.Security.PTPrincipal.Logout();
       }
     }
 
@@ -81,7 +80,6 @@ namespace PTWpf
       {
         ProjectEdit frm = new ProjectEdit(ProjectTracker.Library.Project.NewProject());
         ShowPage(frm);
-        //frame1.NavigationService.Navigate(frm);
       }
       catch (System.Security.SecurityException ex)
       {

@@ -30,7 +30,7 @@ namespace PTWpf
 
       this.DataContext = roles;
 
-      UpdateAuthorization();
+      ApplyAuthorization();
     }
 
     void SaveObject(object sender, EventArgs e)
@@ -91,26 +91,30 @@ namespace PTWpf
         }
     }
 
-    void UpdateAuthorization()
+    void ApplyAuthorization()
     {
       this.AuthPanel.Refresh();
       if (Roles.CanEditObject())
       {
-        this.RolesListBox.IsEnabled = true;
+        this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
         this.AddItemButton.IsEnabled = true;
       }
       else
       {
-        this.RolesListBox.IsEnabled = false;
+        this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
         this.AddItemButton.IsEnabled = false;
       }
     }
 
     #region IRefresh Members
 
+    /// <summary>
+    /// Called by MainPage when the currently
+    /// logged in user changes.
+    /// </summary>
     public void Refresh()
     {
-      UpdateAuthorization();
+      ApplyAuthorization();
       Roles roles = (Roles)this.DataContext;
       roles.CancelEdit();
       if (Roles.CanEditObject())

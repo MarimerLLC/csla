@@ -64,6 +64,9 @@
     <Page Include="ProjectList.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ProjectSelect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ResourceEdit.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -91,6 +94,9 @@
     </Compile>
     <Compile Include="ProjectList.xaml.cs">
       <DependentUpon>ProjectList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectSelect.xaml.cs">
+      <DependentUpon>ProjectSelect.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

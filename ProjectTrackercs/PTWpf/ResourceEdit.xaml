@@ -11,7 +11,7 @@
                            FactoryMethod="GetList"
                            IsAsynchronous="False" />
   </Page.Resources>
-  <Grid>
+  <Grid Name="MainGrid">
     <Grid.Resources>
       <DataTemplate x:Key="lbTemplate">
         <Grid>
@@ -24,6 +24,22 @@
               SelectedValuePath="Key"
               SelectedValue="{Binding Path=Role}" 
               Width="150" />
+              <Button Click="Unassign" HorizontalAlignment="Left" Tag="{Binding Path=ProjectId}">Unassign</Button>
+          </StackPanel>
+        </Grid>
+      </DataTemplate>
+      <DataTemplate x:Key="lbroTemplate">
+        <Grid>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Path=ProjectName}" Width="200" />
+            <TextBlock Text="{Binding Path=Assigned}" Width="100" />
+            <ComboBox 
+              ItemsSource="{Binding Source={StaticResource RoleList}}" 
+              DisplayMemberPath="Value"
+              SelectedValuePath="Key"
+              SelectedValue="{Binding Path=Role}" 
+              Width="150"
+              IsEnabled="False" />
           </StackPanel>
         </Grid>
       </DataTemplate>
@@ -61,6 +77,8 @@
                     AncestorType=csla:ObjectStatusPanel, 
                     AncestorLevel=1}, Path=IsDirty}"
                     >Cancel</Button>
+              <Button Name="AssignButton" Click="Assign" 
+                      HorizontalAlignment="Left">Assign to project</Button>
               <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, 
                         AncestorType=csla:ObjectStatusPanel, 
                         AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>

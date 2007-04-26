@@ -6,7 +6,7 @@
   <Page.Resources>
     <csla:IdentityConverter x:Key="IdentityConverter" />
   </Page.Resources>
-  <Grid>
+  <Grid Name="MainGrid">
     <Grid.Resources>
       <DataTemplate x:Key="lbTemplate">
         <Grid>
@@ -17,6 +17,15 @@
               <TextBlock>Name:</TextBlock>
               <TextBox Text="{Binding Path=Name, Converter={StaticResource IdentityConverter}}" Width="250" />
               <Button Click="RemoveItem" HorizontalAlignment="Left" Tag="{Binding Path=Id}">Remove</Button>
+            </StackPanel>
+          </csla:ValidationPanel>
+        </Grid>
+      </DataTemplate>
+      <DataTemplate x:Key="lbroTemplate">
+        <Grid>
+          <csla:ValidationPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Text="{Binding Path=Name}" Width="250" />
             </StackPanel>
           </csla:ValidationPanel>
         </Grid>

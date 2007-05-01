@@ -628,6 +628,37 @@ namespace Csla.Core
     [NotUndoable()]
     private bool _bindingEdit;
     private bool _neverCommitted = true;
+    [NotUndoable]
+    private bool _disableIEditableObject;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// IEditableObject interface methods should
+    /// be disabled for this object.
+    /// </summary>
+    /// <value>Defaults to False, indicating that
+    /// the IEditableObject methods will behave
+    /// normally.</value>
+    /// <remarks>
+    /// If you disable the IEditableObject methods
+    /// then Windows Forms data binding will no longer
+    /// automatically call BeginEdit, CancelEdit or
+    /// ApplyEdit on your object, and you will have
+    /// to call these methods manually to get proper
+    /// n-level undo behavior.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected bool DisableIEditableObject
+    {
+      get
+      {
+        return _disableIEditableObject;
+      }
+      set
+      {
+        _disableIEditableObject = value;
+      }
+    }
 
     /// <summary>
     /// Allow data binding to start a nested edit on the object.
@@ -639,7 +670,7 @@ namespace Csla.Core
     /// </remarks>
     void System.ComponentModel.IEditableObject.BeginEdit()
     {
-      if (!_bindingEdit)
+      if (!_disableIEditableObject && !_bindingEdit)
         BeginEdit();
     }
 
@@ -655,7 +686,7 @@ namespace Csla.Core
     /// </remarks>
     void System.ComponentModel.IEditableObject.CancelEdit()
     {
-      if (_bindingEdit)
+      if (!_disableIEditableObject && _bindingEdit)
       {
         CancelEdit();
         if (IsNew && _neverCommitted && EditLevel <= EditLevelAdded)
@@ -682,7 +713,7 @@ namespace Csla.Core
     /// </remarks>
     void System.ComponentModel.IEditableObject.EndEdit()
     {
-      if (_bindingEdit)
+      if (!_disableIEditableObject && _bindingEdit)
         ApplyEdit();
     }
 

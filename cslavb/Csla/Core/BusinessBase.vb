@@ -646,6 +646,34 @@ Namespace Core
     <NotUndoable()> _
     Private mBindingEdit As Boolean
     Private mNeverCommitted As Boolean = True
+    <NotUndoable()> _
+    Private mDisableIEditableObject As Boolean
+
+    ''' <summary>
+    ''' Gets or sets a value indicating whether the
+    ''' IEditableObject interface methods should
+    ''' be disabled for this object.
+    ''' </summary>
+    ''' <value>Defaults to False, indicating that
+    ''' the IEditableObject methods will behave
+    ''' normally.</value>
+    ''' <remarks>
+    ''' If you disable the IEditableObject methods
+    ''' then Windows Forms data binding will no longer
+    ''' automatically call BeginEdit, CancelEdit or
+    ''' ApplyEdit on your object, and you will have
+    ''' to call these methods manually to get proper
+    ''' n-level undo behavior.
+    ''' </remarks>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Property DisableIEditableObject() As Boolean
+      Get
+        Return mDisableIEditableObject
+      End Get
+      Set(ByVal value As Boolean)
+        mDisableIEditableObject = value
+      End Set
+    End Property
 
     ''' <summary>
     ''' Allow data binding to start a nested edit on the object.
@@ -658,7 +686,7 @@ Namespace Core
     Private Sub IEditableObject_BeginEdit() _
       Implements System.ComponentModel.IEditableObject.BeginEdit
 
-      If Not mBindingEdit Then
+      If Not mDisableIEditableObject AndAlso Not mBindingEdit Then
         BeginEdit()
       End If
 
@@ -677,7 +705,7 @@ Namespace Core
     Private Sub IEditableObject_CancelEdit() _
       Implements System.ComponentModel.IEditableObject.CancelEdit
 
-      If mBindingEdit Then
+      If Not mDisableIEditableObject AndAlso mBindingEdit Then
         CancelEdit()
         If IsNew AndAlso mNeverCommitted AndAlso _
           EditLevel <= EditLevelAdded Then
@@ -707,7 +735,7 @@ Namespace Core
     Private Sub IEditableObject_EndEdit() _
       Implements System.ComponentModel.IEditableObject.EndEdit
 
-      If mBindingEdit Then
+      If Not mDisableIEditableObject AndAlso mBindingEdit Then
         ApplyEdit()
       End If
 

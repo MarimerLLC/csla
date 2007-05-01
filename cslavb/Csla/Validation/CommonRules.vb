@@ -30,7 +30,7 @@ Namespace Validation
         CStr(CallByName(target, e.PropertyName, CallType.Get))
       If Len(value) = 0 Then
         e.Description = _
-          String.Format(My.Resources.StringRequiredRule, e.PropertyName)
+          String.Format(My.Resources.StringRequiredRule, RuleArgs.GetPropertyName(e))
         Return False
 
       Else
@@ -73,7 +73,7 @@ Namespace Validation
           outValue = max.ToString(format)
         End If
         e.Description = _
-          String.Format(My.Resources.StringMaxLengthRule, e.PropertyName, outValue)
+          String.Format(My.Resources.StringMaxLengthRule, RuleArgs.GetPropertyName(e), outValue)
         Return False
 
       Else
@@ -157,7 +157,7 @@ Namespace Validation
           outValue = min.ToString(format)
         End If
         e.Description = _
-          String.Format(My.Resources.StringMinLengthRule, e.PropertyName, outValue)
+          String.Format(My.Resources.StringMinLengthRule, RuleArgs.GetPropertyName(e), outValue)
         Return False
 
       Else
@@ -233,7 +233,7 @@ Namespace Validation
           outValue = max.ToString(format)
         End If
         e.Description = String.Format(My.Resources.MaxValueRule, _
-          e.PropertyName, outValue)
+          RuleArgs.GetPropertyName(e), outValue)
         Return False
 
       Else
@@ -309,7 +309,7 @@ Namespace Validation
           outValue = min.ToString(format)
         End If
         e.Description = String.Format(My.Resources.MinValueRule, _
-          e.PropertyName, outValue)
+          RuleArgs.GetPropertyName(e), outValue)
         Return False
 
       Else
@@ -388,7 +388,7 @@ Namespace Validation
         Else
           outValue = String.Format(String.Format("{{0:{0}}}", format), max)
         End If
-        e.Description = String.Format(My.Resources.MaxValueRule, e.PropertyName, outValue)
+        e.Description = String.Format(My.Resources.MaxValueRule, RuleArgs.GetPropertyName(e), outValue)
         Return False
 
       Else
@@ -469,7 +469,7 @@ Namespace Validation
         Else
           outValue = String.Format(String.Format("{{0:{0}}}", format), min)
         End If
-        e.Description = String.Format(My.Resources.MinValueRule, e.PropertyName, min.ToString)
+        e.Description = String.Format(My.Resources.MinValueRule, RuleArgs.GetPropertyName(e), min.ToString)
 
       Else
         Return True

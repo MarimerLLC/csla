@@ -20,6 +20,13 @@ Namespace Security
     ''' <returns><see langword="true" /> if read is allowed.</returns>
     ''' <param name="propertyName">Name of the property to read.</param>
     Function CanReadProperty(ByVal propertyName As String) As Boolean
+    ''' <summary>
+    ''' Returns <see langword="true" /> if the user is allowed to execute 
+    ''' the specified method.
+    ''' </summary>
+    ''' <returns><see langword="true" /> if execute is allowed.</returns>
+    ''' <param name="methodName">Name of the method to execute.</param>
+    Function CanExecuteMethod(ByVal methodName As String) As Boolean
   End Interface
 
 End Namespace

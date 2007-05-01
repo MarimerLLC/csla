@@ -133,6 +133,9 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Private mReadResultCache As Dictionary(Of String, Boolean)
   <NotUndoable()> _
   <NonSerialized()> _
+  Private mExecuteResultCache As Dictionary(Of String, Boolean)
+  <NotUndoable()> _
+  <NonSerialized()> _
   Private mLastPrincipal As System.Security.Principal.IPrincipal
 
   <NotUndoable()> _
@@ -300,13 +303,127 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     If mReadResultCache Is Nothing Then
       mReadResultCache = New Dictionary(Of String, Boolean)
     End If
+    If mExecuteResultCache Is Nothing Then
+      mExecuteResultCache = New Dictionary(Of String, Boolean)
+    End If
     If Not ReferenceEquals(Csla.ApplicationContext.User, mLastPrincipal) Then
       ' the principal has changed - reset the cache
       mReadResultCache.Clear()
+      mExecuteResultCache.Clear()
       mLastPrincipal = Csla.ApplicationContext.User
     End If
 
   End Sub
+
+  ''' <summary>
+  ''' Returns <see langword="true" /> if the user is allowed to execute
+  ''' the calling method.
+  ''' </summary>
+  ''' <returns><see langword="true" /> if execute is allowed.</returns>
+  ''' <param name="throwOnFalse">Indicates whether a negative
+  ''' result should cause an exception.</param>
+  <System.Runtime.CompilerServices.MethodImpl( _
+    System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+  Public Function CanExecuteMethod(ByVal throwOnFalse As Boolean) As Boolean
+
+    Dim methodName As String = _
+      New System.Diagnostics.StackTrace(). _
+      GetFrame(1).GetMethod.Name
+    Dim result As Boolean = CanExecuteMethod(methodName)
+    If throwOnFalse AndAlso result = False Then
+      Throw New System.Security.SecurityException( _
+        String.Format("{0} ({1})", _
+        My.Resources.MethodExecuteNotAllowed, methodName))
+    End If
+    Return result
+
+  End Function
+
+  ''' <summary>
+  ''' Returns <see langword="true" /> if the user is allowed to execute
+  ''' the specified method.
+  ''' </summary>
+  ''' <returns><see langword="true" /> if execute is allowed.</returns>
+  ''' <param name="methodName">Name of the method to execute.</param>
+  ''' <param name="throwOnFalse">Indicates whether a negative
+  ''' result should cause an exception.</param>
+  Public Function CanExecuteMethod(ByVal methodName As String, ByVal throwOnFalse As Boolean) As Boolean
+
+    Dim result As Boolean = CanExecuteMethod(methodName)
+    If throwOnFalse AndAlso result = False Then
+      Throw New System.Security.SecurityException( _
+        String.Format("{0} ({1})", _
+        My.Resources.MethodExecuteNotAllowed, methodName))
+    End If
+    Return result
+
+  End Function
+
+  ''' <summary>
+  ''' Returns <see langword="true" /> if the user is allowed to execute
+  ''' the calling method.
+  ''' </summary>
+  ''' <returns><see langword="true" /> if execute is allowed.</returns>
+  <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+  Public Function CanExecuteMethod() As Boolean
+
+    Dim methodName As String = _
+      New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name
+    Return CanExecuteMethod(methodName)
+
+  End Function
+
+  ''' <summary>
+  ''' Returns <see langword="true" /> if the user is allowed to execute
+  ''' the specified method.
+  ''' </summary>
+  ''' <param name="methodName">Name of the method to execute.</param>
+  ''' <returns><see langword="true" /> if execute is allowed.</returns>
+  ''' <remarks>
+  ''' <para>
+  ''' If a list of allowed roles is provided then only users in those
+  ''' roles can read. If no list of allowed roles is provided then
+  ''' the list of denied roles is checked.
+  ''' </para><para>
+  ''' If a list of denied roles is provided then users in the denied
+  ''' roles are denied read access. All other users are allowed.
+  ''' </para><para>
+  ''' If neither a list of allowed nor denied roles is provided then
+  ''' all users will have read access.
+  ''' </para>
+  ''' </remarks>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Public Overridable Function CanExecuteMethod( _
+    ByVal methodName As String) As Boolean Implements Csla.Security.IAuthorizeReadWrite.CanExecuteMethod
+
+    Dim result As Boolean = True
+
+    VerifyAuthorizationCache()
+
+    If mExecuteResultCache.ContainsKey(methodName) Then
+      ' cache contains value - get cached value
+      result = mExecuteResultCache(methodName)
+
+    Else
+      If AuthorizationRules.HasExecuteAllowedRoles(methodName) Then
+        ' some users are explicitly granted read access
+        ' in which case all other users are denied
+        If Not AuthorizationRules.IsExecuteAllowed(methodName) Then
+          result = False
+        End If
+
+      ElseIf AuthorizationRules.HasExecuteDeniedRoles(methodName) Then
+        ' some users are explicitly denied read access
+        If AuthorizationRules.IsExecuteDenied(methodName) Then
+          result = False
+        End If
+      End If
+      ' store value in cache
+      mExecuteResultCache(methodName) = result
+    End If
+    Return result
+
+  End Function
 
 #End Region
 

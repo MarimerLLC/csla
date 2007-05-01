@@ -264,4 +264,7 @@
   <data name="StringMinLengthRule" xml:space="preserve">
     <value>{0} can not be less than {1} characters</value>
   </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Method execution not allowed</value>
+  </data>
 </root>

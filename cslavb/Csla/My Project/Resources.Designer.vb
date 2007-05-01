@@ -214,6 +214,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Method execution not allowed.
+        '''</summary>
+        Friend ReadOnly Property MethodExecuteNotAllowed() As String
+            Get
+                Return ResourceManager.GetString("MethodExecuteNotAllowed", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to not implemented.
         '''</summary>
         Friend ReadOnly Property MethodNotImplemented() As String

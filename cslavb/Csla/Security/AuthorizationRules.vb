@@ -134,6 +134,49 @@ Namespace Security
 
     End Sub
 
+    ''' <summary>
+    ''' Specify the roles allowed to execute a given
+    ''' method.
+    ''' </summary>
+    ''' <param name="methodName">Name of the method.</param>
+    ''' <param name="roles">List of roles granted read access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub InstanceAllowExecute( _
+      ByVal methodName As String, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = InstanceRules.GetRolesForProperty(methodName)
+      For Each item As String In roles
+        currentRoles.ExecuteAllowed.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles denied the right to execute 
+    ''' a given method.
+    ''' </summary>
+    ''' <param name="methodName">Name of the method.</param>
+    ''' <param name="roles">List of roles denied read access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub InstanceDenyExecute(ByVal methodName As String, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = InstanceRules.GetRolesForProperty(methodName)
+      For Each item As String In roles
+        currentRoles.ExecuteDenied.Add(item)
+      Next
+
+    End Sub
+
 #End Region
 
 #Region " Add Per-Type Roles "
@@ -219,6 +262,49 @@ Namespace Security
       Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyName)
       For Each item As String In roles
         currentRoles.WriteDenied.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles allowed to execute a given
+    ''' method.
+    ''' </summary>
+    ''' <param name="methodName">Name of the property.</param>
+    ''' <param name="roles">List of roles granted execute access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub AllowExecute( _
+      ByVal methodName As String, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(methodName)
+      For Each item As String In roles
+        currentRoles.ExecuteAllowed.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles denied the right to execute 
+    ''' a given method.
+    ''' </summary>
+    ''' <param name="methodName">Name of the property.</param>
+    ''' <param name="roles">List of roles denied execute access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub DenyExecute(ByVal methodName As String, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(methodName)
+      For Each item As String In roles
+        currentRoles.ExecuteDenied.Add(item)
       Next
 
     End Sub
@@ -376,6 +462,84 @@ Namespace Security
 
       Else
         result = TypeRules.GetRolesForProperty(propertyName).IsWriteDenied(user)
+      End If
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Indicates whether the property has a list
+    ''' of roles granted execute access.
+    ''' </summary>
+    ''' <param name="methodName">Name of the method.</param>
+    Public Function HasExecuteAllowedRoles( _
+      ByVal methodName As String) As Boolean
+
+      Dim result As Boolean
+      If InstanceRules.GetRolesForProperty(methodName).ExecuteAllowed.Count > 0 Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(methodName).ExecuteAllowed.Count > 0
+      End If
+
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Indicates whether the current user as defined by
+    ''' <see cref="Csla.ApplicationContext.User" />
+    ''' is explicitly allowed to execute the method.
+    ''' </summary>
+    ''' <param name="methodName">Name of the method.</param>
+    Public Function IsExecuteAllowed(ByVal methodName As String) As Boolean
+
+      Dim result As Boolean
+      Dim user As System.Security.Principal.IPrincipal = ApplicationContext.User
+      If InstanceRules.GetRolesForProperty(methodName).IsExecuteAllowed(user) Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(methodName).IsExecuteAllowed(user)
+      End If
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Indicates whether the property has a list
+    ''' of roles denied execute access.
+    ''' </summary>
+    ''' <param name="methodName">Name of the method.</param>
+    Public Function HasExecuteDeniedRoles(ByVal methodName As String) As Boolean
+
+      Dim result As Boolean
+      If InstanceRules.GetRolesForProperty(methodName).ExecuteDenied.Count > 0 Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(methodName).ExecuteDenied.Count > 0
+      End If
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Indicates whether the current user as defined by
+    ''' <see cref="Csla.ApplicationContext.User" />
+    ''' is explicitly denied execute access to the method.
+    ''' </summary>
+    ''' <param name="methodName">Name of the method.</param>
+    Public Function IsExecuteDenied(ByVal methodName As String) As Boolean
+
+      Dim result As Boolean
+      Dim user As System.Security.Principal.IPrincipal = ApplicationContext.User
+      If InstanceRules.GetRolesForProperty(methodName).IsExecuteDenied(user) Then
+        result = True
+
+      Else
+        result = TypeRules.GetRolesForProperty(methodName).IsExecuteDenied(user)
       End If
       Return result
 

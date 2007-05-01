@@ -13,6 +13,8 @@ Namespace Security
     Private mReadDenied As New List(Of String)
     Private mWriteAllowed As New List(Of String)
     Private mWriteDenied As New List(Of String)
+    Private mExecuteAllowed As New List(Of String)
+    Private mExecuteDenied As New List(Of String)
 
     ''' <summary>
     ''' Returns a List(Of String) containing the list
@@ -51,6 +53,26 @@ Namespace Security
     Public ReadOnly Property WriteDenied() As List(Of String)
       Get
         Return mWriteDenied
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns a List(Of String) containing the list
+    ''' of roles allowed execute access.
+    ''' </summary>
+    Public ReadOnly Property ExecuteAllowed() As List(Of String)
+      Get
+        Return mExecuteAllowed
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns a List(Of String) containing the list
+    ''' of roles denied execute access.
+    ''' </summary>
+    Public ReadOnly Property ExecuteDenied() As List(Of String)
+      Get
+        Return mExecuteDenied
       End Get
     End Property
 
@@ -125,6 +147,46 @@ Namespace Security
 
       Dim result As Boolean
       For Each role As String In WriteDenied
+        If principal.IsInRole(role) Then
+          result = True
+          Exit For
+        End If
+      Next
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Returns True if the user is in a role
+    ''' explicitly allowed execute access.
+    ''' </summary>
+    ''' <param name="principal">A System.Security.Principal.IPrincipal representing the user.</param>
+    ''' <returns>True if the user is allowed execute access.</returns>
+    ''' <remarks></remarks>
+    Public Function IsExecuteAllowed(ByVal principal As IPrincipal) As Boolean
+
+      Dim result As Boolean
+      For Each role As String In ExecuteAllowed
+        If principal.IsInRole(role) Then
+          result = True
+          Exit For
+        End If
+      Next
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Returns True if the user is in a role
+    ''' explicitly denied execute access.
+    ''' </summary>
+    ''' <param name="principal">A System.Security.Principal.IPrincipal representing the user.</param>
+    ''' <returns>True if the user is denied execute access.</returns>
+    ''' <remarks></remarks>
+    Public Function IsExecuteDenied(ByVal principal As IPrincipal) As Boolean
+
+      Dim result As Boolean
+      For Each role As String In ExecuteDenied
         If principal.IsInRole(role) Then
           result = True
           Exit For

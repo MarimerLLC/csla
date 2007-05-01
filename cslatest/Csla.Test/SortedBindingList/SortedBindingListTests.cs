@@ -147,5 +147,21 @@ namespace Csla.Test.SortedBindingList
 
         Assert.AreEqual(1, sortedList.IndexOf(charlie), "Sorted index should be 1");
       }
+
+      [TestMethod]
+      public void SourceList()
+      {
+        List<string> list = new List<string>();
+
+        string barney = "Barney";
+        string charlie = "Charlie";
+        string zeke = "Zeke";
+
+        list.AddRange(new string[] { charlie, barney, zeke });
+
+        SortedBindingList<string> sortedList = new SortedBindingList<string>(list);
+
+        Assert.IsTrue(ReferenceEquals(list, sortedList.SourceList), "List references should match");
+      }
     }
 }

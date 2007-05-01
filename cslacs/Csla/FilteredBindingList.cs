@@ -847,7 +847,7 @@ namespace Csla
             if (filteredIndex > -1)
               OnListChanged(
                 new ListChangedEventArgs(
-                e.ListChangedType, filteredIndex));
+                e.ListChangedType, filteredIndex, e.PropertyDescriptor));
             break;
 
           case ListChangedType.ItemDeleted:

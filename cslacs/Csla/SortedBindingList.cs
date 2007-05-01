@@ -775,7 +775,7 @@ namespace Csla
             // a translated index value
             OnListChanged(
               new ListChangedEventArgs(
-              ListChangedType.ItemChanged, SortedIndex(e.NewIndex)));
+              ListChangedType.ItemChanged, SortedIndex(e.NewIndex), e.PropertyDescriptor));
             break;
 
           case ListChangedType.ItemDeleted:

@@ -377,12 +377,57 @@ Public Structure SmartDate
   ''' Converts a string value into a SmartDate.
   ''' </summary>
   ''' <param name="value">String containing the date value.</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  ''' <returns>A new SmartDate containing the date value.</returns>
+  Public Shared Function Parse( _
+    ByVal value As String, ByVal emptyValue As EmptyValue) As SmartDate
+
+    Return New SmartDate(value, emptyValue)
+
+  End Function
+
+  ''' <summary>
+  ''' Converts a string value into a SmartDate.
+  ''' </summary>
+  ''' <param name="value">String containing the date value.</param>
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   ''' <returns>A new SmartDate containing the date value.</returns>
   Public Shared Function Parse( _
     ByVal value As String, ByVal emptyIsMin As Boolean) As SmartDate
 
     Return New SmartDate(value, emptyIsMin)
+
+  End Function
+
+  ''' <summary>
+  ''' Converts a string value into a SmartDate.
+  ''' </summary>
+  ''' <param name="value">String containing the date value.</param>
+  ''' <param name="result">The resulting SmartDate value if the parse was successful.</param>
+  ''' <returns>A value indicating if the parse was successful.</returns>
+  Public Shared Function TryParse(ByVal value As String, ByRef result As SmartDate) As Boolean
+
+    Return TryParse(value, EmptyValue.MinDate, result)
+
+  End Function
+
+  ''' <summary>
+  ''' Converts a string value into a SmartDate.
+  ''' </summary>
+  ''' <param name="value">String containing the date value.</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  ''' <param name="result">The resulting SmartDate value if the parse was successful.</param>
+  ''' <returns>A value indicating if the parse was successful.</returns>
+  Public Shared Function TryParse(ByVal value As String, ByVal emptyValue As EmptyValue, ByRef result As SmartDate) As Boolean
+
+    Dim dateResult As Date
+    If TryStringToDate(value, emptyValue, dateResult) Then
+      result = New SmartDate(dateResult, emptyValue)
+      Return True
+
+    Else
+      Return False
+    End If
 
   End Function
 
@@ -431,32 +476,49 @@ Public Structure SmartDate
   Public Shared Function StringToDate( _
     ByVal value As String, ByVal emptyValue As EmptyValue) As Date
 
+    Dim result As Date
+    If TryStringToDate(value, emptyValue, result) Then
+      Return result
+
+    Else
+      Throw New ArgumentException(My.Resources.StringToDateException)
+    End If
+
+  End Function
+
+  Private Shared Function TryStringToDate(ByVal value As String, ByVal emptyValue As EmptyValue, ByRef result As Date) As Boolean
+
     If Len(value) = 0 Then
       If emptyValue = SmartDate.EmptyValue.MinDate Then
-        Return Date.MinValue
+        result = Date.MinValue
+        Return True
 
       Else
-        Return Date.MaxValue
+        result = Date.MaxValue
+        Return True
       End If
 
     ElseIf IsDate(value) Then
-      Return CDate(value)
+      result = CDate(value)
+      Return True
 
     Else
       Select Case LCase(Trim(value))
         Case My.Resources.SmartDateT, My.Resources.SmartDateToday, "."
-          Return Now
+          result = Now
+          Return True
 
         Case My.Resources.SmartDateY, My.Resources.SmartDateYesterday, "-"
-          Return DateAdd(DateInterval.Day, -1, Now)
+          result = DateAdd(DateInterval.Day, -1, Now)
+          Return True
 
         Case My.Resources.SmartDateTom, My.Resources.SmartDateTomorrow, "+"
-          Return DateAdd(DateInterval.Day, 1, Now)
-
-        Case Else
-          Throw New ArgumentException(My.Resources.StringToDateException)
+          result = DateAdd(DateInterval.Day, 1, Now)
+          Return True
       End Select
     End If
+
+    Return False
 
   End Function
 

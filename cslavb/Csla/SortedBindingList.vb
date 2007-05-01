@@ -706,6 +706,21 @@ Public Class SortedBindingList(Of T)
 
 #End Region
 
+#Region " SourceList "
+
+  ''' <summary>
+  ''' Gets the source list over which this
+  ''' SortedBindingList is a view.
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Public ReadOnly Property SourceList() As IList(Of T)
+    Get
+      Return mList
+    End Get
+  End Property
+
+#End Region
+
   Private mList As IList(Of T)
   Private mSupportsBinding As Boolean
   Private mBindingList As IBindingList

@@ -761,6 +761,8 @@ Namespace Validation
           End If
           If rule.RuleArgs.StopProcessing Then
             shortCircuited = True
+            ' reset the value for next time
+            rule.RuleArgs.StopProcessing = False
           End If
         End If
       Next

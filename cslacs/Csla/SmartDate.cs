@@ -415,11 +415,54 @@ namespace Csla
     /// Converts a string value into a SmartDate.
     /// </summary>
     /// <param name="value">String containing the date value.</param>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+    /// <returns>A new SmartDate containing the date value.</returns>
+    public static SmartDate Parse(string value, EmptyValue emptyValue)
+    {
+      return new SmartDate(value, emptyValue);
+    }
+
+    /// <summary>
+    /// Converts a string value into a SmartDate.
+    /// </summary>
+    /// <param name="value">String containing the date value.</param>
     /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
     /// <returns>A new SmartDate containing the date value.</returns>
     public static SmartDate Parse(string value, bool emptyIsMin)
     {
       return new SmartDate(value, emptyIsMin);
+    }
+
+    /// <summary>
+    /// Converts a string value into a SmartDate.
+    /// </summary>
+    /// <param name="value">String containing the date value.</param>
+    /// <param name="result">The resulting SmartDate value if the parse was successful.</param>
+    /// <returns>A value indicating if the parse was successful.</returns>
+    public static bool TryParse(string value, ref SmartDate result)
+    {
+      return TryParse(value, EmptyValue.MinDate, ref result);
+    }
+
+    /// <summary>
+    /// Converts a string value into a SmartDate.
+    /// </summary>
+    /// <param name="value">String containing the date value.</param>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+    /// <param name="result">The resulting SmartDate value if the parse was successful.</param>
+    /// <returns>A value indicating if the parse was successful.</returns>
+    public static bool TryParse(string value, EmptyValue emptyValue, ref SmartDate result)
+    {
+      System.DateTime dateResult = DateTime.MinValue;
+      if (TryStringToDate(value, emptyValue, ref dateResult))
+      {
+        result = new SmartDate(dateResult, emptyValue);
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
 
     /// <summary>
@@ -465,33 +508,60 @@ namespace Csla
     /// <returns>A Date value.</returns>
     public static DateTime StringToDate(string value, EmptyValue emptyValue)
     {
+      DateTime result = DateTime.MinValue;
+      if (TryStringToDate(value, emptyValue, ref result))
+        return result;
+      else
+        throw new ArgumentException(Resources.StringToDateException);
+    }
+
+    private static bool TryStringToDate(string value, EmptyValue emptyValue, ref DateTime result)
+    {
       DateTime tmp;
       if (String.IsNullOrEmpty(value))
       {
         if (emptyValue == EmptyValue.MinDate)
-          return DateTime.MinValue;
+        {
+          result = DateTime.MinValue;
+          return true;
+        }
         else
-          return DateTime.MaxValue;
+        {
+          result = DateTime.MaxValue;
+          return true;
+        }
       }
       else if (DateTime.TryParse(value, out tmp))
-        return tmp; 
+      {
+        result = tmp;
+        return true;
+      }
       else
       {
         string ldate = value.Trim().ToLower();
         if (ldate == Resources.SmartDateT ||
             ldate == Resources.SmartDateToday ||
             ldate == ".")
-          return DateTime.Now;
+        {
+          result = DateTime.Now;
+          return true;
+        }
         if (ldate == Resources.SmartDateY ||
             ldate == Resources.SmartDateYesterday ||
             ldate == "-")
-          return DateTime.Now.AddDays(-1);
+        {
+          result = DateTime.Now.AddDays(-1);
+          return true;
+        }
         if (ldate == Resources.SmartDateTom ||
             ldate == Resources.SmartDateTomorrow ||
             ldate == "+")
-          return DateTime.Now.AddDays(1);
-        throw new ArgumentException(Resources.StringToDateException);
+        {
+          result = DateTime.Now.AddDays(1);
+          return true;
+        }
       }
+      return false;
     }
 
     /// <summary>

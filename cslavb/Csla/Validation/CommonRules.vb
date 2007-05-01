@@ -640,7 +640,7 @@ Namespace Validation
       ''' </summary>
       Public ReadOnly Property NullResult() As NullResultOptions
         Get
-          Return DirectCast(Me("NullResult"), NullResultOptions)
+          Return DirectCast(Me("NullOption"), NullResultOptions)
         End Get
       End Property
 
@@ -652,7 +652,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal pattern As RegExPatterns)
         MyBase.New(propertyName)
         Me("RegEx") = New Regex(GetPattern(pattern))
-        Me("NullResult") = NullResultOptions.ReturnFalse
+        Me("NullOption") = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
@@ -663,7 +663,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal pattern As String)
         MyBase.New(propertyName)
         Me("RegEx") = New Regex(pattern)
-        Me("NullResult") = NullResultOptions.ReturnFalse
+        Me("NullOption") = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
@@ -674,7 +674,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal regEx As System.Text.RegularExpressions.Regex)
         MyBase.New(propertyName)
         Me("RegEx") = regEx
-        Me("NullResult") = NullResultOptions.ReturnFalse
+        Me("NullOption") = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
@@ -682,14 +682,14 @@ Namespace Validation
       ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="pattern">Built-in regex pattern to use.</param>
-      ''' <param name="nullResult">
+      ''' <param name="NullOption">
       ''' Value indicating how a null value should be
       ''' handled by the rule method.
       ''' </param>
       Public Sub New(ByVal propertyName As String, ByVal pattern As RegExPatterns, ByVal nullResult As NullResultOptions)
         MyBase.New(propertyName)
         Me("RegEx") = New Regex(GetPattern(pattern))
-        Me("NullResult") = nullResult
+        Me("NullOption") = nullResult
       End Sub
 
       ''' <summary>
@@ -697,14 +697,14 @@ Namespace Validation
       ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="pattern">Custom regex pattern to use.</param>
-      ''' <param name="nullResult">
+      ''' <param name="NullOption">
       ''' Value indicating how a null value should be
       ''' handled by the rule method.
       ''' </param>
       Public Sub New(ByVal propertyName As String, ByVal pattern As String, ByVal nullResult As NullResultOptions)
         MyBase.New(propertyName)
         Me("RegEx") = New Regex(pattern)
-        Me("NullResult") = nullResult
+        Me("NullOption") = nullResult
       End Sub
 
       ''' <summary>
@@ -712,14 +712,14 @@ Namespace Validation
       ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="regEx"><see cref="RegEx"/> object to use.</param>
-      ''' <param name="nullResult">
+      ''' <param name="NullOption">
       ''' Value indicating how a null value should be
       ''' handled by the rule method.
       ''' </param>
       Public Sub New(ByVal propertyName As String, ByVal regEx As System.Text.RegularExpressions.Regex, ByVal nullResult As NullResultOptions)
         MyBase.New(propertyName)
         Me("RegEx") = regEx
-        Me("NullResult") = nullResult
+        Me("NullOption") = nullResult
       End Sub
 
       ''' <summary>

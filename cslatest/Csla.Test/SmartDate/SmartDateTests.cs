@@ -333,6 +333,22 @@ namespace Csla.Test.SmartDate
             d1.Date = new DateTime(2005, 3, 1);
             Assert.IsTrue(d1 != d2, "d1 should be greater than d2");
         }
+
+      [TestMethod]
+      public void TryParseTest()
+      {
+        System.Threading.Thread.CurrentThread.CurrentUICulture =
+          new System.Globalization.CultureInfo("en-US");
+
+        Csla.SmartDate sd = new Csla.SmartDate();
+        if (Csla.SmartDate.TryParse("blah", ref sd))
+          Assert.Fail("TryParse should have failed");
+        if (Csla.SmartDate.TryParse("t", ref sd))
+          Assert.AreEqual(DateTime.Now, sd.Date, "Date should have been now");
+        else
+          Assert.Fail("TryParse should have succeeded");
+      }
+
         #endregion
     }
 }

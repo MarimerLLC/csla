@@ -682,7 +682,7 @@ Namespace Validation
       ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="pattern">Built-in regex pattern to use.</param>
-      ''' <param name="NullOption">
+      ''' <param name="nullResult">
       ''' Value indicating how a null value should be
       ''' handled by the rule method.
       ''' </param>
@@ -697,7 +697,7 @@ Namespace Validation
       ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="pattern">Custom regex pattern to use.</param>
-      ''' <param name="NullOption">
+      ''' <param name="nullResult">
       ''' Value indicating how a null value should be
       ''' handled by the rule method.
       ''' </param>
@@ -712,7 +712,7 @@ Namespace Validation
       ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="regEx"><see cref="RegEx"/> object to use.</param>
-      ''' <param name="NullOption">
+      ''' <param name="nullResult">
       ''' Value indicating how a null value should be
       ''' handled by the rule method.
       ''' </param>

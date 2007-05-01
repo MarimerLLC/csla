@@ -46,12 +46,12 @@ Public MustInherit Class BusinessListBase( _
 
 #End Region
 
-#Region " IsDirty, IsValid "
+#Region " IsDirty, IsValid, IsSavable  "
 
   ''' <summary>
   ''' Gets a value indicating whether this object's data has been changed.
   ''' </summary>
-  Public ReadOnly Property IsDirty() As Boolean
+  Public ReadOnly Property IsDirty() As Boolean Implements IEditableCollection.IsDirty
     Get
       ' any non-new deletions make us dirty
       For Each item As C In DeletedList
@@ -74,7 +74,7 @@ Public MustInherit Class BusinessListBase( _
   ''' Gets a value indicating whether this object is currently in
   ''' a valid state (has no broken validation rules).
   ''' </summary>
-  Public Overridable ReadOnly Property IsValid() As Boolean
+  Public Overridable ReadOnly Property IsValid() As Boolean Implements IEditableCollection.IsValid
     Get
       ' run through all the child objects
       ' and if any are invalid then the
@@ -83,6 +83,17 @@ Public MustInherit Class BusinessListBase( _
         If Not child.IsValid Then Return False
       Next
       Return True
+    End Get
+  End Property
+
+  ''' <summary>
+  ''' Returns <see langword="true" /> if this object is both dirty and valid.
+  ''' </summary>
+  ''' <returns>A value indicating if this object is both dirty and valid.</returns>
+  <Browsable(False)> _
+  Public Overridable ReadOnly Property IsSavable() As Boolean Implements IEditableCollection.IsSavable
+    Get
+      Return (IsDirty AndAlso IsValid)
     End Get
   End Property
 

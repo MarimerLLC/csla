@@ -726,7 +726,11 @@ namespace Csla.Validation
               previousRuleBroken = true;
           }
           if (rule.RuleArgs.StopProcessing)
+          {
             shortCircuited = true;
+            // reset the value for next time
+            rule.RuleArgs.StopProcessing = false;
+          }
         }
       }
     }

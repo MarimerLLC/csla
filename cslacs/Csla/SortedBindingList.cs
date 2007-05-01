@@ -691,6 +691,23 @@ namespace Csla
 
     #endregion
 
+    #region SourceList
+
+    /// <summary>
+    /// Gets the source list over which this
+    /// SortedBindingList is a view.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public IList<T> SourceList
+    {
+      get
+      {
+        return _list;
+      }
+    }
+
+    #endregion
+
     private IList<T> _list;
     private bool _supportsBinding;
     private IBindingList _bindingList;

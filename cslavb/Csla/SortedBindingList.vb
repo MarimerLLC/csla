@@ -782,7 +782,7 @@ Public Class SortedBindingList(Of T)
           ' a translated index value
           OnListChanged( _
             New ListChangedEventArgs( _
-              ListChangedType.ItemChanged, SortedIndex(e.NewIndex)))
+              ListChangedType.ItemChanged, SortedIndex(e.NewIndex), e.PropertyDescriptor))
 
         Case ListChangedType.ItemDeleted
           If Not mInitiatedLocally Then

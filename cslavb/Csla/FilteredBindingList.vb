@@ -785,7 +785,8 @@ Public Class FilteredBindingList(Of T)
           End If
           ' raise event if appropriate
           If filteredIndexValue > -1 Then
-            OnListChanged(New ListChangedEventArgs(e.ListChangedType, filteredIndexValue))
+            OnListChanged( _
+              New ListChangedEventArgs(e.ListChangedType, filteredIndexValue, e.PropertyDescriptor))
           End If
 
         Case ListChangedType.ItemDeleted

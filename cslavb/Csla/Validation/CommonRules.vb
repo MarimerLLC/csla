@@ -59,13 +59,23 @@ Namespace Validation
     Public Function StringMaxLength(ByVal target As Object, _
       ByVal e As RuleArgs) As Boolean
 
-      Dim max As Integer = DirectCast(e, MaxLengthRuleArgs).MaxLength
+      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim max As Integer = CInt(args("MaxLength"))
       Dim value As String = _
         CStr(CallByName(target, e.PropertyName, CallType.Get))
       If Len(value) > max Then
+        Dim format As String = CStr(args("Format"))
+        Dim outValue As String
+        If String.IsNullOrEmpty(format) Then
+          outValue = max.ToString
+
+        Else
+          outValue = max.ToString(format)
+        End If
         e.Description = _
-          String.Format(My.Resources.StringMaxLengthRule, e.PropertyName, max)
+          String.Format(My.Resources.StringMaxLengthRule, e.PropertyName, outValue)
         Return False
+
       Else
         Return True
       End If
@@ -76,16 +86,14 @@ Namespace Validation
     ''' <see cref="StringMaxLength" /> rule method.
     ''' </summary>
     Public Class MaxLengthRuleArgs
-      Inherits RuleArgs
-
-      Private mMaxLength As Integer
+      Inherits DecoratedRuleArgs
 
       ''' <summary>
       ''' Get the max length for the string.
       ''' </summary>
       Public ReadOnly Property MaxLength() As Integer
         Get
-          Return mMaxLength
+          Return CType(Me("MaxLength"), Integer)
         End Get
       End Property
 
@@ -96,15 +104,22 @@ Namespace Validation
       ''' <param name="maxLength">Max length of characters allowed.</param>
       Public Sub New(ByVal propertyName As String, ByVal maxLength As Integer)
         MyBase.New(propertyName)
-        mMaxLength = maxLength
+        Me("MaxLength") = maxLength
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
-      ''' Returns a string representation of the object.
+      ''' Create a new object.
       ''' </summary>
-      Public Overrides Function ToString() As String
-        Return MyBase.ToString & "?maxLength=" & mMaxLength.ToString
-      End Function
+      ''' <param name="propertyName">Name of the property to validate.</param>
+      ''' <param name="maxLength">Max length of characters allowed.</param>
+      ''' <param name="format">Format string for the max length
+      ''' value in the broken rule string.</param>
+      Public Sub New(ByVal propertyName As String, ByVal maxLength As Integer, ByVal format As String)
+        MyBase.New(propertyName)
+        Me("MaxLength") = maxLength
+        Me("Format") = format
+      End Sub
 
     End Class
 
@@ -128,13 +143,23 @@ Namespace Validation
     Public Function StringMinLength(ByVal target As Object, _
       ByVal e As RuleArgs) As Boolean
 
-      Dim min As Integer = DirectCast(e, MinLengthRuleArgs).MinLength
+      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim min As Integer = CInt(args("MinValue"))
       Dim value As String = _
         CStr(CallByName(target, e.PropertyName, CallType.Get))
       If Len(value) < min Then
+        Dim format As String = CStr(args("Format"))
+        Dim outValue As String
+        If String.IsNullOrEmpty(format) Then
+          outValue = min.ToString
+
+        Else
+          outValue = min.ToString(format)
+        End If
         e.Description = _
-          String.Format(My.Resources.StringMinLengthRule, e.PropertyName, min)
+          String.Format(My.Resources.StringMinLengthRule, e.PropertyName, outValue)
         Return False
+
       Else
         Return True
       End If
@@ -145,16 +170,14 @@ Namespace Validation
     ''' <see cref="StringMinLength" /> rule method.
     ''' </summary>
     Public Class MinLengthRuleArgs
-      Inherits RuleArgs
-
-      Private mMinLength As Integer
+      Inherits DecoratedRuleArgs
 
       ''' <summary>
       ''' Get the Min length for the string.
       ''' </summary>
       Public ReadOnly Property MinLength() As Integer
         Get
-          Return mMinLength
+          Return CInt(Me("MinLength"))
         End Get
       End Property
 
@@ -165,15 +188,21 @@ Namespace Validation
       ''' <param name="minLength">Min length of characters allowed.</param>
       Public Sub New(ByVal propertyName As String, ByVal minLength As Integer)
         MyBase.New(propertyName)
-        mMinLength = minLength
+        Me("MinLength") = minLength
+        Me("Format") = ""
       End Sub
 
       ''' <summary>
-      ''' Returns a string representation of the object.
+      ''' Create a new object.
       ''' </summary>
-      Public Overrides Function ToString() As String
-        Return MyBase.ToString & "?MinLength=" & mMinLength.ToString
-      End Function
+      ''' <param name="propertyName">Name of the property to validate.</param>
+      ''' <param name="minLength">Min length of characters allowed.</param>
+      ''' <param name="format">Format string for the min length value.</param>
+      Public Sub New(ByVal propertyName As String, ByVal minLength As Integer, ByVal format As String)
+        MyBase.New(propertyName)
+        Me("MinLength") = minLength
+        Me("Format") = format
+      End Sub
 
     End Class
 
@@ -190,12 +219,23 @@ Namespace Validation
     ''' property to validate.</param>
     ''' <returns><see langword="false"/> if the rule is broken.</returns>
     Public Function IntegerMaxValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
-      Dim max As Integer = CType(e, IntegerMaxValueRuleArgs).MaxValue
+
+      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim max As Integer = CInt(args("MaxValue"))
       Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
       If value > max Then
+        Dim format As String = CStr(args("Format"))
+        Dim outValue As String
+        If String.IsNullOrEmpty(format) Then
+          outValue = max.ToString
+
+        Else
+          outValue = max.ToString(format)
+        End If
         e.Description = String.Format(My.Resources.MaxValueRule, _
-          e.PropertyName, max.ToString)
+          e.PropertyName, outValue)
         Return False
+
       Else
         Return True
       End If
@@ -206,16 +246,14 @@ Namespace Validation
     ''' <see cref="IntegerMaxValue" /> rule method.
     ''' </summary>
     Public Class IntegerMaxValueRuleArgs
-      Inherits RuleArgs
-
-      Private mMaxValue As Integer
+      Inherits DecoratedRuleArgs
 
       ''' <summary>
       ''' Get the max value for the property.
       ''' </summary>
       Public ReadOnly Property MaxValue() As Integer
         Get
-          Return mMaxValue
+          Return CInt(Me("MaxValue"))
         End Get
       End Property
 
@@ -226,15 +264,21 @@ Namespace Validation
       ''' <param name="maxValue">Maximum allowed value for the property.</param>
       Public Sub New(ByVal propertyName As String, ByVal maxValue As Integer)
         MyBase.New(propertyName)
-        mMaxValue = maxValue
+        Me("MaxValue") = maxValue
+        Me("Format") = ""
       End Sub
 
       ''' <summary>
-      ''' Returns a string representation of the object.
+      ''' Create a new object.
       ''' </summary>
-      Public Overrides Function ToString() As String
-        Return MyBase.ToString & "?maxValue=" & mMaxValue.ToString
-      End Function
+      ''' <param name="propertyName">Name of the property.</param>
+      ''' <param name="maxValue">Maximum allowed value for the property.</param>
+      ''' <param name="format">Format string for the max value.</param>
+      Public Sub New(ByVal propertyName As String, ByVal maxValue As Integer, ByVal format As String)
+        MyBase.New(propertyName)
+        Me("MaxValue") = maxValue
+        Me("Format") = format
+      End Sub
 
     End Class
 
@@ -251,12 +295,23 @@ Namespace Validation
     ''' property to validate.</param>
     ''' <returns><see langword="false"/> if the rule is broken.</returns>
     Public Function IntegerMinValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
-      Dim min As Integer = CType(e, IntegerMinValueRuleArgs).MinValue
+
+      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim min As Integer = CInt(args("MinValue"))
       Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
       If value < min Then
+        Dim format As String = CStr(args("Format"))
+        Dim outValue As String
+        If String.IsNullOrEmpty(format) Then
+          outValue = min.ToString
+
+        Else
+          outValue = min.ToString(format)
+        End If
         e.Description = String.Format(My.Resources.MinValueRule, _
-          e.PropertyName, min.ToString)
+          e.PropertyName, outValue)
         Return False
+
       Else
         Return True
       End If
@@ -267,16 +322,14 @@ Namespace Validation
     ''' <see cref="IntegerMinValue" /> rule method.
     ''' </summary>
     Public Class IntegerMinValueRuleArgs
-      Inherits RuleArgs
-
-      Private mMinValue As Integer
+      Inherits DecoratedRuleArgs
 
       ''' <summary>
       ''' Get the min value for the property.
       ''' </summary>
       Public ReadOnly Property MinValue() As Integer
         Get
-          Return mMinValue
+          Return CInt(Me("MinValue"))
         End Get
       End Property
 
@@ -287,15 +340,21 @@ Namespace Validation
       ''' <param name="minValue">Minimum allowed value for the property.</param>
       Public Sub New(ByVal propertyName As String, ByVal minValue As Integer)
         MyBase.New(propertyName)
-        mMinValue = MinValue
+        Me("MinValue") = minValue
+        Me("Format") = ""
       End Sub
 
       ''' <summary>
-      ''' Returns a string representation of the object.
+      ''' Create a new object.
       ''' </summary>
-      Public Overrides Function ToString() As String
-        Return MyBase.ToString & "?minValue=" & mMinValue.ToString
-      End Function
+      ''' <param name="propertyName">Name of the property.</param>
+      ''' <param name="minValue">Minimum allowed value for the property.</param>
+      ''' <param name="format">Format string for the min value.</param>
+      Public Sub New(ByVal propertyName As String, ByVal minValue As Integer, ByVal format As String)
+        MyBase.New(propertyName)
+        Me("MinValue") = minValue
+        Me("Format") = format
+      End Sub
 
     End Class
 
@@ -314,13 +373,23 @@ Namespace Validation
     ''' allowed value.</param>
     Public Function MaxValue(Of T As IComparable)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
+      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
       Dim pi As PropertyInfo = target.GetType.GetProperty(e.PropertyName)
       Dim value As T = DirectCast(pi.GetValue(target, Nothing), T)
-      Dim max As T = DirectCast(e, MaxValueRuleArgs(Of T)).MaxValue
+      Dim max As T = CType(args("MaxValue"), T)
 
       Dim result As Integer = value.CompareTo(max)
       If result >= 1 Then
-        e.Description = String.Format(My.Resources.MaxValueRule, e.PropertyName, max.ToString)
+        Dim format As String = CStr(args("Format"))
+        Dim outValue As String
+        If String.IsNullOrEmpty(format) Then
+          outValue = max.ToString
+
+        Else
+          outValue = String.Format(String.Format("{{0:{0}}}", format), max)
+        End If
+        e.Description = String.Format(My.Resources.MaxValueRule, e.PropertyName, outValue)
+        Return False
 
       Else
         Return True
@@ -334,16 +403,14 @@ Namespace Validation
     ''' </summary>
     ''' <typeparam name="T">Type of the property to validate.</typeparam>
     Public Class MaxValueRuleArgs(Of T)
-      Inherits RuleArgs
-
-      Private mMaxValue As T = Nothing
+      Inherits DecoratedRuleArgs
 
       ''' <summary>
       ''' Get the max value for the property.
       ''' </summary>
       Public ReadOnly Property MaxValue() As T
         Get
-          Return mMaxValue
+          Return CType(Me("MaxValue"), T)
         End Get
       End Property
 
@@ -354,15 +421,21 @@ Namespace Validation
       ''' <param name="maxValue">Maximum allowed value for the property.</param>
       Public Sub New(ByVal propertyName As String, ByVal maxValue As T)
         MyBase.New(propertyName)
-        mMaxValue = maxValue
+        Me("MaxValue") = maxValue
+        Me("Format") = ""
       End Sub
 
       ''' <summary>
-      ''' Returns a string representation of the object.
+      ''' Create a new object.
       ''' </summary>
-      Public Overrides Function ToString() As String
-        Return MyBase.ToString & "?maxValue=" & mMaxValue.ToString
-      End Function
+      ''' <param name="propertyName">Name of the property.</param>
+      ''' <param name="maxValue">Maximum allowed value for the property.</param>
+      ''' <param name="format">Format string for the max value.</param>
+      Public Sub New(ByVal propertyName As String, ByVal maxValue As T, ByVal format As String)
+        MyBase.New(propertyName)
+        Me("MaxValue") = maxValue
+        Me("Format") = format
+      End Sub
 
     End Class
 
@@ -381,12 +454,21 @@ Namespace Validation
     ''' allowed value.</param>
     Public Function MinValue(Of T As IComparable)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
+      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
       Dim pi As PropertyInfo = target.GetType.GetProperty(e.PropertyName)
       Dim value As T = DirectCast(pi.GetValue(target, Nothing), T)
-      Dim min As T = DirectCast(e, MinValueRuleArgs(Of T)).MinValue
+      Dim min As T = CType(args("MinValue"), T)
 
       Dim result As Integer = value.CompareTo(min)
       If result <= -1 Then
+        Dim format As String = CStr(args("Format"))
+        Dim outValue As String
+        If String.IsNullOrEmpty(format) Then
+          outValue = min.ToString
+
+        Else
+          outValue = String.Format(String.Format("{{0:{0}}}", format), min)
+        End If
         e.Description = String.Format(My.Resources.MinValueRule, e.PropertyName, min.ToString)
 
       Else
@@ -401,16 +483,14 @@ Namespace Validation
     ''' </summary>
     ''' <typeparam name="T">Type of the property to validate.</typeparam>
     Public Class MinValueRuleArgs(Of T)
-      Inherits RuleArgs
-
-      Private mMinValue As T = Nothing
+      Inherits DecoratedRuleArgs
 
       ''' <summary>
       ''' Get the min value for the property.
       ''' </summary>
       Public ReadOnly Property MinValue() As T
         Get
-          Return mMinValue
+          Return CType(Me("MinValue"), T)
         End Get
       End Property
 
@@ -421,15 +501,21 @@ Namespace Validation
       ''' <param name="minValue">Minimum allowed value for the property.</param>
       Public Sub New(ByVal propertyName As String, ByVal minValue As T)
         MyBase.New(propertyName)
-        mMinValue = minValue
+        Me("MinValue") = minValue
+        Me("Format") = ""
       End Sub
 
       ''' <summary>
-      ''' Returns a string representation of the object.
+      ''' Create a new object.
       ''' </summary>
-      Public Overrides Function ToString() As String
-        Return MyBase.ToString & "?minValue=" & mMinValue.ToString
-      End Function
+      ''' <param name="propertyName">Name of the property.</param>
+      ''' <param name="minValue">Minimum allowed value for the property.</param>
+      ''' <param name="format">Format string for min value.</param>
+      Public Sub New(ByVal propertyName As String, ByVal minValue As T, ByVal format As String)
+        MyBase.New(propertyName)
+        Me("MinValue") = minValue
+        Me("Format") = format
+      End Sub
 
     End Class
 
@@ -451,15 +537,39 @@ Namespace Validation
     Public Function RegExMatch(ByVal target As Object, _
       ByVal e As RuleArgs) As Boolean
 
-      Dim rx As Regex = DirectCast(e, RegExRuleArgs).RegEx
-      If Not rx.IsMatch(CallByName( _
-          target, e.PropertyName, CallType.Get).ToString) Then
+      Dim ruleSatisfied As Boolean
+      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim expression As Regex = DirectCast(args("RegEx"), Regex)
+      Dim nullOption As RegExRuleArgs.NullResultOptions = _
+        DirectCast(args("NullOption"), RegExRuleArgs.NullResultOptions)
+
+      Dim value As Object = _
+        CallByName(target, e.PropertyName, CallType.Get)
+
+      If value Is Nothing AndAlso nullOption = RegExRuleArgs.NullResultOptions.ConvertToEmptyString Then
+        value = String.Empty
+      End If
+
+      If value Is Nothing Then
+        ' if the value is null at this point
+        ' then return the pre-defined result value
+        ruleSatisfied = (nullOption = RegExRuleArgs.NullResultOptions.ReturnTrue)
+
+      Else
+        ' the value is not null, so run the 
+        ' regular expression
+        ruleSatisfied = expression.IsMatch(value.ToString())
+      End If
+
+      If (Not ruleSatisfied) Then
         e.Description = _
-          String.Format(My.Resources.RegExMatchRule, e.PropertyName)
+          String.Format(My.Resources.RegExMatchRule, RuleArgs.GetPropertyName(e))
         Return False
+
       Else
         Return True
       End If
+
     End Function
 
     ''' <summary>
@@ -481,7 +591,7 @@ Namespace Validation
     ''' <see cref="RegExMatch" /> rule method.
     ''' </summary>
     Public Class RegExRuleArgs
-      Inherits RuleArgs
+      Inherits DecoratedRuleArgs
 
 #Region " NullResultOptions "
 
@@ -514,16 +624,13 @@ Namespace Validation
 
 #End Region
 
-      Private mRegEx As Regex
-      Private mNullResult As NullResultOptions
-
       ''' <summary>
       ''' The <see cref="RegEx"/> object used to validate
       ''' the property.
       ''' </summary>
       Public ReadOnly Property RegEx() As Regex
         Get
-          Return mRegEx
+          Return DirectCast(Me("RegEx"), Regex)
         End Get
       End Property
 
@@ -533,7 +640,7 @@ Namespace Validation
       ''' </summary>
       Public ReadOnly Property NullResult() As NullResultOptions
         Get
-          Return mNullResult
+          Return DirectCast(Me("NullResult"), NullResultOptions)
         End Get
       End Property
 
@@ -544,8 +651,8 @@ Namespace Validation
       ''' <param name="pattern">Built-in regex pattern to use.</param>
       Public Sub New(ByVal propertyName As String, ByVal pattern As RegExPatterns)
         MyBase.New(propertyName)
-        mRegEx = New Regex(GetPattern(pattern))
-        mNullResult = NullResultOptions.ReturnFalse
+        Me("RegEx") = New Regex(GetPattern(pattern))
+        Me("NullResult") = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
@@ -555,8 +662,8 @@ Namespace Validation
       ''' <param name="pattern">Custom regex pattern to use.</param>
       Public Sub New(ByVal propertyName As String, ByVal pattern As String)
         MyBase.New(propertyName)
-        mRegEx = New Regex(pattern)
-        mNullResult = NullResultOptions.ReturnFalse
+        Me("RegEx") = New Regex(pattern)
+        Me("NullResult") = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
@@ -566,8 +673,8 @@ Namespace Validation
       ''' <param name="regEx"><see cref="RegEx"/> object to use.</param>
       Public Sub New(ByVal propertyName As String, ByVal regEx As System.Text.RegularExpressions.Regex)
         MyBase.New(propertyName)
-        mRegEx = regEx
-        mNullResult = NullResultOptions.ReturnFalse
+        Me("RegEx") = regEx
+        Me("NullResult") = NullResultOptions.ReturnFalse
       End Sub
 
       ''' <summary>
@@ -581,8 +688,8 @@ Namespace Validation
       ''' </param>
       Public Sub New(ByVal propertyName As String, ByVal pattern As RegExPatterns, ByVal nullResult As NullResultOptions)
         MyBase.New(propertyName)
-        mRegEx = New Regex(GetPattern(pattern))
-        mNullResult = nullResult
+        Me("RegEx") = New Regex(GetPattern(pattern))
+        Me("NullResult") = nullResult
       End Sub
 
       ''' <summary>
@@ -596,8 +703,8 @@ Namespace Validation
       ''' </param>
       Public Sub New(ByVal propertyName As String, ByVal pattern As String, ByVal nullResult As NullResultOptions)
         MyBase.New(propertyName)
-        mRegEx = New Regex(pattern)
-        mNullResult = nullResult
+        Me("RegEx") = New Regex(pattern)
+        Me("NullResult") = nullResult
       End Sub
 
       ''' <summary>
@@ -611,17 +718,9 @@ Namespace Validation
       ''' </param>
       Public Sub New(ByVal propertyName As String, ByVal regEx As System.Text.RegularExpressions.Regex, ByVal nullResult As NullResultOptions)
         MyBase.New(propertyName)
-        mRegEx = regEx
-        mNullResult = nullResult
+        Me("RegEx") = regEx
+        Me("NullResult") = nullResult
       End Sub
-
-      ''' <summary>f
-      ''' Returns a string representation of the object.
-      ''' </summary>
-      Public Overrides Function ToString() As String
-        Return MyBase.ToString() & String.Format("?regex={0}&null={1}", _
-          mRegEx.ToString(), mNullResult.ToString())
-      End Function
 
       ''' <summary>
       ''' Returns the specified built-in regex pattern.

@@ -123,6 +123,7 @@
     <Compile Include="Core\BindableBase.vb" />
     <Compile Include="Security\RolesForProperty.vb" />
     <Compile Include="Validation\BrokenRule.vb" />
+    <Compile Include="Validation\DecoratedRuleArgs.vb" />
     <Compile Include="Validation\IRuleMethod.vb" />
     <Compile Include="Validation\RuleArgs.vb" />
     <Compile Include="Validation\RuleDescription.vb" />

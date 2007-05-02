@@ -267,4 +267,7 @@
   <data name="StringMinLengthRule" xml:space="preserve">
     <value>{0} must be at least {1} characters</value>
   </data>
+  <data name="ValidationRulesException" xml:space="preserve">
+    <value>Validation rule {1} failed in property {0}</value>
+  </data>
 </root>

@@ -502,6 +502,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Validation rule {1} failed in property {0}.
+        /// </summary>
+        internal static string ValidationRulesException {
+            get {
+                return ResourceManager.GetString("ValidationRulesException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value is not a SmartDate.
         /// </summary>
         internal static string ValueNotSmartDateException {

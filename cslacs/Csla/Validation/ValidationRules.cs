@@ -713,7 +713,24 @@ namespace Csla.Validation
         else
         {
           // we're not short-circuited, so check rule
-          if (rule.Invoke(_target))
+          bool ruleResult;
+          try
+          {
+            ruleResult = rule.Invoke(_target);
+          }
+          catch (Exception ex)
+          {
+            //// force a broken rule
+            //ruleResult = false;
+            //rule.RuleArgs.Severity = RuleSeverity.Error;
+            //rule.RuleArgs.Description = 
+            //  string.Format(Properties.Resources.ValidationRuleException & "{{2}}", rule.RuleArgs.PropertyName, rule.RuleName, ex.Message);
+            // throw a more detailed exception
+            throw new ValidationException(
+              string.Format(Properties.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex);
+          }
+
+          if (ruleResult)
           {
             // the rule is not broken
             BrokenRulesList.Remove(rule);

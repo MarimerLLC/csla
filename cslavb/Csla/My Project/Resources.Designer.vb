@@ -502,6 +502,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Validation rule {1} failed in property {0}.
+        '''</summary>
+        Friend ReadOnly Property ValidationRuleException() As String
+            Get
+                Return ResourceManager.GetString("ValidationRuleException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Value is not a SmartDate.
         '''</summary>
         Friend ReadOnly Property ValueNotSmartDateException() As String

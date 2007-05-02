@@ -748,7 +748,22 @@ Namespace Validation
 
         Else
           ' we're not short-circuited, so check rule
-          If rule.Invoke(mTarget) Then
+          Dim ruleResult As Boolean
+          Try
+            ruleResult = rule.Invoke(mTarget)
+
+          Catch ex As Exception
+            '' force a broken rule
+            'ruleResult = False
+            'rule.RuleArgs.Severity = RuleSeverity.Error
+            'rule.RuleArgs.Description = _
+            '  String.Format(My.Resources.ValidationRuleException & "{{2}}", rule.RuleArgs.PropertyName, rule.RuleName, ex.Message)
+            ' throw a more detailed exception
+            Throw New ValidationException( _
+              String.Format(My.Resources.ValidationRuleException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
+          End Try
+
+          If ruleResult Then
             ' the rule is not broken
             BrokenRulesList.Remove(rule)
 

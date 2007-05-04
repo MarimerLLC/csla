@@ -168,10 +168,32 @@ namespace Csla
       {
         if (ReferenceEquals(this[index], sender))
         {
-          OnListChanged(new System.ComponentModel.ListChangedEventArgs(System.ComponentModel.ListChangedType.ItemChanged, index));
-          break;
+          PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+          if (descriptor != null)
+            OnListChanged(new ListChangedEventArgs(
+              ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)));
+          else
+            OnListChanged(new ListChangedEventArgs(
+              ListChangedType.ItemChanged, index));
+          return;
         }
       }
+    }
+
+    private static PropertyDescriptorCollection _propertyDescriptors;
+
+    private PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    {
+      if (_propertyDescriptors == null)
+        _propertyDescriptors = TypeDescriptor.GetProperties(this.GetType());
+      PropertyDescriptor result = null;
+      foreach (PropertyDescriptor desc in _propertyDescriptors)
+        if (desc.Name == propertyName)
+        {
+          result = desc;
+          break;
+        }
+      return result;
     }
 
     #endregion

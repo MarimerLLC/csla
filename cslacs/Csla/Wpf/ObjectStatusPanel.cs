@@ -29,30 +29,8 @@ namespace Csla.Wpf
   /// that supports WFP data binding against those
   /// values.
   /// </remarks>
-  public class ObjectStatusPanel : DataPanelBase, INotifyPropertyChanged
+  public class ObjectStatusPanel : DataPanelBase
   {
-    #region INotifyPropertyChanged
-
-    /// <summary>
-    /// Event indicating that an object property has changed.
-    /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    /// <summary>
-    /// Raise the PropertyChanged event.
-    /// </summary>
-    /// <param name="name">Name of the property that has changed.</param>
-    protected void OnPropertyChanged(string name)
-    {
-      PropertyChangedEventHandler handler = PropertyChanged;
-      if (handler != null)
-      {
-        handler(this, new PropertyChangedEventArgs(name));
-      }
-    }
-
-    #endregion
-
     #region Dependency Properties
 
     private static readonly DependencyProperty IsDeletedProperty =
@@ -73,7 +51,13 @@ namespace Csla.Wpf
     public bool IsDeleted
     {
       get { return (bool)base.GetValue(IsDeletedProperty); }
-      set { base.SetValue(IsDeletedProperty, value); }
+      set 
+      {
+        bool old = IsDeleted;
+        base.SetValue(IsDeletedProperty, value);
+        OnPropertyChanged(
+          new DependencyPropertyChangedEventArgs(IsDeletedProperty, old, value));
+      }
     }
 
     /// <summary>
@@ -83,7 +67,14 @@ namespace Csla.Wpf
     public bool IsDirty
     {
       get { return (bool)base.GetValue(IsDirtyProperty); }
-      set { base.SetValue(IsDirtyProperty, value); }
+      set
+      {
+        bool old = IsDirty;
+        base.SetValue(IsDirtyProperty, value);
+        if (old != value)
+          OnPropertyChanged(
+            new DependencyPropertyChangedEventArgs(IsDirtyProperty, old, value));
+      }
     }
 
     /// <summary>
@@ -93,7 +84,14 @@ namespace Csla.Wpf
     public bool IsNew
     {
       get { return (bool)base.GetValue(IsNewProperty); }
-      set { base.SetValue(IsNewProperty, value); }
+      set
+      {
+        bool old = IsNew;
+        base.SetValue(IsNewProperty, value);
+        if (old != value)
+          OnPropertyChanged(
+            new DependencyPropertyChangedEventArgs(IsNewProperty, old, value));
+      }
     }
 
     /// <summary>
@@ -103,7 +101,14 @@ namespace Csla.Wpf
     public bool IsSavable
     {
       get { return (bool)base.GetValue(IsSavableProperty); }
-      set { base.SetValue(IsSavableProperty, value); }
+      set
+      {
+        bool old = IsSavable;
+        base.SetValue(IsSavableProperty, value);
+        if (old != value)
+          OnPropertyChanged(
+            new DependencyPropertyChangedEventArgs(IsSavableProperty, old, value));
+      }
     }
 
     /// <summary>
@@ -113,7 +118,14 @@ namespace Csla.Wpf
     public bool IsValid
     {
       get { return (bool)base.GetValue(IsValidProperty); }
-      set { base.SetValue(IsValidProperty, value); }
+      set
+      {
+        bool old = IsValid;
+        base.SetValue(IsValidProperty, value);
+        if (old != value)
+          OnPropertyChanged(
+            new DependencyPropertyChangedEventArgs(IsValidProperty, old, value));
+      }
     }
 
     #endregion
@@ -171,30 +183,15 @@ namespace Csla.Wpf
       if (source != null)
       {
         if (IsDeleted != source.IsDeleted)
-        {
           IsDeleted = source.IsDeleted;
-          OnPropertyChanged("IsDeleted");
-        }
         if (IsDirty != source.IsDirty)
-        {
           IsDirty = source.IsDirty;
-          OnPropertyChanged("IsDirty");
-        }
         if (IsNew != source.IsNew)
-        {
           IsNew = source.IsNew;
-          OnPropertyChanged("IsNew");
-        }
         if (IsSavable != source.IsSavable)
-        {
           IsSavable = source.IsSavable;
-          OnPropertyChanged("IsSavable");
-        }
         if (IsValid != source.IsValid)
-        {
           IsValid = source.IsValid;
-          OnPropertyChanged("IsValid");
-        }
       }
       else
       {
@@ -202,20 +199,11 @@ namespace Csla.Wpf
         if (sourceList != null)
         {
           if (IsDirty != sourceList.IsDirty)
-          {
             IsDirty = sourceList.IsDirty;
-            OnPropertyChanged("IsDirty");
-          }
           if (IsValid != sourceList.IsValid)
-          {
             IsValid = sourceList.IsValid;
-            OnPropertyChanged("IsValid");
-          }
           if (IsSavable != sourceList.IsSavable)
-          {
             IsSavable = sourceList.IsSavable;
-            OnPropertyChanged("IsSavable");
-          }
           IsDeleted = false;
           IsNew = false;
         }

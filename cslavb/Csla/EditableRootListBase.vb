@@ -162,13 +162,38 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
     For index As Integer = 0 To Count - 1
       If ReferenceEquals(Me(index), sender) Then
-        OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
-          ComponentModel.ListChangedType.ItemChanged, index))
+        Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
+        If descriptor IsNot Nothing Then
+          OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+            ComponentModel.ListChangedType.ItemChanged, index, descriptor))
+
+        Else
+          OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+            ComponentModel.ListChangedType.ItemChanged, index))
+        End If
         Exit For
       End If
     Next
 
   End Sub
+
+  Private Shared mPropertyDescriptors As PropertyDescriptorCollection
+
+  Private Function GetPropertyDescriptor(ByVal propertyName As String) As PropertyDescriptor
+
+    If mPropertyDescriptors Is Nothing Then
+      mPropertyDescriptors = TypeDescriptor.GetProperties(Me.GetType)
+    End If
+    Dim result As PropertyDescriptor = Nothing
+    For Each desc As PropertyDescriptor In mPropertyDescriptors
+      If desc.Name = propertyName Then
+        result = desc
+        Exit For
+      End If
+    Next
+    Return result
+
+  End Function
 
 #End Region
 

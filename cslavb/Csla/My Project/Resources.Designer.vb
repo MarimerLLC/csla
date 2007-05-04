@@ -313,6 +313,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to No such factory method:{0}.
+        '''</summary>
+        Friend ReadOnly Property NoSuchFactoryMethod() As String
+            Get
+                Return ResourceManager.GetString("NoSuchFactoryMethod", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to No such value exists:.
         '''</summary>
         Friend ReadOnly Property NoSuchValueExistsException() As String

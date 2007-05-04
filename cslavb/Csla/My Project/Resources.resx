@@ -270,4 +270,7 @@
   <data name="ValidationRuleException" xml:space="preserve">
     <value>Validation rule {1} failed in property {0}</value>
   </data>
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>No such factory method:{0}</value>
+  </data>
 </root>

@@ -139,21 +139,10 @@ Friend Module MethodCaller
     Dim result As MethodInfo = Nothing
 
     ' try to find a strongly typed match
-    'If parameters.Length > 0 Then
-    ' put all param types into an array of Type
-    Dim types As New List(Of Type)
-    For Each item As Object In parameters
-      If item Is Nothing Then
-        types.Add(GetType(Object))
-
-      Else
-        types.Add(item.GetType)
-      End If
-    Next
 
     ' first see if there's a matching method
     ' where all params match types
-    result = FindMethod(objectType, method, types.ToArray)
+    result = FindMethod(objectType, method, GetParameterTypes(parameters))
 
     If result Is Nothing Then
       ' no match found - so look for any method
@@ -183,6 +172,21 @@ Friend Module MethodCaller
     End If
 
     Return result
+
+  End Function
+
+  Friend Function GetParameterTypes(ByVal parameters As Object()) As Type()
+
+    Dim result As List(Of Type) = New List(Of Type)()
+
+    For Each item As Object In parameters
+      If item Is Nothing Then
+        result.Add(GetType(Object))
+      Else
+        result.Add(item.GetType())
+      End If
+    Next item
+    Return result.ToArray()
 
   End Function
 

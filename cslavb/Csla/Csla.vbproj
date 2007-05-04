@@ -203,7 +203,13 @@
     <Compile Include="Web\UpdateObjectArgs.vb" />
     <Compile Include="Windows\BindingSourceRefresh.vb" />
     <Compile Include="Windows\ReadWriteAuthorization.vb" />
+    <Compile Include="Wpf\AuthorizationPanel.vb" />
+    <Compile Include="Wpf\CslaDataProvider.vb" />
+    <Compile Include="Wpf\DataPanelBase.vb" />
     <Compile Include="Wpf\IdentityConverter.vb" />
+    <Compile Include="Wpf\ObjectStatusPanel.vb" />
+    <Compile Include="Wpf\ValidationPanel.vb" />
+    <Compile Include="Wpf\VisibilityMode.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources-il.resx">

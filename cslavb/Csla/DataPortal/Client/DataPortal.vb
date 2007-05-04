@@ -13,6 +13,12 @@ Public Module DataPortal
 #Region " DataPortal events "
 
   ''' <summary>
+  ''' Raised by DataPortal before it starts
+  ''' setting up to call a server-side
+  ''' DataPortal method.
+  ''' </summary>
+  Public Event DataPortalInitInvoke As Action(Of System.Object)
+  ''' <summary>
   ''' Raised by DataPortal prior to calling the 
   ''' requested server-side DataPortal method.
   ''' </summary>
@@ -24,6 +30,12 @@ Public Module DataPortal
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
   Public Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
+
+  Private Sub OnDataPortalInitInvoke(ByVal e As Object)
+
+    RaiseEvent DataPortalInitInvoke(e)
+
+  End Sub
 
   Private Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
@@ -90,6 +102,8 @@ Public Module DataPortal
 
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
+
+    OnDataPortalInitInvoke(Nothing)
 
     Dim dpContext As New Server.DataPortalContext( _
       GetPrincipal, proxy.IsServerRemote)
@@ -171,6 +185,8 @@ Public Module DataPortal
     
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
+
+    OnDataPortalInitInvoke(Nothing)
 
     Dim dpContext As New Server.DataPortalContext( _
       GetPrincipal, proxy.IsServerRemote)
@@ -316,6 +332,8 @@ Public Module DataPortal
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
 
+    OnDataPortalInitInvoke(Nothing)
+
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
 
     OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
@@ -360,6 +378,8 @@ Public Module DataPortal
 
     Dim proxy As DataPortalClient.IDataPortalProxy
     proxy = GetDataPortalProxy(RunLocal(method))
+
+    OnDataPortalInitInvoke(Nothing)
 
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
 

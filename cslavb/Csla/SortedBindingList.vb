@@ -53,7 +53,12 @@ Public Class SortedBindingList(Of T)
 
       Else
         If Key Is Nothing Then
-          Return -1
+          If target Is Nothing Then
+            Return 0
+
+          Else
+            Return -1
+          End If
 
         ElseIf Key.Equals(target) Then
           Return 0

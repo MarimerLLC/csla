@@ -230,7 +230,7 @@ namespace Csla.Validation
         else
           outValue = max.ToString(format);
         e.Description = String.Format(Resources.MaxValueRule,
-          RuleArgs.GetPropertyName(e), max.ToString());
+          RuleArgs.GetPropertyName(e), outValue);
         return false;
       }
       return true;

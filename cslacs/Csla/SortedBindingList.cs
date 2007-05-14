@@ -53,7 +53,12 @@ namespace Csla
         else
         {
           if (Key == null)
-            return -1;
+          {
+            if (target == null)
+              return 0;
+            else
+              return -1;
+          }
           else if (Key.Equals(target))
             return 0;
           else

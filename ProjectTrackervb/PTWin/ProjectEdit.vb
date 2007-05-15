@@ -126,8 +126,8 @@ Public Class ProjectEdit
   Private Sub Cancel_Button_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles Cancel_Button.Click
 
-    Me.ProjectBindingSource.CancelEdit()
     Me.ResourcesBindingSource.CancelEdit()
+    Me.ProjectBindingSource.CancelEdit()
 
   End Sub
 

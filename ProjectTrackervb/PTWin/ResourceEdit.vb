@@ -126,8 +126,8 @@ Public Class ResourceEdit
   Private Sub Cancel_Button_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles Cancel_Button.Click
 
-    Me.ResourceBindingSource.CancelEdit()
     Me.AssignmentsBindingSource.CancelEdit()
+    Me.ResourceBindingSource.CancelEdit()
 
   End Sub
 

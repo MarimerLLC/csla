@@ -127,8 +127,8 @@ namespace PTWin
 
     private void Cancel_Button_Click(object sender, EventArgs e)
     {
-      this.ResourceBindingSource.CancelEdit();
       this.AssignmentsBindingSource.CancelEdit();
+      this.ResourceBindingSource.CancelEdit();
     }
 
     private void CloseButton_Click(object sender, EventArgs e)

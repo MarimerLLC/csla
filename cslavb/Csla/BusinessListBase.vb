@@ -428,6 +428,20 @@ Public MustInherit Class BusinessListBase( _
       Me.RaiseListChangedEvents
     Try
       Me.RaiseListChangedEvents = False
+      ' set parent reference
+      item.SetParent(Me)
+      ' if item's edit level is too high,
+      ' reduce it to match list
+      While item.EditLevel > Me.EditLevel
+        item.AcceptChanges()
+      End While
+      ' reset EditLevelAdded if necessary
+      If child.EditLevelAdded > Me.EditLevel Then child.EditLevelAdded = Me.EditLevel
+      ' if item's edit level is too low,
+      ' increase it to match list
+      While item.EditLevel < Me.EditLevel
+        item.CopyState()
+      End While
       MyBase.SetItem(index, item)
 
     Finally

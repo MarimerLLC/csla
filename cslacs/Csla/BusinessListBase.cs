@@ -445,10 +445,8 @@ namespace Csla
     /// <remarks></remarks>
     protected override void SetItem(int index, C item)
     {
-      // copy the original object to the deleted list,
-      // marking as deleted, etc.
       C child = default(C);
-      if (!ReferenceEquals(this[index], item))
+      if (!(ReferenceEquals((C)(this[index]), item)))
         child = this[index];
       // replace the original object with this new
       // object
@@ -456,6 +454,19 @@ namespace Csla
       try
       {
         this.RaiseListChangedEvents = false;
+        // set parent reference
+        item.SetParent(this);
+        // if item's edit level is too high,
+        // reduce it to match list
+        while (item.EditLevel > this.EditLevel)
+          item.AcceptChanges();
+        // reset EditLevelAdded if necessary
+        if (child.EditLevelAdded > this.EditLevel)
+          child.EditLevelAdded = this.EditLevel;
+        // if item's edit level is too low,
+        // increase it to match list
+        while (item.EditLevel < this.EditLevel)
+          item.CopyState();
         base.SetItem(index, item);
       }
       finally

@@ -879,6 +879,7 @@ namespace Csla.Core
     // we need to keep track of the edit
     // level when we weere added so if the user
     // cancels below that level we can be destroyed
+    [NotUndoable]
     private int _editLevelAdded;
 
     /// <summary>

@@ -320,6 +320,8 @@ namespace Csla
 
     private void DeleteChild(C child)
     {
+      while (child.EditLevel > this.EditLevel)
+        child.UndoChanges();
       // mark the object as deleted
       child.DeleteChild();
       // and add it to the deleted collection for storage
@@ -460,13 +462,13 @@ namespace Csla
         // reduce it to match list
         while (item.EditLevel > this.EditLevel)
           item.AcceptChanges();
-        // reset EditLevelAdded if necessary
-        if (child.EditLevelAdded > this.EditLevel)
-          child.EditLevelAdded = this.EditLevel;
         // if item's edit level is too low,
         // increase it to match list
         while (item.EditLevel < this.EditLevel)
           item.CopyState();
+        // reset EditLevelAdded 
+        item.EditLevelAdded = this.EditLevel;
+        // add to list
         base.SetItem(index, item);
       }
       finally

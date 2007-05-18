@@ -1021,6 +1021,7 @@ Namespace Core
     ' we need to keep track of the edit
     ' level when we were added so if the user
     ' cancels below that level we can be destroyed
+    <NotUndoable()> _
     Private mEditLevelAdded As Integer
 
     ''' <summary>

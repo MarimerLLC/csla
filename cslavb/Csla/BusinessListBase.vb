@@ -298,6 +298,9 @@ Public MustInherit Class BusinessListBase( _
   End Property
 
   Private Sub DeleteChild(ByVal child As C)
+    While child.EditLevel > Me.EditLevel
+      child.UndoChanges()
+    End While
     ' mark the object as deleted
     child.DeleteChild()
     ' and add it to the deleted collection for storage
@@ -435,13 +438,14 @@ Public MustInherit Class BusinessListBase( _
       While item.EditLevel > Me.EditLevel
         item.AcceptChanges()
       End While
-      ' reset EditLevelAdded if necessary
-      If child.EditLevelAdded > Me.EditLevel Then child.EditLevelAdded = Me.EditLevel
       ' if item's edit level is too low,
       ' increase it to match list
       While item.EditLevel < Me.EditLevel
         item.CopyState()
       End While
+      ' reset EditLevelAdded 
+      item.EditLevelAdded = Me.EditLevel
+      ' add to list
       MyBase.SetItem(index, item)
 
     Finally

@@ -115,6 +115,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit level mismatch in {0}.
+        /// </summary>
+        internal static string EditLevelMismatchException {
+            get {
+                return ResourceManager.GetString("EditLevelMismatchException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error reading value:.
         /// </summary>
         internal static string ErrorReadingValueException {

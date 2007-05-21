@@ -742,7 +742,7 @@ namespace Csla.Core
     public void BeginEdit()
     {
       _bindingEdit = true;
-      CopyState();
+      CopyState(this.EditLevel + 1);
     }
 
     /// <summary>
@@ -756,7 +756,7 @@ namespace Csla.Core
     /// </remarks>
     public void CancelEdit()
     {
-      UndoChanges();
+      UndoChanges(this.EditLevel - 1);
     }
 
     /// <summary>
@@ -796,7 +796,7 @@ namespace Csla.Core
     {
       _bindingEdit = false;
       _neverCommitted = false;
-      AcceptChanges();
+      AcceptChanges(this.EditLevel - 1);
     }
 
     /// <summary>

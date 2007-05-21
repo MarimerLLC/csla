@@ -73,6 +73,7 @@
     <Compile Include="Core\RemovingItemEventArgs.cs" />
     <Compile Include="Core\SavedEventArgs.cs" />
     <Compile Include="Core\UndoableBase.cs" />
+    <Compile Include="Core\UndoException.cs" />
     <Compile Include="DataPortal\ApplicationContext.cs" />
     <Compile Include="DataPortal\Client\DataPortal.cs" />
     <Compile Include="DataPortal\Client\EnterpriseServicesProxy.cs" />

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.IO;
 using Csla.Serialization;
 using System.ComponentModel;
+using Csla.Properties;
 
 namespace Csla.Core
 {
@@ -37,19 +38,19 @@ namespace Csla.Core
       get { return _stateStack.Count; }
     }
 
-    void IUndoableObject.CopyState()
+    void IUndoableObject.CopyState(int parentEditLevel)
     {
-      CopyState();
+      CopyState(parentEditLevel);
     }
 
-    void IUndoableObject.UndoChanges()
+    void IUndoableObject.UndoChanges(int parentEditLevel)
     {
-      UndoChanges();
+      UndoChanges(parentEditLevel);
     }
 
-    void IUndoableObject.AcceptChanges()
+    void IUndoableObject.AcceptChanges(int parentEditLevel)
     {
-      AcceptChanges();
+      AcceptChanges(parentEditLevel);
     }
 
     /// <summary>
@@ -66,11 +67,14 @@ namespace Csla.Core
     /// onto the state stack.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected internal void CopyState()
+    protected internal void CopyState(int parentEditLevel)
     {
       Type currentType = this.GetType();
       HybridDictionary state = new HybridDictionary();
       FieldInfo[] fields;
+
+      if (this.EditLevel + 1 > parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
 
       do
       {
@@ -102,7 +106,7 @@ namespace Csla.Core
                 else
                 {
                   // this is a child object, cascade the call
-                  ((Core.IUndoableObject)value).CopyState();
+                  ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1);
                 }
               }
               else
@@ -147,8 +151,11 @@ namespace Csla.Core
     /// of the object.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected internal void UndoChanges()
+    protected internal void UndoChanges(int parentEditLevel)
     {
+      if (this.EditLevel - 1 < parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+      
       // if we are a child object we might be asked to
       // undo below the level where stacked states,
       // so just do nothing in that case
@@ -199,7 +206,7 @@ namespace Csla.Core
                     if (value != null)
                     {
                       // this is a child object, cascade the call.
-                      ((Core.IUndoableObject)value).UndoChanges();
+                      ((Core.IUndoableObject)value).UndoChanges(this.EditLevel);
                     }
                   }
                 }
@@ -236,8 +243,11 @@ namespace Csla.Core
     /// to the object's state.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected internal void AcceptChanges()
+    protected internal void AcceptChanges(int parentEditLevel)
     {
+      if (this.EditLevel - 1 < parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+
       if (EditLevel > 0)
       {
         _stateStack.Pop();
@@ -267,7 +277,7 @@ namespace Csla.Core
                   if (value != null)
                   {
                     // it is a child object so cascade the call
-                    ((Core.IUndoableObject)value).AcceptChanges();
+                    ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel);
                   }
                 }
               }

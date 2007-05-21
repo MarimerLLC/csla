@@ -14,7 +14,10 @@ namespace Csla.Core
     /// Copies the state of the object and places the copy
     /// onto the state stack.
     /// </summary>
-    void CopyState();
+    /// <param name="parentEditLevel">
+    /// Parent object's edit level.
+    /// </param>
+    void CopyState(int parentEditLevel);
     /// <summary>
     /// Restores the object's state to the most recently
     /// copied values from the state stack.
@@ -25,7 +28,10 @@ namespace Csla.Core
     /// the stack and restoring it into the fields
     /// of the object.
     /// </remarks>
-    void UndoChanges();
+    /// <param name="parentEditLevel">
+    /// Parent object's edit level.
+    /// </param>
+    void UndoChanges(int parentEditLevel);
     /// <summary>
     /// Accepts any changes made to the object since the last
     /// state copy was made.
@@ -35,6 +41,9 @@ namespace Csla.Core
     /// stack and discarded, thus committing any changes made
     /// to the object's state.
     /// </remarks>
-    void AcceptChanges();
+    /// <param name="parentEditLevel">
+    /// Parent object's edit level.
+    /// </param>
+    void AcceptChanges(int parentEditLevel);
   }
 }

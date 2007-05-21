@@ -127,7 +127,7 @@ namespace Csla
       if (this.IsChild)
         throw new NotSupportedException(Resources.NoBeginEditChildException);
 
-      CopyState();
+      CopyState(this.EditLevel + 1);
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ namespace Csla
       if (this.IsChild)
         throw new NotSupportedException(Resources.NoCancelEditChildException);
 
-      UndoChanges();
+      UndoChanges(this.EditLevel - 1);
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ namespace Csla
       if (this.IsChild)
         throw new NotSupportedException(Resources.NoApplyEditChildException);
 
-      AcceptChanges();
+      AcceptChanges(this.EditLevel - 1);
     }
 
     void Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
@@ -194,38 +194,46 @@ namespace Csla
 
     #region N-level undo
 
-    void Core.IUndoableObject.CopyState()
+    void Core.IUndoableObject.CopyState(int parentEditLevel)
     {
-      CopyState();
+      CopyState(parentEditLevel);
     }
 
-    void Core.IUndoableObject.UndoChanges()
+    void Core.IUndoableObject.UndoChanges(int parentEditLevel)
     {
-      UndoChanges();
+      UndoChanges(parentEditLevel);
     }
 
-    void Core.IUndoableObject.AcceptChanges()
+    void Core.IUndoableObject.AcceptChanges(int parentEditLevel)
     {
-      AcceptChanges();
+      AcceptChanges(parentEditLevel);
     }
 
-    private void CopyState()
+    private void CopyState(int parentEditLevel)
     {
+      if (this.EditLevel + 1 > parentEditLevel)
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+
       // we are going a level deeper in editing
       _editLevel += 1;
 
       // cascade the call to all child objects
       foreach (C child in this)
-        child.CopyState();
+        child.CopyState(_editLevel);
 
       // cascade the call to all deleted child objects
       foreach (C child in DeletedList)
-        child.CopyState();
+        child.CopyState(_editLevel);
     }
 
-    private void UndoChanges()
+    private bool _completelyRemoveChild;
+
+    private void UndoChanges(int parentEditLevel)
     {
       C child;
+
+      if (this.EditLevel - 1 < parentEditLevel)
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
 
       // we are coming up one edit level
       _editLevel -= 1;
@@ -235,7 +243,7 @@ namespace Csla
       for (int index = Count - 1; index >= 0; index--)
       {
         child = this[index];
-        child.UndoChanges();
+        child.UndoChanges(_editLevel);
         // if item is below its point of addition, remove
         if (child.EditLevelAdded > _editLevel)
         {
@@ -243,10 +251,12 @@ namespace Csla
           try
           {
             this.AllowRemove = true;
+            _completelyRemoveChild = true;
             RemoveAt(index);
           }
           finally
           {
+            _completelyRemoveChild = false;
             this.AllowRemove = oldAllowRemove;
           }
         }
@@ -256,7 +266,7 @@ namespace Csla
       for (int index = DeletedList.Count - 1; index >= 0; index--)
       {
         child = DeletedList[index];
-        child.UndoChanges();
+        child.UndoChanges(_editLevel);
         if (child.EditLevelAdded > _editLevel)
         {
           // if item is below its point of addition, remove
@@ -270,8 +280,11 @@ namespace Csla
       }
     }
 
-    private void AcceptChanges()
+    private void AcceptChanges(int parentEditLevel)
     {
+      if (this.EditLevel - 1 < parentEditLevel)
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+
       // we are coming up one edit level
       _editLevel -= 1;
       if (_editLevel < 0) _editLevel = 0;
@@ -279,7 +292,7 @@ namespace Csla
       // cascade the call to all child objects
       foreach (C child in this)
       {
-        child.AcceptChanges();
+        child.AcceptChanges(_editLevel);
         // if item is below its point of addition, lower point of addition
         if (child.EditLevelAdded > _editLevel) child.EditLevelAdded = _editLevel;
       }
@@ -288,7 +301,7 @@ namespace Csla
       for (int index = DeletedList.Count - 1; index >= 0; index--)
       {
         C child = DeletedList[index];
-        child.AcceptChanges();
+        child.AcceptChanges(_editLevel);
         // if item is below its point of addition, remove
         if (child.EditLevelAdded > _editLevel)
           DeletedList.RemoveAt(index);
@@ -320,8 +333,8 @@ namespace Csla
 
     private void DeleteChild(C child)
     {
-      while (child.EditLevel > this.EditLevel)
-        child.UndoChanges();
+      // set child edit level
+      ResetChildEditLevel(child, this.EditLevel);
       // mark the object as deleted
       child.DeleteChild();
       // and add it to the deleted collection for storage
@@ -384,11 +397,14 @@ namespace Csla
     /// <param name="item">Item to insert.</param>
     protected override void InsertItem(int index, C item)
     {
+      // set parent reference
+      item.SetParent(this);
+      // set child edit level
+      ResetChildEditLevel(item, this.EditLevel);
       // when an object is inserted we assume it is
       // a new object and so the edit level when it was
       // added must be set
       item.EditLevelAdded = _editLevel;
-      item.SetParent(this);
       base.InsertItem(index, item);
     }
 
@@ -412,7 +428,12 @@ namespace Csla
       {
         this.RaiseListChangedEvents = oldRaiseListChangedEvents;
       }
-      CopyToDeletedList(child);
+      if (!_completelyRemoveChild)
+      {
+        // the child shouldn't be completely removed,
+        // so copy it to the deleted list
+        CopyToDeletedList(child);
+      }
       OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
     }
 
@@ -458,14 +479,8 @@ namespace Csla
         this.RaiseListChangedEvents = false;
         // set parent reference
         item.SetParent(this);
-        // if item's edit level is too high,
-        // reduce it to match list
-        while (item.EditLevel > this.EditLevel)
-          item.AcceptChanges();
-        // if item's edit level is too low,
-        // increase it to match list
-        while (item.EditLevel < this.EditLevel)
-          item.CopyState();
+        // set child edit level
+        ResetChildEditLevel(item, this.EditLevel);
         // reset EditLevelAdded 
         item.EditLevelAdded = this.EditLevel;
         // add to list
@@ -478,6 +493,18 @@ namespace Csla
       if (child != null)
         CopyToDeletedList(child);
       OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+    }
+
+    private void ResetChildEditLevel(C child, int parentEditLevel)
+    {
+      // if item's edit level is too high,
+      // reduce it to match list
+      while (child.EditLevel > parentEditLevel)
+        child.AcceptChanges(parentEditLevel);
+      // if item's edit level is too low,
+      // increase it to match list
+      while (child.EditLevel < parentEditLevel)
+        child.CopyState(parentEditLevel);
     }
 
     #endregion

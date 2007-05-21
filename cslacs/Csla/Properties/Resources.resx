@@ -270,4 +270,7 @@
   <data name="ValidationRulesException" xml:space="preserve">
     <value>Validation rule {1} failed in property {0}</value>
   </data>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Edit level mismatch in {0}</value>
+  </data>
 </root>

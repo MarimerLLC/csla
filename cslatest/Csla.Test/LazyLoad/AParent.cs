@@ -27,7 +27,7 @@ namespace Csla.Test.LazyLoad
         {
           _children = new AChildList();
           for (int count = 0; count < EditLevel; count++)
-            ((Csla.Core.IUndoableObject)_children).CopyState();
+            ((Csla.Core.IUndoableObject)_children).CopyState(EditLevel);
         }
         return _children; 
       }

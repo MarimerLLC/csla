@@ -115,6 +115,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Edit level mismatch in {0}.
+        '''</summary>
+        Friend ReadOnly Property EditLevelMismatchException() As String
+            Get
+                Return ResourceManager.GetString("EditLevelMismatchException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Error reading value:.
         '''</summary>
         Friend ReadOnly Property ErrorReadingValueException() As String

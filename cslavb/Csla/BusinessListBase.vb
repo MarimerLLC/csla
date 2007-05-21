@@ -127,7 +127,7 @@ Public MustInherit Class BusinessListBase( _
         NotSupportedException(My.Resources.NoBeginEditChildException)
     End If
 
-    CopyState()
+    CopyState(Me.EditLevel + 1)
   End Sub
 
   ''' <summary>
@@ -149,7 +149,7 @@ Public MustInherit Class BusinessListBase( _
         NotSupportedException(My.Resources.NoCancelEditChildException)
     End If
 
-    UndoChanges()
+    UndoChanges(Me.EditLevel - 1)
 
   End Sub
 
@@ -172,7 +172,7 @@ Public MustInherit Class BusinessListBase( _
         NotSupportedException(My.Resources.NoApplyEditChildException)
     End If
 
-    AcceptChanges()
+    AcceptChanges(Me.EditLevel - 1)
   End Sub
 
   ''' <summary>
@@ -193,26 +193,38 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " N-level undo "
 
-  Private Sub CopyState() Implements Core.IEditableCollection.CopyState
+  Private Sub CopyState(ByVal parentEditLevel As Integer) Implements Core.IEditableCollection.CopyState
     Dim Child As C
+
+    If Me.EditLevel + 1 > parentEditLevel Then
+      Throw New UndoException( _
+        String.Format(My.Resources.EditLevelMismatchException, "CopyState"))
+    End If
 
     ' we are going a level deeper in editing
     mEditLevel += 1
 
     ' cascade the call to all child objects
     For Each Child In Me
-      Child.CopyState()
+      Child.CopyState(mEditLevel)
     Next
 
     ' cascade the call to all deleted child objects
     For Each Child In DeletedList
-      Child.CopyState()
+      Child.CopyState(mEditLevel)
     Next
   End Sub
 
-  Private Sub UndoChanges() Implements Core.IEditableCollection.UndoChanges
+  Private mCompletelyRemoveChild As Boolean
+
+  Private Sub UndoChanges(ByVal parentEditLevel As Integer) Implements Core.IEditableCollection.UndoChanges
     Dim child As C
     Dim index As Integer
+
+    If Me.EditLevel - 1 < parentEditLevel Then
+      Throw New UndoException( _
+        String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
+    End If
 
     ' we are coming up one edit level
     mEditLevel -= 1
@@ -221,14 +233,16 @@ Public MustInherit Class BusinessListBase( _
     ' Cancel edit on all current items
     For index = Count - 1 To 0 Step -1
       child = Me(index)
-      child.UndoChanges()
+      child.UndoChanges(mEditLevel)
       ' if item is below its point of addition, remove
       If child.EditLevelAdded > mEditLevel Then
         Dim oldAllowRemove As Boolean = Me.AllowRemove
         Try
           Me.AllowRemove = True
+          mCompletelyRemoveChild = True
           RemoveAt(index)
         Finally
+          mCompletelyRemoveChild = False
           Me.AllowRemove = oldAllowRemove
         End Try
       End If
@@ -237,7 +251,7 @@ Public MustInherit Class BusinessListBase( _
     ' cancel edit on all deleted items
     For index = DeletedList.Count - 1 To 0 Step -1
       child = DeletedList.Item(index)
-      child.UndoChanges()
+      child.UndoChanges(mEditLevel)
       If child.EditLevelAdded > mEditLevel Then
         ' if item is below its point of addition, remove
         DeletedList.RemoveAt(index)
@@ -248,10 +262,15 @@ Public MustInherit Class BusinessListBase( _
     Next
   End Sub
 
-  Private Sub AcceptChanges() _
+  Private Sub AcceptChanges(ByVal parentEditLevel As Integer) _
     Implements Core.IEditableCollection.AcceptChanges
     Dim child As C
     Dim index As Integer
+
+    If Me.EditLevel - 1 < parentEditLevel Then
+      Throw New UndoException( _
+        String.Format(My.Resources.EditLevelMismatchException, "AcceptChanges"))
+    End If
 
     ' we are coming up one edit level
     mEditLevel -= 1
@@ -259,7 +278,7 @@ Public MustInherit Class BusinessListBase( _
 
     ' cascade the call to all child objects
     For Each child In Me
-      child.AcceptChanges()
+      child.AcceptChanges(mEditLevel)
       ' if item is below its point of addition, lower point of addition
       If child.EditLevelAdded > mEditLevel Then child.EditLevelAdded = mEditLevel
     Next
@@ -268,7 +287,7 @@ Public MustInherit Class BusinessListBase( _
     'For Each Child In deletedList
     For index = DeletedList.Count - 1 To 0 Step -1
       child = DeletedList.Item(index)
-      child.AcceptChanges()
+      child.AcceptChanges(mEditLevel)
       ' if item is below its point of addition, remove
       If child.EditLevelAdded > mEditLevel Then
         DeletedList.RemoveAt(index)
@@ -298,9 +317,8 @@ Public MustInherit Class BusinessListBase( _
   End Property
 
   Private Sub DeleteChild(ByVal child As C)
-    While child.EditLevel > Me.EditLevel
-      child.UndoChanges()
-    End While
+    ' set child edit level
+    ResetChildEditLevel(child, Me.EditLevel)
     ' mark the object as deleted
     child.DeleteChild()
     ' and add it to the deleted collection for storage
@@ -356,11 +374,15 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="index">Index of the item to insert.</param>
   ''' <param name="item">Item to insert.</param>
   Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As C)
+
+    ' set parent reference
+    item.SetParent(Me)
+    ' set child edit level
+    ResetChildEditLevel(item, Me.EditLevel)
     ' when an object is inserted we assume it is
     ' a new object and so the edit level when it was
     ' added must be set
     item.EditLevelAdded = mEditLevel
-    item.SetParent(Me)
     MyBase.InsertItem(index, item)
   End Sub
 
@@ -382,7 +404,11 @@ Public MustInherit Class BusinessListBase( _
     Finally
       Me.RaiseListChangedEvents = oldRaiseListChangedEvents
     End Try
-    CopyToDeletedList(child)
+    If Not mCompletelyRemoveChild Then
+      ' the child shouldn't be completely removed,
+      ' so copy it to the deleted list
+      CopyToDeletedList(child)
+    End If
     OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
   End Sub
 
@@ -431,18 +457,9 @@ Public MustInherit Class BusinessListBase( _
       Me.RaiseListChangedEvents
     Try
       Me.RaiseListChangedEvents = False
-      ' set parent reference
       item.SetParent(Me)
-      ' if item's edit level is too high,
-      ' reduce it to match list
-      While item.EditLevel > Me.EditLevel
-        item.AcceptChanges()
-      End While
-      ' if item's edit level is too low,
-      ' increase it to match list
-      While item.EditLevel < Me.EditLevel
-        item.CopyState()
-      End While
+      ' set child edit level
+      ResetChildEditLevel(item, Me.EditLevel)
       ' reset EditLevelAdded 
       item.EditLevelAdded = Me.EditLevel
       ' add to list
@@ -455,6 +472,21 @@ Public MustInherit Class BusinessListBase( _
       CopyToDeletedList(child)
     End If
     OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+  End Sub
+
+  Private Sub ResetChildEditLevel(ByVal child As C, ByVal parentEditLevel As Integer)
+
+    ' if item's edit level is too high,
+    ' reduce it to match list
+    While child.EditLevel > parentEditLevel
+      child.AcceptChanges(parentEditLevel)
+    End While
+    ' if item's edit level is too low,
+    ' increase it to match list
+    While child.EditLevel < parentEditLevel
+      child.CopyState(parentEditLevel)
+    End While
+
   End Sub
 
 #End Region

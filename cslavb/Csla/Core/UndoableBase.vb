@@ -52,11 +52,16 @@ Namespace Core
     ''' onto the state stack.
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub CopyState() Implements IUndoableObject.CopyState
+    Protected Friend Sub CopyState(ByVal parentEditLevel As Integer) Implements IUndoableObject.CopyState
 
       Dim currentType As Type = Me.GetType
       Dim state As New HybridDictionary()
       Dim fields() As FieldInfo
+
+      If Me.EditLevel + 1 > parentEditLevel Then
+        Throw New UndoException( _
+          String.Format(My.Resources.EditLevelMismatchException, "CopyState"))
+      End If
 
       Do
         ' get the list of fields in this type
@@ -82,7 +87,7 @@ Namespace Core
 
                 Else
                   ' this is a child object, cascade the call
-                  DirectCast(value, IUndoableObject).CopyState()
+                  DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1)
                 End If
 
               Else
@@ -130,7 +135,13 @@ Namespace Core
     ''' of the object.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub UndoChanges() Implements IUndoableObject.UndoChanges
+    Protected Friend Sub UndoChanges(ByVal parentEditLevel As Integer) Implements IUndoableObject.UndoChanges
+
+      If Me.EditLevel - 1 < parentEditLevel Then
+        Throw New UndoException( _
+          String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
+      End If
+
       ' if we are a child object we might be asked to
       ' undo below the level where we stacked states,
       ' so just do nothing in that case
@@ -174,7 +185,7 @@ Namespace Core
                     ' make sure the variable has a value
                     If Not value Is Nothing Then
                       ' cascade the call
-                      DirectCast(value, IUndoableObject).UndoChanges()
+                      DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel)
                     End If
                   End If
 
@@ -212,8 +223,13 @@ Namespace Core
     ''' to the object's state.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub AcceptChanges() _
+    Protected Friend Sub AcceptChanges(ByVal parentEditLevel As Integer) _
       Implements IUndoableObject.AcceptChanges
+
+      If Me.EditLevel - 1 < parentEditLevel Then
+        Throw New UndoException( _
+          String.Format(My.Resources.EditLevelMismatchException, "AcceptChanges"))
+      End If
 
       If EditLevel > 0 Then
         mStateStack.Pop()
@@ -240,7 +256,7 @@ Namespace Core
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' it is a child object so cascade the call
-                    DirectCast(value, IUndoableObject).AcceptChanges()
+                    DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel)
                   End If
                 End If
               End If

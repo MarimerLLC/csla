@@ -882,7 +882,7 @@ Namespace Core
     ''' </remarks>
     Public Sub BeginEdit()
       mBindingEdit = True
-      CopyState()
+      CopyState(Me.EditLevel + 1)
     End Sub
 
     ''' <summary>
@@ -895,7 +895,7 @@ Namespace Core
     ''' to the point of the last BeginEdit call.
     ''' </remarks>
     Public Sub CancelEdit()
-      UndoChanges()
+      UndoChanges(Me.EditLevel - 1)
     End Sub
 
     ''' <summary>
@@ -934,7 +934,7 @@ Namespace Core
     Public Sub ApplyEdit()
       mBindingEdit = False
       mNeverCommitted = False
-      AcceptChanges()
+      AcceptChanges(Me.EditLevel - 1)
     End Sub
 
     ''' <summary>

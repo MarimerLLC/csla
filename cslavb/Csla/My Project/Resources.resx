@@ -273,4 +273,7 @@
   <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>No such factory method:{0}</value>
   </data>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Edit level mismatch in {0}</value>
+  </data>
 </root>

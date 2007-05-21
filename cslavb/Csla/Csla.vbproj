@@ -76,6 +76,7 @@
     <Compile Include="Core\ObjectCloner.vb" />
     <Compile Include="Core\RemovingItemEventArgs.vb" />
     <Compile Include="Core\SavedEventArgs.vb" />
+    <Compile Include="Core\UndoException.vb" />
     <Compile Include="DataPortal\Client\EnterpriseServicesProxy.vb" />
     <Compile Include="DataPortal\Client\IDataPortalProxy.vb" />
     <Compile Include="DataPortal\Client\LocalProxy.vb" />

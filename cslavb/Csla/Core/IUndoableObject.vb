@@ -15,7 +15,10 @@ Namespace Core
     ''' Copies the state of the object and places the copy
     ''' onto the state stack.
     ''' </summary>
-    Sub CopyState()
+    ''' <param name="parentEditLevel">
+    ''' Parent object's edit level.
+    ''' </param>
+    Sub CopyState(ByVal parentEditLevel As Integer)
     ''' <summary>
     ''' Restores the object's state to the most recently
     ''' copied values from the state stack.
@@ -26,7 +29,10 @@ Namespace Core
     ''' the stack and restoring it into the fields
     ''' of the object.
     ''' </remarks>
-    Sub UndoChanges()
+    ''' <param name="parentEditLevel">
+    ''' Parent object's edit level.
+    ''' </param>
+    Sub UndoChanges(ByVal parentEditLevel As Integer)
     ''' <summary>
     ''' Accepts any changes made to the object since the last
     ''' state copy was made.
@@ -36,7 +42,10 @@ Namespace Core
     ''' stack and discarded, thus committing any changes made
     ''' to the object's state.
     ''' </remarks>
-    Sub AcceptChanges()
+    ''' <param name="parentEditLevel">
+    ''' Parent object's edit level.
+    ''' </param>
+    Sub AcceptChanges(ByVal parentEditLevel As Integer)
   End Interface
 
 End Namespace

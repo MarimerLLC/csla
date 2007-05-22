@@ -30,6 +30,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\PTWeb\", "www\PTWeb\
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "3290"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -124,7 +125,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WebServicesHost\", "
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "c:\...\WcfHost\", "www\WcfHost\", "{CBF01FEC-D7D9-41E6-B897-C510D39B56F4}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WcfHost\", "www\WcfHost\", "{CBF01FEC-D7D9-41E6-B897-C510D39B56F4}"
 	ProjectSection(WebsiteProperties) = preProject
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/WcfHost"

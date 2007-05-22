@@ -77,8 +77,8 @@ namespace PTWin
         this.ResourceBindingSource.RaiseListChangedEvents = false;
         this.AssignmentsBindingSource.RaiseListChangedEvents = false;
         // do the save
-        this.ResourceBindingSource.EndEdit();
         this.AssignmentsBindingSource.EndEdit();
+        this.ResourceBindingSource.EndEdit();
         try
         {
           Resource temp = Resource.Clone();
@@ -133,8 +133,8 @@ namespace PTWin
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
-      this.ResourceBindingSource.CancelEdit();
       this.AssignmentsBindingSource.CancelEdit();
+      this.ResourceBindingSource.CancelEdit();
       this.Close();
     }
 

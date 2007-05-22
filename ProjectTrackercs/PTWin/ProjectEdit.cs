@@ -66,8 +66,8 @@ namespace PTWin
         this.projectBindingSource.RaiseListChangedEvents = false;
         this.resourcesBindingSource.RaiseListChangedEvents = false;
         // do the save
-        this.projectBindingSource.EndEdit();
         this.resourcesBindingSource.EndEdit();
+        this.projectBindingSource.EndEdit();
         try
         {
           Project temp = _project.Clone();
@@ -134,8 +134,8 @@ namespace PTWin
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
-      this.projectBindingSource.CancelEdit();
       this.resourcesBindingSource.CancelEdit();
+      this.projectBindingSource.CancelEdit();
       this.Close();
     }
 

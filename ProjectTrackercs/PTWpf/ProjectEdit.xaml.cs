@@ -74,6 +74,7 @@ namespace PTWpf
       }
       finally
       {
+        this.DataContext = null;
         this.DataContext = project;
         SetTitle(project);
       }

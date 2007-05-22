@@ -61,6 +61,7 @@ namespace PTWpf
       }
       finally
       {
+        this.DataContext = null;
         this.DataContext = roles;
       }
     }

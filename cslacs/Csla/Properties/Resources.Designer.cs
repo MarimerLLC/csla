@@ -223,6 +223,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method execution not allowed.
+        /// </summary>
+        internal static string MethodExecuteNotAllowed {
+            get {
+                return ResourceManager.GetString("MethodExecuteNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to not implemented.
         /// </summary>
         internal static string MethodNotImplemented {

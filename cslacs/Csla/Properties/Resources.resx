@@ -273,4 +273,7 @@
   <data name="EditLevelMismatchException" xml:space="preserve">
     <value>Edit level mismatch in {0}</value>
   </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Method execution not allowed</value>
+  </data>
 </root>

@@ -74,8 +74,8 @@ Public Class ProjectEdit
       ' stop the flow of events
       Me.ProjectBindingSource.RaiseListChangedEvents = False
       Me.ResourcesBindingSource.RaiseListChangedEvents = False
-      Me.ProjectBindingSource.EndEdit()
       Me.ResourcesBindingSource.EndEdit()
+      Me.ProjectBindingSource.EndEdit()
       ' do the save
       Try
         Dim temp As Project = mProject.Clone
@@ -134,8 +134,8 @@ Public Class ProjectEdit
   Private Sub CloseButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles CloseButton.Click
 
-    Me.ProjectBindingSource.CancelEdit()
     Me.ResourcesBindingSource.CancelEdit()
+    Me.ProjectBindingSource.CancelEdit()
     Me.Close()
 
   End Sub

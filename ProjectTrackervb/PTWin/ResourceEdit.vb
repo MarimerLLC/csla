@@ -73,8 +73,8 @@ Public Class ResourceEdit
       ' stop the flow of events
       Me.ResourceBindingSource.RaiseListChangedEvents = False
       Me.AssignmentsBindingSource.RaiseListChangedEvents = False
-      Me.ResourceBindingSource.EndEdit()
       Me.AssignmentsBindingSource.EndEdit()
+      Me.ResourceBindingSource.EndEdit()
       ' do the save
       Try
         Dim temp As Resource = mResource.Clone
@@ -134,8 +134,8 @@ Public Class ResourceEdit
   Private Sub CloseButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles CloseButton.Click
 
-    Me.ResourceBindingSource.CancelEdit()
     Me.AssignmentsBindingSource.CancelEdit()
+    Me.ResourceBindingSource.CancelEdit()
     Me.Close()
 
   End Sub

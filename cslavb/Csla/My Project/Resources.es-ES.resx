@@ -253,9 +253,27 @@
     <value>{0} no coincide con una expresión regular</value>
   </data>
   <data name="StringMaxLengthRule" xml:space="preserve">
-    <value>{0} no puede exceder {1} caracteres</value>
+    <value>{0} no puede exceder {1} carácteres</value>
   </data>
   <data name="StringRequiredRule" xml:space="preserve">
     <value>{0} es requerido</value>
+  </data>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Discrepancia en el nivel de edición en {0}</value>
+  </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Ejecución de método no permitida</value>
+  </data>
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>No existe tal método de creación (factory):{0}</value>
+  </data>
+  <data name="StringMinLengthRule" xml:space="preserve">
+    <value>{0} no puede ser inferior a {1} carácteres</value>
+  </data>
+  <data name="TypeLoadException" xml:space="preserve">
+    <value>Ocurrió un error al cargar el tipo '{0}'</value>
+  </data>
+  <data name="ValidationRuleException" xml:space="preserve">
+    <value>La regla de validación {1} falló en la propiedad {0}</value>
   </data>
 </root>

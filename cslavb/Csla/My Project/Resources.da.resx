@@ -135,9 +135,6 @@
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Det er ikke muligt direkte at markere et børneobjekt til sletning - brug objektets forældre kollektion</value>
   </data>
-  <data name="NoDeleteRootException" xml:space="preserve">
-    <value>Ugyldig for rodobjekter - brug Delete i stedet</value>
-  </data>
   <data name="NoSaveChildException" xml:space="preserve">
     <value>Kan ikke direkte lagre et børneobjekt</value>
   </data>
@@ -231,7 +228,10 @@
   <data name="PropertySetNotAllowed" xml:space="preserve">
     <value>Property set er ikke tilladt</value>
   </data>
-  <data name="NothingNotValid" xml:space="preserve">
+	<data name="NoDeleteRootException" xml:space="preserve">
+    <value>Ugyldig for rod objekter - brug Delete i stedet</value>
+  </data>
+	<data name="NothingNotValid" xml:space="preserve">
     <value>Argument kan ikke være Nothing</value>
   </data>
   <data name="PrimitiveTypeRequired" xml:space="preserve">
@@ -240,22 +240,40 @@
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Property kopi fejlede</value>
   </data>
-  <data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>Ugyldig regel metode (instans metoder af target objekt er ikke tilladt)</value>
-  </data>
   <data name="MaxValueRule" xml:space="preserve">
     <value>{0} kan ikke være større end {1}</value>
   </data>
   <data name="MinValueRule" xml:space="preserve">
     <value>{0} kan ikke være mindre end {1}</value>
   </data>
-  <data name="RegExMatchRule" xml:space="preserve">
-    <value>{0} passer ikke på det regulære udtryk</value>
-  </data>
-  <data name="StringMaxLengthRule" xml:space="preserve">
+	<data name="StringMaxLengthRule" xml:space="preserve">
     <value>{0} kan ikke være længere end {1} tegn</value>
   </data>
-  <data name="StringRequiredRule" xml:space="preserve">
+	<data name="StringRequiredRule" xml:space="preserve">
     <value>{0} er påkrævet</value>
+  </data>
+	<data name="RegExMatchRule" xml:space="preserve">
+    <value>{0} passer ikke på det regulære udtryk</value>
+  </data>
+	<data name="InvalidRuleMethodException" xml:space="preserve">
+    <value>Ugyldig regel metode (instans metoder af target objekt er ikke tilladt)</value>
+  </data>
+	<data name="TypeLoadException" xml:space="preserve">
+    <value>Kunne ikke læse typen '{0}'</value>
+  </data>
+	<data name="StringMinLengthRule" xml:space="preserve">
+    <value>{0} må ikke være mindre end {1} tegn</value>
+  </data>
+	<data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Udførsel af metoden er ikke tilladt</value>
+  </data>
+	<data name="ValidationRuleException" xml:space="preserve">
+    <value>Valideringsregel {1} fejlede in egenskaben {0}</value>
+  </data>
+	<data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>Factory metode findes ikke:{0}</value>
+  </data>
+	<data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Uoverensstemmelse i redigeringsniveau i {0}</value>
   </data>
 </root>

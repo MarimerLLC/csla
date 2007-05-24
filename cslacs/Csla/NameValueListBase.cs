@@ -139,6 +139,15 @@ namespace Csla
         _key = key;
         _value = value;
       }
+
+      /// <summary>
+      /// Returns a string representation of the
+      /// value for this item.
+      /// </summary>
+      public override string ToString()
+      {
+        return _value.ToString();
+      }
     }
 
     #endregion

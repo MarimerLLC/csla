@@ -53,9 +53,15 @@ namespace Csla.Wpf
     /// </summary>
     public void ReloadBindings()
     {
+      ReloadBindings(true);
+    }
+
+    private void ReloadBindings(bool refreshAfter)
+    {
       _bindings.Clear();
       base.FindChildBindings();
-      Refresh();
+      if (refreshAfter)
+        Refresh();
     }
 
     /// <summary>
@@ -133,7 +139,7 @@ namespace Csla.Wpf
       {
         _haveRecentChange = false;
         if (_bindings.Count == 0)
-          ReloadBindings();
+          ReloadBindings(false);
 
         if (source != null && _bindings.Count > 0)
           foreach (BindingInfo item in _bindings)

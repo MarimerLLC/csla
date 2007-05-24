@@ -258,4 +258,22 @@
   <data name="InvalidRuleMethodException" xml:space="preserve">
     <value>Regla invàlida (no està permès instanciar mètodes de l'objecte destí)</value>
   </data>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Discrepància en el nivell d'edició en {0}</value>
+  </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Execució de mètode no permès</value>
+  </data>
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>No existeix aquest mètode : {0}</value>
+  </data>
+  <data name="StringMinLengthRule" xml:space="preserve">
+    <value>{0} no pot ser menor de {1} caràcters</value>
+  </data>
+  <data name="TypeLoadException" xml:space="preserve">
+    <value>Error al carregar el tipus '{0}'</value>
+  </data>
+  <data name="ValidationRuleException" xml:space="preserve">
+    <value>La regla de validació {1} ha fallat a la propietat {0}</value>
+  </data>
 </root>

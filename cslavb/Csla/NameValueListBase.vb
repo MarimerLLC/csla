@@ -157,6 +157,14 @@ Public MustInherit Class NameValueListBase(Of K, V)
       mValue = value
     End Sub
 
+    ''' <summary>
+    ''' Returns the string representation of the
+    ''' value for this item.
+    ''' </summary>
+    Public Overrides Function ToString() As String
+      Return mValue.ToString
+    End Function
+
   End Class
 
 #End Region

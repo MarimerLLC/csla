@@ -48,9 +48,15 @@ Namespace Wpf
     ''' the validation status.
     ''' </summary>
     Public Sub ReloadBindings()
+      ReloadBindings(True)
+    End Sub
+
+    Private Sub ReloadBindings(ByVal refreshAfter As Boolean)
       mBindings.Clear()
       MyBase.FindChildBindings()
-      Refresh()
+      If refreshAfter Then
+        Refresh()
+      End If
     End Sub
 
     ''' <summary>
@@ -118,7 +124,7 @@ Namespace Wpf
       If mHaveRecentChange AndAlso Not source Is Nothing Then
         mHaveRecentChange = False
         If mBindings.Count = 0 Then
-          ReloadBindings()
+          ReloadBindings(False)
         End If
 
         If Not source Is Nothing AndAlso mBindings.Count > 0 Then

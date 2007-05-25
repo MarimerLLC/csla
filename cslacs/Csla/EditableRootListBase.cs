@@ -33,7 +33,7 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Core.IParent
-    where T : Core.IEditableBusinessObject, Core.ISavable
+    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable
   {
 
     #region  SaveItem Methods

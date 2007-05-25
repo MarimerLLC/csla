@@ -12,7 +12,7 @@ namespace Csla.Core
   /// </remarks>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
     "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
-  public interface IEditableCollection : IUndoableObject
+  public interface IEditableCollection : IBusinessObject, ISupportUndo
   {
     /// <summary>
     /// Removes the specified child from the parent

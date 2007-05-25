@@ -8,7 +8,7 @@ namespace Csla.Core
   /// This interface is used by Csla.Core.UndoableBase
   /// to initiate begin, cancel and apply edit operations.
   /// </remarks>
-  public interface IUndoableObject : IBusinessObject
+  public interface IUndoableObject
   {
     /// <summary>
     /// Copies the state of the object and places the copy

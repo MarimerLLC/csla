@@ -62,6 +62,7 @@
     <Compile Include="Core\IParent.cs" />
     <Compile Include="Core\IReportTotalRowCount.cs" />
     <Compile Include="Core\ISavable.cs" />
+    <Compile Include="Core\ISupportUndo.cs" />
     <Compile Include="Core\IUndoableObject.cs" />
     <Compile Include="Core\IBusinessObject.cs" />
     <Compile Include="Core\ICommandObject.cs" />

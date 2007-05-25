@@ -14,7 +14,7 @@ namespace Csla.Core
   /// so as to not clutter up the native interface of
   /// the collection objects.
   /// </remarks>
-  public interface IEditableBusinessObject : IUndoableObject
+  public interface IEditableBusinessObject : IBusinessObject, ISupportUndo
   {
     /// <summary>
     /// Returns <see langword="true" /> if this object's data has been changed.

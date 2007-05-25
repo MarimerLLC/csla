@@ -17,9 +17,9 @@ namespace Csla
   [Serializable()]
   public abstract class BusinessListBase<T, C> :
       Core.ExtendedBindingList<C>,
-      Core.IEditableCollection, ICloneable, Core.ISavable, Core.IParent
+      Core.IEditableCollection, Core.IUndoableObject, ICloneable, Core.ISavable, Core.IParent
     where T : BusinessListBase<T, C>
-    where C : Core.IEditableBusinessObject
+    where C : Core.IEditableBusinessObject, Core.IUndoableObject
   {
 
     #region Constructors

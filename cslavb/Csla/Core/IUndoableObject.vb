@@ -9,7 +9,6 @@ Namespace Core
   ''' to initiate begin, cancel and apply edit operations.
   ''' </remarks>
   Public Interface IUndoableObject
-    Inherits IBusinessObject
 
     ''' <summary>
     ''' Copies the state of the object and places the copy

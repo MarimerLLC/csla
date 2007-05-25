@@ -10,10 +10,11 @@ Imports Csla.Core
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
 Public MustInherit Class BusinessListBase( _
-  Of T As BusinessListBase(Of T, C), C As Core.IEditableBusinessObject)
+  Of T As BusinessListBase(Of T, C), C As {Core.IEditableBusinessObject, Core.IUndoableObject})
   Inherits Core.ExtendedBindingList(Of C)
 
   Implements Core.IEditableCollection
+  Implements Core.IUndoableObject
   Implements ICloneable
   Implements ISavable
   Implements IParent
@@ -121,9 +122,9 @@ Public MustInherit Class BusinessListBase( _
   ''' This method triggers the copying of all child object states.
   ''' </para>
   ''' </remarks>
-  Public Sub BeginEdit()
+  Public Sub BeginEdit() Implements IEditableCollection.BeginEdit
     If Me.IsChild Then
-      Throw New _
+      Throw New  _
         NotSupportedException(My.Resources.NoBeginEditChildException)
     End If
 
@@ -143,9 +144,9 @@ Public MustInherit Class BusinessListBase( _
   ''' This method triggers an undo in all child objects.
   ''' </para>
   ''' </remarks>
-  Public Sub CancelEdit()
+  Public Sub CancelEdit() Implements IEditableCollection.CancelEdit
     If Me.IsChild Then
-      Throw New _
+      Throw New  _
         NotSupportedException(My.Resources.NoCancelEditChildException)
     End If
 
@@ -166,9 +167,9 @@ Public MustInherit Class BusinessListBase( _
   '''  in all child objects.
   ''' </para>
   ''' </remarks>
-  Public Sub ApplyEdit()
+  Public Sub ApplyEdit() Implements IEditableCollection.ApplyEdit
     If Me.IsChild Then
-      Throw New _
+      Throw New  _
         NotSupportedException(My.Resources.NoApplyEditChildException)
     End If
 
@@ -193,7 +194,7 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " N-level undo "
 
-  Private Sub CopyState(ByVal parentEditLevel As Integer) Implements Core.IEditableCollection.CopyState
+  Private Sub CopyState(ByVal parentEditLevel As Integer) Implements Core.IUndoableObject.CopyState
     Dim Child As C
 
     If Me.EditLevel + 1 > parentEditLevel Then
@@ -217,7 +218,7 @@ Public MustInherit Class BusinessListBase( _
 
   Private mCompletelyRemoveChild As Boolean
 
-  Private Sub UndoChanges(ByVal parentEditLevel As Integer) Implements Core.IEditableCollection.UndoChanges
+  Private Sub UndoChanges(ByVal parentEditLevel As Integer) Implements Core.IUndoableObject.UndoChanges
     Dim child As C
     Dim index As Integer
 
@@ -263,7 +264,7 @@ Public MustInherit Class BusinessListBase( _
   End Sub
 
   Private Sub AcceptChanges(ByVal parentEditLevel As Integer) _
-    Implements Core.IEditableCollection.AcceptChanges
+    Implements Core.IUndoableObject.AcceptChanges
     Dim child As C
     Dim index As Integer
 

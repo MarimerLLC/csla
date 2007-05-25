@@ -27,7 +27,7 @@ Imports System.ComponentModel
 ''' </para>
 ''' </remarks>
 <Serializable()> _
-Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObject, Core.ISavable})
+Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable})
   Inherits Core.ExtendedBindingList(Of T)
 
   Implements Core.IParent

@@ -11,7 +11,8 @@ Namespace Core
   ''' the collection objects.
   ''' </remarks>
   Public Interface IEditableBusinessObject
-    Inherits IUndoableObject
+    Inherits IBusinessObject
+    Inherits ISupportUndo
 
     ''' <summary>
     ''' Returns <see langword="true" /> if this object's data has been changed.

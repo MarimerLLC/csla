@@ -13,7 +13,8 @@ Namespace Core
   <System.Diagnostics.CodeAnalysis.SuppressMessage( _
    "Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")> _
   Public Interface IEditableCollection
-    Inherits IUndoableObject
+    Inherits IBusinessObject
+    Inherits ISupportUndo
 
     ''' <summary>
     ''' Removes the specified child from the parent
@@ -39,6 +40,7 @@ Namespace Core
     ''' </summary>
     ''' <returns>A value indicating if this object is both dirty and valid.</returns>
     ReadOnly Property IsSavable() As Boolean
+
   End Interface
 
 End Namespace

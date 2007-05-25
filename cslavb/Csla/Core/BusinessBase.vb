@@ -880,7 +880,7 @@ Namespace Core
     ''' See Chapters 2 and 3 for details on n-level undo and state stacking.
     ''' </para>
     ''' </remarks>
-    Public Sub BeginEdit()
+    Public Sub BeginEdit() Implements IEditableBusinessObject.BeginEdit
       mBindingEdit = True
       CopyState(Me.EditLevel + 1)
     End Sub
@@ -894,7 +894,7 @@ Namespace Core
     ''' object's state to be restored. This resets the object's values
     ''' to the point of the last BeginEdit call.
     ''' </remarks>
-    Public Sub CancelEdit()
+    Public Sub CancelEdit() Implements IEditableBusinessObject.CancelEdit
       UndoChanges(Me.EditLevel - 1)
     End Sub
 
@@ -931,7 +931,7 @@ Namespace Core
     ''' object's state to be discarded, thus committing any changes made
     ''' to the object's state since the last BeginEdit call.
     ''' </remarks>
-    Public Sub ApplyEdit()
+    Public Sub ApplyEdit() Implements IEditableBusinessObject.ApplyEdit
       mBindingEdit = False
       mNeverCommitted = False
       AcceptChanges(Me.EditLevel - 1)

@@ -135,10 +135,10 @@
 	</data>
 	<data name="ParentSetException" xml:space="preserve">
 		<value>Elternwert kann nur für Kindobjekte gesetzt werden</value>
-		<comment>Parent comment can only be set for child objects</comment>
+		<comment>Parent value can only be set for child objects</comment>
 	</data>
 	<data name="ChildDeleteException" xml:space="preserve">
-		<value>kann ein Kindobjekt nicht direkt zum Löschen markieren - benutzen Sie die Eltern Liste</value>
+		<value>Kann ein Kindobjekt nicht direkt zum Löschen markieren - benutzen Sie die übergeordnete Liste</value>
 		<comment>Can not directly mark a child object for deletion - use its parent collection</comment>
 	</data>
 	<data name="NoDeleteRootException" xml:space="preserve">
@@ -146,7 +146,7 @@
 		<comment>Invalid for root objects - use Delete instead</comment>
 	</data>
 	<data name="NoSaveChildException" xml:space="preserve">
-		<value>ein Kindobjekt kann nich direkt gespeichert werden</value>
+		<value>Ein Kindobjekt kann nich direkt gespeichert werden</value>
 		<comment>Can not directly save a child object</comment>
 	</data>
 	<data name="NoSaveEditingException" xml:space="preserve">
@@ -187,22 +187,22 @@
 	</data>
 	<data name="NoSuchValueExistsException" xml:space="preserve">
 		<value>Wert existiert nicht:</value>
-		<comment>No such comment exists:</comment>
+		<comment>No such value exists:</comment>
 	</data>
 	<data name="ErrorReadingValueException" xml:space="preserve">
 		<value>Fehler beim Lesen des Werts:</value>
-		<comment>Error reading comment:</comment>
+		<comment>Error reading value:</comment>
 	</data>
 	<data name="StringToDateException" xml:space="preserve">
-		<value>String Wert kann nicht zu einem Date Wert konvertiert werden</value>
-		<comment>String comment can not be converted to a date</comment>
+		<value>Zeichenfolge kann nicht in ein Datum konvertiert werden</value>
+		<comment>String value can not be converted to a date</comment>
 	</data>
 	<data name="ValueNotSmartDateException" xml:space="preserve">
 		<value>Wert ist kein SmartDate</value>
-		<comment>comment is not a SmartDate</comment>
+		<comment>Value is not a SmartDate</comment>
 	</data>
 	<data name="NoPrincipalAllowedException" xml:space="preserve">
-		<value>Bei Windows Authentifizierung sollte kein Principal Objekt zu DataPortal übergeben werden </value>
+		<value>Bei Windows Authentifizierung sollte kein Principal Objekt an das DataPortal übergeben werden </value>
 		<comment>No principal object should be passed to DataPortal when using Windows integrated security</comment>
 	</data>
 	<data name="BusinessPrincipalException" xml:space="preserve">
@@ -259,18 +259,18 @@
 	</data>
 	<data name="GetIdValueCantBeNull" xml:space="preserve">
 		<value>GetIdValue darf nicht Nothing zurückgeben</value>
-		<comment>GetIdcomment must not return Nothing</comment>
+		<comment>GetIdValue must not return Nothing</comment>
 	</data>
 	<data name="PropertyGetNotAllowed" xml:space="preserve">
-		<value>Eigenschaft get nicht erlaubt</value>
+		<value>Lesen der Eigenschaft nicht erlaubt</value>
 		<comment>Property get not allowed</comment>
 	</data>
 	<data name="PropertySetNotAllowed" xml:space="preserve">
-		<value>Eigenschaft set nicht erlaubt</value>
+		<value>Setzen der Eigenschaft nicht erlaubt</value>
 		<comment>Property set not allowed</comment>
 	</data>
 	<data name="NothingNotValid" xml:space="preserve">
-		<value>Arguement darf nicht Nothing sein</value>
+		<value>Argument darf nicht Nothing sein</value>
 		<comment>Argument must not be Nothing</comment>
 	</data>
 	<data name="PrimitiveTypeRequired" xml:space="preserve">
@@ -278,7 +278,7 @@
 		<comment>Type parameter must be a primitive type</comment>
 	</data>
 	<data name="PropertyCopyFailed" xml:space="preserve">
-		<value>Eigenschaft Kopie fehlgeschlagen</value>
+		<value>Kopieren einer Eigenschaft fehlgeschlagen</value>
 		<comment>Property copy failed</comment>
 	</data>
 	<data name="MaxValueRule" xml:space="preserve">
@@ -301,4 +301,32 @@
 		<value>{0} enspricht nicht den normalen Bedingungen</value>
 		<comment>{0} does not match regular expression</comment>
 	</data>
+	<data name="InvalidRuleMethodException" xml:space="preserve">
+		<value>Ungültige Prüfungsmethode (Instanzmethoden des Zielsobjektes nicht erlaubt)</value>
+		<comment>Invalid rule method (instance methods of the target object not allowed)</comment>
+	</data>
+	<data name="TypeLoadException" xml:space="preserve">
+		<value>Laden des Typs '{0}' fehlgeschlagen</value>
+		<comment>Failed to load type '{0}'</comment>
+	</data>
+	<data name="StringMinLengthRule" xml:space="preserve">
+		<value>{0} kann nicht weniger als {1} Zeichen haben</value>
+		<comment>{0} can not be less than {1} characters</comment>
+	</data>
+	<data name="MethodExecuteNotAllowed" xml:space="preserve">
+		<value>Ausführen der Methode nicht erlaubt</value>
+		<comment>Method execution not allowed</comment>
+	</data>
+	<data name="ValidationRuleException" xml:space="preserve">
+		<value>Validierungsprüfung {1} für Eigenschaft {0} nicht bestanden</value>
+		<comment>Validation rule {1} failed in property {0}</comment>
+	</data>
+	<data name="NoSuchFactoryMethod" xml:space="preserve">
+		<value>Unbekannte Factory-Methode:{0}</value>
+		<comment>No such factory method:{0}</comment>
+	</data>
+	<data name="EditLevelMismatchException" xml:space="preserve">
+		<value>Keine Übereinstimmung der Edit-Level in {0}</value>
+		<comment>Edit level mismatch in {0}</comment>
+	</data>	
 </root>

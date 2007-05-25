@@ -22,7 +22,7 @@ namespace Csla.Wpf
   /// data object and data property values
   /// are changed.
   /// </summary>
-  public class DataPanelBase : Decorator
+  public class DataPanelBase : StackPanel
   {
     private bool _loaded;
     private object _dataObject;

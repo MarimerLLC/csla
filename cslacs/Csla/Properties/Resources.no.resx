@@ -176,15 +176,19 @@
   </data>
   <data name="NoInsertReadOnlyException" xml:space="preserve">
     <value>Insert (legg inn) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="NoRemoveReadOnlyException" xml:space="preserve">
     <value>Remove (fjern) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="NoClearReadOnlyException" xml:space="preserve">
     <value>Clear (blank) er ugyldig for en Read-Only Collection (uredigerbar liste)</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="NoChangeReadOnlyException" xml:space="preserve">
     <value>Verdier kan ikke endres i en Read-Only Collection (uredigerbar liste)</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="StringToDateException" xml:space="preserve">
     <value>String-verdien kan ikke konverteres til  Date (en dato)</value>
@@ -194,15 +198,19 @@
   </data>
   <data name="InvalidDateException" xml:space="preserve">
     <value>Verdien må være en gyldig dato</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="SortingNotSupportedException" xml:space="preserve">
     <value>Sortering er ikke støttet i denne listen</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="SearchingNotSupportedException" xml:space="preserve">
     <value>Søk er ikke støttet i denne listen</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="AddItemException" xml:space="preserve">
     <value>Det er ikke tillatt å legge til verdier</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="NoPrincipalAllowedException" xml:space="preserve">
     <value>Ingen Principal objekter skal sendes til DataPortalen Windows Integrated Security benyttes</value>
@@ -212,18 +220,23 @@
   </data>
   <data name="NoMatchException" xml:space="preserve">
     <value>Ingen tilsvarende verdi eksisterer i listen</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="SecurityDataBase" xml:space="preserve">
     <value>Sikkerhet</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="SecurityStoredProcedure" xml:space="preserve">
     <value>Login</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="SecurityUserParam" xml:space="preserve">
     <value>@user</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="SecurityPasswordParam" xml:space="preserve">
     <value>@pw</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="SmartDateT" xml:space="preserve">
     <value>t</value>
@@ -245,35 +258,132 @@
   </data>
   <data name="BatchQueueJobCompleted" xml:space="preserve">
     <value>Batch jobben er fullført</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="BatchQueueJobPrefix" xml:space="preserve">
     <value>Batch jobb:</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="BatchQueueJobObjectPrefix" xml:space="preserve">
     <value>Jobb objekt:</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="BatchQueueJobFailed" xml:space="preserve">
     <value>Batch-jobben ble ikke fullført pga en feil under utføringen</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="BatchQueueProcStarted" xml:space="preserve">
-    <value>Batchkø prosessoren har startet</value>
+    <value>Batchkø-prosessoren har startet</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="BatchQueueProcName" xml:space="preserve">
     <value>Navn:</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="BatchQueueProcPort" xml:space="preserve">
     <value>Port:</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="BatchQueueProcQueue" xml:space="preserve">
-    <value>Koe:</value>
+    <value>Kø:</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="BatchQueueProcMaxJobs" xml:space="preserve">
     <value>Max antall jobber:</value>
+    <comment>Obsolete from 2.0?</comment>
   </data>
   <data name="Failed" xml:space="preserve">
     <value>Feilet</value>
   </data>
   <data name="FailedOnServer" xml:space="preserve">
     <value>Feilet på serveren</value>
+  </data>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Redigeringsnivået stemmer ikke i {0}</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="ExecuteNotSupportedException" xml:space="preserve">
+    <value>Ulovlig operasjon - utføringen er ikke tillatt</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="GetIdValueCantBeNull" xml:space="preserve">
+    <value>Forretningsobjektet må ha en ID som ikke er null i GetIdValue</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="InsertNotSupportedException" xml:space="preserve">
+    <value>Ugyldig operasjon - insert er ikke tillatt</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="InvalidRuleMethodException" xml:space="preserve">
+    <value>Ugyldig regelmetode (instansemetoder på målobjektet er ikke tillatt)</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="MaxValueRule" xml:space="preserve">
+    <value>{0} kan ikke være større enn {1}</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="MethodCallFailed" xml:space="preserve">
+    <value>Metodekallet feilet</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Metodeutføringen er ikke tillatt</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="MethodNotImplemented" xml:space="preserve">
+    <value>ikke implementert</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="MinValueRule" xml:space="preserve">
+    <value>{0} kan ikke være mindre enn {1}</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>Fabrikkmetoden finnes ikke:{0}</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="NothingNotValid" xml:space="preserve">
+    <value>Argumentet kan ikke være null</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="PrimitiveTypeRequired" xml:space="preserve">
+    <value>Parametertypen må være av primitiv type</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="PropertyCopyFailed" xml:space="preserve">
+    <value>Kopering av Property feilet</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="PropertyGetNotAllowed" xml:space="preserve">
+    <value>Get-metoden for Property er ikke tillatt</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="PropertySetNotAllowed" xml:space="preserve">
+    <value>Set-metoden for Property er ikke tillat</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="RegExMatchRule" xml:space="preserve">
+    <value>{0} matcher ikke et vanlig uttrykk</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="StringMaxLengthRule" xml:space="preserve">
+    <value>{0} kan ikke overgå {1} tegn</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="StringMinLengthRule" xml:space="preserve">
+    <value>{0} kan ikke være færre enn {1} tegn</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="StringRequiredRule" xml:space="preserve">
+    <value>{0} påkrevd</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="TypeLoadException" xml:space="preserve">
+    <value>Feilet i lastingen av type '{0}'</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="ValidationRuleException" xml:space="preserve">
+    <value>Valideringsregel {1} feilet i Property {0}</value>
+    <comment>New for 3.0</comment>
   </data>
 </root>

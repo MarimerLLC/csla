@@ -68,6 +68,7 @@
     <Compile Include="Core\IParent.vb" />
     <Compile Include="Core\IReportTotalRowCount.vb" />
     <Compile Include="Core\ISavable.vb" />
+    <Compile Include="Core\ISupportUndo.vb" />
     <Compile Include="Core\IUndoableObject.vb" />
     <Compile Include="Core\IBusinessObject.vb" />
     <Compile Include="Core\ICommandObject.vb" />
@@ -241,6 +242,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.it.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.km-KH.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.nl.resx">

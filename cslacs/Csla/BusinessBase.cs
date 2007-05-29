@@ -148,7 +148,7 @@ namespace Csla
         throw new NotSupportedException(Resources.NoSaveChildException);
       if (EditLevel > 0)
         throw new Validation.ValidationException(Resources.NoSaveEditingException);
-      if (!IsValid)
+      if (!IsValid && !IsDeleted)
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
       if (IsDirty)
         result = (T)DataPortal.Update(this);

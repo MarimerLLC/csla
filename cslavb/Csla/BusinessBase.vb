@@ -156,7 +156,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
         My.Resources.NoSaveEditingException)
     End If
 
-    If Not IsValid Then
+    If Not IsValid AndAlso Not IsDeleted Then
       Throw New Validation.ValidationException( _
         My.Resources.NoSaveInvalidException)
     End If

@@ -241,6 +241,9 @@
     <EmbeddedResource Include="Properties\Resources.it.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.km-KH.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.nl.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

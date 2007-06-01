@@ -59,6 +59,7 @@ namespace Csla.Web.Design
       resources.ApplyResources(this.TypeComboBox, "TypeComboBox");
       this.TypeComboBox.FormattingEnabled = true;
       this.TypeComboBox.Name = "TypeComboBox";
+      this.TypeComboBox.Sorted = true;
       // 
       // CslaDataSourceConfiguration
       // 

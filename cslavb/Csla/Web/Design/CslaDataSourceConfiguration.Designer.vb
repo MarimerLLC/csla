@@ -41,6 +41,7 @@ Namespace Web.Design
       resources.ApplyResources(Me.TypeComboBox, "TypeComboBox")
       Me.TypeComboBox.FormattingEnabled = True
       Me.TypeComboBox.Name = "TypeComboBox"
+      Me.TypeComboBox.Sorted = True
       '
       'OkButton
       '

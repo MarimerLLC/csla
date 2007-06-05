@@ -42,17 +42,16 @@ namespace Csla.DataPortalClient
     /// </param>
     public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
     {
-      using (ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint))
-      {
-        IWcfPortal svr = cf.CreateChannel();
-        WcfResponse response =
-          svr.Create(new CreateRequest(objectType, criteria, context));
+      ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint);
+      IWcfPortal svr = cf.CreateChannel();
+      WcfResponse response =
+        svr.Create(new CreateRequest(objectType, criteria, context));
+      cf.Close();
 
-        object result = response.Result;
-        if (result is Exception)
-          throw (Exception)result;
-        return (DataPortalResult)result;
-      }
+      object result = response.Result;
+      if (result is Exception)
+        throw (Exception)result;
+      return (DataPortalResult)result;
     }
 
     /// <summary>
@@ -66,17 +65,16 @@ namespace Csla.DataPortalClient
     /// </param>
     public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
-      using (ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint))
-      {
-        IWcfPortal svr = cf.CreateChannel();
-        WcfResponse response =
-          svr.Fetch(new FetchRequest(objectType, criteria, context));
+      ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint);
+      IWcfPortal svr = cf.CreateChannel();
+      WcfResponse response =
+        svr.Fetch(new FetchRequest(objectType, criteria, context));
+      cf.Close();
 
-        object result = response.Result;
-        if (result is Exception)
-          throw (Exception)result;
-        return (DataPortalResult)result;
-      }
+      object result = response.Result;
+      if (result is Exception)
+        throw (Exception)result;
+      return (DataPortalResult)result;
     }
 
     /// <summary>
@@ -89,17 +87,16 @@ namespace Csla.DataPortalClient
     /// </param>
     public DataPortalResult Update(object obj, DataPortalContext context)
     {
-      using (ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint))
-      {
-        IWcfPortal svr = cf.CreateChannel();
-        WcfResponse response =
-          svr.Update(new UpdateRequest(obj, context));
+      ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint);
+      IWcfPortal svr = cf.CreateChannel();
+      WcfResponse response =
+        svr.Update(new UpdateRequest(obj, context));
+      cf.Close();
 
-        object result = response.Result;
-        if (result is Exception)
-          throw (Exception)result;
-        return (DataPortalResult)result;
-      }
+      object result = response.Result;
+      if (result is Exception)
+        throw (Exception)result;
+      return (DataPortalResult)result;
     }
 
     /// <summary>
@@ -112,17 +109,16 @@ namespace Csla.DataPortalClient
     /// </param>
     public DataPortalResult Delete(object criteria, DataPortalContext context)
     {
-      using (ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint))
-      {
-        IWcfPortal svr = cf.CreateChannel();
-        WcfResponse response =
-          svr.Delete(new DeleteRequest(criteria, context));
+      ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint);
+      IWcfPortal svr = cf.CreateChannel();
+      WcfResponse response =
+        svr.Delete(new DeleteRequest(criteria, context));
+      cf.Close();
 
-        object result = response.Result;
-        if (result is Exception)
-          throw (Exception)result;
-        return (DataPortalResult)result;
-      }
+      object result = response.Result;
+      if (result is Exception)
+        throw (Exception)result;
+      return (DataPortalResult)result;
     }
 
     #endregion

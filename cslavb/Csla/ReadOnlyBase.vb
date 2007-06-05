@@ -197,9 +197,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
       New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
     Dim result As Boolean = CanReadProperty(propertyName)
     If throwOnFalse AndAlso result = False Then
-      Throw New System.Security.SecurityException( _
+      Dim ex As New System.Security.SecurityException( _
         String.Format("{0} ({1})", _
         My.Resources.PropertyGetNotAllowed, propertyName))
+      ex.Action = System.Security.Permissions.SecurityAction.Deny
+      Throw ex
     End If
     Return result
 
@@ -217,9 +219,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
     Dim result As Boolean = CanReadProperty(propertyName)
     If throwOnFalse AndAlso result = False Then
-      Throw New System.Security.SecurityException( _
+      Dim ex As New System.Security.SecurityException( _
         String.Format("{0} ({1})", _
         My.Resources.PropertyGetNotAllowed, propertyName))
+      ex.Action = System.Security.Permissions.SecurityAction.Deny
+      Throw ex
     End If
     Return result
 
@@ -331,9 +335,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
       GetFrame(1).GetMethod.Name
     Dim result As Boolean = CanExecuteMethod(methodName)
     If throwOnFalse AndAlso result = False Then
-      Throw New System.Security.SecurityException( _
+      Dim ex As New System.Security.SecurityException( _
         String.Format("{0} ({1})", _
         My.Resources.MethodExecuteNotAllowed, methodName))
+      ex.Action = System.Security.Permissions.SecurityAction.Deny
+      Throw ex
     End If
     Return result
 
@@ -351,9 +357,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
     Dim result As Boolean = CanExecuteMethod(methodName)
     If throwOnFalse AndAlso result = False Then
-      Throw New System.Security.SecurityException( _
+      Dim ex As New System.Security.SecurityException( _
         String.Format("{0} ({1})", _
         My.Resources.MethodExecuteNotAllowed, methodName))
+      ex.Action = System.Security.Permissions.SecurityAction.Deny
+      Throw ex
     End If
     Return result
 

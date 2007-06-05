@@ -392,9 +392,11 @@ Namespace Core
         GetFrame(1).GetMethod.Name.Substring(4)
       Dim result As Boolean = CanReadProperty(propertyName)
       If throwOnFalse AndAlso result = False Then
-        Throw New System.Security.SecurityException( _
+        Dim ex As New System.Security.SecurityException( _
           String.Format("{0} ({1})", _
           My.Resources.PropertyGetNotAllowed, propertyName))
+        ex.Action = System.Security.Permissions.SecurityAction.Deny
+        Throw ex
       End If
       Return result
 
@@ -412,9 +414,11 @@ Namespace Core
 
       Dim result As Boolean = CanReadProperty(propertyName)
       If throwOnFalse AndAlso result = False Then
-        Throw New System.Security.SecurityException( _
+        Dim ex As New System.Security.SecurityException( _
           String.Format("{0} ({1})", _
           My.Resources.PropertyGetNotAllowed, propertyName))
+        ex.Action = System.Security.Permissions.SecurityAction.Deny
+        Throw ex
       End If
       Return result
 
@@ -500,8 +504,10 @@ Namespace Core
         New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name.Substring(4)
       Dim result As Boolean = CanWriteProperty(propertyName)
       If throwOnFalse AndAlso result = False Then
-        Throw New System.Security.SecurityException( _
+        Dim ex As New System.Security.SecurityException( _
           String.Format("{0} ({1})", My.Resources.PropertySetNotAllowed, propertyName))
+        ex.Action = System.Security.Permissions.SecurityAction.Deny
+        Throw ex
       End If
       Return result
 
@@ -519,8 +525,10 @@ Namespace Core
 
       Dim result As Boolean = CanWriteProperty(propertyName)
       If throwOnFalse AndAlso result = False Then
-        Throw New System.Security.SecurityException( _
+        Dim ex As New System.Security.SecurityException( _
           String.Format("{0} ({1})", My.Resources.PropertySetNotAllowed, propertyName))
+        ex.Action = System.Security.Permissions.SecurityAction.Deny
+        Throw ex
       End If
       Return result
 
@@ -628,9 +636,11 @@ Namespace Core
         GetFrame(1).GetMethod.Name
       Dim result As Boolean = CanExecuteMethod(methodName)
       If throwOnFalse AndAlso result = False Then
-        Throw New System.Security.SecurityException( _
+        Dim ex As New System.Security.SecurityException( _
           String.Format("{0} ({1})", _
           My.Resources.MethodExecuteNotAllowed, methodName))
+        ex.Action = System.Security.Permissions.SecurityAction.Deny
+        Throw ex
       End If
       Return result
 
@@ -648,9 +658,11 @@ Namespace Core
 
       Dim result As Boolean = CanExecuteMethod(methodName)
       If throwOnFalse AndAlso result = False Then
-        Throw New System.Security.SecurityException( _
+        Dim ex As New System.Security.SecurityException( _
           String.Format("{0} ({1})", _
           My.Resources.MethodExecuteNotAllowed, methodName))
+        ex.Action = System.Security.Permissions.SecurityAction.Deny
+        Throw ex
       End If
       Return result
 

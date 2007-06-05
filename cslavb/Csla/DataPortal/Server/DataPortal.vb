@@ -58,9 +58,15 @@ Namespace Server
         ClearContext(context)
         Return result
 
-      Catch
-        ClearContext(context)
+      Catch ex As Csla.Server.DataPortalException
         Throw
+
+      Catch ex As Exception
+        Throw New DataPortalException("DataPortal.Create " & _
+          My.Resources.FailedOnServer, ex, New DataPortalResult)
+
+      Finally
+        ClearContext(context)
       End Try
 
     End Function
@@ -108,9 +114,15 @@ Namespace Server
         ClearContext(context)
         Return result
 
-      Catch
-        ClearContext(context)
+      Catch ex As Csla.Server.DataPortalException
         Throw
+
+      Catch ex As Exception
+        Throw New DataPortalException("DataPortal.Fetch " & _
+          My.Resources.FailedOnServer, ex, New DataPortalResult)
+
+      Finally
+        ClearContext(context)
       End Try
 
     End Function
@@ -178,9 +190,15 @@ Namespace Server
         ClearContext(context)
         Return result
 
-      Catch
-        ClearContext(context)
+      Catch ex As Csla.Server.DataPortalException
         Throw
+
+      Catch ex As Exception
+        Throw New DataPortalException("DataPortal.Update " & _
+          My.Resources.FailedOnServer, ex, New DataPortalResult)
+
+      Finally
+        ClearContext(context)
       End Try
 
     End Function
@@ -227,9 +245,15 @@ Namespace Server
         ClearContext(context)
         Return result
 
-      Catch
-        ClearContext(context)
+      Catch ex As Csla.Server.DataPortalException
         Throw
+
+      Catch ex As Exception
+        Throw New DataPortalException("DataPortal.Delete " & _
+          My.Resources.FailedOnServer, ex, New DataPortalResult)
+
+      Finally
+        ClearContext(context)
       End Try
 
     End Function
@@ -269,8 +293,10 @@ Namespace Server
           Exit Sub
 
         Else
-          Throw New System.Security.SecurityException( _
+          Dim ex As New System.Security.SecurityException( _
             My.Resources.NoPrincipalAllowedException)
+          ex.Action = System.Security.Permissions.SecurityAction.Deny
+          Throw ex
         End If
       End If
 
@@ -280,14 +306,18 @@ Namespace Server
           ApplicationContext.User = context.Principal
 
         Else
-          Throw New System.Security.SecurityException( _
+          Dim ex As New System.Security.SecurityException( _
             My.Resources.BusinessPrincipalException & " " & _
             CType(context.Principal, Object).ToString())
+          ex.Action = System.Security.Permissions.SecurityAction.Deny
+          Throw ex
         End If
 
       Else
-        Throw New System.Security.SecurityException( _
+        Dim ex As New System.Security.SecurityException( _
           My.Resources.BusinessPrincipalException & " Nothing")
+        ex.Action = System.Security.Permissions.SecurityAction.Deny
+        Throw ex
       End If
 
     End Sub

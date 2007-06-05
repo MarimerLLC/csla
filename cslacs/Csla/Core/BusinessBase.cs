@@ -387,9 +387,13 @@ namespace Csla.Core
         GetFrame(1).GetMethod().Name.Substring(4);
       bool result = CanReadProperty(propertyName);
       if (throwOnFalse && result == false)
-        throw new System.Security.SecurityException(
-          String.Format("{0} ({1})", 
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(
+          String.Format("{0} ({1})",
           Resources.PropertyGetNotAllowed, propertyName));
+        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        throw ex;
+      }
       return result;
     }
 
@@ -405,9 +409,13 @@ namespace Csla.Core
     {
       bool result = CanReadProperty(propertyName);
       if (throwOnFalse && result == false)
-        throw new System.Security.SecurityException(
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(
           String.Format("{0} ({1})",
           Resources.PropertyGetNotAllowed, propertyName));
+        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        throw ex;
+      }
       return result;
     }
 
@@ -489,8 +497,12 @@ namespace Csla.Core
       string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
       bool result = CanWriteProperty(propertyName);
       if (throwOnFalse && result == false)
-        throw new System.Security.SecurityException(
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(
           String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
+        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        throw ex;
+      }
       return result;
     }
 
@@ -506,8 +518,12 @@ namespace Csla.Core
     {
       bool result = CanWriteProperty(propertyName);
       if (throwOnFalse && result == false)
-        throw new System.Security.SecurityException(
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(
           String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
+        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        throw ex;
+      }
       return result;
     }
 

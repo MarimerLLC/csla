@@ -207,8 +207,18 @@ namespace Csla
         result = ex.Result;
         if (proxy.IsServerRemote)
           ApplicationContext.SetGlobalContext(result.GlobalContext);
+        string innerMessage = string.Empty;
+        if (ex.InnerException is Csla.Server.CallMethodException)
+        {
+          if (ex.InnerException.InnerException != null)
+            innerMessage = ex.InnerException.InnerException.Message;
+        }
+        else
+        {
+          innerMessage = ex.InnerException.Message;
+        }
         throw new DataPortalException(
-          String.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, ex.InnerException.InnerException), 
+          String.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, innerMessage), 
           ex.InnerException, result.ReturnObject);
       }
 

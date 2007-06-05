@@ -63,6 +63,16 @@ namespace Csla.Server
         }
         return result;
       }
+      catch (Csla.Server.DataPortalException ex)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new DataPortalException(
+          "DataPortal.Create " + Resources.FailedOnServer,
+          ex, new DataPortalResult());
+      }
       finally
       {
         ClearContext(context);
@@ -111,6 +121,16 @@ namespace Csla.Server
             break;
         }
         return result;
+      }
+      catch (Csla.Server.DataPortalException ex)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new DataPortalException(
+          "DataPortal.Fetch " + Resources.FailedOnServer,
+          ex, new DataPortalResult());
       }
       finally
       {
@@ -179,6 +199,16 @@ namespace Csla.Server
         }
         return result;
       }
+      catch (Csla.Server.DataPortalException ex)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new DataPortalException(
+          "DataPortal.Update " + Resources.FailedOnServer,
+          ex, new DataPortalResult());
+      }
       finally
       {
         ClearContext(context);
@@ -228,6 +258,16 @@ namespace Csla.Server
         }
         return result;
       }
+      catch (Csla.Server.DataPortalException ex)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new DataPortalException(
+          "DataPortal.Delete " + Resources.FailedOnServer,
+          ex, new DataPortalResult());
+      }
       finally
       {
         ClearContext(context);
@@ -253,9 +293,9 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
-      System.Threading.Thread.CurrentThread.CurrentCulture = 
+      System.Threading.Thread.CurrentThread.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture);
-      System.Threading.Thread.CurrentThread.CurrentUICulture = 
+      System.Threading.Thread.CurrentThread.CurrentUICulture =
         new System.Globalization.CultureInfo(context.ClientUICulture);
 
       if (ApplicationContext.AuthenticationType == "Windows")
@@ -269,22 +309,37 @@ namespace Csla.Server
         }
         else
         {
-          throw new System.Security.SecurityException(Resources.NoPrincipalAllowedException);
+          System.Security.SecurityException ex =
+            new System.Security.SecurityException(Resources.NoPrincipalAllowedException);
+          ex.Action = System.Security.Permissions.SecurityAction.Deny;
+          throw ex;
         }
       }
       // We expect the Principal to be of the type BusinesPrincipal
       if (context.Principal != null)
       {
         if (context.Principal is Security.BusinessPrincipalBase)
+        {
           ApplicationContext.User = context.Principal;
+        }
         else
-          throw new System.Security.SecurityException(
-            Resources.BusinessPrincipalException + " " + 
-            ((object)context.Principal).ToString());
+        {
+          System.Security.SecurityException ex =
+            new System.Security.SecurityException(
+              Resources.BusinessPrincipalException + " " +
+              ((object)context.Principal).ToString());
+          ex.Action = System.Security.Permissions.SecurityAction.Deny;
+          throw ex;
+        }
       }
       else
-        throw new System.Security.SecurityException(
-          Resources.BusinessPrincipalException + " Nothing");
+      {
+        System.Security.SecurityException ex =
+          new System.Security.SecurityException(
+            Resources.BusinessPrincipalException + " Nothing");
+        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        throw ex;
+      }
     }
 
     private static void ClearContext(DataPortalContext context)

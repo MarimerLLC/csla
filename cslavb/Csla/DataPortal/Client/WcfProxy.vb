@@ -1,3 +1,4 @@
+#If Not NET20 Then
 Imports System
 Imports System.Collections.Generic
 Imports System.Text
@@ -122,3 +123,4 @@ Namespace DataPortalClient
   End Class
 
 End Namespace
+#End If

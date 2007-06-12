@@ -1,3 +1,4 @@
+#If Not NET20 Then
 Imports System
 Imports System.Collections.Generic
 Imports System.Text
@@ -34,3 +35,4 @@ Namespace Server.Hosts.WcfChannel
     End Property
   End Class
 End Namespace
+#End If

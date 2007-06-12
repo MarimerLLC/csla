@@ -1,3 +1,4 @@
+#If Not NET20 Then
 Imports System.Collections.ObjectModel
 Imports System.ComponentModel
 Imports System.Text
@@ -194,3 +195,4 @@ Namespace Wpf
   End Class
 
 End Namespace
+#End If

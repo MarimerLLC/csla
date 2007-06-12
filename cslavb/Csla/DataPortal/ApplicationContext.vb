@@ -332,6 +332,17 @@ Public Module ApplicationContext
     End Get
   End Property
 
+#If NET20 Then
+  ''' <summary>
+  ''' Gets the serialization formatter type used by CSLA .NET
+  ''' for all explicit object serialization (such as cloning,
+  ''' n-level undo, etc).
+  ''' </summary>
+  ''' <remarks>
+  ''' Always uses the standard Microsoft .NET 
+  ''' <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/>.
+  ''' </remarks>
+#Else
   ''' <summary>
   ''' Gets the serialization formatter type used by CSLA .NET
   ''' for all explicit object serialization (such as cloning,
@@ -368,6 +379,7 @@ Public Module ApplicationContext
   ''' NetDataContractSerializer</see> provided as part of WCF.
   ''' </para>
   ''' </remarks>
+#End If
   Public ReadOnly Property SerializationFormatter() As SerializationFormatters
     Get
       Dim tmp As String = ConfigurationManager.AppSettings("CslaSerializationFormatter")
@@ -388,12 +400,14 @@ Public Module ApplicationContext
     ''' <see cref="BinaryFormatter"/>.
     ''' </summary>
     BinaryFormatter
+#If Not NET20 Then
     ''' <summary>
     ''' Use the Microsoft .NET 3.0
     ''' <see cref="System.Runtime.Serialization.NetDataContractSerializer">
     ''' NetDataContractSerializer</see> provided as part of WCF.
     ''' </summary>
     NetDataContractSerializer
+#End If
   End Enum
 
 #End Region

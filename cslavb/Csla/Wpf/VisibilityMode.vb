@@ -1,3 +1,4 @@
+#If Not NET20 Then
 Namespace Wpf
 
   ''' <summary>
@@ -19,3 +20,4 @@ Namespace Wpf
   End Enum
 
 End Namespace
+#End If

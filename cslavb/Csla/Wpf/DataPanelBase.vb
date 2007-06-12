@@ -1,3 +1,4 @@
+#If Not NET20 Then
 Imports System.Collections.Specialized
 Imports System.Text
 Imports System.Windows
@@ -264,3 +265,4 @@ Namespace Wpf
   End Class
 
 End Namespace
+#End If

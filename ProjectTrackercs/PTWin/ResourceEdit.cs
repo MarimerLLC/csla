@@ -73,22 +73,26 @@ namespace PTWin
     {
       using (StatusBusy busy = new StatusBusy("Saving..."))
       {
-        // stop the flow of events
+        // disable events
         this.ResourceBindingSource.RaiseListChangedEvents = false;
         this.AssignmentsBindingSource.RaiseListChangedEvents = false;
-        // do the save
+        // apply changes in memory
         this.AssignmentsBindingSource.EndEdit();
         this.ResourceBindingSource.EndEdit();
         try
         {
+          // clone the object
           Resource temp = Resource.Clone();
+          // save the clone
           _resource = temp.Save();
+          // rebind the UI
           if (rebind)
           {
             // rebind the UI
             this.ResourceBindingSource.DataSource = null;
             this.AssignmentsBindingSource.DataSource = this.ResourceBindingSource;
             this.ResourceBindingSource.DataSource = _resource;
+            // check authorization
             ApplyAuthorizationRules();
           }
         }
@@ -106,8 +110,10 @@ namespace PTWin
         }
         finally
         {
+          // restore events
           this.ResourceBindingSource.RaiseListChangedEvents = true;
           this.AssignmentsBindingSource.RaiseListChangedEvents = true;
+          // refresh the UI
           this.ResourceBindingSource.ResetBindings(false);
           this.AssignmentsBindingSource.ResetBindings(false);
         }
@@ -127,14 +133,31 @@ namespace PTWin
 
     private void Cancel_Button_Click(object sender, EventArgs e)
     {
-      this.AssignmentsBindingSource.CancelEdit();
-      this.ResourceBindingSource.CancelEdit();
+      // disable events
+      this.ResourceBindingSource.RaiseListChangedEvents = false;
+      this.AssignmentsBindingSource.RaiseListChangedEvents = false;
+
+      // unbind the UI
+      UnbindBindingSource(this.AssignmentsBindingSource, true, false);
+      UnbindBindingSource(this.ResourceBindingSource, true, true);
+
+      // rebind the UI
+      this.ResourceBindingSource.DataSource = null;
+      this.AssignmentsBindingSource.DataSource = this.ResourceBindingSource;
+      this.ResourceBindingSource.DataSource = _resource;
+
+      // restore events
+      this.ResourceBindingSource.RaiseListChangedEvents = true;
+      this.AssignmentsBindingSource.RaiseListChangedEvents = true;
+
+      // refresh the UI
+      this.ResourceBindingSource.ResetBindings(false);
+      this.AssignmentsBindingSource.ResetBindings(false);
     }
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
-      this.AssignmentsBindingSource.CancelEdit();
-      this.ResourceBindingSource.CancelEdit();
+      Cancel_Button_Click(sender, e);
       this.Close();
     }
 

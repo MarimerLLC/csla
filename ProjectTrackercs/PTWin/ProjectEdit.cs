@@ -128,14 +128,30 @@ namespace PTWin
 
     private void Cancel_Button_Click(object sender, EventArgs e)
     {
-      this.resourcesBindingSource.CancelEdit();
-      this.projectBindingSource.CancelEdit();
+      // disable events
+      this.projectBindingSource.RaiseListChangedEvents = false;
+      this.resourcesBindingSource.RaiseListChangedEvents = false;
+
+      // unbind the UI
+      UnbindBindingSource(this.resourcesBindingSource, true, false);
+      UnbindBindingSource(this.projectBindingSource, true, true);
+
+      // rebind the UI
+      this.resourcesBindingSource.DataSource = this.projectBindingSource;
+      this.projectBindingSource.DataSource = _project;
+
+      // restore events
+      this.projectBindingSource.RaiseListChangedEvents = true;
+      this.resourcesBindingSource.RaiseListChangedEvents = true;
+      
+      // refresh the UI
+      this.projectBindingSource.ResetBindings(false);
+      this.resourcesBindingSource.ResetBindings(false);
     }
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
-      this.resourcesBindingSource.CancelEdit();
-      this.projectBindingSource.CancelEdit();
+      Cancel_Button_Click(sender, e);
       this.Close();
     }
 

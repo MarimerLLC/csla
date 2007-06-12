@@ -72,4 +72,26 @@ Public Class WinPart
 
 #End Region
 
+#Region " Data binding helpers "
+
+  Protected Sub UnbindBindingSource( _
+    ByVal source As BindingSource, ByVal cancel As Boolean, ByVal isRoot As Boolean)
+
+    Dim current As System.ComponentModel.IEditableObject = _
+            TryCast(source.Current, System.ComponentModel.IEditableObject)
+    If isRoot Then
+      source.DataSource = Nothing
+    End If
+    If current IsNot Nothing Then
+      If cancel Then
+        current.CancelEdit()
+      Else
+        current.EndEdit()
+      End If
+    End If
+
+  End Sub
+
+#End Region
+
 End Class

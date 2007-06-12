@@ -126,16 +126,33 @@ Public Class ResourceEdit
   Private Sub Cancel_Button_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles Cancel_Button.Click
 
-    Me.AssignmentsBindingSource.CancelEdit()
-    Me.ResourceBindingSource.CancelEdit()
+    ' disable events
+    Me.ResourceBindingSource.RaiseListChangedEvents = False
+    Me.AssignmentsBindingSource.RaiseListChangedEvents = False
+
+    ' unbind the UI
+    UnbindBindingSource(Me.AssignmentsBindingSource, True, False)
+    UnbindBindingSource(Me.ResourceBindingSource, True, True)
+
+    ' rebind the UI
+    Me.ResourceBindingSource.DataSource = Nothing
+    Me.AssignmentsBindingSource.DataSource = Me.ResourceBindingSource
+    Me.ResourceBindingSource.DataSource = mResource
+
+    ' restore events
+    Me.ResourceBindingSource.RaiseListChangedEvents = True
+    Me.AssignmentsBindingSource.RaiseListChangedEvents = True
+
+    ' refresh the UI
+    Me.ResourceBindingSource.ResetBindings(False)
+    Me.AssignmentsBindingSource.ResetBindings(False)
 
   End Sub
 
   Private Sub CloseButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles CloseButton.Click
 
-    Me.AssignmentsBindingSource.CancelEdit()
-    Me.ResourceBindingSource.CancelEdit()
+    Cancel_Button_Click(sender, e)
     Me.Close()
 
   End Sub

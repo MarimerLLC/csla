@@ -126,16 +126,32 @@ Public Class ProjectEdit
   Private Sub Cancel_Button_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles Cancel_Button.Click
 
-    Me.ResourcesBindingSource.CancelEdit()
-    Me.ProjectBindingSource.CancelEdit()
+    ' disable events
+    Me.ProjectBindingSource.RaiseListChangedEvents = False
+    Me.ResourcesBindingSource.RaiseListChangedEvents = False
+
+    ' unbind the UI
+    UnbindBindingSource(Me.ResourcesBindingSource, True, False)
+    UnbindBindingSource(Me.ProjectBindingSource, True, True)
+
+    ' rebind the UI
+    Me.ResourcesBindingSource.DataSource = Me.ProjectBindingSource
+    Me.ProjectBindingSource.DataSource = mProject
+
+    ' restore events
+    Me.ProjectBindingSource.RaiseListChangedEvents = True
+    Me.ResourcesBindingSource.RaiseListChangedEvents = True
+
+    ' refresh the UI
+    Me.ProjectBindingSource.ResetBindings(False)
+    Me.ResourcesBindingSource.ResetBindings(False)
 
   End Sub
 
   Private Sub CloseButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles CloseButton.Click
 
-    Me.ResourcesBindingSource.CancelEdit()
-    Me.ProjectBindingSource.CancelEdit()
+    Cancel_Button_Click(sender, e)
     Me.Close()
 
   End Sub

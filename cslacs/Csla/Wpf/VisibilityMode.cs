@@ -1,3 +1,4 @@
+#if !NET20
 using System;
 
 namespace Csla.Wpf
@@ -21,3 +22,4 @@ namespace Csla.Wpf
     Hidden
   }
 }
+#endif

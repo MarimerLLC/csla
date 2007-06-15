@@ -17,24 +17,30 @@ namespace Csla.Wpf
   /// </summary>
   public class CslaDataProvider : DataSourceProvider
   {
-    private Type _objectType = null;
-    private string _factoryMethod = string.Empty;
-    private ObservableCollection<object> _factoryParameters;
-    private bool _isAsynchronous;
-
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public CslaDataProvider()
     {
       _factoryParameters = new ObservableCollection<object>();
-      _factoryParameters.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
+      _factoryParameters.CollectionChanged += 
+        new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
     }
 
-    void _factoryParameters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    void _factoryParameters_CollectionChanged(
+      object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
       BeginQuery();
     }
+
+    #region Properties
+
+    private Type _objectType = null;
+    private bool _manageLifetime;
+    private string _factoryMethod = string.Empty;
+    private ObservableCollection<object> _factoryParameters;
+    private bool _isAsynchronous;
+
 
     /// <summary>
     /// Gets or sets the type of object 
@@ -50,6 +56,25 @@ namespace Csla.Wpf
       { 
         _objectType = value;
         OnPropertyChanged(new PropertyChangedEventArgs("TypeName"));
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// data control should manage the lifetime of
+    /// the business object, including using n-level
+    /// undo.
+    /// </summary>
+    public bool ManageObjectLifetime
+    {
+      get
+      {
+        return _manageLifetime;
+      }
+      set
+      {
+        _manageLifetime = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("ManageObjectLifetime"));
       }
     }
 	
@@ -94,7 +119,11 @@ namespace Csla.Wpf
       get { return _isAsynchronous; }
       set { _isAsynchronous = value; }
     }
-	
+
+    #endregion
+
+    #region Query
+
     /// <summary>
     /// Overridden. Starts to create the requested object, 
     /// either immediately or on a background thread, 
@@ -104,10 +133,12 @@ namespace Csla.Wpf
     {
       if (this.IsRefreshDeferred)
         return;
+
       QueryRequest request = new QueryRequest();
       request.ObjectType = _objectType;
       request.FactoryMethod = _factoryMethod;
       request.FactoryParameters = _factoryParameters;
+      request.ManageObjectLifetime = _manageLifetime;
 
       if (IsAsynchronous)
         System.Threading.ThreadPool.QueueUserWorkItem(DoQuery, request);
@@ -172,6 +203,13 @@ namespace Csla.Wpf
         exceptionResult = ex;
       }
 
+      if (request.ManageObjectLifetime && result != null)
+      {
+        Csla.Core.ISupportUndo undo = result as Csla.Core.ISupportUndo;
+        if (undo != null)
+          undo.BeginEdit();
+      }
+
       // return result to base class
       base.OnQueryFinished(result, exceptionResult, null, null);
     }
@@ -204,7 +242,100 @@ namespace Csla.Wpf
         set { _factoryParameters = 
           new ObservableCollection<object>(new List<object>(value)); }
       }
+      private bool _manageLifetime;
+
+      public bool ManageObjectLifetime
+      {
+        get { return _manageLifetime; }
+        set { _manageLifetime = value; }
+      }
+	
     }
+
+    #endregion
+
+    #endregion
+
+    #region Cancel/Update
+
+    /// <summary>
+    /// Cancels changes to the business object, returning
+    /// it to its previous state.
+    /// </summary>
+    /// <remarks>
+    /// This metod does nothing unless ManageLifetime is
+    /// set to true and the object supports n-level undo.
+    /// </remarks>
+    public void Cancel()
+    {
+      Csla.Core.ISupportUndo undo = this.Data as Csla.Core.ISupportUndo;
+      if (undo != null && _manageLifetime)
+      {
+        undo.CancelEdit();
+        undo.BeginEdit();
+      }
+    }
+
+    /// <summary>
+    /// Accepts changes to the business object, and
+    /// commits them by calling the object's Save()
+    /// method.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This method does nothing unless the object
+    /// implements Csla.Core.ISavable.
+    /// </para><para>
+    /// If the object implements IClonable, it
+    /// will be cloned, and the clone will be
+    /// saved.
+    /// </para><para>
+    /// If the object supports n-level undo and
+    /// ManageLifetime is true, then this method
+    /// will automatically call ApplyEdit() and
+    /// BeginEdit() appropriately.
+    /// </para>
+    /// </remarks>
+    public void Save()
+    {
+      // only do something if the object implements
+      // ISavable
+      Csla.Core.ISavable savable = this.Data as Csla.Core.ISavable;
+      if (savable != null)
+      {
+        object result = savable;
+        Exception exceptionResult = null;
+        try
+        {
+          // apply edits in memory
+          Csla.Core.ISupportUndo undo = savable as Csla.Core.ISupportUndo;
+          if (undo != null && _manageLifetime)
+            undo.ApplyEdit();
+
+          // clone the object if possible
+          ICloneable clonable = savable as ICloneable;
+          if (clonable != null)
+            savable = (Csla.Core.ISavable)clonable.Clone();
+
+          // save the clone
+          result = savable.Save();
+
+          // start editing the resulting object
+          undo = result as Csla.Core.ISupportUndo;
+          if (undo != null && _manageLifetime)
+            undo.BeginEdit();
+        }
+        catch (Exception ex)
+        {
+          exceptionResult = ex;
+        }
+        // clear previous object
+        base.OnQueryFinished(null, null, null, null);
+        // return result to base class
+        base.OnQueryFinished(result, exceptionResult, null, null);
+      }
+    }
+
 
     #endregion
   }

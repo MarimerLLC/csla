@@ -443,6 +443,16 @@ Public Module DataPortal
 
   End Function
 
+  ''' <summary>
+  ''' Releases any remote data portal proxy object, so
+  ''' the next data portal call will create a new
+  ''' proxy instance.
+  ''' </summary>
+  Public Sub ReleaseProxy()
+
+    mPortal = Nothing
+
+  End Sub
 #End Region
 
 #Region " Security "

@@ -20,14 +20,14 @@
 [Serializable()]
 private class Criteria
 {
-  private $IdType$ mId;
+  private $IdType$ _id;
   public $IdType$ Id
   {
     get
-    { return mId; }
+    { return _id; }
   }
   public Criteria($IdType$ id)
-  { mId = id; }
+  { _id = id; }
 }
 
 protected override void DataPortal_Create()

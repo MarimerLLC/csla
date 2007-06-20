@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Windows.Input;
 using System.Windows.Data;
 using System.Reflection;
 using Csla.Properties;
@@ -17,11 +18,13 @@ namespace Csla.Wpf
   /// </summary>
   public class CslaDataProvider : DataSourceProvider
   {
+
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public CslaDataProvider()
     {
+      _commandManager = new CslaDataProviderCommandManager(this);
       _factoryParameters = new ObservableCollection<object>();
       _factoryParameters.CollectionChanged += 
         new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
@@ -40,7 +43,20 @@ namespace Csla.Wpf
     private string _factoryMethod = string.Empty;
     private ObservableCollection<object> _factoryParameters;
     private bool _isAsynchronous;
+    private CslaDataProviderCommandManager _commandManager;
 
+    /// <summary>
+    /// Gets an object that can be used to execute
+    /// Save and Undo commands on this CslaDataProvider 
+    /// through XAML command bindings.
+    /// </summary>
+    public CslaDataProviderCommandManager CommandManager
+    {
+      get
+      {
+        return _commandManager;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the type of object 
@@ -335,9 +351,9 @@ namespace Csla.Wpf
         base.OnQueryFinished(result, exceptionResult, null, null);
       }
     }
-
-
+    
     #endregion
+
   }
 }
 #endif

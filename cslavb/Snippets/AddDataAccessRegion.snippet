@@ -20,14 +20,14 @@
 <Serializable()> _
 Private Class Criteria
 
-  private mId As $IdType$
+  private _id As $IdType$
   Public ReadOnly Property Id() As $IdType$
     Get
-      Return mId
+      Return _id
     End Get
   End Property
   Public Sub New(ByVal id As $IdType$)
-    mId = id
+    _id = id
   End Sub
 
 End Class

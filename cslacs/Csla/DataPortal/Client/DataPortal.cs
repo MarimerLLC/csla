@@ -447,6 +447,16 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Releases any remote data portal proxy object, so
+    /// the next data portal call will create a new
+    /// proxy instance.
+    /// </summary>
+    public static void ReleaseProxy()
+    {
+      _portal = null;
+    }
+
     #endregion
 
     #region Security

@@ -30,7 +30,26 @@ namespace Csla.DataPortalClient
 
     #region IDataPortalServer Members
 
-    const string _endPoint = "WcfDataPortal";
+    private string _endPoint = "WcfDataPortal";
+
+    /// <summary>
+    /// Gets or sets the WCF endpoint used
+    /// to contact the server.
+    /// </summary>
+    /// <remarks>
+    /// The default value is WcfDataPortal.
+    /// </remarks>
+    protected string EndPoint
+    {
+      get
+      {
+        return _endPoint;
+      }
+      set
+      {
+      	_endPoint = value;
+      }
+    }
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a

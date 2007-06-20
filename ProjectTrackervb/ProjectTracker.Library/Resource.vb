@@ -29,6 +29,7 @@ Public Class Resource
     <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As String)
       CanWriteProperty(True)
+      If value Is Nothing Then value = ""
       If mLastName <> value Then
         mLastName = value
         PropertyHasChanged()
@@ -45,6 +46,7 @@ Public Class Resource
     <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As String)
       CanWriteProperty(True)
+      If value Is Nothing Then value = ""
       If mFirstName <> value Then
         mFirstName = value
         PropertyHasChanged()

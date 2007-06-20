@@ -32,6 +32,7 @@ Public Class Project
     <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal Value As String)
       CanWriteProperty(True)
+      If Value Is Nothing Then Value = ""
       If mName <> Value Then
         mName = Value
         PropertyHasChanged()
@@ -48,6 +49,7 @@ Public Class Project
     <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal Value As String)
       CanWriteProperty(True)
+      If Value Is Nothing Then Value = ""
       If mStarted <> Value Then
         mStarted.Text = Value
         PropertyHasChanged()
@@ -64,6 +66,7 @@ Public Class Project
     <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal Value As String)
       CanWriteProperty(True)
+      If Value Is Nothing Then Value = ""
       If mEnded <> Value Then
         mEnded.Text = Value
         PropertyHasChanged()
@@ -80,6 +83,7 @@ Public Class Project
     <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal Value As String)
       CanWriteProperty(True)
+      If Value Is Nothing Then Value = ""
       If mDescription <> Value Then
         mDescription = Value
         PropertyHasChanged()

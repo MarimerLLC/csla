@@ -130,6 +130,52 @@ namespace Csla.Security
         currentRoles.WriteDenied.Add(item);
     }
 
+    /// <summary>
+    /// Specify the roles allowed to execute a given
+    /// method.
+    /// </summary>
+    /// <param name="methodName">Name of the method.</param>
+    /// <param name="roles">List of roles granted read access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void InstanceAllowExecute(string methodName, params string[] roles)
+    {
+
+      RolesForProperty currentRoles = InstanceRules.GetRolesForProperty(methodName);
+      foreach (string item in roles)
+      {
+        currentRoles.ExecuteAllowed.Add(item);
+      }
+
+    }
+
+    /// <summary>
+    /// Specify the roles denied the right to execute 
+    /// a given method.
+    /// </summary>
+    /// <param name="methodName">Name of the method.</param>
+    /// <param name="roles">List of roles denied read access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void InstanceDenyExecute(string methodName, params string[] roles)
+    {
+
+      RolesForProperty currentRoles = InstanceRules.GetRolesForProperty(methodName);
+      foreach (string item in roles)
+      {
+        currentRoles.ExecuteDenied.Add(item);
+      }
+
+    }
+
     #endregion
 
     #region Add Per-Type Roles
@@ -208,6 +254,52 @@ namespace Csla.Security
       RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyName);
       foreach (string item in roles)
         currentRoles.WriteDenied.Add(item);
+    }
+
+    /// <summary>
+    /// Specify the roles allowed to execute a given
+    /// method.
+    /// </summary>
+    /// <param name="methodName">Name of the property.</param>
+    /// <param name="roles">List of roles granted execute access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void AllowExecute(string methodName, params string[] roles)
+    {
+
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(methodName);
+      foreach (string item in roles)
+      {
+        currentRoles.ExecuteAllowed.Add(item);
+      }
+
+    }
+
+    /// <summary>
+    /// Specify the roles denied the right to execute 
+    /// a given method.
+    /// </summary>
+    /// <param name="methodName">Name of the property.</param>
+    /// <param name="roles">List of roles denied execute access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void DenyExecute(string methodName, params string[] roles)
+    {
+
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(methodName);
+      foreach (string item in roles)
+      {
+        currentRoles.ExecuteDenied.Add(item);
+      }
+
     }
 
     #endregion
@@ -316,6 +408,99 @@ namespace Csla.Security
       if (InstanceRules.GetRolesForProperty(propertyName).IsWriteDenied(user))
         return true;
       return TypeRules.GetRolesForProperty(propertyName).IsWriteDenied(user);
+    }
+
+    /// <summary>
+    /// Indicates whether the property has a list
+    /// of roles granted execute access.
+    /// </summary>
+    /// <param name="methodName">Name of the method.</param>
+    public bool HasExecuteAllowedRoles(string methodName)
+    {
+
+      bool result = false;
+      if (InstanceRules.GetRolesForProperty(methodName).ExecuteAllowed.Count > 0)
+      {
+        result = true;
+
+      }
+      else
+      {
+        result = TypeRules.GetRolesForProperty(methodName).ExecuteAllowed.Count > 0;
+      }
+
+      return result;
+
+    }
+
+    /// <summary>
+    /// Indicates whether the current user as defined by
+    /// <see cref="Csla.ApplicationContext.User" />
+    /// is explicitly allowed to execute the method.
+    /// </summary>
+    /// <param name="methodName">Name of the method.</param>
+    public bool IsExecuteAllowed(string methodName)
+    {
+
+      bool result = false;
+      System.Security.Principal.IPrincipal user = ApplicationContext.User;
+      if (InstanceRules.GetRolesForProperty(methodName).IsExecuteAllowed(user))
+      {
+        result = true;
+
+      }
+      else
+      {
+        result = TypeRules.GetRolesForProperty(methodName).IsExecuteAllowed(user);
+      }
+      return result;
+
+    }
+
+    /// <summary>
+    /// Indicates whether the property has a list
+    /// of roles denied execute access.
+    /// </summary>
+    /// <param name="methodName">Name of the method.</param>
+    public bool HasExecuteDeniedRoles(string methodName)
+    {
+
+      bool result = false;
+      if (InstanceRules.GetRolesForProperty(methodName).ExecuteDenied.Count > 0)
+      {
+        result = true;
+
+      }
+      else
+      {
+        result = TypeRules.GetRolesForProperty(methodName).ExecuteDenied.Count > 0;
+      }
+      return result;
+
+    }
+
+    /// <summary>
+    /// Indicates whether the current user as defined by
+    /// <see cref="Csla.ApplicationContext.User" />
+    /// is explicitly denied execute access to the method.
+    /// </summary>
+    /// <param name="methodName">Name of the method.</param>
+    public bool IsExecuteDenied(string methodName)
+    {
+
+      bool result = false;
+      System.Security.Principal.IPrincipal user = ApplicationContext.User;
+      if (InstanceRules.GetRolesForProperty(methodName).IsExecuteDenied(user))
+      {
+        result = true;
+
+      }
+      else
+      {
+        result = TypeRules.GetRolesForProperty(methodName).IsExecuteDenied(user);
+      }
+      return result;
+
     }
 
     #endregion

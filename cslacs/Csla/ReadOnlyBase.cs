@@ -128,6 +128,9 @@ namespace Csla
     private Dictionary<string, bool> _readResultCache;
     [NotUndoable()]
     [NonSerialized()]
+    private Dictionary<string, bool> _executeResultCache;
+    [NotUndoable()]
+    [NonSerialized()]
     private System.Security.Principal.IPrincipal _lastPrincipal;
 
     [NotUndoable()]
@@ -303,6 +306,125 @@ namespace Csla
         _readResultCache.Clear();
         _lastPrincipal = Csla.ApplicationContext.User;
       }
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the calling method.
+    /// </summary>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    public bool CanExecuteMethod(bool throwOnFalse)
+    {
+
+      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+      bool result = CanExecuteMethod(methodName);
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        throw ex;
+      }
+      return result;
+
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the specified method.
+    /// </summary>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <param name="methodName">Name of the method to execute.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    public bool CanExecuteMethod(string methodName, bool throwOnFalse)
+    {
+
+      bool result = CanExecuteMethod(methodName);
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        throw ex;
+      }
+      return result;
+
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the calling method.
+    /// </summary>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    public bool CanExecuteMethod()
+    {
+
+      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+      return CanExecuteMethod(methodName);
+
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the specified method.
+    /// </summary>
+    /// <param name="methodName">Name of the method to execute.</param>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <remarks>
+    /// <para>
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can read. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
+    /// </para><para>
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied read access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have read access.
+    /// </para>
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanExecuteMethod(string methodName)
+    {
+
+      bool result = true;
+
+      VerifyAuthorizationCache();
+
+      if (_executeResultCache.ContainsKey(methodName))
+      {
+        // cache contains value - get cached value
+        result = _executeResultCache[methodName];
+
+      }
+      else
+      {
+        if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
+        {
+          // some users are explicitly granted read access
+          // in which case all other users are denied
+          if (!(AuthorizationRules.IsExecuteAllowed(methodName)))
+          {
+            result = false;
+          }
+
+        }
+        else if (AuthorizationRules.HasExecuteDeniedRoles(methodName))
+        {
+          // some users are explicitly denied read access
+          if (AuthorizationRules.IsExecuteDenied(methodName))
+          {
+            result = false;
+          }
+        }
+        // store value in cache
+        _executeResultCache[methodName] = result;
+      }
+      return result;
+
     }
 
     #endregion

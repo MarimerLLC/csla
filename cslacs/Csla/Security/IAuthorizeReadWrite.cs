@@ -25,5 +25,12 @@ namespace Csla.Security
     /// <returns><see langword="true" /> if read is allowed.</returns>
     /// <param name="propertyName">Name of the property to read.</param>
     bool CanReadProperty(string propertyName);
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute 
+    /// the specified method.
+    /// </summary>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <param name="methodName">Name of the method to execute.</param>
+    bool CanExecuteMethod(string methodName);
   }
 }

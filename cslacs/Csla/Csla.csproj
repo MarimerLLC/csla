@@ -197,6 +197,7 @@
     </Compile>
     <Compile Include="Wpf\AuthorizationPanel.cs" />
     <Compile Include="Wpf\CslaDataProvider.cs" />
+    <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
     <Compile Include="Wpf\DataPanelBase.cs" />
     <Compile Include="Wpf\ObjectStatusPanel.cs" />
     <Compile Include="Wpf\ValidationPanel.cs" />

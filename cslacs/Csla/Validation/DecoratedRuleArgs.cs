@@ -303,8 +303,17 @@ namespace Csla.Validation
     /// <returns></returns>
     public object this[string key]
     {
-      get { return _decorations[key]; }
-      set { _decorations[key] = value; }
+      get 
+      {
+        if (_decorations.ContainsKey(key))
+          return _decorations[key];
+        else
+          return null;
+      }
+      set 
+      { 
+        _decorations[key] = value; 
+      }
     }
 
     /// <summary>

@@ -209,6 +209,7 @@
     <Compile Include="Windows\ReadWriteAuthorization.vb" />
     <Compile Include="Wpf\AuthorizationPanel.vb" />
     <Compile Include="Wpf\CslaDataProvider.vb" />
+    <Compile Include="Wpf\CslaDataProviderCommandManager.vb" />
     <Compile Include="Wpf\DataPanelBase.vb" />
     <Compile Include="Wpf\IdentityConverter.vb" />
     <Compile Include="Wpf\ObjectStatusPanel.vb" />

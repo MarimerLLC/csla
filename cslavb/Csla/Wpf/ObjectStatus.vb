@@ -27,16 +27,16 @@ Namespace Wpf
   ''' that supports WFP data binding against those
   ''' values.
   ''' </remarks>
-  Public Class ObjectStatusPanel
-    Inherits DataPanelBase
+  Public Class ObjectStatus
+    Inherits DataDecoratorBase
 
 #Region "Dependency Properties"
 
-    Private Shared ReadOnly IsDeletedProperty As DependencyProperty = DependencyProperty.Register("IsDeleted", GetType(Boolean), GetType(ObjectStatusPanel), New FrameworkPropertyMetadata(False), Nothing)
-    Private Shared ReadOnly IsDirtyProperty As DependencyProperty = DependencyProperty.Register("IsDirty", GetType(Boolean), GetType(ObjectStatusPanel), New FrameworkPropertyMetadata(False), Nothing)
-    Private Shared ReadOnly IsNewProperty As DependencyProperty = DependencyProperty.Register("IsNew", GetType(Boolean), GetType(ObjectStatusPanel), New FrameworkPropertyMetadata(False), Nothing)
-    Private Shared ReadOnly IsSavableProperty As DependencyProperty = DependencyProperty.Register("IsSavable", GetType(Boolean), GetType(ObjectStatusPanel), New FrameworkPropertyMetadata(False), Nothing)
-    Private Shared ReadOnly IsValidProperty As DependencyProperty = DependencyProperty.Register("IsValid", GetType(Boolean), GetType(ObjectStatusPanel), New FrameworkPropertyMetadata(False), Nothing)
+    Private Shared ReadOnly IsDeletedProperty As DependencyProperty = DependencyProperty.Register("IsDeleted", GetType(Boolean), GetType(ObjectStatus), New FrameworkPropertyMetadata(False), Nothing)
+    Private Shared ReadOnly IsDirtyProperty As DependencyProperty = DependencyProperty.Register("IsDirty", GetType(Boolean), GetType(ObjectStatus), New FrameworkPropertyMetadata(False), Nothing)
+    Private Shared ReadOnly IsNewProperty As DependencyProperty = DependencyProperty.Register("IsNew", GetType(Boolean), GetType(ObjectStatus), New FrameworkPropertyMetadata(False), Nothing)
+    Private Shared ReadOnly IsSavableProperty As DependencyProperty = DependencyProperty.Register("IsSavable", GetType(Boolean), GetType(ObjectStatus), New FrameworkPropertyMetadata(False), Nothing)
+    Private Shared ReadOnly IsValidProperty As DependencyProperty = DependencyProperty.Register("IsValid", GetType(Boolean), GetType(ObjectStatus), New FrameworkPropertyMetadata(False), Nothing)
 
     ''' <summary>
     ''' Exposes the IsDeleted property of the

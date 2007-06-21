@@ -20,8 +20,8 @@ Namespace Wpf
   ''' information provided by the data binding
   ''' context.
   ''' </summary>
-  Public Class ValidationPanel
-    Inherits DataPanelBase
+  Public Class Validator
+    Inherits DataDecoratorBase
 
     Private mHaveRecentChange As Boolean
 

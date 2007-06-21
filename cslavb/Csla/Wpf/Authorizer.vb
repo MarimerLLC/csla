@@ -21,15 +21,15 @@ Namespace Wpf
   ''' information provided by the data binding
   ''' context.
   ''' </summary>
-  Public Class AuthorizationPanel
-    Inherits DataPanelBase
+  Public Class Authorizer
+    Inherits DataDecoratorBase
 
 #Region "NotVisibleMode property"
 
     ' Define DependencyProperty
     Private Shared ReadOnly NotVisibleModeProperty As DependencyProperty = _
       DependencyProperty.Register("NotVisibleMode", GetType(VisibilityMode), _
-      GetType(AuthorizationPanel), New FrameworkPropertyMetadata(VisibilityMode.Hidden), AddressOf IsValidVisibilityMode)
+      GetType(Authorizer), New FrameworkPropertyMetadata(VisibilityMode.Hidden), AddressOf IsValidVisibilityMode)
 
     ' Define method to validate the value
     Private Shared Function IsValidVisibilityMode(ByVal o As Object) As Boolean

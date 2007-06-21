@@ -21,8 +21,8 @@ Namespace Wpf
   ''' data object and data property values
   ''' are changed.
   ''' </summary>
-  Public Class DataPanelBase
-    Inherits StackPanel
+  Public Class DataDecoratorBase
+    Inherits Decorator
 
     Private mLoaded As Boolean
     Private mDataObject As Object

@@ -8,7 +8,8 @@ Namespace Validation
   ''' </summary>
   Public Class DecoratedRuleArgs
     Inherits RuleArgs
-    Private _decorations As Dictionary(Of String, Object)
+
+    Private mDecorations As Dictionary(Of String, Object)
 
 #Region "Base Constructors"
 
@@ -18,7 +19,7 @@ Namespace Validation
     ''' <param name="propertyName">The name of the property to be validated.</param>
     Public Sub New(ByVal propertyName As String)
       MyBase.New(propertyName)
-      _decorations = New Dictionary(Of String, Object)()
+      mDecorations = New Dictionary(Of String, Object)()
     End Sub
 
     ''' <summary>
@@ -30,7 +31,7 @@ Namespace Validation
     ''' creating the broken rule description string.</param>
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String)
       MyBase.New(propertyName, friendlyName)
-      _decorations = New Dictionary(Of String, Object)()
+      mDecorations = New Dictionary(Of String, Object)()
     End Sub
 
     ''' <summary>
@@ -53,7 +54,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal severity As RuleSeverity)
       MyBase.New(propertyName, severity)
-      _decorations = New Dictionary(Of String, Object)()
+      mDecorations = New Dictionary(Of String, Object)()
     End Sub
 
     ''' <summary>
@@ -79,7 +80,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal severity As RuleSeverity)
       MyBase.New(propertyName, friendlyName, severity)
-      _decorations = New Dictionary(Of String, Object)()
+      mDecorations = New Dictionary(Of String, Object)()
     End Sub
 
     ''' <summary>
@@ -106,7 +107,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean)
       MyBase.New(propertyName, severity, stopProcessing)
-      _decorations = New Dictionary(Of String, Object)()
+      mDecorations = New Dictionary(Of String, Object)()
     End Sub
 
     ''' <summary>
@@ -136,7 +137,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean)
       MyBase.New(propertyName, friendlyName, severity, stopProcessing)
-      _decorations = New Dictionary(Of String, Object)()
+      mDecorations = New Dictionary(Of String, Object)()
     End Sub
 
 #End Region
@@ -149,7 +150,7 @@ Namespace Validation
     ''' name/value arguments for use by the rule method.</param>
     Public Sub New(ByVal propertyName As String, ByVal args As Dictionary(Of String, Object))
       MyBase.New(propertyName)
-      _decorations = args
+      mDecorations = args
     End Sub
 
     ''' <summary>
@@ -163,7 +164,7 @@ Namespace Validation
     ''' name/value arguments for use by the rule method.</param>
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal args As Dictionary(Of String, Object))
       MyBase.New(propertyName, friendlyName)
-      _decorations = args
+      mDecorations = args
     End Sub
 
     ''' <summary>
@@ -188,7 +189,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal severity As RuleSeverity, ByVal args As Dictionary(Of String, Object))
       MyBase.New(propertyName, severity)
-      _decorations = args
+      mDecorations = args
     End Sub
 
     ''' <summary>
@@ -216,7 +217,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal severity As RuleSeverity, ByVal args As Dictionary(Of String, Object))
       MyBase.New(propertyName, friendlyName, severity)
-      _decorations = args
+      mDecorations = args
     End Sub
 
     ''' <summary>
@@ -245,7 +246,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean, ByVal args As Dictionary(Of String, Object))
       MyBase.New(propertyName, severity, stopProcessing)
-      _decorations = args
+      mDecorations = args
     End Sub
 
     ''' <summary>
@@ -277,7 +278,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean, ByVal args As Dictionary(Of String, Object))
       MyBase.New(propertyName, friendlyName, severity, stopProcessing)
-      _decorations = args
+      mDecorations = args
     End Sub
 
     ''' <summary>
@@ -288,10 +289,14 @@ Namespace Validation
     ''' <returns></returns>
     Default Public Property Item(ByVal key As String) As Object
       Get
-        Return _decorations(key)
+        If mDecorations.ContainsKey(key) Then
+          Return mDecorations(key)
+        Else
+          Return Nothing
+        End If
       End Get
       Set(ByVal value As Object)
-        _decorations(key) = value
+        mDecorations(key) = value
       End Set
     End Property
 
@@ -304,10 +309,10 @@ Namespace Validation
 
       Dim sb As StringBuilder = New StringBuilder()
       sb.Append(MyBase.ToString())
-      If _decorations.Count > 0 Then
+      If mDecorations.Count > 0 Then
         sb.Append("?")
         Dim first As Boolean = True
-        For Each item As System.Collections.Generic.KeyValuePair(Of String, Object) In _decorations
+        For Each item As System.Collections.Generic.KeyValuePair(Of String, Object) In mDecorations
           If first Then
             first = False
           Else

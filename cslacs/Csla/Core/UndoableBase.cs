@@ -153,14 +153,14 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal void UndoChanges(int parentEditLevel)
     {
-      if (this.EditLevel - 1 < parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
-      
       // if we are a child object we might be asked to
-      // undo below the level where stacked states,
+      // undo below the level of stacked states,
       // so just do nothing in that case
       if (EditLevel > 0)
       {
+        if (this.EditLevel - 1 < parentEditLevel)
+          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+
         HybridDictionary state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {

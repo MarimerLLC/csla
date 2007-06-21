@@ -19,7 +19,7 @@ namespace Csla
       Core.ExtendedBindingList<C>,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable, Core.ISavable, Core.IParent
     where T : BusinessListBase<T, C>
-    where C : Core.IEditableBusinessObject, Core.IUndoableObject
+    where C : Core.IEditableBusinessObject
   {
 
     #region Constructors

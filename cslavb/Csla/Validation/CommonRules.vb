@@ -144,7 +144,7 @@ Namespace Validation
       ByVal e As RuleArgs) As Boolean
 
       Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
-      Dim min As Integer = CInt(args("MinValue"))
+      Dim min As Integer = CInt(args("MinLength"))
       Dim value As String = _
         CStr(CallByName(target, e.PropertyName, CallType.Get))
       If Len(value) < min Then

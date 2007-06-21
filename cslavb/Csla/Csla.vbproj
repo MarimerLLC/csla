@@ -325,6 +325,7 @@
   <ItemGroup>
     <None Include="Diagrams\DataBinding.cd" />
     <None Include="Diagrams\FullCsla.cd" />
+    <None Include="Diagrams\Interfaces.cd" />
     <None Include="Diagrams\Undoable.cd" />
     <None Include="Diagrams\Validation.cd" />
     <None Include="Web References\WebServiceHost\Reference.map">

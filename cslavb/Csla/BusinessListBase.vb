@@ -10,7 +10,7 @@ Imports Csla.Core
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
 Public MustInherit Class BusinessListBase( _
-  Of T As BusinessListBase(Of T, C), C As {Core.IEditableBusinessObject, Core.IUndoableObject})
+  Of T As BusinessListBase(Of T, C), C As {Core.IEditableBusinessObject})
   Inherits Core.ExtendedBindingList(Of C)
 
   Implements Core.IEditableCollection
@@ -124,7 +124,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </remarks>
   Public Sub BeginEdit() Implements IEditableCollection.BeginEdit
     If Me.IsChild Then
-      Throw New  _
+      Throw New _
         NotSupportedException(My.Resources.NoBeginEditChildException)
     End If
 
@@ -146,7 +146,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </remarks>
   Public Sub CancelEdit() Implements IEditableCollection.CancelEdit
     If Me.IsChild Then
-      Throw New  _
+      Throw New _
         NotSupportedException(My.Resources.NoCancelEditChildException)
     End If
 
@@ -169,7 +169,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </remarks>
   Public Sub ApplyEdit() Implements IEditableCollection.ApplyEdit
     If Me.IsChild Then
-      Throw New  _
+      Throw New _
         NotSupportedException(My.Resources.NoApplyEditChildException)
     End If
 

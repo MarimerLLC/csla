@@ -13,6 +13,7 @@ Namespace Core
   Public Interface IEditableBusinessObject
     Inherits IBusinessObject
     Inherits ISupportUndo
+    Inherits IUndoableObject
 
     ''' <summary>
     ''' Returns <see langword="true" /> if this object's data has been changed.

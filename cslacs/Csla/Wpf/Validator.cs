@@ -23,14 +23,14 @@ namespace Csla.Wpf
   /// information provided by the data binding
   /// context.
   /// </summary>
-  public class ValidationPanel : DataPanelBase
+  public class Validator : DataDecoratorBase
   {
     private bool _haveRecentChange;
 
     /// <summary>
     /// Creates a new instance of the object.
     /// </summary>
-    public ValidationPanel()
+    public Validator()
     {
       this.Loaded += new RoutedEventHandler(ValidationPanel_Loaded);
     }

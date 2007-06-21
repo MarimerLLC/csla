@@ -24,7 +24,7 @@ namespace Csla.Wpf
   /// information provided by the data binding
   /// context.
   /// </summary>
-  public class AuthorizationPanel : DataPanelBase
+  public class Authorizer : DataDecoratorBase
   {
     #region NotVisibleMode property
 
@@ -33,7 +33,7 @@ namespace Csla.Wpf
       DependencyProperty.Register(
         "NotVisibleMode", 
         typeof(VisibilityMode), 
-        typeof(AuthorizationPanel), 
+        typeof(Authorizer), 
         new FrameworkPropertyMetadata(VisibilityMode.Hidden), 
         new ValidateValueCallback(IsValidVisibilityMode));
 

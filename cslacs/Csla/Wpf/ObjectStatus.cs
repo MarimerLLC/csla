@@ -30,20 +30,20 @@ namespace Csla.Wpf
   /// that supports WFP data binding against those
   /// values.
   /// </remarks>
-  public class ObjectStatusPanel : DataPanelBase
+  public class ObjectStatus : DataDecoratorBase
   {
     #region Dependency Properties
 
     private static readonly DependencyProperty IsDeletedProperty =
-      DependencyProperty.Register("IsDeleted", typeof(bool), typeof(ObjectStatusPanel), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register("IsDeleted", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty IsDirtyProperty =
-      DependencyProperty.Register("IsDirty", typeof(bool), typeof(ObjectStatusPanel), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register("IsDirty", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty IsNewProperty =
-      DependencyProperty.Register("IsNew", typeof(bool), typeof(ObjectStatusPanel), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register("IsNew", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty IsSavableProperty =
-      DependencyProperty.Register("IsSavable", typeof(bool), typeof(ObjectStatusPanel), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register("IsSavable", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty IsValidProperty =
-      DependencyProperty.Register("IsValid", typeof(bool), typeof(ObjectStatusPanel), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register("IsValid", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
 
     /// <summary>
     /// Exposes the IsDeleted property of the

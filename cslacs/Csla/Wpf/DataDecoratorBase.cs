@@ -23,7 +23,7 @@ namespace Csla.Wpf
   /// data object and data property values
   /// are changed.
   /// </summary>
-  public class DataPanelBase : StackPanel
+  public class DataDecoratorBase : Decorator
   {
     private bool _loaded;
     private object _dataObject;
@@ -91,7 +91,7 @@ namespace Csla.Wpf
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    public DataPanelBase()
+    public DataDecoratorBase()
     {
       this.DataContextChanged += new DependencyPropertyChangedEventHandler(Panel_DataContextChanged);
       this.Loaded += new RoutedEventHandler(Panel_Loaded);

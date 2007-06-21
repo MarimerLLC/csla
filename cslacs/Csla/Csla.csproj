@@ -195,12 +195,12 @@
     <Compile Include="Windows\ReadWriteAuthorization.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Wpf\AuthorizationPanel.cs" />
+    <Compile Include="Wpf\Authorizer.cs" />
     <Compile Include="Wpf\CslaDataProvider.cs" />
     <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
-    <Compile Include="Wpf\DataPanelBase.cs" />
-    <Compile Include="Wpf\ObjectStatusPanel.cs" />
-    <Compile Include="Wpf\ValidationPanel.cs" />
+    <Compile Include="Wpf\DataDecoratorBase.cs" />
+    <Compile Include="Wpf\ObjectStatus.cs" />
+    <Compile Include="Wpf\Validator.cs" />
     <Compile Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Wpf\VisibilityMode.cs" />
   </ItemGroup>

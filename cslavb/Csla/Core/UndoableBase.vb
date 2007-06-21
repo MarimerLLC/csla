@@ -137,15 +137,15 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Friend Sub UndoChanges(ByVal parentEditLevel As Integer) Implements IUndoableObject.UndoChanges
 
-      If Me.EditLevel - 1 < parentEditLevel Then
-        Throw New UndoException( _
-          String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
-      End If
-
       ' if we are a child object we might be asked to
       ' undo below the level where we stacked states,
       ' so just do nothing in that case
       If EditLevel > 0 Then
+        If Me.EditLevel - 1 < parentEditLevel Then
+          Throw New UndoException( _
+            String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
+        End If
+
         Dim state As HybridDictionary
         Using buffer As New MemoryStream(mStateStack.Pop())
           buffer.Position = 0

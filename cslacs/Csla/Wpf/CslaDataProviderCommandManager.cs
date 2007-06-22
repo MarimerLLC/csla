@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows;
+using System.ComponentModel;
 
 namespace Csla.Wpf
 {
@@ -32,14 +33,19 @@ namespace Csla.Wpf
 
     static CslaDataProviderCommandManager()
     {
-      CommandBinding binding = new CommandBinding(ApplicationCommands.Save, SaveCommand, CanExecute);
+      CommandBinding binding;
+      
+      binding = new CommandBinding(ApplicationCommands.Save, SaveCommand, CanExecuteSave);
       CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
       
-      binding = new CommandBinding(ApplicationCommands.Undo, UndoCommand, CanExecute);
+      binding = new CommandBinding(ApplicationCommands.Undo, UndoCommand, CanExecuteUndo);
+      CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
+
+      binding = new CommandBinding(ApplicationCommands.New, NewCommand, CanExecuteNew);
       CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
     }
 
-    internal static void CanExecute(object target, CanExecuteRoutedEventArgs e)
+    private static void CanExecuteSave(object target, CanExecuteRoutedEventArgs e)
     {
       bool result = false;
       CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
@@ -58,18 +64,57 @@ namespace Csla.Wpf
       e.CanExecute = result;
     }
 
-    internal static void SaveCommand(object target, ExecutedRoutedEventArgs e)
+    private static void SaveCommand(object target, ExecutedRoutedEventArgs e)
     {
       CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
       if (ctl != null && ctl.Provider != null)
         ctl.Provider.Save();
     }
 
-    internal static void UndoCommand(object target, ExecutedRoutedEventArgs e)
+    private static void CanExecuteUndo(object target, CanExecuteRoutedEventArgs e)
+    {
+      bool result = false;
+      CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
+      if (ctl != null && ctl.Provider != null)
+      {
+        Csla.Core.IEditableBusinessObject ibiz = ctl.Provider.Data as Csla.Core.IEditableBusinessObject;
+        if (ibiz != null)
+          result = ibiz.IsDirty;
+        else
+        {
+          Csla.Core.IEditableCollection icol = ctl.Provider.Data as Csla.Core.IEditableCollection;
+          if (icol != null)
+            result = icol.IsDirty;
+        }
+      }
+      e.CanExecute = result;
+    }
+
+    private static void UndoCommand(object target, ExecutedRoutedEventArgs e)
     {
       CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
       if (ctl != null && ctl.Provider != null)
         ctl.Provider.Cancel();
+    }
+
+    private static void CanExecuteNew(object target, CanExecuteRoutedEventArgs e)
+    {
+      bool result = false;
+      CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
+      if (ctl != null && ctl.Provider != null)
+      {
+        IBindingList list = ctl.Provider.Data as IBindingList;
+        if (list != null)
+          result = list.AllowNew;
+      }
+      e.CanExecute = result;
+    }
+
+    private static void NewCommand(object target, ExecutedRoutedEventArgs e)
+    {
+      CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
+      if (ctl != null && ctl.Provider != null)
+        ctl.Provider.AddNew();
     }
   }
 }

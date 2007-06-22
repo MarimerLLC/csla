@@ -272,7 +272,7 @@ namespace Csla.Wpf
 
     #endregion
 
-    #region Cancel/Update
+    #region Cancel/Update/New
 
     /// <summary>
     /// Cancels changes to the business object, returning
@@ -350,6 +350,19 @@ namespace Csla.Wpf
         // return result to base class
         base.OnQueryFinished(result, exceptionResult, null, null);
       }
+    }
+
+    /// <summary>
+    /// Adds a new item to the object if the object
+    /// implements IBindingList and AllowNew is true.
+    /// </summary>
+    public void AddNew()
+    {
+      // only do something if the object implements
+      // IBindingList
+      IBindingList list = this.Data as IBindingList;
+      if (list != null && list.AllowNew)
+        list.AddNew();
     }
     
     #endregion

@@ -67,15 +67,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ProjectEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProjectList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ProjectSelect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ResourceList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceSelect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -111,6 +131,11 @@
     <Import Include="System.Windows.Navigation" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditForm.vb" />
+    <Compile Include="IRefresh.vb" />
+    <Compile Include="Login.xaml.vb">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -124,11 +149,23 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ProjectEdit.xaml.vb">
+      <DependentUpon>ProjectEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProjectList.xaml.vb">
       <DependentUpon>ProjectList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProjectSelect.xaml.vb">
+      <DependentUpon>ProjectSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceEdit.xaml.vb">
+      <DependentUpon>ResourceEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ResourceList.xaml.vb">
       <DependentUpon>ResourceList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceSelect.xaml.vb">
+      <DependentUpon>ResourceSelect.xaml</DependentUpon>
     </Compile>
     <Compile Include="RolesEdit.xaml.vb">
       <DependentUpon>RolesEdit.xaml</DependentUpon>
@@ -139,6 +176,7 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>

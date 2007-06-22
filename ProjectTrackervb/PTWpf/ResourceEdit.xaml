@@ -1,0 +1,96 @@
+﻿<local:EditForm x:Class="ResourceEdit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:PTWpf"  
+    xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
+    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library">
+  <UserControl.Resources>
+    <csla:IdentityConverter x:Key="IdentityConverter" />
+    <csla:CslaDataProvider x:Key="RoleList"
+                           ObjectType="{x:Type PTracker:RoleList}"
+                           FactoryMethod="GetList"
+                           IsAsynchronous="False" />
+    <csla:CslaDataProvider x:Key="Resource"
+                           ObjectType="{x:Type PTracker:Resource}"
+                           FactoryMethod="GetResource"
+                           IsAsynchronous="False"
+                           ManageObjectLifetime="True">
+    </csla:CslaDataProvider>
+  </UserControl.Resources>
+  <Grid Name="MainGrid" DataContext="{Binding Source={StaticResource Resource}}" >
+    <Grid.Resources>
+      <DataTemplate x:Key="lbTemplate">
+        <Grid>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Path=ProjectName}" Width="200" />
+            <TextBlock Text="{Binding Path=Assigned}" Width="100" />
+            <ComboBox 
+              ItemsSource="{Binding Source={StaticResource RoleList}}" 
+              DisplayMemberPath="Value"
+              SelectedValuePath="Key"
+              SelectedValue="{Binding Path=Role}" 
+              Width="150" />
+              <Button Click="Unassign" HorizontalAlignment="Left" Tag="{Binding Path=ProjectId}">Unassign</Button>
+          </StackPanel>
+        </Grid>
+      </DataTemplate>
+      <DataTemplate x:Key="lbroTemplate">
+        <Grid>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Path=ProjectName}" Width="200" />
+            <TextBlock Text="{Binding Path=Assigned}" Width="100" />
+            <ComboBox 
+              ItemsSource="{Binding Source={StaticResource RoleList}}" 
+              DisplayMemberPath="Value"
+              SelectedValuePath="Key"
+              SelectedValue="{Binding Path=Role}" 
+              Width="150"
+              IsEnabled="False" />
+          </StackPanel>
+        </Grid>
+      </DataTemplate>
+    </Grid.Resources>
+    
+    <csla:ObjectStatus>
+      <csla:Authorizer Name="AuthPanel">
+        <csla:Validator>
+          <StackPanel FlowDirection="LeftToRight">
+            <StackPanel.Resources>
+              <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="3,5"/>
+              </Style>
+              <Style TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="3,5"/>
+              </Style>
+            </StackPanel.Resources>
+            <TextBlock>Id:</TextBlock>
+            <TextBlock Text="{Binding Id, Mode=OneWay}"></TextBlock>
+            <TextBlock>First name:</TextBlock>
+            <TextBox Text="{Binding FirstName, Converter={StaticResource IdentityConverter}}"></TextBox>
+            <TextBlock>Last name:</TextBlock>
+            <TextBox Text="{Binding LastName, Converter={StaticResource IdentityConverter}}"></TextBox>
+            <TextBlock>Assigned to:</TextBlock>
+            <ListBox Name="ProjectListBox" ItemsSource="{Binding Assignments}" ItemTemplate="{StaticResource lbTemplate}" MouseDoubleClick="ShowProject">
+            </ListBox>
+            <StackPanel Orientation="Horizontal">
+              <Button 
+                Command="ApplicationCommands.Save" 
+                CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
+                HorizontalAlignment="Left" IsDefault="True">Save</Button>
+              <Button 
+                Command="ApplicationCommands.Undo" 
+                CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
+                HorizontalAlignment="Left" IsCancel="True">Cancel</Button>
+              <Button Name="AssignButton" Click="Assign" 
+                      HorizontalAlignment="Left">Assign to project</Button>
+              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>
+              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsValid}">IsValid</CheckBox>
+              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsDirty}">IsDirty</CheckBox>
+              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsNew}">IsNew</CheckBox>
+            </StackPanel>
+          </StackPanel>
+        </csla:Validator>
+      </csla:Authorizer>
+    </csla:ObjectStatus>
+  </Grid>
+</local:EditForm>

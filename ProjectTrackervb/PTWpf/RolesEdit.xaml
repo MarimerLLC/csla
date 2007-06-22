@@ -1,8 +1,70 @@
-﻿<Window x:Class="RolesEdit"
+﻿<local:EditForm x:Class="RolesEdit"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="RolesEdit" Height="300" Width="300">
-    <Grid>
+    xmlns:local="clr-namespace:PTWpf"  
+    xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
+    xmlns:ptracker="clr-namespace:ProjectTracker.Library.Admin;assembly=ProjectTracker.Library">
+  <local:EditForm.Resources>
+    <csla:IdentityConverter x:Key="IdentityConverter" />
+    <csla:CslaDataProvider x:Key="RoleList"
+                           ObjectType="{x:Type ptracker:Roles}"
+                           FactoryMethod="GetRoles"
+                           IsAsynchronous="False"
+                           ManageObjectLifetime="True">
+    </csla:CslaDataProvider>
+  </local:EditForm.Resources>
+  <Grid Name="MainGrid" DataContext="{Binding Source={StaticResource RoleList}}">
+    <Grid.Resources>
+      <DataTemplate x:Key="lbTemplate">
+        <Grid>
+          <csla:Validator>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Id:</TextBlock>
+              <TextBox Text="{Binding Path=Id, Converter={StaticResource IdentityConverter}}" Width="100" />
+              <TextBlock>Name:</TextBlock>
+              <TextBox Text="{Binding Path=Name, Converter={StaticResource IdentityConverter}}" Width="250" />
+              <Button Click="RemoveItem" HorizontalAlignment="Left" Tag="{Binding Path=Id}">Remove</Button>
+            </StackPanel>
+          </csla:Validator>
+        </Grid>
+      </DataTemplate>
+      <DataTemplate x:Key="lbroTemplate">
+        <Grid>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Path=Name}" Width="250" />
+          </StackPanel>
+        </Grid>
+      </DataTemplate>
+    </Grid.Resources>
         
-    </Grid>
-</Window>
+    <csla:ObjectStatus>
+      <csla:Authorizer Name="AuthPanel">
+        <StackPanel>
+          <TextBlock>Roles:</TextBlock>
+          <ListBox Name="RolesListBox" ItemsSource="{Binding}" ItemTemplate="{StaticResource lbTemplate}" />
+          <StackPanel Orientation="Horizontal">
+              <Button 
+                Command="ApplicationCommands.Save" 
+                CommandTarget="{Binding Source={StaticResource RoleList}, Path=CommandManager, BindsDirectlyToSource=True}"
+                HorizontalAlignment="Left" IsDefault="True">Save</Button>
+              <Button 
+                Command="ApplicationCommands.Undo" 
+                CommandTarget="{Binding Source={StaticResource RoleList}, Path=CommandManager, BindsDirectlyToSource=True}"
+                HorizontalAlignment="Left" IsCancel="True">Cancel</Button>
+              <Button Name="AddItemButton"
+                Command="ApplicationCommands.New" 
+                CommandTarget="{Binding Source={StaticResource RoleList}, Path=CommandManager, BindsDirectlyToSource=True}"
+                HorizontalAlignment="Left" IsCancel="True">Add role</Button>
+            <!--<Button Name="AddItemButton" Click="AddItem" HorizontalAlignment="Left">Add role</Button>-->
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, 
+                      AncestorType=csla:ObjectStatus, 
+                      AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsValid}">IsValid</CheckBox>
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsDirty}">IsDirty</CheckBox>
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsNew}">IsNew</CheckBox>
+          </StackPanel>
+        </StackPanel>
+      </csla:Authorizer>
+    </csla:ObjectStatus>
+  </Grid>
+</local:EditForm>

@@ -293,6 +293,20 @@ namespace Csla.Test.Authorization
           Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(System.Security.SecurityException))]
+        public void TestUnAuthExecute()
+        {
+          Csla.ApplicationContext.GlobalContext.Clear();
+
+          Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+
+          PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+          //should fail, because we're not an admin
+          pr.DoWork();
+
+        }
+
         //[TestMethod()]
         //public void TestAuthorizationAfterClone()
         //{

@@ -48,10 +48,13 @@ namespace PTWin
 
     private void SaveButton_Click(object sender, EventArgs e)
     {
+      // stop the flow of events
       this.rolesBindingSource.RaiseListChangedEvents = false;
+      // commit edits in memory
       this.rolesBindingSource.EndEdit();
       try
       {
+        // clone object and save clone
         Roles temp = _roles.Clone();
         _roles = temp.Save();
         this.Close();

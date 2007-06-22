@@ -63,15 +63,19 @@ namespace PTWin
     {
       using (StatusBusy busy = new StatusBusy("Saving..."))
       {
+        // stop the flow of events
         this.projectBindingSource.RaiseListChangedEvents = false;
         this.resourcesBindingSource.RaiseListChangedEvents = false;
-        // do the save
+        
+        // commit edits in memory
         this.resourcesBindingSource.EndEdit();
         this.projectBindingSource.EndEdit();
         try
         {
+          // clone object and save clone
           Project temp = _project.Clone();
           _project = temp.Save();
+
           if (rebind)
           {
             // rebind the UI

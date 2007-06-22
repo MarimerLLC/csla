@@ -276,6 +276,23 @@ namespace Csla.Test.Authorization
             Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
         }
 
+        [TestMethod]
+        public void TestAuthExecute()
+        {
+          Csla.ApplicationContext.GlobalContext.Clear();
+          Csla.Test.Security.TestPrincipal.SimulateLogin();
+
+          PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
+          //should work, because we are now logged in as an admin
+          pr.DoWork();
+
+          Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+          //set to null so the other testmethods continue to throw exceptions
+          Csla.Test.Security.TestPrincipal.SimulateLogout();
+
+          Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+        }
+
         //[TestMethod()]
         //public void TestAuthorizationAfterClone()
         //{

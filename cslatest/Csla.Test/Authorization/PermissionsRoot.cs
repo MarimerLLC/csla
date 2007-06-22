@@ -43,12 +43,19 @@ namespace Csla.Test.Security
             }
           }
 
+          public void DoWork()
+          {
+            CanExecuteMethod(true);
+          }
+
           #region Authorization
 
           protected override void AddAuthorizationRules()
           {
             this.AuthorizationRules.AllowRead("FirstName", "Admin");
             this.AuthorizationRules.AllowWrite("FirstName", "Admin");
+
+            this.AuthorizationRules.AllowExecute("DoWork", "Admin");
           }
 
           #endregion

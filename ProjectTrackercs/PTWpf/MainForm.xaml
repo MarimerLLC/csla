@@ -77,7 +77,5 @@
           </LinearGradientBrush>
         </DockPanel.Background>
       </DockPanel>
-      <!--<Frame Grid.Column="1" Name="frame1" BorderThickness="1" BorderBrush="LightGray" Padding="10" />-->
-      <!-- JournalOwnership="OwnsJournal" NavigationUIVisibility="Hidden"  -->
     </Grid>
 </Window>

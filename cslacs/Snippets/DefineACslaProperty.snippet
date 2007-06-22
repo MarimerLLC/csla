@@ -41,7 +41,6 @@ public $PropertyType$ $PropertyName$
   set
   {
     CanWriteProperty(true);
-    if (value == null) value = string.Empty;
     if (!$PrivateVariable$.Equals(value))
     {
       $PrivateVariable$ = value;

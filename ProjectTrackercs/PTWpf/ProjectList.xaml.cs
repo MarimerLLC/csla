@@ -32,7 +32,7 @@ namespace PTWpf
         (ProjectTracker.Library.ProjectInfo)this.listBox1.SelectedItem;
 
       ProjectEdit frm = new ProjectEdit(item.Id); 
-      MainPage.ShowControl(frm);
+      MainForm.ShowControl(frm);
     }
   }
 }

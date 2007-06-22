@@ -55,7 +55,7 @@
     <Page Include="Login.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainPage.xaml">
+    <Page Include="MainForm.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProjectEdit.xaml">
@@ -90,8 +90,8 @@
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="MainForm.xaml.cs">
+      <DependentUpon>MainForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProjectEdit.xaml.cs">
       <DependentUpon>ProjectEdit.xaml</DependentUpon>

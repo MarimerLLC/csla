@@ -13,7 +13,7 @@ namespace PTWpf
   public interface IRefresh
   {
     /// <summary>
-    /// Called by MainPage when the currently
+    /// Called by MainForm when the currently
     /// logged in user changes.
     /// </summary>
     void Refresh();

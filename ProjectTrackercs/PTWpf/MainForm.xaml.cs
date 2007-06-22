@@ -16,29 +16,29 @@ using ProjectTracker.Library;
 namespace PTWpf
 {
   /// <summary>
-  /// Interaction logic for MainPage.xaml
+  /// Interaction logic for MainForm.xaml
   /// </summary>
 
-  public partial class MainPage : Window
+  public partial class MainForm : Window
   {
     #region Navigation and Plumbing
 
     private static ProjectTracker.Library.Security.PTPrincipal _principal;
-    private static MainPage _mainForm;
+    private static MainForm _mainForm;
 
     private UserControl _currentControl;
 
-    public MainPage()
+    public MainForm()
     {
       InitializeComponent();
 
       _mainForm = this;
 
-      this.Loaded += new RoutedEventHandler(MainPage_Loaded);
+      this.Loaded += new RoutedEventHandler(MainForm_Loaded);
       Csla.DataPortal.DataPortalInitInvoke += new Action<object>(DataPortal_DataPortalInitInvoke);
     }
 
-    void MainPage_Loaded(object sender, RoutedEventArgs e)
+    void MainForm_Loaded(object sender, RoutedEventArgs e)
     {
       ProjectTracker.Library.Security.PTPrincipal.Logout();
       _principal = (ProjectTracker.Library.Security.PTPrincipal)Csla.ApplicationContext.User;

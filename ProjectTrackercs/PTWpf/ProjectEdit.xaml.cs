@@ -56,7 +56,7 @@ namespace PTWpf
       if (dp.Data != null)
         SetTitle((Project)dp.Data);
       else
-        MainPage.ShowControl(null);
+        MainForm.ShowControl(null);
     }
 
     void SetTitle(Project project)
@@ -75,7 +75,7 @@ namespace PTWpf
       if (item != null)
       {
         ResourceEdit frm = new ResourceEdit(item.ResourceId);
-        MainPage.ShowControl(frm);
+        MainForm.ShowControl(frm);
       }
     }
 

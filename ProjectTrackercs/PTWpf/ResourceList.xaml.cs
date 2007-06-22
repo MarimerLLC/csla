@@ -32,7 +32,7 @@ namespace PTWpf
         (ResourceInfo)this.listBox1.SelectedItem;
 
       ResourceEdit frm = new ResourceEdit(item.Id);
-      MainPage.ShowControl(frm);
+      MainForm.ShowControl(frm);
     }
   }
 }

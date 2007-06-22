@@ -73,12 +73,15 @@ Public Class ResourceEdit
       ' stop the flow of events
       Me.ResourceBindingSource.RaiseListChangedEvents = False
       Me.AssignmentsBindingSource.RaiseListChangedEvents = False
+
+      ' commit edits in memory
       Me.AssignmentsBindingSource.EndEdit()
       Me.ResourceBindingSource.EndEdit()
-      ' do the save
       Try
+        ' clone object and save clone
         Dim temp As Resource = mResource.Clone
         mResource = temp.Save
+
         If rebind Then
           ' rebind the UI
           Me.ResourceBindingSource.DataSource = Nothing

@@ -74,12 +74,15 @@ Public Class ProjectEdit
       ' stop the flow of events
       Me.ProjectBindingSource.RaiseListChangedEvents = False
       Me.ResourcesBindingSource.RaiseListChangedEvents = False
+
+      ' commit edits in memory
       Me.ResourcesBindingSource.EndEdit()
       Me.ProjectBindingSource.EndEdit()
-      ' do the save
       Try
+        ' clone object and save clone
         Dim temp As Project = mProject.Clone
         mProject = temp.Save
+
         If rebind Then
           ' rebind the UI
           Me.ProjectBindingSource.DataSource = Nothing

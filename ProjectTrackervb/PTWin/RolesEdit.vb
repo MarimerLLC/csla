@@ -39,9 +39,12 @@ Public Class RolesEdit
     ByVal sender As System.Object, ByVal e As System.EventArgs) _
     Handles SaveButton.Click
 
+    ' stop the flow of events
     Me.RolesBindingSource.RaiseListChangedEvents = False
+    ' commit edits in memory
     Me.RolesBindingSource.EndEdit()
     Try
+      ' clone object and save clone
       Dim temp As Admin.Roles = mRoles.Clone
       mRoles = temp.Save
       Me.Close()

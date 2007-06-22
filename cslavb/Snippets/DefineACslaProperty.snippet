@@ -40,7 +40,6 @@ Public Property $PropertyName$() As $PropertyType$
     <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As $PropertyType$)
         CanWriteProperty(True)
-        If value Is Nothing Then value = ""
         If Not $PrivateVariable$.Equals(value) Then
           $PrivateVariable$ = value
           PropertyHasChanged()

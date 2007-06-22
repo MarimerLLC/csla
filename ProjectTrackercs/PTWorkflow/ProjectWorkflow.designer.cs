@@ -26,37 +26,48 @@ namespace PTWorkflow
 		private void InitializeComponent()
 		{
       this.CanModifyActivities = true;
-      this.saveProject = new System.Workflow.Activities.CodeActivity();
+      this.notifySponsor = new System.Workflow.Activities.CodeActivity();
+      this.notifyResources = new System.Workflow.Activities.CodeActivity();
+      this.sequenceActivity2 = new System.Workflow.Activities.SequenceActivity();
+      this.sequenceActivity1 = new System.Workflow.Activities.SequenceActivity();
+      this.parallelActivity1 = new System.Workflow.Activities.ParallelActivity();
       this.closeProject = new System.Workflow.Activities.CodeActivity();
-      this.getProject = new System.Workflow.Activities.CodeActivity();
-      this.login = new System.Workflow.Activities.CodeActivity();
       // 
-      // saveProject
+      // notifySponsor
       // 
-      this.saveProject.Name = "saveProject";
-      this.saveProject.ExecuteCode += new System.EventHandler(this.saveProject_ExecuteCode);
+      this.notifySponsor.Name = "notifySponsor";
+      this.notifySponsor.ExecuteCode += new System.EventHandler(this.notifySponsor_ExecuteCode);
+      // 
+      // notifyResources
+      // 
+      this.notifyResources.Name = "notifyResources";
+      this.notifyResources.ExecuteCode += new System.EventHandler(this.notifyResources_ExecuteCode);
+      // 
+      // sequenceActivity2
+      // 
+      this.sequenceActivity2.Activities.Add(this.notifySponsor);
+      this.sequenceActivity2.Name = "sequenceActivity2";
+      // 
+      // sequenceActivity1
+      // 
+      this.sequenceActivity1.Activities.Add(this.notifyResources);
+      this.sequenceActivity1.Name = "sequenceActivity1";
+      // 
+      // parallelActivity1
+      // 
+      this.parallelActivity1.Activities.Add(this.sequenceActivity1);
+      this.parallelActivity1.Activities.Add(this.sequenceActivity2);
+      this.parallelActivity1.Name = "parallelActivity1";
       // 
       // closeProject
       // 
       this.closeProject.Name = "closeProject";
       this.closeProject.ExecuteCode += new System.EventHandler(this.closeProject_ExecuteCode);
       // 
-      // getProject
-      // 
-      this.getProject.Name = "getProject";
-      this.getProject.ExecuteCode += new System.EventHandler(this.getProject_ExecuteCode);
-      // 
-      // login
-      // 
-      this.login.Name = "login";
-      this.login.ExecuteCode += new System.EventHandler(this.login_ExecuteCode);
-      // 
       // ProjectWorkflow
       // 
-      this.Activities.Add(this.login);
-      this.Activities.Add(this.getProject);
       this.Activities.Add(this.closeProject);
-      this.Activities.Add(this.saveProject);
+      this.Activities.Add(this.parallelActivity1);
       this.Name = "ProjectWorkflow";
       this.CanModifyActivities = false;
 
@@ -64,10 +75,17 @@ namespace PTWorkflow
 
 		#endregion
 
-    private CodeActivity saveProject;
+    private CodeActivity notifySponsor;
+    private CodeActivity notifyResources;
+    private SequenceActivity sequenceActivity2;
+    private SequenceActivity sequenceActivity1;
+    private ParallelActivity parallelActivity1;
     private CodeActivity closeProject;
-    private CodeActivity getProject;
-    private CodeActivity login;
+
+
+
+
+
 
 
 

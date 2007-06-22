@@ -10,6 +10,7 @@ using System.Workflow.ComponentModel.Design;
 using System.Workflow.Runtime;
 using System.Workflow.Activities;
 using System.Workflow.Activities.Rules;
+using ProjectTracker.Library;
 
 namespace PTWorkflow
 {
@@ -33,27 +34,32 @@ namespace PTWorkflow
 	
     #endregion
 
+    #region Code Activities
+
     private ProjectTracker.Library.Project _project;
-
-    private void login_ExecuteCode(object sender, EventArgs e)
-    {
-      ProjectTracker.Library.Security.PTPrincipal.Login("pm", "pm");
-    }
-
-    private void getProject_ExecuteCode(object sender, EventArgs e)
-    {
-      _project = ProjectTracker.Library.Project.GetProject(ProjectId);
-    }
 
     private void closeProject_ExecuteCode(object sender, EventArgs e)
     {
+      _project = Project.GetProject(ProjectId);
       _project.Ended = DateTime.Today.ToString();
+      _project = _project.Save();
     }
 
-    private void saveProject_ExecuteCode(object sender, EventArgs e)
+    private void notifyResources_ExecuteCode(object sender, EventArgs e)
     {
-      _project.Save();
+      foreach (ProjectResource resource in _project.Resources)
+      {
+        // notify each resource
+      }
     }
-	}
+
+    private void notifySponsor_ExecuteCode(object sender, EventArgs e)
+    {
+      // notify project sponsor
+    }
+
+    #endregion
+
+  }
 
 }

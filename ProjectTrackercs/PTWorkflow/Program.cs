@@ -29,9 +29,17 @@ namespace PTWorkflow
         parameters.Add("ProjectId", new Guid("750a346c-6c08-48c8-9329-e306ce8c7299"));
         WorkflowInstance instance = 
           workflowRuntime.CreateWorkflow(typeof(PTWorkflow.ProjectWorkflow), parameters);
+
+        // login before starting WF instance
+        ProjectTracker.Library.Security.PTPrincipal.Login("pm", "pm");
+
+        // execute workflow
         instance.Start();
 
+        // wait for workflow to complete
         waitHandle.WaitOne();
+        Console.WriteLine("Press <cr> to exit");
+        Console.Read();
       }
     }
   }

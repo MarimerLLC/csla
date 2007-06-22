@@ -18,7 +18,6 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for ProjectEdit.xaml
   /// </summary>
-
   public partial class ProjectEdit : EditForm
   {
     private Guid _projectId;

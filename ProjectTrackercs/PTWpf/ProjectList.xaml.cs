@@ -18,7 +18,6 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for ProjectList.xaml
   /// </summary>
-
   public partial class ProjectList : EditForm
   {
     public ProjectList()

@@ -18,7 +18,6 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for ResourceEdit.xaml
   /// </summary>
-
   public partial class ResourceEdit : EditForm
   {
     private int _resourceId;

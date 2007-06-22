@@ -18,7 +18,6 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for ProjectSelect.xaml
   /// </summary>
-
   public partial class ProjectSelect : Window
   {
     public ProjectSelect()

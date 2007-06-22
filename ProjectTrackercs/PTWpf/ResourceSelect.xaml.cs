@@ -18,7 +18,6 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for ResourceSelect.xaml
   /// </summary>
-
   public partial class ResourceSelect : Window
   {
     public ResourceSelect()

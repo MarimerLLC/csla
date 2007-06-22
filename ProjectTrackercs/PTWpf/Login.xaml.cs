@@ -18,7 +18,6 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for Login.xaml
   /// </summary>
-
   public partial class Login : System.Windows.Window
   {
     public Login()

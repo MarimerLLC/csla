@@ -18,7 +18,6 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for ResourceList.xaml
   /// </summary>
-
   public partial class ResourceList : EditForm
   {
     public ResourceList()

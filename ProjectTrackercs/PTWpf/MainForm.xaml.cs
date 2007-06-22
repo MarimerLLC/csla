@@ -18,7 +18,6 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for MainForm.xaml
   /// </summary>
-
   public partial class MainForm : Window
   {
     #region Navigation and Plumbing

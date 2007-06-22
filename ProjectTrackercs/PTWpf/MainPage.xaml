@@ -1,4 +1,4 @@
-﻿<Page x:Class="PTWpf.MainPage"
+﻿<Window x:Class="PTWpf.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="PTWpf">
@@ -32,7 +32,7 @@
         <Expander IsExpanded="True" Header="Projects" >
           <ListBox>
             <ListBoxItem>
-              <Hyperlink NavigateUri="ProjectList.xaml" TargetName="frame1">Show Project list</Hyperlink>
+              <Hyperlink Click="ShowProjectList">Show Project list</Hyperlink>
             </ListBoxItem>
             <ListBoxItem>
               <Hyperlink Click="NewProject">Add new Project</Hyperlink>
@@ -42,7 +42,7 @@
         <Expander IsExpanded="True" Header="Resources">
           <ListBox>
             <ListBoxItem>
-              <Hyperlink NavigateUri="ResourceList.xaml" TargetName="frame1">Show Resource list</Hyperlink>
+              <Hyperlink Click="ShowResourceList">Show Resource list</Hyperlink>
             </ListBoxItem>
             <ListBoxItem>
               <Hyperlink Click="NewResource">Add new Resource</Hyperlink>
@@ -52,7 +52,7 @@
         <Expander IsExpanded="True" Header="Admin">
           <ListBox>
             <ListBoxItem>
-              <Hyperlink NavigateUri="RolesEdit.xaml" TargetName="frame1">Edit roles</Hyperlink>
+              <Hyperlink Click="ShowRolesEdit">Edit roles</Hyperlink>
             </ListBoxItem>
           </ListBox>
         </Expander>
@@ -69,6 +69,15 @@
           </ListBox>
         </StackPanel>
       </StackPanel>
-      <Frame Grid.Column="1" Name="frame1" BorderThickness="1" BorderBrush="LightGray" Padding="10" />
+      <DockPanel Grid.Column="1" Name="contentArea">
+        <DockPanel.Background>
+          <LinearGradientBrush EndPoint="0.987,0.985" StartPoint="-0.001,0">
+    			  <GradientStop Color="#FF9BB2F0" Offset="0"/>
+    			  <GradientStop Color="#FFFFFFFF" Offset="1"/>
+          </LinearGradientBrush>
+        </DockPanel.Background>
+      </DockPanel>
+      <!--<Frame Grid.Column="1" Name="frame1" BorderThickness="1" BorderBrush="LightGray" Padding="10" />-->
+      <!-- JournalOwnership="OwnsJournal" NavigationUIVisibility="Hidden"  -->
     </Grid>
-</Page>
+</Window>

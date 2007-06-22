@@ -1,17 +1,23 @@
-﻿<Page x:Class="PTWpf.ResourceEdit"
+﻿<local:EditForm x:Class="PTWpf.ResourceEdit"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:PTWpf"  
     xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
-    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library"  
-    Title="Resource Edit">
-  <Page.Resources>
+    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library">
+  <UserControl.Resources>
     <csla:IdentityConverter x:Key="IdentityConverter" />
     <csla:CslaDataProvider x:Key="RoleList"
                            ObjectType="{x:Type PTracker:RoleList}"
                            FactoryMethod="GetList"
                            IsAsynchronous="False" />
-  </Page.Resources>
-  <Grid Name="MainGrid">
+    <csla:CslaDataProvider x:Key="Resource"
+                           ObjectType="{x:Type PTracker:Resource}"
+                           FactoryMethod="GetResource"
+                           IsAsynchronous="False"
+                           ManageObjectLifetime="True">
+    </csla:CslaDataProvider>
+  </UserControl.Resources>
+  <Grid Name="MainGrid" DataContext="{Binding Source={StaticResource Resource}}" >
     <Grid.Resources>
       <DataTemplate x:Key="lbTemplate">
         <Grid>
@@ -45,9 +51,9 @@
       </DataTemplate>
     </Grid.Resources>
     
-    <csla:ObjectStatusPanel>
-      <csla:AuthorizationPanel Name="AuthPanel">
-        <csla:ValidationPanel>
+    <csla:ObjectStatus>
+      <csla:Authorizer Name="AuthPanel">
+        <csla:Validator>
           <StackPanel FlowDirection="LeftToRight">
             <StackPanel.Resources>
               <Style TargetType="{x:Type TextBlock}">
@@ -67,28 +73,24 @@
             <ListBox Name="ProjectListBox" ItemsSource="{Binding Assignments}" ItemTemplate="{StaticResource lbTemplate}" MouseDoubleClick="ShowProject">
             </ListBox>
             <StackPanel Orientation="Horizontal">
-              <Button Click="SaveObject" HorizontalAlignment="Left" IsDefault="True"
-                IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, 
-                    AncestorType=csla:ObjectStatusPanel, 
-                    AncestorLevel=1}, Path=IsSavable}"
-                    >Save</Button>
-              <Button Click="CancelChanges" HorizontalAlignment="Left" IsCancel="True"
-                IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, 
-                    AncestorType=csla:ObjectStatusPanel, 
-                    AncestorLevel=1}, Path=IsDirty}"
-                    >Cancel</Button>
+              <Button 
+                Command="ApplicationCommands.Save" 
+                CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
+                HorizontalAlignment="Left" IsDefault="True">Save</Button>
+              <Button 
+                Command="ApplicationCommands.Undo" 
+                CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
+                HorizontalAlignment="Left" IsCancel="True">Cancel</Button>
               <Button Name="AssignButton" Click="Assign" 
                       HorizontalAlignment="Left">Assign to project</Button>
-              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, 
-                        AncestorType=csla:ObjectStatusPanel, 
-                        AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>
-              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatusPanel, AncestorLevel=1}, Path=IsValid}">IsValid</CheckBox>
-              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatusPanel, AncestorLevel=1}, Path=IsDirty}">IsDirty</CheckBox>
-              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatusPanel, AncestorLevel=1}, Path=IsNew}">IsNew</CheckBox>
+              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>
+              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsValid}">IsValid</CheckBox>
+              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsDirty}">IsDirty</CheckBox>
+              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsNew}">IsNew</CheckBox>
             </StackPanel>
           </StackPanel>
-        </csla:ValidationPanel>
-      </csla:AuthorizationPanel>
-    </csla:ObjectStatusPanel>
+        </csla:Validator>
+      </csla:Authorizer>
+    </csla:ObjectStatus>
   </Grid>
-</Page>
+</local:EditForm>

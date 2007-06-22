@@ -18,72 +18,27 @@ namespace PTWpf
   /// <summary>
   /// Interaction logic for RolesEdit.xaml
   /// </summary>
-  public partial class RolesEdit : System.Windows.Controls.Page, IRefresh
+  public partial class RolesEdit : EditForm
   {
     public RolesEdit()
     {
       InitializeComponent();
-
-      Roles roles = Roles.GetRoles();
-      if (Roles.CanEditObject())
-        roles.BeginEdit();
-
-      this.DataContext = roles;
-
-      ApplyAuthorization();
+      Csla.Wpf.CslaDataProvider dp = this.FindResource("RoleList") as Csla.Wpf.CslaDataProvider;
+      dp.DataChanged += new EventHandler(dp_DataChanged);
     }
 
-    void SaveObject(object sender, EventArgs e)
+    void dp_DataChanged(object sender, EventArgs e)
     {
-      Roles roles = (Roles)this.DataContext;
-      try
-      {
-        Roles tmp = roles.Clone();
-        tmp.ApplyEdit();
-        roles = tmp.Save();
-        roles.BeginEdit();
-      }
-      catch (Csla.DataPortalException ex)
-      {
-        MessageBox.Show(ex.BusinessException.Message, "Data error");
-      }
-      catch (Csla.Validation.ValidationException ex)
-      {
-        MessageBox.Show(ex.Message, "Data validation error");
-      }
-      catch (System.Security.SecurityException ex)
-      {
-        MessageBox.Show(ex.Message, "Security error");
-      }
-      catch (Exception ex)
-      {
-        MessageBox.Show(ex.ToString(), "Unexpected error");
-      }
-      finally
-      {
-        this.DataContext = null;
-        this.DataContext = roles;
-      }
-    }
-
-    void CancelChanges(object sender, EventArgs e)
-    {
-      Roles roles = (Roles)this.DataContext;
-      roles.CancelEdit();
-      roles.BeginEdit();
-    }
-
-    void AddItem(object sender, EventArgs e)
-    {
-      Roles roles = (Roles)this.DataContext;
-      roles.AddNew();
+      Csla.Wpf.CslaDataProvider dp = sender as Csla.Wpf.CslaDataProvider;
+      if (dp.Error != null)
+        MessageBox.Show(dp.Error.ToString(), "Data error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
     }
 
     void RemoveItem(object sender, EventArgs e)
     {
       Button btn = (Button)sender;
       int id = (int)btn.Tag;
-      Roles roles = (Roles)this.DataContext;
+      Roles roles = (Roles)((Csla.Wpf.CslaDataProvider)this.FindResource("RoleList")).Data;
       foreach (Role role in roles)
         if (role.Id == id)
         {
@@ -92,7 +47,7 @@ namespace PTWpf
         }
     }
 
-    void ApplyAuthorization()
+    protected override void ApplyAuthorization()
     {
       this.AuthPanel.Refresh();
       if (Roles.CanEditObject())
@@ -104,24 +59,8 @@ namespace PTWpf
       {
         this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
         this.AddItemButton.IsEnabled = false;
+        ((Csla.Wpf.CslaDataProvider)this.FindResource("RoleList")).Cancel();
       }
     }
-
-    #region IRefresh Members
-
-    /// <summary>
-    /// Called by MainPage when the currently
-    /// logged in user changes.
-    /// </summary>
-    public void Refresh()
-    {
-      ApplyAuthorization();
-      Roles roles = (Roles)this.DataContext;
-      roles.CancelEdit();
-      if (Roles.CanEditObject())
-        roles.BeginEdit();
-    }
-
-    #endregion
   }
 }

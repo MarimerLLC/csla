@@ -19,7 +19,7 @@ namespace PTWpf
   /// Interaction logic for ProjectList.xaml
   /// </summary>
 
-  public partial class ProjectList : System.Windows.Controls.Page
+  public partial class ProjectList : EditForm
   {
     public ProjectList()
     {
@@ -31,8 +31,8 @@ namespace PTWpf
       ProjectTracker.Library.ProjectInfo item =
         (ProjectTracker.Library.ProjectInfo)this.listBox1.SelectedItem;
 
-      ProjectEdit frm = new ProjectEdit(Project.GetProject(item.Id));
-      MainPage.ShowPage(frm);
+      ProjectEdit frm = new ProjectEdit(item.Id); 
+      MainPage.ShowControl(frm);
     }
   }
 }

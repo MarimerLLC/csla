@@ -19,13 +19,11 @@ namespace PTWpf
   /// Interaction logic for ResourceList.xaml
   /// </summary>
 
-  public partial class ResourceList : System.Windows.Controls.Page
+  public partial class ResourceList : EditForm
   {
     public ResourceList()
     {
       InitializeComponent();
-
-      this.DataContext = ProjectTracker.Library.ResourceList.GetResourceList();
     }
 
     void ShowResource(object sender, EventArgs e)
@@ -33,8 +31,8 @@ namespace PTWpf
       ResourceInfo item =
         (ResourceInfo)this.listBox1.SelectedItem;
 
-      ResourceEdit frm = new ResourceEdit(Resource.GetResource(item.Id));
-      MainPage.ShowPage(frm);
+      ResourceEdit frm = new ResourceEdit(item.Id);
+      MainPage.ShowControl(frm);
     }
   }
 }

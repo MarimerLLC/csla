@@ -8,6 +8,12 @@
           <Setter Property="Margin" Value="5"/>
         </Style>
       </Grid.Resources>
+      <Grid.Background>
+        <LinearGradientBrush EndPoint="0.987,0.985" StartPoint="-0.001,0">
+  			  <GradientStop Color="#FFFFB2F0" Offset="0"/>
+  			  <GradientStop Color="#FFFFFFFF" Offset="1"/>
+        </LinearGradientBrush>
+      </Grid.Background>
       <StackPanel>
         <TextBlock>Username:</TextBlock>
         <TextBox Name="UsernameTextBox"></TextBox>

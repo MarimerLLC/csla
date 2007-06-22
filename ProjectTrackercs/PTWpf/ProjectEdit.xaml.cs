@@ -19,23 +19,44 @@ namespace PTWpf
   /// Interaction logic for ProjectEdit.xaml
   /// </summary>
 
-  public partial class ProjectEdit : System.Windows.Controls.Page, IRefresh
+  public partial class ProjectEdit : EditForm
   {
+    private Guid _projectId;
+
     public ProjectEdit()
     {
       InitializeComponent();
+      this.Loaded += new RoutedEventHandler(ProjectEdit_Loaded);
+      Csla.Wpf.CslaDataProvider dp = this.FindResource("Project") as Csla.Wpf.CslaDataProvider;
+      dp.DataChanged += new EventHandler(DataChanged);
     }
 
-    public ProjectEdit(Project project)
+    public ProjectEdit(Guid id)
       : this()
     {
-      SetTitle(project);
+      _projectId = id;
+    }
 
-      project.BeginEdit();
-
-      this.DataContext = project;
-
-      ApplyAuthorization();
+    void ProjectEdit_Loaded(object sender, RoutedEventArgs e)
+    {
+      Csla.Wpf.CslaDataProvider dp = this.FindResource("Project") as Csla.Wpf.CslaDataProvider;
+      using (dp.DeferRefresh())
+      {
+        dp.FactoryParameters.Clear();
+        if (_projectId.Equals(Guid.Empty))
+        {
+          dp.FactoryMethod = "NewProject";
+        }
+        else
+        {
+          dp.FactoryMethod = "GetProject";
+          dp.FactoryParameters.Add(_projectId);
+        }
+      }
+      if (dp.Data != null)
+        SetTitle((Project)dp.Data);
+      else
+        MainPage.ShowControl(null);
     }
 
     void SetTitle(Project project)
@@ -46,47 +67,6 @@ namespace PTWpf
         this.Title = string.Format("Project: {0}", project.Name);
     }
 
-    void SaveObject(object sender, EventArgs e)
-    {
-      Project project = (Project)this.DataContext;
-      try
-      {
-        Project tmp = project.Clone();
-        tmp.ApplyEdit();
-        project = tmp.Save();
-        project.BeginEdit();
-      }
-      catch (Csla.DataPortalException ex)
-      {
-        MessageBox.Show(ex.BusinessException.Message, "Data error");
-      }
-      catch (Csla.Validation.ValidationException ex)
-      {
-        MessageBox.Show(ex.Message, "Data validation error");
-      }
-      catch (System.Security.SecurityException ex)
-      {
-        MessageBox.Show(ex.Message, "Security error");
-      }
-      catch (Exception ex)
-      {
-        MessageBox.Show(ex.ToString(), "Unexpected error");
-      }
-      finally
-      {
-        this.DataContext = null;
-        this.DataContext = project;
-        SetTitle(project);
-      }
-    }
-
-    void CancelChanges(object sender, EventArgs e)
-    {
-      Project project = (Project)this.DataContext;
-      project.CancelEdit();
-      project.BeginEdit();
-    }
-
     void ShowResource(object sender, EventArgs e)
     {
       ProjectTracker.Library.ProjectResource item =
@@ -94,40 +74,55 @@ namespace PTWpf
 
       if (item != null)
       {
-        ResourceEdit frm = new ResourceEdit(Resource.GetResource(item.ResourceId));
-        MainPage.ShowPage(frm);
+        ResourceEdit frm = new ResourceEdit(item.ResourceId);
+        MainPage.ShowControl(frm);
       }
     }
 
-    void TestClick(object sender, EventArgs e)
-    {
-      this.NameTextBox.Text = string.Empty;
-    }
-
-    void ApplyAuthorization()
+    protected override void ApplyAuthorization()
     {
       this.AuthPanel.Refresh();
       if (Project.CanEditObject())
+      {
         this.ResourceListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
+        this.AssignButton.IsEnabled = true;
+      }
       else
+      {
         this.ResourceListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
+        ((Csla.Wpf.CslaDataProvider)this.FindResource("Project")).Cancel();
+        this.AssignButton.IsEnabled = false;
+      }
     }
 
-    #region IRefresh Members
-
-    /// <summary>
-    /// Called by MainPage when the currently
-    /// logged in user changes.
-    /// </summary>
-    public void Refresh()
+    void Assign(object sender, EventArgs e)
     {
-      ApplyAuthorization();
-      Project project = (Project)this.DataContext;
-      project.CancelEdit();
-      if (Project.CanEditObject())
-        project.BeginEdit();
+      ResourceSelect dlg = new ResourceSelect();
+      if ((bool)dlg.ShowDialog())
+      {
+        int id = dlg.ResourceId;
+        Project project = (Project)((Csla.Wpf.CslaDataProvider)this.FindResource("Project")).Data;
+        try
+        {
+          project.Resources.Assign(id);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(
+            ex.Message,
+            "Assignment error",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
+        }
+      }
     }
 
-    #endregion
+    void Unassign(object sender, EventArgs e)
+    {
+      Button btn = (Button)sender;
+      int id = (int)btn.Tag;
+      Project project = (Project)((Csla.Wpf.CslaDataProvider)this.FindResource("Project")).Data;
+      project.Resources.Remove(id);
+    }
   }
 }

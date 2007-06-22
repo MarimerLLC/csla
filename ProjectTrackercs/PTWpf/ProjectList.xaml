@@ -1,21 +1,22 @@
-﻿<Page x:Class="PTWpf.ProjectList"
+﻿<local:EditForm x:Class="PTWpf.ProjectList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:PTWpf"  
     xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
     xmlns:system="clr-namespace:System;assembly=mscorlib" 
-    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library"  
-    KeepAlive="True"
+    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library"
     Title="Project List">
-    <Page.Resources>
+    <UserControl.Resources>
       <csla:CslaDataProvider x:Key="ProjectList"
                              ObjectType="{x:Type PTracker:ProjectList}"
                              FactoryMethod="GetProjectList"
-                             IsAsynchronous="True">
+                             IsAsynchronous="True"
+                             IsInitialLoadEnabled="False">
         <csla:CslaDataProvider.FactoryParameters>
           <system:String>&lt;enter name&gt;</system:String>
         </csla:CslaDataProvider.FactoryParameters>
       </csla:CslaDataProvider>
-    </Page.Resources>
+    </UserControl.Resources>
     <Grid DataContext="{Binding Source={StaticResource ProjectList}}"> 
       <StackPanel FlowDirection="LeftToRight">
         <StackPanel.Resources>
@@ -42,4 +43,4 @@
         <ListBox Name="listBox1" ItemsSource="{Binding}" MouseDoubleClick="ShowProject"/>
       </StackPanel>
     </Grid>
-</Page>
+</local:EditForm>

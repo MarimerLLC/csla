@@ -19,23 +19,44 @@ namespace PTWpf
   /// Interaction logic for ResourceEdit.xaml
   /// </summary>
 
-  public partial class ResourceEdit : System.Windows.Controls.Page, IRefresh
+  public partial class ResourceEdit : EditForm
   {
+    private int _resourceId;
+
     public ResourceEdit()
     {
       InitializeComponent();
+      this.Loaded += new RoutedEventHandler(ResourceEdit_Loaded);
+      Csla.Wpf.CslaDataProvider dp = this.FindResource("Resource") as Csla.Wpf.CslaDataProvider;
+      dp.DataChanged += new EventHandler(DataChanged);
     }
 
-    public ResourceEdit(Resource resource)
+    public ResourceEdit(int resourceId)
       : this()
     {
-      SetTitle(resource);
+      _resourceId = resourceId;
+    }
 
-      resource.BeginEdit();
-
-      this.DataContext = resource;
-
-      ApplyAuthorization();
+    void ResourceEdit_Loaded(object sender, RoutedEventArgs e)
+    {
+      Csla.Wpf.CslaDataProvider dp = this.FindResource("Resource") as Csla.Wpf.CslaDataProvider;
+      using (dp.DeferRefresh())
+      {
+        dp.FactoryParameters.Clear();
+        if (_resourceId == 0)
+        {
+          dp.FactoryMethod = "NewResource";
+        }
+        else
+        {
+          dp.FactoryMethod = "GetResource";
+          dp.FactoryParameters.Add(_resourceId);
+        }
+      }
+      if (dp.Data != null)
+        SetTitle((Resource)dp.Data);
+      else
+        MainPage.ShowControl(null);
     }
 
     void SetTitle(Resource resource)
@@ -46,47 +67,6 @@ namespace PTWpf
         this.Title = string.Format("Resource: {0}", resource.FullName);
     }
 
-    void SaveObject(object sender, EventArgs e)
-    {
-      Resource resource = (Resource)this.DataContext;
-      try
-      {
-        Resource tmp = resource.Clone();
-        tmp.ApplyEdit();
-        resource = tmp.Save();
-        resource.BeginEdit();
-      }
-      catch (Csla.DataPortalException ex)
-      {
-        MessageBox.Show(ex.BusinessException.Message, "Data error");
-      }
-      catch (Csla.Validation.ValidationException ex)
-      {
-        MessageBox.Show(ex.Message, "Data validation error");
-      }
-      catch (System.Security.SecurityException ex)
-      {
-        MessageBox.Show(ex.Message, "Security error");
-      }
-      catch (Exception ex)
-      {
-        MessageBox.Show(ex.ToString(), "Unexpected error");
-      }
-      finally
-      {
-        this.DataContext = null;
-        this.DataContext = resource;
-        SetTitle(resource);
-      }
-    }
-
-    void CancelChanges(object sender, EventArgs e)
-    {
-      Resource resource = (Resource)this.DataContext;
-      resource.CancelEdit();
-      resource.BeginEdit();
-    }
-
     void ShowProject(object sender, EventArgs e)
     {
       ProjectTracker.Library.ResourceAssignment item =
@@ -94,42 +74,12 @@ namespace PTWpf
 
       if (item != null)
       {
-        ProjectEdit frm = new ProjectEdit(Project.GetProject(item.ProjectId));
-        MainPage.ShowPage(frm);
+        ProjectEdit frm = new ProjectEdit(item.ProjectId);
+        MainPage.ShowControl(frm);
       }
     }
 
-    void Assign(object sender, EventArgs e)
-    {
-      ProjectSelect dlg = new ProjectSelect();
-      if ((bool)dlg.ShowDialog())
-      {
-        Guid id = dlg.ProjectId;
-        Resource resource = (Resource)this.DataContext;
-        try
-        {
-          resource.Assignments.AssignTo(id);
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(
-            ex.Message, 
-            "Assignment error", 
-            MessageBoxButton.OK, 
-            MessageBoxImage.Information);
-        }
-      }
-    }
-
-    void Unassign(object sender, EventArgs e)
-    {
-      Button btn = (Button)sender;
-      Guid id = (Guid)btn.Tag;
-      Resource resource = (Resource)this.DataContext;
-      resource.Assignments.Remove(id);
-    }
-
-    void ApplyAuthorization()
+    protected override void ApplyAuthorization()
     {
       this.AuthPanel.Refresh();
       if (Resource.CanEditObject())
@@ -140,21 +90,39 @@ namespace PTWpf
       else
       {
         this.ProjectListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
+        ((Csla.Wpf.CslaDataProvider)this.FindResource("Resource")).Cancel();
         this.AssignButton.IsEnabled = false;
       }
     }
 
-    #region IRefresh Members
-
-    public void Refresh()
+    void Assign(object sender, EventArgs e)
     {
-      ApplyAuthorization();
-      Resource resource = (Resource)this.DataContext;
-        resource.CancelEdit();
-      if (Resource.CanEditObject())
-        resource.BeginEdit();
+      ProjectSelect dlg = new ProjectSelect();
+      if ((bool)dlg.ShowDialog())
+      {
+        Guid id = dlg.ProjectId;
+        Resource resource = (Resource)((Csla.Wpf.CslaDataProvider)this.FindResource("Resource")).Data;
+        try
+        {
+          resource.Assignments.AssignTo(id);
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(
+            ex.Message,
+            "Assignment error",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
+        }
+      }
     }
 
-    #endregion
+    void Unassign(object sender, EventArgs e)
+    {
+      Button btn = (Button)sender;
+      Guid id = (Guid)btn.Tag;
+      Resource resource = (Resource)((Csla.Wpf.CslaDataProvider)this.FindResource("Resource")).Data;
+      resource.Assignments.Remove(id);
+    }
   }
 }

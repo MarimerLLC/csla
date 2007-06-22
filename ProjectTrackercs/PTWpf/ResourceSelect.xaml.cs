@@ -16,31 +16,31 @@ using ProjectTracker.Library;
 namespace PTWpf
 {
   /// <summary>
-  /// Interaction logic for ProjectSelect.xaml
+  /// Interaction logic for ResourceSelect.xaml
   /// </summary>
 
-  public partial class ProjectSelect : Window
+  public partial class ResourceSelect : Window
   {
-    public ProjectSelect()
+    public ResourceSelect()
     {
       InitializeComponent();
     }
 
-    private Guid _projectId;
+    private int _resourceId;
 
-    public Guid ProjectId
+    public int ResourceId
     {
-      get { return _projectId; }
+      get { return _resourceId; }
     }
 
 
     void OkButton(object sender, EventArgs e)
     {
-      ProjectInfo item = (ProjectInfo)ProjectListBox.SelectedItem;
+      ResourceInfo item = (ResourceInfo)ResourceListBox.SelectedItem;
       if (item != null)
       {
         DialogResult = true;
-        _projectId = (item).Id;
+        _resourceId = (item).Id;
       }
       else
         DialogResult = false;
@@ -53,7 +53,7 @@ namespace PTWpf
       Hide();
     }
 
-    void ProjectSelected(object sender, EventArgs e)
+    void ResourceSelected(object sender, EventArgs e)
     {
       OkButton(sender, e);
     }

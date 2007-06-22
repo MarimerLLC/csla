@@ -19,29 +19,32 @@ namespace PTWpf
   /// Interaction logic for MainPage.xaml
   /// </summary>
 
-  public partial class MainPage : System.Windows.Controls.Page
+  public partial class MainPage : Window
   {
+    #region Navigation and Plumbing
+
+    private static ProjectTracker.Library.Security.PTPrincipal _principal;
+    private static MainPage _mainForm;
+
+    private UserControl _currentControl;
+
     public MainPage()
     {
       InitializeComponent();
 
-      ProjectTracker.Library.Security.PTPrincipal.Logout();
-      _principal = (ProjectTracker.Library.Security.PTPrincipal)Csla.ApplicationContext.User;
-
       _mainForm = this;
-      _mainFrame = frame1;
 
-      this.WindowTitle = "Project Tracker";
       this.Loaded += new RoutedEventHandler(MainPage_Loaded);
+      Csla.DataPortal.DataPortalInitInvoke += new Action<object>(DataPortal_DataPortalInitInvoke);
     }
 
     void MainPage_Loaded(object sender, RoutedEventArgs e)
     {
-      _mainFrame.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
-      Csla.DataPortal.DataPortalInitInvoke += new Action<object>(DataPortal_DataPortalInitInvoke);
-    }
+      ProjectTracker.Library.Security.PTPrincipal.Logout();
+      _principal = (ProjectTracker.Library.Security.PTPrincipal)Csla.ApplicationContext.User;
 
-    private static ProjectTracker.Library.Security.PTPrincipal _principal;
+      this.Title = "Project Tracker";
+    }
 
     /// <summary>
     /// This method ensures that the thread about to do
@@ -54,32 +57,61 @@ namespace PTWpf
     void DataPortal_DataPortalInitInvoke(object obj)
     {
       if (!(Csla.ApplicationContext.User is ProjectTracker.Library.Security.PTPrincipal))
-      {
         Csla.ApplicationContext.User = _principal;
-      }
     }
 
-    static void NavigationService_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+
+    public static void ShowControl(UserControl control)
     {
-      Page page = e.Content as Page;
-      if (page != null)
-        _mainForm.WindowTitle = string.Format("Project Tracker - {0}", page.Title);
+      _mainForm.ShowUserControl(control);
     }
 
-    static Page _mainForm;
-    static Frame _mainFrame;
-
-    public static void ShowPage(Page page)
+    private void ShowUserControl(UserControl control)
     {
-      _mainFrame.NavigationService.Navigate(page);
+      UnHookTitleEvent(_currentControl);
+
+      contentArea.Children.Clear();
+      if (control != null)
+        contentArea.Children.Add(control);
+      _currentControl = control;
+      
+      HookTitleEvent(_currentControl);
     }
-    
+
+    private void UnHookTitleEvent(UserControl control)
+    {
+      EditForm form = control as EditForm;
+      if (form != null)
+        form.TitleChanged -= new EventHandler(SetTitle);
+    }
+
+    private void HookTitleEvent(UserControl control)
+    {
+      SetTitle(control, EventArgs.Empty);
+      EditForm form = control as EditForm;
+      if (form != null)
+        form.TitleChanged += new EventHandler(SetTitle);
+    }
+
+    void SetTitle(object sender, EventArgs e)
+    {
+      EditForm form = sender as EditForm;
+      if (form != null && !string.IsNullOrEmpty(form.Title))
+        _mainForm.Title = string.Format("Project Tracker - {0}", ((EditForm)sender).Title);
+      else
+        _mainForm.Title = string.Format("Project Tracker");
+    }
+
+    #endregion
+
+    #region Menu items
+
     void NewProject(object sender, EventArgs e)
     {
       try
       {
-        ProjectEdit frm = new ProjectEdit(ProjectTracker.Library.Project.NewProject());
-        ShowPage(frm);
+        ProjectEdit frm = new ProjectEdit(Guid.Empty);
+        ShowControl(frm);
       }
       catch (System.Security.SecurityException ex)
       {
@@ -87,19 +119,33 @@ namespace PTWpf
       }
     }
 
+    void ShowProjectList(object sender, EventArgs e)
+    {
+      ProjectList frm = new ProjectList();
+      ShowControl(frm);
+    }
+
+    void ShowResourceList(object sender, EventArgs e)
+    {
+      ResourceList frm = new ResourceList();
+      ShowControl(frm);
+    }
+
     void NewResource(object sender, EventArgs e)
     {
-      try
-      {
-        ProjectEdit frm = new ProjectEdit(ProjectTracker.Library.Project.NewProject());
-        ShowPage(frm);
-        //frame1.NavigationService.Navigate(frm);
-      }
-      catch (System.Security.SecurityException ex)
-      {
-        MessageBox.Show(ex.ToString());
-      }
+      ResourceEdit frm = new ResourceEdit(0);
+      ShowControl(frm);
     }
+
+    void ShowRolesEdit(object sender, EventArgs e)
+    {
+      RolesEdit frm = new RolesEdit();
+      ShowControl(frm);
+    }
+
+    #endregion
+
+    #region Login/Logout
 
     void LogInOut(object sender, EventArgs e)
     {
@@ -132,9 +178,11 @@ namespace PTWpf
           LoginButtonText.Text = "Log out";
         }
       }
-      IRefresh p = _mainFrame.Content as IRefresh;
+      IRefresh p = _currentControl as IRefresh;
       if (p != null)
         p.Refresh();
     }
+
+    #endregion
   }
 }

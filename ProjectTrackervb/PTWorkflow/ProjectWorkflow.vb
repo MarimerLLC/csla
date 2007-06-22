@@ -1,7 +1,9 @@
+Imports ProjectTracker.Library
+
 Public Class ProjectWorkflow
   Inherits SequentialWorkflowActivity
 
-  Private _project As ProjectTracker.Library.Project
+#Region " Dependency Properties "
 
   Private Shared ReadOnly ProjectIdProperty As DependencyProperty = _
     DependencyProperty.Register("ProjectId", GetType(Guid), GetType(ProjectWorkflow), Nothing)
@@ -15,31 +17,34 @@ Public Class ProjectWorkflow
     End Set
   End Property
 
-  Private Sub login_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
 
-    ProjectTracker.Library.Security.PTPrincipal.Login("pm", "pm")
+#Region " Code Activities "
 
-  End Sub
-
-  Private Sub getProject_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
-
-    'Dim list As ProjectTracker.Library.ProjectList = ProjectTracker.Library.ProjectList.GetProjectList
-    _project = ProjectTracker.Library.Project.GetProject(ProjectId) 'list(0).Id)
-
-  End Sub
-
+  Private mProject As ProjectTracker.Library.Project
 
   Private Sub closeProject_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
-    _project.Ended = Today.ToString
+    mProject = Project.GetProject(ProjectId)
+    mProject.Ended = Today.ToString
+    mProject = mProject.Save()
 
   End Sub
 
+  Private Sub notifyResources_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
-  Private Sub saveProject_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
-
-    _project.Save()
+    For Each resource As ProjectResource In mProject.Resources
+      ' notify each resource  
+    Next
 
   End Sub
+
+  Private Sub notifySponsor_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    ' notify project sponsor
+
+  End Sub
+
+#End Region
 
 End Class

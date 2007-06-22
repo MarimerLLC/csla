@@ -7,44 +7,57 @@ Partial Class ProjectWorkflow
   <System.Diagnostics.DebuggerNonUserCode()> _
   Private Sub InitializeComponent()
     Me.CanModifyActivities = True
-    Me.saveProject = New System.Workflow.Activities.CodeActivity
+    Me.notifySponsor = New System.Workflow.Activities.CodeActivity
+    Me.notifyResources = New System.Workflow.Activities.CodeActivity
+    Me.sequenceActivity2 = New System.Workflow.Activities.SequenceActivity
+    Me.sequenceActivity1 = New System.Workflow.Activities.SequenceActivity
+    Me.parallelActivity1 = New System.Workflow.Activities.ParallelActivity
     Me.closeProject = New System.Workflow.Activities.CodeActivity
-    Me.getProject = New System.Workflow.Activities.CodeActivity
-    Me.login = New System.Workflow.Activities.CodeActivity
     '
-    'saveProject
+    'notifySponsor
     '
-    Me.saveProject.Name = "saveProject"
-    AddHandler Me.saveProject.ExecuteCode, AddressOf Me.saveProject_ExecuteCode
+    Me.notifySponsor.Name = "notifySponsor"
+    AddHandler Me.notifySponsor.ExecuteCode, AddressOf Me.notifySponsor_ExecuteCode
+    '
+    'notifyResources
+    '
+    Me.notifyResources.Name = "notifyResources"
+    AddHandler Me.notifyResources.ExecuteCode, AddressOf Me.notifyResources_ExecuteCode
+    '
+    'sequenceActivity2
+    '
+    Me.sequenceActivity2.Activities.Add(Me.notifySponsor)
+    Me.sequenceActivity2.Name = "sequenceActivity2"
+    '
+    'sequenceActivity1
+    '
+    Me.sequenceActivity1.Activities.Add(Me.notifyResources)
+    Me.sequenceActivity1.Name = "sequenceActivity1"
+    '
+    'parallelActivity1
+    '
+    Me.parallelActivity1.Activities.Add(Me.sequenceActivity1)
+    Me.parallelActivity1.Activities.Add(Me.sequenceActivity2)
+    Me.parallelActivity1.Name = "parallelActivity1"
     '
     'closeProject
     '
     Me.closeProject.Name = "closeProject"
     AddHandler Me.closeProject.ExecuteCode, AddressOf Me.closeProject_ExecuteCode
     '
-    'getProject
-    '
-    Me.getProject.Name = "getProject"
-    AddHandler Me.getProject.ExecuteCode, AddressOf Me.getProject_ExecuteCode
-    '
-    'login
-    '
-    Me.login.Name = "login"
-    AddHandler Me.login.ExecuteCode, AddressOf Me.login_ExecuteCode
-    '
     'ProjectWorkflow
     '
-    Me.Activities.Add(Me.login)
-    Me.Activities.Add(Me.getProject)
     Me.Activities.Add(Me.closeProject)
-    Me.Activities.Add(Me.saveProject)
+    Me.Activities.Add(Me.parallelActivity1)
     Me.Name = "ProjectWorkflow"
     Me.CanModifyActivities = False
 
   End Sub
-  Private saveProject As System.Workflow.Activities.CodeActivity
-  Private getProject As System.Workflow.Activities.CodeActivity
-  Private login As System.Workflow.Activities.CodeActivity
+  Private notifySponsor As System.Workflow.Activities.CodeActivity
+  Private notifyResources As System.Workflow.Activities.CodeActivity
+  Private sequenceActivity2 As System.Workflow.Activities.SequenceActivity
+  Private sequenceActivity1 As System.Workflow.Activities.SequenceActivity
+  Private parallelActivity1 As System.Workflow.Activities.ParallelActivity
   Private closeProject As System.Workflow.Activities.CodeActivity
 
 End Class

@@ -4,6 +4,7 @@ Module Module1
     Shared WaitHandle As New AutoResetEvent(False)
 
     Shared Sub Main()
+
       Using workflowRuntime As New WorkflowRuntime()
         AddHandler workflowRuntime.WorkflowCompleted, AddressOf OnWorkflowCompleted
         AddHandler workflowRuntime.WorkflowTerminated, AddressOf OnWorkflowTerminated
@@ -13,8 +14,17 @@ Module Module1
         params.Add("ProjectId", New Guid("750a346c-6c08-48c8-9329-e306ce8c7299"))
         workflowInstance = _
           workflowRuntime.CreateWorkflow(GetType(ProjectWorkflow), params)
+
+        ' log in before starting the WF instance
+        ProjectTracker.Library.Security.PTPrincipal.Login("pm", "pm")
+
+        ' execute the workflow
         workflowInstance.Start()
+
+        ' wait for workflow to complete
         WaitHandle.WaitOne()
+        Console.WriteLine("Press <cr> to exit")
+        Console.Read()
       End Using
     End Sub
 

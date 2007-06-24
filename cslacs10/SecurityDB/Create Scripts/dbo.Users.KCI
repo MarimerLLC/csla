@@ -1,7 +1,0 @@
-﻿ALTER TABLE [dbo].[Users] WITH NOCHECK ADD 
-	CONSTRAINT [PK_Users] PRIMARY KEY  CLUSTERED 
-	(
-		[Username]
-	)  ON [PRIMARY] 
-GO
-

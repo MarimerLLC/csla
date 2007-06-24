@@ -1,7 +1,0 @@
-﻿ALTER TABLE [dbo].[Projects] WITH NOCHECK ADD 
-	CONSTRAINT [PK_Projects] PRIMARY KEY  CLUSTERED 
-	(
-		[ID]
-	)  ON [PRIMARY] 
-GO
-

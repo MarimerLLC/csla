@@ -28,12 +28,12 @@ namespace Csla.Wpf
   {
     #region NotVisibleMode property
 
-    // Define DependencyProperty
+    // Define attached DependencyProperty
     private static readonly DependencyProperty NotVisibleModeProperty = 
-      DependencyProperty.Register(
+      DependencyProperty.RegisterAttached(
         "NotVisibleMode", 
         typeof(VisibilityMode), 
-        typeof(Authorizer), 
+        typeof(Authorizer),
         new FrameworkPropertyMetadata(VisibilityMode.Hidden), 
         new ValidateValueCallback(IsValidVisibilityMode));
 
@@ -44,49 +44,21 @@ namespace Csla.Wpf
     }
 
     /// <summary>
-    /// Gets or sets the value controlling how controls
+    /// Gets the value controlling how controls
     /// bound to non-readable properties will be rendered.
     /// </summary>
-    public VisibilityMode NotVisibleMode
+    public static VisibilityMode GetNotVisibleMode(DependencyObject obj)
     {
-      get
-      {
-        return (VisibilityMode)base.GetValue(NotVisibleModeProperty);
-      }
-      set
-      {
-        base.SetValue(NotVisibleModeProperty, value);
-      }
-    }
-
-    #endregion
-
-    #region ControlVisibility property
-
-    private static readonly DependencyProperty ControlVisibilityProperty =
-      DependencyProperty.RegisterAttached(
-      "ControlVisibility", typeof(VisibilityMode), typeof(Authorizer));
-
-    /// <summary>
-    /// Gets a value specifying the visibility mode
-    /// of the specified control. This value is
-    /// used to override the NotVisibleMode property
-    /// for a specific control.
-    /// </summary>
-    public static VisibilityMode GetControlVisibility(DependencyObject obj)
-    {
-      return (VisibilityMode)obj.GetValue(ControlVisibilityProperty);
+      return (VisibilityMode)obj.GetValue(NotVisibleModeProperty);
     }
 
     /// <summary>
-    /// Sets a value specifying the visibility mode
-    /// of the specified control. This value is
-    /// used to override the NotVisibleMode property
-    /// for a specific control.
+    /// Sets the value controlling how controls
+    /// bound to non-readable properties will be rendered.
     /// </summary>
-    public static void SetControlVisibility(DependencyObject obj, VisibilityMode visibility)
+    public static void SetNotVisibleMode(DependencyObject obj, VisibilityMode mode)
     {
-      obj.SetValue(ControlVisibilityProperty, visibility);
+      obj.SetValue(NotVisibleModeProperty, mode);
     }
 
     #endregion
@@ -152,10 +124,7 @@ namespace Csla.Wpf
     private void SetRead(Binding bnd, UIElement ctl, IAuthorizeReadWrite source)
     {
       bool canRead = source.CanReadProperty(bnd.Path.Path);
-      VisibilityMode visibilityMode = NotVisibleMode;
-      object controlVisibility = ctl.GetValue(Authorizer.ControlVisibilityProperty);
-      if (controlVisibility != null)
-        visibilityMode = (VisibilityMode)controlVisibility;
+      VisibilityMode visibilityMode = GetNotVisibleMode(ctl);
 
       if (canRead)
         switch (visibilityMode)

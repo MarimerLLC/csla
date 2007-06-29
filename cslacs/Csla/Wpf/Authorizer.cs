@@ -152,13 +152,13 @@ namespace Csla.Wpf
     private void SetRead(Binding bnd, UIElement ctl, IAuthorizeReadWrite source)
     {
       bool canRead = source.CanReadProperty(bnd.Path.Path);
-      VisibilityMode visibility = NotVisibleMode;
+      VisibilityMode visibilityMode = NotVisibleMode;
       object controlVisibility = ctl.GetValue(Authorizer.ControlVisibilityProperty);
       if (controlVisibility != null)
-        visibility = (VisibilityMode)controlVisibility;
+        visibilityMode = (VisibilityMode)controlVisibility;
 
       if (canRead)
-        switch (visibility)
+        switch (visibilityMode)
         {
           case VisibilityMode.Collapsed:
             if (ctl.Visibility == Visibility.Collapsed)
@@ -172,7 +172,7 @@ namespace Csla.Wpf
             break;
         }
       else
-        switch (visibility)
+        switch (visibilityMode)
         {
           case VisibilityMode.Collapsed:
             ctl.Visibility = Visibility.Collapsed;

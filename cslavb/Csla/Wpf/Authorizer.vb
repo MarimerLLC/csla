@@ -51,6 +51,38 @@ Namespace Wpf
 
 #End Region
 
+#Region " ControlVisibility property "
+
+    Private Shared ControlVisibilityProperty As DependencyProperty = _
+      DependencyProperty.RegisterAttached( _
+      "ControlVisibility", GetType(VisibilityMode), GetType(Authorizer))
+
+    ''' <summary>
+    ''' Gets a value specifying the visibility mode
+    ''' of the specified control. This value is
+    ''' used to override the NotVisibleMode property
+    ''' for a specific control.
+    ''' </summary>
+    Public Shared Function GetControlVisibility(ByVal obj As DependencyObject) As VisibilityMode
+
+      Return CType(obj.GetValue(ControlVisibilityProperty), VisibilityMode)
+
+    End Function
+
+    ''' <summary>
+    ''' Sets a value specifying the visibility mode
+    ''' of the specified control. This value is
+    ''' used to override the NotVisibleMode property
+    ''' for a specific control.
+    ''' </summary>
+    Public Shared Sub SetControlVisibility(ByVal obj As DependencyObject, ByVal visibility As VisibilityMode)
+
+      obj.SetValue(ControlVisibilityProperty, visibility)
+
+    End Sub
+
+#End Region
+
     Private mSource As IAuthorizeReadWrite
 
     ''' <summary>
@@ -101,25 +133,33 @@ Namespace Wpf
     Private Sub SetRead(ByVal bnd As Binding, ByVal ctl As UIElement, ByVal source As IAuthorizeReadWrite)
       Dim canRead As Boolean = source.CanReadProperty(bnd.Path.Path)
 
+      Dim visibilityMode As VisibilityMode = NotVisibleMode
+      Dim controlVisibility As Object = ctl.GetValue(Authorizer.ControlVisibilityProperty)
+      If controlVisibility IsNot Nothing Then
+        visibilityMode = CType(controlVisibility, VisibilityMode)
+      End If
+
       If canRead Then
-        Select Case NotVisibleMode
-          Case VisibilityMode.Collapsed
+        Select Case visibilityMode
+          Case visibilityMode.Collapsed
             If ctl.Visibility = Visibility.Collapsed Then
               ctl.Visibility = Visibility.Visible
             End If
-          Case VisibilityMode.Hidden
+          Case visibilityMode.Hidden
             If ctl.Visibility = Visibility.Hidden Then
               ctl.Visibility = Visibility.Visible
             End If
           Case Else
+            ' ignore
         End Select
       Else
-        Select Case NotVisibleMode
-          Case VisibilityMode.Collapsed
+        Select Case visibilityMode
+          Case visibilityMode.Collapsed
             ctl.Visibility = Visibility.Collapsed
-          Case VisibilityMode.Hidden
+          Case visibilityMode.Hidden
             ctl.Visibility = Visibility.Hidden
           Case Else
+            ' ignore
         End Select
       End If
     End Sub

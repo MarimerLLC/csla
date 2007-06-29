@@ -28,8 +28,11 @@ Namespace Wpf
 
     ' Define DependencyProperty
     Private Shared ReadOnly NotVisibleModeProperty As DependencyProperty = _
-      DependencyProperty.Register("NotVisibleMode", GetType(VisibilityMode), _
-      GetType(Authorizer), New FrameworkPropertyMetadata(VisibilityMode.Hidden), AddressOf IsValidVisibilityMode)
+      DependencyProperty.RegisterAttached("NotVisibleMode", _
+                                          GetType(VisibilityMode), _
+                                          GetType(Authorizer), _
+                                          New FrameworkPropertyMetadata(VisibilityMode.Hidden), _
+                                          AddressOf IsValidVisibilityMode)
 
     ' Define method to validate the value
     Private Shared Function IsValidVisibilityMode(ByVal o As Object) As Boolean
@@ -37,48 +40,19 @@ Namespace Wpf
     End Function
 
     ''' <summary>
-    ''' Gets or sets the value controlling how controls
+    ''' Gets the value controlling how controls
     ''' bound to non-readable properties will be rendered.
     ''' </summary>
-    Public Property NotVisibleMode() As VisibilityMode
-      Get
-        Return CType(MyBase.GetValue(NotVisibleModeProperty), VisibilityMode)
-      End Get
-      Set(ByVal value As VisibilityMode)
-        MyBase.SetValue(NotVisibleModeProperty, value)
-      End Set
-    End Property
-
-#End Region
-
-#Region " ControlVisibility property "
-
-    Private Shared ControlVisibilityProperty As DependencyProperty = _
-      DependencyProperty.RegisterAttached( _
-      "ControlVisibility", GetType(VisibilityMode), GetType(Authorizer))
-
-    ''' <summary>
-    ''' Gets a value specifying the visibility mode
-    ''' of the specified control. This value is
-    ''' used to override the NotVisibleMode property
-    ''' for a specific control.
-    ''' </summary>
-    Public Shared Function GetControlVisibility(ByVal obj As DependencyObject) As VisibilityMode
-
-      Return CType(obj.GetValue(ControlVisibilityProperty), VisibilityMode)
-
+    Public Shared Function GetNotVisibleMode(ByVal obj As DependencyObject) As VisibilityMode
+      Return CType(obj.GetValue(NotVisibleModeProperty), VisibilityMode)
     End Function
 
     ''' <summary>
-    ''' Sets a value specifying the visibility mode
-    ''' of the specified control. This value is
-    ''' used to override the NotVisibleMode property
-    ''' for a specific control.
+    ''' Sets the value controlling how controls
+    ''' bound to non-readable properties will be rendered.
     ''' </summary>
-    Public Shared Sub SetControlVisibility(ByVal obj As DependencyObject, ByVal visibility As VisibilityMode)
-
-      obj.SetValue(ControlVisibilityProperty, visibility)
-
+    Public Shared Sub SetNotVisibleMode(ByVal obj As DependencyObject, ByVal mode As VisibilityMode)
+      obj.SetValue(NotVisibleModeProperty, mode)
     End Sub
 
 #End Region
@@ -131,13 +105,9 @@ Namespace Wpf
     End Sub
 
     Private Sub SetRead(ByVal bnd As Binding, ByVal ctl As UIElement, ByVal source As IAuthorizeReadWrite)
-      Dim canRead As Boolean = source.CanReadProperty(bnd.Path.Path)
 
-      Dim visibilityMode As VisibilityMode = NotVisibleMode
-      Dim controlVisibility As Object = ctl.GetValue(Authorizer.ControlVisibilityProperty)
-      If controlVisibility IsNot Nothing Then
-        visibilityMode = CType(controlVisibility, VisibilityMode)
-      End If
+      Dim canRead As Boolean = source.CanReadProperty(bnd.Path.Path)
+      Dim visibilityMode As VisibilityMode = GetNotVisibleMode(ctl)
 
       If canRead Then
         Select Case visibilityMode
@@ -152,6 +122,7 @@ Namespace Wpf
           Case Else
             ' ignore
         End Select
+
       Else
         Select Case visibilityMode
           Case visibilityMode.Collapsed
@@ -162,7 +133,9 @@ Namespace Wpf
             ' ignore
         End Select
       End If
+
     End Sub
+
   End Class
 
 End Namespace

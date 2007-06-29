@@ -61,6 +61,36 @@ namespace Csla.Wpf
 
     #endregion
 
+    #region ControlVisibility property
+
+    private static readonly DependencyProperty ControlVisibilityProperty =
+      DependencyProperty.RegisterAttached(
+      "ControlVisibility", typeof(VisibilityMode), typeof(Authorizer));
+
+    /// <summary>
+    /// Gets a value specifying the visibility mode
+    /// of the specified control. This value is
+    /// used to override the NotVisibleMode property
+    /// for a specific control.
+    /// </summary>
+    public static VisibilityMode GetControlVisibility(DependencyObject obj)
+    {
+      return (VisibilityMode)obj.GetValue(ControlVisibilityProperty);
+    }
+
+    /// <summary>
+    /// Sets a value specifying the visibility mode
+    /// of the specified control. This value is
+    /// used to override the NotVisibleMode property
+    /// for a specific control.
+    /// </summary>
+    public static void SetControlVisibility(DependencyObject obj, VisibilityMode visibility)
+    {
+      obj.SetValue(ControlVisibilityProperty, visibility);
+    }
+
+    #endregion
+
     IAuthorizeReadWrite _source;
 
     /// <summary>
@@ -122,9 +152,13 @@ namespace Csla.Wpf
     private void SetRead(Binding bnd, UIElement ctl, IAuthorizeReadWrite source)
     {
       bool canRead = source.CanReadProperty(bnd.Path.Path);
+      VisibilityMode visibility = NotVisibleMode;
+      object controlVisibility = ctl.GetValue(Authorizer.ControlVisibilityProperty);
+      if (controlVisibility != null)
+        visibility = (VisibilityMode)controlVisibility;
 
       if (canRead)
-        switch (NotVisibleMode)
+        switch (visibility)
         {
           case VisibilityMode.Collapsed:
             if (ctl.Visibility == Visibility.Collapsed)
@@ -138,7 +172,7 @@ namespace Csla.Wpf
             break;
         }
       else
-        switch (NotVisibleMode)
+        switch (visibility)
         {
           case VisibilityMode.Collapsed:
             ctl.Visibility = Visibility.Collapsed;

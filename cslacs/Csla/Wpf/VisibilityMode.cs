@@ -4,7 +4,7 @@ using System;
 namespace Csla.Wpf
 {
   /// <summary>
-  /// Options controlling how the AuthorizationPanel
+  /// Options controlling how the Authorizer
   /// control alters the visibility of a control
   /// when read access to the property is not allowed.
   /// </summary>
@@ -19,7 +19,13 @@ namespace Csla.Wpf
     /// Specifies that the non-readable control
     /// should be hidden.
     /// </summary>
-    Hidden
+    Hidden,
+    /// <summary>
+    /// Specifies that the visibility of the 
+    /// non-readable control should not be
+    /// altered by the Authorizer control.
+    /// </summary>
+    Ignore
   }
 }
 #endif

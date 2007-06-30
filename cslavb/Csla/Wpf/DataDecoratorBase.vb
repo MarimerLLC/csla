@@ -142,8 +142,12 @@ Namespace Wpf
         oldContext = provider.Data
       End If
       UnHookPropertyChanged(TryCast(oldContext, INotifyPropertyChanged))
-      UnHookBindingListChanged(TryCast(oldContext, IBindingList))
-      UnHookObservableListChanged(TryCast(oldContext, INotifyCollectionChanged))
+      Dim observable As INotifyCollectionChanged = TryCast(oldContext, INotifyCollectionChanged)
+      If observable IsNot Nothing Then
+        UnHookObservableListChanged(observable)
+      Else
+        UnHookBindingListChanged(TryCast(oldContext, IBindingList))
+      End If
     End Sub
 
     Private Sub HookDataContextEvents(ByVal newValue As Object)
@@ -158,8 +162,12 @@ Namespace Wpf
         newContext = provider.Data
       End If
       HookPropertyChanged(TryCast(newContext, INotifyPropertyChanged))
-      HookBindingListChanged(TryCast(newContext, IBindingList))
-      HookObservableListChanged(TryCast(newContext, INotifyCollectionChanged))
+      Dim observable As INotifyCollectionChanged = TryCast(newContext, INotifyCollectionChanged)
+      If observable IsNot Nothing Then
+        HookObservableListChanged(observable)
+      Else
+        HookBindingListChanged(TryCast(newContext, IBindingList))
+      End If
     End Sub
 
     Private Sub UnHookPropertyChanged(ByVal oldContext As INotifyPropertyChanged)

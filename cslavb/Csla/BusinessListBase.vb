@@ -19,7 +19,9 @@ Public MustInherit Class BusinessListBase( _
   Implements ICloneable
   Implements ISavable
   Implements IParent
+#If Not NET20 Then
   Implements System.Collections.Specialized.INotifyCollectionChanged
+#End If
 
 #Region " Constructors "
 
@@ -387,7 +389,9 @@ Public MustInherit Class BusinessListBase( _
     ' added must be set
     item.EditLevelAdded = mEditLevel
     MyBase.InsertItem(index, item)
+#If Not NET20 Then
     OnCollectionChanged(New NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index))
+#End If
 
   End Sub
 
@@ -415,7 +419,9 @@ Public MustInherit Class BusinessListBase( _
       CopyToDeletedList(child)
     End If
     OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
+#If Not NET20 Then
     OnCollectionChanged(New NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index))
+#End If
   End Sub
 
   Private Sub CopyToDeletedList(ByVal child As C)
@@ -478,7 +484,9 @@ Public MustInherit Class BusinessListBase( _
       CopyToDeletedList(child)
     End If
     OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+#If Not NET20 Then
     OnCollectionChanged(New NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, child, item, index))
+#End If
   End Sub
 
   Private Sub ResetChildEditLevel(ByVal child As C, ByVal parentEditLevel As Integer)
@@ -850,6 +858,8 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " INotifyCollectionChanged "
 
+#If Not NET20 Then
+
   <NonSerialized()> _
   <NotUndoable()> _
   Private mNonSerializableCollectionChangedHandlers As NotifyCollectionChangedEventHandler
@@ -908,6 +918,8 @@ Public MustInherit Class BusinessListBase( _
     End Select
 
   End Sub
+
+#End If
 
 #End Region
 

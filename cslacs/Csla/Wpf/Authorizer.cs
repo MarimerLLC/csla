@@ -34,7 +34,7 @@ namespace Csla.Wpf
         "NotVisibleMode", 
         typeof(VisibilityMode), 
         typeof(Authorizer),
-        new FrameworkPropertyMetadata(VisibilityMode.Hidden), 
+        new FrameworkPropertyMetadata(VisibilityMode.Collapsed), 
         new ValidateValueCallback(IsValidVisibilityMode));
 
     // Define method to validate the value

@@ -300,10 +300,13 @@ namespace Csla
     {
       if (_readResultCache == null)
         _readResultCache = new Dictionary<string, bool>();
+      if (_executeResultCache == null)
+        _executeResultCache = new Dictionary<string, bool>();
       if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
         _readResultCache.Clear();
+        _executeResultCache.Clear();
         _lastPrincipal = Csla.ApplicationContext.User;
       }
     }

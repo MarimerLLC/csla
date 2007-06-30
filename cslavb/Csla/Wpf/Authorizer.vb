@@ -31,7 +31,7 @@ Namespace Wpf
       DependencyProperty.RegisterAttached("NotVisibleMode", _
                                           GetType(VisibilityMode), _
                                           GetType(Authorizer), _
-                                          New FrameworkPropertyMetadata(VisibilityMode.Hidden), _
+                                          New FrameworkPropertyMetadata(VisibilityMode.Collapsed), _
                                           AddressOf IsValidVisibilityMode)
 
     ' Define method to validate the value

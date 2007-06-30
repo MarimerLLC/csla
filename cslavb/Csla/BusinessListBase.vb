@@ -907,6 +907,12 @@ Public MustInherit Class BusinessListBase( _
 
   End Sub
 
+  ''' <summary>
+  ''' Raises the System.ComponentModel.IBindingList.ListChanged event.
+  ''' </summary>
+  ''' <param name="e">
+  ''' Parameter for event.
+  ''' </param>
   Protected Overrides Sub OnListChanged(ByVal e As System.ComponentModel.ListChangedEventArgs)
 
     MyBase.OnListChanged(e)

@@ -154,8 +154,11 @@ namespace Csla.Wpf
         oldContext = provider.Data;
       }
       UnHookPropertyChanged(oldContext as INotifyPropertyChanged);
-      UnHookBindingListChanged(oldContext as IBindingList);
-      UnHookObservableListChanged(oldContext as INotifyCollectionChanged);
+      INotifyCollectionChanged observable = oldContext as INotifyCollectionChanged;
+      if (observable != null)
+        UnHookObservableListChanged(observable);
+      else
+        UnHookBindingListChanged(oldContext as IBindingList);
     }
 
     private void HookDataContextEvents(object newValue)
@@ -174,8 +177,11 @@ namespace Csla.Wpf
         newContext = provider.Data;
       }
       HookPropertyChanged(newContext as INotifyPropertyChanged);
-      HookBindingListChanged(newContext as IBindingList);
-      HookObservableListChanged(newContext as INotifyCollectionChanged);
+      INotifyCollectionChanged observable = newContext as INotifyCollectionChanged;
+      if (observable != null)
+        HookObservableListChanged(observable);
+      else
+        HookBindingListChanged(newContext as IBindingList);
     }
 
     private void UnHookPropertyChanged(INotifyPropertyChanged oldContext)

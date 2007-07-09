@@ -145,6 +145,7 @@ Namespace Wpf
       request.ObjectType = mObjectType
       request.FactoryMethod = mFactoryMethod
       request.FactoryParameters = mFactoryParameters
+      request.ManageObjectLifetime = mManageLifetime
 
       If IsAsynchronous Then
         System.Threading.ThreadPool.QueueUserWorkItem(AddressOf DoQuery, request)
@@ -197,6 +198,13 @@ Namespace Wpf
         exceptionResult = ex
       End Try
 
+      If request.ManageObjectLifetime AndAlso result IsNot Nothing Then
+        Dim undo As Csla.Core.ISupportUndo = TryCast(result, Csla.Core.ISupportUndo)
+        If undo IsNot Nothing Then
+          undo.BeginEdit()
+        End If
+      End If
+
       ' return result to base class
       MyBase.OnQueryFinished(result, exceptionResult, Nothing, Nothing)
     End Sub
@@ -236,6 +244,18 @@ Namespace Wpf
           _factoryParameters = New ObservableCollection(Of Object)(New List(Of Object)(value))
         End Set
       End Property
+
+
+      Private mManageObjectLifetime As Boolean
+      Public Property ManageObjectLifetime() As Boolean
+        Get
+          Return mManageObjectLifetime
+        End Get
+        Set(ByVal value As Boolean)
+          mManageObjectLifetime = value
+        End Set
+      End Property
+
     End Class
 
 #End Region

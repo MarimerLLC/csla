@@ -15,6 +15,7 @@
                            ObjectType="{x:Type PTracker:Project}"
                            FactoryMethod="GetProject"
                            IsAsynchronous="False"
+                           IsInitialLoadEnabled="False"
                            ManageObjectLifetime="True">
     </csla:CslaDataProvider>
   </local:EditForm.Resources>
@@ -67,7 +68,7 @@
             <TextBlock>Id:</TextBlock>
             <TextBlock Text="{Binding Id, Mode=OneWay}"></TextBlock>
             <TextBlock>Name:</TextBlock>
-            <TextBox Name="NameTextBox"  
+            <TextBox Name="NameTextBox"
               Text="{Binding Name, Converter={StaticResource IdentityConverter}}"></TextBox>
             <TextBlock>Started:</TextBlock>
             <TextBox Text="{Binding Started, Converter={StaticResource IdentityConverter}}"></TextBox>

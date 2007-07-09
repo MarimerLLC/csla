@@ -10,6 +10,7 @@
       <csla:CslaDataProvider x:Key="ProjectList"
                              ObjectType="{x:Type PTracker:ProjectList}"
                              FactoryMethod="GetProjectList"
+                             IsInitialLoadEnabled="False"
                              IsAsynchronous="True">
         <csla:CslaDataProvider.FactoryParameters>
           <system:String>&lt;enter name&gt;</system:String>

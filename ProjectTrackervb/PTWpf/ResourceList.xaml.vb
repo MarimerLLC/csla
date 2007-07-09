@@ -10,8 +10,11 @@ Partial Public Class ResourceList
   Private Sub ShowResource(ByVal sender As Object, ByVal e As EventArgs)
     Dim item As ResourceInfo = CType(Me.listBox1.SelectedItem, ResourceInfo)
 
-    Dim frm As ResourceEdit = New ResourceEdit(item.Id)
-    MainForm.ShowControl(frm)
+    If item IsNot Nothing Then
+      Dim frm As ResourceEdit = New ResourceEdit(item.Id)
+      MainForm.ShowControl(frm)
+    End If
+
   End Sub
 
 End Class

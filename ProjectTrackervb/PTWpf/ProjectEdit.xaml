@@ -15,6 +15,7 @@
                            ObjectType="{x:Type PTracker:Project}"
                            FactoryMethod="GetProject"
                            IsAsynchronous="False"
+                           IsInitialLoadEnabled="False"
                            ManageObjectLifetime="True">
     </csla:CslaDataProvider>
   </local:EditForm.Resources>

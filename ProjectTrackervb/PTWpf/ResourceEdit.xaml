@@ -14,6 +14,7 @@
                            ObjectType="{x:Type PTracker:Resource}"
                            FactoryMethod="GetResource"
                            IsAsynchronous="False"
+                           IsInitialLoadEnabled="False"
                            ManageObjectLifetime="True">
     </csla:CslaDataProvider>
   </UserControl.Resources>

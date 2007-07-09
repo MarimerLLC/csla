@@ -120,6 +120,9 @@
       <Name>System.Web.Services</Name>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />

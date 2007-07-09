@@ -140,6 +140,8 @@ namespace Csla.Wpf
 
     #region Query
 
+    private bool _firstRun = true;
+
     /// <summary>
     /// Overridden. Starts to create the requested object, 
     /// either immediately or on a background thread, 
@@ -149,6 +151,13 @@ namespace Csla.Wpf
     {
       if (this.IsRefreshDeferred)
         return;
+
+      if (_firstRun)
+      {
+        _firstRun = false;
+        if (!IsInitialLoadEnabled)
+          return;
+      }
 
       QueryRequest request = new QueryRequest();
       request.ObjectType = _objectType;

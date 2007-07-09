@@ -121,15 +121,26 @@ Namespace Wpf
 
 #Region " Query "
 
+    Dim mFirstRun As Boolean = True
+
     ''' <summary>
     ''' Overridden. Starts to create the requested object, 
     ''' either immediately or on a background thread, 
     ''' based on the value of the IsAsynchronous property.
     ''' </summary>
     Protected Overrides Sub BeginQuery()
+
       If Me.IsRefreshDeferred Then
         Return
       End If
+
+      If mFirstRun Then
+        mFirstRun = False
+        If Not IsInitialLoadEnabled Then
+          Return
+        End If
+      End If
+
       Dim request As QueryRequest = New QueryRequest()
       request.ObjectType = mObjectType
       request.FactoryMethod = mFactoryMethod
@@ -140,6 +151,7 @@ Namespace Wpf
       Else
         DoQuery(request)
       End If
+
     End Sub
 
     Private Sub DoQuery(ByVal state As Object)

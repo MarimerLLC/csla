@@ -30,8 +30,11 @@ namespace PTWpf
       ProjectTracker.Library.ProjectInfo item =
         (ProjectTracker.Library.ProjectInfo)this.listBox1.SelectedItem;
 
-      ProjectEdit frm = new ProjectEdit(item.Id); 
-      MainForm.ShowControl(frm);
+      if (item != null)
+      {
+        ProjectEdit frm = new ProjectEdit(item.Id);
+        MainForm.ShowControl(frm);
+      }
     }
   }
 }

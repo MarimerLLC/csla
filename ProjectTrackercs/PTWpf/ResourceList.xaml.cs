@@ -30,8 +30,11 @@ namespace PTWpf
       ResourceInfo item =
         (ResourceInfo)this.listBox1.SelectedItem;
 
-      ResourceEdit frm = new ResourceEdit(item.Id);
-      MainForm.ShowControl(frm);
+      if (item != null)
+      {
+        ResourceEdit frm = new ResourceEdit(item.Id);
+        MainForm.ShowControl(frm);
+      }
     }
   }
 }

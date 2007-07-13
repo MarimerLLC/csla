@@ -201,7 +201,7 @@
     <Compile Include="Wpf\DataDecoratorBase.cs" />
     <Compile Include="Wpf\ObjectStatus.cs" />
     <Compile Include="Wpf\Validator.cs" />
-    <Compile Include="Wpf\IdentityConverter.cs" />
+    <EmbeddedResource Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Wpf\VisibilityMode.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +319,11 @@
     </None>
     <None Include="Web References\WebServiceHost\Service.disco" />
     <None Include="Web References\WebServiceHost\Service.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Web\CslaDataSource.bmp" />
+    <EmbeddedResource Include="Windows\BindingSourceRefresh.bmp" />
+    <EmbeddedResource Include="Windows\ReadWriteAuthorization.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,4 +1,5 @@
 Imports System
+Imports System.Drawing
 Imports System.ComponentModel
 Imports System.Collections.Generic
 Imports System.Windows.Forms
@@ -16,6 +17,7 @@ Namespace Windows
   ''' </summary>
   <DesignerCategory("")> _
   <ProvideProperty("ReadValuesOnChange", GetType(BindingSource))> _
+  <ToolboxItem(True), ToolboxBitmap(GetType(BindingSourceRefresh), "Csla.Windows.BindingSourceRefresh")> _
   Public Class BindingSourceRefresh
     Inherits System.ComponentModel.Component
 

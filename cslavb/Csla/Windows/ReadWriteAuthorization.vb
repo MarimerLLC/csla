@@ -1,4 +1,5 @@
 Imports System
+Imports System.Drawing
 Imports System.ComponentModel
 Imports System.Collections.Generic
 Imports System.Windows.Forms
@@ -14,6 +15,7 @@ Namespace Windows
   ''' </summary>
   <DesignerCategory("")> _
   <ProvideProperty("ApplyAuthorization", GetType(Control))> _
+  <ToolboxItem(True), ToolboxBitmap(GetType(ReadWriteAuthorization), "Csla.Windows.ReadWriteAuthorization")> _
   Public Class ReadWriteAuthorization
     Inherits System.ComponentModel.Component
 

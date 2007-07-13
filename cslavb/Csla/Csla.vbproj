@@ -33,7 +33,9 @@
     <DocumentationFile>Csla.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86" />
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -205,8 +207,10 @@
     <Compile Include="Web\InsertObjectArgs.vb" />
     <Compile Include="Web\SelectObjectArgs.vb" />
     <Compile Include="Web\UpdateObjectArgs.vb" />
-    <Compile Include="Windows\BindingSourceRefresh.vb" />
-    <Compile Include="Windows\ReadWriteAuthorization.vb" />
+    <Compile Include="Windows\BindingSourceRefresh.vb">
+    </Compile>
+    <Compile Include="Windows\ReadWriteAuthorization.vb">
+    </Compile>
     <Compile Include="Wpf\Authorizer.vb" />
     <Compile Include="Wpf\CslaDataProvider.vb" />
     <Compile Include="Wpf\CslaDataProviderCommandManager.vb" />
@@ -334,6 +338,11 @@
     </None>
     <None Include="Web References\WebServiceHost\WebServicePortal.disco" />
     <None Include="Web References\WebServiceHost\WebServicePortal.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Web\CslaDataSource.bmp" />
+    <EmbeddedResource Include="Windows\BindingSourceRefresh.bmp" />
+    <EmbeddedResource Include="Windows\ReadWriteAuthorization.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
 </Project>

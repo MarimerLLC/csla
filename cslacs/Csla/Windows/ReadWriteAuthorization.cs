@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -14,6 +15,7 @@ namespace Csla.Windows
   /// </summary>
   [DesignerCategory("")]
   [ProvideProperty("ApplyAuthorization", typeof(Control))]
+  [ToolboxItem(true), ToolboxBitmap(typeof(ReadWriteAuthorization), "Csla.Windows.ReadWriteAuthorization")]
   public class ReadWriteAuthorization : Component, IExtenderProvider
   {
 

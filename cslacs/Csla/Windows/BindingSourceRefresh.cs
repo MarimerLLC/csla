@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -16,6 +17,7 @@ namespace Csla.Windows
   /// </summary>
   [DesignerCategory("")]
   [ProvideProperty("ReadValuesOnChange", typeof(BindingSource))]
+  [ToolboxItem(true), ToolboxBitmap(typeof(BindingSourceRefresh), "Csla.Windows.BindingSourceRefresh")]
   public class BindingSourceRefresh : Component, IExtenderProvider
   {
 

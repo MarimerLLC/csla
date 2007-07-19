@@ -679,14 +679,15 @@ namespace Csla.Core
     /// <remarks>
     /// <para>
     /// If a list of allowed roles is provided then only users in those
-    /// roles can read. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
+    /// roles can execute the method. If no list of allowed roles is 
+    /// provided then the list of denied roles is checked.
     /// </para><para>
     /// If a list of denied roles is provided then users in the denied
-    /// roles are denied read access. All other users are allowed.
+    /// roles are not allowed to execute the method. 
+    /// All other users are allowed.
     /// </para><para>
     /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have read access.
+    /// all users will be allowed to execute the method..
     /// </para>
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]

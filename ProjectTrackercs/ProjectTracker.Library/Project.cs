@@ -142,7 +142,7 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringRequired, "Name");
+        Csla.Validation.CommonRules.StringRequired, new Csla.Validation.RuleArgs("Name", "Project name"));
       ValidationRules.AddRule(
         Csla.Validation.CommonRules.StringMaxLength, 
         new Csla.Validation.CommonRules.MaxLengthRuleArgs("Name", 50));
@@ -409,10 +409,7 @@ namespace ProjectTracker.Library
 
     public static bool Exists(Guid id)
     {
-      ExistsCommand result;
-      result = DataPortal.Execute<ExistsCommand>
-        (new ExistsCommand(id));
-      return result.Exists;
+      return ExistsCommand.Exists(id);
     }
 
     [Serializable()]
@@ -421,12 +418,20 @@ namespace ProjectTracker.Library
       private Guid _id;
       private bool _exists;
 
-      public bool Exists
+      public bool ProjectExists
       {
         get { return _exists; }
       }
 
-      public ExistsCommand(Guid id)
+      public static bool Exists(Guid id)
+      {
+        ExistsCommand result;
+        result = DataPortal.Execute<ExistsCommand>
+          (new ExistsCommand(id));
+        return result.ProjectExists;
+      }
+
+      private ExistsCommand(Guid id)
       {
         _id = id;
       }

@@ -365,9 +365,7 @@ namespace ProjectTracker.Library
 
     public static bool Exists(string id)
     {
-      ExistsCommand result;
-      result = DataPortal.Execute<ExistsCommand>(new ExistsCommand(id));
-      return result.Exists;
+      return ExistsCommand.Exists(id);
     }
 
     [Serializable()]
@@ -377,12 +375,19 @@ namespace ProjectTracker.Library
       private string _id;
       private bool _exists;
 
-      public bool Exists
+      public bool ResourceExists
       {
         get { return _exists; }
       }
 
-      public ExistsCommand(string id)
+      public static bool Exists(string id)
+      {
+        ExistsCommand result;
+        result = DataPortal.Execute<ExistsCommand>(new ExistsCommand(id));
+        return result.ResourceExists;
+      }
+
+      private ExistsCommand(string id)
       {
         _id = id;
       }

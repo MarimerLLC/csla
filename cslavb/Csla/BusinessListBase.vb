@@ -19,9 +19,6 @@ Public MustInherit Class BusinessListBase( _
   Implements ICloneable
   Implements ISavable
   Implements IParent
-#If Not NET20 Then
-  Implements System.Collections.Specialized.INotifyCollectionChanged
-#End If
 
 #Region " Constructors "
 
@@ -389,9 +386,6 @@ Public MustInherit Class BusinessListBase( _
     ' added must be set
     item.EditLevelAdded = mEditLevel
     MyBase.InsertItem(index, item)
-#If Not NET20 Then
-    OnCollectionChanged(New NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index))
-#End If
 
   End Sub
 
@@ -419,9 +413,6 @@ Public MustInherit Class BusinessListBase( _
       CopyToDeletedList(child)
     End If
     OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
-#If Not NET20 Then
-    OnCollectionChanged(New NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index))
-#End If
   End Sub
 
   Private Sub CopyToDeletedList(ByVal child As C)
@@ -484,9 +475,6 @@ Public MustInherit Class BusinessListBase( _
       CopyToDeletedList(child)
     End If
     OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
-#If Not NET20 Then
-    OnCollectionChanged(New NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, child, item, index))
-#End If
   End Sub
 
   Private Sub ResetChildEditLevel(ByVal child As C, ByVal parentEditLevel As Integer)
@@ -853,79 +841,6 @@ Public MustInherit Class BusinessListBase( _
     RaiseEvent Saved(Me, New Csla.Core.SavedEventArgs(newObject))
 
   End Sub
-
-#End Region
-
-#Region " INotifyCollectionChanged "
-
-#If Not NET20 Then
-
-  <NonSerialized()> _
-  <NotUndoable()> _
-  Private mNonSerializableCollectionChangedHandlers As NotifyCollectionChangedEventHandler
-  <NotUndoable()> _
-  Private mSerializableCollectionChangedHandlers As NotifyCollectionChangedEventHandler
-
-  ''' <summary>
-  ''' Event raised when an object has been saved.
-  ''' </summary>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-  Public Custom Event CollectionChanged As NotifyCollectionChangedEventHandler Implements INotifyCollectionChanged.CollectionChanged
-    AddHandler(ByVal value As NotifyCollectionChangedEventHandler)
-      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        mSerializableCollectionChangedHandlers = CType(System.Delegate.Combine(mSerializableCollectionChangedHandlers, value), NotifyCollectionChangedEventHandler)
-      Else
-        mNonSerializableCollectionChangedHandlers = CType(System.Delegate.Combine(mNonSerializableCollectionChangedHandlers, value), NotifyCollectionChangedEventHandler)
-      End If
-    End AddHandler
-    RemoveHandler(ByVal value As NotifyCollectionChangedEventHandler)
-      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        mSerializableCollectionChangedHandlers = CType(System.Delegate.Remove(mSerializableCollectionChangedHandlers, value), NotifyCollectionChangedEventHandler)
-      Else
-        mNonSerializableCollectionChangedHandlers = CType(System.Delegate.Remove(mNonSerializableCollectionChangedHandlers, value), NotifyCollectionChangedEventHandler)
-      End If
-    End RemoveHandler
-    RaiseEvent(ByVal sender As System.Object, ByVal e As NotifyCollectionChangedEventArgs)
-      If Not mNonSerializableCollectionChangedHandlers Is Nothing Then
-        mNonSerializableCollectionChangedHandlers.Invoke(Me, e)
-      End If
-      If Not mSerializableCollectionChangedHandlers Is Nothing Then
-        mSerializableCollectionChangedHandlers.Invoke(Me, e)
-      End If
-    End RaiseEvent
-  End Event
-
-  ''' <summary>
-  ''' Raises the <see cref="CollectionChanged"/> event.
-  ''' </summary>
-  ''' <param name="e">NotifyCollectionChangedEventArgs object to
-  ''' be passed as parameter.</param>
-  <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Sub OnCollectionChanged(ByVal e As NotifyCollectionChangedEventArgs)
-
-    RaiseEvent CollectionChanged(Me, e)
-
-  End Sub
-
-  ''' <summary>
-  ''' Raises the System.ComponentModel.IBindingList.ListChanged event.
-  ''' </summary>
-  ''' <param name="e">
-  ''' Parameter for event.
-  ''' </param>
-  Protected Overrides Sub OnListChanged(ByVal e As System.ComponentModel.ListChangedEventArgs)
-
-    MyBase.OnListChanged(e)
-    Select Case e.ListChangedType
-      Case ListChangedType.ItemMoved
-        OnCollectionChanged(New NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, Me(e.NewIndex), e.NewIndex, e.OldIndex))
-      Case ListChangedType.Reset
-        OnCollectionChanged(New NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset))
-    End Select
-
-  End Sub
-
-#End If
 
 #End Region
 

@@ -120,7 +120,7 @@ Public Class Project
   Protected Overrides Sub AddBusinessRules()
 
     ValidationRules.AddRule( _
-      AddressOf Validation.CommonRules.StringRequired, "Name")
+      AddressOf Validation.CommonRules.StringRequired, New Csla.Validation.RuleArgs("Name", "Project name"))
     ValidationRules.AddRule( _
       AddressOf Validation.CommonRules.StringMaxLength, _
       New Validation.CommonRules.MaxLengthRuleArgs("Name", 50))
@@ -388,9 +388,7 @@ Public Class Project
 
   Public Shared Function Exists(ByVal id As Guid) As Boolean
 
-    Dim result As ExistsCommand
-    result = DataPortal.Execute(Of ExistsCommand)(New ExistsCommand(id))
-    Return result.Exists
+    Return ExistsCommand.Exists(id)
 
   End Function
 
@@ -401,13 +399,21 @@ Public Class Project
     Private mId As Guid
     Private mExists As Boolean
 
-    Public ReadOnly Property Exists() As Boolean
+    Public ReadOnly Property ProjectExists() As Boolean
       Get
         Return mExists
       End Get
     End Property
 
-    Public Sub New(ByVal id As Guid)
+    Public Shared Function Exists(ByVal id As Guid) As Boolean
+
+      Dim result As ExistsCommand
+      result = DataPortal.Execute(Of ExistsCommand)(New ExistsCommand(id))
+      Return result.ProjectExists
+
+    End Function
+
+    Private Sub New(ByVal id As Guid)
       mId = id
     End Sub
 

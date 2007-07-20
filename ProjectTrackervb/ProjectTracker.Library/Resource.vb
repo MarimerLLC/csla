@@ -352,9 +352,7 @@ Private Class Criteria
 
   Public Shared Function Exists(ByVal id As String) As Boolean
 
-    Dim result As ExistsCommand
-    result = DataPortal.Execute(Of ExistsCommand)(New ExistsCommand(id))
-    Return result.Exists
+    Return ExistsCommand.Exists(id)
 
   End Function
 
@@ -365,13 +363,21 @@ Private Class Criteria
     Private mId As String
     Private mExists As Boolean
 
-    Public ReadOnly Property Exists() As Boolean
+    Public ReadOnly Property ResourceExists() As Boolean
       Get
         Return mExists
       End Get
     End Property
 
-    Public Sub New(ByVal id As String)
+    Public Shared Function Exists(ByVal id As String) As Boolean
+
+      Dim result As ExistsCommand
+      result = DataPortal.Execute(Of ExistsCommand)(New ExistsCommand(id))
+      Return result.ResourceExists
+
+    End Function
+
+    Private Sub New(ByVal id As String)
       mId = id
     End Sub
 

@@ -19,9 +19,6 @@ namespace Csla
   public abstract class BusinessListBase<T, C> :
       Core.ExtendedBindingList<C>,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable, Core.ISavable, Core.IParent
-#if !NET20
-      , INotifyCollectionChanged
-#endif
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -410,9 +407,6 @@ namespace Csla
       // added must be set
       item.EditLevelAdded = _editLevel;
       base.InsertItem(index, item);
-#if ! NET20
-      OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
-#endif
     }
 
     /// <summary>
@@ -442,9 +436,6 @@ namespace Csla
         CopyToDeletedList(child);
       }
       OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
-#if ! NET20
-      OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index));
-#endif
     }
 
     private void CopyToDeletedList(C child)
@@ -503,9 +494,6 @@ namespace Csla
       if (child != null)
         CopyToDeletedList(child);
       OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
-#if ! NET20
-      OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, child, item, index));
-#endif
     }
 
     private void ResetChildEditLevel(C child, int parentEditLevel)
@@ -860,79 +848,6 @@ namespace Csla
       if (_serializableSavedHandlers != null)
         _serializableSavedHandlers.Invoke(this, args);
     }
-
-    #endregion
-
-    #region  INotifyCollectionChanged
-
-#if ! NET20
-
-    [NonSerialized(), NotUndoable()]
-    private NotifyCollectionChangedEventHandler _nonSerializableCollectionChangedHandlers;
-    [NotUndoable()]
-    private NotifyCollectionChangedEventHandler _serializableCollectionChangedHandlers;
-
-    /// <summary>
-    /// Event raised when an object has been saved.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event NotifyCollectionChangedEventHandler CollectionChanged
-    {
-      add
-      {
-        if (value.Method.IsPublic && (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic))
-          _serializableCollectionChangedHandlers = 
-            (NotifyCollectionChangedEventHandler)(System.Delegate.Combine(_serializableCollectionChangedHandlers, value));
-        else
-          _nonSerializableCollectionChangedHandlers = 
-            (NotifyCollectionChangedEventHandler)(System.Delegate.Combine(_nonSerializableCollectionChangedHandlers, value));
-      }
-      remove
-      {
-        if (value.Method.IsPublic && (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic))
-          _serializableCollectionChangedHandlers = 
-            (NotifyCollectionChangedEventHandler)(System.Delegate.Remove(_serializableCollectionChangedHandlers, value));
-        else
-          _nonSerializableCollectionChangedHandlers = 
-            (NotifyCollectionChangedEventHandler)(System.Delegate.Remove(_nonSerializableCollectionChangedHandlers, value));
-      }
-    }
-
-    /// <summary>
-    /// Raises the <see cref="CollectionChanged"/> event.
-    /// </summary>
-    /// <param name="e">NotifyCollectionChangedEventArgs object to
-    /// be passed as parameter.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-    {
-      if (_nonSerializableCollectionChangedHandlers != null)
-        _nonSerializableCollectionChangedHandlers.Invoke(this, e);
-      if (_serializableCollectionChangedHandlers != null)
-        _serializableCollectionChangedHandlers.Invoke(this, e);
-    }
-
-    /// <summary>
-    /// Raises the System.ComponentModel.IBindingList.ListChanged event.
-    /// </summary>
-    /// <param name="e">
-    /// Parameter for event.
-    /// </param>
-    protected override void OnListChanged(System.ComponentModel.ListChangedEventArgs e)
-    {
-      base.OnListChanged(e);
-      switch (e.ListChangedType)
-      {
-        case ListChangedType.ItemMoved:
-          OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, this[e.NewIndex], e.NewIndex, e.OldIndex));
-          break;
-        case ListChangedType.Reset:
-          OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-          break;
-      }
-    }
-
-#endif
 
     #endregion
 

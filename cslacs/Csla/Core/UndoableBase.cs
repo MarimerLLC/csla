@@ -20,6 +20,8 @@ namespace Csla.Core
     // keep a stack of object state values.
     [NotUndoable()]
     private Stack<byte[]> _stateStack = new Stack<byte[]>();
+    [NotUndoable]
+    private bool _bindingEdit;
 
     /// <summary>
     /// Creates an instance of the object.
@@ -27,6 +29,24 @@ namespace Csla.Core
     protected UndoableBase()
     {
 
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether n-level undo
+    /// was invoked through IEditableObject. FOR INTERNAL
+    /// CSLA .NET USE ONLY!
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected bool BindingEdit
+    {
+      get
+      {
+        return _bindingEdit;
+      }
+      set
+      {
+        _bindingEdit = value;
+      }
     }
 
     /// <summary>
@@ -106,7 +126,8 @@ namespace Csla.Core
                 else
                 {
                   // this is a child object, cascade the call
-                  ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1);
+                  if (!_bindingEdit)
+                    ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1);
                 }
               }
               else
@@ -206,7 +227,8 @@ namespace Csla.Core
                     if (value != null)
                     {
                       // this is a child object, cascade the call.
-                      ((Core.IUndoableObject)value).UndoChanges(this.EditLevel);
+                      if (!_bindingEdit)
+                        ((Core.IUndoableObject)value).UndoChanges(this.EditLevel);
                     }
                   }
                 }
@@ -277,7 +299,8 @@ namespace Csla.Core
                   if (value != null)
                   {
                     // it is a child object so cascade the call
-                    ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel);
+                    if (!_bindingEdit)
+                      ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel);
                   }
                 }
               }

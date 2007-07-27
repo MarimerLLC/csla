@@ -768,8 +768,8 @@ namespace Csla.Core
 
     #region System.ComponentModel.IEditableObject
 
-    [NotUndoable()]
-    private bool _bindingEdit;
+    //[NotUndoable()]
+    //private bool _bindingEdit;
     private bool _neverCommitted = true;
     [NotUndoable]
     private bool _disableIEditableObject;
@@ -813,8 +813,11 @@ namespace Csla.Core
     /// </remarks>
     void System.ComponentModel.IEditableObject.BeginEdit()
     {
-      if (!_disableIEditableObject && !_bindingEdit)
+      if (!_disableIEditableObject && !BindingEdit)
+      {
+        BindingEdit = true;
         BeginEdit();
+      }
     }
 
     /// <summary>
@@ -829,7 +832,7 @@ namespace Csla.Core
     /// </remarks>
     void System.ComponentModel.IEditableObject.CancelEdit()
     {
-      if (!_disableIEditableObject && _bindingEdit)
+      if (!_disableIEditableObject && BindingEdit)
       {
         CancelEdit();
         if (IsNew && _neverCommitted && EditLevel <= EditLevelAdded)
@@ -856,8 +859,10 @@ namespace Csla.Core
     /// </remarks>
     void System.ComponentModel.IEditableObject.EndEdit()
     {
-      if (!_disableIEditableObject && _bindingEdit)
+      if (!_disableIEditableObject && BindingEdit)
+      {
         ApplyEdit();
+      }
     }
 
     #endregion
@@ -884,7 +889,7 @@ namespace Csla.Core
     /// </remarks>
     public void BeginEdit()
     {
-      _bindingEdit = true;
+      //_bindingEdit = true;
       CopyState(this.EditLevel + 1);
     }
 
@@ -912,7 +917,7 @@ namespace Csla.Core
     /// </remarks>
     protected override void UndoChangesComplete()
     {
-      _bindingEdit = false;
+      BindingEdit = false;
       ValidationRules.SetTarget(this);
       AddInstanceBusinessRules();
       if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
@@ -937,9 +942,9 @@ namespace Csla.Core
     /// </remarks>
     public void ApplyEdit()
     {
-      _bindingEdit = false;
       _neverCommitted = false;
       AcceptChanges(this.EditLevel - 1);
+      BindingEdit = false;
     }
 
     /// <summary>

@@ -99,6 +99,7 @@ Public Class Resource
     ValidationRules.AddRule(AddressOf Validation.CommonRules.StringMaxLength, _
       New Validation.CommonRules.MaxLengthRuleArgs("FirstName", 50))
 
+    ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, "LastName")
     ValidationRules.AddRule(AddressOf Validation.CommonRules.StringMaxLength, _
       New Validation.CommonRules.MaxLengthRuleArgs("LastName", 50))
 

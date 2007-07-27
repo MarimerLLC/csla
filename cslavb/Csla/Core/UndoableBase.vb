@@ -19,6 +19,8 @@ Namespace Core
     ' keep a stack of object state values
     <NotUndoable()> _
     Private mStateStack As New Stack(Of Byte())
+    <NotUndoable()> _
+    Private mbindingEdit As Boolean
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -27,6 +29,24 @@ Namespace Core
     Protected Sub New()
 
     End Sub
+
+    ''' <summary>
+    ''' Gets or sets a value indicating whether n-level undo
+    ''' was invoked through IEditableObject. FOR INTERNAL
+    ''' CSLA .NET USE ONLY!
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Property BindingEdit() As Boolean
+      Get
+        Return mbindingEdit
+      End Get
+      Set(ByVal value As Boolean)
+        mbindingEdit = value
+      End Set
+    End Property
 
     ''' <summary>
     ''' Returns the current edit level of the object.
@@ -87,7 +107,9 @@ Namespace Core
 
                 Else
                   ' this is a child object, cascade the call
-                  DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1)
+                  If Not mbindingEdit Then
+                    DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1)
+                  End If
                 End If
 
               Else
@@ -184,14 +206,16 @@ Namespace Core
                   Else
                     ' make sure the variable has a value
                     If Not value Is Nothing Then
-                      ' cascade the call
-                      DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel)
+                      ' this is a child object, cascade the call
+                      If Not mbindingEdit Then
+                        DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel)
+                      End If
                     End If
                   End If
 
                 Else
-                  ' this is a regular field, restore its value
-                  field.SetValue(Me, state.Item(GetFieldName(field)))
+                    ' this is a regular field, restore its value
+                    field.SetValue(Me, state.Item(GetFieldName(field)))
                 End If
               End If
             End If
@@ -255,8 +279,10 @@ Namespace Core
                   Dim value As Object = field.GetValue(Me)
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
-                    ' it is a child object so cascade the call
-                    DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel)
+                    ' this is a child object, cascade the call
+                    If Not mbindingEdit Then
+                      DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel)
+                    End If
                   End If
                 End If
               End If

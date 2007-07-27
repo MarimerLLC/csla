@@ -773,8 +773,6 @@ Namespace Core
 
 #Region " IEditableObject "
 
-    <NotUndoable()> _
-    Private mBindingEdit As Boolean
     Private mNeverCommitted As Boolean = True
     <NotUndoable()> _
     Private mDisableIEditableObject As Boolean
@@ -816,7 +814,8 @@ Namespace Core
     Private Sub IEditableObject_BeginEdit() _
       Implements System.ComponentModel.IEditableObject.BeginEdit
 
-      If Not mDisableIEditableObject AndAlso Not mBindingEdit Then
+      If Not mDisableIEditableObject AndAlso Not BindingEdit Then
+        BindingEdit = True
         BeginEdit()
       End If
 
@@ -835,7 +834,7 @@ Namespace Core
     Private Sub IEditableObject_CancelEdit() _
       Implements System.ComponentModel.IEditableObject.CancelEdit
 
-      If Not mDisableIEditableObject AndAlso mBindingEdit Then
+      If Not mDisableIEditableObject AndAlso BindingEdit Then
         CancelEdit()
         If IsNew AndAlso mNeverCommitted AndAlso _
           EditLevel <= EditLevelAdded Then
@@ -865,7 +864,7 @@ Namespace Core
     Private Sub IEditableObject_EndEdit() _
       Implements System.ComponentModel.IEditableObject.EndEdit
 
-      If Not mDisableIEditableObject AndAlso mBindingEdit Then
+      If Not mDisableIEditableObject AndAlso BindingEdit Then
         ApplyEdit()
       End If
 
@@ -894,7 +893,6 @@ Namespace Core
     ''' </para>
     ''' </remarks>
     Public Sub BeginEdit() Implements IEditableBusinessObject.BeginEdit
-      mBindingEdit = True
       CopyState(Me.EditLevel + 1)
     End Sub
 
@@ -921,7 +919,7 @@ Namespace Core
     ''' </remarks>
     Protected Overrides Sub UndoChangesComplete()
 
-      mBindingEdit = False
+      BindingEdit = False
       ValidationRules.SetTarget(Me)
       AddInstanceBusinessRules()
       If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
@@ -945,9 +943,9 @@ Namespace Core
     ''' to the object's state since the last BeginEdit call.
     ''' </remarks>
     Public Sub ApplyEdit() Implements IEditableBusinessObject.ApplyEdit
-      mBindingEdit = False
       mNeverCommitted = False
       AcceptChanges(Me.EditLevel - 1)
+      BindingEdit = False
     End Sub
 
     ''' <summary>

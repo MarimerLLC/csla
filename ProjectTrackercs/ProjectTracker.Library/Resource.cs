@@ -115,6 +115,7 @@ namespace ProjectTracker.Library
       ValidationRules.AddRule(new RuleHandler(CommonRules.StringMaxLength), 
         new CommonRules.MaxLengthRuleArgs("FirstName", 50));
 
+      ValidationRules.AddRule(new RuleHandler(CommonRules.StringRequired), "LastName");
       ValidationRules.AddRule(new RuleHandler(CommonRules.StringMaxLength),
         new CommonRules.MaxLengthRuleArgs("LastName", 50));
     }

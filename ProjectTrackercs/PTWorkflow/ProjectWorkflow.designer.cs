@@ -26,12 +26,15 @@ namespace PTWorkflow
 		private void InitializeComponent()
 		{
       this.CanModifyActivities = true;
+      System.Workflow.ComponentModel.ActivityBind activitybind1 = new System.Workflow.ComponentModel.ActivityBind();
+      System.Workflow.ComponentModel.ActivityBind activitybind2 = new System.Workflow.ComponentModel.ActivityBind();
       this.notifySponsor = new System.Workflow.Activities.CodeActivity();
       this.notifyResources = new System.Workflow.Activities.CodeActivity();
       this.sequenceActivity2 = new System.Workflow.Activities.SequenceActivity();
       this.sequenceActivity1 = new System.Workflow.Activities.SequenceActivity();
       this.parallelActivity1 = new System.Workflow.Activities.ParallelActivity();
-      this.closeProject = new System.Workflow.Activities.CodeActivity();
+      this.closeProject1 = new PTWorkflow.CloseProject();
+      this.getProject1 = new PTWfActivities.GetProject();
       // 
       // notifySponsor
       // 
@@ -59,14 +62,25 @@ namespace PTWorkflow
       this.parallelActivity1.Activities.Add(this.sequenceActivity2);
       this.parallelActivity1.Name = "parallelActivity1";
       // 
-      // closeProject
+      // closeProject1
       // 
-      this.closeProject.Name = "closeProject";
-      this.closeProject.ExecuteCode += new System.EventHandler(this.closeProject_ExecuteCode);
+      this.closeProject1.Name = "closeProject1";
+      activitybind1.Name = "getProject1";
+      activitybind1.Path = "Project";
+      this.closeProject1.SetBinding(System.Workflow.ComponentModel.DependencyProperty.FromName("Project", typeof(PTWorkflow.CloseProject)), ((System.Workflow.ComponentModel.ActivityBind)(activitybind1)));
+      // 
+      // getProject1
+      // 
+      this.getProject1.Name = "getProject1";
+      this.getProject1.Project = null;
+      activitybind2.Name = "ProjectWorkflow";
+      activitybind2.Path = "ProjectId";
+      this.getProject1.SetBinding(System.Workflow.ComponentModel.DependencyProperty.FromName("ProjectId", typeof(PTWfActivities.GetProject)), ((System.Workflow.ComponentModel.ActivityBind)(activitybind2)));
       // 
       // ProjectWorkflow
       // 
-      this.Activities.Add(this.closeProject);
+      this.Activities.Add(this.getProject1);
+      this.Activities.Add(this.closeProject1);
       this.Activities.Add(this.parallelActivity1);
       this.Name = "ProjectWorkflow";
       this.CanModifyActivities = false;
@@ -75,12 +89,19 @@ namespace PTWorkflow
 
 		#endregion
 
-    private CodeActivity notifySponsor;
-    private CodeActivity notifyResources;
-    private SequenceActivity sequenceActivity2;
-    private SequenceActivity sequenceActivity1;
-    private ParallelActivity parallelActivity1;
-    private CodeActivity closeProject;
+        private PTWfActivities.GetProject getProject1;
+        private CloseProject closeProject1;
+        private CodeActivity notifySponsor;
+        private CodeActivity notifyResources;
+        private SequenceActivity sequenceActivity2;
+        private SequenceActivity sequenceActivity1;
+        private ParallelActivity parallelActivity1;
+
+
+
+
+
+
 
 
 

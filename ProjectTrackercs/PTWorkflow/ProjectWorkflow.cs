@@ -23,31 +23,42 @@ namespace PTWorkflow
 
     #region Dependency Properties
 
-    private static DependencyProperty ProjectIdProperty =
-      DependencyProperty.Register("ProjectId", typeof(Guid), typeof(ProjectWorkflow), null);
+    private static DependencyProperty ProjectIdProperty = DependencyProperty.Register(
+      "ProjectId", typeof(Guid), typeof(ProjectWorkflow), null);
 
     public Guid ProjectId
     {
       get { return (Guid)base.GetValue(ProjectIdProperty); }
       set { base.SetValue(ProjectIdProperty, value); }
     }
+
+    //private static DependencyProperty ProjectProperty =
+    //  DependencyProperty.Register("Project", typeof(Project), typeof(ProjectWorkflow), null);
+
+    //public Project Project
+    //{
+    //  get { return (Project)base.GetValue(ProjectProperty); }
+    //  set { base.SetValue(ProjectProperty, value); }
+    //}
 	
     #endregion
 
     #region Code Activities
-
-    private ProjectTracker.Library.Project _project;
+    [System.Runtime.Serialization.OptionalField(VersionAdded=2)]
+    private void getProject_ExecuteCode(object sender, EventArgs e)
+    {
+      //this.Project = Project.GetProject(ProjectId);
+    }
 
     private void closeProject_ExecuteCode(object sender, EventArgs e)
     {
-      _project = Project.GetProject(ProjectId);
-      _project.Ended = DateTime.Today.ToString();
-      _project = _project.Save();
+      //this.Project.Ended = DateTime.Today.ToString();
+      //this.Project = this.Project.Save();
     }
 
     private void notifyResources_ExecuteCode(object sender, EventArgs e)
     {
-      foreach (ProjectResource resource in _project.Resources)
+      foreach (ProjectResource resource in this.getProject1.Project.Resources)
       {
         // notify each resource
       }

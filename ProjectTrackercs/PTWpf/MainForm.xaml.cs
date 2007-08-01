@@ -39,7 +39,8 @@ namespace PTWpf
     void MainForm_Loaded(object sender, RoutedEventArgs e)
     {
       ProjectTracker.Library.Security.PTPrincipal.Logout();
-      _principal = (ProjectTracker.Library.Security.PTPrincipal)Csla.ApplicationContext.User;
+      _principal = (ProjectTracker.Library.Security.PTPrincipal)
+        Csla.ApplicationContext.User;
 
       this.Title = "Project Tracker";
     }
@@ -54,7 +55,7 @@ namespace PTWpf
     /// <param name="obj"></param>
     void DataPortal_DataPortalInitInvoke(object obj)
     {
-      if (!(Csla.ApplicationContext.User is ProjectTracker.Library.Security.PTPrincipal))
+      if (!ReferenceEquals(Csla.ApplicationContext.User, _principal))
         Csla.ApplicationContext.User = _principal;
     }
 
@@ -176,6 +177,9 @@ namespace PTWpf
           LoginButtonText.Text = "Log out";
         }
       }
+      _principal = (ProjectTracker.Library.Security.PTPrincipal)
+        Csla.ApplicationContext.User;
+
       IRefresh p = _currentControl as IRefresh;
       if (p != null)
         p.Refresh();

@@ -493,12 +493,16 @@ namespace Csla
     /// <param name="arrayIndex">Starting array index.</param>
     public void CopyTo(T[] array, int arrayIndex)
     {
-      _list.CopyTo(array, arrayIndex);
+      int pos = arrayIndex;
+      foreach (T child in this)
+        array[pos] = child;
     }
 
     void System.Collections.ICollection.CopyTo(System.Array array, int index)
     {
-      CopyTo((T[])array, index);
+      T[] tmp = new T[array.Length];
+      CopyTo(tmp, index);
+      Array.Copy(tmp, 0, array, index, array.Length);
     }
 
     /// <summary>

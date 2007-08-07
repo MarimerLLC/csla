@@ -504,12 +504,17 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   ''' <param name="array">Array to receive the data.</param>
   ''' <param name="arrayIndex">Starting array index.</param>
-  Public Sub CopyTo(ByVal array() As T, ByVal arrayIndex As Integer) Implements System.Collections.Generic.ICollection(Of T).CopyTo
-    mList.CopyTo(array, arrayIndex)
+  Public Sub CopyTo(ByVal array As T(), ByVal arrayIndex As Integer) Implements IList(Of T).CopyTo
+    Dim pos As Integer = arrayIndex
+    For Each child As T In Me
+      array(pos) = child
+    Next
   End Sub
 
-  Private Sub CopyTo(ByVal array As System.Array, ByVal index As Integer) Implements System.Collections.ICollection.CopyTo
-    CopyTo(CType(array, T()), index)
+  Private Sub ICollection_CopyTo(ByVal array As System.Array, ByVal index As Integer) Implements System.Collections.ICollection.CopyTo
+    Dim tmp(array.Length) As T
+    CopyTo(tmp, index)
+    array.Copy(tmp, 0, array, index, array.Length)
   End Sub
 
   ''' <summary>

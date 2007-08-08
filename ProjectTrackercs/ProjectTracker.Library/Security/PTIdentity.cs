@@ -58,6 +58,12 @@ namespace ProjectTracker.Library.Security
         (new Criteria(username, password));
     }
 
+    internal static PTIdentity GetIdentity(string username)
+    {
+      return DataPortal.Fetch<PTIdentity>
+        (new LoadOnlyCriteria(username));
+    }
+
     private PTIdentity()
     { /* require use of factory methods */ }
 
@@ -87,6 +93,21 @@ namespace ProjectTracker.Library.Security
       }
     }
 
+    [Serializable()]
+    private class LoadOnlyCriteria
+    {
+      private string _username;
+      public string Username
+      {
+        get { return _username; }
+      }
+
+      public LoadOnlyCriteria(string username)
+      {
+        _username = username;
+      }
+    }
+
     private void DataPortal_Fetch(Criteria criteria)
     {
       using (SqlConnection cn =
@@ -101,28 +122,53 @@ namespace ProjectTracker.Library.Security
           cm.Parameters.AddWithValue("@pw", criteria.Password);
           using (SqlDataReader dr = cm.ExecuteReader())
           {
-            if (dr.Read())
-            {
-              _name = criteria.Username;
-              _isAuthenticated = true;
-              if (dr.NextResult())
-              {
-                while (dr.Read())
-                {
-                  _roles.Add(dr.GetString(0));
-                }
-              }
-            }
-            else
-            {
-              _name = string.Empty;
-              _isAuthenticated = false;
-              _roles.Clear();
-            }
+            Fetch(dr);
           }
         }
       }
     }
+
+    private void DataPortal_Fetch(LoadOnlyCriteria criteria)
+    {
+      using (SqlConnection cn =
+        new SqlConnection(Database.SecurityConnection))
+      {
+        cn.Open();
+        using (SqlCommand cm = cn.CreateCommand())
+        {
+          cm.CommandText = "GetUser";
+          cm.CommandType = CommandType.StoredProcedure;
+          cm.Parameters.AddWithValue("@user", criteria.Username);
+          using (SqlDataReader dr = cm.ExecuteReader())
+          {
+            Fetch(dr);
+          }
+        }
+      }
+    }
+
+    private void Fetch(SqlDataReader dr)
+    {
+      if (dr.Read())
+      {
+        _name = dr.GetString(0);
+        _isAuthenticated = true;
+        if (dr.NextResult())
+        {
+          while (dr.Read())
+          {
+            _roles.Add(dr.GetString(0));
+          }
+        }
+      }
+      else
+      {
+        _name = string.Empty;
+        _isAuthenticated = false;
+        _roles.Clear();
+      }
+    }
+
     #endregion
   }
 }

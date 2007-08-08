@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET20
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -39,3 +40,4 @@ namespace Csla.Workflow
     Suspended
   }
 }
+#endif

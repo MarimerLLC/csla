@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ProjectTracker.Library;
+using System.ServiceModel;
 
 public class PTService : IPTService
 {
@@ -9,7 +10,7 @@ public class PTService : IPTService
   public ProjectData[] GetProjectList()
   {
     // anonymous access allowed
-    Security.UseAnonymous();
+    //Security.UseAnonymous();
 
     try
     {

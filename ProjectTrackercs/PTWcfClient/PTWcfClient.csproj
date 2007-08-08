@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.20209</ProductVersion>
+    <ProductVersion>9.0.20706</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FB92746A-AA36-43CC-861E-5617EC1BFA46}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -73,17 +73,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Service References\PTWcfService\configuration.svcinfo" />
     <None Include="Service References\PTWcfService\PTService.wsdl" />
-    <None Include="Service References\PTWcfService\PTService.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\PTWcfService\PTService1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\PTWcfService\PTService2.xsd">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Service References\PTWcfService\PTService.xsd" />
+    <None Include="Service References\PTWcfService\PTService1.xsd" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -100,6 +92,13 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\PTWcfService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PTWcfService\PTService.disco" />
+    <None Include="Service References\PTWcfService\PTService2.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PTWcfService\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\PTWcfService\PTWcfClient.PTWcfService.ProjectData.datasource">

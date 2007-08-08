@@ -44,18 +44,7 @@ namespace PTWorkflow
     #endregion
 
     #region Code Activities
-    [System.Runtime.Serialization.OptionalField(VersionAdded=2)]
-    private void getProject_ExecuteCode(object sender, EventArgs e)
-    {
-      //this.Project = Project.GetProject(ProjectId);
-    }
-
-    private void closeProject_ExecuteCode(object sender, EventArgs e)
-    {
-      //this.Project.Ended = DateTime.Today.ToString();
-      //this.Project = this.Project.Save();
-    }
-
+    
     private void notifyResources_ExecuteCode(object sender, EventArgs e)
     {
       foreach (ProjectResource resource in this.getProject1.Project.Resources)

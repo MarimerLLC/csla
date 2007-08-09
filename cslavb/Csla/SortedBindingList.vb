@@ -508,6 +508,7 @@ Public Class SortedBindingList(Of T)
     Dim pos As Integer = arrayIndex
     For Each child As T In Me
       array(pos) = child
+      pos += 1
     Next
   End Sub
 

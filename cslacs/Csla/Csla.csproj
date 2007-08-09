@@ -149,6 +149,7 @@
     <Compile Include="Security\AuthorizationRulesManager.cs" />
     <Compile Include="Security\BusinessPrincipalBase.cs" />
     <Compile Include="Security\IAuthorizeReadWrite.cs" />
+    <Compile Include="Security\PrincipalCache.cs" />
     <Compile Include="Security\RolesForProperty.cs" />
     <Compile Include="Security\SharedAuthorizationRules.cs" />
     <Compile Include="Serialization\BinaryFormatterWrapper.cs" />

@@ -57,8 +57,8 @@ namespace Csla.Test.ValidationRules
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext["Shared"] = 0;
 
-      HasPerTypeRules root = new HasPerTypeRules();
-      root = new HasPerTypeRules();
+      HasPerTypeRules2 root = new HasPerTypeRules2();
+      root = new HasPerTypeRules2();
       Assert.AreEqual(1, (int)ApplicationContext.GlobalContext["Shared"], "Rules should init just once");
     }
 

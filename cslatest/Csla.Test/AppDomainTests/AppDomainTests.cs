@@ -20,6 +20,7 @@ namespace Csla.Test.AppDomainTests
         [TestMethod]
         public void AppDomainTestIsCalled()
         {
+            Csla.ApplicationContext.GlobalContext.Clear();
             int local= AppDomain.CurrentDomain.Id;
             Basic.Root r = Basic.Root.NewRoot();
             int remote = r.CreatedDomain;

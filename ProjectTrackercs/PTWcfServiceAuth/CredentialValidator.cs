@@ -18,8 +18,12 @@ namespace PTWcfServiceAuth
       if (userName != "anonymous")
       {
         PTPrincipal.Logout();
-        if (!PTPrincipal.VerifyCredentials(userName, password))
+        //if (!PTPrincipal.VerifyCredentials(userName, password))
+        if (!PTPrincipal.Login(userName, password))
           throw new FaultException("Unknown username or password");
+
+        // add current principal to rolling cache
+        Csla.Security.PrincipalCache.AddPrincipal(Csla.ApplicationContext.User);
       }
     }
   }

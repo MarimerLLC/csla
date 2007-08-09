@@ -43,12 +43,22 @@ namespace PTWcfServiceAuth
       if (identities == null || identities.Count <= 0)
         return false;
 
-      // load prinicpal based on username authenticated in CredentialValidator
+      // try to get principal from rolling cache
       string username = identities[0].Name;
-      PTPrincipal.Logout();
-      if (username != "anonymous")
-        PTPrincipal.LoadPrincipal(username);
-      IPrincipal principal = Csla.ApplicationContext.User;
+      IPrincipal principal = Csla.Security.PrincipalCache.GetPrincipal(username);
+
+      if (principal == null)
+      {
+        PTPrincipal.Logout();
+        if (username != "anonymous")
+        {
+          // load prinicpal based on username authenticated in CredentialValidator
+          PTPrincipal.LoadPrincipal(username);
+          // add current principal to rolling cache
+          Csla.Security.PrincipalCache.AddPrincipal(Csla.ApplicationContext.User);
+        }
+        principal = Csla.ApplicationContext.User;
+      }
 
       // tell WCF to use the custom principal 
       context.Properties["Principal"] = principal;

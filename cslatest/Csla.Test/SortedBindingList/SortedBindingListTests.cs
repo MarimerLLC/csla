@@ -118,9 +118,12 @@ namespace Csla.Test.SortedBindingList
             Assert.AreEqual(1222, intArray2[2]);
 
             sortedList.ApplySort("", ListSortDirection.Descending);
+            Assert.AreEqual(44, sortedList[0], "Sorted values incorrect");
+
             sortedList.CopyTo(intArray2, 0);
 
-            Assert.AreEqual(1, intArray2[2]);
+            Assert.AreEqual(44, intArray2[0], "Copied values incorrect");
+            Assert.AreEqual(7, intArray2[2], "Copied values incorrect");
 
             foreach (int item in intArray2)
             {

@@ -327,6 +327,23 @@ namespace Csla
       get { return new Uri(ConfigurationManager.AppSettings["CslaDataPortalUrl"]); }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether objects should be
+    /// automatically cloned by the data portal Update()
+    /// method when using a local data portal configuration.
+    /// </summary>
+    public static bool AutoCloneOnUpdate
+    {
+      get
+      {
+        bool result = false;
+        string setting = ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"];
+        if (!string.IsNullOrEmpty(setting))
+          result = bool.Parse(setting);
+        return result;
+      }
+    }
+
 #if NET20
     /// <summary>
     /// Gets the serialization formatter type used by CSLA .NET

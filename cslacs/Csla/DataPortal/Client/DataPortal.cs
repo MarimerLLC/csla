@@ -349,6 +349,12 @@ namespace Csla
 
       try
       {
+        if (!proxy.IsServerRemote && ApplicationContext.AutoCloneOnUpdate)
+        {
+          // when using local data portal, automatically
+          // clone original object before saving
+          obj = ((ICloneable)obj).Clone();
+        }
         result = proxy.Update(obj, dpContext);
       }
       catch (Server.DataPortalException ex)

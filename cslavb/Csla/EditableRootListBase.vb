@@ -136,6 +136,16 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
   End Sub
 
+  ''' <summary>
+  ''' Replaces an item in the list.
+  ''' </summary>
+  ''' <param name="index">Index at which the item was replaced.</param>
+  ''' <param name="item">New item.</param>
+  Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As T)
+    item.SetParent(Me)
+    MyBase.SetItem(index, item)
+  End Sub
+
 #End Region
 
 #Region " IParent Members "

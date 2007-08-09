@@ -9,8 +9,10 @@ public class PTService : IPTService
 
   public ProjectData[] GetProjectList()
   {
-    // anonymous access allowed
-    //Security.UseAnonymous();
+    // TODO: comment out the following if using the
+    // PTWcfServiceAuth components to require a
+    // username/password from the caller
+    ProjectTracker.Library.Security.PTPrincipal.Logout();
 
     try
     {

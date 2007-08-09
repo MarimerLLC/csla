@@ -142,6 +142,12 @@ namespace Csla
       base.RemoveItem(index);
     }
 
+    protected override void SetItem(int index, T item)
+    {
+      item.SetParent(this);
+      base.SetItem(index, item);
+    }
+
     #endregion
 
     #region  IParent Members

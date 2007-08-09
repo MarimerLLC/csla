@@ -142,6 +142,12 @@ namespace Csla
       base.RemoveItem(index);
     }
 
+    /// <summary>
+    /// Replaces item in the list.
+    /// </summary>
+    /// <param name="index">Index of the item
+    /// that was replaced.</param>
+    /// <param name="item">New item.</param>
     protected override void SetItem(int index, T item)
     {
       item.SetParent(this);

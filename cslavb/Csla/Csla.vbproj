@@ -123,6 +123,7 @@
     <Compile Include="Security\AccessType.vb" />
     <Compile Include="Security\AuthorizationRulesManager.vb" />
     <Compile Include="Security\IAuthorizeReadWrite.vb" />
+    <Compile Include="Security\PrincipalCache.vb" />
     <Compile Include="Security\SharedAuthorizationRules.vb" />
     <Compile Include="Serialization\BinaryFormatterWrapper.vb" />
     <Compile Include="Serialization\ISerializationFormatter.vb" />

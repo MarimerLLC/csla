@@ -339,6 +339,11 @@ Public Module DataPortal
     OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
 
     Try
+      If Not proxy.IsServerRemote AndAlso ApplicationContext.AutoCloneOnUpdate Then
+        ' when using local data portal, automatically
+        ' clone original object before saving
+        obj = DirectCast(obj, ICloneable).Clone
+      End If
       result = proxy.Update(obj, dpContext)
 
     Catch ex As Server.DataPortalException

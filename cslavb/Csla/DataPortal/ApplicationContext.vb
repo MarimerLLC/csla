@@ -332,6 +332,23 @@ Public Module ApplicationContext
     End Get
   End Property
 
+  ''' <summary>
+  ''' Gets a value indicating whether objects should be
+  ''' automatically cloned by the data portal Update()
+  ''' method when using a local data portal configuration.
+  ''' </summary>
+  Public ReadOnly Property AutoCloneOnUpdate() As Boolean
+    Get
+      Dim result As Boolean = False
+      Dim setting As String = _
+        ConfigurationManager.AppSettings("CslaAutoCloneOnUpdate")
+      If Len(setting) > 0 Then
+        result = Boolean.Parse(setting)
+      End If
+      Return result
+    End Get
+  End Property
+
 #If NET20 Then
   ''' <summary>
   ''' Gets the serialization formatter type used by CSLA .NET

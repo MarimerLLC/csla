@@ -495,7 +495,10 @@ namespace Csla
     {
       int pos = arrayIndex;
       foreach (T child in this)
+      {
         array[pos] = child;
+        pos++;
+      }
     }
 
     void System.Collections.ICollection.CopyTo(System.Array array, int index)

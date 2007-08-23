@@ -50,8 +50,10 @@ namespace PTWin
     {
       // stop the flow of events
       this.rolesBindingSource.RaiseListChangedEvents = false;
-      // commit edits in memory
-      this.rolesBindingSource.EndEdit();
+      
+      // commit edits in memory and unbind
+      UnbindBindingSource(this.rolesBindingSource, true, true);
+
       try
       {
         // clone object and save clone

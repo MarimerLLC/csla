@@ -67,9 +67,10 @@ namespace PTWin
         this.projectBindingSource.RaiseListChangedEvents = false;
         this.resourcesBindingSource.RaiseListChangedEvents = false;
         
-        // commit edits in memory
-        this.resourcesBindingSource.EndEdit();
-        this.projectBindingSource.EndEdit();
+        // commit edits in memory and unbind
+        UnbindBindingSource(this.resourcesBindingSource, false, false);
+        UnbindBindingSource(this.projectBindingSource, false, true);
+
         try
         {
           // clone object and save clone
@@ -139,9 +140,9 @@ namespace PTWin
       // unbind the UI
       UnbindBindingSource(this.resourcesBindingSource, true, false);
       UnbindBindingSource(this.projectBindingSource, true, true);
+      this.resourcesBindingSource.DataSource = this.projectBindingSource;
 
       // rebind the UI
-      this.resourcesBindingSource.DataSource = this.projectBindingSource;
       this.projectBindingSource.DataSource = _project;
 
       // restore events

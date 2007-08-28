@@ -79,17 +79,17 @@ namespace PTWin
 
     #region Data binding helpers 
 
-    protected void UnbindBindingSource(BindingSource source, bool cancel, bool isRoot)
+    protected void UnbindBindingSource(BindingSource source, bool apply, bool isRoot)
     {
       System.ComponentModel.IEditableObject current =
         source.Current as System.ComponentModel.IEditableObject;
       if (isRoot)
         source.DataSource = null;
       if (current != null)
-        if (cancel)
-          current.CancelEdit();
-        else
+        if (apply)
           current.EndEdit();
+        else
+          current.CancelEdit();
     }
 
     #endregion

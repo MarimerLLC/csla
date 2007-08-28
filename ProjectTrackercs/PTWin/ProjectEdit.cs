@@ -38,6 +38,22 @@ namespace PTWin
     }
 
     #endregion
+    
+    public ProjectEdit(Project project)
+    {
+      InitializeComponent();
+
+      // store object reference
+      _project = project;
+
+      // set up binding
+      this.roleListBindingSource.DataSource = RoleList.GetList();
+
+      BindUI();
+
+      // check authorization
+      ApplyAuthorizationRules();
+    }
 
     private void ApplyAuthorizationRules()
     {
@@ -59,105 +75,94 @@ namespace PTWin
         !canEdit;
     }
 
-    private void SaveProject(bool rebind)
+    private void OKButton_Click(object sender, EventArgs e)
     {
       using (StatusBusy busy = new StatusBusy("Saving..."))
       {
-        // stop the flow of events
-        this.projectBindingSource.RaiseListChangedEvents = false;
-        this.resourcesBindingSource.RaiseListChangedEvents = false;
-        
-        // commit edits in memory and unbind
-        UnbindBindingSource(this.resourcesBindingSource, false, false);
-        UnbindBindingSource(this.projectBindingSource, false, true);
-
-        try
-        {
-          // clone object and save clone
-          Project temp = _project.Clone();
-          _project = temp.Save();
-
-          if (rebind)
-          {
-            // rebind the UI
-            this.projectBindingSource.DataSource = null;
-            this.resourcesBindingSource.DataSource = this.projectBindingSource;
-            this.projectBindingSource.DataSource = _project;
-            ApplyAuthorizationRules();
-          }
-        }
-        catch (Csla.DataPortalException ex)
-        {
-          MessageBox.Show(ex.BusinessException.ToString(),
-            "Error saving", MessageBoxButtons.OK,
-            MessageBoxIcon.Exclamation);
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.ToString(),
-            "Error Saving", MessageBoxButtons.OK,
-            MessageBoxIcon.Exclamation);
-        }
-        finally
-        {
-          this.projectBindingSource.RaiseListChangedEvents = true;
-          this.resourcesBindingSource.RaiseListChangedEvents = true;
-          this.projectBindingSource.ResetBindings(false);
-          this.resourcesBindingSource.ResetBindings(false);
-        }
+        RebindUI(true, false);
       }
-    }
-
-    public ProjectEdit(Project project)
-    {
-      InitializeComponent();
-
-      _project = project;
-
-      this.roleListBindingSource.DataSource = RoleList.GetList();
-      this.projectBindingSource.DataSource = _project;
-
-      ApplyAuthorizationRules();
-    }
-
-    private void OKButton_Click(object sender, EventArgs e)
-    {
-      SaveProject(false);
       this.Close();
     }
 
     private void ApplyButton_Click(object sender, EventArgs e)
     {
-      SaveProject(true);
+      using (StatusBusy busy = new StatusBusy("Saving..."))
+      {
+        RebindUI(true, true);
+      }
     }
 
     private void Cancel_Button_Click(object sender, EventArgs e)
     {
-      // disable events
-      this.projectBindingSource.RaiseListChangedEvents = false;
-      this.resourcesBindingSource.RaiseListChangedEvents = false;
-
-      // unbind the UI
-      UnbindBindingSource(this.resourcesBindingSource, true, false);
-      UnbindBindingSource(this.projectBindingSource, true, true);
-      this.resourcesBindingSource.DataSource = this.projectBindingSource;
-
-      // rebind the UI
-      this.projectBindingSource.DataSource = _project;
-
-      // restore events
-      this.projectBindingSource.RaiseListChangedEvents = true;
-      this.resourcesBindingSource.RaiseListChangedEvents = true;
-      
-      // refresh the UI
-      this.projectBindingSource.ResetBindings(false);
-      this.resourcesBindingSource.ResetBindings(false);
+      RebindUI(false, true);
     }
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
-      Cancel_Button_Click(sender, e);
+      RebindUI(false, false);
       this.Close();
+    }
+
+    private void BindUI()
+    {
+      _project.BeginEdit();
+      this.projectBindingSource.DataSource = _project;
+    }
+
+    private void RebindUI(bool saveObject, bool rebind)
+    {
+      // disable events
+      this.projectBindingSource.RaiseListChangedEvents = false;
+      this.resourcesBindingSource.RaiseListChangedEvents = false;
+      try
+      {
+        // unbind the UI
+        UnbindBindingSource(this.resourcesBindingSource, saveObject, false);
+        UnbindBindingSource(this.projectBindingSource, saveObject, true);
+        this.resourcesBindingSource.DataSource = this.projectBindingSource;
+
+        // save or cancel changes
+        if (saveObject)
+        {
+          _project.ApplyEdit();
+          try
+          {
+            Project temp = _project.Clone();
+            _project = temp.Save();
+          }
+          catch (Csla.DataPortalException ex)
+          {
+            MessageBox.Show(ex.BusinessException.ToString(),
+              "Error saving", MessageBoxButtons.OK,
+              MessageBoxIcon.Exclamation);
+          }
+          catch (Exception ex)
+          {
+            MessageBox.Show(ex.ToString(),
+              "Error Saving", MessageBoxButtons.OK,
+              MessageBoxIcon.Exclamation);
+          }
+        }
+        else
+          _project.CancelEdit();
+
+        // rebind UI if requested
+        if (rebind)
+          BindUI();
+      }
+      finally
+      {
+        // restore events
+        this.projectBindingSource.RaiseListChangedEvents = true;
+        this.resourcesBindingSource.RaiseListChangedEvents = true;
+
+        if (rebind)
+        {
+          // refresh the UI if rebinding
+          this.projectBindingSource.ResetBindings(false);
+          this.resourcesBindingSource.ResetBindings(false);
+        }
+      }
     }
 
     private void AssignButton_Click(object sender, EventArgs e)

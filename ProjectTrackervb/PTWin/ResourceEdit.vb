@@ -18,7 +18,8 @@ Public Class ResourceEdit
     mResource = resource
 
     Me.RoleListBindingSource.DataSource = RoleList.GetList
-    Me.ResourceBindingSource.DataSource = mResource
+
+    BindUI()
 
     ApplyAuthorizationRules()
 
@@ -67,54 +68,12 @@ Public Class ResourceEdit
 
   End Sub
 
-  Private Sub SaveResource(ByVal rebind As Boolean)
-
-    Using busy As New StatusBusy("Saving...")
-      ' stop the flow of events
-      Me.ResourceBindingSource.RaiseListChangedEvents = False
-      Me.AssignmentsBindingSource.RaiseListChangedEvents = False
-
-      ' commit edits in memory
-      Me.AssignmentsBindingSource.EndEdit()
-      Me.ResourceBindingSource.EndEdit()
-      Try
-        ' clone object and save clone
-        Dim temp As Resource = mResource.Clone
-        mResource = temp.Save
-
-        If rebind Then
-          ' rebind the UI
-          Me.ResourceBindingSource.DataSource = Nothing
-          Me.AssignmentsBindingSource.DataSource = Me.ResourceBindingSource
-          Me.ResourceBindingSource.DataSource = mResource
-          ApplyAuthorizationRules()
-        End If
-
-      Catch ex As Csla.DataPortalException
-        MessageBox.Show(ex.BusinessException.ToString, _
-          "Error saving", MessageBoxButtons.OK, _
-          MessageBoxIcon.Exclamation)
-
-      Catch ex As Exception
-        MessageBox.Show(ex.ToString, _
-          "Error saving", MessageBoxButtons.OK, _
-          MessageBoxIcon.Exclamation)
-
-      Finally
-        Me.ResourceBindingSource.RaiseListChangedEvents = True
-        Me.AssignmentsBindingSource.RaiseListChangedEvents = True
-        Me.ResourceBindingSource.ResetBindings(False)
-        Me.AssignmentsBindingSource.ResetBindings(False)
-      End Try
-
-    End Using
-
-  End Sub
-
   Private Sub OKButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles OKButton.Click
 
-    SaveResource(False)
+    Using busy As New StatusBusy("Saving...")
+      RebindUI(True, False)
+    End Using
     Me.Close()
 
   End Sub
@@ -122,42 +81,83 @@ Public Class ResourceEdit
   Private Sub ApplyButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles ApplyButton.Click
 
-    SaveResource(True)
+    Using busy As New StatusBusy("Saving...")
+      RebindUI(True, True)
+    End Using
 
   End Sub
 
   Private Sub Cancel_Button_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles Cancel_Button.Click
 
-    ' disable events
-    Me.ResourceBindingSource.RaiseListChangedEvents = False
-    Me.AssignmentsBindingSource.RaiseListChangedEvents = False
-
-    ' unbind the UI
-    UnbindBindingSource(Me.AssignmentsBindingSource, True, False)
-    UnbindBindingSource(Me.ResourceBindingSource, True, True)
-
-    ' rebind the UI
-    Me.ResourceBindingSource.DataSource = Nothing
-    Me.AssignmentsBindingSource.DataSource = Me.ResourceBindingSource
-    Me.ResourceBindingSource.DataSource = mResource
-
-    ' restore events
-    Me.ResourceBindingSource.RaiseListChangedEvents = True
-    Me.AssignmentsBindingSource.RaiseListChangedEvents = True
-
-    ' refresh the UI
-    Me.ResourceBindingSource.ResetBindings(False)
-    Me.AssignmentsBindingSource.ResetBindings(False)
+    RebindUI(False, True)
 
   End Sub
 
   Private Sub CloseButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles CloseButton.Click
 
-    Cancel_Button_Click(sender, e)
+    RebindUI(False, False)
     Me.Close()
 
+  End Sub
+
+  Private Sub BindUI()
+
+    mResource.BeginEdit()
+    Me.ResourceBindingSource.DataSource = mResource
+
+  End Sub
+
+  Private Sub RebindUI(ByVal saveObject As Boolean, ByVal rebind As Boolean)
+
+    ' disable events
+    Me.ResourceBindingSource.RaiseListChangedEvents = False
+    Me.AssignmentsBindingSource.RaiseListChangedEvents = False
+    Try
+      ' unbind the UI
+      UnbindBindingSource(Me.AssignmentsBindingSource, saveObject, False)
+      UnbindBindingSource(Me.ResourceBindingSource, saveObject, True)
+      Me.AssignmentsBindingSource.DataSource = Me.ResourceBindingSource
+
+      ' save or cancel changes
+      If saveObject Then
+        mResource.ApplyEdit()
+        Try
+          Dim temp As Resource = mResource.Clone()
+          mResource = temp.Save()
+
+        Catch ex As Csla.DataPortalException
+          MessageBox.Show(ex.BusinessException.ToString(), _
+            "Error saving", MessageBoxButtons.OK, _
+            MessageBoxIcon.Exclamation)
+
+        Catch ex As Exception
+          MessageBox.Show(ex.ToString(), _
+            "Error Saving", MessageBoxButtons.OK, _
+            MessageBoxIcon.Exclamation)
+        End Try
+
+      Else
+        mResource.CancelEdit()
+
+        ' rebind UI if requested
+        If rebind Then
+          BindUI()
+        End If
+      End If
+
+    Finally
+      ' restore events
+      Me.ResourceBindingSource.RaiseListChangedEvents = True
+      Me.AssignmentsBindingSource.RaiseListChangedEvents = True
+
+      If rebind Then
+        ' refresh the UI if rebinding
+        Me.ResourceBindingSource.ResetBindings(False)
+        Me.AssignmentsBindingSource.ResetBindings(False)
+      End If
+    End Try
   End Sub
 
   Private Sub AssignButton_Click(ByVal sender As System.Object, _

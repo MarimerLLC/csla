@@ -75,7 +75,7 @@ Public Class WinPart
 #Region " Data binding helpers "
 
   Protected Sub UnbindBindingSource( _
-    ByVal source As BindingSource, ByVal cancel As Boolean, ByVal isRoot As Boolean)
+    ByVal source As BindingSource, ByVal apply As Boolean, ByVal isRoot As Boolean)
 
     Dim current As System.ComponentModel.IEditableObject = _
             TryCast(source.Current, System.ComponentModel.IEditableObject)
@@ -83,10 +83,10 @@ Public Class WinPart
       source.DataSource = Nothing
     End If
     If current IsNot Nothing Then
-      If cancel Then
-        current.CancelEdit()
-      Else
+      If apply Then
         current.EndEdit()
+      Else
+        current.CancelEdit()
       End If
     End If
 

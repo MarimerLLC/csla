@@ -18,7 +18,8 @@ Public Class ProjectEdit
     mProject = project
 
     Me.RoleListBindingSource.DataSource = RoleList.GetList
-    Me.ProjectBindingSource.DataSource = mProject
+
+    BindUI()
 
     ApplyAuthorizationRules()
 
@@ -68,53 +69,12 @@ Public Class ProjectEdit
 
   End Sub
 
-  Private Sub SaveProject(ByVal rebind As Boolean)
-
-    Using busy As New StatusBusy("Saving...")
-      ' stop the flow of events
-      Me.ProjectBindingSource.RaiseListChangedEvents = False
-      Me.ResourcesBindingSource.RaiseListChangedEvents = False
-
-      ' commit edits in memory
-      Me.ResourcesBindingSource.EndEdit()
-      Me.ProjectBindingSource.EndEdit()
-      Try
-        ' clone object and save clone
-        Dim temp As Project = mProject.Clone
-        mProject = temp.Save
-
-        If rebind Then
-          ' rebind the UI
-          Me.ProjectBindingSource.DataSource = Nothing
-          Me.ResourcesBindingSource.DataSource = Me.ProjectBindingSource
-          Me.ProjectBindingSource.DataSource = mProject
-          ApplyAuthorizationRules()
-        End If
-
-      Catch ex As Csla.DataPortalException
-        MessageBox.Show(ex.BusinessException.ToString, _
-          "Error saving", MessageBoxButtons.OK, _
-          MessageBoxIcon.Exclamation)
-
-      Catch ex As Exception
-        MessageBox.Show(ex.ToString, _
-          "Error saving", MessageBoxButtons.OK, _
-          MessageBoxIcon.Exclamation)
-
-      Finally
-        Me.ProjectBindingSource.RaiseListChangedEvents = True
-        Me.ResourcesBindingSource.RaiseListChangedEvents = True
-        Me.ProjectBindingSource.ResetBindings(False)
-        Me.ResourcesBindingSource.ResetBindings(False)
-      End Try
-    End Using
-
-  End Sub
-
   Private Sub OKButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles OKButton.Click
 
-    SaveProject(False)
+    Using busy As New StatusBusy("Saving...")
+      RebindUI(True, False)
+    End Using
     Me.Close()
 
   End Sub
@@ -122,41 +82,83 @@ Public Class ProjectEdit
   Private Sub ApplyButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles ApplyButton.Click
 
-    SaveProject(True)
+    Using busy As New StatusBusy("Saving...")
+      RebindUI(True, True)
+    End Using
 
   End Sub
 
   Private Sub Cancel_Button_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles Cancel_Button.Click
 
-    ' disable events
-    Me.ProjectBindingSource.RaiseListChangedEvents = False
-    Me.ResourcesBindingSource.RaiseListChangedEvents = False
-
-    ' unbind the UI
-    UnbindBindingSource(Me.ResourcesBindingSource, True, False)
-    UnbindBindingSource(Me.ProjectBindingSource, True, True)
-
-    ' rebind the UI
-    Me.ResourcesBindingSource.DataSource = Me.ProjectBindingSource
-    Me.ProjectBindingSource.DataSource = mProject
-
-    ' restore events
-    Me.ProjectBindingSource.RaiseListChangedEvents = True
-    Me.ResourcesBindingSource.RaiseListChangedEvents = True
-
-    ' refresh the UI
-    Me.ProjectBindingSource.ResetBindings(False)
-    Me.ResourcesBindingSource.ResetBindings(False)
+    RebindUI(False, True)
 
   End Sub
 
   Private Sub CloseButton_Click(ByVal sender As System.Object, _
     ByVal e As System.EventArgs) Handles CloseButton.Click
 
-    Cancel_Button_Click(sender, e)
+    RebindUI(False, False)
     Me.Close()
 
+  End Sub
+
+  Private Sub BindUI()
+
+    mProject.BeginEdit()
+    Me.ProjectBindingSource.DataSource = mProject
+
+  End Sub
+
+  Private Sub RebindUI(ByVal saveObject As Boolean, ByVal rebind As Boolean)
+
+    ' disable events
+    Me.ProjectBindingSource.RaiseListChangedEvents = False
+    Me.ResourcesBindingSource.RaiseListChangedEvents = False
+    Try
+      ' unbind the UI
+      UnbindBindingSource(Me.ResourcesBindingSource, saveObject, False)
+      UnbindBindingSource(Me.ProjectBindingSource, saveObject, True)
+      Me.ResourcesBindingSource.DataSource = Me.ProjectBindingSource
+
+      ' save or cancel changes
+      If saveObject Then
+        mProject.ApplyEdit()
+        Try
+          Dim temp As Project = mProject.Clone()
+          mProject = temp.Save()
+
+        Catch ex As Csla.DataPortalException
+          MessageBox.Show(ex.BusinessException.ToString(), _
+            "Error saving", MessageBoxButtons.OK, _
+            MessageBoxIcon.Exclamation)
+
+        Catch ex As Exception
+          MessageBox.Show(ex.ToString(), _
+            "Error Saving", MessageBoxButtons.OK, _
+            MessageBoxIcon.Exclamation)
+        End Try
+
+      Else
+        mProject.CancelEdit()
+
+        ' rebind UI if requested
+        If rebind Then
+          BindUI()
+        End If
+      End If
+
+      finally
+      ' restore events
+      Me.ProjectBindingSource.RaiseListChangedEvents = True
+      Me.ResourcesBindingSource.RaiseListChangedEvents = True
+
+      If rebind Then
+        ' refresh the UI if rebinding
+        Me.ProjectBindingSource.ResetBindings(False)
+        Me.ResourcesBindingSource.ResetBindings(False)
+      End If
+    End Try
   End Sub
 
   Private Sub AssignButton_Click(ByVal sender As System.Object, _

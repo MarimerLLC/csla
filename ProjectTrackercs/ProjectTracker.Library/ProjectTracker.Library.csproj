@@ -43,6 +43,7 @@
     <Compile Include="Assignment.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Project.cs" />
+    <Compile Include="ProjectCloser.cs" />
     <Compile Include="ProjectInfo.cs" />
     <Compile Include="ProjectList.cs" />
     <Compile Include="ProjectResource.cs" />

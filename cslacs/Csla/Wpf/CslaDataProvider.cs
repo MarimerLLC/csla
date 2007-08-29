@@ -337,10 +337,13 @@ namespace Csla.Wpf
           if (undo != null && _manageLifetime)
             undo.ApplyEdit();
 
-          // clone the object if possible
-          ICloneable clonable = savable as ICloneable;
-          if (clonable != null)
-            savable = (Csla.Core.ISavable)clonable.Clone();
+          if (!Csla.ApplicationContext.AutoCloneOnUpdate)
+          {
+            // clone the object if possible
+            ICloneable clonable = savable as ICloneable;
+            if (clonable != null)
+              savable = (Csla.Core.ISavable)clonable.Clone();
+          }
 
           // save the clone
           result = savable.Save();

@@ -73,6 +73,13 @@ Namespace Security
 
     End Function
 
+    Friend Shared Function GetIdentity( _
+      ByVal username As String) As PTIdentity
+
+      Return DataPortal.Fetch(Of PTIdentity)(New LoadOnlyCriteria(username))
+
+    End Function
+
     Private Sub New()
       ' require use of factory methods
     End Sub
@@ -105,6 +112,22 @@ Namespace Security
       End Sub
     End Class
 
+    <Serializable()> _
+    Private Class LoadOnlyCriteria
+
+      Private mUsername As String
+
+      Public ReadOnly Property Username() As String
+        Get
+          Return mUsername
+        End Get
+      End Property
+
+      Public Sub New(ByVal username As String)
+        mUsername = username
+      End Sub
+    End Class
+
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
       Using cn As New SqlConnection(Database.SecurityConnection)
@@ -115,23 +138,45 @@ Namespace Security
           cm.Parameters.AddWithValue("@user", criteria.Username)
           cm.Parameters.AddWithValue("@pw", criteria.Password)
           Using dr As SqlDataReader = cm.ExecuteReader()
-            If dr.Read() Then
-              mName = criteria.Username
-              mIsAuthenticated = True
-              If dr.NextResult Then
-                While dr.Read
-                  mRoles.Add(dr.GetString(0))
-                End While
-              End If
-
-            Else
-              mName = ""
-              mIsAuthenticated = False
-              mRoles.Clear()
-            End If
+            Fetch(dr)
           End Using
         End Using
       End Using
+
+    End Sub
+
+    Private Overloads Sub DataPortal_Fetch(ByVal criteria As LoadOnlyCriteria)
+
+      Using cn As New SqlConnection(Database.SecurityConnection)
+        cn.Open()
+        Using cm As SqlCommand = cn.CreateCommand
+          cm.CommandText = "GetUser"
+          cm.CommandType = CommandType.StoredProcedure
+          cm.Parameters.AddWithValue("@user", criteria.Username)
+          Using dr As SqlDataReader = cm.ExecuteReader()
+            Fetch(dr)
+          End Using
+        End Using
+      End Using
+
+    End Sub
+
+    Private Sub Fetch(ByVal dr As SqlDataReader)
+
+      If dr.Read() Then
+        mName = dr.GetString(0)
+        mIsAuthenticated = True
+        If dr.NextResult Then
+          While dr.Read
+            mRoles.Add(dr.GetString(0))
+          End While
+        End If
+
+      Else
+        mName = ""
+        mIsAuthenticated = False
+        mRoles.Clear()
+      End If
 
     End Sub
 

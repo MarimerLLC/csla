@@ -8,8 +8,10 @@ Public Class PTService
 
   Public Function GetProjectList() As ProjectData() Implements IPTService.GetProjectList
 
-    ' anonymous access allowed
-    Security.UseAnonymous()
+    ' TODO: comment out the following if using the
+    ' PTWcfServiceAuth components to require a
+    ' username/password from the caller
+    ProjectTracker.Library.Security.PTPrincipal.Logout()
 
     Try
       Dim list As ProjectList = ProjectList.GetProjectList()

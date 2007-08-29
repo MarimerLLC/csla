@@ -768,8 +768,6 @@ namespace Csla.Core
 
     #region System.ComponentModel.IEditableObject
 
-    //[NotUndoable()]
-    //private bool _bindingEdit;
     private bool _neverCommitted = true;
     [NotUndoable]
     private bool _disableIEditableObject;
@@ -889,7 +887,6 @@ namespace Csla.Core
     /// </remarks>
     public void BeginEdit()
     {
-      //_bindingEdit = true;
       CopyState(this.EditLevel + 1);
     }
 
@@ -910,7 +907,7 @@ namespace Csla.Core
     /// <summary>
     /// Called when an undo operation has completed.
     /// </summary>
-    /// <remarks>
+    /// <remarks> 
     /// This method resets the object as a result of
     /// deserialization and raises PropertyChanged events
     /// to notify data binding that the object has changed.

@@ -317,10 +317,12 @@ Namespace Wpf
             undo.ApplyEdit()
           End If
 
-          ' clone the object if possible
-          Dim clonable As ICloneable = TryCast(savable, ICloneable)
-          If Not clonable Is Nothing Then
-            savable = CType(clonable.Clone(), Csla.Core.ISavable)
+          If Not Csla.ApplicationContext.AutoCloneOnUpdate Then
+            ' clone the object if possible
+            Dim clonable As ICloneable = TryCast(savable, ICloneable)
+            If Not clonable Is Nothing Then
+              savable = CType(clonable.Clone(), Csla.Core.ISavable)
+            End If
           End If
 
           ' save the clone

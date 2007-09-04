@@ -19,22 +19,35 @@ namespace PTWcfClient
     {
       System.ServiceModel.ChannelFactory<PTWcfService.IPTService> factory =
         new System.ServiceModel.ChannelFactory<PTWcfService.IPTService>("WSHttpBinding_IPTService");
-      factory.Credentials.UserName.UserName = "pm";
-      factory.Credentials.UserName.Password = "pm";
-      PTWcfService.IPTService proxy = factory.CreateChannel();
-      PTWcfService.ProjectData[] list;
-      using (proxy as IDisposable)
+      try
       {
-        list = proxy.GetProjectList();
+        factory.Credentials.UserName.UserName = "pm";
+        factory.Credentials.UserName.Password = "pm";
+        PTWcfService.IPTService proxy = factory.CreateChannel();
+        PTWcfService.ProjectData[] list;
+        using (proxy as IDisposable)
+        {
+          list = proxy.GetProjectList();
+        }
       }
-      this.projectDataBindingSource.DataSource = list;
+      finally
+      {
+        factory.Close();
+      }
 
       //PTWcfService.PTServiceClient svc = new PTWcfClient.PTWcfService.PTServiceClient();
-      //svc.ClientCredentials.UserName.UserName = "anonymous";
-      ////svc.ClientCredentials.UserName.Password = "pm";
-      //PTWcfService.ProjectData[] list = svc.GetProjectList();
-      //this.projectDataBindingSource.DataSource = list;
-      //svc.Close();
+      //try
+      //{
+      //  svc.ClientCredentials.UserName.UserName = "anonymous";
+      //  //svc.ClientCredentials.UserName.Password = "pm";
+      //  PTWcfService.ProjectData[] list = svc.GetProjectList();
+      //}
+      //finally
+      //{
+      //  svc.Close();
+      //}
+
+      this.projectDataBindingSource.DataSource = list;
     }
   }
 }

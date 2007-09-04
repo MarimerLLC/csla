@@ -141,14 +141,14 @@ Public Class ProjectEdit
 
       Else
         mProject.CancelEdit()
-
-        ' rebind UI if requested
-        If rebind Then
-          BindUI()
-        End If
       End If
 
-      finally
+      ' rebind UI if requested
+      If rebind Then
+        BindUI()
+      End If
+
+    Finally
       ' restore events
       Me.ProjectBindingSource.RaiseListChangedEvents = True
       Me.ResourcesBindingSource.RaiseListChangedEvents = True
@@ -159,6 +159,7 @@ Public Class ProjectEdit
         Me.ResourcesBindingSource.ResetBindings(False)
       End If
     End Try
+
   End Sub
 
   Private Sub AssignButton_Click(ByVal sender As System.Object, _

@@ -140,11 +140,11 @@ Public Class ResourceEdit
 
       Else
         mResource.CancelEdit()
+      End If
 
-        ' rebind UI if requested
-        If rebind Then
-          BindUI()
-        End If
+      ' rebind UI if requested
+      If rebind Then
+        BindUI()
       End If
 
     Finally
@@ -158,6 +158,7 @@ Public Class ResourceEdit
         Me.AssignmentsBindingSource.ResetBindings(False)
       End If
     End Try
+
   End Sub
 
   Private Sub AssignButton_Click(ByVal sender As System.Object, _

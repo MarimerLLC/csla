@@ -85,8 +85,17 @@ namespace Csla
         item.AcceptChanges(editLevel - tmp);
       try
       {
+        T savable = item;
+        if (!Csla.ApplicationContext.AutoCloneOnUpdate)
+        {
+          // clone the object if possible
+          ICloneable clonable = savable as ICloneable;
+          if (clonable != null)
+            savable = (T)clonable.Clone();
+        }
+
         // do the save
-        this[index] = (T)item.Save();
+        this[index] = (T)savable.Save();
       }
       finally
       {

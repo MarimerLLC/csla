@@ -111,11 +111,13 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(new RuleHandler(CommonRules.StringRequired), "FirstName");
+      ValidationRules.AddRule(new RuleHandler(CommonRules.StringRequired), 
+        new RuleArgs("FirstName", "First name"));
       ValidationRules.AddRule(new RuleHandler(CommonRules.StringMaxLength), 
         new CommonRules.MaxLengthRuleArgs("FirstName", 50));
 
-      ValidationRules.AddRule(new RuleHandler(CommonRules.StringRequired), "LastName");
+      ValidationRules.AddRule(new RuleHandler(CommonRules.StringRequired), 
+        new RuleArgs("LastName", "Last name"));
       ValidationRules.AddRule(new RuleHandler(CommonRules.StringMaxLength),
         new CommonRules.MaxLengthRuleArgs("LastName", 50));
     }

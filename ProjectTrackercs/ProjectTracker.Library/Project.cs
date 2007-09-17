@@ -142,7 +142,8 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringRequired, new Csla.Validation.RuleArgs("Name", "Project name"));
+        Csla.Validation.CommonRules.StringRequired, 
+        new Csla.Validation.RuleArgs("Name", "Project name"));
       ValidationRules.AddRule(
         Csla.Validation.CommonRules.StringMaxLength, 
         new Csla.Validation.CommonRules.MaxLengthRuleArgs("Name", 50));

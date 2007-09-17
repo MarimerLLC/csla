@@ -56,7 +56,7 @@
     <csla:ObjectStatus>
       <csla:Authorizer Name="AuthPanel">
         <csla:Validator>
-          <StackPanel FlowDirection="LeftToRight">
+          <StackPanel FlowDirection="LeftToRight" Margin="0 0 20 0">
             <StackPanel.Resources>
               <Style TargetType="{x:Type TextBlock}">
                 <Setter Property="Margin" Value="3,5"/>

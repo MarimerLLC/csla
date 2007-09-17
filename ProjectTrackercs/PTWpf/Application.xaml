@@ -3,6 +3,43 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     StartupUri="MainForm.xaml">
   <Application.Resources>
+    <Style TargetType="{x:Type TextBox}">
+      <Setter Property="Validation.ErrorTemplate">
+        <Setter.Value>
+          <ControlTemplate>
+            <DockPanel>
+              <AdornedElementPlaceholder />
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Ellipse HorizontalAlignment="Center" 
+                         Grid.Row="0" 
+                         Grid.Column="0" 
+                         Height="20" 
+                         Width="20" 
+                         Fill="Red" />
+                <TextBlock HorizontalAlignment="Center" 
+                           Grid.Row="0" 
+                           Grid.Column="0" 
+                           Foreground="White" 
+                           FontSize="20">!</TextBlock>
+              </Grid>
+            </DockPanel>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="Validation.HasError" Value="true">
+          <Setter Property="ToolTip"
+            Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                            Path=(Validation.Errors)[0].ErrorContent}"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
 
   </Application.Resources>
 </Application>

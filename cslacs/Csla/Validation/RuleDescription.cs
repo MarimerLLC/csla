@@ -29,14 +29,21 @@ namespace Csla.Validation
       _propertyName = uri.LocalPath.Substring(1);
 
       string args = uri.Query;
-      _arguments = new Dictionary<string, string>();
-      string[] argArray = args.Split('&');
-      foreach (string arg in argArray)
+      if (!(string.IsNullOrEmpty(args)))
       {
-        string[] argParams = arg.Split('=');
-        _arguments.Add(
-          Uri.UnescapeDataString(argParams[0]),
-          Uri.UnescapeDataString(argParams[1]));
+        if (args.StartsWith("?"))
+        {
+          args = args.Remove(0, 1);
+        }
+        _arguments = new Dictionary<string, string>();
+        string[] argArray = args.Split('&');
+        foreach (string arg in argArray)
+        {
+          string[] argParams = arg.Split('=');
+          _arguments.Add(
+            System.Uri.UnescapeDataString(argParams[0]), 
+            System.Uri.UnescapeDataString(argParams[1]));
+        }
       }
     }
 

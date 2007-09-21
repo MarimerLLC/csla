@@ -186,5 +186,18 @@ namespace PTWpf
     }
 
     #endregion
+
+    private void CloseProject(object sender, RoutedEventArgs e)
+    {
+      ProjectSelect frm = new ProjectSelect();
+      bool result = (bool)frm.ShowDialog();
+      if (result)
+      {
+        Guid id = frm.ProjectId;
+        ProjectCloser.CloseProject(id);
+        MessageBox.Show("Project closed", 
+          "Close project", MessageBoxButton.OK, MessageBoxImage.Information);
+      }
+    }
   }
 }

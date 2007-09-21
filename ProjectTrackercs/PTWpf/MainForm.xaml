@@ -37,7 +37,10 @@
             <ListBoxItem>
               <Hyperlink Click="NewProject">Add new Project</Hyperlink>
             </ListBoxItem>
-          </ListBox>
+          <ListBoxItem>
+            <Hyperlink Click="CloseProject">Close Project</Hyperlink>
+          </ListBoxItem>
+        </ListBox>
         </Expander>
         <Expander IsExpanded="True" Header="Resources">
           <ListBox>

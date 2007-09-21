@@ -548,6 +548,7 @@ namespace Csla.Validation
       {
         this["MaxValue"] = maxValue;
         this["Format"] = string.Empty;
+        this["ValueType"] = typeof(T).FullName;
       }
 
       /// <summary>
@@ -564,6 +565,7 @@ namespace Csla.Validation
       {
         this["MaxValue"] = maxValue;
         this["Format"] = string.Empty;
+        this["ValueType"] = typeof(T).FullName;
       }
 
       /// <summary>
@@ -578,6 +580,7 @@ namespace Csla.Validation
       {
         this["MaxValue"] = maxValue;
         this["Format"] = format;
+        this["ValueType"] = typeof(T).FullName;
       }
 
       /// <summary>
@@ -596,6 +599,7 @@ namespace Csla.Validation
       {
         this["MaxValue"] = maxValue;
         this["Format"] = format;
+        this["ValueType"] = typeof(T).FullName;
       }
     }
 
@@ -661,6 +665,7 @@ namespace Csla.Validation
       {
         this["MinValue"] = minValue;
         this["Format"] = string.Empty;
+        this["ValueType"] = typeof(T).FullName;
       }
 
       /// <summary>
@@ -677,6 +682,7 @@ namespace Csla.Validation
       {
         this["MinValue"] = minValue;
         this["Format"] = string.Empty;
+        this["ValueType"] = typeof(T).FullName;
       }
 
       /// <summary>
@@ -691,6 +697,7 @@ namespace Csla.Validation
       {
         this["MinValue"] = minValue;
         this["Format"] = format;
+        this["ValueType"] = typeof(T).FullName;
       }
 
       /// <summary>
@@ -709,6 +716,7 @@ namespace Csla.Validation
       {
         this["MinValue"] = minValue;
         this["Format"] = format;
+        this["ValueType"] = typeof(T).FullName;
       }
     }
 

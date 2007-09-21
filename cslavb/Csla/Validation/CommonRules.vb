@@ -540,6 +540,7 @@ Namespace Validation
         MyBase.New(propertyName)
         Me("MaxValue") = maxValue
         Me("Format") = ""
+        Me("ValueType") = GetType(T).FullName
       End Sub
 
       ''' <summary>
@@ -554,6 +555,7 @@ Namespace Validation
         MyBase.New(propertyName, friendlyName)
         Me("MaxValue") = maxValue
         Me("Format") = ""
+        Me("ValueType") = GetType(T).FullName
       End Sub
 
       ''' <summary>
@@ -566,6 +568,7 @@ Namespace Validation
         MyBase.New(propertyName)
         Me("MaxValue") = maxValue
         Me("Format") = format
+        Me("ValueType") = GetType(T).FullName
       End Sub
 
       ''' <summary>
@@ -581,6 +584,7 @@ Namespace Validation
         MyBase.New(propertyName, friendlyName)
         Me("MaxValue") = maxValue
         Me("Format") = format
+        Me("ValueType") = GetType(T).FullName
       End Sub
 
     End Class
@@ -649,6 +653,7 @@ Namespace Validation
         MyBase.New(propertyName)
         Me("MinValue") = minValue
         Me("Format") = ""
+        Me("ValueType") = GetType(T).FullName
       End Sub
 
       ''' <summary>
@@ -663,6 +668,7 @@ Namespace Validation
         MyBase.New(propertyName, friendlyName)
         Me("MinValue") = minValue
         Me("Format") = ""
+        Me("ValueType") = GetType(T).FullName
       End Sub
 
       ''' <summary>
@@ -675,6 +681,7 @@ Namespace Validation
         MyBase.New(propertyName)
         Me("MinValue") = minValue
         Me("Format") = format
+        Me("ValueType") = GetType(T).FullName
       End Sub
 
       ''' <summary>
@@ -690,6 +697,7 @@ Namespace Validation
         MyBase.New(propertyName, friendlyName)
         Me("MinValue") = minValue
         Me("Format") = format
+        Me("ValueType") = GetType(T).FullName
       End Sub
 
     End Class

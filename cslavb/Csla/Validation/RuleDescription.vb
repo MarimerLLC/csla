@@ -25,14 +25,22 @@ Namespace Validation
       mPropertyName = uri.LocalPath.Substring(1)
 
       Dim args As String = uri.Query
-      mArguments = New Dictionary(Of String, String)()
-      Dim argArray As String() = args.Split("&"c)
-      For Each arg As String In argArray
-        Dim argParams As String() = arg.Split("="c)
-        mArguments.Add(uri.UnescapeDataString(argParams(0)), uri.UnescapeDataString(argParams(1)))
-      Next arg
+      If (Not String.IsNullOrEmpty(args)) Then
+        If args.StartsWith("?") Then
+          args = args.Remove(0, 1)
+        End If
+        mArguments = New Dictionary(Of String, String)()
+        Dim argArray As String() = args.Split("&"c)
+        For Each arg As String In argArray
+          Dim argParams As String() = arg.Split("="c)
+          mArguments.Add( _
+            System.Uri.UnescapeDataString(argParams(0)), _
+            System.Uri.UnescapeDataString(argParams(1)))
+        Next arg
+      End If
 
     End Sub
+
 
     ''' <summary>
     ''' Parses a rule:// URI.

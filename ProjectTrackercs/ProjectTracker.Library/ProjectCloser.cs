@@ -27,11 +27,14 @@ namespace ProjectTracker.Library
 
     protected override void DataPortal_Execute()
     {
-      Dictionary<string, object> parameters = new Dictionary<string, object>();
+      Dictionary<string, object> parameters = 
+        new Dictionary<string, object>();
       parameters.Add("ProjectId", _projectId);
 
       WorkflowManager mgr = new WorkflowManager();
-      mgr.ExecuteWorkflow("PTWorkflow.ProjectWorkflow, PTWorkflow", parameters);
+      mgr.ExecuteWorkflow(
+        "PTWorkflow.ProjectWorkflow, PTWorkflow", 
+        parameters);
       
       if (mgr.Status == WorkflowStatus.Terminated)
         throw mgr.Error;

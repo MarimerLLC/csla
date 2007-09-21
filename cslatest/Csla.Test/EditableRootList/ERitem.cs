@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Csla.Test.EditableRootList
 {
+  [Serializable]
   public class ERitem : BusinessBase<ERitem>
   {
     string _data = string.Empty;

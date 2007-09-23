@@ -330,6 +330,9 @@
     <None Include="Web References\WebServiceHost\Service.wsdl" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.zh-TW.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Web\CslaDataSource.bmp" />
     <EmbeddedResource Include="Windows\BindingSourceRefresh.bmp" />
     <EmbeddedResource Include="Windows\ReadWriteAuthorization.bmp" />

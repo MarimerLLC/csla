@@ -347,6 +347,9 @@
     <None Include="Web References\WebServiceHost\WebServicePortal.wsdl" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.zh-TW.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Web\CslaDataSource.bmp" />
     <EmbeddedResource Include="Windows\BindingSourceRefresh.bmp" />
     <EmbeddedResource Include="Windows\ReadWriteAuthorization.bmp" />

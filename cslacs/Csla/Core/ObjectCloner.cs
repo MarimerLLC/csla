@@ -4,7 +4,12 @@ using Csla.Serialization;
 
 namespace Csla.Core
 {
-  internal static class ObjectCloner
+  /// <summary>
+  /// This class provides an implementation of a deep
+  /// clone of a complete object graph. Objects are
+  /// copied at the field level.
+  /// </summary>
+  public static class ObjectCloner
   {
 #if NET20
     /// <summary>

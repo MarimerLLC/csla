@@ -353,7 +353,9 @@ namespace Csla
         {
           // when using local data portal, automatically
           // clone original object before saving
-          obj = ((ICloneable)obj).Clone();
+          ICloneable cloneable = obj as ICloneable;
+          if (cloneable != null)
+            obj = cloneable.Clone();
         }
         result = proxy.Update(obj, dpContext);
       }

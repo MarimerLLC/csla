@@ -342,7 +342,10 @@ Public Module DataPortal
       If Not proxy.IsServerRemote AndAlso ApplicationContext.AutoCloneOnUpdate Then
         ' when using local data portal, automatically
         ' clone original object before saving
-        obj = DirectCast(obj, ICloneable).Clone
+        Dim cloneable As ICloneable = TryCast(obj, ICloneable)
+        If cloneable IsNot Nothing Then
+          obj = cloneable.Clone
+        End If
       End If
       result = proxy.Update(obj, dpContext)
 

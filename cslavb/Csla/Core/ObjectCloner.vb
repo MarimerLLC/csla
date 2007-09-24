@@ -3,7 +3,12 @@ Imports Csla.Serialization
 
 Namespace Core
 
-  Friend Module ObjectCloner
+  ''' <summary>
+  ''' This class provides an implementation of a deep
+  ''' clone of a complete object graph. Objects are
+  ''' copied at the field level.
+  ''' </summary>
+  Public Module ObjectCloner
 
 #If NET20 Then
     ''' <summary>

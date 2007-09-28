@@ -51,6 +51,7 @@ namespace Csla.Test.EditableRootList
       ERlist list = new ERlist();
       list.Add(ERitem.GetItem("test"));
       ERitem item = list[0];
+      item.Saved += new EventHandler<Csla.Core.SavedEventArgs>(item_Saved);
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
 
@@ -58,7 +59,14 @@ namespace Csla.Test.EditableRootList
 
       Assert.AreEqual(0, list.Count, "Incorrect count after remove");
       Assert.AreEqual("DeleteSelf", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have deleted itself");
-      Assert.IsTrue(item.IsNew, "Object should be new after delete");
+      Assert.IsTrue(_itemIsNew, "Object should be new after delete");
+    }
+
+    private bool _itemIsNew;
+
+    void item_Saved(object sender, Csla.Core.SavedEventArgs e)
+    {
+      _itemIsNew = ((ERitem)e.NewObject).IsNew;
     }
 
     [TestMethod]
@@ -71,11 +79,11 @@ namespace Csla.Test.EditableRootList
       // simulate grid edit
       System.ComponentModel.IEditableObject obj = (System.ComponentModel.IEditableObject)item;
       obj.BeginEdit();
-      item.Data = "test";
+      list[0].Data = "test";
       obj.EndEdit();
 
       Assert.AreEqual("Insert", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been inserted");
-      Assert.IsFalse(item.IsNew, "Object should not be new");
+      Assert.IsFalse(list[0].IsNew, "Object should not be new");
     }
 
     [TestMethod]
@@ -97,7 +105,7 @@ namespace Csla.Test.EditableRootList
       obj.EndEdit();
 
       Assert.AreEqual("Update", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been updated");
-      Assert.IsFalse(item.IsNew, "Object should not be new");
+      Assert.IsFalse(list[0].IsNew, "Object should not be new");
     }
   }
 }

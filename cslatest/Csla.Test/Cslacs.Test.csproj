@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="cslaTestcs.config" />
     <None Include="DataPortalTestDatabaseDataSet.xsc">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
     </None>

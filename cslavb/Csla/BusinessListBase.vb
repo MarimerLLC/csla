@@ -794,6 +794,10 @@ Public MustInherit Class BusinessListBase( _
     Return Save()
   End Function
 
+  Private Sub ISavable_SaveComplete(ByVal newObject As Object) Implements Core.ISavable.SaveComplete
+    OnSaved(DirectCast(newObject, T))
+  End Sub
+
   <NonSerialized()> _
   <NotUndoable()> _
   Private mNonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)

@@ -328,6 +328,14 @@ Namespace Wpf
           ' save the clone
           result = savable.Save()
 
+          If Not ReferenceEquals(savable, Me.Data) AndAlso Not Csla.ApplicationContext.AutoCloneOnUpdate Then
+            ' raise Saved event from original object
+            Dim original As Core.ISavable = TryCast(Me.Data, Core.ISavable)
+            If original IsNot Nothing Then
+              original.SaveComplete(result)
+            End If
+          End If
+
           ' start editing the resulting object
           undo = TryCast(result, Csla.Core.ISupportUndo)
           If Not undo Is Nothing AndAlso mManageLifetime Then

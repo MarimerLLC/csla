@@ -177,6 +177,10 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
     Return Save()
   End Function
 
+  Private Sub ISavable_SaveComplete(ByVal newObject As Object) Implements Core.ISavable.SaveComplete
+    OnSaved(DirectCast(newObject, T))
+  End Sub
+
   ''' <summary>
   ''' Saves the object to the database, forcing
   ''' IsNew to <see langword="false"/> and IsDirty to True.

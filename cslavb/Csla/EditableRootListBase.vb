@@ -90,6 +90,14 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
       ' do the save
       Me.Item(index) = DirectCast(savable.Save, T)
 
+      If Not ReferenceEquals(savable, item) AndAlso Not Csla.ApplicationContext.AutoCloneOnUpdate Then
+        ' raise Saved event from original object
+        Dim original As Core.ISavable = TryCast(item, Core.ISavable)
+        If original IsNot Nothing Then
+          original.SaveComplete(Me.Item(index))
+        End If
+      End If
+
     Finally
       ' restore edit level to previous level
       For tmp As Integer = 1 To editLevel

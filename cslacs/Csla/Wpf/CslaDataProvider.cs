@@ -348,6 +348,14 @@ namespace Csla.Wpf
           // save the clone
           result = savable.Save();
 
+          if (!ReferenceEquals(savable, this.Data) && !Csla.ApplicationContext.AutoCloneOnUpdate)
+          {
+            // raise Saved event from original object
+            Core.ISavable original = this.Data as Core.ISavable;
+            if (original != null)
+              original.SaveComplete(result);
+          }
+
           // start editing the resulting object
           undo = result as Csla.Core.ISupportUndo;
           if (undo != null && _manageLifetime)

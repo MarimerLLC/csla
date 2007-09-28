@@ -96,6 +96,14 @@ namespace Csla
 
         // do the save
         this[index] = (T)savable.Save();
+
+        if (!ReferenceEquals(savable, item) && !Csla.ApplicationContext.AutoCloneOnUpdate)
+        {
+          // raise Saved event from original object
+          Core.ISavable original = item as Core.ISavable;
+          if (original != null)
+            original.SaveComplete(this[index]);
+        }
       }
       finally
       {

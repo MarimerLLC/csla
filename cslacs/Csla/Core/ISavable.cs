@@ -16,6 +16,13 @@ namespace Csla.Core
     /// <returns>A new object containing the saved values.</returns>
     object Save();
     /// <summary>
+    /// INTERNAL CSLA .NET USE ONLY.
+    /// </summary>
+    /// <param name="newObject">
+    /// The new object returned as a result of the save.
+    /// </param>
+    void SaveComplete(object newObject);
+    /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
     event EventHandler<SavedEventArgs> Saved;

@@ -194,6 +194,10 @@ namespace Csla
       return Save();
     }
 
+    void Csla.Core.ISavable.SaveComplete(object newObject)
+    {
+      OnSaved((T)newObject);
+    }
 
     [NonSerialized]
     [NotUndoable]

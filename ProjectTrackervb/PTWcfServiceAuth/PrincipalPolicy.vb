@@ -33,7 +33,7 @@ Public Class PrincipalPolicy
     Implements IdentityModel.Policy.IAuthorizationPolicy.Evaluate
 
     ' get the identities list from the context
-    Dim obj As Object
+    Dim obj As Object = Nothing
     If (Not context.Properties.TryGetValue("Identities", obj)) Then
       Return False
     End If

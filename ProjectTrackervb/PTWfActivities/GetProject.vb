@@ -33,7 +33,8 @@ Public Class GetProject
 
 #End Region
 
-  Protected Overrides Function Execute(ByVal executionContext As ActivityExecutionContext) As ActivityExecutionStatus
+  Protected Overrides Function Execute( _
+    ByVal executionContext As ActivityExecutionContext) As ActivityExecutionStatus
 
     Me.Project = Project.GetProject(Me.ProjectId)
     Return MyBase.Execute(executionContext)

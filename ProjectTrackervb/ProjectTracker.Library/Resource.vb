@@ -95,7 +95,8 @@ Public Class Resource
 
   Protected Overrides Sub AddBusinessRules()
 
-    ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, "FirstName")
+    ValidationRules.AddRule( _
+      AddressOf Validation.CommonRules.StringRequired, "FirstName")
     ValidationRules.AddRule(AddressOf Validation.CommonRules.StringMaxLength, _
       New Validation.CommonRules.MaxLengthRuleArgs("FirstName", 50))
 

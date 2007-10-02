@@ -17,23 +17,40 @@ Public Class ProjectWorkflow
     End Set
   End Property
 
+  Private Shared ReadOnly ProjectProperty As DependencyProperty = _
+    DependencyProperty.Register("Project", GetType(Project), GetType(ProjectWorkflow), Nothing)
+
+  Public Property Project() As Project
+    Get
+      Return CType(MyBase.GetValue(ProjectProperty), Project)
+    End Get
+    Set(ByVal value As Project)
+      MyBase.SetValue(ProjectProperty, value)
+    End Set
+  End Property
+
 #End Region
 
 #Region " Code Activities "
 
-  Private mProject As ProjectTracker.Library.Project
+  'Private mProject As ProjectTracker.Library.Project
+
+  Private Sub getProject_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    Me.Project = Project.GetProject(ProjectId)
+
+  End Sub
 
   Private Sub closeProject_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
-    mProject = Project.GetProject(ProjectId)
-    mProject.Ended = Today.ToString
-    mProject = mProject.Save()
+    Me.Project.Ended = Today.ToString
+    Me.Project = Me.Project.Save()
 
   End Sub
 
   Private Sub notifyResources_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
-    For Each resource As ProjectResource In mProject.Resources
+    For Each resource As ProjectResource In Me.getProject1.Project.Resources
       ' notify each resource  
     Next
 

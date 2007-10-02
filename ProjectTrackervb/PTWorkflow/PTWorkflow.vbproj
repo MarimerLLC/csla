@@ -62,10 +62,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\cslavb\Csla\bin\Debug\Csla.dll</HintPath>
     </Reference>
-    <Reference Include="ProjectTracker.Library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ProjectTracker.Library\bin\Debug\ProjectTracker.Library.dll</HintPath>
-    </Reference>
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System</Name>
       <SpecificVersion>True</SpecificVersion>
@@ -179,6 +175,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ProjectTracker.Library\ProjectTracker.Library.vbproj">
+      <Project>{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}</Project>
+      <Name>ProjectTracker.Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PTWfActivities\PTWfActivities.vbproj">
       <Project>{97F1AC49-6F83-4803-9527-189905D9A055}</Project>
       <Name>PTWfActivities</Name>

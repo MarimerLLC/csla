@@ -7,12 +7,15 @@ Partial Class ProjectWorkflow
   <System.Diagnostics.DebuggerNonUserCode()> _
   Private Sub InitializeComponent()
     Me.CanModifyActivities = True
+    Dim activitybind1 As System.Workflow.ComponentModel.ActivityBind = New System.Workflow.ComponentModel.ActivityBind
+    Dim activitybind2 As System.Workflow.ComponentModel.ActivityBind = New System.Workflow.ComponentModel.ActivityBind
     Me.notifySponsor = New System.Workflow.Activities.CodeActivity
     Me.notifyResources = New System.Workflow.Activities.CodeActivity
     Me.sequenceActivity2 = New System.Workflow.Activities.SequenceActivity
     Me.sequenceActivity1 = New System.Workflow.Activities.SequenceActivity
     Me.parallelActivity1 = New System.Workflow.Activities.ParallelActivity
-    Me.closeProject = New System.Workflow.Activities.CodeActivity
+    Me.closeProject1 = New PTWfActivities.CloseProject
+    Me.getProject1 = New PTWfActivities.GetProject
     '
     'notifySponsor
     '
@@ -40,24 +43,36 @@ Partial Class ProjectWorkflow
     Me.parallelActivity1.Activities.Add(Me.sequenceActivity2)
     Me.parallelActivity1.Name = "parallelActivity1"
     '
-    'closeProject
+    'closeProject1
     '
-    Me.closeProject.Name = "closeProject"
-    AddHandler Me.closeProject.ExecuteCode, AddressOf Me.closeProject_ExecuteCode
+    Me.closeProject1.Name = "closeProject1"
+    activitybind1.Name = "getProject1"
+    activitybind1.Path = "Project"
+    Me.closeProject1.SetBinding(System.Workflow.ComponentModel.DependencyProperty.FromName("Project", GetType(PTWfActivities.CloseProject)), CType(activitybind1, System.Workflow.ComponentModel.ActivityBind))
+    '
+    'getProject1
+    '
+    Me.getProject1.Name = "getProject1"
+    Me.getProject1.Project = Nothing
+    activitybind2.Name = "ProjectWorkflow"
+    activitybind2.Path = "ProjectId"
+    Me.getProject1.SetBinding(System.Workflow.ComponentModel.DependencyProperty.FromName("ProjectId", GetType(PTWfActivities.GetProject)), CType(activitybind2, System.Workflow.ComponentModel.ActivityBind))
     '
     'ProjectWorkflow
     '
-    Me.Activities.Add(Me.closeProject)
+    Me.Activities.Add(Me.getProject1)
+    Me.Activities.Add(Me.closeProject1)
     Me.Activities.Add(Me.parallelActivity1)
     Me.Name = "ProjectWorkflow"
     Me.CanModifyActivities = False
 
   End Sub
+  Private closeProject1 As PTWfActivities.CloseProject
+  Private getProject1 As PTWfActivities.GetProject
   Private notifySponsor As System.Workflow.Activities.CodeActivity
   Private notifyResources As System.Workflow.Activities.CodeActivity
   Private sequenceActivity2 As System.Workflow.Activities.SequenceActivity
   Private sequenceActivity1 As System.Workflow.Activities.SequenceActivity
   Private parallelActivity1 As System.Workflow.Activities.ParallelActivity
-  Private closeProject As System.Workflow.Activities.CodeActivity
 
 End Class

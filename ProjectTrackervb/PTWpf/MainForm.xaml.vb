@@ -152,6 +152,8 @@ Partial Public Class MainForm
         LoginButtonText.Text = "Log out"
       End If
     End If
+    mPrincipal = _
+      CType(Csla.ApplicationContext.User, ProjectTracker.Library.Security.PTPrincipal)
     Dim p As IRefresh = TryCast(mCurrentControl, IRefresh)
     If Not p Is Nothing Then
       p.Refresh()

@@ -39,7 +39,7 @@ Partial Public Class MainForm
   ''' </summary>
   ''' <param name="obj"></param>
   Private Sub DataPortal_DataPortalInitInvoke(ByVal obj As Object)
-    If Not (TypeOf Csla.ApplicationContext.User Is ProjectTracker.Library.Security.PTPrincipal) Then
+    If Not ReferenceEquals(Csla.ApplicationContext.User, mPrincipal) Then
       Csla.ApplicationContext.User = mPrincipal
     End If
   End Sub

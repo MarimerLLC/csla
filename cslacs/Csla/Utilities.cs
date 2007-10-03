@@ -46,9 +46,7 @@ namespace Csla
         case CallType.Set:
           {
             PropertyInfo p = target.GetType().GetProperty(methodName);
-            object[] index = null;
-            args.CopyTo(index, 1);
-            p.SetValue(target, args[0], index);
+            p.SetValue(target, args[0], null);
             return null;
           }
         case CallType.Method:

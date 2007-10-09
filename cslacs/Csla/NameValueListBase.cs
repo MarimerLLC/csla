@@ -76,6 +76,50 @@ namespace Csla
       return false;
     }
 
+    /// <summary>
+    /// Get the item for the first matching
+    /// value in the collection.
+    /// </summary>
+    /// <param name="value">
+    /// Value to search for in the list.
+    /// </param>
+    /// <returns>Item from the list.</returns>
+    public NameValuePair GetItemByValue(V value)
+    {
+
+      foreach (NameValuePair item in this)
+      {
+        if (item != null && item.Value.Equals(value))
+        {
+          return item;
+        }
+      }
+      return null;
+
+    }
+
+    /// <summary>
+    /// Get the item for the first matching
+    /// key in the collection.
+    /// </summary>
+    /// <param name="key">
+    /// Key to search for in the list.
+    /// </param>
+    /// <returns>Item from the list.</returns>
+    public NameValuePair GetItemByKey(K key)
+    {
+
+      foreach (NameValuePair item in this)
+      {
+        if (item != null && item.Key.Equals(key))
+        {
+          return item;
+        }
+      }
+      return null;
+
+    }
+
     #endregion
 
     #region Constructors
@@ -148,54 +192,6 @@ namespace Csla
       {
         return _value.ToString();
       }
-    }
-
-    #endregion
-
-    #region GetKey/GetItem Methods
-
-    /// <summary>
-    /// Get the key for the first matching
-    /// value item in the collection.
-    /// </summary>
-    /// <param name="value">
-    /// Value to search for in the list.
-    /// </param>
-    /// <returns>Key value.</returns>
-    public K GetKey(V value)
-    {
-
-      foreach (NameValuePair item in this)
-      {
-        if (item != null && item.Value.Equals(value))
-        {
-          return item.Key;
-        }
-      }
-      return default(K);
-
-    }
-
-    /// <summary>
-    /// Get the value for the first matching
-    /// key item in the collection.
-    /// </summary>
-    /// <param name="key">
-    /// Key to search for in the list.
-    /// </param>
-    /// <returns>Value.</returns>
-    public V GetValue(K key)
-    {
-
-      foreach (NameValuePair item in this)
-      {
-        if (item != null && item.Key.Equals(key))
-        {
-          return item.Value;
-        }
-      }
-      return default(V);
-
     }
 
     #endregion

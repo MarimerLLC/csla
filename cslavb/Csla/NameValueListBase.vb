@@ -85,6 +85,44 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
   End Function
 
+  ''' <summary>
+  ''' Get the item for the first matching
+  ''' value in the collection.
+  ''' </summary>
+  ''' <param name="value">
+  ''' Value to search for in the list.
+  ''' </param>
+  ''' <returns>An item from the list.</returns>
+  Public Function GetItemByValue(ByVal value As V) As NameValuePair
+
+    For Each item As NameValuePair In Me
+      If item IsNot Nothing AndAlso item.Value.Equals(value) Then
+        Return item
+      End If
+    Next
+    Return Nothing
+
+  End Function
+
+  ''' <summary>
+  ''' Get the item for the first matching
+  ''' key in the collection.
+  ''' </summary>
+  ''' <param name="key">
+  ''' Key to search for in the list.
+  ''' </param>
+  ''' <returns>An item from the list.</returns>
+  Public Function GetItemByKey(ByVal key As K) As NameValuePair
+
+    For Each item As NameValuePair In Me
+      If item IsNot Nothing AndAlso item.Key.Equals(key) Then
+        Return item
+      End If
+    Next
+    Return Nothing
+
+  End Function
+
 #End Region
 
 #Region " Constructors "
@@ -166,48 +204,6 @@ Public MustInherit Class NameValueListBase(Of K, V)
     End Function
 
   End Class
-
-#End Region
-
-#Region " GetKey/GetValue Methods "
-
-  ''' <summary>
-  ''' Get the key for the first matching
-  ''' value item in the collection.
-  ''' </summary>
-  ''' <param name="value">
-  ''' Value to search for in the list.
-  ''' </param>
-  ''' <returns>Key value.</returns>
-  Public Function GetKey(ByVal value As V) As K
-
-    For Each item As NameValuePair In Me
-      If item IsNot Nothing AndAlso item.Value.Equals(value) Then
-        Return item.Key
-      End If
-    Next
-    Return Nothing
-
-  End Function
-
-  ''' <summary>
-  ''' Get the value for the first matching
-  ''' key item in the collection.
-  ''' </summary>
-  ''' <param name="key">
-  ''' Key to search for in the list.
-  ''' </param>
-  ''' <returns>Value.</returns>
-  Public Function GetValue(ByVal key As K) As V
-
-    For Each item As NameValuePair In Me
-      If item IsNot Nothing AndAlso item.Key.Equals(key) Then
-        Return item.Value
-      End If
-    Next
-    Return Nothing
-
-  End Function
 
 #End Region
 

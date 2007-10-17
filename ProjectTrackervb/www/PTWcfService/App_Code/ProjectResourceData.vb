@@ -3,59 +3,59 @@
 <DataContract()> _
 Public Class ProjectResourceData
 
-  Private _resourceId As Integer
-  Private _firstName As String
-  Private _lastName As String
-  Private _assigned As String
-  Private _role As Integer
+  Private mResourceId As Integer
+  Private mFirstName As String
+  Private mLastName As String
+  Private mAssigned As String
+  Private mRole As Integer
 
   <DataMember()> _
   Public Property ResourceId() As Integer
     Get
-      Return _resourceId
+      Return mResourceId
     End Get
     Set(ByVal value As Integer)
-      _resourceId = value
+      mResourceId = value
     End Set
   End Property
 
   <DataMember()> _
   Public Property FirstName() As String
     Get
-      Return _firstName
+      Return mFirstName
     End Get
     Set(ByVal value As String)
-      _firstName = value
+      mFirstName = value
     End Set
   End Property
 
   <DataMember()> _
   Public Property LastName() As String
     Get
-      Return _lastName
+      Return mLastName
     End Get
     Set(ByVal value As String)
-      _lastName = value
+      mLastName = value
     End Set
   End Property
 
   <DataMember()> _
   Public Property Assigned() As String
     Get
-      Return _assigned
+      Return mAssigned
     End Get
     Set(ByVal value As String)
-      _assigned = value
+      mAssigned = value
     End Set
   End Property
 
   <DataMember()> _
   Public Property Role() As Integer
     Get
-      Return _role
+      Return mRole
     End Get
     Set(ByVal value As Integer)
-      _role = value
+      mRole = value
     End Set
   End Property
 

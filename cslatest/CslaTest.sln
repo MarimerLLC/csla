@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslacs.Test", "Csla.Test\Cslacs.Test.csproj", "{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslavb.Test", "Csla.Test\Cslavb.Test.csproj", "{002E4164-CFAF-4923-BEBB-B3A11281AB48}"

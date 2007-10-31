@@ -17,6 +17,8 @@ namespace PTWcfClient
 
     private void Form1_Load(object sender, EventArgs e)
     {
+      PTWcfService.ProjectData[] list;
+
       System.ServiceModel.ChannelFactory<PTWcfService.IPTService> factory =
         new System.ServiceModel.ChannelFactory<PTWcfService.IPTService>("WSHttpBinding_IPTService");
       try
@@ -24,7 +26,6 @@ namespace PTWcfClient
         factory.Credentials.UserName.UserName = "pm";
         factory.Credentials.UserName.Password = "pm";
         PTWcfService.IPTService proxy = factory.CreateChannel();
-        PTWcfService.ProjectData[] list;
         using (proxy as IDisposable)
         {
           list = proxy.GetProjectList();

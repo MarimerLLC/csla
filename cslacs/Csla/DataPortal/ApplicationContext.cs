@@ -336,7 +336,7 @@ namespace Csla
     {
       get
       {
-        bool result = false;
+        bool result = true;
         string setting = ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"];
         if (!string.IsNullOrEmpty(setting))
           result = bool.Parse(setting);

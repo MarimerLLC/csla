@@ -412,7 +412,9 @@ Public MustInherit Class BusinessListBase( _
       ' so copy it to the deleted list
       CopyToDeletedList(child)
     End If
-    OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
+    If RaiseListChangedEvents Then
+      OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
+    End If
   End Sub
 
   Private Sub CopyToDeletedList(ByVal child As C)
@@ -474,7 +476,9 @@ Public MustInherit Class BusinessListBase( _
     If child IsNot Nothing Then
       CopyToDeletedList(child)
     End If
-    OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+    If RaiseListChangedEvents Then
+      OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+    End If
   End Sub
 
   Private Sub ResetChildEditLevel(ByVal child As C, ByVal parentEditLevel As Integer)
@@ -589,20 +593,22 @@ Public MustInherit Class BusinessListBase( _
   Private Sub Child_PropertyChanged(ByVal sender As Object, _
     ByVal e As System.ComponentModel.PropertyChangedEventArgs)
 
-    For index As Integer = 0 To Count - 1
-      If ReferenceEquals(Me(index), sender) Then
-        Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
-        If descriptor IsNot Nothing Then
-          OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
-            ComponentModel.ListChangedType.ItemChanged, index, descriptor))
+    If RaiseListChangedEvents Then
+      For index As Integer = 0 To Count - 1
+        If ReferenceEquals(Me(index), sender) Then
+          Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
+          If descriptor IsNot Nothing Then
+            OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+              ComponentModel.ListChangedType.ItemChanged, index, descriptor))
 
-        Else
-          OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
-            ComponentModel.ListChangedType.ItemChanged, index))
+          Else
+            OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
+              ComponentModel.ListChangedType.ItemChanged, index))
+          End If
+          Exit For
         End If
-        Exit For
-      End If
-    Next
+      Next
+    End If
 
   End Sub
 
@@ -611,7 +617,7 @@ Public MustInherit Class BusinessListBase( _
   Private Function GetPropertyDescriptor(ByVal propertyName As String) As PropertyDescriptor
 
     If mPropertyDescriptors Is Nothing Then
-      mPropertyDescriptors = TypeDescriptor.GetProperties(Me.GetType)
+      mPropertyDescriptors = TypeDescriptor.GetProperties(GetType(C))
     End If
     Dim result As PropertyDescriptor = Nothing
     For Each desc As PropertyDescriptor In mPropertyDescriptors

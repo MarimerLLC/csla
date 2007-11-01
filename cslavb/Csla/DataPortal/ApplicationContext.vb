@@ -339,7 +339,7 @@ Public Module ApplicationContext
   ''' </summary>
   Public ReadOnly Property AutoCloneOnUpdate() As Boolean
     Get
-      Dim result As Boolean = False
+      Dim result As Boolean = True
       Dim setting As String = _
         ConfigurationManager.AppSettings("CslaAutoCloneOnUpdate")
       If Len(setting) > 0 Then

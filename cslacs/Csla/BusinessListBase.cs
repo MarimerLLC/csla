@@ -435,7 +435,8 @@ namespace Csla
         // so copy it to the deleted list
         CopyToDeletedList(child);
       }
-      OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
+      if (RaiseListChangedEvents)
+        OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
     }
 
     private void CopyToDeletedList(C child)
@@ -493,7 +494,8 @@ namespace Csla
       }
       if (child != null)
         CopyToDeletedList(child);
-      OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+      if (RaiseListChangedEvents)
+        OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
     }
 
     private void ResetChildEditLevel(C child, int parentEditLevel)
@@ -596,18 +598,21 @@ namespace Csla
 
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      for (int index = 0; index < Count; index++)
+      if (RaiseListChangedEvents)
       {
-        if (ReferenceEquals(this[index], sender))
+        for (int index = 0; index < Count; index++)
         {
-          PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
-          if (descriptor != null)
-            OnListChanged(new ListChangedEventArgs(
-              ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)));
-          else
-            OnListChanged(new ListChangedEventArgs(
-              ListChangedType.ItemChanged, index));
-          return;
+          if (ReferenceEquals(this[index], sender))
+          {
+            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+            if (descriptor != null)
+              OnListChanged(new ListChangedEventArgs(
+                ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)));
+            else
+              OnListChanged(new ListChangedEventArgs(
+                ListChangedType.ItemChanged, index));
+            return;
+          }
         }
       }
     }
@@ -617,7 +622,7 @@ namespace Csla
     private PropertyDescriptor GetPropertyDescriptor(string propertyName)
     {
       if (_propertyDescriptors == null)
-        _propertyDescriptors = TypeDescriptor.GetProperties(this.GetType());
+        _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));
       PropertyDescriptor result = null;
       foreach (PropertyDescriptor desc in _propertyDescriptors)
         if (desc.Name == propertyName)

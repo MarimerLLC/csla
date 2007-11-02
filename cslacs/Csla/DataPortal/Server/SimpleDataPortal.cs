@@ -101,16 +101,16 @@ namespace Csla.Server
           obj, "DataPortal_OnDataPortalInvoke", 
           new DataPortalEventArgs(context));
 
+        // mark the object as old
+        MethodCaller.CallMethodIfImplemented(
+          obj, "MarkOld");
+
         // tell the business object to fetch its data
         MethodInfo method = MethodCaller.GetFetchMethod(objectType, criteria);
         if (criteria is int)
           MethodCaller.CallMethod(obj, method);
         else
           MethodCaller.CallMethod(obj, method, criteria);
-
-        // mark the object as old
-        MethodCaller.CallMethodIfImplemented(
-          obj, "MarkOld");
 
         // tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented(

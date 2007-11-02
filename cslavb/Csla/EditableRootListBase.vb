@@ -316,4 +316,21 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
 #End Region
 
+#Region " ToArray "
+
+  ''' <summary>
+  ''' Get an array containing all items in the list.
+  ''' </summary>
+  Public Function ToArray() As T()
+
+    Dim result As New List(Of T)
+    For Each Item As T In Me
+      result.Add(Item)
+    Next
+    Return result.ToArray
+
+  End Function
+
+#End Region
+
 End Class

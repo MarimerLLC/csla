@@ -141,4 +141,21 @@ Public MustInherit Class ReadOnlyListBase( _
 
 #End Region
 
+#Region " ToArray "
+
+  ''' <summary>
+  ''' Get an array containing all items in the list.
+  ''' </summary>
+  Public Function ToArray() As C()
+
+    Dim result As New List(Of C)
+    For Each Item As C In Me
+      result.Add(Item)
+    Next
+    Return result.ToArray
+
+  End Function
+
+#End Region
+
 End Class

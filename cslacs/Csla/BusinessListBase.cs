@@ -861,5 +861,19 @@ namespace Csla
 
     #endregion
 
+    #region ToArray
+
+    /// <summary>
+    /// Get an array containing all items in the list.
+    /// </summary>
+    public C[] ToArray()
+    {
+      List<C> result = new List<C>();
+      foreach (C item in this)
+        result.Add(item);
+      return result.ToArray();
+    }
+    #endregion
+
   }
 }

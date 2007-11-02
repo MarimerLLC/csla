@@ -87,7 +87,7 @@ Namespace Security
 
       Dim result As Boolean
       For Each role As String In ReadAllowed
-        If principal.IsInRole(role) Then
+        If IsInRole(principal, role) Then
           result = True
           Exit For
         End If
@@ -107,7 +107,7 @@ Namespace Security
 
       Dim result As Boolean
       For Each role As String In ReadDenied
-        If principal.IsInRole(role) Then
+        If IsInRole(principal, role) Then
           result = True
           Exit For
         End If
@@ -127,7 +127,7 @@ Namespace Security
 
       Dim result As Boolean
       For Each role As String In WriteAllowed
-        If principal.IsInRole(role) Then
+        If IsInRole(principal, role) Then
           result = True
           Exit For
         End If
@@ -147,7 +147,7 @@ Namespace Security
 
       Dim result As Boolean
       For Each role As String In WriteDenied
-        If principal.IsInRole(role) Then
+        If IsInRole(principal, role) Then
           result = True
           Exit For
         End If
@@ -167,7 +167,7 @@ Namespace Security
 
       Dim result As Boolean
       For Each role As String In ExecuteAllowed
-        If principal.IsInRole(role) Then
+        If IsInRole(principal, role) Then
           result = True
           Exit For
         End If
@@ -187,7 +187,7 @@ Namespace Security
 
       Dim result As Boolean
       For Each role As String In ExecuteDenied
-        If principal.IsInRole(role) Then
+        If IsInRole(principal, role) Then
           result = True
           Exit For
         End If
@@ -196,6 +196,48 @@ Namespace Security
 
     End Function
 
+    Private Shared mIsInRoleProvider As IsInRoleProvider
+
+    Private Function IsInRole(ByVal principal As IPrincipal, ByVal role As String) As Boolean
+
+      If mIsInRoleProvider Is Nothing Then
+        Dim provider As String = ApplicationContext.IsInRoleProvider
+        If String.IsNullOrEmpty(provider) Then
+          mIsInRoleProvider = AddressOf IsInRoleDefault
+
+        Else
+          Dim items() As String = provider.Split(","c)
+          Dim containingType As Type = Type.GetType(items(0) & "," & items(1))
+          mIsInRoleProvider = _
+            CType([Delegate].CreateDelegate( _
+            GetType(IsInRoleProvider), containingType, items(2)), IsInRoleProvider)
+        End If
+      End If
+      Return mIsInRoleProvider(principal, role)
+
+    End Function
+
+    Private Function IsInRoleDefault(ByVal principal As IPrincipal, ByVal role As String) As Boolean
+
+      Return principal.IsInRole(role)
+
+    End Function
+
   End Class
+
+  ''' <summary>
+  ''' Delegate for the method called when the a role
+  ''' needs to be checked for the current user.
+  ''' </summary>
+  ''' <param name="principal">
+  ''' The current security principal object.
+  ''' </param>
+  ''' <param name="role">
+  ''' The role to be checked.
+  ''' </param>
+  ''' <returns>
+  ''' True if the current user is in the specified role.
+  ''' </returns>
+  Public Delegate Function IsInRoleProvider(ByVal principal As IPrincipal, ByVal role As String) As Boolean
 
 End Namespace

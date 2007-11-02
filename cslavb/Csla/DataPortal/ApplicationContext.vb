@@ -266,7 +266,6 @@ Public Module ApplicationContext
   Public ReadOnly Property AuthenticationType() As String
     Get
       Return ConfigurationManager.AppSettings("CslaAuthentication")
-      'Return My.Settings.CslaAuthentication
     End Get
   End Property
 
@@ -329,6 +328,30 @@ Public Module ApplicationContext
   Public ReadOnly Property DataPortalUrl() As Uri
     Get
       Return New Uri(ConfigurationManager.AppSettings("CslaDataPortalUrl"))
+    End Get
+  End Property
+
+  ''' <summary>
+  ''' Gets a qualified name for a method that implements
+  ''' the IsInRole() behavior used for authorization.
+  ''' </summary>
+  ''' <returns>
+  ''' Returns a value in the form
+  ''' "Namespace.Class, Assembly, MethodName".
+  ''' </returns>
+  ''' <remarks>
+  ''' The default is to use a simple IsInRole() call against
+  ''' the current principal. If another method is supplied
+  ''' it must conform to the IsInRoleProvider delegate.
+  ''' </remarks>
+  Public ReadOnly Property IsInRoleProvider() As String
+    Get
+      Dim result As String = _
+        ConfigurationManager.AppSettings("CslaIsInRoleProvider")
+      If Len(result) = 0 Then
+        result = ""
+      End If
+      Return result
     End Get
   End Property
 

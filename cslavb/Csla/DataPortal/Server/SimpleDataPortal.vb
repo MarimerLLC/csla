@@ -105,6 +105,9 @@ Namespace Server
           obj, "DataPortal_OnDataPortalInvoke", _
           New DataPortalEventArgs(context))
 
+        ' mark the object as old
+        MethodCaller.CallMethodIfImplemented(obj, "MarkOld")
+
         ' tell the business object to fetch its data
         Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
         If TypeOf criteria Is Integer Then
@@ -115,9 +118,6 @@ Namespace Server
         Else
           MethodCaller.CallMethod(obj, method, criteria)
         End If
-
-        ' mark the object as old
-        MethodCaller.CallMethodIfImplemented(obj, "MarkOld")
 
         ' tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented( _

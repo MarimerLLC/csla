@@ -1,4 +1,6 @@
-﻿''' <summary>
+﻿Imports ProjectTracker.Library
+
+''' <summary>
 ''' Interaction logic for MainForm.xaml
 ''' </summary>
 Partial Public Class MainForm
@@ -161,5 +163,28 @@ Partial Public Class MainForm
   End Sub
 
 #End Region
+
+  Private Sub CloseProject(ByVal sender As System.Object, ByVal e As System.Windows.RoutedEventArgs)
+
+    Dim frm As New ProjectSelect()
+    Dim result As Boolean = frm.ShowDialog
+    If result Then
+      Dim id As Guid = frm.ProjectId
+      Try
+        ProjectCloser.CloseProject(id)
+        MessageBox.Show("Project closed", _
+          "Close project", MessageBoxButton.OK, MessageBoxImage.Information)
+
+      Catch ex As Csla.DataPortalException
+        MessageBox.Show(ex.BusinessException.Message, _
+          "Close project", MessageBoxButton.OK, MessageBoxImage.Exclamation)
+
+      Catch ex As Exception
+        MessageBox.Show(ex.ToString, _
+          "Close project", MessageBoxButton.OK, MessageBoxImage.Warning)
+      End Try
+    End If
+
+  End Sub
 
 End Class

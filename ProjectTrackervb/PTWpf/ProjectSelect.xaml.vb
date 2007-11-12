@@ -20,7 +20,7 @@ Partial Public Class ProjectSelect
     Dim item As ProjectInfo = CType(ProjectListBox.SelectedItem, ProjectInfo)
     If Not item Is Nothing Then
       DialogResult = True
-      mProjectId = (item).Id
+      mProjectId = item.Id
 
     Else
       DialogResult = False

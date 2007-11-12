@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21004</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -62,6 +62,7 @@
     <Compile Include="Admin\Roles.vb" />
     <Compile Include="Assignment.vb" />
     <Compile Include="Database.vb" />
+    <Compile Include="ProjectCloser.vb" />
     <Compile Include="ProjectInfo.vb" />
     <Compile Include="ProjectList.vb" />
     <Compile Include="ProjectResource.vb" />

@@ -571,4 +571,61 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
 #End Region
 
+#Region " Property Helpers "
+
+  ''' <summary>
+  ''' Gets a property's value, first checking authorization.
+  ''' </summary>
+  ''' <param name="field">
+  ''' The backing field for the property.</param>
+  ''' <param name="propertyName">
+  ''' The name of the property.</param>
+  ''' <param name="defaultValue">
+  ''' Value to be returned if the user is not
+  ''' authorized to read the property.</param>
+  ''' <remarks>
+  ''' If the user is not authorized to read the property
+  ''' value, the defaultValue value is returned as a
+  ''' result.
+  ''' </remarks>
+  Protected Function GetProperty(Of T)(ByVal field As T, ByVal propertyName As String, ByVal defaultValue As T) As T
+
+    Return GetProperty(Of T)(field, propertyName, defaultValue, False)
+
+  End Function
+
+  ''' <summary>
+  ''' Gets a property's value, first checking authorization.
+  ''' </summary>
+  ''' <param name="field">
+  ''' The backing field for the property.</param>
+  ''' <param name="propertyName">
+  ''' The name of the property.</param>
+  ''' <param name="defaultValue">
+  ''' Value to be returned if the user is not
+  ''' authorized to read the property.</param>
+  ''' <param name="throwOnNoAccess">
+  ''' True if an exception should be thrown when the
+  ''' user is not authorized to read this property.</param>
+  Protected Function GetProperty(Of T)(ByVal field As T, ByVal propertyName As String, ByVal defaultValue As T, ByVal throwOnNoAccess As Boolean) As T
+
+    Dim canRead As Boolean
+    If throwOnNoAccess Then
+      CanReadProperty(propertyName, True)
+      canRead = True
+
+    Else
+      canRead = CanReadProperty(propertyName, False)
+    End If
+    If canRead Then
+      Return field
+
+    Else
+      Return defaultValue
+    End If
+
+  End Function
+
+#End Region
+
 End Class

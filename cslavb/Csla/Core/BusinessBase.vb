@@ -1349,6 +1349,126 @@ Namespace Core
 
 #End Region
 
+#Region " Property Helpers "
+
+    ''' <summary>
+    ''' Gets a property's value, first checking authorization.
+    ''' </summary>
+    ''' <param name="field">
+    ''' The backing field for the property.</param>
+    ''' <param name="propertyName">
+    ''' The name of the property.</param>
+    ''' <param name="defaultValue">
+    ''' Value to be returned if the user is not
+    ''' authorized to read the property.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to read the property
+    ''' value, the defaultValue value is returned as a
+    ''' result.
+    ''' </remarks>
+    Protected Function GetProperty(Of T)(ByVal field As T, ByVal propertyName As String, ByVal defaultValue As T) As T
+
+      Return GetProperty(Of T)(field, propertyName, defaultValue, False)
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a property's value, first checking authorization.
+    ''' </summary>
+    ''' <param name="field">
+    ''' The backing field for the property.</param>
+    ''' <param name="propertyName">
+    ''' The name of the property.</param>
+    ''' <param name="defaultValue">
+    ''' Value to be returned if the user is not
+    ''' authorized to read the property.</param>
+    ''' <param name="throwOnNoAccess">
+    ''' True if an exception should be thrown when the
+    ''' user is not authorized to read this property.</param>
+    Protected Function GetProperty(Of T)(ByVal field As T, ByVal propertyName As String, ByVal defaultValue As T, ByVal throwOnNoAccess As Boolean) As T
+
+      Dim canRead As Boolean
+      If throwOnNoAccess Then
+        CanReadProperty(propertyName, True)
+        canRead = True
+
+      Else
+        canRead = CanReadProperty(propertyName, False)
+      End If
+      If canRead Then
+        Return field
+
+      Else
+        Return defaultValue
+      End If
+
+    End Function
+
+    ''' <summary>
+    ''' Sets a property's backing field with the supplied
+    ''' value, first checking authorization, and then
+    ''' calling PropertyHasChanged if the value does change.
+    ''' </summary>
+    ''' <param name="field">
+    ''' A reference to the backing field for the property.</param>
+    ''' <param name="newValue">
+    ''' The new value for the property.</param>
+    ''' <param name="propertyName">
+    ''' The name of the property.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to change the property, this
+    ''' overload throws a SecurityException.
+    ''' </remarks>
+    Protected Sub SetProperty(Of T)(ByRef field As T, ByVal newValue As T, ByVal propertyName As String)
+
+      SetProperty(Of T)(field, newValue, propertyName, True)
+
+    End Sub
+
+    ''' <summary>
+    ''' Sets a property's backing field with the supplied
+    ''' value, first checking authorization, and then
+    ''' calling PropertyHasChanged if the value does change.
+    ''' </summary>
+    ''' <param name="field">
+    ''' A reference to the backing field for the property.</param>
+    ''' <param name="newValue">
+    ''' The new value for the property.</param>
+    ''' <param name="propertyName">
+    ''' The name of the property.</param>
+    ''' <param name="throwOnNoAccess">
+    ''' True if an exception should be thrown when the
+    ''' user is not authorized to change this property.</param>
+    Protected Sub SetProperty(Of T)(ByRef field As T, ByVal newValue As T, ByVal propertyName As String, ByVal throwOnNoAccess As Boolean)
+
+      Dim setValue As Boolean
+      If throwOnNoAccess Then
+        CanWriteProperty(propertyName, True)
+        setValue = True
+
+      Else
+        setValue = CanWriteProperty(propertyName, False)
+      End If
+      If setValue Then
+        If field Is Nothing Then
+          If newValue IsNot Nothing Then
+            field = newValue
+            PropertyHasChanged(propertyName)
+          End If
+
+        ElseIf Not field.Equals(newValue) Then
+          If TypeOf newValue Is String AndAlso newValue Is Nothing Then
+            newValue = CType(CType("", Object), T)
+          End If
+          field = newValue
+          PropertyHasChanged(propertyName)
+        End If
+      End If
+
+    End Sub
+
+#End Region
+
   End Class
 
 End Namespace

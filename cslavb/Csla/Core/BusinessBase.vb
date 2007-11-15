@@ -1356,6 +1356,24 @@ Namespace Core
     ''' </summary>
     ''' <param name="field">
     ''' The backing field for the property.</param>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to read the property
+    ''' value, the defaultValue value is returned as a
+    ''' result.
+    ''' </remarks>
+    Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As P) As P
+
+      Return GetProperty(Of P)(propertyInfo.Name, field, propertyInfo.defaultValue, False)
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a property's value, first checking authorization.
+    ''' </summary>
+    ''' <param name="field">
+    ''' The backing field for the property.</param>
     ''' <param name="propertyName">
     ''' The name of the property.</param>
     ''' <param name="defaultValue">
@@ -1366,9 +1384,9 @@ Namespace Core
     ''' value, the defaultValue value is returned as a
     ''' result.
     ''' </remarks>
-    Protected Function GetProperty(Of T)(ByVal field As T, ByVal propertyName As String, ByVal defaultValue As T) As T
+    Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P) As P
 
-      Return GetProperty(Of T)(field, propertyName, defaultValue, False)
+      Return GetProperty(Of P)(propertyName, field, defaultValue, False)
 
     End Function
 
@@ -1385,7 +1403,7 @@ Namespace Core
     ''' <param name="throwOnNoAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to read this property.</param>
-    Protected Function GetProperty(Of T)(ByVal field As T, ByVal propertyName As String, ByVal defaultValue As T, ByVal throwOnNoAccess As Boolean) As T
+    Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal throwOnNoAccess As Boolean) As P
 
       Dim canRead As Boolean
       If throwOnNoAccess Then
@@ -1413,15 +1431,36 @@ Namespace Core
     ''' A reference to the backing field for the property.</param>
     ''' <param name="newValue">
     ''' The new value for the property.</param>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to change the property, this
+    ''' overload throws a SecurityException.
+    ''' </remarks>
+    Protected Sub SetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As P)
+
+      SetProperty(Of P)(propertyInfo.Name, field, newValue, True)
+
+    End Sub
+
+    ''' <summary>
+    ''' Sets a property's backing field with the supplied
+    ''' value, first checking authorization, and then
+    ''' calling PropertyHasChanged if the value does change.
+    ''' </summary>
+    ''' <param name="field">
+    ''' A reference to the backing field for the property.</param>
+    ''' <param name="newValue">
+    ''' The new value for the property.</param>
     ''' <param name="propertyName">
     ''' The name of the property.</param>
     ''' <remarks>
     ''' If the user is not authorized to change the property, this
     ''' overload throws a SecurityException.
     ''' </remarks>
-    Protected Sub SetProperty(Of T)(ByRef field As T, ByVal newValue As T, ByVal propertyName As String)
+    Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P)
 
-      SetProperty(Of T)(field, newValue, propertyName, True)
+      SetProperty(Of P)(propertyName, field, newValue, True)
 
     End Sub
 
@@ -1439,7 +1478,7 @@ Namespace Core
     ''' <param name="throwOnNoAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
-    Protected Sub SetProperty(Of T)(ByRef field As T, ByVal newValue As T, ByVal propertyName As String, ByVal throwOnNoAccess As Boolean)
+    Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
 
       Dim setValue As Boolean
       If throwOnNoAccess Then
@@ -1458,7 +1497,7 @@ Namespace Core
 
         ElseIf Not field.Equals(newValue) Then
           If TypeOf newValue Is String AndAlso newValue Is Nothing Then
-            newValue = CType(CType("", Object), T)
+            newValue = CType(CType("", Object), P)
           End If
           field = newValue
           PropertyHasChanged(propertyName)
@@ -1466,6 +1505,64 @@ Namespace Core
       End If
 
     End Sub
+
+#End Region
+
+#Region " PropertyInfo "
+
+    ''' <summary>
+    ''' Registers a property's metadata, returning
+    ''' the metadata as a result.
+    ''' </summary>
+    ''' <param name="propertyName">Property name.</param>
+    ''' <param name="declaringType">Type in which the property is declared.</param>
+    ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
+    Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal declaringType As Type) As PropertyInfo(Of P)
+      Return RegisterProperty(Of P)(propertyName, Nothing, declaringType)
+    End Function
+
+    ''' <summary>
+    ''' Registers a property's metadata, returning
+    ''' the metadata as a result.
+    ''' </summary>
+    ''' <param name="propertyName">Property name.</param>
+    ''' <param name="declaringType">Type in which the property is declared.</param>
+    ''' <param name="defaultValue">Default value to be returned if the user
+    ''' is not allowed to read the property.</param>
+    ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
+    Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal declaringType As Type, ByVal defaultValue As P) As PropertyInfo(Of P)
+      Return RegisterProperty(Of P)(propertyName, Nothing, declaringType, defaultValue)
+    End Function
+
+    ''' <summary>
+    ''' Registers a property's metadata, returning
+    ''' the metadata as a result.
+    ''' </summary>
+    ''' <param name="propertyName">Property name.</param>
+    ''' <param name="friendlyName">Friendly display name for the property.</param>
+    ''' <param name="declaringType">Type in which the property is declared.</param>
+    ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
+    Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal friendlyName As String, ByVal declaringType As Type) As PropertyInfo(Of P)
+
+      Return New PropertyInfo(Of P)(propertyName, friendlyName)
+
+    End Function
+
+    ''' <summary>
+    ''' Registers a property's metadata, returning
+    ''' the metadata as a result.
+    ''' </summary>
+    ''' <param name="propertyName">Property name.</param>
+    ''' <param name="friendlyName">Friendly display name for the property.</param>
+    ''' <param name="declaringType">Type in which the property is declared.</param>
+    ''' <param name="defaultValue">Default value to be returned if the user
+    ''' is not allowed to read the property.</param>
+    ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
+    Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal friendlyName As String, ByVal declaringType As Type, ByVal defaultValue As P) As PropertyInfo(Of P)
+
+      Return New PropertyInfo(Of P)(propertyName, friendlyName, defaultValue)
+
+    End Function
 
 #End Region
 

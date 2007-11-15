@@ -578,6 +578,24 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </summary>
   ''' <param name="field">
   ''' The backing field for the property.</param>
+  ''' <param name="propertyInfo">
+  ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+  ''' <remarks>
+  ''' If the user is not authorized to read the property
+  ''' value, the defaultValue value is returned as a
+  ''' result.
+  ''' </remarks>
+  Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As P) As P
+
+    Return GetProperty(Of P)(propertyInfo.Name, field, propertyInfo.defaultValue, False)
+
+  End Function
+
+  ''' <summary>
+  ''' Gets a property's value, first checking authorization.
+  ''' </summary>
+  ''' <param name="field">
+  ''' The backing field for the property.</param>
   ''' <param name="propertyName">
   ''' The name of the property.</param>
   ''' <param name="defaultValue">
@@ -588,9 +606,9 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' value, the defaultValue value is returned as a
   ''' result.
   ''' </remarks>
-  Protected Function GetProperty(Of T)(ByVal field As T, ByVal propertyName As String, ByVal defaultValue As T) As T
+  Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P) As P
 
-    Return GetProperty(Of T)(field, propertyName, defaultValue, False)
+    Return GetProperty(Of P)(propertyName, field, defaultValue, False)
 
   End Function
 
@@ -607,7 +625,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="throwOnNoAccess">
   ''' True if an exception should be thrown when the
   ''' user is not authorized to read this property.</param>
-  Protected Function GetProperty(Of T)(ByVal field As T, ByVal propertyName As String, ByVal defaultValue As T, ByVal throwOnNoAccess As Boolean) As T
+  Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal throwOnNoAccess As Boolean) As P
 
     Dim canRead As Boolean
     If throwOnNoAccess Then
@@ -623,6 +641,64 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     Else
       Return defaultValue
     End If
+
+  End Function
+
+#End Region
+
+#Region " PropertyInfo "
+
+  ''' <summary>
+  ''' Registers a property's metadata, returning
+  ''' the metadata as a result.
+  ''' </summary>
+  ''' <param name="propertyName">Property name.</param>
+  ''' <param name="declaringType">Type in which the property is declared.</param>
+  ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
+  Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal declaringType As Type) As PropertyInfo(Of P)
+    Return RegisterProperty(Of P)(propertyName, Nothing, declaringType)
+  End Function
+
+  ''' <summary>
+  ''' Registers a property's metadata, returning
+  ''' the metadata as a result.
+  ''' </summary>
+  ''' <param name="propertyName">Property name.</param>
+  ''' <param name="declaringType">Type in which the property is declared.</param>
+  ''' <param name="defaultValue">Default value to be returned if the user
+  ''' is not allowed to read the property.</param>
+  ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
+  Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal declaringType As Type, ByVal defaultValue As P) As PropertyInfo(Of P)
+    Return RegisterProperty(Of P)(propertyName, Nothing, declaringType, defaultValue)
+  End Function
+
+  ''' <summary>
+  ''' Registers a property's metadata, returning
+  ''' the metadata as a result.
+  ''' </summary>
+  ''' <param name="propertyName">Property name.</param>
+  ''' <param name="friendlyName">Friendly display name for the property.</param>
+  ''' <param name="declaringType">Type in which the property is declared.</param>
+  ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
+  Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal friendlyName As String, ByVal declaringType As Type) As PropertyInfo(Of P)
+
+    Return New PropertyInfo(Of P)(propertyName, friendlyName)
+
+  End Function
+
+  ''' <summary>
+  ''' Registers a property's metadata, returning
+  ''' the metadata as a result.
+  ''' </summary>
+  ''' <param name="propertyName">Property name.</param>
+  ''' <param name="friendlyName">Friendly display name for the property.</param>
+  ''' <param name="declaringType">Type in which the property is declared.</param>
+  ''' <param name="defaultValue">Default value to be returned if the user
+  ''' is not allowed to read the property.</param>
+  ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
+  Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal friendlyName As String, ByVal declaringType As Type, ByVal defaultValue As P) As PropertyInfo(Of P)
+
+    Return New PropertyInfo(Of P)(propertyName, friendlyName, defaultValue)
 
   End Function
 

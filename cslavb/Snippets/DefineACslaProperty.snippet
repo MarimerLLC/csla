@@ -16,9 +16,20 @@
           <Default>NewProperty</Default>
         </Literal>
         <Literal>
+          <ID>FriendlyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with friendly display name.</ToolTip>
+          <Default>NewProperty</Default>
+        </Literal>
+        <Literal>
+          <ID>DeclaringType</ID>
+          <Type>Type</Type>
+          <ToolTip>Replace with the type that is declaring this property.</ToolTip>
+          <Default>Object</Default>
+        </Literal>
+        <Literal>
           <ID>PropertyType</ID>
-          <Type>
-          </Type>
+          <Type>Type</Type>
           <ToolTip>Replace with the property type.</ToolTip>
           <Default>Integer</Default>
         </Literal>
@@ -30,20 +41,18 @@
         </Object>
       </Declarations>
       <Code Language="VB" Kind="method decl">
-  <![CDATA[Private $PrivateVariable$ As $PropertyType$
+  <![CDATA[' Property $PropertyName$ ("$FriendlyName$") in field $PrivateVariable$ As $PropertyType$ in $DeclaringType$
+Private Shared $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)("$PropertyName$", "$FriendlyName$", GetType($DeclaringType$))
+Private $PrivateVariable$ As $PropertyType$ = $PropertyName$Property.DefaultValue
+''' <Summary>
+''' Gets and sets the $FriendlyName$ value.
+''' </Summary>
 Public Property $PropertyName$() As $PropertyType$
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-        CanReadProperty(True) 
-        Return $PrivateVariable$ 
+        Return GetProperty(Of $PropertyType$)($PropertyName$Property, $PrivateVariable$)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As $PropertyType$)
-        CanWriteProperty(True)
-        If Not $PrivateVariable$.Equals(value) Then
-          $PrivateVariable$ = value
-          PropertyHasChanged()
-        End If
+        SetProperty(Of $PropertyType$)($PropertyName$Property, $PrivateVariable$, value)
     End Set
 End Property]]></Code>
     </Snippet>

@@ -5,29 +5,23 @@ Public Class PropertyInfo(Of T)
 
   Implements Core.IPropertyInfo
 
-  Friend Sub New(ByVal name As String)
-
-    mName = name
-
-  End Sub
-
-  Friend Sub New(ByVal name As String, ByVal defaultValue As T)
-
-    Me.New(name)
-    mDefaultValue = defaultValue
-
-  End Sub
-
   Friend Sub New(ByVal name As String, ByVal friendlyName As String)
 
-    Me.New(name)
+    mName = name
     mFriendlyName = friendlyName
+    If TypeOf mDefaultValue Is String Then
+      mDefaultValue = DirectCast(DirectCast(String.Empty, Object), T)
+
+    Else
+      mDefaultValue = Nothing
+    End If
 
   End Sub
 
   Friend Sub New(ByVal name As String, ByVal friendlyName As String, ByVal defaultValue As T)
 
-    Me.New(name, defaultValue)
+    mName = name
+    mDefaultValue = defaultValue
     mFriendlyName = friendlyName
 
   End Sub
@@ -73,7 +67,7 @@ Public Class PropertyInfo(Of T)
     End Get
   End Property
 
-  Private mDefaultValue As T = Nothing
+  Private mDefaultValue As T
   Public ReadOnly Property DefaultValue() As T
     Get
       Return mDefaultValue

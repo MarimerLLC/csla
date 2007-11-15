@@ -246,6 +246,7 @@ Namespace Core
     ''' directly from the property to be checked.
     ''' </para>
     ''' </remarks>
+    <Obsolete("Use overload the requires property name")> _
     <System.Runtime.CompilerServices.MethodImpl( _
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Protected Sub PropertyHasChanged()
@@ -1411,19 +1412,57 @@ Namespace Core
     ''' user is not authorized to read this property.</param>
     Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal throwOnNoAccess As Boolean) As P
 
-      Dim canRead As Boolean
-      If throwOnNoAccess Then
-        CanReadProperty(propertyName, True)
-        canRead = True
-
-      Else
-        canRead = CanReadProperty(propertyName, False)
-      End If
-      If canRead Then
+      If CanReadProperty(propertyName, throwOnNoAccess) Then
         Return field
 
       Else
         Return defaultValue
+      End If
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a SmartDate property's value in String format, 
+    ''' first checking authorization.
+    ''' </summary>
+    ''' <param name="field">
+    ''' The SmartDate backing field for the property.</param>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to read the property
+    ''' value, the defaultValue value is returned as a
+    ''' result.
+    ''' </remarks>
+    Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As SmartDate) As String
+
+      Return GetProperty(Of P)(propertyInfo, field, False)
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a SmartDate property's value in String format, 
+    ''' first checking authorization.
+    ''' </summary>
+    ''' <param name="field">
+    ''' The SmartDate backing field for the property.</param>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    ''' <param name="throwOnNoAccess">
+    ''' True if an exception should be thrown when the
+    ''' user is not authorized to read this property.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to read the property
+    ''' value, the defaultValue value is returned as a
+    ''' result.
+    ''' </remarks>
+    Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As SmartDate, ByVal throwOnNoAccess As Boolean) As String
+
+      If CanReadProperty(propertyInfo.Name, throwOnNoAccess) Then
+        Return field.Text
+
+      Else
+        Return DirectCast(DirectCast(propertyInfo.DefaultValue, Object), SmartDate).Text
       End If
 
     End Function
@@ -1486,15 +1525,7 @@ Namespace Core
     ''' user is not authorized to change this property.</param>
     Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
 
-      Dim setValue As Boolean
-      If throwOnNoAccess Then
-        CanWriteProperty(propertyName, True)
-        setValue = True
-
-      Else
-        setValue = CanWriteProperty(propertyName, False)
-      End If
-      If setValue Then
+      If CanWriteProperty(propertyName, throwOnNoAccess) Then
         If field Is Nothing Then
           If newValue IsNot Nothing Then
             field = newValue
@@ -1507,6 +1538,56 @@ Namespace Core
           End If
           field = newValue
           PropertyHasChanged(propertyName)
+        End If
+      End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Sets a property's SmartDate backing field with the 
+    ''' supplied String value, first checking authorization, and then
+    ''' calling PropertyHasChanged if the value does change.
+    ''' </summary>
+    ''' <param name="field">
+    ''' A reference to the SmartDate backing field for the property.</param>
+    ''' <param name="newValue">
+    ''' The new String value for the property.</param>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to change the property, this
+    ''' overload throws a SecurityException.
+    ''' </remarks>
+    Protected Sub SetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As SmartDate, ByVal newValue As String)
+
+      SetProperty(Of P)(propertyInfo, field, newValue, True)
+
+    End Sub
+
+    ''' <summary>
+    ''' Sets a property's SmartDate backing field with the 
+    ''' supplied String value, first checking authorization, and then
+    ''' calling PropertyHasChanged if the value does change.
+    ''' </summary>
+    ''' <param name="field">
+    ''' A reference to the SmartDate backing field for the property.</param>
+    ''' <param name="newValue">
+    ''' The new String value for the property.</param>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    ''' <param name="throwOnNoAccess">
+    ''' True if an exception should be thrown when the
+    ''' user is not authorized to change this property.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to change the property, this
+    ''' overload throws a SecurityException.
+    ''' </remarks>
+    Protected Sub SetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As SmartDate, ByVal newValue As String, ByVal throwOnNoAccess As Boolean)
+
+      If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
+        If Not field.Equals(newValue) Then
+          field.Text = newValue
+          PropertyHasChanged(propertyInfo.Name)
         End If
       End If
 

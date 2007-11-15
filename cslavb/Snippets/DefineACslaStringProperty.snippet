@@ -15,6 +15,18 @@
           <ToolTip>Replace with property name.</ToolTip>
           <Default>NewProperty</Default>
         </Literal>
+        <Literal>
+          <ID>FriendlyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with friendly display name.</ToolTip>
+          <Default>NewProperty</Default>
+        </Literal>
+        <Literal>
+          <ID>DeclaringType</ID>
+          <Type>Type</Type>
+          <ToolTip>Replace with the type that is declaring this property.</ToolTip>
+          <Default>Object</Default>
+        </Literal>
         <Object>
           <ID>PrivateVariable</ID>
           <Type>Object</Type>
@@ -23,23 +35,21 @@
         </Object>
       </Declarations>
       <Code Language="VB" Kind="method decl">
-  <![CDATA[Private $PrivateVariable$ As String = ""
+        <![CDATA[' Property $PropertyName$ ("$FriendlyName$") in field $PrivateVariable$ As String in $DeclaringType$
+Private Shared $PropertyName$Property As PropertyInfo(Of String) = RegisterProperty(Of String)("$PropertyName$", "$FriendlyName$", GetType($DeclaringType$), String.Empty)
+Private $PrivateVariable$ As String = $PropertyName$Property.DefaultValue
+''' <Summary>
+''' Gets and sets the $FriendlyName$ value.
+''' </Summary>
 Public Property $PropertyName$() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-        CanReadProperty(True) 
-        Return $PrivateVariable$ 
+        Return GetProperty(Of String)($PropertyName$Property, $PrivateVariable$)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As String)
-        CanWriteProperty(True)
-        If value Is Nothing Then value = ""
-        If Not $PrivateVariable$.Equals(value) Then
-          $PrivateVariable$ = value
-          PropertyHasChanged()
-        End If
+        SetProperty(Of String)($PropertyName$Property, $PrivateVariable$, value)
     End Set
-End Property]]></Code>
+End Property]]>
+      </Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

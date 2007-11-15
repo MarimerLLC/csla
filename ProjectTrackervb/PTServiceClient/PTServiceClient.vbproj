@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21004</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CB45E45-6BED-4333-97CB-7EAD725DE984}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -37,9 +37,9 @@
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=2.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+    <Reference Include="Csla, Version=3.5.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\csla20vb\Csla\bin\Debug\Csla.dll</HintPath>
+      <HintPath>..\..\cslavb\Csla\bin\Debug\Csla.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

@@ -4,88 +4,58 @@ Public Class Resource
 
 #Region " Business Methods "
 
-  Private mId As Integer
-  Private mLastName As String = ""
-  Private mFirstName As String = ""
   Private mTimestamp(7) As Byte
 
-  Private mAssignments As ResourceAssignments = _
-    ResourceAssignments.NewResourceAssignments()
-
+  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, Resource)("Id")
+  Private mId As Integer = IdProperty.DefaultValue
   Public ReadOnly Property Id() As Integer
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mId
+      Return GetProperty(Of Integer)(IdProperty, mId)
     End Get
   End Property
 
+  Private Shared LastNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Resource)("LastName", "Last name")
+  Private mLastName As String = LastNameProperty.DefaultValue
   Public Property LastName() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mLastName
+      Return GetProperty(Of String)(LastNameProperty, mLastName)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As String)
-      CanWriteProperty(True)
-      If value Is Nothing Then value = ""
-      If mLastName <> value Then
-        mLastName = value
-        PropertyHasChanged()
-      End If
+      SetProperty(Of String)(LastNameProperty, mLastName, value)
     End Set
   End Property
 
+  Private Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Resource)("FirstName", "First name")
+  Private mFirstName As String = FirstNameProperty.DefaultValue
   Public Property FirstName() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mFirstName
+      Return GetProperty(Of String)(FirstNameProperty, mFirstName)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As String)
-      CanWriteProperty(True)
-      If value Is Nothing Then value = ""
-      If mFirstName <> value Then
-        mFirstName = value
-        PropertyHasChanged()
-      End If
+      SetProperty(Of String)(FirstNameProperty, mFirstName, value)
     End Set
   End Property
 
+  Private Shared FullNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Resource)("FullName", "Full name")
   Public ReadOnly Property FullName() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      If CanReadProperty("FirstName") AndAlso CanReadProperty("LastName") Then
-        Return mLastName & ", " & mFirstName
-      Else
-        Throw New System.Security.SecurityException("Property read not allowed")
-      End If
+      Return LastName & ", " & FirstName
     End Get
   End Property
 
+  Private Shared AssignmentsProperty As PropertyInfo(Of ResourceAssignments) = RegisterProperty(Of ResourceAssignments, Resource)("Assignments")
   Public ReadOnly Property Assignments() As ResourceAssignments
     Get
-      Return mAssignments
+      If Not ChildExists(AssignmentsProperty) Then
+        SetChild(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.NewResourceAssignments())
+      End If
+      Return GetChild(Of ResourceAssignments)(AssignmentsProperty)
     End Get
   End Property
 
-  Public Overrides ReadOnly Property IsValid() As Boolean
-    Get
-      Return MyBase.IsValid AndAlso mAssignments.IsValid
-    End Get
-  End Property
+  Public Overrides Function ToString() As String
 
-  Public Overrides ReadOnly Property IsDirty() As Boolean
-    Get
-      Return MyBase.IsDirty OrElse mAssignments.IsDirty
-    End Get
-  End Property
-
-  Protected Overrides Function GetIdValue() As Object
-
-    Return mId
+    Return mId.ToString
 
   End Function
 
@@ -244,7 +214,7 @@ Private Class Criteria
 
             ' load child objects
             dr.NextResult()
-            mAssignments = ResourceAssignments.GetResourceAssignments(dr)
+            SetChild(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(dr))
           End Using
         End With
       End Using
@@ -278,7 +248,7 @@ Private Class Criteria
         End With
       End Using
       ' update child objects
-      mAssignments.Update(Me)
+      GetChild(Of ResourceAssignments)(AssignmentsProperty).Update(Me)
       ' removing of item only needed for local data portal
       If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
         ApplicationContext.LocalContext.Remove("cn")
@@ -315,7 +285,7 @@ Private Class Criteria
         End Using
       End If
       ' update child objects
-      mAssignments.Update(Me)
+      GetChild(Of ResourceAssignments)(AssignmentsProperty).Update(Me)
       ' removing of item only needed for local data portal
       If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
         ApplicationContext.LocalContext.Remove("cn")

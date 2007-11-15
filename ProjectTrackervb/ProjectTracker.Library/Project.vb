@@ -4,113 +4,73 @@ Public Class Project
 
 #Region " Business Methods "
 
-  Private mId As Guid = Guid.NewGuid
-  Private mName As String = ""
-  Private mStarted As New SmartDate
-  Private mEnded As New SmartDate(False)
-  Private mDescription As String = ""
   Private mTimestamp(7) As Byte
 
-  Private mResources As ProjectResources = _
-    ProjectResources.NewProjectResources()
-
+  Private Shared IdProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid, Project)("Id")
+  Private mId As Guid = Guid.NewGuid
   <System.ComponentModel.DataObjectField(True, True)> _
   Public ReadOnly Property Id() As Guid
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mId
+      Return GetProperty(Of Guid)(IdProperty, Mid)
     End Get
   End Property
 
+  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Project)("Name")
+  Private mName As String = NameProperty.DefaultValue
   Public Property Name() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mName
+      Return GetProperty(Of String)(NameProperty, mName)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
-    Set(ByVal Value As String)
-      CanWriteProperty(True)
-      If Value Is Nothing Then Value = ""
-      If mName <> Value Then
-        mName = Value
-        PropertyHasChanged()
-      End If
+    Set(ByVal value As String)
+      SetProperty(Of String)(NameProperty, mName, value)
     End Set
   End Property
 
+  Private Shared StartedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate, Project)("Started")
+  Private mStarted As SmartDate = StartedProperty.DefaultValue
   Public Property Started() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mStarted.Text
+      Return GetProperty(Of SmartDate)(StartedProperty, mStarted)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
-    Set(ByVal Value As String)
-      CanWriteProperty(True)
-      If Value Is Nothing Then Value = ""
-      If mStarted <> Value Then
-        mStarted.Text = Value
-        PropertyHasChanged()
-      End If
+    Set(ByVal value As String)
+      SetProperty(Of SmartDate)(StartedProperty, mStarted, value)
     End Set
   End Property
 
+  Private Shared EndedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate, Project)("Ended", New SmartDate(False))
+  Private mEnded As SmartDate = EndedProperty.DefaultValue
   Public Property Ended() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mEnded.Text
+      Return GetProperty(Of SmartDate)(EndedProperty, mEnded)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
-    Set(ByVal Value As String)
-      CanWriteProperty(True)
-      If Value Is Nothing Then Value = ""
-      If mEnded <> Value Then
-        mEnded.Text = Value
-        PropertyHasChanged()
-      End If
+    Set(ByVal value As String)
+      SetProperty(Of SmartDate)(EndedProperty, mEnded, value)
     End Set
   End Property
 
+  Private Shared DescriptionProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Project)("Description")
+  Private mDescription As String = DescriptionProperty.DefaultValue
   Public Property Description() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mDescription
+      Return GetProperty(Of String)(DescriptionProperty, mDescription)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
-    Set(ByVal Value As String)
-      CanWriteProperty(True)
-      If Value Is Nothing Then Value = ""
-      If mDescription <> Value Then
-        mDescription = Value
-        PropertyHasChanged()
-      End If
+    Set(ByVal value As String)
+      SetProperty(Of String)(DescriptionProperty, mDescription, value)
     End Set
   End Property
 
+  Private Shared ResourcesProperty As PropertyInfo(Of ProjectResources) = RegisterProperty(Of ProjectResources, Project)("Resources")
   Public ReadOnly Property Resources() As ProjectResources
     Get
-      Return mResources
+      If Not ChildExists(ResourcesProperty) Then
+        SetChild(Of ProjectResources)(ResourcesProperty, ProjectResources.NewProjectResources())
+      End If
+      Return GetChild(Of ProjectResources)(ResourcesProperty)
     End Get
   End Property
 
-  Public Overrides ReadOnly Property IsValid() As Boolean
-    Get
-      Return MyBase.IsValid AndAlso mResources.IsValid
-    End Get
-  End Property
-
-  Public Overrides ReadOnly Property IsDirty() As Boolean
-    Get
-      Return MyBase.IsDirty OrElse mResources.IsDirty
-    End Get
-  End Property
-
-  Protected Overrides Function GetIdValue() As Object
-    Return mId
+  Public Overrides Function ToString() As String
+    Return mId.ToString
   End Function
 
 #End Region
@@ -296,7 +256,7 @@ Public Class Project
 
             ' load child objects
             .NextResult()
-            mResources = ProjectResources.GetProjectResources(dr)
+            SetChild(Of ProjectResources)(ResourcesProperty, ProjectResources.GetProjectResources(dr))
           End With
         End Using
       End Using
@@ -315,7 +275,7 @@ Public Class Project
       End Using
     End Using
     ' update child objects
-    mResources.Update(Me)
+    GetChild(Of ProjectResources)(ResourcesProperty).Update(Me)
 
   End Sub
 
@@ -333,7 +293,7 @@ Public Class Project
       End Using
     End If
     ' update child objects
-    mResources.Update(Me)
+    GetChild(Of ProjectResources)(ResourcesProperty).Update(Me)
 
   End Sub
 

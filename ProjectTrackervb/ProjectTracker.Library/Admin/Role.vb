@@ -8,15 +8,11 @@ Namespace Admin
 
 #Region " Business Methods "
 
-    Private mId As Integer
+    Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, Role)("Id")
+    Private mId As Integer = IdProperty.DefaultValue
     Private mIdSet As Boolean
-    Private mName As String = ""
-    Private mTimestamp(7) As Byte
-
     Public Property Id() As Integer
-      <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
       Get
-        CanReadProperty(True)
         If Not mIdSet Then
           ' generate a default id value
           mIdSet = True
@@ -29,40 +25,26 @@ Namespace Admin
           Next
           mId = max + 1
         End If
-        Return mId
+        Return GetProperty(Of Integer)(IdProperty, mId)
       End Get
-      <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
       Set(ByVal value As Integer)
-        CanWriteProperty(True)
-        If Not mId.Equals(value) Then
-          mIdSet = True
-          mId = value
-          PropertyHasChanged()
-        End If
+        mIdSet = True
+        SetProperty(IdProperty, mId, value)
       End Set
     End Property
 
+    Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Role)("Name")
+    Private mName As String = NameProperty.DefaultValue
     Public Property Name() As String
-      <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
       Get
-        CanReadProperty(True)
-        Return mName
+        Return GetProperty(NameProperty, mName)
       End Get
-      <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
       Set(ByVal value As String)
-        CanWriteProperty(True)
-        If Not mName.Equals(value) Then
-          mName = value
-          PropertyHasChanged()
-        End If
+        SetProperty(NameProperty, mName, value)
       End Set
     End Property
 
-    Protected Overrides Function GetIdValue() As Object
-
-      Return mId
-
-    End Function
+    Private mTimestamp(7) As Byte
 
 #End Region
 

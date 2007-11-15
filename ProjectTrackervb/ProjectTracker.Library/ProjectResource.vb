@@ -6,82 +6,67 @@ Public Class ProjectResource
 
 #Region " Business Methods "
 
-  Private mResourceId As Integer
-  Private mFirstName As String = ""
-  Private mLastName As String = ""
-  Private mAssigned As New SmartDate(Today)
-  Private mRole As Integer
   Private mTimestamp(7) As Byte
 
+  Private Shared ResourceIdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, ProjectResource)("ResourceId", "Resource id")
+  Private mResourceId As Integer = ResourceIdProperty.DefaultValue
   Public ReadOnly Property ResourceId() As Integer
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mResourceId
+      Return GetProperty(Of Integer)(ResourceIdProperty, mResourceId)
     End Get
   End Property
 
+  Private Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, ProjectResource)("FirstName", "First name")
+  Private mFirstName As String = FirstNameProperty.DefaultValue
   Public ReadOnly Property FirstName() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mFirstName
+      Return GetProperty(Of String)(FirstNameProperty, mFirstName)
     End Get
   End Property
 
+  Private Shared LastNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, ProjectResource)("LastName", "Last name")
+  Private mLastName As String = ""
   Public ReadOnly Property LastName() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mLastName
+      Return GetProperty(Of String)(LastNameProperty, mLastName)
     End Get
   End Property
 
   Public ReadOnly Property FullName() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      If CanReadProperty("FirstName") AndAlso CanReadProperty("LastName") Then
-        Return LastName & ", " & FirstName
-      Else
-        Throw _
-          New System.Security.SecurityException("Property read not allowed")
-      End If
+      Return LastName & ", " & FirstName
     End Get
   End Property
 
+  Private Shared AssignedProperty As PropertyInfo(Of String) = RegisterProperty(Of String, ProjectResource)("Assigned", "Date assigned")
+  Private mAssigned As New SmartDate(Today)
   Public ReadOnly Property Assigned() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mAssigned.Text
+      Return GetProperty(Of String)(AssignedProperty, mAssigned)
     End Get
   End Property
 
+  Private Shared RoleProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, ProjectResource)("Role", "Role assigned")
+  Private mRole As Integer
   Public Property Role() As Integer Implements IHoldRoles.Role
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mRole
+      Return GetProperty(Of Integer)(RoleProperty, mRole)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As Integer)
-      CanWriteProperty(True)
-      If Not mRole.Equals(value) Then
-        mRole = value
-        PropertyHasChanged()
-      End If
+      SetProperty(Of Integer)(RoleProperty, mRole, value)
     End Set
   End Property
 
   Public Function GetResource() As Resource
 
+    CanExecuteMethod("GetResource", True)
     Return Resource.GetResource(mResourceId)
 
   End Function
 
-  Protected Overrides Function GetIdValue() As Object
+  Public Overrides Function ToString() As String
 
-    Return mResourceId
+    Return mResourceId.ToString
 
   End Function
 

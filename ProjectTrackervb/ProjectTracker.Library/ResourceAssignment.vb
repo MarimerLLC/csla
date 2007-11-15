@@ -6,61 +6,53 @@ Public Class ResourceAssignment
 
 #Region " Business Methods "
 
-  Private mProjectId As Guid = Guid.Empty
-  Private mProjectName As String = ""
-  Private mAssigned As New SmartDate(Today)
-  Private mRole As Integer
   Private mTimestamp(7) As Byte
 
+  Private Shared ProjectIdProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid, ResourceAssignment)("ProjectId", Guid.Empty)
+  Private mProjectId As Guid = ProjectIdProperty.DefaultValue
   Public ReadOnly Property ProjectId() As Guid
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mProjectId
+      Return GetProperty(Of Guid)(ProjectIdProperty, mProjectId)
     End Get
   End Property
 
+  Private Shared ProjectNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, ResourceAssignment)("ProjectName")
+  Private mProjectName As String = ProjectNameProperty.DefaultValue
   Public ReadOnly Property ProjectName() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mProjectName
+      Return GetProperty(Of String)(ProjectNameProperty, mProjectName)
     End Get
   End Property
 
+  Private Shared AssignedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate, ResourceAssignment)("Assigned")
+  Private mAssigned As New SmartDate(Today)
   Public ReadOnly Property Assigned() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mAssigned.Text
+      Return GetProperty(Of SmartDate)(AssignedProperty, mAssigned)
     End Get
   End Property
 
+  Private Shared RoleProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, ResourceAssignment)("Role")
+  Private mRole As Integer = RoleProperty.DefaultValue
   Public Property Role() As Integer Implements IHoldRoles.Role
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Get
-      CanReadProperty(True)
-      Return mRole
+      Return GetProperty(Of Integer)(RoleProperty, mRole)
     End Get
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Set(ByVal value As Integer)
-      CanWriteProperty(True)
-      If Not mRole.Equals(value) Then
-        mRole = value
-        PropertyHasChanged()
-      End If
+      SetProperty(Of Integer)(RoleProperty, mRole, value)
     End Set
   End Property
 
   Public Function GetProject() As Project
 
+    CanExecuteMethod("GetProject", True)
     Return Project.GetProject(mProjectId)
 
   End Function
 
-  Protected Overrides Function GetIdValue() As Object
+  Public Overrides Function ToString() As String
 
-    Return mProjectId
+    Return mProjectId.ToString
 
   End Function
 

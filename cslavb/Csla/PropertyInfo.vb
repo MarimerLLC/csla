@@ -3,6 +3,8 @@
 ''' </summary>
 Public Class PropertyInfo(Of T)
 
+  Implements Core.IPropertyInfo
+
   Friend Sub New(ByVal name As String)
 
     mName = name
@@ -34,7 +36,7 @@ Public Class PropertyInfo(Of T)
   ''' <summary>
   ''' Gets the property name value.
   ''' </summary>
-  Public ReadOnly Property Name() As String
+  Public ReadOnly Property Name() As String Implements Core.IPropertyInfo.Name
     Get
       Return mName
     End Get
@@ -44,7 +46,7 @@ Public Class PropertyInfo(Of T)
   ''' <summary>
   ''' Gets the type of the property.
   ''' </summary>
-  Public ReadOnly Property Type() As Type
+  Public ReadOnly Property Type() As Type Implements Core.IPropertyInfo.Type
     Get
       Return GetType(T)
     End Get
@@ -60,7 +62,7 @@ Public Class PropertyInfo(Of T)
   ''' property name itself is returned as a
   ''' result.
   ''' </remarks>
-  Public ReadOnly Property FriendlyName() As String
+  Public ReadOnly Property FriendlyName() As String Implements Core.IPropertyInfo.FriendlyName
     Get
       If mFriendlyName IsNot Nothing Then
         Return mFriendlyName

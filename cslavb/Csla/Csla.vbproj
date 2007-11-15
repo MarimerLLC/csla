@@ -95,6 +95,7 @@
   <ItemGroup>
     <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessListBase.vb" />
+    <Compile Include="ChildInfo.vb" />
     <Compile Include="Core\ExtendedBindingList.vb" />
     <Compile Include="Core\IEditableBusinessObject.vb" />
     <Compile Include="Core\IExtendedBindingList.vb" />

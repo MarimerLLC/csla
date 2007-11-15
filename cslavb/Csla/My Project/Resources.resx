@@ -276,4 +276,7 @@
   <data name="EditLevelMismatchException" xml:space="preserve">
     <value>Edit level mismatch in {0}</value>
   </data>
+  <data name="InvalidChildTypeException" xml:space="preserve">
+    <value>Child object must implement IEditableBusinessObject or IEditableCollection</value>
+  </data>
 </root>

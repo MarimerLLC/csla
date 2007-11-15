@@ -58,7 +58,7 @@ Public Class PropertyInfo(Of T)
   ''' </remarks>
   Public ReadOnly Property FriendlyName() As String Implements Core.IPropertyInfo.FriendlyName
     Get
-      If mFriendlyName IsNot Nothing Then
+      If Not String.IsNullOrEmpty(mFriendlyName) Then
         Return mFriendlyName
 
       Else

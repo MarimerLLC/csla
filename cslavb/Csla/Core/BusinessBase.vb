@@ -132,7 +132,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsDirty() As Boolean Implements IEditableBusinessObject.IsDirty
       Get
-        Return mIsDirty
+        Return mIsDirty OrElse ChildrenDirty()
       End Get
     End Property
 
@@ -1160,7 +1160,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsValid() As Boolean Implements IEditableBusinessObject.IsValid
       Get
-        Return ValidationRules.IsValid
+        Return ValidationRules.IsValid AndAlso ChildrenValid()
       End Get
     End Property
 
@@ -1602,10 +1602,13 @@ Namespace Core
     ''' the metadata as a result.
     ''' </summary>
     ''' <param name="propertyName">Property name.</param>
-    ''' <param name="declaringType">Type in which the property is declared.</param>
+    ''' <typeparam name="propertyType">
+    ''' Type of the property value's backing field.</typeparam>
+    ''' <typeparam name="declaringType">
+    ''' Type of the object that contains this property.</typeparam>
     ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
-    Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal declaringType As Type) As PropertyInfo(Of P)
-      Return RegisterProperty(Of P)(propertyName, Nothing, declaringType)
+    Protected Shared Function RegisterProperty(Of propertyType, declaringType)(ByVal propertyName As String) As PropertyInfo(Of propertyType)
+      Return RegisterProperty(Of propertyType, declaringType)(propertyName, String.Empty)
     End Function
 
     ''' <summary>
@@ -1613,12 +1616,15 @@ Namespace Core
     ''' the metadata as a result.
     ''' </summary>
     ''' <param name="propertyName">Property name.</param>
-    ''' <param name="declaringType">Type in which the property is declared.</param>
     ''' <param name="defaultValue">Default value to be returned if the user
     ''' is not allowed to read the property.</param>
+    ''' <typeparam name="propertyType">
+    ''' Type of the property value's backing field.</typeparam>
+    ''' <typeparam name="declaringType">
+    ''' Type of the object that contains this property.</typeparam>
     ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
-    Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal declaringType As Type, ByVal defaultValue As P) As PropertyInfo(Of P)
-      Return RegisterProperty(Of P)(propertyName, Nothing, declaringType, defaultValue)
+    Protected Shared Function RegisterProperty(Of propertyType, declaringType)(ByVal propertyName As String, ByVal defaultValue As propertyType) As PropertyInfo(Of propertyType)
+      Return RegisterProperty(Of propertyType, declaringType)(propertyName, String.Empty, defaultValue)
     End Function
 
     ''' <summary>
@@ -1627,11 +1633,14 @@ Namespace Core
     ''' </summary>
     ''' <param name="propertyName">Property name.</param>
     ''' <param name="friendlyName">Friendly display name for the property.</param>
-    ''' <param name="declaringType">Type in which the property is declared.</param>
+    ''' <typeparam name="propertyType">
+    ''' Type of the property value's backing field.</typeparam>
+    ''' <typeparam name="declaringType">
+    ''' Type of the object that contains this property.</typeparam>
     ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
-    Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal friendlyName As String, ByVal declaringType As Type) As PropertyInfo(Of P)
+    Protected Shared Function RegisterProperty(Of propertyType, declaringType)(ByVal propertyName As String, ByVal friendlyName As String) As PropertyInfo(Of propertyType)
 
-      Return New PropertyInfo(Of P)(propertyName, friendlyName)
+      Return New PropertyInfo(Of propertyType)(propertyName, friendlyName)
 
     End Function
 
@@ -1641,13 +1650,116 @@ Namespace Core
     ''' </summary>
     ''' <param name="propertyName">Property name.</param>
     ''' <param name="friendlyName">Friendly display name for the property.</param>
-    ''' <param name="declaringType">Type in which the property is declared.</param>
     ''' <param name="defaultValue">Default value to be returned if the user
     ''' is not allowed to read the property.</param>
+    ''' <typeparam name="propertyType">
+    ''' Type of the property value's backing field.</typeparam>
+    ''' <typeparam name="declaringType">
+    ''' Type of the object that contains this property.</typeparam>
     ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
-    Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal friendlyName As String, ByVal declaringType As Type, ByVal defaultValue As P) As PropertyInfo(Of P)
+    Protected Shared Function RegisterProperty(Of propertyType, declaringType)(ByVal propertyName As String, ByVal friendlyName As String, ByVal defaultValue As propertyType) As PropertyInfo(Of propertyType)
 
-      Return New PropertyInfo(Of P)(propertyName, friendlyName, defaultValue)
+      Return New PropertyInfo(Of propertyType)(propertyName, friendlyName, defaultValue)
+
+    End Function
+
+#End Region
+
+#Region " Child Manager "
+
+    <NotUndoable()> _
+    Private mChildren As New Dictionary(Of IPropertyInfo, IBusinessObject)
+
+    Private Function ChildrenValid() As Boolean
+
+      For Each Item As KeyValuePair(Of IPropertyInfo, IBusinessObject) In mChildren
+        Dim list As IEditableCollection = TryCast(Item.Value, IEditableCollection)
+        If list IsNot Nothing Then
+          If Not list.IsValid Then
+            Return False
+          End If
+
+        Else
+          Dim obj As IEditableBusinessObject = TryCast(Item.Value, IEditableBusinessObject)
+          If obj IsNot Nothing Then
+            If Not obj.IsValid Then
+              Return False
+            End If
+          End If
+        End If
+      Next
+      Return True
+
+    End Function
+
+    Private Function ChildrenDirty() As Boolean
+
+      For Each Item As KeyValuePair(Of IPropertyInfo, IBusinessObject) In mChildren
+        Dim list As IEditableCollection = TryCast(Item.Value, IEditableCollection)
+        If list IsNot Nothing Then
+          If list.IsDirty Then
+            Return True
+          End If
+
+        Else
+          Dim obj As IEditableBusinessObject = TryCast(Item.Value, IEditableBusinessObject)
+          If obj IsNot Nothing Then
+            If obj.IsDirty Then
+              Return True
+            End If
+          End If
+        End If
+      Next
+      Return False
+
+    End Function
+
+    Protected Function GetChild(Of childType As IBusinessObject)( _
+      ByVal propertyInfo As PropertyInfo(Of childType)) As childType
+
+      Return GetChild(Of childType)(propertyInfo, False)
+
+    End Function
+
+    Protected Function GetChild(Of childType As IBusinessObject)( _
+      ByVal propertyInfo As PropertyInfo(Of childType), ByVal throwOnNoAccess As Boolean) As childType
+
+      If CanReadProperty(propertyInfo.Name, throwOnNoAccess) AndAlso mChildren.ContainsKey(propertyInfo) Then
+        Return DirectCast(mChildren.Item(propertyInfo), childType)
+
+      Else
+        Return Nothing
+      End If
+
+    End Function
+
+    Protected Function SetChild(Of childType As IBusinessObject)( _
+      ByVal propertyInfo As PropertyInfo(Of childType), ByVal child As childType) As childType
+
+      Return SetChild(Of childType)(propertyInfo, child, True)
+
+    End Function
+
+    Protected Function SetChild(Of childType As IBusinessObject)( _
+      ByVal propertyInfo As PropertyInfo(Of childType), ByVal child As childType, ByVal throwOnNoAccess As Boolean) As childType
+
+      If TryCast(child, IEditableCollection) Is Nothing Then
+        If TryCast(child, IEditableBusinessObject) Is Nothing Then
+          Throw New NotSupportedException(My.Resources.InvalidChildTypeException)
+        End If
+      End If
+
+      If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
+        mChildren.Item(propertyInfo) = child
+        OnPropertyChanged(propertyInfo.Name)
+      End If
+      Return child
+
+    End Function
+
+    Protected Function ChildExists(ByVal propertyInfo As IPropertyInfo) As Boolean
+
+      Return mChildren.ContainsKey(propertyInfo)
 
     End Function
 

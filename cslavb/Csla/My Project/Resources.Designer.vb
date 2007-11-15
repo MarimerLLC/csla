@@ -196,6 +196,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Child object must implement IEditableBusinessObject or IEditableCollection.
+        '''</summary>
+        Friend ReadOnly Property InvalidChildTypeException() As String
+            Get
+                Return ResourceManager.GetString("InvalidChildTypeException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Invalid rule method (instance methods of the target object not allowed).
         '''</summary>
         Friend ReadOnly Property InvalidRuleMethodException() As String

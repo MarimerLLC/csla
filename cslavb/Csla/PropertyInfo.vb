@@ -9,7 +9,7 @@ Public Class PropertyInfo(Of T)
 
     mName = name
     mFriendlyName = friendlyName
-    If TypeOf mDefaultValue Is String Then
+    If GetType(T).Equals(GetType(String)) Then
       mDefaultValue = DirectCast(DirectCast(String.Empty, Object), T)
 
     Else

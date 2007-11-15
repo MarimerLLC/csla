@@ -1497,7 +1497,7 @@ Namespace Core
 
         ElseIf Not field.Equals(newValue) Then
           If TypeOf newValue Is String AndAlso newValue Is Nothing Then
-            newValue = CType(CType("", Object), P)
+            newValue = DirectCast(DirectCast("", Object), P)
           End If
           field = newValue
           PropertyHasChanged(propertyName)

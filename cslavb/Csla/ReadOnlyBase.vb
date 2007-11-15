@@ -33,46 +33,13 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <see cref="Equals"/>, <see cref="GetHashCode"/> and
   ''' <see cref="ToString"/> methods in your business object.
   ''' </remarks>
-  Protected MustOverride Function GetIdValue() As Object
+  Protected Overridable Function GetIdValue() As Object
+    Return Nothing
+  End Function
 
 #End Region
 
 #Region " System.Object Overrides "
-
-  ''' <summary>
-  ''' Compares this object for equality with another object, using
-  ''' the results of <see cref="GetIdValue"/> to determine
-  ''' equality.
-  ''' </summary>
-  ''' <param name="obj">The object to be compared.</param>
-  Public Overloads Overrides Function Equals(ByVal obj As Object) As Boolean
-
-    If TypeOf obj Is T Then
-      Dim id As Object = GetIdValue()
-      If id Is Nothing Then
-        Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
-      End If
-      Return id.Equals(DirectCast(obj, T).GetIdValue)
-
-    Else
-      Return False
-    End If
-
-  End Function
-
-  ''' <summary>
-  ''' Returns a hash code value for this object, based on
-  ''' the results of <see cref="GetIdValue"/>.
-  ''' </summary>
-  Public Overrides Function GetHashCode() As Integer
-
-    Dim id As Object = GetIdValue()
-    If id Is Nothing Then
-      Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
-    End If
-    Return id.GetHashCode
-
-  End Function
 
   ''' <summary>
   ''' Returns a text representation of this object by
@@ -83,7 +50,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
     Dim id As Object = GetIdValue()
     If id Is Nothing Then
-      Throw New ArgumentException(My.Resources.GetIdValueCantBeNull)
+      Return MyBase.ToString
     End If
     Return id.ToString
 

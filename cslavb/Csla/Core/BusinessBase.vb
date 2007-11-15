@@ -383,6 +383,7 @@ Namespace Core
     ''' <returns><see langword="true" /> if read is allowed.</returns>
     ''' <param name="throwOnFalse">Indicates whether a negative
     ''' result should cause an exception.</param>
+    <Obsolete("Use overload requiring explicit property name")> _
     <System.Runtime.CompilerServices.MethodImpl( _
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanReadProperty(ByVal throwOnFalse As Boolean) As Boolean
@@ -429,6 +430,7 @@ Namespace Core
     ''' calling property.
     ''' </summary>
     ''' <returns><see langword="true" /> if read is allowed.</returns>
+    <Obsolete("Use overload requiring explicit property name")> _
     <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanReadProperty() As Boolean
 
@@ -497,6 +499,7 @@ Namespace Core
     ''' <returns><see langword="true" /> if write is allowed.</returns>
     ''' <param name="throwOnFalse">Indicates whether a negative
     ''' result should cause an exception.</param>
+    <Obsolete("Use overload requiring explicit property name")> _
     <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanWriteProperty(ByVal throwOnFalse As Boolean) As Boolean
 
@@ -539,6 +542,7 @@ Namespace Core
     ''' calling property.
     ''' </summary>
     ''' <returns><see langword="true" /> if write is allowed.</returns>
+    <Obsolete("Use overload requiring explicit property name")> _
     <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanWriteProperty() As Boolean
 
@@ -627,6 +631,7 @@ Namespace Core
     ''' <returns><see langword="true" /> if execute is allowed.</returns>
     ''' <param name="throwOnFalse">Indicates whether a negative
     ''' result should cause an exception.</param>
+    <Obsolete("Use overload requiring explicit method name")> _
     <System.Runtime.CompilerServices.MethodImpl( _
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanExecuteMethod(ByVal throwOnFalse As Boolean) As Boolean
@@ -673,6 +678,7 @@ Namespace Core
     ''' the calling method.
     ''' </summary>
     ''' <returns><see langword="true" /> if execute is allowed.</returns>
+    <Obsolete("Use overload requiring explicit method name")> _
     <System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
     Public Function CanExecuteMethod() As Boolean
 

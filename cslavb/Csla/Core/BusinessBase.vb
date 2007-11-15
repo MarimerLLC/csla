@@ -1668,19 +1668,19 @@ Namespace Core
 #Region " Child Manager "
 
     <NotUndoable()> _
-    Private mChildren As New Dictionary(Of IPropertyInfo, IBusinessObject)
+    Private mChildren As New Dictionary(Of String, IBusinessObject)
 
     Private Function ChildrenValid() As Boolean
 
-      For Each Item As KeyValuePair(Of IPropertyInfo, IBusinessObject) In mChildren
-        Dim list As IEditableCollection = TryCast(Item.Value, IEditableCollection)
+      For Each item As KeyValuePair(Of String, IBusinessObject) In mChildren
+        Dim list As IEditableCollection = TryCast(item.Value, IEditableCollection)
         If list IsNot Nothing Then
           If Not list.IsValid Then
             Return False
           End If
 
         Else
-          Dim obj As IEditableBusinessObject = TryCast(Item.Value, IEditableBusinessObject)
+          Dim obj As IEditableBusinessObject = TryCast(item.Value, IEditableBusinessObject)
           If obj IsNot Nothing Then
             If Not obj.IsValid Then
               Return False
@@ -1694,15 +1694,15 @@ Namespace Core
 
     Private Function ChildrenDirty() As Boolean
 
-      For Each Item As KeyValuePair(Of IPropertyInfo, IBusinessObject) In mChildren
-        Dim list As IEditableCollection = TryCast(Item.Value, IEditableCollection)
+      For Each item As KeyValuePair(Of String, IBusinessObject) In mChildren
+        Dim list As IEditableCollection = TryCast(item.Value, IEditableCollection)
         If list IsNot Nothing Then
           If list.IsDirty Then
             Return True
           End If
 
         Else
-          Dim obj As IEditableBusinessObject = TryCast(Item.Value, IEditableBusinessObject)
+          Dim obj As IEditableBusinessObject = TryCast(item.Value, IEditableBusinessObject)
           If obj IsNot Nothing Then
             If obj.IsDirty Then
               Return True
@@ -1724,8 +1724,8 @@ Namespace Core
     Protected Function GetChild(Of childType As IBusinessObject)( _
       ByVal propertyInfo As PropertyInfo(Of childType), ByVal throwOnNoAccess As Boolean) As childType
 
-      If CanReadProperty(propertyInfo.Name, throwOnNoAccess) AndAlso mChildren.ContainsKey(propertyInfo) Then
-        Return DirectCast(mChildren.Item(propertyInfo), childType)
+      If CanReadProperty(propertyInfo.Name, throwOnNoAccess) AndAlso mChildren.ContainsKey(propertyInfo.Name) Then
+        Return DirectCast(mChildren.Item(propertyInfo.Name), childType)
 
       Else
         Return Nothing
@@ -1750,7 +1750,7 @@ Namespace Core
       End If
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
-        mChildren.Item(propertyInfo) = child
+        mChildren.Item(propertyInfo.Name) = child
         OnPropertyChanged(propertyInfo.Name)
       End If
       Return child
@@ -1759,7 +1759,7 @@ Namespace Core
 
     Protected Function ChildExists(ByVal propertyInfo As IPropertyInfo) As Boolean
 
-      Return mChildren.ContainsKey(propertyInfo)
+      Return mChildren.ContainsKey(propertyInfo.Name)
 
     End Function
 

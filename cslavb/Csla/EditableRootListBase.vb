@@ -48,11 +48,11 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' is properly replaced by the result of the
   ''' Save() method call.
   ''' </remarks>
-  Public Sub SaveItem(ByVal item As T)
+  Public Function SaveItem(ByVal item As T) As T
 
-    SaveItem(IndexOf(item))
+    Return SaveItem(IndexOf(item))
 
-  End Sub
+  End Function
 
   ''' <summary>
   ''' Saves the specified item in the list.
@@ -66,7 +66,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' is properly replaced by the result of the
   ''' Save() method call.
   ''' </remarks>
-  Public Overridable Sub SaveItem(ByVal index As Integer)
+  Public Overridable Function SaveItem(ByVal index As Integer) As T
 
     Dim raiseEvents As Boolean = Me.RaiseListChangedEvents
     Me.RaiseListChangedEvents = False
@@ -108,8 +108,9 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
       Me.RaiseListChangedEvents = raiseEvents
     End Try
     Me.OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+    Return Me.Item(index)
 
-  End Sub
+  End Function
 
 #End Region
 

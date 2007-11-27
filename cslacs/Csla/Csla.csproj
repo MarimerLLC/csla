@@ -81,6 +81,7 @@
     <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessListBase.cs" />
     <Compile Include="CommandBase.cs" />
@@ -105,7 +106,6 @@
     <Compile Include="Core\SavedEventArgs.cs" />
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="Core\UndoException.cs" />
-    <Compile Include="DataPortal\ApplicationContext.cs" />
     <Compile Include="DataPortal\Client\DataPortal.cs" />
     <Compile Include="DataPortal\Client\EnterpriseServicesProxy.cs" />
     <Compile Include="DataPortal\Client\IDataPortalProxy.cs" />

@@ -59,6 +59,15 @@ Namespace Core
     End Property
 
     ''' <summary>
+    ''' This method is invoked before the CopyState
+    ''' operation begins.
+    ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub CopyingState()
+
+    End Sub
+
+    ''' <summary>
     ''' This method is invoked after the CopyState
     ''' operation is complete.
     ''' </summary>
@@ -73,6 +82,8 @@ Namespace Core
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Friend Sub CopyState(ByVal parentEditLevel As Integer) Implements IUndoableObject.CopyState
+
+      CopyingState()
 
       Dim currentType As Type = Me.GetType
       Dim state As New HybridDictionary()
@@ -138,6 +149,15 @@ Namespace Core
     End Sub
 
     ''' <summary>
+    ''' This method is invoked before the UndoChanges
+    ''' operation begins.
+    ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub UndoingChanges()
+
+    End Sub
+
+    ''' <summary>
     ''' This method is invoked after the UndoChanges
     ''' operation is complete.
     ''' </summary>
@@ -158,6 +178,8 @@ Namespace Core
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Friend Sub UndoChanges(ByVal parentEditLevel As Integer) Implements IUndoableObject.UndoChanges
+
+      UndoingChanges()
 
       ' if we are a child object we might be asked to
       ' undo below the level where we stacked states,
@@ -229,6 +251,15 @@ Namespace Core
     End Sub
 
     ''' <summary>
+    ''' This method is invoked before the AcceptChanges
+    ''' operation begins.
+    ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub AcceptingChanges()
+
+    End Sub
+
+    ''' <summary>
     ''' This method is invoked after the AcceptChanges
     ''' operation is complete.
     ''' </summary>
@@ -249,6 +280,8 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Friend Sub AcceptChanges(ByVal parentEditLevel As Integer) _
       Implements IUndoableObject.AcceptChanges
+
+      AcceptingChanges()
 
       If Me.EditLevel - 1 < parentEditLevel Then
         Throw New UndoException( _

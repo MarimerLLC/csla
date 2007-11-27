@@ -27,14 +27,6 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' Override this method to return a unique identifying
   ''' value for this object.
   ''' </summary>
-  ''' <remarks>
-  ''' If you can not provide a unique identifying value, it
-  ''' is best if you can generate such a unique value (even
-  ''' temporarily). If you can not do that, then return 
-  ''' <see langword="Nothing"/> and then manually override the
-  ''' <see cref="Equals"/>, <see cref="GetHashCode"/> and
-  ''' <see cref="ToString"/> methods in your business object.
-  ''' </remarks>
   Protected Overridable Function GetIdValue() As Object
     Return Nothing
   End Function

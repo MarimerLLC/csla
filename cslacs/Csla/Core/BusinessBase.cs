@@ -249,6 +249,7 @@ namespace Csla.Core
     /// </remarks>
     [System.Runtime.CompilerServices.MethodImpl(
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
     protected void PropertyHasChanged()
     {
       string propertyName = 

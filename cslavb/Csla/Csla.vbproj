@@ -93,6 +93,7 @@
     <Import Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationContext.vb" />
     <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessListBase.vb" />
     <Compile Include="Core\ExtendedBindingList.vb" />
@@ -175,7 +176,6 @@
     <Compile Include="Core\BusinessBase.vb" />
     <Compile Include="Core\IEditableCollection.vb" />
     <Compile Include="Core\ReadOnlyBindingList.vb" />
-    <Compile Include="DataPortal\ApplicationContext.vb" />
     <Compile Include="DataPortal\Server\CallMethodException.vb" />
     <Compile Include="CommandBase.vb" />
     <Compile Include="DataPortal\CriteriaBase.vb" />

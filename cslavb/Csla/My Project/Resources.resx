@@ -279,4 +279,7 @@
   <data name="InvalidChildTypeException" xml:space="preserve">
     <value>Child object must implement IEditableBusinessObject or IEditableCollection</value>
   </data>
+  <data name="FilterRequiredException" xml:space="preserve">
+    <value>Filter parameter and filter provider are required</value>
+  </data>
 </root>

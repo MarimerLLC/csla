@@ -713,6 +713,20 @@ Public Class FilteredBindingList(Of T)
   End Property
 
   ''' <summary>
+  ''' Applies a filter to the view using the
+  ''' most recently used property name and
+  ''' filter provider.
+  ''' </summary>
+  Public Sub ApplyFilter()
+
+    If mFilterBy Is Nothing OrElse mFilter Is Nothing Then
+      Throw New ArgumentNullException(My.Resources.FilterRequiredException)
+    End If
+    DoFilter()
+
+  End Sub
+
+  ''' <summary>
   ''' Applies a filter to the view.
   ''' </summary>
   ''' <param name="propertyName">The text name of the property on which to filter.</param>

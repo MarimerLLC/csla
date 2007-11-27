@@ -169,6 +169,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Filter parameter and filter provider are required.
+        '''</summary>
+        Friend ReadOnly Property FilterRequiredException() As String
+            Get
+                Return ResourceManager.GetString("FilterRequiredException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Business object must supply a non-null ID value in GetIdValue.
         '''</summary>
         Friend ReadOnly Property GetIdValueCantBeNull() As String

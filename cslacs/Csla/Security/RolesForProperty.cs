@@ -92,7 +92,7 @@ namespace Csla.Security
     public bool IsReadAllowed(IPrincipal principal)
     {
       foreach (string role in ReadAllowed)
-        if (principal.IsInRole(role))
+        if (IsInRole(principal, role))
           return true;
       return false;
     }
@@ -108,7 +108,7 @@ namespace Csla.Security
     public bool IsReadDenied(IPrincipal principal)
     {
       foreach (string role in ReadDenied)
-        if (principal.IsInRole(role))
+        if (IsInRole(principal, role))
           return true;
       return false;
     }
@@ -124,7 +124,7 @@ namespace Csla.Security
     public bool IsWriteAllowed(IPrincipal principal)
     {
       foreach (string role in WriteAllowed)
-        if (principal.IsInRole(role))
+        if (IsInRole(principal, role))
           return true;
       return false;
     }
@@ -140,7 +140,7 @@ namespace Csla.Security
     public bool IsWriteDenied(IPrincipal principal)
     {
       foreach (string role in WriteDenied)
-        if (principal.IsInRole(role))
+        if (IsInRole(principal, role))
           return true;
       return false;
     }
@@ -158,7 +158,7 @@ namespace Csla.Security
       bool result = false;
       foreach (string role in ExecuteAllowed)
       {
-        if (principal.IsInRole(role))
+        if (IsInRole(principal, role))
         {
           result = true;
           break;
@@ -181,7 +181,7 @@ namespace Csla.Security
       bool result = false;
       foreach (string role in ExecuteDenied)
       {
-        if (principal.IsInRole(role))
+        if (IsInRole(principal, role))
         {
           result = true;
           break;
@@ -190,5 +190,44 @@ namespace Csla.Security
       return result;
 
     }
+
+    private static IsInRoleProvider mIsInRoleProvider;
+
+    private bool IsInRole(IPrincipal principal, string role)
+    {
+      if (mIsInRoleProvider == null)
+      {
+        string provider = ApplicationContext.IsInRoleProvider;
+        if (string.IsNullOrEmpty(provider))
+          mIsInRoleProvider = IsInRoleDefault;
+        else
+        {
+          string[] items = provider.Split(',');
+          Type containingType = Type.GetType(items[0] + "," + items[1]);
+          mIsInRoleProvider = (IsInRoleProvider)(Delegate.CreateDelegate(typeof(IsInRoleProvider), containingType, items[2]));
+        }
+      }
+      return mIsInRoleProvider(principal, role);
+    }
+
+    private bool IsInRoleDefault(IPrincipal principal, string role)
+    {
+      return IsInRole(principal, role);
+    }
   }
+
+  /// <summary>
+  /// Delegate for the method called when the a role
+  /// needs to be checked for the current user.
+  /// </summary>
+  /// <param name="principal">
+  /// The current security principal object.
+  /// </param>
+  /// <param name="role">
+  /// The role to be checked.
+  /// </param>
+  /// <returns>
+  /// True if the current user is in the specified role.
+  /// </returns>
+  public delegate bool IsInRoleProvider(IPrincipal principal, string role);
 }

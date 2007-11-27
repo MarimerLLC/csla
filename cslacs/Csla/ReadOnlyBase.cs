@@ -162,6 +162,7 @@ namespace Csla
     /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
     public bool CanReadProperty(bool throwOnFalse)
     {
       string propertyName =
@@ -205,6 +206,9 @@ namespace Csla
     /// calling property.
     /// </summary>
     /// <returns><see langword="true" /> if read is allowed.</returns>
+    [System.Runtime.CompilerServices.MethodImpl(
+      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
     public bool CanReadProperty()
     {
       string propertyName = 
@@ -292,6 +296,7 @@ namespace Csla
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit method name")]
     public bool CanExecuteMethod(bool throwOnFalse)
     {
 
@@ -335,6 +340,7 @@ namespace Csla
     /// </summary>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit method name")]
     public bool CanExecuteMethod()
     {
 

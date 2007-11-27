@@ -383,6 +383,7 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
     public bool CanReadProperty(bool throwOnFalse)
     {
       string propertyName = 
@@ -428,6 +429,7 @@ namespace Csla.Core
     /// </summary>
     /// <returns><see langword="true" /> if read is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
     public bool CanReadProperty()
     {
       string propertyName = 
@@ -495,6 +497,7 @@ namespace Csla.Core
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
     public bool CanWriteProperty(bool throwOnFalse)
     {
       string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
@@ -536,6 +539,7 @@ namespace Csla.Core
     /// </summary>
     /// <returns><see langword="true" /> if write is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
     public bool CanWriteProperty()
     {
       string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
@@ -619,6 +623,7 @@ namespace Csla.Core
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit method name")]
     public bool CanExecuteMethod(bool throwOnFalse)
     {
 
@@ -662,6 +667,7 @@ namespace Csla.Core
     /// </summary>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit method name")]
     public bool CanExecuteMethod()
     {
 

@@ -673,6 +673,16 @@ namespace Csla.Data
     }
 
     /// <summary>
+    /// Invokes the IsDBNull method of the underlying datareader.
+    /// </summary>
+    /// <param name="name">Name of the column containing the value.</param>
+    public virtual bool IsDBNull(string name)
+    {
+      int index = this.GetOrdinal(name);
+      return this.IsDBNull(index);
+    }
+
+    /// <summary>
     /// Returns a value from the datareader.
     /// </summary>
     /// <param name="name">Name of the column containing the value.</param>

@@ -190,6 +190,34 @@ Namespace Validation
     ''' <returns>The text of all broken rule descriptions.</returns>
     Public Overrides Function ToString() As String
 
+      Return ToString(Environment.NewLine)
+
+    End Function
+
+    ''' <summary>
+    ''' Returns the text of all broken rule descriptions
+    ''' for a specific severity, each
+    ''' separated by a <see cref="Environment.NewLine" />.
+    ''' </summary>
+    ''' <param name="severity">The severity of rules to
+    ''' include in the result.</param>
+    ''' <returns>The text of all broken rule descriptions
+    ''' matching the specified severtiy.</returns>
+    Public Overloads Function ToString(ByVal severity As RuleSeverity) As String
+
+      Return ToString(Environment.NewLine, severity)
+
+    End Function
+
+    ''' <summary>
+    ''' Returns the text of all broken rule descriptions.
+    ''' </summary>
+    ''' <param name="separator">
+    ''' String to place between each broken rule description.
+    ''' </param>
+    ''' <returns>The text of all broken rule descriptions.</returns>
+    Public Overloads Function ToString(ByVal separator As String) As String
+
       Dim result As New System.Text.StringBuilder()
       Dim item As BrokenRule
       Dim first As Boolean = True
@@ -198,7 +226,7 @@ Namespace Validation
         If first Then
           first = False
         Else
-          result.Append(Environment.NewLine)
+          result.Append(separator)
         End If
         result.Append(item.Description)
       Next
@@ -207,14 +235,17 @@ Namespace Validation
     End Function
 
     ''' <summary>
-    ''' Returns the text of all broken rule descriptions, each
-    ''' separated by a <see cref="Environment.NewLine" />.
+    ''' Returns the text of all broken rule descriptions
+    ''' for a specific severity.
     ''' </summary>
+    ''' <param name="separator">
+    ''' String to place between each broken rule description.
+    ''' </param>
     ''' <param name="severity">The severity of rules to
     ''' include in the result.</param>
     ''' <returns>The text of all broken rule descriptions
     ''' matching the specified severtiy.</returns>
-    Public Overloads Function ToString(ByVal severity As RuleSeverity) As String
+    Public Overloads Function ToString(ByVal separator As String, ByVal severity As RuleSeverity) As String
 
       Dim result As New System.Text.StringBuilder()
       Dim item As BrokenRule
@@ -225,7 +256,7 @@ Namespace Validation
           If first Then
             first = False
           Else
-            result.Append(Environment.NewLine)
+            result.Append(separator)
           End If
           result.Append(item.Description)
         End If
@@ -233,6 +264,7 @@ Namespace Validation
       Return result.ToString
 
     End Function
+
 
     ''' <summary>
     ''' Returns a string array containing all broken

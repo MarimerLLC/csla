@@ -52,11 +52,9 @@ namespace Csla
     /// is properly replaced by the result of the
     /// Save() method call.
     /// </remarks>
-    public void SaveItem(T item)
+    public T SaveItem(T item)
     {
-
-      SaveItem(IndexOf(item));
-
+      return SaveItem(IndexOf(item));
     }
 
     /// <summary>
@@ -71,7 +69,7 @@ namespace Csla
     /// is properly replaced by the result of the
     /// Save() method call.
     /// </remarks>
-    public virtual void SaveItem(int index)
+    public virtual T SaveItem(int index)
     {
       bool raisingEvents = this.RaiseListChangedEvents;
       this.RaiseListChangedEvents = false;
@@ -114,6 +112,7 @@ namespace Csla
         this.RaiseListChangedEvents = raisingEvents;
       }
       this.OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+      return this[index];
     }
 
     #endregion

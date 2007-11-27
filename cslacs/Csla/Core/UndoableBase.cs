@@ -74,6 +74,15 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// This method is invoked before the CopyState
+    /// operation begins.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void CopyingState()
+    {
+    }
+
+    /// <summary>
     /// This method is invoked after the CopyState
     /// operation is complete.
     /// </summary>
@@ -89,6 +98,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal void CopyState(int parentEditLevel)
     {
+      CopyingState();
+
       Type currentType = this.GetType();
       HybridDictionary state = new HybridDictionary();
       FieldInfo[] fields;
@@ -153,11 +164,20 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// This method is invoked before the UndoChanges
+    /// operation begins.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void UndoChangesComplete()
+    {
+    }
+
+    /// <summary>
     /// This method is invoked after the UndoChanges
     /// operation is complete.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void UndoChangesComplete()
+    protected virtual void UndoingChanges()
     {
     }
 
@@ -174,6 +194,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal void UndoChanges(int parentEditLevel)
     {
+      UndoingChanges();
+
       // if we are a child object we might be asked to
       // undo below the level of stacked states,
       // so just do nothing in that case
@@ -247,6 +269,15 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// This method is invoked before the AcceptChanges
+    /// operation begins.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void AcceptingChanges()
+    {
+    }
+
+    /// <summary>
     /// This method is invoked after the AcceptChanges
     /// operation is complete.
     /// </summary>
@@ -267,6 +298,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal void AcceptChanges(int parentEditLevel)
     {
+      AcceptingChanges();
+
       if (this.EditLevel - 1 < parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
 

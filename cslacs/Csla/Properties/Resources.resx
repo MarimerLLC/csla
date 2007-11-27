@@ -276,4 +276,7 @@
   <data name="MethodExecuteNotAllowed" xml:space="preserve">
     <value>Method execution not allowed</value>
   </data>
+  <data name="FilterRequiredException" xml:space="preserve">
+    <value>Filter parameter and filter provider are required</value>
+  </data>
 </root>

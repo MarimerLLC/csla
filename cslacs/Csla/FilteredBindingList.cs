@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Collections;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -755,6 +756,18 @@ namespace Csla
     public bool IsFiltered
     {
       get { return _filtered; }
+    }
+
+    /// <summary>
+    /// Applies a filter to the view using the
+    /// most recently used property name and
+    /// filter provider.
+    /// </summary>
+    public void ApplyFilter()
+    {
+      if (_filterBy == null || _filter == null)
+        throw new ArgumentNullException(Resources.FilterRequiredException);
+      DoFilter();
     }
 
     /// <summary>

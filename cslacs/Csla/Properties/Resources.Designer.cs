@@ -169,6 +169,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter parameter and filter provider are required.
+        /// </summary>
+        internal static string FilterRequiredException {
+            get {
+                return ResourceManager.GetString("FilterRequiredException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GetIdValue must not return Nothing.
         /// </summary>
         internal static string GetIdValueCantBeNull {

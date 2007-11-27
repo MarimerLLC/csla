@@ -182,21 +182,12 @@ namespace Csla.Validation
     /// <returns>The text of all broken rule descriptions.</returns>
     public override string ToString()
     {
-      System.Text.StringBuilder result = new System.Text.StringBuilder();
-      bool first = true;
-      foreach (BrokenRule item in this)
-      {
-        if (first)
-          first = false;
-        else
-          result.Append(Environment.NewLine);
-        result.Append(item.Description);
-      }
-      return result.ToString();
+      return ToString(Environment.NewLine);
     }
 
     /// <summary>
-    /// Returns the text of all broken rule descriptions, each
+    /// Returns the text of all broken rule descriptions
+    /// for a specific severity, each
     /// separated by a <see cref="Environment.NewLine" />.
     /// </summary>
     /// <param name="severity">The severity of rules to
@@ -204,6 +195,44 @@ namespace Csla.Validation
     /// <returns>The text of all broken rule descriptions
     /// matching the specified severtiy.</returns>
     public string ToString(RuleSeverity severity)
+    {
+      return ToString(Environment.NewLine, severity);
+    }
+
+    /// <summary>
+    /// Returns the text of all broken rule descriptions.
+    /// </summary>
+    /// <param name="separator">
+    /// String to place between each broken rule description.
+    /// </param>
+    /// <returns>The text of all broken rule descriptions.</returns>
+    public string ToString(string separator)
+    {
+      System.Text.StringBuilder result = new System.Text.StringBuilder();
+      bool first = true;
+      foreach (BrokenRule item in this)
+      {
+        if (first)
+          first = false;
+        else
+          result.Append(separator);
+        result.Append(item.Description);
+      }
+      return result.ToString();
+    }
+
+    /// <summary>
+    /// Returns the text of all broken rule descriptions
+    /// for a specific severity.
+    /// </summary>
+    /// <param name="separator">
+    /// String to place between each broken rule description.
+    /// </param>
+    /// <param name="severity">The severity of rules to
+    /// include in the result.</param>
+    /// <returns>The text of all broken rule descriptions
+    /// matching the specified severtiy.</returns>
+    public string ToString(string separator, RuleSeverity severity)
     {
       System.Text.StringBuilder result = new System.Text.StringBuilder();
       bool first = true;
@@ -214,12 +243,13 @@ namespace Csla.Validation
           if (first)
             first = false;
           else
-            result.Append(Environment.NewLine);
+            result.Append(separator);
           result.Append(item.Description);
         }
       }
       return result.ToString();
     }
+
 
     /// <summary>
     /// Returns a string array containing all broken

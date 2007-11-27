@@ -36,42 +36,14 @@ namespace Csla
     /// <see cref="Equals"/>, <see cref="GetHashCode"/> and
     /// <see cref="ToString"/> methods in your business object.
     /// </remarks>
-    protected abstract object GetIdValue();
+    protected virtual object GetIdValue()
+    {
+      return null;
+    }
 
     #endregion
 
     #region System.Object Overrides
-
-    /// <summary>
-    /// Compares this object for equality with another object, using
-    /// the results of <see cref="GetIdValue"/> to determine
-    /// equality.
-    /// </summary>
-    /// <param name="obj">The object to be compared.</param>
-    public override bool Equals(object obj)
-    {
-      if (obj is T)
-      {
-        object id = GetIdValue();
-        if (id == null)
-          throw new ArgumentException(Resources.GetIdValueCantBeNull);
-        return id.Equals(((T)obj).GetIdValue());
-      }
-      else
-        return false;
-    }
-
-    /// <summary>
-    /// Returns a hash code value for this object, based on
-    /// the results of <see cref="GetIdValue"/>.
-    /// </summary>
-    public override int GetHashCode()
-    {
-      object id = GetIdValue();
-      if (id == null)
-        throw new ArgumentException(Resources.GetIdValueCantBeNull);
-      return id.GetHashCode();
-    }
 
     /// <summary>
     /// Returns a text representation of this object by
@@ -82,8 +54,9 @@ namespace Csla
     {
       object id = GetIdValue();
       if (id == null)
-        throw new ArgumentException(Resources.GetIdValueCantBeNull);
-      return id.ToString();
+        return base.ToString();
+      else
+        return id.ToString();
     }
 
     #endregion

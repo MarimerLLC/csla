@@ -809,7 +809,7 @@ namespace Csla
     /// <summary>
     /// Subtracts a DateTimeOffset from the object.
     /// </summary>
-    /// <param name="value">Date to subtract from the date.</param>
+    /// <param name="value">DateTimeOffset to subtract from the date.</param>
     /// <remarks>
     /// SmartDate maintains the date value as a DateTime,
     /// so the provided DateTimeOffset is converted to a

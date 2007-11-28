@@ -345,10 +345,8 @@ namespace Csla
       get
       {
         string result = ConfigurationManager.AppSettings["CslaIsInRoleProvider"];
-        if (result.Length == 0)
-        {
+        if (string.IsNullOrEmpty(result))
           result = string.Empty;
-        }
         return result;
       }
     }

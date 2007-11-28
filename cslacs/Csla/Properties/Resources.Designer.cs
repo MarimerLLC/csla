@@ -61,6 +61,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merge only allowed on custom collection objects.
+        /// </summary>
+        internal static string BrokenRulesMergeException {
+            get {
+                return ResourceManager.GetString("BrokenRulesMergeException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Principal must be of type BusinessPrincipal, not.
         /// </summary>
         internal static string BusinessPrincipalException {

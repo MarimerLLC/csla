@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Csla.Properties;
 
 namespace Csla.Validation
 {
@@ -19,6 +20,7 @@ namespace Csla.Validation
     private int _errorCount;
     private int _warningCount;
     private int _infoCount;
+    private bool _customList;
 
     /// <summary>
     /// Gets the number of broken rules in
@@ -145,6 +147,7 @@ namespace Csla.Validation
 
     private void IncrementCount(BrokenRule item)
     {
+      IncrementRevision();
       switch (item.Severity)
       {
         case RuleSeverity.Error:
@@ -161,6 +164,7 @@ namespace Csla.Validation
 
     private void DecrementCount(BrokenRule item)
     {
+      IncrementRevision();
       switch (item.Severity)
       {
         case RuleSeverity.Error:
@@ -281,5 +285,81 @@ namespace Csla.Validation
           result.Add(item.Description);
       return result.ToArray();
     }
+
+    #region Custom List
+
+    /// <summary>
+    /// Gets an empty collection on which the Merge()
+    /// method may be called to merge in data from
+    /// other BrokenRuleCollection objects.
+    /// </summary>
+    public static BrokenRulesCollection CreateCollection() 
+    {
+      BrokenRulesCollection result = new BrokenRulesCollection();
+      result._customList = true;
+      return result;
+    }
+
+    /// <summary>
+    /// Merges data from the supplied list into this
+    /// list, changing the rule names to be unique
+    /// based on the source value.
+    /// </summary>
+    /// <param name="source">
+    /// A unique source name for each list being
+    /// merged into this master list.
+    /// </param>
+    /// <param name="list">
+    /// A list to merge into this master list.
+    /// </param>
+    /// <remarks>
+    /// This method is intended to allow merging of
+    /// all BrokenRulesCollection objects in a business
+    /// object graph into a single list. To this end,
+    /// no attempt is made to remove duplicates during
+    /// the merge process. Also, the source parameter
+    /// value must be unqiue for each object instance
+    /// in the graph, or rule name collisions may
+    /// occur.
+    /// </remarks>
+    public void Merge(string source, BrokenRulesCollection list)
+    {
+      if (!_customList)
+        throw new NotSupportedException(Resources.BrokenRulesMergeException);
+      IsReadOnly = false;
+      foreach (BrokenRule item in list)
+      {
+        BrokenRule newItem = new BrokenRule(source, item);
+        IncrementCount(newItem);
+        Add(newItem);
+      }
+      IsReadOnly = true;
+    }
+
+    #endregion
+
+    #region Revision
+
+    private int _revision;
+
+    private void IncrementRevision()
+    {
+      _revision = (_revision + 1) % int.MaxValue;
+    }
+
+    /// <summary>
+    /// Gets the current revision number of
+    /// the collection.
+    /// </summary>
+    /// <remarks>
+    /// The revision value changes each time an
+    /// item is added or removed from the collection.
+    /// </remarks>
+    public int Revision
+    {
+      get { return _revision; }
+    }
+
+    #endregion
   }
 }

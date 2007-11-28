@@ -212,7 +212,7 @@ namespace Csla.Security
 
     private bool IsInRoleDefault(IPrincipal principal, string role)
     {
-      return IsInRole(principal, role);
+      return principal.IsInRole(role);
     }
   }
 

@@ -21,12 +21,12 @@ namespace Csla.Test.SortedBindingList
         [TestMethod()]
         public void AscendingSort()
         {
-            int[] intArr = { 45, 23, 56, 56, 11, 87, 94, 44 };
+            int[] intArr = { 45, 23, 57, 56, 11, 87, 94, 44 };
             SortedBindingList<int> sortedList = new SortedBindingList<int>(intArr);
             sortedList.ListChanged += new ListChangedEventHandler(sortedList_ListChanged);
 
             Assert.AreEqual(false, sortedList.IsSorted);
-            Assert.AreEqual(56, intArr[2]);
+            Assert.AreEqual(56, intArr[3]);
             sortedList.ApplySort("", ListSortDirection.Ascending);
             Assert.AreEqual(44, sortedList[2]);
             Assert.AreEqual(8, sortedList.Count);
@@ -42,7 +42,7 @@ namespace Csla.Test.SortedBindingList
 
             sortedList.RemoveSort();
             Assert.AreEqual(false, sortedList.IsSorted);
-            Assert.AreEqual(56, sortedList[2]);
+            Assert.AreEqual(56, sortedList[3]);
         }
 
         public void sortedList_ListChanged(object sender, ListChangedEventArgs e)

@@ -38,10 +38,10 @@ namespace Csla.Test.RollBack
                 root.ApplyEdit();
                 root = root.Save();
             }
-            catch
+            catch (Exception ex)
             {
                 root = tmp;
-                Assert.Fail("exception occurred");
+                Assert.Fail("exception occurred " + ex.Message);
             }
 
             Assert.IsNotNull(root, "obj is not null");

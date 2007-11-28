@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Csla.Test.DataPortalTest
 {
-    class Split : SplitBase<Split>
-    {
-    }
+  [Serializable]
+  class Split : SplitBase<Split>
+  {
+  }
 }

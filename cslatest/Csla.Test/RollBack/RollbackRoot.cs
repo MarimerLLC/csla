@@ -81,7 +81,7 @@ namespace Csla.Test.RollBack
         {
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Created");
+            Csla.ApplicationContext.GlobalContext["Root"] = "Created";
         }
 
         protected override void DataPortal_Fetch(object criteria)
@@ -89,18 +89,18 @@ namespace Csla.Test.RollBack
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
             MarkOld();
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Fetched");
+            Csla.ApplicationContext.GlobalContext["Root"] = "Fetched";
         }
 
         protected override void DataPortal_Insert()
         {
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Inserted");
+            Csla.ApplicationContext.GlobalContext["Root"] = "Inserted";
         }
 
         protected override void DataPortal_Update()
         {
             //we would update here
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Updated");
+            Csla.ApplicationContext.GlobalContext["Root"] = "Updated";
             
             if (_fail)
                 throw new Exception("fail Update");
@@ -108,19 +108,19 @@ namespace Csla.Test.RollBack
 
         protected override void DataPortal_DeleteSelf()
         {
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted self");
+            Csla.ApplicationContext.GlobalContext["Root"] = "Deleted self";
         }
 
         protected override void DataPortal_Delete(object criteria)
         {
             //we would delete here
-            Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
+            Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
         }
 
         protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
         {
             base.OnDeserialized(context);
-            Csla.ApplicationContext.GlobalContext.Add("Deserialized", "root Deserialized");
+            Csla.ApplicationContext.GlobalContext["Deserialized"] = "root Deserialized";
         }
         
 

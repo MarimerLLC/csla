@@ -16,6 +16,7 @@ Namespace Validation
     Private mErrorCount As Integer
     Private mWarningCount As Integer
     Private mInfoCount As Integer
+    Private mCustomList As Boolean
 
     ''' <summary>
     ''' Gets the number of broken rules in
@@ -159,6 +160,7 @@ Namespace Validation
 
     Private Sub IncrementCount(ByVal item As BrokenRule)
 
+      IncrementRevision()
       Select Case item.Severity
         Case RuleSeverity.Error
           mErrorCount += 1
@@ -172,6 +174,7 @@ Namespace Validation
 
     Private Sub DecrementCount(ByVal item As BrokenRule)
 
+      IncrementRevision()
       Select Case item.Severity
         Case RuleSeverity.Error
           mErrorCount -= 1
@@ -301,6 +304,86 @@ Namespace Validation
       Return result.ToArray
 
     End Function
+
+#Region " Custom List "
+
+    ''' <summary>
+    ''' Gets an empty collection on which the Merge()
+    ''' method may be called to merge in data from
+    ''' other BrokenRuleCollection objects.
+    ''' </summary>
+    Public Shared Function CreateCollection() As BrokenRulesCollection
+
+      Dim result As New BrokenRulesCollection
+      result.mCustomList = True
+      Return result
+
+    End Function
+
+    ''' <summary>
+    ''' Merges data from the supplied list into this
+    ''' list, changing the rule names to be unique
+    ''' based on the source value.
+    ''' </summary>
+    ''' <param name="source">
+    ''' A unique source name for each list being
+    ''' merged into this master list.
+    ''' </param>
+    ''' <param name="list">
+    ''' A list to merge into this master list.
+    ''' </param>
+    ''' <remarks>
+    ''' This method is intended to allow merging of
+    ''' all BrokenRulesCollection objects in a business
+    ''' object graph into a single list. To this end,
+    ''' no attempt is made to remove duplicates during
+    ''' the merge process. Also, the source parameter
+    ''' value must be unqiue for each object instance
+    ''' in the graph, or rule name collisions may
+    ''' occur.
+    ''' </remarks>
+    Public Sub Merge(ByVal source As String, ByVal list As BrokenRulesCollection)
+
+      If Not mCustomList Then
+        Throw New NotSupportedException(My.Resources.BrokenRulesMergeException)
+      End If
+      IsReadOnly = False
+      For Each item As BrokenRule In list
+        Dim newItem As New BrokenRule(source, item)
+        IncrementCount(newItem)
+        Add(newItem)
+      Next
+      IsReadOnly = True
+
+    End Sub
+
+#End Region
+
+#Region " Revision "
+
+    Private mRevision As Integer
+
+    Private Sub IncrementRevision()
+
+      mRevision = (mRevision + 1) Mod Integer.MaxValue
+
+    End Sub
+
+    ''' <summary>
+    ''' Gets the current revision number of
+    ''' the collection.
+    ''' </summary>
+    ''' <remarks>
+    ''' The revision value changes each time an
+    ''' item is added or removed from the collection.
+    ''' </remarks>
+    Public ReadOnly Property Revision() As Integer
+      Get
+        Return mRevision
+      End Get
+    End Property
+
+#End Region
 
   End Class
 

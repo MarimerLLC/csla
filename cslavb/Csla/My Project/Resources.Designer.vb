@@ -61,6 +61,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Merge only allowed on custom collection objects.
+        '''</summary>
+        Friend ReadOnly Property BrokenRulesMergeException() As String
+            Get
+                Return ResourceManager.GetString("BrokenRulesMergeException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Principal must be of type BusinessPrincipal, not.
         '''</summary>
         Friend ReadOnly Property BusinessPrincipalException() As String

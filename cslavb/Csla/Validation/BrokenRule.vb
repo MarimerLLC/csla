@@ -17,6 +17,13 @@ Namespace Validation
       mSeverity = rule.RuleArgs.Severity
     End Sub
 
+    Friend Sub New(ByVal source As String, ByVal rule As BrokenRule)
+      mRuleName = String.Format("rule://{0}.{1}", source, rule.RuleName.Replace("rule://", String.Empty))
+      mDescription = rule.Description
+      mProperty = rule.Property
+      mSeverity = rule.Severity
+    End Sub
+
     ''' <summary>
     ''' Provides access to the name of the broken rule.
     ''' </summary>

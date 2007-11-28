@@ -102,6 +102,39 @@ Public Structure SmartDate
   ''' The SmartDate created will use the min possible
   ''' date to represent an empty date.
   ''' </remarks>
+  ''' <param name="value">The initial value of the object.</param>
+  Public Sub New(ByVal value As DateTimeOffset)
+    mEmptyValue = EmptyValue.MinDate
+    Me.Date = value.DateTime
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="value">The initial value of the object.</param>
+  ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal value As DateTimeOffset, ByVal emptyIsMin As Boolean)
+    mEmptyValue = GetEmptyValue(emptyIsMin)
+    Me.Date = value.DateTime
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="value">The initial value of the object.</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal value As DateTimeOffset, ByVal emptyValue As EmptyValue)
+    mEmptyValue = emptyValue
+    Me.Date = value.DateTime
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <remarks>
+  ''' The SmartDate created will use the min possible
+  ''' date to represent an empty date.
+  ''' </remarks>
   ''' <param name="value">The initial value of the object (as text).</param>
   Public Sub New(ByVal value As String)
     mEmptyValue = EmptyValue.MinDate
@@ -235,6 +268,15 @@ Public Structure SmartDate
       mInitialized = True
     End Set
   End Property
+
+  ''' <summary>
+  ''' Gets the value as a DateTimeOffset.
+  ''' </summary>
+  Public Function GetDateTimeOffset() As DateTimeOffset
+
+    Return New DateTimeOffset(mDate)
+
+  End Function
 
 #End Region
 
@@ -654,6 +696,21 @@ Public Structure SmartDate
     Return Me.Date.CompareTo(value)
   End Function
 
+  ''' <summary>
+  ''' Compares a SmartDate to a date value.
+  ''' </summary>
+  ''' <param name="value">The date to which we are being compared.</param>
+  ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
+  ''' <remarks>
+  ''' SmartDate maintains the date value as a DateTime,
+  ''' so the provided DateTimeOffset is converted to a
+  ''' DateTime for this comparison. You should be aware
+  ''' that this can lead to a loss of precision in
+  ''' some cases.
+  ''' </remarks>
+  Public Function CompareTo(ByVal value As DateTimeOffset) As Integer
+    Return Me.Date.CompareTo(value.DateTime)
+  End Function
 
   ''' <summary>
   ''' Adds a TimeSpan onto the object.
@@ -688,6 +745,25 @@ Public Structure SmartDate
       Return TimeSpan.Zero
     Else
       Return Me.Date.Subtract(value)
+    End If
+  End Function
+
+  ''' <summary>
+  ''' Subtracts a DateTimeOffset from the object.
+  ''' </summary>
+  ''' <param name="value">DateTimeOffset to subtract from the date.</param>
+  ''' <remarks>
+  ''' SmartDate maintains the date value as a DateTime,
+  ''' so the provided DateTimeOffset is converted to a
+  ''' DateTime for this comparison. You should be aware
+  ''' that this can lead to a loss of precision in
+  ''' some cases.
+  ''' </remarks>
+  Public Function Subtract(ByVal value As DateTimeOffset) As TimeSpan
+    If IsEmpty Then
+      Return TimeSpan.Zero
+    Else
+      Return Me.Date.Subtract(value.DateTime)
     End If
   End Function
 

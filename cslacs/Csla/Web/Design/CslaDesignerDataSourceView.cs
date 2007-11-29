@@ -57,6 +57,8 @@ namespace Csla.Web.Design
             values[colIndex] = "abc";
           else if (col.DataType.Equals(typeof(System.DateTime)))
             values[colIndex] = System.DateTime.Today.ToShortDateString();
+          else if (col.DataType.Equals(typeof(System.DateTimeOffset)))
+            values[colIndex] = System.DateTime.Today.ToShortDateString();
           else if (col.DataType.Equals(typeof(bool)))
             values[colIndex] = false;
           else if (col.DataType.IsPrimitive)

@@ -54,6 +54,8 @@ Namespace Web.Design
             values(colIndex) = "abc"
           ElseIf col.DataType.Equals(GetType(Date)) Then
             values(colIndex) = Today.ToShortDateString
+          ElseIf col.DataType.Equals(GetType(DateTimeOffset)) Then
+            values(colIndex) = Today.ToShortDateString
           ElseIf col.DataType.Equals(GetType(Boolean)) Then
             values(colIndex) = False
           ElseIf col.DataType.IsPrimitive Then

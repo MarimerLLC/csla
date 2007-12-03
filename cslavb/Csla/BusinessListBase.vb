@@ -183,6 +183,7 @@ Public MustInherit Class BusinessListBase( _
   ''' completed.
   ''' </summary>
   ''' <param name="child">The child object that was edited.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overridable Sub EditChildComplete( _
     ByVal child As Core.IEditableBusinessObject) _
     Implements Core.IParent.ApplyEditChild
@@ -849,6 +850,40 @@ Public MustInherit Class BusinessListBase( _
   Protected Sub OnSaved(ByVal newObject As T)
 
     RaiseEvent Saved(Me, New Csla.Core.SavedEventArgs(newObject))
+
+  End Sub
+
+#End Region
+
+#Region " Parent/Child link "
+
+  <NotUndoable()> _
+  <NonSerialized()> _
+  Private mParent As Core.IParent
+
+  ''' <summary>
+  ''' Provide access to the parent reference for use
+  ''' in child object code.
+  ''' </summary>
+  ''' <remarks>
+  ''' This value will be Nothing for root objects.
+  ''' </remarks>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected ReadOnly Property Parent() As Core.IParent
+    Get
+      Return mParent
+    End Get
+  End Property
+
+  ''' <summary>
+  ''' Used by BusinessListBase as a child object is 
+  ''' created to tell the child object about its
+  ''' parent.
+  ''' </summary>
+  ''' <param name="parent">A reference to the parent collection object.</param>
+  Friend Sub SetParent(ByVal parent As Core.IParent) Implements IEditableCollection.SetParent
+
+    mParent = parent
 
   End Sub
 

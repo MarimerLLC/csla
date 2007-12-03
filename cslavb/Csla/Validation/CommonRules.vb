@@ -111,6 +111,17 @@ Namespace Validation
       ''' <summary>
       ''' Create a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="maxLength">Max length of characters allowed.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal maxLength As Integer)
+        MyBase.New(propertyInfo)
+        Me("MaxLength") = maxLength
+        Me("Format") = String.Empty
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -131,6 +142,19 @@ Namespace Validation
       ''' value in the broken rule string.</param>
       Public Sub New(ByVal propertyName As String, ByVal maxLength As Integer, ByVal format As String)
         MyBase.New(propertyName)
+        Me("MaxLength") = maxLength
+        Me("Format") = format
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="maxLength">Max length of characters allowed.</param>
+      ''' <param name="format">Format string for the max length
+      ''' value in the broken rule string.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal maxLength As Integer, ByVal format As String)
+        MyBase.New(propertyInfo)
         Me("MaxLength") = maxLength
         Me("Format") = format
       End Sub
@@ -225,6 +249,17 @@ Namespace Validation
       ''' <summary>
       ''' Create a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="minLength">Min length of characters allowed.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minLength As Integer)
+        MyBase.New(propertyInfo)
+        Me("MinLength") = minLength
+        Me("Format") = ""
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -244,6 +279,18 @@ Namespace Validation
       ''' <param name="format">Format string for the min length value.</param>
       Public Sub New(ByVal propertyName As String, ByVal minLength As Integer, ByVal format As String)
         MyBase.New(propertyName)
+        Me("MinLength") = minLength
+        Me("Format") = format
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="minLength">Min length of characters allowed.</param>
+      ''' <param name="format">Format string for the min length value.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minLength As Integer, ByVal format As String)
+        MyBase.New(propertyInfo)
         Me("MinLength") = minLength
         Me("Format") = format
       End Sub
@@ -330,6 +377,17 @@ Namespace Validation
       ''' <summary>
       ''' Create a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+      ''' <param name="maxValue">Maximum allowed value for the property.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal maxValue As Integer)
+        MyBase.New(propertyInfo)
+        Me("MaxValue") = maxValue
+        Me("Format") = ""
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -349,6 +407,18 @@ Namespace Validation
       ''' <param name="format">Format string for the max value.</param>
       Public Sub New(ByVal propertyName As String, ByVal maxValue As Integer, ByVal format As String)
         MyBase.New(propertyName)
+        Me("MaxValue") = maxValue
+        Me("Format") = format
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+      ''' <param name="maxValue">Maximum allowed value for the property.</param>
+      ''' <param name="format">Format string for the max value.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal maxValue As Integer, ByVal format As String)
+        MyBase.New(propertyInfo)
         Me("MaxValue") = maxValue
         Me("Format") = format
       End Sub
@@ -435,6 +505,17 @@ Namespace Validation
       ''' <summary>
       ''' Create a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+      ''' <param name="minValue">Minimum allowed value for the property.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minValue As Integer)
+        MyBase.New(propertyInfo)
+        Me("MinValue") = minValue
+        Me("Format") = ""
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -454,6 +535,18 @@ Namespace Validation
       ''' <param name="format">Format string for the min value.</param>
       Public Sub New(ByVal propertyName As String, ByVal minValue As Integer, ByVal format As String)
         MyBase.New(propertyName)
+        Me("MinValue") = minValue
+        Me("Format") = format
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+      ''' <param name="minValue">Minimum allowed value for the property.</param>
+      ''' <param name="format">Format string for the min value.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minValue As Integer, ByVal format As String)
+        MyBase.New(propertyInfo)
         Me("MinValue") = minValue
         Me("Format") = format
       End Sub
@@ -546,6 +639,18 @@ Namespace Validation
       ''' <summary>
       ''' Create a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+      ''' <param name="maxValue">Maximum allowed value for the property.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal maxValue As T)
+        MyBase.New(propertyInfo)
+        Me("MaxValue") = maxValue
+        Me("Format") = ""
+        Me("ValueType") = GetType(T).FullName
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -566,6 +671,19 @@ Namespace Validation
       ''' <param name="format">Format string for the max value.</param>
       Public Sub New(ByVal propertyName As String, ByVal maxValue As T, ByVal format As String)
         MyBase.New(propertyName)
+        Me("MaxValue") = maxValue
+        Me("Format") = format
+        Me("ValueType") = GetType(T).FullName
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+      ''' <param name="maxValue">Maximum allowed value for the property.</param>
+      ''' <param name="format">Format string for the max value.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal maxValue As T, ByVal format As String)
+        MyBase.New(propertyInfo)
         Me("MaxValue") = maxValue
         Me("Format") = format
         Me("ValueType") = GetType(T).FullName
@@ -659,6 +777,18 @@ Namespace Validation
       ''' <summary>
       ''' Create a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+      ''' <param name="minValue">Minimum allowed value for the property.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minValue As T)
+        MyBase.New(propertyInfo)
+        Me("MinValue") = minValue
+        Me("Format") = ""
+        Me("ValueType") = GetType(T).FullName
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -679,6 +809,19 @@ Namespace Validation
       ''' <param name="format">Format string for min value.</param>
       Public Sub New(ByVal propertyName As String, ByVal minValue As T, ByVal format As String)
         MyBase.New(propertyName)
+        Me("MinValue") = minValue
+        Me("Format") = format
+        Me("ValueType") = GetType(T).FullName
+      End Sub
+
+      ''' <summary>
+      ''' Create a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+      ''' <param name="minValue">Minimum allowed value for the property.</param>
+      ''' <param name="format">Format string for min value.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minValue As T, ByVal format As String)
+        MyBase.New(propertyInfo)
         Me("MinValue") = minValue
         Me("Format") = format
         Me("ValueType") = GetType(T).FullName
@@ -841,6 +984,17 @@ Namespace Validation
       ''' <summary>
       ''' Creates a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="pattern">Built-in regex pattern to use.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal pattern As RegExPatterns)
+        MyBase.New(propertyInfo)
+        Me("RegEx") = New Regex(GetPattern(pattern))
+        Me("NullOption") = NullResultOptions.ReturnFalse
+      End Sub
+
+      ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -859,6 +1013,17 @@ Namespace Validation
       ''' <param name="pattern">Custom regex pattern to use.</param>
       Public Sub New(ByVal propertyName As String, ByVal pattern As String)
         MyBase.New(propertyName)
+        Me("RegEx") = New Regex(pattern)
+        Me("NullOption") = NullResultOptions.ReturnFalse
+      End Sub
+
+      ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="pattern">Custom regex pattern to use.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal pattern As String)
+        MyBase.New(propertyInfo)
         Me("RegEx") = New Regex(pattern)
         Me("NullOption") = NullResultOptions.ReturnFalse
       End Sub
@@ -891,6 +1056,17 @@ Namespace Validation
       ''' <summary>
       ''' Creates a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="regEx"><see cref="RegEx"/> object to use.</param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal regEx As System.Text.RegularExpressions.Regex)
+        MyBase.New(propertyInfo)
+        Me("RegEx") = regEx
+        Me("NullOption") = NullResultOptions.ReturnFalse
+      End Sub
+
+      ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -913,6 +1089,21 @@ Namespace Validation
       ''' </param>
       Public Sub New(ByVal propertyName As String, ByVal pattern As RegExPatterns, ByVal nullResult As NullResultOptions)
         MyBase.New(propertyName)
+        Me("RegEx") = New Regex(GetPattern(pattern))
+        Me("NullOption") = nullResult
+      End Sub
+
+      ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="pattern">Built-in regex pattern to use.</param>
+      ''' <param name="nullResult">
+      ''' Value indicating how a null value should be
+      ''' handled by the rule method.
+      ''' </param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal pattern As RegExPatterns, ByVal nullResult As NullResultOptions)
+        MyBase.New(propertyInfo)
         Me("RegEx") = New Regex(GetPattern(pattern))
         Me("NullOption") = nullResult
       End Sub
@@ -953,6 +1144,21 @@ Namespace Validation
       ''' <summary>
       ''' Creates a new object.
       ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="pattern">Custom regex pattern to use.</param>
+      ''' <param name="nullResult">
+      ''' Value indicating how a null value should be
+      ''' handled by the rule method.
+      ''' </param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal pattern As String, ByVal nullResult As NullResultOptions)
+        MyBase.New(propertyInfo)
+        Me("RegEx") = New Regex(pattern)
+        Me("NullOption") = nullResult
+      End Sub
+
+      ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
       ''' <param name="propertyName">Name of the property to validate.</param>
       ''' <param name="friendlyName">A friendly name for the property, which
       ''' will be used in place of the property name when
@@ -979,6 +1185,21 @@ Namespace Validation
       ''' </param>
       Public Sub New(ByVal propertyName As String, ByVal regEx As System.Text.RegularExpressions.Regex, ByVal nullResult As NullResultOptions)
         MyBase.New(propertyName)
+        Me("RegEx") = regEx
+        Me("NullOption") = nullResult
+      End Sub
+
+      ''' <summary>
+      ''' Creates a new object.
+      ''' </summary>
+      ''' <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      ''' <param name="regEx"><see cref="RegEx"/> object to use.</param>
+      ''' <param name="nullResult">
+      ''' Value indicating how a null value should be
+      ''' handled by the rule method.
+      ''' </param>
+      Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal regEx As System.Text.RegularExpressions.Regex, ByVal nullResult As NullResultOptions)
+        MyBase.New(propertyInfo)
         Me("RegEx") = regEx
         Me("NullOption") = nullResult
       End Sub

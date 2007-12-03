@@ -383,6 +383,35 @@ Namespace Validation
     ''' </para>
     ''' </remarks>
     ''' <param name="handler">The method that implements the rule.</param>
+    ''' <param name="propertyInfo">
+    ''' The PropertyInfo object describing the property.
+    ''' </param>
+    Public Sub AddRule( _
+      ByVal handler As RuleHandler, ByVal propertyInfo As Core.IPropertyInfo)
+
+      ValidateHandler(handler)
+      GetTypeRules(True).AddRule(handler, New RuleArgs(propertyInfo), 0)
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' A rule is implemented by a method which conforms to the 
+    ''' method signature defined by the RuleHandler delegate.
+    ''' </para><para>
+    ''' The propertyName may be used by the method that implements the rule
+    ''' in order to retrieve the value to be validated. If the rule
+    ''' implementation is inside the target object then it probably has
+    ''' direct access to all data. However, if the rule implementation
+    ''' is outside the target object then it will need to use reflection
+    ''' or CallByName to dynamically invoke this property to retrieve
+    ''' the value to be validated.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="handler">The method that implements the rule.</param>
     ''' <param name="propertyName">
     ''' The property name on the target object where the rule implementation can retrieve
     ''' the value to be validated.
@@ -392,6 +421,38 @@ Namespace Validation
 
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, New RuleArgs(propertyName), 0)
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' A rule is implemented by a method which conforms to the 
+    ''' method signature defined by the RuleHandler delegate.
+    ''' </para><para>
+    ''' The propertyName may be used by the method that implements the rule
+    ''' in order to retrieve the value to be validated. If the rule
+    ''' implementation is inside the target object then it probably has
+    ''' direct access to all data. However, if the rule implementation
+    ''' is outside the target object then it will need to use reflection
+    ''' or CallByName to dynamically invoke this property to retrieve
+    ''' the value to be validated.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="handler">The method that implements the rule.</param>
+    ''' <param name="propertyInfo">
+    ''' The PropertyInfo object describing the property.
+    ''' </param>
+    ''' <param name="priority">
+    ''' The priority of the rule, where lower numbers are processed first.
+    ''' </param>
+    Public Sub AddRule( _
+      ByVal handler As RuleHandler, ByVal propertyInfo As Core.IPropertyInfo, ByVal priority As Integer)
+
+      ValidateHandler(handler)
+      GetTypeRules(True).AddRule(handler, New RuleArgs(propertyInfo), priority)
 
     End Sub
 
@@ -446,6 +507,35 @@ Namespace Validation
     ''' </para>
     ''' </remarks>
     ''' <param name="handler">The method that implements the rule.</param>
+    ''' <param name="propertyInfo">
+    ''' The PropertyInfo object describing the property.
+    ''' </param>
+    Public Sub AddRule(Of T)( _
+      ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyInfo As Core.IPropertyInfo)
+
+      ValidateHandler(handler)
+      GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, New RuleArgs(propertyInfo), 0)
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' A rule is implemented by a method which conforms to the 
+    ''' method signature defined by the RuleHandler delegate.
+    ''' </para><para>
+    ''' The propertyName may be used by the method that implements the rule
+    ''' in order to retrieve the value to be validated. If the rule
+    ''' implementation is inside the target object then it probably has
+    ''' direct access to all data. However, if the rule implementation
+    ''' is outside the target object then it will need to use reflection
+    ''' or CallByName to dynamically invoke this property to retrieve
+    ''' the value to be validated.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="handler">The method that implements the rule.</param>
     ''' <param name="propertyName">
     ''' The property name on the target object where the rule implementation can retrieve
     ''' the value to be validated.
@@ -455,6 +545,68 @@ Namespace Validation
 
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, New RuleArgs(propertyName), 0)
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' A rule is implemented by a method which conforms to the 
+    ''' method signature defined by the RuleHandler delegate.
+    ''' </para><para>
+    ''' The propertyName may be used by the method that implements the rule
+    ''' in order to retrieve the value to be validated. If the rule
+    ''' implementation is inside the target object then it probably has
+    ''' direct access to all data. However, if the rule implementation
+    ''' is outside the target object then it will need to use reflection
+    ''' or CallByName to dynamically invoke this property to retrieve
+    ''' the value to be validated.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="handler">The method that implements the rule.</param>
+    ''' <param name="args">
+    ''' A RuleArgs object specifying the property name and other arguments
+    ''' passed to the rule method
+    ''' </param>
+    Public Sub AddRule(Of T)( _
+      ByVal handler As RuleHandler(Of T, RuleArgs), ByVal args As RuleArgs)
+
+      ValidateHandler(handler)
+      GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, args, 0)
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' A rule is implemented by a method which conforms to the 
+    ''' method signature defined by the RuleHandler delegate.
+    ''' </para><para>
+    ''' The propertyName may be used by the method that implements the rule
+    ''' in order to retrieve the value to be validated. If the rule
+    ''' implementation is inside the target object then it probably has
+    ''' direct access to all data. However, if the rule implementation
+    ''' is outside the target object then it will need to use reflection
+    ''' or CallByName to dynamically invoke this property to retrieve
+    ''' the value to be validated.
+    ''' </para>
+    ''' </remarks>
+    ''' <param name="handler">The method that implements the rule.</param>
+    ''' <param name="propertyInfo">
+    ''' The PropertyInfo object describing the property.
+    ''' </param>
+    ''' <param name="priority">
+    ''' The priority of the rule, where lower numbers are processed first.
+    ''' </param>
+    Public Sub AddRule(Of T)( _
+      ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyInfo As Core.IPropertyInfo, ByVal priority As Integer)
+
+      ValidateHandler(handler)
+      GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, New RuleArgs(propertyInfo), priority)
 
     End Sub
 
@@ -609,6 +761,48 @@ Namespace Validation
     ''' Adds a property to the list of dependencies for
     ''' the specified property
     ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' PropertyInfo for the property.
+    ''' </param>
+    ''' <param name="dependentPropertyInfo">
+    ''' PropertyInfo for the depandent property.
+    ''' </param>
+    ''' <remarks>
+    ''' When rules are checked for propertyName, they will
+    ''' also be checked for any dependent properties associated
+    ''' with that property.
+    ''' </remarks>
+    Public Sub AddDependentProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal dependentPropertyInfo As Core.IPropertyInfo)
+
+      GetTypeRules(True).AddDependentProperty(propertyInfo.Name, dependentPropertyInfo.Name)
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a property to the list of dependencies for
+    ''' the specified property
+    ''' </summary>
+    ''' <param name="propertyName">
+    ''' The name of the property.
+    ''' </param>
+    ''' <param name="dependentPropertyName">
+    ''' The name of the depandent property.
+    ''' </param>
+    ''' <remarks>
+    ''' When rules are checked for propertyName, they will
+    ''' also be checked for any dependent properties associated
+    ''' with that property.
+    ''' </remarks>
+    Public Sub AddDependentProperty(ByVal propertyName As String, ByVal dependentPropertyName As String)
+
+      GetTypeRules(True).AddDependentProperty(propertyName, dependentPropertyName)
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a property to the list of dependencies for
+    ''' the specified property
+    ''' </summary>
     ''' <param name="propertyName">
     ''' The name of the property.
     ''' </param>
@@ -617,12 +811,82 @@ Namespace Validation
     ''' </param>
     ''' <remarks>
     ''' When rules are checked for propertyName, they will
-    ''' also be checked for any dependant properties associated
+    ''' also be checked for any dependent properties associated
     ''' with that property.
     ''' </remarks>
+    <Obsolete("Use AddDependentProperty")> _
     Public Sub AddDependantProperty(ByVal propertyName As String, ByVal dependantPropertyName As String)
 
-      GetTypeRules(True).AddDependantProperty(propertyName, dependantPropertyName)
+      AddDependentProperty(propertyName, dependantPropertyName)
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a property to the list of dependencies for
+    ''' the specified property
+    ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' PropertyInfo for the property.
+    ''' </param>
+    ''' <param name="dependentPropertyInfo">
+    ''' PropertyInfo for the depandent property.
+    ''' </param>
+    ''' <param name="isBidirectional">
+    ''' If <see langword="true"/> then a 
+    ''' reverse dependancy is also established
+    ''' from dependentPropertyName to propertyName.
+    ''' </param>
+    ''' <remarks>
+    ''' When rules are checked for propertyName, they will
+    ''' also be checked for any dependent properties associated
+    ''' with that property. If isBidirectional is 
+    ''' <see langword="true"/> then an additional association
+    ''' is set up so when rules are checked for
+    ''' dependentPropertyName the rules for propertyName
+    ''' will also be checked.
+    ''' </remarks>
+    Public Sub AddDependentProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal dependentPropertyInfo As Core.IPropertyInfo, _
+                                    ByVal isBidirectional As Boolean)
+
+      Dim mgr As ValidationRulesManager = GetTypeRules(True)
+      mgr.AddDependentProperty(propertyInfo.Name, dependentPropertyInfo.Name)
+      If isBidirectional Then
+        mgr.AddDependentProperty(dependentPropertyInfo.Name, propertyInfo.Name)
+      End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Adds a property to the list of dependencies for
+    ''' the specified property
+    ''' </summary>
+    ''' <param name="propertyName">
+    ''' The name of the property.
+    ''' </param>
+    ''' <param name="dependentPropertyName">
+    ''' The name of the depandent property.
+    ''' </param>
+    ''' <param name="isBidirectional">
+    ''' If <see langword="true"/> then a 
+    ''' reverse dependancy is also established
+    ''' from dependentPropertyName to propertyName.
+    ''' </param>
+    ''' <remarks>
+    ''' When rules are checked for propertyName, they will
+    ''' also be checked for any dependent properties associated
+    ''' with that property. If isBidirectional is 
+    ''' <see langword="true"/> then an additional association
+    ''' is set up so when rules are checked for
+    ''' dependentPropertyName the rules for propertyName
+    ''' will also be checked.
+    ''' </remarks>
+    Public Sub AddDependentProperty(ByVal propertyName As String, ByVal dependentPropertyName As String, ByVal isBidirectional As Boolean)
+
+      Dim mgr As ValidationRulesManager = GetTypeRules(True)
+      mgr.AddDependentProperty(propertyName, dependentPropertyName)
+      If isBidirectional Then
+        mgr.AddDependentProperty(dependentPropertyName, propertyName)
+      End If
 
     End Sub
 
@@ -643,19 +907,20 @@ Namespace Validation
     ''' </param>
     ''' <remarks>
     ''' When rules are checked for propertyName, they will
-    ''' also be checked for any dependant properties associated
+    ''' also be checked for any dependent properties associated
     ''' with that property. If isBidirectional is 
     ''' <see langword="true"/> then an additional association
     ''' is set up so when rules are checked for
     ''' dependantPropertyName the rules for propertyName
     ''' will also be checked.
     ''' </remarks>
+    <Obsolete("Use AddDependentProperty")> _
     Public Sub AddDependantProperty(ByVal propertyName As String, ByVal dependantPropertyName As String, ByVal isBidirectional As Boolean)
 
-      dim mgr as ValidationRulesManager=GetTypeRules(True)
-      mgr.AddDependantProperty(propertyName, dependantPropertyName)
+      Dim mgr As ValidationRulesManager = GetTypeRules(True)
+      mgr.AddDependentProperty(propertyName, dependantPropertyName)
       If isBidirectional Then
-        mgr.AddDependantProperty(dependantPropertyName, propertyName)
+        mgr.AddDependentProperty(dependantPropertyName, propertyName)
       End If
 
     End Sub
@@ -667,7 +932,7 @@ Namespace Validation
     ''' <summary>
     ''' Invokes all rule methods associated with
     ''' the specified property and any 
-    ''' dependant properties.
+    ''' dependent properties.
     ''' </summary>
     ''' <param name="propertyName">The name of the property to validate.</param>
     Public Sub CheckRules(ByVal propertyName As String)
@@ -683,11 +948,11 @@ Namespace Validation
           If list IsNot Nothing Then
             CheckRules(list)
           End If
-          Dim dependancies As List(Of String) = rulesList.GetDependancyList(False)
-          If dependancies IsNot Nothing Then
-            For i As Integer = 0 To dependancies.Count - 1
-              Dim dependantProperty As String = dependancies(i)
-              CheckRules(rules, dependantProperty)
+          Dim dependencies As List(Of String) = rulesList.GetDependancyList(False)
+          If dependencies IsNot Nothing Then
+            For i As Integer = 0 To dependencies.Count - 1
+              Dim dependentProperty As String = dependencies(i)
+              CheckRules(rules, dependentProperty)
             Next
           End If
         End If

@@ -89,7 +89,7 @@ Namespace Validation
     ''' also be checked for any dependant properties associated
     ''' with that property.
     ''' </remarks>
-    Public Sub AddDependantProperty(ByVal propertyName As String, ByVal dependantPropertyName As String)
+    Public Sub AddDependentProperty(ByVal propertyName As String, ByVal dependantPropertyName As String)
 
       ' get the list of rules for the property
       Dim list As List(Of String) = GetRulesForProperty(propertyName, True).GetDependancyList(True)

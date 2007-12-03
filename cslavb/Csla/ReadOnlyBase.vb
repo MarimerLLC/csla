@@ -558,7 +558,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </remarks>
   Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As P) As P
 
-    Return GetProperty(Of P)(propertyInfo.Name, field, propertyInfo.defaultValue, False)
+    Return GetProperty(Of P)(propertyInfo.Name, field, propertyInfo.DefaultValue, False)
 
   End Function
 
@@ -598,15 +598,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' user is not authorized to read this property.</param>
   Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal throwOnNoAccess As Boolean) As P
 
-    Dim canRead As Boolean
-    If throwOnNoAccess Then
-      CanReadProperty(propertyName, True)
-      canRead = True
-
-    Else
-      canRead = CanReadProperty(propertyName, False)
-    End If
-    If canRead Then
+    If CanReadProperty(propertyName, throwOnNoAccess) Then
       Return field
 
     Else
@@ -616,11 +608,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   End Function
 
   ''' <summary>
-  ''' Gets a SmartDate property's value in String format, 
+  ''' Gets a ISmartField property's value in String format, 
   ''' first checking authorization.
   ''' </summary>
   ''' <param name="field">
-  ''' The SmartDate backing field for the property.</param>
+  ''' The ISmartField backing field for the property.</param>
   ''' <param name="propertyInfo">
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
   ''' <remarks>
@@ -628,18 +620,18 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' value, the defaultValue value is returned as a
   ''' result.
   ''' </remarks>
-  Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As SmartDate) As String
+  Protected Function GetProperty(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As P) As F
 
-    Return GetProperty(Of P)(propertyInfo, field, False)
+    Return GetProperty(Of P, F)(propertyInfo, field, False)
 
   End Function
 
   ''' <summary>
-  ''' Gets a SmartDate property's value in String format, 
+  ''' Gets a ISmartField property's value in String format, 
   ''' first checking authorization.
   ''' </summary>
   ''' <param name="field">
-  ''' The SmartDate backing field for the property.</param>
+  ''' The ISmartField backing field for the property.</param>
   ''' <param name="propertyInfo">
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
   ''' <param name="throwOnNoAccess">
@@ -650,74 +642,266 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' value, the defaultValue value is returned as a
   ''' result.
   ''' </remarks>
-  Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As SmartDate, ByVal throwOnNoAccess As Boolean) As String
+  Protected Function GetProperty(Of P, F)( _
+    ByVal propertyInfo As PropertyInfo(Of P), ByVal field As P, ByVal throwOnNoAccess As Boolean) As F
 
     If CanReadProperty(propertyInfo.Name, throwOnNoAccess) Then
-      Return field.Text
+      Dim sf As ISmartField = TryCast(field, ISmartField)
+      If sf IsNot Nothing Then
+        Return DirectCast(DirectCast(sf.Text, Object), F)
+
+      Else
+        Return DirectCast(Convert.ChangeType(field, GetType(F)), F)
+      End If
 
     Else
-      Return DirectCast(DirectCast(propertyInfo.DefaultValue, Object), SmartDate).Text
+      Return DirectCast(DirectCast(propertyInfo.DefaultValue, Object), F)
     End If
 
   End Function
 
+  Protected Function GetProperty(Of P)( _
+    ByVal propertyInfo As PropertyInfo(Of P)) As P
+
+    Return GetProperty(Of P)(propertyInfo, False)
+
+  End Function
+
+  Protected Function GetProperty(Of P, F)( _
+    ByVal propertyInfo As PropertyInfo(Of P)) As F
+
+    Return DirectCast(Convert.ChangeType(GetProperty(Of P)(propertyInfo, False), GetType(F)), F)
+
+  End Function
+
+  Protected Function GetProperty(Of P, F)( _
+    ByVal propertyInfo As PropertyInfo(Of P), ByVal throwOnNoAccess As Boolean) As F
+
+    Return DirectCast(Convert.ChangeType(GetProperty(Of P)(propertyInfo, throwOnNoAccess), GetType(F)), F)
+
+  End Function
+
+  Protected Function GetProperty(Of P)( _
+    ByVal propertyInfo As PropertyInfo(Of P), ByVal throwOnNoAccess As Boolean) As P
+
+    If CanReadProperty(propertyInfo.Name, throwOnNoAccess) Then
+      If PropertyManager.FieldValues.ContainsKey(propertyInfo.Name) Then
+        Return DirectCast(PropertyManager.FieldValues.Item(propertyInfo.Name), P)
+
+      ElseIf PropertyManager.ChildValues.ContainsKey(propertyInfo.Name) Then
+        Return DirectCast(PropertyManager.ChildValues.Item(propertyInfo.Name), P)
+
+      Else
+        If GetType(IBusinessObject).IsAssignableFrom(GetType(P)) Then
+          PropertyManager.ChildValues.Item(propertyInfo.Name) = Nothing
+
+        Else
+          PropertyManager.FieldValues.Item(propertyInfo.Name) = propertyInfo.DefaultValue
+        End If
+        Return propertyInfo.DefaultValue
+      End If
+
+    Else
+      Return propertyInfo.DefaultValue
+    End If
+
+  End Function
+
+  ''' <summary>
+  ''' Sets a property's backing field with the supplied
+  ''' value, first checking authorization, and then
+  ''' calling PropertyHasChanged if the value does change.
+  ''' </summary>
+  ''' <param name="field">
+  ''' A reference to the backing field for the property.</param>
+  ''' <param name="newValue">
+  ''' The new value for the property.</param>
+  ''' <param name="propertyInfo">
+  ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+  ''' <remarks>
+  ''' If the user is not authorized to change the property, this
+  ''' overload throws a SecurityException.
+  ''' </remarks>
+  Protected Sub SetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As P)
+
+    SetProperty(Of P)(propertyInfo.Name, field, newValue, True)
+
+  End Sub
+
+  ''' <summary>
+  ''' Sets a property's backing field with the supplied
+  ''' value, first checking authorization, and then
+  ''' calling PropertyHasChanged if the value does change.
+  ''' </summary>
+  ''' <param name="field">
+  ''' A reference to the backing field for the property.</param>
+  ''' <param name="newValue">
+  ''' The new value for the property.</param>
+  ''' <param name="propertyName">
+  ''' The name of the property.</param>
+  ''' <remarks>
+  ''' If the user is not authorized to change the property, this
+  ''' overload throws a SecurityException.
+  ''' </remarks>
+  Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P)
+
+    SetProperty(Of P)(propertyName, field, newValue, True)
+
+  End Sub
+
+  ''' <summary>
+  ''' Sets a property's backing field with the supplied
+  ''' value, first checking authorization, and then
+  ''' calling PropertyHasChanged if the value does change.
+  ''' </summary>
+  ''' <param name="field">
+  ''' A reference to the backing field for the property.</param>
+  ''' <param name="newValue">
+  ''' The new value for the property.</param>
+  ''' <param name="propertyName">
+  ''' The name of the property.</param>
+  ''' <param name="throwOnNoAccess">
+  ''' True if an exception should be thrown when the
+  ''' user is not authorized to change this property.</param>
+  Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
+
+    If field Is Nothing Then
+      If newValue IsNot Nothing Then
+        field = newValue
+      End If
+
+    ElseIf Not field.Equals(newValue) Then
+      If TypeOf newValue Is String AndAlso newValue Is Nothing Then
+        newValue = DirectCast(DirectCast("", Object), P)
+      End If
+      field = newValue
+    End If
+
+  End Sub
+
+  ''' <summary>
+  ''' Sets a property's ISmartField backing field with the 
+  ''' supplied String value, first checking authorization, and then
+  ''' calling PropertyHasChanged if the value does change.
+  ''' </summary>
+  ''' <param name="field">
+  ''' A reference to the ISmartField backing field for the property.</param>
+  ''' <param name="newValue">
+  ''' The new String value for the property.</param>
+  ''' <param name="propertyInfo">
+  ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+  ''' <remarks>
+  ''' If the user is not authorized to change the property, this
+  ''' overload throws a SecurityException.
+  ''' </remarks>
+  Protected Sub SetProperty(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As F)
+
+    SetProperty(Of P, F)(propertyInfo, field, newValue, True)
+
+  End Sub
+
+  ''' <summary>
+  ''' Sets a property's ISmartField backing field with the 
+  ''' supplied String value, first checking authorization, and then
+  ''' calling PropertyHasChanged if the value does change.
+  ''' </summary>
+  ''' <param name="field">
+  ''' A reference to the ISmartField backing field for the property.</param>
+  ''' <param name="newValue">
+  ''' The new String value for the property.</param>
+  ''' <param name="propertyInfo">
+  ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+  ''' <param name="throwOnNoAccess">
+  ''' True if an exception should be thrown when the
+  ''' user is not authorized to change this property.</param>
+  ''' <remarks>
+  ''' If the user is not authorized to change the property, this
+  ''' overload throws a SecurityException.
+  ''' </remarks>
+  Protected Sub SetProperty(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As F, ByVal throwOnNoAccess As Boolean)
+
+    If Not field.Equals(newValue) Then
+      Dim sf As ISmartField = TryCast(field, ISmartField)
+      If sf IsNot Nothing Then
+        sf.Text = newValue.ToString
+        field = DirectCast(sf, P)
+
+      Else
+        field = DirectCast(Convert.ChangeType(newValue, GetType(P)), P)
+      End If
+    End If
+
+  End Sub
+
+  Protected Sub SetProperty(Of P)( _
+    ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
+
+    SetProperty(Of P)(propertyInfo, newValue, True)
+
+  End Sub
+
+  Protected Sub SetProperty(Of P, F)( _
+    ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
+
+    SetProperty(Of P, F)(propertyInfo, newValue, True)
+
+  End Sub
+
+  Protected Sub SetProperty(Of P, F)( _
+    ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F, ByVal throwOnNoAccess As Boolean)
+
+    Dim field As P = GetProperty(Of P)(propertyInfo)
+    Dim sf As ISmartField = TryCast(field, ISmartField)
+    If sf IsNot Nothing Then
+      sf.Text = newValue.ToString
+
+    Else
+      field = DirectCast(Convert.ChangeType(newValue, GetType(P)), P)
+    End If
+    SetProperty(Of P)(propertyInfo, field, throwOnNoAccess)
+
+  End Sub
+
+  Protected Sub SetProperty(Of P)( _
+    ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
+
+    Dim field As Object = Nothing
+    If PropertyManager.PropertyFieldExists(propertyInfo) Then
+      field = PropertyManager.FieldValues.Item(propertyInfo.Name)
+    End If
+    If field Is Nothing Then
+      If newValue IsNot Nothing Then
+        PropertyManager.FieldValues.Item(propertyInfo.Name) = newValue
+      End If
+
+    ElseIf Not field.Equals(newValue) Then
+      If GetType(P).Equals(GetType(String)) AndAlso newValue Is Nothing Then
+        newValue = DirectCast(DirectCast(String.Empty, Object), P)
+      End If
+      PropertyManager.FieldValues.Item(propertyInfo.Name) = newValue
+    End If
+
+  End Sub
+
 #End Region
 
-#Region " PropertyInfo "
+#Region " PropertyManager "
+
+  <NotUndoable()> _
+  Private mPropertyManager As PropertyManager.PropertyManager
 
   ''' <summary>
-  ''' Registers a property's metadata, returning
-  ''' the metadata as a result.
+  ''' Gets the PropertyManager object for this
+  ''' business object.
   ''' </summary>
-  ''' <param name="propertyName">Property name.</param>
-  ''' <param name="declaringType">Type in which the property is declared.</param>
-  ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
-  Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal declaringType As Type) As PropertyInfo(Of P)
-    Return RegisterProperty(Of P)(propertyName, Nothing, declaringType)
-  End Function
-
-  ''' <summary>
-  ''' Registers a property's metadata, returning
-  ''' the metadata as a result.
-  ''' </summary>
-  ''' <param name="propertyName">Property name.</param>
-  ''' <param name="declaringType">Type in which the property is declared.</param>
-  ''' <param name="defaultValue">Default value to be returned if the user
-  ''' is not allowed to read the property.</param>
-  ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
-  Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal declaringType As Type, ByVal defaultValue As P) As PropertyInfo(Of P)
-    Return RegisterProperty(Of P)(propertyName, Nothing, declaringType, defaultValue)
-  End Function
-
-  ''' <summary>
-  ''' Registers a property's metadata, returning
-  ''' the metadata as a result.
-  ''' </summary>
-  ''' <param name="propertyName">Property name.</param>
-  ''' <param name="friendlyName">Friendly display name for the property.</param>
-  ''' <param name="declaringType">Type in which the property is declared.</param>
-  ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
-  Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal friendlyName As String, ByVal declaringType As Type) As PropertyInfo(Of P)
-
-    Return New PropertyInfo(Of P)(propertyName, friendlyName)
-
-  End Function
-
-  ''' <summary>
-  ''' Registers a property's metadata, returning
-  ''' the metadata as a result.
-  ''' </summary>
-  ''' <param name="propertyName">Property name.</param>
-  ''' <param name="friendlyName">Friendly display name for the property.</param>
-  ''' <param name="declaringType">Type in which the property is declared.</param>
-  ''' <param name="defaultValue">Default value to be returned if the user
-  ''' is not allowed to read the property.</param>
-  ''' <returns>A <see cref="PropertyInfo" /> object describing the property.</returns>
-  Protected Shared Function RegisterProperty(Of P)(ByVal propertyName As String, ByVal friendlyName As String, ByVal declaringType As Type, ByVal defaultValue As P) As PropertyInfo(Of P)
-
-    Return New PropertyInfo(Of P)(propertyName, friendlyName, defaultValue)
-
-  End Function
+  Protected ReadOnly Property PropertyManager() As PropertyManager.PropertyManager
+    Get
+      If mPropertyManager Is Nothing Then
+        mPropertyManager = New PropertyManager.PropertyManager
+      End If
+      Return mPropertyManager
+    End Get
+  End Property
 
 #End Region
 

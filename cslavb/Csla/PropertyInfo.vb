@@ -1,11 +1,31 @@
 ﻿''' <summary>
 ''' Maintains metadata about a property.
 ''' </summary>
+''' <typeparam name="T">
+''' Data type of the property.
+''' </typeparam>
 Public Class PropertyInfo(Of T)
 
   Implements Core.IPropertyInfo
 
-  Friend Sub New(ByVal name As String, ByVal friendlyName As String)
+  ''' <summary>
+  ''' Creates a new instance of this class.
+  ''' </summary>
+  ''' <param name="name">Name of the property.</param>
+  Public Sub New(ByVal name As String)
+
+    Me.New(name, "")
+
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new instance of this class.
+  ''' </summary>
+  ''' <param name="name">Name of the property.</param>
+  ''' <param name="friendlyName">
+  ''' Friendly display name for the property.
+  ''' </param>
+  Public Sub New(ByVal name As String, ByVal friendlyName As String)
 
     mName = name
     mFriendlyName = friendlyName
@@ -18,7 +38,31 @@ Public Class PropertyInfo(Of T)
 
   End Sub
 
-  Friend Sub New(ByVal name As String, ByVal friendlyName As String, ByVal defaultValue As T)
+  ''' <summary>
+  ''' Creates a new instance of this class.
+  ''' </summary>
+  ''' <param name="name">Name of the property.</param>
+  ''' <param name="defaultValue">
+  ''' Default value for the property.
+  ''' </param>
+  Public Sub New(ByVal name As String, ByVal defaultValue As T)
+
+    mName = name
+    mDefaultValue = defaultValue
+
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new instance of this class.
+  ''' </summary>
+  ''' <param name="name">Name of the property.</param>
+  ''' <param name="friendlyName">
+  ''' Friendly display name for the property.
+  ''' </param>
+  ''' <param name="defaultValue">
+  ''' Default value for the property.
+  ''' </param>
+  Public Sub New(ByVal name As String, ByVal friendlyName As String, ByVal defaultValue As T)
 
     mName = name
     mDefaultValue = defaultValue
@@ -68,7 +112,22 @@ Public Class PropertyInfo(Of T)
   End Property
 
   Private mDefaultValue As T
+  ''' <summary>
+  ''' Gets the default initial value for the property.
+  ''' </summary>
+  ''' <remarks>
+  ''' This value is used to initialize the property's
+  ''' value, and is returned from a property get
+  ''' if the user is not authorized to 
+  ''' read the property.
+  ''' </remarks>
   Public ReadOnly Property DefaultValue() As T
+    Get
+      Return mDefaultValue
+    End Get
+  End Property
+
+  Private ReadOnly Property IPropertyInfo_DefaultValue() As Object Implements Core.IPropertyInfo.DefaultValue
     Get
       Return mDefaultValue
     End Get

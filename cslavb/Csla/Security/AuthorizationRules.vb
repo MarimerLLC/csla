@@ -185,6 +185,28 @@ Namespace Security
     ''' Specify the roles allowed to read a given
     ''' property.
     ''' </summary>
+    ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+    ''' <param name="roles">List of roles granted read access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub AllowRead( _
+      ByVal propertyInfo As Core.IPropertyInfo, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyInfo.Name)
+      For Each item As String In roles
+        currentRoles.ReadAllowed.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles allowed to read a given
+    ''' property.
+    ''' </summary>
     ''' <param name="propertyName">Name of the property.</param>
     ''' <param name="roles">List of roles granted read access.</param>
     ''' <remarks>
@@ -199,6 +221,27 @@ Namespace Security
       Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyName)
       For Each item As String In roles
         currentRoles.ReadAllowed.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles denied read access to 
+    ''' a given property.
+    ''' </summary>
+    ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+    ''' <param name="roles">List of roles denied read access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub DenyRead(ByVal propertyInfo As Core.IPropertyInfo, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyInfo.Name)
+      For Each item As String In roles
+        currentRoles.ReadDenied.Add(item)
       Next
 
     End Sub
@@ -228,6 +271,27 @@ Namespace Security
     ''' Specify the roles allowed to write a given
     ''' property.
     ''' </summary>
+    ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+    ''' <param name="roles">List of roles granted write access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub AllowWrite(ByVal propertyInfo As Core.IPropertyInfo, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyInfo.Name)
+      For Each item As String In roles
+        currentRoles.WriteAllowed.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles allowed to write a given
+    ''' property.
+    ''' </summary>
     ''' <param name="propertyName">Name of the property.</param>
     ''' <param name="roles">List of roles granted write access.</param>
     ''' <remarks>
@@ -241,6 +305,27 @@ Namespace Security
       Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyName)
       For Each item As String In roles
         currentRoles.WriteAllowed.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles denied write access to 
+    ''' a given property.
+    ''' </summary>
+    ''' <param name="propertyInfo">PropertyInfo for the property.</param>
+    ''' <param name="roles">List of roles denied write access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub DenyWrite(ByVal propertyInfo As Core.IPropertyInfo, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyInfo.Name)
+      For Each item As String In roles
+        currentRoles.WriteDenied.Add(item)
       Next
 
     End Sub
@@ -270,7 +355,29 @@ Namespace Security
     ''' Specify the roles allowed to execute a given
     ''' method.
     ''' </summary>
-    ''' <param name="methodName">Name of the property.</param>
+    ''' <param name="propertyInfo">PropertyInfo for the method.</param>
+    ''' <param name="roles">List of roles granted execute access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of allowed roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub AllowExecute( _
+      ByVal propertyInfo As Core.IPropertyInfo, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyInfo.Name)
+      For Each item As String In roles
+        currentRoles.ExecuteAllowed.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles allowed to execute a given
+    ''' method.
+    ''' </summary>
+    ''' <param name="methodName">Name of the method.</param>
     ''' <param name="roles">List of roles granted execute access.</param>
     ''' <remarks>
     ''' This method may be called multiple times, with the roles in
@@ -292,7 +399,28 @@ Namespace Security
     ''' Specify the roles denied the right to execute 
     ''' a given method.
     ''' </summary>
-    ''' <param name="methodName">Name of the property.</param>
+    ''' <param name="propertyInfo">PropertyInfo for the method.</param>
+    ''' <param name="roles">List of roles denied execute access.</param>
+    ''' <remarks>
+    ''' This method may be called multiple times, with the roles in
+    ''' each call being added to the end of the list of denied roles.
+    ''' In other words, each call is cumulative, adding more roles
+    ''' to the list.
+    ''' </remarks>
+    Public Sub DenyExecute(ByVal propertyInfo As Core.IPropertyInfo, ByVal ParamArray roles() As String)
+
+      Dim currentRoles As RolesForProperty = TypeRules.GetRolesForProperty(propertyInfo.Name)
+      For Each item As String In roles
+        currentRoles.ExecuteDenied.Add(item)
+      Next
+
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles denied the right to execute 
+    ''' a given method.
+    ''' </summary>
+    ''' <param name="methodName">Name of the method.</param>
     ''' <param name="roles">List of roles denied execute access.</param>
     ''' <remarks>
     ''' This method may be called multiple times, with the roles in

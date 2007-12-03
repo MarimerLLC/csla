@@ -25,6 +25,15 @@ Namespace Validation
     ''' <summary>
     ''' Creates an instance of RuleArgs.
     ''' </summary>
+    ''' <param name="propertyInfo">The PropertyInfo for the property to be validated.</param>
+    Public Sub New(ByVal propertyInfo As Core.IPropertyInfo)
+      MyBase.New(propertyInfo)
+      mDecorations = New Dictionary(Of String, Object)()
+    End Sub
+
+    ''' <summary>
+    ''' Creates an instance of RuleArgs.
+    ''' </summary>
     ''' <param name="propertyName">The name of the property to be validated.</param>
     ''' <param name="friendlyName">A friendly name for the property, which
     ''' will be used in place of the property name when
@@ -54,6 +63,29 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal severity As RuleSeverity)
       MyBase.New(propertyName, severity)
+      mDecorations = New Dictionary(Of String, Object)()
+    End Sub
+
+    ''' <summary>
+    ''' Creates an instance of RuleArgs.
+    ''' </summary>
+    ''' <param name="propertyInfo">The PropertyInfo for the property to be validated.</param>
+    ''' <param name="severity">Initial default severity for the rule.</param>
+    ''' <remarks>
+    ''' <para>
+    ''' The <b>severity</b> parameter defines only the initial default 
+    ''' severity value. If the rule changes this value by setting
+    ''' e.Severity, then that new value will become the default for all
+    ''' subsequent rule invocations.
+    ''' </para><para>
+    ''' To avoid confusion, it is recommended that the 
+    ''' <b>severity</b> constructor parameter 
+    ''' only be used for rule methods that do not explicitly set
+    ''' e.Severity.
+    ''' </para>
+    ''' </remarks>
+    Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal severity As RuleSeverity)
+      MyBase.New(propertyInfo, severity)
       mDecorations = New Dictionary(Of String, Object)()
     End Sub
 
@@ -113,6 +145,33 @@ Namespace Validation
     ''' <summary>
     ''' Creates an instance of RuleArgs.
     ''' </summary>
+    ''' <param name="propertyInfo">The PropertyInfo for the property to be validated.</param>
+    ''' <param name="severity">The default severity for the rule.</param>
+    ''' <param name="stopProcessing">
+    ''' Initial default value for the StopProcessing property.
+    ''' </param>
+    ''' <remarks>
+    ''' <para>
+    ''' The <b>severity</b> and <b>stopProcessing</b> parameters 
+    ''' define only the initial default values. If the rule 
+    ''' changes these values by setting e.Severity or
+    ''' e.StopProcessing, then the new values will become 
+    ''' the default for all subsequent rule invocations.
+    ''' </para><para>
+    ''' To avoid confusion, It is recommended that the 
+    ''' <b>severity</b> and <b>stopProcessing</b> constructor 
+    ''' parameters only be used for rule methods that do 
+    ''' not explicitly set e.Severity or e.StopProcessing.
+    ''' </para>
+    ''' </remarks>
+    Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean)
+      MyBase.New(propertyInfo, severity, stopProcessing)
+      mDecorations = New Dictionary(Of String, Object)()
+    End Sub
+
+    ''' <summary>
+    ''' Creates an instance of RuleArgs.
+    ''' </summary>
     ''' <param name="propertyName">The name of the property to be validated.</param>
     ''' <param name="friendlyName">A friendly name for the property, which
     ''' will be used in place of the property name when
@@ -156,6 +215,17 @@ Namespace Validation
     ''' <summary>
     ''' Creates an instance of RuleArgs.
     ''' </summary>
+    ''' <param name="propertyInfo">The PropertyInfo for the property to be validated.</param>
+    ''' <param name="args">Reference to a Dictionary containing 
+    ''' name/value arguments for use by the rule method.</param>
+    Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal args As Dictionary(Of String, Object))
+      MyBase.New(propertyInfo)
+      mDecorations = args
+    End Sub
+
+    ''' <summary>
+    ''' Creates an instance of RuleArgs.
+    ''' </summary>
     ''' <param name="propertyName">The name of the property to be validated.</param>
     ''' <param name="friendlyName">A friendly name for the property, which
     ''' will be used in place of the property name when
@@ -189,6 +259,31 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal severity As RuleSeverity, ByVal args As Dictionary(Of String, Object))
       MyBase.New(propertyName, severity)
+      mDecorations = args
+    End Sub
+
+    ''' <summary>
+    ''' Creates an instance of RuleArgs.
+    ''' </summary>
+    ''' <param name="propertyInfo">The PropertyInfo for the property to be validated.</param>
+    ''' <param name="severity">Initial default severity for the rule.</param>
+    ''' <param name="args">Reference to a Dictionary containing 
+    ''' name/value arguments for use by the rule method.</param>
+    ''' <remarks>
+    ''' <para>
+    ''' The <b>severity</b> parameter defines only the initial default 
+    ''' severity value. If the rule changes this value by setting
+    ''' e.Severity, then that new value will become the default for all
+    ''' subsequent rule invocations.
+    ''' </para><para>
+    ''' To avoid confusion, it is recommended that the 
+    ''' <b>severity</b> constructor parameter 
+    ''' only be used for rule methods that do not explicitly set
+    ''' e.Severity.
+    ''' </para>
+    ''' </remarks>
+    Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal severity As RuleSeverity, ByVal args As Dictionary(Of String, Object))
+      MyBase.New(propertyInfo, severity)
       mDecorations = args
     End Sub
 
@@ -246,6 +341,35 @@ Namespace Validation
     ''' </remarks>
     Public Sub New(ByVal propertyName As String, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean, ByVal args As Dictionary(Of String, Object))
       MyBase.New(propertyName, severity, stopProcessing)
+      mDecorations = args
+    End Sub
+
+    ''' <summary>
+    ''' Creates an instance of RuleArgs.
+    ''' </summary>
+    ''' <param name="propertyInfo">The PropertyInfo for the property to be validated.</param>
+    ''' <param name="severity">The default severity for the rule.</param>
+    ''' <param name="stopProcessing">
+    ''' Initial default value for the StopProcessing property.
+    ''' </param>
+    ''' <param name="args">Reference to a Dictionary containing 
+    ''' name/value arguments for use by the rule method.</param>
+    ''' <remarks>
+    ''' <para>
+    ''' The <b>severity</b> and <b>stopProcessing</b> parameters 
+    ''' define only the initial default values. If the rule 
+    ''' changes these values by setting e.Severity or
+    ''' e.StopProcessing, then the new values will become 
+    ''' the default for all subsequent rule invocations.
+    ''' </para><para>
+    ''' To avoid confusion, It is recommended that the 
+    ''' <b>severity</b> and <b>stopProcessing</b> constructor 
+    ''' parameters only be used for rule methods that do 
+    ''' not explicitly set e.Severity or e.StopProcessing.
+    ''' </para>
+    ''' </remarks>
+    Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean, ByVal args As Dictionary(Of String, Object))
+      MyBase.New(propertyInfo, severity, stopProcessing)
       mDecorations = args
     End Sub
 

@@ -40,6 +40,13 @@ Namespace Core
     ''' </summary>
     ''' <returns>A value indicating if this object is both dirty and valid.</returns>
     ReadOnly Property IsSavable() As Boolean
+    ''' <summary>
+    ''' Used by BusinessListBase as a child object is 
+    ''' created to tell the child object about its
+    ''' parent.
+    ''' </summary>
+    ''' <param name="parent">A reference to the parent collection object.</param>
+    Sub SetParent(ByVal parent As IParent)
 
   End Interface
 

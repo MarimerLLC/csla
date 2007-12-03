@@ -13,7 +13,7 @@ namespace Csla
   /// data type and the design choices behind it.
   /// </remarks>
   [Serializable()]
-  public struct SmartDate : IComparable
+  public struct SmartDate : Csla.Core.ISmartField, IComparable
   {
     private DateTime _date;
     private bool _initialized;
@@ -121,6 +121,54 @@ namespace Csla
       _initialized = false;
       _date = DateTime.MinValue;
       Date = value;
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
+    /// <remarks>
+    /// The SmartDate created will use the min possible
+    /// date to represent an empty date.
+    /// </remarks>
+    /// <param name="value">The initial value of the object.</param>
+    public SmartDate(DateTime? value)
+    {
+      _emptyValue = Csla.SmartDate.EmptyValue.MinDate;
+      _format = null;
+      _initialized = false;
+      _date = DateTime.MinValue;
+      if (value.HasValue)
+        Date = value.Value;
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
+    /// <param name="value">The initial value of the object.</param>
+    /// <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+    public SmartDate(DateTime? value, bool emptyIsMin)
+    {
+      _emptyValue = GetEmptyValue(emptyIsMin);
+      _format = null;
+      _initialized = false;
+      _date = DateTime.MinValue;
+      if (value.HasValue)
+        Date = value.Value;
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
+    /// <param name="value">The initial value of the object.</param>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+    public SmartDate(DateTime? value, EmptyValue emptyValue)
+    {
+      _emptyValue = emptyValue;
+      _format = null;
+      _initialized = false;
+      _date = DateTime.MinValue;
+      if (value.HasValue)
+        Date = value.Value;
     }
 
     /// <summary>
@@ -349,6 +397,17 @@ namespace Csla
     public DateTimeOffset ToDateTimeOffset()
     {
       return new DateTimeOffset(this.Date);
+    }
+
+    /// <summary>
+    /// Gets the value as a DateTime?.
+    /// </summary>
+    public DateTime? ToNullableDate()
+    {
+      if (this.IsEmpty)
+        return new DateTime?();
+      else
+        return new DateTime?(this.Date);
     }
 
     #endregion

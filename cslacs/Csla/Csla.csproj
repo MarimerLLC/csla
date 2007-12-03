@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21004</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9DA591ED-C570-47AC-8E5D-35B039E07973}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -93,6 +93,7 @@
     <Compile Include="Core\IParent.cs" />
     <Compile Include="Core\IReportTotalRowCount.cs" />
     <Compile Include="Core\ISavable.cs" />
+    <Compile Include="Core\ISmartField.cs" />
     <Compile Include="Core\ISupportUndo.cs" />
     <Compile Include="Core\IUndoableObject.cs" />
     <Compile Include="Core\IBusinessObject.cs" />

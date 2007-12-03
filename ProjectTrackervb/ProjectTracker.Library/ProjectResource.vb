@@ -8,7 +8,7 @@ Public Class ProjectResource
 
   Private mTimestamp(7) As Byte
 
-  Private Shared ResourceIdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, ProjectResource)("ResourceId", "Resource id")
+  Private Shared ResourceIdProperty As New PropertyInfo(Of Integer)("ResourceId", "Resource id")
   Private mResourceId As Integer = ResourceIdProperty.DefaultValue
   Public ReadOnly Property ResourceId() As Integer
     Get
@@ -16,7 +16,7 @@ Public Class ProjectResource
     End Get
   End Property
 
-  Private Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, ProjectResource)("FirstName", "First name")
+  Private Shared FirstNameProperty As New PropertyInfo(Of String)("FirstName", "First name")
   Private mFirstName As String = FirstNameProperty.DefaultValue
   Public ReadOnly Property FirstName() As String
     Get
@@ -24,7 +24,7 @@ Public Class ProjectResource
     End Get
   End Property
 
-  Private Shared LastNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, ProjectResource)("LastName", "Last name")
+  Private Shared LastNameProperty As New PropertyInfo(Of String)("LastName", "Last name")
   Private mLastName As String = ""
   Public ReadOnly Property LastName() As String
     Get
@@ -38,15 +38,15 @@ Public Class ProjectResource
     End Get
   End Property
 
-  Private Shared AssignedProperty As PropertyInfo(Of String) = RegisterProperty(Of String, ProjectResource)("Assigned", "Date assigned")
+  Private Shared AssignedProperty As New PropertyInfo(Of SmartDate)("Assigned", "Date assigned")
   Private mAssigned As New SmartDate(Today)
   Public ReadOnly Property Assigned() As String
     Get
-      Return GetProperty(Of String)(AssignedProperty, mAssigned)
+      Return GetProperty(Of SmartDate, String)(AssignedProperty, mAssigned)
     End Get
   End Property
 
-  Private Shared RoleProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, ProjectResource)("Role", "Role assigned")
+  Private Shared RoleProperty As New PropertyInfo(Of Integer)("Role", "Role assigned")
   Private mRole As Integer
   Public Property Role() As Integer Implements IHoldRoles.Role
     Get
@@ -76,7 +76,7 @@ Public Class ProjectResource
 
   Protected Overrides Sub AddBusinessRules()
 
-    ValidationRules.AddRule(AddressOf Assignment.ValidRole, "Role")
+    ValidationRules.AddRule(AddressOf Assignment.ValidRole, RoleProperty)
 
   End Sub
 
@@ -86,7 +86,7 @@ Public Class ProjectResource
 
   Protected Overrides Sub AddAuthorizationRules()
 
-    AuthorizationRules.AllowWrite("Role", "ProjectManager")
+    AuthorizationRules.AllowWrite(RoleProperty, "ProjectManager")
 
   End Sub
 

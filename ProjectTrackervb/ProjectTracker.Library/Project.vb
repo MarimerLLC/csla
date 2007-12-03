@@ -6,7 +6,7 @@ Public Class Project
 
   Private mTimestamp(7) As Byte
 
-  Private Shared IdProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid, Project)("Id")
+  Private Shared IdProperty As New PropertyInfo(Of Guid)("Id")
   Private mId As Guid = Guid.NewGuid
   <System.ComponentModel.DataObjectField(True, True)> _
   Public ReadOnly Property Id() As Guid
@@ -15,7 +15,7 @@ Public Class Project
     End Get
   End Property
 
-  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Project)("Name")
+  Private Shared NameProperty As New PropertyInfo(Of String)("Name")
   Private mName As String = NameProperty.DefaultValue
   Public Property Name() As String
     Get
@@ -26,29 +26,29 @@ Public Class Project
     End Set
   End Property
 
-  Private Shared StartedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate, Project)("Started")
+  Private Shared StartedProperty As New PropertyInfo(Of SmartDate)("Started")
   Private mStarted As SmartDate = StartedProperty.DefaultValue
   Public Property Started() As String
     Get
-      Return GetProperty(Of SmartDate)(StartedProperty, mStarted)
+      Return GetProperty(Of SmartDate, String)(StartedProperty, mStarted)
     End Get
     Set(ByVal value As String)
-      SetProperty(Of SmartDate)(StartedProperty, mStarted, value)
+      SetProperty(Of SmartDate, String)(StartedProperty, mStarted, value)
     End Set
   End Property
 
-  Private Shared EndedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate, Project)("Ended", New SmartDate(False))
+  Private Shared EndedProperty As New PropertyInfo(Of SmartDate)("Ended", New SmartDate(SmartDate.EmptyValue.MaxDate))
   Private mEnded As SmartDate = EndedProperty.DefaultValue
   Public Property Ended() As String
     Get
-      Return GetProperty(Of SmartDate)(EndedProperty, mEnded)
+      Return GetProperty(Of SmartDate, String)(EndedProperty, mEnded)
     End Get
     Set(ByVal value As String)
-      SetProperty(Of SmartDate)(EndedProperty, mEnded, value)
+      SetProperty(Of SmartDate, String)(EndedProperty, mEnded, value)
     End Set
   End Property
 
-  Private Shared DescriptionProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Project)("Description")
+  Private Shared DescriptionProperty As New PropertyInfo(Of String)("Description")
   Private mDescription As String = DescriptionProperty.DefaultValue
   Public Property Description() As String
     Get
@@ -59,13 +59,13 @@ Public Class Project
     End Set
   End Property
 
-  Private Shared ResourcesProperty As PropertyInfo(Of ProjectResources) = RegisterProperty(Of ProjectResources, Project)("Resources")
+  Private Shared ResourcesProperty As New PropertyInfo(Of ProjectResources)("Resources")
   Public ReadOnly Property Resources() As ProjectResources
     Get
-      If Not ChildExists(ResourcesProperty) Then
-        SetChild(Of ProjectResources)(ResourcesProperty, ProjectResources.NewProjectResources())
+      If Not PropertyManager.PropertyFieldExists(ResourcesProperty) Then
+        SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.NewProjectResources())
       End If
-      Return GetChild(Of ProjectResources)(ResourcesProperty)
+      Return GetProperty(Of ProjectResources)(ResourcesProperty)
     End Get
   End Property
 
@@ -80,15 +80,15 @@ Public Class Project
   Protected Overrides Sub AddBusinessRules()
 
     ValidationRules.AddRule( _
-      AddressOf Validation.CommonRules.StringRequired, New Csla.Validation.RuleArgs("Name", "Project name"))
+      AddressOf Validation.CommonRules.StringRequired, New Csla.Validation.RuleArgs(NameProperty))
     ValidationRules.AddRule( _
       AddressOf Validation.CommonRules.StringMaxLength, _
-      New Validation.CommonRules.MaxLengthRuleArgs("Name", 50))
+      New Validation.CommonRules.MaxLengthRuleArgs(NameProperty, 50))
 
-    ValidationRules.AddRule(Of Project)(AddressOf StartDateGTEndDate(Of Project), "Started")
-    ValidationRules.AddRule(Of Project)(AddressOf StartDateGTEndDate(Of Project), "Ended")
+    ValidationRules.AddRule(Of Project)(AddressOf StartDateGTEndDate(Of Project), StartedProperty)
+    ValidationRules.AddRule(Of Project)(AddressOf StartDateGTEndDate(Of Project), EndedProperty)
 
-    ValidationRules.AddDependantProperty("Started", "Ended", True)
+    ValidationRules.AddDependentProperty(StartedProperty, EndedProperty, True)
 
   End Sub
 
@@ -113,10 +113,10 @@ Public Class Project
   Protected Overrides Sub AddAuthorizationRules()
 
     ' add AuthorizationRules here
-    AuthorizationRules.AllowWrite("Name", "ProjectManager")
-    AuthorizationRules.AllowWrite("Started", "ProjectManager")
-    AuthorizationRules.AllowWrite("Ended", "ProjectManager")
-    AuthorizationRules.AllowWrite("Description", "ProjectManager")
+    AuthorizationRules.AllowWrite(NameProperty, "ProjectManager")
+    AuthorizationRules.AllowWrite(StartedProperty, "ProjectManager")
+    AuthorizationRules.AllowWrite(EndedProperty, "ProjectManager")
+    AuthorizationRules.AllowWrite(DescriptionProperty, "ProjectManager")
 
   End Sub
 
@@ -256,7 +256,7 @@ Public Class Project
 
             ' load child objects
             .NextResult()
-            SetChild(Of ProjectResources)(ResourcesProperty, ProjectResources.GetProjectResources(dr))
+            SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.GetProjectResources(dr))
           End With
         End Using
       End Using
@@ -275,7 +275,7 @@ Public Class Project
       End Using
     End Using
     ' update child objects
-    GetChild(Of ProjectResources)(ResourcesProperty).Update(Me)
+    GetProperty(Of ProjectResources)(ResourcesProperty).Update(Me)
 
   End Sub
 
@@ -293,7 +293,7 @@ Public Class Project
       End Using
     End If
     ' update child objects
-    GetChild(Of ProjectResources)(ResourcesProperty).Update(Me)
+    GetProperty(Of ProjectResources)(ResourcesProperty).Update(Me)
 
   End Sub
 

@@ -6,7 +6,7 @@ Public Class Resource
 
   Private mTimestamp(7) As Byte
 
-  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, Resource)("Id")
+  Private Shared IdProperty As New PropertyInfo(Of Integer)("Id")
   Private mId As Integer = IdProperty.DefaultValue
   Public ReadOnly Property Id() As Integer
     Get
@@ -14,7 +14,7 @@ Public Class Resource
     End Get
   End Property
 
-  Private Shared LastNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Resource)("LastName", "Last name")
+  Private Shared LastNameProperty As New PropertyInfo(Of String)("LastName", "Last name")
   Private mLastName As String = LastNameProperty.DefaultValue
   Public Property LastName() As String
     Get
@@ -25,7 +25,7 @@ Public Class Resource
     End Set
   End Property
 
-  Private Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Resource)("FirstName", "First name")
+  Private Shared FirstNameProperty As New PropertyInfo(Of String)("FirstName", "First name")
   Private mFirstName As String = FirstNameProperty.DefaultValue
   Public Property FirstName() As String
     Get
@@ -36,20 +36,20 @@ Public Class Resource
     End Set
   End Property
 
-  Private Shared FullNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Resource)("FullName", "Full name")
+  Private Shared FullNameProperty As New PropertyInfo(Of String)("FullName", "Full name")
   Public ReadOnly Property FullName() As String
     Get
       Return LastName & ", " & FirstName
     End Get
   End Property
 
-  Private Shared AssignmentsProperty As PropertyInfo(Of ResourceAssignments) = RegisterProperty(Of ResourceAssignments, Resource)("Assignments")
+  Private Shared AssignmentsProperty As New PropertyInfo(Of ResourceAssignments)("Assignments")
   Public ReadOnly Property Assignments() As ResourceAssignments
     Get
-      If Not ChildExists(AssignmentsProperty) Then
-        SetChild(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.NewResourceAssignments())
+      If Not PropertyManager.PropertyFieldExists(AssignmentsProperty) Then
+        SetProperty(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.NewResourceAssignments())
       End If
-      Return GetChild(Of ResourceAssignments)(AssignmentsProperty)
+      Return GetProperty(Of ResourceAssignments)(AssignmentsProperty)
     End Get
   End Property
 
@@ -66,13 +66,13 @@ Public Class Resource
   Protected Overrides Sub AddBusinessRules()
 
     ValidationRules.AddRule( _
-      AddressOf Validation.CommonRules.StringRequired, "FirstName")
+      AddressOf Validation.CommonRules.StringRequired, FirstNameProperty)
     ValidationRules.AddRule(AddressOf Validation.CommonRules.StringMaxLength, _
-      New Validation.CommonRules.MaxLengthRuleArgs("FirstName", 50))
+      New Validation.CommonRules.MaxLengthRuleArgs(FirstNameProperty, 50))
 
-    ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, "LastName")
+    ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, LastNameProperty)
     ValidationRules.AddRule(AddressOf Validation.CommonRules.StringMaxLength, _
-      New Validation.CommonRules.MaxLengthRuleArgs("LastName", 50))
+      New Validation.CommonRules.MaxLengthRuleArgs(LastNameProperty, 50))
 
   End Sub
 
@@ -83,8 +83,8 @@ Public Class Resource
   Protected Overrides Sub AddAuthorizationRules()
 
     ' add AuthorizationRules here
-    AuthorizationRules.AllowWrite("LastName", "ProjectManager")
-    AuthorizationRules.AllowWrite("FirstName", "ProjectManager")
+    AuthorizationRules.AllowWrite(LastNameProperty, "ProjectManager")
+    AuthorizationRules.AllowWrite(FirstNameProperty, "ProjectManager")
 
   End Sub
 
@@ -214,7 +214,7 @@ Private Class Criteria
 
             ' load child objects
             dr.NextResult()
-            SetChild(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(dr))
+            SetProperty(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(dr))
           End Using
         End With
       End Using
@@ -248,7 +248,7 @@ Private Class Criteria
         End With
       End Using
       ' update child objects
-      GetChild(Of ResourceAssignments)(AssignmentsProperty).Update(Me)
+      GetProperty(Of ResourceAssignments)(AssignmentsProperty).Update(Me)
       ' removing of item only needed for local data portal
       If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
         ApplicationContext.LocalContext.Remove("cn")
@@ -285,7 +285,7 @@ Private Class Criteria
         End Using
       End If
       ' update child objects
-      GetChild(Of ResourceAssignments)(AssignmentsProperty).Update(Me)
+      GetProperty(Of ResourceAssignments)(AssignmentsProperty).Update(Me)
       ' removing of item only needed for local data portal
       If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
         ApplicationContext.LocalContext.Remove("cn")

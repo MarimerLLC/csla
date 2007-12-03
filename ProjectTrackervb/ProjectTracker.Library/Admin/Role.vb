@@ -8,7 +8,7 @@ Namespace Admin
 
 #Region " Business Methods "
 
-    Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, Role)("Id")
+    Private Shared IdProperty As New PropertyInfo(Of Integer)("Id")
     Private mId As Integer = IdProperty.DefaultValue
     Private mIdSet As Boolean
     Public Property Id() As Integer
@@ -29,18 +29,18 @@ Namespace Admin
       End Get
       Set(ByVal value As Integer)
         mIdSet = True
-        SetProperty(IdProperty, mId, value)
+        SetProperty(Of Integer)(IdProperty, mId, value)
       End Set
     End Property
 
-    Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, Role)("Name")
+    Private Shared NameProperty As New PropertyInfo(Of String)("Name")
     Private mName As String = NameProperty.DefaultValue
     Public Property Name() As String
       Get
         Return GetProperty(NameProperty, mName)
       End Get
       Set(ByVal value As String)
-        SetProperty(NameProperty, mName, value)
+        SetProperty(Of String)(NameProperty, mName, value)
       End Set
     End Property
 
@@ -52,9 +52,9 @@ Namespace Admin
 
     Protected Overrides Sub AddBusinessRules()
 
-      ValidationRules.AddRule(Of Role)(AddressOf NoDuplicates, "Id")
+      ValidationRules.AddRule(Of Role)(AddressOf NoDuplicates, IdProperty)
       ValidationRules.AddRule( _
-        AddressOf Csla.Validation.CommonRules.StringRequired, "Name")
+        AddressOf Csla.Validation.CommonRules.StringRequired, NameProperty)
 
     End Sub
 
@@ -80,8 +80,8 @@ Namespace Admin
 
     Protected Overrides Sub AddAuthorizationRules()
 
-      AuthorizationRules.AllowWrite("Id", "Administrator")
-      AuthorizationRules.AllowWrite("Name", "Administrator")
+      AuthorizationRules.AllowWrite(IdProperty, "Administrator")
+      AuthorizationRules.AllowWrite(NameProperty, "Administrator")
 
     End Sub
 

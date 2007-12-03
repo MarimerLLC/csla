@@ -8,7 +8,7 @@ Public Class ResourceAssignment
 
   Private mTimestamp(7) As Byte
 
-  Private Shared ProjectIdProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid, ResourceAssignment)("ProjectId", Guid.Empty)
+  Private Shared ProjectIdProperty As New PropertyInfo(Of Guid)("ProjectId", Guid.Empty)
   Private mProjectId As Guid = ProjectIdProperty.DefaultValue
   Public ReadOnly Property ProjectId() As Guid
     Get
@@ -16,7 +16,7 @@ Public Class ResourceAssignment
     End Get
   End Property
 
-  Private Shared ProjectNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String, ResourceAssignment)("ProjectName")
+  Private Shared ProjectNameProperty As New PropertyInfo(Of String)("ProjectName")
   Private mProjectName As String = ProjectNameProperty.DefaultValue
   Public ReadOnly Property ProjectName() As String
     Get
@@ -24,15 +24,15 @@ Public Class ResourceAssignment
     End Get
   End Property
 
-  Private Shared AssignedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate, ResourceAssignment)("Assigned")
+  Private Shared AssignedProperty As New PropertyInfo(Of SmartDate)("Assigned")
   Private mAssigned As New SmartDate(Today)
   Public ReadOnly Property Assigned() As String
     Get
-      Return GetProperty(Of SmartDate)(AssignedProperty, mAssigned)
+      Return GetProperty(Of SmartDate, String)(AssignedProperty, mAssigned)
     End Get
   End Property
 
-  Private Shared RoleProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer, ResourceAssignment)("Role")
+  Private Shared RoleProperty As New PropertyInfo(Of Integer)("Role")
   Private mRole As Integer = RoleProperty.DefaultValue
   Public Property Role() As Integer Implements IHoldRoles.Role
     Get
@@ -62,7 +62,7 @@ Public Class ResourceAssignment
 
   Protected Overrides Sub AddBusinessRules()
 
-    ValidationRules.AddRule(AddressOf Assignment.ValidRole, "Role")
+    ValidationRules.AddRule(AddressOf Assignment.ValidRole, RoleProperty)
 
   End Sub
 
@@ -72,7 +72,7 @@ Public Class ResourceAssignment
 
   Protected Overrides Sub AddAuthorizationRules()
 
-    AuthorizationRules.AllowWrite("Role", "ProjectManager")
+    AuthorizationRules.AllowWrite(RoleProperty, "ProjectManager")
 
   End Sub
 

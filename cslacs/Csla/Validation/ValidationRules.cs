@@ -450,6 +450,34 @@ namespace Csla.Validation
     /// </para>
     /// </remarks>
     /// <param name="handler">The method that implements the rule.</param>
+    /// <param name="args">
+    /// A RuleArgs object specifying the property name and other arguments
+    /// passed to the rule method
+    /// </param>
+    public void AddRule<T>(RuleHandler<T, RuleArgs> handler, RuleArgs args)
+    {
+      ValidateHandler(handler);
+      GetTypeRules(true).AddRule<T, RuleArgs>(handler, args, 0);
+    }
+
+    /// <summary>
+    /// Adds a rule to the list of rules to be enforced.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A rule is implemented by a method which conforms to the 
+    /// method signature defined by the RuleHandler delegate.
+    /// </para><para>
+    /// The propertyName may be used by the method that implements the rule
+    /// in order to retrieve the value to be validated. If the rule
+    /// implementation is inside the target object then it probably has
+    /// direct access to all data. However, if the rule implementation
+    /// is outside the target object then it will need to use reflection
+    /// or CallByName to dynamically invoke this property to retrieve
+    /// the value to be validated.
+    /// </para>
+    /// </remarks>
+    /// <param name="handler">The method that implements the rule.</param>
     /// <param name="propertyName">
     /// The property name on the target object where the rule implementation can retrieve
     /// the value to be validated.

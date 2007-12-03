@@ -7,9 +7,12 @@
 ''' data type and the design choices behind it.
 ''' </remarks>
 <Serializable()> _
+<System.ComponentModel.TypeConverter(GetType(Csla.Core.TypeConverters.SmartDateConverter))> _
 Public Structure SmartDate
 
+  Implements Core.ISmartField
   Implements IComparable
+  Implements IConvertible
 
   Private mDate As Date
   Private mEmptyValue As EmptyValue
@@ -93,6 +96,45 @@ Public Structure SmartDate
   Public Sub New(ByVal value As Date, ByVal emptyValue As EmptyValue)
     mEmptyValue = emptyValue
     Me.Date = value
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <remarks>
+  ''' The SmartDate created will use the min possible
+  ''' date to represent an empty date.
+  ''' </remarks>
+  ''' <param name="value">The initial value of the object.</param>
+  Public Sub New(ByVal value As Date?)
+    mEmptyValue = EmptyValue.MinDate
+    If value.HasValue Then
+      Me.Date = value.Value
+    End If
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="value">The initial value of the object.</param>
+  ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal value As Date?, ByVal emptyIsMin As Boolean)
+    mEmptyValue = GetEmptyValue(emptyIsMin)
+    If value.HasValue Then
+      Me.Date = value.Value
+    End If
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
+  ''' <param name="value">The initial value of the object.</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  Public Sub New(ByVal value As Date?, ByVal emptyValue As EmptyValue)
+    mEmptyValue = emptyValue
+    If value.HasValue Then
+      Me.Date = value.Value
+    End If
   End Sub
 
   ''' <summary>
@@ -239,7 +281,7 @@ Public Structure SmartDate
   ''' short date format (d).
   ''' </para>
   ''' </remarks>
-  Public Property Text() As String
+  Public Property Text() As String Implements Core.ISmartField.Text
     Get
       Return DateToString(Me.Date, FormatString, mEmptyValue)
     End Get
@@ -272,9 +314,23 @@ Public Structure SmartDate
   ''' <summary>
   ''' Gets the value as a DateTimeOffset.
   ''' </summary>
-  Public Function GetDateTimeOffset() As DateTimeOffset
+  Public Function ToDateTimeOffset() As DateTimeOffset
 
     Return New DateTimeOffset(mDate)
+
+  End Function
+
+  ''' <summary>
+  ''' Gets the value as a Date?.
+  ''' </summary>
+  Public Function ToNullableDate() As Date?
+
+    If Me.IsEmpty Then
+      Return New Date?
+
+    Else
+      Return New Date?(Me.Date)
+    End If
 
   End Function
 
@@ -372,7 +428,7 @@ Public Structure SmartDate
   ''' <summary>
   ''' Gets a value indicating whether this object contains an empty date.
   ''' </summary>
-  Public ReadOnly Property IsEmpty() As Boolean
+  Public ReadOnly Property IsEmpty() As Boolean Implements Core.ISmartField.IsEmpty
     Get
       If mEmptyValue = EmptyValue.MinDate Then
         Return Me.Date.Equals(Date.MinValue)
@@ -980,6 +1036,83 @@ Public Structure SmartDate
   Public Shared Operator <=(ByVal obj1 As SmartDate, ByVal obj2 As String) As Boolean
     Return obj1.CompareTo(obj2) <= 0
   End Operator
+
+#End Region
+
+#Region " IConvertible "
+
+  Private Function GetTypeCode() As System.TypeCode Implements System.IConvertible.GetTypeCode
+    Return DirectCast(mDate, IConvertible).GetTypeCode
+  End Function
+
+  Private Function ToBoolean(ByVal provider As System.IFormatProvider) As Boolean Implements System.IConvertible.ToBoolean
+    Return DirectCast(mDate, IConvertible).ToBoolean(provider)
+  End Function
+
+  Private Function ToByte(ByVal provider As System.IFormatProvider) As Byte Implements System.IConvertible.ToByte
+    Return DirectCast(mDate, IConvertible).ToByte(provider)
+  End Function
+
+  Private Function ToChar(ByVal provider As System.IFormatProvider) As Char Implements System.IConvertible.ToChar
+    Return DirectCast(mDate, IConvertible).ToChar(provider)
+  End Function
+
+  Private Function ToDateTime(ByVal provider As System.IFormatProvider) As Date Implements System.IConvertible.ToDateTime
+    Return DirectCast(mDate, IConvertible).ToDateTime(provider)
+  End Function
+
+  Private Function ToDecimal(ByVal provider As System.IFormatProvider) As Decimal Implements System.IConvertible.ToDecimal
+    Return DirectCast(mDate, IConvertible).ToDecimal(provider)
+  End Function
+
+  Private Function ToDouble(ByVal provider As System.IFormatProvider) As Double Implements System.IConvertible.ToDouble
+    Return DirectCast(mDate, IConvertible).ToDouble(provider)
+  End Function
+
+  Private Function ToInt16(ByVal provider As System.IFormatProvider) As Short Implements System.IConvertible.ToInt16
+    Return DirectCast(mDate, IConvertible).ToInt16(provider)
+  End Function
+
+  Private Function ToInt32(ByVal provider As System.IFormatProvider) As Integer Implements System.IConvertible.ToInt32
+    Return DirectCast(mDate, IConvertible).ToInt32(provider)
+  End Function
+
+  Private Function ToInt64(ByVal provider As System.IFormatProvider) As Long Implements System.IConvertible.ToInt64
+    Return DirectCast(mDate, IConvertible).ToInt64(provider)
+  End Function
+
+  Private Function ToSByte(ByVal provider As System.IFormatProvider) As SByte Implements System.IConvertible.ToSByte
+    Return DirectCast(mDate, IConvertible).ToSByte(provider)
+  End Function
+
+  Private Function ToSingle(ByVal provider As System.IFormatProvider) As Single Implements System.IConvertible.ToSingle
+    Return DirectCast(mDate, IConvertible).ToSingle(provider)
+  End Function
+
+  Private Function ToString1(ByVal provider As System.IFormatProvider) As String Implements System.IConvertible.ToString
+    Return DirectCast(Text, IConvertible).ToString(provider)
+  End Function
+
+  Private Function ToType(ByVal conversionType As System.Type, ByVal provider As System.IFormatProvider) As Object Implements System.IConvertible.ToType
+    If conversionType.Equals(GetType(String)) Then
+      Return DirectCast(Text, IConvertible).ToType(conversionType, provider)
+
+    Else
+      Return DirectCast(mDate, IConvertible).ToType(conversionType, provider)
+    End If
+  End Function
+
+  Private Function ToUInt16(ByVal provider As System.IFormatProvider) As UShort Implements System.IConvertible.ToUInt16
+    Return DirectCast(mDate, IConvertible).ToUInt16(provider)
+  End Function
+
+  Private Function ToUInt32(ByVal provider As System.IFormatProvider) As UInteger Implements System.IConvertible.ToUInt32
+    Return DirectCast(mDate, IConvertible).ToUInt32(provider)
+  End Function
+
+  Private Function ToUInt64(ByVal provider As System.IFormatProvider) As ULong Implements System.IConvertible.ToUInt64
+    Return DirectCast(mDate, IConvertible).ToUInt64(provider)
+  End Function
 
 #End Region
 

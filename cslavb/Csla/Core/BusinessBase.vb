@@ -273,6 +273,7 @@ Namespace Core
     ''' </remarks>
     Protected Overridable Sub PropertyHasChanged(ByVal propertyName As String)
 
+      OnPropertyChanging(propertyName)
       ValidationRules.CheckRules(propertyName)
       MarkDirty(True)
       OnPropertyChanged(propertyName)
@@ -1735,6 +1736,7 @@ Namespace Core
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
         If GetType(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type) Then
+          OnPropertyChanging(propertyInfo.Name)
           If PropertyManager.PropertyFieldExists(propertyInfo) Then
             ' remove old event hook
             Dim oldValue As Object = PropertyManager.ChildValues.Item(propertyInfo.Name)
@@ -1753,6 +1755,7 @@ Namespace Core
           OnPropertyChanged(propertyInfo.Name)
 
         ElseIf GetType(IEditableCollection).IsAssignableFrom(propertyInfo.Type) Then
+          OnPropertyChanging(propertyInfo.Name)
           PropertyManager.ChildValues.Item(propertyInfo.Name) = CType(newValue, IBusinessObject)
           ' TODO: set parent value
           ' TODO: hook child event (ListChanged, CollectionChanged or PropertyChanged)

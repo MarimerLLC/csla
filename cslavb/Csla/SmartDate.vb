@@ -13,6 +13,7 @@ Public Structure SmartDate
   Implements Core.ISmartField
   Implements IComparable
   Implements IConvertible
+  Implements IFormattable
 
   Private mDate As Date
   Private mEmptyValue As EmptyValue
@@ -1089,7 +1090,7 @@ Public Structure SmartDate
     Return DirectCast(mDate, IConvertible).ToSingle(provider)
   End Function
 
-  Private Function ToString1(ByVal provider As System.IFormatProvider) As String Implements System.IConvertible.ToString
+  Private Function IConvertible_ToString(ByVal provider As System.IFormatProvider) As String Implements System.IConvertible.ToString
     Return DirectCast(Text, IConvertible).ToString(provider)
   End Function
 
@@ -1112,6 +1113,18 @@ Public Structure SmartDate
 
   Private Function ToUInt64(ByVal provider As System.IFormatProvider) As ULong Implements System.IConvertible.ToUInt64
     Return DirectCast(mDate, IConvertible).ToUInt64(provider)
+  End Function
+
+#End Region
+
+#Region " IFormattable "
+
+  Private Function IFormattable_ToString( _
+    ByVal format As String, ByVal formatProvider As System.IFormatProvider) As String _
+    Implements System.IFormattable.ToString
+
+    Return Me.ToString(format)
+
   End Function
 
 #End Region

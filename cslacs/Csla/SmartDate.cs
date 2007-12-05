@@ -14,7 +14,7 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   [System.ComponentModel.TypeConverter(typeof(Csla.Core.TypeConverters.SmartDateConverter))]
-  public struct SmartDate : Csla.Core.ISmartField, IComparable, IConvertible
+  public struct SmartDate : Csla.Core.ISmartField, IComparable, IConvertible, IFormattable
   {
     private DateTime _date;
     private bool _initialized;
@@ -1231,5 +1231,14 @@ namespace Csla
 
     #endregion
 
+
+    #region IFormattable Members
+
+    string IFormattable.ToString(string format, IFormatProvider formatProvider)
+    {
+      return this.ToString(format);
+    }
+
+    #endregion
   }
 }

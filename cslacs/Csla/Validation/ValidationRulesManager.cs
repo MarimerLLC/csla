@@ -70,21 +70,21 @@ namespace Csla.Validation
     /// <param name="propertyName">
     /// The name of the property.
     /// </param>
-    /// <param name="dependantPropertyName">
-    /// The name of the dependant property.
+    /// <param name="dependentPropertyName">
+    /// The name of the dependent property.
     /// </param>
     /// <remarks>
     /// When rules are checked for propertyName, they will
-    /// also be checked for any dependant properties associated
+    /// also be checked for any dependent properties associated
     /// with that property.
     /// </remarks>
-    public void AddDependantProperty(string propertyName, string dependantPropertyName)
+    public void AddDependentProperty(string propertyName, string dependentPropertyName)
     {
       // get the list of rules for the property
       List<string> list = GetRulesForProperty(propertyName, true).GetDependancyList(true);
 
       // we have the list, add the dependency
-      list.Add(dependantPropertyName);
+      list.Add(dependentPropertyName);
     }
 
     #endregion

@@ -603,6 +603,61 @@ namespace Csla.Validation
     /// <param name="propertyName">
     /// The name of the property.
     /// </param>
+    /// <param name="dependentPropertyName">
+    /// The name of the depandent property.
+    /// </param>
+    /// <remarks>
+    /// When rules are checked for propertyName, they will
+    /// also be checked for any dependent properties associated
+    /// with that property.
+    /// </remarks>
+    public void AddDependentProperty(string propertyName, string dependentPropertyName)
+    {
+      GetTypeRules(true).AddDependentProperty(propertyName, dependentPropertyName);
+    }
+
+    /// <summary>
+    /// Adds a property to the list of dependencies for
+    /// the specified property
+    /// </summary>
+    /// <param name="propertyName">
+    /// The name of the property.
+    /// </param>
+    /// <param name="dependentPropertyName">
+    /// The name of the depandent property.
+    /// </param>
+    /// <param name="isBidirectional">
+    /// If <see langword="true"/> then a 
+    /// reverse dependancy is also established
+    /// from dependentPropertyName to propertyName.
+    /// </param>
+    /// <remarks>
+    /// When rules are checked for propertyName, they will
+    /// also be checked for any dependent properties associated
+    /// with that property. If isBidirectional is 
+    /// <see langword="true"/> then an additional association
+    /// is set up so when rules are checked for
+    /// dependentPropertyName the rules for propertyName
+    /// will also be checked.
+    /// </remarks>
+    public void AddDependentProperty(string propertyName, string dependentPropertyName, bool isBidirectional)
+    {
+
+      ValidationRulesManager mgr = GetTypeRules(true);
+      mgr.AddDependentProperty(propertyName, dependentPropertyName);
+      if (isBidirectional)
+      {
+        mgr.AddDependentProperty(dependentPropertyName, propertyName);
+      }
+    }
+
+    /// <summary>
+    /// Adds a property to the list of dependencies for
+    /// the specified property
+    /// </summary>
+    /// <param name="propertyName">
+    /// The name of the property.
+    /// </param>
     /// <param name="dependantPropertyName">
     /// The name of the depandent property.
     /// </param>
@@ -611,9 +666,10 @@ namespace Csla.Validation
     /// also be checked for any dependant properties associated
     /// with that property.
     /// </remarks>
+    [Obsolete("Use AddDependentProperty")]
     public void AddDependantProperty(string propertyName, string dependantPropertyName)
     {
-      GetTypeRules(true).AddDependantProperty(propertyName, dependantPropertyName);
+      AddDependentProperty(propertyName, dependantPropertyName);
     }
 
     /// <summary>
@@ -640,15 +696,10 @@ namespace Csla.Validation
     /// dependantPropertyName the rules for propertyName
     /// will also be checked.
     /// </remarks>
+    [Obsolete("Use AddDependentProperty")]
     public void AddDependantProperty(string propertyName, string dependantPropertyName, bool isBidirectional)
     {
-
-      ValidationRulesManager mgr = GetTypeRules(true);
-      mgr.AddDependantProperty(propertyName, dependantPropertyName);
-      if (isBidirectional)
-      {
-        mgr.AddDependantProperty(dependantPropertyName, propertyName);
-      }
+      AddDependentProperty(propertyName, dependantPropertyName, isBidirectional);
     }
 
     #endregion
@@ -658,7 +709,7 @@ namespace Csla.Validation
     /// <summary>
     /// Invokes all rule methods associated with
     /// the specified property and any 
-    /// dependant properties.
+    /// dependent properties.
     /// </summary>
     /// <param name="propertyName">The name of the property to validate.</param>
     public void CheckRules(string propertyName)
@@ -680,8 +731,8 @@ namespace Csla.Validation
           {
             for (int i = 0; i < dependancies.Count; i++)
             {
-              string dependantProperty = dependancies[i];
-              CheckRules(rules, dependantProperty);
+              string dependentProperty = dependancies[i];
+              CheckRules(rules, dependentProperty);
             }
           }
         }

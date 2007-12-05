@@ -105,6 +105,7 @@
     <Compile Include="Core\ReadOnlyBindingList.cs" />
     <Compile Include="Core\RemovingItemEventArgs.cs" />
     <Compile Include="Core\SavedEventArgs.cs" />
+    <Compile Include="Core\TypeConverters\SmartDateConverter.cs" />
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="Core\UndoException.cs" />
     <Compile Include="DataPortal\Client\DataPortal.cs" />

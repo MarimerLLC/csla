@@ -13,7 +13,8 @@ namespace Csla
   /// data type and the design choices behind it.
   /// </remarks>
   [Serializable()]
-  public struct SmartDate : Csla.Core.ISmartField, IComparable
+  [System.ComponentModel.TypeConverter(typeof(Csla.Core.TypeConverters.SmartDateConverter))]
+  public struct SmartDate : Csla.Core.ISmartField, IComparable, IConvertible
   {
     private DateTime _date;
     private bool _initialized;
@@ -1129,6 +1130,103 @@ namespace Csla
     public static bool operator <=(SmartDate obj1, string obj2)
     {
       return obj1.CompareTo(obj2) <= 0;
+    }
+
+    #endregion
+
+    #region  IConvertible
+
+    System.TypeCode IConvertible.GetTypeCode()
+    {
+      return ((IConvertible)_date).GetTypeCode();
+    }
+
+    bool IConvertible.ToBoolean(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToBoolean(provider);
+    }
+
+    byte IConvertible.ToByte(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToByte(provider);
+    }
+
+    char IConvertible.ToChar(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToChar(provider);
+    }
+
+    System.DateTime IConvertible.ToDateTime(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToDateTime(provider);
+    }
+
+    decimal IConvertible.ToDecimal(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToDecimal(provider);
+    }
+
+    double IConvertible.ToDouble(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToDouble(provider);
+    }
+
+    short IConvertible.ToInt16(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToInt16(provider);
+    }
+
+    int IConvertible.ToInt32(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToInt32(provider);
+    }
+
+    long IConvertible.ToInt64(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToInt64(provider);
+    }
+
+    sbyte IConvertible.ToSByte(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToSByte(provider);
+    }
+
+    float IConvertible.ToSingle(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToSingle(provider);
+    }
+
+    string IConvertible.ToString(System.IFormatProvider provider)
+    {
+      return ((IConvertible)Text).ToString(provider);
+    }
+
+    object IConvertible.ToType(System.Type conversionType, System.IFormatProvider provider)
+    {
+      if (conversionType.Equals(typeof(string)))
+      {
+        return ((IConvertible)Text).ToType(conversionType, provider);
+
+      }
+      else
+      {
+        return ((IConvertible)_date).ToType(conversionType, provider);
+      }
+    }
+
+    ushort IConvertible.ToUInt16(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToUInt16(provider);
+    }
+
+    uint IConvertible.ToUInt32(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToUInt32(provider);
+    }
+
+    ulong IConvertible.ToUInt64(System.IFormatProvider provider)
+    {
+      return ((IConvertible)_date).ToUInt64(provider);
     }
 
     #endregion

@@ -164,10 +164,10 @@ Namespace Core
       End RemoveHandler
 
       RaiseEvent(ByVal sender As Object, ByVal e As PropertyChangingEventArgs)
-        If mNonSerializableChangedHandlers IsNot Nothing Then
+        If mNonSerializableChangingHandlers IsNot Nothing Then
           mNonSerializableChangingHandlers.Invoke(sender, e)
         End If
-        If mSerializableChangedHandlers IsNot Nothing Then
+        If mSerializableChangingHandlers IsNot Nothing Then
           mSerializableChangingHandlers.Invoke(sender, e)
         End If
       End RaiseEvent

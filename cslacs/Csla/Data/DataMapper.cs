@@ -13,7 +13,6 @@ namespace Csla.Data
   /// <remarks></remarks>
   public static class DataMapper
   {
-
     #region Map from IDictionary
 
     /// <summary>
@@ -88,6 +87,66 @@ namespace Csla.Data
 
     #endregion
 
+    #region Map to Dictionary
+
+    /// <summary>
+    /// Copies values from the source into the target.
+    /// </summary>
+    /// <param name="source">An object with properties to be loaded into the dictionary.</param>
+    /// <param name="target">A name/value dictionary containing the source values.</param>
+    public static void Map(object source, Dictionary<string, object> target)
+    {
+      Map(source, target, false);
+    }
+
+    /// <summary>
+    /// Copies values from the source into the target.
+    /// </summary>
+    /// <param name="source">An object with properties to be loaded into the dictionary.</param>
+    /// <param name="target">A name/value dictionary containing the source values.</param>
+    /// <param name="ignoreList">A list of property names to ignore. 
+    /// These properties will not be set on the target object.</param>
+    public static void Map(object source, Dictionary<string, object> target, params string[] ignoreList)
+    {
+      Map(source, target, false, ignoreList);
+    }
+
+    /// <summary>
+    /// Copies values from the source into the target.
+    /// </summary>
+    /// <param name="source">An object with properties to be loaded into the dictionary.</param>
+    /// <param name="target">A name/value dictionary containing the source values.</param>
+    /// <param name="ignoreList">A list of property names to ignore. 
+    /// These properties will not be set on the target object.</param>
+    /// <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
+    public static void Map(
+      object source, Dictionary<string, object> target,
+      bool suppressExceptions,
+      params string[] ignoreList)
+    {
+      List<string> ignore = new List<string>(ignoreList);
+      foreach (PropertyInfo prop in Reflection.TypeInfoCache.GetPropertyInfo(source.GetType()))
+      {
+        string propertyName = prop.Name;
+        if (!ignore.Contains(propertyName))
+        {
+          try
+          {
+            target.Add(propertyName, prop.GetValue(source, null));
+          }
+          catch (Exception ex)
+          {
+            if (!suppressExceptions)
+              throw new ArgumentException(
+                String.Format("{0} ({1})",
+                Resources.PropertyCopyFailed, propertyName), ex);
+          }
+        }
+      }
+    }
+
+    #endregion
+
     #region Map from Object
 
     /// <summary>
@@ -150,8 +209,8 @@ namespace Csla.Data
       params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
-      PropertyInfo[] sourceProperties =
-        GetSourceProperties(source.GetType());
+      List<PropertyInfo> sourceProperties =
+        Csla.Reflection.TypeInfoCache.GetBrowsablePropertyInfo(source.GetType());
       foreach (PropertyInfo sourceProperty in sourceProperties)
       {
         string propertyName = sourceProperty.Name;
@@ -174,18 +233,71 @@ namespace Csla.Data
       }
     }
 
-    private static PropertyInfo[] GetSourceProperties(Type sourceType)
+    /// <summary>
+    /// Copies values from the source into the
+    /// properties of the target.
+    /// </summary>
+    /// <param name="source">An object containing the source values.</param>
+    /// <param name="target">An object with properties to be set from the dictionary.</param>
+    /// <param name="map">A DataMap object containing the mappings to use during the copy process.</param>
+    /// <remarks>
+    /// The property names and types of the source object must match the property names and types
+    /// on the target object. Source properties may not be indexed. 
+    /// Target properties may not be readonly or indexed.
+    /// </remarks>
+    public static void Map(object source, object target, DataMap map)
     {
-      List<PropertyInfo> result = new List<PropertyInfo>();
-      PropertyDescriptorCollection props =
-        TypeDescriptor.GetProperties(sourceType);
-      foreach (PropertyDescriptor item in props)
-        if (item.IsBrowsable)
-          result.Add(sourceType.GetProperty(item.Name));
-      return result.ToArray();
+      Map(source, target, map, false);
+    }
+
+    /// <summary>
+    /// Copies values from the source into the
+    /// properties of the target.
+    /// </summary>
+    /// <param name="source">An object containing the source values.</param>
+    /// <param name="target">An object with properties to be set from the dictionary.</param>
+    /// <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
+    /// <param name="map">A DataMap object containing the mappings to use during the copy process.</param>
+    /// <remarks>
+    /// The property names and types of the source object must match the property names and types
+    /// on the target object. Source properties may not be indexed. 
+    /// Target properties may not be readonly or indexed.
+    /// </remarks>
+    public static void Map(object source, object target, DataMap map, bool suppressExceptions)
+    {
+      foreach (DataMap.MemberMapping mapping in map.GetMap())
+      {
+        try
+        {
+          object value = GetValue(mapping.FromMember, source);
+          SetValue(
+            target, mapping.ToMember, value);
+        }
+        catch (Exception ex)
+        {
+          if (!suppressExceptions)
+            throw new ArgumentException(
+              String.Format("{0} ({1})",
+              Resources.PropertyCopyFailed, mapping.FromMember.Name), ex);
+        }
+      }
     }
 
     #endregion
+
+    #region GetValue
+
+    private static object GetValue(MemberInfo member, object source)
+    {
+      if (member.MemberType == MemberTypes.Property)
+        return ((PropertyInfo)member).GetValue(source, null);
+      else
+        return ((FieldInfo)member).GetValue(source);
+    }
+
+    #endregion
+
+    #region SetValue
 
     /// <summary>
     /// Sets an object's property with the specified value,
@@ -198,33 +310,89 @@ namespace Csla.Data
       object target, string propertyName, object value)
     {
       PropertyInfo propertyInfo =
-        target.GetType().GetProperty(propertyName);
-      if (value == null)
-        propertyInfo.SetValue(target, value, null);
-      else
+        target.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+      SetValue(target, propertyInfo, value);
+    }
+
+    /// <summary>
+    /// Sets an object's field with the specified value,
+    /// coercing that value to the appropriate type if possible.
+    /// </summary>
+    /// <param name="target">Object containing the field to set.</param>
+    /// <param name="fieldName">Name of the field (public or non-public) to set.</param>
+    /// <param name="value">Value to set into the field.</param>
+    public static void SetFieldValue(
+      object target, string fieldName, object value)
+    {
+      FieldInfo fieldInfo =
+        target.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      SetValue(target, fieldInfo, value);
+    }
+
+    /// <summary>
+    /// Sets an object's property or field with the specified value,
+    /// coercing that value to the appropriate type if possible.
+    /// </summary>
+    /// <param name="target">Object containing the member to set.</param>
+    /// <param name="memberInfo">MemberInfo object for the member to set.</param>
+    /// <param name="value">Value to set into the member.</param>
+    public static void SetValue(
+      object target, MemberInfo memberInfo, object value)
+    {
+      if (value != null)
       {
-        Type pType =
-          Utilities.GetPropertyType(propertyInfo.PropertyType);
+        Type pType;
+        if (memberInfo.MemberType == MemberTypes.Property)
+          pType = ((PropertyInfo)memberInfo).PropertyType;
+        else
+          pType = ((FieldInfo)memberInfo).FieldType;
         Type vType =
           Utilities.GetPropertyType(value.GetType());
-        if (pType.Equals(vType))
+        value = CoerceValue(pType, vType, value);
+      }
+      if (memberInfo.MemberType == MemberTypes.Property)
+        ((PropertyInfo)memberInfo).SetValue(target, value, null);
+      else
+        ((FieldInfo)memberInfo).SetValue(target, value);
+    }
+
+    private static object CoerceValue(Type propertyType, Type valueType, object value)
+    {
+      if (propertyType.Equals(valueType))
+      {
+        // types match, just return value
+        return value;
+      }
+      else
+      {
+        // types don't match, try to coerce
+        //if (propertyType.Equals(typeof(Guid)))
+        //  return new Guid(value.ToString());
+        //else 
+        if (propertyType.IsEnum && valueType.Equals(typeof(string)))
+          return Enum.Parse(propertyType, value.ToString());
+        if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
         {
-          // types match, just copy value
-          propertyInfo.SetValue(target, value, null);
+          if (valueType.Equals(typeof(string)) && (string)value == string.Empty)
+            return null;
+          else if (value == null)
+            return null;
         }
-        else
+        try
         {
-          // types don't match, try to coerce
-          if (pType.Equals(typeof(Guid)))
-            propertyInfo.SetValue(
-              target, new Guid(value.ToString()), null);
-          else if (pType.IsEnum && vType.Equals(typeof(string)))
-            propertyInfo.SetValue(target, Enum.Parse(pType, value.ToString()), null);
+          return Convert.ChangeType(value, Utilities.GetPropertyType(propertyType));
+        }
+        catch
+        {
+          TypeConverter cnv = TypeDescriptor.GetConverter(Utilities.GetPropertyType(propertyType));
+          if (cnv != null && cnv.CanConvertFrom(value.GetType()))
+            return cnv.ConvertFrom(value);
           else
-            propertyInfo.SetValue(
-              target, Convert.ChangeType(value, pType), null);
+            throw;
         }
       }
     }
+
+    #endregion
   }
 }

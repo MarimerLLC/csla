@@ -146,6 +146,7 @@
     <Compile Include="DataPortal\Server\TransactionalDataPortal.cs" />
     <Compile Include="DataPortal\TransactionalAttribute.cs" />
     <Compile Include="DataPortal\TransactionalTypes.cs" />
+    <Compile Include="Data\DataMap.cs" />
     <Compile Include="Data\DataMapper.cs" />
     <Compile Include="Data\ObjectAdapter.cs" />
     <Compile Include="Data\SafeDataReader.cs" />
@@ -170,6 +171,7 @@
     </Compile>
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
+    <Compile Include="Reflection\TypeInfoCache.cs" />
     <Compile Include="Security\AccessType.cs" />
     <Compile Include="Security\AuthorizationRules.cs" />
     <Compile Include="Security\AuthorizationRulesManager.cs" />

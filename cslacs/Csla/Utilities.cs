@@ -91,10 +91,7 @@ namespace Csla
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
         if (indexer != null)
-          foreach (PropertyInfo prop in listType.GetProperties(
-            BindingFlags.Public | 
-            BindingFlags.Instance | 
-            BindingFlags.FlattenHierarchy))
+          foreach (PropertyInfo prop in Csla.Reflection.TypeInfoCache.GetPropertyInfo(listType))
           {
             if (prop.Name == indexer.MemberName)
               result = Utilities.GetPropertyType(prop.PropertyType);

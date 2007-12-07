@@ -152,6 +152,7 @@
     <Compile Include="FilterProvider.vb" />
     <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="PropertyInfo.vb" />
+    <Compile Include="Reflection\TypeInfoCache.vb" />
     <Compile Include="Security\AccessType.vb" />
     <Compile Include="Security\AuthorizationRulesManager.vb" />
     <Compile Include="Security\IAuthorizeReadWrite.vb" />

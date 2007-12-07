@@ -26,14 +26,35 @@ namespace Csla.Test.DataMapper
       Csla.Data.DataMapper.SetPropertyValue(target, "MyInt", 42);
       Assert.AreEqual(42, target.MyInt, "Int should match");
 
+      Csla.Data.DataMapper.SetPropertyValue(target, "MyInt", "24");
+      Assert.AreEqual(24, target.MyInt, "Int from string should be 24");
+
+      Csla.Data.DataMapper.SetPropertyValue(target, "MyInt", "");
+      Assert.AreEqual(0, target.MyInt, "Int from empty string should be 0");
+
+      Csla.Data.DataMapper.SetPropertyValue(target, "MyInt", null);
+      Assert.AreEqual(0, target.MyInt, "Int from null should be 0");
+
       Csla.Data.DataMapper.SetPropertyValue(target, "MyDouble", 4.2);
       Assert.AreEqual(4.2, target.MyDouble, "Double should match");
+    }
+
+    [TestMethod]
+    public void BooleanTYpes()
+    {
+      DataMapTarget target = new DataMapTarget();
 
       Csla.Data.DataMapper.SetPropertyValue(target, "MyBool", true);
       Assert.AreEqual(true, target.MyBool, "Bool should be true");
 
       Csla.Data.DataMapper.SetPropertyValue(target, "MyBool", false);
       Assert.AreEqual(false, target.MyBool, "Bool should be false");
+
+      Csla.Data.DataMapper.SetPropertyValue(target, "MyBool", "");
+      Assert.AreEqual(false, target.MyBool, "Bool from empty string should be false");
+
+      Csla.Data.DataMapper.SetPropertyValue(target, "MyBool", null);
+      Assert.AreEqual(false, target.MyBool, "Bool from null should be false");
     }
 
     [TestMethod]

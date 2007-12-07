@@ -365,19 +365,24 @@ namespace Csla.Data
       }
       else
       {
-        // types don't match, try to coerce
-        //if (propertyType.Equals(typeof(Guid)))
-        //  return new Guid(value.ToString());
-        //else 
+        if (propertyType.IsGenericType)
+        {
+          if (propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+          {
+            if (value == null) 
+              return null;
+            else if (valueType.Equals(typeof(string)) && (string)value == string.Empty)
+              return null;
+          }
+          propertyType = Utilities.GetPropertyType(propertyType);
+        }
+
         if (propertyType.IsEnum && valueType.Equals(typeof(string)))
           return Enum.Parse(propertyType, value.ToString());
-        if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-        {
-          if (valueType.Equals(typeof(string)) && (string)value == string.Empty)
-            return null;
-          else if (value == null)
-            return null;
-        }
+
+        if (propertyType.IsPrimitive && valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+          value = 0;
+        
         try
         {
           return Convert.ChangeType(value, Utilities.GetPropertyType(propertyType));

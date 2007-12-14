@@ -30,8 +30,11 @@ namespace Csla.Validation
       {
         lock (_managers)
         {
-          result = new ValidationRulesManager();
-          _managers.Add(objectType, result);
+          if (!_managers.TryGetValue(objectType, out result))
+          {
+            result = new ValidationRulesManager();
+            _managers.Add(objectType, result);
+          }
         }
       }
       return result;

@@ -32,8 +32,11 @@ namespace Csla.Security
       {
         lock (_managers)
         {
-          result = new AuthorizationRulesManager();
-          _managers.Add(objectType, result);
+          if (!_managers.TryGetValue(objectType, out result))
+          {
+            result = new AuthorizationRulesManager();
+            _managers.Add(objectType, result);
+          }
         }
       }
       return result;

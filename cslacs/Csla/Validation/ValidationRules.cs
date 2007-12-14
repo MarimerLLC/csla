@@ -585,7 +585,7 @@ namespace Csla.Validation
 
     private bool ValidateHandler(System.Reflection.MethodInfo method)
     {
-      if (!method.IsStatic && method.DeclaringType.Equals(_target.GetType()))
+      if (!method.IsStatic && method.DeclaringType.IsInstanceOfType(_target))
         throw new InvalidOperationException(
           string.Format("{0}: {1}",
           Properties.Resources.InvalidRuleMethodException, method.Name));

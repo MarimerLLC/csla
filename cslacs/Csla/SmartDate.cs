@@ -127,6 +127,21 @@ namespace Csla
     /// <summary>
     /// Creates a new SmartDate object.
     /// </summary>
+    /// <param name="value">The initial value of the object.</param>
+    /// <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+    /// <param name="kind">One of the DateTimeKind values.</param>
+    public SmartDate(DateTime value, EmptyValue emptyValue, DateTimeKind kind)
+    {
+      _emptyValue = emptyValue;
+      _format = null;
+      _initialized = false;
+      _date = DateTime.MinValue;
+      Date = DateTime.SpecifyKind(value, kind);
+    }
+
+    /// <summary>
+    /// Creates a new SmartDate object.
+    /// </summary>
     /// <remarks>
     /// The SmartDate created will use the min possible
     /// date to represent an empty date.

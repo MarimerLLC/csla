@@ -706,6 +706,20 @@ namespace Csla.Validation
 
     #region Checking Rules
 
+    private bool _suppressRuleChecking;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether calling
+    /// <see cref="CheckRules"/> should result in rule
+    /// methods being invoked.
+    /// </summary>
+    /// <value>True to suppress all rule method invocation.</value>
+    public bool SuppressRuleChecking
+    {
+      get { return _suppressRuleChecking; }
+      set { _suppressRuleChecking = value; }
+    }
+
     /// <summary>
     /// Invokes all rule methods associated with
     /// the specified property and any 
@@ -714,6 +728,9 @@ namespace Csla.Validation
     /// <param name="propertyName">The name of the property to validate.</param>
     public void CheckRules(string propertyName)
     {
+      if (_suppressRuleChecking)
+        return;
+
       // get the rules dictionary
       ValidationRulesManager rules = RulesToCheck;
       if (rules != null)
@@ -758,6 +775,9 @@ namespace Csla.Validation
     /// </summary>
     public void CheckRules()
     {
+      if (_suppressRuleChecking)
+        return;
+
       ValidationRulesManager rules = RulesToCheck;
       if (rules != null)
       {

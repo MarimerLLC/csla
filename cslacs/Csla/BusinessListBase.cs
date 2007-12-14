@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.Serialization;
 using Csla.Properties;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+
 
 namespace Csla
 {
@@ -244,7 +248,19 @@ namespace Csla
       for (int index = Count - 1; index >= 0; index--)
       {
         child = this[index];
+        
+        //ACE: Important, make sure to remove the item prior to
+        //     it going through undo, otherwise, it will
+        //     incur a more expensive RemoveByReference operation
+        DeferredLoadIndexIfNotLoaded();
+        _indexSet.RemoveItem(child);
+
         child.UndoChanges(_editLevel);
+        
+        //ACE: Now that we have undone the changes, we can add the item
+        //     back in the index.
+        _indexSet.InsertItem(child);
+          
         // if item is below its point of addition, remove
         if (child.EditLevelAdded > _editLevel)
         {
@@ -253,6 +269,7 @@ namespace Csla
           {
             this.AllowRemove = true;
             _completelyRemoveChild = true;
+            RemoveIndexItem(child);
             RemoveAt(index);
           }
           finally
@@ -336,6 +353,8 @@ namespace Csla
     {
       // set child edit level
       ResetChildEditLevel(child, this.EditLevel);
+      // remove from the index
+      RemoveIndexItem(child);
       // mark the object as deleted
       child.DeleteChild();
       // and add it to the deleted collection for storage
@@ -352,6 +371,7 @@ namespace Csla
       // we need to preserve the object's editleveladded value
       // because it will be changed by the normal add process
       int saveLevel = child.EditLevelAdded;
+      InsertIndexItem(child);
       Add(child);
       child.EditLevelAdded = saveLevel;
     }
@@ -406,6 +426,7 @@ namespace Csla
       // a new object and so the edit level when it was
       // added must be set
       item.EditLevelAdded = _editLevel;
+      InsertIndexItem(item);
       base.InsertItem(index, item);
     }
 
@@ -423,6 +444,7 @@ namespace Csla
       try
       {
         this.RaiseListChangedEvents = false;
+        RemoveIndexItem(child);
         base.RemoveItem(index);
       }
       finally
@@ -454,6 +476,8 @@ namespace Csla
     protected override void ClearItems()
     {
       while (base.Count > 0) RemoveItem(0);
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.ClearIndexes();
       base.ClearItems();
     }
 
@@ -485,6 +509,8 @@ namespace Csla
         ResetChildEditLevel(item, this.EditLevel);
         // reset EditLevelAdded 
         item.EditLevelAdded = this.EditLevel;
+        // update the indexes
+        ReIndexItem(item);
         // add to list
         base.SetItem(index, item);
       }
@@ -508,6 +534,145 @@ namespace Csla
       // increase it to match list
       while (child.EditLevel < parentEditLevel)
         child.CopyState(parentEditLevel);
+    }
+
+    #endregion
+
+    #region Indexing
+
+    [NonSerialized]
+    private Linq.IIndexSet<C> _indexSet;
+
+    private void DeferredLoadIndexIfNotLoaded()
+    {
+      if (_indexSet == null) _indexSet = new Csla.Linq.IndexSet<C>();
+    }
+
+    /// <summary>
+    /// Allows users of CSLA to override the indexing behavior of BLB
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public Type IndexingProvider
+    {
+      get {
+        DeferredLoadIndexIfNotLoaded();
+        return _indexSet.GetType(); 
+      }
+      set {
+        if (value.IsClass && !value.IsAbstract && value.IsAssignableFrom(typeof(Linq.IIndexSet<C>)))
+        {
+          _indexSet = Activator.CreateInstance(value) as Linq.IIndexSet<C>;
+          ReIndexAll();
+        }
+      }
+    }
+
+
+    private IndexModeEnum IndexModeFor(string property)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      if (_indexSet.HasIndexFor(property))
+        return _indexSet[property].IndexMode;
+      else
+        return IndexModeEnum.IndexModeNever;
+    }
+
+    private bool IndexLoadedFor(string property)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      if (_indexSet.HasIndexFor(property))
+        return _indexSet[property].Loaded;
+      else
+        return false;
+    }
+
+    private void LoadIndexIfNotLoaded(string property)
+    {
+      if (IndexModeFor(property) != IndexModeEnum.IndexModeNever)
+        if (!IndexLoadedFor(property))
+         ReIndex(property);
+    }
+
+    private void InsertIndexItem(C item)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.InsertItem(item);
+    }
+
+    private void InsertIndexItem(C item, string property)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.InsertItem(item, property);
+    }
+
+    private void RemoveIndexItem(C item)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.RemoveItem(item);
+    }
+
+    private void RemoveIndexItem(C item, string property)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.RemoveItem(item, property);
+    }
+
+    private void ReIndexItem(C item, string property)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.ReIndexItem(item, property);
+    }
+
+    private void ReIndexItem(C item)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.ReIndexItem(item);
+    }
+
+    private void ReIndexAll()
+    {
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.ClearIndexes();
+      foreach (C item in this)
+        InsertIndexItem(item);
+    }
+
+    private void ReIndex(string property)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      _indexSet.ClearIndex(property);
+      foreach (C item in this)
+        InsertIndexItem(item, property);
+      _indexSet[property].LoadComplete();
+    }
+    
+    #endregion
+
+    #region Where Implementation
+
+    /// <summary>
+    /// Iterates through a set of items according to the expression passed to it.
+    /// </summary>
+    public IEnumerable<C> SearchByExpression(Expression<Func<C, bool>> expr)
+    {
+      DeferredLoadIndexIfNotLoaded();
+      string property = _indexSet.HasIndexFor(expr);
+      if (
+        property != null &&
+        IndexModeFor(property) != IndexModeEnum.IndexModeNever
+          )
+      {
+        LoadIndexIfNotLoaded(property);
+        foreach (C item in _indexSet.Search(expr, property))
+          yield return item;
+      }
+      else
+      {
+        IEnumerable<C> sourceEnum = this.AsEnumerable<C>();
+        var result = sourceEnum.Where<C>(expr.Compile());
+        foreach (C item in result)
+          yield return item;
+      }
     }
 
     #endregion
@@ -600,6 +765,10 @@ namespace Csla
     {
       if (RaiseListChangedEvents)
       {
+        DeferredLoadIndexIfNotLoaded();
+        if (_indexSet.HasIndexFor(e.PropertyName))
+           ReIndexItem((C) sender, e.PropertyName);
+
         for (int index = 0; index < Count; index++)
         {
           if (ReferenceEquals(this[index], sender))
@@ -874,6 +1043,22 @@ namespace Csla
       return result.ToArray();
     }
     #endregion
+  }
 
+  /// <summary>
+  /// Extension method for implementation of LINQ methods on BusinessListBase
+  /// </summary>
+  public static class BusinessListBaseExtension
+  {
+      /// <summary>
+      /// Custom implementation of Where for BusinessListBase - used in LINQ
+      /// </summary>
+      public static IEnumerable<C> Where<T, C>(this BusinessListBase<T, C> source, Expression<Func<C, bool>> expr)
+        where T : BusinessListBase<T, C>
+        where C : Core.IEditableBusinessObject
+      {
+        foreach (C item in source.SearchByExpression(expr))
+          yield return item;
+      }
   }
 }

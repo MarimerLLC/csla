@@ -929,6 +929,23 @@ Namespace Validation
 
 #Region " Checking Rules "
 
+    Private mSuppressRuleChecking As Boolean
+
+    ''' <summary>
+    ''' Gets or sets a value indicating whether calling
+    ''' <see cref="CheckRules"/> should result in rule
+    ''' methods being invoked.
+    ''' </summary>
+    ''' <value>True to suppress all rule method invocation.</value>
+    Public Property SuppressRuleChecking() As Boolean
+      Get
+        Return mSuppressRuleChecking
+      End Get
+      Set(ByVal value As Boolean)
+        mSuppressRuleChecking = value
+      End Set
+    End Property
+
     ''' <summary>
     ''' Invokes all rule methods associated with
     ''' the specified property and any 
@@ -936,6 +953,10 @@ Namespace Validation
     ''' </summary>
     ''' <param name="propertyName">The name of the property to validate.</param>
     Public Sub CheckRules(ByVal propertyName As String)
+
+      If mSuppressRuleChecking Then
+        Return
+      End If
 
       ' get the rules dictionary
       Dim rules As ValidationRulesManager = RulesToCheck
@@ -979,6 +1000,10 @@ Namespace Validation
     ''' in the object.
     ''' </summary>
     Public Sub CheckRules()
+
+      If mSuppressRuleChecking Then
+        Return
+      End If
 
       Dim rules As ValidationRulesManager = RulesToCheck
       If rules IsNot Nothing Then

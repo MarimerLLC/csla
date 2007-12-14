@@ -102,6 +102,17 @@ Public Structure SmartDate
   ''' <summary>
   ''' Creates a new SmartDate object.
   ''' </summary>
+  ''' <param name="value">The initial value of the object.</param>
+  ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  ''' <param name="kind">One of the DateTimeKind values.</param>
+  Public Sub New(ByVal value As Date, ByVal emptyValue As EmptyValue, ByVal kind As DateTimeKind)
+    mEmptyValue = emptyValue
+    Me.Date = DateTime.SpecifyKind(value, kind)
+  End Sub
+
+  ''' <summary>
+  ''' Creates a new SmartDate object.
+  ''' </summary>
   ''' <remarks>
   ''' The SmartDate created will use the min possible
   ''' date to represent an empty date.

@@ -24,8 +24,10 @@ Namespace Validation
       Dim result As ValidationRulesManager = Nothing
       If Not mManagers.TryGetValue(objectType, result) AndAlso create Then
         SyncLock mManagers
-          result = New ValidationRulesManager
-          mManagers.Add(objectType, result)
+          If Not mManagers.TryGetValue(objectType, result) Then
+            result = New ValidationRulesManager
+            mManagers.Add(objectType, result)
+          End If
         End SyncLock
       End If
       Return result

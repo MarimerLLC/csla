@@ -27,8 +27,10 @@ Namespace Security
       Dim result As AuthorizationRulesManager = Nothing
       If Not mManagers.TryGetValue(objectType, result) AndAlso create Then
         SyncLock mManagers
-          result = New AuthorizationRulesManager
-          mManagers.Add(objectType, result)
+          If Not mManagers.TryGetValue(objectType, result) Then
+            result = New AuthorizationRulesManager
+            mManagers.Add(objectType, result)
+          End If
         End SyncLock
       End If
       Return result

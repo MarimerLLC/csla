@@ -70,6 +70,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
       SyncLock Me.GetType
         If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+          Csla.Security.SharedAuthorizationRules.GetManager(Me.GetType, True)
           AddAuthorizationRules()
         End If
       End SyncLock
@@ -519,6 +520,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
       SyncLock Me.GetType
         If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+          Csla.Security.SharedAuthorizationRules.GetManager(Me.GetType, True)
           AddAuthorizationRules()
         End If
       End SyncLock

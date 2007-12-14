@@ -745,7 +745,7 @@ Namespace Validation
 
     Private Function ValidateHandler(ByVal method As System.Reflection.MethodInfo) As Boolean
 
-      If Not method.IsStatic AndAlso method.DeclaringType.Equals(mTarget.GetType) Then
+      If Not method.IsStatic AndAlso method.DeclaringType.IsInstanceOfType(mTarget) Then
         Throw New InvalidOperationException( _
           String.Format("{0}: {1}", _
           My.Resources.InvalidRuleMethodException, method.Name))

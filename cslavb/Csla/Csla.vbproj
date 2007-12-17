@@ -64,6 +64,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
@@ -145,6 +148,7 @@
     <Compile Include="DataPortal\Server\TransactionalDataPortal.vb" />
     <Compile Include="DataPortal\TransactionalTypes.vb" />
     <Compile Include="Data\ConnectionManager.vb" />
+    <Compile Include="Data\ContextManager.vb" />
     <Compile Include="Data\DataMapper.vb" />
     <Compile Include="DefaultFilter.vb" />
     <Compile Include="EditableRootListBase.vb" />

@@ -123,8 +123,7 @@ namespace PTWin
           _resource.ApplyEdit();
           try
           {
-            Resource temp = _resource.Clone();
-            _resource = temp.Save();
+            _resource = _resource.Save();
           }
           catch (Csla.DataPortalException ex)
           {
@@ -141,13 +140,13 @@ namespace PTWin
         }
         else
           _resource.CancelEdit();
-
-        // rebind UI if requested
-        if (rebind)
-          BindUI();
       }
       finally
       {
+        // rebind UI if requested
+        if (rebind)
+          BindUI();
+
         // restore events
         this.ResourceBindingSource.RaiseListChangedEvents = true;
         this.AssignmentsBindingSource.RaiseListChangedEvents = true;

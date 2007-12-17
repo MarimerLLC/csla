@@ -127,8 +127,7 @@ namespace PTWin
           _project.ApplyEdit();
           try
           {
-            Project temp = _project.Clone();
-            _project = temp.Save();
+            _project = _project.Save();
           }
           catch (Csla.DataPortalException ex)
           {
@@ -145,13 +144,13 @@ namespace PTWin
         }
         else
           _project.CancelEdit();
-
-        // rebind UI if requested
-        if (rebind)
-          BindUI();
       }
       finally
       {
+        // rebind UI if requested
+        if (rebind)
+          BindUI();
+
         // restore events
         this.projectBindingSource.RaiseListChangedEvents = true;
         this.resourcesBindingSource.RaiseListChangedEvents = true;

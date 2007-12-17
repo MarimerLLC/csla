@@ -56,9 +56,7 @@ namespace PTWin
 
       try
       {
-        // clone object and save clone
-        Roles temp = _roles.Clone();
-        _roles = temp.Save();
+        _roles = _roles.Save();
         this.Close();
       }
       catch (Csla.DataPortalException ex)
@@ -74,6 +72,8 @@ namespace PTWin
       }
       finally
       {
+        this.rolesBindingSource.DataSource = _roles;
+
         this.rolesBindingSource.RaiseListChangedEvents = true;
         this.rolesBindingSource.ResetBindings(false);
       }

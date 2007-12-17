@@ -144,6 +144,7 @@
     <Compile Include="DataPortal\Server\SimpleDataPortal.vb" />
     <Compile Include="DataPortal\Server\TransactionalDataPortal.vb" />
     <Compile Include="DataPortal\TransactionalTypes.vb" />
+    <Compile Include="Data\ConnectionManager.vb" />
     <Compile Include="Data\DataMapper.vb" />
     <Compile Include="DefaultFilter.vb" />
     <Compile Include="EditableRootListBase.vb" />

@@ -1,3 +1,5 @@
+Option Infer On
+
 Imports System.Data.SqlClient
 
 Namespace Admin
@@ -95,9 +97,9 @@ Namespace Admin
 
     End Function
 
-    Friend Shared Function GetRole(ByVal dr As Csla.Data.SafeDataReader) As Role
+    Friend Shared Function GetRole(ByVal data As ProjectTracker.DalLinq.getRolesResult) As Role
 
-      Return New Role(dr)
+      Return New Role(data)
 
     End Function
 
@@ -108,10 +110,10 @@ Namespace Admin
 
     End Sub
 
-    Private Sub New(ByVal dr As Csla.Data.SafeDataReader)
+    Private Sub New(ByVal data As ProjectTracker.DalLinq.getRolesResult)
 
       MarkAsChild()
-      Fetch(dr)
+      Fetch(data)
 
     End Sub
 
@@ -119,61 +121,45 @@ Namespace Admin
 
 #Region " Data Access "
 
-    Private Sub Fetch(ByVal dr As Csla.Data.SafeDataReader)
+    Private Sub Fetch(ByVal data As ProjectTracker.DalLinq.getRolesResult)
 
-      With dr
-        mId = .GetInt32("id")
-        mIdSet = True
-        mName = .GetString("name")
-        .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
-      End With
+      mId = data.Id
+      mIdSet = True
+      mName = data.Name
+      mTimestamp = data.LastChanged.ToArray
       MarkOld()
 
     End Sub
 
-    Friend Sub Insert(ByVal cn As SqlConnection)
+    Friend Sub Insert()
 
       ' if we're not dirty then don't update the database
       If Not Me.IsDirty Then Exit Sub
 
-      Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandText = "addRole"
-        DoInsertUpdate(cm)
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
+        Dim lastChanged As System.Data.Linq.Binary = mTimestamp
+        mgr.DataContext.addRole(mId, mName, lastChanged)
+        mTimestamp = lastChanged.ToArray
       End Using
-
-    End Sub
-
-    Friend Sub Update(ByVal cn As SqlConnection)
-
-      ' if we're not dirty then don't update the database
-      If Not Me.IsDirty Then Exit Sub
-
-      Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandText = "updateRole"
-        cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
-        DoInsertUpdate(cm)
-      End Using
-
-    End Sub
-
-    Private Sub DoInsertUpdate(ByVal cm As SqlCommand)
-
-      cm.CommandType = CommandType.StoredProcedure
-      cm.Parameters.AddWithValue("@id", mId)
-      cm.Parameters.AddWithValue("@name", mName)
-      Dim param As New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
-      param.Direction = ParameterDirection.Output
-      cm.Parameters.Add(param)
-
-      cm.ExecuteNonQuery()
-
-      mTimestamp = CType(cm.Parameters("@newLastChanged").Value, Byte())
-
       MarkOld()
 
     End Sub
 
-    Friend Sub DeleteSelf(ByVal cn As SqlConnection)
+    Friend Sub Update()
+
+      ' if we're not dirty then don't update the database
+      If Not Me.IsDirty Then Exit Sub
+
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
+        Dim lastChanged As System.Data.Linq.Binary = Nothing
+        mgr.DataContext.UpdateRole(mId, mName, mTimestamp, lastChanged)
+        mTimestamp = lastChanged.ToArray
+      End Using
+      MarkOld()
+
+    End Sub
+
+    Friend Sub DeleteSelf()
 
       ' if we're not dirty then don't update the database
       If Not Me.IsDirty Then Exit Sub
@@ -181,20 +167,11 @@ Namespace Admin
       ' if we're new then don't update the database
       If Me.IsNew Then Exit Sub
 
-      DeleteRole(cn, mId)
-      MarkNew()
-
-    End Sub
-
-    Friend Shared Sub DeleteRole( _
-      ByVal cn As SqlConnection, ByVal id As Integer)
-
-      Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandType = CommandType.StoredProcedure
-        cm.CommandText = "deleteRole"
-        cm.Parameters.AddWithValue("@id", id)
-        cm.ExecuteNonQuery()
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
+        mgr.DataContext.DeleteRole(mId)
       End Using
+
+      MarkNew()
 
     End Sub
 

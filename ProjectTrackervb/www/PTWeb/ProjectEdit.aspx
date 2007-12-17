@@ -39,7 +39,7 @@
           <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" ShowInsertButton="True" />
         </Fields>
       </asp:DetailsView>
-      &nbsp;&nbsp;&nbsp;<br />
+          &nbsp;&nbsp;&nbsp;<br />
       <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ResourcesDataSource" Width="432px" DataKeyNames="ResourceId">
         <Columns>
           <asp:BoundField DataField="ResourceId" HeaderText="ResourceId" ReadOnly="True" SortExpression="ResourceId" Visible="False" />
@@ -80,8 +80,7 @@
           </asp:GridView>
           <asp:LinkButton ID="CancelAssignButton" runat="server">Cancel</asp:LinkButton><br />
           <csla:CslaDataSource ID="ResourceListDataSource" runat="server"
-            TypeName="ProjectTracker.Library.ResourceList, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False">
-          </csla:CslaDataSource>
+            TypeName="ProjectTracker.Library.ResourceList, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False"></csla:CslaDataSource>
         </asp:View>
       </asp:MultiView>
       <asp:Label ID="ErrorLabel" runat="server" ForeColor="Red"></asp:Label><br />
@@ -89,7 +88,8 @@
           TypeName="ProjectTracker.Library.Project, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False">
       </csla:CslaDataSource> 
       <csla:CslaDataSource ID="ResourcesDataSource" runat="server" 
-          TypeName="ProjectTracker.Library.ProjectResources, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False">
+          TypeName="ProjectTracker.Library.ProjectResources, ProjectTracker.Library" 
+        TypeSupportsPaging="False" TypeSupportsSorting="False" TypeAssemblyName="">
       </csla:CslaDataSource> 
       <csla:CslaDataSource ID="RoleListDataSource" runat="server" 
           TypeName="ProjectTracker.Library.RoleList, ProjectTracker.Library" TypeSupportsPaging="False" TypeSupportsSorting="False">
@@ -97,5 +97,5 @@
       <br />
     </div>
       <br />
-      &nbsp;
+      &nbsp; 
 </asp:Content>

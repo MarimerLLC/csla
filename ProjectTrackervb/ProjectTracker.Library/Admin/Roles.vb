@@ -1,3 +1,5 @@
+Option Infer On
+
 Namespace Admin
 
   ''' <summary>
@@ -140,20 +142,11 @@ Namespace Admin
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
       Me.RaiseListChangedEvents = False
-      Using cn As New SqlConnection(Database.PTrackerConnection)
-        cn.Open()
-        Using cm As SqlCommand = cn.CreateCommand
-          cm.CommandType = CommandType.StoredProcedure
-          cm.CommandText = "getRoles"
-
-          Using dr As New SafeDataReader(cm.ExecuteReader)
-            With dr
-              While .Read()
-                Me.Add(Role.GetRole(dr))
-              End While
-            End With
-          End Using
-        End Using
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
+        Dim roles = From r In mgr.DataContext.getRoles Select r
+        For Each value In roles
+          Me.Add(Role.GetRole(value))
+        Next
       End Using
       Me.RaiseListChangedEvents = True
 
@@ -163,19 +156,18 @@ Namespace Admin
     Protected Overrides Sub DataPortal_Update()
 
       Me.RaiseListChangedEvents = False
-      Using cn As New SqlConnection(Database.PTrackerConnection)
-        cn.Open()
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
         For Each item As Role In DeletedList
-          item.DeleteSelf(cn)
+          item.DeleteSelf()
         Next
         DeletedList.Clear()
 
         For Each item As Role In Me
           If item.IsNew Then
-            item.Insert(cn)
+            item.Insert()
 
           Else
-            item.Update(cn)
+            item.Update()
           End If
         Next
       End Using

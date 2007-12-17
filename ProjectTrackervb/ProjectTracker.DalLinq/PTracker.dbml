@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="PTracker" Class="PTrackerDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=&quot;C:\Visual Studio Projects\csla\ProjectTrackervb\PTracker.mdf&quot;;Integrated Security=True;Connect Timeout=30;User Instance=True" SettingsObjectName="ProjectTracker.DalLinq.My.MySettings" SettingsPropertyName="PTrackerConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Assignments" Member="Assignments">
+    <Type Name="Assignment">
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ResourceId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Assigned" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Role" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastChanged" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" IsVersion="true" />
+      <Association Name="Role_Assignment" Member="Role1" ThisKey="Role" Type="Role" IsForeignKey="true" />
+      <Association Name="Project_Assignment" Member="Project" ThisKey="ProjectId" Type="Project" IsForeignKey="true" />
+      <Association Name="Resource_Assignment" Member="Resource" ThisKey="ResourceId" Type="Resource" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Roles" Member="Roles">
+    <Type Name="Role">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="LastChanged" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" IsVersion="true" />
+      <Association Name="Role_Assignment" Member="Assignments" OtherKey="Role" Type="Assignment" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Projects" Member="Projects">
+    <Type Name="Project">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Started" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Ended" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="LastChanged" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" IsVersion="true" />
+      <Association Name="Project_Assignment" Member="Assignments" OtherKey="ProjectId" Type="Assignment" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Resources" Member="Resources">
+    <Type Name="Resource">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="LastName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="FirstName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="LastChanged" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" IsVersion="true" />
+      <Association Name="Resource_Assignment" Member="Assignments" OtherKey="ResourceId" Type="Assignment" />
+    </Type>
+  </Table>
+  <Function Name="dbo.addAssignment" Method="addAssignment">
+    <Parameter Name="projectId" Type="System.Guid" DbType="UniqueIdentifier" />
+    <Parameter Name="resourceId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="assigned" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="role" Type="System.Int32" DbType="Int" />
+    <Parameter Name="newLastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.updateRole" Method="updateRole">
+    <Parameter Name="id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="name" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="lastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" />
+    <Parameter Name="newLastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.addProject" Method="addProject">
+    <Parameter Name="id" Type="System.Guid" DbType="UniqueIdentifier" />
+    <Parameter Name="name" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="started" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="ended" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="description" Type="System.String" DbType="VarChar(MAX)" />
+    <Parameter Name="newLastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.addResource" Method="addResource">
+    <Parameter Name="lastName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="firstName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="newId" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Parameter Name="newLastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.addRole" Method="addRole">
+    <Parameter Name="id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="name" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="newLastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.deleteAssignment" Method="deleteAssignment">
+    <Parameter Name="projectId" Type="System.Guid" DbType="UniqueIdentifier" />
+    <Parameter Name="resourceId" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.deleteProject" Method="deleteProject">
+    <Parameter Name="id" Type="System.Guid" DbType="UniqueIdentifier" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.deleteResource" Method="deleteResource">
+    <Parameter Name="id" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.deleteRole" Method="deleteRole">
+    <Parameter Name="id" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.existsProject" Method="existsProject">
+    <Parameter Name="id" Type="System.Guid" DbType="UniqueIdentifier" />
+    <ElementType Name="existsProjectResult">
+      <Column Name="Column1" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.existsResource" Method="existsResource">
+    <Parameter Name="id" Type="System.Int32" DbType="Int" />
+    <ElementType Name="existsResourceResult">
+      <Column Name="Column1" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getProject" Method="getProject">
+    <Parameter Name="id" Type="System.Guid" DbType="UniqueIdentifier" />
+    <ElementType Name="getProjectResult">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Started" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Ended" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="LastChanged" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getProjects" Method="getProjects">
+    <ElementType Name="getProjectsResult">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getResource" Method="getResource">
+    <Parameter Name="id" Type="System.Int32" DbType="Int" />
+    <ElementType Name="getResourceResult">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="FirstName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="LastChanged" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getResources" Method="getResources">
+    <ElementType Name="getResourcesResult">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="FirstName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getRoles" Method="getRoles">
+    <ElementType Name="getRolesResult">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="LastChanged" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.updateAssignment" Method="updateAssignment">
+    <Parameter Name="projectId" Type="System.Guid" DbType="UniqueIdentifier" />
+    <Parameter Name="resourceId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="assigned" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="role" Type="System.Int32" DbType="Int" />
+    <Parameter Name="lastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" />
+    <Parameter Name="newLastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.updateProject" Method="updateProject">
+    <Parameter Name="id" Type="System.Guid" DbType="UniqueIdentifier" />
+    <Parameter Name="name" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="started" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="ended" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="description" Type="System.String" DbType="VarChar(MAX)" />
+    <Parameter Name="lastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" />
+    <Parameter Name="newLastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.updateResource" Method="updateResource">
+    <Parameter Name="id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="lastName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="firstName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="lastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" />
+    <Parameter Name="newLastChanged" Type="System.Data.Linq.Binary" DbType="Timestamp" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+</Database>

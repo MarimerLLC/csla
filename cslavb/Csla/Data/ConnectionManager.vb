@@ -26,28 +26,26 @@ Namespace Data
 
     Private Shared mLock As New Object
     Private mConnection As C
-    Private mName As String
+    Private mConnectionString As String
 
     ''' <summary>
     ''' Gets the ConnectionManager object for the specified
-    ''' database name. The name must correspond to a named
-    ''' connection string in the config file.
+    ''' connectionString.
     ''' </summary>
-    ''' <param name="name">
-    ''' Name of the database connection string stored in
-    ''' the application config file.
+    ''' <param name="connectionString">
+    ''' The database connection string.
     ''' </param>
     ''' <returns>ConnectionManager object for the connection.</returns>
-    Public Shared Function GetManager(ByVal name As String) As ConnectionManager(Of C)
+    Public Shared Function GetManager(ByVal connectionString As String) As ConnectionManager(Of C)
 
       SyncLock mLock
         Dim mgr As ConnectionManager(Of C)
-        If ApplicationContext.LocalContext.Contains("__db:" & name) Then
-          mgr = CType(ApplicationContext.LocalContext("__db:" & name), ConnectionManager(Of C))
+        If ApplicationContext.LocalContext.Contains("__db:" & connectionString) Then
+          mgr = CType(ApplicationContext.LocalContext("__db:" & connectionString), ConnectionManager(Of C))
 
         Else
-          mgr = New ConnectionManager(Of C)(name)
-          ApplicationContext.LocalContext("__db:" & name) = mgr
+          mgr = New ConnectionManager(Of C)(connectionString)
+          ApplicationContext.LocalContext("__db:" & connectionString) = mgr
         End If
         mgr.AddRef()
         Return mgr
@@ -55,12 +53,9 @@ Namespace Data
 
     End Function
 
-    Private Sub New(ByVal name As String)
+    Private Sub New(ByVal connectionString As String)
 
-      mName = name
-      ' get connection string
-      Dim connectionString As String = _
-        ConfigurationManager.ConnectionStrings(name).ConnectionString
+      mConnectionString = connectionString
 
       ' open connection
       mConnection = New C
@@ -78,15 +73,6 @@ Namespace Data
       End Get
     End Property
 
-    ''' <summary>
-    ''' Gets the name of the database connection string.
-    ''' </summary>
-    Public ReadOnly Property Name() As String
-      Get
-        Return mName
-      End Get
-    End Property
-
 #Region " Reference counting "
 
     Private mRefCount As Integer
@@ -101,7 +87,7 @@ Namespace Data
         mRefCount -= 1
         If mRefCount = 0 Then
           mConnection.Dispose()
-          ApplicationContext.LocalContext.Remove("__db:" & mName)
+          ApplicationContext.LocalContext.Remove("__db:" & mConnectionString)
         End If
       End SyncLock
 

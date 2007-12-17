@@ -29,27 +29,26 @@ Namespace Data
 
     Private Shared mLock As New Object
     Private mContext As C
-    Private mName As String
+    Private mConnectionString As String
 
     ''' <summary>
     ''' Gets the ContextManager object for the specified
     ''' key name.
     ''' </summary>
-    ''' <param name="name">
-    ''' Name of the database connection string stored in
-    ''' the application config file.
+    ''' <param name="connectionString">
+    ''' The database connection string.
     ''' </param>
     ''' <returns>ContextManager object for the name.</returns>
-    Public Shared Function GetManager(ByVal name As String) As ContextManager(Of C)
+    Public Shared Function GetManager(ByVal connectionString As String) As ContextManager(Of C)
 
       SyncLock mLock
         Dim mgr As ContextManager(Of C)
-        If ApplicationContext.LocalContext.Contains("__ctx:" & name) Then
-          mgr = CType(ApplicationContext.LocalContext("__ctx:" & name), ContextManager(Of C))
+        If ApplicationContext.LocalContext.Contains("__ctx:" & connectionString) Then
+          mgr = CType(ApplicationContext.LocalContext("__ctx:" & connectionString), ContextManager(Of C))
 
         Else
-          mgr = New ContextManager(Of C)(name)
-          ApplicationContext.LocalContext("__ctx:" & name) = mgr
+          mgr = New ContextManager(Of C)(connectionString)
+          ApplicationContext.LocalContext("__ctx:" & connectionString) = mgr
         End If
         mgr.AddRef()
         Return mgr
@@ -57,12 +56,9 @@ Namespace Data
 
     End Function
 
-    Private Sub New(ByVal name As String)
+    Private Sub New(ByVal connectionString As String)
 
-      mName = name
-      ' get connection string
-      Dim connectionString As String = _
-        ConfigurationManager.ConnectionStrings(name).ConnectionString
+      mConnectionString = connectionString
 
       mContext = DirectCast(Activator.CreateInstance(GetType(C), connectionString), C)
 
@@ -74,15 +70,6 @@ Namespace Data
     Public ReadOnly Property DataContext() As C
       Get
         Return mContext
-      End Get
-    End Property
-
-    ''' <summary>
-    ''' Gets the name of the context object.
-    ''' </summary>
-    Public ReadOnly Property Name() As String
-      Get
-        Return mName
       End Get
     End Property
 
@@ -100,7 +87,7 @@ Namespace Data
         mRefCount -= 1
         If mRefCount = 0 Then
           mContext.Dispose()
-          ApplicationContext.LocalContext.Remove("__ctx:" & mName)
+          ApplicationContext.LocalContext.Remove("__ctx:" & mConnectionString)
         End If
       End SyncLock
 

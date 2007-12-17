@@ -33,23 +33,20 @@ Namespace Data
     ''' database name. The name must correspond to a named
     ''' connection string in the config file.
     ''' </summary>
-    ''' <typeparam name="T">
-    ''' Type of database connection object to use.
-    ''' </typeparam>
     ''' <param name="name">
     ''' Name of the database connection string stored in
     ''' the application config file.
     ''' </param>
     ''' <returns>ConnectionManager object for the connection.</returns>
-    Public Shared Function GetManager(Of T As {IDbConnection, New})(ByVal name As String) As ConnectionManager(Of T)
+    Public Shared Function GetManager(ByVal name As String) As ConnectionManager(Of C)
 
       SyncLock mLock
-        Dim mgr As ConnectionManager(Of T)
+        Dim mgr As ConnectionManager(Of C)
         If ApplicationContext.LocalContext.Contains("__db:" & name) Then
-          mgr = CType(ApplicationContext.LocalContext("__db:" & name), ConnectionManager(Of T))
+          mgr = CType(ApplicationContext.LocalContext("__db:" & name), ConnectionManager(Of C))
 
         Else
-          mgr = New ConnectionManager(Of T)(name)
+          mgr = New ConnectionManager(Of C)(name)
           ApplicationContext.LocalContext("__db:" & name) = mgr
         End If
         mgr.AddRef()
@@ -67,7 +64,7 @@ Namespace Data
 
       ' open connection
       mConnection = New C
-      mConnection.ConnectionString = name
+      mConnection.ConnectionString = connectionString
       mConnection.Open()
 
     End Sub

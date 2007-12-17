@@ -42,11 +42,9 @@ Public Class RolesEdit
     ' stop the flow of events
     Me.RolesBindingSource.RaiseListChangedEvents = False
     ' commit edits in memory
-    Me.RolesBindingSource.EndEdit()
+    UnbindBindingSource(Me.RolesBindingSource, True, True)
     Try
-      ' clone object and save clone
-      Dim temp As Admin.Roles = mRoles.Clone
-      mRoles = temp.Save
+      mRoles = mRoles.Save
       Me.Close()
 
     Catch ex As Csla.DataPortalException
@@ -60,6 +58,8 @@ Public Class RolesEdit
         MessageBoxIcon.Exclamation)
 
     Finally
+      Me.RolesBindingSource.DataSource = mRoles
+
       Me.RolesBindingSource.RaiseListChangedEvents = True
       Me.RolesBindingSource.ResetBindings(False)
     End Try

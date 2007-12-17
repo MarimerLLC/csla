@@ -125,8 +125,7 @@ Public Class ProjectEdit
       If saveObject Then
         mProject.ApplyEdit()
         Try
-          Dim temp As Project = mProject.Clone()
-          mProject = temp.Save()
+          mProject = mProject.Save()
 
         Catch ex As Csla.DataPortalException
           MessageBox.Show(ex.BusinessException.ToString(), _
@@ -143,12 +142,12 @@ Public Class ProjectEdit
         mProject.CancelEdit()
       End If
 
+    Finally
       ' rebind UI if requested
       If rebind Then
         BindUI()
       End If
 
-    Finally
       ' restore events
       Me.ProjectBindingSource.RaiseListChangedEvents = True
       Me.ResourcesBindingSource.RaiseListChangedEvents = True

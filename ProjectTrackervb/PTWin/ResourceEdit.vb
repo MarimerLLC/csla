@@ -124,8 +124,7 @@ Public Class ResourceEdit
       If saveObject Then
         mResource.ApplyEdit()
         Try
-          Dim temp As Resource = mResource.Clone()
-          mResource = temp.Save()
+          mResource = mResource.Save()
 
         Catch ex As Csla.DataPortalException
           MessageBox.Show(ex.BusinessException.ToString(), _
@@ -142,12 +141,12 @@ Public Class ResourceEdit
         mResource.CancelEdit()
       End If
 
+    Finally
       ' rebind UI if requested
       If rebind Then
         BindUI()
       End If
 
-    Finally
       ' restore events
       Me.ResourceBindingSource.RaiseListChangedEvents = True
       Me.AssignmentsBindingSource.RaiseListChangedEvents = True

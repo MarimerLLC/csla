@@ -346,6 +346,34 @@ Public Structure SmartDate
 
   End Function
 
+  Public Sub SetDate(ByVal newDate As Date)
+
+    Me.Date = newDate
+
+  End Sub
+
+  Public Sub SetDate(ByVal newDate As Date?)
+
+    If newDate.HasValue Then
+      Me.Date = newDate.Value
+
+    Else
+      If mEmptyValue = EmptyValue.MinDate Then
+        Me.Date = Date.MinValue
+
+      Else
+        Me.Date = Date.MaxValue
+      End If
+    End If
+
+  End Sub
+
+  Public Sub SetDate(ByVal newDate As DateTimeOffset)
+
+    Me.Date = newDate.DateTime
+
+  End Sub
+
 #End Region
 
 #Region " System.Object overrides "
@@ -837,7 +865,7 @@ Public Structure SmartDate
 
 #End Region
 
-#Region "Operators"
+#Region " Operators "
 
   ''' <summary>
   ''' Equality operator
@@ -857,6 +885,70 @@ Public Structure SmartDate
   ''' <returns></returns>
   Public Shared Operator <>(ByVal obj1 As SmartDate, ByVal obj2 As SmartDate) As Boolean
     Return Not obj1.Equals(obj2)
+  End Operator
+
+  ''' <summary>
+  ''' Convert a SmartDate to a String.
+  ''' </summary>
+  ''' <param name="obj1">SmartDate value.</param>
+  Public Shared Widening Operator CType(ByVal obj1 As SmartDate) As String
+    Return obj1.Text
+  End Operator
+
+  ''' <summary>
+  ''' Convert a SmartDate to a DateTime.
+  ''' </summary>
+  ''' <param name="obj1">SmartDate value.</param>
+  Public Shared Widening Operator CType(ByVal obj1 As SmartDate) As Date
+    Return obj1.Date
+  End Operator
+
+  ''' <summary>
+  ''' Convert a SmartDate to a nullable DateTime.
+  ''' </summary>
+  ''' <param name="obj1">SmartDate value.</param>
+  Public Shared Widening Operator CType(ByVal obj1 As SmartDate) As Date?
+    Return obj1.ToNullableDate
+  End Operator
+
+  ''' <summary>
+  ''' Convert a SmartDate to a DateTimeOffset.
+  ''' </summary>
+  ''' <param name="obj1">SmartDate value.</param>
+  Public Shared Widening Operator CType(ByVal obj1 As SmartDate) As DateTimeOffset
+    Return obj1.ToDateTimeOffset
+  End Operator
+
+  ''' <summary>
+  ''' Convert a value to a SmartDate.
+  ''' </summary>
+  ''' <param name="dateValue">Value to convert.</param>
+  Public Shared Narrowing Operator CType(ByVal dateValue As String) As SmartDate
+    Return New SmartDate(dateValue)
+  End Operator
+
+  ''' <summary>
+  ''' Convert a value to a SmartDate.
+  ''' </summary>
+  ''' <param name="dateValue">Value to convert.</param>
+  Public Shared Widening Operator CType(ByVal dateValue As Date) As SmartDate
+    Return New SmartDate(dateValue)
+  End Operator
+
+  ''' <summary>
+  ''' Convert a value to a SmartDate.
+  ''' </summary>
+  ''' <param name="dateValue">Value to convert.</param>
+  Public Shared Widening Operator CType(ByVal dateValue As Date?) As SmartDate
+    Return New SmartDate(dateValue)
+  End Operator
+
+  ''' <summary>
+  ''' Convert a value to a SmartDate.
+  ''' </summary>
+  ''' <param name="dateValue">Value to convert.</param>
+  Public Shared Narrowing Operator CType(ByVal dateValue As DateTimeOffset) As SmartDate
+    Return New SmartDate(dateValue)
   End Operator
 
   ''' <summary>

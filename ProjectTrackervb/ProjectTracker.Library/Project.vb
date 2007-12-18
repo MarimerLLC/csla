@@ -171,7 +171,7 @@ Public Class Project
       Throw New System.Security.SecurityException( _
         "User not authorized to view a project")
     End If
-    Return DataPortal.Fetch(Of Project)(New Criteria(id))
+    Return DataPortal.Fetch(Of Project)(New SingleCriteria(Of Project, Guid)(id))
 
   End Function
 
@@ -181,7 +181,7 @@ Public Class Project
       Throw New System.Security.SecurityException( _
         "User not authorized to remove a project")
     End If
-    DataPortal.Delete(New Criteria(id))
+    DataPortal.Delete(New SingleCriteria(Of Project, Guid)(id))
 
   End Sub
 
@@ -211,21 +211,6 @@ Public Class Project
 
 #Region " Data Access "
 
-  <Serializable()> _
-  Private Class Criteria
-
-    Private mId As Guid
-    Public ReadOnly Property Id() As Guid
-      Get
-        Return mId
-      End Get
-    End Property
-
-    Public Sub New(ByVal id As Guid)
-      mId = id
-    End Sub
-  End Class
-
   <RunLocal()> _
   Protected Overrides Sub DataPortal_Create()
 
@@ -235,32 +220,46 @@ Public Class Project
 
   End Sub
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of Project, Guid))
 
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandType = CommandType.StoredProcedure
-        cm.CommandText = "getProject"
-        cm.Parameters.AddWithValue("@id", criteria.Id)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      ' get project data
+      Dim data = ctx.DataContext.Projects.ToArray(0)
+      mId = data.Id
+      mName = data.Name
+      mStarted.SetDate(data.Started)
+      mEnded.SetDate(data.Ended)
+      mDescription = data.Description
+      mTimestamp = data.LastChanged.ToArray
 
-        Using dr As New SafeDataReader(cm.ExecuteReader)
-          dr.Read()
-          With dr
-            mId = .GetGuid("Id")
-            mName = .GetString("Name")
-            mStarted = .GetSmartDate("Started", mStarted.EmptyIsMin)
-            mEnded = .GetSmartDate("Ended", mEnded.EmptyIsMin)
-            mDescription = .GetString("Description")
-            .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
-
-            ' load child objects
-            .NextResult()
-            SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.GetProjectResources(dr))
-          End With
-        End Using
-      End Using
+      ' get child data
+      SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.GetProjectResources(data.Assignments.ToArray))
     End Using
+
+    'Using cn As New SqlConnection(Database.PTrackerConnection)
+    '  cn.Open()
+    '  Using cm As SqlCommand = cn.CreateCommand
+    '    cm.CommandType = CommandType.StoredProcedure
+    '    cm.CommandText = "getProject"
+    '    cm.Parameters.AddWithValue("@id", criteria.Value)
+
+    '    Using dr As New SafeDataReader(cm.ExecuteReader)
+    '      dr.Read()
+    '      With dr
+    '        mId = .GetGuid("Id")
+    '        mName = .GetString("Name")
+    '        mStarted = .GetSmartDate("Started", mStarted.EmptyIsMin)
+    '        mEnded = .GetSmartDate("Ended", mEnded.EmptyIsMin)
+    '        mDescription = .GetString("Description")
+    '        .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
+
+    '        ' load child objects
+    '        .NextResult()
+    '        SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.GetProjectResources(dr))
+    '      End With
+    '    End Using
+    '  End Using
+    'End Using
 
   End Sub
 
@@ -320,12 +319,12 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
-    DataPortal_Delete(New Criteria(mId))
+    DataPortal_Delete(New SingleCriteria(Of Project, Guid)(mId))
 
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
-  Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
+  Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Project, Guid))
 
     Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
@@ -334,7 +333,7 @@ Public Class Project
           .Connection = cn
           .CommandType = CommandType.StoredProcedure
           .CommandText = "deleteProject"
-          .Parameters.AddWithValue("@id", criteria.Id)
+          .Parameters.AddWithValue("@id", criteria.Value)
           .ExecuteNonQuery()
         End With
       End Using

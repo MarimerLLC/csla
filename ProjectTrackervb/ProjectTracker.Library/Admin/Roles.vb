@@ -142,9 +142,8 @@ Namespace Admin
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
 
       Me.RaiseListChangedEvents = False
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
-        Dim roles = From r In mgr.DataContext.getRoles Select r
-        For Each value In roles
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+        For Each value In mgr.DataContext.getRoles
           Me.Add(Role.GetRole(value))
         Next
       End Using
@@ -156,7 +155,7 @@ Namespace Admin
     Protected Overrides Sub DataPortal_Update()
 
       Me.RaiseListChangedEvents = False
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
         For Each item As Role In DeletedList
           item.DeleteSelf()
         Next

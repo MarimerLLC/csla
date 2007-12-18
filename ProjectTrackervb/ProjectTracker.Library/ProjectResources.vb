@@ -77,9 +77,9 @@ Public Class ProjectResources
   End Function
 
   Friend Shared Function GetProjectResources( _
-    ByVal dr As SafeDataReader) As ProjectResources
+    ByVal data As ProjectTracker.DalLinq.Assignment()) As ProjectResources
 
-    Return New ProjectResources(dr)
+    Return New ProjectResources(data)
 
   End Function
 
@@ -89,10 +89,10 @@ Public Class ProjectResources
 
   End Sub
 
-  Private Sub New(ByVal dr As SafeDataReader)
+  Private Sub New(ByVal data As ProjectTracker.DalLinq.Assignment())
 
     MarkAsChild()
-    Fetch(dr)
+    Fetch(data)
 
   End Sub
 
@@ -100,12 +100,12 @@ Public Class ProjectResources
 
 #Region " Data Access "
 
-  Private Sub Fetch(ByVal dr As SafeDataReader)
+  Private Sub Fetch(ByVal data As ProjectTracker.DalLinq.Assignment())
 
     Me.RaiseListChangedEvents = False
-    While dr.Read()
-      Me.Add(ProjectResource.GetResource(dr))
-    End While
+    For Each value In data
+      Me.Add(ProjectResource.GetResource(value))
+    Next
     Me.RaiseListChangedEvents = True
 
   End Sub

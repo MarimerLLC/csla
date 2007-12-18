@@ -136,7 +136,7 @@ Namespace Admin
       ' if we're not dirty then don't update the database
       If Not Me.IsDirty Then Exit Sub
 
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
         Dim lastChanged As System.Data.Linq.Binary = mTimestamp
         mgr.DataContext.addRole(mId, mName, lastChanged)
         mTimestamp = lastChanged.ToArray
@@ -150,7 +150,7 @@ Namespace Admin
       ' if we're not dirty then don't update the database
       If Not Me.IsDirty Then Exit Sub
 
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
         Dim lastChanged As System.Data.Linq.Binary = Nothing
         mgr.DataContext.UpdateRole(mId, mName, mTimestamp, lastChanged)
         mTimestamp = lastChanged.ToArray
@@ -167,7 +167,7 @@ Namespace Admin
       ' if we're new then don't update the database
       If Me.IsNew Then Exit Sub
 
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker")
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
         mgr.DataContext.DeleteRole(mId)
       End Using
 

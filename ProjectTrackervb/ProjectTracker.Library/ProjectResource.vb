@@ -103,9 +103,9 @@ Public Class ProjectResource
   End Function
 
   Friend Shared Function GetResource( _
-    ByVal dr As SafeDataReader) As ProjectResource
+    ByVal data As ProjectTracker.DalLinq.Assignment) As ProjectResource
 
-    Return New ProjectResource(dr)
+    Return New ProjectResource(data)
 
   End Function
 
@@ -115,10 +115,10 @@ Public Class ProjectResource
 
   End Sub
 
-  Private Sub New(ByVal dr As SafeDataReader)
+  Private Sub New(ByVal data As ProjectTracker.DalLinq.Assignment)
 
     MarkAsChild()
-    Fetch(dr)
+    Fetch(data)
 
   End Sub
 
@@ -139,15 +139,15 @@ Public Class ProjectResource
 
 #Region " Data Access "
 
-  Private Sub Fetch(ByVal dr As SafeDataReader)
+  Private Sub Fetch(ByVal data As ProjectTracker.DalLinq.Assignment)
 
-    With dr
-      mResourceId = .GetInt32("ResourceId")
-      mLastName = .GetString("LastName")
-      mFirstName = .GetString("FirstName")
-      mAssigned = .GetSmartDate("Assigned")
-      mRole = .GetInt32("Role")
-      .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
+    With data
+      mResourceId = .ResourceId
+      mLastName = .Resource.LastName
+      mFirstName = .Resource.FirstName
+      mAssigned.SetDate(.Assigned)
+      mRole = .Role
+      mTimestamp = .LastChanged.ToArray
     End With
     MarkOld()
 

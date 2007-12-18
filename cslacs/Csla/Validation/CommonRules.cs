@@ -179,7 +179,7 @@ namespace Csla.Validation
       int min = (int)args["MinLength"];
       string value = (string)Utilities.CallByName(
         target, e.PropertyName, CallType.Get);
-      if (!String.IsNullOrEmpty(value) && (value.Length < min))
+      if (String.IsNullOrEmpty(value) || (value.Length < min))
       {
         string format = (string)args["Format"];
         string outValue;

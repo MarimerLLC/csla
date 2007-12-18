@@ -15,12 +15,23 @@ Public Class SingleCriteria(Of B, C)
 
   Private mValue As C
 
+  ''' <summary>
+  ''' Gets the criteria value provided by the caller.
+  ''' </summary>
   Public ReadOnly Property Value() As C
     Get
       Return mValue
     End Get
   End Property
 
+  ''' <summary>
+  ''' Creates an instance of the type,
+  ''' initializing it with the criteria
+  ''' value.
+  ''' </summary>
+  ''' <param name="value">
+  ''' The criteria value.
+  ''' </param>
   Public Sub New(ByVal value As C)
     MyBase.New(GetType(B))
     mValue = value

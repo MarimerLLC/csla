@@ -301,43 +301,6 @@ Namespace Data
       End If
     End Sub
 
-    Private Function CoerceValue(ByVal propertyType As Type, ByVal valueType As Type, ByVal value As Object) As Object
-      If propertyType.Equals(valueType) Then
-        ' types match, just return value
-        Return value
-      Else
-        If propertyType.IsGenericType Then
-          If propertyType.GetGenericTypeDefinition() Is GetType(Nullable(Of )) Then
-            If value Is Nothing Then
-              Return Nothing
-            ElseIf valueType.Equals(GetType(String)) AndAlso CStr(value) = String.Empty Then
-              Return Nothing
-            End If
-          End If
-          propertyType = Utilities.GetPropertyType(propertyType)
-        End If
-
-        If propertyType.IsEnum AndAlso valueType.Equals(GetType(String)) Then
-          Return System.Enum.Parse(propertyType, value.ToString())
-        End If
-
-        If propertyType.IsPrimitive AndAlso valueType.Equals(GetType(String)) AndAlso String.IsNullOrEmpty(CStr(value)) Then
-          value = 0
-        End If
-
-        Try
-          Return Convert.ChangeType(value, Utilities.GetPropertyType(propertyType))
-        Catch
-          Dim cnv As TypeConverter = TypeDescriptor.GetConverter(Utilities.GetPropertyType(propertyType))
-          If cnv IsNot Nothing AndAlso cnv.CanConvertFrom(value.GetType()) Then
-            Return cnv.ConvertFrom(value)
-          Else
-            Throw
-          End If
-        End Try
-      End If
-    End Function
-
 #End Region
 
   End Module

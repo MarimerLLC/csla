@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21004</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{002E4164-CFAF-4923-BEBB-B3A11281AB48}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -143,6 +143,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="PropertyGetSet\EditableGetSet.cs" />
+    <Compile Include="PropertyGetSet\PropertyGetSetTests.cs" />
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
     <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />

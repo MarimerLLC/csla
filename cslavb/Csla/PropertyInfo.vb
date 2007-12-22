@@ -133,4 +133,8 @@ Public Class PropertyInfo(Of T)
     End Get
   End Property
 
+  Private Function NewFieldData() As Core.FieldDataManager.IFieldData Implements Core.IPropertyInfo.NewFieldData
+    Return New Core.FieldDataManager.FieldData(Of T)
+  End Function
+
 End Class

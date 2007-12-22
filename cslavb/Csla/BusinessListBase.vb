@@ -906,4 +906,20 @@ Public MustInherit Class BusinessListBase( _
 
 #End Region
 
+#Region " ITrackStatus "
+
+  Private ReadOnly Property IsNew() As Boolean Implements ITrackStatus.IsNew
+    Get
+      Return False
+    End Get
+  End Property
+
+  Private ReadOnly Property IsDeleted() As Boolean Implements ITrackStatus.IsDeleted
+    Get
+      Return False
+    End Get
+  End Property
+
+#End Region
+
 End Class

@@ -27,6 +27,10 @@
     ''' read the property.
     ''' </remarks>
     ReadOnly Property DefaultValue() As Object
+    ''' <summary>
+    ''' Gets a new field data container for the property.
+    ''' </summary>
+    Function NewFieldData() As Core.FieldDataManager.IFieldData
 
   End Interface
 

@@ -109,14 +109,17 @@
     <Compile Include="Core\ISavable.vb" />
     <Compile Include="Core\ISmartField.vb" />
     <Compile Include="Core\ISupportUndo.vb" />
+    <Compile Include="Core\ITrackStatus.vb" />
     <Compile Include="Core\IUndoableObject.vb" />
     <Compile Include="Core\IBusinessObject.vb" />
     <Compile Include="Core\ICommandObject.vb" />
     <Compile Include="Core\IReadOnlyCollection.vb" />
     <Compile Include="Core\IReadOnlyObject.vb" />
     <Compile Include="Core\ObjectCloner.vb" />
-    <Compile Include="Core\PropertyManager\PropertyManager.vb" />
-    <Compile Include="Core\PropertyManager\PropertyValue.vb" />
+    <Compile Include="Core\FieldManager\FieldData.vb" />
+    <Compile Include="Core\FieldManager\FieldDataManager.vb" />
+    <Compile Include="Core\FieldManager\IFieldData.vb" />
+    <Compile Include="Core\FieldManager\PropertyValue.vb" />
     <Compile Include="Core\RemovingItemEventArgs.vb" />
     <Compile Include="Core\SavedEventArgs.vb" />
     <Compile Include="Core\TypeConverters\SmartDateConverter.vb" />
@@ -409,6 +412,9 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\PropertyManager\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
 </Project>

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Reflection;
 using System.Runtime.Remoting;
@@ -460,6 +461,7 @@ namespace Csla
     /// the next data portal call will create a new
     /// proxy instance.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public static void ReleaseProxy()
     {
       _portal = null;

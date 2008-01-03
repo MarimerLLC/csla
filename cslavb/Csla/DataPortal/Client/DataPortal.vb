@@ -456,6 +456,7 @@ Public Module DataPortal
   ''' the next data portal call will create a new
   ''' proxy instance.
   ''' </summary>
+  <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
   Public Sub ReleaseProxy()
 
     mPortal = Nothing

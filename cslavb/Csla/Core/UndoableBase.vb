@@ -52,7 +52,7 @@ Namespace Core
     ''' Returns the current edit level of the object.
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected ReadOnly Property EditLevel() As Integer
+    Protected ReadOnly Property EditLevel() As Integer Implements IUndoableObject.EditLevel
       Get
         Return mStateStack.Count
       End Get
@@ -344,6 +344,25 @@ Namespace Core
       Return field.DeclaringType.Name & "!" & field.Name
 
     End Function
+
+#End Region
+
+#Region " Reset child edit level "
+
+    Friend Shared Sub ResetChildEditLevel(ByVal child As IUndoableObject, ByVal parentEditLevel As Integer)
+
+      ' if item's edit level is too high,
+      ' reduce it to match list
+      While child.EditLevel > parentEditLevel
+        child.AcceptChanges(parentEditLevel)
+      End While
+      ' if item's edit level is too low,
+      ' increase it to match list
+      While child.EditLevel < parentEditLevel
+        child.CopyState(parentEditLevel)
+      End While
+
+    End Sub
 
 #End Region
 

@@ -38,10 +38,6 @@ Namespace Core
     ''' </remarks>
     Property EditLevelAdded() As Integer
     ''' <summary>
-    ''' Gets the current edit level of the object.
-    ''' </summary>
-    ReadOnly Property EditLevel() As Integer
-    ''' <summary>
     ''' Called by a parent object to mark the child
     ''' for deferred deletion.
     ''' </summary>

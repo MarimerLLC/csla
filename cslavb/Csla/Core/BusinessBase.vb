@@ -135,7 +135,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsDirty() As Boolean Implements IEditableBusinessObject.IsDirty
       Get
-        Return mIsDirty OrElse FieldManager.IsDirty()
+        Return mIsDirty OrElse (mFieldManager IsNot Nothing AndAlso FieldManager.IsDirty())
       End Get
     End Property
 
@@ -293,6 +293,9 @@ Namespace Core
     Protected Sub MarkClean()
 
       mIsDirty = False
+      If mFieldManager IsNot Nothing Then
+        FieldManager.MarkClean()
+      End If
       OnUnknownPropertyChanged()
 
     End Sub
@@ -1064,13 +1067,6 @@ Namespace Core
       End Set
     End Property
 
-    Private ReadOnly Property IEditableBusinessObject_EditLevel() As Integer _
-        Implements IEditableBusinessObject.EditLevel
-      Get
-        Return Me.EditLevel
-      End Get
-    End Property
-
 #End Region
 
 #Region " ICloneable "
@@ -1165,7 +1161,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsValid() As Boolean Implements IEditableBusinessObject.IsValid
       Get
-        Return ValidationRules.IsValid AndAlso FieldManager.IsValid()
+        Return ValidationRules.IsValid AndAlso (mFieldManager Is Nothing OrElse FieldManager.IsValid())
       End Get
     End Property
 
@@ -1599,7 +1595,7 @@ Namespace Core
 
         Else
           result = propertyInfo.DefaultValue
-          FieldManager.SetFieldData(propertyInfo, result)
+          FieldManager.LoadFieldData(propertyInfo, result)
         End If
 
       Else
@@ -1919,6 +1915,11 @@ Namespace Core
         Dim child As IEditableBusinessObject = DirectCast(newValue, IEditableBusinessObject)
         If child IsNot Nothing Then
           child.SetParent(Me)
+          ' set child edit level
+          UndoableBase.ResetChildEditLevel(child, Me.EditLevel)
+          ' reset EditLevelAdded 
+          child.EditLevelAdded = Me.EditLevel
+          ' hook child event
           Dim pc As INotifyPropertyChanged = DirectCast(newValue, INotifyPropertyChanged)
           AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
         End If
@@ -1933,14 +1934,19 @@ Namespace Core
         Dim child As IEditableCollection = DirectCast(newValue, IEditableCollection)
         If child IsNot Nothing Then
           child.SetParent(Me)
+          Dim undoChild As IUndoableObject = TryCast(child, IUndoableObject)
+          If undoChild IsNot Nothing Then
+            ' set child edit level
+            UndoableBase.ResetChildEditLevel(undoChild, Me.EditLevel)
+          End If
           Dim pc As IBindingList = DirectCast(newValue, IBindingList)
           AddHandler pc.ListChanged, AddressOf Child_ListChanged
         End If
 
-      Else
-        FieldManager.SetFieldData(propertyInfo, newValue)
-      End If
-      OnPropertyChanged(propertyInfo.Name)
+        Else
+          FieldManager.SetFieldData(propertyInfo, newValue)
+        End If
+        OnPropertyChanged(propertyInfo.Name)
 
     End Sub
 
@@ -1958,7 +1964,6 @@ Namespace Core
 
 #Region " Field Manager "
 
-    <NotUndoable()> _
     Private mFieldManager As FieldDataManager.FieldDataManager
 
     ''' <summary>
@@ -1969,6 +1974,7 @@ Namespace Core
       Get
         If mFieldManager Is Nothing Then
           mFieldManager = New FieldDataManager.FieldDataManager
+          UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel)
         End If
         Return mFieldManager
       End Get
@@ -1993,7 +1999,8 @@ Namespace Core
       ' when a child has its edits applied
     End Sub
 
-    Private Sub RemoveChild(ByVal child As IEditableBusinessObject) Implements IParent.RemoveChild
+    Private Sub RemoveChild(ByVal child As IEditableBusinessObject) _
+      Implements IParent.RemoveChild
 
       Dim name = FieldManager.FindPropertyName(child)
       FieldManager.RemoveField(name)

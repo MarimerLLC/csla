@@ -9,7 +9,10 @@ Namespace Core
   ''' to initiate begin, cancel and apply edit operations.
   ''' </remarks>
   Public Interface IUndoableObject
-
+    ''' <summary>
+    ''' Gets the current edit level of the object.
+    ''' </summary>
+    ReadOnly Property EditLevel() As Integer
     ''' <summary>
     ''' Copies the state of the object and places the copy
     ''' onto the state stack.

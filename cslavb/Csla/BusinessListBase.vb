@@ -321,7 +321,7 @@ Public MustInherit Class BusinessListBase( _
 
   Private Sub DeleteChild(ByVal child As C)
     ' set child edit level
-    ResetChildEditLevel(child, Me.EditLevel)
+    UndoableBase.ResetChildEditLevel(child, Me.EditLevel)
     ' mark the object as deleted
     child.DeleteChild()
     ' and add it to the deleted collection for storage
@@ -381,7 +381,7 @@ Public MustInherit Class BusinessListBase( _
     ' set parent reference
     item.SetParent(Me)
     ' set child edit level
-    ResetChildEditLevel(item, Me.EditLevel)
+    UndoableBase.ResetChildEditLevel(item, Me.EditLevel)
     ' when an object is inserted we assume it is
     ' a new object and so the edit level when it was
     ' added must be set
@@ -465,7 +465,7 @@ Public MustInherit Class BusinessListBase( _
       Me.RaiseListChangedEvents = False
       item.SetParent(Me)
       ' set child edit level
-      ResetChildEditLevel(item, Me.EditLevel)
+      UndoableBase.ResetChildEditLevel(item, Me.EditLevel)
       ' reset EditLevelAdded 
       item.EditLevelAdded = Me.EditLevel
       ' add to list
@@ -482,21 +482,6 @@ Public MustInherit Class BusinessListBase( _
     End If
   End Sub
 
-  Private Sub ResetChildEditLevel(ByVal child As C, ByVal parentEditLevel As Integer)
-
-    ' if item's edit level is too high,
-    ' reduce it to match list
-    While child.EditLevel > parentEditLevel
-      child.AcceptChanges(parentEditLevel)
-    End While
-    ' if item's edit level is too low,
-    ' increase it to match list
-    While child.EditLevel < parentEditLevel
-      child.CopyState(parentEditLevel)
-    End While
-
-  End Sub
-
 #End Region
 
 #Region " Edit level tracking "
@@ -508,7 +493,7 @@ Public MustInherit Class BusinessListBase( _
   ''' Returns the current edit level of the object.
   ''' </summary>
   <EditorBrowsable(EditorBrowsableState.Never)> _
-  Protected ReadOnly Property EditLevel() As Integer
+  Protected ReadOnly Property EditLevel() As Integer Implements IUndoableObject.EditLevel
     Get
       Return mEditLevel
     End Get

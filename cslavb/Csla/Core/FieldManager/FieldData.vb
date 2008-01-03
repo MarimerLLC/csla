@@ -28,25 +28,55 @@
 
     Private ReadOnly Property IsDeleted() As Boolean Implements ITrackStatus.IsDeleted
       Get
-        Return False
+        Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
+        If child IsNot Nothing Then
+          Return child.IsDeleted
+
+        Else
+          Return False
+        End If
       End Get
     End Property
 
     Public ReadOnly Property IsDirty() As Boolean Implements ITrackStatus.IsDirty
       Get
+        Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
+        If child IsNot Nothing Then
+          Return child.IsDirty
 
+        Else
+          Return mIsDirty
+        End If
       End Get
     End Property
 
+    Public Sub MarkClean() Implements IFieldData.MarkClean
+
+      mIsDirty = False
+
+    End Sub
+
     Private ReadOnly Property IsNew() As Boolean Implements ITrackStatus.IsNew
       Get
-        Return False
+        Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
+        If child IsNot Nothing Then
+          Return child.IsNew
+
+        Else
+          Return False
+        End If
       End Get
     End Property
 
     Private ReadOnly Property IsValid() As Boolean Implements ITrackStatus.IsValid
       Get
-        Return True
+        Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
+        If child IsNot Nothing Then
+          Return child.IsValid
+
+        Else
+          Return True
+        End If
       End Get
     End Property
 

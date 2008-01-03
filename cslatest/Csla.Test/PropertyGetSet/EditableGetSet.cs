@@ -16,6 +16,7 @@ using TestMethod = NUnit.Framework.TestAttribute;
 
 namespace Csla.Test.PropertyGetSet
 {
+  [Serializable]
   public class EditableGetSet : Csla.BusinessBase<EditableGetSet>
   {
     private static Csla.PropertyInfo<string> F01Property = new Csla.PropertyInfo<string>("F01");
@@ -84,9 +85,62 @@ namespace Csla.Test.PropertyGetSet
       get 
       { 
         if (!FieldManager.FieldExists(C01Property))
-          SetProperty<EditableGetSet>(C01Property, new EditableGetSet());
+          SetProperty<EditableGetSet>(C01Property, new EditableGetSet(true));
         return GetProperty<EditableGetSet>(C01Property); 
       }
     }
+
+    public int EditLevel
+    {
+      get { return base.EditLevel; }
+    }
+
+    public void MarkClean()
+    {
+      base.MarkClean();
+    }
+
+    public EditableGetSet()
+    {
+      MarkNew();
+      MarkClean();
+    }
+
+    public EditableGetSet(bool isChild)
+    {
+      if (isChild)
+      {
+        MarkAsChild();
+        MarkNew();
+      }
+    }
+
+    #region " Data Access "
+
+    protected override void DataPortal_Insert()
+    {
+      //FieldManager.UpdateChildren();
+      if (FieldManager.FieldExists(C01Property))
+        C01.Insert();
+    }
+
+    protected override void DataPortal_Update()
+    {
+      //FieldManager.UpdateChildren();
+      if (FieldManager.FieldExists(C01Property))
+        C01.Update();
+    }
+
+    internal void Insert()
+    {
+      MarkOld();
+    }
+
+    internal void Update()
+    {
+      MarkOld();
+    }
+
+    #endregion
   }
 }

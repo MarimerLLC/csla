@@ -1328,9 +1328,7 @@ Namespace Core
       ValidationRules.SetTarget(Me)
       InitializeBusinessRules()
       InitializeAuthorizationRules()
-      If mFieldManager IsNot Nothing Then
-        mDeserializationWorkPending = True
-      End If
+      FieldDataDeserialized()
 
     End Sub
 
@@ -1574,9 +1572,9 @@ Namespace Core
 
       Dim result As P
       If CanReadProperty(propertyInfo.Name, throwOnNoAccess) Then
-        Dim data As FieldDataManager.IFieldData = FieldManager.GetFieldData(propertyInfo)
+        Dim data As FieldManager.IFieldData = FieldManager.GetFieldData(propertyInfo)
         If data IsNot Nothing Then
-          Dim fd As FieldDataManager.FieldData(Of P) = TryCast(data, FieldDataManager.FieldData(Of P))
+          Dim fd As FieldManager.FieldData(Of P) = TryCast(data, FieldManager.FieldData(Of P))
           If fd IsNot Nothing Then
             result = fd.Value
 
@@ -1955,24 +1953,17 @@ Namespace Core
 
 #Region " Field Manager "
 
-    Private mFieldManager As FieldDataManager.FieldDataManager
-    <NonSerialized()> _
-    <NotUndoable()> _
-    Private mDeserializationWorkPending As Boolean
+    Private mFieldManager As FieldManager.FieldDataManager
 
     ''' <summary>
     ''' Gets the PropertyManager object for this
     ''' business object.
     ''' </summary>
-    Protected ReadOnly Property FieldManager() As FieldDataManager.FieldDataManager
+    Protected ReadOnly Property FieldManager() As FieldManager.FieldDataManager
       Get
         If mFieldManager Is Nothing Then
-          mFieldManager = New FieldDataManager.FieldDataManager
+          mFieldManager = New FieldManager.FieldDataManager
           UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel)
-        End If
-        If mDeserializationWorkPending Then
-          mDeserializationWorkPending = False
-          FieldDataDeserialized()
         End If
         Return mFieldManager
       End Get

@@ -101,6 +101,7 @@
     <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessListBase.vb" />
     <Compile Include="Core\ExtendedBindingList.vb" />
+    <Compile Include="Core\FieldManager\FieldDataList.vb" />
     <Compile Include="Core\IEditableBusinessObject.vb" />
     <Compile Include="Core\IExtendedBindingList.vb" />
     <Compile Include="Core\IParent.vb" />

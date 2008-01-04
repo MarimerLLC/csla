@@ -1,11 +1,22 @@
-﻿Namespace Core.FieldDataManager
+﻿Namespace Core.FieldManager
 
   <Serializable()> _
   Public Class FieldData(Of T)
     Implements IFieldData
 
+    Private mName As String
     Private mData As T
     Private mIsDirty As Boolean
+
+    Public Sub New(ByVal name As String)
+      mName = name
+    End Sub
+
+    Public ReadOnly Property Name() As String Implements IFieldData.Name
+      Get
+        Return mName
+      End Get
+    End Property
 
     Public Property Value() As T
       Get

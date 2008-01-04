@@ -1,4 +1,4 @@
-﻿Namespace Core.FieldDataManager
+﻿Namespace Core.FieldManager
 
   ''' <summary>
   ''' Defines the members required by a field
@@ -7,6 +7,10 @@
   Public Interface IFieldData
     Inherits ITrackStatus
 
+    ''' <summary>
+    ''' Gets the name of the field.
+    ''' </summary>
+    ReadOnly Property Name() As String
     ''' <summary>
     ''' Gets or sets the field value.
     ''' </summary>

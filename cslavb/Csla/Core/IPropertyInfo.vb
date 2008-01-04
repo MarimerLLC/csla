@@ -30,7 +30,7 @@
     ''' <summary>
     ''' Gets a new field data container for the property.
     ''' </summary>
-    Function NewFieldData() As Core.FieldDataManager.IFieldData
+    Function NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData
 
   End Interface
 

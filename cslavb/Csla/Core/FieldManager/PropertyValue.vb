@@ -1,4 +1,4 @@
-﻿Namespace Core.FieldDataManager
+﻿Namespace Core.FieldManager
 
   ''' <summary>
   ''' Indicates how a property's field

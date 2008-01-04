@@ -1972,14 +1972,14 @@ Namespace Core
     Private Sub FieldDataDeserialized()
 
       For Each item As Object In FieldManager.GetChildren
-        Dim eo As IEditableBusinessObject = DirectCast(item, IEditableBusinessObject)
+        Dim eo As IEditableBusinessObject = TryCast(item, IEditableBusinessObject)
         If eo IsNot Nothing Then
           eo.SetParent(Me)
           Dim pc As INotifyPropertyChanged = DirectCast(item, INotifyPropertyChanged)
           AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
 
         Else
-          Dim el As IEditableCollection = DirectCast(item, IEditableCollection)
+          Dim el As IEditableCollection = TryCast(item, IEditableCollection)
           If el IsNot Nothing Then
             el.SetParent(Me)
             Dim bl As IBindingList = DirectCast(item, IBindingList)

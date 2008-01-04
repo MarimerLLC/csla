@@ -366,9 +366,9 @@ namespace Csla.Wpf
           exceptionResult = ex;
         }
         // clear previous object
-        base.OnQueryFinished(null, null, null, null);
+        base.OnQueryFinished(null, exceptionResult, null, null);
         // return result to base class
-        base.OnQueryFinished(result, exceptionResult, null, null);
+        base.OnQueryFinished(result, null, null, null);
       }
     }
 

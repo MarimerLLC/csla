@@ -30,24 +30,8 @@ Namespace Core
     Protected Sub New()
 
       Initialize()
-      AddInstanceBusinessRules()
-      If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-        SyncLock Me.GetType
-          If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-            Validation.SharedValidationRules.GetManager(Me.GetType, True)
-            AddBusinessRules()
-          End If
-        End SyncLock
-      End If
-      AddInstanceAuthorizationRules()
-      If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-        SyncLock Me.GetType
-          If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-            Csla.Security.SharedAuthorizationRules.GetManager(Me.GetType, True)
-            AddAuthorizationRules()
-          End If
-        End SyncLock
-      End If
+      InitializeBusinessRules()
+      InitializeAuthorizationRules()
 
     End Sub
 
@@ -338,6 +322,20 @@ Namespace Core
     <NotUndoable()> _
     <NonSerialized()> _
     Private mAuthorizationRules As Security.AuthorizationRules
+
+    Private Sub InitializeAuthorizationRules()
+
+      AddInstanceAuthorizationRules()
+      If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+        SyncLock Me.GetType
+          If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+            Csla.Security.SharedAuthorizationRules.GetManager(Me.GetType, True)
+            AddAuthorizationRules()
+          End If
+        End SyncLock
+      End If
+
+    End Sub
 
     ''' <summary>
     ''' Override this method to add authorization
@@ -935,15 +933,7 @@ Namespace Core
 
       BindingEdit = False
       ValidationRules.SetTarget(Me)
-      AddInstanceBusinessRules()
-      If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-        SyncLock Me.GetType
-          If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-            Validation.SharedValidationRules.GetManager(Me.GetType, True)
-            AddBusinessRules()
-          End If
-        End SyncLock
-      End If
+      InitializeBusinessRules()
       OnUnknownPropertyChanged()
       MyBase.UndoChangesComplete()
 
@@ -1095,6 +1085,20 @@ Namespace Core
 #Region " ValidationRules, IsValid "
 
     Private mValidationRules As Validation.ValidationRules
+
+    Private Sub InitializeBusinessRules()
+
+      AddInstanceBusinessRules()
+      If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
+        SyncLock Me.GetType
+          If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
+            Validation.SharedValidationRules.GetManager(Me.GetType, True)
+            AddBusinessRules()
+          End If
+        End SyncLock
+      End If
+
+    End Sub
 
     ''' <summary>
     ''' Provides access to the broken rules functionality.
@@ -1322,23 +1326,10 @@ Namespace Core
 
       OnDeserialized(context)
       ValidationRules.SetTarget(Me)
-      AddInstanceBusinessRules()
-      If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-        SyncLock Me.GetType
-          If Not Validation.SharedValidationRules.RulesExistFor(Me.GetType) Then
-            Validation.SharedValidationRules.GetManager(Me.GetType, True)
-            AddBusinessRules()
-          End If
-        End SyncLock
-      End If
-      AddInstanceAuthorizationRules()
-      If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-        SyncLock Me.GetType
-          If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-            Csla.Security.SharedAuthorizationRules.GetManager(Me.GetType, True)
-            AddAuthorizationRules()
-          End If
-        End SyncLock
+      InitializeBusinessRules()
+      InitializeAuthorizationRules()
+      If mFieldManager IsNot Nothing Then
+        mDeserializationWorkPending = True
       End If
 
     End Sub
@@ -1943,10 +1934,10 @@ Namespace Core
           AddHandler pc.ListChanged, AddressOf Child_ListChanged
         End If
 
-        Else
-          FieldManager.SetFieldData(propertyInfo, newValue)
-        End If
-        OnPropertyChanged(propertyInfo.Name)
+      Else
+        FieldManager.SetFieldData(propertyInfo, newValue)
+      End If
+      OnPropertyChanged(propertyInfo.Name)
 
     End Sub
 
@@ -1965,6 +1956,9 @@ Namespace Core
 #Region " Field Manager "
 
     Private mFieldManager As FieldDataManager.FieldDataManager
+    <NonSerialized()> _
+    <NotUndoable()> _
+    Private mDeserializationWorkPending As Boolean
 
     ''' <summary>
     ''' Gets the PropertyManager object for this
@@ -1976,9 +1970,34 @@ Namespace Core
           mFieldManager = New FieldDataManager.FieldDataManager
           UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel)
         End If
+        If mDeserializationWorkPending Then
+          mDeserializationWorkPending = False
+          FieldDataDeserialized()
+        End If
         Return mFieldManager
       End Get
     End Property
+
+    Private Sub FieldDataDeserialized()
+
+      For Each item As Object In FieldManager.GetChildren
+        Dim eo As IEditableBusinessObject = DirectCast(item, IEditableBusinessObject)
+        If eo IsNot Nothing Then
+          eo.SetParent(Me)
+          Dim pc As INotifyPropertyChanged = DirectCast(item, INotifyPropertyChanged)
+          AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
+
+        Else
+          Dim el As IEditableCollection = DirectCast(item, IEditableCollection)
+          If el IsNot Nothing Then
+            el.SetParent(Me)
+            Dim bl As IBindingList = DirectCast(item, IBindingList)
+            AddHandler bl.ListChanged, AddressOf Child_ListChanged
+          End If
+        End If
+      Next
+
+    End Sub
 
 #End Region
 

@@ -29,6 +29,12 @@ Namespace Core.FieldDataManager
       End Get
     End Property
 
+    Friend ReadOnly Property HasFieldData() As Boolean
+      Get
+        Return mFields IsNot Nothing
+      End Get
+    End Property
+
 #End Region
 
 #Region " Get/Set/Find fields "
@@ -85,6 +91,18 @@ Namespace Core.FieldDataManager
     Public Function FieldExists(ByVal propertyInfo As IPropertyInfo) As Boolean
 
       Return FieldData.ContainsKey(propertyInfo.Name)
+
+    End Function
+
+    Public Function GetChildren() As List(Of Object)
+
+      Dim result As New List(Of Object)
+      For Each item In FieldData
+        If TypeOf item.Value.Value Is IEditableBusinessObject OrElse TypeOf item.Value.Value Is IEditableCollection Then
+          result.Add(item.Value.Value)
+        End If
+      Next
+      Return result
 
     End Function
 

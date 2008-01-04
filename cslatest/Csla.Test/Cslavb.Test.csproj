@@ -143,6 +143,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="PropertyGetSet\ChildList.cs" />
     <Compile Include="PropertyGetSet\EditableGetSet.cs" />
     <Compile Include="PropertyGetSet\PropertyGetSetTests.cs" />
     <Compile Include="RollBack\RollbackRoot.cs" />

@@ -90,6 +90,17 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
+    private static Csla.PropertyInfo<ChildList> L01Property = new Csla.PropertyInfo<ChildList>("L01");
+    public ChildList L01
+    {
+      get
+      {
+        if (!FieldManager.FieldExists(L01Property))
+          SetProperty<ChildList>(L01Property, new ChildList(true));
+        return GetProperty<ChildList>(L01Property);
+      }
+    }
+
     public int EditLevel
     {
       get { return base.EditLevel; }
@@ -122,6 +133,8 @@ namespace Csla.Test.PropertyGetSet
       //FieldManager.UpdateChildren();
       if (FieldManager.FieldExists(C01Property))
         C01.Insert();
+      if (FieldManager.FieldExists(L01Property))
+        L01.Update();
     }
 
     protected override void DataPortal_Update()
@@ -129,6 +142,8 @@ namespace Csla.Test.PropertyGetSet
       //FieldManager.UpdateChildren();
       if (FieldManager.FieldExists(C01Property))
         C01.Update();
+      if (FieldManager.FieldExists(L01Property))
+        L01.Update();
     }
 
     internal void Insert()

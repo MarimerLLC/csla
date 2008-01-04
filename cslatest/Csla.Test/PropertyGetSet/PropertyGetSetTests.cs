@@ -276,12 +276,16 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
-
-      EditableGetSet initialChild = root.C01;
+      Assert.AreEqual(1, root.C01.EditLevel, "Child edit level after BeginEdit");
+      Assert.AreEqual(1, root.L01.EditLevel, "List edit level after BeginEdit");
+      root.L01.Add(new EditableGetSet(true));
+      Assert.AreEqual(1, root.L01[0].EditLevel, "List child edit level after BeginEdit");
 
       root = root.Clone();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after Clone");
-      Assert.AreEqual(1, initialChild.EditLevel, "Child edit level after Clone");
+      Assert.AreEqual(1, root.C01.EditLevel, "Child edit level after Clone");
+      Assert.AreEqual(1, root.L01.EditLevel, "List edit level after Clone");
+      Assert.AreEqual(1, root.L01[0].EditLevel, "List child edit level after Clone");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
     }
@@ -326,6 +330,65 @@ namespace Csla.Test.PropertyGetSet
       root = root.Save();
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after Save");
+    }
+
+    [TestMethod]
+    public void RootChildListUndoCancel()
+    {
+      EditableGetSet root = new EditableGetSet();
+      Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
+      root.BeginEdit();
+      Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
+
+      ChildList list = root.L01;
+      Assert.AreEqual(1, list.EditLevel, "List edit level after being created");
+
+      Assert.IsFalse(root.IsDirty, "Root should not be dirty");
+      Assert.IsFalse(list.IsDirty, "List should not be dirty");
+
+      list.Add(new EditableGetSet(true));
+      Assert.AreEqual(1, list.Count, "List count should be 1");
+
+      root.CancelEdit();
+      Assert.AreEqual(0, root.EditLevel, "Root edit level after CancelEdit");
+      ChildList secondList = root.L01;
+      Assert.AreEqual(0, secondList.EditLevel, "Second list edit level after CancelEdit");
+      Assert.IsFalse(ReferenceEquals(list, secondList), "List objects should not be the same");
+
+      Assert.IsFalse(root.IsDirty, "Root should not be dirty after CancelEdit");
+      Assert.IsFalse(secondList.IsDirty, "Second list should not be dirty");
+    }
+
+    [TestMethod]
+    public void RootChildListUndoApply()
+    {
+      EditableGetSet root = new EditableGetSet();
+      Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
+      root.BeginEdit();
+      Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
+
+      ChildList list = root.L01;
+      Assert.AreEqual(1, list.EditLevel, "List edit level after being created");
+
+      Assert.IsFalse(root.IsDirty, "Root should not be dirty");
+      Assert.IsFalse(list.IsDirty, "List should not be dirty");
+
+      list.Add(new EditableGetSet(true));
+      Assert.AreEqual(1, list.Count, "List count should be 1");
+
+      root.ApplyEdit();
+      Assert.AreEqual(0, root.EditLevel, "Root edit level after ApplyEdit");
+      ChildList secondList = root.L01;
+      Assert.AreEqual(0, secondList.EditLevel, "Second list edit level after ApplyEdit");
+      Assert.IsTrue(ReferenceEquals(list, secondList), "List objects should be the same");
+
+      Assert.IsTrue(root.IsDirty, "Root should be dirty after ApplyEdit");
+      Assert.IsTrue(secondList.IsDirty, "Second list should be dirty");
+
+      root = root.Save();
+
+      Assert.IsFalse(root.IsDirty, "Root should not be dirty after Save");
+      Assert.IsFalse(root.L01.IsDirty, "List should not be dirty after Save");
     }
 
     // ======================================================================================

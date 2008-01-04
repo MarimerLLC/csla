@@ -43,6 +43,25 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
+    public void SerializedExplicitFieldProperties()
+    {
+      EditableGetSet root = new EditableGetSet();
+      root = root.Clone();
+      Assert.AreEqual("n/a", root.F03, "Default value should have been set");
+      Assert.AreEqual("", root.F01, "String should default to string.Empty");
+      Assert.AreEqual(0, root.F02, "Numeric should default to 0");
+
+      root.F01 = "hi there";
+      root = root.Clone();
+      Assert.AreEqual("hi there", root.F01, "String should have been set");
+
+      root.F02 = 123;
+      Assert.AreEqual(123, root.F02, "Numeric should have been set");
+
+      Assert.IsTrue(root.IsDirty, "Root should be dirty");
+    }
+
+    [TestMethod]
     public void ManagedFieldProperties()
     {
       EditableGetSet root = new EditableGetSet();
@@ -64,6 +83,26 @@ namespace Csla.Test.PropertyGetSet
 
       root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
       root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+    }
+
+    [TestMethod]
+    public void SerializedManagedFieldProperties()
+    {
+      EditableGetSet root = new EditableGetSet();
+      root = root.Clone();
+      Assert.AreEqual("n/a", root.M03, "Default value should have been set");
+      Assert.AreEqual("", root.M01, "String should default to string.Empty");
+      Assert.AreEqual(0, root.M02, "Numeric should default to 0");
+
+      root.M01 = "hi there";
+      root = root.Clone();
+      Assert.AreEqual("hi there", root.M01, "String should have been set");
+
+      root.M02 = 123;
+      root = root.Clone();
+      Assert.AreEqual(123, root.M02, "Numeric should have been set");
+
+      Assert.IsTrue(root.IsDirty, "Root should be dirty");
     }
 
     [TestMethod]
@@ -114,6 +153,34 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsTrue(child.IsDirty, "Child should be dirty");
 
       child.F01 = "hi there";
+      Assert.AreEqual("", _changingName, "C01 should NOT have been changing");
+      Assert.AreEqual("C01", _changedName, "C01 should have changed");
+
+      root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+    }
+
+    [TestMethod]
+    public void SerializedSimpleChildProperties()
+    {
+      EditableGetSet root = new EditableGetSet();
+      EditableGetSet child = root.C01;
+      child.F01 = "hi there";
+
+      root = root.Clone();
+      root.PropertyChanging += new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+
+      child = root.C01;
+      Assert.IsNotNull(child, "Child should not be null");
+      Assert.AreEqual("hi there", child.F01, "Child value should be intact");
+
+      Assert.IsTrue(root.IsDirty, "Root should be dirty");
+      Assert.IsTrue(child.IsDirty, "Child should be dirty");
+
+      _changingName = "";
+      _changedName = "";
+      child.F01 = "I've been cloned!";
       Assert.AreEqual("", _changingName, "C01 should NOT have been changing");
       Assert.AreEqual("C01", _changedName, "C01 should have changed");
 
@@ -200,6 +267,23 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsFalse(ReferenceEquals(initialChild, secondChild), "Child objects should be different");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty after second child created");
+    }
+
+    [TestMethod]
+    public void SerializedEditLevel()
+    {
+      EditableGetSet root = new EditableGetSet();
+      Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
+      root.BeginEdit();
+      Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
+
+      EditableGetSet initialChild = root.C01;
+
+      root = root.Clone();
+      Assert.AreEqual(1, root.EditLevel, "Root edit level after Clone");
+      Assert.AreEqual(1, initialChild.EditLevel, "Child edit level after Clone");
+
+      Assert.IsTrue(root.IsDirty, "Root should be dirty");
     }
 
     [TestMethod]

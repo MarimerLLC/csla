@@ -346,10 +346,10 @@ Namespace Wpf
           exceptionResult = ex
         End Try
 
-        ' clear previous object
-        MyBase.OnQueryFinished(Nothing, Nothing, Nothing, Nothing)
+        ' clear previous object and return any exception
+        MyBase.OnQueryFinished(Nothing, exceptionResult, Nothing, Nothing)
         ' return result to base class
-        MyBase.OnQueryFinished(result, exceptionResult, Nothing, Nothing)
+        MyBase.OnQueryFinished(result, Nothing, Nothing, Nothing)
       End If
 
     End Sub

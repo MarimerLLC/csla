@@ -416,6 +416,58 @@ Public Module DataPortal
 
 #End Region
 
+#Region " Child Data Access methods "
+
+  ''' <summary>
+  ''' Creates and initializes a new
+  ''' child business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to create.
+  ''' </typeparam>
+  ''' <param name="params">
+  ''' Parameters passed to child create method.
+  ''' </param>
+  Public Function CreateChild(Of T)(ByVal ParamArray params() As Object) As T
+
+    Dim portal As New Server.ChildDataPortal
+    Return DirectCast(portal.Create(GetType(T)), T)
+
+  End Function
+
+  ''' <summary>
+  ''' Creates and loads an existing
+  ''' child business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to retrieve.
+  ''' </typeparam>
+  ''' <param name="params">
+  ''' Parameters passed to child fetch method.
+  ''' </param>
+  Public Function FetchChild(Of T)(ByVal ParamArray params() As Object) As T
+
+    Dim portal As New Server.ChildDataPortal
+    Return DirectCast(portal.Fetch(GetType(T), params), T)
+
+  End Function
+
+  ''' <summary>
+  ''' Inserts, updates or deletes an existing
+  ''' child business object.
+  ''' </summary>
+  ''' <param name="child">
+  ''' Business object to update.
+  ''' </param>
+  Public Sub UpdateChild(ByVal child As Object)
+
+    Dim portal As New Server.ChildDataPortal
+    portal.Update(child)
+
+  End Sub
+
+#End Region
+
 #Region " Get DataPortal Proxy "
 
   Private mLocalPortal As DataPortalClient.IDataPortalProxy

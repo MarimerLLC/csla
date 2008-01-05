@@ -344,7 +344,7 @@ Namespace Core.FieldManager
           If item IsNot Nothing Then
             Dim obj As Object = item.Value
             If TypeOf obj Is IEditableBusinessObject OrElse TypeOf obj Is IEditableCollection Then
-              ' TODO: update child
+              Csla.DataPortal.UpdateChild(obj)
             End If
           End If
         Next

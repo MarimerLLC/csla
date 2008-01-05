@@ -654,6 +654,32 @@ Public MustInherit Class BusinessListBase( _
 #Region " Data Access "
 
   ''' <summary>
+  ''' Saves all items in the list, automatically
+  ''' performing insert, update or delete operations
+  ''' as necessary.
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub Child_Update()
+
+    Dim oldRLCE = Me.RaiseListChangedEvents
+    Me.RaiseListChangedEvents = False
+    Try
+      For Each child In DeletedList
+        DataPortal.UpdateChild(child)
+      Next
+      DeletedList.Clear()
+
+      For Each child In Me
+        DataPortal.UpdateChild(child)
+      Next
+
+    Finally
+      Me.RaiseListChangedEvents = oldRLCE
+    End Try
+
+  End Sub
+
+  ''' <summary>
   ''' Saves the object to the database.
   ''' </summary>
   ''' <remarks>

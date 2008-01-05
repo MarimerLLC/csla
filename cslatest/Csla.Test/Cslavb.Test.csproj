@@ -92,6 +92,10 @@
     <Compile Include="Basic\RootList.cs" />
     <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
     <Compile Include="DataMapper\DataMapperTests.cs" />
+    <Compile Include="DataPortalChild\Child.cs" />
+    <Compile Include="DataPortalChild\ChildList.cs" />
+    <Compile Include="DataPortalChild\DataPortalChildTests.cs" />
+    <Compile Include="DataPortalChild\Root.cs" />
     <Compile Include="DataPortalTestDatabaseDataSet.cs">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
       <SubType>Component</SubType>

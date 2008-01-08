@@ -933,7 +933,7 @@ Namespace Validation
 
     ''' <summary>
     ''' Gets or sets a value indicating whether calling
-    ''' <see cref="CheckRules"/> should result in rule
+    ''' CheckRules should result in rule
     ''' methods being invoked.
     ''' </summary>
     ''' <value>True to suppress all rule method invocation.</value>

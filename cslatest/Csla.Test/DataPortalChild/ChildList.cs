@@ -29,7 +29,7 @@ namespace Csla.Test.DataPortalChild
       _status = "Fetched";
     }
 
-    protected override void Child_Update()
+    protected override void Child_Update(params object[] p)
     {
       base.Child_Update();
       _status = "Updated";

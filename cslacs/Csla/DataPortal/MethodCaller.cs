@@ -199,7 +199,7 @@ namespace Csla
         {
           result = objectType.GetMethod(method, allLevelFlags);
         }
-        catch (AmbiguousMatchException ex)
+        catch (AmbiguousMatchException)
         {
           MethodInfo[] methods = objectType.GetMethods();
           foreach (MethodInfo m in methods)

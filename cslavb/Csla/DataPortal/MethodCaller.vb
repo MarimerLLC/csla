@@ -114,17 +114,63 @@ Friend Module MethodCaller
     ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) _
     As Object
 
-    ' call a Public method on the object
     Dim result As Object
+    Dim infoParams = info.GetParameters
+    Dim inParams() As Object
+    If parameters Is Nothing Then
+      inParams = New Object() {Nothing}
+
+    Else
+      inParams = parameters
+    End If
+    If infoParams.Length > 0 AndAlso infoParams(infoParams.Length - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0 Then
+      ' last param is a param array
+      Dim extras = inParams.Length - (infoParams.Length - 1)
+      ' 1 or more params go in the param array
+      ' copy extras into an array
+      Dim extraArray() As Object = GetExtrasArray(extras)
+      For pos = 0 To extras - 1
+        extraArray(pos) = inParams(infoParams.Length - 1 + pos)
+      Next
+
+      ' copy items into new array
+      Dim paramList(infoParams.Length - 1) As Object
+      For pos = 0 To infoParams.Length - 2
+        paramList(pos) = parameters(pos)
+      Next
+      paramList(paramList.Length - 1) = extraArray
+
+      ' use new array
+      inParams = paramList
+    End If
     Try
-      result = info.Invoke(obj, parameters)
+      result = info.Invoke(obj, inParams)
 
     Catch e As Exception
+      Dim inner As Exception
+      If e.InnerException Is Nothing Then
+        inner = e
+
+      Else
+        inner = e.InnerException
+      End If
       Throw New CallMethodException( _
-        info.Name & " " & My.Resources.MethodCallFailed, _
-        e.InnerException)
+        info.Name & " " & My.Resources.MethodCallFailed, inner)
     End Try
     Return result
+
+  End Function
+
+  Private Function GetExtrasArray(ByVal count As Integer) As Object()
+
+    If count > 0 Then
+      Dim result(count - 1) As Object
+      Return result
+
+    Else
+      Dim result() As Object = {}
+      Return result
+    End If
 
   End Function
 
@@ -138,18 +184,25 @@ Friend Module MethodCaller
 
     Dim result As MethodInfo = Nothing
 
+    Dim inParams() As Object
+    If parameters Is Nothing Then
+      inParams = New Object() {Nothing}
+
+    Else
+      inParams = parameters
+    End If
+
     ' try to find a strongly typed match
 
     ' first see if there's a matching method
     ' where all params match types
-    result = FindMethod(objectType, method, GetParameterTypes(parameters))
+    result = FindMethod(objectType, method, GetParameterTypes(inParams))
 
     If result Is Nothing Then
       ' no match found - so look for any method
       ' with the right number of parameters
-      result = FindMethod(objectType, method, parameters.Length)
+      result = FindMethod(objectType, method, inParams.Length)
     End If
-    'End If
 
     ' no strongly typed match found, get default
     If result Is Nothing Then
@@ -160,7 +213,7 @@ Friend Module MethodCaller
         Dim methods() As MethodInfo = objectType.GetMethods
         For Each m As MethodInfo In methods
           If m.Name = method AndAlso _
-          m.GetParameters.Length = parameters.Length Then
+          m.GetParameters.Length = inParams.Length Then
             result = m
             Exit For
           End If
@@ -179,13 +232,18 @@ Friend Module MethodCaller
 
     Dim result As List(Of Type) = New List(Of Type)()
 
-    For Each item As Object In parameters
-      If item Is Nothing Then
-        result.Add(GetType(Object))
-      Else
-        result.Add(item.GetType())
-      End If
-    Next item
+    If parameters Is Nothing Then
+      result.Add(GetType(Object))
+
+    Else
+      For Each item As Object In parameters
+        If item Is Nothing Then
+          result.Add(GetType(Object))
+        Else
+          result.Add(item.GetType())
+        End If
+      Next
+    End If
     Return result.ToArray()
 
   End Function
@@ -248,7 +306,17 @@ Friend Module MethodCaller
       Dim info As MethodInfo = _
         currentType.GetMethod(method, oneLevelFlags)
       If info IsNot Nothing Then
-        If info.GetParameters.Length = parameterCount Then
+        Dim infoParams = info.GetParameters
+        Dim pCount = infoParams.Length
+        If pcount > 0 AndAlso infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0 Then
+          ' last param is a param array
+          If parameterCount >= pCount - 1 Then
+            ' got a match so use it
+            result = info
+            Exit Do
+          End If
+
+        ElseIf pCount = parameterCount Then
           ' got a match so use it
           result = info
           Exit Do

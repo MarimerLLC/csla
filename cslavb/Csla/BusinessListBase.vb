@@ -658,19 +658,23 @@ Public MustInherit Class BusinessListBase( _
   ''' performing insert, update or delete operations
   ''' as necessary.
   ''' </summary>
+  ''' <param name="params">
+  ''' Optional parameters passed to child update
+  ''' methods.
+  ''' </param>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_Update()
+  Protected Overridable Sub Child_Update(ByVal ParamArray params() As Object)
 
     Dim oldRLCE = Me.RaiseListChangedEvents
     Me.RaiseListChangedEvents = False
     Try
       For Each child In DeletedList
-        DataPortal.UpdateChild(child)
+        DataPortal.UpdateChild(child, params)
       Next
       DeletedList.Clear()
 
       For Each child In Me
-        DataPortal.UpdateChild(child)
+        DataPortal.UpdateChild(child, params)
       Next
 
     Finally

@@ -39,7 +39,7 @@ Namespace Server
         ' tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented( _
           obj, "DataPortal_OnDataPortalInvoke", _
-          New DataPortalEventArgs(context))
+          New DataPortalEventArgs(context, DataPortalOperations.Create))
 
         ' tell the business object to fetch its data
         Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
@@ -58,7 +58,7 @@ Namespace Server
         ' tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented( _
           obj, "DataPortal_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(context))
+          New DataPortalEventArgs(context, DataPortalOperations.Create))
 
         ' return the populated business object as a result
         Return New DataPortalResult(obj)
@@ -68,7 +68,7 @@ Namespace Server
           ' tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented( _
             obj, "DataPortal_OnDataPortalException", _
-            New DataPortalEventArgs(context), ex)
+            New DataPortalEventArgs(context, DataPortalOperations.Create), ex)
         Catch
           ' ignore exceptions from the exception handler
         End Try
@@ -103,7 +103,7 @@ Namespace Server
         ' tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented( _
           obj, "DataPortal_OnDataPortalInvoke", _
-          New DataPortalEventArgs(context))
+          New DataPortalEventArgs(context, DataPortalOperations.Fetch))
 
         ' mark the object as old
         MethodCaller.CallMethodIfImplemented(obj, "MarkOld")
@@ -122,7 +122,7 @@ Namespace Server
         ' tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented( _
           obj, "DataPortal_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(context))
+          New DataPortalEventArgs(context, DataPortalOperations.Fetch))
 
         ' return the populated business object as a result
         Return New DataPortalResult(obj)
@@ -132,7 +132,7 @@ Namespace Server
           ' tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented( _
             obj, "DataPortal_OnDataPortalException", _
-            New DataPortalEventArgs(context), ex)
+            New DataPortalEventArgs(context, DataPortalOperations.Fetch), ex)
         Catch
           ' ignore exceptions from the exception handler
         End Try
@@ -156,11 +156,13 @@ Namespace Server
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Update
 
+      Dim operation = DataPortalOperations.Update
+
       Try
         ' tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented( _
           obj, "DataPortal_OnDataPortalInvoke", _
-          New DataPortalEventArgs(context))
+          New DataPortalEventArgs(context, operation))
 
         ' tell the business object to update itself
         If TypeOf obj Is Core.BusinessBase Then
@@ -189,6 +191,7 @@ Namespace Server
         ElseIf TypeOf obj Is CommandBase Then
           ' tell the object to update itself
           MethodCaller.CallMethod(obj, "DataPortal_Execute")
+          operation = DataPortalOperations.Execute
 
         Else
           ' this is an updatable collection or some other
@@ -202,7 +205,7 @@ Namespace Server
         ' tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented( _
           obj, "DataPortal_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(context))
+          New DataPortalEventArgs(context, operation))
 
         Return New DataPortalResult(obj)
 
@@ -211,7 +214,7 @@ Namespace Server
           ' tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented( _
             obj, "DataPortal_OnDataPortalException", _
-            New DataPortalEventArgs(context), ex)
+            New DataPortalEventArgs(context, operation), ex)
         Catch
           ' ignore exceptions from the exception handler
         End Try
@@ -243,7 +246,7 @@ Namespace Server
         ' tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented( _
           obj, "DataPortal_OnDataPortalInvoke", _
-          New DataPortalEventArgs(context))
+          New DataPortalEventArgs(context, DataPortalOperations.Delete))
 
         ' tell the business object to delete itself
         MethodCaller.CallMethod(obj, "DataPortal_Delete", criteria)
@@ -251,7 +254,7 @@ Namespace Server
         ' tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented( _
           obj, "DataPortal_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(context))
+          New DataPortalEventArgs(context, DataPortalOperations.Delete))
 
         Return New DataPortalResult
 
@@ -260,7 +263,7 @@ Namespace Server
           ' tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented( _
             obj, "DataPortal_OnDataPortalException", _
-            New DataPortalEventArgs(context), ex)
+            New DataPortalEventArgs(context, DataPortalOperations.Delete), ex)
         Catch
           ' ignore exceptions from the exception handler
         End Try

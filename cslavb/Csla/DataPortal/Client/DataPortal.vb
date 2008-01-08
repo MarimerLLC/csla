@@ -108,7 +108,7 @@ Public Module DataPortal
     Dim dpContext As New Server.DataPortalContext( _
       GetPrincipal, proxy.IsServerRemote)
 
-    OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Create))
 
     Try
       result = proxy.Create(objectType, criteria, dpContext)
@@ -127,7 +127,7 @@ Public Module DataPortal
       ApplicationContext.SetGlobalContext(result.GlobalContext)
     End If
 
-    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Create))
 
     Return result.ReturnObject
 
@@ -191,7 +191,7 @@ Public Module DataPortal
     Dim dpContext As New Server.DataPortalContext( _
       GetPrincipal, proxy.IsServerRemote)
 
-    OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch))
 
     Try
       result = proxy.Fetch(objectType, criteria, dpContext)
@@ -210,7 +210,7 @@ Public Module DataPortal
       ApplicationContext.SetGlobalContext(result.GlobalContext)
     End If
 
-    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch))
 
     Return result.ReturnObject
 
@@ -305,11 +305,13 @@ Public Module DataPortal
   Public Function Update(ByVal obj As Object) As Object
 
     Dim result As Server.DataPortalResult
+    Dim operation = DataPortalOperations.Update
 
     Dim method As MethodInfo
     Dim methodName As String
     If TypeOf obj Is CommandBase Then
       methodName = "DataPortal_Execute"
+      operation = DataPortalOperations.Execute
 
     ElseIf TypeOf obj Is Core.BusinessBase Then
       Dim tmp As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
@@ -336,7 +338,7 @@ Public Module DataPortal
 
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
 
-    OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvoke(New DataPortalEventArgs(dpContext, operation))
 
     Try
       If Not proxy.IsServerRemote AndAlso ApplicationContext.AutoCloneOnUpdate Then
@@ -363,7 +365,7 @@ Public Module DataPortal
       ApplicationContext.SetGlobalContext(result.GlobalContext)
     End If
 
-    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, operation))
 
     Return result.ReturnObject
 
@@ -391,7 +393,7 @@ Public Module DataPortal
 
     Dim dpContext As New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
 
-    OnDataPortalInvoke(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete))
 
     Try
       result = proxy.Delete(criteria, dpContext)
@@ -410,7 +412,7 @@ Public Module DataPortal
       ApplicationContext.SetGlobalContext(result.GlobalContext)
     End If
 
-    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext))
+    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete))
 
   End Sub
 
@@ -459,10 +461,10 @@ Public Module DataPortal
   ''' <param name="child">
   ''' Business object to update.
   ''' </param>
-  Public Sub UpdateChild(ByVal child As Object)
+  Public Sub UpdateChild(ByVal child As Object, ByVal ParamArray params() As Object)
 
     Dim portal As New Server.ChildDataPortal
-    portal.Update(child)
+    portal.Update(child, params)
 
   End Sub
 

@@ -288,7 +288,7 @@ Namespace Core.FieldManager
               ' get child object from old field collection
               Dim child = DirectCast(oldFields.GetValue(key), IFieldData)
               ' cascade call to child
-              DirectCast(child, IUndoableObject).UndoChanges(parentEditLevel)
+              DirectCast(child.Value, IUndoableObject).UndoChanges(parentEditLevel)
               FieldData.Add(key, child)
 
             Else
@@ -337,14 +337,14 @@ Namespace Core.FieldManager
     ''' all child objects contained in 
     ''' the list of fields.
     ''' </summary>
-    Public Sub UpdateChildren()
+    Public Sub UpdateChildren(ByVal ParamArray parameters() As Object)
 
       If HasFieldData Then
         For Each item In FieldData.GetFieldDataList
           If item IsNot Nothing Then
             Dim obj As Object = item.Value
             If TypeOf obj Is IEditableBusinessObject OrElse TypeOf obj Is IEditableCollection Then
-              Csla.DataPortal.UpdateChild(obj)
+              Csla.DataPortal.UpdateChild(obj, parameters)
             End If
           End If
         Next

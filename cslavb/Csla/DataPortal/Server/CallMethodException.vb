@@ -42,7 +42,9 @@ Namespace Server
     Public Sub New(ByVal message As String, ByVal ex As Exception)
 
       MyBase.New(message, ex)
-      mInnerStackTrace = ex.StackTrace
+      If ex IsNot Nothing Then
+        mInnerStackTrace = ex.StackTrace
+      End If
 
     End Sub
 

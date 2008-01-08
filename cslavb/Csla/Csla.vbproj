@@ -130,6 +130,7 @@
     <Compile Include="DataPortal\Client\RemotingProxy.vb" />
     <Compile Include="DataPortal\Client\WcfProxy.vb" />
     <Compile Include="DataPortal\Client\WebServicesProxy.vb" />
+    <Compile Include="DataPortal\DataPortalOperations.vb" />
     <Compile Include="DataPortal\Hosts\EnterpriseServicesPortal.vb" />
     <Compile Include="DataPortal\Hosts\IWcfPortal.vb" />
     <Compile Include="DataPortal\Hosts\RemotingPortal.vb" />

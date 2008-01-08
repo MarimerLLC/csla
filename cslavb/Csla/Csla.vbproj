@@ -163,6 +163,12 @@
     <Compile Include="FilteredBindingList.vb" />
     <Compile Include="FilterProvider.vb" />
     <Compile Include="GlobalSuppressions.vb" />
+    <Compile Include="IndexableAttribute.vb" />
+    <Compile Include="IndexModeEnum.vb" />
+    <Compile Include="Linq\IIndex.vb" />
+    <Compile Include="Linq\IIndexSet.vb" />
+    <Compile Include="Linq\Index.vb" />
+    <Compile Include="Linq\IndexSet.vb" />
     <Compile Include="PropertyInfo.vb" />
     <Compile Include="Reflection\TypeInfoCache.vb" />
     <Compile Include="Security\AccessType.vb" />

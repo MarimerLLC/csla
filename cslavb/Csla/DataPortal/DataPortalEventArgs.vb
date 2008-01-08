@@ -33,6 +33,9 @@ Public Class DataPortalEventArgs
   ''' <param name="dataPortalContext">
   ''' Data portal context object.
   ''' </param>
+  ''' <param name="operation">
+  ''' Data portal operation being performed.
+  ''' </param>
   Public Sub New(ByVal dataPortalContext As Server.DataPortalContext, ByVal operation As DataPortalOperations)
     mDataPortalContext = dataPortalContext
     mOperation = operation

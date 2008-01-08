@@ -189,9 +189,9 @@ Namespace Server
           End If
 
         ElseIf TypeOf obj Is CommandBase Then
+          operation = DataPortalOperations.Execute
           ' tell the object to update itself
           MethodCaller.CallMethod(obj, "DataPortal_Execute")
-          operation = DataPortalOperations.Execute
 
         Else
           ' this is an updatable collection or some other

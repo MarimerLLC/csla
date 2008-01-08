@@ -118,7 +118,7 @@ namespace Csla
       Server.DataPortalContext dpContext = 
         new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
-      OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+      OnDataPortalInvoke(new DataPortalEventArgs(dpContext, DataPortalOperations.Create));
 
       try
       {
@@ -137,7 +137,7 @@ namespace Csla
       if (proxy.IsServerRemote)
         ApplicationContext.SetGlobalContext(result.GlobalContext);
 
-      OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+      OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, DataPortalOperations.Create));
 
       return result.ReturnObject;
     }
@@ -197,7 +197,7 @@ namespace Csla
         new Server.DataPortalContext(GetPrincipal(), 
         proxy.IsServerRemote);
 
-      OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+      OnDataPortalInvoke(new DataPortalEventArgs(dpContext, DataPortalOperations.Fetch));
 
       try
       {
@@ -226,7 +226,7 @@ namespace Csla
       if (proxy.IsServerRemote)
         ApplicationContext.SetGlobalContext(result.GlobalContext);
 
-      OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+      OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, DataPortalOperations.Fetch));
 
       return result.ReturnObject;
     }
@@ -317,11 +317,15 @@ namespace Csla
     public static object Update(object obj)
     {
       Server.DataPortalResult result;
+      DataPortalOperations operation = DataPortalOperations.Update;
 
       MethodInfo method;
       string methodName;
       if (obj is CommandBase)
+      {
         methodName = "DataPortal_Execute";
+        operation = DataPortalOperations.Execute;
+      }
       else if (obj is Core.BusinessBase)
       {
         Core.BusinessBase tmp = (Core.BusinessBase)obj;
@@ -346,7 +350,7 @@ namespace Csla
       Server.DataPortalContext dpContext = 
         new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
-      OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+      OnDataPortalInvoke(new DataPortalEventArgs(dpContext, operation));
 
       try
       {
@@ -373,7 +377,7 @@ namespace Csla
       if (proxy.IsServerRemote)
         ApplicationContext.SetGlobalContext(result.GlobalContext);
 
-      OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+      OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, operation));
 
       return result.ReturnObject;
     }
@@ -398,7 +402,7 @@ namespace Csla
 
       Server.DataPortalContext dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
-      OnDataPortalInvoke(new DataPortalEventArgs(dpContext));
+      OnDataPortalInvoke(new DataPortalEventArgs(dpContext, DataPortalOperations.Delete));
 
       try
       {
@@ -417,7 +421,7 @@ namespace Csla
       if (proxy.IsServerRemote)
         ApplicationContext.SetGlobalContext(result.GlobalContext);
 
-      OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext));
+      OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, DataPortalOperations.Delete));
     }
 
     #endregion

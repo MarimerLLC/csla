@@ -90,6 +90,7 @@
     <Compile Include="Core\ExtendedBindingList.cs" />
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
+    <Compile Include="Data\ConnectionManager.cs" />
     <Compile Include="Linq\IIndex.cs" />
     <Compile Include="Linq\IIndexSet.cs" />
     <Compile Include="Linq\Index.cs" />

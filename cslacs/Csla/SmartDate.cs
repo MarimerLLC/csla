@@ -939,6 +939,78 @@ namespace Csla
     }
 
     /// <summary>
+    /// Convert a SmartDate to a String.
+    /// </summary>
+    /// <param name="obj1">SmartDate value.</param>
+    public static implicit operator string(SmartDate obj1)
+    {
+      return obj1.Text;
+    }
+
+    /// <summary>
+    /// Convert a SmartDate to a DateTime.
+    /// </summary>
+    /// <param name="obj1">SmartDate value.</param>
+    public static implicit operator System.DateTime(SmartDate obj1)
+    {
+      return obj1.Date;
+    }
+
+    /// <summary>
+    /// Convert a SmartDate to a nullable DateTime.
+    /// </summary>
+    /// <param name="obj1">SmartDate value.</param>
+    public static implicit operator System.DateTime?(SmartDate obj1)
+    {
+      return obj1.ToNullableDate();
+    }
+
+    /// <summary>
+    /// Convert a SmartDate to a DateTimeOffset.
+    /// </summary>
+    /// <param name="obj1">SmartDate value.</param>
+    public static implicit operator DateTimeOffset(SmartDate obj1)
+    {
+      return obj1.ToDateTimeOffset();
+    }
+
+    /// <summary>
+    /// Convert a value to a SmartDate.
+    /// </summary>
+    /// <param name="dateValue">Value to convert.</param>
+    public static explicit operator SmartDate(string dateValue)
+    {
+      return new SmartDate(dateValue);
+    }
+
+    /// <summary>
+    /// Convert a value to a SmartDate.
+    /// </summary>
+    /// <param name="dateValue">Value to convert.</param>
+    public static implicit operator SmartDate(System.DateTime dateValue)
+    {
+      return new SmartDate(dateValue);
+    }
+
+    /// <summary>
+    /// Convert a value to a SmartDate.
+    /// </summary>
+    /// <param name="dateValue">Value to convert.</param>
+    public static implicit operator SmartDate(System.DateTime? dateValue)
+    {
+      return new SmartDate(dateValue);
+    }
+
+    /// <summary>
+    /// Convert a value to a SmartDate.
+    /// </summary>
+    /// <param name="dateValue">Value to convert.</param>
+    public static explicit operator SmartDate(DateTimeOffset dateValue)
+    {
+      return new SmartDate(dateValue);
+    }
+
+    /// <summary>
     /// Equality operator
     /// </summary>
     /// <param name="obj1">First object</param>

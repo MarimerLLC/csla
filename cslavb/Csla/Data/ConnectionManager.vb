@@ -97,6 +97,11 @@ Namespace Data
 
 #Region " IDisposable "
 
+    ''' <summary>
+    ''' Dispose object, dereferencing or
+    ''' disposing the connection it is
+    ''' managing.
+    ''' </summary>
     Public Sub Dispose() Implements IDisposable.Dispose
       DeRef()
     End Sub

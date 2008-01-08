@@ -63,6 +63,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
@@ -91,6 +94,7 @@
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
     <Compile Include="Data\ConnectionManager.cs" />
+    <Compile Include="Data\ContextManager.cs" />
     <Compile Include="Linq\IIndex.cs" />
     <Compile Include="Linq\IIndexSet.cs" />
     <Compile Include="Linq\Index.cs" />

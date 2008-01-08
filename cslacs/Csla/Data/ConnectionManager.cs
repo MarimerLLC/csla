@@ -109,6 +109,11 @@ namespace Csla.Data
 
     #region  IDisposable
 
+    /// <summary>
+    /// Dispose object, dereferencing or
+    /// disposing the connection it is
+    /// managing.
+    /// </summary>
     public void Dispose()
     {
       DeRef();

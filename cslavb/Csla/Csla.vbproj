@@ -170,6 +170,7 @@
     <Compile Include="Linq\Index.vb" />
     <Compile Include="Linq\IndexSet.vb" />
     <Compile Include="PropertyInfo.vb" />
+    <Compile Include="PropertyLoadException.vb" />
     <Compile Include="Reflection\TypeInfoCache.vb" />
     <Compile Include="Security\AccessType.vb" />
     <Compile Include="Security\AuthorizationRulesManager.vb" />

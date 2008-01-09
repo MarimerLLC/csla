@@ -412,6 +412,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Property load or set failed for property {0} ({1}).
+        '''</summary>
+        Friend ReadOnly Property PropertyLoadException() As String
+            Get
+                Return ResourceManager.GetString("PropertyLoadException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Property set not allowed.
         '''</summary>
         Friend ReadOnly Property PropertySetNotAllowed() As String

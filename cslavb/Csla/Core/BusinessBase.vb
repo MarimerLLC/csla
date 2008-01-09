@@ -1714,21 +1714,26 @@ Namespace Core
     Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
 
       If CanWriteProperty(propertyName, throwOnNoAccess) Then
-        If field Is Nothing Then
-          If newValue IsNot Nothing Then
+        Try
+          If field Is Nothing Then
+            If newValue IsNot Nothing Then
+              OnPropertyChanging(propertyName)
+              field = newValue
+              PropertyHasChanged(propertyName)
+            End If
+
+          ElseIf Not field.Equals(newValue) Then
+            If TypeOf newValue Is String AndAlso newValue Is Nothing Then
+              newValue = CoerceValue(Of P)(GetType(String), String.Empty)
+            End If
             OnPropertyChanging(propertyName)
             field = newValue
             PropertyHasChanged(propertyName)
           End If
 
-        ElseIf Not field.Equals(newValue) Then
-          If TypeOf newValue Is String AndAlso newValue Is Nothing Then
-            newValue = CoerceValue(Of P)(GetType(String), String.Empty)
-          End If
-          OnPropertyChanging(propertyName)
-          field = newValue
-          PropertyHasChanged(propertyName)
-        End If
+        Catch ex As Exception
+          Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyName, ex.Message, ex.Message))
+        End Try
       End If
 
     End Sub
@@ -1760,21 +1765,26 @@ Namespace Core
     Protected Sub SetProperty(Of P, V)(ByVal propertyName As String, ByRef field As P, ByVal newValue As V, ByVal throwOnNoAccess As Boolean)
 
       If CanWriteProperty(propertyName, throwOnNoAccess) Then
-        If field Is Nothing Then
-          If newValue IsNot Nothing Then
+        Try
+          If field Is Nothing Then
+            If newValue IsNot Nothing Then
+              OnPropertyChanging(propertyName)
+              field = CoerceValue(Of P)(GetType(V), newValue)
+              PropertyHasChanged(propertyName)
+            End If
+
+          ElseIf Not field.Equals(newValue) Then
+            If TypeOf newValue Is String AndAlso newValue Is Nothing Then
+              newValue = CoerceValue(Of V)(GetType(String), String.Empty)
+            End If
             OnPropertyChanging(propertyName)
             field = CoerceValue(Of P)(GetType(V), newValue)
             PropertyHasChanged(propertyName)
           End If
 
-        ElseIf Not field.Equals(newValue) Then
-          If TypeOf newValue Is String AndAlso newValue Is Nothing Then
-            newValue = CoerceValue(Of V)(GetType(String), String.Empty)
-          End If
-          OnPropertyChanging(propertyName)
-          field = CoerceValue(Of P)(GetType(V), newValue)
-          PropertyHasChanged(propertyName)
-        End If
+        Catch ex As Exception
+          Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyName, ex.Message))
+        End Try
       End If
 
     End Sub
@@ -1835,20 +1845,7 @@ Namespace Core
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F, ByVal throwOnNoAccess As Boolean)
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
-        Dim fieldData = FieldManager.GetFieldData(propertyInfo)
-        Dim oldValue As P = Nothing
-        If fieldData IsNot Nothing Then
-          oldValue = DirectCast(fieldData.Value, P)
-        End If
-
-        If fieldData Is Nothing OrElse oldValue Is Nothing Then
-          If Not newValue Is Nothing Then
-            SetPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), newValue))
-          End If
-
-        ElseIf Not newValue.Equals(oldValue) Then
-          SetPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), newValue))
-        End If
+        LoadProperty(Of P, F)(propertyInfo, newValue)
       End If
 
     End Sub
@@ -1872,6 +1869,28 @@ Namespace Core
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
+        LoadProperty(Of P)(propertyInfo, newValue)
+      End If
+
+    End Sub
+
+#End Region
+
+#Region " Load Properties "
+
+    ''' <summary>
+    ''' Loads a property's managed field with the 
+    ''' supplied value calling PropertyHasChanged 
+    ''' if the value does change.
+    ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    ''' <param name="newValue">
+    ''' The new value for the property.</param>
+    Protected Sub LoadProperty(Of P, F)( _
+      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
+
+      Try
         Dim fieldData = FieldManager.GetFieldData(propertyInfo)
         Dim oldValue As P = Nothing
         If fieldData IsNot Nothing Then
@@ -1880,17 +1899,57 @@ Namespace Core
 
         If fieldData Is Nothing OrElse oldValue Is Nothing Then
           If Not newValue Is Nothing Then
-            SetPropertyValue(Of P)(propertyInfo, oldValue, newValue)
+            LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), newValue))
           End If
 
         ElseIf Not newValue.Equals(oldValue) Then
-          SetPropertyValue(Of P)(propertyInfo, oldValue, newValue)
+          LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), newValue))
         End If
-      End If
+
+      Catch ex As Exception
+        Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
+      End Try
 
     End Sub
 
-    Private Sub SetPropertyValue(Of P)( _
+    ''' <summary>
+    ''' Loads a property's managed field with the 
+    ''' supplied value calling PropertyHasChanged 
+    ''' if the value does change.
+    ''' </summary>
+    ''' <typeparam name="P">
+    ''' Type of the property.
+    ''' </typeparam>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    ''' <param name="newValue">
+    ''' The new value for the property.</param>
+    Protected Sub LoadProperty(Of P)( _
+      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
+
+      Try
+        Dim fieldData = FieldManager.GetFieldData(propertyInfo)
+        Dim oldValue As P = Nothing
+        If fieldData IsNot Nothing Then
+          oldValue = DirectCast(fieldData.Value, P)
+        End If
+
+        If fieldData Is Nothing OrElse oldValue Is Nothing Then
+          If Not newValue Is Nothing Then
+            LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
+          End If
+
+        ElseIf Not newValue.Equals(oldValue) Then
+          LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
+        End If
+
+      Catch ex As Exception
+        Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
+      End Try
+
+    End Sub
+
+    Private Sub LoadPropertyValue(Of P)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal oldValue As P, ByVal newValue As P)
 
       OnPropertyChanging(propertyInfo.Name)
@@ -1926,7 +1985,10 @@ Namespace Core
           Dim undoChild As IUndoableObject = TryCast(child, IUndoableObject)
           If undoChild IsNot Nothing Then
             ' set child edit level
-            UndoableBase.ResetChildEditLevel(undoChild, Me.EditLevel)
+            Dim newEditLevel = Me.EditLevel
+            If BindingEdit Then _
+              newEditLevel = Me.EditLevel - 1
+            UndoableBase.ResetChildEditLevel(undoChild, newEditLevel)
           End If
           Dim pc As IBindingList = DirectCast(newValue, IBindingList)
           AddHandler pc.ListChanged, AddressOf Child_ListChanged

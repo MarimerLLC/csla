@@ -285,4 +285,7 @@
   <data name="BrokenRulesMergeException" xml:space="preserve">
     <value>Merge only allowed on custom collection objects</value>
   </data>
+  <data name="PropertyLoadException" xml:space="preserve">
+    <value>Property load or set failed for property {0} ({1})</value>
+  </data>
 </root>

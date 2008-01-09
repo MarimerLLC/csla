@@ -651,7 +651,18 @@ Public MustInherit Class BusinessListBase( _
 
 #End Region
 
-#Region " Data Access "
+#Region " Child Data Access "
+
+  ''' <summary>
+  ''' Initializes a new instance of the object
+  ''' with default values.
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub Child_Create()
+
+    ' do nothing - list self-initializes
+
+  End Sub
 
   ''' <summary>
   ''' Saves all items in the list, automatically
@@ -682,6 +693,10 @@ Public MustInherit Class BusinessListBase( _
     End Try
 
   End Sub
+
+#End Region
+
+#Region " Data Access "
 
   ''' <summary>
   ''' Saves the object to the database.

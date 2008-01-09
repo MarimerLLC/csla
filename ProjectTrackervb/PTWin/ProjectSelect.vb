@@ -11,12 +11,27 @@ Public Class ProjectSelect
     End Get
   End Property
 
-  Private Sub OK_Button_Click( _
-    ByVal sender As System.Object, ByVal e As System.EventArgs) _
-    Handles OK_Button.Click
+  Private Sub AcceptValue()
 
     mProjectId = CType(Me.ProjectListListBox.SelectedValue, Guid)
+    Me.DialogResult = Windows.Forms.DialogResult.OK
     Me.Close()
+
+  End Sub
+
+  Private Sub OK_Button_Click( _
+      ByVal sender As System.Object, ByVal e As System.EventArgs) _
+      Handles OK_Button.Click
+
+    AcceptValue()
+
+  End Sub
+
+  Private Sub ProjectListListBox_MouseDoubleClick( _
+    ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) _
+    Handles ProjectListListBox.MouseDoubleClick
+
+    AcceptValue()
 
   End Sub
 

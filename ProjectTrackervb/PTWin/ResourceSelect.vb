@@ -9,10 +9,23 @@ Public Class ResourceSelect
     End Get
   End Property
 
-  Private Sub OK_Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OK_Button.Click
+  Private Sub AcceptValue()
 
     mResourceId = CType(Me.ResourceListListBox.SelectedValue, ResourceInfo).Id
+    Me.DialogResult = Windows.Forms.DialogResult.OK
     Me.Close()
+
+  End Sub
+
+  Private Sub OK_Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OK_Button.Click
+
+    AcceptValue()
+
+  End Sub
+
+  Private Sub ResourceListListBox_MouseDoubleClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles ResourceListListBox.MouseDoubleClick
+
+    AcceptValue()
 
   End Sub
 

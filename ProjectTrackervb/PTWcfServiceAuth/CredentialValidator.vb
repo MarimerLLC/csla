@@ -12,7 +12,6 @@ Public Class CredentialValidator
 
     If userName <> "anonymous" Then
       PTPrincipal.Logout()
-      'if (!PTPrincipal.VerifyCredentials(userName, password))
       If (Not PTPrincipal.Login(userName, password)) Then
         Throw New FaultException("Unknown username or password")
       End If

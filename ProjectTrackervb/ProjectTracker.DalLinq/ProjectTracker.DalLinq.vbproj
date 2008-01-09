@@ -78,11 +78,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ProjectDal.vb" />
     <Compile Include="PTracker.designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PTracker.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="Security.designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Security.dbml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +96,9 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Security.dbml.layout">
+      <DependentUpon>Security.dbml</DependentUpon>
+    </None>
     <None Include="PTracker.dbml.layout">
       <DependentUpon>PTracker.dbml</DependentUpon>
     </None>
@@ -111,6 +118,12 @@
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>PTracker.designer.vb</LastGenOutput>
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Security.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>Security.designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+      <CustomToolNamespace>Security</CustomToolNamespace>
     </None>
   </ItemGroup>
   <ItemGroup>

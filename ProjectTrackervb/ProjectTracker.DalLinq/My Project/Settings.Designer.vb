@@ -65,6 +65,18 @@ Namespace My
                 Return CType(Me("PTrackerConnectionString"),String)
             End Get
         End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=.\SQLEXPRESS;AttachDbFilename=""c:\Visual Studio Projects\csla\Project"& _ 
+            "Trackervb\Security.mdf"";Integrated Security=True;Connect Timeout=30;User Instanc"& _ 
+            "e=True")>  _
+        Public ReadOnly Property SecurityConnectionString() As String
+            Get
+                Return CType(Me("SecurityConnectionString"),String)
+            End Get
+        End Property
     End Class
 End Namespace
 

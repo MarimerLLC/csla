@@ -31,6 +31,10 @@ Partial Public Class ResourceEdit
     Me.UnassignButton = New System.Windows.Forms.Button
     Me.AssignButton = New System.Windows.Forms.Button
     Me.AssignmentsDataGridView = New System.Windows.Forms.DataGridView
+    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewLinkColumn
+    Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn
+    Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
     Me.AssignmentsBindingSource = New System.Windows.Forms.BindingSource(Me.components)
     Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
     Me.BindingSourceRefresh1 = New Csla.Windows.BindingSourceRefresh(Me.components)
@@ -39,10 +43,6 @@ Partial Public Class ResourceEdit
     Me.ApplyButton = New System.Windows.Forms.Button
     Me.Cancel_Button = New System.Windows.Forms.Button
     Me.OKButton = New System.Windows.Forms.Button
-    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewLinkColumn
-    Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn
-    Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
     FirstNameLabel = New System.Windows.Forms.Label
     IdLabel = New System.Windows.Forms.Label
     LastNameLabel = New System.Windows.Forms.Label
@@ -61,7 +61,7 @@ Partial Public Class ResourceEdit
     FirstNameLabel.Location = New System.Drawing.Point(11, 42)
     FirstNameLabel.Name = "FirstNameLabel"
     FirstNameLabel.Size = New System.Drawing.Size(60, 13)
-    FirstNameLabel.TabIndex = 0
+    FirstNameLabel.TabIndex = 2
     FirstNameLabel.Text = "First Name:"
     '
     'IdLabel
@@ -71,7 +71,7 @@ Partial Public Class ResourceEdit
     IdLabel.Location = New System.Drawing.Point(11, 13)
     IdLabel.Name = "IdLabel"
     IdLabel.Size = New System.Drawing.Size(19, 13)
-    IdLabel.TabIndex = 2
+    IdLabel.TabIndex = 0
     IdLabel.Text = "Id:"
     '
     'LastNameLabel
@@ -103,7 +103,7 @@ Partial Public Class ResourceEdit
     Me.FirstNameTextBox.Location = New System.Drawing.Point(78, 39)
     Me.FirstNameTextBox.Name = "FirstNameTextBox"
     Me.FirstNameTextBox.Size = New System.Drawing.Size(385, 20)
-    Me.FirstNameTextBox.TabIndex = 1
+    Me.FirstNameTextBox.TabIndex = 3
     '
     'IdLabel1
     '
@@ -114,7 +114,7 @@ Partial Public Class ResourceEdit
     Me.IdLabel1.Location = New System.Drawing.Point(78, 13)
     Me.IdLabel1.Name = "IdLabel1"
     Me.IdLabel1.Size = New System.Drawing.Size(385, 23)
-    Me.IdLabel1.TabIndex = 3
+    Me.IdLabel1.TabIndex = 1
     '
     'LastNameTextBox
     '
@@ -150,7 +150,7 @@ Partial Public Class ResourceEdit
     Me.UnassignButton.Location = New System.Drawing.Point(368, 48)
     Me.UnassignButton.Name = "UnassignButton"
     Me.UnassignButton.Size = New System.Drawing.Size(75, 23)
-    Me.UnassignButton.TabIndex = 14
+    Me.UnassignButton.TabIndex = 2
     Me.UnassignButton.Text = "Unassign"
     Me.UnassignButton.UseVisualStyleBackColor = True
     '
@@ -161,7 +161,7 @@ Partial Public Class ResourceEdit
     Me.AssignButton.Location = New System.Drawing.Point(368, 19)
     Me.AssignButton.Name = "AssignButton"
     Me.AssignButton.Size = New System.Drawing.Size(75, 23)
-    Me.AssignButton.TabIndex = 13
+    Me.AssignButton.TabIndex = 1
     Me.AssignButton.Text = "Assign"
     Me.AssignButton.UseVisualStyleBackColor = True
     '
@@ -184,65 +184,6 @@ Partial Public Class ResourceEdit
     Me.AssignmentsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
     Me.AssignmentsDataGridView.Size = New System.Drawing.Size(356, 285)
     Me.AssignmentsDataGridView.TabIndex = 0
-    '
-    'AssignmentsBindingSource
-    '
-    Me.AssignmentsBindingSource.DataMember = "Assignments"
-    Me.AssignmentsBindingSource.DataSource = Me.ResourceBindingSource
-    Me.BindingSourceRefresh1.SetReadValuesOnChange(Me.AssignmentsBindingSource, False)
-    '
-    'ErrorProvider1
-    '
-    Me.ErrorProvider1.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink
-    Me.ErrorProvider1.ContainerControl = Me
-    Me.ErrorProvider1.DataSource = Me.ResourceBindingSource
-    '
-    'CloseButton
-    '
-    Me.CloseButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.CloseButton, False)
-    Me.CloseButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-    Me.CloseButton.Location = New System.Drawing.Point(499, 100)
-    Me.CloseButton.Name = "CloseButton"
-    Me.CloseButton.Size = New System.Drawing.Size(75, 23)
-    Me.CloseButton.TabIndex = 34
-    Me.CloseButton.Text = "Close"
-    Me.CloseButton.UseVisualStyleBackColor = True
-    '
-    'ApplyButton
-    '
-    Me.ApplyButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.ApplyButton, False)
-    Me.ApplyButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-    Me.ApplyButton.Location = New System.Drawing.Point(499, 42)
-    Me.ApplyButton.Name = "ApplyButton"
-    Me.ApplyButton.Size = New System.Drawing.Size(75, 23)
-    Me.ApplyButton.TabIndex = 33
-    Me.ApplyButton.Text = "Apply"
-    Me.ApplyButton.UseVisualStyleBackColor = True
-    '
-    'Cancel_Button
-    '
-    Me.Cancel_Button.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.Cancel_Button, False)
-    Me.Cancel_Button.DialogResult = System.Windows.Forms.DialogResult.Cancel
-    Me.Cancel_Button.Location = New System.Drawing.Point(499, 71)
-    Me.Cancel_Button.Name = "Cancel_Button"
-    Me.Cancel_Button.Size = New System.Drawing.Size(75, 23)
-    Me.Cancel_Button.TabIndex = 32
-    Me.Cancel_Button.Text = "Cancel"
-    Me.Cancel_Button.UseVisualStyleBackColor = True
-    '
-    'OKButton
-    '
-    Me.OKButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.OKButton, False)
-    Me.OKButton.Location = New System.Drawing.Point(499, 13)
-    Me.OKButton.Name = "OKButton"
-    Me.OKButton.Size = New System.Drawing.Size(75, 23)
-    Me.OKButton.TabIndex = 31
-    Me.OKButton.Text = "OK"
-    Me.OKButton.UseVisualStyleBackColor = True
     '
     'DataGridViewTextBoxColumn3
     '
@@ -282,6 +223,65 @@ Partial Public Class ResourceEdit
     Me.Role.Name = "Role"
     Me.Role.ValueMember = "Key"
     Me.Role.Width = 35
+    '
+    'AssignmentsBindingSource
+    '
+    Me.AssignmentsBindingSource.DataMember = "Assignments"
+    Me.AssignmentsBindingSource.DataSource = Me.ResourceBindingSource
+    Me.BindingSourceRefresh1.SetReadValuesOnChange(Me.AssignmentsBindingSource, False)
+    '
+    'ErrorProvider1
+    '
+    Me.ErrorProvider1.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink
+    Me.ErrorProvider1.ContainerControl = Me
+    Me.ErrorProvider1.DataSource = Me.ResourceBindingSource
+    '
+    'CloseButton
+    '
+    Me.CloseButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.CloseButton, False)
+    Me.CloseButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+    Me.CloseButton.Location = New System.Drawing.Point(499, 100)
+    Me.CloseButton.Name = "CloseButton"
+    Me.CloseButton.Size = New System.Drawing.Size(75, 23)
+    Me.CloseButton.TabIndex = 10
+    Me.CloseButton.Text = "Close"
+    Me.CloseButton.UseVisualStyleBackColor = True
+    '
+    'ApplyButton
+    '
+    Me.ApplyButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.ApplyButton, False)
+    Me.ApplyButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+    Me.ApplyButton.Location = New System.Drawing.Point(499, 42)
+    Me.ApplyButton.Name = "ApplyButton"
+    Me.ApplyButton.Size = New System.Drawing.Size(75, 23)
+    Me.ApplyButton.TabIndex = 8
+    Me.ApplyButton.Text = "Apply"
+    Me.ApplyButton.UseVisualStyleBackColor = True
+    '
+    'Cancel_Button
+    '
+    Me.Cancel_Button.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.Cancel_Button, False)
+    Me.Cancel_Button.DialogResult = System.Windows.Forms.DialogResult.Cancel
+    Me.Cancel_Button.Location = New System.Drawing.Point(499, 71)
+    Me.Cancel_Button.Name = "Cancel_Button"
+    Me.Cancel_Button.Size = New System.Drawing.Size(75, 23)
+    Me.Cancel_Button.TabIndex = 9
+    Me.Cancel_Button.Text = "Cancel"
+    Me.Cancel_Button.UseVisualStyleBackColor = True
+    '
+    'OKButton
+    '
+    Me.OKButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.OKButton, False)
+    Me.OKButton.Location = New System.Drawing.Point(499, 13)
+    Me.OKButton.Name = "OKButton"
+    Me.OKButton.Size = New System.Drawing.Size(75, 23)
+    Me.OKButton.TabIndex = 7
+    Me.OKButton.Text = "OK"
+    Me.OKButton.UseVisualStyleBackColor = True
     '
     'ResourceEdit
     '

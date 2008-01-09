@@ -67,7 +67,7 @@ Partial Class ProjectEdit
     DescriptionLabel.Location = New System.Drawing.Point(10, 120)
     DescriptionLabel.Name = "DescriptionLabel"
     DescriptionLabel.Size = New System.Drawing.Size(63, 13)
-    DescriptionLabel.TabIndex = 16
+    DescriptionLabel.TabIndex = 8
     DescriptionLabel.Text = "Description:"
     '
     'EndedLabel
@@ -77,7 +77,7 @@ Partial Class ProjectEdit
     EndedLabel.Location = New System.Drawing.Point(10, 94)
     EndedLabel.Name = "EndedLabel"
     EndedLabel.Size = New System.Drawing.Size(41, 13)
-    EndedLabel.TabIndex = 18
+    EndedLabel.TabIndex = 6
     EndedLabel.Text = "Ended:"
     '
     'IdLabel
@@ -87,7 +87,7 @@ Partial Class ProjectEdit
     IdLabel.Location = New System.Drawing.Point(10, 13)
     IdLabel.Name = "IdLabel"
     IdLabel.Size = New System.Drawing.Size(19, 13)
-    IdLabel.TabIndex = 20
+    IdLabel.TabIndex = 0
     IdLabel.Text = "Id:"
     '
     'NameLabel
@@ -97,7 +97,7 @@ Partial Class ProjectEdit
     NameLabel.Location = New System.Drawing.Point(10, 42)
     NameLabel.Name = "NameLabel"
     NameLabel.Size = New System.Drawing.Size(38, 13)
-    NameLabel.TabIndex = 22
+    NameLabel.TabIndex = 2
     NameLabel.Text = "Name:"
     '
     'StartedLabel
@@ -107,7 +107,7 @@ Partial Class ProjectEdit
     StartedLabel.Location = New System.Drawing.Point(10, 68)
     StartedLabel.Name = "StartedLabel"
     StartedLabel.Size = New System.Drawing.Size(44, 13)
-    StartedLabel.TabIndex = 24
+    StartedLabel.TabIndex = 4
     StartedLabel.Text = "Started:"
     '
     'ErrorProvider1
@@ -140,7 +140,7 @@ Partial Class ProjectEdit
     Me.CloseButton.Location = New System.Drawing.Point(576, 100)
     Me.CloseButton.Name = "CloseButton"
     Me.CloseButton.Size = New System.Drawing.Size(75, 23)
-    Me.CloseButton.TabIndex = 30
+    Me.CloseButton.TabIndex = 14
     Me.CloseButton.Text = "Close"
     Me.CloseButton.UseVisualStyleBackColor = True
     '
@@ -152,7 +152,7 @@ Partial Class ProjectEdit
     Me.ApplyButton.Location = New System.Drawing.Point(576, 42)
     Me.ApplyButton.Name = "ApplyButton"
     Me.ApplyButton.Size = New System.Drawing.Size(75, 23)
-    Me.ApplyButton.TabIndex = 29
+    Me.ApplyButton.TabIndex = 12
     Me.ApplyButton.Text = "Apply"
     Me.ApplyButton.UseVisualStyleBackColor = True
     '
@@ -164,7 +164,7 @@ Partial Class ProjectEdit
     Me.Cancel_Button.Location = New System.Drawing.Point(576, 71)
     Me.Cancel_Button.Name = "Cancel_Button"
     Me.Cancel_Button.Size = New System.Drawing.Size(75, 23)
-    Me.Cancel_Button.TabIndex = 28
+    Me.Cancel_Button.TabIndex = 13
     Me.Cancel_Button.Text = "Cancel"
     Me.Cancel_Button.UseVisualStyleBackColor = True
     '
@@ -175,7 +175,7 @@ Partial Class ProjectEdit
     Me.OKButton.Location = New System.Drawing.Point(576, 13)
     Me.OKButton.Name = "OKButton"
     Me.OKButton.Size = New System.Drawing.Size(75, 23)
-    Me.OKButton.TabIndex = 27
+    Me.OKButton.TabIndex = 11
     Me.OKButton.Text = "OK"
     Me.OKButton.UseVisualStyleBackColor = True
     '
@@ -186,7 +186,7 @@ Partial Class ProjectEdit
     Me.UnassignButton.Location = New System.Drawing.Point(379, 48)
     Me.UnassignButton.Name = "UnassignButton"
     Me.UnassignButton.Size = New System.Drawing.Size(75, 23)
-    Me.UnassignButton.TabIndex = 12
+    Me.UnassignButton.TabIndex = 2
     Me.UnassignButton.Text = "Unassign"
     Me.UnassignButton.UseVisualStyleBackColor = True
     '
@@ -202,7 +202,7 @@ Partial Class ProjectEdit
     Me.GroupBox1.Location = New System.Drawing.Point(79, 231)
     Me.GroupBox1.Name = "GroupBox1"
     Me.GroupBox1.Size = New System.Drawing.Size(460, 210)
-    Me.GroupBox1.TabIndex = 26
+    Me.GroupBox1.TabIndex = 10
     Me.GroupBox1.TabStop = False
     Me.GroupBox1.Text = "Resources"
     '
@@ -213,7 +213,7 @@ Partial Class ProjectEdit
     Me.AssignButton.Location = New System.Drawing.Point(379, 19)
     Me.AssignButton.Name = "AssignButton"
     Me.AssignButton.Size = New System.Drawing.Size(75, 23)
-    Me.AssignButton.TabIndex = 11
+    Me.AssignButton.TabIndex = 1
     Me.AssignButton.Text = "Assign"
     Me.AssignButton.UseVisualStyleBackColor = True
     '
@@ -235,7 +235,7 @@ Partial Class ProjectEdit
     Me.ResourcesDataGridView.RowHeadersVisible = False
     Me.ResourcesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
     Me.ResourcesDataGridView.Size = New System.Drawing.Size(367, 185)
-    Me.ResourcesDataGridView.TabIndex = 10
+    Me.ResourcesDataGridView.TabIndex = 0
     '
     'DataGridViewTextBoxColumn2
     '
@@ -286,7 +286,7 @@ Partial Class ProjectEdit
     Me.DescriptionTextBox.Multiline = True
     Me.DescriptionTextBox.Name = "DescriptionTextBox"
     Me.DescriptionTextBox.Size = New System.Drawing.Size(460, 108)
-    Me.DescriptionTextBox.TabIndex = 17
+    Me.DescriptionTextBox.TabIndex = 9
     '
     'EndedTextBox
     '
@@ -297,7 +297,7 @@ Partial Class ProjectEdit
     Me.EndedTextBox.Location = New System.Drawing.Point(79, 91)
     Me.EndedTextBox.Name = "EndedTextBox"
     Me.EndedTextBox.Size = New System.Drawing.Size(460, 20)
-    Me.EndedTextBox.TabIndex = 19
+    Me.EndedTextBox.TabIndex = 7
     '
     'IdLabel1
     '
@@ -308,7 +308,7 @@ Partial Class ProjectEdit
     Me.IdLabel1.Location = New System.Drawing.Point(79, 13)
     Me.IdLabel1.Name = "IdLabel1"
     Me.IdLabel1.Size = New System.Drawing.Size(460, 23)
-    Me.IdLabel1.TabIndex = 21
+    Me.IdLabel1.TabIndex = 1
     '
     'NameTextBox
     '
@@ -319,7 +319,7 @@ Partial Class ProjectEdit
     Me.NameTextBox.Location = New System.Drawing.Point(79, 39)
     Me.NameTextBox.Name = "NameTextBox"
     Me.NameTextBox.Size = New System.Drawing.Size(460, 20)
-    Me.NameTextBox.TabIndex = 23
+    Me.NameTextBox.TabIndex = 3
     '
     'StartedTextBox
     '
@@ -330,7 +330,7 @@ Partial Class ProjectEdit
     Me.StartedTextBox.Location = New System.Drawing.Point(79, 65)
     Me.StartedTextBox.Name = "StartedTextBox"
     Me.StartedTextBox.Size = New System.Drawing.Size(460, 20)
-    Me.StartedTextBox.TabIndex = 25
+    Me.StartedTextBox.TabIndex = 5
     '
     'ProjectEdit
     '

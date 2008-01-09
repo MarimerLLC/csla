@@ -89,7 +89,7 @@ Namespace Admin
 
     Public Shared Function GetRoles() As Roles
 
-      Return DataPortal.Fetch(Of Roles)(New Criteria)
+      Return DataPortal.Fetch(Of Roles)()
 
     End Function
 
@@ -103,11 +103,6 @@ Namespace Admin
 
 #Region " Data Access "
 
-    <Serializable()> _
-    Private Class Criteria
-      ' no criteria
-    End Class
-
     Public Overrides Function Save() As Roles
 
       ' see if save is allowed
@@ -115,23 +110,26 @@ Namespace Admin
         Throw New System.Security.SecurityException( _
           "User not authorized to save roles")
       End If
+      Return MyBase.Save()
 
-      ' do the save
-      Dim result As Roles
-      result = MyBase.Save()
+
+    End Function
+
+    Private Sub Roles_Saved(ByVal sender As Object, ByVal e As Csla.Core.SavedEventArgs) Handles Me.Saved
 
       ' this runs on the client and invalidates
       ' the RoleList cache
       RoleList.InvalidateCache()
-      Return result
 
-    End Function
+    End Sub
 
     Protected Overrides Sub DataPortal_OnDataPortalInvokeComplete( _
       ByVal e As Csla.DataPortalEventArgs)
 
       If ApplicationContext.ExecutionLocation = _
-        ApplicationContext.ExecutionLocations.Server Then
+        ApplicationContext.ExecutionLocations.Server AndAlso _
+        e.Operation = DataPortalOperations.Update Then
+
         ' this runs on the server and invalidates
         ' the RoleList cache
         RoleList.InvalidateCache()
@@ -139,7 +137,7 @@ Namespace Admin
 
     End Sub
 
-    Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
+    Private Overloads Sub DataPortal_Fetch()
 
       Me.RaiseListChangedEvents = False
       Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
@@ -154,23 +152,9 @@ Namespace Admin
     <Transactional(TransactionalTypes.TransactionScope)> _
     Protected Overrides Sub DataPortal_Update()
 
-      Me.RaiseListChangedEvents = False
       Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
-        For Each item As Role In DeletedList
-          item.DeleteSelf()
-        Next
-        DeletedList.Clear()
-
-        For Each item As Role In Me
-          If item.IsNew Then
-            item.Insert()
-
-          Else
-            item.Update()
-          End If
-        Next
+        Child_Update()
       End Using
-      Me.RaiseListChangedEvents = True
 
     End Sub
 

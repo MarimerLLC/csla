@@ -7,62 +7,57 @@ Public Class Project
   Private mTimestamp(7) As Byte
 
   Private Shared IdProperty As New PropertyInfo(Of Guid)("Id")
-  Private mId As Guid = Guid.NewGuid
   <System.ComponentModel.DataObjectField(True, True)> _
   Public ReadOnly Property Id() As Guid
     Get
-      Return GetProperty(Of Guid)(IdProperty, Mid)
+      Return GetProperty(Of Guid)(IdProperty)
     End Get
   End Property
 
   Private Shared NameProperty As New PropertyInfo(Of String)("Name")
-  Private mName As String = NameProperty.DefaultValue
   Public Property Name() As String
     Get
-      Return GetProperty(Of String)(NameProperty, mName)
+      Return GetProperty(Of String)(NameProperty)
     End Get
     Set(ByVal value As String)
-      SetProperty(Of String)(NameProperty, mName, value)
+      SetProperty(Of String)(NameProperty, value)
     End Set
   End Property
 
   Private Shared StartedProperty As New PropertyInfo(Of SmartDate)("Started")
-  Private mStarted As SmartDate = StartedProperty.DefaultValue
   Public Property Started() As String
     Get
-      Return GetProperty(Of SmartDate, String)(StartedProperty, mStarted)
+      Return GetProperty(Of SmartDate, String)(StartedProperty)
     End Get
     Set(ByVal value As String)
-      SetProperty(Of SmartDate, String)(StartedProperty, mStarted, value)
+      SetProperty(Of SmartDate, String)(StartedProperty, value)
     End Set
   End Property
 
   Private Shared EndedProperty As New PropertyInfo(Of SmartDate)("Ended", New SmartDate(SmartDate.EmptyValue.MaxDate))
-  Private mEnded As SmartDate = EndedProperty.DefaultValue
   Public Property Ended() As String
     Get
-      Return GetProperty(Of SmartDate, String)(EndedProperty, mEnded)
+      Return GetProperty(Of SmartDate, String)(EndedProperty)
     End Get
     Set(ByVal value As String)
-      SetProperty(Of SmartDate, String)(EndedProperty, mEnded, value)
+      SetProperty(Of SmartDate, String)(EndedProperty, value)
     End Set
   End Property
 
   Private Shared DescriptionProperty As New PropertyInfo(Of String)("Description")
-  Private mDescription As String = DescriptionProperty.DefaultValue
   Public Property Description() As String
     Get
-      Return GetProperty(Of String)(DescriptionProperty, mDescription)
+      Return GetProperty(Of String)(DescriptionProperty)
     End Get
     Set(ByVal value As String)
-      SetProperty(Of String)(DescriptionProperty, mDescription, value)
+      SetProperty(Of String)(DescriptionProperty, value)
     End Set
   End Property
 
   Private Shared ResourcesProperty As New PropertyInfo(Of ProjectResources)("Resources")
   Public ReadOnly Property Resources() As ProjectResources
     Get
-      If Not PropertyManager.PropertyFieldExists(ResourcesProperty) Then
+      If Not FieldManager.FieldExists(ResourcesProperty) Then
         SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.NewProjectResources())
       End If
       Return GetProperty(Of ProjectResources)(ResourcesProperty)
@@ -70,7 +65,7 @@ Public Class Project
   End Property
 
   Public Overrides Function ToString() As String
-    Return mId.ToString
+    Return Id.ToString
   End Function
 
 #End Region
@@ -96,7 +91,7 @@ Public Class Project
     ByVal target As T, _
     ByVal e As Validation.RuleArgs) As Boolean
 
-    If target.mStarted > target.mEnded Then
+    If target.GetProperty(Of SmartDate)(StartedProperty) > target.GetProperty(Of SmartDate)(EndedProperty) Then
       e.Description = "Start date can't be after end date"
       Return False
 
@@ -214,7 +209,7 @@ Public Class Project
   <RunLocal()> _
   Protected Overrides Sub DataPortal_Create()
 
-    mId = Guid.NewGuid
+    SetProperty(Of Guid)(IdProperty, Guid.NewGuid)
     Started = CStr(Today)
     ValidationRules.CheckRules()
 
@@ -224,119 +219,76 @@ Public Class Project
 
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
       ' get project data
-      Dim data = ctx.DataContext.Projects.ToArray(0)
-      mId = data.Id
-      mName = data.Name
-      mStarted.SetDate(data.Started)
-      mEnded.SetDate(data.Ended)
-      mDescription = data.Description
+      Dim data = (From p In ctx.DataContext.Projects Where p.Id = criteria.Value Select p).Single
+      SetProperty(Of Guid)(IdProperty, data.Id)
+      SetProperty(Of String)(NameProperty, data.Name)
+      SetProperty(Of SmartDate, Date?)(StartedProperty, data.Started)
+      SetProperty(Of SmartDate, Date?)(EndedProperty, data.Ended)
+      SetProperty(Of String)(DescriptionProperty, data.Description)
       mTimestamp = data.LastChanged.ToArray
 
       ' get child data
-      SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.GetProjectResources(data.Assignments.ToArray))
+      SetProperty(Of ProjectResources)(ResourcesProperty, _
+        ProjectResources.GetProjectResources(data.Assignments.ToArray))
     End Using
-
-    'Using cn As New SqlConnection(Database.PTrackerConnection)
-    '  cn.Open()
-    '  Using cm As SqlCommand = cn.CreateCommand
-    '    cm.CommandType = CommandType.StoredProcedure
-    '    cm.CommandText = "getProject"
-    '    cm.Parameters.AddWithValue("@id", criteria.Value)
-
-    '    Using dr As New SafeDataReader(cm.ExecuteReader)
-    '      dr.Read()
-    '      With dr
-    '        mId = .GetGuid("Id")
-    '        mName = .GetString("Name")
-    '        mStarted = .GetSmartDate("Started", mStarted.EmptyIsMin)
-    '        mEnded = .GetSmartDate("Ended", mEnded.EmptyIsMin)
-    '        mDescription = .GetString("Description")
-    '        .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
-
-    '        ' load child objects
-    '        .NextResult()
-    '        SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.GetProjectResources(dr))
-    '      End With
-    '    End Using
-    '  End Using
-    'End Using
 
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Insert()
 
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandText = "addProject"
-        DoInsertUpdate(cm)
-      End Using
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      ' insert project data
+      Dim lastChanged As System.Data.Linq.Binary = Nothing
+      ctx.DataContext.addProject(GetProperty(Of Guid)(IdProperty), _
+                                 GetProperty(Of String)(NameProperty), _
+                                 GetProperty(Of SmartDate)(StartedProperty), _
+                                 GetProperty(Of SmartDate)(EndedProperty), _
+                                 GetProperty(Of String)(DescriptionProperty), _
+                                 lastChanged)
+      mTimestamp = lastChanged.ToArray
+      ' update child objects
+      DataPortal.UpdateChild(GetProperty(Of ProjectResources)(ResourcesProperty), Me)
     End Using
-    ' update child objects
-    GetProperty(Of ProjectResources)(ResourcesProperty).Update(Me)
 
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Update()
 
-    If MyBase.IsDirty Then
-      Using cn As New SqlConnection(Database.PTrackerConnection)
-        cn.Open()
-        Using cm As SqlCommand = cn.CreateCommand
-          cm.CommandText = "updateProject"
-          cm.Parameters.AddWithValue("@lastChanged", mTimestamp)
-          DoInsertUpdate(cm)
-        End Using
-      End Using
-    End If
-    ' update child objects
-    GetProperty(Of ProjectResources)(ResourcesProperty).Update(Me)
-
-  End Sub
-
-  Private Sub DoInsertUpdate(ByVal cm As SqlCommand)
-
-    With cm
-      .CommandType = CommandType.StoredProcedure
-      .Parameters.AddWithValue("@id", mId)
-      .Parameters.AddWithValue("@name", mName)
-      .Parameters.AddWithValue("@started", mStarted.DBValue)
-      .Parameters.AddWithValue("@ended", mEnded.DBValue)
-      .Parameters.AddWithValue("@description", mDescription)
-      Dim param As New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
-      param.Direction = ParameterDirection.Output
-      .Parameters.Add(param)
-
-      .ExecuteNonQuery()
-
-      mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
-    End With
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      ' insert project data
+      Dim lastChanged As System.Data.Linq.Binary = Nothing
+      ctx.DataContext.UpdateProject(GetProperty(Of Guid)(IdProperty), _
+                                    GetProperty(Of String)(NameProperty), _
+                                    GetProperty(Of SmartDate)(StartedProperty), _
+                                    GetProperty(Of SmartDate)(EndedProperty), _
+                                    GetProperty(Of String)(DescriptionProperty), _
+                                    mTimestamp, _
+                                    lastChanged)
+      mTimestamp = lastChanged.ToArray
+      ' update child objects
+      DataPortal.UpdateChild(GetProperty(Of ProjectResources)(ResourcesProperty), Me)
+    End Using
 
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
-    DataPortal_Delete(New SingleCriteria(Of Project, Guid)(mId))
+    DataPortal_Delete(New SingleCriteria(Of Project, Guid)(GetProperty(Of Guid)(IdProperty)))
 
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
   Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Project, Guid))
 
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        With cm
-          .Connection = cn
-          .CommandType = CommandType.StoredProcedure
-          .CommandText = "deleteProject"
-          .Parameters.AddWithValue("@id", criteria.Value)
-          .ExecuteNonQuery()
-        End With
-      End Using
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      ' delete project data
+      Dim lastChanged As System.Data.Linq.Binary = Nothing
+      ctx.DataContext.DeleteProject(criteria.Value)
+      ' reset child list field
+      SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.NewProjectResources)
     End Using
 
   End Sub

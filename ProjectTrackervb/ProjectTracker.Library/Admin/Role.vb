@@ -11,7 +11,6 @@ Namespace Admin
 #Region " Business Methods "
 
     Private Shared IdProperty As New PropertyInfo(Of Integer)("Id")
-    Private mId As Integer = IdProperty.DefaultValue
     Private mIdSet As Boolean
     Public Property Id() As Integer
       Get
@@ -25,24 +24,23 @@ Namespace Admin
               max = item.Id
             End If
           Next
-          mId = max + 1
+          SetProperty(Of Integer)(IdProperty, max + 1)
         End If
-        Return GetProperty(Of Integer)(IdProperty, mId)
+        Return GetProperty(Of Integer)(IdProperty)
       End Get
       Set(ByVal value As Integer)
         mIdSet = True
-        SetProperty(Of Integer)(IdProperty, mId, value)
+        SetProperty(Of Integer)(IdProperty, value)
       End Set
     End Property
 
     Private Shared NameProperty As New PropertyInfo(Of String)("Name")
-    Private mName As String = NameProperty.DefaultValue
     Public Property Name() As String
       Get
-        Return GetProperty(NameProperty, mName)
+        Return GetProperty(NameProperty)
       End Get
       Set(ByVal value As String)
-        SetProperty(Of String)(NameProperty, mName, value)
+        SetProperty(Of String)(NameProperty, value)
       End Set
     End Property
 
@@ -66,7 +64,7 @@ Namespace Admin
       Dim parent As Roles = CType(target.Parent, Roles)
       If parent IsNot Nothing Then
         For Each item As Role In parent
-          If item.Id = target.mId AndAlso Not ReferenceEquals(item, target) Then
+          If item.Id = target.GetProperty(Of Integer)(IdProperty) AndAlso Not ReferenceEquals(item, target) Then
             e.Description = "Role Id must be unique"
             Return False
           End If
@@ -93,27 +91,19 @@ Namespace Admin
 
     Friend Shared Function NewRole() As Role
 
-      Return New Role
+      Return DataPortal.CreateChild(Of Role)()
 
     End Function
 
     Friend Shared Function GetRole(ByVal data As ProjectTracker.DalLinq.getRolesResult) As Role
 
-      Return New Role(data)
+      Return DataPortal.FetchChild(Of Role)(data)
 
     End Function
 
     Private Sub New()
 
       MarkAsChild()
-      ValidationRules.CheckRules()
-
-    End Sub
-
-    Private Sub New(ByVal data As ProjectTracker.DalLinq.getRolesResult)
-
-      MarkAsChild()
-      Fetch(data)
 
     End Sub
 
@@ -121,57 +111,52 @@ Namespace Admin
 
 #Region " Data Access "
 
-    Private Sub Fetch(ByVal data As ProjectTracker.DalLinq.getRolesResult)
+    Private Sub Child_Create()
 
-      mId = data.Id
+      ValidationRules.CheckRules()
+
+    End Sub
+
+    Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.getRolesResult)
+
+      SetProperty(Of Integer)(IdProperty, data.Id)
       mIdSet = True
-      mName = data.Name
+      SetProperty(Of String)(NameProperty, data.Name)
       mTimestamp = data.LastChanged.ToArray
       MarkOld()
 
     End Sub
 
-    Friend Sub Insert()
-
-      ' if we're not dirty then don't update the database
-      If Not Me.IsDirty Then Exit Sub
+    Private Sub Child_Insert()
 
       Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
         Dim lastChanged As System.Data.Linq.Binary = mTimestamp
-        mgr.DataContext.addRole(mId, mName, lastChanged)
+        mgr.DataContext.addRole(GetProperty(Of Integer)(IdProperty), _
+                                GetProperty(Of String)(NameProperty), _
+                                lastChanged)
         mTimestamp = lastChanged.ToArray
       End Using
-      MarkOld()
 
     End Sub
 
-    Friend Sub Update()
-
-      ' if we're not dirty then don't update the database
-      If Not Me.IsDirty Then Exit Sub
+    Private Sub Child_Update()
 
       Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
         Dim lastChanged As System.Data.Linq.Binary = Nothing
-        mgr.DataContext.UpdateRole(mId, mName, mTimestamp, lastChanged)
+        mgr.DataContext.UpdateRole(GetProperty(Of Integer)(IdProperty), _
+                                   GetProperty(Of String)(NameProperty), _
+                                   mTimestamp, _
+                                   lastChanged)
         mTimestamp = lastChanged.ToArray
       End Using
-      MarkOld()
 
     End Sub
 
-    Friend Sub DeleteSelf()
-
-      ' if we're not dirty then don't update the database
-      If Not Me.IsDirty Then Exit Sub
-
-      ' if we're new then don't update the database
-      If Me.IsNew Then Exit Sub
+    Private Sub Child_DeleteSelf()
 
       Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
-        mgr.DataContext.DeleteRole(mId)
+        mgr.DataContext.DeleteRole(Id)
       End Using
-
-      MarkNew()
 
     End Sub
 

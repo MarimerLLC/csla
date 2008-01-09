@@ -9,26 +9,23 @@ Public Class ProjectResource
   Private mTimestamp(7) As Byte
 
   Private Shared ResourceIdProperty As New PropertyInfo(Of Integer)("ResourceId", "Resource id")
-  Private mResourceId As Integer = ResourceIdProperty.DefaultValue
   Public ReadOnly Property ResourceId() As Integer
     Get
-      Return GetProperty(Of Integer)(ResourceIdProperty, mResourceId)
+      Return GetProperty(Of Integer)(ResourceIdProperty)
     End Get
   End Property
 
   Private Shared FirstNameProperty As New PropertyInfo(Of String)("FirstName", "First name")
-  Private mFirstName As String = FirstNameProperty.DefaultValue
   Public ReadOnly Property FirstName() As String
     Get
-      Return GetProperty(Of String)(FirstNameProperty, mFirstName)
+      Return GetProperty(Of String)(FirstNameProperty)
     End Get
   End Property
 
   Private Shared LastNameProperty As New PropertyInfo(Of String)("LastName", "Last name")
-  Private mLastName As String = ""
   Public ReadOnly Property LastName() As String
     Get
-      Return GetProperty(Of String)(LastNameProperty, mLastName)
+      Return GetProperty(Of String)(LastNameProperty)
     End Get
   End Property
 
@@ -39,34 +36,32 @@ Public Class ProjectResource
   End Property
 
   Private Shared AssignedProperty As New PropertyInfo(Of SmartDate)("Assigned", "Date assigned")
-  Private mAssigned As New SmartDate(Today)
   Public ReadOnly Property Assigned() As String
     Get
-      Return GetProperty(Of SmartDate, String)(AssignedProperty, mAssigned)
+      Return GetProperty(Of SmartDate, String)(AssignedProperty)
     End Get
   End Property
 
   Private Shared RoleProperty As New PropertyInfo(Of Integer)("Role", "Role assigned")
-  Private mRole As Integer
   Public Property Role() As Integer Implements IHoldRoles.Role
     Get
-      Return GetProperty(Of Integer)(RoleProperty, mRole)
+      Return GetProperty(Of Integer)(RoleProperty)
     End Get
     Set(ByVal value As Integer)
-      SetProperty(Of Integer)(RoleProperty, mRole, value)
+      SetProperty(Of Integer)(RoleProperty, value)
     End Set
   End Property
 
   Public Function GetResource() As Resource
 
     CanExecuteMethod("GetResource", True)
-    Return Resource.GetResource(mResourceId)
+    Return Resource.GetResource(GetProperty(Of Integer)(ResourceIdProperty))
 
   End Function
 
   Public Overrides Function ToString() As String
 
-    Return mResourceId.ToString
+    Return ResourceId.ToString
 
   End Function
 
@@ -97,7 +92,7 @@ Public Class ProjectResource
   Friend Shared Function NewProjectResource( _
     ByVal resourceId As Integer) As ProjectResource
 
-    Return New ProjectResource( _
+    Return DataPortal.CreateChild(Of ProjectResource)( _
       Resource.GetResource(resourceId), RoleList.DefaultRole)
 
   End Function
@@ -105,95 +100,74 @@ Public Class ProjectResource
   Friend Shared Function GetResource( _
     ByVal data As ProjectTracker.DalLinq.Assignment) As ProjectResource
 
-    Return New ProjectResource(data)
+    Return DataPortal.FetchChild(Of ProjectResource)(data)
 
   End Function
 
   Private Sub New()
-
-    MarkAsChild()
-
-  End Sub
-
-  Private Sub New(ByVal data As ProjectTracker.DalLinq.Assignment)
-
-    MarkAsChild()
-    Fetch(data)
-
-  End Sub
-
-  Private Sub New(ByVal resource As Resource, ByVal role As Integer)
-
-    MarkAsChild()
-    With resource
-      mResourceId = .Id
-      mLastName = .LastName
-      mFirstName = .FirstName
-      mAssigned.Date = Assignment.GetDefaultAssignedDate
-      mRole = role
-    End With
-
+    ' require use of factory methods
   End Sub
 
 #End Region
 
 #Region " Data Access "
 
-  Private Sub Fetch(ByVal data As ProjectTracker.DalLinq.Assignment)
+  Private Sub Child_Create()
+
+    SetProperty(Of SmartDate)(AssignedProperty, New SmartDate(Today))
+
+  End Sub
+
+  Private Sub Child_Create(ByVal resource As Resource, ByVal role As Integer)
+
+    MarkAsChild()
+    With resource
+      SetProperty(Of Integer)(ResourceIdProperty, .Id)
+      SetProperty(Of String)(LastNameProperty, .LastName)
+      SetProperty(Of String)(FirstNameProperty, .FirstName)
+      SetProperty(Of SmartDate)(AssignedProperty, Assignment.GetDefaultAssignedDate)
+      SetProperty(Of Integer)(RoleProperty, role)
+    End With
+
+  End Sub
+
+  Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.Assignment)
 
     With data
-      mResourceId = .ResourceId
-      mLastName = .Resource.LastName
-      mFirstName = .Resource.FirstName
-      mAssigned.SetDate(.Assigned)
-      mRole = .Role
+      SetProperty(Of Integer)(ResourceIdProperty, .ResourceId)
+      SetProperty(Of String)(LastNameProperty, .Resource.LastName)
+      SetProperty(Of String)(FirstNameProperty, .Resource.FirstName)
+      SetProperty(Of SmartDate)(AssignedProperty, .Assigned)
+      SetProperty(Of Integer)(RoleProperty, .Role)
       mTimestamp = .LastChanged.ToArray
     End With
     MarkOld()
 
   End Sub
 
-  Friend Sub Insert(ByVal project As Project)
+  Private Sub Child_Insert(ByVal project As Project)
 
-    ' if we're not dirty then don't update the database
-    If Not Me.IsDirty Then Exit Sub
-
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      mTimestamp = Assignment.AddAssignment( _
-        cn, project.Id, mResourceId, mAssigned, mRole)
-      MarkOld()
-    End Using
+    mTimestamp = Assignment.AddAssignment(project.Id, _
+                                          GetProperty(Of Integer)(ResourceIdProperty), _
+                                          GetProperty(Of SmartDate)(AssignedProperty), _
+                                          GetProperty(Of Integer)(RoleProperty))
 
   End Sub
 
-  Friend Sub Update(ByVal project As Project)
+  Private Sub Child_Update(ByVal project As Project)
 
-    ' if we're not dirty then don't update the database
-    If Not Me.IsDirty Then Exit Sub
-
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      mTimestamp = Assignment.UpdateAssignment( _
-        cn, project.Id, mResourceId, mAssigned, mRole, mTimestamp)
-      MarkOld()
-    End Using
+    mTimestamp = Assignment.UpdateAssignment(project.Id, _
+                                             GetProperty(Of Integer)(ResourceIdProperty), _
+                                             GetProperty(Of SmartDate)(AssignedProperty), _
+                                             GetProperty(Of Integer)(RoleProperty), _
+                                             mTimestamp)
 
   End Sub
 
-  Friend Sub DeleteSelf(ByVal project As Project)
+  Private Sub Child_DeleteSelf(ByVal project As Project)
 
-    ' if we're not dirty then don't update the database
-    If Not Me.IsDirty Then Exit Sub
-
-    ' if we're new then don't update the database
-    If Me.IsNew Then Exit Sub
-
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      Assignment.RemoveAssignment(cn, project.Id, mResourceId)
-      MarkNew()
-    End Using
+    Assignment.RemoveAssignment( _
+      project.Id, GetProperty(Of Integer)(ResourceIdProperty))
 
   End Sub
 

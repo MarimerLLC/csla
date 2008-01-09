@@ -72,62 +72,31 @@ Public Class ProjectResources
 
   Friend Shared Function NewProjectResources() As ProjectResources
 
-    Return New ProjectResources
+    Return DataPortal.CreateChild(Of ProjectResources)()
 
   End Function
 
   Friend Shared Function GetProjectResources( _
     ByVal data As ProjectTracker.DalLinq.Assignment()) As ProjectResources
 
-    Return New ProjectResources(data)
+    Return DataPortal.FetchChild(Of ProjectResources)( _
+      New SingleCriteria(Of ProjectResources, ProjectTracker.DalLinq.Assignment())(data))
 
   End Function
 
   Private Sub New()
-
-    MarkAsChild()
-
-  End Sub
-
-  Private Sub New(ByVal data As ProjectTracker.DalLinq.Assignment())
-
-    MarkAsChild()
-    Fetch(data)
-
+    ' require use of factory methods
   End Sub
 
 #End Region
 
 #Region " Data Access "
 
-  Private Sub Fetch(ByVal data As ProjectTracker.DalLinq.Assignment())
+  Private Sub Child_Fetch(ByVal criteria As SingleCriteria(Of ProjectResources, ProjectTracker.DalLinq.Assignment()))
 
     Me.RaiseListChangedEvents = False
-    For Each value In data
+    For Each value In criteria.Value
       Me.Add(ProjectResource.GetResource(value))
-    Next
-    Me.RaiseListChangedEvents = True
-
-  End Sub
-
-  Friend Sub Update(ByVal project As Project)
-
-    Me.RaiseListChangedEvents = False
-    ' update (thus deleting) any deleted child objects
-    For Each obj As ProjectResource In DeletedList
-      obj.DeleteSelf(project)
-    Next
-    ' now that they are deleted, remove them from memory too
-    DeletedList.Clear()
-
-    ' add/update any current child objects
-    For Each obj As ProjectResource In Me
-      If obj.IsNew Then
-        obj.Insert(project)
-
-      Else
-        obj.Update(project)
-      End If
     Next
     Me.RaiseListChangedEvents = True
 

@@ -46,7 +46,7 @@ Public Class Resource
   Private Shared AssignmentsProperty As New PropertyInfo(Of ResourceAssignments)("Assignments")
   Public ReadOnly Property Assignments() As ResourceAssignments
     Get
-      If Not PropertyManager.PropertyFieldExists(AssignmentsProperty) Then
+      If Not FieldManager.FieldExists(AssignmentsProperty) Then
         SetProperty(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.NewResourceAssignments())
       End If
       Return GetProperty(Of ResourceAssignments)(AssignmentsProperty)

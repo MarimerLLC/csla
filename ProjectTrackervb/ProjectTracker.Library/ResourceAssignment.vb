@@ -143,7 +143,7 @@ Public Class ResourceAssignment
     If Not Me.IsDirty Then Exit Sub
 
     mTimestamp = Assignment.AddAssignment( _
-      cn, mProjectId, resource.Id, mAssigned, mRole)
+      mProjectId, resource.Id, mAssigned, mRole)
     MarkOld()
 
   End Sub
@@ -157,7 +157,7 @@ Public Class ResourceAssignment
     If Not Me.IsDirty Then Exit Sub
 
     mTimestamp = Assignment.UpdateAssignment( _
-      cn, mProjectId, resource.Id, mAssigned, mRole, mTimestamp)
+      mProjectId, resource.Id, mAssigned, mRole, mTimestamp)
     MarkOld()
 
   End Sub
@@ -172,7 +172,7 @@ Public Class ResourceAssignment
     ' if we're new then don't update the database
     If Me.IsNew Then Exit Sub
 
-    Assignment.RemoveAssignment(cn, mProjectId, resource.Id)
+    Assignment.RemoveAssignment(mProjectId, resource.Id)
     MarkNew()
 
   End Sub

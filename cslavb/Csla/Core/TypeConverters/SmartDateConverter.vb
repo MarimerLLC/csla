@@ -45,10 +45,12 @@ Namespace Core.TypeConverters
         Return New SmartDate(CStr(value))
       ElseIf TypeOf value Is DateTime Then
         Return New SmartDate(CDate(value))
-      ElseIf TypeOf value Is DateTimeOffset Then
-        Return New SmartDate(DirectCast(value, DateTimeOffset).DateTime)
+      ElseIf value Is Nothing Then
+        Return New SmartDate
       ElseIf TypeOf value Is Date? Then
         Return New SmartDate(DirectCast(value, Date?))
+      ElseIf TypeOf value Is DateTimeOffset Then
+        Return New SmartDate(DirectCast(value, DateTimeOffset).DateTime)
       End If
       Return MyBase.ConvertFrom(context, culture, value)
 

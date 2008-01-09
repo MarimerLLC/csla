@@ -96,6 +96,7 @@ Public Module Utilities
         If desiredType.GetGenericTypeDefinition() Is GetType(Nullable(Of )) Then
           If value Is Nothing Then
             Return Nothing
+
           ElseIf valueType.Equals(GetType(String)) AndAlso CStr(value) = String.Empty Then
             Return Nothing
           End If
@@ -113,11 +114,13 @@ Public Module Utilities
         value = 0
       End If
 
+      Dim pType = Utilities.GetPropertyType(desiredType)
       Try
-        Return Convert.ChangeType(value, Utilities.GetPropertyType(desiredType))
+        Return Convert.ChangeType(value, pType)
+
       Catch
-        Dim cnv As TypeConverter = TypeDescriptor.GetConverter(Utilities.GetPropertyType(desiredType))
-        If cnv IsNot Nothing AndAlso cnv.CanConvertFrom(value.GetType()) Then
+        Dim cnv As TypeConverter = TypeDescriptor.GetConverter(pType)
+        If cnv IsNot Nothing AndAlso cnv.CanConvertFrom(valueType) Then
           Return cnv.ConvertFrom(value)
 
         Else

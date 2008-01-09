@@ -1902,7 +1902,7 @@ Namespace Core
             LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), newValue))
           End If
 
-        ElseIf Not newValue.Equals(oldValue) Then
+        ElseIf Not oldValue.Equals(newValue) Then
           LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), newValue))
         End If
 
@@ -1939,7 +1939,7 @@ Namespace Core
             LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
           End If
 
-        ElseIf Not newValue.Equals(oldValue) Then
+        ElseIf Not oldValue.Equals(newValue) Then
           LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
         End If
 

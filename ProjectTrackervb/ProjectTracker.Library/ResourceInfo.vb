@@ -5,22 +5,16 @@ Public Class ResourceInfo
   Private mId As Integer
   Private mName As String
 
-  Public Property Id() As Integer
+  Public ReadOnly Property Id() As Integer
     Get
       Return mId
     End Get
-    Friend Set(ByVal Value As Integer)
-      mId = Value
-    End Set
   End Property
 
-  Public Property Name() As String
+  Public ReadOnly Property Name() As String
     Get
       Return mName
     End Get
-    Friend Set(ByVal Value As String)
-      mName = Value
-    End Set
   End Property
 
   Protected Overrides Function GetIdValue() As Object
@@ -31,14 +25,9 @@ Public Class ResourceInfo
     Return mName
   End Function
 
-  Private Sub New()
-    ' require use of factory methods
-  End Sub
-
-  Friend Sub New(ByVal dr As SafeDataReader)
-    mId = dr.GetInt32("Id")
-    mName = String.Format("{0}, {1}", _
-      dr.GetString("LastName"), dr.GetString("FirstName"))
+  Friend Sub New(ByVal resource As DalLinq.Resource)
+    mId = resource.Id
+    mName = String.Format("{0}, {1}", resource.LastName, resource.FirstName)
   End Sub
 
 End Class

@@ -69,7 +69,7 @@ Namespace Security
     Friend Shared Function GetIdentity( _
       ByVal username As String, ByVal password As String) As PTIdentity
 
-      Return DataPortal.Fetch(Of PTIdentity)(New Criteria(username, password))
+      Return DataPortal.Fetch(Of PTIdentity)(New CredentialsCriteria(username, password))
 
     End Function
 
@@ -89,7 +89,7 @@ Namespace Security
 #Region " Data Access "
 
     <Serializable()> _
-    Private Class Criteria
+    Private Class CredentialsCriteria
 
       Private mUsername As String
       Private mPassword As String
@@ -128,49 +128,33 @@ Namespace Security
       End Sub
     End Class
 
-    Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
+    Private Overloads Sub DataPortal_Fetch(ByVal criteria As CredentialsCriteria)
 
-      Using cn As New SqlConnection(Database.SecurityConnection)
-        cn.Open()
-        Using cm As SqlCommand = cn.CreateCommand
-          cm.CommandText = "Login"
-          cm.CommandType = CommandType.StoredProcedure
-          cm.Parameters.AddWithValue("@user", criteria.Username)
-          cm.Parameters.AddWithValue("@pw", criteria.Password)
-          Using dr As SqlDataReader = cm.ExecuteReader()
-            Fetch(dr)
-          End Using
-        End Using
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.Security.SecurityDataContext).GetManager(Database.SecurityConnection)
+        Dim data = (From u In ctx.DataContext.Users Where u.Username = criteria.Username AndAlso u.Password = criteria.Password Select u).Single
+        Fetch(data)
       End Using
 
     End Sub
 
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As LoadOnlyCriteria)
 
-      Using cn As New SqlConnection(Database.SecurityConnection)
-        cn.Open()
-        Using cm As SqlCommand = cn.CreateCommand
-          cm.CommandText = "GetUser"
-          cm.CommandType = CommandType.StoredProcedure
-          cm.Parameters.AddWithValue("@user", criteria.Username)
-          Using dr As SqlDataReader = cm.ExecuteReader()
-            Fetch(dr)
-          End Using
-        End Using
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.Security.SecurityDataContext).GetManager(Database.SecurityConnection)
+        Dim data = (From u In ctx.DataContext.Users Where u.Username = criteria.Username Select u).Single
+        Fetch(data)
       End Using
 
     End Sub
 
-    Private Sub Fetch(ByVal dr As SqlDataReader)
+    Private Sub Fetch(ByVal user As DalLinq.Security.User)
 
-      If dr.Read() Then
-        mName = dr.GetString(0)
+      If user IsNot Nothing Then
+        mName = user.Username
         mIsAuthenticated = True
-        If dr.NextResult Then
-          While dr.Read
-            mRoles.Add(dr.GetString(0))
-          End While
-        End If
+        Dim roles = From r In user.Roles
+        For Each role In roles
+          mRoles.Add(role.Role)
+        Next
 
       Else
         mName = ""

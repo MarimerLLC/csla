@@ -1,5 +1,3 @@
-Option Infer On
-
 Namespace Admin
 
   ''' <summary>
@@ -140,8 +138,8 @@ Namespace Admin
     Private Overloads Sub DataPortal_Fetch()
 
       Me.RaiseListChangedEvents = False
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
-        For Each value In mgr.DataContext.getRoles
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+        For Each value In ctx.DataContext.getRoles
           Me.Add(Role.GetRole(value))
         Next
       End Using
@@ -152,9 +150,11 @@ Namespace Admin
     <Transactional(TransactionalTypes.TransactionScope)> _
     Protected Overrides Sub DataPortal_Update()
 
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Me.RaiseListChangedEvents = False
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
         Child_Update()
       End Using
+      Me.RaiseListChangedEvents = True
 
     End Sub
 

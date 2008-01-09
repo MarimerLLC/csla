@@ -12,7 +12,7 @@ Public Class ResourceList
 
   Public Shared Function GetResourceList() As ResourceList
 
-    Return DataPortal.Fetch(Of ResourceList)(New Criteria)
+    Return DataPortal.Fetch(Of ResourceList)()
 
   End Function
 
@@ -24,33 +24,16 @@ Public Class ResourceList
 
 #Region " Data Access "
 
-  <Serializable()> _
-  Private Class Criteria
-    ' no criteria - we retrieve all resources
-  End Class
-
-
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
+  Private Overloads Sub DataPortal_Fetch()
 
     RaiseListChangedEvents = False
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        With cm
-          .CommandType = CommandType.StoredProcedure
-          .CommandText = "getResources"
-
-          Using dr As New SafeDataReader(.ExecuteReader)
-            IsReadOnly = False
-            While dr.Read()
-              Dim info As New ResourceInfo(dr)
-              Me.Add(info)
-            End While
-
-            IsReadOnly = True
-          End Using
-        End With
-      End Using
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Dim data = From r In ctx.DataContext.Resources Select r
+      IsReadOnly = False
+      For Each resource In data
+        Me.Add(New ResourceInfo(resource))
+      Next
+      IsReadOnly = True
     End Using
     RaiseListChangedEvents = True
 

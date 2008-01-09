@@ -1,5 +1,3 @@
-Option Infer On
-
 Imports System.Data.SqlClient
 
 Namespace Admin
@@ -14,18 +12,8 @@ Namespace Admin
     Private mIdSet As Boolean
     Public Property Id() As Integer
       Get
-        If Not mIdSet Then
-          ' generate a default id value
-          mIdSet = True
-          Dim parent As Roles = CType(Me.Parent, Roles)
-          Dim max As Integer = 0
-          For Each item As Role In parent
-            If item.Id > max Then
-              max = item.Id
-            End If
-          Next
-          SetProperty(Of Integer)(IdProperty, max + 1)
-        End If
+        If Not mIdSet Then _
+          SetProperty(Of Integer)(IdProperty, GetMax() + 1)
         Return GetProperty(Of Integer)(IdProperty)
       End Get
       Set(ByVal value As Integer)
@@ -33,6 +21,21 @@ Namespace Admin
         SetProperty(Of Integer)(IdProperty, value)
       End Set
     End Property
+
+    Private Function GetMax() As Integer
+
+      ' generate a default id value
+      mIdSet = True
+      Dim parent As Roles = CType(Me.Parent, Roles)
+      Dim max As Integer = 0
+      For Each item As Role In parent
+        If item.Id > max Then
+          max = item.Id
+        End If
+      Next
+      Return max
+
+    End Function
 
     Private Shared NameProperty As New PropertyInfo(Of String)("Name")
     Public Property Name() As String
@@ -52,13 +55,15 @@ Namespace Admin
 
     Protected Overrides Sub AddBusinessRules()
 
-      ValidationRules.AddRule(Of Role)(AddressOf NoDuplicates, IdProperty)
+      ValidationRules.AddRule(Of Role)( _
+        AddressOf NoDuplicates, IdProperty)
       ValidationRules.AddRule( _
         AddressOf Csla.Validation.CommonRules.StringRequired, NameProperty)
 
     End Sub
 
-    Private Shared Function NoDuplicates(Of T As Role)(ByVal target As T, _
+    Private Shared Function NoDuplicates(Of T As Role)( _
+      ByVal target As T, _
       ByVal e As Csla.Validation.RuleArgs) As Boolean
 
       Dim parent As Roles = CType(target.Parent, Roles)
@@ -103,7 +108,7 @@ Namespace Admin
 
     Private Sub New()
 
-      MarkAsChild()
+      ' require use of factory methods
 
     End Sub
 
@@ -123,7 +128,6 @@ Namespace Admin
       mIdSet = True
       SetProperty(Of String)(NameProperty, data.Name)
       mTimestamp = data.LastChanged.ToArray
-      MarkOld()
 
     End Sub
 

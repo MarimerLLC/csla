@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace Csla
@@ -32,7 +33,7 @@ namespace Csla
     /// <param name="args">List of arguments to pass to the method.</param>
     /// <returns>The result of the property or method invocation.</returns>
     public static object CallByName(
-      object target, string methodName, CallType callType, 
+      object target, string methodName, CallType callType,
       params object[] args)
     {
       switch (callType)
@@ -99,6 +100,127 @@ namespace Csla
       }
       return result;
     }
+
+    #region  CoerceValue
+
+    /// <summary>
+    /// Attempts to coerce a value of one type into
+    /// a value of a different type.
+    /// </summary>
+    /// <param name="desiredType">
+    /// Type to which the value should be coerced.
+    /// </param>
+    /// <param name="valueType">
+    /// Original type of the value.
+    /// </param>
+    /// <param name="value">
+    /// The value to coerce.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// If the desired type is a primitive type or Decimal, 
+    /// empty string and null values will result in a 0 
+    /// or equivalent.
+    /// </para>
+    /// <para>
+    /// If the desired type is a Nullable type, empty string
+    /// and null values will result in a null result.
+    /// </para>
+    /// <para>
+    /// If the desired type is an enum the value's ToString()
+    /// result is parsed to convert into the enum value.
+    /// </para>
+    /// </remarks>
+    public static object CoerceValue(Type desiredType, Type valueType, object value)
+    {
+      if (desiredType.Equals(valueType))
+      {
+        // types match, just return value
+        return value;
+      }
+      else
+      {
+        if (desiredType.IsGenericType)
+        {
+          if (desiredType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            if (value == null)
+            {
+              return null;
+
+            }
+            else if (valueType.Equals(typeof(string)) && System.Convert.ToString(value) == string.Empty)
+            {
+              return null;
+            }
+        }
+        desiredType = Utilities.GetPropertyType(desiredType);
+      }
+
+      if (desiredType.IsEnum && valueType.Equals(typeof(string)))
+      {
+        return System.Enum.Parse(desiredType, value.ToString());
+      }
+
+      if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) && valueType.Equals(typeof(string)) && string.IsNullOrEmpty(System.Convert.ToString(value)))
+      {
+        value = 0;
+      }
+
+      var pType = Utilities.GetPropertyType(desiredType);
+      try
+      {
+        return Convert.ChangeType(value, pType);
+
+      }
+      catch
+      {
+        TypeConverter cnv = TypeDescriptor.GetConverter(pType);
+        if (cnv != null && cnv.CanConvertFrom(valueType))
+        {
+          return cnv.ConvertFrom(value);
+
+        }
+        else
+        {
+          throw;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Attempts to coerce a value of one type into
+    /// a value of a different type.
+    /// </summary>
+    /// <typeparam name="D">
+    /// Type to which the value should be coerced.
+    /// </typeparam>
+    /// <param name="valueType">
+    /// Original type of the value.
+    /// </param>
+    /// <param name="value">
+    /// The value to coerce.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// If the desired type is a primitive type or Decimal, 
+    /// empty string and null values will result in a 0 
+    /// or equivalent.
+    /// </para>
+    /// <para>
+    /// If the desired type is a Nullable type, empty string
+    /// and null values will result in a null result.
+    /// </para>
+    /// <para>
+    /// If the desired type is an enum the value's ToString()
+    /// result is parsed to convert into the enum value.
+    /// </para>
+    /// </remarks>
+    public static D CoerceValue<D>(Type valueType, object value)
+    {
+      return (D)(CoerceValue(typeof(D), valueType, value));
+    }
+
+    #endregion
   }
 
   /// <summary>

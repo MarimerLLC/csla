@@ -46,10 +46,12 @@ namespace Csla.Core.TypeConverters
         return new SmartDate(System.Convert.ToString(value));
       else if (value is DateTime)
         return new SmartDate(System.Convert.ToDateTime(value));
-      else if (value is DateTimeOffset)
-        return new SmartDate(((DateTimeOffset)value).DateTime);
+      else if (value == null)
+        return new SmartDate();
       else if (value is System.DateTime?)
         return new SmartDate((System.DateTime?)value);
+      else if (value is DateTimeOffset)
+        return new SmartDate(((DateTimeOffset)value).DateTime);
       return base.ConvertFrom(context, culture, value);
     }
 

@@ -126,7 +126,7 @@ Friend Module MethodCaller
     If infoParams.Length > 0 AndAlso infoParams(infoParams.Length - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0 Then
       ' last param is a param array
       Dim extras = inParams.Length - (infoParams.Length - 1)
-      ' 1 or more params go in the param array
+      ' 1 or more parameters go in the param array
       ' copy extras into an array
       Dim extraArray() As Object = GetExtrasArray(extras)
       For pos = 0 To extras - 1
@@ -195,7 +195,7 @@ Friend Module MethodCaller
     ' try to find a strongly typed match
 
     ' first see if there's a matching method
-    ' where all params match types
+    ' where all parameters match types
     result = FindMethod(objectType, method, GetParameterTypes(inParams))
 
     If result Is Nothing Then

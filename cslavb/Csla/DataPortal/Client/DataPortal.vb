@@ -427,13 +427,13 @@ Public Module DataPortal
   ''' <typeparam name="T">
   ''' Type of business object to create.
   ''' </typeparam>
-  ''' <param name="params">
+  ''' <param name="parameters">
   ''' Parameters passed to child create method.
   ''' </param>
-  Public Function CreateChild(Of T)(ByVal ParamArray params() As Object) As T
+  Public Function CreateChild(Of T)(ByVal ParamArray parameters() As Object) As T
 
     Dim portal As New Server.ChildDataPortal
-    Return DirectCast(portal.Create(GetType(T)), T)
+    Return DirectCast(portal.Create(GetType(T), parameters), T)
 
   End Function
 
@@ -444,13 +444,13 @@ Public Module DataPortal
   ''' <typeparam name="T">
   ''' Type of business object to retrieve.
   ''' </typeparam>
-  ''' <param name="params">
+  ''' <param name="parameters">
   ''' Parameters passed to child fetch method.
   ''' </param>
-  Public Function FetchChild(Of T)(ByVal ParamArray params() As Object) As T
+  Public Function FetchChild(Of T)(ByVal ParamArray parameters() As Object) As T
 
     Dim portal As New Server.ChildDataPortal
-    Return DirectCast(portal.Fetch(GetType(T), params), T)
+    Return DirectCast(portal.Fetch(GetType(T), parameters), T)
 
   End Function
 
@@ -461,10 +461,10 @@ Public Module DataPortal
   ''' <param name="child">
   ''' Business object to update.
   ''' </param>
-  Public Sub UpdateChild(ByVal child As Object, ByVal ParamArray params() As Object)
+  Public Sub UpdateChild(ByVal child As Object, ByVal ParamArray parameters() As Object)
 
     Dim portal As New Server.ChildDataPortal
-    portal.Update(child, params)
+    portal.Update(child, parameters)
 
   End Sub
 

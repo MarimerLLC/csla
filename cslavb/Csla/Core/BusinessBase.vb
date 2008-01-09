@@ -1935,7 +1935,7 @@ Namespace Core
       Else
         FieldManager.SetFieldData(propertyInfo, newValue)
       End If
-      OnPropertyChanged(propertyInfo.Name)
+      PropertyHasChanged(propertyInfo.Name)
 
     End Sub
 

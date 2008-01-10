@@ -293,9 +293,10 @@ Namespace Core.FieldManager
             If TypeOf item.Value Is Boolean Then
               ' get child object from old field collection
               Dim child = DirectCast(oldFields.GetValue(key), IFieldData)
+              ' add to new list
+              FieldData.Add(key, child)
               ' cascade call to child
               DirectCast(child.Value, IUndoableObject).UndoChanges(parentEditLevel)
-              FieldData.Add(key, child)
 
             Else
               ' restore IFieldData object into field collection

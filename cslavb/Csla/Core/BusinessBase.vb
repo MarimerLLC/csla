@@ -1443,7 +1443,7 @@ Namespace Core
     ''' </remarks>
     Protected Function GetProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F) As P
 
-      Return CoerceValue(Of P)(GetType(F), GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, False))
+      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, False))
 
     End Function
 
@@ -1472,7 +1472,7 @@ Namespace Core
     Protected Function GetProperty(Of F, P)( _
       ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F, ByVal throwOnNoAccess As Boolean) As P
 
-      Return CoerceValue(Of P)(GetType(F), GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess))
+      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess))
 
     End Function
 
@@ -1518,7 +1518,7 @@ Namespace Core
     Protected Function GetProperty(Of F, P)( _
       ByVal propertyInfo As PropertyInfo(Of F)) As P
 
-      Return CoerceValue(Of P)(GetType(F), GetProperty(Of F)(propertyInfo, False))
+      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, False))
 
     End Function
 
@@ -1546,7 +1546,7 @@ Namespace Core
     Protected Function GetProperty(Of F, P)( _
       ByVal propertyInfo As PropertyInfo(Of F), ByVal throwOnNoAccess As Boolean) As P
 
-      Return CoerceValue(Of P)(GetType(F), GetProperty(Of F)(propertyInfo, throwOnNoAccess))
+      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, throwOnNoAccess))
 
     End Function
 
@@ -1724,7 +1724,7 @@ Namespace Core
 
           ElseIf Not field.Equals(newValue) Then
             If TypeOf newValue Is String AndAlso newValue Is Nothing Then
-              newValue = CoerceValue(Of P)(GetType(String), String.Empty)
+              newValue = CoerceValue(Of P)(GetType(String), field, String.Empty)
             End If
             OnPropertyChanging(propertyName)
             field = newValue
@@ -1769,16 +1769,16 @@ Namespace Core
           If field Is Nothing Then
             If newValue IsNot Nothing Then
               OnPropertyChanging(propertyName)
-              field = CoerceValue(Of P)(GetType(V), newValue)
+              field = CoerceValue(Of P)(GetType(V), field, newValue)
               PropertyHasChanged(propertyName)
             End If
 
           ElseIf Not field.Equals(newValue) Then
             If TypeOf newValue Is String AndAlso newValue Is Nothing Then
-              newValue = CoerceValue(Of V)(GetType(String), String.Empty)
+              newValue = CoerceValue(Of V)(GetType(String), Nothing, String.Empty)
             End If
             OnPropertyChanging(propertyName)
-            field = CoerceValue(Of P)(GetType(V), newValue)
+            field = CoerceValue(Of P)(GetType(V), field, newValue)
             PropertyHasChanged(propertyName)
           End If
 
@@ -1845,7 +1845,9 @@ Namespace Core
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F, ByVal throwOnNoAccess As Boolean)
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
+        OnPropertyChanging(propertyInfo.Name)
         LoadProperty(Of P, F)(propertyInfo, newValue)
+        PropertyHasChanged(propertyInfo.Name)
       End If
 
     End Sub
@@ -1869,7 +1871,9 @@ Namespace Core
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
+        OnPropertyChanging(propertyInfo.Name)
         LoadProperty(Of P)(propertyInfo, newValue)
+        PropertyHasChanged(propertyInfo.Name)
       End If
 
     End Sub
@@ -1887,23 +1891,33 @@ Namespace Core
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
     ''' <param name="newValue">
     ''' The new value for the property.</param>
+    ''' <remarks>
+    ''' No authorization checks occur when this method is called,
+    ''' and no PropertyChanging or PropertyChanged events are raised.
+    ''' Loading values does not cause validation rules to be
+    ''' invoked.
+    ''' </remarks>
     Protected Sub LoadProperty(Of P, F)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
       Try
-        Dim fieldData = FieldManager.GetFieldData(propertyInfo)
         Dim oldValue As P = Nothing
-        If fieldData IsNot Nothing Then
+        Dim fieldData = FieldManager.GetFieldData(propertyInfo)
+        If fieldData Is Nothing Then
+          oldValue = propertyInfo.DefaultValue
+          fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue)
+
+        Else
           oldValue = DirectCast(fieldData.Value, P)
         End If
 
-        If fieldData Is Nothing OrElse oldValue Is Nothing Then
+        If oldValue Is Nothing Then
           If Not newValue Is Nothing Then
-            LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), newValue))
+            LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue))
           End If
 
         ElseIf Not oldValue.Equals(newValue) Then
-          LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), newValue))
+          LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue))
         End If
 
       Catch ex As Exception
@@ -1924,17 +1938,27 @@ Namespace Core
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
     ''' <param name="newValue">
     ''' The new value for the property.</param>
+    ''' <remarks>
+    ''' No authorization checks occur when this method is called,
+    ''' and no PropertyChanging or PropertyChanged events are raised.
+    ''' Loading values does not cause validation rules to be
+    ''' invoked.
+    ''' </remarks>
     Protected Sub LoadProperty(Of P)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
 
       Try
-        Dim fieldData = FieldManager.GetFieldData(propertyInfo)
         Dim oldValue As P = Nothing
-        If fieldData IsNot Nothing Then
+        Dim fieldData = FieldManager.GetFieldData(propertyInfo)
+        If fieldData Is Nothing Then
+          oldValue = propertyInfo.DefaultValue
+          fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue)
+
+        Else
           oldValue = DirectCast(fieldData.Value, P)
         End If
 
-        If fieldData Is Nothing OrElse oldValue Is Nothing Then
+        If oldValue Is Nothing Then
           If Not newValue Is Nothing Then
             LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
           End If
@@ -1952,7 +1976,6 @@ Namespace Core
     Private Sub LoadPropertyValue(Of P)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal oldValue As P, ByVal newValue As P)
 
-      OnPropertyChanging(propertyInfo.Name)
       If GetType(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type) Then
         ' remove old event hook
         If oldValue IsNot Nothing Then
@@ -1997,7 +2020,6 @@ Namespace Core
       Else
         FieldManager.SetFieldData(propertyInfo, newValue)
       End If
-      PropertyHasChanged(propertyInfo.Name)
 
     End Sub
 

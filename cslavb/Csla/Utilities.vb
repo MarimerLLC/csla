@@ -85,7 +85,7 @@ Public Module Utilities
   ''' result is parsed to convert into the enum value.
   ''' </para>
   ''' </remarks>
-  Public Function CoerceValue(ByVal desiredType As Type, ByVal valueType As Type, ByVal value As Object) As Object
+  Public Function CoerceValue(ByVal desiredType As Type, ByVal valueType As Type, ByVal oldValue As Object, ByVal value As Object) As Object
 
     If desiredType.Equals(valueType) Then
       ' types match, just return value
@@ -108,18 +108,25 @@ Public Module Utilities
         Return System.Enum.Parse(desiredType, value.ToString())
       End If
 
+      If desiredType.Equals(GetType(SmartDate)) AndAlso oldValue IsNot Nothing Then
+        If value Is Nothing Then _
+          value = String.Empty
+        Dim tmp = DirectCast(oldValue, SmartDate)
+        tmp.Text = value.ToString
+        Return tmp
+      End If
+
       If (desiredType.IsPrimitive OrElse desiredType.Equals(GetType(Decimal))) _
           AndAlso valueType.Equals(GetType(String)) _
           AndAlso String.IsNullOrEmpty(CStr(value)) Then
         value = 0
       End If
 
-      Dim pType = Utilities.GetPropertyType(desiredType)
       Try
-        Return Convert.ChangeType(value, pType)
+        Return Convert.ChangeType(value, desiredType)
 
       Catch
-        Dim cnv As TypeConverter = TypeDescriptor.GetConverter(pType)
+        Dim cnv As TypeConverter = TypeDescriptor.GetConverter(desiredType)
         If cnv IsNot Nothing AndAlso cnv.CanConvertFrom(valueType) Then
           Return cnv.ConvertFrom(value)
 
@@ -159,9 +166,9 @@ Public Module Utilities
   ''' result is parsed to convert into the enum value.
   ''' </para>
   ''' </remarks>
-  Public Function CoerceValue(Of D)(ByVal valueType As Type, ByVal value As Object) As D
+  Public Function CoerceValue(Of D)(ByVal valueType As Type, ByVal oldValue As D, ByVal value As Object) As D
 
-    Return DirectCast(CoerceValue(GetType(D), valueType, value), D)
+    Return DirectCast(CoerceValue(GetType(D), valueType, oldValue, value), D)
 
   End Function
 

@@ -99,15 +99,21 @@ Namespace Core.FieldManager
     ''' <param name="prop">
     ''' The property corresponding to the field.
     ''' </param>
-    Public Sub LoadFieldData(ByVal prop As IPropertyInfo, ByVal value As Object)
+    Public Function LoadFieldData(ByVal prop As IPropertyInfo, ByVal value As Object) As IFieldData
 
+      Dim field As IFieldData = Nothing
       If Not FieldData.ContainsKey(prop.Name) Then
-        FieldData.Add(prop.Name, prop.NewFieldData(prop.Name))
-      End If
-      GetFieldData(prop).Value = value
-      GetFieldData(prop).MarkClean()
+        field = prop.NewFieldData(prop.Name)
+        FieldData.Add(prop.Name, field)
 
-    End Sub
+      Else
+        field = GetFieldData(prop)
+      End If
+      field.Value = value
+      field.MarkClean()
+      Return field
+
+    End Function
 
     ''' <summary>
     ''' Removes the value for a specific field.

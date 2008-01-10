@@ -631,7 +631,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </remarks>
   Protected Function GetProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F) As P
 
-    Return CoerceValue(Of P)(GetType(F), GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, False))
+    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, False))
 
   End Function
 
@@ -660,7 +660,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Protected Function GetProperty(Of F, P)( _
     ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F, ByVal throwOnNoAccess As Boolean) As P
 
-    Return CoerceValue(Of P)(GetType(F), GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess))
+    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess))
 
   End Function
 
@@ -706,7 +706,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Protected Function GetProperty(Of F, P)( _
     ByVal propertyInfo As PropertyInfo(Of F)) As P
 
-    Return CoerceValue(Of P)(GetType(F), GetProperty(Of F)(propertyInfo, False))
+    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, False))
 
   End Function
 
@@ -734,7 +734,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Protected Function GetProperty(Of F, P)( _
     ByVal propertyInfo As PropertyInfo(Of F), ByVal throwOnNoAccess As Boolean) As P
 
-    Return CoerceValue(Of P)(GetType(F), GetProperty(Of F)(propertyInfo, throwOnNoAccess))
+    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, throwOnNoAccess))
 
   End Function
 
@@ -784,112 +784,56 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
 #End Region
 
-#Region " Set Properties "
+#Region " Load Properties "
 
   ''' <summary>
-  ''' Sets a property's backing field with the supplied
-  ''' value, first checking authorization, and then
-  ''' calling PropertyHasChanged if the value does change.
+  ''' Loads a property's managed field with the 
+  ''' supplied value calling PropertyHasChanged 
+  ''' if the value does change.
   ''' </summary>
-  ''' <param name="field">
-  ''' A reference to the backing field for the property.</param>
-  ''' <param name="newValue">
-  ''' The new value for the property.</param>
   ''' <param name="propertyInfo">
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-  Protected Sub SetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As P)
-
-    SetProperty(Of P)(propertyInfo.Name, field, newValue)
-
-  End Sub
-
-  ''' <summary>
-  ''' Sets a property's backing field with the 
-  ''' supplied value, first checking authorization, and then
-  ''' calling PropertyHasChanged if the value does change.
-  ''' </summary>
-  ''' <typeparam name="P">
-  ''' Type of the field being set.
-  ''' </typeparam>
-  ''' <typeparam name="V">
-  ''' Type of the value provided to the field.
-  ''' </typeparam>
-  ''' <param name="field">
-  ''' A reference to the backing field for the property.</param>
   ''' <param name="newValue">
   ''' The new value for the property.</param>
-  ''' <param name="propertyInfo">
-  ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-  Protected Sub SetProperty(Of P, V)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As V)
-
-    SetProperty(Of P, V)(propertyInfo.Name, field, newValue)
-
-  End Sub
-
-  ''' <summary>
-  ''' Sets a property's backing field with the supplied
-  ''' value, first checking authorization, and then
-  ''' calling PropertyHasChanged if the value does change.
-  ''' </summary>
-  ''' <param name="field">
-  ''' A reference to the backing field for the property.</param>
-  ''' <param name="newValue">
-  ''' The new value for the property.</param>
-  ''' <param name="propertyName">
-  ''' The name of the property.</param>
-  Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P)
-
-    field = newValue
-
-  End Sub
-
-  ''' <summary>
-  ''' Sets a property's backing field with the 
-  ''' supplied value, first checking authorization, and then
-  ''' calling PropertyHasChanged if the value does change.
-  ''' </summary>
-  ''' <typeparam name="P">
-  ''' Type of the field being set.
-  ''' </typeparam>
-  ''' <typeparam name="V">
-  ''' Type of the value provided to the field.
-  ''' </typeparam>
-  ''' <param name="field">
-  ''' A reference to the backing field for the property.</param>
-  ''' <param name="newValue">
-  ''' The new value for the property.</param>
-  ''' <param name="propertyName">
-  ''' The name of the property.</param>
   ''' <remarks>
-  ''' If the field value is of type string, any incoming
-  ''' null values are converted to string.Empty.
+  ''' No authorization checks occur when this method is called,
+  ''' and no PropertyChanging or PropertyChanged events are raised.
+  ''' Loading values does not cause validation rules to be
+  ''' invoked.
   ''' </remarks>
-  Protected Sub SetProperty(Of P, V)(ByVal propertyName As String, ByRef field As P, ByVal newValue As V)
-
-    field = CoerceValue(Of P)(GetType(V), newValue)
-
-  End Sub
-
-  ''' <summary>
-  ''' Sets a property's managed field with the 
-  ''' supplied value, first checking authorization, and then
-  ''' calling PropertyHasChanged if the value does change.
-  ''' </summary>
-  ''' <param name="propertyInfo">
-  ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-  ''' <param name="newValue">
-  ''' The new value for the property.</param>
-  Protected Sub SetProperty(Of P, F)( _
+  Protected Sub LoadProperty(Of P, F)( _
     ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
-    FieldManager.SetFieldData(propertyInfo, CoerceValue(Of P)(GetType(F), newValue))
+    Try
+      Dim oldValue As P = Nothing
+      Dim fieldData = FieldManager.GetFieldData(propertyInfo)
+      If fieldData Is Nothing Then
+        oldValue = propertyInfo.DefaultValue
+        fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue)
+
+      Else
+        oldValue = DirectCast(fieldData.Value, P)
+      End If
+
+      If oldValue Is Nothing Then
+        If Not newValue Is Nothing Then
+          FieldManager.SetFieldData(propertyInfo, CoerceValue(Of P)(GetType(F), oldValue, newValue))
+        End If
+
+      ElseIf Not oldValue.Equals(newValue) Then
+        FieldManager.SetFieldData(propertyInfo, CoerceValue(Of P)(GetType(F), oldValue, newValue))
+      End If
+
+    Catch ex As Exception
+      Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
+    End Try
 
   End Sub
 
   ''' <summary>
-  ''' Sets a property's managed field with the 
-  ''' supplied value, first checking authorization, and then
-  ''' calling PropertyHasChanged if the value does change.
+  ''' Loads a property's managed field with the 
+  ''' supplied value calling PropertyHasChanged 
+  ''' if the value does change.
   ''' </summary>
   ''' <typeparam name="P">
   ''' Type of the property.
@@ -898,10 +842,38 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
   ''' <param name="newValue">
   ''' The new value for the property.</param>
-  Protected Sub SetProperty(Of P)( _
+  ''' <remarks>
+  ''' No authorization checks occur when this method is called,
+  ''' and no PropertyChanging or PropertyChanged events are raised.
+  ''' Loading values does not cause validation rules to be
+  ''' invoked.
+  ''' </remarks>
+  Protected Sub LoadProperty(Of P)( _
     ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
 
-    FieldManager.SetFieldData(propertyInfo, newValue)
+    Try
+      Dim oldValue As P = Nothing
+      Dim fieldData = FieldManager.GetFieldData(propertyInfo)
+      If fieldData Is Nothing Then
+        oldValue = propertyInfo.DefaultValue
+        fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue)
+
+      Else
+        oldValue = DirectCast(fieldData.Value, P)
+      End If
+
+      If oldValue Is Nothing Then
+        If Not newValue Is Nothing Then
+          FieldManager.SetFieldData(propertyInfo, newValue)
+        End If
+
+      ElseIf Not oldValue.Equals(newValue) Then
+        FieldManager.SetFieldData(propertyInfo, newValue)
+      End If
+
+    Catch ex As Exception
+      Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
+    End Try
 
   End Sub
 

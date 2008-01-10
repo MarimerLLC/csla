@@ -233,36 +233,45 @@ Public MustInherit Class BusinessListBase( _
     mEditLevel -= 1
     If mEditLevel < 0 Then mEditLevel = 0
 
-    ' Cancel edit on all current items
-    For index = Count - 1 To 0 Step -1
-      child = Me(index)
-      child.UndoChanges(mEditLevel)
-      ' if item is below its point of addition, remove
-      If child.EditLevelAdded > mEditLevel Then
-        Dim oldAllowRemove As Boolean = Me.AllowRemove
-        Try
-          Me.AllowRemove = True
-          mCompletelyRemoveChild = True
-          RemoveAt(index)
-        Finally
-          mCompletelyRemoveChild = False
-          Me.AllowRemove = oldAllowRemove
-        End Try
-      End If
-    Next
-
-    ' cancel edit on all deleted items
-    For index = DeletedList.Count - 1 To 0 Step -1
-      child = DeletedList.Item(index)
-      child.UndoChanges(mEditLevel)
-      If child.EditLevelAdded > mEditLevel Then
+    Dim oldRLCE = RaiseListChangedEvents
+    RaiseListChangedEvents = False
+    Try
+      ' Cancel edit on all current items
+      For index = Count - 1 To 0 Step -1
+        child = Me(index)
+        child.UndoChanges(mEditLevel)
         ' if item is below its point of addition, remove
-        DeletedList.RemoveAt(index)
-      Else
-        ' if item is no longer deleted move back to main list
-        If Not child.IsDeleted Then UnDeleteChild(child)
-      End If
-    Next
+        If child.EditLevelAdded > mEditLevel Then
+          Dim oldAllowRemove As Boolean = Me.AllowRemove
+          Try
+            Me.AllowRemove = True
+            mCompletelyRemoveChild = True
+            RemoveAt(index)
+          Finally
+            mCompletelyRemoveChild = False
+            Me.AllowRemove = oldAllowRemove
+          End Try
+        End If
+      Next
+
+      ' cancel edit on all deleted items
+      For index = DeletedList.Count - 1 To 0 Step -1
+        child = DeletedList.Item(index)
+        child.UndoChanges(mEditLevel)
+        If child.EditLevelAdded > mEditLevel Then
+          ' if item is below its point of addition, remove
+          DeletedList.RemoveAt(index)
+        Else
+          ' if item is no longer deleted move back to main list
+          If Not child.IsDeleted Then UnDeleteChild(child)
+        End If
+      Next
+
+    Finally
+      RaiseListChangedEvents = oldRLCE
+      OnListChanged(New ListChangedEventArgs(ListChangedType.Reset, -1))
+    End Try
+
   End Sub
 
   Private Sub AcceptChanges(ByVal parentEditLevel As Integer) _

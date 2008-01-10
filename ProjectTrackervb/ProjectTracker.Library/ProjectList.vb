@@ -43,7 +43,7 @@ Public Class ProjectList
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
       Dim data = From p In ctx.DataContext.Projects Select p
       If Not String.IsNullOrEmpty(nameFilter) Then _
-        data = From p In data Where p.Name Like nameFilter Select p
+        data = From p In data Where p.Name Like "*" & nameFilter & "*" Select p
       IsReadOnly = False
       For Each project In data
         Me.Add(New ProjectInfo(project.Id, project.Name))

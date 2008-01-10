@@ -114,19 +114,18 @@ Public Class ProjectResource
 
   Private Sub Child_Create()
 
-    SetProperty(Of SmartDate)(AssignedProperty, New SmartDate(Today))
+    LoadProperty(Of SmartDate)(AssignedProperty, New SmartDate(Today))
 
   End Sub
 
   Private Sub Child_Create(ByVal resource As Resource, ByVal role As Integer)
 
-    MarkAsChild()
     With resource
-      SetProperty(Of Integer)(ResourceIdProperty, .Id)
-      SetProperty(Of String)(LastNameProperty, .LastName)
-      SetProperty(Of String)(FirstNameProperty, .FirstName)
-      SetProperty(Of SmartDate)(AssignedProperty, Assignment.GetDefaultAssignedDate)
-      SetProperty(Of Integer)(RoleProperty, role)
+      LoadProperty(Of Integer)(ResourceIdProperty, .Id)
+      LoadProperty(Of String)(LastNameProperty, .LastName)
+      LoadProperty(Of String)(FirstNameProperty, .FirstName)
+      LoadProperty(Of SmartDate)(AssignedProperty, Assignment.GetDefaultAssignedDate)
+      LoadProperty(Of Integer)(RoleProperty, role)
     End With
 
   End Sub
@@ -134,14 +133,13 @@ Public Class ProjectResource
   Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.Assignment)
 
     With data
-      SetProperty(Of Integer)(ResourceIdProperty, .ResourceId)
-      SetProperty(Of String)(LastNameProperty, .Resource.LastName)
-      SetProperty(Of String)(FirstNameProperty, .Resource.FirstName)
-      SetProperty(Of SmartDate)(AssignedProperty, .Assigned)
-      SetProperty(Of Integer)(RoleProperty, .Role)
+      LoadProperty(Of Integer)(ResourceIdProperty, .ResourceId)
+      LoadProperty(Of String)(LastNameProperty, .Resource.LastName)
+      LoadProperty(Of String)(FirstNameProperty, .Resource.FirstName)
+      LoadProperty(Of SmartDate)(AssignedProperty, .Assigned)
+      LoadProperty(Of Integer)(RoleProperty, .Role)
       mTimestamp = .LastChanged.ToArray
     End With
-    MarkOld()
 
   End Sub
 

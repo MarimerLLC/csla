@@ -5,7 +5,7 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTWin", "PTWin\PTWin.vbproj
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ProjectTracker.Library", "ProjectTracker.Library\ProjectTracker.Library.vbproj", "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWeb", "www\PTWeb", "{D60D64FB-3B54-4A4C-A697-32E2D2C8AA22}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWeb", "www\PTWeb\", "{D60D64FB-3B54-4A4C-A697-32E2D2C8AA22}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;{424C335A-9CC1-4AAA-9733-44F6C6A808C6}|EnterpriseServicesHostvb.dll;{0ADB016C-0257-42D8-B30E-E0CDB576CC40}|ProjectTracker.DalLinq.dll;"
@@ -28,7 +28,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWeb", "www\PTWeb", "{D60D
 EndProject
 Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "PTData", "PTData\PTData.dbp", "{2480976C-1317-4730-8FB7-D2AC35DFDDF8}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RemotingHost", "www\RemotingHost", "{ECDE95B8-25D9-4284-A4F4-1B88D665F15C}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RemotingHost", "www\RemotingHost\", "{ECDE95B8-25D9-4284-A4F4-1B88D665F15C}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;{0ADB016C-0257-42D8-B30E-E0CDB576CC40}|ProjectTracker.DalLinq.dll;"
@@ -46,11 +46,11 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RemotingHost", "www\Remotin
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "2856"
+		VWDPort = "2985"
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebServicesHost", "www\WebServicesHost", "{6F58060F-4C96-4E57-A7A1-A784881D830D}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebServicesHost", "www\WebServicesHost\", "{6F58060F-4C96-4E57-A7A1-A784881D830D}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;{0ADB016C-0257-42D8-B30E-E0CDB576CC40}|ProjectTracker.DalLinq.dll;"
@@ -68,13 +68,13 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebServicesHost", "www\WebS
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "2859"
+		VWDPort = "2987"
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "EnterpriseServicesHostvb", "EnterpriseServicesHostvb\EnterpriseServicesHostvb.vbproj", "{424C335A-9CC1-4AAA-9733-44F6C6A808C6}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWebService", "www\PTWebService", "{F935E36F-1676-4101-8066-6F37BA3F2AFD}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWebService", "www\PTWebService\", "{F935E36F-1676-4101-8066-6F37BA3F2AFD}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;{0ADB016C-0257-42D8-B30E-E0CDB576CC40}|ProjectTracker.DalLinq.dll;"
@@ -92,13 +92,13 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWebService", "www\PTWebSe
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "3233"
+		VWDPort = "2989"
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTServiceClient", "PTServiceClient\PTServiceClient.vbproj", "{6CB45E45-6BED-4333-97CB-7EAD725DE984}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WcfHost", "www\WcfHost", "{227E9BBA-BA4D-4791-88DD-B7F04724F303}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WcfHost", "www\WcfHost\", "{227E9BBA-BA4D-4791-88DD-B7F04724F303}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;{FAE8EFC0-6C64-48B8-9DB1-76AC1EB7577A}|PTWorkflow.dll;{97F1AC49-6F83-4803-9527-189905D9A055}|PTWfActivities.dll;{0ADB016C-0257-42D8-B30E-E0CDB576CC40}|ProjectTracker.DalLinq.dll;"
@@ -116,11 +116,11 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WcfHost", "www\WcfHost", "{
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "4216"
+		VWDPort = "2991"
 		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWcfService", "www\PTWcfService", "{07D6FFE3-CFDF-4707-BA98-A865614A6718}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWcfService", "www\PTWcfService\", "{07D6FFE3-CFDF-4707-BA98-A865614A6718}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{40BD3DDA-93B4-4BE4-A97A-DCA8A5A870E4}|ProjectTracker.Library.dll;{0ADB016C-0257-42D8-B30E-E0CDB576CC40}|ProjectTracker.DalLinq.dll;"
@@ -138,7 +138,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWcfService", "www\PTWcfSe
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "1059"
+		VWDPort = "2993"
 	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PTWcfClient", "PTWcfClient\PTWcfClient.vbproj", "{A78EE1BC-8BF7-44DD-A3A7-75ECC704218F}"

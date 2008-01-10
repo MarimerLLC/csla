@@ -209,7 +209,7 @@ Public Class Project
   <RunLocal()> _
   Protected Overrides Sub DataPortal_Create()
 
-    SetProperty(Of Guid)(IdProperty, Guid.NewGuid)
+    LoadProperty(Of Guid)(IdProperty, Guid.NewGuid)
     Started = CStr(Today)
     ValidationRules.CheckRules()
 
@@ -220,15 +220,15 @@ Public Class Project
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
       ' get project data
       Dim data = (From p In ctx.DataContext.Projects Where p.Id = criteria.Value Select p).Single
-      SetProperty(Of Guid)(IdProperty, data.Id)
-      SetProperty(Of String)(NameProperty, data.Name)
-      SetProperty(Of SmartDate, Date?)(StartedProperty, data.Started)
-      SetProperty(Of SmartDate, Date?)(EndedProperty, data.Ended)
-      SetProperty(Of String)(DescriptionProperty, data.Description)
+      LoadProperty(Of Guid)(IdProperty, data.Id)
+      LoadProperty(Of String)(NameProperty, data.Name)
+      LoadProperty(Of SmartDate, Date?)(StartedProperty, data.Started)
+      LoadProperty(Of SmartDate, Date?)(EndedProperty, data.Ended)
+      LoadProperty(Of String)(DescriptionProperty, data.Description)
       mTimestamp = data.LastChanged.ToArray
 
       ' get child data
-      SetProperty(Of ProjectResources)(ResourcesProperty, _
+      LoadProperty(Of ProjectResources)(ResourcesProperty, _
         ProjectResources.GetProjectResources(data.Assignments.ToArray))
     End Using
 
@@ -330,16 +330,9 @@ Public Class Project
 
     Protected Overrides Sub DataPortal_Execute()
 
-      Using cn As New SqlConnection(Database.PTrackerConnection)
-        cn.Open()
-        Using cm As SqlCommand = cn.CreateCommand
-          cm.CommandType = CommandType.Text
-          cm.CommandText = "SELECT Id FROM Projects WHERE Id=@id"
-          cm.Parameters.AddWithValue("@id", mId)
-
-          Dim count As Integer = CInt(cm.ExecuteScalar)
-          mExists = (count > 0)
-        End Using
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+        Dim data = From p In ctx.DataContext.Projects Where p.Id = mId
+        mExists = data.Count > 0
       End Using
 
     End Sub

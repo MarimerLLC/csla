@@ -137,7 +137,7 @@ Public Class Resource
     If Not CanDeleteObject() Then
       Throw New System.Security.SecurityException("User not authorized to remove a resource")
     End If
-    DataPortal.Delete(New Criteria(id))
+    DataPortal.Delete(New SingleCriteria(Of Resource, Integer)(id))
 
   End Sub
 
@@ -146,7 +146,7 @@ Public Class Resource
     If Not CanGetObject() Then
       Throw New System.Security.SecurityException("User not authorized to view a resource")
     End If
-    Return CType(DataPortal.Fetch(New Criteria(id)), Resource)
+    Return DataPortal.Fetch(Of Resource)(New SingleCriteria(Of Resource, Integer)(id))
 
   End Function
 
@@ -173,27 +173,13 @@ Public Class Resource
 
 #Region " Data Access "
 
-  <Serializable()> _
-Private Class Criteria
-    Private mId As Integer
-    Public ReadOnly Property Id() As Integer
-      Get
-        Return mId
-      End Get
-    End Property
-
-    Public Sub New(ByVal id As Integer)
-      mId = id
-    End Sub
-  End Class
-
   <RunLocal()> _
   Protected Overrides Sub DataPortal_Create()
     ' nothing to initialize
     ValidationRules.CheckRules()
   End Sub
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
     Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
@@ -201,7 +187,7 @@ Private Class Criteria
         With cm
           .CommandType = CommandType.StoredProcedure
           .CommandText = "getResource"
-          .Parameters.AddWithValue("@id", criteria.Id)
+          .Parameters.AddWithValue("@id", criteria.Value)
 
           Using dr As New SafeDataReader(.ExecuteReader)
             dr.Read()
@@ -297,12 +283,12 @@ Private Class Criteria
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
-    DataPortal_Delete(New Criteria(mId))
+    DataPortal_Delete(New SingleCriteria(Of Resource, Integer)(mId))
 
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
-  Private Overloads Sub DataPortal_Delete(ByVal criteria As Criteria)
+  Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
     Using cn As New SqlConnection(Database.PTrackerConnection)
       cn.Open()
@@ -310,7 +296,7 @@ Private Class Criteria
         With cm
           .CommandType = CommandType.StoredProcedure
           .CommandText = "deleteResource"
-          .Parameters.AddWithValue("@id", criteria.Id)
+          .Parameters.AddWithValue("@id", criteria.Value)
           .ExecuteNonQuery()
         End With
       End Using

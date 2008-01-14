@@ -13,6 +13,7 @@ namespace Csla.Data
   /// <remarks></remarks>
   public static class DataMapper
   {
+
     #region Map from IDictionary
 
     /// <summary>
@@ -61,8 +62,8 @@ namespace Csla.Data
     /// object. Target properties may not be readonly or indexed.
     /// </remarks>
     public static void Map(
-      System.Collections.IDictionary source, 
-      object target, bool suppressExceptions, 
+      System.Collections.IDictionary source,
+      object target, bool suppressExceptions,
       params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
@@ -78,7 +79,7 @@ namespace Csla.Data
           {
             if (!suppressExceptions)
               throw new ArgumentException(
-                String.Format("{0} ({1})", 
+                String.Format("{0} ({1})",
                 Resources.PropertyCopyFailed, propertyName), ex);
           }
         }
@@ -125,7 +126,9 @@ namespace Csla.Data
       params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
-      foreach (PropertyInfo prop in Reflection.TypeInfoCache.GetPropertyInfo(source.GetType()))
+      PropertyInfo[] sourceProperties =
+        GetSourceProperties(source.GetType());
+      foreach (PropertyInfo prop in sourceProperties)
       {
         string propertyName = prop.Name;
         if (!ignore.Contains(propertyName))
@@ -204,13 +207,13 @@ namespace Csla.Data
     /// </para>
     /// </remarks>
     public static void Map(
-      object source, object target, 
-      bool suppressExceptions, 
+      object source, object target,
+      bool suppressExceptions,
       params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
-      List<PropertyInfo> sourceProperties =
-        Csla.Reflection.TypeInfoCache.GetBrowsablePropertyInfo(source.GetType());
+      PropertyInfo[] sourceProperties =
+        GetSourceProperties(source.GetType());
       foreach (PropertyInfo sourceProperty in sourceProperties)
       {
         string propertyName = sourceProperty.Name;
@@ -219,14 +222,14 @@ namespace Csla.Data
           try
           {
             SetPropertyValue(
-              target, propertyName, 
+              target, propertyName,
               sourceProperty.GetValue(source, null));
           }
           catch (Exception ex)
           {
             if (!suppressExceptions)
               throw new ArgumentException(
-                String.Format("{0} ({1})", 
+                String.Format("{0} ({1})",
                 Resources.PropertyCopyFailed, propertyName), ex);
           }
         }
@@ -281,6 +284,17 @@ namespace Csla.Data
               Resources.PropertyCopyFailed, mapping.FromMember.Name), ex);
         }
       }
+    }
+
+    private static PropertyInfo[] GetSourceProperties(Type sourceType)
+    {
+      List<PropertyInfo> result = new List<PropertyInfo>();
+      PropertyDescriptorCollection props =
+        TypeDescriptor.GetProperties(sourceType);
+      foreach (PropertyDescriptor item in props)
+        if (item.IsBrowsable)
+          result.Add(sourceType.GetProperty(item.Name));
+      return result.ToArray();
     }
 
     #endregion
@@ -341,14 +355,23 @@ namespace Csla.Data
     {
       if (value != null)
       {
+        object oldValue;
         Type pType;
         if (memberInfo.MemberType == MemberTypes.Property)
-          pType = ((PropertyInfo)memberInfo).PropertyType;
+        {
+          PropertyInfo pInfo = (PropertyInfo)memberInfo;
+          pType = pInfo.PropertyType;
+          oldValue = pInfo.GetValue(target, null);
+        }
         else
-          pType = ((FieldInfo)memberInfo).FieldType;
+        {
+          FieldInfo fInfo = (FieldInfo)memberInfo;
+          pType = fInfo.FieldType;
+          oldValue = fInfo.GetValue(target);
+        }
         Type vType =
           Utilities.GetPropertyType(value.GetType());
-        value = CoerceValue(pType, vType, value);
+        value = Utilities.CoerceValue(pType, vType, oldValue, value);
       }
       if (memberInfo.MemberType == MemberTypes.Property)
         ((PropertyInfo)memberInfo).SetValue(target, value, null);
@@ -356,48 +379,7 @@ namespace Csla.Data
         ((FieldInfo)memberInfo).SetValue(target, value);
     }
 
-    private static object CoerceValue(Type propertyType, Type valueType, object value)
-    {
-      if (propertyType.Equals(valueType))
-      {
-        // types match, just return value
-        return value;
-      }
-      else
-      {
-        if (propertyType.IsGenericType)
-        {
-          if (propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-          {
-            if (value == null) 
-              return null;
-            else if (valueType.Equals(typeof(string)) && (string)value == string.Empty)
-              return null;
-          }
-          propertyType = Utilities.GetPropertyType(propertyType);
-        }
-
-        if (propertyType.IsEnum && valueType.Equals(typeof(string)))
-          return Enum.Parse(propertyType, value.ToString());
-
-        if (propertyType.IsPrimitive && valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
-          value = 0;
-        
-        try
-        {
-          return Convert.ChangeType(value, Utilities.GetPropertyType(propertyType));
-        }
-        catch
-        {
-          TypeConverter cnv = TypeDescriptor.GetConverter(Utilities.GetPropertyType(propertyType));
-          if (cnv != null && cnv.CanConvertFrom(value.GetType()))
-            return cnv.ConvertFrom(value);
-          else
-            throw;
-        }
-      }
-    }
-
     #endregion
   }
 }
+

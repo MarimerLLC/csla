@@ -51,46 +51,44 @@
         </Grid>
       </DataTemplate>
     </Grid.Resources>
-    
+
     <csla:ObjectStatus>
       <csla:Authorizer Name="AuthPanel">
-        <csla:Validator>
-          <StackPanel FlowDirection="LeftToRight">
-            <StackPanel.Resources>
-              <Style TargetType="{x:Type TextBlock}">
-                <Setter Property="Margin" Value="3,5"/>
-              </Style>
-              <Style TargetType="{x:Type Button}">
-                <Setter Property="Margin" Value="3,5"/>
-              </Style>
-            </StackPanel.Resources>
-            <TextBlock>Id:</TextBlock>
-            <TextBlock Text="{Binding Id, Mode=OneWay}"></TextBlock>
-            <TextBlock>First name:</TextBlock>
-            <TextBox Text="{Binding FirstName, Converter={StaticResource IdentityConverter}}"></TextBox>
-            <TextBlock>Last name:</TextBlock>
-            <TextBox Text="{Binding LastName, Converter={StaticResource IdentityConverter}}"></TextBox>
-            <TextBlock>Assigned to:</TextBlock>
-            <ListBox Name="ProjectListBox" ItemsSource="{Binding Assignments}" ItemTemplate="{StaticResource lbTemplate}" MouseDoubleClick="ShowProject">
-            </ListBox>
-            <StackPanel Orientation="Horizontal">
-              <Button 
+        <StackPanel FlowDirection="LeftToRight">
+          <StackPanel.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="Margin" Value="3,5"/>
+            </Style>
+            <Style TargetType="{x:Type Button}">
+              <Setter Property="Margin" Value="3,5"/>
+            </Style>
+          </StackPanel.Resources>
+          <TextBlock>Id:</TextBlock>
+          <TextBlock Text="{Binding Id, Mode=OneWay}"></TextBlock>
+          <TextBlock>First name:</TextBlock>
+          <TextBox Text="{Binding FirstName, Converter={StaticResource IdentityConverter}, ValidatesOnDataErrors=True}"></TextBox>
+          <TextBlock>Last name:</TextBlock>
+          <TextBox Text="{Binding LastName, Converter={StaticResource IdentityConverter}, ValidatesOnDataErrors=True}"></TextBox>
+          <TextBlock>Assigned to:</TextBlock>
+          <ListBox Name="ProjectListBox" ItemsSource="{Binding Assignments}" ItemTemplate="{StaticResource lbTemplate}" MouseDoubleClick="ShowProject">
+          </ListBox>
+          <StackPanel Orientation="Horizontal">
+            <Button 
                 Command="ApplicationCommands.Save" 
                 CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
                 HorizontalAlignment="Left" IsDefault="True">Save</Button>
-              <Button 
+            <Button 
                 Command="ApplicationCommands.Undo" 
                 CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
                 HorizontalAlignment="Left" IsCancel="True">Cancel</Button>
-              <Button Name="AssignButton" Click="Assign" 
+            <Button Name="AssignButton" Click="Assign" 
                       HorizontalAlignment="Left">Assign to project</Button>
-              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>
-              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsValid}">IsValid</CheckBox>
-              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsDirty}">IsDirty</CheckBox>
-              <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsNew}">IsNew</CheckBox>
-            </StackPanel>
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsValid}">IsValid</CheckBox>
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsDirty}">IsDirty</CheckBox>
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsNew}">IsNew</CheckBox>
           </StackPanel>
-        </csla:Validator>
+        </StackPanel>
       </csla:Authorizer>
     </csla:ObjectStatus>
   </Grid>

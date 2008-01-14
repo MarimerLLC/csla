@@ -17,15 +17,13 @@
     <Grid.Resources>
       <DataTemplate x:Key="lbTemplate">
         <Grid>
-          <csla:Validator>
-            <StackPanel Orientation="Horizontal">
-              <TextBlock>Id:</TextBlock>
-              <TextBox Text="{Binding Path=Id, Converter={StaticResource IdentityConverter}}" Width="100" />
-              <TextBlock>Name:</TextBlock>
-              <TextBox Text="{Binding Path=Name, Converter={StaticResource IdentityConverter}}" Width="250" />
-              <Button Click="RemoveItem" HorizontalAlignment="Left" Tag="{Binding Path=Id}">Remove</Button>
-            </StackPanel>
-          </csla:Validator>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock>Id:</TextBlock>
+            <TextBox Text="{Binding Path=Id, Converter={StaticResource IdentityConverter}, ValidatesOnDataErrors=True}" Width="100" />
+            <TextBlock>Name:</TextBlock>
+            <TextBox Text="{Binding Path=Name, Converter={StaticResource IdentityConverter}, ValidatesOnDataErrors=True}" Width="250" />
+            <Button Click="RemoveItem" HorizontalAlignment="Left" Tag="{Binding Path=Id}">Remove</Button>
+          </StackPanel>
         </Grid>
       </DataTemplate>
       <DataTemplate x:Key="lbroTemplate">

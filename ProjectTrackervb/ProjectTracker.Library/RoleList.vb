@@ -26,8 +26,7 @@ Public Class RoleList
   Public Shared Function GetList() As RoleList
 
     If mList Is Nothing Then
-      mList = DataPortal.Fetch(Of RoleList) _
-        (New Criteria(GetType(RoleList)))
+      mList = DataPortal.Fetch(Of RoleList)()
     End If
     Return mList
 
@@ -52,26 +51,16 @@ Public Class RoleList
 
 #Region " Data Access "
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
+  Private Overloads Sub DataPortal_Fetch()
 
     Me.RaiseListChangedEvents = False
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        cm.CommandType = CommandType.StoredProcedure
-        cm.CommandText = "getRoles"
-
-        Using dr As New SafeDataReader(cm.ExecuteReader)
-          IsReadOnly = False
-          With dr
-            While .Read()
-              Me.Add(New NameValuePair( _
-                .GetInt32("id"), .GetString("name")))
-            End While
-          End With
-          IsReadOnly = True
-        End Using
-      End Using
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Dim data = From r In ctx.DataContext.Roles Select r
+      IsReadOnly = False
+      For Each role In data
+        Me.Add(New NameValuePair(role.Id, role.Name))
+      Next
+      IsReadOnly = True
     End Using
     Me.RaiseListChangedEvents = True
 

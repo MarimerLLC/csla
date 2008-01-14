@@ -83,7 +83,7 @@ Public Class ResourceAssignment
   Friend Shared Function NewResourceAssignment( _
     ByVal projectId As Guid) As ResourceAssignment
 
-    Return DataPortal.CreateChild(Of ResourceAssignment)(Project.GetProject(projectId), RoleList.DefaultRole)
+    Return DataPortal.CreateChild(Of ResourceAssignment)(projectId, RoleList.DefaultRole)
 
   End Function
 
@@ -112,10 +112,11 @@ Public Class ResourceAssignment
 
 #Region " Data Access "
 
-  Private Sub Child_Create(ByVal project As Project, ByVal role As Integer)
+  Private Sub Child_Create(ByVal projectId As Guid, ByVal role As Integer)
 
-    mProjectId = project.Id
-    mProjectName = project.Name
+    Dim proj = Project.GetProject(projectId)
+    mProjectId = proj.Id
+    mProjectName = proj.Name
     mAssigned.Date = Assignment.GetDefaultAssignedDate
     mRole = role
 

@@ -66,14 +66,15 @@ Public Class ResourceAssignments
 
   Friend Shared Function NewResourceAssignments() As ResourceAssignments
 
-    Return New ResourceAssignments
+    Return DataPortal.CreateChild(Of ResourceAssignments)()
 
   End Function
 
   Friend Shared Function GetResourceAssignments( _
           ByVal data() As ProjectTracker.DalLinq.Assignment) As ResourceAssignments
 
-    Return DataPortal.FetchChild(Of ResourceAssignments)(data)
+    Return DataPortal.FetchChild(Of ResourceAssignments)( _
+      New SingleCriteria(Of ResourceAssignments, ProjectTracker.DalLinq.Assignment())(data))
 
   End Function
 
@@ -85,10 +86,10 @@ Public Class ResourceAssignments
 
 #Region " Data Access "
 
-  Private Sub Child_Fetch(ByVal data() As ProjectTracker.DalLinq.Assignment)
+  Private Sub Child_Fetch(ByVal criteria As SingleCriteria(Of ResourceAssignments, ProjectTracker.DalLinq.Assignment()))
 
     Me.RaiseListChangedEvents = False
-    For Each child In data
+    For Each child In criteria.Value
       Add(ResourceAssignment.GetResourceAssignment(child))
     Next
     Me.RaiseListChangedEvents = True

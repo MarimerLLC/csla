@@ -229,16 +229,8 @@ Public Class Resource
   <Transactional(TransactionalTypes.TransactionScope)> _
   Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        With cm
-          .CommandType = CommandType.StoredProcedure
-          .CommandText = "deleteResource"
-          .Parameters.AddWithValue("@id", criteria.Value)
-          .ExecuteNonQuery()
-        End With
-      End Using
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      ctx.DataContext.DeleteResource(mId)
     End Using
 
   End Sub
@@ -247,7 +239,7 @@ Public Class Resource
 
 #Region " Exists "
 
-  Public Shared Function Exists(ByVal id As String) As Boolean
+  Public Shared Function Exists(ByVal id As Integer) As Boolean
 
     Return ExistsCommand.Exists(id)
 
@@ -257,7 +249,7 @@ Public Class Resource
   Private Class ExistsCommand
     Inherits CommandBase
 
-    Private mId As String
+    Private mId As Integer
     Private mExists As Boolean
 
     Public ReadOnly Property ResourceExists() As Boolean
@@ -266,7 +258,7 @@ Public Class Resource
       End Get
     End Property
 
-    Public Shared Function Exists(ByVal id As String) As Boolean
+    Public Shared Function Exists(ByVal id As Integer) As Boolean
 
       Dim result As ExistsCommand
       result = DataPortal.Execute(Of ExistsCommand)(New ExistsCommand(id))
@@ -274,22 +266,14 @@ Public Class Resource
 
     End Function
 
-    Private Sub New(ByVal id As String)
+    Private Sub New(ByVal id As Integer)
       mId = id
     End Sub
 
     Protected Overrides Sub DataPortal_Execute()
 
-      Using cn As New SqlConnection(Database.PTrackerConnection)
-        cn.Open()
-        Using cm As SqlCommand = cn.CreateCommand
-          cm.CommandType = CommandType.Text
-          cm.CommandText = "SELECT id FROM Resources WHERE id=@id"
-          cm.Parameters.AddWithValue("@id", mId)
-
-          Dim count As Integer = CInt(cm.ExecuteScalar)
-          mExists = (count > 0)
-        End Using
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+        mExists = (From p In ctx.DataContext.Resources Where p.Id = mId).Count > 0
       End Using
 
     End Sub

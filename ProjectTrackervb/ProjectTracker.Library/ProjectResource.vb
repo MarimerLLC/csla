@@ -93,7 +93,7 @@ Public Class ProjectResource
     ByVal resourceId As Integer) As ProjectResource
 
     Return DataPortal.CreateChild(Of ProjectResource)( _
-      Resource.GetResource(resourceId), RoleList.DefaultRole)
+      resourceId, RoleList.DefaultRole)
 
   End Function
 
@@ -118,9 +118,10 @@ Public Class ProjectResource
 
   End Sub
 
-  Private Sub Child_Create(ByVal resource As Resource, ByVal role As Integer)
+  Private Sub Child_Create(ByVal resourceId As Integer, ByVal role As Integer)
 
-    With resource
+    Dim res = Resource.GetResource(resourceId)
+    With res
       LoadProperty(Of Integer)(ResourceIdProperty, .Id)
       LoadProperty(Of String)(LastNameProperty, .LastName)
       LoadProperty(Of String)(FirstNameProperty, .FirstName)

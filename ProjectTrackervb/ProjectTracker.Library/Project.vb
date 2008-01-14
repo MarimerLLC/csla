@@ -331,8 +331,7 @@ Public Class Project
     Protected Overrides Sub DataPortal_Execute()
 
       Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
-        Dim data = From p In ctx.DataContext.Projects Where p.Id = mId
-        mExists = data.Count > 0
+        mExists = (From p In ctx.DataContext.Projects Where p.Id = mId).Count > 0
       End Using
 
     End Sub

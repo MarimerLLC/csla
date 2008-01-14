@@ -6,7 +6,7 @@
   ''' <typeparam name="T">Type of field value contained.</typeparam>
   <Serializable()> _
   Public Class FieldData(Of T)
-    Implements IFieldData
+    Implements IFieldData(Of T)
 
     Private mName As String
     Private mData As T
@@ -34,7 +34,7 @@
     ''' <summary>
     ''' Gets or sets the value of the field.
     ''' </summary>
-    Public Property Value() As T
+    Public Property Value() As T Implements IFieldData(Of T).Value
       Get
         Return mData
       End Get

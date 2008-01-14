@@ -1574,7 +1574,7 @@ Namespace Core
       If CanReadProperty(propertyInfo.Name, throwOnNoAccess) Then
         Dim data As FieldManager.IFieldData = FieldManager.GetFieldData(propertyInfo)
         If data IsNot Nothing Then
-          Dim fd As FieldManager.FieldData(Of P) = TryCast(data, FieldManager.FieldData(Of P))
+          Dim fd As FieldManager.IFieldData(Of P) = TryCast(data, FieldManager.IFieldData(Of P))
           If fd IsNot Nothing Then
             result = fd.Value
 
@@ -1584,7 +1584,7 @@ Namespace Core
 
         Else
           result = propertyInfo.DefaultValue
-          FieldManager.LoadFieldData(propertyInfo, result)
+          FieldManager.LoadFieldData(Of P)(propertyInfo, result)
         End If
 
       Else
@@ -1905,20 +1905,18 @@ Namespace Core
         Dim fieldData = FieldManager.GetFieldData(propertyInfo)
         If fieldData Is Nothing Then
           oldValue = propertyInfo.DefaultValue
-          fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue)
+          fieldData = FieldManager.LoadFieldData(Of P)(propertyInfo, oldValue)
 
         Else
-          oldValue = DirectCast(fieldData.Value, P)
-        End If
+          Dim fd = TryCast(fieldData, FieldManager.IFieldData(Of P))
+          If fd IsNot Nothing Then
+            oldValue = fd.Value
 
-        If oldValue Is Nothing Then
-          If Not newValue Is Nothing Then
-            LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue))
+          Else
+            oldValue = DirectCast(fieldData.Value, P)
           End If
-
-        ElseIf Not oldValue.Equals(newValue) Then
-          LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue))
         End If
+        LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue))
 
       Catch ex As Exception
         Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
@@ -1952,20 +1950,19 @@ Namespace Core
         Dim fieldData = FieldManager.GetFieldData(propertyInfo)
         If fieldData Is Nothing Then
           oldValue = propertyInfo.DefaultValue
-          fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue)
+          fieldData = FieldManager.LoadFieldData(Of P)(propertyInfo, oldValue)
 
         Else
-          oldValue = DirectCast(fieldData.Value, P)
-        End If
+          Dim fd = TryCast(fieldData, FieldManager.IFieldData(Of P))
+          If fd IsNot Nothing Then
+            oldValue = fd.Value
 
-        If oldValue Is Nothing Then
-          If Not newValue Is Nothing Then
-            LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
+          Else
+            oldValue = DirectCast(fieldData.Value, P)
           End If
-
-        ElseIf Not oldValue.Equals(newValue) Then
-          LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
         End If
+
+        LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
 
       Catch ex As Exception
         Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
@@ -1976,49 +1973,59 @@ Namespace Core
     Private Sub LoadPropertyValue(Of P)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal oldValue As P, ByVal newValue As P)
 
-      If GetType(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type) Then
-        ' remove old event hook
-        If oldValue IsNot Nothing Then
-          Dim pc As INotifyPropertyChanged = DirectCast(oldValue, INotifyPropertyChanged)
-          RemoveHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
-        End If
-        FieldManager.SetFieldData(propertyInfo, newValue)
-        Dim child As IEditableBusinessObject = DirectCast(newValue, IEditableBusinessObject)
-        If child IsNot Nothing Then
-          child.SetParent(Me)
-          ' set child edit level
-          UndoableBase.ResetChildEditLevel(child, Me.EditLevel)
-          ' reset EditLevelAdded 
-          child.EditLevelAdded = Me.EditLevel
-          ' hook child event
-          Dim pc As INotifyPropertyChanged = DirectCast(newValue, INotifyPropertyChanged)
-          AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
-        End If
-
-      ElseIf GetType(IEditableCollection).IsAssignableFrom(propertyInfo.Type) Then
-        ' remove old event hooks
-        If oldValue IsNot Nothing Then
-          Dim pc As IBindingList = DirectCast(oldValue, IBindingList)
-          RemoveHandler pc.ListChanged, AddressOf Child_ListChanged
-        End If
-        FieldManager.SetFieldData(propertyInfo, newValue)
-        Dim child As IEditableCollection = DirectCast(newValue, IEditableCollection)
-        If child IsNot Nothing Then
-          child.SetParent(Me)
-          Dim undoChild As IUndoableObject = TryCast(child, IUndoableObject)
-          If undoChild IsNot Nothing Then
-            ' set child edit level
-            Dim newEditLevel = Me.EditLevel
-            If BindingEdit Then _
-              newEditLevel = Me.EditLevel - 1
-            UndoableBase.ResetChildEditLevel(undoChild, newEditLevel)
-          End If
-          Dim pc As IBindingList = DirectCast(newValue, IBindingList)
-          AddHandler pc.ListChanged, AddressOf Child_ListChanged
-        End If
+      Dim valuesDiffer = False
+      If oldValue Is Nothing Then
+        valuesDiffer = newValue IsNot Nothing
 
       Else
-        FieldManager.SetFieldData(propertyInfo, newValue)
+        valuesDiffer = Not oldValue.Equals(newValue)
+      End If
+
+      If valuesDiffer Then
+        If GetType(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type) Then
+          ' remove old event hook
+          If oldValue IsNot Nothing Then
+            Dim pc As INotifyPropertyChanged = DirectCast(oldValue, INotifyPropertyChanged)
+            RemoveHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
+          End If
+          FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+          Dim child As IEditableBusinessObject = DirectCast(newValue, IEditableBusinessObject)
+          If child IsNot Nothing Then
+            child.SetParent(Me)
+            ' set child edit level
+            UndoableBase.ResetChildEditLevel(child, Me.EditLevel)
+            ' reset EditLevelAdded 
+            child.EditLevelAdded = Me.EditLevel
+            ' hook child event
+            Dim pc As INotifyPropertyChanged = DirectCast(newValue, INotifyPropertyChanged)
+            AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
+          End If
+
+        ElseIf GetType(IEditableCollection).IsAssignableFrom(propertyInfo.Type) Then
+          ' remove old event hooks
+          If oldValue IsNot Nothing Then
+            Dim pc As IBindingList = DirectCast(oldValue, IBindingList)
+            RemoveHandler pc.ListChanged, AddressOf Child_ListChanged
+          End If
+          FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+          Dim child As IEditableCollection = DirectCast(newValue, IEditableCollection)
+          If child IsNot Nothing Then
+            child.SetParent(Me)
+            Dim undoChild As IUndoableObject = TryCast(child, IUndoableObject)
+            If undoChild IsNot Nothing Then
+              ' set child edit level
+              Dim newEditLevel = Me.EditLevel
+              If BindingEdit Then _
+                newEditLevel = Me.EditLevel - 1
+              UndoableBase.ResetChildEditLevel(undoChild, newEditLevel)
+            End If
+            Dim pc As IBindingList = DirectCast(newValue, IBindingList)
+            AddHandler pc.ListChanged, AddressOf Child_ListChanged
+          End If
+
+        Else
+          FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+        End If
       End If
 
     End Sub

@@ -80,15 +80,28 @@ Namespace Core.FieldManager
     ''' <summary>
     ''' Sets the value for a specific field.
     ''' </summary>
+    ''' <typeparam name="P">
+    ''' Type of field value.
+    ''' </typeparam>
     ''' <param name="prop">
     ''' The property corresponding to the field.
     ''' </param>
-    Public Sub SetFieldData(ByVal prop As IPropertyInfo, ByVal value As Object)
+    ''' <param name="value">
+    ''' Value to store for field.
+    ''' </param>
+    Public Sub SetFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P)
 
       If Not FieldData.ContainsKey(prop.Name) Then
         FieldData.Add(prop.Name, prop.NewFieldData(prop.Name))
       End If
-      GetFieldData(prop).Value = value
+      Dim field = GetFieldData(prop)
+      Dim fd = TryCast(field, IFieldData(Of P))
+      If fd IsNot Nothing Then
+        fd.Value = value
+
+      Else
+        field.Value = value
+      End If
 
     End Sub
 
@@ -96,10 +109,16 @@ Namespace Core.FieldManager
     ''' Sets the value for a specific field without
     ''' marking the field as dirty.
     ''' </summary>
+    ''' <typeparam name="P">
+    ''' Type of field value.
+    ''' </typeparam>
     ''' <param name="prop">
     ''' The property corresponding to the field.
     ''' </param>
-    Public Function LoadFieldData(ByVal prop As IPropertyInfo, ByVal value As Object) As IFieldData
+    ''' <param name="value">
+    ''' Value to store for field.
+    ''' </param>
+    Public Function LoadFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P) As IFieldData
 
       Dim field As IFieldData = Nothing
       If Not FieldData.ContainsKey(prop.Name) Then
@@ -109,7 +128,13 @@ Namespace Core.FieldManager
       Else
         field = GetFieldData(prop)
       End If
-      field.Value = value
+      Dim fd = TryCast(field, IFieldData(Of P))
+      If fd IsNot Nothing Then
+        fd.Value = value
+
+      Else
+        field.Value = value
+      End If
       field.MarkClean()
       Return field
 

@@ -67,6 +67,10 @@ Public Module Utilities
   ''' <param name="valueType">
   ''' Original type of the value.
   ''' </param>
+  ''' <param name="oldValue">
+  ''' The previous value (if any) being replaced by
+  ''' the new coerced value.
+  ''' </param>
   ''' <param name="value">
   ''' The value to coerce.
   ''' </param>
@@ -147,6 +151,10 @@ Public Module Utilities
   ''' </typeparam>
   ''' <param name="valueType">
   ''' Original type of the value.
+  ''' </param>
+  ''' <param name="oldValue">
+  ''' The previous value (if any) being replaced by
+  ''' the new coerced value.
   ''' </param>
   ''' <param name="value">
   ''' The value to coerce.

@@ -123,19 +123,23 @@ Friend Module MethodCaller
     Else
       inParams = parameters
     End If
-    If infoParams.Length > 0 AndAlso infoParams(infoParams.Length - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0 Then
-      ' last param is a param array
-      Dim extras = inParams.Length - (infoParams.Length - 1)
-      ' 1 or more parameters go in the param array
+    Dim pCount = infoParams.Length
+    If (pCount > 0 AndAlso infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0) _
+       OrElse _
+       (pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) Then
+      ' last param is a param array or only param is an array
+      Dim extras = inParams.Length - (pCount - 1)
+      ' 1 or more params go in the param array
       ' copy extras into an array
-      Dim extraArray() As Object = GetExtrasArray(extras)
-      For pos = 0 To extras - 1
-        extraArray(pos) = inParams(infoParams.Length - 1 + pos)
-      Next
+      Dim extraArray() As Object = GetExtrasArray(extras, infoParams(pCount - 1).ParameterType)
+      Array.Copy(inParams, extraArray, extras)
+      'For pos = 0 To extras - 1
+      '  extraArray(pos) = inParams(pCount - 1 + pos)
+      'Next
 
       ' copy items into new array
-      Dim paramList(infoParams.Length - 1) As Object
-      For pos = 0 To infoParams.Length - 2
+      Dim paramList(pCount - 1) As Object
+      For pos = 0 To pCount - 2
         paramList(pos) = parameters(pos)
       Next
       paramList(paramList.Length - 1) = extraArray
@@ -161,16 +165,9 @@ Friend Module MethodCaller
 
   End Function
 
-  Private Function GetExtrasArray(ByVal count As Integer) As Object()
+  Private Function GetExtrasArray(ByVal count As Integer, ByVal arrayType As Type) As Object()
 
-    If count > 0 Then
-      Dim result(count - 1) As Object
-      Return result
-
-    Else
-      Dim result() As Object = {}
-      Return result
-    End If
+    Return DirectCast(System.Array.CreateInstance(arrayType.GetElementType, count), Object())
 
   End Function
 
@@ -195,7 +192,7 @@ Friend Module MethodCaller
     ' try to find a strongly typed match
 
     ' first see if there's a matching method
-    ' where all parameters match types
+    ' where all params match types
     result = FindMethod(objectType, method, GetParameterTypes(inParams))
 
     If result Is Nothing Then
@@ -308,8 +305,10 @@ Friend Module MethodCaller
       If info IsNot Nothing Then
         Dim infoParams = info.GetParameters
         Dim pCount = infoParams.Length
-        If pcount > 0 AndAlso infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0 Then
-          ' last param is a param array
+        If (pCount > 0 AndAlso infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0) _
+           OrElse _
+           (pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) Then
+          ' last param is a param array or only param is an array
           If parameterCount >= pCount - 1 Then
             ' got a match so use it
             result = info

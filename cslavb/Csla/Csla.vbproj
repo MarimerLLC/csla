@@ -276,7 +276,6 @@
     <Compile Include="Wpf\DataDecoratorBase.vb" />
     <Compile Include="Wpf\IdentityConverter.vb" />
     <Compile Include="Wpf\ObjectStatus.vb" />
-    <Compile Include="Wpf\Validator.vb" />
     <Compile Include="Wpf\VisibilityMode.vb" />
   </ItemGroup>
   <ItemGroup>

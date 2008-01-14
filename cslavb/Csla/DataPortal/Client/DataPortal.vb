@@ -97,37 +97,43 @@ Public Module DataPortal
     ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
-
-    Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
-
-    Dim proxy As DataPortalClient.IDataPortalProxy
-    proxy = GetDataPortalProxy(RunLocal(method))
-
-    OnDataPortalInitInvoke(Nothing)
-
-    Dim dpContext As New Server.DataPortalContext( _
-      GetPrincipal, proxy.IsServerRemote)
-
-    OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Create))
-
+    Dim dpContext As Server.DataPortalContext = Nothing
     Try
-      result = proxy.Create(objectType, criteria, dpContext)
+      Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
 
-    Catch ex As Server.DataPortalException
-      result = ex.Result
+      Dim proxy As DataPortalClient.IDataPortalProxy
+      proxy = GetDataPortalProxy(RunLocal(method))
+
+      OnDataPortalInitInvoke(Nothing)
+
+      dpContext = New Server.DataPortalContext( _
+        GetPrincipal, proxy.IsServerRemote)
+
+      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Create))
+
+      Try
+        result = proxy.Create(objectType, criteria, dpContext)
+
+      Catch ex As Server.DataPortalException
+        result = ex.Result
+        If proxy.IsServerRemote Then
+          ApplicationContext.SetGlobalContext(result.GlobalContext)
+        End If
+        Throw New DataPortalException( _
+          String.Format("DataPortal.Create {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+          ex.InnerException, result.ReturnObject)
+      End Try
+
       If proxy.IsServerRemote Then
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
-      Throw New DataPortalException( _
-        String.Format("DataPortal.Create {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
-        ex.InnerException, result.ReturnObject)
+
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Create))
+
+    Catch ex As Exception
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Create, ex))
+      Throw
     End Try
-
-    If proxy.IsServerRemote Then
-      ApplicationContext.SetGlobalContext(result.GlobalContext)
-    End If
-
-    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Create))
 
     Return result.ReturnObject
 
@@ -180,37 +186,43 @@ Public Module DataPortal
     ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
-
-    Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
-    
-    Dim proxy As DataPortalClient.IDataPortalProxy
-    proxy = GetDataPortalProxy(RunLocal(method))
-
-    OnDataPortalInitInvoke(Nothing)
-
-    Dim dpContext As New Server.DataPortalContext( _
-      GetPrincipal, proxy.IsServerRemote)
-
-    OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch))
-
+    Dim dpContext As Server.DataPortalContext = Nothing
     Try
-      result = proxy.Fetch(objectType, criteria, dpContext)
+      Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
 
-    Catch ex As Server.DataPortalException
-      result = ex.Result
+      Dim proxy As DataPortalClient.IDataPortalProxy
+      proxy = GetDataPortalProxy(RunLocal(method))
+
+      OnDataPortalInitInvoke(Nothing)
+
+      dpContext = New Server.DataPortalContext( _
+        GetPrincipal, proxy.IsServerRemote)
+
+      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch))
+
+      Try
+        result = proxy.Fetch(objectType, criteria, dpContext)
+
+      Catch ex As Server.DataPortalException
+        result = ex.Result
+        If proxy.IsServerRemote Then
+          ApplicationContext.SetGlobalContext(result.GlobalContext)
+        End If
+        Throw New DataPortalException( _
+          String.Format("DataPortal.Fetch {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+          ex.InnerException, result.ReturnObject)
+      End Try
+
       If proxy.IsServerRemote Then
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
-      Throw New DataPortalException( _
-        String.Format("DataPortal.Fetch {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
-        ex.InnerException, result.ReturnObject)
+
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch))
+
+    Catch ex As Exception
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch, ex))
+      Throw
     End Try
-
-    If proxy.IsServerRemote Then
-      ApplicationContext.SetGlobalContext(result.GlobalContext)
-    End If
-
-    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch))
 
     Return result.ReturnObject
 
@@ -305,67 +317,73 @@ Public Module DataPortal
   Public Function Update(ByVal obj As Object) As Object
 
     Dim result As Server.DataPortalResult
+    Dim dpContext As Server.DataPortalContext = Nothing
     Dim operation = DataPortalOperations.Update
-
-    Dim method As MethodInfo
-    Dim methodName As String
-    If TypeOf obj Is CommandBase Then
-      methodName = "DataPortal_Execute"
-      operation = DataPortalOperations.Execute
-
-    ElseIf TypeOf obj Is Core.BusinessBase Then
-      Dim tmp As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
-      If tmp.IsDeleted Then
-        methodName = "DataPortal_DeleteSelf"
-      Else
-        If tmp.IsNew Then
-          methodName = "DataPortal_Insert"
-
-        Else
-          methodName = "DataPortal_Update"
-        End If
-      End If
-    Else
-      methodName = "DataPortal_Update"
-    End If
-
-    method = MethodCaller.GetMethod(obj.GetType, methodName)
-
-    Dim proxy As DataPortalClient.IDataPortalProxy
-    proxy = GetDataPortalProxy(RunLocal(method))
-
-    OnDataPortalInitInvoke(Nothing)
-
-    Dim dpContext As New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
-
-    OnDataPortalInvoke(New DataPortalEventArgs(dpContext, operation))
-
     Try
-      If Not proxy.IsServerRemote AndAlso ApplicationContext.AutoCloneOnUpdate Then
-        ' when using local data portal, automatically
-        ' clone original object before saving
-        Dim cloneable As ICloneable = TryCast(obj, ICloneable)
-        If cloneable IsNot Nothing Then
-          obj = cloneable.Clone
-        End If
-      End If
-      result = proxy.Update(obj, dpContext)
+      Dim method As MethodInfo
+      Dim methodName As String
+      If TypeOf obj Is CommandBase Then
+        methodName = "DataPortal_Execute"
+        operation = DataPortalOperations.Execute
 
-    Catch ex As Server.DataPortalException
-      result = ex.Result
+      ElseIf TypeOf obj Is Core.BusinessBase Then
+        Dim tmp As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
+        If tmp.IsDeleted Then
+          methodName = "DataPortal_DeleteSelf"
+        Else
+          If tmp.IsNew Then
+            methodName = "DataPortal_Insert"
+
+          Else
+            methodName = "DataPortal_Update"
+          End If
+        End If
+      Else
+        methodName = "DataPortal_Update"
+      End If
+
+      method = MethodCaller.GetMethod(obj.GetType, methodName)
+
+      Dim proxy As DataPortalClient.IDataPortalProxy
+      proxy = GetDataPortalProxy(RunLocal(method))
+
+      OnDataPortalInitInvoke(Nothing)
+
+      dpContext = New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
+
+      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, operation))
+
+      Try
+        If Not proxy.IsServerRemote AndAlso ApplicationContext.AutoCloneOnUpdate Then
+          ' when using local data portal, automatically
+          ' clone original object before saving
+          Dim cloneable As ICloneable = TryCast(obj, ICloneable)
+          If cloneable IsNot Nothing Then
+            obj = cloneable.Clone
+          End If
+        End If
+        result = proxy.Update(obj, dpContext)
+
+      Catch ex As Server.DataPortalException
+        result = ex.Result
+        If proxy.IsServerRemote Then
+          ApplicationContext.SetGlobalContext(result.GlobalContext)
+        End If
+        Throw New DataPortalException( _
+          String.Format("DataPortal.Update {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+          ex.InnerException, result.ReturnObject)
+      End Try
+
       If proxy.IsServerRemote Then
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
-      Throw New DataPortalException( _
-        String.Format("DataPortal.Update {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
-        ex.InnerException, result.ReturnObject)
+
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, operation))
+
+    Catch ex As Exception
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, operation, ex))
+      Throw
     End Try
-
-    If proxy.IsServerRemote Then
-      ApplicationContext.SetGlobalContext(result.GlobalContext)
-    End If
-
-    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, operation))
 
     Return result.ReturnObject
 
@@ -382,37 +400,43 @@ Public Module DataPortal
   Public Sub Delete(ByVal criteria As Object)
 
     Dim result As Server.DataPortalResult
-
-    Dim method As MethodInfo = _
-      MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
-
-    Dim proxy As DataPortalClient.IDataPortalProxy
-    proxy = GetDataPortalProxy(RunLocal(method))
-
-    OnDataPortalInitInvoke(Nothing)
-
-    Dim dpContext As New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
-
-    OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete))
-
+    Dim dpContext As Server.DataPortalContext = Nothing
     Try
-      result = proxy.Delete(criteria, dpContext)
+      Dim method As MethodInfo = _
+        MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
 
-    Catch ex As Server.DataPortalException
-      result = ex.Result
+      Dim proxy As DataPortalClient.IDataPortalProxy
+      proxy = GetDataPortalProxy(RunLocal(method))
+
+      OnDataPortalInitInvoke(Nothing)
+
+      dpContext = New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
+
+      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete))
+
+      Try
+        result = proxy.Delete(criteria, dpContext)
+
+      Catch ex As Server.DataPortalException
+        result = ex.Result
+        If proxy.IsServerRemote Then
+          ApplicationContext.SetGlobalContext(result.GlobalContext)
+        End If
+        Throw New DataPortalException( _
+          String.Format("DataPortal.Delete {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+          ex.InnerException, result.ReturnObject)
+      End Try
+
       If proxy.IsServerRemote Then
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
-      Throw New DataPortalException( _
-        String.Format("DataPortal.Delete {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
-        ex.InnerException, result.ReturnObject)
+
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete))
+
+    Catch ex As Exception
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete, ex))
+      Throw
     End Try
-
-    If proxy.IsServerRemote Then
-      ApplicationContext.SetGlobalContext(result.GlobalContext)
-    End If
-
-    OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete))
 
   End Sub
 

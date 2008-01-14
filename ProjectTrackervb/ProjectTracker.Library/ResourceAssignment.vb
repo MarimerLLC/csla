@@ -83,28 +83,19 @@ Public Class ResourceAssignment
   Friend Shared Function NewResourceAssignment( _
     ByVal projectId As Guid) As ResourceAssignment
 
-    Return New ResourceAssignment(Project.GetProject(projectId), RoleList.DefaultRole)
+    Return DataPortal.CreateChild(Of ResourceAssignment)(Project.GetProject(projectId), RoleList.DefaultRole)
 
   End Function
 
   Friend Shared Function GetResourceAssignment( _
-    ByVal dr As SafeDataReader) As ResourceAssignment
+    ByVal data As ProjectTracker.DalLinq.Assignment) As ResourceAssignment
 
-    Return New ResourceAssignment(dr)
+    Return DataPortal.FetchChild(Of ResourceAssignment)(data)
 
   End Function
 
   Private Sub New()
-
-    MarkAsChild()
-
-  End Sub
-
-  Private Sub New(ByVal dr As SafeDataReader)
-
-    MarkAsChild()
-    Fetch(dr)
-
+    ' require use of factory methods
   End Sub
 
   Private Sub New(ByVal project As Project, ByVal role As Integer)
@@ -121,59 +112,42 @@ Public Class ResourceAssignment
 
 #Region " Data Access "
 
-  Private Sub Fetch(ByVal dr As SafeDataReader)
+  Private Sub Child_Create(ByVal project As Project, ByVal role As Integer)
 
-    With dr
-      mProjectId = .GetGuid("ProjectId")
-      mProjectName = .GetString("Name")
-      mAssigned = .GetSmartDate("Assigned")
-      mRole = .GetInt32("Role")
-      .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
-    End With
-    MarkOld()
+    mProjectId = project.Id
+    mProjectName = project.Name
+    mAssigned.Date = Assignment.GetDefaultAssignedDate
+    mRole = role
 
   End Sub
 
-  Friend Sub Insert(ByVal resource As Resource)
+  Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.Assignment)
 
-    Dim cn As SqlClient.SqlConnection = _
-      CType(ApplicationContext.LocalContext("cn"), SqlClient.SqlConnection)
+    mProjectId = data.ProjectId
+    mProjectName = data.Project.Name
+    mAssigned = data.Assigned
+    mRole = data.Role
+    mTimestamp = data.LastChanged.ToArray
 
-    ' if we're not dirty then don't update the database
-    If Not Me.IsDirty Then Exit Sub
+  End Sub
+
+  Private Sub Child_Insert(ByVal resource As Resource)
 
     mTimestamp = Assignment.AddAssignment( _
       mProjectId, resource.Id, mAssigned, mRole)
-    MarkOld()
 
   End Sub
 
-  Friend Sub Update(ByVal resource As Resource)
-
-    Dim cn As SqlClient.SqlConnection = _
-      CType(ApplicationContext.LocalContext("cn"), SqlClient.SqlConnection)
-
-    ' if we're not dirty then don't update the database
-    If Not Me.IsDirty Then Exit Sub
+  Private Sub Child_Update(ByVal resource As Resource)
 
     mTimestamp = Assignment.UpdateAssignment( _
       mProjectId, resource.Id, mAssigned, mRole, mTimestamp)
-    MarkOld()
 
   End Sub
 
-  Friend Sub DeleteSelf(ByVal resource As Resource)
-
-    Dim cn As SqlClient.SqlConnection = _
-      CType(ApplicationContext.LocalContext("cn"), SqlClient.SqlConnection)
-    ' if we're not dirty then don't update the database
-    If Not Me.IsDirty Then Exit Sub
-
-    ' if we're new then don't update the database
-    If Me.IsNew Then Exit Sub
+  Private Sub Child_DeleteSelf(ByVal resource As Resource)
 
     Assignment.RemoveAssignment(mProjectId, resource.Id)
-    MarkNew()
 
   End Sub
 

@@ -181,29 +181,14 @@ Public Class Resource
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      Using cm As SqlCommand = cn.CreateCommand
-        With cm
-          .CommandType = CommandType.StoredProcedure
-          .CommandText = "getResource"
-          .Parameters.AddWithValue("@id", criteria.Value)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Dim data = (From r In ctx.DataContext.Resources Where r.Id = criteria.Value Select r).Single
+      mId = data.Id
+      mLastName = data.LastName
+      mFirstName = data.FirstName
+      mTimestamp = data.LastChanged.ToArray
 
-          Using dr As New SafeDataReader(.ExecuteReader)
-            dr.Read()
-            With dr
-              mId = .GetInt32("Id")
-              mLastName = .GetString("LastName")
-              mFirstName = .GetString("FirstName")
-              .GetBytes("LastChanged", 0, mTimestamp, 0, 8)
-            End With
-
-            ' load child objects
-            dr.NextResult()
-            SetProperty(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(dr))
-          End Using
-        End With
-      End Using
+      SetProperty(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(data.Assignments.ToArray))
     End Using
 
   End Sub
@@ -211,34 +196,13 @@ Public Class Resource
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Insert()
 
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      ApplicationContext.LocalContext("cn") = cn
-      Using cm As SqlCommand = cn.CreateCommand
-        With cm
-          .CommandType = CommandType.StoredProcedure
-          .CommandText = "addResource"
-          .Parameters.AddWithValue("@lastName", mLastName)
-          .Parameters.AddWithValue("@firstName", mFirstName)
-          Dim param As New SqlParameter("@newId", SqlDbType.Int)
-          param.Direction = ParameterDirection.Output
-          .Parameters.Add(param)
-          param = New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
-          param.Direction = ParameterDirection.Output
-          .Parameters.Add(param)
-
-          .ExecuteNonQuery()
-
-          mId = CInt(.Parameters("@newId").Value)
-          mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
-        End With
-      End Using
-      ' update child objects
-      GetProperty(Of ResourceAssignments)(AssignmentsProperty).Update(Me)
-      ' removing of item only needed for local data portal
-      If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
-        ApplicationContext.LocalContext.Remove("cn")
-      End If
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Dim newId As Integer?
+      Dim newLastChanged As System.Data.Linq.Binary = Nothing
+      ctx.DataContext.addResource(mLastName, mFirstName, newId, newLastChanged)
+      mId = CInt(newId)
+      mTimestamp = newLastChanged.ToArray
+      FieldManager.UpdateChildren(Me)
     End Using
 
   End Sub
@@ -246,36 +210,11 @@ Public Class Resource
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Update()
 
-    Using cn As New SqlConnection(Database.PTrackerConnection)
-      cn.Open()
-      ApplicationContext.LocalContext("cn") = cn
-      If MyBase.IsDirty Then
-        Using cm As SqlCommand = cn.CreateCommand
-          With cm
-            .CommandType = CommandType.StoredProcedure
-            .CommandText = "updateResource"
-            With cm
-              .Parameters.AddWithValue("@id", mId)
-              .Parameters.AddWithValue("@lastName", mLastName)
-              .Parameters.AddWithValue("@firstName", mFirstName)
-              .Parameters.AddWithValue("@lastChanged", mTimestamp)
-              Dim param As New SqlParameter("@newLastChanged", SqlDbType.Timestamp)
-              param.Direction = ParameterDirection.Output
-              .Parameters.Add(param)
-
-              .ExecuteNonQuery()
-
-              mTimestamp = CType(.Parameters("@newLastChanged").Value, Byte())
-            End With
-          End With
-        End Using
-      End If
-      ' update child objects
-      GetProperty(Of ResourceAssignments)(AssignmentsProperty).Update(Me)
-      ' removing of item only needed for local data portal
-      If ApplicationContext.ExecutionLocation = ExecutionLocations.Client Then
-        ApplicationContext.LocalContext.Remove("cn")
-      End If
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Dim newLastChanged As System.Data.Linq.Binary = Nothing
+      ctx.DataContext.UpdateResource(mId, mLastName, mFirstName, mTimestamp, newLastChanged)
+      mTimestamp = newLastChanged.ToArray
+      FieldManager.UpdateChildren(Me)
     End Using
 
   End Sub

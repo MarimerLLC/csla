@@ -71,57 +71,25 @@ Public Class ResourceAssignments
   End Function
 
   Friend Shared Function GetResourceAssignments( _
-          ByVal dr As SafeDataReader) As ResourceAssignments
+          ByVal data() As ProjectTracker.DalLinq.Assignment) As ResourceAssignments
 
-    Return New ResourceAssignments(dr)
+    Return DataPortal.FetchChild(Of ResourceAssignments)(data)
 
   End Function
 
   Private Sub New()
-
-    MarkAsChild()
-
-  End Sub
-
-  Private Sub New(ByVal dr As SafeDataReader)
-
-    MarkAsChild()
-    Fetch(dr)
-
+    ' require use of factory methods
   End Sub
 
 #End Region
 
 #Region " Data Access "
 
-  Private Sub Fetch(ByVal dr As SafeDataReader)
+  Private Sub Child_Fetch(ByVal data() As ProjectTracker.DalLinq.Assignment)
 
     Me.RaiseListChangedEvents = False
-    While dr.Read()
-      Me.Add(ResourceAssignment.GetResourceAssignment(dr))
-    End While
-    Me.RaiseListChangedEvents = True
-
-  End Sub
-
-  Friend Sub Update(ByVal resource As Resource)
-
-    Me.RaiseListChangedEvents = False
-    ' update (thus deleting) any deleted child objects
-    For Each item As ResourceAssignment In DeletedList
-      item.DeleteSelf(resource)
-    Next
-    ' now that they are deleted, remove them from memory too
-    DeletedList.Clear()
-
-    ' add/update any current child objects
-    For Each item As ResourceAssignment In Me
-      If item.IsNew Then
-        item.Insert(resource)
-
-      Else
-        item.Update(resource)
-      End If
+    For Each child In data
+      Add(ResourceAssignment.GetResourceAssignment(child))
     Next
     Me.RaiseListChangedEvents = True
 

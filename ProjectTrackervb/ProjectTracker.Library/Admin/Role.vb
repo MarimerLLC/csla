@@ -122,9 +122,9 @@ Namespace Admin
 
     Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.getRolesResult)
 
-      SetProperty(Of Integer)(IdProperty, data.Id)
+      LoadProperty(Of Integer)(IdProperty, data.Id)
       mIdSet = True
-      SetProperty(Of String)(NameProperty, data.Name)
+      LoadProperty(Of String)(NameProperty, data.Name)
       mTimestamp = data.LastChanged.ToArray
 
     End Sub

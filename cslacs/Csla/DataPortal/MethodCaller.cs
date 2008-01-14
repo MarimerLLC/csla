@@ -8,17 +8,9 @@ namespace Csla
 {
   internal static class MethodCaller
   {
-    private const BindingFlags allLevelFlags =
-      BindingFlags.FlattenHierarchy |
-      BindingFlags.Instance |
-      BindingFlags.Public |
-      BindingFlags.NonPublic;
+    private const BindingFlags allLevelFlags = BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-    private const BindingFlags oneLevelFlags =
-      BindingFlags.DeclaredOnly |
-      BindingFlags.Instance |
-      BindingFlags.Public |
-      BindingFlags.NonPublic;
+    private const BindingFlags oneLevelFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     /// <summary>
     /// Gets a reference to the DataPortal_Create method for
@@ -97,6 +89,7 @@ namespace Csla
       MethodInfo info = GetMethod(obj.GetType(), method, parameters);
       if (info == null)
         throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
+
       return CallMethod(obj, info, parameters);
     }
 
@@ -114,22 +107,25 @@ namespace Csla
         inParams = new object[] { null };
       else
         inParams = parameters;
-
-      if (infoParams.Length > 0 && infoParams[infoParams.Length - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)
+      var pCount = infoParams.Length;
+      if ((pCount > 0 && infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0) || (pCount == 1 && infoParams[0].ParameterType.IsArray))
       {
-        // last param is a param array
-        var extras = inParams.Length - (infoParams.Length - 1);
+        // last param is a param array or only param is an array
+        var extras = inParams.Length - (pCount - 1);
         // 1 or more params go in the param array
         // copy extras into an array
-        object[] extraArray = GetExtrasArray(extras);
-        for (var pos = 0; pos < extras; pos++)
-          extraArray[pos] = inParams[infoParams.Length - 1 + pos];
+        object[] extraArray = GetExtrasArray(extras, infoParams[pCount - 1].ParameterType);
+        Array.Copy(inParams, extraArray, extras);
+        //For pos = 0 To extras - 1
+        //  extraArray(pos) = inParams(pCount - 1 + pos)
+        //Next
 
         // copy items into new array
-        object[] paramList = new object[infoParams.Length];
-        for (var pos = 0; pos <= infoParams.Length - 2; pos++)
+        object[] paramList = new object[pCount];
+        for (var pos = 0; pos <= pCount - 2; pos++)
+        {
           paramList[pos] = parameters[pos];
-
+        }
         paramList[paramList.Length - 1] = extraArray;
 
         // use new array
@@ -151,18 +147,9 @@ namespace Csla
       return result;
     }
 
-    private static object[] GetExtrasArray(int count)
+    private static object[] GetExtrasArray(int count, Type arrayType)
     {
-      if (count > 0)
-      {
-        object[] result = new object[count];
-        return result;
-      }
-      else
-      {
-        object[] result = null;
-        return result;
-      }
+      return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
     }
 
     /// <summary>
@@ -211,10 +198,11 @@ namespace Csla
             }
           }
           if (result == null)
+          {
             throw;
+          }
         }
       }
-
       return result;
     }
 
@@ -278,7 +266,6 @@ namespace Csla
         info = objType.GetMethod(method, oneLevelFlags, null, types, null);
         if (info != null)
           break; // match found
-
         objType = objType.BaseType;
       } while (objType != null);
 
@@ -304,9 +291,9 @@ namespace Csla
         {
           var infoParams = info.GetParameters();
           var pCount = infoParams.Length;
-          if (pCount > 0 && infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)
+          if ((pCount > 0 && infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0) || (pCount == 1 && infoParams[0].ParameterType.IsArray))
           {
-            // last param is a param array
+            // last param is a param array or only param is an array
             if (parameterCount >= pCount - 1)
             {
               // got a match so use it

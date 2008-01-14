@@ -40,7 +40,7 @@ namespace Csla.Test.DataMapper
     }
 
     [TestMethod]
-    public void BooleanTYpes()
+    public void BooleanTypes()
     {
       DataMapTarget target = new DataMapTarget();
 
@@ -135,6 +135,11 @@ namespace Csla.Test.DataMapper
 
       Csla.Data.DataMapper.SetPropertyValue(target, "MySmartDate", new DateTimeOffset(new DateTime(2004, 3, 2)));
       Assert.AreEqual(new Csla.SmartDate(new DateTime(2004, 3, 2)), target.MySmartDate, "SmartDate should be 3/2/2004");
+
+      target.MySmartDate = new Csla.SmartDate(DateTime.Today, Csla.SmartDate.EmptyValue.MaxDate);
+      Assert.IsFalse(target.MySmartDate.EmptyIsMin, "EmptyIsMin should be false before set");
+      Csla.Data.DataMapper.SetPropertyValue(target, "MySmartDate", DateTime.Parse("1/1/2007"));
+      Assert.IsFalse(target.MySmartDate.EmptyIsMin, "EmptyIsMin should be false after set");
     }
 
     [TestMethod]

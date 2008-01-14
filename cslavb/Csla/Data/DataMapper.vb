@@ -2,7 +2,6 @@ Imports System.Reflection
 Imports System.ComponentModel
 
 Namespace Data
-
   ''' <summary>
   ''' Map data from a source into a target object
   ''' by copying public property values.
@@ -10,7 +9,7 @@ Namespace Data
   ''' <remarks></remarks>
   Public Module DataMapper
 
-#Region " Map From IDictionary "
+#Region " Map from IDictionary "
 
     ''' <summary>
     ''' Copies values from the source into the
@@ -23,9 +22,7 @@ Namespace Data
     ''' object. Target properties may not be readonly or indexed.
     ''' </remarks>
     Public Sub Map(ByVal source As System.Collections.IDictionary, ByVal target As Object)
-
       Map(source, target, False)
-
     End Sub
 
     ''' <summary>
@@ -40,11 +37,8 @@ Namespace Data
     ''' The key names in the dictionary must match the property names on the target
     ''' object. Target properties may not be readonly or indexed.
     ''' </remarks>
-    Public Sub Map(ByVal source As System.Collections.IDictionary, ByVal target As Object, _
-      ByVal ParamArray ignoreList() As String)
-
+    Public Sub Map(ByVal source As System.Collections.IDictionary, ByVal target As Object, ByVal ParamArray ignoreList() As String)
       Map(source, target, False, ignoreList)
-
     End Sub
 
     ''' <summary>
@@ -60,33 +54,24 @@ Namespace Data
     ''' The key names in the dictionary must match the property names on the target
     ''' object. Target properties may not be readonly or indexed.
     ''' </remarks>
-    Public Sub Map( _
-      ByVal source As System.Collections.IDictionary, _
-      ByVal target As Object, _
-      ByVal suppressExceptions As Boolean, _
-      ByVal ParamArray ignoreList() As String)
-
-      Dim ignore As New List(Of String)(ignoreList)
+    Public Sub Map(ByVal source As System.Collections.IDictionary, ByVal target As Object, ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
+      Dim ignore As List(Of String) = New List(Of String)(ignoreList)
       For Each propertyName As String In source.Keys
-        If Not ignore.Contains(propertyName) Then
+        If (Not ignore.Contains(propertyName)) Then
           Try
-            SetPropertyValue(target, propertyName, source.Item(propertyName))
-
+            SetPropertyValue(target, propertyName, source(propertyName))
           Catch ex As Exception
-            If Not suppressExceptions Then
-              Throw New ArgumentException( _
-                String.Format("{0} ({1})", _
-                My.Resources.PropertyCopyFailed, propertyName), ex)
+            If (Not suppressExceptions) Then
+              Throw New ArgumentException(String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, propertyName), ex)
             End If
           End Try
         End If
-      Next
-
+      Next propertyName
     End Sub
 
 #End Region
 
-#Region "Map to Dictionary"
+#Region " Map to Dictionary "
 
     ''' <summary>
     ''' Copies values from the source into the target.
@@ -118,7 +103,8 @@ Namespace Data
     ''' <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
     Public Sub Map(ByVal source As Object, ByVal target As Dictionary(Of String, Object), ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
       Dim ignore As List(Of String) = New List(Of String)(ignoreList)
-      For Each prop As PropertyInfo In Reflection.TypeInfoCache.GetPropertyInfo(source.GetType())
+      Dim sourceProperties() As PropertyInfo = GetSourceProperties(source.GetType())
+      For Each prop As PropertyInfo In sourceProperties
         Dim propertyName As String = prop.Name
         If (Not ignore.Contains(propertyName)) Then
           Try
@@ -148,9 +134,7 @@ Namespace Data
     ''' Target properties may not be readonly or indexed.
     ''' </remarks>
     Public Sub Map(ByVal source As Object, ByVal target As Object)
-
       Map(source, target, False)
-
     End Sub
 
     ''' <summary>
@@ -166,11 +150,8 @@ Namespace Data
     ''' on the target object. Source properties may not be indexed. 
     ''' Target properties may not be readonly or indexed.
     ''' </remarks>
-    Public Sub Map(ByVal source As Object, ByVal target As Object, _
-      ByVal ParamArray ignoreList() As String)
-
+    Public Sub Map(ByVal source As Object, ByVal target As Object, ByVal ParamArray ignoreList() As String)
       Map(source, target, False, ignoreList)
-
     End Sub
 
     ''' <summary>
@@ -193,52 +174,79 @@ Namespace Data
     ''' to false are ignored.
     ''' </para>
     ''' </remarks>
-    Public Sub Map( _
-      ByVal source As Object, _
-      ByVal target As Object, _
-      ByVal suppressExceptions As Boolean, _
-      ByVal ParamArray ignoreList() As String)
-
-      Dim ignore As New List(Of String)(ignoreList)
-      Dim sourceProperties As PropertyInfo() = _
-        GetSourceProperties(source.GetType)
+    Public Sub Map(ByVal source As Object, ByVal target As Object, ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
+      Dim ignore As List(Of String) = New List(Of String)(ignoreList)
+      Dim sourceProperties() As PropertyInfo = GetSourceProperties(source.GetType())
       For Each sourceProperty As PropertyInfo In sourceProperties
         Dim propertyName As String = sourceProperty.Name
-        If Not ignore.Contains(propertyName) Then
+        If (Not ignore.Contains(propertyName)) Then
           Try
-            SetPropertyValue(target, propertyName, _
-              sourceProperty.GetValue(source, Nothing))
-
+            SetPropertyValue(target, propertyName, sourceProperty.GetValue(source, Nothing))
           Catch ex As Exception
-            If Not suppressExceptions Then
-              Throw New ArgumentException( _
-                String.Format("{0} ({1})", _
-                My.Resources.PropertyCopyFailed, propertyName), ex)
+            If (Not suppressExceptions) Then
+              Throw New ArgumentException(String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, propertyName), ex)
             End If
           End Try
         End If
-      Next
-
+      Next sourceProperty
     End Sub
 
-    Private Function GetSourceProperties( _
-      ByVal sourceType As Type) As PropertyInfo()
+    ''' <summary>
+    ''' Copies values from the source into the
+    ''' properties of the target.
+    ''' </summary>
+    ''' <param name="source">An object containing the source values.</param>
+    ''' <param name="target">An object with properties to be set from the dictionary.</param>
+    ''' <param name="map">A DataMap object containing the mappings to use during the copy process.</param>
+    ''' <remarks>
+    ''' The property names and types of the source object must match the property names and types
+    ''' on the target object. Source properties may not be indexed. 
+    ''' Target properties may not be readonly or indexed.
+    ''' </remarks>
+    Public Sub Map(ByVal source As Object, ByVal target As Object, ByVal map As DataMap)
+      DataMapper.Map(source, target, map, False)
+    End Sub
 
-      Dim result As New Generic.List(Of PropertyInfo)
-      Dim props As PropertyDescriptorCollection = _
-        TypeDescriptor.GetProperties(sourceType)
+    ''' <summary>
+    ''' Copies values from the source into the
+    ''' properties of the target.
+    ''' </summary>
+    ''' <param name="source">An object containing the source values.</param>
+    ''' <param name="target">An object with properties to be set from the dictionary.</param>
+    ''' <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
+    ''' <param name="map">A DataMap object containing the mappings to use during the copy process.</param>
+    ''' <remarks>
+    ''' The property names and types of the source object must match the property names and types
+    ''' on the target object. Source properties may not be indexed. 
+    ''' Target properties may not be readonly or indexed.
+    ''' </remarks>
+    Public Sub Map(ByVal source As Object, ByVal target As Object, ByVal map As DataMap, ByVal suppressExceptions As Boolean)
+      For Each mapping As DataMap.MemberMapping In map.GetMap()
+        Try
+          Dim value As Object = GetValue(mapping.FromMember, source)
+          SetValue(target, mapping.ToMember, value)
+        Catch ex As Exception
+          If (Not suppressExceptions) Then
+            Throw New ArgumentException(String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, mapping.FromMember.Name), ex)
+          End If
+        End Try
+      Next mapping
+    End Sub
+
+    Private Function GetSourceProperties(ByVal sourceType As Type) As PropertyInfo()
+      Dim result As List(Of PropertyInfo) = New List(Of PropertyInfo)()
+      Dim props As PropertyDescriptorCollection = TypeDescriptor.GetProperties(sourceType)
       For Each item As PropertyDescriptor In props
         If item.IsBrowsable Then
           result.Add(sourceType.GetProperty(item.Name))
         End If
-      Next
-      Return result.ToArray
-
+      Next item
+      Return result.ToArray()
     End Function
 
 #End Region
 
-#Region "GetValue"
+#Region " GetValue "
 
     Private Function GetValue(ByVal member As MemberInfo, ByVal source As Object) As Object
       If member.MemberType = MemberTypes.Property Then
@@ -250,7 +258,7 @@ Namespace Data
 
 #End Region
 
-#Region "SetValue"
+#Region " SetValue "
 
     ''' <summary>
     ''' Sets an object's property with the specified value,
@@ -285,14 +293,19 @@ Namespace Data
     ''' <param name="value">Value to set into the member.</param>
     Public Sub SetValue(ByVal target As Object, ByVal memberInfo As MemberInfo, ByVal value As Object)
       If value IsNot Nothing Then
+        Dim oldValue As Object
         Dim pType As Type
         If memberInfo.MemberType = MemberTypes.Property Then
-          pType = (CType(memberInfo, PropertyInfo)).PropertyType
+          Dim pInfo As PropertyInfo = CType(memberInfo, PropertyInfo)
+          pType = pInfo.PropertyType
+          oldValue = pInfo.GetValue(target, Nothing)
         Else
-          pType = (CType(memberInfo, FieldInfo)).FieldType
+          Dim fInfo As FieldInfo = CType(memberInfo, FieldInfo)
+          pType = fInfo.FieldType
+          oldValue = fInfo.GetValue(target)
         End If
         Dim vType As Type = Utilities.GetPropertyType(value.GetType())
-        value = CoerceValue(pType, vType, value)
+        value = Utilities.CoerceValue(pType, vType, oldValue, value)
       End If
       If memberInfo.MemberType = MemberTypes.Property Then
         CType(memberInfo, PropertyInfo).SetValue(target, value, Nothing)

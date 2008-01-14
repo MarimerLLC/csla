@@ -183,7 +183,6 @@
     </Compile>
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
-    <Compile Include="Reflection\TypeInfoCache.cs" />
     <Compile Include="Security\AccessType.cs" />
     <Compile Include="Security\AuthorizationRules.cs" />
     <Compile Include="Security\AuthorizationRulesManager.cs" />

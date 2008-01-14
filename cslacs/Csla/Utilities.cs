@@ -92,7 +92,10 @@ namespace Csla
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
         if (indexer != null)
-          foreach (PropertyInfo prop in Csla.Reflection.TypeInfoCache.GetPropertyInfo(listType))
+          foreach (PropertyInfo prop in listType.GetProperties(
+            BindingFlags.Public |
+            BindingFlags.Instance |
+            BindingFlags.FlattenHierarchy))
           {
             if (prop.Name == indexer.MemberName)
               result = Utilities.GetPropertyType(prop.PropertyType);
@@ -113,6 +116,10 @@ namespace Csla
     /// <param name="valueType">
     /// Original type of the value.
     /// </param>
+    /// <param name="oldValue">
+    /// The previous value (if any) being replaced by
+    /// the new coerced value.
+    /// </param>
     /// <param name="value">
     /// The value to coerce.
     /// </param>
@@ -131,7 +138,7 @@ namespace Csla
     /// result is parsed to convert into the enum value.
     /// </para>
     /// </remarks>
-    public static object CoerceValue(Type desiredType, Type valueType, object value)
+    public static object CoerceValue(Type desiredType, Type valueType, object oldValue, object value)
     {
       if (desiredType.Equals(valueType))
       {
@@ -142,50 +149,45 @@ namespace Csla
       {
         if (desiredType.IsGenericType)
         {
-          if (desiredType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+          if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
             if (value == null)
-            {
               return null;
-
-            }
             else if (valueType.Equals(typeof(string)) && System.Convert.ToString(value) == string.Empty)
-            {
               return null;
-            }
         }
         desiredType = Utilities.GetPropertyType(desiredType);
       }
 
       if (desiredType.IsEnum && valueType.Equals(typeof(string)))
-      {
         return System.Enum.Parse(desiredType, value.ToString());
-      }
 
-      if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) && valueType.Equals(typeof(string)) && string.IsNullOrEmpty(System.Convert.ToString(value)))
+      if (desiredType.Equals(typeof(SmartDate)) && oldValue != null)
       {
-        value = 0;
+        if (value == null)
+          value = string.Empty;
+        var tmp = (SmartDate)oldValue;
+        tmp.Text = value.ToString();
+        return tmp;
       }
 
-      var pType = Utilities.GetPropertyType(desiredType);
+      if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) && 
+          valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+        value = 0;
+
       try
       {
-        return Convert.ChangeType(value, pType);
-
+        return Convert.ChangeType(value, desiredType);
       }
       catch
       {
-        TypeConverter cnv = TypeDescriptor.GetConverter(pType);
+        TypeConverter cnv = TypeDescriptor.GetConverter(desiredType);
         if (cnv != null && cnv.CanConvertFrom(valueType))
-        {
           return cnv.ConvertFrom(value);
-
-        }
         else
-        {
           throw;
-        }
       }
     }
+
 
     /// <summary>
     /// Attempts to coerce a value of one type into
@@ -197,6 +199,10 @@ namespace Csla
     /// <param name="valueType">
     /// Original type of the value.
     /// </param>
+    /// <param name="oldValue">
+    /// The previous value (if any) being replaced by
+    /// the new coerced value.
+    /// </param>
     /// <param name="value">
     /// The value to coerce.
     /// </param>
@@ -215,9 +221,9 @@ namespace Csla
     /// result is parsed to convert into the enum value.
     /// </para>
     /// </remarks>
-    public static D CoerceValue<D>(Type valueType, object value)
+    public static D CoerceValue<D>(Type valueType, D oldValue, object value)
     {
-      return (D)(CoerceValue(typeof(D), valueType, value));
+      return (D)(CoerceValue(typeof(D), valueType, oldValue, value));
     }
 
     #endregion

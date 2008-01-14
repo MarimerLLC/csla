@@ -102,6 +102,7 @@ namespace Csla.Core
 
       Type currentType = this.GetType();
       HybridDictionary state = new HybridDictionary();
+      FieldInfo[] fields;
 
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
@@ -109,7 +110,10 @@ namespace Csla.Core
       do
       {
         // get the list of fields in this type
-        List<FieldInfo> fields = Csla.Reflection.TypeInfoCache.GetFieldInfo(currentType);
+        fields = currentType.GetFields(
+            BindingFlags.NonPublic |
+            BindingFlags.Instance |
+            BindingFlags.Public);
 
         foreach (FieldInfo field in fields)
         {
@@ -210,12 +214,15 @@ namespace Csla.Core
         }
 
         Type currentType = this.GetType();
+        FieldInfo[] fields;
 
         do
         {
           // get the list of fields in this type
-          List<FieldInfo> fields = Csla.Reflection.TypeInfoCache.GetFieldInfo(currentType);
-
+          fields = currentType.GetFields(
+              BindingFlags.NonPublic |
+              BindingFlags.Instance |
+              BindingFlags.Public);
           foreach (FieldInfo field in fields)
           {
             // make sure we process only our variables
@@ -300,12 +307,15 @@ namespace Csla.Core
       {
         _stateStack.Pop();
         Type currentType = this.GetType();
+        FieldInfo[] fields;
 
         do
         {
           // get the list of fields in this type
-          List<FieldInfo> fields = Csla.Reflection.TypeInfoCache.GetFieldInfo(currentType);
-
+          fields = currentType.GetFields(
+              BindingFlags.NonPublic |
+              BindingFlags.Instance |
+              BindingFlags.Public);
           foreach (FieldInfo field in fields)
           {
             // make sure we process only our variables

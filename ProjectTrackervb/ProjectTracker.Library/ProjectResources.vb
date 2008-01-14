@@ -79,8 +79,7 @@ Public Class ProjectResources
   Friend Shared Function GetProjectResources( _
     ByVal data As ProjectTracker.DalLinq.Assignment()) As ProjectResources
 
-    Return DataPortal.FetchChild(Of ProjectResources)( _
-      New SingleCriteria(Of ProjectResources, ProjectTracker.DalLinq.Assignment())(data))
+    Return DataPortal.FetchChild(Of ProjectResources)(data)
 
   End Function
 
@@ -92,10 +91,10 @@ Public Class ProjectResources
 
 #Region " Data Access "
 
-  Private Sub Child_Fetch(ByVal criteria As SingleCriteria(Of ProjectResources, ProjectTracker.DalLinq.Assignment()))
+  Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.Assignment())
 
     Me.RaiseListChangedEvents = False
-    For Each value In criteria.Value
+    For Each value In data
       Me.Add(ProjectResource.GetResource(value))
     Next
     Me.RaiseListChangedEvents = True

@@ -96,7 +96,7 @@ namespace Csla.Test.PropertyGetSet
       get
       {
         if (!FieldManager.FieldExists(L01Property))
-          SetProperty<ChildList>(L01Property, new ChildList(true));
+          LoadProperty<ChildList>(L01Property, new ChildList(true));
         return GetProperty<ChildList>(L01Property);
       }
     }
@@ -126,7 +126,7 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
-    #region " Data Access "
+    #region Data Access 
 
     protected override void DataPortal_Insert()
     {

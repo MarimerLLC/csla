@@ -244,57 +244,67 @@ namespace Csla
       _editLevel -= 1;
       if (_editLevel < 0) _editLevel = 0;
 
-      // Cancel edit on all current items
-      for (int index = Count - 1; index >= 0; index--)
+      bool oldRLCE = this.RaiseListChangedEvents;
+      this.RaiseListChangedEvents = false;
+      try
       {
-        child = this[index];
-        
-        //ACE: Important, make sure to remove the item prior to
-        //     it going through undo, otherwise, it will
-        //     incur a more expensive RemoveByReference operation
-        DeferredLoadIndexIfNotLoaded();
-        _indexSet.RemoveItem(child);
-
-        child.UndoChanges(_editLevel);
-        
-        //ACE: Now that we have undone the changes, we can add the item
-        //     back in the index.
-        _indexSet.InsertItem(child);
-          
-        // if item is below its point of addition, remove
-        if (child.EditLevelAdded > _editLevel)
+        // Cancel edit on all current items
+        for (int index = Count - 1; index >= 0; index--)
         {
-          bool oldAllowRemove = this.AllowRemove;
-          try
+          child = this[index];
+
+          //ACE: Important, make sure to remove the item prior to
+          //     it going through undo, otherwise, it will
+          //     incur a more expensive RemoveByReference operation
+          DeferredLoadIndexIfNotLoaded();
+          _indexSet.RemoveItem(child);
+
+          child.UndoChanges(_editLevel);
+
+          //ACE: Now that we have undone the changes, we can add the item
+          //     back in the index.
+          _indexSet.InsertItem(child);
+
+          // if item is below its point of addition, remove
+          if (child.EditLevelAdded > _editLevel)
           {
-            this.AllowRemove = true;
-            _completelyRemoveChild = true;
-            RemoveIndexItem(child);
-            RemoveAt(index);
+            bool oldAllowRemove = this.AllowRemove;
+            try
+            {
+              this.AllowRemove = true;
+              _completelyRemoveChild = true;
+              RemoveIndexItem(child);
+              RemoveAt(index);
+            }
+            finally
+            {
+              _completelyRemoveChild = false;
+              this.AllowRemove = oldAllowRemove;
+            }
           }
-          finally
+        }
+
+        // cancel edit on all deleted items
+        for (int index = DeletedList.Count - 1; index >= 0; index--)
+        {
+          child = DeletedList[index];
+          child.UndoChanges(_editLevel);
+          if (child.EditLevelAdded > _editLevel)
           {
-            _completelyRemoveChild = false;
-            this.AllowRemove = oldAllowRemove;
+            // if item is below its point of addition, remove
+            DeletedList.RemoveAt(index);
+          }
+          else
+          {
+            // if item is no longer deleted move back to main list
+            if (!child.IsDeleted) UnDeleteChild(child);
           }
         }
       }
-
-      // cancel edit on all deleted items
-      for (int index = DeletedList.Count - 1; index >= 0; index--)
+      finally
       {
-        child = DeletedList[index];
-        child.UndoChanges(_editLevel);
-        if (child.EditLevelAdded > _editLevel)
-        {
-          // if item is below its point of addition, remove
-          DeletedList.RemoveAt(index);
-        }
-        else
-        {
-          // if item is no longer deleted move back to main list
-          if (!child.IsDeleted) UnDeleteChild(child);
-        }
+        this.RaiseListChangedEvents = oldRLCE;
+        OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
       }
     }
 

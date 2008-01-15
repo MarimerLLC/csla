@@ -4,6 +4,10 @@ Imports System.Collections.Specialized
 
 Namespace Server
 
+  ''' <summary>
+  ''' Invoke data portal methods on child
+  ''' objects.
+  ''' </summary>
   Public Class ChildDataPortal
 
 #Region " Data Access "

@@ -485,6 +485,9 @@ Public Module DataPortal
   ''' <param name="child">
   ''' Business object to update.
   ''' </param>
+  ''' <param name="parameters">
+  ''' Parameters passed to child update method.
+  ''' </param>
   Public Sub UpdateChild(ByVal child As Object, ByVal ParamArray parameters() As Object)
 
     Dim portal As New Server.ChildDataPortal

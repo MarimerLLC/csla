@@ -248,7 +248,6 @@
     <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
     <Compile Include="Wpf\DataDecoratorBase.cs" />
     <Compile Include="Wpf\ObjectStatus.cs" />
-    <Compile Include="Wpf\Validator.cs" />
     <Compile Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Wpf\VisibilityMode.cs" />
   </ItemGroup>

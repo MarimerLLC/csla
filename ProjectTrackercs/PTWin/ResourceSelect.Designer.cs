@@ -47,7 +47,7 @@ namespace PTWin
       this.ResourceListListBox.Location = new System.Drawing.Point(12, 12);
       this.ResourceListListBox.Name = "ResourceListListBox";
       this.ResourceListListBox.Size = new System.Drawing.Size(416, 264);
-      this.ResourceListListBox.TabIndex = 4;
+      this.ResourceListListBox.TabIndex = 0;
       // 
       // ResourceListBindingSource
       // 
@@ -66,7 +66,7 @@ namespace PTWin
       this.TableLayoutPanel1.RowCount = 1;
       this.TableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.TableLayoutPanel1.Size = new System.Drawing.Size(146, 29);
-      this.TableLayoutPanel1.TabIndex = 3;
+      this.TableLayoutPanel1.TabIndex = 1;
       // 
       // OK_Button
       // 

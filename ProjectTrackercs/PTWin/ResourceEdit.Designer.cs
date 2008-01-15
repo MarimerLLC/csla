@@ -38,6 +38,10 @@ namespace PTWin
       this.OKButton = new System.Windows.Forms.Button();
       this.GroupBox1 = new System.Windows.Forms.GroupBox();
       this.AssignmentsDataGridView = new System.Windows.Forms.DataGridView();
+      this.projectIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.projectNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewLinkColumn();
+      this.assignedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.Role = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.RoleListBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.AssignmentsBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.ResourceBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -49,10 +53,6 @@ namespace PTWin
       this.ErrorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
       this.BindingSourceRefresh1 = new Csla.Windows.BindingSourceRefresh(this.components);
       this.ReadWriteAuthorization1 = new Csla.Windows.ReadWriteAuthorization(this.components);
-      this.projectIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.projectNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewLinkColumn();
-      this.assignedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.Role = new System.Windows.Forms.DataGridViewComboBoxColumn();
       FirstNameLabel = new System.Windows.Forms.Label();
       IdLabel = new System.Windows.Forms.Label();
       LastNameLabel = new System.Windows.Forms.Label();
@@ -71,7 +71,7 @@ namespace PTWin
       FirstNameLabel.Location = new System.Drawing.Point(13, 42);
       FirstNameLabel.Name = "FirstNameLabel";
       FirstNameLabel.Size = new System.Drawing.Size(60, 13);
-      FirstNameLabel.TabIndex = 35;
+      FirstNameLabel.TabIndex = 2;
       FirstNameLabel.Text = "First Name:";
       // 
       // IdLabel
@@ -81,7 +81,7 @@ namespace PTWin
       IdLabel.Location = new System.Drawing.Point(13, 13);
       IdLabel.Name = "IdLabel";
       IdLabel.Size = new System.Drawing.Size(19, 13);
-      IdLabel.TabIndex = 37;
+      IdLabel.TabIndex = 0;
       IdLabel.Text = "Id:";
       // 
       // LastNameLabel
@@ -91,7 +91,7 @@ namespace PTWin
       LastNameLabel.Location = new System.Drawing.Point(13, 68);
       LastNameLabel.Name = "LastNameLabel";
       LastNameLabel.Size = new System.Drawing.Size(61, 13);
-      LastNameLabel.TabIndex = 39;
+      LastNameLabel.TabIndex = 4;
       LastNameLabel.Text = "Last Name:";
       // 
       // CloseButton
@@ -102,7 +102,7 @@ namespace PTWin
       this.CloseButton.Location = new System.Drawing.Point(501, 100);
       this.CloseButton.Name = "CloseButton";
       this.CloseButton.Size = new System.Drawing.Size(75, 23);
-      this.CloseButton.TabIndex = 45;
+      this.CloseButton.TabIndex = 10;
       this.CloseButton.Text = "Close";
       this.CloseButton.UseVisualStyleBackColor = true;
       this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
@@ -115,7 +115,7 @@ namespace PTWin
       this.ApplyButton.Location = new System.Drawing.Point(501, 42);
       this.ApplyButton.Name = "ApplyButton";
       this.ApplyButton.Size = new System.Drawing.Size(75, 23);
-      this.ApplyButton.TabIndex = 44;
+      this.ApplyButton.TabIndex = 8;
       this.ApplyButton.Text = "Apply";
       this.ApplyButton.UseVisualStyleBackColor = true;
       this.ApplyButton.Click += new System.EventHandler(this.ApplyButton_Click);
@@ -128,7 +128,7 @@ namespace PTWin
       this.Cancel_Button.Location = new System.Drawing.Point(501, 71);
       this.Cancel_Button.Name = "Cancel_Button";
       this.Cancel_Button.Size = new System.Drawing.Size(75, 23);
-      this.Cancel_Button.TabIndex = 43;
+      this.Cancel_Button.TabIndex = 9;
       this.Cancel_Button.Text = "Cancel";
       this.Cancel_Button.UseVisualStyleBackColor = true;
       this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
@@ -140,7 +140,7 @@ namespace PTWin
       this.OKButton.Location = new System.Drawing.Point(501, 13);
       this.OKButton.Name = "OKButton";
       this.OKButton.Size = new System.Drawing.Size(75, 23);
-      this.OKButton.TabIndex = 42;
+      this.OKButton.TabIndex = 7;
       this.OKButton.Text = "OK";
       this.OKButton.UseVisualStyleBackColor = true;
       this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
@@ -157,7 +157,7 @@ namespace PTWin
       this.GroupBox1.Location = new System.Drawing.Point(16, 91);
       this.GroupBox1.Name = "GroupBox1";
       this.GroupBox1.Size = new System.Drawing.Size(449, 310);
-      this.GroupBox1.TabIndex = 41;
+      this.GroupBox1.TabIndex = 6;
       this.GroupBox1.TabStop = false;
       this.GroupBox1.Text = "Assigned projects";
       // 
@@ -183,87 +183,8 @@ namespace PTWin
       this.AssignmentsDataGridView.RowHeadersVisible = false;
       this.AssignmentsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
       this.AssignmentsDataGridView.Size = new System.Drawing.Size(356, 285);
-      this.AssignmentsDataGridView.TabIndex = 15;
+      this.AssignmentsDataGridView.TabIndex = 0;
       this.AssignmentsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.AssignmentsDataGridView_CellContentClick);
-      // 
-      // RoleListBindingSource
-      // 
-      this.RoleListBindingSource.DataSource = typeof(ProjectTracker.Library.RoleList);
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.RoleListBindingSource, false);
-      // 
-      // AssignmentsBindingSource
-      // 
-      this.AssignmentsBindingSource.DataMember = "Assignments";
-      this.AssignmentsBindingSource.DataSource = this.ResourceBindingSource;
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.AssignmentsBindingSource, false);
-      // 
-      // ResourceBindingSource
-      // 
-      this.ResourceBindingSource.DataSource = typeof(ProjectTracker.Library.Resource);
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.ResourceBindingSource, true);
-      // 
-      // UnassignButton
-      // 
-      this.UnassignButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.UnassignButton, false);
-      this.UnassignButton.Location = new System.Drawing.Point(368, 48);
-      this.UnassignButton.Name = "UnassignButton";
-      this.UnassignButton.Size = new System.Drawing.Size(75, 23);
-      this.UnassignButton.TabIndex = 14;
-      this.UnassignButton.Text = "Unassign";
-      this.UnassignButton.UseVisualStyleBackColor = true;
-      this.UnassignButton.Click += new System.EventHandler(this.UnassignButton_Click);
-      // 
-      // AssignButton
-      // 
-      this.AssignButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.AssignButton, false);
-      this.AssignButton.Location = new System.Drawing.Point(368, 19);
-      this.AssignButton.Name = "AssignButton";
-      this.AssignButton.Size = new System.Drawing.Size(75, 23);
-      this.AssignButton.TabIndex = 13;
-      this.AssignButton.Text = "Assign";
-      this.AssignButton.UseVisualStyleBackColor = true;
-      this.AssignButton.Click += new System.EventHandler(this.AssignButton_Click);
-      // 
-      // FirstNameTextBox
-      // 
-      this.FirstNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.FirstNameTextBox, true);
-      this.FirstNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ResourceBindingSource, "FirstName", true));
-      this.FirstNameTextBox.Location = new System.Drawing.Point(80, 39);
-      this.FirstNameTextBox.Name = "FirstNameTextBox";
-      this.FirstNameTextBox.Size = new System.Drawing.Size(385, 20);
-      this.FirstNameTextBox.TabIndex = 36;
-      // 
-      // IdLabel1
-      // 
-      this.IdLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.IdLabel1, true);
-      this.IdLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ResourceBindingSource, "Id", true));
-      this.IdLabel1.Location = new System.Drawing.Point(80, 13);
-      this.IdLabel1.Name = "IdLabel1";
-      this.IdLabel1.Size = new System.Drawing.Size(385, 23);
-      this.IdLabel1.TabIndex = 38;
-      // 
-      // LastNameTextBox
-      // 
-      this.LastNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.ReadWriteAuthorization1.SetApplyAuthorization(this.LastNameTextBox, true);
-      this.LastNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ResourceBindingSource, "LastName", true));
-      this.LastNameTextBox.Location = new System.Drawing.Point(80, 65);
-      this.LastNameTextBox.Name = "LastNameTextBox";
-      this.LastNameTextBox.Size = new System.Drawing.Size(385, 20);
-      this.LastNameTextBox.TabIndex = 40;
-      // 
-      // ErrorProvider1
-      // 
-      this.ErrorProvider1.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-      this.ErrorProvider1.ContainerControl = this;
-      this.ErrorProvider1.DataSource = this.ResourceBindingSource;
       // 
       // projectIdDataGridViewTextBoxColumn
       // 
@@ -301,6 +222,85 @@ namespace PTWin
       this.Role.Name = "Role";
       this.Role.ValueMember = "Key";
       this.Role.Width = 35;
+      // 
+      // RoleListBindingSource
+      // 
+      this.RoleListBindingSource.DataSource = typeof(ProjectTracker.Library.RoleList);
+      this.BindingSourceRefresh1.SetReadValuesOnChange(this.RoleListBindingSource, false);
+      // 
+      // AssignmentsBindingSource
+      // 
+      this.AssignmentsBindingSource.DataMember = "Assignments";
+      this.AssignmentsBindingSource.DataSource = this.ResourceBindingSource;
+      this.BindingSourceRefresh1.SetReadValuesOnChange(this.AssignmentsBindingSource, false);
+      // 
+      // ResourceBindingSource
+      // 
+      this.ResourceBindingSource.DataSource = typeof(ProjectTracker.Library.Resource);
+      this.BindingSourceRefresh1.SetReadValuesOnChange(this.ResourceBindingSource, true);
+      // 
+      // UnassignButton
+      // 
+      this.UnassignButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.UnassignButton, false);
+      this.UnassignButton.Location = new System.Drawing.Point(368, 48);
+      this.UnassignButton.Name = "UnassignButton";
+      this.UnassignButton.Size = new System.Drawing.Size(75, 23);
+      this.UnassignButton.TabIndex = 2;
+      this.UnassignButton.Text = "Unassign";
+      this.UnassignButton.UseVisualStyleBackColor = true;
+      this.UnassignButton.Click += new System.EventHandler(this.UnassignButton_Click);
+      // 
+      // AssignButton
+      // 
+      this.AssignButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.AssignButton, false);
+      this.AssignButton.Location = new System.Drawing.Point(368, 19);
+      this.AssignButton.Name = "AssignButton";
+      this.AssignButton.Size = new System.Drawing.Size(75, 23);
+      this.AssignButton.TabIndex = 1;
+      this.AssignButton.Text = "Assign";
+      this.AssignButton.UseVisualStyleBackColor = true;
+      this.AssignButton.Click += new System.EventHandler(this.AssignButton_Click);
+      // 
+      // FirstNameTextBox
+      // 
+      this.FirstNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.FirstNameTextBox, true);
+      this.FirstNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ResourceBindingSource, "FirstName", true));
+      this.FirstNameTextBox.Location = new System.Drawing.Point(80, 39);
+      this.FirstNameTextBox.Name = "FirstNameTextBox";
+      this.FirstNameTextBox.Size = new System.Drawing.Size(385, 20);
+      this.FirstNameTextBox.TabIndex = 3;
+      // 
+      // IdLabel1
+      // 
+      this.IdLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.IdLabel1, true);
+      this.IdLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ResourceBindingSource, "Id", true));
+      this.IdLabel1.Location = new System.Drawing.Point(80, 13);
+      this.IdLabel1.Name = "IdLabel1";
+      this.IdLabel1.Size = new System.Drawing.Size(385, 23);
+      this.IdLabel1.TabIndex = 1;
+      // 
+      // LastNameTextBox
+      // 
+      this.LastNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.ReadWriteAuthorization1.SetApplyAuthorization(this.LastNameTextBox, true);
+      this.LastNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.ResourceBindingSource, "LastName", true));
+      this.LastNameTextBox.Location = new System.Drawing.Point(80, 65);
+      this.LastNameTextBox.Name = "LastNameTextBox";
+      this.LastNameTextBox.Size = new System.Drawing.Size(385, 20);
+      this.LastNameTextBox.TabIndex = 5;
+      // 
+      // ErrorProvider1
+      // 
+      this.ErrorProvider1.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.ErrorProvider1.ContainerControl = this;
+      this.ErrorProvider1.DataSource = this.ResourceBindingSource;
       // 
       // ResourceEdit
       // 

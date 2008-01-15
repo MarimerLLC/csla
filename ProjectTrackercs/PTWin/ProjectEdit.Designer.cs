@@ -77,7 +77,7 @@ namespace PTWin
       DescriptionLabel.Location = new System.Drawing.Point(12, 120);
       DescriptionLabel.Name = "DescriptionLabel";
       DescriptionLabel.Size = new System.Drawing.Size(63, 13);
-      DescriptionLabel.TabIndex = 31;
+      DescriptionLabel.TabIndex = 8;
       DescriptionLabel.Text = "Description:";
       // 
       // EndedLabel
@@ -87,7 +87,7 @@ namespace PTWin
       EndedLabel.Location = new System.Drawing.Point(12, 94);
       EndedLabel.Name = "EndedLabel";
       EndedLabel.Size = new System.Drawing.Size(41, 13);
-      EndedLabel.TabIndex = 33;
+      EndedLabel.TabIndex = 6;
       EndedLabel.Text = "Ended:";
       // 
       // IdLabel
@@ -97,7 +97,7 @@ namespace PTWin
       IdLabel.Location = new System.Drawing.Point(12, 13);
       IdLabel.Name = "IdLabel";
       IdLabel.Size = new System.Drawing.Size(19, 13);
-      IdLabel.TabIndex = 35;
+      IdLabel.TabIndex = 0;
       IdLabel.Text = "Id:";
       // 
       // NameLabel
@@ -107,7 +107,7 @@ namespace PTWin
       NameLabel.Location = new System.Drawing.Point(12, 42);
       NameLabel.Name = "NameLabel";
       NameLabel.Size = new System.Drawing.Size(38, 13);
-      NameLabel.TabIndex = 37;
+      NameLabel.TabIndex = 2;
       NameLabel.Text = "Name:";
       // 
       // StartedLabel
@@ -117,7 +117,7 @@ namespace PTWin
       StartedLabel.Location = new System.Drawing.Point(12, 68);
       StartedLabel.Name = "StartedLabel";
       StartedLabel.Size = new System.Drawing.Size(44, 13);
-      StartedLabel.TabIndex = 39;
+      StartedLabel.TabIndex = 4;
       StartedLabel.Text = "Started:";
       // 
       // CloseButton
@@ -128,7 +128,7 @@ namespace PTWin
       this.CloseButton.Location = new System.Drawing.Point(578, 100);
       this.CloseButton.Name = "CloseButton";
       this.CloseButton.Size = new System.Drawing.Size(75, 23);
-      this.CloseButton.TabIndex = 45;
+      this.CloseButton.TabIndex = 14;
       this.CloseButton.Text = "Close";
       this.CloseButton.UseVisualStyleBackColor = true;
       this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
@@ -141,7 +141,7 @@ namespace PTWin
       this.ApplyButton.Location = new System.Drawing.Point(578, 42);
       this.ApplyButton.Name = "ApplyButton";
       this.ApplyButton.Size = new System.Drawing.Size(75, 23);
-      this.ApplyButton.TabIndex = 44;
+      this.ApplyButton.TabIndex = 12;
       this.ApplyButton.Text = "Apply";
       this.ApplyButton.UseVisualStyleBackColor = true;
       this.ApplyButton.Click += new System.EventHandler(this.ApplyButton_Click);
@@ -154,7 +154,7 @@ namespace PTWin
       this.Cancel_Button.Location = new System.Drawing.Point(578, 71);
       this.Cancel_Button.Name = "Cancel_Button";
       this.Cancel_Button.Size = new System.Drawing.Size(75, 23);
-      this.Cancel_Button.TabIndex = 43;
+      this.Cancel_Button.TabIndex = 13;
       this.Cancel_Button.Text = "Cancel";
       this.Cancel_Button.UseVisualStyleBackColor = true;
       this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
@@ -166,7 +166,7 @@ namespace PTWin
       this.OKButton.Location = new System.Drawing.Point(578, 13);
       this.OKButton.Name = "OKButton";
       this.OKButton.Size = new System.Drawing.Size(75, 23);
-      this.OKButton.TabIndex = 42;
+      this.OKButton.TabIndex = 11;
       this.OKButton.Text = "OK";
       this.OKButton.UseVisualStyleBackColor = true;
       this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
@@ -183,7 +183,7 @@ namespace PTWin
       this.GroupBox1.Location = new System.Drawing.Point(81, 231);
       this.GroupBox1.Name = "GroupBox1";
       this.GroupBox1.Size = new System.Drawing.Size(460, 210);
-      this.GroupBox1.TabIndex = 41;
+      this.GroupBox1.TabIndex = 10;
       this.GroupBox1.TabStop = false;
       this.GroupBox1.Text = "Resources";
       // 
@@ -194,7 +194,7 @@ namespace PTWin
       this.UnassignButton.Location = new System.Drawing.Point(379, 48);
       this.UnassignButton.Name = "UnassignButton";
       this.UnassignButton.Size = new System.Drawing.Size(75, 23);
-      this.UnassignButton.TabIndex = 12;
+      this.UnassignButton.TabIndex = 2;
       this.UnassignButton.Text = "Unassign";
       this.UnassignButton.UseVisualStyleBackColor = true;
       this.UnassignButton.Click += new System.EventHandler(this.UnassignButton_Click);
@@ -206,7 +206,7 @@ namespace PTWin
       this.AssignButton.Location = new System.Drawing.Point(379, 19);
       this.AssignButton.Name = "AssignButton";
       this.AssignButton.Size = new System.Drawing.Size(75, 23);
-      this.AssignButton.TabIndex = 11;
+      this.AssignButton.TabIndex = 1;
       this.AssignButton.Text = "Assign";
       this.AssignButton.UseVisualStyleBackColor = true;
       this.AssignButton.Click += new System.EventHandler(this.AssignButton_Click);
@@ -233,7 +233,7 @@ namespace PTWin
       this.ResourcesDataGridView.RowHeadersVisible = false;
       this.ResourcesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
       this.ResourcesDataGridView.Size = new System.Drawing.Size(367, 185);
-      this.ResourcesDataGridView.TabIndex = 10;
+      this.ResourcesDataGridView.TabIndex = 0;
       this.ResourcesDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ResourcesDataGridView_CellContentClick);
       // 
       // ResourceId
@@ -299,7 +299,7 @@ namespace PTWin
       this.DescriptionTextBox.Multiline = true;
       this.DescriptionTextBox.Name = "DescriptionTextBox";
       this.DescriptionTextBox.Size = new System.Drawing.Size(460, 108);
-      this.DescriptionTextBox.TabIndex = 32;
+      this.DescriptionTextBox.TabIndex = 9;
       // 
       // EndedTextBox
       // 
@@ -310,7 +310,7 @@ namespace PTWin
       this.EndedTextBox.Location = new System.Drawing.Point(81, 91);
       this.EndedTextBox.Name = "EndedTextBox";
       this.EndedTextBox.Size = new System.Drawing.Size(460, 20);
-      this.EndedTextBox.TabIndex = 34;
+      this.EndedTextBox.TabIndex = 7;
       // 
       // IdLabel1
       // 
@@ -321,7 +321,7 @@ namespace PTWin
       this.IdLabel1.Location = new System.Drawing.Point(81, 13);
       this.IdLabel1.Name = "IdLabel1";
       this.IdLabel1.Size = new System.Drawing.Size(460, 23);
-      this.IdLabel1.TabIndex = 36;
+      this.IdLabel1.TabIndex = 1;
       // 
       // NameTextBox
       // 
@@ -332,7 +332,7 @@ namespace PTWin
       this.NameTextBox.Location = new System.Drawing.Point(81, 39);
       this.NameTextBox.Name = "NameTextBox";
       this.NameTextBox.Size = new System.Drawing.Size(460, 20);
-      this.NameTextBox.TabIndex = 38;
+      this.NameTextBox.TabIndex = 3;
       // 
       // StartedTextBox
       // 
@@ -343,7 +343,7 @@ namespace PTWin
       this.StartedTextBox.Location = new System.Drawing.Point(81, 65);
       this.StartedTextBox.Name = "StartedTextBox";
       this.StartedTextBox.Size = new System.Drawing.Size(460, 20);
-      this.StartedTextBox.TabIndex = 40;
+      this.StartedTextBox.TabIndex = 5;
       // 
       // ErrorProvider1
       // 

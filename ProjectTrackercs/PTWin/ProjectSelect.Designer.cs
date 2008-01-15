@@ -46,7 +46,7 @@ namespace PTWin
       this.GetListButton.Location = new System.Drawing.Point(356, 9);
       this.GetListButton.Name = "GetListButton";
       this.GetListButton.Size = new System.Drawing.Size(75, 23);
-      this.GetListButton.TabIndex = 10;
+      this.GetListButton.TabIndex = 2;
       this.GetListButton.Text = "Get list";
       this.GetListButton.UseVisualStyleBackColor = true;
       this.GetListButton.Click += new System.EventHandler(this.GetListButton_Click);
@@ -58,7 +58,7 @@ namespace PTWin
       this.NameTextBox.Location = new System.Drawing.Point(83, 9);
       this.NameTextBox.Name = "NameTextBox";
       this.NameTextBox.Size = new System.Drawing.Size(267, 20);
-      this.NameTextBox.TabIndex = 9;
+      this.NameTextBox.TabIndex = 1;
       // 
       // NameLabel
       // 
@@ -66,7 +66,7 @@ namespace PTWin
       this.NameLabel.Location = new System.Drawing.Point(12, 12);
       this.NameLabel.Name = "NameLabel";
       this.NameLabel.Size = new System.Drawing.Size(38, 13);
-      this.NameLabel.TabIndex = 8;
+      this.NameLabel.TabIndex = 0;
       this.NameLabel.Text = "Name:";
       // 
       // ProjectListListBox
@@ -79,7 +79,7 @@ namespace PTWin
       this.ProjectListListBox.Location = new System.Drawing.Point(12, 41);
       this.ProjectListListBox.Name = "ProjectListListBox";
       this.ProjectListListBox.Size = new System.Drawing.Size(419, 238);
-      this.ProjectListListBox.TabIndex = 7;
+      this.ProjectListListBox.TabIndex = 3;
       this.ProjectListListBox.ValueMember = "Id";
       // 
       // projectListBindingSource
@@ -99,7 +99,7 @@ namespace PTWin
       this.TableLayoutPanel1.RowCount = 1;
       this.TableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.TableLayoutPanel1.Size = new System.Drawing.Size(146, 29);
-      this.TableLayoutPanel1.TabIndex = 6;
+      this.TableLayoutPanel1.TabIndex = 4;
       // 
       // OK_Button
       // 

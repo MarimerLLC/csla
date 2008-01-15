@@ -22,7 +22,8 @@ namespace Csla
   [Serializable()]
   public abstract class BusinessListBase<T, C> :
       Core.ExtendedBindingList<C>,
-      Core.IEditableCollection, Core.IUndoableObject, ICloneable, Core.ISavable, Core.IParent
+      Core.IEditableCollection, Core.IUndoableObject, ICloneable, 
+      Core.ISavable, Core.IParent
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -1093,6 +1094,26 @@ namespace Csla
         result.Add(item);
       return result.ToArray();
     }
+    #endregion
+
+    #region  ITrackStatus
+
+    bool Core.ITrackStatus.IsNew
+    {
+      get
+      {
+        return false;
+      }
+    }
+
+    bool Core.ITrackStatus.IsDeleted
+    {
+      get
+      {
+        return false;
+      }
+    }
+
     #endregion
   }
 

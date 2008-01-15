@@ -12,7 +12,7 @@ namespace Csla.Core
   /// </remarks>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
     "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
-  public interface IEditableCollection : IBusinessObject, ISupportUndo
+  public interface IEditableCollection : IBusinessObject, ISupportUndo, ITrackStatus
   {
     /// <summary>
     /// Removes the specified child from the parent
@@ -20,19 +20,6 @@ namespace Csla.Core
     /// </summary>
     /// <param name="child">Child object to be removed.</param>
     void RemoveChild(Core.IEditableBusinessObject child);
-    /// <summary>
-    /// Returns <see langword="true" /> if the collection or
-    /// any child object's data in the collection has been changed.
-    /// </summary>
-    /// <returns>A value indicating if this object's data has been changed.</returns>
-    bool IsDirty { get; }
-    /// <summary>
-    /// Returns <see langword="true" /> if all
-    /// child objects are currently valid, <see langword="false" /> if any
-    /// child object has broken rules or is otherwise invalid.
-    /// </summary>
-    /// <returns>A value indicating if the object is currently valid.</returns>
-    bool IsValid { get; }
     /// <summary>
     /// Returns <see langword="true" /> if this object is both dirty and valid.
     /// </summary>

@@ -80,7 +80,6 @@ Public Class PropertyInfo(Of T)
     End Get
   End Property
 
-  Private mType As Type
   ''' <summary>
   ''' Gets the type of the property.
   ''' </summary>

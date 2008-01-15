@@ -144,6 +144,7 @@ namespace Csla
       catch (Exception ex)
       {
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, DataPortalOperations.Create, ex));
+        throw;
       }
       return result.ReturnObject;
     }
@@ -239,6 +240,7 @@ namespace Csla
       catch (Exception ex)
       {
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, DataPortalOperations.Fetch, ex));
+        throw;
       }
       return result.ReturnObject;
     }
@@ -396,6 +398,7 @@ namespace Csla
       catch (Exception ex)
       {
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, operation, ex));
+        throw;
       }
       return result.ReturnObject;
     }
@@ -446,6 +449,7 @@ namespace Csla
       catch (Exception ex)
       {
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, DataPortalOperations.Delete, ex));
+        throw;
       }
     }
 

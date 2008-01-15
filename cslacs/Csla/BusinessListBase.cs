@@ -844,6 +844,47 @@ namespace Csla
 
     #endregion
 
+    #region  Child Data Access
+
+    /// <summary>
+    /// Initializes a new instance of the object
+    /// with default values.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void Child_Create()
+    { /* do nothing - list self-initializes */ }
+
+    /// <summary>
+    /// Saves all items in the list, automatically
+    /// performing insert, update or delete operations
+    /// as necessary.
+    /// </summary>
+    /// <param name="parameters">
+    /// Optional parameters passed to child update
+    /// methods.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void Child_Update(params object[] parameters)
+    {
+      var oldRLCE = this.RaiseListChangedEvents;
+      this.RaiseListChangedEvents = false;
+      try
+      {
+        foreach (var child in DeletedList)
+          DataPortal.UpdateChild(child, parameters);
+        DeletedList.Clear();
+
+        foreach (var child in this)
+          DataPortal.UpdateChild(child, parameters);
+      }
+      finally
+      {
+        this.RaiseListChangedEvents = oldRLCE;
+      }
+    }
+
+    #endregion
+
     #region Data Access
 
     /// <summary>

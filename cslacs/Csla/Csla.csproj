@@ -94,6 +94,7 @@
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
     <Compile Include="DataPortal\DataPortalOperations.cs" />
+    <Compile Include="DataPortal\Server\ChildDataPortal.cs" />
     <Compile Include="Data\ConnectionManager.cs" />
     <Compile Include="Data\ContextManager.cs" />
     <Compile Include="Linq\IIndex.cs" />

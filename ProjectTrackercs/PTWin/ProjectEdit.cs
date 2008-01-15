@@ -45,7 +45,10 @@ namespace PTWin
 
       // store object reference
       _project = project;
+    }
 
+    private void ProjectEdit_Load(object sender, EventArgs e)
+    {
       // set up binding
       this.roleListBindingSource.DataSource = RoleList.GetList();
 

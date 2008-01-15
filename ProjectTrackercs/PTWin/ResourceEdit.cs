@@ -25,7 +25,10 @@ namespace PTWin
 
       // store object reference
       _resource = resource;
+    }
 
+    private void ResourceEdit_Load(object sender, EventArgs e)
+    {
       this.CurrentPrincipalChanged += new EventHandler(ResourceEdit_CurrentPrincipalChanged);
       _resource.PropertyChanged += new PropertyChangedEventHandler(mResource_PropertyChanged);
 

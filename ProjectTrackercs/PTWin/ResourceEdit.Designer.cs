@@ -320,6 +320,7 @@ namespace PTWin
       this.Controls.Add(this.LastNameTextBox);
       this.Name = "ResourceEdit";
       this.Size = new System.Drawing.Size(588, 415);
+      this.Load += new System.EventHandler(this.ResourceEdit_Load);
       this.GroupBox1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.AssignmentsDataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.RoleListBindingSource)).EndInit();

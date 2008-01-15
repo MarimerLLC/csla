@@ -373,6 +373,7 @@ namespace PTWin
       this.Controls.Add(this.StartedTextBox);
       this.Name = "ProjectEdit";
       this.Size = new System.Drawing.Size(665, 454);
+      this.Load += new System.EventHandler(this.ProjectEdit_Load);
       this.CurrentPrincipalChanged += new System.EventHandler(this.ProjectEdit_CurrentPrincipalChanged);
       this.GroupBox1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.ResourcesDataGridView)).EndInit();

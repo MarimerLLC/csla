@@ -80,7 +80,6 @@ namespace Csla
       }
     }
 
-    private Type mType;
     /// <summary>
     /// Gets the type of the property.
     /// </summary>
@@ -144,7 +143,7 @@ namespace Csla
       }
     }
 
-    public Core.FieldManager.IFieldData NewFieldData(string name)
+    Core.FieldManager.IFieldData Core.IPropertyInfo.NewFieldData(string name)
     {
       return new Core.FieldManager.FieldData<T>(name);
     }

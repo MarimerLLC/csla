@@ -108,6 +108,18 @@ namespace Csla.Validation
       /// <summary>
       /// Create a new object.
       /// </summary>
+      /// <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      /// <param name="maxLength">Max length of characters allowed.</param>
+      public MaxLengthRuleArgs(Core.IPropertyInfo propertyInfo, int maxLength)
+        : base(propertyInfo)
+      {
+        this["MaxLength"] = maxLength;
+        this["Format"] = string.Empty;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -131,6 +143,20 @@ namespace Csla.Validation
       public MaxLengthRuleArgs(
         string propertyName, int maxLength, string format)
         : base(propertyName)
+      {
+        this["MaxLength"] = maxLength;
+        this["Format"] = format;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyInfo">PropertyInfo for the property to validate.</param>
+      /// <param name="maxLength">Max length of characters allowed.</param>
+      /// <param name="format">Format string for the max length
+      /// value in the broken rule string.</param>
+      public MaxLengthRuleArgs(Core.IPropertyInfo propertyInfo, int maxLength, string format)
+        : base(propertyInfo)
       {
         this["MaxLength"] = maxLength;
         this["Format"] = format;
@@ -225,6 +251,19 @@ namespace Csla.Validation
       /// <summary>
       /// Create a new object.
       /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="minLength">min length of characters allowed.</param>
+      public MinLengthRuleArgs(
+        Core.IPropertyInfo propertyInfo, int minLength)
+        : base(propertyInfo)
+      {
+        this["MinLength"] = minLength;
+        this["Format"] = string.Empty;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -248,6 +287,21 @@ namespace Csla.Validation
       public MinLengthRuleArgs(
         string propertyName, int minLength, string format)
         : base(propertyName)
+      {
+        this["MinLength"] = minLength;
+        this["Format"] = format;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="minLength">min length of characters allowed.</param>
+      /// <param name="format">Format string for the min length
+      /// value in the broken rule string.</param>
+      public MinLengthRuleArgs(
+        Core.IPropertyInfo propertyInfo, int minLength, string format)
+        : base(propertyInfo)
       {
         this["MinLength"] = minLength;
         this["Format"] = format;
@@ -333,6 +387,18 @@ namespace Csla.Validation
       /// <summary>
       /// Create a new object.
       /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="maxValue">Maximum allowed value for the property.</param>
+      public IntegerMaxValueRuleArgs(Core.IPropertyInfo propertyInfo, int maxValue)
+        : base(propertyInfo)
+      {
+        this["MaxValue"] = maxValue;
+        this["Format"] = string.Empty;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -355,6 +421,20 @@ namespace Csla.Validation
       /// value in the broken rule string.</param>
       public IntegerMaxValueRuleArgs(string propertyName, int maxValue, string format)
         : base(propertyName)
+      {
+        this["MaxValue"] = maxValue;
+        this["Format"] = format;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="maxValue">Maximum allowed value for the property.</param>
+      /// <param name="format">Format string for the max value
+      /// value in the broken rule string.</param>
+      public IntegerMaxValueRuleArgs(Core.IPropertyInfo propertyInfo, int maxValue, string format)
+        : base(propertyInfo)
       {
         this["MaxValue"] = maxValue;
         this["Format"] = format;
@@ -440,6 +520,18 @@ namespace Csla.Validation
       /// <summary>
       /// Create a new object.
       /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="minValue">Minimum allowed value for the property.</param>
+      public IntegerMinValueRuleArgs(Core.IPropertyInfo propertyInfo, int minValue)
+        : base(propertyInfo)
+      {
+        this["MinValue"] = minValue;
+        this["Format"] = string.Empty;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -462,6 +554,20 @@ namespace Csla.Validation
       /// value in the broken rule string.</param>
       public IntegerMinValueRuleArgs(string propertyName, int minValue, string format)
         : base(propertyName)
+      {
+        this["MinValue"] = minValue;
+        this["Format"] = format;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="minValue">Minimum allowed value for the property.</param>
+      /// <param name="format">Format string for the min value
+      /// value in the broken rule string.</param>
+      public IntegerMinValueRuleArgs(Core.IPropertyInfo propertyInfo, int minValue, string format)
+        : base(propertyInfo)
       {
         this["MinValue"] = minValue;
         this["Format"] = format;
@@ -554,6 +660,19 @@ namespace Csla.Validation
       /// <summary>
       /// Create a new object.
       /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="maxValue">Maximum allowed value for the property.</param>
+      public MaxValueRuleArgs(Core.IPropertyInfo propertyInfo, T maxValue)
+        : base(propertyInfo)
+      {
+        this["MaxValue"] = maxValue;
+        this["Format"] = string.Empty;
+        this["ValueType"] = typeof(T).FullName;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -577,6 +696,21 @@ namespace Csla.Validation
       /// value in the broken rule string.</param>
       public MaxValueRuleArgs(string propertyName, T maxValue, string format)
         : base(propertyName)
+      {
+        this["MaxValue"] = maxValue;
+        this["Format"] = format;
+        this["ValueType"] = typeof(T).FullName;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="maxValue">Maximum allowed value for the property.</param>
+      /// <param name="format">Format string for the max value
+      /// value in the broken rule string.</param>
+      public MaxValueRuleArgs(Core.IPropertyInfo propertyInfo, T maxValue, string format)
+        : base(propertyInfo)
       {
         this["MaxValue"] = maxValue;
         this["Format"] = format;
@@ -671,6 +805,19 @@ namespace Csla.Validation
       /// <summary>
       /// Create a new object.
       /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="minValue">Minimum allowed value for the property.</param>
+      public MinValueRuleArgs(Core.IPropertyInfo propertyInfo, T minValue)
+        : base(propertyInfo)
+      {
+        this["MinValue"] = minValue;
+        this["Format"] = string.Empty;
+        this["ValueType"] = typeof(T).FullName;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -694,6 +841,21 @@ namespace Csla.Validation
       /// value in the broken rule string.</param>
       public MinValueRuleArgs(string propertyName, T minValue, string format)
         : base(propertyName)
+      {
+        this["MinValue"] = minValue;
+        this["Format"] = format;
+        this["ValueType"] = typeof(T).FullName;
+      }
+
+      /// <summary>
+      /// Create a new object.
+      /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="minValue">Minimum allowed value for the property.</param>
+      /// <param name="format">Format string for the min value
+      /// value in the broken rule string.</param>
+      public MinValueRuleArgs(Core.IPropertyInfo propertyInfo, T minValue, string format)
+        : base(propertyInfo)
       {
         this["MinValue"] = minValue;
         this["Format"] = format;
@@ -745,7 +907,7 @@ namespace Csla.Validation
 
       object value = Utilities.CallByName(target, e.PropertyName, CallType.Get);
       if (value == null && nullOption == RegExRuleArgs.NullResultOptions.ConvertToEmptyString)
-          value=string.Empty;
+        value = string.Empty;
 
       if (value == null)
       {
@@ -858,6 +1020,18 @@ namespace Csla.Validation
       /// <summary>
       /// Creates a new object.
       /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="pattern">Built-in regex pattern to use.</param>
+      public RegExRuleArgs(Core.IPropertyInfo propertyInfo, RegExPatterns pattern)
+        : base(propertyInfo)
+      {
+        this["RegEx"] = new Regex(GetPattern(pattern));
+        this["NullOption"] = NullResultOptions.ReturnFalse;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -878,6 +1052,18 @@ namespace Csla.Validation
       /// <param name="pattern">Custom regex pattern to use.</param>
       public RegExRuleArgs(string propertyName, string pattern)
         : base(propertyName)
+      {
+        this["RegEx"] = new Regex(pattern);
+        this["NullOption"] = NullResultOptions.ReturnFalse;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="pattern">Custom regex pattern to use.</param>
+      public RegExRuleArgs(Core.IPropertyInfo propertyInfo, string pattern)
+        : base(propertyInfo)
       {
         this["RegEx"] = new Regex(pattern);
         this["NullOption"] = NullResultOptions.ReturnFalse;
@@ -914,6 +1100,18 @@ namespace Csla.Validation
       /// <summary>
       /// Creates a new object.
       /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="regEx"><see cref="RegEx"/> object to use.</param>
+      public RegExRuleArgs(Core.IPropertyInfo propertyInfo, System.Text.RegularExpressions.Regex regEx)
+        : base(propertyInfo)
+      {
+        this["RegEx"] = regEx;
+        this["NullOption"] = NullResultOptions.ReturnFalse;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -938,6 +1136,22 @@ namespace Csla.Validation
       /// </param>
       public RegExRuleArgs(string propertyName, RegExPatterns pattern, NullResultOptions nullResult)
         : base(propertyName)
+      {
+        this["RegEx"] = new Regex(GetPattern(pattern));
+        this["NullOption"] = nullResult;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="pattern">Built-in regex pattern to use.</param>
+      /// <param name="nullResult">
+      /// Value indicating how a null value should be
+      /// handled by the rule method.
+      /// </param>
+      public RegExRuleArgs(Core.IPropertyInfo propertyInfo, RegExPatterns pattern, NullResultOptions nullResult)
+        : base(propertyInfo)
       {
         this["RegEx"] = new Regex(GetPattern(pattern));
         this["NullOption"] = nullResult;
@@ -982,6 +1196,22 @@ namespace Csla.Validation
       /// <summary>
       /// Creates a new object.
       /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="pattern">Custom regex pattern to use.</param>
+      /// <param name="nullResult">
+      /// Value indicating how a null value should be
+      /// handled by the rule method.
+      /// </param>
+      public RegExRuleArgs(Core.IPropertyInfo propertyInfo, string pattern, NullResultOptions nullResult)
+        : base(propertyInfo)
+      {
+        this["RegEx"] = new Regex(pattern);
+        this["NullOption"] = nullResult;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
       /// <param name="propertyName">Name of the property to validate.</param>
       /// <param name="friendlyName">A friendly name for the property, which
       /// will be used in place of the property name when
@@ -1010,6 +1240,22 @@ namespace Csla.Validation
       /// </param>
       public RegExRuleArgs(string propertyName, System.Text.RegularExpressions.Regex regEx, NullResultOptions nullResult)
         : base(propertyName)
+      {
+        this["RegEx"] = regEx;
+        this["NullOption"] = nullResult;
+      }
+
+      /// <summary>
+      /// Creates a new object.
+      /// </summary>
+      /// <param name="propertyInfo">Property to validate.</param>
+      /// <param name="regEx"><see cref="RegEx"/> object to use.</param>
+      /// <param name="nullResult">
+      /// Value indicating how a null value should be
+      /// handled by the rule method.
+      /// </param>
+      public RegExRuleArgs(Core.IPropertyInfo propertyInfo, System.Text.RegularExpressions.Regex regEx, NullResultOptions nullResult)
+        : base(propertyInfo)
       {
         this["RegEx"] = regEx;
         this["NullOption"] = nullResult;

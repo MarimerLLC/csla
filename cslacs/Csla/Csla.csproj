@@ -102,6 +102,7 @@
     <Compile Include="Core\ITrackStatus.cs" />
     <Compile Include="DataPortal\DataPortalOperations.cs" />
     <Compile Include="DataPortal\Server\ChildDataPortal.cs" />
+    <Compile Include="DataPortal\SingleCriteria.cs" />
     <Compile Include="Data\ConnectionManager.cs" />
     <Compile Include="Data\ContextManager.cs" />
     <Compile Include="Linq\IIndex.cs" />

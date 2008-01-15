@@ -1,225 +1,161 @@
-using System;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
-using Csla.Data;
-using Csla.Validation;
+using System;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectResource : 
-    BusinessBase<ProjectResource>, IHoldRoles
+  public class ProjectResource : BusinessBase<ProjectResource>, IHoldRoles
   {
-    #region Business Methods
 
-    private int _resourceId;
-    private string _firstName = string.Empty;
-    private string _lastName = string.Empty;
-    private SmartDate _assigned;
-    private int _role;
+    #region  Business Methods
+
     private byte[] _timestamp = new byte[8];
 
-    [System.ComponentModel.DataObjectField(false, true)]
+    private static PropertyInfo<int> ResourceIdProperty = new PropertyInfo<int>("ResourceId", "Resource id");
     public int ResourceId
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _resourceId;
+        return GetProperty<int>(ResourceIdProperty);
       }
     }
 
+    private static PropertyInfo<string> FirstNameProperty = new PropertyInfo<string>("FirstName", "First name");
     public string FirstName
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _firstName;
+        return GetProperty<string>(FirstNameProperty);
       }
     }
 
+    private static PropertyInfo<string> LastNameProperty = new PropertyInfo<string>("LastName", "Last name");
     public string LastName
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _lastName;
+        return GetProperty<string>(LastNameProperty);
       }
     }
 
     public string FullName
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        if (CanReadProperty("FirstName") && 
-          CanReadProperty("LastName"))
-          return string.Format("{0}, {1}", LastName, FirstName);
-        else
-          throw new System.Security.SecurityException(
-            "Property read not allowed");
+        return LastName + ", " + FirstName;
       }
     }
 
+    private static PropertyInfo<SmartDate> AssignedProperty = new PropertyInfo<SmartDate>("Assigned", "Date assigned");
     public string Assigned
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _assigned.Text;
+        return GetProperty<SmartDate, string>(AssignedProperty);
       }
     }
 
+    private static PropertyInfo<int> RoleProperty = new PropertyInfo<int>("Role", "Role assigned");
     public int Role
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _role;
+        return GetProperty<int>(RoleProperty);
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
-        if (!_role.Equals(value))
-        {
-          _role = value;
-          PropertyHasChanged();
-        }
+        SetProperty<int>(RoleProperty, value);
       }
     }
 
     public Resource GetResource()
     {
-      return Resource.GetResource(_resourceId);
+      CanExecuteMethod("GetResource", true);
+      return Resource.GetResource(GetProperty<int>(ResourceIdProperty));
     }
 
-    protected override object GetIdValue()
+    public override string ToString()
     {
-      return _resourceId;
+      return ResourceId.ToString();
     }
 
     #endregion
 
-    #region Validation Rules
+    #region  Validation Rules
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(
-        new Csla.Validation.RuleHandler(
-          Assignment.ValidRole), "Role");
+      ValidationRules.AddRule(Assignment.ValidRole, RoleProperty);
     }
 
     #endregion
 
-    #region Authorization Rules
-    
+    #region  Authorization Rules
+
     protected override void AddAuthorizationRules()
     {
-      AuthorizationRules.AllowWrite(
-        "Role", "ProjectManager");
+      AuthorizationRules.AllowWrite(RoleProperty, "ProjectManager");
     }
 
     #endregion
 
-    #region Factory Methods
+    #region  Factory Methods
 
     internal static ProjectResource NewProjectResource(int resourceId)
     {
-      return new ProjectResource(
-        Resource.GetResource(resourceId), 
-        RoleList.DefaultRole());
+      return DataPortal.CreateChild<ProjectResource>(resourceId, RoleList.DefaultRole());
     }
 
-    internal static ProjectResource GetResource(SafeDataReader dr)
+    internal static ProjectResource GetResource(ProjectTracker.DalLinq.Assignment data)
     {
-      return new ProjectResource(dr);
+      return DataPortal.FetchChild<ProjectResource>(data);
     }
 
     private ProjectResource()
-    {
-      MarkAsChild();
-    }
-
-    private ProjectResource(Resource resource, int role)
-    {
-      MarkAsChild();
-      _resourceId = resource.Id;
-      _lastName = resource.LastName;
-      _firstName = resource.FirstName;
-      _assigned.Date = Assignment.GetDefaultAssignedDate();
-      _role = role;
-    }
-
-    private ProjectResource(SafeDataReader dr)
-    {
-      MarkAsChild();
-      Fetch(dr);
-    }
+    { /* require use of factory methods */ }
 
     #endregion
 
-    #region Data Access
+    #region  Data Access
 
-    private void Fetch(SafeDataReader dr)
+    private void Child_Create()
     {
-      _resourceId = dr.GetInt32("ResourceId");
-      _lastName = dr.GetString("LastName");
-      _firstName = dr.GetString("FirstName");
-      _assigned = dr.GetSmartDate("Assigned");
-      _role = dr.GetInt32("Role");
-      dr.GetBytes("LastChanged", 0, _timestamp, 0, 8);
-      MarkOld();
+      LoadProperty<SmartDate>(AssignedProperty, new SmartDate(System.DateTime.Today));
     }
 
-    internal void Insert(Project project)
+    private void Child_Create(int resourceId, int role)
     {
-      // if we're not dirty then don't update the database
-      if (!this.IsDirty) return;
-
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
-      {
-        cn.Open();
-        _timestamp = Assignment.AddAssignment(
-          cn, project.Id, _resourceId, _assigned, _role);
-        MarkOld();
-      }
+      var res = Resource.GetResource(resourceId);
+      LoadProperty<int>(ResourceIdProperty, res.Id);
+      LoadProperty<string>(LastNameProperty, res.LastName);
+      LoadProperty<string>(FirstNameProperty, res.FirstName);
+      LoadProperty<SmartDate>(AssignedProperty, Assignment.GetDefaultAssignedDate());
+      LoadProperty<int>(RoleProperty, role);
     }
 
-    internal void Update(Project project)
+    private void Child_Fetch(ProjectTracker.DalLinq.Assignment data)
     {
-      // if we're not dirty then don't update the database
-      if (!this.IsDirty) return;
-
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
-      {
-        cn.Open();
-        _timestamp = Assignment.UpdateAssignment(
-          cn, project.Id, _resourceId, _assigned, _role, _timestamp);
-        MarkOld();
-      }
+      LoadProperty<int>(ResourceIdProperty, data.ResourceId);
+      LoadProperty<string>(LastNameProperty, data.Resource.LastName);
+      LoadProperty<string>(FirstNameProperty, data.Resource.FirstName);
+      LoadProperty<SmartDate>(AssignedProperty, data.Assigned);
+      LoadProperty<int>(RoleProperty, data.Role);
+      _timestamp = data.LastChanged.ToArray();
     }
 
-    internal void DeleteSelf(Project project)
+    private void Child_Insert(Project project)
     {
-      // if we're not dirty then don't update the database
-      if (!this.IsDirty) return;
+      _timestamp = Assignment.AddAssignment(project.Id, GetProperty<int>(ResourceIdProperty), GetProperty<SmartDate>(AssignedProperty), GetProperty<int>(RoleProperty));
+    }
 
-      // if we're new then don't update the database
-      if (this.IsNew) return;
+    private void Child_Update(Project project)
+    {
+      _timestamp = Assignment.UpdateAssignment(project.Id, GetProperty<int>(ResourceIdProperty), GetProperty<SmartDate>(AssignedProperty), GetProperty<int>(RoleProperty), _timestamp);
+    }
 
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
-      {
-        cn.Open();
-        Assignment.RemoveAssignment(cn, project.Id, _resourceId);
-        MarkNew();
-      }
+    private void Child_DeleteSelf(Project project)
+    {
+      Assignment.RemoveAssignment(project.Id, GetProperty<int>(ResourceIdProperty));
     }
 
     #endregion

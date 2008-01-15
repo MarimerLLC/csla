@@ -1,36 +1,39 @@
-using System;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
-using Csla.Data;
+using System;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
   public class ResourceAssignments : BusinessListBase<ResourceAssignments, ResourceAssignment>
   {
-    #region Business Methods
+    #region  Business Methods
 
     public ResourceAssignment this[Guid projectId]
     {
       get
       {
         foreach (ResourceAssignment res in this)
+        {
           if (res.ProjectId.Equals(projectId))
+          {
             return res;
+          }
+        }
         return null;
       }
     }
 
     public void AssignTo(Guid projectId)
     {
-      if (!Contains(projectId))
+      if (!(Contains(projectId)))
       {
         ResourceAssignment project = ResourceAssignment.NewResourceAssignment(projectId);
         this.Add(project);
       }
       else
+      {
         throw new InvalidOperationException("Resource already assigned to project");
+      }
     }
 
     public void Remove(Guid projectId)
@@ -59,65 +62,39 @@ namespace ProjectTracker.Library
         if (project.ProjectId == projectId)
           return true;
       return false;
+
     }
 
     #endregion
 
-    #region Factory Methods
+    #region  Factory Methods
 
     internal static ResourceAssignments NewResourceAssignments()
     {
-      return new ResourceAssignments();
+      return DataPortal.CreateChild<ResourceAssignments>();
     }
 
-    internal static ResourceAssignments GetResourceAssignments(SafeDataReader dr)
+    internal static ResourceAssignments GetResourceAssignments(ProjectTracker.DalLinq.Assignment[] data)
     {
-      return new ResourceAssignments(dr);
+      return DataPortal.FetchChild<ResourceAssignments>(data);
     }
 
     private ResourceAssignments()
-    {
-      MarkAsChild();
-    }
+    { /* require use of factory methods */ }
 
-    private ResourceAssignments(SafeDataReader dr)
+    #endregion
+
+    #region  Data Access
+
+    private void Child_Fetch(ProjectTracker.DalLinq.Assignment[] data)
     {
-      MarkAsChild();
-      Fetch(dr);
+      this.RaiseListChangedEvents = false;
+      foreach (var child in data)
+        Add(ResourceAssignment.GetResourceAssignment(child));
+      this.RaiseListChangedEvents = true;
     }
 
     #endregion
 
-    #region Data Access
-
-    private void Fetch(SafeDataReader dr)
-    {
-      RaiseListChangedEvents = false;
-      while (dr.Read())
-        this.Add(ResourceAssignment.GetResourceAssignment(dr));
-      RaiseListChangedEvents = true;
-    }
-
-    internal void Update(Resource resource)
-    {
-      RaiseListChangedEvents = false;
-      // update (thus deleting) any deleted child objects
-      foreach (ResourceAssignment item in DeletedList)
-        item.DeleteSelf(resource);
-      // now that they are deleted, remove them from memory too
-      DeletedList.Clear();
-
-      // add/update any current child objects
-      foreach (ResourceAssignment item in this)
-      {
-        if (item.IsNew)
-          item.Insert(resource);
-        else
-          item.Update(resource);
-      }
-      RaiseListChangedEvents = true;
-    }
-
-    #endregion
   }
 }

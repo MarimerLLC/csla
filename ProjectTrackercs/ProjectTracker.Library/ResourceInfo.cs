@@ -1,29 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data.SqlClient;
 using Csla;
-using Csla.Data;
+using System;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ResourceInfo :
-    ReadOnlyBase<ResourceInfo>
+  public class ResourceInfo : ReadOnlyBase<ResourceInfo>
   {
-    #region Business Methods
-
     private int _id;
     private string _name;
 
     public int Id
     {
-      get { return _id; }
+      get
+      {
+        return _id;
+      }
     }
 
     public string Name
     {
-      get { return _name; }
+      get
+      {
+        return _name;
+      }
     }
 
     protected override object GetIdValue()
@@ -36,21 +35,10 @@ namespace ProjectTracker.Library
       return _name;
     }
 
-    #endregion
-
-    #region Constructors
-
-    private ResourceInfo()
-    { /* require use of factory methods */ }
-
-    internal ResourceInfo(SafeDataReader dr)
+    internal ResourceInfo(DalLinq.Resource resource)
     {
-      _id = dr.GetInt32("Id");
-      _name = string.Format("{0}, {1}",
-                dr.GetString("LastName"),
-                dr.GetString("FirstName"));
+      _id = resource.Id;
+      _name = string.Format("{0}, {1}", resource.LastName, resource.FirstName);
     }
-
-    #endregion
   }
 }

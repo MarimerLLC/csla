@@ -1,20 +1,23 @@
-using System;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
 using Csla.Data;
+using System;
+using System.Linq;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ResourceList : 
-    ReadOnlyListBase<ResourceList, ResourceInfo>
+  public class ResourceList : ReadOnlyListBase<ResourceList, ResourceInfo>
   {
-    #region Factory Methods
+    #region  Factory Methods
+
+    public static ResourceList EmptyList()
+    {
+      return new ResourceList();
+    }
 
     public static ResourceList GetResourceList()
     {
-      return DataPortal.Fetch<ResourceList>(new Criteria());
+      return DataPortal.Fetch<ResourceList>();
     }
 
     private ResourceList()
@@ -22,37 +25,21 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Data Access
+    #region  Data Access
 
-    [Serializable()]
-    private class Criteria
-    { /* no criteria - retrieve all resources */ }
-
-    private void DataPortal_Fetch(Criteria criteria)
+    private void DataPortal_Fetch()
     {
-      this.RaiseListChangedEvents = false;
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      RaiseListChangedEvents = false;
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "getResources";
-
-          using (SafeDataReader dr = 
-            new SafeDataReader(cm.ExecuteReader()))
-          {
-            IsReadOnly = false;
-            while (dr.Read())
-            {
-              ResourceInfo info = new ResourceInfo(dr);
-              this.Add(info);
-            }
-            IsReadOnly = true;
-          }
-        }
+        var data = from r in ctx.DataContext.Resources
+                   select r;
+        IsReadOnly = false;
+        foreach (var resource in data)
+          this.Add(new ResourceInfo(resource));
+        IsReadOnly = true;
       }
-      this.RaiseListChangedEvents = true;
+      RaiseListChangedEvents = true;
     }
 
     #endregion

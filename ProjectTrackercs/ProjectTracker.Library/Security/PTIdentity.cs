@@ -1,174 +1,194 @@
-using System;
-using System.Data;
-using System.Data.SqlClient;
-using System.Collections.Generic;
-using System.Security.Principal;
 using Csla;
+using Csla.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Principal;
+using ProjectTracker.DalLinq.Security;
 
-namespace ProjectTracker.Library.Security
+namespace ProjectTracker.Library
 {
-  [Serializable()]
-  public class PTIdentity : 
-    ReadOnlyBase<PTIdentity>, IIdentity
+  namespace Security
   {
-    #region Business Methods
-
-    private bool _isAuthenticated;
-    private string _name = string.Empty;
-    private List<string> _roles = new List<string>();
-
-    public string AuthenticationType
-    {
-      get { return "Csla"; }
-    }
-
-    public bool IsAuthenticated
-    {
-      get { return _isAuthenticated; }
-    }
-
-    public string Name
-    {
-      get { return _name; }
-    }
-
-    protected override object GetIdValue()
-    {
-      return _name;
-    }
-
-    internal bool IsInRole(string role)
-    {
-      return _roles.Contains(role);
-    }
-
-    #endregion
-
-    #region Factory Methods
-
-    internal static PTIdentity UnauthenticatedIdentity()
-    {
-      return new PTIdentity();
-    }
-
-    internal static PTIdentity GetIdentity(
-      string username, string password)
-    {
-      return DataPortal.Fetch<PTIdentity>
-        (new Criteria(username, password));
-    }
-
-    internal static PTIdentity GetIdentity(string username)
-    {
-      return DataPortal.Fetch<PTIdentity>
-        (new LoadOnlyCriteria(username));
-    }
-
-    private PTIdentity()
-    { /* require use of factory methods */ }
-
-    #endregion
-
-    #region Data Access
-
     [Serializable()]
-    private class Criteria
+    public class PTIdentity : ReadOnlyBase<PTIdentity>, IIdentity
     {
-      private string _username;
-      public string Username
+
+      #region  Business Methods
+
+      protected override object GetIdValue()
       {
-        get { return _username; }
+        return _name;
       }
 
-      private string _password;
-      public string Password
+      #region  IsInRole
+
+      private List<string> _roles = new List<string>();
+
+      internal bool IsInRole(string role)
       {
-        get { return _password; }
+        return _roles.Contains(role);
       }
 
-      public Criteria(string username, string password)
-      {
-        _username = username;
-        _password = password;
-      }
-    }
+      #endregion
 
-    [Serializable()]
-    private class LoadOnlyCriteria
-    {
-      private string _username;
-      public string Username
-      {
-        get { return _username; }
-      }
+      #region  IIdentity
 
-      public LoadOnlyCriteria(string username)
-      {
-        _username = username;
-      }
-    }
+      private bool _isAuthenticated;
+      private string _name = "";
 
-    private void DataPortal_Fetch(Criteria criteria)
-    {
-      using (SqlConnection cn =
-        new SqlConnection(Database.SecurityConnection))
+      public string AuthenticationType
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
+        get
         {
-          cm.CommandText = "Login";
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.Parameters.AddWithValue("@user", criteria.Username);
-          cm.Parameters.AddWithValue("@pw", criteria.Password);
-          using (SqlDataReader dr = cm.ExecuteReader())
-          {
-            Fetch(dr);
-          }
+          return "Csla";
         }
       }
-    }
 
-    private void DataPortal_Fetch(LoadOnlyCriteria criteria)
-    {
-      using (SqlConnection cn =
-        new SqlConnection(Database.SecurityConnection))
+      public bool IsAuthenticated
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
+        get
         {
-          cm.CommandText = "GetUser";
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.Parameters.AddWithValue("@user", criteria.Username);
-          using (SqlDataReader dr = cm.ExecuteReader())
-          {
-            Fetch(dr);
-          }
+          return _isAuthenticated;
         }
       }
-    }
 
-    private void Fetch(SqlDataReader dr)
-    {
-      if (dr.Read())
+      public string Name
       {
-        _name = dr.GetString(0);
-        _isAuthenticated = true;
-        if (dr.NextResult())
+        get
         {
-          while (dr.Read())
-          {
-            _roles.Add(dr.GetString(0));
-          }
+          return _name;
         }
       }
-      else
-      {
-        _name = string.Empty;
-        _isAuthenticated = false;
-        _roles.Clear();
-      }
-    }
 
-    #endregion
+      #endregion
+
+      #endregion
+
+      #region  Factory Methods
+
+      internal static PTIdentity UnauthenticatedIdentity()
+      {
+        return new PTIdentity();
+      }
+
+      internal static PTIdentity GetIdentity(string username, string password)
+      {
+        return DataPortal.Fetch<PTIdentity>(new CredentialsCriteria(username, password));
+      }
+
+      internal static PTIdentity GetIdentity(string username)
+      {
+        return DataPortal.Fetch<PTIdentity>(new LoadOnlyCriteria(username));
+      }
+
+      private PTIdentity()
+      {
+        // require use of factory methods
+      }
+
+      #endregion
+
+      #region  Data Access
+
+      [Serializable()]
+      private class CredentialsCriteria
+      {
+
+        private string _username;
+        private string _password;
+
+        public string Username
+        {
+          get
+          {
+            return _username;
+          }
+        }
+
+        public string Password
+        {
+          get
+          {
+            return _password;
+          }
+        }
+
+        public CredentialsCriteria(string username, string password)
+        {
+          _username = username;
+          _password = password;
+        }
+      }
+
+      [Serializable()]
+      private class LoadOnlyCriteria
+      {
+
+        private string mUsername;
+
+        public string Username
+        {
+          get
+          {
+            return mUsername;
+          }
+        }
+
+        public LoadOnlyCriteria(string username)
+        {
+          mUsername = username;
+        }
+      }
+
+      private void DataPortal_Fetch(CredentialsCriteria criteria)
+      {
+        using (var ctx = ContextManager<SecurityDataContext>.GetManager(Database.SecurityConnection))
+        {
+          var data = from u in ctx.DataContext.Users
+                     where u.Username == criteria.Username && u.Password == criteria.Password
+                     select u;
+          if (data.Count() > 0)
+            Fetch(data.Single());
+          else
+            Fetch(null);
+        }
+      }
+
+      private void DataPortal_Fetch(LoadOnlyCriteria criteria)
+      {
+        using (var ctx = ContextManager<SecurityDataContext>.GetManager(Database.SecurityConnection))
+        {
+          var data = from u in ctx.DataContext.Users
+                     where u.Username == criteria.Username
+                     select u;
+          if (data.Count() > 0)
+            Fetch(data.Single());
+          else
+            Fetch(null);
+        }
+      }
+
+      private void Fetch(User user)
+      {
+        if (user != null)
+        {
+          _name = user.Username;
+          _isAuthenticated = true;
+          var roles = from r in user.Roles select r;
+          foreach (var role in roles)
+            _roles.Add(role.Role1);
+        }
+        else
+        {
+          _name = "";
+          _isAuthenticated = false;
+          _roles.Clear();
+        }
+      }
+
+      #endregion
+
+    }
   }
 }

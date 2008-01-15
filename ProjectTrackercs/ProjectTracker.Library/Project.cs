@@ -1,194 +1,145 @@
-using System;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
 using Csla.Data;
+using System;
+using System.Linq;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
   public class Project : BusinessBase<Project>
   {
-    #region Business Methods
+    #region  Business Methods
 
-    private Guid _id;
-    private string _name = string.Empty;
-    private SmartDate _started;
-    private SmartDate _ended = new SmartDate(false);
-    private string _description = string.Empty;
-    private byte[] _timestamp = new byte[8];
+    private byte[] mTimestamp = new byte[8];
 
-    private ProjectResources _resources;
-
+    private static PropertyInfo<Guid> IdProperty = new PropertyInfo<Guid>("Id");
     [System.ComponentModel.DataObjectField(true, true)]
     public Guid Id
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _id;
+        return GetProperty<Guid>(IdProperty);
       }
     }
 
+    private static PropertyInfo<string> NameProperty = new PropertyInfo<string>("Name");
     public string Name
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _name;
+        return GetProperty<string>(NameProperty);
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
-        if (value == null) value = string.Empty;
-        if (_name != value)
-        {
-          _name = value;
-          PropertyHasChanged();
-        }
+        SetProperty<string>(NameProperty, value);
       }
     }
 
+    private static PropertyInfo<SmartDate> StartedProperty = new PropertyInfo<SmartDate>("Started");
     public string Started
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _started.Text;
+        return GetProperty<SmartDate, string>(StartedProperty);
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
-        if (value == null) value = string.Empty;
-        if (_started != value)
-        {
-          _started.Text = value;
-          PropertyHasChanged();
-        }
+        SetProperty<SmartDate, string>(StartedProperty, value);
       }
     }
 
+    private static PropertyInfo<SmartDate> EndedProperty = new PropertyInfo<SmartDate>("Ended", new SmartDate(SmartDate.EmptyValue.MaxDate));
     public string Ended
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _ended.Text;
+        return GetProperty<SmartDate, string>(EndedProperty);
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
-        if (value == null) value = string.Empty;
-        if (_ended != value)
-        {
-          _ended.Text = value;
-          PropertyHasChanged();
-        }
+        SetProperty<SmartDate, string>(EndedProperty, value);
       }
     }
 
+    private static PropertyInfo<string> DescriptionProperty = new PropertyInfo<string>("Description");
     public string Description
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-          return _description;
+        return GetProperty<string>(DescriptionProperty);
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
-        if (value == null) value = string.Empty;
-        if (_description != value)
-        {
-          _description = value;
-          PropertyHasChanged();
-        }
+        SetProperty<string>(DescriptionProperty, value);
       }
     }
 
+    private static PropertyInfo<ProjectResources> ResourcesProperty = new PropertyInfo<ProjectResources>("Resources");
     public ProjectResources Resources
     {
-      get { return _resources; }
+      get
+      {
+        if (!(FieldManager.FieldExists(ResourcesProperty)))
+        {
+          SetProperty<ProjectResources>(ResourcesProperty, ProjectResources.NewProjectResources());
+        }
+        return GetProperty<ProjectResources>(ResourcesProperty);
+      }
     }
 
-    public override bool IsValid
+    public override string ToString()
     {
-      get { return base.IsValid && _resources.IsValid; }
-    }
-
-    public override bool IsDirty
-    {
-      get { return base.IsDirty || _resources.IsDirty; }
-    }
-
-    protected override object GetIdValue()
-    {
-      return _id;
+      return Id.ToString();
     }
 
     #endregion
 
-    #region Validation Rules
+    #region  Validation Rules
 
     protected override void AddBusinessRules()
     {
       ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringRequired, 
-        new Csla.Validation.RuleArgs("Name", "Project name"));
+        Csla.Validation.CommonRules.StringRequired,
+        new Csla.Validation.RuleArgs(NameProperty));
       ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringMaxLength, 
-        new Csla.Validation.CommonRules.MaxLengthRuleArgs("Name", 50));
+        Csla.Validation.CommonRules.StringMaxLength,
+        new Csla.Validation.CommonRules.MaxLengthRuleArgs(NameProperty, 50));
 
-      ValidationRules.AddRule<Project>(
-        StartDateGTEndDate<Project>, "Started");
-      ValidationRules.AddRule<Project>(
-        StartDateGTEndDate<Project>, "Ended");
+      ValidationRules.AddRule<Project>(StartDateGTEndDate<Project>, StartedProperty);
+      ValidationRules.AddRule<Project>(StartDateGTEndDate<Project>, EndedProperty);
 
-      ValidationRules.AddDependantProperty("Started", "Ended", true);
+      ValidationRules.AddDependentProperty(StartedProperty, EndedProperty, true);
     }
 
-    private static bool StartDateGTEndDate<T>(
-      T target, Csla.Validation.RuleArgs e) where T : Project
+    private static bool StartDateGTEndDate<T>(T target, Csla.Validation.RuleArgs e) where T : Project
     {
-      if (target._started > target._ended)
+      if (target.GetProperty<SmartDate>(StartedProperty) > target.GetProperty<SmartDate>(EndedProperty))
       {
-        e.Description = 
-          "Start date can't be after end date";
+        e.Description = "Start date can't be after end date";
         return false;
       }
       else
+      {
         return true;
+      }
     }
 
     #endregion
 
-    #region Authorization Rules
+    #region  Authorization Rules
 
     protected override void AddAuthorizationRules()
     {
-      AuthorizationRules.AllowWrite(
-        "Name", "ProjectManager");
-      AuthorizationRules.AllowWrite(
-        "Started", "ProjectManager");
-      AuthorizationRules.AllowWrite(
-        "Ended", "ProjectManager");
-      AuthorizationRules.AllowWrite(
-        "Description", "ProjectManager");
+      // add AuthorizationRules here
+      AuthorizationRules.AllowWrite(NameProperty, "ProjectManager");
+      AuthorizationRules.AllowWrite(StartedProperty, "ProjectManager");
+      AuthorizationRules.AllowWrite(EndedProperty, "ProjectManager");
+      AuthorizationRules.AllowWrite(DescriptionProperty, "ProjectManager");
     }
 
     public static bool CanAddObject()
     {
-      return Csla.ApplicationContext.User.IsInRole(
-        "ProjectManager");
+      return Csla.ApplicationContext.User.IsInRole("ProjectManager");
     }
 
     public static bool CanGetObject()
@@ -199,11 +150,9 @@ namespace ProjectTracker.Library
     public static bool CanDeleteObject()
     {
       bool result = false;
-      if (Csla.ApplicationContext.User.IsInRole(
-        "ProjectManager"))
+      if (Csla.ApplicationContext.User.IsInRole("ProjectManager"))
         result = true;
-      if (Csla.ApplicationContext.User.IsInRole(
-        "Administrator"))
+      if (Csla.ApplicationContext.User.IsInRole("Administrator"))
         result = true;
       return result;
     }
@@ -215,198 +164,138 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Factory Methods
+    #region  Factory Methods
 
     public static Project NewProject()
     {
-      if (!CanAddObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to add a project");
+      if (!(CanAddObject()))
+        throw new System.Security.SecurityException("User not authorized to add a project");
       return DataPortal.Create<Project>();
     }
 
     public static Project GetProject(Guid id)
     {
-      if (!CanGetObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to view a project");
-      return DataPortal.Fetch<Project>(new Criteria(id));
+      if (!(CanGetObject()))
+        throw new System.Security.SecurityException("User not authorized to view a project");
+      return DataPortal.Fetch<Project>(new SingleCriteria<Project, Guid>(id));
     }
 
     public static void DeleteProject(Guid id)
     {
-      if (!CanDeleteObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to remove a project");
-      DataPortal.Delete(new Criteria(id));
-    }
-
-    private Project()
-    {
-      _resources = ProjectResources.NewProjectResources();
-      _resources.ListChanged += new System.ComponentModel.ListChangedEventHandler(_resources_ListChanged);
-    }
-
-    void _resources_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
-    {
-      OnPropertyChanged(null);
+      if (!(CanDeleteObject()))
+        throw new System.Security.SecurityException("User not authorized to remove a project");
+      DataPortal.Delete(new SingleCriteria<Project, Guid>(id));
     }
 
     public override Project Save()
     {
-      if (IsDeleted && !CanDeleteObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to remove a project");
-      else if (IsNew && !CanAddObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to add a project");
-      else if (!CanEditObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to update a project");
-
+      if (IsDeleted && !(CanDeleteObject()))
+        throw new System.Security.SecurityException("User not authorized to remove a project");
+      else if (IsNew && !(CanAddObject()))
+        throw new System.Security.SecurityException("User not authorized to add a project");
+      else if (!(CanEditObject()))
+        throw new System.Security.SecurityException("User not authorized to update a project");
       return base.Save();
     }
 
+    private Project()
+    { /* require use of factory methods */ }
+
     #endregion
 
-    #region Data Access
-
-    [Serializable()]
-    private class Criteria
-    {
-      private Guid _id;
-      public Guid Id
-      {
-        get { return _id; }
-      }
-
-      public Criteria(Guid id)
-      { _id = id; }
-    }
+    #region  Data Access
 
     [RunLocal()]
     protected override void DataPortal_Create()
     {
-      _id = Guid.NewGuid();
-      _started.Date = DateTime.Today;
+      LoadProperty<Guid>(IdProperty, Guid.NewGuid());
+      Started = System.Convert.ToString(System.DateTime.Today);
       ValidationRules.CheckRules();
     }
 
-    private void DataPortal_Fetch(Criteria criteria)
+    private void DataPortal_Fetch(SingleCriteria<Project, Guid> criteria)
     {
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "getProject";
-          cm.Parameters.AddWithValue("@id", criteria.Id);
+        // get project data
+        var data = (from p in ctx.DataContext.Projects
+                    where p.Id == criteria.Value
+                    select p).Single();
+        LoadProperty<Guid>(IdProperty, data.Id);
+        LoadProperty<string>(NameProperty, data.Name);
+        LoadProperty<SmartDate, System.DateTime?>(StartedProperty, data.Started);
+        LoadProperty<SmartDate, System.DateTime?>(EndedProperty, data.Ended);
+        LoadProperty<string>(DescriptionProperty, data.Description);
+        mTimestamp = data.LastChanged.ToArray();
 
-          using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
-          {
-            dr.Read();
-            _id = dr.GetGuid("Id");
-            _name = dr.GetString("Name");
-            _started = dr.GetSmartDate("Started", _started.EmptyIsMin);
-            _ended = dr.GetSmartDate("Ended", _ended.EmptyIsMin);
-            _description = dr.GetString("Description");
-            dr.GetBytes("LastChanged", 0, _timestamp, 0, 8);
-
-            // load child objects
-            dr.NextResult();
-            _resources.ListChanged -= new System.ComponentModel.ListChangedEventHandler(_resources_ListChanged);
-            _resources = ProjectResources.GetProjectResources(dr);
-            _resources.ListChanged += new System.ComponentModel.ListChangedEventHandler(_resources_ListChanged);
-          }
-        }
+        // get child data
+        LoadProperty<ProjectResources>(ResourcesProperty, ProjectResources.GetProjectResources(data.Assignments.ToArray()));
       }
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandText = "addProject";
-          DoInsertUpdate(cm);
-        }
+        // insert project data
+        System.Data.Linq.Binary lastChanged = null;
+        ctx.DataContext.addProject(
+          GetProperty<Guid>(IdProperty),
+          GetProperty<string>(NameProperty),
+          GetProperty<SmartDate>(StartedProperty),
+          GetProperty<SmartDate>(EndedProperty),
+          GetProperty<string>(DescriptionProperty),
+          ref lastChanged);
+        mTimestamp = lastChanged.ToArray();
+        // update child objects
+        DataPortal.UpdateChild(GetProperty<ProjectResources>(ResourcesProperty), this);
       }
-      // update child objects
-      _resources.Update(this);
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
-      if (base.IsDirty)
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
-        {
-          cn.Open();
-          using (SqlCommand cm = cn.CreateCommand())
-          {
-            cm.CommandText = "updateProject";
-            cm.Parameters.AddWithValue("@lastChanged", _timestamp);
-            DoInsertUpdate(cm);
-          }
-        }
+        // insert project data
+        System.Data.Linq.Binary lastChanged = null;
+        ctx.DataContext.updateProject(
+          GetProperty<Guid>(IdProperty),
+          GetProperty<string>(NameProperty),
+          GetProperty<SmartDate>(StartedProperty),
+          GetProperty<SmartDate>(EndedProperty),
+          GetProperty<string>(DescriptionProperty),
+          mTimestamp,
+          ref lastChanged);
+        mTimestamp = lastChanged.ToArray();
+        // update child objects
+        DataPortal.UpdateChild(GetProperty<ProjectResources>(ResourcesProperty), this);
       }
-      // update child objects
-      _resources.Update(this);
-    }
-
-    private void DoInsertUpdate(SqlCommand cm)
-    {
-      cm.CommandType = CommandType.StoredProcedure;
-      cm.Parameters.AddWithValue("@id", _id);
-      cm.Parameters.AddWithValue("@name", _name);
-      cm.Parameters.AddWithValue("@started", _started.DBValue);
-      cm.Parameters.AddWithValue("@ended", _ended.DBValue);
-      cm.Parameters.AddWithValue("@description", _description);
-      SqlParameter param =
-        new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
-      param.Direction = ParameterDirection.Output;
-      cm.Parameters.Add(param);
-
-      cm.ExecuteNonQuery();
-
-      _timestamp = (byte[])cm.Parameters["@newLastChanged"].Value;
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
-      DataPortal_Delete(new Criteria(_id));
+      DataPortal_Delete(new SingleCriteria<Project, Guid>(GetProperty<Guid>(IdProperty)));
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(Criteria criteria)
+    private void DataPortal_Delete(SingleCriteria<Project, Guid> criteria)
     {
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "deleteProject";
-          cm.Parameters.AddWithValue("@id", criteria.Id);
-          cm.ExecuteNonQuery();
-        }
+        // delete project data
+        System.Data.Linq.Binary lastChanged = null;
+        ctx.DataContext.deleteProject(criteria.Value);
+        // reset child list field
+        SetProperty<ProjectResources>(ResourcesProperty, ProjectResources.NewProjectResources());
       }
-    }
-
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      _resources.ListChanged += new System.ComponentModel.ListChangedEventHandler(_resources_ListChanged);
     }
 
     #endregion
 
-    #region Exists
+    #region  Exists
 
     public static bool Exists(Guid id)
     {
@@ -416,19 +305,22 @@ namespace ProjectTracker.Library
     [Serializable()]
     private class ExistsCommand : CommandBase
     {
+
       private Guid _id;
       private bool _exists;
 
       public bool ProjectExists
       {
-        get { return _exists; }
+        get
+        {
+          return _exists;
+        }
       }
 
       public static bool Exists(Guid id)
       {
-        ExistsCommand result;
-        result = DataPortal.Execute<ExistsCommand>
-          (new ExistsCommand(id));
+        ExistsCommand result = null;
+        result = DataPortal.Execute<ExistsCommand>(new ExistsCommand(id));
         return result.ProjectExists;
       }
 
@@ -439,17 +331,11 @@ namespace ProjectTracker.Library
 
       protected override void DataPortal_Execute()
       {
-        using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
         {
-          cn.Open();
-          using (SqlCommand cm = cn.CreateCommand())
-          {
-            cm.CommandType = CommandType.StoredProcedure;
-            cm.CommandText = "existsProject";
-            cm.Parameters.AddWithValue("@id", _id);
-            int count = (int)cm.ExecuteScalar();
-            _exists = (count > 0);
-          }
+          _exists = ((from p in ctx.DataContext.Projects
+                      where p.Id == _id
+                      select p).Count() > 0);
         }
       }
     }

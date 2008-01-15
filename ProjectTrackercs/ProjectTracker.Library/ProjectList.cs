@@ -1,35 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
 using Csla.Data;
+using System;
+using System.Linq;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectList : 
-    ReadOnlyListBase<ProjectList, ProjectInfo>
+  public class ProjectList : ReadOnlyListBase<ProjectList, ProjectInfo>
   {
-    #region Factory Methods
+    #region  Factory Methods
 
-    /// <summary>
-    /// Return a list of all projects.
-    /// </summary>
     public static ProjectList GetProjectList()
     {
-      return DataPortal.Fetch<ProjectList>(new Criteria());
+      return DataPortal.Fetch<ProjectList>();
     }
 
-    /// <summary>
-    /// Return a list of projects filtered
-    /// by project name.
-    /// </summary>
     public static ProjectList GetProjectList(string name)
     {
-      return DataPortal.Fetch<ProjectList>
-        (new FilteredCriteria(name));
+      return DataPortal.Fetch<ProjectList>(new SingleCriteria<ProjectList, string>(name));
     }
 
     private ProjectList()
@@ -37,67 +25,41 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Data Access
+    #region  Data Access
 
-    [Serializable()]
-    private class Criteria
-    { /* no criteria - retrieve all projects */ }
-
-    [Serializable()]
-    private class FilteredCriteria
-    {
-      private string _name;
-      public string Name
-      {
-        get { return _name; }
-      }
-
-      public FilteredCriteria(string name)
-      {
-        _name = name;
-      }
-    }
-
-    private void DataPortal_Fetch(Criteria criteria)
+    private void DataPortal_Fetch()
     {
       // fetch with no filter
       Fetch("");
     }
 
-    private void DataPortal_Fetch(FilteredCriteria criteria)
+    private void DataPortal_Fetch(Csla.SingleCriteria<ProjectList, string> criteria)
     {
-      Fetch(criteria.Name);
+      Fetch(criteria.Value);
     }
 
     private void Fetch(string nameFilter)
     {
-      this.RaiseListChangedEvents = false;
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      RaiseListChangedEvents = false;
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
+        var data = from p in ctx.DataContext.Projects
+                   select p;
+        if (!(string.IsNullOrEmpty(nameFilter)))
         {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "getProjects";
-          using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))
-          {
-            IsReadOnly = false;
-            while (dr.Read())
-            {
-              ProjectInfo info = new ProjectInfo(
-                dr.GetGuid(0),
-                dr.GetString(1));
-              // apply filter if necessary
-              if ((nameFilter.Length == 0) || (info.Name.IndexOf(nameFilter) == 0))
-                this.Add(info);
-            }
-            IsReadOnly = true;
-          }
+          data = from p in data
+                 where p.Name.Contains(nameFilter)
+                 select p;
         }
+        IsReadOnly = false;
+        foreach (var project in data)
+          this.Add(new ProjectInfo(project.Id, project.Name));
+        IsReadOnly = true;
       }
-      this.RaiseListChangedEvents = true;
+      RaiseListChangedEvents = true;
     }
 
     #endregion
+
   }
 }

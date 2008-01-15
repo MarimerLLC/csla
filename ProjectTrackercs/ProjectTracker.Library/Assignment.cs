@@ -1,33 +1,27 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
-using Csla.Validation;
 using Csla.Data;
-using System.Reflection;
+using Csla.Validation;
 
 namespace ProjectTracker.Library
 {
   internal interface IHoldRoles
   {
-    int Role { get; set;}
+    int Role { get; set; }
   }
 
   internal static class Assignment
   {
+    #region  Business Methods
 
-    #region Business Methods
-
-    public static DateTime GetDefaultAssignedDate()
+    public static System.DateTime GetDefaultAssignedDate()
     {
-      return DateTime.Today;
+      return System.DateTime.Today;
     }
 
     #endregion
 
-    #region Validation Rules
+    #region  Validation Rules
 
     /// <summary>
     /// Ensure the Role property value exists
@@ -38,7 +32,9 @@ namespace ProjectTracker.Library
       int role = ((IHoldRoles)target).Role;
 
       if (RoleList.GetList().ContainsKey(role))
+      {
         return true;
+      }
       else
       {
         e.Description = "Role must be in RoleList";
@@ -48,63 +44,34 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Data Access
+    #region  Data Access
 
-    public static byte[] AddAssignment(
-      SqlConnection cn, Guid projectId, int resourceId, 
-      SmartDate assigned, int role)
+    public static byte[] AddAssignment(Guid projectId, int resourceId, SmartDate assigned, int role)
     {
-      using (SqlCommand cm = cn.CreateCommand())
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cm.CommandText = "addAssignment";
-        return DoAddUpdate(
-          cm, projectId, resourceId, assigned, role);
+        System.Data.Linq.Binary lastChanged = null;
+        ctx.DataContext.addAssignment(projectId, resourceId, assigned, role, ref lastChanged);
+        return lastChanged.ToArray();
       }
     }
 
-    public static byte[] UpdateAssignment(SqlConnection cn,
-      Guid projectId, int resourceId, SmartDate assigned, 
-      int newRole, byte[] timestamp)
+    public static byte[] UpdateAssignment(Guid projectId, int resourceId, SmartDate assigned, int newRole, byte[] timestamp)
     {
-      using (SqlCommand cm = cn.CreateCommand())
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cm.CommandText = "updateAssignment";
-        cm.Parameters.AddWithValue("@lastChanged", timestamp);
-        return DoAddUpdate(
-          cm, projectId, resourceId, assigned, newRole);
+        System.Data.Linq.Binary lastChanged = null;
+        ctx.DataContext.updateAssignment(projectId, resourceId, assigned, newRole, timestamp, ref lastChanged);
+        return lastChanged.ToArray();
       }
     }
 
-    private static byte[] DoAddUpdate(SqlCommand cm,
-      Guid projectId, int resourceId, SmartDate assigned,
-      int newRole)
+    public static void RemoveAssignment(Guid projectId, int resourceId)
     {
-      cm.CommandType = CommandType.StoredProcedure;
-      cm.Parameters.AddWithValue("@projectId", projectId);
-      cm.Parameters.AddWithValue("@resourceId", resourceId);
-      cm.Parameters.AddWithValue("@assigned", assigned.DBValue);
-      cm.Parameters.AddWithValue("@role", newRole);
-      SqlParameter param =
-        new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
-      param.Direction = ParameterDirection.Output;
-      cm.Parameters.Add(param);
-
-      cm.ExecuteNonQuery();
-
-      return (byte[])cm.Parameters["@newLastChanged"].Value;
-    }
-
-    public static void RemoveAssignment(
-      SqlConnection cn, Guid projectId, int resourceId)
-    {
-      using (SqlCommand cm = cn.CreateCommand())
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cm.CommandType = CommandType.StoredProcedure;
-        cm.CommandText = "deleteAssignment";
-        cm.Parameters.AddWithValue("@projectId", projectId);
-        cm.Parameters.AddWithValue("@resourceId", resourceId);
-
-        cm.ExecuteNonQuery();
+        System.Data.Linq.Binary lastChanged = null;
+        ctx.DataContext.deleteAssignment(projectId, resourceId);
       }
     }
 

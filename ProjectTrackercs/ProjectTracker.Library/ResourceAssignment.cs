@@ -1,189 +1,140 @@
-using System;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
-using Csla.Data;
+using System;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
   public class ResourceAssignment : BusinessBase<ResourceAssignment>, IHoldRoles
   {
-    #region Business Methods
+    #region  Business Methods
 
-    private Guid _projectId = Guid.Empty;
-    private string _projectName = string.Empty;
-    private SmartDate _assigned = new SmartDate(DateTime.Today);
-    private int _role;
     private byte[] _timestamp = new byte[8];
 
+    private static PropertyInfo<Guid> ProjectIdProperty = new PropertyInfo<Guid>("ProjectId", Guid.Empty);
+    private Guid _projectId = ProjectIdProperty.DefaultValue;
     public Guid ProjectId
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _projectId;
+        return GetProperty<Guid>(ProjectIdProperty, _projectId);
       }
     }
 
+    private static PropertyInfo<string> ProjectNameProperty = new PropertyInfo<string>("ProjectName");
+    private string _projectName = ProjectNameProperty.DefaultValue;
     public string ProjectName
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _projectName;
+        return GetProperty<string>(ProjectNameProperty, _projectName);
       }
     }
 
+    private static PropertyInfo<SmartDate> AssignedProperty = new PropertyInfo<SmartDate>("Assigned");
+    private SmartDate _assigned = new SmartDate(System.DateTime.Today);
     public string Assigned
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _assigned.Text;
+        return GetProperty<SmartDate, string>(AssignedProperty, _assigned);
       }
     }
 
+    private static PropertyInfo<int> RoleProperty = new PropertyInfo<int>("Role");
+    private int _role = RoleProperty.DefaultValue;
     public int Role
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _role;
+        return GetProperty<int>(RoleProperty, _role);
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
-        if (!_role.Equals(value))
-        {
-          _role = value;
-          PropertyHasChanged();
-        }
+        SetProperty<int>(RoleProperty, ref _role, value);
       }
     }
 
     public Project GetProject()
     {
+      CanExecuteMethod("GetProject", true);
       return Project.GetProject(_projectId);
     }
 
-    protected override object GetIdValue()
+    public override string ToString()
     {
-      return _projectId;
+      return _projectId.ToString();
     }
 
     #endregion
 
-    #region Validation Rules
+    #region  Validation Rules
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(
-        new Csla.Validation.RuleHandler(
-          Assignment.ValidRole), "Role");
+      ValidationRules.AddRule(Assignment.ValidRole, RoleProperty);
     }
 
     #endregion
 
-    #region Authorization Rules
+    #region  Authorization Rules
 
     protected override void AddAuthorizationRules()
     {
-      AuthorizationRules.AllowWrite(
-        "Role", "ProjectManager");
+      AuthorizationRules.AllowWrite(RoleProperty, "ProjectManager");
     }
 
     #endregion
 
-    #region Factory Methods
+    #region  Factory Methods
 
-    internal static ResourceAssignment NewResourceAssignment(
-      Guid projectId)
+    internal static ResourceAssignment NewResourceAssignment(Guid projectId)
     {
-      return new ResourceAssignment(
-        Project.GetProject(projectId), RoleList.DefaultRole());
+      return DataPortal.CreateChild<ResourceAssignment>(projectId, RoleList.DefaultRole());
     }
 
-    internal static ResourceAssignment GetResourceAssignment(
-      SafeDataReader dr)
+    internal static ResourceAssignment GetResourceAssignment(ProjectTracker.DalLinq.Assignment data)
     {
-      return new ResourceAssignment(dr);
+      return DataPortal.FetchChild<ResourceAssignment>(data);
     }
 
     private ResourceAssignment()
-    { MarkAsChild(); }
+    { /* require use of factory methods */ }
 
     #endregion
 
-    #region Data Access
+    #region  Data Access
 
-    /// <summary>
-    /// Called to when a new object is created.
-    /// </summary>
-    private ResourceAssignment(Project project, int role)
+    private void Child_Create(Guid projectId, int role)
     {
-      MarkAsChild();
-      _projectId = project.Id;
-      _projectName = project.Name;
+      var proj = Project.GetProject(projectId);
+      _projectId = proj.Id;
+      _projectName = proj.Name;
       _assigned.Date = Assignment.GetDefaultAssignedDate();
       _role = role;
     }
 
-    /// <summary>
-    /// Called when loading data from the database.
-    /// </summary>
-    private ResourceAssignment(SafeDataReader dr)
+    private void Child_Fetch(ProjectTracker.DalLinq.Assignment data)
     {
-      MarkAsChild();
-      _projectId = dr.GetGuid("ProjectId");
-      _projectName = dr.GetString("Name");
-      _assigned = dr.GetSmartDate("Assigned");
-      _role = dr.GetInt32("Role");
-      dr.GetBytes("LastChanged", 0, _timestamp, 0, 8);
-      MarkOld();
+      _projectId = data.ProjectId;
+      _projectName = data.Project.Name;
+      _assigned = data.Assigned;
+      _role = data.Role;
+      _timestamp = data.LastChanged.ToArray();
     }
 
-    internal void Insert(Resource resource)
+    private void Child_Insert(Resource resource)
     {
-      SqlConnection cn = (SqlConnection)ApplicationContext.LocalContext["cn"];
-
-      // if we're not dirty then don't update the database
-      if (!this.IsDirty) return;
-
-      _timestamp = Assignment.AddAssignment(
-        cn, _projectId, resource.Id, _assigned, _role);
-      MarkOld();
+      _timestamp = Assignment.AddAssignment(_projectId, resource.Id, _assigned, _role);
     }
 
-    internal void Update(Resource resource)
+    private void Child_Update(Resource resource)
     {
-      SqlConnection cn = (SqlConnection)ApplicationContext.LocalContext["cn"];
-
-      // if we're not dirty then don't update the database
-      if (!this.IsDirty) return;
-
-      _timestamp = Assignment.UpdateAssignment(
-        cn, _projectId, resource.Id, _assigned, _role, _timestamp);
-      MarkOld();
+      _timestamp = Assignment.UpdateAssignment(_projectId, resource.Id, _assigned, _role, _timestamp);
     }
 
-    internal void DeleteSelf(Resource resource)
+    private void Child_DeleteSelf(Resource resource)
     {
-      SqlConnection cn = (SqlConnection)ApplicationContext.LocalContext["cn"];
-
-      // if we're not dirty then don't update the database
-      if (!this.IsDirty) return;
-
-      // if we're new then don't update the database
-      if (this.IsNew) return;
-
-      Assignment.RemoveAssignment(cn, _projectId, resource.Id);
-      MarkNew();
+      Assignment.RemoveAssignment(_projectId, resource.Id);
     }
 
     #endregion

@@ -1,29 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data.SqlClient;
 using Csla;
-using Csla.Data;
+using System;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectInfo :
-    ReadOnlyBase<ProjectInfo>
+  public class ProjectInfo : ReadOnlyBase<ProjectInfo>
   {
-    #region Business Methods
-
     private Guid _id;
     private string _name;
 
     public Guid Id
     {
-      get { return _id; }
+      get
+      {
+        return _id;
+      }
+      internal set
+      {
+        _id = value;
+      }
     }
 
     public string Name
     {
-      get { return _name; }
+      get
+      {
+        return _name;
+      }
+      internal set
+      {
+        _name = value;
+      }
     }
 
     protected override object GetIdValue()
@@ -36,18 +43,15 @@ namespace ProjectTracker.Library
       return _name;
     }
 
-    #endregion
-
-    #region Constructors
-
     private ProjectInfo()
-    { /* require use of factory methods */ }
+    {
+      // require use of factory methods
+    }
 
     internal ProjectInfo(Guid id, string name)
     {
       _id = id;
       _name = name;
     }
-    #endregion
   }
 }

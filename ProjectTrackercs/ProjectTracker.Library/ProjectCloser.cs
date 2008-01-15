@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Csla;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Csla;
 using Csla.Workflow;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
+  [Serializable()]
   public class ProjectCloser : CommandBase
   {
     public static void CloseProject(Guid id)
@@ -15,27 +14,24 @@ namespace ProjectTracker.Library
       cmd = DataPortal.Execute<ProjectCloser>(cmd);
     }
 
-    private Guid _projectId;
+    private Guid mProjectId;
 
     private ProjectCloser()
     { /* require use of factory methods */ }
 
-    private ProjectCloser(Guid projectId)
+    private ProjectCloser(Guid id)
     {
-      _projectId = projectId;
+      mProjectId = id;
     }
 
     protected override void DataPortal_Execute()
     {
-      Dictionary<string, object> parameters = 
-        new Dictionary<string, object>();
-      parameters.Add("ProjectId", _projectId);
+      Dictionary<string, object> parameters = new Dictionary<string, object>();
+      parameters.Add("ProjectId", mProjectId);
 
       WorkflowManager mgr = new WorkflowManager();
-      mgr.ExecuteWorkflow(
-        "PTWorkflow.ProjectWorkflow, PTWorkflow", 
-        parameters);
-      
+      mgr.ExecuteWorkflow("PTWorkflow.ProjectWorkflow, PTWorkflow", parameters);
+
       if (mgr.Status == WorkflowStatus.Terminated)
         throw mgr.Error;
     }

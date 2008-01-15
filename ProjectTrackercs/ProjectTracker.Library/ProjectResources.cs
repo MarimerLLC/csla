@@ -1,16 +1,12 @@
-using System;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
-using Csla.Data;
+using System;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectResources : 
-    BusinessListBase<ProjectResources, ProjectResource>
+  public class ProjectResources : BusinessListBase<ProjectResources, ProjectResource>
   {
-    #region Business Methods
+    #region  Business Methods
 
     public ProjectResource GetItem(int resourceId)
     {
@@ -22,15 +18,15 @@ namespace ProjectTracker.Library
 
     public void Assign(int resourceId)
     {
-      if (!Contains(resourceId))
+      if (!(Contains(resourceId)))
       {
-        ProjectResource resource =
-          ProjectResource.NewProjectResource(resourceId);
+        ProjectResource resource = ProjectResource.NewProjectResource(resourceId);
         this.Add(resource);
       }
       else
-        throw new InvalidOperationException(
-          "Resource already assigned to project");
+      {
+        throw new InvalidOperationException("Resource already assigned to project");
+      }
     }
 
     public void Remove(int resourceId)
@@ -63,59 +59,30 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Factory Methods
+    #region  Factory Methods
 
     internal static ProjectResources NewProjectResources()
     {
-      return new ProjectResources();
+      return DataPortal.CreateChild<ProjectResources>();
     }
 
-    internal static ProjectResources GetProjectResources(SafeDataReader dr)
+    internal static ProjectResources GetProjectResources(ProjectTracker.DalLinq.Assignment[] data)
     {
-      return new ProjectResources(dr);
+      return DataPortal.FetchChild<ProjectResources>(data);
     }
 
     private ProjectResources()
-    {
-      MarkAsChild();
-    }
-
-    private ProjectResources(SafeDataReader dr)
-    {
-      MarkAsChild();
-      Fetch(dr);
-    }
+    { /* require use of factory methods */ }
 
     #endregion
 
-    #region Data Access
+    #region  Data Access
 
-    // called to load data from the database
-    private void Fetch(SafeDataReader dr)
+    private void Child_Fetch(ProjectTracker.DalLinq.Assignment[] data)
     {
       this.RaiseListChangedEvents = false;
-      while (dr.Read())
-        this.Add(ProjectResource.GetResource(dr));
-      this.RaiseListChangedEvents = true;
-    }
-
-    internal void Update(Project project)
-    {
-      this.RaiseListChangedEvents = false;
-      // update (thus deleting) any deleted child objects
-      foreach (ProjectResource obj in DeletedList)
-        obj.DeleteSelf(project);
-      // now that they are deleted, remove them from memory too
-      DeletedList.Clear();
-
-      // add/update any current child objects
-      foreach (ProjectResource obj in this)
-      {
-        if (obj.IsNew)
-          obj.Insert(project);
-        else
-          obj.Update(project);
-      }
+      foreach (var value in data)
+        this.Add(ProjectResource.GetResource(value));
       this.RaiseListChangedEvents = true;
     }
 

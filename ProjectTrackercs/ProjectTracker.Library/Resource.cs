@@ -1,136 +1,108 @@
-using System;
-using System.Data;
-using System.Data.SqlClient;
 using Csla;
 using Csla.Data;
-using Csla.Validation;
+using System;
+using System.Linq;
 
 namespace ProjectTracker.Library
 {
-
   [Serializable()]
   public class Resource : BusinessBase<Resource>
   {
+    #region  Business Methods
 
-    #region Business Methods
-
-    private int _id;
-    private string _lastName = string.Empty;
-    private string _firstName = string.Empty;
     private byte[] _timestamp = new byte[8];
 
-    private ResourceAssignments _assignments; 
-
-    [System.ComponentModel.DataObjectField(true, true)]
+    private static PropertyInfo<int> IdProperty = new PropertyInfo<int>("Id");
+    private int _id = IdProperty.DefaultValue;
     public int Id
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _id;
+        return GetProperty<int>(IdProperty, _id);
       }
     }
 
+    private static PropertyInfo<string> LastNameProperty = new PropertyInfo<string>("LastName", "Last name");
+    private string _lastName = LastNameProperty.DefaultValue;
     public string LastName
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _lastName;
+        return GetProperty<string>(LastNameProperty, _lastName);
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
-        if (value == null) value = string.Empty;
-        if (_lastName != value)
-        {
-          _lastName = value;
-          PropertyHasChanged();
-        }
+        SetProperty<string>(LastNameProperty, ref _lastName, value);
       }
     }
 
+    private static PropertyInfo<string> FirstNameProperty = new PropertyInfo<string>("FirstName", "First name");
+    private string _firstName = FirstNameProperty.DefaultValue;
     public string FirstName
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
-        return _firstName;
+        return GetProperty<string>(FirstNameProperty, _firstName);
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty();
-        if (value == null) value = string.Empty;
-        if (_firstName != value)
-        {
-          _firstName = value;
-          PropertyHasChanged();
-        }
+        SetProperty<string>(FirstNameProperty, ref _firstName, value);
       }
     }
+
+    private static PropertyInfo<string> FullNameProperty = new PropertyInfo<string>("FullName", "Full name");
     public string FullName
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        if (CanReadProperty("FirstName") && CanReadProperty("LastName"))
-          return string.Format("{0}, {1}", _lastName, _firstName);
-        else
-          throw new System.Security.SecurityException("Property read not allowed");
+        return LastName + ", " + FirstName;
       }
     }
 
+    private static PropertyInfo<ResourceAssignments> AssignmentsProperty = new PropertyInfo<ResourceAssignments>("Assignments");
     public ResourceAssignments Assignments
     {
-      get { return _assignments; }
+      get
+      {
+        if (!(FieldManager.FieldExists(AssignmentsProperty)))
+        {
+          SetProperty<ResourceAssignments>(AssignmentsProperty, ResourceAssignments.NewResourceAssignments());
+        }
+        return GetProperty<ResourceAssignments>(AssignmentsProperty);
+      }
     }
 
-    public override bool IsValid
+    public override string ToString()
     {
-      get { return base.IsValid && _assignments.IsValid; }
-    }
-
-    public override bool IsDirty
-    {
-      get { return base.IsDirty || _assignments.IsDirty; }
-    }
-
-    protected override object GetIdValue()
-    {
-      return _id;
+      return _id.ToString();
     }
 
     #endregion
 
-    #region Validation Rules
+    #region  Validation Rules
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(new RuleHandler(CommonRules.StringRequired), 
-        new RuleArgs("FirstName", "First name"));
-      ValidationRules.AddRule(new RuleHandler(CommonRules.StringMaxLength), 
-        new CommonRules.MaxLengthRuleArgs("FirstName", 50));
+      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, FirstNameProperty);
+      ValidationRules.AddRule(
+        Csla.Validation.CommonRules.StringMaxLength,
+        new Csla.Validation.CommonRules.MaxLengthRuleArgs(FirstNameProperty, 50));
 
-      ValidationRules.AddRule(new RuleHandler(CommonRules.StringRequired), 
-        new RuleArgs("LastName", "Last name"));
-      ValidationRules.AddRule(new RuleHandler(CommonRules.StringMaxLength),
-        new CommonRules.MaxLengthRuleArgs("LastName", 50));
+      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, LastNameProperty);
+      ValidationRules.AddRule(
+        Csla.Validation.CommonRules.StringMaxLength,
+        new Csla.Validation.CommonRules.MaxLengthRuleArgs(LastNameProperty, 50));
     }
 
     #endregion
 
-    #region Authorization Rules
+    #region  Authorization Rules
 
     protected override void AddAuthorizationRules()
     {
       // add AuthorizationRules here
-      AuthorizationRules.AllowWrite("LastName", "ProjectManager");
-      AuthorizationRules.AllowWrite("FirstName", "ProjectManager");
+      AuthorizationRules.AllowWrite(LastNameProperty, "ProjectManager");
+      AuthorizationRules.AllowWrite(FirstNameProperty, "ProjectManager");
     }
 
     public static bool CanAddObject()
@@ -160,73 +132,46 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region Factory Methods
+    #region  Factory Methods
 
     public static Resource NewResource()
     {
-      if (!CanAddObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to add a resource");
+      if (!(CanAddObject()))
+        throw new System.Security.SecurityException("User not authorized to add a resource");
       return DataPortal.Create<Resource>();
     }
 
     public static void DeleteResource(int id)
     {
-      if (!CanDeleteObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to remove a resource");
-      DataPortal.Delete(new Criteria(id));
+      if (!(CanDeleteObject()))
+        throw new System.Security.SecurityException("User not authorized to remove a resource");
+      DataPortal.Delete(new SingleCriteria<Resource, int>(id));
     }
 
     public static Resource GetResource(int id)
     {
-      if (!CanGetObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to view a resource");
-      return DataPortal.Fetch<Resource>(new Criteria(id));
+      if (!(CanGetObject()))
+        throw new System.Security.SecurityException("User not authorized to view a resource");
+      return DataPortal.Fetch<Resource>(new SingleCriteria<Resource, int>(id));
     }
 
     public override Resource Save()
     {
-      if (IsDeleted && !CanDeleteObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to remove a resource");
-      else if (IsNew && !CanAddObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to add a resource");
-      else if (!CanEditObject())
-        throw new System.Security.SecurityException(
-          "User not authorized to update a resource");
+      if (IsDeleted && !(CanDeleteObject()))
+        throw new System.Security.SecurityException("User not authorized to remove a resource");
+      else if (IsNew && !(CanAddObject()))
+        throw new System.Security.SecurityException("User not authorized to add a resource");
+      else if (!(CanEditObject()))
+        throw new System.Security.SecurityException("User not authorized to update a resource");
       return base.Save();
     }
 
     private Resource()
-    {
-      _assignments = ResourceAssignments.NewResourceAssignments();
-      _assignments.ListChanged += new System.ComponentModel.ListChangedEventHandler(_assignments_ListChanged);
-    }
-
-    void _assignments_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
-    {
-      OnUnknownPropertyChanged();
-    }
+    { /* require use of factory methods */ }
 
     #endregion
 
-    #region Data Access
-
-    [Serializable()]
-    private class Criteria
-    {
-      private int _id;
-      public int Id
-      {
-        get { return _id; }
-      }
-
-      public Criteria(int id)
-      { _id = id; }
-    }
+    #region  Data Access
 
     [RunLocal()]
     protected override void DataPortal_Create()
@@ -235,138 +180,68 @@ namespace ProjectTracker.Library
       ValidationRules.CheckRules();
     }
 
-    private void DataPortal_Fetch(Criteria criteria)
+    private void DataPortal_Fetch(SingleCriteria<Resource, int> criteria)
     {
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "getResource";
-          cm.Parameters.AddWithValue("@id", criteria.Id);
+        var data = (from r in ctx.DataContext.Resources
+                    where r.Id == criteria.Value
+                    select r).Single();
+        _id = data.Id;
+        _lastName = data.LastName;
+        _firstName = data.FirstName;
+        _timestamp = data.LastChanged.ToArray();
 
-          using (SafeDataReader dr = 
-            new SafeDataReader(cm.ExecuteReader()))
-          {
-            dr.Read();
-            _id = dr.GetInt32("Id");
-            _lastName = dr.GetString("LastName");
-            _firstName = dr.GetString("FirstName");
-            dr.GetBytes("LastChanged", 0, _timestamp, 0, 8);
-
-            // load child objects
-            dr.NextResult();
-            _assignments.ListChanged -= new System.ComponentModel.ListChangedEventHandler(_assignments_ListChanged);
-            _assignments = 
-              ResourceAssignments.GetResourceAssignments(dr);
-            _assignments.ListChanged += new System.ComponentModel.ListChangedEventHandler(_assignments_ListChanged);
-          }
-        }
+        SetProperty<ResourceAssignments>(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(data.Assignments.ToArray()));
       }
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        ApplicationContext.LocalContext["cn"] = cn;
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "addResource";
-          cm.Parameters.AddWithValue("@lastName", _lastName);
-          cm.Parameters.AddWithValue("@firstName", _firstName);
-          SqlParameter param = 
-            new SqlParameter("@newId",SqlDbType.Int);
-          param.Direction = ParameterDirection.Output;
-          cm.Parameters.Add(param);
-          param = new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
-          param.Direction = ParameterDirection.Output;
-          cm.Parameters.Add(param);
-
-          cm.ExecuteNonQuery();
-
-          _id = (int)cm.Parameters["@newId"].Value;
-          _timestamp = (byte[])cm.Parameters["@newLastChanged"].Value;
-        }
-        // update child objects
-        _assignments.Update(this);
-        // removing of item only needed for local data portal
-        if (ApplicationContext.ExecutionLocation==ApplicationContext.ExecutionLocations.Client)
-          ApplicationContext.LocalContext.Remove("cn");
+        int? newId = null;
+        System.Data.Linq.Binary newLastChanged = null;
+        ctx.DataContext.addResource(_lastName, _firstName, ref newId, ref newLastChanged);
+        _id = System.Convert.ToInt32(newId);
+        _timestamp = newLastChanged.ToArray();
+        FieldManager.UpdateChildren(this);
       }
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        ApplicationContext.LocalContext["cn"] = cn;
-        if (base.IsDirty)
-        {
-          using (SqlCommand cm = cn.CreateCommand())
-          {
-            cm.CommandType = CommandType.StoredProcedure;
-            cm.CommandText = "updateResource";
-            cm.Parameters.AddWithValue("@id", _id);
-            cm.Parameters.AddWithValue("@lastName", _lastName);
-            cm.Parameters.AddWithValue("@firstName", _firstName);
-            cm.Parameters.AddWithValue("@lastChanged", _timestamp);
-            SqlParameter param = 
-              new SqlParameter("@newLastChanged", SqlDbType.Timestamp);
-            param.Direction = ParameterDirection.Output;
-            cm.Parameters.Add(param);
-
-            cm.ExecuteNonQuery();
-
-            _timestamp = (byte[])cm.Parameters["@newLastChanged"].Value;
-          }
-        }
-        // update child objects
-        _assignments.Update(this);
-        // removing of item only needed for local data portal
-        if (ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Client)
-          ApplicationContext.LocalContext.Remove("cn");
+        System.Data.Linq.Binary newLastChanged = null;
+        ctx.DataContext.updateResource(_id, _lastName, _firstName, _timestamp, ref newLastChanged);
+        _timestamp = newLastChanged.ToArray();
+        FieldManager.UpdateChildren(this);
       }
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
-      DataPortal_Delete(new Criteria(_id));
+      DataPortal_Delete(new SingleCriteria<Resource, int>(_id));
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(Criteria criteria)
+    private void DataPortal_Delete(SingleCriteria<Resource, int> criteria)
     {
-      using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        cn.Open();
-        using (SqlCommand cm = cn.CreateCommand())
-        {
-          cm.CommandType = CommandType.StoredProcedure;
-          cm.CommandText = "deleteResource";
-          cm.Parameters.AddWithValue("@id", criteria.Id);
-          cm.ExecuteNonQuery();
-        }
+        ctx.DataContext.deleteResource(_id);
       }
-    }
-
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      _assignments.ListChanged += new System.ComponentModel.ListChangedEventHandler(_assignments_ListChanged);
     }
 
     #endregion
 
-    #region Exists
+    #region  Exists
 
-    public static bool Exists(string id)
+    public static bool Exists(int id)
     {
       return ExistsCommand.Exists(id);
     }
@@ -374,40 +249,36 @@ namespace ProjectTracker.Library
     [Serializable()]
     private class ExistsCommand : CommandBase
     {
-
-      private string _id;
+      private int _id;
       private bool _exists;
 
       public bool ResourceExists
       {
-        get { return _exists; }
+        get
+        {
+          return _exists;
+        }
       }
 
-      public static bool Exists(string id)
+      public static bool Exists(int id)
       {
-        ExistsCommand result;
+        ExistsCommand result = null;
         result = DataPortal.Execute<ExistsCommand>(new ExistsCommand(id));
         return result.ResourceExists;
       }
 
-      private ExistsCommand(string id)
+      private ExistsCommand(int id)
       {
         _id = id;
       }
 
       protected override void DataPortal_Execute()
       {
-        using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))
+        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
         {
-          cn.Open();
-          using (SqlCommand cm = cn.CreateCommand())
-          {
-            cm.CommandType = CommandType.StoredProcedure;
-            cm.CommandText = "existsResource";
-            cm.Parameters.AddWithValue("@id", _id);
-            int count = (int)cm.ExecuteScalar();
-            _exists = (count > 0);
-          }
+          _exists = (from p in ctx.DataContext.Resources
+                     where p.Id == _id
+                     select p).Count() > 0;
         }
       }
     }

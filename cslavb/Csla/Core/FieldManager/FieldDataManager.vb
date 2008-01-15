@@ -331,10 +331,10 @@ Namespace Core.FieldManager
               FieldData.Add(key, DirectCast(item.Value, IFieldData))
             End If
           Next
-        End If
 
-      Else
-        mStateStack.Pop()
+        Else
+          mStateStack.Pop()
+        End If
       End If
 
     End Sub

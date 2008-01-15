@@ -53,8 +53,7 @@ Public Class ProjectSelect
 
   Private Sub DisplayList(ByVal list As ProjectList)
 
-    Dim sortedList As New Csla.SortedBindingList(Of ProjectInfo)(list)
-    sortedList.ApplySort("Name", ListSortDirection.Ascending)
+    Dim sortedList = From p In list Order By p.Name
     Me.ProjectListBindingSource.DataSource = sortedList
 
   End Sub

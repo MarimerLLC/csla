@@ -49,6 +49,11 @@ namespace Csla.Core
       }
     }
 
+    int IUndoableObject.EditLevel
+    {
+      get { return EditLevel; }
+    }
+
     /// <summary>
     /// Returns the current edit level of the object.
     /// </summary>
@@ -359,5 +364,20 @@ namespace Csla.Core
 
     #endregion
 
+    #region  Reset child edit level
+
+    internal static void ResetChildEditLevel(IUndoableObject child, int parentEditLevel)
+    {
+      // if item's edit level is too high,
+      // reduce it to match list
+      while (child.EditLevel > parentEditLevel)
+        child.AcceptChanges(parentEditLevel);
+      // if item's edit level is too low,
+      // increase it to match list
+      while (child.EditLevel < parentEditLevel)
+        child.CopyState(parentEditLevel);
+    }
+
+    #endregion
   }
 }

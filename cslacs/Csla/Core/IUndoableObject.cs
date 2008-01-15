@@ -11,6 +11,10 @@ namespace Csla.Core
   public interface IUndoableObject
   {
     /// <summary>
+    /// Gets the current edit level of the object.
+    /// </summary>
+    int EditLevel { get; }
+    /// <summary>
     /// Copies the state of the object and places the copy
     /// onto the state stack.
     /// </summary>

@@ -189,6 +189,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="PropertyInfo.cs" />
+    <Compile Include="PropertyLoadException.cs" />
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="Security\AccessType.cs" />

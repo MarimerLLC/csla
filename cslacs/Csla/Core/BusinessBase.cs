@@ -19,7 +19,7 @@ namespace Csla.Core
   public abstract class BusinessBase : 
     Csla.Core.UndoableBase, IEditableBusinessObject,
     System.ComponentModel.IEditableObject, System.ComponentModel.IDataErrorInfo, 
-    ICloneable, Csla.Security.IAuthorizeReadWrite
+    ICloneable, Csla.Security.IAuthorizeReadWrite, IParent
   {
 
     #region Constructors
@@ -30,30 +30,8 @@ namespace Csla.Core
     protected BusinessBase()
     {
       Initialize();
-      AddInstanceBusinessRules();
-      if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-      {
-        lock (this.GetType())
-        {
-          if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-          {
-            Validation.SharedValidationRules.GetManager(this.GetType(), true);
-            AddBusinessRules();
-          }
-        }
-      }
-      AddInstanceAuthorizationRules();
-      if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-      {
-        lock (this.GetType())
-        {
-          if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-          {
-            Security.SharedAuthorizationRules.GetManager(this.GetType(), true);
-            AddAuthorizationRules();
-          }
-        }
-      }
+      InitializeBusinessRules();
+      InitializeAuthorizationRules();
     }
 
     #endregion
@@ -136,7 +114,7 @@ namespace Csla.Core
     [Browsable(false)]
     public virtual bool IsDirty
     {
-      get { return _isDirty; }
+      get { return _isDirty || (_fieldManager != null && FieldManager.IsDirty()); }
     }
 
     /// <summary>
@@ -294,6 +272,8 @@ namespace Csla.Core
     protected void MarkClean()
     {
       _isDirty = false;
+      if (_fieldManager != null)
+      FieldManager.MarkClean();
       OnUnknownPropertyChanged();
     }
 
@@ -334,6 +314,22 @@ namespace Csla.Core
     [NotUndoable()]
     [NonSerialized()]
     private Security.AuthorizationRules _authorizationRules;
+
+    private void InitializeAuthorizationRules()
+    {
+      AddInstanceAuthorizationRules();
+      if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
+      {
+        lock (this.GetType())
+        {
+          if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
+          {
+            Csla.Security.SharedAuthorizationRules.GetManager(this.GetType(), true);
+            AddAuthorizationRules();
+          }
+        }
+      }
+    }
 
     /// <summary>
     /// Override this method to add authorization
@@ -930,18 +926,7 @@ namespace Csla.Core
     {
       BindingEdit = false;
       ValidationRules.SetTarget(this);
-      AddInstanceBusinessRules();
-      if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-      {
-        lock (this.GetType())
-        {
-          if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-          {
-            Validation.SharedValidationRules.GetManager(this.GetType(), true);
-            AddBusinessRules();
-          }
-        }
-      }
+      InitializeBusinessRules();
       OnUnknownPropertyChanged();
       base.UndoChangesComplete();
     }
@@ -1058,7 +1043,7 @@ namespace Csla.Core
       set { _editLevelAdded = value; }
     }
 
-    int IEditableBusinessObject.EditLevel
+    int IUndoableObject.EditLevel
     {
       get
       {
@@ -1092,6 +1077,22 @@ namespace Csla.Core
     #region ValidationRules, IsValid
 
     private Validation.ValidationRules _validationRules;
+
+    private void InitializeBusinessRules()
+    {
+      AddInstanceBusinessRules();
+      if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
+      {
+        lock (this.GetType())
+        {
+          if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
+          {
+            Validation.SharedValidationRules.GetManager(this.GetType(), true);
+            AddBusinessRules();
+          }
+        }
+      }
+    }
 
     /// <summary>
     /// Provides access to the broken rules functionality.
@@ -1160,7 +1161,7 @@ namespace Csla.Core
     [Browsable(false)]
     public virtual bool IsValid
     {
-      get { return ValidationRules.IsValid; }
+      get { return ValidationRules.IsValid && (_fieldManager != null || FieldManager.IsValid()); }
     }
 
 
@@ -1328,30 +1329,9 @@ namespace Csla.Core
     {
       OnDeserialized(context);
       ValidationRules.SetTarget(this);
-      AddInstanceBusinessRules();
-      if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-      {
-        lock (this.GetType())
-        {
-          if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))
-          {
-            Validation.SharedValidationRules.GetManager(this.GetType(), true);
-            AddBusinessRules();
-          }
-        }
-      }
-      AddInstanceAuthorizationRules();
-      if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-      {
-        lock (this.GetType())
-        {
-          if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-          {
-            Security.SharedAuthorizationRules.GetManager(this.GetType(), true);
-            AddAuthorizationRules();
-          }
-        }
-      }
+      InitializeBusinessRules();
+      InitializeAuthorizationRules();
+      FieldDataDeserialized();
     }
 
     /// <summary>
@@ -1390,6 +1370,765 @@ namespace Csla.Core
     void IEditableBusinessObject.SetParent(IParent parent)
     {
       this.SetParent(parent);
+    }
+
+    #endregion
+
+    #region  Get Properties
+
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
+    /// <param name="defaultValue">
+    /// Value to be returned if the user is not
+    /// authorized to read the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(string propertyName, P field, P defaultValue)
+    {
+      return GetProperty<P>(propertyName, field, defaultValue, false);
+    }
+
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
+    /// <param name="defaultValue">
+    /// Value to be returned if the user is not
+    /// authorized to read the property.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    protected P GetProperty<P>(string propertyName, P field, P defaultValue, bool throwOnNoAccess)
+    {
+      if (CanReadProperty(propertyName, throwOnNoAccess))
+        return field;
+      else
+        return defaultValue;
+    }
+
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field)
+    {
+      return GetProperty<P>(propertyInfo.Name, field, propertyInfo.DefaultValue, false);
+    }
+
+    /// <summary>
+    /// Gets a property's value as 
+    /// a specified type, first checking authorization.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, false));
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field, bool throwOnNoAccess)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess));
+    }
+
+    /// <summary>
+    /// Gets a property's managed field value, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(PropertyInfo<P> propertyInfo)
+    {
+      return GetProperty<P>(propertyInfo, false);
+    }
+
+    /// <summary>
+    /// Gets a property's value from the list of 
+    /// managed field values, first checking authorization,
+    /// and converting the value to an appropriate type.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, false));
+    }
+
+    /// <summary>
+    /// Gets a property's value from the list of 
+    /// managed field values, first checking authorization,
+    /// and converting the value to an appropriate type.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, bool throwOnNoAccess)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, throwOnNoAccess));
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, bool throwOnNoAccess)
+    {
+      P result = default(P);
+      if (CanReadProperty(propertyInfo.Name, throwOnNoAccess))
+      {
+        FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
+        if (data != null)
+        {
+          FieldManager.IFieldData<P> fd = data as FieldManager.IFieldData<P>;
+          if (fd != null)
+            result = fd.Value;
+          else
+            result = (P)data.Value;
+        }
+        else
+        {
+          result = propertyInfo.DefaultValue;
+          FieldManager.LoadFieldData<P>(propertyInfo, result);
+        }
+      }
+      else
+      {
+        result = propertyInfo.DefaultValue;
+      }
+      return result;
+    }
+
+    #endregion
+
+    #region  Set Properties
+
+    /// <summary>
+    /// Sets a property's backing field with the supplied
+    /// value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, ref P field, P newValue)
+    {
+      SetProperty<P>(propertyInfo.Name, ref field, newValue, true);
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the supplied
+    /// value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetProperty<P>(string propertyName, ref P field, P newValue)
+    {
+      SetProperty<P>(propertyName, ref field, newValue, true);
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the field being set.
+    /// </typeparam>
+    /// <typeparam name="V">
+    /// Type of the value provided to the field.
+    /// </typeparam>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
+    {
+      SetProperty<P, V>(propertyInfo, ref field, newValue, true);
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the field being set.
+    /// </typeparam>
+    /// <typeparam name="V">
+    /// Type of the value provided to the field.
+    /// </typeparam>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to change this property.</param>
+    /// <remarks>
+    /// If the field value is of type string, any incoming
+    /// null values are converted to string.Empty.
+    /// </remarks>
+    protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, bool throwOnNoAccess)
+    {
+      SetProperty<P, V>(propertyInfo.Name, ref field, newValue, throwOnNoAccess);
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the supplied
+    /// value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to change this property.</param>
+    protected void SetProperty<P>(string propertyName, ref P field, P newValue, bool throwOnNoAccess)
+    {
+      if (CanWriteProperty(propertyName, throwOnNoAccess))
+      {
+        try
+        {
+          if (field == null)
+          {
+            if (newValue != null)
+            {
+              OnPropertyChanging(propertyName);
+              field = newValue;
+              PropertyHasChanged(propertyName);
+            }
+          }
+          else if (!(field.Equals(newValue)))
+          {
+            if (newValue is string && newValue == null)
+              newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
+            OnPropertyChanging(propertyName);
+            field = newValue;
+            PropertyHasChanged(propertyName);
+          }
+        }
+        catch (Exception ex)
+        {
+          throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message));
+        }
+      }
+    }
+
+    /// <summary>
+    /// Sets a property's backing field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the field being set.
+    /// </typeparam>
+    /// <typeparam name="V">
+    /// Type of the value provided to the field.
+    /// </typeparam>
+    /// <param name="field">
+    /// A reference to the backing field for the property.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to change this property.</param>
+    /// <remarks>
+    /// If the field value is of type string, any incoming
+    /// null values are converted to string.Empty.
+    /// </remarks>
+    protected void SetProperty<P, V>(string propertyName, ref P field, V newValue, bool throwOnNoAccess)
+    {
+      if (CanWriteProperty(propertyName, throwOnNoAccess))
+      {
+        try
+        {
+          if (field == null)
+          {
+            if (newValue != null)
+            {
+              OnPropertyChanging(propertyName);
+              field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
+              PropertyHasChanged(propertyName);
+            }
+          }
+          else if (!(field.Equals(newValue)))
+          {
+            if (newValue is string && newValue == null)
+              newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
+            OnPropertyChanging(propertyName);
+            field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
+            PropertyHasChanged(propertyName);
+          }
+        }
+        catch (Exception ex)
+        {
+          throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyName, ex.Message));
+        }
+      }
+    }
+
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      SetProperty<P>(propertyInfo, newValue, true);
+    }
+
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    {
+      SetProperty<P, F>(propertyInfo, newValue, true);
+    }
+
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to change this property.</param>
+    protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue, bool throwOnNoAccess)
+    {
+      if (CanWriteProperty(propertyInfo.Name, throwOnNoAccess))
+      {
+        OnPropertyChanging(propertyInfo.Name);
+        LoadProperty<P, F>(propertyInfo, newValue);
+        PropertyHasChanged(propertyInfo.Name);
+      }
+    }
+
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to change this property.</param>
+    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue, bool throwOnNoAccess)
+    {
+      if (CanWriteProperty(propertyInfo.Name, throwOnNoAccess))
+      {
+        OnPropertyChanging(propertyInfo.Name);
+        LoadProperty<P>(propertyInfo, newValue);
+        PropertyHasChanged(propertyInfo.Name);
+      }
+    }
+
+    #endregion
+
+    #region  Load Properties
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value calling PropertyHasChanged 
+    /// if the value does change.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    {
+      try
+      {
+        P oldValue = default(P);
+        var fieldData = FieldManager.GetFieldData(propertyInfo);
+        if (fieldData == null)
+        {
+          oldValue = propertyInfo.DefaultValue;
+          fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+        }
+        else
+        {
+          var fd = fieldData as FieldManager.IFieldData<P>;
+          if (fd != null)
+            oldValue = fd.Value;
+          else
+            oldValue = (P)fieldData.Value;
+        }
+        LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+      }
+    }
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value calling PropertyHasChanged 
+    /// if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      try
+      {
+        P oldValue = default(P);
+        var fieldData = FieldManager.GetFieldData(propertyInfo);
+        if (fieldData == null)
+        {
+          oldValue = propertyInfo.DefaultValue;
+          fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+        }
+        else
+        {
+          var fd = fieldData as FieldManager.IFieldData<P>;
+          if (fd != null)
+            oldValue = fd.Value;
+          else
+            oldValue = (P)fieldData.Value;
+        }
+        LoadPropertyValue<P>(propertyInfo, oldValue, newValue);
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+      }
+    }
+
+    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue)
+    {
+      var valuesDiffer = false;
+      if (oldValue == null)
+        valuesDiffer = newValue != null;
+      else
+        valuesDiffer = !(oldValue.Equals(newValue));
+
+      if (valuesDiffer)
+      {
+        if (typeof(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type))
+        {
+          // remove old event hook
+          if (oldValue != null)
+          {
+            INotifyPropertyChanged pc = (INotifyPropertyChanged)oldValue;
+            pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+          }
+          FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          IEditableBusinessObject child = (IEditableBusinessObject)newValue;
+          if (child != null)
+          {
+            child.SetParent(this);
+            // set child edit level
+            UndoableBase.ResetChildEditLevel(child, this.EditLevel);
+            // reset EditLevelAdded 
+            child.EditLevelAdded = this.EditLevel;
+            // hook child event
+            INotifyPropertyChanged pc = (INotifyPropertyChanged)newValue;
+            pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+          }
+        }
+        else if (typeof(IEditableCollection).IsAssignableFrom(propertyInfo.Type))
+        {
+          // remove old event hooks
+          if (oldValue != null)
+          {
+            IBindingList pc = (IBindingList)oldValue;
+            pc.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
+          }
+          FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          IEditableCollection child = (IEditableCollection)newValue;
+          if (child != null)
+          {
+            child.SetParent(this);
+            IUndoableObject undoChild = child as IUndoableObject;
+            if (undoChild != null)
+            {
+              // set child edit level
+              var newEditLevel = this.EditLevel;
+              if (BindingEdit)
+                newEditLevel = this.EditLevel - 1;
+              UndoableBase.ResetChildEditLevel(undoChild, newEditLevel);
+            }
+            IBindingList pc = (IBindingList)newValue;
+            pc.ListChanged += new ListChangedEventHandler(Child_ListChanged);
+          }
+        }
+        else
+        {
+          FieldManager.SetFieldData<P>(propertyInfo, newValue);
+        }
+      }
+    }
+
+    private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      var data = FieldManager.FindPropertyName(sender);
+      OnPropertyChanged(data);
+    }
+
+    private void Child_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      var data = FieldManager.FindPropertyName(sender);
+      OnPropertyChanged(data);
+    }
+
+    #endregion
+
+    #region  Field Manager
+
+    private FieldManager.FieldDataManager _fieldManager;
+
+    /// <summary>
+    /// Gets the PropertyManager object for this
+    /// business object.
+    /// </summary>
+    protected FieldManager.FieldDataManager FieldManager
+    {
+      get
+      {
+        if (_fieldManager == null)
+        {
+          _fieldManager = new FieldManager.FieldDataManager();
+          UndoableBase.ResetChildEditLevel(_fieldManager, this.EditLevel);
+        }
+        return _fieldManager;
+      }
+    }
+
+    private void FieldDataDeserialized()
+    {
+      foreach (object item in FieldManager.GetChildren())
+      {
+        IEditableBusinessObject eo = item as IEditableBusinessObject;
+        if (eo != null)
+        {
+          eo.SetParent(this);
+          INotifyPropertyChanged pc = (INotifyPropertyChanged)item;
+          pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+        }
+        else
+        {
+          IEditableCollection el = item as IEditableCollection;
+          if (el != null)
+          {
+            el.SetParent(this);
+            IBindingList bl = (IBindingList)item;
+            bl.ListChanged += new ListChangedEventHandler(Child_ListChanged);
+          }
+        }
+      }
+    }
+
+    #endregion
+
+    #region  IParent
+
+    /// <summary>
+    /// Override this method to be notified when a child object's
+    /// <see cref="Core.BusinessBase.ApplyEdit" /> method has
+    /// completed.
+    /// </summary>
+    /// <param name="child">The child object that was edited.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void EditChildComplete(Core.IEditableBusinessObject child)
+    {
+      // do nothing, we don't really care
+      // when a child has its edits applied
+    }
+
+    void IParent.ApplyEditChild(Core.IEditableBusinessObject child)
+    {
+      this.EditChildComplete(child);
+    }
+
+    void IParent.RemoveChild(IEditableBusinessObject child)
+    {
+      var name = FieldManager.FindPropertyName(child);
+      FieldManager.RemoveField(name);
     }
 
     #endregion

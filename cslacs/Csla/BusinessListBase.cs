@@ -363,7 +363,7 @@ namespace Csla
     private void DeleteChild(C child)
     {
       // set child edit level
-      ResetChildEditLevel(child, this.EditLevel);
+      Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel);
       // remove from the index
       RemoveIndexItem(child);
       // mark the object as deleted
@@ -432,7 +432,7 @@ namespace Csla
       // set parent reference
       item.SetParent(this);
       // set child edit level
-      ResetChildEditLevel(item, this.EditLevel);
+      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel);
       // when an object is inserted we assume it is
       // a new object and so the edit level when it was
       // added must be set
@@ -517,7 +517,7 @@ namespace Csla
         // set parent reference
         item.SetParent(this);
         // set child edit level
-        ResetChildEditLevel(item, this.EditLevel);
+        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel);
         // reset EditLevelAdded 
         item.EditLevelAdded = this.EditLevel;
         // update the indexes
@@ -533,18 +533,6 @@ namespace Csla
         CopyToDeletedList(child);
       if (RaiseListChangedEvents)
         OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
-    }
-
-    private void ResetChildEditLevel(C child, int parentEditLevel)
-    {
-      // if item's edit level is too high,
-      // reduce it to match list
-      while (child.EditLevel > parentEditLevel)
-        child.AcceptChanges(parentEditLevel);
-      // if item's edit level is too low,
-      // increase it to match list
-      while (child.EditLevel < parentEditLevel)
-        child.CopyState(parentEditLevel);
     }
 
     #endregion
@@ -700,6 +688,14 @@ namespace Csla
     protected int EditLevel
     {
       get { return _editLevel; }
+    }
+
+    int Core.IUndoableObject.EditLevel
+    {
+      get
+      {
+        return this.EditLevel;
+      }
     }
 
     #endregion
@@ -1078,6 +1074,40 @@ namespace Csla
         _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)
         _serializableSavedHandlers.Invoke(this, args);
+    }
+
+    #endregion
+
+    #region  Parent/Child link
+
+    [NotUndoable(), NonSerialized()]
+    private Core.IParent _parent;
+
+    /// <summary>
+    /// Provide access to the parent reference for use
+    /// in child object code.
+    /// </summary>
+    /// <remarks>
+    /// This value will be Nothing for root objects.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected Core.IParent Parent
+    {
+      get
+      {
+        return _parent;
+      }
+    }
+
+    /// <summary>
+    /// Used by BusinessListBase as a child object is 
+    /// created to tell the child object about its
+    /// parent.
+    /// </summary>
+    /// <param name="parent">A reference to the parent collection object.</param>
+    public void SetParent(Core.IParent parent)
+    {
+      _parent = parent;
     }
 
     #endregion

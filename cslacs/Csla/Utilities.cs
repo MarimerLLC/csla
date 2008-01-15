@@ -221,7 +221,7 @@ namespace Csla
     /// result is parsed to convert into the enum value.
     /// </para>
     /// </remarks>
-    public static D CoerceValue<D>(Type valueType, D oldValue, object value)
+    public static D CoerceValue<D>(Type valueType, object oldValue, object value)
     {
       return (D)(CoerceValue(typeof(D), valueType, oldValue, value));
     }

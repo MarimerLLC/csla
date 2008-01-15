@@ -24,17 +24,17 @@ namespace Csla.Core.FieldManager
 
     #region  FieldData
 
-    private FieldDataList mFields;
+    private FieldDataList _fields;
 
     private FieldDataList FieldData
     {
       get
       {
-        if (mFields == null)
+        if (_fields == null)
         {
-          mFields = new FieldDataList();
+          _fields = new FieldDataList();
         }
-        return mFields;
+        return _fields;
       }
     }
 
@@ -42,7 +42,7 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        return mFields != null;
+        return _fields != null;
       }
     }
 
@@ -241,7 +241,7 @@ namespace Csla.Core.FieldManager
 
     #region  IUndoableObject
 
-    private Stack<byte[]> mStateStack = new Stack<byte[]>();
+    private Stack<byte[]> _stateStack = new Stack<byte[]>();
 
     /// <summary>
     /// Gets the current edit level of the object.
@@ -250,7 +250,7 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        return mStateStack.Count;
+        return _stateStack.Count;
       }
     }
 
@@ -288,7 +288,7 @@ namespace Csla.Core.FieldManager
       {
         var formatter = SerializationFormatterFactory.GetFormatter();
         formatter.Serialize(buffer, state);
-        mStateStack.Push(buffer.ToArray());
+        _stateStack.Push(buffer.ToArray());
       }
     }
 
@@ -302,7 +302,7 @@ namespace Csla.Core.FieldManager
         if (HasFieldData)
         {
           HybridDictionary state = null;
-          using (MemoryStream buffer = new MemoryStream(mStateStack.Pop()))
+          using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
           {
             buffer.Position = 0;
             var formatter = SerializationFormatterFactory.GetFormatter();
@@ -310,7 +310,7 @@ namespace Csla.Core.FieldManager
           }
 
           var oldFields = FieldData;
-          mFields = new FieldDataList();
+          _fields = new FieldDataList();
 
           foreach (DictionaryEntry item in state)
           {
@@ -331,10 +331,10 @@ namespace Csla.Core.FieldManager
             }
           }
         }
-      }
-      else
-      {
-        mStateStack.Pop();
+        else
+        {
+          _stateStack.Pop();
+        }
       }
     }
 
@@ -346,7 +346,7 @@ namespace Csla.Core.FieldManager
       if (EditLevel > 0)
       {
         // discard latest recorded state
-        mStateStack.Pop();
+        _stateStack.Pop();
 
         if (HasFieldData)
         {

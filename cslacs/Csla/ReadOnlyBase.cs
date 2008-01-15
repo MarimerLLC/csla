@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Csla.Core.FieldManager;
 using Csla.Properties;
 
 namespace Csla
@@ -544,5 +545,362 @@ namespace Csla
 
     #endregion
 
+    #region  Get Properties
+
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
+    /// <param name="defaultValue">
+    /// Value to be returned if the user is not
+    /// authorized to read the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(string propertyName, P field, P defaultValue)
+    {
+      return GetProperty<P>(propertyName, field, defaultValue, false);
+    }
+
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
+    /// <param name="defaultValue">
+    /// Value to be returned if the user is not
+    /// authorized to read the property.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    protected P GetProperty<P>(string propertyName, P field, P defaultValue, bool throwOnNoAccess)
+    {
+      if (CanReadProperty(propertyName, throwOnNoAccess))
+        return field;
+      else
+        return defaultValue;
+    }
+
+    /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field)
+    {
+      return GetProperty<P>(propertyInfo.Name, field, propertyInfo.DefaultValue, false);
+    }
+
+    /// <summary>
+    /// Gets a property's value as 
+    /// a specified type, first checking authorization.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, false));
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field, bool throwOnNoAccess)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess));
+    }
+
+    /// <summary>
+    /// Gets a property's managed field value, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(PropertyInfo<P> propertyInfo)
+    {
+      return GetProperty<P>(propertyInfo, false);
+    }
+
+    /// <summary>
+    /// Gets a property's value from the list of 
+    /// managed field values, first checking authorization,
+    /// and converting the value to an appropriate type.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, false));
+    }
+
+    /// <summary>
+    /// Gets a property's value from the list of 
+    /// managed field values, first checking authorization,
+    /// and converting the value to an appropriate type.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, bool throwOnNoAccess)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, throwOnNoAccess));
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="throwOnNoAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, bool throwOnNoAccess)
+    {
+      P result = default(P);
+      if (CanReadProperty(propertyInfo.Name, throwOnNoAccess))
+      {
+        IFieldData data = FieldManager.GetFieldData(propertyInfo);
+        if (data != null)
+        {
+          FieldData<P> fd = data as FieldData<P>;
+          if (fd != null)
+            result = fd.Value;
+          else
+            result = (P)data.Value;
+        }
+        else
+        {
+          result = propertyInfo.DefaultValue;
+          FieldManager.SetFieldData(propertyInfo, result);
+        }
+      }
+      else
+      {
+        result = propertyInfo.DefaultValue;
+      }
+      return result;
+    }
+
+    #endregion
+
+    #region  Load Properties
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value calling PropertyHasChanged 
+    /// if the value does change.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    {
+      try
+      {
+        P oldValue = default(P);
+        var fieldData = FieldManager.GetFieldData(propertyInfo);
+        if (fieldData == null)
+        {
+          oldValue = propertyInfo.DefaultValue;
+          fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue);
+        }
+        else
+        {
+          oldValue = (P)fieldData.Value;
+        }
+
+        if (oldValue == null)
+        {
+          if (newValue != null)
+            FieldManager.SetFieldData(propertyInfo, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
+        }
+        else if (!(oldValue.Equals(newValue)))
+        {
+          FieldManager.SetFieldData(propertyInfo, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
+        }
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+      }
+    }
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value calling PropertyHasChanged 
+    /// if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      try
+      {
+        P oldValue = default(P);
+        var fieldData = FieldManager.GetFieldData(propertyInfo);
+        if (fieldData == null)
+        {
+          oldValue = propertyInfo.DefaultValue;
+          fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue);
+        }
+        else
+        {
+          oldValue = (P)fieldData.Value;
+        }
+
+        if (oldValue == null)
+        {
+          if (newValue != null)
+            FieldManager.SetFieldData(propertyInfo, newValue);
+        }
+        else if (!(oldValue.Equals(newValue)))
+        {
+          FieldManager.SetFieldData(propertyInfo, newValue);
+        }
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+      }
+    }
+
+    #endregion
+
+    #region  Field Manager
+
+    [NotUndoable()]
+    private FieldDataManager _fieldManager;
+
+    /// <summary>
+    /// Gets the PropertyManager object for this
+    /// business object.
+    /// </summary>
+    protected FieldDataManager FieldManager
+    {
+      get
+      {
+        if (_fieldManager == null)
+        {
+          _fieldManager = new FieldDataManager();
+        }
+        return _fieldManager;
+      }
+    }
+
+    #endregion
   }
 }

@@ -1,4 +1,5 @@
 ﻿Namespace Core
+
   ''' <summary>
   ''' Maintains metadata about a property.
   ''' </summary>

@@ -10,7 +10,7 @@
     Private mFields As New List(Of IFieldData)
 
     Public Sub New()
-
+      ' required due to serialization ctor
     End Sub
 
     Public Function ContainsKey(ByVal key As String) As Boolean

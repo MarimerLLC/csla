@@ -253,6 +253,9 @@ Namespace Core.FieldManager
 
     Private mStateStack As New Stack(Of Byte())
 
+    ''' <summary>
+    ''' Gets the current edit level of the object.
+    ''' </summary>
     Public ReadOnly Property EditLevel() As Integer Implements IUndoableObject.EditLevel
       Get
         Return mStateStack.Count

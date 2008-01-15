@@ -130,14 +130,14 @@ namespace Csla.Test.Serialization
         {
             Csla.Test.ValidationRules.HasRulesManager root = Csla.Test.ValidationRules.HasRulesManager.NewHasRulesManager();
             root.Name = "";
-            Assert.AreEqual(false, root.IsValid);
+            Assert.AreEqual(false, root.IsValid, "root should not start valid");
 
             root = root.Clone();
-            Assert.AreEqual(false, root.IsValid);
+            Assert.AreEqual(false, root.IsValid, "root should not be valid after clone");
             root.Name = "something";
-            Assert.AreEqual(true, root.IsValid);
+            Assert.AreEqual(true, root.IsValid, "root should be valid after property set");
             root = root.Clone();
-            Assert.AreEqual(true, root.IsValid);
+            Assert.AreEqual(true, root.IsValid, "root should be valid after second clone");
         }
 
         [TestMethod()]

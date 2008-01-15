@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using ProjectTracker.Library;
+using System.Linq;
 
 namespace PTWin
 {
@@ -44,9 +45,7 @@ namespace PTWin
 
     private void DisplayList(ProjectList list)
     {
-      Csla.SortedBindingList<ProjectInfo> sortedList =
-        new Csla.SortedBindingList<ProjectInfo>(list);
-      sortedList.ApplySort("Name", ListSortDirection.Ascending);
+      var sortedList = from p in list orderby p.Name select p;
       this.projectListBindingSource.DataSource = sortedList;
     }
 

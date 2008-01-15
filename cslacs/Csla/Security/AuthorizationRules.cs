@@ -178,7 +178,26 @@ namespace Csla.Security
 
     #endregion
 
-    #region Add Per-Type Roles
+    #region  Add Per-Type Roles
+
+    /// <summary>
+    /// Specify the roles allowed to read a given
+    /// property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo for the property.</param>
+    /// <param name="roles">List of roles granted read access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void AllowRead(Core.IPropertyInfo propertyInfo, params string[] roles)
+    {
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyInfo.Name);
+      foreach (string item in roles)
+        currentRoles.ReadAllowed.Add(item);
+    }
 
     /// <summary>
     /// Specify the roles allowed to read a given
@@ -197,6 +216,25 @@ namespace Csla.Security
       RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyName);
       foreach (string item in roles)
         currentRoles.ReadAllowed.Add(item);
+    }
+
+    /// <summary>
+    /// Specify the roles denied read access to 
+    /// a given property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo for the property.</param>
+    /// <param name="roles">List of roles denied read access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void DenyRead(Core.IPropertyInfo propertyInfo, params string[] roles)
+    {
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyInfo.Name);
+      foreach (string item in roles)
+        currentRoles.ReadDenied.Add(item);
     }
 
     /// <summary>
@@ -222,6 +260,25 @@ namespace Csla.Security
     /// Specify the roles allowed to write a given
     /// property.
     /// </summary>
+    /// <param name="propertyInfo">PropertyInfo for the property.</param>
+    /// <param name="roles">List of roles granted write access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void AllowWrite(Core.IPropertyInfo propertyInfo, params string[] roles)
+    {
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyInfo.Name);
+      foreach (string item in roles)
+        currentRoles.WriteAllowed.Add(item);
+    }
+
+    /// <summary>
+    /// Specify the roles allowed to write a given
+    /// property.
+    /// </summary>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="roles">List of roles granted write access.</param>
     /// <remarks>
@@ -235,6 +292,25 @@ namespace Csla.Security
       RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyName);
       foreach (string item in roles)
         currentRoles.WriteAllowed.Add(item);
+    }
+
+    /// <summary>
+    /// Specify the roles denied write access to 
+    /// a given property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo for the property.</param>
+    /// <param name="roles">List of roles denied write access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void DenyWrite(Core.IPropertyInfo propertyInfo, params string[] roles)
+    {
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyInfo.Name);
+      foreach (string item in roles)
+        currentRoles.WriteDenied.Add(item);
     }
 
     /// <summary>
@@ -260,7 +336,26 @@ namespace Csla.Security
     /// Specify the roles allowed to execute a given
     /// method.
     /// </summary>
-    /// <param name="methodName">Name of the property.</param>
+    /// <param name="propertyInfo">PropertyInfo for the method.</param>
+    /// <param name="roles">List of roles granted execute access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of allowed roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void AllowExecute(Core.IPropertyInfo propertyInfo, params string[] roles)
+    {
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyInfo.Name);
+      foreach (string item in roles)
+        currentRoles.ExecuteAllowed.Add(item);
+    }
+
+    /// <summary>
+    /// Specify the roles allowed to execute a given
+    /// method.
+    /// </summary>
+    /// <param name="methodName">Name of the method.</param>
     /// <param name="roles">List of roles granted execute access.</param>
     /// <remarks>
     /// This method may be called multiple times, with the roles in
@@ -270,20 +365,35 @@ namespace Csla.Security
     /// </remarks>
     public void AllowExecute(string methodName, params string[] roles)
     {
-
       RolesForProperty currentRoles = TypeRules.GetRolesForProperty(methodName);
       foreach (string item in roles)
-      {
         currentRoles.ExecuteAllowed.Add(item);
-      }
-
     }
 
     /// <summary>
     /// Specify the roles denied the right to execute 
     /// a given method.
     /// </summary>
-    /// <param name="methodName">Name of the property.</param>
+    /// <param name="propertyInfo">PropertyInfo for the method.</param>
+    /// <param name="roles">List of roles denied execute access.</param>
+    /// <remarks>
+    /// This method may be called multiple times, with the roles in
+    /// each call being added to the end of the list of denied roles.
+    /// In other words, each call is cumulative, adding more roles
+    /// to the list.
+    /// </remarks>
+    public void DenyExecute(Core.IPropertyInfo propertyInfo, params string[] roles)
+    {
+      RolesForProperty currentRoles = TypeRules.GetRolesForProperty(propertyInfo.Name);
+      foreach (string item in roles)
+        currentRoles.ExecuteDenied.Add(item);
+    }
+
+    /// <summary>
+    /// Specify the roles denied the right to execute 
+    /// a given method.
+    /// </summary>
+    /// <param name="methodName">Name of the method.</param>
     /// <param name="roles">List of roles denied execute access.</param>
     /// <remarks>
     /// This method may be called multiple times, with the roles in
@@ -293,13 +403,9 @@ namespace Csla.Security
     /// </remarks>
     public void DenyExecute(string methodName, params string[] roles)
     {
-
       RolesForProperty currentRoles = TypeRules.GetRolesForProperty(methodName);
       foreach (string item in roles)
-      {
         currentRoles.ExecuteDenied.Add(item);
-      }
-
     }
 
     #endregion

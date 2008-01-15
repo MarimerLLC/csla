@@ -343,7 +343,34 @@ namespace Csla.Validation
 
     #endregion
 
-    #region Adding Per-Type Rules
+    #region  Adding Shared Rules
+
+    /// <summary>
+    /// Adds a rule to the list of rules to be enforced.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A rule is implemented by a method which conforms to the 
+    /// method signature defined by the RuleHandler delegate.
+    /// </para><para>
+    /// The propertyName may be used by the method that implements the rule
+    /// in order to retrieve the value to be validated. If the rule
+    /// implementation is inside the target object then it probably has
+    /// direct access to all data. However, if the rule implementation
+    /// is outside the target object then it will need to use reflection
+    /// or CallByName to dynamically invoke this property to retrieve
+    /// the value to be validated.
+    /// </para>
+    /// </remarks>
+    /// <param name="handler">The method that implements the rule.</param>
+    /// <param name="propertyInfo">
+    /// The PropertyInfo object describing the property.
+    /// </param>
+    public void AddRule(RuleHandler handler, Core.IPropertyInfo propertyInfo)
+    {
+      ValidateHandler(handler);
+      GetTypeRules(true).AddRule(handler, new RuleArgs(propertyInfo), 0);
+    }
 
     /// <summary>
     /// Adds a rule to the list of rules to be enforced.
@@ -391,6 +418,36 @@ namespace Csla.Validation
     /// </para>
     /// </remarks>
     /// <param name="handler">The method that implements the rule.</param>
+    /// <param name="propertyInfo">
+    /// The PropertyInfo object describing the property.
+    /// </param>
+    /// <param name="priority">
+    /// The priority of the rule, where lower numbers are processed first.
+    /// </param>
+    public void AddRule(RuleHandler handler, Core.IPropertyInfo propertyInfo, int priority)
+    {
+      ValidateHandler(handler);
+      GetTypeRules(true).AddRule(handler, new RuleArgs(propertyInfo), priority);
+    }
+
+    /// <summary>
+    /// Adds a rule to the list of rules to be enforced.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A rule is implemented by a method which conforms to the 
+    /// method signature defined by the RuleHandler delegate.
+    /// </para><para>
+    /// The propertyName may be used by the method that implements the rule
+    /// in order to retrieve the value to be validated. If the rule
+    /// implementation is inside the target object then it probably has
+    /// direct access to all data. However, if the rule implementation
+    /// is outside the target object then it will need to use reflection
+    /// or CallByName to dynamically invoke this property to retrieve
+    /// the value to be validated.
+    /// </para>
+    /// </remarks>
+    /// <param name="handler">The method that implements the rule.</param>
     /// <param name="propertyName">
     /// The property name on the target object where the rule implementation can retrieve
     /// the value to be validated.
@@ -402,6 +459,33 @@ namespace Csla.Validation
     {
       ValidateHandler(handler);
       GetTypeRules(true).AddRule(handler, new RuleArgs(propertyName), priority);
+    }
+
+    /// <summary>
+    /// Adds a rule to the list of rules to be enforced.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A rule is implemented by a method which conforms to the 
+    /// method signature defined by the RuleHandler delegate.
+    /// </para><para>
+    /// The propertyName may be used by the method that implements the rule
+    /// in order to retrieve the value to be validated. If the rule
+    /// implementation is inside the target object then it probably has
+    /// direct access to all data. However, if the rule implementation
+    /// is outside the target object then it will need to use reflection
+    /// or CallByName to dynamically invoke this property to retrieve
+    /// the value to be validated.
+    /// </para>
+    /// </remarks>
+    /// <param name="handler">The method that implements the rule.</param>
+    /// <param name="propertyInfo">
+    /// The PropertyInfo object describing the property.
+    /// </param>
+    public void AddRule<T>(RuleHandler<T, RuleArgs> handler, Core.IPropertyInfo propertyInfo)
+    {
+      ValidateHandler(handler);
+      GetTypeRules(true).AddRule<T, RuleArgs>(handler, new RuleArgs(propertyInfo), 0);
     }
 
     /// <summary>
@@ -458,6 +542,36 @@ namespace Csla.Validation
     {
       ValidateHandler(handler);
       GetTypeRules(true).AddRule<T, RuleArgs>(handler, args, 0);
+    }
+
+    /// <summary>
+    /// Adds a rule to the list of rules to be enforced.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A rule is implemented by a method which conforms to the 
+    /// method signature defined by the RuleHandler delegate.
+    /// </para><para>
+    /// The propertyName may be used by the method that implements the rule
+    /// in order to retrieve the value to be validated. If the rule
+    /// implementation is inside the target object then it probably has
+    /// direct access to all data. However, if the rule implementation
+    /// is outside the target object then it will need to use reflection
+    /// or CallByName to dynamically invoke this property to retrieve
+    /// the value to be validated.
+    /// </para>
+    /// </remarks>
+    /// <param name="handler">The method that implements the rule.</param>
+    /// <param name="propertyInfo">
+    /// The PropertyInfo object describing the property.
+    /// </param>
+    /// <param name="priority">
+    /// The priority of the rule, where lower numbers are processed first.
+    /// </param>
+    public void AddRule<T>(RuleHandler<T, RuleArgs> handler, Core.IPropertyInfo propertyInfo, int priority)
+    {
+      ValidateHandler(handler);
+      GetTypeRules(true).AddRule<T, RuleArgs>(handler, new RuleArgs(propertyInfo), priority);
     }
 
     /// <summary>
@@ -586,15 +700,32 @@ namespace Csla.Validation
     private bool ValidateHandler(System.Reflection.MethodInfo method)
     {
       if (!method.IsStatic && method.DeclaringType.IsInstanceOfType(_target))
-        throw new InvalidOperationException(
-          string.Format("{0}: {1}",
-          Properties.Resources.InvalidRuleMethodException, method.Name));
+        throw new InvalidOperationException(string.Format("{0}: {1}", Properties.Resources.InvalidRuleMethodException, method.Name));
       return true;
     }
-
     #endregion
 
-    #region Adding per-type dependancies
+    #region  Adding per-type dependencies
+
+    /// <summary>
+    /// Adds a property to the list of dependencies for
+    /// the specified property
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo for the property.
+    /// </param>
+    /// <param name="dependentPropertyInfo">
+    /// PropertyInfo for the depandent property.
+    /// </param>
+    /// <remarks>
+    /// When rules are checked for propertyName, they will
+    /// also be checked for any dependent properties associated
+    /// with that property.
+    /// </remarks>
+    public void AddDependentProperty(Core.IPropertyInfo propertyInfo, Core.IPropertyInfo dependentPropertyInfo)
+    {
+      GetTypeRules(true).AddDependentProperty(propertyInfo.Name, dependentPropertyInfo.Name);
+    }
 
     /// <summary>
     /// Adds a property to the list of dependencies for
@@ -623,6 +754,59 @@ namespace Csla.Validation
     /// <param name="propertyName">
     /// The name of the property.
     /// </param>
+    /// <param name="dependantPropertyName">
+    /// The name of the depandent property.
+    /// </param>
+    /// <remarks>
+    /// When rules are checked for propertyName, they will
+    /// also be checked for any dependent properties associated
+    /// with that property.
+    /// </remarks>
+    [Obsolete("Use AddDependentProperty")]
+    public void AddDependantProperty(string propertyName, string dependantPropertyName)
+    {
+      AddDependentProperty(propertyName, dependantPropertyName);
+    }
+
+    /// <summary>
+    /// Adds a property to the list of dependencies for
+    /// the specified property
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo for the property.
+    /// </param>
+    /// <param name="dependentPropertyInfo">
+    /// PropertyInfo for the depandent property.
+    /// </param>
+    /// <param name="isBidirectional">
+    /// If <see langword="true"/> then a 
+    /// reverse dependancy is also established
+    /// from dependentPropertyName to propertyName.
+    /// </param>
+    /// <remarks>
+    /// When rules are checked for propertyName, they will
+    /// also be checked for any dependent properties associated
+    /// with that property. If isBidirectional is 
+    /// <see langword="true"/> then an additional association
+    /// is set up so when rules are checked for
+    /// dependentPropertyName the rules for propertyName
+    /// will also be checked.
+    /// </remarks>
+    public void AddDependentProperty(Core.IPropertyInfo propertyInfo, Core.IPropertyInfo dependentPropertyInfo, bool isBidirectional)
+    {
+      ValidationRulesManager mgr = GetTypeRules(true);
+      mgr.AddDependentProperty(propertyInfo.Name, dependentPropertyInfo.Name);
+      if (isBidirectional)
+        mgr.AddDependentProperty(dependentPropertyInfo.Name, propertyInfo.Name);
+    }
+
+    /// <summary>
+    /// Adds a property to the list of dependencies for
+    /// the specified property
+    /// </summary>
+    /// <param name="propertyName">
+    /// The name of the property.
+    /// </param>
     /// <param name="dependentPropertyName">
     /// The name of the depandent property.
     /// </param>
@@ -642,34 +826,10 @@ namespace Csla.Validation
     /// </remarks>
     public void AddDependentProperty(string propertyName, string dependentPropertyName, bool isBidirectional)
     {
-
       ValidationRulesManager mgr = GetTypeRules(true);
       mgr.AddDependentProperty(propertyName, dependentPropertyName);
       if (isBidirectional)
-      {
         mgr.AddDependentProperty(dependentPropertyName, propertyName);
-      }
-    }
-
-    /// <summary>
-    /// Adds a property to the list of dependencies for
-    /// the specified property
-    /// </summary>
-    /// <param name="propertyName">
-    /// The name of the property.
-    /// </param>
-    /// <param name="dependantPropertyName">
-    /// The name of the depandent property.
-    /// </param>
-    /// <remarks>
-    /// When rules are checked for propertyName, they will
-    /// also be checked for any dependant properties associated
-    /// with that property.
-    /// </remarks>
-    [Obsolete("Use AddDependentProperty")]
-    public void AddDependantProperty(string propertyName, string dependantPropertyName)
-    {
-      AddDependentProperty(propertyName, dependantPropertyName);
     }
 
     /// <summary>
@@ -689,7 +849,7 @@ namespace Csla.Validation
     /// </param>
     /// <remarks>
     /// When rules are checked for propertyName, they will
-    /// also be checked for any dependant properties associated
+    /// also be checked for any dependent properties associated
     /// with that property. If isBidirectional is 
     /// <see langword="true"/> then an additional association
     /// is set up so when rules are checked for
@@ -699,7 +859,10 @@ namespace Csla.Validation
     [Obsolete("Use AddDependentProperty")]
     public void AddDependantProperty(string propertyName, string dependantPropertyName, bool isBidirectional)
     {
-      AddDependentProperty(propertyName, dependantPropertyName, isBidirectional);
+      ValidationRulesManager mgr = GetTypeRules(true);
+      mgr.AddDependentProperty(propertyName, dependantPropertyName);
+      if (isBidirectional)
+        mgr.AddDependentProperty(dependantPropertyName, propertyName);
     }
 
     #endregion

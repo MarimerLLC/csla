@@ -2,7 +2,6 @@ using System;
 
 namespace Csla.Validation
 {
-
   /// <summary>
   /// Object providing extra information to methods that
   /// implement business rules.
@@ -20,7 +19,10 @@ namespace Csla.Validation
     /// </summary>
     public string PropertyName
     {
-      get { return _propertyName; }
+      get
+      {
+        return _propertyName;
+      }
     }
 
     /// <summary>
@@ -30,8 +32,14 @@ namespace Csla.Validation
     /// </summary>
     public string PropertyFriendlyName
     {
-      get { return _propertyFriendlyName; }
-      set { _propertyFriendlyName = value; }
+      get
+      {
+        return _propertyFriendlyName;
+      }
+      set
+      {
+        _propertyFriendlyName = value;
+      }
     }
 
     /// <summary>
@@ -46,8 +54,14 @@ namespace Csla.Validation
     /// </remarks>
     public string Description
     {
-      get { return _description; }
-      set { _description = value; }
+      get
+      {
+        return _description;
+      }
+      set
+      {
+        _description = value;
+      }
     }
 
     /// <summary>
@@ -60,8 +74,14 @@ namespace Csla.Validation
     /// </remarks>
     public RuleSeverity Severity
     {
-      get { return _severity; }
-      set { _severity = value; }
+      get
+      {
+        return _severity;
+      }
+      set
+      {
+        _severity = value;
+      }
     }
 
     /// <summary>
@@ -77,9 +97,16 @@ namespace Csla.Validation
     /// </remarks>
     public bool StopProcessing
     {
-      get { return _stopProcessing; }
-      set { _stopProcessing = value; }
+      get
+      {
+        return _stopProcessing;
+      }
+      set
+      {
+        _stopProcessing = value;
+      }
     }
+
 
     /// <summary>
     /// Creates an instance of RuleArgs.
@@ -87,7 +114,19 @@ namespace Csla.Validation
     /// <param name="propertyName">The name of the property to be validated.</param>
     public RuleArgs(string propertyName)
     {
+
       _propertyName = propertyName;
+
+    }
+
+    /// <summary>
+    /// Creates an instance of RuleArgs.
+    /// </summary>
+    /// <param name="propertyInfo">The PropertyInfo object for the property.</param>
+    public RuleArgs(Core.IPropertyInfo propertyInfo)
+      : this(propertyInfo.Name)
+    {
+      _propertyFriendlyName = propertyInfo.FriendlyName;
     }
 
     /// <summary>
@@ -98,8 +137,8 @@ namespace Csla.Validation
     /// will be used in place of the property name when
     /// creating the broken rule description string.</param>
     public RuleArgs(string propertyName, string friendlyName)
+      : this(propertyName)
     {
-      _propertyName = propertyName;
       _propertyFriendlyName = friendlyName;
     }
 
@@ -123,6 +162,30 @@ namespace Csla.Validation
     /// </remarks>
     public RuleArgs(string propertyName, RuleSeverity severity)
       : this(propertyName)
+    {
+      _severity = severity;
+    }
+
+    /// <summary>
+    /// Creates an instance of RuleArgs.
+    /// </summary>
+    /// <param name="propertyInfo">The PropertyInfo for the property.</param>
+    /// <param name="severity">Initial default severity for the rule.</param>
+    /// <remarks>
+    /// <para>
+    /// The <b>severity</b> parameter defines only the initial default 
+    /// severity value. If the rule changes this value by setting
+    /// e.Severity, then that new value will become the default for all
+    /// subsequent rule invocations.
+    /// </para><para>
+    /// To avoid confusion, it is recommended that the 
+    /// <b>severity</b> constructor parameter 
+    /// only be used for rule methods that do not explicitly set
+    /// e.Severity.
+    /// </para>
+    /// </remarks>
+    public RuleArgs(Core.IPropertyInfo propertyInfo, RuleSeverity severity)
+      : this(propertyInfo)
     {
       _severity = severity;
     }
@@ -185,6 +248,34 @@ namespace Csla.Validation
     /// <summary>
     /// Creates an instance of RuleArgs.
     /// </summary>
+    /// <param name="propertyInfo">The PropertyInfo for the property.</param>
+    /// <param name="severity">The default severity for the rule.</param>
+    /// <param name="stopProcessing">
+    /// Initial default value for the StopProcessing property.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// The <b>severity</b> and <b>stopProcessing</b> parameters 
+    /// define only the initial default values. If the rule 
+    /// changes these values by setting e.Severity or
+    /// e.StopProcessing, then the new values will become 
+    /// the default for all subsequent rule invocations.
+    /// </para><para>
+    /// To avoid confusion, It is recommended that the 
+    /// <b>severity</b> and <b>stopProcessing</b> constructor 
+    /// parameters only be used for rule methods that do 
+    /// not explicitly set e.Severity or e.StopProcessing.
+    /// </para>
+    /// </remarks>
+    public RuleArgs(Core.IPropertyInfo propertyInfo, RuleSeverity severity, bool stopProcessing)
+      : this(propertyInfo, severity)
+    {
+      _stopProcessing = stopProcessing;
+    }
+
+    /// <summary>
+    /// Creates an instance of RuleArgs.
+    /// </summary>
     /// <param name="propertyName">The name of the property to be validated.</param>
     /// <param name="friendlyName">A friendly name for the property, which
     /// will be used in place of the property name when
@@ -214,7 +305,7 @@ namespace Csla.Validation
     }
 
     /// <summary>
-    /// Return a string representation of the object.
+    /// Returns a string representation of the object.
     /// </summary>
     public override string ToString()
     {
@@ -234,7 +325,8 @@ namespace Csla.Validation
     /// </returns>
     public static string GetPropertyName(RuleArgs e)
     {
-      string propName;
+      string propName = null;
+
       if (string.IsNullOrEmpty(e.PropertyFriendlyName))
         propName = e.PropertyName;
       else

@@ -1,7 +1,8 @@
-using Csla;
-using Csla.Data;
 using System;
 using System.Linq;
+using Csla;
+using Csla.Data;
+using Csla.Security;
 
 namespace ProjectTracker.Library
 {
@@ -137,29 +138,13 @@ namespace ProjectTracker.Library
       AuthorizationRules.AllowWrite(DescriptionProperty, "ProjectManager");
     }
 
-    public static bool CanAddObject()
+    protected static void AddObjectAuthorizationRules()
     {
-      return Csla.ApplicationContext.User.IsInRole("ProjectManager");
-    }
-
-    public static bool CanGetObject()
-    {
-      return true;
-    }
-
-    public static bool CanDeleteObject()
-    {
-      bool result = false;
-      if (Csla.ApplicationContext.User.IsInRole("ProjectManager"))
-        result = true;
-      if (Csla.ApplicationContext.User.IsInRole("Administrator"))
-        result = true;
-      return result;
-    }
-
-    public static bool CanEditObject()
-    {
-      return Csla.ApplicationContext.User.IsInRole("ProjectManager");
+      // add object-level authorization rules here
+      AuthorizationRules.AllowCreate(typeof(Project), "ProjectManager");
+      AuthorizationRules.AllowEdit(typeof(Project), "ProjectManager");
+      AuthorizationRules.AllowDelete(typeof(Project), "ProjectManager");
+      AuthorizationRules.AllowDelete(typeof(Project), "Administrator");
     }
 
     #endregion
@@ -168,34 +153,17 @@ namespace ProjectTracker.Library
 
     public static Project NewProject()
     {
-      if (!(CanAddObject()))
-        throw new System.Security.SecurityException("User not authorized to add a project");
       return DataPortal.Create<Project>();
     }
 
     public static Project GetProject(Guid id)
     {
-      if (!(CanGetObject()))
-        throw new System.Security.SecurityException("User not authorized to view a project");
       return DataPortal.Fetch<Project>(new SingleCriteria<Project, Guid>(id));
     }
 
     public static void DeleteProject(Guid id)
     {
-      if (!(CanDeleteObject()))
-        throw new System.Security.SecurityException("User not authorized to remove a project");
       DataPortal.Delete(new SingleCriteria<Project, Guid>(id));
-    }
-
-    public override Project Save()
-    {
-      if (IsDeleted && !(CanDeleteObject()))
-        throw new System.Security.SecurityException("User not authorized to remove a project");
-      else if (IsNew && !(CanAddObject()))
-        throw new System.Security.SecurityException("User not authorized to add a project");
-      else if (!(CanEditObject()))
-        throw new System.Security.SecurityException("User not authorized to update a project");
-      return base.Save();
     }
 
     private Project()
@@ -286,7 +254,6 @@ namespace ProjectTracker.Library
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
         // delete project data
-        System.Data.Linq.Binary lastChanged = null;
         ctx.DataContext.deleteProject(criteria.Value);
         // reset child list field
         SetProperty<ProjectResources>(ResourcesProperty, ProjectResources.NewProjectResources());

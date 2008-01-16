@@ -105,29 +105,13 @@ namespace ProjectTracker.Library
       AuthorizationRules.AllowWrite(FirstNameProperty, "ProjectManager");
     }
 
-    public static bool CanAddObject()
+    protected static void AddObjectAuthorizationRules()
     {
-      return Csla.ApplicationContext.User.IsInRole("ProjectManager");
-    }
-
-    public static bool CanGetObject()
-    {
-      return true;
-    }
-
-    public static bool CanDeleteObject()
-    {
-      bool result = false;
-      if (Csla.ApplicationContext.User.IsInRole("ProjectManager"))
-        result = true;
-      if (Csla.ApplicationContext.User.IsInRole("Administrator"))
-        result = true;
-      return result;
-    }
-
-    public static bool CanEditObject()
-    {
-      return Csla.ApplicationContext.User.IsInRole("ProjectManager");
+      // add object-level authorization rules here
+      AuthorizationRules.AllowCreate(typeof(Project), "ProjectManager");
+      AuthorizationRules.AllowEdit(typeof(Project), "ProjectManager");
+      AuthorizationRules.AllowDelete(typeof(Project), "ProjectManager");
+      AuthorizationRules.AllowDelete(typeof(Project), "Administrator");
     }
 
     #endregion
@@ -136,34 +120,17 @@ namespace ProjectTracker.Library
 
     public static Resource NewResource()
     {
-      if (!(CanAddObject()))
-        throw new System.Security.SecurityException("User not authorized to add a resource");
       return DataPortal.Create<Resource>();
     }
 
     public static void DeleteResource(int id)
     {
-      if (!(CanDeleteObject()))
-        throw new System.Security.SecurityException("User not authorized to remove a resource");
       DataPortal.Delete(new SingleCriteria<Resource, int>(id));
     }
 
     public static Resource GetResource(int id)
     {
-      if (!(CanGetObject()))
-        throw new System.Security.SecurityException("User not authorized to view a resource");
       return DataPortal.Fetch<Resource>(new SingleCriteria<Resource, int>(id));
-    }
-
-    public override Resource Save()
-    {
-      if (IsDeleted && !(CanDeleteObject()))
-        throw new System.Security.SecurityException("User not authorized to remove a resource");
-      else if (IsNew && !(CanAddObject()))
-        throw new System.Security.SecurityException("User not authorized to add a resource");
-      else if (!(CanEditObject()))
-        throw new System.Security.SecurityException("User not authorized to update a resource");
-      return base.Save();
     }
 
     private Resource()

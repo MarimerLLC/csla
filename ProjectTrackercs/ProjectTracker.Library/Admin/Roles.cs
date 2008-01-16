@@ -1,5 +1,6 @@
 using Csla;
 using Csla.Data;
+using Csla.Security;
 using System;
 
 namespace ProjectTracker.Library
@@ -60,27 +61,12 @@ namespace ProjectTracker.Library
 
       #region  Authorization Rules
 
-      public static bool CanAddObject()
+      protected static void AddObjectAuthorizationRules()
       {
-        return Csla.ApplicationContext.User.IsInRole("Administrator");
-      }
-
-      public static bool CanGetObject()
-      {
-        return true;
-      }
-
-      public static bool CanDeleteObject()
-      {
-        bool result = false;
-        if (Csla.ApplicationContext.User.IsInRole("Administrator"))
-          result = true;
-        return result;
-      }
-
-      public static bool CanEditObject()
-      {
-        return Csla.ApplicationContext.User.IsInRole("Administrator");
+        // add object-level authorization rules here
+        AuthorizationRules.AllowCreate(typeof(Project), "Administrator");
+        AuthorizationRules.AllowEdit(typeof(Project), "Administrator");
+        AuthorizationRules.AllowDelete(typeof(Project), "Administrator");
       }
 
       #endregion
@@ -101,14 +87,6 @@ namespace ProjectTracker.Library
       #endregion
 
       #region  Data Access
-
-      public override Roles Save()
-      {
-        // see if save is allowed
-        if (!(CanEditObject()))
-          throw new System.Security.SecurityException("User not authorized to save roles");
-        return base.Save();
-      }
 
       private void Roles_Saved(object sender, Csla.Core.SavedEventArgs e)
       {

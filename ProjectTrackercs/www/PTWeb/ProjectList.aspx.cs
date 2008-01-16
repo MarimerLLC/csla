@@ -27,9 +27,9 @@ public partial class ProjectList : System.Web.UI.Page
   {
     this.GridView1.Columns[
       this.GridView1.Columns.Count - 1].Visible =
-      Project.CanDeleteObject();
+      Csla.Security.AuthorizationRules.CanDeleteObject(typeof(Project));
     NewProjectButton.Visible =
-      ProjectTracker.Library.Project.CanAddObject();
+      Csla.Security.AuthorizationRules.CanCreateObject(typeof(Project));
   }
 
   #region GridView1

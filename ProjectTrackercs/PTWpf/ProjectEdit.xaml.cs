@@ -80,7 +80,7 @@ namespace PTWpf
     protected override void ApplyAuthorization()
     {
       this.AuthPanel.Refresh();
-      if (Project.CanEditObject())
+      if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Project)))
       {
         this.ResourceListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
         this.AssignButton.IsEnabled = true;

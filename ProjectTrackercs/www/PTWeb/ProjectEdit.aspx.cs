@@ -34,7 +34,7 @@ public partial class ProjectEdit : System.Web.UI.Page
   {
     Project obj = GetProject();
     // project display
-    if (Project.CanEditObject())
+    if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Project)))
     {
       if (obj.IsNew)
         this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
@@ -48,13 +48,13 @@ public partial class ProjectEdit : System.Web.UI.Page
       this.AddResourceButton.Visible = false;
     }
     this.DetailsView1.Rows[
-      this.DetailsView1.Rows.Count - 1].Visible = 
-      Project.CanEditObject();
+      this.DetailsView1.Rows.Count - 1].Visible =
+      Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));
 
     // resource display
     this.GridView1.Columns[
-      this.GridView1.Columns.Count - 1].Visible = 
-      Project.CanEditObject();
+      this.GridView1.Columns.Count - 1].Visible =
+      Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));
   }
 
   #region Project DetailsView

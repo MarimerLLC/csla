@@ -70,7 +70,6 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        System.Data.Linq.Binary lastChanged = null;
         ctx.DataContext.deleteAssignment(projectId, resourceId);
       }
     }

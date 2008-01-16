@@ -1,6 +1,7 @@
-﻿using Csla;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Csla;
+using Csla.Security;
 using Csla.Workflow;
 
 namespace ProjectTracker.Library
@@ -8,13 +9,25 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectCloser : CommandBase
   {
+    private Guid mProjectId;
+
+    #region Authorization
+
+    protected static void AddObjectAuthorizationRules()
+    {
+      // add object-level authorization rules here
+      AuthorizationRules.AllowEdit(typeof(Project), "ProjectManager");
+    }
+
+    #endregion
+
+    #region Factory Methods
+
     public static void CloseProject(Guid id)
     {
       ProjectCloser cmd = new ProjectCloser(id);
       cmd = DataPortal.Execute<ProjectCloser>(cmd);
     }
-
-    private Guid mProjectId;
 
     private ProjectCloser()
     { /* require use of factory methods */ }
@@ -23,6 +36,10 @@ namespace ProjectTracker.Library
     {
       mProjectId = id;
     }
+
+    #endregion
+
+    #region Data Access
 
     protected override void DataPortal_Execute()
     {
@@ -35,5 +52,7 @@ namespace ProjectTracker.Library
       if (mgr.Status == WorkflowStatus.Terminated)
         throw mgr.Error;
     }
+
+    #endregion
   }
 }

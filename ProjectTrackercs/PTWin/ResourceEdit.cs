@@ -63,7 +63,7 @@ namespace PTWin
       // have the controls enable/disable/etc
       this.ReadWriteAuthorization1.ResetControlAuthorization();
 
-      bool canEdit = ProjectTracker.Library.Project.CanEditObject();
+      bool canEdit = Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));
 
       // enable/disable appropriate buttons
       this.OKButton.Enabled = canEdit;

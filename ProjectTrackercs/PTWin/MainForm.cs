@@ -269,18 +269,18 @@ namespace PTWin
     private void ApplyAuthorizationRules()
     {
       // Project menu
-      this.NewProjectToolStripMenuItem.Enabled = 
-        Project.CanAddObject();
-      this.EditProjectToolStripMenuItem.Enabled = 
-        Project.CanGetObject();
-      if (Project.CanEditObject())
+      this.NewProjectToolStripMenuItem.Enabled =
+        Csla.Security.AuthorizationRules.CanCreateObject(typeof(Project));
+      this.EditProjectToolStripMenuItem.Enabled =
+        Csla.Security.AuthorizationRules.CanGetObject(typeof(Project));
+      if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Project)))
         this.EditProjectToolStripMenuItem.Text = 
           "Edit project";
       else
         this.EditProjectToolStripMenuItem.Text = 
           "View project";
-      this.DeleteProjectToolStripMenuItem.Enabled = 
-        Project.CanDeleteObject();
+      this.DeleteProjectToolStripMenuItem.Enabled =
+        Csla.Security.AuthorizationRules.CanDeleteObject(typeof(Project));
 
       // Resource menu
       this.NewResourceToolStripMenuItem.Enabled = 
@@ -297,8 +297,8 @@ namespace PTWin
         Resource.CanDeleteObject();
 
       // Admin menu
-      this.EditRolesToolStripMenuItem.Enabled = 
-        ProjectTracker.Library.Admin.Roles.CanEditObject();
+      this.EditRolesToolStripMenuItem.Enabled =
+        Csla.Security.AuthorizationRules.CanEditObject(typeof(ProjectTracker.Library.Admin.Roles));
     }
 
     #endregion

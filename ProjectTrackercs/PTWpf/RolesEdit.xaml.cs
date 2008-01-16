@@ -49,7 +49,7 @@ namespace PTWpf
     protected override void ApplyAuthorization()
     {
       this.AuthPanel.Refresh();
-      if (Roles.CanEditObject())
+      if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Roles)))
       {
         this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
         this.AddItemButton.IsEnabled = true;

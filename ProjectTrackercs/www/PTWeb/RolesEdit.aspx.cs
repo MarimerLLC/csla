@@ -33,9 +33,9 @@ public partial class RolesEdit : System.Web.UI.Page
   {
     this.GridView1.Columns[
       this.GridView1.Columns.Count - 1].Visible =
-      ProjectTracker.Library.Admin.Roles.CanEditObject();
+      Csla.Security.AuthorizationRules.CanEditObject(typeof(Roles));
     this.AddRoleButton.Visible =
-      ProjectTracker.Library.Admin.Roles.CanAddObject();
+      Csla.Security.AuthorizationRules.CanCreateObject(typeof(Roles));
   }
 
   protected void AddRoleButton_Click(object sender, EventArgs e)

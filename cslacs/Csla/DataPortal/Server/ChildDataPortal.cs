@@ -38,7 +38,8 @@ namespace Csla.Server
         MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild");
 
         // tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke", new DataPortalEventArgs(null, DataPortalOperations.Create));
+        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke", 
+          new DataPortalEventArgs(null, objectType, DataPortalOperations.Create));
 
         // tell the business object to fetch its data
         MethodInfo method = MethodCaller.GetMethod(objectType, "Child_Create", parameters);
@@ -48,7 +49,8 @@ namespace Csla.Server
         MethodCaller.CallMethodIfImplemented(obj, "MarkNew");
 
         // tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete", new DataPortalEventArgs(null, DataPortalOperations.Create));
+        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
+          new DataPortalEventArgs(null, objectType, DataPortalOperations.Create));
 
         // return the populated business object as a result
         return obj;
@@ -59,7 +61,8 @@ namespace Csla.Server
         try
         {
           // tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException", new DataPortalEventArgs(null, DataPortalOperations.Create), ex);
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
+            new DataPortalEventArgs(null, objectType, DataPortalOperations.Create), ex);
         }
         catch
         {
@@ -91,7 +94,8 @@ namespace Csla.Server
         MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild");
 
         // tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke", new DataPortalEventArgs(null, DataPortalOperations.Fetch));
+        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke",
+          new DataPortalEventArgs(null, objectType, DataPortalOperations.Fetch));
 
         // mark the object as old
         MethodCaller.CallMethodIfImplemented(obj, "MarkOld");
@@ -101,7 +105,8 @@ namespace Csla.Server
         MethodCaller.CallMethod(obj, method, parameters);
 
         // tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete", new DataPortalEventArgs(null, DataPortalOperations.Fetch));
+        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
+          new DataPortalEventArgs(null, objectType, DataPortalOperations.Fetch));
 
         // return the populated business object as a result
         return obj;
@@ -112,7 +117,8 @@ namespace Csla.Server
         try
         {
           // tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException", new DataPortalEventArgs(null, DataPortalOperations.Fetch), ex);
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
+            new DataPortalEventArgs(null, objectType, DataPortalOperations.Fetch), ex);
         }
         catch
         {
@@ -134,11 +140,12 @@ namespace Csla.Server
     {
 
       var operation = DataPortalOperations.Update;
-
+      Type objectType = obj.GetType();
       try
       {
         // tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke", new DataPortalEventArgs(null, operation));
+        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke",
+          new DataPortalEventArgs(null, objectType, operation));
 
         // tell the business object to update itself
         if (obj is Core.BusinessBase)
@@ -191,7 +198,8 @@ namespace Csla.Server
         }
 
         // tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete", new DataPortalEventArgs(null, operation));
+        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
+          new DataPortalEventArgs(null, objectType, operation));
 
       }
       catch (Exception ex)
@@ -199,7 +207,8 @@ namespace Csla.Server
         try
         {
           // tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException", new DataPortalEventArgs(null, operation), ex);
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
+            new DataPortalEventArgs(null, objectType, operation), ex);
         }
         catch
         {

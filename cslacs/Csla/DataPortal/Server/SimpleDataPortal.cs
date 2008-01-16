@@ -37,7 +37,7 @@ namespace Csla.Server
 
         // tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented(
-          obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context, DataPortalOperations.Create));
+          obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context, objectType, DataPortalOperations.Create));
 
         // tell the business object to create its data
         MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
@@ -53,7 +53,7 @@ namespace Csla.Server
         // tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvokeComplete",
-          new DataPortalEventArgs(context, DataPortalOperations.Create));
+          new DataPortalEventArgs(context, objectType, DataPortalOperations.Create));
 
         // return the populated business object as a result
         return new DataPortalResult(obj);
@@ -65,7 +65,7 @@ namespace Csla.Server
           // tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented(
             obj, "DataPortal_OnDataPortalException",
-            new DataPortalEventArgs(context, DataPortalOperations.Create), ex);
+            new DataPortalEventArgs(context, objectType, DataPortalOperations.Create), ex);
         }
         catch
         {
@@ -99,7 +99,7 @@ namespace Csla.Server
         // tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvoke",
-          new DataPortalEventArgs(context, DataPortalOperations.Fetch));
+          new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch));
 
         // mark the object as old
         MethodCaller.CallMethodIfImplemented(
@@ -115,7 +115,7 @@ namespace Csla.Server
         // tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvokeComplete",
-          new DataPortalEventArgs(context, DataPortalOperations.Fetch));
+          new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch));
 
         // return the populated business object as a result
         return new DataPortalResult(obj);
@@ -127,7 +127,7 @@ namespace Csla.Server
           // tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented(
             obj, "DataPortal_OnDataPortalException",
-            new DataPortalEventArgs(context, DataPortalOperations.Fetch), ex);
+            new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch), ex);
         }
         catch
         {
@@ -151,12 +151,13 @@ namespace Csla.Server
     public DataPortalResult Update(object obj, DataPortalContext context)
     {
       DataPortalOperations operation = DataPortalOperations.Update;
+      Type objectType = obj.GetType();
       try
       {
         // tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvoke",
-          new DataPortalEventArgs(context, operation));
+          new DataPortalEventArgs(context, objectType, operation));
 
         // tell the business object to update itself
         if (obj is Core.BusinessBase)
@@ -214,8 +215,8 @@ namespace Csla.Server
 
         // tell the business object the DataPortal_xyz is complete
         MethodCaller.CallMethodIfImplemented(
-          obj, "DataPortal_OnDataPortalInvokeComplete", 
-          new DataPortalEventArgs(context, operation));
+          obj, "DataPortal_OnDataPortalInvokeComplete",
+          new DataPortalEventArgs(context, objectType, operation));
 
         return new DataPortalResult(obj);
       }
@@ -226,7 +227,7 @@ namespace Csla.Server
           // tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented(
             obj, "DataPortal_OnDataPortalException",
-            new DataPortalEventArgs(context, operation), ex);
+            new DataPortalEventArgs(context, objectType, operation), ex);
         }
         catch
         {
@@ -249,15 +250,16 @@ namespace Csla.Server
     public DataPortalResult Delete(object criteria, DataPortalContext context)
     {
       object obj = null;
+      Type objectType = MethodCaller.GetObjectType(criteria);
       try
       {
         // create an instance of the business objet
-        obj = CreateBusinessObject(criteria);
+        obj = CreateBusinessObject(objectType);
 
         // tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented(
-          obj, "DataPortal_OnDataPortalInvoke", 
-          new DataPortalEventArgs(context, DataPortalOperations.Delete));
+          obj, "DataPortal_OnDataPortalInvoke",
+          new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete));
 
         // tell the business object to delete itself
         MethodCaller.CallMethod(
@@ -266,7 +268,7 @@ namespace Csla.Server
         // tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvokeComplete",
-          new DataPortalEventArgs(context, DataPortalOperations.Delete));
+          new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete));
 
         return new DataPortalResult();
       }
@@ -277,7 +279,7 @@ namespace Csla.Server
           // tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented(
             obj, "DataPortal_OnDataPortalException",
-            new DataPortalEventArgs(context, DataPortalOperations.Delete), ex);
+            new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete), ex);
         }
         catch
         {
@@ -293,23 +295,8 @@ namespace Csla.Server
 
     #region Creating the business object
 
-    private static object CreateBusinessObject(object criteria)
+    private static object CreateBusinessObject(Type businessType)
     {
-      Type businessType;
-      if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
-      {
-        // get the type of the actual business object
-        // from CriteriaBase 
-        businessType = ((CriteriaBase)criteria).ObjectType;
-      }
-      else
-      {
-        // get the type of the actual business object
-        // based on the nested class scheme in the book
-        businessType = criteria.GetType().DeclaringType;
-      }
-
-      // create an instance of the business object
       return Activator.CreateInstance(businessType, true);
     }
 

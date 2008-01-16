@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Text;
+
+namespace Csla.Core
+{
+  internal class PositionMap<T>
+    where T : Core.IEditableBusinessObject
+  {
+    Dictionary<T, int> _map;
+    IList<T> _list;
+
+    public PositionMap(IList<T> list)
+    {
+      _list = list;
+      ClearMap();
+    }
+
+    public void ClearMap()
+    {
+      _map = new Dictionary<T, int>(_list.Count);
+    }
+
+    public void AddToMap(T item)
+    {
+      _map.Add(item, _list.Count - 1);
+    }
+
+    public void InsertIntoMap(T item, int position)
+    {
+      if (position == _list.Count - 1)
+      {
+        AddToMap(item);
+      }
+      else
+      {
+        for (int i = _list.Count - 1; i == position; i--)
+          _map[_list[i]]++;
+        _map.Add(item, position);
+      }
+    }
+
+    public void RemoveFromMap(T item)
+    {
+      int oldPosition = PositionOf(item);
+      if (oldPosition == -1) return;
+      _map.Remove(item);
+      for (int i = oldPosition + 1; i < _list.Count; i++)
+        _map[_list[i]]--;
+    }
+
+    public int PositionOf(T item)
+    {
+      if (_map.ContainsKey(item))
+        return _map[item];
+      else
+        return -1;
+    }
+
+    public void RebuildMap()
+    {
+      ClearMap();
+      int i = 0;
+      foreach (T item in _list)
+      {
+        _map.Add(item, i);
+        i++;
+      }
+
+    }
+  }
+}

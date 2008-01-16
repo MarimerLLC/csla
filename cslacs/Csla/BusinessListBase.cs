@@ -22,12 +22,12 @@ namespace Csla
   [Serializable()]
   public abstract class BusinessListBase<T, C> :
       Core.ExtendedBindingList<C>,
-      Core.IEditableCollection, Core.IUndoableObject, ICloneable, 
-      Core.ISavable, Core.IParent
+      Core.IEditableCollection, Core.IUndoableObject, ICloneable,
+      Core.ISavable, Core.IParent,
+      IQueryable<C>, Linq.IIndexSearchable<C>, Core.IPositionMappable<C>
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
-
     #region Constructors
 
     /// <summary>
@@ -35,6 +35,7 @@ namespace Csla
     /// </summary>
     protected BusinessListBase()
     {
+      _expression = Expression.Constant(this);
       Initialize();
     }
 
@@ -366,6 +367,8 @@ namespace Csla
       Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel);
       // remove from the index
       RemoveIndexItem(child);
+      // remove from the position map
+      RemoveFromMap(child);
       // mark the object as deleted
       child.DeleteChild();
       // and add it to the deleted collection for storage
@@ -409,7 +412,9 @@ namespace Csla
     /// <param name="child">The child object to remove.</param>
     void Core.IEditableCollection.RemoveChild(Csla.Core.IEditableBusinessObject child)
     {
+      RemoveFromMap((C)child);
       Remove((C)child);
+      RemoveIndexItem((C)child);
     }
 
     /// <summary>
@@ -419,7 +424,9 @@ namespace Csla
     /// <param name="child">The child object to remove.</param>
     void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
     {
+      RemoveFromMap((C)child);
       Remove((C)child);
+      RemoveIndexItem((C)child);
     }
 
     /// <summary>
@@ -439,6 +446,7 @@ namespace Csla
       item.EditLevelAdded = _editLevel;
       InsertIndexItem(item);
       base.InsertItem(index, item);
+      InsertIntoMap(item, index);
     }
 
     /// <summary>
@@ -456,6 +464,7 @@ namespace Csla
       {
         this.RaiseListChangedEvents = false;
         RemoveIndexItem(child);
+        RemoveFromMap(child);
         base.RemoveItem(index);
       }
       finally
@@ -489,6 +498,7 @@ namespace Csla
       while (base.Count > 0) RemoveItem(0);
       DeferredLoadIndexIfNotLoaded();
       _indexSet.ClearIndexes();
+      _positionMap.ClearMap();
       base.ClearItems();
     }
 
@@ -522,8 +532,10 @@ namespace Csla
         item.EditLevelAdded = this.EditLevel;
         // update the indexes
         ReIndexItem(item);
+        RemoveFromMap(item);
         // add to list
         base.SetItem(index, item);
+        InsertIntoMap(item, index);
       }
       finally
       {
@@ -647,8 +659,43 @@ namespace Csla
     
     #endregion
 
-    #region Where Implementation
+    #region PositionMapping
+    [NonSerialized]
+    private Core.PositionMap<C> _positionMap;
 
+    private void DeferredLoadPositionMapIfNotLoaded()
+    {
+      if (_positionMap == null) _positionMap = new Csla.Core.PositionMap<C>(this);
+    }
+
+    private void RemoveFromMap(C child)
+    {
+      DeferredLoadPositionMapIfNotLoaded();
+      _positionMap.RemoveFromMap(child);
+    }
+
+    private void InsertIntoMap(C child, int position)
+    {
+      DeferredLoadPositionMapIfNotLoaded();
+      _positionMap.InsertIntoMap(child, position);
+    }
+
+    private void AddToMap(C child)
+    {
+      DeferredLoadPositionMapIfNotLoaded();
+      _positionMap.AddToMap(child);
+      
+    }
+
+    public int PositionOf(C item)
+    {
+      DeferredLoadPositionMapIfNotLoaded();
+      return _positionMap.PositionOf(item);
+    }
+
+    #endregion
+
+    #region Where Implementation
     /// <summary>
     /// Iterates through a set of items according to the expression passed to it.
     /// </summary>
@@ -668,6 +715,8 @@ namespace Csla
       else
       {
         IEnumerable<C> sourceEnum = this.AsEnumerable<C>();
+        //IQueryable<C> sourceQuery = this.AsQueryable<C>();
+        //var result = sourceQuery.Where<C>(expr.Compile());
         var result = sourceEnum.Where<C>(expr.Compile());
         foreach (C item in result)
           yield return item;
@@ -1145,22 +1194,60 @@ namespace Csla
     }
 
     #endregion
+
+    #region LinqIntegration
+
+    [NonSerialized]
+    IQueryProvider _queryProvider;
+
+    [NonSerialized]
+    Expression _expression;
+
+    internal void SetCurrentExpression(Expression ex)
+    {
+      _expression = ex;
+    }
+
+    private void LoadProviderIfNotLoaded()
+    {
+      _queryProvider = new Csla.Linq.CslaQueryProvider<T, C>(this);
+    }
+
+    #region IQueryable Members
+
+    /// <summary>
+    /// Required for IQueryable - returns the ElementType (maps to C)
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public Type ElementType
+    {
+      get { return typeof(C); }
+    }
+
+    /// <summary>
+    /// Last expression used in a linq query
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public Expression Expression
+    {
+      get { return _expression; }
+    }
+
+    /// <summary>
+    /// Query provider currently being used
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public IQueryProvider Provider
+    {
+      get {
+        return new Linq.CslaQueryProvider<T, C>(this);
+      }
+    }
+
+    #endregion
+
+    #endregion
+
   }
 
-  /// <summary>
-  /// Extension method for implementation of LINQ methods on BusinessListBase
-  /// </summary>
-  public static class BusinessListBaseExtension
-  {
-      /// <summary>
-      /// Custom implementation of Where for BusinessListBase - used in LINQ
-      /// </summary>
-      public static IEnumerable<C> Where<T, C>(this BusinessListBase<T, C> source, Expression<Func<C, bool>> expr)
-        where T : BusinessListBase<T, C>
-        where C : Core.IEditableBusinessObject
-      {
-        foreach (C item in source.SearchByExpression(expr))
-          yield return item;
-      }
-  }
 }

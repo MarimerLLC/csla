@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -90,6 +90,8 @@
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BusinessBase.cs" />
+    <Compile Include="Core\ExpressionTreeHelpers.cs" />
+    <Compile Include="Core\ExpressionVisitor.cs" />
     <Compile Include="Core\ExtendedBindingList.cs" />
     <Compile Include="Core\FieldManager\FieldData.cs" />
     <Compile Include="Core\FieldManager\FieldDataList.cs" />
@@ -105,7 +107,17 @@
     <Compile Include="DataPortal\SingleCriteria.cs" />
     <Compile Include="Data\ConnectionManager.cs" />
     <Compile Include="Data\ContextManager.cs" />
+    <Compile Include="Core\InnermostWhereFinder.cs" />
+    <Compile Include="Core\InvalidQueryExpression.cs" />
+    <Compile Include="Core\IPositionMappable.cs" />
+    <Compile Include="Core\PositionMap.cs" />
+    <Compile Include="Core\TypeSystem.cs" />
+    <Compile Include="FilteredBindingList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Linq\CslaQueryProvider.cs" />
     <Compile Include="Linq\IIndex.cs" />
+    <Compile Include="Linq\IIndexSearchable.cs" />
     <Compile Include="Linq\IIndexSet.cs" />
     <Compile Include="Linq\Index.cs" />
     <Compile Include="Linq\IndexSet.cs" />
@@ -172,11 +184,11 @@
     <Compile Include="DefaultFilter.cs" />
     <Compile Include="EditableRootListBase.cs" />
     <Compile Include="EnterpriseServicesSettings.cs" />
-    <Compile Include="FilteredBindingList.cs" />
     <Compile Include="FilterProvider.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IndexableAttribute.cs" />
     <Compile Include="IndexModeEnum.cs" />
+    <Compile Include="Linq\LinqBindingList.cs" />
     <Compile Include="NameValueListBase.cs" />
     <Compile Include="NotUndoableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

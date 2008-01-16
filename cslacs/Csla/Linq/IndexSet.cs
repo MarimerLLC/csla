@@ -11,7 +11,6 @@ namespace Csla.Linq
   internal class IndexSet<T> : IIndexSet<T>
   {
     private Dictionary<string, IIndex<T>> _internalIndexSet = new Dictionary<string, IIndex<T>>();
-    private List<int> _indexingNeedBaseline = new List<int>();
     
     public IndexSet() : base()
     {

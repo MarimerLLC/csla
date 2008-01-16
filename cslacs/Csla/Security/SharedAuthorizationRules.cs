@@ -4,7 +4,6 @@ using System.ComponentModel;
 
 namespace Csla.Security
 {
-
   /// <summary>
   /// Maintains a list of all the per-type
   /// <see cref="AuthorizationRulesManager"/> objects

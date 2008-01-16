@@ -91,10 +91,7 @@ namespace Csla.Security
     /// <remarks></remarks>
     public bool IsReadAllowed(IPrincipal principal)
     {
-      foreach (string role in ReadAllowed)
-        if (IsInRole(principal, role))
-          return true;
-      return false;
+      return AuthorizationRulesManager.PrincipalRoleInList(principal, ReadAllowed);
     }
 
     /// <summary>
@@ -107,10 +104,7 @@ namespace Csla.Security
     /// <remarks></remarks>
     public bool IsReadDenied(IPrincipal principal)
     {
-      foreach (string role in ReadDenied)
-        if (IsInRole(principal, role))
-          return true;
-      return false;
+      return AuthorizationRulesManager.PrincipalRoleInList(principal, ReadDenied);
     }
 
     /// <summary>
@@ -123,10 +117,7 @@ namespace Csla.Security
     /// <remarks></remarks>
     public bool IsWriteAllowed(IPrincipal principal)
     {
-      foreach (string role in WriteAllowed)
-        if (IsInRole(principal, role))
-          return true;
-      return false;
+      return AuthorizationRulesManager.PrincipalRoleInList(principal, WriteAllowed);
     }
 
     /// <summary>
@@ -139,10 +130,7 @@ namespace Csla.Security
     /// <remarks></remarks>
     public bool IsWriteDenied(IPrincipal principal)
     {
-      foreach (string role in WriteDenied)
-        if (IsInRole(principal, role))
-          return true;
-      return false;
+      return AuthorizationRulesManager.PrincipalRoleInList(principal, WriteDenied);
     }
 
     /// <summary>
@@ -154,18 +142,7 @@ namespace Csla.Security
     /// <remarks></remarks>
     public bool IsExecuteAllowed(IPrincipal principal)
     {
-
-      bool result = false;
-      foreach (string role in ExecuteAllowed)
-      {
-        if (IsInRole(principal, role))
-        {
-          result = true;
-          break;
-        }
-      }
-      return result;
-
+      return AuthorizationRulesManager.PrincipalRoleInList(principal, ExecuteAllowed);
     }
 
     /// <summary>
@@ -177,57 +154,7 @@ namespace Csla.Security
     /// <remarks></remarks>
     public bool IsExecuteDenied(IPrincipal principal)
     {
-
-      bool result = false;
-      foreach (string role in ExecuteDenied)
-      {
-        if (IsInRole(principal, role))
-        {
-          result = true;
-          break;
-        }
-      }
-      return result;
-
-    }
-
-    private static IsInRoleProvider mIsInRoleProvider;
-
-    private bool IsInRole(IPrincipal principal, string role)
-    {
-      if (mIsInRoleProvider == null)
-      {
-        string provider = ApplicationContext.IsInRoleProvider;
-        if (string.IsNullOrEmpty(provider))
-          mIsInRoleProvider = IsInRoleDefault;
-        else
-        {
-          string[] items = provider.Split(',');
-          Type containingType = Type.GetType(items[0] + "," + items[1]);
-          mIsInRoleProvider = (IsInRoleProvider)(Delegate.CreateDelegate(typeof(IsInRoleProvider), containingType, items[2]));
-        }
-      }
-      return mIsInRoleProvider(principal, role);
-    }
-
-    private bool IsInRoleDefault(IPrincipal principal, string role)
-    {
-      return principal.IsInRole(role);
+      return AuthorizationRulesManager.PrincipalRoleInList(principal, ExecuteDenied);
     }
   }
-
-  /// <summary>
-  /// Delegate for the method called when the a role
-  /// needs to be checked for the current user.
-  /// </summary>
-  /// <param name="principal">
-  /// The current security principal object.
-  /// </param>
-  /// <param name="role">
-  /// The role to be checked.
-  /// </param>
-  /// <returns>
-  /// True if the current user is in the specified role.
-  /// </returns>
-  public delegate bool IsInRoleProvider(IPrincipal principal, string role);
 }

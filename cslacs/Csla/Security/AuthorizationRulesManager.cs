@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Security.Principal;
 
 namespace Csla.Security
 {
@@ -39,5 +40,62 @@ namespace Csla.Security
     }
 
     #endregion
+
+    #region IsInRole
+
+    internal static bool PrincipalRoleInList(IPrincipal principal, List<string> roleList)
+    {
+      bool result = false;
+      foreach (string role in roleList)
+      {
+        if (IsInRole(principal, role))
+        {
+          result = true;
+          break;
+        }
+      }
+      return result;
+    }
+
+    private static IsInRoleProvider mIsInRoleProvider;
+
+    private static bool IsInRole(IPrincipal principal, string role)
+    {
+      if (mIsInRoleProvider == null)
+      {
+        string provider = ApplicationContext.IsInRoleProvider;
+        if (string.IsNullOrEmpty(provider))
+          mIsInRoleProvider = IsInRoleDefault;
+        else
+        {
+          string[] items = provider.Split(',');
+          Type containingType = Type.GetType(items[0] + "," + items[1]);
+          mIsInRoleProvider = (IsInRoleProvider)(Delegate.CreateDelegate(typeof(IsInRoleProvider), containingType, items[2]));
+        }
+      }
+      return mIsInRoleProvider(principal, role);
+    }
+
+    private static bool IsInRoleDefault(IPrincipal principal, string role)
+    {
+      return principal.IsInRole(role);
+    }
+
+    #endregion
   }
+
+  /// <summary>
+  /// Delegate for the method called when the a role
+  /// needs to be checked for the current user.
+  /// </summary>
+  /// <param name="principal">
+  /// The current security principal object.
+  /// </param>
+  /// <param name="role">
+  /// The role to be checked.
+  /// </param>
+  /// <returns>
+  /// True if the current user is in the specified role.
+  /// </returns>
+  public delegate bool IsInRoleProvider(IPrincipal principal, string role);
 }

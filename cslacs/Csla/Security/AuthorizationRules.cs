@@ -611,5 +611,270 @@ namespace Csla.Security
 
     #endregion
 
+    #region Object Level Roles  
+
+    /// <summary>
+    /// Specify the roles allowed to get (fetch)
+    /// a given type of business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="roles">List of roles.</param>
+    public static void AllowGet(Type objectType, params string[] roles)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      typeRules.AllowGet(roles);
+    }
+
+    /// <summary>
+    /// Specify the roles not allowed to get (fetch)
+    /// a given type of business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="roles">List of roles.</param>
+    public static void DenyGet(Type objectType, params string[] roles)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      typeRules.DenyGet(roles);
+    }
+
+    /// <summary>
+    /// Specify the roles allowed to edit (save)
+    /// a given type of business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="roles">List of roles.</param>
+    public static void AllowEdit(Type objectType, params string[] roles)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      typeRules.AllowEdit(roles);
+    }
+
+    /// <summary>
+    /// Specify the roles not allowed to edit (save)
+    /// a given type of business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="roles">List of roles.</param>
+    public static void DenyEdit(Type objectType, params string[] roles)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      typeRules.DenyEdit(roles);
+    }
+
+    /// <summary>
+    /// Specify the roles allowed to create
+    /// a given type of business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="roles">List of roles.</param>
+    public static void AllowCreate(Type objectType, params string[] roles)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      typeRules.AllowCreate(roles);
+    }
+
+    /// <summary>
+    /// Specify the roles not allowed to create
+    /// a given type of business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="roles">List of roles.</param>
+    public static void DenyCreate(Type objectType, params string[] roles)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      typeRules.DenyCreate(roles);
+    }
+
+    /// <summary>
+    /// Specify the roles allowed to delete
+    /// a given type of business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="roles">List of roles.</param>
+    public static void AllowDelete(Type objectType, params string[] roles)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      typeRules.AllowDelete(roles);
+    }
+
+    /// <summary>
+    /// Specify the roles not allowed to delete
+    /// a given type of business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="roles">List of roles.</param>
+    public static void DenyDelete(Type objectType, params string[] roles)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      typeRules.DenyDelete(roles);
+    }
+
+    internal static List<string> GetAllowCreateRoles(Type objectType)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      return typeRules.AllowCreateRoles;
+    }
+
+    internal static List<string> GetDenyCreateRoles(Type objectType)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      return typeRules.DenyCreateRoles;
+    }
+
+    internal static List<string> GetAllowGetRoles(Type objectType)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      return typeRules.AllowGetRoles;
+    }
+
+    internal static List<string> GetDenyGetRoles(Type objectType)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      return typeRules.DenyGetRoles;
+    }
+
+    internal static List<string> GetAllowEditRoles(Type objectType)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      return typeRules.AllowEditRoles;
+    }
+
+    internal static List<string> GetDenyEditRoles(Type objectType)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      return typeRules.DenyEditRoles;
+    }
+
+    internal static List<string> GetAllowDeleteRoles(Type objectType)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      return typeRules.AllowDeleteRoles;
+    }
+
+    internal static List<string> GetDenyDeleteRoles(Type objectType)
+    {
+      var typeRules = ObjectAuthorizationRules.GetRoles(objectType);
+      return typeRules.DenyDeleteRoles;
+    }
+
+
+    #endregion
+
+    #region Check Object Level Roles
+
+    /// <summary>
+    /// Gets a value indicating whether the current user
+    /// is allowed to create an instance of the business
+    /// object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    public static bool CanCreateObject(Type objectType)
+    {
+      bool result = true;
+      var principal = ApplicationContext.User;
+      var allow = Csla.Security.AuthorizationRules.GetAllowCreateRoles(objectType);
+      if (allow != null)
+      {
+        if (!Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal, allow))
+          result = false;
+      }
+      else
+      {
+        var deny = Csla.Security.AuthorizationRules.GetDenyCreateRoles(objectType);
+        if (deny != null)
+        {
+          if (Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal, deny))
+            result = false;
+        }
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the current user
+    /// is allowed to get (fetch) an instance of the business
+    /// object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    public static bool CanGetObject(Type objectType)
+    {
+      bool result = true;
+      var principal = ApplicationContext.User;
+      var allow = Csla.Security.AuthorizationRules.GetAllowGetRoles(objectType);
+      if (allow != null)
+      {
+        if (!Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal, allow))
+          result = false;
+      }
+      else
+      {
+        var deny = Csla.Security.AuthorizationRules.GetDenyGetRoles(objectType);
+        if (deny != null)
+        {
+          if (Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal, deny))
+            result = false;
+        }
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the current user
+    /// is allowed to edit (save) an instance of the business
+    /// object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    public static bool CanEditObject(Type objectType)
+    {
+      bool result = true;
+      var principal = ApplicationContext.User;
+      var allow = Csla.Security.AuthorizationRules.GetAllowEditRoles(objectType);
+      if (allow != null)
+      {
+        if (!Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal, allow))
+          result = false;
+      }
+      else
+      {
+        var deny = Csla.Security.AuthorizationRules.GetDenyEditRoles(objectType);
+        if (deny != null)
+        {
+          if (Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal, deny))
+            result = false;
+        }
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the current user
+    /// is allowed to delete an instance of the business
+    /// object.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    public static bool CanDeleteObject(Type objectType)
+    {
+      bool result = true;
+      var principal = ApplicationContext.User;
+      var allow = Csla.Security.AuthorizationRules.GetAllowDeleteRoles(objectType);
+      if (allow != null)
+      {
+        if (!Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal, allow))
+          result = false;
+      }
+      else
+      {
+        var deny = Csla.Security.AuthorizationRules.GetDenyDeleteRoles(objectType);
+        if (deny != null)
+        {
+          if (Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal, deny))
+            result = false;
+        }
+      }
+      return result;
+    }
+
+    #endregion
+
   }
 }

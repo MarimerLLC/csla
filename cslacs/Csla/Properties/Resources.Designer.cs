@@ -547,6 +547,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User not authorized to {0} object type {1}.
+        /// </summary>
+        internal static string UserNotAuthorizedException {
+            get {
+                return ResourceManager.GetString("UserNotAuthorizedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validation rule {1} failed in property {0}.
         /// </summary>
         internal static string ValidationRulesException {

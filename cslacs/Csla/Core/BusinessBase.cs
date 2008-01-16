@@ -741,7 +741,6 @@ namespace Csla.Core
 
     }
 
-
     #endregion
 
     #region Parent/Child link

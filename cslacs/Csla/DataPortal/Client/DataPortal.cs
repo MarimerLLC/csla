@@ -110,6 +110,11 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
+        if (!Csla.Security.AuthorizationRules.CanCreateObject(objectType))
+          throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+            "create",
+            objectType.Name));
+
         MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
@@ -195,6 +200,11 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
+        if (!Csla.Security.AuthorizationRules.CanGetObject(objectType))
+          throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+            "get",
+            objectType.Name));
+
         MethodInfo method = MethodCaller.GetFetchMethod(objectType, criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
@@ -342,20 +352,48 @@ namespace Csla
         {
           methodName = "DataPortal_Execute";
           operation = DataPortalOperations.Execute;
+          if (!Csla.Security.AuthorizationRules.CanEditObject(objectType))
+            throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+              "execute",
+              objectType.Name));
         }
         else if (obj is Core.BusinessBase)
         {
           Core.BusinessBase tmp = (Core.BusinessBase)obj;
           if (tmp.IsDeleted)
+          {
             methodName = "DataPortal_DeleteSelf";
+            if (!Csla.Security.AuthorizationRules.CanDeleteObject(objectType))
+              throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                "delete",
+                objectType.Name));
+          }
           else
             if (tmp.IsNew)
+            {
               methodName = "DataPortal_Insert";
+              if (!Csla.Security.AuthorizationRules.CanCreateObject(objectType))
+                throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  "create",
+                  objectType.Name));
+            }
             else
+            {
               methodName = "DataPortal_Update";
+              if (!Csla.Security.AuthorizationRules.CanEditObject(objectType))
+                throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  "save",
+                  objectType.Name));
+            }
         }
         else
+        {
           methodName = "DataPortal_Update";
+          if (!Csla.Security.AuthorizationRules.CanEditObject(objectType))
+            throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+              "save",
+              objectType.Name));
+        }
 
         method = MethodCaller.GetMethod(obj.GetType(), methodName);
 
@@ -417,6 +455,11 @@ namespace Csla
       Type objectType = MethodCaller.GetObjectType(criteria);
       try
       {
+        if (!Csla.Security.AuthorizationRules.CanDeleteObject(objectType))
+          throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+            "delete",
+            objectType.Name));
+
         MethodInfo method = MethodCaller.GetMethod(
           objectType, "DataPortal_Delete", criteria);
 

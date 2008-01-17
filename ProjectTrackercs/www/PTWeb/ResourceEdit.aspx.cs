@@ -9,6 +9,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using ProjectTracker.Library;
+using Csla.Security;
 
 public partial class ResourceEdit : System.Web.UI.Page
 {
@@ -33,8 +34,9 @@ public partial class ResourceEdit : System.Web.UI.Page
   private void ApplyAuthorizationRules()
   {
     Resource obj = GetResource();
+    var canEdit = AuthorizationRules.CanEditObject(typeof(Resource));
     // Resource display
-    if (Resource.CanEditObject())
+    if (canEdit)
     {
       if (obj.IsNew)
         this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
@@ -47,10 +49,10 @@ public partial class ResourceEdit : System.Web.UI.Page
       this.DetailsView1.DefaultMode = DetailsViewMode.ReadOnly;
       this.AssignProjectButton.Visible = false;
     }
-    this.DetailsView1.Rows[this.DetailsView1.Rows.Count - 1].Visible = Resource.CanEditObject();
+    this.DetailsView1.Rows[this.DetailsView1.Rows.Count - 1].Visible = canEdit;
 
     // resources display
-    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Resource.CanEditObject();
+    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = canEdit;
   }
 
   #region DetailsView

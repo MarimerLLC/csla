@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using ProjectTracker.Library;
+using Csla.Security;
 
 namespace PTWin
 {
@@ -270,35 +271,35 @@ namespace PTWin
     {
       // Project menu
       this.NewProjectToolStripMenuItem.Enabled =
-        Csla.Security.AuthorizationRules.CanCreateObject(typeof(Project));
+        AuthorizationRules.CanCreateObject(typeof(Project));
       this.EditProjectToolStripMenuItem.Enabled =
-        Csla.Security.AuthorizationRules.CanGetObject(typeof(Project));
-      if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Project)))
+        AuthorizationRules.CanGetObject(typeof(Project));
+      if (AuthorizationRules.CanEditObject(typeof(Project)))
         this.EditProjectToolStripMenuItem.Text = 
           "Edit project";
       else
         this.EditProjectToolStripMenuItem.Text = 
           "View project";
       this.DeleteProjectToolStripMenuItem.Enabled =
-        Csla.Security.AuthorizationRules.CanDeleteObject(typeof(Project));
+        AuthorizationRules.CanDeleteObject(typeof(Project));
 
       // Resource menu
-      this.NewResourceToolStripMenuItem.Enabled = 
-        Resource.CanAddObject();
-      this.EditResourceToolStripMenuItem.Enabled = 
-        Resource.CanGetObject();
-      if (Resource.CanEditObject())
+      this.NewResourceToolStripMenuItem.Enabled =
+        AuthorizationRules.CanCreateObject(typeof(Resource));
+      this.EditResourceToolStripMenuItem.Enabled =
+        AuthorizationRules.CanGetObject(typeof(Resource));
+      if (AuthorizationRules.CanEditObject(typeof(Resource)))
         this.EditResourceToolStripMenuItem.Text = 
           "Edit resource";
       else
         this.EditResourceToolStripMenuItem.Text = 
           "View resource";
-      this.DeleteResourceToolStripMenuItem.Enabled = 
-        Resource.CanDeleteObject();
+      this.DeleteResourceToolStripMenuItem.Enabled =
+        AuthorizationRules.CanDeleteObject(typeof(Resource));
 
       // Admin menu
       this.EditRolesToolStripMenuItem.Enabled =
-        Csla.Security.AuthorizationRules.CanEditObject(typeof(ProjectTracker.Library.Admin.Roles));
+        AuthorizationRules.CanEditObject(typeof(ProjectTracker.Library.Admin.Roles));
     }
 
     #endregion

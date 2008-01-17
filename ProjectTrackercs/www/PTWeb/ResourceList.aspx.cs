@@ -9,6 +9,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using ProjectTracker.Library;
+using Csla.Security;
 
 public partial class ResourceList : System.Web.UI.Page
 {
@@ -25,8 +26,9 @@ public partial class ResourceList : System.Web.UI.Page
 
   private void ApplyAuthorizationRules()
   {
-    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = Resource.CanDeleteObject();
-    NewResourceButton.Visible = Resource.CanAddObject();
+    this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = 
+      AuthorizationRules.CanDeleteObject(typeof(Resource));
+    NewResourceButton.Visible = AuthorizationRules.CanCreateObject(typeof(Resource));
   }
 
   #region GridView1

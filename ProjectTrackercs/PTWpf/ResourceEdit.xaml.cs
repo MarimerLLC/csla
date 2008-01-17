@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ProjectTracker.Library;
+using Csla.Security;
 
 namespace PTWpf
 {
@@ -80,7 +81,7 @@ namespace PTWpf
     protected override void ApplyAuthorization()
     {
       this.AuthPanel.Refresh();
-      if (Resource.CanEditObject())
+      if (AuthorizationRules.CanEditObject(typeof(Resource)))
       {
         this.ProjectListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
         this.AssignButton.IsEnabled = true;

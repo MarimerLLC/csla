@@ -10,7 +10,6 @@ namespace Csla.Server
   /// </summary>
   public class ChildDataPortal
   {
-
     #region  Data Access
 
     /// <summary>
@@ -216,34 +215,5 @@ namespace Csla.Server
     }
 
     #endregion
-
-    #region  Creating the business object
-
-    private static object CreateBusinessObject(object criteria)
-    {
-
-      Type businessType = null;
-
-      if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
-      {
-        // get the type of the actual business object
-        // from CriteriaBase 
-        businessType = ((CriteriaBase)criteria).ObjectType;
-
-      }
-      else
-      {
-        // get the type of the actual business object
-        // based on the nested class scheme in the book
-        businessType = criteria.GetType().DeclaringType;
-      }
-
-      // create an instance of the business object
-      return Activator.CreateInstance(businessType, true);
-
-    }
-
-    #endregion
-
   }
 }

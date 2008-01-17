@@ -110,6 +110,9 @@ Namespace Wpf
         Dim list As IBindingList = TryCast(ctl.Provider.Data, IBindingList)
         If list IsNot Nothing Then
           result = list.AllowNew
+          If result AndAlso Not Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType) Then
+            result = False
+          End If
         End If
       End If
       e.CanExecute = result

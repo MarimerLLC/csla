@@ -600,6 +600,9 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public static void ReleaseProxy()
     {
+      var disp = _portal as IDisposable;
+      if (disp != null)
+        disp.Dispose();
       _portal = null;
     }
 

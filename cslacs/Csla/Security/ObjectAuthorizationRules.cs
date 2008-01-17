@@ -20,22 +20,13 @@ namespace Csla.Security
       RolesForType result = null;
       if (!_managers.TryGetValue(objectType, out result))
       {
-        bool createdManager = false;
         lock (_managers)
         {
           if (!_managers.TryGetValue(objectType, out result))
           {
             result = new RolesForType();
             _managers.Add(objectType, result);
-            createdManager = true;
-          }
-        }
-        // if necessary, create instance to trigger
-        // static constructor
-        if (createdManager)
-        {
-          lock (objectType)
-          {
+            // invoke method to add auth roles
             var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
             MethodInfo method = objectType.GetMethod(
               "AddObjectAuthorizationRules", flags);

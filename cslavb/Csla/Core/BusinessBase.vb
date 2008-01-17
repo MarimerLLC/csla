@@ -1578,25 +1578,64 @@ Namespace Core
     Protected Function GetProperty(Of P)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal throwOnNoAccess As Boolean) As P
 
-      Dim result As P
+      Dim result As P = Nothing
       If CanReadProperty(propertyInfo.Name, throwOnNoAccess) Then
-        Dim data As FieldManager.IFieldData = FieldManager.GetFieldData(propertyInfo)
-        If data IsNot Nothing Then
-          Dim fd As FieldManager.IFieldData(Of P) = TryCast(data, FieldManager.IFieldData(Of P))
-          If fd IsNot Nothing Then
-            result = fd.Value
+        result = ReadProperty(Of P)(propertyInfo)
 
-          Else
-            result = DirectCast(data.Value, P)
-          End If
+      Else
+        result = propertyInfo.DefaultValue
+      End If
+      Return result
+
+    End Function
+
+#End Region
+
+#Region " Read Properties"
+
+    ''' <summary>
+    ''' Gets a property's value from the list of 
+    ''' managed field values, converting the 
+    ''' value to an appropriate type.
+    ''' </summary>
+    ''' <typeparam name="F">
+    ''' Type of the field.
+    ''' </typeparam>
+    ''' <typeparam name="P">
+    ''' Type of the property.
+    ''' </typeparam>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    Protected Function ReadProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F)) As P
+
+      Return Utilities.CoerceValue(Of P)(GetType(F), Nothing, ReadProperty(Of F)(propertyInfo))
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a property's value as a specified type.
+    ''' </summary>
+    ''' <typeparam name="P">
+    ''' Type of the property.
+    ''' </typeparam>
+    ''' <param name="propertyInfo">
+    ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+    Protected Function ReadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P)) As P
+
+      Dim result As P = Nothing
+      Dim data As FieldManager.IFieldData = FieldManager.GetFieldData(propertyInfo)
+      If data IsNot Nothing Then
+        Dim fd As FieldManager.IFieldData(Of P) = TryCast(data, FieldManager.IFieldData(Of P))
+        If fd IsNot Nothing Then
+          result = fd.Value
 
         Else
-          result = propertyInfo.DefaultValue
-          FieldManager.LoadFieldData(Of P)(propertyInfo, result)
+          result = CType(data.Value, P)
         End If
 
       Else
         result = propertyInfo.DefaultValue
+        FieldManager.LoadFieldData(Of P)(propertyInfo, result)
       End If
       Return result
 

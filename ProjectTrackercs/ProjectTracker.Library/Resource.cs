@@ -1,4 +1,5 @@
 using Csla;
+using Csla.Security;
 using Csla.Data;
 using System;
 using System.Linq;
@@ -108,10 +109,10 @@ namespace ProjectTracker.Library
     protected static void AddObjectAuthorizationRules()
     {
       // add object-level authorization rules here
-      AuthorizationRules.AllowCreate(typeof(Project), "ProjectManager");
-      AuthorizationRules.AllowEdit(typeof(Project), "ProjectManager");
-      AuthorizationRules.AllowDelete(typeof(Project), "ProjectManager");
-      AuthorizationRules.AllowDelete(typeof(Project), "Administrator");
+      AuthorizationRules.AllowCreate(typeof(Resource), "ProjectManager");
+      AuthorizationRules.AllowEdit(typeof(Resource), "ProjectManager");
+      AuthorizationRules.AllowDelete(typeof(Resource), "ProjectManager");
+      AuthorizationRules.AllowDelete(typeof(Resource), "Administrator");
     }
 
     #endregion
@@ -159,7 +160,7 @@ namespace ProjectTracker.Library
         _firstName = data.FirstName;
         _timestamp = data.LastChanged.ToArray();
 
-        SetProperty<ResourceAssignments>(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(data.Assignments.ToArray()));
+        LoadProperty<ResourceAssignments>(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(data.Assignments.ToArray()));
       }
     }
 

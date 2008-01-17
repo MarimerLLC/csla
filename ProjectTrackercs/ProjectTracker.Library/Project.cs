@@ -209,15 +209,15 @@ namespace ProjectTracker.Library
         // insert project data
         System.Data.Linq.Binary lastChanged = null;
         ctx.DataContext.addProject(
-          GetProperty<Guid>(IdProperty),
-          GetProperty<string>(NameProperty),
-          GetProperty<SmartDate>(StartedProperty),
-          GetProperty<SmartDate>(EndedProperty),
-          GetProperty<string>(DescriptionProperty),
+          ReadProperty<Guid>(IdProperty),
+          ReadProperty<string>(NameProperty),
+          ReadProperty<SmartDate>(StartedProperty),
+          ReadProperty<SmartDate>(EndedProperty),
+          ReadProperty<string>(DescriptionProperty),
           ref lastChanged);
         mTimestamp = lastChanged.ToArray();
         // update child objects
-        DataPortal.UpdateChild(GetProperty<ProjectResources>(ResourcesProperty), this);
+        DataPortal.UpdateChild(ReadProperty<ProjectResources>(ResourcesProperty), this);
       }
     }
 
@@ -229,23 +229,23 @@ namespace ProjectTracker.Library
         // insert project data
         System.Data.Linq.Binary lastChanged = null;
         ctx.DataContext.updateProject(
-          GetProperty<Guid>(IdProperty),
-          GetProperty<string>(NameProperty),
-          GetProperty<SmartDate>(StartedProperty),
-          GetProperty<SmartDate>(EndedProperty),
-          GetProperty<string>(DescriptionProperty),
+          ReadProperty<Guid>(IdProperty),
+          ReadProperty<string>(NameProperty),
+          ReadProperty<SmartDate>(StartedProperty),
+          ReadProperty<SmartDate>(EndedProperty),
+          ReadProperty<string>(DescriptionProperty),
           mTimestamp,
           ref lastChanged);
         mTimestamp = lastChanged.ToArray();
         // update child objects
-        DataPortal.UpdateChild(GetProperty<ProjectResources>(ResourcesProperty), this);
+        DataPortal.UpdateChild(ReadProperty<ProjectResources>(ResourcesProperty), this);
       }
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
-      DataPortal_Delete(new SingleCriteria<Project, Guid>(GetProperty<Guid>(IdProperty)));
+      DataPortal_Delete(new SingleCriteria<Project, Guid>(ReadProperty<Guid>(IdProperty)));
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]

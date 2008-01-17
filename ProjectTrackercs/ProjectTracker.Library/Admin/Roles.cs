@@ -64,9 +64,9 @@ namespace ProjectTracker.Library
       protected static void AddObjectAuthorizationRules()
       {
         // add object-level authorization rules here
-        AuthorizationRules.AllowCreate(typeof(Project), "Administrator");
-        AuthorizationRules.AllowEdit(typeof(Project), "Administrator");
-        AuthorizationRules.AllowDelete(typeof(Project), "Administrator");
+        AuthorizationRules.AllowCreate(typeof(Roles), "Administrator");
+        AuthorizationRules.AllowEdit(typeof(Roles), "Administrator");
+        AuthorizationRules.AllowDelete(typeof(Roles), "Administrator");
       }
 
       #endregion

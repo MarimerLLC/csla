@@ -142,7 +142,7 @@ namespace ProjectTracker.Library
         using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
         {
           System.Data.Linq.Binary lastChanged = _timestamp;
-          mgr.DataContext.addRole(GetProperty<int>(IdProperty), GetProperty<string>(NameProperty), ref lastChanged);
+          mgr.DataContext.addRole(ReadProperty<int>(IdProperty), ReadProperty<string>(NameProperty), ref lastChanged);
           _timestamp = lastChanged.ToArray();
         }
       }
@@ -152,7 +152,7 @@ namespace ProjectTracker.Library
         using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
         {
           System.Data.Linq.Binary lastChanged = null;
-          mgr.DataContext.updateRole(GetProperty<int>(IdProperty), GetProperty<string>(NameProperty), _timestamp, ref lastChanged);
+          mgr.DataContext.updateRole(ReadProperty<int>(IdProperty), ReadProperty<string>(NameProperty), _timestamp, ref lastChanged);
           _timestamp = lastChanged.ToArray();
         }
       }

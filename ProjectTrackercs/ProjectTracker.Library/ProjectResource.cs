@@ -145,17 +145,28 @@ namespace ProjectTracker.Library
 
     private void Child_Insert(Project project)
     {
-      _timestamp = Assignment.AddAssignment(project.Id, GetProperty<int>(ResourceIdProperty), GetProperty<SmartDate>(AssignedProperty), GetProperty<int>(RoleProperty));
+      _timestamp = Assignment.AddAssignment(
+        project.Id, 
+        ReadProperty<int>(ResourceIdProperty), 
+        ReadProperty<SmartDate>(AssignedProperty), 
+        ReadProperty<int>(RoleProperty));
     }
 
     private void Child_Update(Project project)
     {
-      _timestamp = Assignment.UpdateAssignment(project.Id, GetProperty<int>(ResourceIdProperty), GetProperty<SmartDate>(AssignedProperty), GetProperty<int>(RoleProperty), _timestamp);
+      _timestamp = Assignment.UpdateAssignment(
+        project.Id, 
+        ReadProperty<int>(ResourceIdProperty), 
+        ReadProperty<SmartDate>(AssignedProperty), 
+        ReadProperty<int>(RoleProperty), 
+        _timestamp);
     }
 
     private void Child_DeleteSelf(Project project)
     {
-      Assignment.RemoveAssignment(project.Id, GetProperty<int>(ResourceIdProperty));
+      Assignment.RemoveAssignment(
+        project.Id, 
+        ReadProperty<int>(ResourceIdProperty));
     }
 
     #endregion

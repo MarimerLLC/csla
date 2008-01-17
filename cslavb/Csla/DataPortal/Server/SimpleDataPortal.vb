@@ -239,10 +239,10 @@ Namespace Server
       Implements Server.IDataPortalServer.Delete
 
       Dim obj As Object = Nothing
-
+      Dim objectType = MethodCaller.GetObjectType(criteria)
       Try
         ' create an instance of the business object
-        obj = CreateBusinessObject(criteria)
+        obj = CreateBusinessObject(objectType)
 
         ' tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented( _
@@ -279,22 +279,8 @@ Namespace Server
 #Region " Creating the business object "
 
     Private Shared Function CreateBusinessObject( _
-      ByVal criteria As Object) As Object
+      ByVal businessType As Type) As Object
 
-      Dim businessType As Type
-
-      If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
-        ' get the type of the actual business object
-        ' from CriteriaBase 
-        businessType = CType(criteria, CriteriaBase).ObjectType
-
-      Else
-        ' get the type of the actual business object
-        ' based on the nested class scheme in the book
-        businessType = criteria.GetType.DeclaringType
-      End If
-
-      ' create an instance of the business object
       Return Activator.CreateInstance(businessType, True)
 
     End Function

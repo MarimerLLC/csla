@@ -105,7 +105,11 @@ namespace Csla.Wpf
       {
         IBindingList list = ctl.Provider.Data as IBindingList;
         if (list != null)
+        {
           result = list.AllowNew;
+          if (result && !Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType()))
+            result = false;
+        }
       }
       e.CanExecute = result;
     }

@@ -59,6 +59,9 @@ namespace Csla
     /// <param name="dataPortalContext">
     /// Data portal context object.
     /// </param>
+    /// <param name="objectType">
+    /// Business object type.
+    /// </param>
     /// <param name="operation">
     /// Data portal operation being performed.
     /// </param>
@@ -74,6 +77,9 @@ namespace Csla
     /// </summary>
     /// <param name="dataPortalContext">
     /// Data portal context object.
+    /// </param>
+    /// <param name="objectType">
+    /// Business object type.
     /// </param>
     /// <param name="operation">
     /// Data portal operation being performed.

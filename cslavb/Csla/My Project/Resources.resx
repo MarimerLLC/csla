@@ -288,4 +288,7 @@
   <data name="PropertyLoadException" xml:space="preserve">
     <value>Property load or set failed for property {0} ({1})</value>
   </data>
+  <data name="UserNotAuthorizedException" xml:space="preserve">
+    <value>User not authorized to {0} object type {1}</value>
+  </data>
 </root>

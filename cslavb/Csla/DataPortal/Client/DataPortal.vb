@@ -100,6 +100,12 @@ Public Module DataPortal
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
     Try
+      If Not Csla.Security.AuthorizationRules.CanCreateObject(objectType) Then
+        Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+          "create", _
+          objectType.Name))
+      End If
+
       Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
 
       Dim proxy As DataPortalClient.IDataPortalProxy
@@ -189,6 +195,12 @@ Public Module DataPortal
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
     Try
+      If Not Csla.Security.AuthorizationRules.CanGetObject(objectType) Then
+        Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+          "get", _
+          objectType.Name))
+      End If
+
       Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
 
       Dim proxy As DataPortalClient.IDataPortalProxy
@@ -320,27 +332,53 @@ Public Module DataPortal
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
     Dim operation = DataPortalOperations.Update
+    Dim objectType = obj.GetType
     Try
       Dim method As MethodInfo
       Dim methodName As String
       If TypeOf obj Is CommandBase Then
         methodName = "DataPortal_Execute"
         operation = DataPortalOperations.Execute
+        If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
+          Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+            "execute", _
+            objectType.Name))
+        End If
 
       ElseIf TypeOf obj Is Core.BusinessBase Then
         Dim tmp As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
         If tmp.IsDeleted Then
           methodName = "DataPortal_DeleteSelf"
+          If Not Csla.Security.AuthorizationRules.CanDeleteObject(objectType) Then
+            Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+              "delete", _
+              objectType.Name))
+          End If
         Else
           If tmp.IsNew Then
             methodName = "DataPortal_Insert"
+            If Not Csla.Security.AuthorizationRules.CanCreateObject(objectType) Then
+              Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+                "create", _
+                objectType.Name))
+            End If
 
           Else
             methodName = "DataPortal_Update"
+            If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
+              Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+                "save", _
+                objectType.Name))
+            End If
           End If
         End If
       Else
         methodName = "DataPortal_Update"
+        If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
+          Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+            "save", _
+            objectType.Name))
+        End If
       End If
 
       method = MethodCaller.GetMethod(obj.GetType, methodName)
@@ -402,7 +440,14 @@ Public Module DataPortal
 
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
+    Dim objectType = MethodCaller.GetObjectType(criteria)
     Try
+      If Not Csla.Security.AuthorizationRules.CanDeleteObject(objectType) Then
+        Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+          "delete", _
+          objectType.Name))
+      End If
+
       Dim method As MethodInfo = _
         MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
 

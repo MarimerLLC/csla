@@ -556,6 +556,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to User not authorized to {0} object type {1}.
+        '''</summary>
+        Friend ReadOnly Property UserNotAuthorizedException() As String
+            Get
+                Return ResourceManager.GetString("UserNotAuthorizedException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Validation rule {1} failed in property {0}.
         '''</summary>
         Friend ReadOnly Property ValidationRuleException() As String

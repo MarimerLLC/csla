@@ -3,6 +3,7 @@ Imports System.Reflection
 Imports System.Runtime.Remoting
 Imports System.Runtime.Remoting.Channels
 Imports System.Runtime.Remoting.Channels.Http
+Imports Csla.Reflection
 
 ''' <summary>
 ''' This is the client-side DataPortal as described in

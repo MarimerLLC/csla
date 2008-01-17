@@ -146,7 +146,6 @@
     <Compile Include="DataPortal\Hosts\WebServicePortal.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DataPortal\MethodCaller.vb" />
     <Compile Include="DataPortal\Server\ChildDataPortal.vb" />
     <Compile Include="DataPortal\Server\DataPortalContext.vb" />
     <Compile Include="DataPortal\Server\IDataPortalServer.vb" />
@@ -173,7 +172,7 @@
     <Compile Include="Linq\IndexSet.vb" />
     <Compile Include="PropertyInfo.vb" />
     <Compile Include="PropertyLoadException.vb" />
-    <Compile Include="Reflection\TypeInfoCache.vb" />
+    <Compile Include="Reflection\MethodCaller.vb" />
     <Compile Include="Security\AccessType.vb" />
     <Compile Include="Security\AuthorizationRulesManager.vb" />
     <Compile Include="Security\IAuthorizeReadWrite.vb" />

@@ -4,6 +4,7 @@ Imports System.ComponentModel
 Imports System.Text
 Imports System.Windows.Data
 Imports System.Reflection
+Imports Csla.Reflection
 
 Namespace Wpf
 

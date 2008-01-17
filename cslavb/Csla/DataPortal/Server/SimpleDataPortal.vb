@@ -1,6 +1,7 @@
 Imports System.Reflection
 Imports System.Security.Principal
 Imports System.Collections.Specialized
+Imports Csla.Reflection
 
 Namespace Server
 

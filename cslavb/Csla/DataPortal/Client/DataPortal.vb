@@ -540,6 +540,10 @@ Public Module DataPortal
   <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
   Public Sub ReleaseProxy()
 
+    Dim disp = TryCast(mPortal, IDisposable)
+    If disp IsNot Nothing Then
+      disp.Dispose()
+    End If
     mPortal = Nothing
 
   End Sub

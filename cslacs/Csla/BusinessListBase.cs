@@ -102,7 +102,11 @@ namespace Csla
     [Browsable(false)]
     public virtual bool IsSavable
     {
-      get { return (IsDirty && IsValid); }
+      get 
+      {
+        bool auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
+        return (IsDirty && IsValid && auth);
+      }
     }
 
     #endregion

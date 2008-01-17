@@ -291,7 +291,17 @@ namespace Csla.Core
     [Browsable(false)]
     public virtual bool IsSavable
     {
-      get { return (IsDirty && IsValid); }
+      get 
+      {
+        bool auth;
+        if (IsDeleted)
+          auth = Csla.Security.AuthorizationRules.CanDeleteObject(this.GetType());
+        else if (IsNew)
+          auth = Csla.Security.AuthorizationRules.CanCreateObject(this.GetType());
+        else
+          auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
+        return (IsDirty && IsValid && auth); 
+      }
     }
 
     #endregion

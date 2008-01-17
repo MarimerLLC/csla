@@ -675,6 +675,243 @@ Namespace Security
 
 #End Region
 
+#Region "Object Level Roles  "
+
+    ''' <summary>
+    ''' Specify the roles allowed to get (fetch)
+    ''' a given type of business object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    ''' <param name="roles">List of roles.</param>
+    Public Shared Sub AllowGet(ByVal objectType As Type, ByVal ParamArray roles() As String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      typeRules.AllowGet(roles)
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles not allowed to get (fetch)
+    ''' a given type of business object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    ''' <param name="roles">List of roles.</param>
+    Public Shared Sub DenyGet(ByVal objectType As Type, ByVal ParamArray roles() As String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      typeRules.DenyGet(roles)
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles allowed to edit (save)
+    ''' a given type of business object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    ''' <param name="roles">List of roles.</param>
+    Public Shared Sub AllowEdit(ByVal objectType As Type, ByVal ParamArray roles() As String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      typeRules.AllowEdit(roles)
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles not allowed to edit (save)
+    ''' a given type of business object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    ''' <param name="roles">List of roles.</param>
+    Public Shared Sub DenyEdit(ByVal objectType As Type, ByVal ParamArray roles() As String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      typeRules.DenyEdit(roles)
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles allowed to create
+    ''' a given type of business object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    ''' <param name="roles">List of roles.</param>
+    Public Shared Sub AllowCreate(ByVal objectType As Type, ByVal ParamArray roles() As String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      typeRules.AllowCreate(roles)
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles not allowed to create
+    ''' a given type of business object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    ''' <param name="roles">List of roles.</param>
+    Public Shared Sub DenyCreate(ByVal objectType As Type, ByVal ParamArray roles() As String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      typeRules.DenyCreate(roles)
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles allowed to delete
+    ''' a given type of business object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    ''' <param name="roles">List of roles.</param>
+    Public Shared Sub AllowDelete(ByVal objectType As Type, ByVal ParamArray roles() As String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      typeRules.AllowDelete(roles)
+    End Sub
+
+    ''' <summary>
+    ''' Specify the roles not allowed to delete
+    ''' a given type of business object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    ''' <param name="roles">List of roles.</param>
+    Public Shared Sub DenyDelete(ByVal objectType As Type, ByVal ParamArray roles() As String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      typeRules.DenyDelete(roles)
+    End Sub
+
+    Friend Shared Function GetAllowCreateRoles(ByVal objectType As Type) As List(Of String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      Return typeRules.AllowCreateRoles
+    End Function
+
+    Friend Shared Function GetDenyCreateRoles(ByVal objectType As Type) As List(Of String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      Return typeRules.DenyCreateRoles
+    End Function
+
+    Friend Shared Function GetAllowGetRoles(ByVal objectType As Type) As List(Of String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      Return typeRules.AllowGetRoles
+    End Function
+
+    Friend Shared Function GetDenyGetRoles(ByVal objectType As Type) As List(Of String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      Return typeRules.DenyGetRoles
+    End Function
+
+    Friend Shared Function GetAllowEditRoles(ByVal objectType As Type) As List(Of String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      Return typeRules.AllowEditRoles
+    End Function
+
+    Friend Shared Function GetDenyEditRoles(ByVal objectType As Type) As List(Of String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      Return typeRules.DenyEditRoles
+    End Function
+
+    Friend Shared Function GetAllowDeleteRoles(ByVal objectType As Type) As List(Of String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      Return typeRules.AllowDeleteRoles
+    End Function
+
+    Friend Shared Function GetDenyDeleteRoles(ByVal objectType As Type) As List(Of String)
+      Dim typeRules = ObjectAuthorizationRules.GetRoles(objectType)
+      Return typeRules.DenyDeleteRoles
+    End Function
+
+
+#End Region
+
+#Region "Check Object Level Roles"
+
+    ''' <summary>
+    ''' Gets a value indicating whether the current user
+    ''' is allowed to create an instance of the business
+    ''' object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    Public Shared Function CanCreateObject(ByVal objectType As Type) As Boolean
+      Dim result As Boolean = True
+      Dim principal = ApplicationContext.User
+      Dim allow = AuthorizationRules.GetAllowCreateRoles(objectType)
+      If allow IsNot Nothing Then
+        If (Not AuthorizationRulesManager.PrincipalRoleInList(principal, allow)) Then
+          result = False
+        End If
+      Else
+        Dim deny = AuthorizationRules.GetDenyCreateRoles(objectType)
+        If deny IsNot Nothing Then
+          If AuthorizationRulesManager.PrincipalRoleInList(principal, deny) Then
+            result = False
+          End If
+        End If
+      End If
+      Return result
+    End Function
+
+    ''' <summary>
+    ''' Gets a value indicating whether the current user
+    ''' is allowed to get (fetch) an instance of the business
+    ''' object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    Public Shared Function CanGetObject(ByVal objectType As Type) As Boolean
+      Dim result As Boolean = True
+      Dim principal = ApplicationContext.User
+      Dim allow = AuthorizationRules.GetAllowGetRoles(objectType)
+      If allow IsNot Nothing Then
+        If (Not AuthorizationRulesManager.PrincipalRoleInList(principal, allow)) Then
+          result = False
+        End If
+      Else
+        Dim deny = AuthorizationRules.GetDenyGetRoles(objectType)
+        If deny IsNot Nothing Then
+          If AuthorizationRulesManager.PrincipalRoleInList(principal, deny) Then
+            result = False
+          End If
+        End If
+      End If
+      Return result
+    End Function
+
+    ''' <summary>
+    ''' Gets a value indicating whether the current user
+    ''' is allowed to edit (save) an instance of the business
+    ''' object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    Public Shared Function CanEditObject(ByVal objectType As Type) As Boolean
+      Dim result As Boolean = True
+      Dim principal = ApplicationContext.User
+      Dim allow = AuthorizationRules.GetAllowEditRoles(objectType)
+      If allow IsNot Nothing Then
+        If (Not AuthorizationRulesManager.PrincipalRoleInList(principal, allow)) Then
+          result = False
+        End If
+      Else
+        Dim deny = AuthorizationRules.GetDenyEditRoles(objectType)
+        If deny IsNot Nothing Then
+          If AuthorizationRulesManager.PrincipalRoleInList(principal, deny) Then
+            result = False
+          End If
+        End If
+      End If
+      Return result
+    End Function
+
+    ''' <summary>
+    ''' Gets a value indicating whether the current user
+    ''' is allowed to delete an instance of the business
+    ''' object.
+    ''' </summary>
+    ''' <param name="objectType">Type of business object.</param>
+    Public Shared Function CanDeleteObject(ByVal objectType As Type) As Boolean
+      Dim result As Boolean = True
+      Dim principal = ApplicationContext.User
+      Dim allow = AuthorizationRules.GetAllowDeleteRoles(objectType)
+      If allow IsNot Nothing Then
+        If (Not AuthorizationRulesManager.PrincipalRoleInList(principal, allow)) Then
+          result = False
+        End If
+      Else
+        Dim deny = AuthorizationRules.GetDenyDeleteRoles(objectType)
+        If deny IsNot Nothing Then
+          If AuthorizationRulesManager.PrincipalRoleInList(principal, deny) Then
+            result = False
+          End If
+        End If
+      End If
+      Return result
+    End Function
+
+#End Region
+
   End Class
 
 End Namespace

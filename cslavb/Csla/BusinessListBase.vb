@@ -95,7 +95,8 @@ Public MustInherit Class BusinessListBase( _
   <Browsable(False)> _
   Public Overridable ReadOnly Property IsSavable() As Boolean Implements IEditableCollection.IsSavable
     Get
-      Return (IsDirty AndAlso IsValid)
+      Dim auth = Csla.Security.AuthorizationRules.CanEditObject(Me.GetType())
+      Return (IsDirty AndAlso IsValid AndAlso auth)
     End Get
   End Property
 

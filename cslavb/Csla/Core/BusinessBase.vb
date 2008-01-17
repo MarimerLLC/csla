@@ -298,7 +298,15 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsSavable() As Boolean Implements IEditableBusinessObject.IsSavable
       Get
-        Return IsDirty AndAlso IsValid
+        Dim auth As Boolean
+        If IsDeleted Then
+          auth = Csla.Security.AuthorizationRules.CanDeleteObject(Me.GetType())
+        ElseIf IsNew Then
+          auth = Csla.Security.AuthorizationRules.CanCreateObject(Me.GetType())
+        Else
+          auth = Csla.Security.AuthorizationRules.CanEditObject(Me.GetType())
+        End If
+        Return IsDirty AndAlso IsValid AndAlso auth
       End Get
     End Property
 

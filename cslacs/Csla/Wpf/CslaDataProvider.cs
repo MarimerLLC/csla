@@ -4,10 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
-using System.Windows.Input;
 using System.Windows.Data;
 using System.Reflection;
+using Csla.Reflection;
 using Csla.Properties;
 
 namespace Csla.Wpf

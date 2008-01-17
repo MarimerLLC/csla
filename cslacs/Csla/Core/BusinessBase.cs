@@ -1592,25 +1592,58 @@ namespace Csla.Core
     {
       P result = default(P);
       if (CanReadProperty(propertyInfo.Name, throwOnNoAccess))
+        result = ReadProperty<P>(propertyInfo);
+      else
+        result = propertyInfo.DefaultValue;
+      return result;
+    }
+
+    #endregion
+
+    #region  Read Properties
+
+    /// <summary>
+    /// Gets a property's value from the list of 
+    /// managed field values, converting the 
+    /// value to an appropriate type.
+    /// </summary>
+    /// <typeparam name="F">
+    /// Type of the field.
+    /// </typeparam>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    protected P ReadProperty<F, P>(PropertyInfo<F> propertyInfo)
+    {
+      return Utilities.CoerceValue<P>(typeof(F), null, ReadProperty<F>(propertyInfo));
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    {
+      P result = default(P);
+      FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
+      if (data != null)
       {
-        FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
-        if (data != null)
-        {
-          FieldManager.IFieldData<P> fd = data as FieldManager.IFieldData<P>;
-          if (fd != null)
-            result = fd.Value;
-          else
-            result = (P)data.Value;
-        }
+        FieldManager.IFieldData<P> fd = data as FieldManager.IFieldData<P>;
+        if (fd != null)
+          result = fd.Value;
         else
-        {
-          result = propertyInfo.DefaultValue;
-          FieldManager.LoadFieldData<P>(propertyInfo, result);
-        }
+          result = (P)data.Value;
       }
       else
       {
         result = propertyInfo.DefaultValue;
+        FieldManager.LoadFieldData<P>(propertyInfo, result);
       }
       return result;
     }

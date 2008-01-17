@@ -1900,7 +1900,29 @@ namespace Csla.Core
       if (CanWriteProperty(propertyInfo.Name, throwOnNoAccess))
       {
         OnPropertyChanging(propertyInfo.Name);
-        LoadProperty<P, F>(propertyInfo, newValue);
+        try
+        {
+          P oldValue = default(P);
+          var fieldData = FieldManager.GetFieldData(propertyInfo);
+          if (fieldData == null)
+          {
+            oldValue = propertyInfo.DefaultValue;
+            fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+          }
+          else
+          {
+            var fd = fieldData as FieldManager.IFieldData<P>;
+            if (fd != null)
+              oldValue = fd.Value;
+            else
+              oldValue = (P)fieldData.Value;
+          }
+          LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), true);
+        }
+        catch (Exception ex)
+        {
+          throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+        }
         PropertyHasChanged(propertyInfo.Name);
       }
     }
@@ -1925,7 +1947,29 @@ namespace Csla.Core
       if (CanWriteProperty(propertyInfo.Name, throwOnNoAccess))
       {
         OnPropertyChanging(propertyInfo.Name);
-        LoadProperty<P>(propertyInfo, newValue);
+        try
+        {
+          P oldValue = default(P);
+          var fieldData = FieldManager.GetFieldData(propertyInfo);
+          if (fieldData == null)
+          {
+            oldValue = propertyInfo.DefaultValue;
+            fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+          }
+          else
+          {
+            var fd = fieldData as FieldManager.IFieldData<P>;
+            if (fd != null)
+              oldValue = fd.Value;
+            else
+              oldValue = (P)fieldData.Value;
+          }
+          LoadPropertyValue<P>(propertyInfo, oldValue, newValue, true);
+        }
+        catch (Exception ex)
+        {
+          throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+        }
         PropertyHasChanged(propertyInfo.Name);
       }
     }
@@ -1968,7 +2012,7 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
+        LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), false);
       }
       catch (Exception ex)
       {
@@ -2013,7 +2057,7 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        LoadPropertyValue<P>(propertyInfo, oldValue, newValue);
+        LoadPropertyValue<P>(propertyInfo, oldValue, newValue, false);
       }
       catch (Exception ex)
       {
@@ -2021,7 +2065,7 @@ namespace Csla.Core
       }
     }
 
-    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue)
+    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
     {
       var valuesDiffer = false;
       if (oldValue == null)
@@ -2039,7 +2083,10 @@ namespace Csla.Core
             INotifyPropertyChanged pc = (INotifyPropertyChanged)oldValue;
             pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
           }
-          FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          if (markDirty)
+            FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          else
+            FieldManager.LoadFieldData<P>(propertyInfo, newValue);
           IEditableBusinessObject child = (IEditableBusinessObject)newValue;
           if (child != null)
           {
@@ -2061,7 +2108,10 @@ namespace Csla.Core
             IBindingList pc = (IBindingList)oldValue;
             pc.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
           }
-          FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          if (markDirty)
+            FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          else
+            FieldManager.LoadFieldData<P>(propertyInfo, newValue);
           IEditableCollection child = (IEditableCollection)newValue;
           if (child != null)
           {
@@ -2081,7 +2131,10 @@ namespace Csla.Core
         }
         else
         {
-          FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          if (markDirty)
+            FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          else
+            FieldManager.LoadFieldData<P>(propertyInfo, newValue);
         }
       }
     }

@@ -1893,7 +1893,27 @@ Namespace Core
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
         OnPropertyChanging(propertyInfo.Name)
-        LoadProperty(Of P, F)(propertyInfo, newValue)
+        Try
+          Dim oldValue As P = Nothing
+          Dim fieldData = FieldManager.GetFieldData(propertyInfo)
+          If fieldData Is Nothing Then
+            oldValue = propertyInfo.DefaultValue
+            fieldData = FieldManager.LoadFieldData(Of P)(propertyInfo, oldValue)
+
+          Else
+            Dim fd = TryCast(fieldData, FieldManager.IFieldData(Of P))
+            If fd IsNot Nothing Then
+              oldValue = fd.Value
+
+            Else
+              oldValue = DirectCast(fieldData.Value, P)
+            End If
+          End If
+          LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue), True)
+
+        Catch ex As Exception
+          Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
+        End Try
         PropertyHasChanged(propertyInfo.Name)
       End If
 
@@ -1919,7 +1939,27 @@ Namespace Core
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
         OnPropertyChanging(propertyInfo.Name)
-        LoadProperty(Of P)(propertyInfo, newValue)
+        Try
+          Dim oldValue As P = Nothing
+          Dim fieldData = FieldManager.GetFieldData(propertyInfo)
+          If fieldData Is Nothing Then
+            oldValue = propertyInfo.DefaultValue
+            fieldData = FieldManager.LoadFieldData(Of P)(propertyInfo, oldValue)
+
+          Else
+            Dim fd = TryCast(fieldData, FieldManager.IFieldData(Of P))
+            If fd IsNot Nothing Then
+              oldValue = fd.Value
+
+            Else
+              oldValue = DirectCast(fieldData.Value, P)
+            End If
+          End If
+          LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue, True)
+
+        Catch ex As Exception
+          Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
+        End Try
         PropertyHasChanged(propertyInfo.Name)
       End If
 
@@ -1963,7 +2003,7 @@ Namespace Core
             oldValue = DirectCast(fieldData.Value, P)
           End If
         End If
-        LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue))
+        LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue), False)
 
       Catch ex As Exception
         Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
@@ -2009,7 +2049,7 @@ Namespace Core
           End If
         End If
 
-        LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue)
+        LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue, False)
 
       Catch ex As Exception
         Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
@@ -2018,7 +2058,10 @@ Namespace Core
     End Sub
 
     Private Sub LoadPropertyValue(Of P)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal oldValue As P, ByVal newValue As P)
+      ByVal propertyInfo As PropertyInfo(Of P), _
+      ByVal oldValue As P, _
+      ByVal newValue As P, _
+      ByVal markDirty As Boolean)
 
       Dim valuesDiffer = False
       If oldValue Is Nothing Then
@@ -2035,7 +2078,11 @@ Namespace Core
             Dim pc As INotifyPropertyChanged = DirectCast(oldValue, INotifyPropertyChanged)
             RemoveHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
           End If
-          FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+          If markDirty Then
+            FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+          Else
+            FieldManager.LoadFieldData(Of P)(propertyInfo, newValue)
+          End If
           Dim child As IEditableBusinessObject = DirectCast(newValue, IEditableBusinessObject)
           If child IsNot Nothing Then
             child.SetParent(Me)
@@ -2054,7 +2101,11 @@ Namespace Core
             Dim pc As IBindingList = DirectCast(oldValue, IBindingList)
             RemoveHandler pc.ListChanged, AddressOf Child_ListChanged
           End If
-          FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+          If markDirty Then
+            FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+          Else
+            FieldManager.LoadFieldData(Of P)(propertyInfo, newValue)
+          End If
           Dim child As IEditableCollection = DirectCast(newValue, IEditableCollection)
           If child IsNot Nothing Then
             child.SetParent(Me)
@@ -2071,7 +2122,11 @@ Namespace Core
           End If
 
         Else
-          FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+          If markDirty Then
+            FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+          Else
+            FieldManager.LoadFieldData(Of P)(propertyInfo, newValue)
+          End If
         End If
       End If
 

@@ -116,7 +116,7 @@ Public Module DataPortal
       dpContext = New Server.DataPortalContext( _
         GetPrincipal, proxy.IsServerRemote)
 
-      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Create))
+      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create))
 
       Try
         result = proxy.Create(objectType, criteria, dpContext)
@@ -135,10 +135,10 @@ Public Module DataPortal
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
 
-      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Create))
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create))
 
     Catch ex As Exception
-      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Create, ex))
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create, ex))
       Throw
     End Try
 
@@ -211,7 +211,7 @@ Public Module DataPortal
       dpContext = New Server.DataPortalContext( _
         GetPrincipal, proxy.IsServerRemote)
 
-      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch))
+      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch))
 
       Try
         result = proxy.Fetch(objectType, criteria, dpContext)
@@ -230,10 +230,10 @@ Public Module DataPortal
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
 
-      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch))
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch))
 
     Catch ex As Exception
-      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Fetch, ex))
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch, ex))
       Throw
     End Try
 
@@ -390,7 +390,7 @@ Public Module DataPortal
 
       dpContext = New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
 
-      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, operation))
+      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, objectType, operation))
 
       Try
         If Not proxy.IsServerRemote AndAlso ApplicationContext.AutoCloneOnUpdate Then
@@ -417,10 +417,10 @@ Public Module DataPortal
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
 
-      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, operation))
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, objectType, operation))
 
     Catch ex As Exception
-      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, operation, ex))
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, objectType, operation, ex))
       Throw
     End Try
 
@@ -458,7 +458,7 @@ Public Module DataPortal
 
       dpContext = New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
 
-      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete))
+      OnDataPortalInvoke(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete))
 
       Try
         result = proxy.Delete(criteria, dpContext)
@@ -477,10 +477,10 @@ Public Module DataPortal
         ApplicationContext.SetGlobalContext(result.GlobalContext)
       End If
 
-      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete))
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete))
 
     Catch ex As Exception
-      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, DataPortalOperations.Delete, ex))
+      OnDataPortalInvokeComplete(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete, ex))
       Throw
     End Try
 

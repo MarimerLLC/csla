@@ -36,7 +36,7 @@ Namespace Server
         ' tell the business object we're about to make a Child_xyz call
         MethodCaller.CallMethodIfImplemented( _
           obj, "Child_OnDataPortalInvoke", _
-          New DataPortalEventArgs(Nothing, DataPortalOperations.Create))
+          New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Create))
 
         ' tell the business object to fetch its data
         Dim method As MethodInfo = MethodCaller.GetMethod(objectType, "Child_Create", parameters)
@@ -48,7 +48,7 @@ Namespace Server
         ' tell the business object the Child_xyz call is complete
         MethodCaller.CallMethodIfImplemented( _
           obj, "Child_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(Nothing, DataPortalOperations.Create))
+          New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Create))
 
         ' return the populated business object as a result
         Return obj
@@ -58,7 +58,7 @@ Namespace Server
           ' tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented( _
             obj, "Child_OnDataPortalException", _
-            New DataPortalEventArgs(Nothing, DataPortalOperations.Create), ex)
+            New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Create), ex)
         Catch
           ' ignore exceptions from the exception handler
         End Try
@@ -91,7 +91,7 @@ Namespace Server
         ' tell the business object we're about to make a Child_xyz call
         MethodCaller.CallMethodIfImplemented( _
           obj, "Child_OnDataPortalInvoke", _
-          New DataPortalEventArgs(Nothing, DataPortalOperations.Fetch))
+          New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Fetch))
 
         ' mark the object as old
         MethodCaller.CallMethodIfImplemented(obj, "MarkOld")
@@ -103,7 +103,7 @@ Namespace Server
         ' tell the business object the Child_xyz call is complete
         MethodCaller.CallMethodIfImplemented( _
           obj, "Child_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(Nothing, DataPortalOperations.Fetch))
+          New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Fetch))
 
         ' return the populated business object as a result
         Return obj
@@ -113,7 +113,7 @@ Namespace Server
           ' tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented( _
             obj, "Child_OnDataPortalException", _
-            New DataPortalEventArgs(Nothing, DataPortalOperations.Fetch), ex)
+            New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Fetch), ex)
         Catch
           ' ignore exceptions from the exception handler
         End Try
@@ -135,12 +135,13 @@ Namespace Server
       ByVal ParamArray parameters() As Object)
 
       Dim operation = DataPortalOperations.Update
+      Dim objectType = obj.GetType
 
       Try
         ' tell the business object we're about to make a Child_xyz call
         MethodCaller.CallMethodIfImplemented( _
           obj, "Child_OnDataPortalInvoke", _
-          New DataPortalEventArgs(Nothing, operation))
+          New DataPortalEventArgs(Nothing, objectType, operation))
 
         ' tell the business object to update itself
         If TypeOf obj Is Core.BusinessBase Then
@@ -183,14 +184,14 @@ Namespace Server
         ' tell the business object the Child_xyz call is complete
         MethodCaller.CallMethodIfImplemented( _
           obj, "Child_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(Nothing, operation))
+          New DataPortalEventArgs(Nothing, objectType, operation))
 
       Catch ex As Exception
         Try
           ' tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented( _
             obj, "Child_OnDataPortalException", _
-            New DataPortalEventArgs(Nothing, operation), ex)
+            New DataPortalEventArgs(Nothing, objectType, operation), ex)
         Catch
           ' ignore exceptions from the exception handler
         End Try

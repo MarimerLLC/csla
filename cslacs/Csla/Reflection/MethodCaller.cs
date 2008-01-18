@@ -1,16 +1,54 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Csla.Server;
 using Csla.Properties;
+using Csla.Server;
+using Csla;
 
 namespace Csla.Reflection
 {
-  internal static class MethodCaller
+  /// <summary>
+  /// Provides methods to dynamically find and call methods.
+  /// </summary>
+  public static class MethodCaller
   {
+
     private const BindingFlags allLevelFlags = BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     private const BindingFlags oneLevelFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
+    #region Dynamic Method Cache
+
+    private static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
+
+    private static DynamicMethodHandle GetCachedMethod(object obj, MethodInfo info, params object[] parameters)
+    {
+      var key = new MethodCacheKey(obj.GetType().FullName, info.Name, GetParameterTypes(parameters));
+      DynamicMethodHandle mh = null;
+      if (!_methodCache.TryGetValue(key, out mh))
+      {
+        mh = new DynamicMethodHandle(info, parameters);
+        _methodCache.Add(key, mh);
+      }
+      return mh;
+    }
+
+    private static DynamicMethodHandle GetCachedMethod(object obj, string method, params object[] parameters)
+    {
+      var key = new MethodCacheKey(obj.GetType().FullName, method, GetParameterTypes(parameters));
+      DynamicMethodHandle mh = null;
+      if (!_methodCache.TryGetValue(key, out mh))
+      {
+        MethodInfo info = GetMethod(obj.GetType(), method, parameters);
+        mh = new DynamicMethodHandle(info, parameters);
+        _methodCache.Add(key, mh);
+      }
+      return mh;
+    }
+
+    #endregion
+
+    #region Data Portal Methods
 
     /// <summary>
     /// Gets a reference to the DataPortal_Create method for
@@ -23,20 +61,23 @@ namespace Csla.Reflection
     /// flag indicating that the parameter should be considered missing
     /// (not Nothing/null - just not there).
     /// </remarks>
-    public static MethodInfo GetCreateMethod(Type objectType, object criteria)
+    internal static MethodInfo GetCreateMethod(Type objectType, object criteria)
     {
+
       MethodInfo method = null;
       if (criteria is int)
       {
         // an "Integer" criteria is a special flag indicating
         // that criteria is empty and should not be used
         method = MethodCaller.GetMethod(objectType, "DataPortal_Create");
+
       }
       else
       {
         method = MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria);
       }
       return method;
+
     }
 
     /// <summary>
@@ -50,33 +91,48 @@ namespace Csla.Reflection
     /// flag indicating that the parameter should be considered missing
     /// (not Nothing/null - just not there).
     /// </remarks>
-    public static MethodInfo GetFetchMethod(Type objectType, object criteria)
+    internal static MethodInfo GetFetchMethod(Type objectType, object criteria)
     {
+
       MethodInfo method = null;
       if (criteria is int)
       {
         // an "Integer" criteria is a special flag indicating
         // that criteria is empty and should not be used
         method = MethodCaller.GetMethod(objectType, "DataPortal_Fetch");
+
       }
       else
       {
         method = MethodCaller.GetMethod(objectType, "DataPortal_Fetch", criteria);
       }
       return method;
+
     }
+
+    #endregion
+
+    #region Call Method
 
     /// <summary>
     /// Uses reflection to dynamically invoke a method
     /// if that method is implemented on the target object.
     /// </summary>
+    /// <param name="obj">
+    /// Object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
     public static object CallMethodIfImplemented(object obj, string method, params object[] parameters)
     {
-      MethodInfo info = GetMethod(obj.GetType(), method, parameters);
-      if (info != null)
-        return CallMethod(obj, info, parameters);
-      else
+      var mh = GetCachedMethod(obj, method, parameters);
+      if (mh == null || mh.DynamicMethod == null)
         return null;
+      return CallMethod(obj, mh, parameters);
     }
 
     /// <summary>
@@ -84,13 +140,43 @@ namespace Csla.Reflection
     /// throwing an exception if it is not
     /// implemented on the target object.
     /// </summary>
+    /// <param name="obj">
+    /// Object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
     public static object CallMethod(object obj, string method, params object[] parameters)
     {
-      MethodInfo info = GetMethod(obj.GetType(), method, parameters);
-      if (info == null)
+      var mh = GetCachedMethod(obj, method, parameters);
+      if (mh == null || mh.DynamicMethod == null)
         throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
+      return CallMethod(obj, mh, parameters);
+    }
 
-      return CallMethod(obj, info, parameters);
+    /// <summary>
+    /// Uses reflection to dynamically invoke a method,
+    /// throwing an exception if it is not
+    /// implemented on the target object.
+    /// </summary>
+    /// <param name="obj">
+    /// Object containing method.
+    /// </param>
+    /// <param name="info">
+    /// MethodInfo for the method.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
+    public static object CallMethod(object obj, MethodInfo info, params object[] parameters)
+    {
+      var mh = GetCachedMethod(obj, info, parameters);
+      if (mh == null || mh.DynamicMethod == null)
+        throw new NotImplementedException(info.Name + " " + Resources.MethodNotImplemented);
+      return CallMethod(obj, mh, parameters);
     }
 
     /// <summary>
@@ -98,34 +184,41 @@ namespace Csla.Reflection
     /// throwing an exception if it is not implemented
     /// on the target object.
     /// </summary>
-    public static object CallMethod(object obj, MethodInfo info, params object[] parameters)
+    /// <param name="obj">
+    /// Object containing method.
+    /// </param>
+    /// <param name="methodHandle">
+    /// MethodHandle for the method.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
+    private static object CallMethod(object obj, DynamicMethodHandle methodHandle, params object[] parameters)
     {
       object result = null;
-      var infoParams = info.GetParameters();
+      var method = methodHandle.DynamicMethod;
+
       object[] inParams = null;
       if (parameters == null)
         inParams = new object[] { null };
       else
         inParams = parameters;
-      var pCount = infoParams.Length;
-      if ((pCount > 0 && infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0) || (pCount == 1 && infoParams[0].ParameterType.IsArray))
+
+      if (methodHandle.HasFinalArrayParam)
       {
+        var pCount = methodHandle.MethodParamsLength;
         // last param is a param array or only param is an array
         var extras = inParams.Length - (pCount - 1);
+
         // 1 or more params go in the param array
         // copy extras into an array
-        object[] extraArray = GetExtrasArray(extras, infoParams[pCount - 1].ParameterType);
+        object[] extraArray = GetExtrasArray(extras, methodHandle.FinalArrayElementType);
         Array.Copy(inParams, extraArray, extras);
-        //For pos = 0 To extras - 1
-        //  extraArray(pos) = inParams(pCount - 1 + pos)
-        //Next
 
         // copy items into new array
         object[] paramList = new object[pCount];
         for (var pos = 0; pos <= pCount - 2; pos++)
-        {
           paramList[pos] = parameters[pos];
-        }
         paramList[paramList.Length - 1] = extraArray;
 
         // use new array
@@ -133,16 +226,16 @@ namespace Csla.Reflection
       }
       try
       {
-        result = info.Invoke(obj, inParams);
+        result = methodHandle.DynamicMethod(obj, inParams);
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
         Exception inner = null;
-        if (e.InnerException == null)
-          inner = e;
+        if (ex.InnerException == null)
+          inner = ex;
         else
-          inner = e.InnerException;
-        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+          inner = ex.InnerException;
+        throw new CallMethodException(methodHandle.MethodName + " " + Resources.MethodCallFailed, inner);
       }
       return result;
     }
@@ -152,12 +245,26 @@ namespace Csla.Reflection
       return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
     }
 
+    #endregion
+
+    #region Get/Find Method
+
     /// <summary>
     /// Uses reflection to locate a matching method
     /// on the target object.
     /// </summary>
+    /// <param name="objectType">
+    /// Type of object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
     public static MethodInfo GetMethod(Type objectType, string method, params object[] parameters)
     {
+
       MethodInfo result = null;
 
       object[] inParams = null;
@@ -198,21 +305,116 @@ namespace Csla.Reflection
             }
           }
           if (result == null)
-          {
             throw;
-          }
         }
       }
+
       return result;
     }
 
-    internal static Type[] GetParameterTypes(object[] parameters)
+    /// <summary>
+    /// Returns information about the specified
+    /// method, even if the parameter types are
+    /// generic and are located in an abstract
+    /// generic base class.
+    /// </summary>
+    /// <param name="objectType">
+    /// Type of object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
+    /// <param name="types">
+    /// Parameter types to pass to method.
+    /// </param>
+    public static MethodInfo FindMethod(Type objectType, string method, Type[] types)
+    {
+      MethodInfo info = null;
+      do
+      {
+        // find for a strongly typed match
+        info = objectType.GetMethod(method, oneLevelFlags, null, types, null);
+        if (info != null)
+        {
+          break; // match found
+        }
+
+        objectType = objectType.BaseType;
+      } while (objectType != null);
+
+      return info;
+    }
+
+    /// <summary>
+    /// Returns information about the specified
+    /// method, finding the method based purely
+    /// on the method name and number of parameters.
+    /// </summary>
+    /// <param name="objectType">
+    /// Type of object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
+    /// <param name="parameterCount">
+    /// Number of parameters to pass to method.
+    /// </param>
+    public static MethodInfo FindMethod(Type objectType, string method, int parameterCount)
+    {
+      // walk up the inheritance hierarchy looking
+      // for a method with the right number of
+      // parameters
+      MethodInfo result = null;
+      Type currentType = objectType;
+      do
+      {
+        MethodInfo info = currentType.GetMethod(method, oneLevelFlags);
+        if (info != null)
+        {
+          var infoParams = info.GetParameters();
+          var pCount = infoParams.Length;
+          if (pCount > 0 &&
+             ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
+             (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
+          {
+            // last param is a param array or only param is an array
+            if (parameterCount >= pCount - 1)
+            {
+              // got a match so use it
+              result = info;
+              break;
+            }
+          }
+          else if (pCount == parameterCount)
+          {
+            // got a match so use it
+            result = info;
+            break;
+          }
+        }
+        currentType = currentType.BaseType;
+      } while (currentType != null);
+
+      return result;
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Returns an array of Type objects corresponding
+    /// to the type of parameters provided.
+    /// </summary>
+    /// <param name="parameters">
+    /// Parameter values.
+    /// </param>
+    public static Type[] GetParameterTypes(object[] parameters)
     {
       List<Type> result = new List<Type>();
 
       if (parameters == null)
       {
         result.Add(typeof(object));
+
       }
       else
       {
@@ -235,6 +437,9 @@ namespace Csla.Reflection
     /// Returns a business object type based on
     /// the supplied criteria object.
     /// </summary>
+    /// <param name="criteria">
+    /// Criteria object.
+    /// </param>
     public static Type GetObjectType(object criteria)
     {
       if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
@@ -249,69 +454,6 @@ namespace Csla.Reflection
         // based on the nested class scheme in the book
         return criteria.GetType().DeclaringType;
       }
-    }
-
-    /// <summary>
-    /// Returns information about the specified
-    /// method, even if the parameter types are
-    /// generic and are located in an abstract
-    /// generic base class.
-    /// </summary>
-    public static MethodInfo FindMethod(Type objType, string method, Type[] types)
-    {
-      MethodInfo info = null;
-      do
-      {
-        // find for a strongly typed match
-        info = objType.GetMethod(method, oneLevelFlags, null, types, null);
-        if (info != null)
-          break; // match found
-        objType = objType.BaseType;
-      } while (objType != null);
-
-      return info;
-    }
-
-    /// <summary>
-    /// Returns information about the specified
-    /// method, finding the method based purely
-    /// on the method name and number of parameters.
-    /// </summary>
-    public static MethodInfo FindMethod(Type objType, string method, int parameterCount)
-    {
-      // walk up the inheritance hierarchy looking
-      // for a method with the right number of
-      // parameters
-      MethodInfo result = null;
-      Type currentType = objType;
-      do
-      {
-        MethodInfo info = currentType.GetMethod(method, oneLevelFlags);
-        if (info != null)
-        {
-          var infoParams = info.GetParameters();
-          var pCount = infoParams.Length;
-          if ((pCount > 0 && infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0) || (pCount == 1 && infoParams[0].ParameterType.IsArray))
-          {
-            // last param is a param array or only param is an array
-            if (parameterCount >= pCount - 1)
-            {
-              // got a match so use it
-              result = info;
-              break;
-            }
-          }
-          else if (pCount == parameterCount)
-          {
-            // got a match so use it
-            result = info;
-            break;
-          }
-        }
-        currentType = currentType.BaseType;
-      } while (currentType != null);
-
-      return result;
     }
   }
 }

@@ -205,6 +205,9 @@
     <Compile Include="PropertyLoadException.cs" />
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
+    <Compile Include="Reflection\DynamicMethodHandle.cs" />
+    <Compile Include="Reflection\DynamicMethodHandlerFactory.cs" />
+    <Compile Include="Reflection\MethodCacheKey.cs" />
     <Compile Include="Reflection\MethodCaller.cs" />
     <Compile Include="Security\AccessType.cs" />
     <Compile Include="Security\AuthorizationRules.cs" />
@@ -263,6 +266,8 @@
     <Compile Include="Windows\BindingSourceRefresh.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Windows\HostComponentDesigner.cs" />
+    <Compile Include="Windows\HostPropertyAttribute.cs" />
     <Compile Include="Windows\ReadWriteAuthorization.cs">
       <SubType>Component</SubType>
     </Compile>

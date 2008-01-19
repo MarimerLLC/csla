@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 using Csla.Properties;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 
 namespace Csla

@@ -102,6 +102,8 @@
     <Compile Include="Core\IExtendedBindingList.cs" />
     <Compile Include="Core\IPropertyInfo.cs" />
     <Compile Include="Core\ITrackStatus.cs" />
+    <Compile Include="DataPortal\DataPortalMethodCache.cs" />
+    <Compile Include="DataPortal\DataPortalMethodInfo.cs" />
     <Compile Include="DataPortal\DataPortalOperations.cs" />
     <Compile Include="DataPortal\Server\ChildDataPortal.cs" />
     <Compile Include="DataPortal\SingleCriteria.cs" />

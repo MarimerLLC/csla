@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Security.Principal;
 using System.Collections.Specialized;
 using Csla.Reflection;
@@ -31,6 +30,7 @@ namespace Csla.Server
     {
       object obj = null;
 
+      var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Create);
       try
       {
         // create an instance of the business object.
@@ -38,14 +38,14 @@ namespace Csla.Server
 
         // tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented(
-          obj, "DataPortal_OnDataPortalInvoke", new DataPortalEventArgs(context, objectType, DataPortalOperations.Create));
+          obj, "DataPortal_OnDataPortalInvoke", eventArgs);
 
         // tell the business object to create its data
-        MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
+        //MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
         if (criteria is int)
-          MethodCaller.CallMethod(obj, method);
+          MethodCaller.CallMethod(obj, "DataPortal_Create");
         else
-          MethodCaller.CallMethod(obj, method, criteria);
+          MethodCaller.CallMethod(obj, "DataPortal_Create", criteria);
 
         // mark the object as new
         MethodCaller.CallMethodIfImplemented(
@@ -54,7 +54,7 @@ namespace Csla.Server
         // tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvokeComplete",
-          new DataPortalEventArgs(context, objectType, DataPortalOperations.Create));
+          eventArgs);
 
         // return the populated business object as a result
         return new DataPortalResult(obj);
@@ -66,7 +66,7 @@ namespace Csla.Server
           // tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented(
             obj, "DataPortal_OnDataPortalException",
-            new DataPortalEventArgs(context, objectType, DataPortalOperations.Create), ex);
+            eventArgs, ex);
         }
         catch
         {
@@ -92,6 +92,7 @@ namespace Csla.Server
     public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       object obj = null;
+      var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch);
       try
       {
         // create an instance of the business object.
@@ -100,23 +101,22 @@ namespace Csla.Server
         // tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvoke",
-          new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch));
+          eventArgs);
 
         // mark the object as old
         MethodCaller.CallMethodIfImplemented(
           obj, "MarkOld");
 
         // tell the business object to fetch its data
-        MethodInfo method = MethodCaller.GetFetchMethod(objectType, criteria);
         if (criteria is int)
-          MethodCaller.CallMethod(obj, method);
+          MethodCaller.CallMethod(obj, "DataPortal_Fetch");
         else
-          MethodCaller.CallMethod(obj, method, criteria);
+          MethodCaller.CallMethod(obj, "DataPortal_Fetch", criteria);
 
         // tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvokeComplete",
-          new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch));
+          eventArgs);
 
         // return the populated business object as a result
         return new DataPortalResult(obj);
@@ -128,7 +128,7 @@ namespace Csla.Server
           // tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented(
             obj, "DataPortal_OnDataPortalException",
-            new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch), ex);
+            eventArgs, ex);
         }
         catch
         {
@@ -252,15 +252,16 @@ namespace Csla.Server
     {
       object obj = null;
       Type objectType = MethodCaller.GetObjectType(criteria);
+      var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete);
       try
       {
         // create an instance of the business objet
-        obj = CreateBusinessObject(objectType);
+        obj = Activator.CreateInstance(objectType, true);
 
         // tell the business object we're about to make a DataPortal_xyz call
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvoke",
-          new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete));
+          eventArgs);
 
         // tell the business object to delete itself
         MethodCaller.CallMethod(
@@ -269,7 +270,7 @@ namespace Csla.Server
         // tell the business object the DataPortal_xyz call is complete
         MethodCaller.CallMethodIfImplemented(
           obj, "DataPortal_OnDataPortalInvokeComplete",
-          new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete));
+          eventArgs);
 
         return new DataPortalResult();
       }
@@ -280,7 +281,7 @@ namespace Csla.Server
           // tell the business object there was an exception
           MethodCaller.CallMethodIfImplemented(
             obj, "DataPortal_OnDataPortalException",
-            new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete), ex);
+            eventArgs, ex);
         }
         catch
         {
@@ -293,15 +294,5 @@ namespace Csla.Server
     }
 
     #endregion
-
-    #region Creating the business object
-
-    private static object CreateBusinessObject(Type businessType)
-    {
-      return Activator.CreateInstance(businessType, true);
-    }
-
-    #endregion
-
   }
 }

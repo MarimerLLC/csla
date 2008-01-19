@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Security.Principal;
 using System.Collections.Specialized;
 using Csla.Reflection;
@@ -34,10 +33,10 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
+        DataPortalMethodInfo method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
 
         IDataPortalServer portal;
-        switch (TransactionalType(method))
+        switch (method.TransactionalType)
         {
           case TransactionalTypes.EnterpriseServices:
             portal = new ServicedDataPortal();
@@ -97,10 +96,10 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = MethodCaller.GetFetchMethod(objectType, criteria);
+        DataPortalMethodInfo method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
 
         IDataPortalServer portal;
-        switch (TransactionalType(method))
+        switch (method.TransactionalType)
         {
           case TransactionalTypes.EnterpriseServices:
             portal = new ServicedDataPortal();
@@ -157,7 +156,7 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method;
+        DataPortalMethodInfo method;
         string methodName;
         if (obj is CommandBase)
           methodName = "DataPortal_Execute";
@@ -175,10 +174,10 @@ namespace Csla.Server
         else
           methodName = "DataPortal_Update";
 
-        method = MethodCaller.GetMethod(obj.GetType(), methodName);
+        method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
 
         IDataPortalServer portal;
-        switch (TransactionalType(method))
+        switch (method.TransactionalType)
         {
           case TransactionalTypes.EnterpriseServices:
             portal = new ServicedDataPortal();
@@ -234,11 +233,10 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        MethodInfo method = MethodCaller.GetMethod(
-          MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria);
+        var method = DataPortalMethodCache.GetMethodInfo(MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria);
 
         IDataPortalServer portal;
-        switch (TransactionalType(method))
+        switch (method.TransactionalType)
         {
           case TransactionalTypes.EnterpriseServices:
             portal = new ServicedDataPortal();
@@ -355,30 +353,6 @@ namespace Csla.Server
       ApplicationContext.Clear();
       if (ApplicationContext.AuthenticationType != "Windows")
         ApplicationContext.User = null;
-    }
-
-    #endregion
-
-    #region Helper methods
-
-    private static bool IsTransactionalMethod(MethodInfo method)
-    {
-      return Attribute.IsDefined(method, typeof(TransactionalAttribute));
-    }
-
-    private static TransactionalTypes TransactionalType(MethodInfo method)
-    {
-      TransactionalTypes result;
-      if (IsTransactionalMethod(method))
-      {
-        TransactionalAttribute attrib =
-          (TransactionalAttribute)Attribute.GetCustomAttribute(
-          method, typeof(TransactionalAttribute));
-        result = attrib.TransactionType;
-      }
-      else
-        result = TransactionalTypes.Manual;
-      return result;
     }
 
     #endregion

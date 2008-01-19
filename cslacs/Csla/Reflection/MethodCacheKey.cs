@@ -16,17 +16,10 @@ namespace Csla.Reflection
       this.MethodName = methodName;
       this.ParamTypes = paramTypes;
 
-      StringBuilder sb = new StringBuilder();
-      sb.Append(typeName);
-      sb.Append(".");
-      sb.Append(methodName);
-      sb.Append("?");
+      _hashKey = typeName.GetHashCode();
+      _hashKey = _hashKey ^ methodName.GetHashCode();
       foreach (Type item in paramTypes)
-      {
-        sb.Append(item.Name);
-        sb.Append(",");
-      }
-      _hashKey = sb.ToString().GetHashCode();
+        _hashKey = _hashKey ^ item.Name.GetHashCode();
     }
 
     public override bool Equals(object obj)

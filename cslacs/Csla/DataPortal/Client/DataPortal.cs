@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
-using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Http;
@@ -116,10 +115,10 @@ namespace Csla
             "create",
             objectType.Name));
 
-        MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
+        var method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(RunLocal(method));
+        proxy = GetDataPortalProxy(method.RunLocal);
 
         OnDataPortalInitInvoke(null);
 
@@ -206,10 +205,10 @@ namespace Csla
             "get",
             objectType.Name));
 
-        MethodInfo method = MethodCaller.GetFetchMethod(objectType, criteria);
+        var method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(RunLocal(method));
+        proxy = GetDataPortalProxy(method.RunLocal);
 
         OnDataPortalInitInvoke(null);
 
@@ -347,7 +346,6 @@ namespace Csla
       Type objectType = obj.GetType();
       try
       {
-        MethodInfo method;
         string methodName;
         if (obj is CommandBase)
         {
@@ -396,10 +394,10 @@ namespace Csla
               objectType.Name));
         }
 
-        method = MethodCaller.GetMethod(obj.GetType(), methodName);
+        var method = Server.DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
 
         DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(RunLocal(method));
+        proxy = GetDataPortalProxy(method.RunLocal);
 
         OnDataPortalInitInvoke(null);
 
@@ -461,11 +459,11 @@ namespace Csla
             "delete",
             objectType.Name));
 
-        MethodInfo method = MethodCaller.GetMethod(
+        var method = Server.DataPortalMethodCache.GetMethodInfo(
           objectType, "DataPortal_Delete", criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(RunLocal(method));
+        proxy = GetDataPortalProxy(method.RunLocal);
 
         OnDataPortalInitInvoke(null);
 
@@ -626,15 +624,5 @@ namespace Csla
     }
 
     #endregion
-
-    #region Helper methods
-
-    private static bool RunLocal(MethodInfo method)
-    {
-      return Attribute.IsDefined(method, typeof(RunLocalAttribute), false);
-    }
-
-    #endregion
-
   }
 }

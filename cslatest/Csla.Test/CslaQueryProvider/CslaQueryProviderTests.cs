@@ -27,13 +27,6 @@ namespace Csla.Test.CslaQueryProvider
       Id = Guid.NewGuid();
     }
 
-    
-
-    protected override object GetIdValue()
-    {
-      return Id;
-    }
-
     #region IConvertible Members
 
     TypeCode IConvertible.GetTypeCode()
@@ -751,9 +744,131 @@ namespace Csla.Test.CslaQueryProvider
     }
 
     [TestMethod]
+    public void TestQueryProviderSequenceEqual()
+    {
+      var randomA = new CollectionExtendingIQueryable<RandomThing>();
+      var randomB = new CollectionExtendingIQueryable<RandomThing>();
+      randomA.Add(new RandomThing(1));
+      randomA.Add(new RandomThing(2));
+      randomB.Add(new RandomThing(1));
+      randomB.Add(new RandomThing(2));
+      var shouldBeTrue = randomA.SequenceEqual(randomB, new CustomRandomThingComparer());
+      randomB.Add(new RandomThing(3));
+      var shouldBeFalse = randomA.SequenceEqual(randomB, new CustomRandomThingComparer());
+      Assert.IsTrue(shouldBeTrue);
+      Assert.IsFalse(shouldBeFalse);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderSingle()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      random.Add(new RandomThing(1));
+      var shouldBeTrue1 = random.Single() is RandomThing;
+      random.Add(new RandomThing(2));
+      var shouldBeTrue2 = random.Single(x => x.SomeVal == 1) is RandomThing;
+      bool madeException = false;
+      try
+      {
+        var shouldThrowException = random.Single();
+      }
+      catch (InvalidOperationException ex)
+      {
+        madeException = true;
+      }
+      Assert.IsTrue(shouldBeTrue1);
+      Assert.IsTrue(shouldBeTrue2);
+      Assert.IsTrue(madeException);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderSingleOrDefault()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      var defaultRandom = default(RandomThing);
+      var shouldBeTrue1 = defaultRandom == random.SingleOrDefault();
+      random.Add(new RandomThing(2));
+      var shouldBeTrue2 = defaultRandom == random.SingleOrDefault(x => x.SomeVal == 42);
+      var shouldBeTrue3 = (new RandomThing(2)).SomeVal == random.SingleOrDefault(x => x.SomeVal == 2).SomeVal;
+      Assert.IsTrue(shouldBeTrue1);
+      Assert.IsTrue(shouldBeTrue2);
+      Assert.IsTrue(shouldBeTrue3);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderSkip()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      for (int i = 0; i < 10; i++)
+        random.Add(new RandomThing(i));
+      var subset = random.Skip(5);
+      var shouldBeSixth = subset.First();
+      Assert.IsTrue(shouldBeSixth.SomeVal == 5);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderSkipWhile()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      for (int i = 30; i >= 0; i--)
+        random.Add(new RandomThing(i));
+      var subset = random.SkipWhile(x => x.SomeVal > 20);
+      var shouldBeTwenty = subset.First();
+      Assert.IsTrue(shouldBeTwenty.SomeVal == 20);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderSum()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      for (int i = 1; i <= 4; i++)
+        random.Add(new RandomThing(i));
+      var sumAll = random.Sum(x => x.SomeVal);
+      Assert.IsTrue(sumAll == 10);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderTake()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      for (int i = 1; i <= 10; i++)
+        random.Add(new RandomThing(i));
+      var firstThree = random.Take(3);
+      var arrayOfThree = firstThree.ToArray();
+      Assert.IsTrue(arrayOfThree[0].SomeVal == 1);
+      Assert.IsTrue(arrayOfThree[1].SomeVal == 2);
+      Assert.IsTrue(arrayOfThree[2].SomeVal == 3);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderTakeWhile()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      for (int i = 1; i <= 10; i++)
+        random.Add(new RandomThing(i));
+      var firstThree = random.TakeWhile(x => x.SomeVal <= 3);
+      var arrayOfThree = firstThree.ToArray();
+      Assert.IsTrue(arrayOfThree[0].SomeVal == 1);
+      Assert.IsTrue(arrayOfThree[1].SomeVal == 2);
+      Assert.IsTrue(arrayOfThree[2].SomeVal == 3);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderUnion()
+    {
+      var randomA = new CollectionExtendingIQueryable<RandomThing>();
+      var randomB = new CollectionExtendingIQueryable<RandomThing>();
+      for (int i = 1; i <= 10; i++)
+        randomA.Add(new RandomThing(i));
+      for (int i = 9; i <= 20; i++)
+        randomB.Add(new RandomThing(i));
+      Assert.IsTrue(randomB.Union(randomA, new CustomRandomThingComparer()).Count() == 20);
+    }
+
+    [TestMethod]
     public void TestViewSyncronization()
     {
-      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+      var random = new CollectionExtendingIQueryable<RandomThing>();
       Random rnd = new Random();
       random.Add(new RandomThing(42)); //first one has to be under 100 to run our removal tests correctly
       for (int i = 0; i < 99; i++)

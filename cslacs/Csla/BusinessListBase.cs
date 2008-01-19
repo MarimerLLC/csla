@@ -22,7 +22,7 @@ namespace Csla
   public abstract class BusinessListBase<T, C> :
       Core.ExtendedBindingList<C>,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable,
-      Core.ISavable, Core.IParent,
+      Core.ISavable, Core.IParent, Server.IDataPortalTarget,
       IQueryable<C>, Linq.IIndexSearchable<C>, Core.IPositionMappable<C>
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
@@ -1061,6 +1061,40 @@ namespace Csla
 
     }
 
+    /// <summary>
+    /// Called by the server-side DataPortal prior to calling the 
+    /// requested DataPortal_XYZ method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal after calling the 
+    /// requested DataPortal_XYZ method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal if an exception
+    /// occurs during data access.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    /// <param name="ex">The Exception thrown during data access.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+    }
+
     #endregion
 
     #region ISavable Members
@@ -1251,6 +1285,50 @@ namespace Csla
 
     #endregion
 
+    #region IDataPortalTarget Members
+
+    void Csla.Server.IDataPortalTarget.MarkAsChild()
+    {
+      this.MarkAsChild();
+    }
+
+    void Csla.Server.IDataPortalTarget.MarkNew()
+    {    }
+
+    void Csla.Server.IDataPortalTarget.MarkOld()
+    {    }
+
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+      this.DataPortal_OnDataPortalInvoke(e);
+    }
+
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+      this.DataPortal_OnDataPortalInvokeComplete(e);
+    }
+
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+      this.DataPortal_OnDataPortalException(e, ex);
+    }
+
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+      this.Child_OnDataPortalInvoke(e);
+    }
+
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+      this.Child_OnDataPortalInvokeComplete(e);
+    }
+
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+      this.Child_OnDataPortalException(e, ex);
+    }
+
+    #endregion
   }
 
 }

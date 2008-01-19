@@ -28,7 +28,8 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class CommandBase : Core.ICommandObject
+  public abstract class CommandBase : Core.ICommandObject,
+    Server.IDataPortalTarget
   {
 
     #region Constructors
@@ -137,5 +138,41 @@ namespace Csla
 
     #endregion
 
+    #region IDataPortalTarget Members
+
+    void Csla.Server.IDataPortalTarget.MarkAsChild()
+    { }
+
+    void Csla.Server.IDataPortalTarget.MarkNew()
+    { }
+
+    void Csla.Server.IDataPortalTarget.MarkOld()
+    { }
+
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+      this.DataPortal_OnDataPortalInvoke(e);
+    }
+
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+      this.DataPortal_OnDataPortalInvokeComplete(e);
+    }
+
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+      this.DataPortal_OnDataPortalException(e, ex);
+    }
+
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    { }
+
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    { }
+
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    { }
+
+    #endregion
   }
 }

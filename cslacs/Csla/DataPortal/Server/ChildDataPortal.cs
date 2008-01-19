@@ -20,30 +20,39 @@ namespace Csla.Server
     /// </param>
     public object Create(System.Type objectType, params object[] parameters)
     {
-
       object obj = null;
+      IDataPortalTarget target = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, DataPortalOperations.Create);
       try
       {
         // create an instance of the business object
         obj = Activator.CreateInstance(objectType, true);
 
-        // tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke",
-          eventArgs);
+        target = obj as IDataPortalTarget;
 
-        // mark the object as a child
-        MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild");
+        if (target != null)
+        {
+          target.Child_OnDataPortalInvoke(eventArgs);
+          target.MarkAsChild();
+          target.MarkNew();
+        }
+        else
+        {
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke",
+            eventArgs);
+          MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild");
+          MethodCaller.CallMethodIfImplemented(obj, "MarkNew");
+        }
+
 
         // tell the business object to fetch its data
         MethodCaller.CallMethod(obj, "Child_Create", parameters);
 
-        // mark the object as new
-        MethodCaller.CallMethodIfImplemented(obj, "MarkNew");
-
-        // tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
-          eventArgs);
+        if (target != null)
+          target.Child_OnDataPortalInvokeComplete(eventArgs);
+        else
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
+            eventArgs);
 
         // return the populated business object as a result
         return obj;
@@ -53,9 +62,11 @@ namespace Csla.Server
       {
         try
         {
-          // tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
-            eventArgs, ex);
+          if (target != null)
+            target.Child_OnDataPortalException(eventArgs, ex);
+          else
+            MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
+              eventArgs, ex);
         }
         catch
         {
@@ -77,28 +88,37 @@ namespace Csla.Server
     {
 
       object obj = null;
+      IDataPortalTarget target = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, DataPortalOperations.Fetch);
       try
       {
         // create an instance of the business object
         obj = Activator.CreateInstance(objectType, true);
 
-        // tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke",
-          eventArgs);
+        target = obj as IDataPortalTarget;
 
-        // mark the object as a child
-        MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild");
-
-        // mark the object as old
-        MethodCaller.CallMethodIfImplemented(obj, "MarkOld");
+        if (target != null)
+        {
+          target.Child_OnDataPortalInvoke(eventArgs);
+          target.MarkAsChild();
+          target.MarkOld();
+        }
+        else
+        {
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke",
+            eventArgs);
+          MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild");
+          MethodCaller.CallMethodIfImplemented(obj, "MarkOld");
+        }
 
         // tell the business object to fetch its data
         MethodCaller.CallMethod(obj, "Child_Fetch", parameters);
 
-        // tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
-          eventArgs);
+        if (target != null)
+          target.Child_OnDataPortalInvokeComplete(eventArgs);
+        else
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
+            eventArgs);
 
         // return the populated business object as a result
         return obj;
@@ -108,9 +128,11 @@ namespace Csla.Server
       {
         try
         {
-          // tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
-            eventArgs, ex);
+          if (target != null)
+            target.Child_OnDataPortalException(eventArgs, ex);
+          else
+            MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
+              eventArgs, ex);
         }
         catch
         {
@@ -133,11 +155,15 @@ namespace Csla.Server
 
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
+      IDataPortalTarget target = obj as IDataPortalTarget;
       try
       {
-        // tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke",
-          new DataPortalEventArgs(null, objectType, operation));
+        if (target != null)
+          target.Child_OnDataPortalInvoke(
+            new DataPortalEventArgs(null, objectType, operation));
+        else
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvoke",
+            new DataPortalEventArgs(null, objectType, operation));
 
         // tell the business object to update itself
         if (obj is Core.BusinessBase)
@@ -150,8 +176,10 @@ namespace Csla.Server
               // tell the object to delete itself
               MethodCaller.CallMethod(busObj, "Child_DeleteSelf", parameters);
             }
-            // mark the object as new
-            MethodCaller.CallMethodIfImplemented(busObj, "MarkNew");
+            if (target != null)
+              target.MarkNew();
+            else
+              MethodCaller.CallMethodIfImplemented(busObj, "MarkNew");
 
           }
           else
@@ -167,8 +195,10 @@ namespace Csla.Server
               // tell the object to update itself
               MethodCaller.CallMethod(busObj, "Child_Update", parameters);
             }
-            // mark the object as old
-            MethodCaller.CallMethodIfImplemented(busObj, "MarkOld");
+            if (target != null)
+              target.MarkOld();
+            else
+              MethodCaller.CallMethodIfImplemented(busObj, "MarkOld");
           }
 
         }
@@ -185,22 +215,30 @@ namespace Csla.Server
           // non-BusinessBase type of object
           // tell the object to update itself
           MethodCaller.CallMethod(obj, "Child_Update", parameters);
-          // mark the object as old
-          MethodCaller.CallMethodIfImplemented(obj, "MarkOld");
+          if (target != null)
+            target.MarkOld();
+          else
+            MethodCaller.CallMethodIfImplemented(obj, "MarkOld");
         }
 
-        // tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
-          new DataPortalEventArgs(null, objectType, operation));
+        if (target != null)
+          target.Child_OnDataPortalInvokeComplete(
+            new DataPortalEventArgs(null, objectType, operation));
+        else
+          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalInvokeComplete",
+            new DataPortalEventArgs(null, objectType, operation));
 
       }
       catch (Exception ex)
       {
         try
         {
-          // tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
-            new DataPortalEventArgs(null, objectType, operation), ex);
+          if (target != null)
+            target.Child_OnDataPortalException(
+              new DataPortalEventArgs(null, objectType, operation), ex);
+          else
+            MethodCaller.CallMethodIfImplemented(obj, "Child_OnDataPortalException",
+              new DataPortalEventArgs(null, objectType, operation), ex);
         }
         catch
         {

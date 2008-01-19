@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Csla.Core
 {
-  public abstract class ExpressionVisitor
+  internal abstract class ExpressionVisitor
   {
     protected ExpressionVisitor()
     {

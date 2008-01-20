@@ -11,8 +11,8 @@ namespace Csla.Linq
   internal class IndexSet<T> : IIndexSet<T>
   {
     private Dictionary<string, IIndex<T>> _internalIndexSet = new Dictionary<string, IIndex<T>>();
-    
-    public IndexSet() : base()
+
+    public IndexSet()
     {
       PropertyInfo[] allProps = typeof(T).GetProperties();
       foreach (PropertyInfo property in allProps)
@@ -29,8 +29,10 @@ namespace Csla.Linq
     void IIndexSet<T>.InsertItem(T item)
     {
       foreach (IIndex<T> index in _internalIndexSet.Values)
+      {
         if (index.Loaded)
           index.Add(item);
+      }
     }
 
     void IIndexSet<T>.InsertItem(T item, string property)
@@ -150,5 +152,10 @@ namespace Csla.Linq
 
 
     #endregion
+
+    public void LoadIndex(string property)
+    {
+      _internalIndexSet[property].LoadComplete();
+    }
   }
 }

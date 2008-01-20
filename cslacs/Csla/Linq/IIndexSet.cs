@@ -60,5 +60,9 @@ namespace Csla.Linq
     /// Return an index based on an indexer using a property name
     /// </summary>
     IIndex<T> this [string property] { get; }
+    /// <summary>
+    /// Tell the index set that it is time to allow for loading of an on demand index
+    /// </summary>
+    void LoadIndex(string property);
   }
 }

@@ -32,6 +32,11 @@ namespace Csla.Linq
         _loaded = true;
     }
 
+    private void LoadOnDemandIndex()
+    {
+      if (!_loaded && _indexAttribute.IndexMode != IndexModeEnum.IndexModeNever)
+        ((IIndex<T>)this).LoadComplete();
+    }
 
     #region IIndex<T> Members
 
@@ -44,7 +49,7 @@ namespace Csla.Linq
     {
       int hashCode = item.GetHashCode();
       IComparable propertyValue = _theProp.GetValue(item,null) as IComparable;
-
+      LoadOnDemandIndex();
       if (_index.ContainsKey(hashCode))
       {
         foreach (T itemFromIndex in _index[hashCode])
@@ -59,6 +64,7 @@ namespace Csla.Linq
 
     IEnumerable<T> IIndex<T>.WhereEqual(int hashCode, Func<T, bool> expr)
     {
+      LoadOnDemandIndex();
       if (_index.ContainsKey(hashCode))
         foreach (T item in _index[hashCode])
           if (expr(item))

@@ -186,7 +186,10 @@ namespace Csla.Core
     {
       if (IndexModeFor(property) != IndexModeEnum.IndexModeNever)
         if (!IndexLoadedFor(property))
+        {
+          _indexSet.LoadIndex(property);
           ReIndex(property);
+        }
     }
 
     private void InsertIndexItem(C item)

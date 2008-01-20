@@ -604,7 +604,10 @@ namespace Csla
     {
       if (IndexModeFor(property) != IndexModeEnum.IndexModeNever)
         if (!IndexLoadedFor(property))
-         ReIndex(property);
+        {
+          _indexSet.LoadIndex(property);
+          ReIndex(property);
+        }
     }
 
     private void InsertIndexItem(C item)

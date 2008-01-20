@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
 using Csla.Properties;
 
 namespace Csla
@@ -232,5 +234,22 @@ namespace Csla
     }
 
     #endregion
+  }
+
+  /// <summary>
+  /// Extension method for implementation of LINQ methods on ReadOnlyListBase
+  /// </summary>
+  public static class ReadOnlyListBase
+  {
+    /// <summary>
+    /// Custom implementation of Where for ReadOnlyListBase - used in LINQ
+    /// </summary>
+    public static IEnumerable<C> Where<T, C>(this ReadOnlyListBase<T, C> source, Expression<Func<C, bool>> expr)
+      where T : ReadOnlyListBase<T, C>
+      where C : Core.IEditableBusinessObject
+    {
+      foreach (C item in source.SearchByExpression(expr))
+        yield return item;
+    }
   }
 }

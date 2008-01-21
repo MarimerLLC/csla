@@ -1,4 +1,3 @@
-Imports Microsoft.VisualBasic
 Imports System
 Imports System.Collections.Generic
 Imports System.Collections.ObjectModel
@@ -8,11 +7,8 @@ Imports System.Linq.Expressions
 Imports System.Text
 
 Namespace Linq
-
   Friend Class Index(Of T)
-
     Implements IIndex(Of T)
-
     'implements a hashtable with chaining for cases
     '   where we have a collision on hash code
 
@@ -36,6 +32,12 @@ Namespace Linq
       End If
     End Sub
 
+    Private Sub LoadOnDemandIndex()
+      If (Not _loaded) AndAlso _indexAttribute.IndexMode <> IndexModeEnum.IndexModeNever Then
+        CType(Me, IIndex(Of T)).LoadComplete()
+      End If
+    End Sub
+
 #Region "IIndex<T> Members"
 
     Private ReadOnly Property IndexField() As PropertyInfo Implements IIndex(Of T).IndexField
@@ -47,7 +49,7 @@ Namespace Linq
     Private Function WhereEqual(ByVal item As T) As IEnumerable(Of T) Implements IIndex(Of T).WhereEqual
       Dim hashCode As Integer = item.GetHashCode()
       Dim propertyValue As IComparable = TryCast(_theProp.GetValue(item, Nothing), IComparable)
-
+      LoadOnDemandIndex()
       If _index.ContainsKey(hashCode) Then
         For Each itemFromIndex As T In _index(hashCode)
           Dim propertyValueFromIndex As IComparable = TryCast(_theProp.GetValue(itemFromIndex, Nothing), IComparable)
@@ -60,6 +62,7 @@ Namespace Linq
     End Function
 
     Private Function WhereEqual(ByVal hashCode As Integer, ByVal expr As Func(Of T, Boolean)) As IEnumerable(Of T) Implements IIndex(Of T).WhereEqual
+      LoadOnDemandIndex()
       If _index.ContainsKey(hashCode) Then
         For Each item As T In _index(hashCode)
           If expr(item) Then
@@ -157,7 +160,10 @@ Namespace Linq
       If (Not wasRemoved) Then
         RemoveByReference(item)
       End If
-      DirectCast(Me, ICollection(Of T)).Add(item)
+      Dim tmp = TryCast(Me, ICollection(Of T))
+      If tmp IsNot Nothing Then
+        tmp.Add(item)
+      End If
     End Sub
 
 #End Region
@@ -188,15 +194,21 @@ Namespace Linq
 
 #End Region
 
+
+
     Private Sub RemoveByReference(ByVal item As T)
       For Each itemToCheck As T In Me
         If ReferenceEquals(itemToCheck, item) Then
-          DirectCast(Me, ICollection(Of T)).Remove(item)
+          Dim tmp = TryCast(Me, ICollection(Of T))
+          If tmp IsNot Nothing Then
+            tmp.Remove(item)
+          End If
         End If
       Next itemToCheck
     End Sub
 
 #Region "IIndex<T> Members"
+
 
     Private ReadOnly Property Loaded() As Boolean Implements IIndex(Of T).Loaded
       Get
@@ -225,7 +237,5 @@ Namespace Linq
     End Property
 
 #End Region
-
   End Class
-
 End Namespace

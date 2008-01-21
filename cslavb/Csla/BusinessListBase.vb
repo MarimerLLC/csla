@@ -1,6 +1,8 @@
 Imports System.ComponentModel
 Imports System.Collections.Specialized
 Imports Csla.Core
+Imports System.Linq
+Imports System.Linq.Expressions
 
 ''' <summary>
 ''' This is the base class from which most business collections
@@ -19,6 +21,9 @@ Public MustInherit Class BusinessListBase( _
   Implements ICloneable
   Implements ISavable
   Implements IParent
+  Implements IQueryable(Of C)
+  Implements Linq.IIndexSearchable(Of C)
+  Implements Core.IPositionMappable(Of C)
 
 #Region " Constructors "
 
@@ -494,6 +499,172 @@ Public MustInherit Class BusinessListBase( _
 
 #End Region
 
+#Region "Indexing"
+
+  <NonSerialized()> _
+  Private _indexSet As Linq.IIndexSet(Of C)
+
+  Private Sub DeferredLoadIndexIfNotLoaded()
+    If _indexSet Is Nothing Then
+      _indexSet = New Csla.Linq.IndexSet(Of C)()
+    End If
+  End Sub
+
+  ''' <summary>
+  ''' Allows users of CSLA to override the indexing behavior of BLB
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Public Property IndexingProvider() As Type
+    Get
+      DeferredLoadIndexIfNotLoaded()
+      Return _indexSet.GetType()
+    End Get
+    Set(ByVal value As Type)
+      If value.IsClass AndAlso (Not value.IsAbstract) AndAlso value.IsAssignableFrom(GetType(Linq.IIndexSet(Of C))) Then
+        _indexSet = TryCast(Activator.CreateInstance(value), Linq.IIndexSet(Of C))
+        ReIndexAll()
+      End If
+    End Set
+  End Property
+
+
+  Private Function IndexModeFor(ByVal [property] As String) As IndexModeEnum
+    DeferredLoadIndexIfNotLoaded()
+    If _indexSet.HasIndexFor([property]) Then
+      Return _indexSet([property]).IndexMode
+    Else
+      Return IndexModeEnum.IndexModeNever
+    End If
+  End Function
+
+  Private Function IndexLoadedFor(ByVal [property] As String) As Boolean
+    DeferredLoadIndexIfNotLoaded()
+    If _indexSet.HasIndexFor([property]) Then
+      Return _indexSet([property]).Loaded
+    Else
+      Return False
+    End If
+  End Function
+
+  Private Sub LoadIndexIfNotLoaded(ByVal [property] As String)
+    If IndexModeFor([property]) <> IndexModeEnum.IndexModeNever Then
+      If (Not IndexLoadedFor([property])) Then
+        _indexSet.LoadIndex([property])
+        ReIndex([property])
+      End If
+    End If
+  End Sub
+
+  Private Sub InsertIndexItem(ByVal item As C)
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.InsertItem(item)
+  End Sub
+
+  Private Sub InsertIndexItem(ByVal item As C, ByVal [property] As String)
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.InsertItem(item, [property])
+  End Sub
+
+  Private Sub RemoveIndexItem(ByVal item As C)
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.RemoveItem(item)
+  End Sub
+
+  Private Sub RemoveIndexItem(ByVal item As C, ByVal [property] As String)
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.RemoveItem(item, [property])
+  End Sub
+
+  Private Sub ReIndexItem(ByVal item As C, ByVal [property] As String)
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.ReIndexItem(item, [property])
+  End Sub
+
+  Private Sub ReIndexItem(ByVal item As C)
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.ReIndexItem(item)
+  End Sub
+
+  Private Sub ReIndexAll()
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.ClearIndexes()
+    For Each item As C In Me
+      InsertIndexItem(item)
+    Next item
+  End Sub
+
+  Private Sub ReIndex(ByVal [property] As String)
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.ClearIndex([property])
+    For Each item As C In Me
+      InsertIndexItem(item, [property])
+    Next item
+    _indexSet([property]).LoadComplete()
+  End Sub
+
+#End Region
+
+#Region "PositionMapping"
+
+  <NonSerialized()> _
+  Private _positionMap As Core.PositionMap(Of C)
+
+  Private Sub DeferredLoadPositionMapIfNotLoaded()
+    If _positionMap Is Nothing Then
+      _positionMap = New Csla.Core.PositionMap(Of C)(Me)
+    End If
+  End Sub
+
+  Private Sub RemoveFromMap(ByVal child As C)
+    DeferredLoadPositionMapIfNotLoaded()
+    _positionMap.RemoveFromMap(child)
+  End Sub
+
+  Private Sub InsertIntoMap(ByVal child As C, ByVal position As Integer)
+    DeferredLoadPositionMapIfNotLoaded()
+    _positionMap.InsertIntoMap(child, position)
+  End Sub
+
+  Private Sub AddToMap(ByVal child As C)
+    DeferredLoadPositionMapIfNotLoaded()
+    _positionMap.AddToMap(child)
+
+  End Sub
+
+  Public Function PositionOf(ByVal item As C) As Integer Implements IPositionMappable(Of C).PositionOf
+    DeferredLoadPositionMapIfNotLoaded()
+    Return _positionMap.PositionOf(item)
+  End Function
+
+#End Region
+
+#Region "Where Implementation"
+  ''' <summary>
+  ''' Iterates through a set of items according to the expression passed to it.
+  ''' </summary>
+  Public Function SearchByExpression(ByVal expr As Expression(Of Func(Of C, Boolean))) As IEnumerable(Of C) Implements Linq.IIndexSearchable(Of C).SearchByExpression
+    DeferredLoadIndexIfNotLoaded()
+    Dim [property] As String = _indexSet.HasIndexFor(expr)
+    If [property] IsNot Nothing AndAlso IndexModeFor([property]) <> IndexModeEnum.IndexModeNever Then
+      LoadIndexIfNotLoaded([property])
+      For Each item As C In _indexSet.Search(expr, [property])
+        'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
+        'yield Return item
+      Next item
+    Else
+      Dim sourceEnum As IEnumerable(Of C) = Me.AsEnumerable()
+      'IQueryable<C> sourceQuery = this.AsQueryable<C>();
+      'var result = sourceQuery.Where<C>(expr.Compile());
+      Dim result = sourceEnum.Where(expr.Compile())
+      For Each item As C In result
+        'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
+        'yield Return item
+      Next item
+    End If
+  End Function
+
+#End Region
+
 #Region " Edit level tracking "
 
   ' keep track of how many edit levels we have
@@ -959,6 +1130,58 @@ Public MustInherit Class BusinessListBase( _
       Return False
     End Get
   End Property
+
+#End Region
+
+#Region "LinqIntegration"
+
+  <NonSerialized()> _
+  Private _queryProvider As IQueryProvider
+
+  <NonSerialized()> _
+  Private _expression As Expression
+
+  Friend Sub SetCurrentExpression(ByVal ex As Expression)
+    _expression = ex
+  End Sub
+
+  Private Sub LoadProviderIfNotLoaded()
+    _queryProvider = New Csla.Linq.CslaQueryProvider(Of T, C)(Me)
+  End Sub
+
+#Region "IQueryable Members"
+
+  ''' <summary>
+  ''' Required for IQueryable - returns the ElementType (maps to C)
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Public ReadOnly Property ElementType() As Type Implements IQueryable(Of C).ElementType
+    Get
+      Return GetType(C)
+    End Get
+  End Property
+
+  ''' <summary>
+  ''' Last expression used in a linq query
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Public ReadOnly Property Expression() As Expression Implements IQueryable(Of C).Expression
+    Get
+      Return _expression
+    End Get
+  End Property
+
+  ''' <summary>
+  ''' Query provider currently being used
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Public ReadOnly Property Provider() As IQueryProvider Implements IQueryable(Of C).Provider
+    Get
+      Return New Linq.CslaQueryProvider(Of T, C)(Me)
+    End Get
+  End Property
+
+#End Region
 
 #End Region
 

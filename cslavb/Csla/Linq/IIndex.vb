@@ -1,4 +1,3 @@
-Imports Microsoft.VisualBasic
 Imports System
 Imports System.Collections.Generic
 Imports System.Linq
@@ -7,7 +6,6 @@ Imports System.Text
 Imports System.Reflection
 
 Namespace Linq
-
   ''' <summary>
   ''' Interface that determines functionality of an index
   ''' </summary>
@@ -46,5 +44,4 @@ Namespace Linq
     ''' </summary>
     Property IndexMode() As IndexModeEnum
   End Interface
-
 End Namespace

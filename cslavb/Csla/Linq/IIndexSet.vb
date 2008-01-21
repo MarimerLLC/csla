@@ -1,4 +1,3 @@
-Imports Microsoft.VisualBasic
 Imports System
 Imports System.Collections.Generic
 Imports System.Collections.ObjectModel
@@ -7,7 +6,6 @@ Imports System.Text
 Imports System.Linq.Expressions
 
 Namespace Linq
-
   ''' <summary>
   ''' Interface that defines a what a set of indexes should do
   ''' </summary>
@@ -60,7 +58,9 @@ Namespace Linq
     ''' Return an index based on an indexer using a property name
     ''' </summary>
     Default ReadOnly Property Item(ByVal [property] As String) As IIndex(Of T)
-
+    ''' <summary>
+    ''' Tell the index set that it is time to allow for loading of an on demand index
+    ''' </summary>
+    Sub LoadIndex(ByVal [property] As String)
   End Interface
-
 End Namespace

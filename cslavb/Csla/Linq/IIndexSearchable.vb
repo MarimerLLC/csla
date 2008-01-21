@@ -1,0 +1,11 @@
+﻿Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Imports System.Linq.Expressions
+Imports System.Text
+
+Namespace Linq
+  Friend Interface IIndexSearchable(Of T)
+    Function SearchByExpression(ByVal expr As Expression(Of Func(Of T, Boolean))) As IEnumerable(Of T)
+  End Interface
+End Namespace

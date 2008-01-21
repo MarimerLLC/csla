@@ -1,4 +1,3 @@
-Imports Microsoft.VisualBasic
 Imports System
 Imports System.Collections.Generic
 Imports System.Linq
@@ -8,14 +7,11 @@ Imports System.Linq.Expressions
 Imports Ex = System.Linq.Expressions.Expression
 
 Namespace Linq
-
   Friend Class IndexSet(Of T)
     Implements IIndexSet(Of T)
     Private _internalIndexSet As Dictionary(Of String, IIndex(Of T)) = New Dictionary(Of String, IIndex(Of T))()
-    Private _indexingNeedBaseline As List(Of Integer) = New List(Of Integer)()
 
     Public Sub New()
-      MyBase.New()
       Dim allProps() As PropertyInfo = GetType(T).GetProperties()
       For Each [property] As PropertyInfo In allProps
         Dim attributes() As Object = [property].GetCustomAttributes(True)
@@ -147,6 +143,8 @@ Namespace Linq
 
 #End Region
 
+    Public Sub LoadIndex(ByVal [property] As String) Implements IIndexSet(Of T).LoadIndex
+      _internalIndexSet([property]).LoadComplete()
+    End Sub
   End Class
-
 End Namespace

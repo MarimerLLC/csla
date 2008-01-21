@@ -98,6 +98,7 @@
     <Compile Include="Basic\Root.cs" />
     <Compile Include="Basic\RootList.cs" />
     <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
+    <Compile Include="CslaQueryProvider\CslaQueryProviderTests.cs" />
     <Compile Include="DataMapper\DataMapperTests.cs" />
     <Compile Include="DataPortalChild\Child.cs" />
     <Compile Include="DataPortalChild\ChildList.cs" />

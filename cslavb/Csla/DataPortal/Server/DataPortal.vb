@@ -35,9 +35,9 @@ Namespace Server
 
         Dim result As DataPortalResult
 
-        Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
+        Dim method = DataPortalMethodCache.GetCreateMethod(objectType, criteria)
 
-        Select Case TransactionalType(method)
+        Select Case method.TransactionalType
           Case TransactionalTypes.EnterpriseServices
             Dim portal As New ServicedDataPortal
             Try
@@ -91,9 +91,9 @@ Namespace Server
 
         Dim result As DataPortalResult
 
-        Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
+        Dim method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria)
 
-        Select Case TransactionalType(method)
+        Select Case method.TransactionalType
           Case TransactionalTypes.EnterpriseServices
             Dim portal As New ServicedDataPortal
             Try
@@ -146,7 +146,6 @@ Namespace Server
 
         Dim result As DataPortalResult
 
-        Dim method As MethodInfo
         Dim methodName As String
         If TypeOf obj Is CommandBase Then
           methodName = "DataPortal_Execute"
@@ -167,9 +166,9 @@ Namespace Server
           methodName = "DataPortal_Update"
         End If
 
-        method = MethodCaller.GetMethod(obj.GetType, methodName)
+        Dim method = Server.DataPortalMethodCache.GetMethodInfo(obj.GetType, methodName)
 
-        Select Case TransactionalType(method)
+        Select Case method.TransactionalType
           Case TransactionalTypes.EnterpriseServices
             Dim portal As New ServicedDataPortal
             Try
@@ -221,10 +220,10 @@ Namespace Server
 
         Dim result As DataPortalResult
 
-        Dim method As MethodInfo = _
-          MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
+        Dim method = Server.DataPortalMethodCache.GetMethodInfo( _
+          MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
 
-        Select Case TransactionalType(method)
+        Select Case method.TransactionalType
           Case TransactionalTypes.EnterpriseServices
             Dim portal As New ServicedDataPortal
             Try

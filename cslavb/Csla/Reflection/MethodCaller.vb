@@ -1,91 +1,113 @@
 Imports System.Reflection
 Imports Csla.Server
+Imports Csla
 
 Namespace Reflection
 
-  Friend Module MethodCaller
+  ''' <summary>
+  ''' Provides methods to dynamically find and call methods.
+  ''' </summary>
+  Public Module MethodCaller
 
-    Private Const allLevelFlags As BindingFlags = _
-      BindingFlags.FlattenHierarchy Or _
-      BindingFlags.Instance Or _
-      BindingFlags.Public Or _
-      BindingFlags.NonPublic
+    Private Const allLevelFlags As BindingFlags = BindingFlags.FlattenHierarchy Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
 
-    Private Const oneLevelFlags As BindingFlags = _
-        BindingFlags.DeclaredOnly Or _
-        BindingFlags.Instance Or _
-        BindingFlags.Public Or _
-        BindingFlags.NonPublic
+    Private Const oneLevelFlags As BindingFlags = BindingFlags.DeclaredOnly Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
 
+    Private Const ctorFlags As BindingFlags = BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
 
-    ''' <summary>
-    ''' Gets a reference to the DataPortal_Create method for
-    ''' the specified business object type.
-    ''' </summary>
-    ''' <param name="objectType">Type of the business object.</param>
-    ''' <param name="criteria">Criteria parameter value.</param>
-    ''' <remarks>
-    ''' If the criteria parameter value is an integer, that is a special
-    ''' flag indicating that the parameter should be considered missing
-    ''' (not Nothing/null - just not there).
-    ''' </remarks>
-    Public Function GetCreateMethod(ByVal objectType As Type, ByVal criteria As Object) As MethodInfo
+#Region "Dynamic Method Cache"
 
-      Dim method As MethodInfo
-      If TypeOf criteria Is Integer Then
-        ' an "Integer" criteria is a special flag indicating
-        ' that criteria is empty and should not be used
-        method = MethodCaller.GetMethod(objectType, "DataPortal_Create")
+    Private _methodCache As Dictionary(Of MethodCacheKey, DynamicMethodHandle) = New Dictionary(Of MethodCacheKey, DynamicMethodHandle)()
 
-      Else
-        method = MethodCaller.GetMethod(objectType, "DataPortal_Create", criteria)
+    Private Function GetCachedMethod(ByVal obj As Object, ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) As DynamicMethodHandle
+      Dim key = New MethodCacheKey(obj.GetType().FullName, info.Name, GetParameterTypes(parameters))
+      Dim mh As DynamicMethodHandle = Nothing
+      If (Not _methodCache.TryGetValue(key, mh)) Then
+        SyncLock _methodCache
+          If (Not _methodCache.TryGetValue(key, mh)) Then
+            mh = New DynamicMethodHandle(info, parameters)
+            _methodCache.Add(key, mh)
+          End If
+        End SyncLock
       End If
-      Return method
-
+      Return mh
     End Function
 
-    ''' <summary>
-    ''' Gets a reference to the DataPortal_Fetch method for
-    ''' the specified business object type.
-    ''' </summary>
-    ''' <param name="objectType">Type of the business object.</param>
-    ''' <param name="criteria">Criteria parameter value.</param>
-    ''' <remarks>
-    ''' If the criteria parameter value is an integer, that is a special
-    ''' flag indicating that the parameter should be considered missing
-    ''' (not Nothing/null - just not there).
-    ''' </remarks>
-    Public Function GetFetchMethod(ByVal objectType As Type, ByVal criteria As Object) As MethodInfo
-
-      Dim method As MethodInfo
-      If TypeOf criteria Is Integer Then
-        ' an "Integer" criteria is a special flag indicating
-        ' that criteria is empty and should not be used
-        method = MethodCaller.GetMethod(objectType, "DataPortal_Fetch")
-
-      Else
-        method = MethodCaller.GetMethod(objectType, "DataPortal_Fetch", criteria)
+    Private Function GetCachedMethod(ByVal obj As Object, ByVal method As String, ByVal ParamArray parameters() As Object) As DynamicMethodHandle
+      Dim key = New MethodCacheKey(obj.GetType().FullName, method, GetParameterTypes(parameters))
+      Dim mh As DynamicMethodHandle = Nothing
+      If (Not _methodCache.TryGetValue(key, mh)) Then
+        SyncLock _methodCache
+          If (Not _methodCache.TryGetValue(key, mh)) Then
+            Dim info As MethodInfo = GetMethod(obj.GetType(), method, parameters)
+            mh = New DynamicMethodHandle(info, parameters)
+            _methodCache.Add(key, mh)
+          End If
+        End SyncLock
       End If
-      Return method
-
+      Return mh
     End Function
+
+#End Region
+
+#Region "Dynamic Constructor Cache "
+
+    Private _ctorCache As Dictionary(Of Type, DynamicCtorDelegate) = New Dictionary(Of Type, DynamicCtorDelegate)()
+
+    Private Function GetCachedConstructor(ByVal objectType As Type) As DynamicCtorDelegate
+      Dim result As DynamicCtorDelegate = Nothing
+      If (Not _ctorCache.TryGetValue(objectType, result)) Then
+        SyncLock _ctorCache
+          If (Not _ctorCache.TryGetValue(objectType, result)) Then
+            Dim info As ConstructorInfo = objectType.GetConstructor(ctorFlags, Nothing, Type.EmptyTypes, Nothing)
+            result = DynamicMethodHandlerFactory.CreateConstructor(info)
+            _ctorCache.Add(objectType, result)
+          End If
+        End SyncLock
+      End If
+      Return result
+    End Function
+
+#End Region
+
+#Region "Create Instance"
+
+    ''' <summary>
+    ''' Uses reflection to create an object using its 
+    ''' default constructor.
+    ''' </summary>
+    ''' <param name="objectType">Type of object to create.</param>
+    Public Function CreateInstance(ByVal objectType As Type) As Object
+      Dim ctor = GetCachedConstructor(objectType)
+      If ctor Is Nothing Then
+        Throw New NotImplementedException("Default constructor " & My.Resources.MethodNotImplemented)
+      End If
+      Return ctor.Invoke()
+    End Function
+
+#End Region
+
+#Region "Call Method"
 
     ''' <summary>
     ''' Uses reflection to dynamically invoke a method
     ''' if that method is implemented on the target object.
     ''' </summary>
-    Public Function CallMethodIfImplemented(ByVal obj As Object, _
-      ByVal method As String, ByVal ParamArray parameters() As Object) As Object
-
-      Dim info As MethodInfo = _
-        GetMethod(obj.GetType, method, parameters)
-      If info IsNot Nothing Then
-        Return CallMethod(obj, info, parameters)
-
-      Else
+    ''' <param name="obj">
+    ''' Object containing method.
+    ''' </param>
+    ''' <param name="method">
+    ''' Name of the method.
+    ''' </param>
+    ''' <param name="parameters">
+    ''' Parameters to pass to method.
+    ''' </param>
+    Public Function CallMethodIfImplemented(ByVal obj As Object, ByVal method As String, ByVal ParamArray parameters() As Object) As Object
+      Dim mh = GetCachedMethod(obj, method, parameters)
+      If mh Is Nothing OrElse mh.DynamicMethod Is Nothing Then
         Return Nothing
       End If
-
+      Return CallMethod(obj, mh, parameters)
     End Function
 
     ''' <summary>
@@ -93,18 +115,43 @@ Namespace Reflection
     ''' throwing an exception if it is not
     ''' implemented on the target object.
     ''' </summary>
-    Public Function CallMethod(ByVal obj As Object, _
-      ByVal method As String, ByVal ParamArray parameters() As Object) As Object
-
-      Dim info As MethodInfo = _
-        GetMethod(obj.GetType, method, parameters)
-      If info Is Nothing Then
-        Throw New NotImplementedException( _
-          method & " " & My.Resources.MethodNotImplemented)
+    ''' <param name="obj">
+    ''' Object containing method.
+    ''' </param>
+    ''' <param name="method">
+    ''' Name of the method.
+    ''' </param>
+    ''' <param name="parameters">
+    ''' Parameters to pass to method.
+    ''' </param>
+    Public Function CallMethod(ByVal obj As Object, ByVal method As String, ByVal ParamArray parameters() As Object) As Object
+      Dim mh = GetCachedMethod(obj, method, parameters)
+      If mh Is Nothing OrElse mh.DynamicMethod Is Nothing Then
+        Throw New NotImplementedException(method & " " & My.Resources.MethodNotImplemented)
       End If
+      Return CallMethod(obj, mh, parameters)
+    End Function
 
-      Return CallMethod(obj, info, parameters)
-
+    ''' <summary>
+    ''' Uses reflection to dynamically invoke a method,
+    ''' throwing an exception if it is not
+    ''' implemented on the target object.
+    ''' </summary>
+    ''' <param name="obj">
+    ''' Object containing method.
+    ''' </param>
+    ''' <param name="info">
+    ''' MethodInfo for the method.
+    ''' </param>
+    ''' <param name="parameters">
+    ''' Parameters to pass to method.
+    ''' </param>
+    Public Function CallMethod(ByVal obj As Object, ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) As Object
+      Dim mh = GetCachedMethod(obj, info, parameters)
+      If mh Is Nothing OrElse mh.DynamicMethod Is Nothing Then
+        Throw New NotImplementedException(info.Name & " " & My.Resources.MethodNotImplemented)
+      End If
+      Return CallMethod(obj, mh, parameters)
     End Function
 
     ''' <summary>
@@ -112,81 +159,88 @@ Namespace Reflection
     ''' throwing an exception if it is not implemented
     ''' on the target object.
     ''' </summary>
-    Public Function CallMethod(ByVal obj As Object, _
-      ByVal info As MethodInfo, ByVal ParamArray parameters() As Object) _
-      As Object
+    ''' <param name="obj">
+    ''' Object containing method.
+    ''' </param>
+    ''' <param name="methodHandle">
+    ''' MethodHandle for the method.
+    ''' </param>
+    ''' <param name="parameters">
+    ''' Parameters to pass to method.
+    ''' </param>
+    Private Function CallMethod(ByVal obj As Object, ByVal methodHandle As DynamicMethodHandle, ByVal ParamArray parameters() As Object) As Object
+      Dim result As Object = Nothing
+      Dim method = methodHandle.DynamicMethod
 
-      Dim result As Object
-      Dim infoParams = info.GetParameters
-      Dim inParams() As Object
+      Dim inParams() As Object = Nothing
       If parameters Is Nothing Then
         inParams = New Object() {Nothing}
-
       Else
         inParams = parameters
       End If
-      Dim pCount = infoParams.Length
-      If (pCount > 0 AndAlso infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0) _
-         OrElse _
-         (pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) Then
+
+      If methodHandle.HasFinalArrayParam Then
+        Dim pCount = methodHandle.MethodParamsLength
         ' last param is a param array or only param is an array
         Dim extras = inParams.Length - (pCount - 1)
+
         ' 1 or more params go in the param array
         ' copy extras into an array
-        Dim extraArray() As Object = GetExtrasArray(extras, infoParams(pCount - 1).ParameterType)
+        Dim extraArray() As Object = GetExtrasArray(extras, methodHandle.FinalArrayElementType)
         Array.Copy(inParams, extraArray, extras)
-        'For pos = 0 To extras - 1
-        '  extraArray(pos) = inParams(pCount - 1 + pos)
-        'Next
 
         ' copy items into new array
-        Dim paramList(pCount - 1) As Object
+        Dim paramList() As Object = New Object(pCount - 1) {}
         For pos = 0 To pCount - 2
           paramList(pos) = parameters(pos)
-        Next
+        Next pos
         paramList(paramList.Length - 1) = extraArray
 
         ' use new array
         inParams = paramList
       End If
       Try
-        result = info.Invoke(obj, inParams)
-
-      Catch e As Exception
-        Dim inner As Exception
-        If e.InnerException Is Nothing Then
-          inner = e
-
+        result = methodHandle.DynamicMethod(obj, inParams)
+      Catch ex As Exception
+        Dim inner As Exception = Nothing
+        If ex.InnerException Is Nothing Then
+          inner = ex
         Else
-          inner = e.InnerException
+          inner = ex.InnerException
         End If
-        Throw New CallMethodException( _
-          info.Name & " " & My.Resources.MethodCallFailed, inner)
+        Throw New CallMethodException(methodHandle.MethodName & " " & My.Resources.MethodCallFailed, inner)
       End Try
       Return result
-
     End Function
 
     Private Function GetExtrasArray(ByVal count As Integer, ByVal arrayType As Type) As Object()
-
-      Return DirectCast(System.Array.CreateInstance(arrayType.GetElementType, count), Object())
-
+      Return CType(System.Array.CreateInstance(arrayType.GetElementType(), count), Object())
     End Function
+
+#End Region
+
+#Region "Get/Find Method"
 
     ''' <summary>
     ''' Uses reflection to locate a matching method
     ''' on the target object.
     ''' </summary>
-    Public Function GetMethod(ByVal objectType As Type, _
-      ByVal method As String, ByVal ParamArray parameters() As Object) _
-      As MethodInfo
+    ''' <param name="objectType">
+    ''' Type of object containing method.
+    ''' </param>
+    ''' <param name="method">
+    ''' Name of the method.
+    ''' </param>
+    ''' <param name="parameters">
+    ''' Parameters to pass to method.
+    ''' </param>
+    Public Function GetMethod(ByVal objectType As Type, ByVal method As String, ByVal ParamArray parameters() As Object) As MethodInfo
 
       Dim result As MethodInfo = Nothing
 
-      Dim inParams() As Object
+      Dim inParams() As Object = Nothing
       If parameters Is Nothing Then
         inParams = New Object() {Nothing}
-
       Else
         inParams = parameters
       End If
@@ -207,16 +261,14 @@ Namespace Reflection
       If result Is Nothing Then
         Try
           result = objectType.GetMethod(method, allLevelFlags)
-
-        Catch ex As AmbiguousMatchException
-          Dim methods() As MethodInfo = objectType.GetMethods
+        Catch e1 As AmbiguousMatchException
+          Dim methods() As MethodInfo = objectType.GetMethods()
           For Each m As MethodInfo In methods
-            If m.Name = method AndAlso _
-            m.GetParameters.Length = inParams.Length Then
+            If m.Name = method AndAlso m.GetParameters().Length = inParams.Length Then
               result = m
               Exit For
             End If
-          Next
+          Next m
           If result Is Nothing Then
             Throw
           End If
@@ -224,11 +276,92 @@ Namespace Reflection
       End If
 
       Return result
-
     End Function
 
-    Friend Function GetParameterTypes(ByVal parameters As Object()) As Type()
+    ''' <summary>
+    ''' Returns information about the specified
+    ''' method, even if the parameter types are
+    ''' generic and are located in an abstract
+    ''' generic base class.
+    ''' </summary>
+    ''' <param name="objectType">
+    ''' Type of object containing method.
+    ''' </param>
+    ''' <param name="method">
+    ''' Name of the method.
+    ''' </param>
+    ''' <param name="types">
+    ''' Parameter types to pass to method.
+    ''' </param>
+    Public Function FindMethod(ByVal objectType As Type, ByVal method As String, ByVal types() As Type) As MethodInfo
+      Dim info As MethodInfo = Nothing
+      Do
+        ' find for a strongly typed match
+        info = objectType.GetMethod(method, oneLevelFlags, Nothing, types, Nothing)
+        If info IsNot Nothing Then
+          Exit Do ' match found
+        End If
 
+        objectType = objectType.BaseType
+      Loop While objectType IsNot Nothing
+
+      Return info
+    End Function
+
+    ''' <summary>
+    ''' Returns information about the specified
+    ''' method, finding the method based purely
+    ''' on the method name and number of parameters.
+    ''' </summary>
+    ''' <param name="objectType">
+    ''' Type of object containing method.
+    ''' </param>
+    ''' <param name="method">
+    ''' Name of the method.
+    ''' </param>
+    ''' <param name="parameterCount">
+    ''' Number of parameters to pass to method.
+    ''' </param>
+    Public Function FindMethod(ByVal objectType As Type, ByVal method As String, ByVal parameterCount As Integer) As MethodInfo
+      ' walk up the inheritance hierarchy looking
+      ' for a method with the right number of
+      ' parameters
+      Dim result As MethodInfo = Nothing
+      Dim currentType As Type = objectType
+      Do
+        Dim info As MethodInfo = currentType.GetMethod(method, oneLevelFlags)
+        If info IsNot Nothing Then
+          Dim infoParams = info.GetParameters()
+          Dim pCount = infoParams.Length
+          If pCount > 0 AndAlso ((pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) OrElse (infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0)) Then
+            ' last param is a param array or only param is an array
+            If parameterCount >= pCount - 1 Then
+              ' got a match so use it
+              result = info
+              Exit Do
+            End If
+          ElseIf pCount = parameterCount Then
+            ' got a match so use it
+            result = info
+            Exit Do
+          End If
+        End If
+        currentType = currentType.BaseType
+      Loop While currentType IsNot Nothing
+
+      Return result
+    End Function
+
+#End Region
+
+    ''' <summary>
+    ''' Returns an array of Type objects corresponding
+    ''' to the type of parameters provided.
+    ''' </summary>
+    ''' <param name="parameters">
+    ''' Parameter values.
+    ''' </param>
+    Public Function GetParameterTypes(ByVal parameters() As Object) As Type()
       Dim result As List(Of Type) = New List(Of Type)()
 
       If parameters Is Nothing Then
@@ -241,93 +374,28 @@ Namespace Reflection
           Else
             result.Add(item.GetType())
           End If
-        Next
+        Next item
       End If
       Return result.ToArray()
-
     End Function
 
     ''' <summary>
     ''' Returns a business object type based on
     ''' the supplied criteria object.
     ''' </summary>
+    ''' <param name="criteria">
+    ''' Criteria object.
+    ''' </param>
     Public Function GetObjectType(ByVal criteria As Object) As Type
-
-      If criteria.GetType.IsSubclassOf(GetType(CriteriaBase)) Then
+      If criteria.GetType().IsSubclassOf(GetType(CriteriaBase)) Then
         ' get the type of the actual business object
         ' from CriteriaBase 
-        Return CType(criteria, CriteriaBase).ObjectType
-
+        Return (CType(criteria, CriteriaBase)).ObjectType
       Else
         ' get the type of the actual business object
         ' based on the nested class scheme in the book
-        Return criteria.GetType.DeclaringType
+        Return criteria.GetType().DeclaringType
       End If
-
-    End Function
-
-    ''' <summary>
-    ''' Returns information about the specified
-    ''' method, even if the parameter types are
-    ''' generic and are located in an abstract
-    ''' generic base class.
-    ''' </summary>
-    Public Function FindMethod(ByVal objType As Type, ByVal method As String, ByVal types As Type()) As MethodInfo
-
-      Dim info As MethodInfo = Nothing
-      Do
-        ' find for a strongly typed match
-        info = objType.GetMethod(method, oneLevelFlags, Nothing, types, Nothing)
-        If info IsNot Nothing Then
-          Exit Do ' match found
-        End If
-
-        objType = objType.BaseType
-      Loop While objType IsNot Nothing
-
-      Return info
-
-    End Function
-
-    ''' <summary>
-    ''' Returns information about the specified
-    ''' method, finding the method based purely
-    ''' on the method name and number of parameters.
-    ''' </summary>
-    Public Function FindMethod(ByVal objType As Type, ByVal method As String, ByVal parameterCount As Integer) As MethodInfo
-
-      ' walk up the inheritance hierarchy looking
-      ' for a method with the right number of
-      ' parameters
-      Dim result As MethodInfo = Nothing
-      Dim currentType As Type = objType
-      Do
-        Dim info As MethodInfo = _
-          currentType.GetMethod(method, oneLevelFlags)
-        If info IsNot Nothing Then
-          Dim infoParams = info.GetParameters
-          Dim pCount = infoParams.Length
-          If (pCount > 0 AndAlso infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0) _
-             OrElse _
-             (pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) Then
-            ' last param is a param array or only param is an array
-            If parameterCount >= pCount - 1 Then
-              ' got a match so use it
-              result = info
-              Exit Do
-            End If
-
-          ElseIf pCount = parameterCount Then
-            ' got a match so use it
-            result = info
-            Exit Do
-          End If
-        End If
-        currentType = currentType.BaseType
-      Loop Until currentType Is Nothing
-
-      Return result
-
     End Function
 
   End Module

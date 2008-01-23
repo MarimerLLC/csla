@@ -137,6 +137,8 @@
     <Compile Include="DataPortal\Client\RemotingProxy.vb" />
     <Compile Include="DataPortal\Client\WcfProxy.vb" />
     <Compile Include="DataPortal\Client\WebServicesProxy.vb" />
+    <Compile Include="DataPortal\DataPortalMethodCache.vb" />
+    <Compile Include="DataPortal\DataPortalMethodInfo.vb" />
     <Compile Include="DataPortal\DataPortalOperations.vb" />
     <Compile Include="DataPortal\Hosts\EnterpriseServicesPortal.vb" />
     <Compile Include="DataPortal\Hosts\IWcfPortal.vb" />
@@ -155,6 +157,7 @@
     <Compile Include="DataPortal\Server\ChildDataPortal.vb" />
     <Compile Include="DataPortal\Server\DataPortalContext.vb" />
     <Compile Include="DataPortal\Server\IDataPortalServer.vb" />
+    <Compile Include="DataPortal\Server\IDataPortalTarget.vb" />
     <Compile Include="DataPortal\Server\ServicedDataPortal.vb" />
     <Compile Include="DataPortal\Server\SimpleDataPortal.vb" />
     <Compile Include="DataPortal\Server\TransactionalDataPortal.vb" />
@@ -182,6 +185,10 @@
     <Compile Include="Linq\LinqBindingList.vb" />
     <Compile Include="PropertyInfo.vb" />
     <Compile Include="PropertyLoadException.vb" />
+    <Compile Include="Reflection\DynamicMethodHandle.vb" />
+    <Compile Include="Reflection\DynamicMethodHandlerFactory.vb" />
+    <Compile Include="Reflection\LateBoundObject.vb" />
+    <Compile Include="Reflection\MethodCacheKey.vb" />
     <Compile Include="Reflection\MethodCaller.vb" />
     <Compile Include="Security\AccessType.vb" />
     <Compile Include="Security\AuthorizationRulesManager.vb" />

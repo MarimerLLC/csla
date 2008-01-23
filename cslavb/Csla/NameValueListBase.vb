@@ -17,6 +17,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
   Implements ICloneable
   Implements Core.IBusinessObject
+  Implements Server.IDataPortalTarget
 
 #Region " Core Implementation "
 
@@ -305,7 +306,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
 
   End Sub
 
@@ -316,7 +317,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
 
   End Sub
 
@@ -328,7 +329,35 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+
+  End Sub
+
+#End Region
+
+#Region " IDataPortalTarget implementation "
+
+  Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
+
+  End Sub
+
+  Private Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+
+  End Sub
+
+  Private Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+
+  End Sub
+
+  Private Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
+
+  End Sub
+
+  Private Sub MarkNew() Implements Server.IDataPortalTarget.MarkNew
+
+  End Sub
+
+  Private Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
 
   End Sub
 

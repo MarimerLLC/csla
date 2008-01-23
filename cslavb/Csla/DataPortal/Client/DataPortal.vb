@@ -106,10 +106,10 @@ Public Module DataPortal
           objectType.Name))
       End If
 
-      Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
+      Dim method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria)
 
       Dim proxy As DataPortalClient.IDataPortalProxy
-      proxy = GetDataPortalProxy(RunLocal(method))
+      proxy = GetDataPortalProxy(method.RunLocal)
 
       OnDataPortalInitInvoke(Nothing)
 
@@ -201,10 +201,10 @@ Public Module DataPortal
           objectType.Name))
       End If
 
-      Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
+      Dim method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria)
 
       Dim proxy As DataPortalClient.IDataPortalProxy
-      proxy = GetDataPortalProxy(RunLocal(method))
+      proxy = GetDataPortalProxy(method.RunLocal)
 
       OnDataPortalInitInvoke(Nothing)
 
@@ -334,7 +334,6 @@ Public Module DataPortal
     Dim operation = DataPortalOperations.Update
     Dim objectType = obj.GetType
     Try
-      Dim method As MethodInfo
       Dim methodName As String
       If TypeOf obj Is CommandBase Then
         methodName = "DataPortal_Execute"
@@ -381,10 +380,10 @@ Public Module DataPortal
         End If
       End If
 
-      method = MethodCaller.GetMethod(obj.GetType, methodName)
+      Dim method = Server.DataPortalMethodCache.GetMethodInfo(obj.GetType, methodName)
 
       Dim proxy As DataPortalClient.IDataPortalProxy
-      proxy = GetDataPortalProxy(RunLocal(method))
+      proxy = GetDataPortalProxy(method.RunLocal)
 
       OnDataPortalInitInvoke(Nothing)
 
@@ -448,11 +447,11 @@ Public Module DataPortal
           objectType.Name))
       End If
 
-      Dim method As MethodInfo = _
-        MethodCaller.GetMethod(MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
+      Dim method = Server.DataPortalMethodCache.GetMethodInfo( _
+        MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
 
       Dim proxy As DataPortalClient.IDataPortalProxy
-      proxy = GetDataPortalProxy(RunLocal(method))
+      proxy = GetDataPortalProxy(method.RunLocal)
 
       OnDataPortalInitInvoke(Nothing)
 

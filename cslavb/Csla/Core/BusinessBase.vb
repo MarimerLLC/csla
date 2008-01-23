@@ -20,6 +20,7 @@ Namespace Core
     Implements IDataErrorInfo
     Implements Csla.Security.IAuthorizeReadWrite
     Implements IParent
+    Implements Server.IDataPortalTarget
 
 #Region " Constructors "
 
@@ -138,7 +139,7 @@ Namespace Core
     ''' implementation after executing your new code.
     ''' </para>
     ''' </remarks>
-    Protected Overridable Sub MarkNew()
+    Protected Overridable Sub MarkNew() Implements Server.IDataPortalTarget.MarkNew
       mIsNew = True
       mIsDeleted = False
       MarkDirty()
@@ -162,7 +163,7 @@ Namespace Core
     ''' implementation after executing your new code.
     ''' </para>
     ''' </remarks>
-    Protected Overridable Sub MarkOld()
+    Protected Overridable Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
       mIsNew = False
       MarkClean()
     End Sub
@@ -984,7 +985,7 @@ Namespace Core
     ''' <summary>
     ''' Marks the object as being a child object.
     ''' </summary>
-    Protected Sub MarkAsChild()
+    Protected Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
       mIsChild = True
     End Sub
 
@@ -1258,7 +1259,7 @@ Namespace Core
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+    Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
 
     End Sub
 
@@ -1269,7 +1270,7 @@ Namespace Core
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+    Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
 
     End Sub
 
@@ -1281,7 +1282,38 @@ Namespace Core
     ''' <param name="ex">The Exception thrown during data access.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+    Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+
+    End Sub
+
+    ''' <summary>
+    ''' Called by the server-side DataPortal prior to calling the 
+    ''' requested DataPortal_XYZ method.
+    ''' </summary>
+    ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+
+    End Sub
+
+    ''' <summary>
+    ''' Called by the server-side DataPortal after calling the 
+    ''' requested DataPortal_XYZ method.
+    ''' </summary>
+    ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+
+    End Sub
+
+    ''' <summary>
+    ''' Called by the server-side DataPortal if an exception
+    ''' occurs during data access.
+    ''' </summary>
+    ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    ''' <param name="ex">The Exception thrown during data access.</param>
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
 
     End Sub
 

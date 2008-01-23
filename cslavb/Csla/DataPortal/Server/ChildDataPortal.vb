@@ -1,7 +1,4 @@
-﻿Imports System.Reflection
-Imports System.Security.Principal
-Imports System.Collections.Specialized
-Imports Csla.Reflection
+﻿Imports Csla.Reflection
 
 Namespace Server
 
@@ -11,7 +8,7 @@ Namespace Server
   ''' </summary>
   Public Class ChildDataPortal
 
-#Region " Data Access "
+#Region " Data Access"
 
     ''' <summary>
     ''' Create a new business object.
@@ -20,50 +17,50 @@ Namespace Server
     ''' <param name="parameters">
     ''' Criteria parameters passed from caller.
     ''' </param>
-    Public Function Create( _
-      ByVal objectType As System.Type, _
-      ByVal ParamArray parameters() As Object) As Object
-
-      Dim obj As Object = Nothing
-
+    Public Function Create(ByVal objectType As System.Type, ByVal ParamArray parameters() As Object) As Object
+      Dim obj As LateBoundObject = Nothing
+      Dim target As IDataPortalTarget = Nothing
+      Dim eventArgs = New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Create)
       Try
         ' create an instance of the business object
-        obj = Activator.CreateInstance(objectType, True)
+        obj = New LateBoundObject(objectType)
 
-        ' mark the object as a child
-        MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild")
+        target = TryCast(obj.Instance, IDataPortalTarget)
 
-        ' tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "Child_OnDataPortalInvoke", _
-          New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Create))
+        If target IsNot Nothing Then
+          target.Child_OnDataPortalInvoke(eventArgs)
+          target.MarkAsChild()
+          target.MarkNew()
+        Else
+          obj.CallMethodIfImplemented("Child_OnDataPortalInvoke", eventArgs)
+          obj.CallMethodIfImplemented("MarkAsChild")
+          obj.CallMethodIfImplemented("MarkNew")
+        End If
+
 
         ' tell the business object to fetch its data
-        Dim method As MethodInfo = MethodCaller.GetMethod(objectType, "Child_Create", parameters)
-        MethodCaller.CallMethod(obj, method, parameters)
+        obj.CallMethod("Child_Create", parameters)
 
-        ' mark the object as new
-        MethodCaller.CallMethodIfImplemented(obj, "MarkNew")
-
-        ' tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "Child_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Create))
+        If target IsNot Nothing Then
+          target.Child_OnDataPortalInvokeComplete(eventArgs)
+        Else
+          obj.CallMethodIfImplemented("Child_OnDataPortalInvokeComplete", eventArgs)
+        End If
 
         ' return the populated business object as a result
-        Return obj
+        Return obj.Instance
 
       Catch ex As Exception
         Try
-          ' tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented( _
-            obj, "Child_OnDataPortalException", _
-            New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Create), ex)
+          If target IsNot Nothing Then
+            target.Child_OnDataPortalException(eventArgs, ex)
+          Else
+            obj.CallMethodIfImplemented("Child_OnDataPortalException", eventArgs, ex)
+          End If
         Catch
           ' ignore exceptions from the exception handler
         End Try
-        Throw New Csla.DataPortalException("ChildDataPortal.Create " & _
-          My.Resources.FailedOnServer, ex, obj)
+        Throw New Csla.DataPortalException("ChildDataPortal.Create " & My.Resources.FailedOnServer, ex, obj.Instance)
       End Try
 
     End Function
@@ -75,50 +72,50 @@ Namespace Server
     ''' <param name="parameters">
     ''' Criteria parameters passed from caller.
     ''' </param>
-    Public Function Fetch( _
-      ByVal objectType As Type, _
-      ByVal ParamArray parameters() As Object) As Object
+    Public Function Fetch(ByVal objectType As Type, ByVal ParamArray parameters() As Object) As Object
 
-      Dim obj As Object = Nothing
-
+      Dim obj As LateBoundObject = Nothing
+      Dim target As IDataPortalTarget = Nothing
+      Dim eventArgs = New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Fetch)
       Try
         ' create an instance of the business object
-        obj = Activator.CreateInstance(objectType, True)
+        obj = New LateBoundObject(objectType)
 
-        ' mark the object as a child
-        MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild")
+        target = TryCast(obj.Instance, IDataPortalTarget)
 
-        ' tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "Child_OnDataPortalInvoke", _
-          New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Fetch))
-
-        ' mark the object as old
-        MethodCaller.CallMethodIfImplemented(obj, "MarkOld")
+        If target IsNot Nothing Then
+          target.Child_OnDataPortalInvoke(eventArgs)
+          target.MarkAsChild()
+          target.MarkOld()
+        Else
+          obj.CallMethodIfImplemented("Child_OnDataPortalInvoke", eventArgs)
+          obj.CallMethodIfImplemented("MarkAsChild")
+          obj.CallMethodIfImplemented("MarkOld")
+        End If
 
         ' tell the business object to fetch its data
-        Dim method As MethodInfo = MethodCaller.GetMethod(objectType, "Child_Fetch", parameters)
-        MethodCaller.CallMethod(obj, method, parameters)
+        obj.CallMethod("Child_Fetch", parameters)
 
-        ' tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "Child_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Fetch))
+        If target IsNot Nothing Then
+          target.Child_OnDataPortalInvokeComplete(eventArgs)
+        Else
+          obj.CallMethodIfImplemented("Child_OnDataPortalInvokeComplete", eventArgs)
+        End If
 
         ' return the populated business object as a result
-        Return obj
+        Return obj.Instance
 
       Catch ex As Exception
         Try
-          ' tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented( _
-            obj, "Child_OnDataPortalException", _
-            New DataPortalEventArgs(Nothing, objectType, DataPortalOperations.Fetch), ex)
+          If target IsNot Nothing Then
+            target.Child_OnDataPortalException(eventArgs, ex)
+          Else
+            obj.CallMethodIfImplemented("Child_OnDataPortalException", eventArgs, ex)
+          End If
         Catch
           ' ignore exceptions from the exception handler
         End Try
-        Throw New Csla.DataPortalException("ChildDataPortal.Fetch " & _
-          My.Resources.FailedOnServer, ex, obj)
+        Throw New Csla.DataPortalException("ChildDataPortal.Fetch " & My.Resources.FailedOnServer, ex, obj.Instance)
       End Try
 
     End Function
@@ -130,73 +127,83 @@ Namespace Server
     ''' <param name="parameters">
     ''' Parameters passed to method.
     ''' </param>
-    Public Sub Update( _
-      ByVal obj As Object, _
-      ByVal ParamArray parameters() As Object)
+    Public Sub Update(ByVal obj As Object, ByVal ParamArray parameters() As Object)
 
       Dim operation = DataPortalOperations.Update
-      Dim objectType = obj.GetType
-
+      Dim objectType As Type = obj.GetType()
+      Dim target As IDataPortalTarget = TryCast(obj, IDataPortalTarget)
+      Dim lb As LateBoundObject = New LateBoundObject(obj)
       Try
-        ' tell the business object we're about to make a Child_xyz call
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "Child_OnDataPortalInvoke", _
-          New DataPortalEventArgs(Nothing, objectType, operation))
+        If target IsNot Nothing Then
+          target.Child_OnDataPortalInvoke(New DataPortalEventArgs(Nothing, objectType, operation))
+        Else
+          lb.CallMethodIfImplemented("Child_OnDataPortalInvoke", New DataPortalEventArgs(Nothing, objectType, operation))
+        End If
 
         ' tell the business object to update itself
         If TypeOf obj Is Core.BusinessBase Then
-          Dim busObj As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
+          Dim busObj As Core.BusinessBase = CType(obj, Core.BusinessBase)
           If busObj.IsDeleted Then
-            If Not busObj.IsNew Then
+            If (Not busObj.IsNew) Then
               ' tell the object to delete itself
-              MethodCaller.CallMethod(busObj, "Child_DeleteSelf", parameters)
+              lb.CallMethod("Child_DeleteSelf", parameters)
             End If
-            ' mark the object as new
-            MethodCaller.CallMethodIfImplemented(busObj, "MarkNew")
+            If target IsNot Nothing Then
+              target.MarkNew()
+            Else
+              lb.CallMethodIfImplemented("MarkNew")
+            End If
 
           Else
             If busObj.IsNew Then
               ' tell the object to insert itself
-              MethodCaller.CallMethod(busObj, "Child_Insert", parameters)
+              lb.CallMethod("Child_Insert", parameters)
 
             Else
               ' tell the object to update itself
-              MethodCaller.CallMethod(busObj, "Child_Update", parameters)
+              lb.CallMethod("Child_Update", parameters)
             End If
-            ' mark the object as old
-            MethodCaller.CallMethodIfImplemented(busObj, "MarkOld")
+            If target IsNot Nothing Then
+              target.MarkOld()
+            Else
+              lb.CallMethodIfImplemented("MarkOld")
+            End If
           End If
 
         ElseIf TypeOf obj Is CommandBase Then
           ' tell the object to update itself
-          MethodCaller.CallMethod(obj, "Child_Execute", parameters)
+          lb.CallMethod("Child_Execute", parameters)
           operation = DataPortalOperations.Execute
 
         Else
           ' this is an updatable collection or some other
           ' non-BusinessBase type of object
           ' tell the object to update itself
-          MethodCaller.CallMethod(obj, "Child_Update", parameters)
-          ' mark the object as old
-          MethodCaller.CallMethodIfImplemented(obj, "MarkOld")
+          lb.CallMethod("Child_Update", parameters)
+          If target IsNot Nothing Then
+            target.MarkOld()
+          Else
+            lb.CallMethodIfImplemented("MarkOld")
+          End If
         End If
 
-        ' tell the business object the Child_xyz call is complete
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "Child_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(Nothing, objectType, operation))
+        If target IsNot Nothing Then
+          target.Child_OnDataPortalInvokeComplete(New DataPortalEventArgs(Nothing, objectType, operation))
+        Else
+          lb.CallMethodIfImplemented("Child_OnDataPortalInvokeComplete", New DataPortalEventArgs(Nothing, objectType, operation))
+        End If
 
       Catch ex As Exception
         Try
-          ' tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented( _
-            obj, "Child_OnDataPortalException", _
-            New DataPortalEventArgs(Nothing, objectType, operation), ex)
+          If target IsNot Nothing Then
+            target.Child_OnDataPortalException(New DataPortalEventArgs(Nothing, objectType, operation), ex)
+          Else
+            lb.CallMethodIfImplemented("Child_OnDataPortalException", New DataPortalEventArgs(Nothing, objectType, operation), ex)
+          End If
         Catch
           ' ignore exceptions from the exception handler
         End Try
-        Throw New Csla.DataPortalException("ChildDataPortal.Update " & _
-          My.Resources.FailedOnServer, ex, obj)
+        Throw New Csla.DataPortalException("ChildDataPortal.Update " & My.Resources.FailedOnServer, ex, obj)
       End Try
 
     End Sub

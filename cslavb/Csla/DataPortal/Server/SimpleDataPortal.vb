@@ -1,4 +1,3 @@
-Imports System.Reflection
 Imports System.Security.Principal
 Imports System.Collections.Specialized
 Imports Csla.Reflection
@@ -13,7 +12,7 @@ Namespace Server
 
     Implements IDataPortalServer
 
-#Region " Data Access "
+#Region "Data Access"
 
     ''' <summary>
     ''' Create a new business object.
@@ -23,58 +22,56 @@ Namespace Server
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
-    Public Function Create( _
-      ByVal objectType As System.Type, _
-      ByVal criteria As Object, _
-      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
-      Implements Server.IDataPortalServer.Create
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
+    Public Function Create(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Create
 
-      Dim obj As Object = Nothing
-
+      Dim obj As LateBoundObject = Nothing
+      Dim target As IDataPortalTarget = Nothing
+      Dim eventArgs = New DataPortalEventArgs(context, objectType, DataPortalOperations.Create)
       Try
-        ' create an instance of the business object
-        obj = Activator.CreateInstance(objectType, True)
+        ' create an instance of the business object.
+        obj = New LateBoundObject(objectType)
 
-        ' tell the business object we're about to make a DataPortal_xyz call
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "DataPortal_OnDataPortalInvoke", _
-          New DataPortalEventArgs(context, objectType, DataPortalOperations.Create))
+        target = TryCast(obj.Instance, IDataPortalTarget)
 
-        ' tell the business object to fetch its data
-        Dim method As MethodInfo = MethodCaller.GetCreateMethod(objectType, criteria)
-        If TypeOf criteria Is Integer Then
-          ' an "Integer" criteria is a special flag indicating
-          ' that criteria is empty and should not be used
-          MethodCaller.CallMethod(obj, method)
-
+        If target IsNot Nothing Then
+          target.DataPortal_OnDataPortalInvoke(eventArgs)
+          target.MarkNew()
         Else
-          MethodCaller.CallMethod(obj, method, criteria)
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs)
+          obj.CallMethodIfImplemented("MarkNew")
         End If
 
-        ' mark the object as new
-        MethodCaller.CallMethodIfImplemented(obj, "MarkNew")
+        ' tell the business object to create its data
+        If TypeOf criteria Is Integer Then
+          obj.CallMethod("DataPortal_Create")
+        Else
+          obj.CallMethod("DataPortal_Create", criteria)
+        End If
 
-        ' tell the business object the DataPortal_xyz call is complete
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "DataPortal_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(context, objectType, DataPortalOperations.Create))
+        If target IsNot Nothing Then
+          target.DataPortal_OnDataPortalInvokeComplete(eventArgs)
+        Else
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete", eventArgs)
+        End If
 
         ' return the populated business object as a result
-        Return New DataPortalResult(obj)
-
+        Return New DataPortalResult(obj.Instance)
       Catch ex As Exception
         Try
-          ' tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented( _
-            obj, "DataPortal_OnDataPortalException", _
-            New DataPortalEventArgs(context, objectType, DataPortalOperations.Create), ex)
+          If target IsNot Nothing Then
+            target.DataPortal_OnDataPortalException(eventArgs, ex)
+          Else
+            obj.CallMethodIfImplemented("DataPortal_OnDataPortalException", eventArgs, ex)
+          End If
         Catch
           ' ignore exceptions from the exception handler
         End Try
-        Throw New DataPortalException("DataPortal.Create " & _
-          My.Resources.FailedOnServer, ex, New DataPortalResult(obj))
+        Dim outval As Object = Nothing
+        If obj IsNot Nothing Then
+          outval = obj.Instance
+        End If
+        Throw New DataPortalException("DataPortal.Create " & My.Resources.FailedOnServer, ex, New DataPortalResult(outval))
       End Try
 
     End Function
@@ -87,58 +84,56 @@ Namespace Server
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
-    Public Function Fetch( _
-      ByVal objectType As Type, _
-      ByVal criteria As Object, _
-      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
-      Implements Server.IDataPortalServer.Fetch
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")> _
+    Public Function Fetch(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Fetch
 
-      Dim obj As Object = Nothing
-
+      Dim obj As LateBoundObject = Nothing
+      Dim target As IDataPortalTarget = Nothing
+      Dim eventArgs = New DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch)
       Try
-        ' create an instance of the business object
-        obj = Activator.CreateInstance(objectType, True)
+        ' create an instance of the business object.
+        obj = New LateBoundObject(objectType)
 
-        ' tell the business object we're about to make a DataPortal_xyz call
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "DataPortal_OnDataPortalInvoke", _
-          New DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch))
+        target = TryCast(obj.Instance, IDataPortalTarget)
 
-        ' mark the object as old
-        MethodCaller.CallMethodIfImplemented(obj, "MarkOld")
-
-        ' tell the business object to fetch its data
-        Dim method As MethodInfo = MethodCaller.GetFetchMethod(objectType, criteria)
-        If TypeOf criteria Is Integer Then
-          ' an "Integer" criteria is a special flag indicating
-          ' that criteria is empty and should not be used
-          MethodCaller.CallMethod(obj, method)
-
+        If target IsNot Nothing Then
+          target.DataPortal_OnDataPortalInvoke(eventArgs)
+          target.MarkOld()
         Else
-          MethodCaller.CallMethod(obj, method, criteria)
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs)
+          obj.CallMethodIfImplemented("MarkOld")
         End If
 
-        ' tell the business object the DataPortal_xyz call is complete
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "DataPortal_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch))
+        ' tell the business object to fetch its data
+        If TypeOf criteria Is Integer Then
+          obj.CallMethod("DataPortal_Fetch")
+        Else
+          obj.CallMethod("DataPortal_Fetch", criteria)
+        End If
+
+        If target IsNot Nothing Then
+          target.DataPortal_OnDataPortalInvokeComplete(eventArgs)
+        Else
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete", eventArgs)
+        End If
 
         ' return the populated business object as a result
-        Return New DataPortalResult(obj)
-
+        Return New DataPortalResult(obj.Instance)
       Catch ex As Exception
         Try
-          ' tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented( _
-            obj, "DataPortal_OnDataPortalException", _
-            New DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch), ex)
+          If target IsNot Nothing Then
+            target.DataPortal_OnDataPortalException(eventArgs, ex)
+          Else
+            obj.CallMethodIfImplemented("DataPortal_OnDataPortalException", eventArgs, ex)
+          End If
         Catch
           ' ignore exceptions from the exception handler
         End Try
-        Throw New DataPortalException("DataPortal.Fetch " & _
-          My.Resources.FailedOnServer, ex, New DataPortalResult(obj))
+        Dim outval As Object = Nothing
+        If obj IsNot Nothing Then
+          outval = obj.Instance
+        End If
+        Throw New DataPortalException("DataPortal.Fetch " & My.Resources.FailedOnServer, ex, New DataPortalResult(outval))
       End Try
 
     End Function
@@ -150,78 +145,81 @@ Namespace Server
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")> _
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
-    Public Function Update( _
-      ByVal obj As Object, _
-      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
-      Implements Server.IDataPortalServer.Update
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
+    Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Update
 
-      Dim operation = DataPortalOperations.Update
-      Dim objectType = obj.GetType
-
+      Dim operation As DataPortalOperations = DataPortalOperations.Update
+      Dim objectType As Type = obj.GetType()
+      Dim target = TryCast(obj, IDataPortalTarget)
+      Dim lb As LateBoundObject = New LateBoundObject(obj)
       Try
-        ' tell the business object we're about to make a DataPortal_xyz call
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "DataPortal_OnDataPortalInvoke", _
-          New DataPortalEventArgs(context, objectType, operation))
+        If target IsNot Nothing Then
+          target.DataPortal_OnDataPortalInvoke(New DataPortalEventArgs(context, objectType, operation))
+        Else
+          lb.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", New DataPortalEventArgs(context, objectType, operation))
+        End If
 
         ' tell the business object to update itself
         If TypeOf obj Is Core.BusinessBase Then
-          Dim busObj As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
+          Dim busObj As Core.BusinessBase = CType(obj, Core.BusinessBase)
           If busObj.IsDeleted Then
-            If Not busObj.IsNew Then
+            If (Not busObj.IsNew) Then
               ' tell the object to delete itself
-              MethodCaller.CallMethod(busObj, "DataPortal_DeleteSelf")
+              lb.CallMethod("DataPortal_DeleteSelf")
             End If
-            ' mark the object as new
-            MethodCaller.CallMethodIfImplemented(busObj, "MarkNew")
-
+            If target IsNot Nothing Then
+              target.MarkNew()
+            Else
+              lb.CallMethodIfImplemented("MarkNew")
+            End If
           Else
             If busObj.IsNew Then
               ' tell the object to insert itself
-              MethodCaller.CallMethod(busObj, "DataPortal_Insert")
-
+              lb.CallMethod("DataPortal_Insert")
             Else
               ' tell the object to update itself
-              MethodCaller.CallMethod(busObj, "DataPortal_Update")
+              lb.CallMethod("DataPortal_Update")
             End If
-            ' mark the object as old
-            MethodCaller.CallMethodIfImplemented(busObj, "MarkOld")
+            If target IsNot Nothing Then
+              target.MarkOld()
+            Else
+              lb.CallMethodIfImplemented("MarkOld")
+            End If
           End If
-
         ElseIf TypeOf obj Is CommandBase Then
           operation = DataPortalOperations.Execute
           ' tell the object to update itself
-          MethodCaller.CallMethod(obj, "DataPortal_Execute")
-
+          lb.CallMethod("DataPortal_Execute")
         Else
           ' this is an updatable collection or some other
           ' non-BusinessBase type of object
           ' tell the object to update itself
-          MethodCaller.CallMethod(obj, "DataPortal_Update")
-          ' mark the object as old
-          MethodCaller.CallMethodIfImplemented(obj, "MarkOld")
+          lb.CallMethod("DataPortal_Update")
+          If target IsNot Nothing Then
+            target.MarkOld()
+          Else
+            lb.CallMethodIfImplemented("MarkOld")
+          End If
         End If
 
-        ' tell the business object the DataPortal_xyz call is complete
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "DataPortal_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(context, objectType, operation))
+        If target IsNot Nothing Then
+          target.DataPortal_OnDataPortalInvokeComplete(New DataPortalEventArgs(context, objectType, operation))
+        Else
+          lb.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete", New DataPortalEventArgs(context, objectType, operation))
+        End If
 
         Return New DataPortalResult(obj)
-
       Catch ex As Exception
         Try
-          ' tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented( _
-            obj, "DataPortal_OnDataPortalException", _
-            New DataPortalEventArgs(context, objectType, operation), ex)
+          If target IsNot Nothing Then
+            target.DataPortal_OnDataPortalException(New DataPortalEventArgs(context, objectType, operation), ex)
+          Else
+            lb.CallMethodIfImplemented("DataPortal_OnDataPortalException", New DataPortalEventArgs(context, objectType, operation), ex)
+          End If
         Catch
           ' ignore exceptions from the exception handler
         End Try
-        Throw New DataPortalException("DataPortal.Update " & _
-          My.Resources.FailedOnServer, ex, New DataPortalResult(obj))
+        Throw New DataPortalException("DataPortal.Update " & My.Resources.FailedOnServer, ex, New DataPortalResult(obj))
       End Try
 
     End Function
@@ -234,60 +232,50 @@ Namespace Server
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
-    Public Function Delete( _
-      ByVal criteria As Object, _
-      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
-      Implements Server.IDataPortalServer.Delete
+    Public Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Delete
 
-      Dim obj As Object = Nothing
-      Dim objectType = MethodCaller.GetObjectType(criteria)
+      Dim obj As LateBoundObject = Nothing
+      Dim target As IDataPortalTarget = Nothing
+      Dim objectType As Type = MethodCaller.GetObjectType(criteria)
+      Dim eventArgs = New DataPortalEventArgs(context, objectType, DataPortalOperations.Delete)
       Try
-        ' create an instance of the business object
-        obj = CreateBusinessObject(objectType)
+        ' create an instance of the business objet
+        obj = New LateBoundObject(objectType)
 
-        ' tell the business object we're about to make a DataPortal_xyz call
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "DataPortal_OnDataPortalInvoke", _
-          New DataPortalEventArgs(context, objectType, DataPortalOperations.Delete))
+        target = TryCast(obj.Instance, IDataPortalTarget)
+
+        If target IsNot Nothing Then
+          target.DataPortal_OnDataPortalInvoke(eventArgs)
+        Else
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs)
+        End If
 
         ' tell the business object to delete itself
-        MethodCaller.CallMethod(obj, "DataPortal_Delete", criteria)
+        obj.CallMethod("DataPortal_Delete", criteria)
 
-        ' tell the business object the DataPortal_xyz call is complete
-        MethodCaller.CallMethodIfImplemented( _
-          obj, "DataPortal_OnDataPortalInvokeComplete", _
-          New DataPortalEventArgs(context, objectType, DataPortalOperations.Delete))
+        If target IsNot Nothing Then
+          target.DataPortal_OnDataPortalInvokeComplete(eventArgs)
+        Else
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete", eventArgs)
+        End If
 
-        Return New DataPortalResult
-
+        Return New DataPortalResult()
       Catch ex As Exception
         Try
-          ' tell the business object there was an exception
-          MethodCaller.CallMethodIfImplemented( _
-            obj, "DataPortal_OnDataPortalException", _
-            New DataPortalEventArgs(context, objectType, DataPortalOperations.Delete), ex)
+          If target IsNot Nothing Then
+            target.DataPortal_OnDataPortalException(eventArgs, ex)
+          Else
+            obj.CallMethodIfImplemented("DataPortal_OnDataPortalException", eventArgs, ex)
+          End If
         Catch
           ' ignore exceptions from the exception handler
         End Try
-        Throw New DataPortalException("DataPortal.Delete " & _
-          My.Resources.FailedOnServer, ex, New DataPortalResult)
+        Throw New DataPortalException("DataPortal.Delete " & My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
 
     End Function
 
 #End Region
-
-#Region " Creating the business object "
-
-    Private Shared Function CreateBusinessObject( _
-      ByVal businessType As Type) As Object
-
-      Return Activator.CreateInstance(businessType, True)
-
-    End Function
-
-#End Region
-
   End Class
 
 End Namespace

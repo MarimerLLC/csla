@@ -5,7 +5,12 @@ using System.Text;
 
 namespace Csla.Reflection
 {
-  internal class LateBoundObject
+  /// <summary>
+  /// Enables simple invocation of methods
+  /// against the contained object using 
+  /// late binding.
+  /// </summary>
+  public class LateBoundObject
   {
     /// <summary>
     /// Object instance managed by LateBoundObject.
@@ -20,6 +25,10 @@ namespace Csla.Reflection
     /// <param name="objectType">
     /// Type of object to create.
     /// </param>
+    /// <remarks>
+    /// The specified type must implement a
+    /// default constructor.
+    /// </remarks>
     public LateBoundObject(Type objectType)
       : this(MethodCaller.CreateInstance(objectType))
     { }

@@ -341,7 +341,7 @@ Namespace Core
 
     Private Function GetFieldName(ByVal field As FieldInfo) As String
 
-      Return field.DeclaringType.Name & "!" & field.Name
+      Return field.DeclaringType.FullName & "!" & field.Name
 
     End Function
 

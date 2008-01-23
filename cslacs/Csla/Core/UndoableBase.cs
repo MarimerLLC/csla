@@ -359,7 +359,7 @@ namespace Csla.Core
 
     private static string GetFieldName(FieldInfo field)
     {
-      return field.DeclaringType.Name + "!" + field.Name;
+      return field.DeclaringType.FullName + "!" + field.Name;
     }
 
     #endregion

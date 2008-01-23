@@ -28,15 +28,15 @@ namespace Csla.Server
     public DataPortalResult Create(
       Type objectType, object criteria, DataPortalContext context)
     {
-      object obj = null;
+      LateBoundObject obj = null;
       IDataPortalTarget target = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Create);
       try
       {
         // create an instance of the business object.
-        obj = Activator.CreateInstance(objectType, true);
+        obj = new LateBoundObject(objectType);
 
-        target = obj as IDataPortalTarget;
+        target = obj.Instance as IDataPortalTarget;
 
         if (target != null)
         {
@@ -45,28 +45,24 @@ namespace Csla.Server
         }
         else
         {
-          MethodCaller.CallMethodIfImplemented(
-            obj, "DataPortal_OnDataPortalInvoke", eventArgs);
-          MethodCaller.CallMethodIfImplemented(
-            obj, "MarkNew");
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
+          obj.CallMethodIfImplemented("MarkNew");
         }
 
         // tell the business object to create its data
-        //MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);
         if (criteria is int)
-          MethodCaller.CallMethod(obj, "DataPortal_Create");
+          obj.CallMethod("DataPortal_Create");
         else
-          MethodCaller.CallMethod(obj, "DataPortal_Create", criteria);
+          obj.CallMethod("DataPortal_Create", criteria);
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
         else
-          MethodCaller.CallMethodIfImplemented(
-            obj, "DataPortal_OnDataPortalInvokeComplete",
-            eventArgs);
+          obj.CallMethodIfImplemented(
+            "DataPortal_OnDataPortalInvokeComplete", eventArgs);
 
         // return the populated business object as a result
-        return new DataPortalResult(obj);
+        return new DataPortalResult(obj.Instance);
       }
       catch (Exception ex)
       {
@@ -75,17 +71,19 @@ namespace Csla.Server
           if (target != null)
             target.DataPortal_OnDataPortalException(eventArgs, ex);
           else
-            MethodCaller.CallMethodIfImplemented(
-              obj, "DataPortal_OnDataPortalException",
+            obj.CallMethodIfImplemented(
+              "DataPortal_OnDataPortalException",
               eventArgs, ex);
         }
         catch
         {
           // ignore exceptions from the exception handler
         }
+        object outval = null;
+        if (obj != null) outval = obj.Instance;
         throw new DataPortalException(
           "DataPortal.Create " + Resources.FailedOnServer, 
-          ex, new DataPortalResult(obj));
+          ex, new DataPortalResult(outval));
       }
 
     }
@@ -102,15 +100,15 @@ namespace Csla.Server
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
-      object obj = null;
+      LateBoundObject obj = null;
       IDataPortalTarget target = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch);
       try
       {
         // create an instance of the business object.
-        obj = Activator.CreateInstance(objectType, true);
+        obj = new LateBoundObject(objectType);
 
-        target = obj as IDataPortalTarget;
+        target = obj.Instance as IDataPortalTarget;
 
         if (target != null)
         {
@@ -119,28 +117,25 @@ namespace Csla.Server
         }
         else
         {
-          MethodCaller.CallMethodIfImplemented(
-            obj, "DataPortal_OnDataPortalInvoke",
-            eventArgs);
-          MethodCaller.CallMethodIfImplemented(
-            obj, "MarkOld");
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
+          obj.CallMethodIfImplemented("MarkOld");
         }
 
         // tell the business object to fetch its data
         if (criteria is int)
-          MethodCaller.CallMethod(obj, "DataPortal_Fetch");
+          obj.CallMethod("DataPortal_Fetch");
         else
-          MethodCaller.CallMethod(obj, "DataPortal_Fetch", criteria);
+          obj.CallMethod("DataPortal_Fetch", criteria);
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
         else
-          MethodCaller.CallMethodIfImplemented(
-            obj, "DataPortal_OnDataPortalInvokeComplete",
+          obj.CallMethodIfImplemented(
+            "DataPortal_OnDataPortalInvokeComplete",
             eventArgs);
 
         // return the populated business object as a result
-        return new DataPortalResult(obj);
+        return new DataPortalResult(obj.Instance);
       }
       catch (Exception ex)
       {
@@ -149,17 +144,19 @@ namespace Csla.Server
           if (target != null)
             target.DataPortal_OnDataPortalException(eventArgs, ex);
           else
-            MethodCaller.CallMethodIfImplemented(
-              obj, "DataPortal_OnDataPortalException",
+            obj.CallMethodIfImplemented(
+              "DataPortal_OnDataPortalException",
               eventArgs, ex);
         }
         catch
         {
           // ignore exceptions from the exception handler
         }
+        object outval = null;
+        if (obj != null) outval = obj.Instance;
         throw new DataPortalException(
           "DataPortal.Fetch " + Resources.FailedOnServer, 
-          ex, new DataPortalResult(obj));
+          ex, new DataPortalResult(outval));
       }
     }
 
@@ -177,14 +174,15 @@ namespace Csla.Server
       DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
       var target = obj as IDataPortalTarget;
+      LateBoundObject lb = new LateBoundObject(obj);
       try
       {
         if (target != null)
           target.DataPortal_OnDataPortalInvoke(
             new DataPortalEventArgs(context, objectType, operation));
         else
-          MethodCaller.CallMethodIfImplemented(
-            obj, "DataPortal_OnDataPortalInvoke",
+          lb.CallMethodIfImplemented(
+            "DataPortal_OnDataPortalInvoke",
             new DataPortalEventArgs(context, objectType, operation));
 
         // tell the business object to update itself
@@ -196,63 +194,54 @@ namespace Csla.Server
             if (!busObj.IsNew)
             {
               // tell the object to delete itself
-              MethodCaller.CallMethod(
-                busObj, "DataPortal_DeleteSelf");
+              lb.CallMethod("DataPortal_DeleteSelf");
             }
             if (target != null)
               target.MarkNew();
             else
-              MethodCaller.CallMethodIfImplemented(
-                busObj, "MarkNew");
+              lb.CallMethodIfImplemented("MarkNew");
           }
           else
           {
             if (busObj.IsNew)
             {
               // tell the object to insert itself
-              MethodCaller.CallMethod(
-                busObj, "DataPortal_Insert");
+              lb.CallMethod("DataPortal_Insert");
             }
             else
             {
               // tell the object to update itself
-              MethodCaller.CallMethod(
-                busObj, "DataPortal_Update");
+              lb.CallMethod("DataPortal_Update");
             }
             if (target != null)
               target.MarkOld();
             else
-              MethodCaller.CallMethodIfImplemented(
-                busObj, "MarkOld");
+              lb.CallMethodIfImplemented("MarkOld");
           }
         }
         else if (obj is CommandBase)
         {
           operation = DataPortalOperations.Execute;
           // tell the object to update itself
-          MethodCaller.CallMethod(
-            obj, "DataPortal_Execute");
+          lb.CallMethod("DataPortal_Execute");
         }
         else
         {
           // this is an updatable collection or some other
           // non-BusinessBase type of object
           // tell the object to update itself
-          MethodCaller.CallMethod(
-            obj, "DataPortal_Update");
+          lb.CallMethod("DataPortal_Update");
           if (target != null)
             target.MarkOld();
           else
-            MethodCaller.CallMethodIfImplemented(
-              obj, "MarkOld");
+            lb.CallMethodIfImplemented("MarkOld");
         }
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(
             new DataPortalEventArgs(context, objectType, operation));
         else
-          MethodCaller.CallMethodIfImplemented(
-            obj, "DataPortal_OnDataPortalInvokeComplete",
+          lb.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete",
             new DataPortalEventArgs(context, objectType, operation));
 
         return new DataPortalResult(obj);
@@ -265,8 +254,8 @@ namespace Csla.Server
             target.DataPortal_OnDataPortalException(
               new DataPortalEventArgs(context, objectType, operation), ex);
           else
-            MethodCaller.CallMethodIfImplemented(
-              obj, "DataPortal_OnDataPortalException",
+            lb.CallMethodIfImplemented(
+              "DataPortal_OnDataPortalException",
               new DataPortalEventArgs(context, objectType, operation), ex);
         }
         catch
@@ -289,34 +278,29 @@ namespace Csla.Server
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     public DataPortalResult Delete(object criteria, DataPortalContext context)
     {
-      object obj = null;
+      LateBoundObject obj = null;
       IDataPortalTarget target = null;
       Type objectType = MethodCaller.GetObjectType(criteria);
       var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete);
       try
       {
         // create an instance of the business objet
-        obj = Activator.CreateInstance(objectType, true);
+        obj = new LateBoundObject(objectType);
 
-        target = obj as IDataPortalTarget;
+        target = obj.Instance as IDataPortalTarget;
 
         if (target != null)
           target.DataPortal_OnDataPortalInvoke(eventArgs);
         else
-          MethodCaller.CallMethodIfImplemented(
-            obj, "DataPortal_OnDataPortalInvoke",
-            eventArgs);
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
 
         // tell the business object to delete itself
-        MethodCaller.CallMethod(
-          obj, "DataPortal_Delete", criteria);
+        obj.CallMethod("DataPortal_Delete", criteria);
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
         else
-          MethodCaller.CallMethodIfImplemented(
-            obj, "DataPortal_OnDataPortalInvokeComplete",
-            eventArgs);
+          obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete", eventArgs);
 
         return new DataPortalResult();
       }
@@ -327,8 +311,8 @@ namespace Csla.Server
           if (target != null)
             target.DataPortal_OnDataPortalException(eventArgs, ex);
           else
-            MethodCaller.CallMethodIfImplemented(
-              obj, "DataPortal_OnDataPortalException",
+            obj.CallMethodIfImplemented(
+              "DataPortal_OnDataPortalException",
               eventArgs, ex);
         }
         catch

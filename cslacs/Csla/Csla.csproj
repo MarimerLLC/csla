@@ -210,6 +210,7 @@
     <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="Reflection\DynamicMethodHandle.cs" />
     <Compile Include="Reflection\DynamicMethodHandlerFactory.cs" />
+    <Compile Include="Reflection\LateBoundObject.cs" />
     <Compile Include="Reflection\MethodCacheKey.cs" />
     <Compile Include="Reflection\MethodCaller.cs" />
     <Compile Include="Security\AccessType.cs" />

@@ -17,6 +17,8 @@ namespace Csla.Reflection
 
     private const BindingFlags oneLevelFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
+    private const BindingFlags ctorFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
     #region Dynamic Method Cache
 
     private static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
@@ -27,8 +29,14 @@ namespace Csla.Reflection
       DynamicMethodHandle mh = null;
       if (!_methodCache.TryGetValue(key, out mh))
       {
-        mh = new DynamicMethodHandle(info, parameters);
-        _methodCache.Add(key, mh);
+        lock (_methodCache)
+        {
+          if (!_methodCache.TryGetValue(key, out mh))
+          {
+            mh = new DynamicMethodHandle(info, parameters);
+            _methodCache.Add(key, mh);
+          }
+        }
       }
       return mh;
     }
@@ -39,11 +47,59 @@ namespace Csla.Reflection
       DynamicMethodHandle mh = null;
       if (!_methodCache.TryGetValue(key, out mh))
       {
-        MethodInfo info = GetMethod(obj.GetType(), method, parameters);
-        mh = new DynamicMethodHandle(info, parameters);
-        _methodCache.Add(key, mh);
+        lock (_methodCache)
+        {
+          if (!_methodCache.TryGetValue(key, out mh))
+          {
+            MethodInfo info = GetMethod(obj.GetType(), method, parameters);
+            mh = new DynamicMethodHandle(info, parameters);
+            _methodCache.Add(key, mh);
+          }
+        }
       }
       return mh;
+    }
+
+    #endregion
+
+    #region Dynamic Constructor Cache 
+
+    private static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
+
+    private static DynamicCtorDelegate GetCachedConstructor(Type objectType)
+    {
+      DynamicCtorDelegate result = null;
+      if (!_ctorCache.TryGetValue(objectType, out result))
+      {
+        lock (_ctorCache)
+        {
+          if (!_ctorCache.TryGetValue(objectType, out result))
+          {
+            ConstructorInfo info = 
+              objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
+            result = DynamicMethodHandlerFactory.CreateConstructor(info);
+            _ctorCache.Add(objectType, result);
+          }
+        }
+      }
+      return result;
+    }
+
+    #endregion
+
+    #region Create Instance
+
+    /// <summary>
+    /// Uses reflection to create an object using its 
+    /// default constructor.
+    /// </summary>
+    /// <param name="objectType">Type of object to create.</param>
+    public static object CreateInstance(Type objectType)
+    {
+      var ctor = GetCachedConstructor(objectType);
+      if (ctor == null)
+        throw new NotImplementedException("Default constructor " + Resources.MethodNotImplemented);
+      return ctor.Invoke();
     }
 
     #endregion

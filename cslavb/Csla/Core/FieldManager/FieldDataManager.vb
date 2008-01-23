@@ -62,8 +62,9 @@ Namespace Core.FieldManager
     ''' </param>
     Public Function GetFieldData(ByVal key As String) As IFieldData
 
-      If FieldData.ContainsKey(key) Then
-        Return FieldData.GetValue(key)
+      Dim result As IFieldData = Nothing
+      If FieldData.TryGetValue(key, result) Then
+        Return result
 
       Else
         Return Nothing
@@ -91,10 +92,11 @@ Namespace Core.FieldManager
     ''' </param>
     Public Sub SetFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P)
 
-      If Not FieldData.ContainsKey(prop.Name) Then
-        FieldData.Add(prop.Name, prop.NewFieldData(prop.Name))
+      Dim field As IFieldData = Nothing
+      If Not FieldData.TryGetValue(prop.Name, field) Then
+        field = prop.NewFieldData(prop.Name)
+        FieldData.Add(prop.Name, field)
       End If
-      Dim field = GetFieldData(prop)
       Dim fd = TryCast(field, IFieldData(Of P))
       If fd IsNot Nothing Then
         fd.Value = value
@@ -121,12 +123,9 @@ Namespace Core.FieldManager
     Public Function LoadFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P) As IFieldData
 
       Dim field As IFieldData = Nothing
-      If Not FieldData.ContainsKey(prop.Name) Then
+      If Not FieldData.TryGetValue(prop.Name, field) Then
         field = prop.NewFieldData(prop.Name)
         FieldData.Add(prop.Name, field)
-
-      Else
-        field = GetFieldData(prop)
       End If
       Dim fd = TryCast(field, IFieldData(Of P))
       If fd IsNot Nothing Then
@@ -150,8 +149,9 @@ Namespace Core.FieldManager
     ''' </param>
     Public Sub RemoveField(ByVal propertyName As String)
 
-      If FieldData.ContainsKey(propertyName) Then
-        GetFieldData(propertyName).Value = Nothing
+      Dim field As IFieldData = Nothing
+      If FieldData.TryGetValue(propertyName, field) Then
+        field.Value = Nothing
       End If
 
     End Sub

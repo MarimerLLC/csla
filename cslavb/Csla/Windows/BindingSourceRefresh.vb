@@ -59,8 +59,9 @@ Namespace Windows
     ''' </summary>
     ''' <param name="source">Control being extended.</param>
     Public Function GetReadValuesOnChange(ByVal source As BindingSource) As Boolean
-      If mSources.ContainsKey(source) Then
-        Return mSources.Item(source)
+      Dim result As Boolean
+      If mSources.TryGetValue(source, result) Then
+        Return result
       Else
         Return False
       End If
@@ -76,11 +77,7 @@ Namespace Windows
     Public Sub SetReadValuesOnChange( _
       ByVal source As BindingSource, ByVal value As Boolean)
 
-      If mSources.ContainsKey(source) Then
-        mSources.Item(source) = value
-      Else
-        mSources.Add(source, value)
-      End If
+      mSources.Item(source) = value
       If value Then
         'hook
         AddHandler source.BindingComplete, AddressOf Source_BindingComplete

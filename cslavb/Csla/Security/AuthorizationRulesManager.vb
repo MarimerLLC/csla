@@ -27,12 +27,9 @@ Namespace Security
       ByVal propertyName As String) As RolesForProperty
 
       Dim currentRoles As RolesForProperty = Nothing
-      If Not RulesList.ContainsKey(propertyName) Then
+      If Not RulesList.TryGetValue(propertyName, currentRoles) Then
         currentRoles = New RolesForProperty
         RulesList.Add(propertyName, currentRoles)
-
-      Else
-        currentRoles = RulesList.Item(propertyName)
       End If
       Return currentRoles
 

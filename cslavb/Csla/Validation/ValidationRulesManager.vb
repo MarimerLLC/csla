@@ -28,9 +28,7 @@ Namespace Validation
 
       ' get the list (if any) from the dictionary
       Dim list As RulesList = Nothing
-      If RulesDictionary.ContainsKey(propertyName) Then
-        list = RulesDictionary.Item(propertyName)
-      End If
+      RulesDictionary.TryGetValue(propertyName, list)
 
       If createList AndAlso list Is Nothing Then
         ' there is no list for this name - create one

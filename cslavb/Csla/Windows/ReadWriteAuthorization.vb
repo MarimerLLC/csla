@@ -62,8 +62,9 @@ Namespace Windows
     Public Function GetApplyAuthorization( _
       ByVal source As Control) As Boolean
 
-      If mSources.ContainsKey(source) Then
-        Return mSources.Item(source)
+      Dim result As Boolean
+      If mSources.TryGetValue(source, result) Then
+        Return result
 
       Else
         Return False
@@ -80,11 +81,7 @@ Namespace Windows
     Public Sub SetApplyAuthorization( _
       ByVal source As Control, ByVal value As Boolean)
 
-      If mSources.ContainsKey(source) Then
-        mSources.Item(source) = value
-      Else
-        mSources.Add(source, value)
-      End If
+      mSources.Item(source) = value
 
     End Sub
 

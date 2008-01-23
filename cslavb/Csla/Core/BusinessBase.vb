@@ -481,11 +481,8 @@ Namespace Core
 
       VerifyAuthorizationCache()
 
-      If mReadResultCache.ContainsKey(propertyName) Then
-        ' cache contains value - get cached value
-        result = mReadResultCache(propertyName)
-
-      Else
+      If Not mReadResultCache.TryGetValue(propertyName, result) Then
+        result = True
         If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
           ' some users are explicitly granted read access
           ' in which case all other users are denied
@@ -593,11 +590,8 @@ Namespace Core
 
       VerifyAuthorizationCache()
 
-      If mWriteResultCache.ContainsKey(propertyName) Then
-        ' cache contains value - get cached value
-        result = mWriteResultCache(propertyName)
-
-      Else
+      If Not mWriteResultCache.TryGetValue(propertyName, result) Then
+        result = True
         If AuthorizationRules.HasWriteAllowedRoles(propertyName) Then
           ' some users are explicitly granted write access
           ' in which case all other users are denied
@@ -730,11 +724,8 @@ Namespace Core
 
       VerifyAuthorizationCache()
 
-      If mExecuteResultCache.ContainsKey(methodName) Then
-        ' cache contains value - get cached value
-        result = mExecuteResultCache(methodName)
-
-      Else
+      If Not mExecuteResultCache.TryGetValue(methodName, result) Then
+        result = True
         If AuthorizationRules.HasExecuteAllowedRoles(methodName) Then
           ' some users are explicitly granted read access
           ' in which case all other users are denied

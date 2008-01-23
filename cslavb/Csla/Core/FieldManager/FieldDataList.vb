@@ -13,6 +13,20 @@
       ' required due to serialization ctor
     End Sub
 
+    Public Function TryGetValue(ByVal key As String, ByRef result As IFieldData) As Boolean
+
+      Dim index As Integer
+      If mFieldIndex.TryGetValue(key, index) Then
+        result = mFields(index)
+        Return True
+
+      Else
+        result = Nothing
+        Return False
+      End If
+
+    End Function
+
     Public Function ContainsKey(ByVal key As String) As Boolean
       Return mFieldIndex.ContainsKey(key)
     End Function

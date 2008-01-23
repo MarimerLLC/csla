@@ -413,8 +413,9 @@ Namespace Validation
     ''' <returns></returns>
     Default Public Property Item(ByVal key As String) As Object
       Get
-        If mDecorations.ContainsKey(key) Then
-          Return mDecorations(key)
+        Dim result As Object = Nothing
+        If mDecorations.TryGetValue(key, result) Then
+          Return result
         Else
           Return Nothing
         End If

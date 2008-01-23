@@ -478,6 +478,7 @@ namespace Csla.Core
 
       if (!_readResultCache.TryGetValue(propertyName, out result))
       {
+        result = true;
         if (AuthorizationRules.HasReadAllowedRoles(propertyName))
         {
           // some users are explicitly granted read access
@@ -582,6 +583,7 @@ namespace Csla.Core
 
       if (!_writeResultCache.TryGetValue(propertyName, out result))
       {
+        result = true;
         if (this.AuthorizationRules.HasWriteAllowedRoles(propertyName))
         {
           // some users are explicitly granted write access
@@ -709,6 +711,7 @@ namespace Csla.Core
 
       if (!_executeResultCache.TryGetValue(methodName, out result))
       {
+        result = true;
         if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
         {
           // some users are explicitly granted read access

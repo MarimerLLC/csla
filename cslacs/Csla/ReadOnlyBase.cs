@@ -241,6 +241,7 @@ namespace Csla
 
       if (!_readResultCache.TryGetValue(propertyName, out result))
       {
+        result = true;
         if (AuthorizationRules.HasReadAllowedRoles(propertyName))
         {
           // some users are explicitly granted read access
@@ -370,6 +371,7 @@ namespace Csla
 
       if (!_executeResultCache.TryGetValue(methodName, out result))
       {
+        result = true;
         if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
         {
           // some users are explicitly granted read access

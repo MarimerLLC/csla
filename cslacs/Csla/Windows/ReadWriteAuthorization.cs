@@ -54,8 +54,9 @@ namespace Csla.Windows
     /// <param name="source">Control being extended.</param>
     public bool GetApplyAuthorization(Control source)
     {
-      if (_sources.ContainsKey(source))
-        return _sources[source];
+      bool result;
+      if (_sources.TryGetValue(source, out result))
+        return result;
       else
         return false;
     }

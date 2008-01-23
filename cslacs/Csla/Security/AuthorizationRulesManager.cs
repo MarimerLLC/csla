@@ -29,13 +29,11 @@ namespace Csla.Security
     internal RolesForProperty GetRolesForProperty(string propertyName)
     {
       RolesForProperty currentRoles = null;
-      if (!RulesList.ContainsKey(propertyName))
+      if (!RulesList.TryGetValue(propertyName, out currentRoles))
       {
         currentRoles = new RolesForProperty();
         RulesList.Add(propertyName, currentRoles);
       }
-      else
-        currentRoles = RulesList[propertyName];
       return currentRoles;
     }
 

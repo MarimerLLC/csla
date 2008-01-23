@@ -53,8 +53,9 @@ namespace Csla.Core
 
     public int PositionOf(T item)
     {
-      if (_map.ContainsKey(item))
-        return _map[item];
+      int result;
+      if (_map.TryGetValue(item, out result))
+        return result;
       else
         return -1;
     }

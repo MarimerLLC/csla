@@ -16,6 +16,21 @@ namespace Csla.Core.FieldManager
     public FieldDataList()
     { /* required due to serialization ctor */ }
 
+    public bool TryGetValue(string key, out IFieldData result)
+    {
+      int index;
+      if (_fieldIndex.TryGetValue(key, out index))
+      {
+        result = _fields[index];
+        return true;
+      }
+      else
+      {
+        result = null;
+        return false;
+      }
+    }
+
     public bool ContainsKey(string key)
     {
       return _fieldIndex.ContainsKey(key);

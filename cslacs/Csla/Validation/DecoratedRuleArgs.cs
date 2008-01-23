@@ -434,8 +434,9 @@ namespace Csla.Validation
     {
       get
       {
-        if (_decorations.ContainsKey(key))
-          return _decorations[key];
+        object result = null;
+        if (_decorations.TryGetValue(key, out result))
+          return result;
         else
           return null;
       }

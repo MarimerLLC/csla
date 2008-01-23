@@ -219,11 +219,11 @@ namespace Csla.Windows
     /// <param name="source">Control being extended.</param>
     public bool GetReadValuesOnChange(BindingSource source)
     {
-      if (_sources.ContainsKey(source))
-      {
-        return _sources[source];
-      }
-      return (false);
+      bool result;
+      if (_sources.TryGetValue(source, out result))
+        return result;
+      else
+        return false;
     }
 
     /// <summary>

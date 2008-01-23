@@ -27,8 +27,7 @@ namespace Csla.Validation
     {
       // get the list (if any) from the dictionary
       RulesList list = null;
-      if (RulesDictionary.ContainsKey(propertyName))
-        list = RulesDictionary[propertyName];
+      RulesDictionary.TryGetValue(propertyName, out list);
 
       if (createList && list == null)
       {

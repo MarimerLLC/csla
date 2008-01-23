@@ -239,12 +239,7 @@ namespace Csla
 
       VerifyAuthorizationCache();
 
-      if (_readResultCache.ContainsKey(propertyName))
-      {
-        // cache contains value - get cached value
-        result = _readResultCache[propertyName];
-      }
-      else
+      if (!_readResultCache.TryGetValue(propertyName, out result))
       {
         if (AuthorizationRules.HasReadAllowedRoles(propertyName))
         {
@@ -373,13 +368,7 @@ namespace Csla
 
       VerifyAuthorizationCache();
 
-      if (_executeResultCache.ContainsKey(methodName))
-      {
-        // cache contains value - get cached value
-        result = _executeResultCache[methodName];
-
-      }
-      else
+      if (!_executeResultCache.TryGetValue(methodName, out result))
       {
         if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
         {

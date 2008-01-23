@@ -71,8 +71,9 @@ namespace Csla.Core.FieldManager
     /// </param>
     public IFieldData GetFieldData(string key)
     {
-      if (FieldData.ContainsKey(key))
-        return FieldData.GetValue(key);
+      IFieldData result;
+      if (FieldData.TryGetValue(key, out result))
+        return result;
       else
         return null;
     }
@@ -96,10 +97,13 @@ namespace Csla.Core.FieldManager
     /// </param>
     public void SetFieldData<P>(IPropertyInfo prop, P value)
     {
-      if (!(FieldData.ContainsKey(prop.Name)))
-        FieldData.Add(prop.Name, prop.NewFieldData(prop.Name));
+      IFieldData field;
+      if (!FieldData.TryGetValue(prop.Name, out field))
+      {
+        field = prop.NewFieldData(prop.Name);
+        FieldData.Add(prop.Name, field);
+      }
 
-      var field = GetFieldData(prop);
       var fd = field as IFieldData<P>;
       if (fd != null)
         fd.Value = value;
@@ -122,16 +126,13 @@ namespace Csla.Core.FieldManager
     /// </param>
     public IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
     {
-      IFieldData field = null;
-      if (!(FieldData.ContainsKey(prop.Name)))
+      IFieldData field;
+      if (!(FieldData.TryGetValue(prop.Name, out field)))
       {
         field = prop.NewFieldData(prop.Name);
         FieldData.Add(prop.Name, field);
       }
-      else
-      {
-        field = GetFieldData(prop);
-      }
+
       var fd = field as IFieldData<P>;
       if (fd != null)
         fd.Value = value;
@@ -151,8 +152,9 @@ namespace Csla.Core.FieldManager
     /// </param>
     public void RemoveField(string propertyName)
     {
-      if (FieldData.ContainsKey(propertyName))
-        GetFieldData(propertyName).Value = null;
+      IFieldData field;
+      if (FieldData.TryGetValue(propertyName, out field))
+        field.Value = null;
     }
 
     /// <summary>

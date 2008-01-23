@@ -24,7 +24,7 @@ namespace Csla.Linq
 
     private object Eval(Expression ex)
     {
-      if (ex is ConstantExpression) return (ex as ConstantExpression).Value;
+      if (ex is ConstantExpression) return ((ConstantExpression) ex).Value;
       LambdaExpression lambdax = Expression.Lambda(ex);
       return lambdax.Compile().DynamicInvoke();
     }
@@ -91,7 +91,7 @@ namespace Csla.Linq
       Type elementType = TypeSystem.GetElementType(expression.Type);
       try
       {
-        MethodCallExpression mex = expression as MethodCallExpression;
+        MethodCallExpression mex = (MethodCallExpression) expression;
         if (typeof(TElement) == typeof(C) && mex.Method.Name == "Where" && _filter == null)
         {
            _filter = new LinqBindingList<C>(_parent, this, expression);
@@ -107,8 +107,8 @@ namespace Csla.Linq
             //requiring this workaround.  Not sure how straight Linq to Objects does it.
             case "Select":
 
-              UnaryExpression selectHolder = mex.Arguments[1] as UnaryExpression;
-              LambdaExpression theSelect = selectHolder.Operand as LambdaExpression;
+              UnaryExpression selectHolder = (UnaryExpression) mex.Arguments[1];
+              LambdaExpression theSelect = (LambdaExpression) selectHolder.Operand;
 
               Expression<Func<C, TElement>> selectorLambda
                   = Expression.Lambda<Func<C, TElement>>(theSelect.Body, theSelect.Parameters);
@@ -122,9 +122,9 @@ namespace Csla.Linq
               return (
                 Queryable.Concat<TElement>(
                   //at this point, no more filtering, just move it to a concatenated list of items, which we turn to queryable so that the method considers it ok
-                  (_filter as IQueryable<TElement>).ToList<TElement>().AsQueryable<TElement>(),
+                  ((IQueryable<TElement>) _filter).ToList<TElement>().AsQueryable<TElement>(),
                   //have to eval on the method to make it not a ParameterExpression, but the actual Enumerable inside
-                  Eval(mex.Arguments[1]) as IEnumerable<TElement>)
+                  (IEnumerable<TElement>) Eval(mex.Arguments[1]))
                 );
 
             case "Where":
@@ -148,7 +148,7 @@ namespace Csla.Linq
                     //expressions have to be compiled in order to work with the method call on straight Enumerable
                     //somehow, LINQ to objects itself magically does this.  Reflector shows a mess, so I (Aaron) invented my
                     //own way.  God love unit tests!
-                    paramList.Add(Compile(arg as Expression));
+                    paramList.Add(Compile((Expression) arg));
                   else
                     paramList.Add(arg);
                 i++;
@@ -180,7 +180,7 @@ namespace Csla.Linq
       Type elementType = TypeSystem.GetElementType(expression.Type);
       if (expression is MethodCallExpression)
       {
-        MethodCallExpression mex = expression as MethodCallExpression;
+        MethodCallExpression mex = (MethodCallExpression) expression;
         if (mex.Method.Name == "OfType")
         {
           Type listType = typeof(Enumerable);
@@ -226,7 +226,7 @@ namespace Csla.Linq
       //somehow cache the reflected methodinfos and do lookups that way
       //that said, we need a complete red/green/refactor cycle here before I am touching that one
 
-      MethodCallExpression mex = expression as MethodCallExpression;
+      MethodCallExpression mex = (MethodCallExpression) expression;
       
       
       //convert the enumerated collection to a list
@@ -254,7 +254,7 @@ namespace Csla.Linq
             //expressions have to be compiled in order to work with the method call on straight Enumerable
             //somehow, LINQ to objects itself magically does this.  Reflector shows a mess, so I (Aaron) invented my
             //own way.  God love unit tests!
-            paramList.Add(Compile(arg as Expression));
+            paramList.Add(Compile((Expression) arg));
           else 
             paramList.Add(arg);
         i++;

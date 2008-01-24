@@ -141,13 +141,6 @@ namespace ProjectTracker.Library
 
     #region  Data Access
 
-    [RunLocal()]
-    protected override void DataPortal_Create()
-    {
-      // nothing to initialize
-      ValidationRules.CheckRules();
-    }
-
     private void DataPortal_Fetch(SingleCriteria<Resource, int> criteria)
     {
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))

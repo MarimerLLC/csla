@@ -53,7 +53,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RemotingHost", "www\Remotin
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "3187"
+		VWDPort = "4141"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -75,7 +75,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWebService", "www\PTWebSe
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "7411"
+		VWDPort = "4143"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -101,7 +101,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebServicesHost", "www\WebS
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "4334"
+		VWDPort = "4145"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -123,7 +123,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WcfHost", "www\WcfHost\", "
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "3564"
+		VWDPort = "4147"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject

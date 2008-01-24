@@ -17,62 +17,35 @@ namespace ProjectTracker.Library
     [System.ComponentModel.DataObjectField(true, true)]
     public Guid Id
     {
-      get
-      {
-        return GetProperty<Guid>(IdProperty);
-      }
+      get { return GetProperty<Guid>(IdProperty); }
     }
 
     private static PropertyInfo<string> NameProperty = new PropertyInfo<string>("Name");
     public string Name
     {
-      get
-      {
-        return GetProperty<string>(NameProperty);
-      }
-      set
-      {
-        SetProperty<string>(NameProperty, value);
-      }
+      get { return GetProperty<string>(NameProperty); }
+      set { SetProperty<string>(NameProperty, value); }
     }
 
     private static PropertyInfo<SmartDate> StartedProperty = new PropertyInfo<SmartDate>("Started");
     public string Started
     {
-      get
-      {
-        return GetProperty<SmartDate, string>(StartedProperty);
-      }
-      set
-      {
-        SetProperty<SmartDate, string>(StartedProperty, value);
-      }
+      get { return GetProperty<SmartDate, string>(StartedProperty); }
+      set { SetProperty<SmartDate, string>(StartedProperty, value); }
     }
 
     private static PropertyInfo<SmartDate> EndedProperty = new PropertyInfo<SmartDate>("Ended", new SmartDate(SmartDate.EmptyValue.MaxDate));
     public string Ended
     {
-      get
-      {
-        return GetProperty<SmartDate, string>(EndedProperty);
-      }
-      set
-      {
-        SetProperty<SmartDate, string>(EndedProperty, value);
-      }
+      get { return GetProperty<SmartDate, string>(EndedProperty); }
+      set { SetProperty<SmartDate, string>(EndedProperty, value); }
     }
 
     private static PropertyInfo<string> DescriptionProperty = new PropertyInfo<string>("Description");
     public string Description
     {
-      get
-      {
-        return GetProperty<string>(DescriptionProperty);
-      }
-      set
-      {
-        SetProperty<string>(DescriptionProperty, value);
-      }
+      get { return GetProperty<string>(DescriptionProperty); }
+      set { SetProperty<string>(DescriptionProperty, value); }
     }
 
     private static PropertyInfo<ProjectResources> ResourcesProperty = new PropertyInfo<ProjectResources>("Resources");
@@ -99,12 +72,10 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringRequired,
-        new Csla.Validation.RuleArgs(NameProperty));
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringMaxLength,
-        new Csla.Validation.CommonRules.MaxLengthRuleArgs(NameProperty, 50));
+      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired,
+                              new Csla.Validation.RuleArgs(NameProperty));
+      ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength,
+                              new Csla.Validation.CommonRules.MaxLengthRuleArgs(NameProperty, 50));
 
       ValidationRules.AddRule<Project>(StartDateGTEndDate<Project>, StartedProperty);
       ValidationRules.AddRule<Project>(StartDateGTEndDate<Project>, EndedProperty);
@@ -272,16 +243,12 @@ namespace ProjectTracker.Library
     [Serializable()]
     private class ExistsCommand : CommandBase
     {
-
       private Guid _id;
       private bool _exists;
 
       public bool ProjectExists
       {
-        get
-        {
-          return _exists;
-        }
+        get { return _exists; }
       }
 
       public static bool Exists(Guid id)

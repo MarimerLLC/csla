@@ -127,7 +127,7 @@ namespace Csla
     /// if the user is not authorized to 
     /// read the property.
     /// </remarks>
-    public T DefaultValue
+    public virtual T DefaultValue
     {
       get
       {
@@ -139,11 +139,24 @@ namespace Csla
     {
       get
       {
-        return _defaultValue;
+        return DefaultValue;
       }
     }
 
     Core.FieldManager.IFieldData Core.IPropertyInfo.NewFieldData(string name)
+    {
+      return NewFieldData(name);
+    }
+
+    /// <summary>
+    /// Create and return a new IFieldData object
+    /// to store an instance value for this
+    /// property.
+    /// </summary>
+    /// <param name="name">
+    /// Property name.
+    /// </param>
+    protected virtual Core.FieldManager.IFieldData NewFieldData(string name)
     {
       return new Core.FieldManager.FieldData<T>(name);
     }

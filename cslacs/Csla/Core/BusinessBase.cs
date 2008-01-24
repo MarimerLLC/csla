@@ -1186,9 +1186,10 @@ namespace Csla.Core
     /// loosely-typed criteria parameter.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [RunLocal]
     protected virtual void DataPortal_Create()
     {
-      throw new NotSupportedException(Resources.CreateNotSupportedException);
+      ValidationRules.CheckRules();
     }
 
     /// <summary>

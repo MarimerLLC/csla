@@ -120,7 +120,7 @@ Public Class PropertyInfo(Of T)
   ''' if the user is not authorized to 
   ''' read the property.
   ''' </remarks>
-  Public ReadOnly Property DefaultValue() As T
+  Public Overridable ReadOnly Property DefaultValue() As T
     Get
       Return mDefaultValue
     End Get
@@ -132,7 +132,15 @@ Public Class PropertyInfo(Of T)
     End Get
   End Property
 
-  Private Function NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData Implements Core.IPropertyInfo.NewFieldData
+  ''' <summary>
+  ''' Create and return a new IFieldData object
+  ''' to store an instance value for this
+  ''' property.
+  ''' </summary>
+  ''' <param name="name">
+  ''' Property name.
+  ''' </param>
+  Protected Overridable Function NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData Implements Core.IPropertyInfo.NewFieldData
     Return New Core.FieldManager.FieldData(Of T)(name)
   End Function
 

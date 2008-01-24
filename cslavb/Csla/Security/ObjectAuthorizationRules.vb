@@ -18,7 +18,8 @@ Namespace Security
             result = New RolesForType()
             _managers.Add(objectType, result)
             ' invoke method to add auth roles
-            Dim flags = BindingFlags.Static Or BindingFlags.Public Or BindingFlags.NonPublic
+            Dim flags = _
+              BindingFlags.Static Or BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.FlattenHierarchy
             Dim method As MethodInfo = objectType.GetMethod("AddObjectAuthorizationRules", flags)
             If method IsNot Nothing Then
               method.Invoke(Nothing, Nothing)

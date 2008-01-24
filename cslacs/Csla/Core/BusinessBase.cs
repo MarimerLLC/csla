@@ -1010,7 +1010,8 @@ namespace Csla.Core
     {
       if (!this.IsChild)
         throw new NotSupportedException(Resources.NoDeleteRootException);
-
+      
+      BindingEdit = false;
       MarkDeleted();
     }
 

@@ -27,7 +27,8 @@ namespace Csla.Security
             result = new RolesForType();
             _managers.Add(objectType, result);
             // invoke method to add auth roles
-            var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+            var flags = 
+              BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
             MethodInfo method = objectType.GetMethod(
               "AddObjectAuthorizationRules", flags);
             if (method != null)

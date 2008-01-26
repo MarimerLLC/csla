@@ -132,11 +132,9 @@ Namespace Linq
         Dim leftSide As Expression = binExp.Left
         Dim rightSide As Expression = binExp.Right
         Dim rightHash As Nullable(Of Integer) = GetHashRight(rightSide)
-        For Each item As T In _internalIndexSet([property]).WhereEqual(rightHash.Value, exprCompiled)
-          'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-          'yield Return item
-        Next item
-
+        Return _internalIndexSet([property]).WhereEqual(rightHash.Value, exprCompiled)
+      Else
+        Return New List(Of T)()
       End If
     End Function
 

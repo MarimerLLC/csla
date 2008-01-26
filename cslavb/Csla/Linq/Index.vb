@@ -49,28 +49,31 @@ Namespace Linq
     Private Function WhereEqual(ByVal item As T) As IEnumerable(Of T) Implements IIndex(Of T).WhereEqual
       Dim hashCode As Integer = item.GetHashCode()
       Dim propertyValue As IComparable = TryCast(_theProp.GetValue(item, Nothing), IComparable)
+      Dim returnEnumerable As List(Of T) = New List(Of T)()
       LoadOnDemandIndex()
       If _index.ContainsKey(hashCode) Then
         For Each itemFromIndex As T In _index(hashCode)
           Dim propertyValueFromIndex As IComparable = TryCast(_theProp.GetValue(itemFromIndex, Nothing), IComparable)
+
           If CType(propertyValue, Object).Equals(propertyValueFromIndex) Then
-            'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-            'yield Return itemFromIndex
+            returnEnumerable.Add(itemFromIndex)
           End If
         Next itemFromIndex
       End If
+      Return returnEnumerable
     End Function
 
     Private Function WhereEqual(ByVal hashCode As Integer, ByVal expr As Func(Of T, Boolean)) As IEnumerable(Of T) Implements IIndex(Of T).WhereEqual
       LoadOnDemandIndex()
+      Dim returnEnumerable As List(Of T) = New List(Of T)()
       If _index.ContainsKey(hashCode) Then
         For Each item As T In _index(hashCode)
           If expr(item) Then
-            'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-            'yield Return item
+            returnEnumerable.Add(item)
           End If
         Next item
       End If
+      Return returnEnumerable
     End Function
 
 
@@ -171,12 +174,15 @@ Namespace Linq
 #Region "IEnumerable<T> Members"
 
     Private Function GetEnumerator() As IEnumerator(Of T) Implements IEnumerable(Of T).GetEnumerator
+
+      Dim vbList As List(Of T) = New List(Of T)()
+
       For Each list As List(Of T) In _index.Values
         For Each item As T In list
-          'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-          'yield Return item
+          vbList.Add(item)
         Next item
       Next list
+      Return CType(vbList, Global.System.Collections.Generic.IEnumerator(Of T))
     End Function
 
 #End Region
@@ -184,12 +190,13 @@ Namespace Linq
 #Region "IEnumerable Members"
 
     Private Function IEnumerable_GetEnumerator() As System.Collections.IEnumerator Implements System.Collections.IEnumerable.GetEnumerator
+      Dim returnEnumerable As List(Of T) = New List(Of T)()
       For Each list As List(Of T) In _index.Values
         For Each item As T In list
-          'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-          'yield Return item
+          returnEnumerable.Add(item)
         Next item
       Next list
+      Return CType(returnEnumerable, Collections.IEnumerator)
     End Function
 
 #End Region

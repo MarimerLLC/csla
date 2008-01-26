@@ -689,11 +689,7 @@ Public Class LinqBindingList(Of T)
         _filterIndex.Add(New ListItem(tmp, (CType(_list, IPositionMappable(Of T))).PositionOf(item)))
       Next item
     End If
-    'else
-    '  foreach (T item in _list.Where((Func<T, bool>) (whereBody as LambdaExpression).Compile()))
-    '    object tmp = _filterBy.GetValue(item);
-    '    _filterIndex.Add(new ListItem(tmp, ((IPositionMappable<T>)_list).PositionOf(item)));
-    '  }
+
   End Sub
 
 #Region "IEnumerable<T> Members"
@@ -703,21 +699,24 @@ Public Class LinqBindingList(Of T)
   ''' </summary>
   ''' <returns></returns>
   Public Function GetEnumerator() As IEnumerator(Of T) Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
+    Dim returnEnumerable As List(Of T) = New List(Of T)()
     If TypeOf _list Is Linq.IIndexSearchable(Of T) AndAlso TypeOf _list Is Core.IPositionMappable(Of T) Then
       ' Find the call to Where() and get the lambda expression predicate.
       Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
       Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
       Dim whereBody As Expression(Of Func(Of T, Boolean)) = CType((CType(whereExpression.Arguments(1), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
+
       For Each item As T In (TryCast(_list, Linq.IIndexSearchable(Of T))).SearchByExpression(whereBody)
-        'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-        'yield Return item
+
+        returnEnumerable.Add(item)
       Next item
     Else
       For Each item As T In _list
-        'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-        'yield Return item
+
+        returnEnumerable.Add(item)
       Next item
     End If
+    Return CType(returnEnumerable.GetEnumerator, Global.System.Collections.Generic.IEnumerator(Of T))
   End Function
 
 #End Region

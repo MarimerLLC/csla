@@ -1,5 +1,8 @@
 Imports System.ComponentModel
 Imports Csla.Core
+Imports System.Runtime.CompilerServices
+Imports System.Linq
+Imports System.Linq.Expressions
 
 ''' <summary>
 ''' This is the base class from which readonly collections
@@ -207,3 +210,14 @@ Public MustInherit Class ReadOnlyListBase( _
 #End Region
 
 End Class
+
+Public Module ReadOnlyListBaseExtension
+  <Extension()> _
+  Public Function Where(Of T As ReadOnlyListBase(Of T, C), C As Core.IEditableBusinessObject)(ByVal source As ReadOnlyListBase(Of T, C), ByVal expr As Expression(Of Func(Of C, Boolean))) As IEnumerable(Of C)
+    Return source.SearchByExpression(expr)
+  End Function
+
+End Module
+
+
+

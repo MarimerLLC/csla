@@ -34,6 +34,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <remarks></remarks>
   Protected Sub New()
 
+    _expression = Expression.Constant(Me)
     Initialize()
 
   End Sub
@@ -338,6 +339,10 @@ Public MustInherit Class BusinessListBase( _
   Private Sub DeleteChild(ByVal child As C)
     ' set child edit level
     UndoableBase.ResetChildEditLevel(child, Me.EditLevel)
+    'remove from the index
+    RemoveIndexItem(child)
+    'remove from the position map
+    RemoveFromMap(child)
     ' mark the object as deleted
     child.DeleteChild()
     ' and add it to the deleted collection for storage
@@ -382,9 +387,9 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="child">The child object to remove.</param>
   Private Sub RemoveChild(ByVal child As Core.IEditableBusinessObject) _
     Implements Core.IEditableCollection.RemoveChild, IParent.RemoveChild
-
+    RemoveFromMap(DirectCast(child, C))
     Remove(DirectCast(child, C))
-
+    RemoveIndexItem(DirectCast(child, C))
   End Sub
 
   ''' <summary>
@@ -402,8 +407,10 @@ Public MustInherit Class BusinessListBase( _
     ' a new object and so the edit level when it was
     ' added must be set
     item.EditLevelAdded = mEditLevel
-    MyBase.InsertItem(index, item)
 
+    InsertIndexItem(item)
+    MyBase.InsertItem(index, item)
+    InsertIntoMap(item, index)
   End Sub
 
   ''' <summary>
@@ -419,6 +426,8 @@ Public MustInherit Class BusinessListBase( _
       Me.RaiseListChangedEvents
     Try
       Me.RaiseListChangedEvents = False
+      RemoveIndexItem(child)
+      RemoveFromMap(child)
       MyBase.RemoveItem(index)
 
     Finally
@@ -485,7 +494,10 @@ Public MustInherit Class BusinessListBase( _
       ' reset EditLevelAdded 
       item.EditLevelAdded = Me.EditLevel
       ' add to list
+      ReIndexItem(item)
+      RemoveFromMap(item)
       MyBase.SetItem(index, item)
+      InsertIntoMap(item, index)
 
     Finally
       Me.RaiseListChangedEvents = oldRaiseListChangedEvents
@@ -648,19 +660,10 @@ Public MustInherit Class BusinessListBase( _
     Dim [property] As String = _indexSet.HasIndexFor(expr)
     If [property] IsNot Nothing AndAlso IndexModeFor([property]) <> IndexModeEnum.IndexModeNever Then
       LoadIndexIfNotLoaded([property])
-      For Each item As C In _indexSet.Search(expr, [property])
-        'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-        'yield Return item
-      Next item
+      Return _indexSet.Search(expr, [property])
     Else
       Dim sourceEnum As IEnumerable(Of C) = Me.AsEnumerable()
-      'IQueryable<C> sourceQuery = this.AsQueryable<C>();
-      'var result = sourceQuery.Where<C>(expr.Compile());
-      Dim result = sourceEnum.Where(expr.Compile())
-      For Each item As C In result
-        'TODO: INSTANT VB TODO TASK: VB does not support iterators and has no equivalent to the C# 'yield' keyword:
-        'yield Return item
-      Next item
+      Return sourceEnum.Where(expr.Compile())
     End If
   End Function
 

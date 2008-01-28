@@ -254,7 +254,6 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void PropertyHasChanged(string propertyName)
     {
-      OnPropertyChanging(propertyName);
       ValidationRules.CheckRules(propertyName);
       MarkDirty(true);
       OnPropertyChanged(propertyName);

@@ -101,7 +101,7 @@ namespace Csla
     /// property name itself is returned as a
     /// result.
     /// </remarks>
-    public string FriendlyName
+    public virtual string FriendlyName
     {
       get
       {

@@ -8,14 +8,14 @@ namespace Csla.Test.DataPortalChild
   [Serializable]
   public class Root : BusinessBase<Root>
   {
-    private static PropertyInfo<string> DataProperty = new PropertyInfo<string>("Data");
+    private static PropertyInfo<string> DataProperty = RegisterProperty<string>(typeof(Root), new PropertyInfo<string>("Data"));
     public string Data
     {
       get { return GetProperty<string>(DataProperty); }
       set { SetProperty<string>(DataProperty, value); }
     }
 
-    private static PropertyInfo<Child> ChildProperty = new PropertyInfo<Child>("Child");
+    private static PropertyInfo<Child> ChildProperty = RegisterProperty<Child>(typeof(Root), new PropertyInfo<Child>("Child"));
     public Child Child
     {
       get 
@@ -26,7 +26,7 @@ namespace Csla.Test.DataPortalChild
       }
     }
 
-    private static PropertyInfo<ChildList> ChildListProperty = new PropertyInfo<ChildList>("ChildList");
+    private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(typeof(Root), new PropertyInfo<ChildList>("ChildList"));
     public ChildList ChildList
     {
       get

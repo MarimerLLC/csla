@@ -23,7 +23,7 @@ namespace Csla.Test.DataPortalChild
       MarkAsChild();
     }
 
-    private static PropertyInfo<string> DataProperty = new PropertyInfo<string>("Data");
+    private static PropertyInfo<string> DataProperty = RegisterProperty<string>(typeof(Child), new PropertyInfo<string>("Data"));
     public string Data
     {
       get { return GetProperty<string>(DataProperty); }

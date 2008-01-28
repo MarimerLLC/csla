@@ -1357,7 +1357,7 @@ Namespace Core
 
       OnDeserialized(context)
       ValidationRules.SetTarget(Me)
-      FieldManager.SetPropertyList(PropertyInfoCache(Me.GetType))
+      FieldManager.SetPropertyList(GetPropertyListCache(Me.GetType))
       InitializeBusinessRules()
       InitializeAuthorizationRules()
       FieldDataDeserialized()
@@ -1397,21 +1397,21 @@ Namespace Core
       End Get
     End Property
 
-    Private Shared ReadOnly Property PropertyListCache(ByVal objectType As Type) As List(Of IPropertyInfo)
-      Get
-        Dim cache = PropertyInfoCache
-        Dim list As List(Of IPropertyInfo) = Nothing
-        If Not cache.TryGetValue(objectType, list) Then
-          SyncLock cache
-            If Not cache.TryGetValue(objectType, list) Then
-              list = New List(Of IPropertyInfo)
-              cache.Add(objectType, list)
-            End If
-          End SyncLock
-        End If
-        Return list
-      End Get
-    End Property
+    Private Shared Function GetPropertyListCache(ByVal objectType As Type) As List(Of IPropertyInfo)
+
+      Dim cache = PropertyInfoCache
+      Dim list As List(Of IPropertyInfo) = Nothing
+      If Not cache.TryGetValue(objectType, list) Then
+        SyncLock cache
+          If Not cache.TryGetValue(objectType, list) Then
+            list = New List(Of IPropertyInfo)
+            cache.Add(objectType, list)
+          End If
+        End SyncLock
+      End If
+      Return list
+
+    End Function
 
     ''' <summary>
     ''' Indicates that the specified property belongs
@@ -1431,7 +1431,7 @@ Namespace Core
     ''' </returns>
     Protected Shared Function RegisterProperty(Of T)(ByVal objectType As Type, ByVal info As PropertyInfo(Of T)) As PropertyInfo(Of T)
 
-      Dim list = PropertyListCache(objectType)
+      Dim list = GetPropertyListCache(objectType)
       SyncLock list
         list.Add(info)
         ' reset index values
@@ -1457,7 +1457,7 @@ Namespace Core
 
       ' return a copy of the list to avoid
       ' possible locking issues
-      Return New List(Of IPropertyInfo)(PropertyListCache(objectType))
+      Return New List(Of IPropertyInfo)(GetPropertyListCache(objectType))
 
     End Function
 
@@ -2268,7 +2268,7 @@ Namespace Core
     Protected ReadOnly Property FieldManager() As FieldManager.FieldDataManager
       Get
         If mFieldManager Is Nothing Then
-          mFieldManager = New FieldManager.FieldDataManager(PropertyListCache(Me.GetType))
+          mFieldManager = New FieldManager.FieldDataManager(GetPropertyListCache(Me.GetType))
           UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel)
         End If
         Return mFieldManager

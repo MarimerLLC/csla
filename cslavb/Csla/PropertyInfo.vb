@@ -8,7 +8,6 @@ Public Class PropertyInfo(Of T)
 
   Implements Core.IPropertyInfo
   Implements IComparable
-  Implements IComparable(Of Core.IPropertyInfo)
 
   ''' <summary>
   ''' Creates a new instance of this class.
@@ -166,15 +165,9 @@ Public Class PropertyInfo(Of T)
     End Set
   End Property
 
-  Private Function CompareTo(ByVal other As Core.IPropertyInfo) As Integer Implements System.IComparable(Of Core.IPropertyInfo).CompareTo
+  Private Function CompareTo(ByVal obj As Object) As Integer Implements System.IComparable.CompareTo
 
-    Return mName.CompareTo(other.Name)
-
-  End Function
-
-  Private Function CompareTo1(ByVal obj As Object) As Integer Implements System.IComparable.CompareTo
-
-    Return CompareTo(DirectCast(obj, Core.IPropertyInfo))
+    Return mName.CompareTo(DirectCast(obj, Core.IPropertyInfo).Name)
 
   End Function
 

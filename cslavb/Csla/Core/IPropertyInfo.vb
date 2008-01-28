@@ -32,6 +32,12 @@
     ''' Gets a new field data container for the property.
     ''' </summary>
     Function NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData
+    ''' <summary>
+    ''' Gets or sets the index position for the managed
+    ''' field storage behind the property. FOR
+    ''' INTERNAL CSLA .NET USE ONLY.
+    ''' </summary>
+    Property Index() As Integer
 
   End Interface
 

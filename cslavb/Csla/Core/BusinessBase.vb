@@ -260,7 +260,6 @@ Namespace Core
     ''' </remarks>
     Protected Overridable Sub PropertyHasChanged(ByVal propertyName As String)
 
-      OnPropertyChanging(propertyName)
       ValidationRules.CheckRules(propertyName)
       MarkDirty(True)
       OnPropertyChanged(propertyName)
@@ -1026,6 +1025,7 @@ Namespace Core
         Throw New NotSupportedException(My.Resources.NoDeleteRootException)
       End If
 
+      BindingEdit = False
       MarkDeleted()
 
     End Sub
@@ -1357,6 +1357,7 @@ Namespace Core
 
       OnDeserialized(context)
       ValidationRules.SetTarget(Me)
+      FieldManager.SetPropertyList(PropertyInfoCache(Me.GetType))
       InitializeBusinessRules()
       InitializeAuthorizationRules()
       FieldDataDeserialized()
@@ -1376,6 +1377,89 @@ Namespace Core
       ' could override if needed
 
     End Sub
+
+#End Region
+
+#Region " Register Properties "
+
+    Private Shared _propertyInfoCache As Dictionary(Of Type, List(Of IPropertyInfo))
+
+    Private Shared ReadOnly Property PropertyInfoCache() As Dictionary(Of Type, List(Of IPropertyInfo))
+      Get
+        If _propertyInfoCache Is Nothing Then
+          SyncLock GetType(BusinessBase)
+            If _propertyInfoCache Is Nothing Then
+              _propertyInfoCache = New Dictionary(Of Type, List(Of IPropertyInfo))
+            End If
+          End SyncLock
+        End If
+        Return _propertyInfoCache
+      End Get
+    End Property
+
+    Private Shared ReadOnly Property PropertyListCache(ByVal objectType As Type) As List(Of IPropertyInfo)
+      Get
+        Dim cache = PropertyInfoCache
+        Dim list As List(Of IPropertyInfo) = Nothing
+        If Not cache.TryGetValue(objectType, list) Then
+          SyncLock cache
+            If Not cache.TryGetValue(objectType, list) Then
+              list = New List(Of IPropertyInfo)
+              cache.Add(objectType, list)
+            End If
+          End SyncLock
+        End If
+        Return list
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Indicates that the specified property belongs
+    ''' to the type.
+    ''' </summary>
+    ''' <typeparam name="T">
+    ''' Type of property.
+    ''' </typeparam>
+    ''' <param name="objectType">
+    ''' Type of object to which the property belongs.
+    ''' </param>
+    ''' <param name="info">
+    ''' PropertyInfo object for the property.
+    ''' </param>
+    ''' <returns>
+    ''' The provided IPropertyInfo object.
+    ''' </returns>
+    Protected Shared Function RegisterProperty(Of T)(ByVal objectType As Type, ByVal info As PropertyInfo(Of T)) As PropertyInfo(Of T)
+
+      Dim list = PropertyListCache(objectType)
+      SyncLock list
+        list.Add(info)
+        ' reset index values
+        list.Sort()
+        For index = 0 To list.Count - 1
+          list(index).Index = index
+        Next
+      End SyncLock
+      Return info
+
+    End Function
+
+    ''' <summary>
+    ''' Returns a copy of the property list for
+    ''' a given business object type. Returns
+    ''' null if there are no properties registered
+    ''' for the type.
+    ''' </summary>
+    ''' <param name="objectType">
+    ''' The business object type.
+    ''' </param>
+    Friend Shared Function GetRegisteredProperties(ByVal objectType As Type) As List(Of IPropertyInfo)
+
+      ' return a copy of the list to avoid
+      ' possible locking issues
+      Return New List(Of IPropertyInfo)(PropertyListCache(objectType))
+
+    End Function
 
 #End Region
 
@@ -2155,14 +2239,20 @@ Namespace Core
 
     End Sub
 
+    Friend Sub LoadProperty(ByVal info As IPropertyInfo, ByVal value As Object)
+
+      FieldManager.LoadFieldData(Of Object)(info, value)
+
+    End Sub
+
     Private Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-      Dim data = FieldManager.FindPropertyName(sender)
-      OnPropertyChanged(data)
+      Dim data = FieldManager.FindProperty(sender)
+      OnPropertyChanged(data.Name)
     End Sub
 
     Private Sub Child_ListChanged(ByVal sender As Object, ByVal e As ListChangedEventArgs)
-      Dim data = FieldManager.FindPropertyName(sender)
-      OnPropertyChanged(data)
+      Dim data = FieldManager.FindProperty(sender)
+      OnPropertyChanged(data.Name)
     End Sub
 
 #End Region
@@ -2178,7 +2268,7 @@ Namespace Core
     Protected ReadOnly Property FieldManager() As FieldManager.FieldDataManager
       Get
         If mFieldManager Is Nothing Then
-          mFieldManager = New FieldManager.FieldDataManager
+          mFieldManager = New FieldManager.FieldDataManager(PropertyListCache(Me.GetType))
           UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel)
         End If
         Return mFieldManager
@@ -2228,8 +2318,8 @@ Namespace Core
     Private Sub RemoveChild(ByVal child As IEditableBusinessObject) _
       Implements IParent.RemoveChild
 
-      Dim name = FieldManager.FindPropertyName(child)
-      FieldManager.RemoveField(name)
+      Dim info = FieldManager.FindProperty(child)
+      FieldManager.RemoveField(info)
 
     End Sub
 

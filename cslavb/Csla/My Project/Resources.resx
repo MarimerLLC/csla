@@ -291,4 +291,7 @@
   <data name="UserNotAuthorizedException" xml:space="preserve">
     <value>User not authorized to {0} object type {1}</value>
   </data>
+  <data name="UnRegisteredPropertyException" xml:space="preserve">
+    <value>Can not use unregistered property. Call RegisterProperty() for property {0}</value>
+  </data>
 </root>

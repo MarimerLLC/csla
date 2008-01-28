@@ -547,6 +547,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Can not use unregistered property. Call RegisterProperty() for property {0}.
+        '''</summary>
+        Friend ReadOnly Property UnRegisteredPropertyException() As String
+            Get
+                Return ResourceManager.GetString("UnRegisteredPropertyException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Invalid operation - update not allowed.
         '''</summary>
         Friend ReadOnly Property UpdateNotSupportedException() As String

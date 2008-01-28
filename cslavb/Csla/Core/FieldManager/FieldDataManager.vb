@@ -13,30 +13,43 @@ Namespace Core.FieldManager
   Public Class FieldDataManager
     Implements IUndoableObject
 
-    Friend Sub New()
-      ' prevent creation from outside this assembly
+    <NonSerialized()> _
+    Private mPropertyList As List(Of IPropertyInfo)
+    Private mFieldData() As IFieldData
+
+    Friend Sub New(ByVal propertyList As List(Of IPropertyInfo))
+      mPropertyList = propertyList
+      ReDim mFieldData(0 To mPropertyList.Count - 1)
     End Sub
 
-#Region " FieldData "
+    ''' <summary>
+    ''' Called when parent object is deserialized to
+    ''' restore property list.
+    ''' </summary>
+    Friend Sub SetPropertyList(ByVal propertyList As List(Of IPropertyInfo))
+      mPropertyList = propertyList
+    End Sub
 
-    Private mFields As FieldDataList
+    '#Region " FieldData "
 
-    Private ReadOnly Property FieldData() As FieldDataList
-      Get
-        If mFields Is Nothing Then
-          mFields = New FieldDataList
-        End If
-        Return mFields
-      End Get
-    End Property
+    '    Private mFields As FieldDataList
 
-    Private ReadOnly Property HasFieldData() As Boolean
-      Get
-        Return mFields IsNot Nothing
-      End Get
-    End Property
+    '    Private ReadOnly Property FieldData() As FieldDataList
+    '      Get
+    '        If mFields Is Nothing Then
+    '          mFields = New FieldDataList
+    '        End If
+    '        Return mFields
+    '      End Get
+    '    End Property
 
-#End Region
+    '    Private ReadOnly Property HasFieldData() As Boolean
+    '      Get
+    '        Return mFields IsNot Nothing
+    '      End Get
+    '    End Property
+
+    '#End Region
 
 #Region " Get/Set/Find fields "
 
@@ -49,32 +62,47 @@ Namespace Core.FieldManager
     ''' </param>
     Public Function GetFieldData(ByVal prop As IPropertyInfo) As IFieldData
 
-      Return GetFieldData(prop.Name)
+      Return mFieldData(prop.Index)
+      'Dim result As IFieldData = Nothing
+      'If FieldData.TryGetValue(prop.Name, result) Then
+      '  Return result
+
+      'Else
+      '  Return Nothing
+      'End If
 
     End Function
 
-    ''' <summary>
-    ''' Gets the <see cref="IFieldData" /> object
-    ''' for a specific field.
-    ''' </summary>
-    ''' <param name="key">
-    ''' The property name corresponding to the field.
-    ''' </param>
-    Public Function GetFieldData(ByVal key As String) As IFieldData
+    '''' <summary>
+    '''' Gets the <see cref="IFieldData" /> object
+    '''' for a specific field.
+    '''' </summary>
+    '''' <param name="key">
+    '''' The property name corresponding to the field.
+    '''' </param>
+    'Public Function GetFieldData(ByVal key As String) As IFieldData
 
-      Dim result As IFieldData = Nothing
-      If FieldData.TryGetValue(key, result) Then
-        Return result
+    '  Dim result As IFieldData = Nothing
+    '  If FieldData.TryGetValue(key, result) Then
+    '    Return result
 
-      Else
-        Return Nothing
-      End If
+    '  Else
+    '    Return Nothing
+    '  End If
 
-    End Function
+    'End Function
 
-    Friend Function FindPropertyName(ByVal value As Object) As String
+    Friend Function FindProperty(ByVal value As Object) As IPropertyInfo
 
-      Return FieldData.FindPropertyName(value)
+      Dim index = 0
+      For Each item In mFieldData
+        If item IsNot Nothing AndAlso item.Value.Equals(value) Then
+          Return mPropertyList(index)
+        End If
+        index += 1
+      Next
+      Return Nothing
+      'Return FieldData.FindPropertyName(value)
 
     End Function
 
@@ -92,11 +120,16 @@ Namespace Core.FieldManager
     ''' </param>
     Public Sub SetFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P)
 
-      Dim field As IFieldData = Nothing
-      If Not FieldData.TryGetValue(prop.Name, field) Then
+      Dim field = mFieldData(prop.Index)
+      If field Is Nothing Then
         field = prop.NewFieldData(prop.Name)
-        FieldData.Add(prop.Name, field)
+        mFieldData(prop.Index) = field
       End If
+      'Dim field As IFieldData = Nothing
+      'If Not FieldData.TryGetValue(prop.Name, field) Then
+      '  field = prop.NewFieldData(prop.Name)
+      '  FieldData.Add(prop.Name, field)
+      'End If
       Dim fd = TryCast(field, IFieldData(Of P))
       If fd IsNot Nothing Then
         fd.Value = value
@@ -122,11 +155,16 @@ Namespace Core.FieldManager
     ''' </param>
     Public Function LoadFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P) As IFieldData
 
-      Dim field As IFieldData = Nothing
-      If Not FieldData.TryGetValue(prop.Name, field) Then
+      Dim field = mFieldData(prop.Index)
+      If field Is Nothing Then
         field = prop.NewFieldData(prop.Name)
-        FieldData.Add(prop.Name, field)
+        mFieldData(prop.Index) = field
       End If
+      'Dim field As IFieldData = Nothing
+      'If Not FieldData.TryGetValue(prop.Name, field) Then
+      '  field = prop.NewFieldData(prop.Name)
+      '  FieldData.Add(prop.Name, field)
+      'End If
       Dim fd = TryCast(field, IFieldData(Of P))
       If fd IsNot Nothing Then
         fd.Value = value
@@ -144,15 +182,19 @@ Namespace Core.FieldManager
     ''' The <see cref="IFieldData" /> object is
     ''' not removed, only the contained field value.
     ''' </summary>
-    ''' <param name="propertyName">
-    ''' The property name corresponding to the field.
+    ''' <param name="prop">
+    ''' The property corresponding to the field.
     ''' </param>
-    Public Sub RemoveField(ByVal propertyName As String)
+    Public Sub RemoveField(ByVal prop As IPropertyInfo)
 
-      Dim field As IFieldData = Nothing
-      If FieldData.TryGetValue(propertyName, field) Then
+      Dim field = mFieldData(prop.Index)
+      If field IsNot Nothing Then
         field.Value = Nothing
       End If
+      'Dim field As IFieldData = Nothing
+      'If FieldData.TryGetValue(propertyName, field) Then
+      '  field.Value = Nothing
+      'End If
 
     End Sub
 
@@ -166,7 +208,8 @@ Namespace Core.FieldManager
     ''' </param>
     Public Function FieldExists(ByVal propertyInfo As IPropertyInfo) As Boolean
 
-      Return FieldData.ContainsKey(propertyInfo.Name)
+      Return mFieldData(propertyInfo.Index) IsNot Nothing
+      'Return FieldData.ContainsKey(propertyInfo.Name)
 
     End Function
 
@@ -182,13 +225,18 @@ Namespace Core.FieldManager
     Public Function GetChildren() As List(Of Object)
 
       Dim result As New List(Of Object)
-      If HasFieldData Then
-        For Each item In FieldData.GetFieldDataList
-          If TypeOf item.Value Is IEditableBusinessObject OrElse TypeOf item.Value Is IEditableCollection Then
-            result.Add(item.Value)
-          End If
-        Next
-      End If
+      For Each item In mFieldData
+        If item IsNot Nothing AndAlso (TypeOf item.Value Is IEditableBusinessObject OrElse TypeOf item.Value Is IEditableCollection) Then
+          result.Add(item.Value)
+        End If
+      Next
+      'If HasFieldData Then
+      '  For Each item In FieldData.GetFieldDataList
+      '    If TypeOf item.Value Is IEditableBusinessObject OrElse TypeOf item.Value Is IEditableCollection Then
+      '      result.Add(item.Value)
+      '    End If
+      '  Next
+      'End If
       Return result
 
     End Function
@@ -203,13 +251,18 @@ Namespace Core.FieldManager
     ''' </summary>
     Public Function IsValid() As Boolean
 
-      If HasFieldData Then
-        For Each item In FieldData.GetFieldDataList
-          If item IsNot Nothing AndAlso Not item.IsValid Then
-            Return False
-          End If
-        Next
-      End If
+      For Each item In mFieldData
+        If item IsNot Nothing AndAlso Not item.IsValid Then
+          Return False
+        End If
+      Next
+      'If HasFieldData Then
+      '  For Each item In FieldData.GetFieldDataList
+      '    If item IsNot Nothing AndAlso Not item.IsValid Then
+      '      Return False
+      '    End If
+      '  Next
+      'End If
       Return True
 
     End Function
@@ -220,13 +273,18 @@ Namespace Core.FieldManager
     ''' </summary>
     Public Function IsDirty() As Boolean
 
-      If HasFieldData Then
-        For Each item In FieldData.GetFieldDataList
-          If item IsNot Nothing AndAlso item.IsDirty Then
-            Return True
-          End If
-        Next
-      End If
+      For Each item In mFieldData
+        If item IsNot Nothing AndAlso item.IsDirty Then
+          Return True
+        End If
+      Next
+      'If HasFieldData Then
+      '  For Each item In FieldData.GetFieldDataList
+      '    If item IsNot Nothing AndAlso item.IsDirty Then
+      '      Return True
+      '    End If
+      '  Next
+      'End If
       Return False
 
     End Function
@@ -237,13 +295,18 @@ Namespace Core.FieldManager
     ''' </summary>
     Public Sub MarkClean()
 
-      If HasFieldData Then
-        For Each item In FieldData.GetFieldDataList
-          If item IsNot Nothing AndAlso item.IsDirty Then
-            item.MarkClean()
-          End If
-        Next
-      End If
+      For Each item In mFieldData
+        If item IsNot Nothing AndAlso item.IsDirty Then
+          item.MarkClean()
+        End If
+      Next
+      'If HasFieldData Then
+      '  For Each item In FieldData.GetFieldDataList
+      '    If item IsNot Nothing AndAlso item.IsDirty Then
+      '      item.MarkClean()
+      '    End If
+      '  Next
+      'End If
 
     End Sub
 
@@ -269,23 +332,37 @@ Namespace Core.FieldManager
           String.Format(My.Resources.EditLevelMismatchException, "CopyState"))
       End If
 
-      Dim state As New HybridDictionary
+      Dim state(mPropertyList.Count - 1) As IFieldData
 
-      If HasFieldData Then
-        For Each item In FieldData.GetFieldDataList
+      For index = 0 To mFieldData.Length - 1
+        Dim item = mFieldData(index)
+        If item IsNot Nothing Then
           Dim child = TryCast(item.Value, IUndoableObject)
           If child IsNot Nothing Then
             ' cascade call to child
             child.CopyState(parentEditLevel)
-            ' store fact that child exists
-            state.Add(item.Name, True)
 
           Else
             ' add the IFieldData object
-            state.Add(item.Name, item)
+            state(index) = item
           End If
-        Next
-      End If
+        End If
+      Next
+      'If HasFieldData Then
+      '  For Each item In FieldData.GetFieldDataList
+      '    Dim child = TryCast(item.Value, IUndoableObject)
+      '    If child IsNot Nothing Then
+      '      ' cascade call to child
+      '      child.CopyState(parentEditLevel)
+      '      ' store fact that child exists
+      '      state.Add(item.Name, True)
+
+      '    Else
+      '      ' add the IFieldData object
+      '      state.Add(item.Name, item)
+      '    End If
+      '  Next
+      'End If
 
       ' serialize the state and stack it
       Using buffer As New MemoryStream
@@ -304,37 +381,64 @@ Namespace Core.FieldManager
             String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
         End If
 
-        If HasFieldData Then
-          Dim state As HybridDictionary
-          Using buffer As New MemoryStream(mStateStack.Pop())
-            buffer.Position = 0
-            Dim formatter = SerializationFormatterFactory.GetFormatter
-            state = _
-              CType(formatter.Deserialize(buffer), HybridDictionary)
-          End Using
+        Dim state() As IFieldData
+        Using buffer As New MemoryStream(mStateStack.Pop())
+          buffer.Position = 0
+          Dim formatter = SerializationFormatterFactory.GetFormatter
+          state = _
+            CType(formatter.Deserialize(buffer), IFieldData())
+        End Using
 
-          Dim oldFields = FieldData
-          mFields = New FieldDataList
-
-          For Each item As DictionaryEntry In state
-            Dim key = CStr(item.Key)
-            If TypeOf item.Value Is Boolean Then
-              ' get child object from old field collection
-              Dim child = DirectCast(oldFields.GetValue(key), IFieldData)
-              ' add to new list
-              FieldData.Add(key, child)
-              ' cascade call to child
-              DirectCast(child.Value, IUndoableObject).UndoChanges(parentEditLevel)
+        For index = 0 To mFieldData.Length - 1
+          Dim oldItem = state(index)
+          Dim item = mFieldData(index)
+          If oldItem Is Nothing AndAlso item IsNot Nothing Then
+            ' potential child object
+            Dim child = TryCast(item.Value, IUndoableObject)
+            If child IsNot Nothing Then
+              child.UndoChanges(parentEditLevel)
 
             Else
-              ' restore IFieldData object into field collection
-              FieldData.Add(key, DirectCast(item.Value, IFieldData))
+              ' null value
+              mFieldData(index) = Nothing
             End If
-          Next
 
-        Else
-          mStateStack.Pop()
-        End If
+          Else
+            ' restore IFieldData object into field collection
+            mFieldData(index) = state(index)
+          End If
+        Next
+        'If HasFieldData Then
+        '  Dim state As HybridDictionary
+        '  Using buffer As New MemoryStream(mStateStack.Pop())
+        '    buffer.Position = 0
+        '    Dim formatter = SerializationFormatterFactory.GetFormatter
+        '    state = _
+        '      CType(formatter.Deserialize(buffer), HybridDictionary)
+        '  End Using
+
+        '  Dim oldFields = FieldData
+        '  mFields = New FieldDataList
+
+        '  For Each item As DictionaryEntry In state
+        '    Dim key = CStr(item.Key)
+        '    If TypeOf item.Value Is Boolean Then
+        '      ' get child object from old field collection
+        '      Dim child = DirectCast(oldFields.GetValue(key), IFieldData)
+        '      ' add to new list
+        '      FieldData.Add(key, child)
+        '      ' cascade call to child
+        '      DirectCast(child.Value, IUndoableObject).UndoChanges(parentEditLevel)
+
+        '    Else
+        '      ' restore IFieldData object into field collection
+        '      FieldData.Add(key, DirectCast(item.Value, IFieldData))
+        '    End If
+        '  Next
+
+        'Else
+        '  mStateStack.Pop()
+        'End If
       End If
 
     End Sub
@@ -350,15 +454,24 @@ Namespace Core.FieldManager
         ' discard latest recorded state
         mStateStack.Pop()
 
-        If HasFieldData Then
-          For Each item In FieldData.GetFieldDataList
+        For Each item In mFieldData
+          If item IsNot Nothing Then
             Dim child = TryCast(item.Value, IUndoableObject)
             If child IsNot Nothing Then
               ' cascade call to child
               child.AcceptChanges(parentEditLevel)
             End If
-          Next
-        End If
+          End If
+        Next
+        'If HasFieldData Then
+        '  For Each item In FieldData.GetFieldDataList
+        '    Dim child = TryCast(item.Value, IUndoableObject)
+        '    If child IsNot Nothing Then
+        '      ' cascade call to child
+        '      child.AcceptChanges(parentEditLevel)
+        '    End If
+        '  Next
+        'End If
       End If
 
     End Sub
@@ -374,16 +487,24 @@ Namespace Core.FieldManager
     ''' </summary>
     Public Sub UpdateChildren(ByVal ParamArray parameters() As Object)
 
-      If HasFieldData Then
-        For Each item In FieldData.GetFieldDataList
-          If item IsNot Nothing Then
-            Dim obj As Object = item.Value
-            If TypeOf obj Is IEditableBusinessObject OrElse TypeOf obj Is IEditableCollection Then
-              Csla.DataPortal.UpdateChild(obj, parameters)
-            End If
+      For Each item In mFieldData
+        If item IsNot Nothing Then
+          Dim obj As Object = item.Value
+          If TypeOf obj Is IEditableBusinessObject OrElse TypeOf obj Is IEditableCollection Then
+            Csla.DataPortal.UpdateChild(obj, parameters)
           End If
-        Next
-      End If
+        End If
+      Next
+      'If HasFieldData Then
+      '  For Each item In FieldData.GetFieldDataList
+      '    If item IsNot Nothing Then
+      '      Dim obj As Object = item.Value
+      '      If TypeOf obj Is IEditableBusinessObject OrElse TypeOf obj Is IEditableCollection Then
+      '        Csla.DataPortal.UpdateChild(obj, parameters)
+      '      End If
+      '    End If
+      '  Next
+      'End If
 
     End Sub
 

@@ -246,6 +246,19 @@ Namespace Data
 
 #End Region
 
+#Region " Load from IDictionary "
+
+    Public Sub Load(ByVal source As System.Collections.IDictionary, ByVal target As Core.BusinessBase)
+
+      Dim propertyList = Core.BusinessBase.GetRegisteredProperties(target.GetType)
+      For Each p In propertyList
+        target.LoadProperty(p, source.Item(p.Name))
+      Next
+
+    End Sub
+
+#End Region
+
 #Region " GetValue "
 
     Private Function GetValue(ByVal member As MemberInfo, ByVal source As Object) As Object

@@ -7,6 +7,8 @@
 Public Class PropertyInfo(Of T)
 
   Implements Core.IPropertyInfo
+  Implements IComparable
+  Implements IComparable(Of Core.IPropertyInfo)
 
   ''' <summary>
   ''' Creates a new instance of this class.
@@ -99,7 +101,7 @@ Public Class PropertyInfo(Of T)
   ''' property name itself is returned as a
   ''' result.
   ''' </remarks>
-  Public ReadOnly Property FriendlyName() As String Implements Core.IPropertyInfo.FriendlyName
+  Public Overridable ReadOnly Property FriendlyName() As String Implements Core.IPropertyInfo.FriendlyName
     Get
       If Not String.IsNullOrEmpty(mFriendlyName) Then
         Return mFriendlyName
@@ -142,6 +144,38 @@ Public Class PropertyInfo(Of T)
   ''' </param>
   Protected Overridable Function NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData Implements Core.IPropertyInfo.NewFieldData
     Return New Core.FieldManager.FieldData(Of T)(name)
+  End Function
+
+  Private mIndex As Integer = -1
+
+  ''' <summary>
+  ''' Gets or sets the index position for the managed
+  ''' field storage behind the property. FOR
+  ''' INTERNAL CSLA .NET USE ONLY.
+  ''' </summary>
+  Public Property Index() As Integer Implements Core.IPropertyInfo.Index
+    Get
+      If mIndex = -1 Then
+        Throw New InvalidOperationException( _
+          String.Format(My.Resources.UnRegisteredPropertyException, mName))
+      End If
+      Return mIndex
+    End Get
+    Set(ByVal value As Integer)
+      mIndex = value
+    End Set
+  End Property
+
+  Private Function CompareTo(ByVal other As Core.IPropertyInfo) As Integer Implements System.IComparable(Of Core.IPropertyInfo).CompareTo
+
+    Return mName.CompareTo(other.Name)
+
+  End Function
+
+  Private Function CompareTo1(ByVal obj As Object) As Integer Implements System.IComparable.CompareTo
+
+    Return CompareTo(DirectCast(obj, Core.IPropertyInfo))
+
   End Function
 
 End Class

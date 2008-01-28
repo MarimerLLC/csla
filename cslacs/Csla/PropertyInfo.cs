@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -11,7 +12,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Data type of the property.
   /// </typeparam>
-  public class PropertyInfo<T> : Core.IPropertyInfo
+  public class PropertyInfo<T> : Core.IPropertyInfo, IComparable
   {
     /// <summary>
     /// Creates a new instance of this class.
@@ -160,5 +161,35 @@ namespace Csla
     {
       return new Core.FieldManager.FieldData<T>(name);
     }
+
+    private int _index = -1;
+
+    /// <summary>
+    /// Gets or sets the index position for the managed
+    /// field storage behind the property. FOR
+    /// INTERNAL CSLA .NET USE ONLY.
+    /// </summary>
+    public int Index
+    {
+      get
+      {
+        if (_index == -1)
+          throw new InvalidOperationException(string.Format(Resources.UnRegisteredPropertyException, _name));
+        return _index;
+      }
+      set
+      {
+        _index = value;
+      }
+    }
+
+    #region IComparable Members
+
+    int IComparable.CompareTo(object obj)
+    {
+      return _name.CompareTo(((Core.IPropertyInfo)obj).Name);
+    }
+
+    #endregion
   }
 }

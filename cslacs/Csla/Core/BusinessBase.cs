@@ -1359,6 +1359,7 @@ namespace Csla.Core
     {
       OnDeserialized(context);
       ValidationRules.SetTarget(this);
+      FieldManager.SetPropertyList(GetPropertyListCache(this.GetType()));
       InitializeBusinessRules();
       InitializeAuthorizationRules();
       FieldDataDeserialized();
@@ -1400,6 +1401,92 @@ namespace Csla.Core
     void IEditableBusinessObject.SetParent(IParent parent)
     {
       this.SetParent(parent);
+    }
+
+    #endregion
+
+    #region  Register Properties
+
+    private static Dictionary<Type, List<IPropertyInfo>> _propertyInfoCache;
+
+    private static Dictionary<Type, List<IPropertyInfo>> PropertyInfoCache
+    {
+      get
+      {
+        if (_propertyInfoCache == null)
+        {
+          lock (typeof(BusinessBase))
+          {
+            if (_propertyInfoCache == null)
+              _propertyInfoCache = new Dictionary<Type, List<IPropertyInfo>>();
+          }
+        }
+        return _propertyInfoCache;
+      }
+    }
+
+    private static List<IPropertyInfo> GetPropertyListCache(Type objectType)
+    {
+      var cache = PropertyInfoCache;
+      List<IPropertyInfo> list = null;
+      if (!(cache.TryGetValue(objectType, out list)))
+      {
+        lock (cache)
+        {
+          if (!(cache.TryGetValue(objectType, out list)))
+          {
+            list = new List<IPropertyInfo>();
+            cache.Add(objectType, list);
+          }
+        }
+      }
+      return list;
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the type.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of property.
+    /// </typeparam>
+    /// <param name="objectType">
+    /// Type of object to which the property belongs.
+    /// </param>
+    /// <param name="info">
+    /// PropertyInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided IPropertyInfo object.
+    /// </returns>
+    protected static PropertyInfo<T> RegisterProperty<T>(Type objectType, PropertyInfo<T> info)
+    {
+      var list = GetPropertyListCache(objectType);
+      lock (list)
+      {
+        list.Add(info);
+        // reset index values
+        list.Sort();
+        for (var index = 0; index < list.Count; index++)
+          list[index].Index = index;
+      }
+      return info;
+    }
+
+    /// <summary>
+    /// Returns a copy of the property list for
+    /// a given business object type. Returns
+    /// null if there are no properties registered
+    /// for the type.
+    /// </summary>
+    /// <param name="objectType">
+    /// The business object type.
+    /// </param>
+    internal static List<IPropertyInfo> GetRegisteredProperties(Type objectType)
+    {
+      // return a copy of the list to avoid
+      // possible locking issues
+      return new List<IPropertyInfo>(GetPropertyListCache(objectType));
     }
 
     #endregion
@@ -1462,7 +1549,7 @@ namespace Csla.Core
     /// <param name="field">
     /// The backing field for the property.</param>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <remarks>
     /// If the user is not authorized to read the property
     /// value, the defaultValue value is returned as a
@@ -1486,7 +1573,7 @@ namespace Csla.Core
     /// <param name="field">
     /// The backing field for the property.</param>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <remarks>
     /// If the user is not authorized to read the property
     /// value, the defaultValue value is returned as a
@@ -1510,7 +1597,7 @@ namespace Csla.Core
     /// <param name="field">
     /// The backing field for the property.</param>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="throwOnNoAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
@@ -1532,7 +1619,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <remarks>
     /// If the user is not authorized to read the property
     /// value, the defaultValue value is returned as a
@@ -1555,7 +1642,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <remarks>
     /// If the user is not authorized to read the property
     /// value, the defaultValue value is returned as a
@@ -1578,7 +1665,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="throwOnNoAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
@@ -1600,7 +1687,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="throwOnNoAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
@@ -1635,7 +1722,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     protected P ReadProperty<F, P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, ReadProperty<F>(propertyInfo));
@@ -1648,7 +1735,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
       P result = default(P);
@@ -1683,7 +1770,7 @@ namespace Csla.Core
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <remarks>
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
@@ -1729,7 +1816,7 @@ namespace Csla.Core
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <remarks>
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
@@ -1755,7 +1842,7 @@ namespace Csla.Core
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="throwOnNoAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
@@ -1874,7 +1961,7 @@ namespace Csla.Core
     /// calling PropertyHasChanged if the value does change.
     /// </summary>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>
@@ -1892,7 +1979,7 @@ namespace Csla.Core
     /// calling PropertyHasChanged if the value does change.
     /// </summary>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>
@@ -1910,7 +1997,7 @@ namespace Csla.Core
     /// calling PropertyHasChanged if the value does change.
     /// </summary>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <param name="throwOnNoAccess">
@@ -1957,7 +2044,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <param name="throwOnNoAccess">
@@ -2005,7 +2092,7 @@ namespace Csla.Core
     /// if the value does change.
     /// </summary>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>
@@ -2050,7 +2137,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// <see cref="PropertyInfo" /> object containing property metadata.</param>
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>
@@ -2160,16 +2247,21 @@ namespace Csla.Core
       }
     }
 
+    internal void LoadProperty(IPropertyInfo info, object value)
+    {
+      FieldManager.LoadFieldData<object>(info, value);
+    }
+
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      var data = FieldManager.FindPropertyName(sender);
-      OnPropertyChanged(data);
+      var data = FieldManager.FindProperty(sender);
+      OnPropertyChanged(data.Name);
     }
 
     private void Child_ListChanged(object sender, ListChangedEventArgs e)
     {
-      var data = FieldManager.FindPropertyName(sender);
-      OnPropertyChanged(data);
+      var data = FieldManager.FindProperty(sender);
+      OnPropertyChanged(data.Name);
     }
 
     #endregion
@@ -2188,7 +2280,7 @@ namespace Csla.Core
       {
         if (_fieldManager == null)
         {
-          _fieldManager = new FieldManager.FieldDataManager();
+          _fieldManager = new FieldManager.FieldDataManager(GetPropertyListCache(this.GetType()));
           UndoableBase.ResetChildEditLevel(_fieldManager, this.EditLevel);
         }
         return _fieldManager;
@@ -2243,8 +2335,8 @@ namespace Csla.Core
 
     void IParent.RemoveChild(IEditableBusinessObject child)
     {
-      var name = FieldManager.FindPropertyName(child);
-      FieldManager.RemoveField(name);
+      var info = FieldManager.FindProperty(child);
+      FieldManager.RemoveField(info);
     }
 
     #endregion

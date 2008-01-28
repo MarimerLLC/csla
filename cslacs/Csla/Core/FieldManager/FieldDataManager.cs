@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Collections.Generic;
 using Csla.Serialization;
 
 namespace Csla.Core.FieldManager
@@ -17,36 +13,25 @@ namespace Csla.Core.FieldManager
   [Serializable()]
   public class FieldDataManager : IUndoableObject
   {
-    internal FieldDataManager()
+
+    [NonSerialized()]
+    private List<IPropertyInfo> mPropertyList;
+    private IFieldData[] mFieldData;
+
+    internal FieldDataManager(List<IPropertyInfo> propertyList)
     {
-      // prevent creation from outside this assembly
+      mPropertyList = propertyList;
+      mFieldData = new IFieldData[mPropertyList.Count];
     }
 
-    #region  FieldData
-
-    private FieldDataList _fields;
-
-    private FieldDataList FieldData
+    /// <summary>
+    /// Called when parent object is deserialized to
+    /// restore property list.
+    /// </summary>
+    internal void SetPropertyList(List<IPropertyInfo> propertyList)
     {
-      get
-      {
-        if (_fields == null)
-        {
-          _fields = new FieldDataList();
-        }
-        return _fields;
-      }
+      mPropertyList = propertyList;
     }
-
-    private bool HasFieldData
-    {
-      get
-      {
-        return _fields != null;
-      }
-    }
-
-    #endregion
 
     #region  Get/Set/Find fields
 
@@ -59,28 +44,21 @@ namespace Csla.Core.FieldManager
     /// </param>
     public IFieldData GetFieldData(IPropertyInfo prop)
     {
-      return GetFieldData(prop.Name);
+      return mFieldData[prop.Index];
     }
 
-    /// <summary>
-    /// Gets the <see cref="IFieldData" /> object
-    /// for a specific field.
-    /// </summary>
-    /// <param name="key">
-    /// The property name corresponding to the field.
-    /// </param>
-    public IFieldData GetFieldData(string key)
+    internal IPropertyInfo FindProperty(object value)
     {
-      IFieldData result;
-      if (FieldData.TryGetValue(key, out result))
-        return result;
-      else
-        return null;
-    }
-
-    internal string FindPropertyName(object value)
-    {
-      return FieldData.FindPropertyName(value);
+      var index = 0;
+      foreach (var item in mFieldData)
+      {
+        if (item != null && item.Value.Equals(value))
+        {
+          return mPropertyList[index];
+        }
+        index += 1;
+      }
+      return null;
     }
 
     /// <summary>
@@ -97,13 +75,12 @@ namespace Csla.Core.FieldManager
     /// </param>
     public void SetFieldData<P>(IPropertyInfo prop, P value)
     {
-      IFieldData field;
-      if (!FieldData.TryGetValue(prop.Name, out field))
+      var field = mFieldData[prop.Index];
+      if (field == null)
       {
         field = prop.NewFieldData(prop.Name);
-        FieldData.Add(prop.Name, field);
+        mFieldData[prop.Index] = field;
       }
-
       var fd = field as IFieldData<P>;
       if (fd != null)
         fd.Value = value;
@@ -126,13 +103,12 @@ namespace Csla.Core.FieldManager
     /// </param>
     public IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
     {
-      IFieldData field;
-      if (!(FieldData.TryGetValue(prop.Name, out field)))
+      var field = mFieldData[prop.Index];
+      if (field == null)
       {
         field = prop.NewFieldData(prop.Name);
-        FieldData.Add(prop.Name, field);
+        mFieldData[prop.Index] = field;
       }
-
       var fd = field as IFieldData<P>;
       if (fd != null)
         fd.Value = value;
@@ -147,13 +123,13 @@ namespace Csla.Core.FieldManager
     /// The <see cref="IFieldData" /> object is
     /// not removed, only the contained field value.
     /// </summary>
-    /// <param name="propertyName">
-    /// The property name corresponding to the field.
+    /// <param name="prop">
+    /// The property corresponding to the field.
     /// </param>
-    public void RemoveField(string propertyName)
+    public void RemoveField(IPropertyInfo prop)
     {
-      IFieldData field;
-      if (FieldData.TryGetValue(propertyName, out field))
+      var field = mFieldData[prop.Index];
+      if (field != null)
         field.Value = null;
     }
 
@@ -167,7 +143,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public bool FieldExists(IPropertyInfo propertyInfo)
     {
-      return FieldData.ContainsKey(propertyInfo.Name);
+      return mFieldData[propertyInfo.Index] != null;
     }
 
     /// <summary>
@@ -182,12 +158,9 @@ namespace Csla.Core.FieldManager
     public List<object> GetChildren()
     {
       List<object> result = new List<object>();
-      if (HasFieldData)
-      {
-        foreach (var item in FieldData.GetFieldDataList())
-          if (item.Value is IEditableBusinessObject || item.Value is IEditableCollection)
-            result.Add(item.Value);
-      }
+      foreach (var item in mFieldData)
+        if (item != null && (item.Value is IEditableBusinessObject || item.Value is IEditableCollection))
+          result.Add(item.Value);
       return result;
     }
 
@@ -201,12 +174,9 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public bool IsValid()
     {
-      if (HasFieldData)
-      {
-        foreach (var item in FieldData.GetFieldDataList())
-          if (item != null && !item.IsValid)
-            return false;
-      }
+      foreach (var item in mFieldData)
+        if (item != null && !item.IsValid)
+          return false;
       return true;
     }
 
@@ -216,12 +186,9 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public bool IsDirty()
     {
-      if (HasFieldData)
-      {
-        foreach (var item in FieldData.GetFieldDataList())
-          if (item != null && item.IsDirty)
-            return true;
-      }
+      foreach (var item in mFieldData)
+        if (item != null && item.IsDirty)
+          return true;
       return false;
     }
 
@@ -231,56 +198,47 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public void MarkClean()
     {
-      if (HasFieldData)
-      {
-        foreach (var item in FieldData.GetFieldDataList())
-          if (item != null && item.IsDirty)
-            item.MarkClean();
-      }
+      foreach (var item in mFieldData)
+        if (item != null && item.IsDirty)
+          item.MarkClean();
     }
 
     #endregion
 
     #region  IUndoableObject
 
-    private Stack<byte[]> _stateStack = new Stack<byte[]>();
+    private Stack<byte[]> mStateStack = new Stack<byte[]>();
 
     /// <summary>
     /// Gets the current edit level of the object.
     /// </summary>
     public int EditLevel
     {
-      get
-      {
-        return _stateStack.Count;
-      }
+      get { return mStateStack.Count; }
     }
 
-    void IUndoableObject.CopyState(int parentEditLevel)
+    void Core.IUndoableObject.CopyState(int parentEditLevel)
     {
-
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
 
-      HybridDictionary state = new HybridDictionary();
+      IFieldData[] state = new IFieldData[mPropertyList.Count];
 
-      if (HasFieldData)
+      for (var index = 0; index < mFieldData.Length; index++)
       {
-        foreach (var item in FieldData.GetFieldDataList())
+        var item = mFieldData[index];
+        if (item != null)
         {
           var child = item.Value as IUndoableObject;
           if (child != null)
           {
             // cascade call to child
             child.CopyState(parentEditLevel);
-            // store fact that child exists
-            state.Add(item.Name, true);
-
           }
           else
           {
             // add the IFieldData object
-            state.Add(item.Name, item);
+            state[index] = item;
           }
         }
       }
@@ -290,57 +248,53 @@ namespace Csla.Core.FieldManager
       {
         var formatter = SerializationFormatterFactory.GetFormatter();
         formatter.Serialize(buffer, state);
-        _stateStack.Push(buffer.ToArray());
+        mStateStack.Push(buffer.ToArray());
       }
     }
 
-    void IUndoableObject.UndoChanges(int parentEditLevel)
+    void Core.IUndoableObject.UndoChanges(int parentEditLevel)
     {
       if (EditLevel > 0)
       {
         if (this.EditLevel - 1 < parentEditLevel)
           throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
 
-        if (HasFieldData)
+        IFieldData[] state = null;
+        using (MemoryStream buffer = new MemoryStream(mStateStack.Pop()))
         {
-          HybridDictionary state = null;
-          using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
-          {
-            buffer.Position = 0;
-            var formatter = SerializationFormatterFactory.GetFormatter();
-            state = (HybridDictionary)(formatter.Deserialize(buffer));
-          }
+          buffer.Position = 0;
+          var formatter = SerializationFormatterFactory.GetFormatter();
+          state = (IFieldData[])(formatter.Deserialize(buffer));
+        }
 
-          var oldFields = FieldData;
-          _fields = new FieldDataList();
-
-          foreach (DictionaryEntry item in state)
+        for (var index = 0; index < mFieldData.Length; index++)
+        {
+          var oldItem = state[index];
+          var item = mFieldData[index];
+          if (oldItem == null && item != null)
           {
-            var key = System.Convert.ToString(item.Key);
-            if (item.Value is bool)
+            // potential child object
+            var child = item.Value as IUndoableObject;
+            if (child != null)
             {
-              // get child object from old field collection
-              var child = (IFieldData)(oldFields.GetValue(key));
-              // add to new list
-              FieldData.Add(key, child);
-              // cascade call to child
-              ((IUndoableObject)child.Value).UndoChanges(parentEditLevel);
+              child.UndoChanges(parentEditLevel);
             }
             else
             {
-              // restore IFieldData object into field collection
-              FieldData.Add(key, (IFieldData)item.Value);
+              // null value
+              mFieldData[index] = null;
             }
           }
-        }
-        else
-        {
-          _stateStack.Pop();
+          else
+          {
+            // restore IFieldData object into field collection
+            mFieldData[index] = state[index];
+          }
         }
       }
     }
 
-    void IUndoableObject.AcceptChanges(int parentEditLevel)
+    void Core.IUndoableObject.AcceptChanges(int parentEditLevel)
     {
       if (this.EditLevel - 1 < parentEditLevel)
         throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
@@ -348,11 +302,11 @@ namespace Csla.Core.FieldManager
       if (EditLevel > 0)
       {
         // discard latest recorded state
-        _stateStack.Pop();
+        mStateStack.Pop();
 
-        if (HasFieldData)
+        foreach (var item in mFieldData)
         {
-          foreach (var item in FieldData.GetFieldDataList())
+          if (item != null)
           {
             var child = item.Value as IUndoableObject;
             if (child != null)
@@ -376,16 +330,13 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public void UpdateChildren(params object[] parameters)
     {
-      if (HasFieldData)
+      foreach (var item in mFieldData)
       {
-        foreach (var item in FieldData.GetFieldDataList())
+        if (item != null)
         {
-          if (item != null)
-          {
-            object obj = item.Value;
-            if (obj is IEditableBusinessObject || obj is IEditableCollection)
-              Csla.DataPortal.UpdateChild(obj, parameters);
-          }
+          object obj = item.Value;
+          if (obj is IEditableBusinessObject || obj is IEditableCollection)
+            Csla.DataPortal.UpdateChild(obj, parameters);
         }
       }
     }
@@ -393,4 +344,5 @@ namespace Csla.Core.FieldManager
     #endregion
 
   }
+
 }

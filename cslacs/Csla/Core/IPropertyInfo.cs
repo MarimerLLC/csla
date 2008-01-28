@@ -37,5 +37,11 @@ namespace Csla.Core
     /// Gets a new field data container for the property.
     /// </summary>
     Core.FieldManager.IFieldData NewFieldData(string name);
+	  /// <summary>
+	  /// Gets or sets the index position for the managed
+	  /// field storage behind the property. FOR
+	  /// INTERNAL CSLA .NET USE ONLY.
+	  /// </summary>
+    int Index { get; set; }
   }
 }

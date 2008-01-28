@@ -538,6 +538,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can not use unregistered property. Call RegisterProperty() for property {0}.
+        /// </summary>
+        internal static string UnRegisteredPropertyException {
+            get {
+                return ResourceManager.GetString("UnRegisteredPropertyException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid operation - update not allowed.
         /// </summary>
         internal static string UpdateNotSupportedException {

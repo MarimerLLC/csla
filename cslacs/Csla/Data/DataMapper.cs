@@ -299,6 +299,28 @@ namespace Csla.Data
 
     #endregion
 
+    #region  Load from IDictionary
+
+    /// <summary>
+    /// Copies values from the source into the
+    /// target.
+    /// </summary>
+    /// <param name="source">
+    /// Dictionary containing the source values.
+    /// </param>
+    /// <param name="target">
+    /// Business object with managed fields that
+    /// will contain the copied values.
+    /// </param>
+    public static void Load(System.Collections.IDictionary source, Core.BusinessBase target)
+    {
+      var propertyList = Core.BusinessBase.GetRegisteredProperties(target.GetType());
+      foreach (var p in propertyList)
+        target.LoadProperty(p, source[p.Name]);
+    }
+
+    #endregion
+
     #region GetValue
 
     private static object GetValue(MemberInfo member, object source)

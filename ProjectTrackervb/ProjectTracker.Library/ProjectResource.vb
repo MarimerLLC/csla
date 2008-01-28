@@ -8,21 +8,21 @@ Public Class ProjectResource
 
   Private mTimestamp(7) As Byte
 
-  Private Shared ResourceIdProperty As New PropertyInfo(Of Integer)("ResourceId", "Resource id")
+  Private Shared ResourceIdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(ProjectResource), New PropertyInfo(Of Integer)("ResourceId", "Resource id"))
   Public ReadOnly Property ResourceId() As Integer
     Get
       Return GetProperty(Of Integer)(ResourceIdProperty)
     End Get
   End Property
 
-  Private Shared FirstNameProperty As New PropertyInfo(Of String)("FirstName", "First name")
+  Private Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(ProjectResource), New PropertyInfo(Of String)("FirstName", "First name"))
   Public ReadOnly Property FirstName() As String
     Get
       Return GetProperty(Of String)(FirstNameProperty)
     End Get
   End Property
 
-  Private Shared LastNameProperty As New PropertyInfo(Of String)("LastName", "Last name")
+  Private Shared LastNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(ProjectResource), New PropertyInfo(Of String)("LastName", "Last name"))
   Public ReadOnly Property LastName() As String
     Get
       Return GetProperty(Of String)(LastNameProperty)
@@ -35,14 +35,14 @@ Public Class ProjectResource
     End Get
   End Property
 
-  Private Shared AssignedProperty As New PropertyInfo(Of SmartDate)("Assigned", "Date assigned")
+  Private Shared AssignedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(GetType(ProjectResource), New PropertyInfo(Of SmartDate)("Assigned", "Date assigned"))
   Public ReadOnly Property Assigned() As String
     Get
       Return GetProperty(Of SmartDate, String)(AssignedProperty)
     End Get
   End Property
 
-  Private Shared RoleProperty As New PropertyInfo(Of Integer)("Role", "Role assigned")
+  Private Shared RoleProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(ProjectResource), New PropertyInfo(Of Integer)("Role", "Role assigned"))
   Public Property Role() As Integer Implements IHoldRoles.Role
     Get
       Return GetProperty(Of Integer)(RoleProperty)

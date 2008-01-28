@@ -6,7 +6,7 @@ Namespace Admin
 
 #Region " Business Methods "
 
-    Private Shared IdProperty As New PropertyInfo(Of Integer)("Id")
+    Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(Role), New PropertyInfo(Of Integer)("Id"))
     Private mIdSet As Boolean
     Public Property Id() As Integer
       Get
@@ -35,7 +35,7 @@ Namespace Admin
 
     End Function
 
-    Private Shared NameProperty As New PropertyInfo(Of String)("Name")
+    Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(Role), New PropertyInfo(Of String)("Name"))
     Public Property Name() As String
       Get
         Return GetProperty(NameProperty)

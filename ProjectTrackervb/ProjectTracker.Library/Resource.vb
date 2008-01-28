@@ -6,7 +6,7 @@ Public Class Resource
 
   Private mTimestamp(7) As Byte
 
-  Private Shared IdProperty As New PropertyInfo(Of Integer)("Id")
+  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(Resource), New PropertyInfo(Of Integer)("Id"))
   Private mId As Integer = IdProperty.DefaultValue
   Public ReadOnly Property Id() As Integer
     Get
@@ -14,7 +14,7 @@ Public Class Resource
     End Get
   End Property
 
-  Private Shared LastNameProperty As New PropertyInfo(Of String)("LastName", "Last name")
+  Private Shared LastNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(Resource), New PropertyInfo(Of String)("LastName", "Last name"))
   Private mLastName As String = LastNameProperty.DefaultValue
   Public Property LastName() As String
     Get
@@ -25,7 +25,7 @@ Public Class Resource
     End Set
   End Property
 
-  Private Shared FirstNameProperty As New PropertyInfo(Of String)("FirstName", "First name")
+  Private Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(Resource), New PropertyInfo(Of String)("FirstName", "First name"))
   Private mFirstName As String = FirstNameProperty.DefaultValue
   Public Property FirstName() As String
     Get
@@ -36,14 +36,14 @@ Public Class Resource
     End Set
   End Property
 
-  Private Shared FullNameProperty As New PropertyInfo(Of String)("FullName", "Full name")
+  Private Shared FullNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(Resource), New PropertyInfo(Of String)("FullName", "Full name"))
   Public ReadOnly Property FullName() As String
     Get
       Return LastName & ", " & FirstName
     End Get
   End Property
 
-  Private Shared AssignmentsProperty As New PropertyInfo(Of ResourceAssignments)("Assignments")
+  Private Shared AssignmentsProperty As PropertyInfo(Of ResourceAssignments) = RegisterProperty(Of ResourceAssignments)(GetType(Resource), New PropertyInfo(Of ResourceAssignments)("Assignments"))
   Public ReadOnly Property Assignments() As ResourceAssignments
     Get
       If Not FieldManager.FieldExists(AssignmentsProperty) Then

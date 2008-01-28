@@ -10,40 +10,32 @@
     <Snippet>
       <Declarations>
         <Literal>
+          <ID>ClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>BusinessClass</Default>
+        </Literal>
+        <Literal>
+          <ID>FriendlyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with friendly property name.</ToolTip>
+          <Default>Name</Default>
+        </Literal>
+        <Literal>
           <ID>PropertyName</ID>
           <Type>String</Type>
           <ToolTip>Replace with property name.</ToolTip>
-          <Default>NewProperty</Default>
+          <Default>Name</Default>
         </Literal>
-        <Object>
-          <ID>PrivateVariable</ID>
-          <Type>Object</Type>
-          <ToolTip>Replace this with the private variable name.</ToolTip>
-          <Default>newPropertyValue</Default>
-        </Object>
       </Declarations>
       <Code Language="CSharp" Kind="method decl">
-  <![CDATA[SmartDate $PrivateVariable$;
+        <![CDATA[private static PropertyInfo<SmartDate> $PropertyName$Property = RegisterProperty<SmartDate>(typeof($ClassName$), new PropertyInfo<SmartDate>("$PropertyName$", "$FriendlyName$", new SmartDate()));
 public string $PropertyName$
 {
-  [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-  get
-  {
-    CanReadProperty(true) ;
-    return $PrivateVariable$.Text;
-  }
-  [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-  set
-  {
-    CanWriteProperty(true);
-    if (value == null) value = string.Empty;
-    if ($PrivateVariable$ != value)
-    {
-      $PrivateVariable$.Text = value;
-      PropertyHasChanged();
-    }
-  }
-}]]></Code>
+  get { return GetProperty<SmartDate, string>($PropertyName$Property); }
+  set { SetProperty<SmartDate, string>($PropertyName$Property, value); }
+}]]>
+      </Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

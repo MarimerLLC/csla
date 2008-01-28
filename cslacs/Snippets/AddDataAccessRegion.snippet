@@ -10,32 +10,25 @@
     <Snippet>
       <Declarations>
         <Literal>
+          <ID>ObjectType</ID>
+          <ToolTip>Replace with the business object type.</ToolTip>
+          <Default>BusinessType</Default>
+        </Literal>
+        <Literal>
+          <ID>IdName</ID>
+          <ToolTip>Replace with the Id property info name.</ToolTip>
+          <Default>IdProperty</Default>
+        </Literal>
+        <Literal>
           <ID>IdType</ID>
           <ToolTip>Replace with the Id variable type.</ToolTip>
           <Default>int</Default>
         </Literal>
       </Declarations>
-      <Code Language="CSharp"><![CDATA[#region Data Access
+      <Code Language="CSharp">
+  <![CDATA[#region Data Access
 
-[Serializable()]
-private class Criteria
-{
-  private $IdType$ _id;
-  public $IdType$ Id
-  {
-    get
-    { return _id; }
-  }
-  public Criteria($IdType$ id)
-  { _id = id; }
-}
-
-protected override void DataPortal_Create()
-{
-  // TODO: load default values into object
-}
-
-private void DataPortal_Fetch(Criteria criteria)
+private void DataPortal_Fetch(SingleCriteria<$ObjectType$, $IdType$> criteria)
 {
   // TODO: load values into object
 }
@@ -52,10 +45,10 @@ protected override void DataPortal_Update()
 
 protected override void DataPortal_DeleteSelf()
 {
-  DataPortal_Delete(new Criteria($IdName$));
+  DataPortal_Delete(new SingleCriteria<$ObjectType$, $IdType$>(GetProperty<$IdType$>($IdName$)));
 }
 
-private void DataPortal_Delete(Criteria criteria)
+private void DataPortal_Delete(SingleCriteria<$ObjectType$, $IdType$> criteria)
 {
   // TODO: delete object's data
 }

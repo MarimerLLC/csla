@@ -33,7 +33,8 @@
           <Default>int</Default>
         </Literal>
       </Declarations>
-      <Code Language="CSharp"><![CDATA[#region Factory Methods
+      <Code Language="CSharp">
+  <![CDATA[#region Factory Methods
 
 public static $ClassName$ New$ClassName$()
 {
@@ -42,12 +43,12 @@ public static $ClassName$ New$ClassName$()
 
 public static $ClassName$ Get$ClassName$($IdType$ $IdName$)
 {
-  return DataPortal.Fetch<$ClassName$>(new $CriteriaClassName$($IdName$));
+  return DataPortal.Fetch<$ClassName$>(new SingleCriteria<$ClassName$, $IdType$>($IdName$));
 }
 
 public static void Delete$ClassName$($IdType$ $IdName$)
 {
-  DataPortal.Delete(new $CriteriaClassName$($IdName$));
+  DataPortal.Delete(new SingleCriteria<$ClassName$, $IdType$>($IdName$));
 }
 
 private $ClassName$()

@@ -25,28 +25,20 @@
           <ID>DeclaringType</ID>
           <Type>Type</Type>
           <ToolTip>Replace with the type that is declaring this property.</ToolTip>
-          <Default>Object</Default>
+          <Default>BusinessObject</Default>
         </Literal>
-        <Object>
-          <ID>PrivateVariable</ID>
-          <Type>Object</Type>
-          <ToolTip>Replace this with the private variable name.</ToolTip>
-          <Default>newPropertyValue</Default>
-        </Object>
       </Declarations>
       <Code Language="VB" Kind="method decl">
-        <![CDATA[' Property $PropertyName$ ("$FriendlyName$") in field $PrivateVariable$ As SmartDate in $DeclaringType$
-Private Shared $PropertyName$Property As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)("$PropertyName$", "$FriendlyName$", GetType($DeclaringType$), New SmartDate(String.Empty))
-Private $PrivateVariable$ As SmartDate = $PropertyName$Property.DefaultValue
+        <![CDATA[Private Shared $PropertyName$Property As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(GetType($DeclaringType$), New PropertyInfo(Of SmartDate)("$PropertyName$", "$FriendlyName$"))
 ''' <Summary>
 ''' Gets and sets the $FriendlyName$ value.
 ''' </Summary>
 Public Property $PropertyName$() As String
     Get
-        Return GetProperty(Of SmartDate)($PropertyName$Property, $PrivateVariable$)
+        Return GetProperty(Of SmartDate, String)($PropertyName$Property)
     End Get
     Set(ByVal value As String)
-        SetProperty(Of SmartDate)($PropertyName$Property, $PrivateVariable$, value)
+        SetProperty(Of SmartDate, String)($PropertyName$Property, value)
     End Set
 End Property]]>
       </Code>

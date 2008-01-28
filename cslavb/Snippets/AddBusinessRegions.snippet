@@ -8,13 +8,10 @@
       <Shortcut>cslabiz</Shortcut>
     </Header>
     <Snippet>
-      <Code Language="VB"><![CDATA[#Region " Business Methods "
+      <Code Language="VB">
+  <![CDATA[#Region " Business Methods "
 
   ' TODO: add public properties and methods
-
-  Protected Overrides Function GetIdValue() As Object
-    ' TODO: return unique id value for object
-  End Function
 
 #End Region
 
@@ -30,6 +27,10 @@ End Sub
 
 Protected Overrides Sub AddAuthorizationRules()
   ' TODO: add authorization rules
+End Sub
+
+Private Shared Sub AddObjectAuthorizationRules()
+  ' TODO: add object-level authorization rules
 End Sub
 
 #End Region]]></Code>

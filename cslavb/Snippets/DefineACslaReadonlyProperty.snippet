@@ -5,7 +5,7 @@
       <Title>Define a Csla Readonly Property</Title>
       <Author>Rockford Lhotka</Author>
       <Description>Defines a Csla-style readonly Property with a backing field.</Description>
-      <Shortcut>cslaroprop</Shortcut>
+      <Shortcut>cslapropg</Shortcut>
     </Header>
     <Snippet>
       <Declarations>
@@ -25,7 +25,7 @@
           <ID>DeclaringType</ID>
           <Type>Type</Type>
           <ToolTip>Replace with the type that is declaring this property.</ToolTip>
-          <Default>Object</Default>
+          <Default>BusinessObject</Default>
         </Literal>
         <Literal>
           <ID>PropertyType</ID>
@@ -41,15 +41,13 @@
         </Object>
       </Declarations>
       <Code Language="VB" Kind="method decl">
-        <![CDATA[' Property $PropertyName$ ("$FriendlyName$") in field $PrivateVariable$ As $PropertyType$ in $DeclaringType$
-Private Shared $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)("$PropertyName$", "$FriendlyName$", GetType($DeclaringType$))
-Private $PrivateVariable$ As $PropertyType$ = $PropertyName$Property.DefaultValue
+        <![CDATA[Private Shared $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(GetType($DeclaringType$), New PropertyInfo(Of $PropertyType$)("$PropertyName$", "$FriendlyName$"))
 ''' <Summary>
 ''' Gets the $FriendlyName$ value.
 ''' </Summary>
 Public ReadOnly Property $PropertyName$() As $PropertyType$
     Get
-        Return GetProperty(Of $PropertyType$)($PropertyName$Property, $PrivateVariable$)
+        Return GetProperty(Of $PropertyType$)($PropertyName$Property)
     End Get
 End Property]]>
       </Code>

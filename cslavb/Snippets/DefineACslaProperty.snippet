@@ -25,7 +25,7 @@
           <ID>DeclaringType</ID>
           <Type>Type</Type>
           <ToolTip>Replace with the type that is declaring this property.</ToolTip>
-          <Default>Object</Default>
+          <Default>BusinessObject</Default>
         </Literal>
         <Literal>
           <ID>PropertyType</ID>
@@ -41,18 +41,16 @@
         </Object>
       </Declarations>
       <Code Language="VB" Kind="method decl">
-  <![CDATA[' Property $PropertyName$ ("$FriendlyName$") in field $PrivateVariable$ As $PropertyType$ in $DeclaringType$
-Private Shared $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)("$PropertyName$", "$FriendlyName$", GetType($DeclaringType$))
-Private $PrivateVariable$ As $PropertyType$ = $PropertyName$Property.DefaultValue
+  <![CDATA[Private Shared $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(GetType($DeclaringType$), New PropertyInfo(Of $PropertyType$)("$PropertyName$", "$FriendlyName$"))
 ''' <Summary>
 ''' Gets and sets the $FriendlyName$ value.
 ''' </Summary>
 Public Property $PropertyName$() As $PropertyType$
     Get
-        Return GetProperty(Of $PropertyType$)($PropertyName$Property, $PrivateVariable$)
+        Return GetProperty(Of $PropertyType$)($PropertyName$Property)
     End Get
     Set(ByVal value As $PropertyType$)
-        SetProperty(Of $PropertyType$)($PropertyName$Property, $PrivateVariable$, value)
+        SetProperty(Of $PropertyType$)($PropertyName$Property, value)
     End Set
 End Property]]></Code>
     </Snippet>

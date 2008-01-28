@@ -13,42 +13,42 @@ namespace ProjectTracker.Library
 
     private byte[] mTimestamp = new byte[8];
 
-    private static PropertyInfo<Guid> IdProperty = new PropertyInfo<Guid>("Id");
+    private static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(typeof(Project), new PropertyInfo<Guid>("Id"));
     [System.ComponentModel.DataObjectField(true, true)]
     public Guid Id
     {
       get { return GetProperty<Guid>(IdProperty); }
     }
 
-    private static PropertyInfo<string> NameProperty = new PropertyInfo<string>("Name");
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(typeof(Project), new PropertyInfo<string>("Name"));
     public string Name
     {
       get { return GetProperty<string>(NameProperty); }
       set { SetProperty<string>(NameProperty, value); }
     }
 
-    private static PropertyInfo<SmartDate> StartedProperty = new PropertyInfo<SmartDate>("Started");
+    private static PropertyInfo<SmartDate> StartedProperty = RegisterProperty<SmartDate>(typeof(Project), new PropertyInfo<SmartDate>("Started"));
     public string Started
     {
       get { return GetProperty<SmartDate, string>(StartedProperty); }
       set { SetProperty<SmartDate, string>(StartedProperty, value); }
     }
 
-    private static PropertyInfo<SmartDate> EndedProperty = new PropertyInfo<SmartDate>("Ended", new SmartDate(SmartDate.EmptyValue.MaxDate));
+    private static PropertyInfo<SmartDate> EndedProperty = RegisterProperty<SmartDate>(typeof(Project), new PropertyInfo<SmartDate>("Ended", new SmartDate(SmartDate.EmptyValue.MaxDate)));
     public string Ended
     {
       get { return GetProperty<SmartDate, string>(EndedProperty); }
       set { SetProperty<SmartDate, string>(EndedProperty, value); }
     }
 
-    private static PropertyInfo<string> DescriptionProperty = new PropertyInfo<string>("Description");
+    private static PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(typeof(Project), new PropertyInfo<string>("Description"));
     public string Description
     {
       get { return GetProperty<string>(DescriptionProperty); }
       set { SetProperty<string>(DescriptionProperty, value); }
     }
 
-    private static PropertyInfo<ProjectResources> ResourcesProperty = new PropertyInfo<ProjectResources>("Resources");
+    private static PropertyInfo<ProjectResources> ResourcesProperty = RegisterProperty<ProjectResources>(typeof(Project), new PropertyInfo<ProjectResources>("Resources"));
     public ProjectResources Resources
     {
       get

@@ -13,7 +13,7 @@ namespace ProjectTracker.Library
 
       #region  Business Methods
 
-      private static PropertyInfo<int> IdProperty = new PropertyInfo<int>("Id");
+      private static PropertyInfo<int> IdProperty = RegisterProperty<int>(typeof(Role), new PropertyInfo<int>("Id"));
       private bool _idSet;
       public int Id
       {
@@ -50,7 +50,7 @@ namespace ProjectTracker.Library
 
       }
 
-      private static PropertyInfo<string> NameProperty = new PropertyInfo<string>("Name");
+      private static PropertyInfo<string> NameProperty = RegisterProperty<string>(typeof(Role), new PropertyInfo<string>("Name"));
       public string Name
       {
         get

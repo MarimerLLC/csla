@@ -13,7 +13,7 @@ namespace ProjectTracker.Library
 
     private byte[] _timestamp = new byte[8];
 
-    private static PropertyInfo<int> IdProperty = new PropertyInfo<int>("Id");
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(typeof(Resource), new PropertyInfo<int>("Id"));
     private int _id = IdProperty.DefaultValue;
     public int Id
     {
@@ -23,7 +23,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<string> LastNameProperty = new PropertyInfo<string>("LastName", "Last name");
+    private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(typeof(Resource), new PropertyInfo<string>("LastName", "Last name"));
     private string _lastName = LastNameProperty.DefaultValue;
     public string LastName
     {
@@ -37,7 +37,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<string> FirstNameProperty = new PropertyInfo<string>("FirstName", "First name");
+    private static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(typeof(Resource), new PropertyInfo<string>("FirstName", "First name"));
     private string _firstName = FirstNameProperty.DefaultValue;
     public string FirstName
     {
@@ -51,7 +51,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<string> FullNameProperty = new PropertyInfo<string>("FullName", "Full name");
+    private static PropertyInfo<string> FullNameProperty = RegisterProperty<string>(typeof(Resource), new PropertyInfo<string>("FullName", "Full name"));
     public string FullName
     {
       get
@@ -60,7 +60,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<ResourceAssignments> AssignmentsProperty = new PropertyInfo<ResourceAssignments>("Assignments");
+    private static PropertyInfo<ResourceAssignments> AssignmentsProperty = RegisterProperty<ResourceAssignments>(typeof(Resource), new PropertyInfo<ResourceAssignments>("Assignments"));
     public ResourceAssignments Assignments
     {
       get

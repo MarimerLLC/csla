@@ -61,7 +61,7 @@ namespace Csla.Core.FieldManager
       {
         hierarchy.Add(current);
         current = current.BaseType;
-      } while (!current.Equals(typeof(BusinessBase)));
+      } while (current != null && !current.Equals(typeof(BusinessBase)));
       // walk from top to bottom to build consolidated list
       for (int index = hierarchy.Count - 1; index >= 0; index--)
         result.AddRange(PropertyInfoManager.GetPropertyListCache(hierarchy[index]));

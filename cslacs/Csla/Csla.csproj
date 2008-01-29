@@ -98,6 +98,7 @@
     <Compile Include="Core\FieldManager\FieldDataManager.cs" />
     <Compile Include="Core\FieldManager\IFieldData.cs" />
     <Compile Include="Core\FieldManager\IFieldDataT.cs" />
+    <Compile Include="Core\FieldManager\PropertyInfoManager.cs" />
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
     <Compile Include="Core\IPropertyInfo.cs" />

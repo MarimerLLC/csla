@@ -547,7 +547,7 @@ namespace Csla
     private void OnDeserializedHandler(StreamingContext context)
     {
       OnDeserialized(context);
-      FieldManager.SetPropertyList(GetPropertyListCache(this.GetType()));
+      FieldManager.SetPropertyList(this.GetType());
       InitializeAuthorizationRules();
     }
 
@@ -567,47 +567,11 @@ namespace Csla
 
     #region  Register Properties
 
-    private static Dictionary<Type, List<IPropertyInfo>> _propertyInfoCache;
-
-    private static Dictionary<Type, List<IPropertyInfo>> PropertyInfoCache
-    {
-      get
-      {
-        if (_propertyInfoCache == null)
-        {
-          lock (typeof(BusinessBase))
-          {
-            if (_propertyInfoCache == null)
-              _propertyInfoCache = new Dictionary<Type, List<IPropertyInfo>>();
-          }
-        }
-        return _propertyInfoCache;
-      }
-    }
-
-    private static List<IPropertyInfo> GetPropertyListCache(Type objectType)
-    {
-      var cache = PropertyInfoCache;
-      List<IPropertyInfo> list = null;
-      if (!(cache.TryGetValue(objectType, out list)))
-      {
-        lock (cache)
-        {
-          if (!(cache.TryGetValue(objectType, out list)))
-          {
-            list = new List<IPropertyInfo>();
-            cache.Add(objectType, list);
-          }
-        }
-      }
-      return list;
-    }
-
     /// <summary>
     /// Indicates that the specified property belongs
     /// to the type.
     /// </summary>
-    /// <typeparam name="T">
+    /// <typeparam name="P">
     /// Type of property.
     /// </typeparam>
     /// <param name="objectType">
@@ -619,34 +583,9 @@ namespace Csla
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    protected static PropertyInfo<T> RegisterProperty<T>(Type objectType, PropertyInfo<T> info)
+    protected static PropertyInfo<P> RegisterProperty<P>(Type objectType, PropertyInfo<P> info)
     {
-      var list = GetPropertyListCache(objectType);
-      lock (list)
-      {
-        list.Add(info);
-        // reset index values
-        list.Sort();
-        for (var index = 0; index < list.Count; index++)
-          list[index].Index = index;
-      }
-      return info;
-    }
-
-    /// <summary>
-    /// Returns a copy of the property list for
-    /// a given business object type. Returns
-    /// null if there are no properties registered
-    /// for the type.
-    /// </summary>
-    /// <param name="objectType">
-    /// The business object type.
-    /// </param>
-    internal static List<IPropertyInfo> GetRegisteredProperties(Type objectType)
-    {
-      // return a copy of the list to avoid
-      // possible locking issues
-      return new List<IPropertyInfo>(GetPropertyListCache(objectType));
+      return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(objectType, info);
     }
 
     #endregion
@@ -1034,7 +973,7 @@ namespace Csla
       {
         if (_fieldManager == null)
         {
-          _fieldManager = new FieldDataManager(GetPropertyListCache(this.GetType()));
+          _fieldManager = new FieldDataManager(this.GetType());
         }
         return _fieldManager;
       }

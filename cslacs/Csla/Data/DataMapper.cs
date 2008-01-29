@@ -314,7 +314,7 @@ namespace Csla.Data
     /// </param>
     public static void Load(System.Collections.IDictionary source, Core.BusinessBase target)
     {
-      var propertyList = Core.BusinessBase.GetRegisteredProperties(target.GetType());
+      var propertyList = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(target.GetType());
       foreach (var p in propertyList)
         target.LoadProperty(p, source[p.Name]);
     }

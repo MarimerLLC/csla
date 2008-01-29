@@ -13,24 +13,74 @@ namespace Csla.Core.FieldManager
   [Serializable()]
   public class FieldDataManager : IUndoableObject
   {
+    private static Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new Dictionary<Type, List<IPropertyInfo>>();
 
     [NonSerialized()]
-    private List<IPropertyInfo> mPropertyList;
-    private IFieldData[] mFieldData;
+    private List<IPropertyInfo> _propertyList;
+    private IFieldData[] _fieldData;
 
-    internal FieldDataManager(List<IPropertyInfo> propertyList)
+    internal FieldDataManager(Type businessObjectType)
     {
-      mPropertyList = propertyList;
-      mFieldData = new IFieldData[mPropertyList.Count];
+      _propertyList = GetConsolidatedList(businessObjectType);
+      _fieldData = new IFieldData[_propertyList.Count];
     }
 
     /// <summary>
     /// Called when parent object is deserialized to
     /// restore property list.
     /// </summary>
-    internal void SetPropertyList(List<IPropertyInfo> propertyList)
+    internal void SetPropertyList(Type businessObjectType)
     {
-      mPropertyList = propertyList;
+      _propertyList = GetConsolidatedList(businessObjectType);
+    }
+
+    private List<IPropertyInfo> GetConsolidatedList(Type type)
+    {
+      List<IPropertyInfo> result = null;
+      if (!_consolidatedLists.TryGetValue(type, out result))
+      {
+        lock (_consolidatedLists)
+        {
+          if (!_consolidatedLists.TryGetValue(type, out result))
+          {
+            result = CreateConsolidatedList(type);
+            _consolidatedLists.Add(type, result);
+          }
+        }
+      }
+      return result;
+    }
+
+    private List<IPropertyInfo> CreateConsolidatedList(Type type)
+    {
+      List<IPropertyInfo> result = new List<IPropertyInfo>();
+      // get inheritance hierarchy
+      Type current = type;
+      List<Type> hierarchy = new List<Type>();
+      do
+      {
+        hierarchy.Add(current);
+        current = current.BaseType;
+      } while (!current.Equals(typeof(BusinessBase)));
+      // walk from top to bottom to build consolidated list
+      for (int index = hierarchy.Count - 1; index >= 0; index--)
+        result.AddRange(PropertyInfoManager.GetPropertyListCache(hierarchy[index]));
+      // set Index properties on all unindexed PropertyInfo objects
+      int max = -1;
+      foreach (var item in result)
+      {
+        if (item.Index == -1)
+        {
+          max++;
+          item.Index = max;
+        }
+        else
+        {
+          max = item.Index;
+        }
+      }
+      // return consolidated list
+      return result;
     }
 
     #region  Get/Set/Find fields
@@ -44,17 +94,17 @@ namespace Csla.Core.FieldManager
     /// </param>
     public IFieldData GetFieldData(IPropertyInfo prop)
     {
-      return mFieldData[prop.Index];
+      return _fieldData[prop.Index];
     }
 
     internal IPropertyInfo FindProperty(object value)
     {
       var index = 0;
-      foreach (var item in mFieldData)
+      foreach (var item in _fieldData)
       {
         if (item != null && item.Value.Equals(value))
         {
-          return mPropertyList[index];
+          return _propertyList[index];
         }
         index += 1;
       }
@@ -75,11 +125,11 @@ namespace Csla.Core.FieldManager
     /// </param>
     public void SetFieldData<P>(IPropertyInfo prop, P value)
     {
-      var field = mFieldData[prop.Index];
+      var field = _fieldData[prop.Index];
       if (field == null)
       {
         field = prop.NewFieldData(prop.Name);
-        mFieldData[prop.Index] = field;
+        _fieldData[prop.Index] = field;
       }
       var fd = field as IFieldData<P>;
       if (fd != null)
@@ -103,11 +153,11 @@ namespace Csla.Core.FieldManager
     /// </param>
     public IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
     {
-      var field = mFieldData[prop.Index];
+      var field = _fieldData[prop.Index];
       if (field == null)
       {
         field = prop.NewFieldData(prop.Name);
-        mFieldData[prop.Index] = field;
+        _fieldData[prop.Index] = field;
       }
       var fd = field as IFieldData<P>;
       if (fd != null)
@@ -128,7 +178,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public void RemoveField(IPropertyInfo prop)
     {
-      var field = mFieldData[prop.Index];
+      var field = _fieldData[prop.Index];
       if (field != null)
         field.Value = null;
     }
@@ -143,7 +193,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public bool FieldExists(IPropertyInfo propertyInfo)
     {
-      return mFieldData[propertyInfo.Index] != null;
+      return _fieldData[propertyInfo.Index] != null;
     }
 
     /// <summary>
@@ -158,7 +208,7 @@ namespace Csla.Core.FieldManager
     public List<object> GetChildren()
     {
       List<object> result = new List<object>();
-      foreach (var item in mFieldData)
+      foreach (var item in _fieldData)
         if (item != null && (item.Value is IEditableBusinessObject || item.Value is IEditableCollection))
           result.Add(item.Value);
       return result;
@@ -174,7 +224,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public bool IsValid()
     {
-      foreach (var item in mFieldData)
+      foreach (var item in _fieldData)
         if (item != null && !item.IsValid)
           return false;
       return true;
@@ -186,7 +236,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public bool IsDirty()
     {
-      foreach (var item in mFieldData)
+      foreach (var item in _fieldData)
         if (item != null && item.IsDirty)
           return true;
       return false;
@@ -198,7 +248,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public void MarkClean()
     {
-      foreach (var item in mFieldData)
+      foreach (var item in _fieldData)
         if (item != null && item.IsDirty)
           item.MarkClean();
     }
@@ -222,11 +272,11 @@ namespace Csla.Core.FieldManager
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
 
-      IFieldData[] state = new IFieldData[mPropertyList.Count];
+      IFieldData[] state = new IFieldData[_propertyList.Count];
 
-      for (var index = 0; index < mFieldData.Length; index++)
+      for (var index = 0; index < _fieldData.Length; index++)
       {
-        var item = mFieldData[index];
+        var item = _fieldData[index];
         if (item != null)
         {
           var child = item.Value as IUndoableObject;
@@ -267,10 +317,10 @@ namespace Csla.Core.FieldManager
           state = (IFieldData[])(formatter.Deserialize(buffer));
         }
 
-        for (var index = 0; index < mFieldData.Length; index++)
+        for (var index = 0; index < _fieldData.Length; index++)
         {
           var oldItem = state[index];
-          var item = mFieldData[index];
+          var item = _fieldData[index];
           if (oldItem == null && item != null)
           {
             // potential child object
@@ -282,13 +332,13 @@ namespace Csla.Core.FieldManager
             else
             {
               // null value
-              mFieldData[index] = null;
+              _fieldData[index] = null;
             }
           }
           else
           {
             // restore IFieldData object into field collection
-            mFieldData[index] = state[index];
+            _fieldData[index] = state[index];
           }
         }
       }
@@ -304,7 +354,7 @@ namespace Csla.Core.FieldManager
         // discard latest recorded state
         mStateStack.Pop();
 
-        foreach (var item in mFieldData)
+        foreach (var item in _fieldData)
         {
           if (item != null)
           {
@@ -330,7 +380,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public void UpdateChildren(params object[] parameters)
     {
-      foreach (var item in mFieldData)
+      foreach (var item in _fieldData)
       {
         if (item != null)
         {

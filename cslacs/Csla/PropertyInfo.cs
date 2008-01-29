@@ -173,8 +173,8 @@ namespace Csla
     {
       get
       {
-        if (_index == -1)
-          throw new InvalidOperationException(string.Format(Resources.UnRegisteredPropertyException, _name));
+        //if (_index == -1)
+        //  throw new InvalidOperationException(string.Format(Resources.UnRegisteredPropertyException, _name));
         return _index;
       }
       set

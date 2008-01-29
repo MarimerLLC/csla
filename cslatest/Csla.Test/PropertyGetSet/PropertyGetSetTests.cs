@@ -86,6 +86,29 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
+    public void ManagedFieldBaseProperties()
+    {
+      EditableGetSet root = new EditableGetSet();
+      root.PropertyChanging += new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      Assert.AreEqual("", root.Base, "String should default to string.Empty");
+      Assert.AreEqual("", root.TopBase, "TopBase should default to string.Empty");
+
+      root.Base = "hi there";
+      Assert.AreEqual("hi there", root.Base, "String should have been set");
+      Assert.AreEqual("Base", _changingName, "Base should have been changing");
+      Assert.AreEqual("Base", _changedName, "Base should have changed");
+
+      root.TopBase = "hi there";
+      Assert.AreEqual("hi there", root.TopBase, "TopBase should have been set");
+      Assert.AreEqual("TopBase", _changingName, "TopBase should have been changing");
+      Assert.AreEqual("TopBase", _changedName, "TopBase should have changed");
+
+      root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+    }
+
+    [TestMethod]
     public void SerializedManagedFieldProperties()
     {
       EditableGetSet root = new EditableGetSet();

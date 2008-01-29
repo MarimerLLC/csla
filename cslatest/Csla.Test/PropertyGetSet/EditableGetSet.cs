@@ -3,21 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Csla;
 
-#if !NUNIT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-#else
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#endif
-
 namespace Csla.Test.PropertyGetSet
 {
   [Serializable]
-  public class EditableGetSet : Csla.BusinessBase<EditableGetSet>
+  public class EditableGetSet : EditableGetSetBase<EditableGetSet>
   {
     private static Csla.PropertyInfo<string> F01Property = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("F01"));
     private string _f01 = F01Property.DefaultValue;

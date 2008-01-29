@@ -154,10 +154,6 @@ Public Class PropertyInfo(Of T)
   ''' </summary>
   Public Property Index() As Integer Implements Core.IPropertyInfo.Index
     Get
-      If mIndex = -1 Then
-        Throw New InvalidOperationException( _
-          String.Format(My.Resources.UnRegisteredPropertyException, mName))
-      End If
       Return mIndex
     End Get
     Set(ByVal value As Integer)

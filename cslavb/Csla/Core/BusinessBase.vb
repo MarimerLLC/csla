@@ -1357,7 +1357,7 @@ Namespace Core
 
       OnDeserialized(context)
       ValidationRules.SetTarget(Me)
-      FieldManager.SetPropertyList(GetPropertyListCache(Me.GetType))
+      FieldManager.SetPropertyList(Me.GetType)
       InitializeBusinessRules()
       InitializeAuthorizationRules()
       FieldDataDeserialized()
@@ -1382,42 +1382,11 @@ Namespace Core
 
 #Region " Register Properties "
 
-    Private Shared _propertyInfoCache As Dictionary(Of Type, List(Of IPropertyInfo))
-
-    Private Shared ReadOnly Property PropertyInfoCache() As Dictionary(Of Type, List(Of IPropertyInfo))
-      Get
-        If _propertyInfoCache Is Nothing Then
-          SyncLock GetType(BusinessBase)
-            If _propertyInfoCache Is Nothing Then
-              _propertyInfoCache = New Dictionary(Of Type, List(Of IPropertyInfo))
-            End If
-          End SyncLock
-        End If
-        Return _propertyInfoCache
-      End Get
-    End Property
-
-    Private Shared Function GetPropertyListCache(ByVal objectType As Type) As List(Of IPropertyInfo)
-
-      Dim cache = PropertyInfoCache
-      Dim list As List(Of IPropertyInfo) = Nothing
-      If Not cache.TryGetValue(objectType, list) Then
-        SyncLock cache
-          If Not cache.TryGetValue(objectType, list) Then
-            list = New List(Of IPropertyInfo)
-            cache.Add(objectType, list)
-          End If
-        End SyncLock
-      End If
-      Return list
-
-    End Function
-
     ''' <summary>
     ''' Indicates that the specified property belongs
     ''' to the type.
     ''' </summary>
-    ''' <typeparam name="T">
+    ''' <typeparam name="P">
     ''' Type of property.
     ''' </typeparam>
     ''' <param name="objectType">
@@ -1429,35 +1398,9 @@ Namespace Core
     ''' <returns>
     ''' The provided IPropertyInfo object.
     ''' </returns>
-    Protected Shared Function RegisterProperty(Of T)(ByVal objectType As Type, ByVal info As PropertyInfo(Of T)) As PropertyInfo(Of T)
+    Protected Shared Function RegisterProperty(Of P)(ByVal objectType As Type, ByVal info As PropertyInfo(Of P)) As PropertyInfo(Of P)
 
-      Dim list = GetPropertyListCache(objectType)
-      SyncLock list
-        list.Add(info)
-        ' reset index values
-        list.Sort()
-        For index = 0 To list.Count - 1
-          list(index).Index = index
-        Next
-      End SyncLock
-      Return info
-
-    End Function
-
-    ''' <summary>
-    ''' Returns a copy of the property list for
-    ''' a given business object type. Returns
-    ''' null if there are no properties registered
-    ''' for the type.
-    ''' </summary>
-    ''' <param name="objectType">
-    ''' The business object type.
-    ''' </param>
-    Friend Shared Function GetRegisteredProperties(ByVal objectType As Type) As List(Of IPropertyInfo)
-
-      ' return a copy of the list to avoid
-      ' possible locking issues
-      Return New List(Of IPropertyInfo)(GetPropertyListCache(objectType))
+      Return Core.FieldManager.PropertyInfoManager.RegisterProperty(Of P)(objectType, info)
 
     End Function
 
@@ -2268,7 +2211,7 @@ Namespace Core
     Protected ReadOnly Property FieldManager() As FieldManager.FieldDataManager
       Get
         If mFieldManager Is Nothing Then
-          mFieldManager = New FieldManager.FieldDataManager(GetPropertyListCache(Me.GetType))
+          mFieldManager = New FieldManager.FieldDataManager(Me.GetType)
           UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel)
         End If
         Return mFieldManager

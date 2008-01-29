@@ -250,7 +250,7 @@ Namespace Data
 
     Public Sub Load(ByVal source As System.Collections.IDictionary, ByVal target As Core.BusinessBase)
 
-      Dim propertyList = Core.BusinessBase.GetRegisteredProperties(target.GetType)
+      Dim propertyList = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(target.GetType)
       For Each p In propertyList
         target.LoadProperty(p, source.Item(p.Name))
       Next

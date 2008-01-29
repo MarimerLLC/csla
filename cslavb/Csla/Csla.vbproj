@@ -104,6 +104,7 @@
     <Compile Include="Core\ExtendedBindingList.vb" />
     <Compile Include="Core\FieldManager\FieldDataList.vb" />
     <Compile Include="Core\FieldManager\IFieldDataT.vb" />
+    <Compile Include="Core\FieldManager\PropertyInfoManager.vb" />
     <Compile Include="Core\IEditableBusinessObject.vb" />
     <Compile Include="Core\IExtendedBindingList.vb" />
     <Compile Include="Core\InnermostWhereFinder.vb" />

@@ -153,7 +153,22 @@ namespace Csla.Test.Basic
       //it should bring back everything 
       Assert.IsTrue(someQuery.Count() == 1000);
     }
- 
+
+    [TestMethod]
+    public void QueryWithComplexWhere()
+    {
+      var sampleSize = 1000;
+      Console.WriteLine("Creating " + sampleSize + " element collection...");
+      var blbCollection = new TestBusinessListBaseCollection(sampleSize);
+      Console.WriteLine("Collection established.");
+      var someQuery = from i in blbCollection where i.IndexedInt >= 0 && i.IndexedInt <= 1000 select i;
+      //it should bring back everything 
+      Assert.IsTrue(someQuery.Count() == 1000);
+
+      var anotherQuery = from i in blbCollection where i.IndexedInt.Equals(5) select i;
+      //it should bring back 1 item 
+      Assert.IsTrue(someQuery.Count() == 1);
+    }
   }
 
   [Serializable]

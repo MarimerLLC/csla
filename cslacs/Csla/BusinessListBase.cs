@@ -1194,7 +1194,7 @@ namespace Csla
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    public void SetParent(Core.IParent parent)
+    void Core.IEditableCollection.SetParent(Core.IParent parent)
     {
       _parent = parent;
     }

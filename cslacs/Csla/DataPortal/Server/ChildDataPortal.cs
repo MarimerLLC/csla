@@ -154,6 +154,12 @@ namespace Csla.Server
     /// </param>
     public void Update(object obj, params object[] parameters)
     {
+      var busObj = obj as Core.BusinessBase;
+      if (busObj != null && busObj.IsDirty == false)
+      {
+        // if the object isn't dirty, then just exit
+        return;
+      }
 
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
@@ -169,9 +175,8 @@ namespace Csla.Server
             new DataPortalEventArgs(null, objectType, operation));
 
         // tell the business object to update itself
-        if (obj is Core.BusinessBase)
+        if (busObj != null)
         {
-          Core.BusinessBase busObj = (Core.BusinessBase)obj;
           if (busObj.IsDeleted)
           {
             if (!busObj.IsNew)

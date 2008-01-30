@@ -159,15 +159,17 @@ namespace Csla.Test.Basic
     {
       var sampleSize = 1000;
       Console.WriteLine("Creating " + sampleSize + " element collection...");
-      var blbCollection = new TestBusinessListBaseCollection(sampleSize);
+      var blbCollection = new TestBusinessListBaseCollection(sampleSize,1,false);
       Console.WriteLine("Collection established.");
       var someQuery = from i in blbCollection where i.IndexedInt >= 0 && i.IndexedInt <= 1000 select i;
       //it should bring back everything 
       Assert.IsTrue(someQuery.Count() == 1000);
 
-      var anotherQuery = from i in blbCollection where i.IndexedInt.Equals(5) select i;
+      var firstItem = blbCollection.First();
+
+      var anotherQuery = from i in blbCollection where i.IndexedInt.Equals(firstItem.IndexedInt) select i;
       //it should bring back 1 item 
-      Assert.IsTrue(someQuery.Count() == 1);
+      Assert.IsTrue(anotherQuery.Count() == 1);
     }
   }
 
@@ -175,13 +177,19 @@ namespace Csla.Test.Basic
   public class TestReadOnlyCollection : ReadOnlyListBase<TestReadOnlyCollection, TestIndexableItem>
   {
     public TestReadOnlyCollection(int sampleSize)
+      : this(sampleSize, 100, true) { }
+    public TestReadOnlyCollection(int sampleSize, int sparsenessFactor, bool randomize)
     {
       //allow adds
       IsReadOnly = false;
       Random rnd = new Random();
       for(int i = 0; i < sampleSize; i++)
       {
-        int nextRnd = rnd.Next(sampleSize / 100);
+        int nextRnd;
+        if (randomize)
+          nextRnd = rnd.Next(sampleSize / sparsenessFactor);
+        else
+          nextRnd = i / sparsenessFactor;
         Add(
           new TestIndexableItem 
           { 
@@ -199,17 +207,23 @@ namespace Csla.Test.Basic
   public class TestBusinessListBaseCollection : BusinessListBase<TestBusinessListBaseCollection, TestIndexableItem>
   {
     public TestBusinessListBaseCollection(int sampleSize)
+      : this(sampleSize, 100, true) { }
+    public TestBusinessListBaseCollection(int sampleSize, int sparsenessFactor, bool randomize)
     {
       Random rnd = new Random();
-      for (int i = 0; i < sampleSize; i++)
+      for(int i = 0; i < sampleSize; i++)
       {
-        int nextRnd = rnd.Next(sampleSize / 100);
+        int nextRnd;
+        if (randomize)
+          nextRnd = rnd.Next(sampleSize / sparsenessFactor);
+        else
+          nextRnd = i / sparsenessFactor;
         Add(
-          new TestIndexableItem
-          {
-            IndexedString = nextRnd.ToString(),
-            IndexedInt = nextRnd,
-            NonIndexedString = nextRnd.ToString()
+          new TestIndexableItem 
+          { 
+            IndexedString = nextRnd.ToString(), 
+            IndexedInt = nextRnd, 
+            NonIndexedString = nextRnd.ToString() 
           }
           );
       }

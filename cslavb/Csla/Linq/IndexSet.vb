@@ -134,7 +134,7 @@ Namespace Linq
         Dim rightHash As Nullable(Of Integer) = GetHashRight(rightSide)
         Return _internalIndexSet([property]).WhereEqual(rightHash.Value, exprCompiled)
       Else
-        Return New List(Of T)()
+        Return _internalIndexSet([property]).Where(expr.Compile())
       End If
     End Function
 

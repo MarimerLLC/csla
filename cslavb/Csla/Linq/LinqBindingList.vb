@@ -685,7 +685,7 @@ Public Class LinqBindingList(Of T)
     If TypeOf _list Is Linq.IIndexSearchable(Of T) Then
       'before we can start, we do have to go through the whole thing once to make our filterindex.  
       For Each item As T In (TryCast(_list, Linq.IIndexSearchable(Of T))).SearchByExpression(whereBody)
-        If _filterBy Is Nothing Then
+        If Not _filterBy Is Nothing Then
           Dim tmp As Object = _filterBy.GetValue(item)
           _filterIndex.Add(New ListItem(tmp, (CType(_list, IPositionMappable(Of T))).PositionOf(item)))
         Else

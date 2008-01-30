@@ -141,6 +141,19 @@ namespace Csla.Test.Basic
       Assert.IsTrue(indexedRead < nonIndexedRead);
       Assert.IsTrue(forcedIterationIndexed.Count() == forcedIterationNonIndexed.Count());
     }
+
+    [TestMethod]
+    public void QueryOnIndexedFieldThatCantUseIndexWorks()
+    {
+      var sampleSize = 1000;
+      Console.WriteLine("Creating " + sampleSize + " element collection...");
+      var blbCollection = new TestBusinessListBaseCollection(sampleSize);
+      Console.WriteLine("Collection established.");
+      var someQuery = from i in blbCollection where i.IndexedInt <= 1000 select i;
+      //it should bring back everything 
+      Assert.IsTrue(someQuery.Count() == 1000);
+    }
+ 
   }
 
   [Serializable]

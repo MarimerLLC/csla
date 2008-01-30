@@ -146,7 +146,11 @@ namespace Csla.Linq
         int? rightHash = GetHashRight(rightSide);
         foreach (T item in _internalIndexSet[property].WhereEqual(rightHash.Value, exprCompiled))
           yield return item;
-
+      }
+      else
+      {
+        foreach(T item in _internalIndexSet[property].Where(expr.Compile()))
+          yield return item;
       }
     }
 

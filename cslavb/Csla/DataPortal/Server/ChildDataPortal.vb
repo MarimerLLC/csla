@@ -129,10 +129,17 @@ Namespace Server
     ''' </param>
     Public Sub Update(ByVal obj As Object, ByVal ParamArray parameters() As Object)
 
+      Dim busObj = TryCast(obj, Core.BusinessBase)
+      If busObj IsNot Nothing AndAlso busObj.IsDirty = False Then
+        ' if the object isn't dirty, then just exit
+        Exit Sub
+      End If
+
       Dim operation = DataPortalOperations.Update
       Dim objectType As Type = obj.GetType()
       Dim target As IDataPortalTarget = TryCast(obj, IDataPortalTarget)
       Dim lb As LateBoundObject = New LateBoundObject(obj)
+
       Try
         If target IsNot Nothing Then
           target.Child_OnDataPortalInvoke(New DataPortalEventArgs(Nothing, objectType, operation))
@@ -141,8 +148,7 @@ Namespace Server
         End If
 
         ' tell the business object to update itself
-        If TypeOf obj Is Core.BusinessBase Then
-          Dim busObj As Core.BusinessBase = CType(obj, Core.BusinessBase)
+        If busObj IsNot Nothing Then
           If busObj.IsDeleted Then
             If (Not busObj.IsNew) Then
               ' tell the object to delete itself

@@ -749,8 +749,16 @@ namespace Csla
         //before we can start, we do have to go through the whole thing once to make our filterindex.  
         foreach (T item in (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody))
         {
-          object tmp = _filterBy.GetValue(item);
-          _filterIndex.Add(new ListItem(tmp, ((IPositionMappable<T>)_list).PositionOf(item)));
+          if (_filterBy != null)
+          {
+            object tmp = _filterBy.GetValue(item);
+            _filterIndex.Add(new ListItem(tmp, ((IPositionMappable<T>)_list).PositionOf(item)));
+          }
+          else
+          {
+            _filterIndex.Add(new ListItem(item.GetHashCode(), ((IPositionMappable<T>)_list).PositionOf(item)));
+          }
+
         }
       //else
       //  foreach (T item in _list.Where((Func<T, bool>) (whereBody as LambdaExpression).Compile()))

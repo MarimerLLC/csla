@@ -19,6 +19,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Implements Core.IReadOnlyObject
   Implements Csla.Security.IAuthorizeReadWrite
   Implements Server.IDataPortalTarget
+  Implements Core.IManageProperties
 
 #Region " Object ID Value "
 
@@ -821,6 +822,29 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   End Function
 
+  ''' <summary>
+  ''' Gets a property's value as a specified type.
+  ''' </summary>
+  ''' <param name="propertyInfo">
+  ''' PropertyInfo object containing property metadata.</param>
+  ''' <remarks>
+  ''' If the user is not authorized to read the property
+  ''' value, the defaultValue value is returned as a
+  ''' result.
+  ''' </remarks>
+  Protected Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
+    Dim result As Object = Nothing
+    If CanReadProperty(propertyInfo.Name, False) Then
+      Dim info = FieldManager.GetFieldData(propertyInfo)
+      If info IsNot Nothing Then
+        result = info.Value
+      End If
+    Else
+      result = propertyInfo.DefaultValue
+    End If
+    Return result
+  End Function
+
 #End Region
 
 #Region " Read Properties"
@@ -871,6 +895,20 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     End If
     Return result
 
+  End Function
+
+  ''' <summary>
+  ''' Gets a property's value as a specified type.
+  ''' </summary>
+  ''' <param name="propertyInfo">
+  ''' PropertyInfo object containing property metadata.</param>
+  Protected Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
+    Dim info = FieldManager.GetFieldData(propertyInfo)
+    If info IsNot Nothing Then
+      Return info.Value
+    Else
+      Return Nothing
+    End If
   End Function
 
 #End Region
@@ -968,6 +1006,25 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   End Sub
 
+  ''' <summary>
+  ''' Loads a property's managed field with the 
+  ''' supplied value calling PropertyHasChanged 
+  ''' if the value does change.
+  ''' </summary>
+  ''' <param name="propertyInfo">
+  ''' PropertyInfo object containing property metadata.</param>
+  ''' <param name="newValue">
+  ''' The new value for the property.</param>
+  ''' <remarks>
+  ''' No authorization checks occur when this method is called,
+  ''' and no PropertyChanging or PropertyChanged events are raised.
+  ''' Loading values does not cause validation rules to be
+  ''' invoked.
+  ''' </remarks>
+  Protected Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
+    FieldManager.LoadFieldData(propertyInfo, newValue)
+  End Sub
+
 #End Region
 
 #Region " Field Manager "
@@ -1002,6 +1059,24 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Private Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
 
+  End Sub
+
+#End Region
+
+#Region " IManagedProperties "
+
+  Private Function GetManagedProperties() As System.Collections.Generic.List(Of IPropertyInfo) Implements IManageProperties.GetManagedProperties
+    Return FieldManager.GetRegisteredProperties
+  End Function
+
+  Private ReadOnly Property HasManagedProperties() As Boolean Implements IManageProperties.HasManagedProperties
+    Get
+      Return mFieldManager IsNot Nothing AndAlso mFieldManager.HasFields
+    End Get
+  End Property
+
+  Private Sub SetProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements Core.IManageProperties.SetProperty
+    Throw New NotImplementedException("IManageProperties.SetProperty")
   End Sub
 
 #End Region

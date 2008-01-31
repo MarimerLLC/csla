@@ -40,6 +40,15 @@ Namespace Core.FieldManager
       Return New List(Of IPropertyInfo)(_propertyList)
     End Function
 
+    ''' <summary>
+    ''' Gets a value indicating whether there
+    ''' are any managed fields available.
+    ''' </summary>
+    Public ReadOnly Property HasFields() As Boolean
+      Get
+        Return _propertyList.Count > 0
+      End Get
+    End Property
 
 #Region "ConsolidatedPropertyList"
 

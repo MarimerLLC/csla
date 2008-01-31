@@ -107,6 +107,7 @@
     <Compile Include="Core\FieldManager\PropertyInfoManager.vb" />
     <Compile Include="Core\IEditableBusinessObject.vb" />
     <Compile Include="Core\IExtendedBindingList.vb" />
+    <Compile Include="Core\IManageProperties.vb" />
     <Compile Include="Core\InnermostWhereFinder.vb" />
     <Compile Include="Core\InvalidQueryExpression.vb" />
     <Compile Include="Core\IParent.vb" />

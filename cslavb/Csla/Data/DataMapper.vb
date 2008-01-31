@@ -246,15 +246,64 @@ Namespace Data
 
 #End Region
 
-#Region " Load from IDictionary "
+#Region " Load from IDictionary"
 
-    Public Sub Load(ByVal source As System.Collections.IDictionary, ByVal target As Core.BusinessBase)
-
-      Dim propertyList = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(target.GetType)
+    ''' <summary>
+    ''' Copies values from the source into the
+    ''' target.
+    ''' </summary>
+    ''' <param name="source">
+    ''' Dictionary containing the source values.
+    ''' </param>
+    ''' <param name="target">
+    ''' Business object with managed fields that
+    ''' will contain the copied values.
+    ''' </param>
+    ''' <param name="nameMapper">
+    ''' A function that translates the target
+    ''' property names into key values for the
+    ''' source dictionary.
+    ''' </param>
+    Public Sub Load(ByVal source As System.Collections.IDictionary, ByVal target As Object, ByVal nameMapper As Func(Of String, Object))
+      Dim validTarget = TryCast(target, Core.IManageProperties)
+      If validTarget Is Nothing Then
+        Throw New NotSupportedException()
+      End If
+      Dim propertyList = validTarget.GetManagedProperties()
       For Each p In propertyList
-        target.LoadProperty(p, source.Item(p.Name))
-      Next
+        validTarget.LoadProperty(p, source(nameMapper(p.Name)))
+      Next p
+    End Sub
 
+#End Region
+
+#Region " Load to IDictionary"
+
+    ''' <summary>
+    ''' Copies values from the source into the
+    ''' target.
+    ''' </summary>
+    ''' <param name="source">
+    ''' Business object with managed fields that
+    ''' contain the source values.
+    ''' </param>
+    ''' <param name="target">
+    ''' Dictionary that will contain the resulting values.
+    ''' </param>
+    ''' <param name="nameMapper">
+    ''' A function that translates the source
+    ''' property names into key values for the
+    ''' target dictionary.
+    ''' </param>
+    Public Sub Load(ByVal source As Object, ByVal target As System.Collections.IDictionary, ByVal nameMapper As Func(Of String, Object))
+      Dim validSource = TryCast(source, Core.IManageProperties)
+      If validSource Is Nothing Then
+        Throw New NotSupportedException()
+      End If
+      Dim propertyList = validSource.GetManagedProperties()
+      For Each p In propertyList
+        target(nameMapper(p.Name)) = validSource.ReadProperty(p)
+      Next p
     End Sub
 
 #End Region

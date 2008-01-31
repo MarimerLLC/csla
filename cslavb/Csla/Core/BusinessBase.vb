@@ -21,6 +21,7 @@ Namespace Core
     Implements Csla.Security.IAuthorizeReadWrite
     Implements IParent
     Implements Server.IDataPortalTarget
+    Implements IManageProperties
 
 #Region " Constructors "
 
@@ -1651,7 +1652,7 @@ Namespace Core
     ''' value, the defaultValue value is returned as a
     ''' result.
     ''' </remarks>
-    Protected Friend Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object
+    Protected Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
       Dim result As Object = Nothing
       If CanReadProperty(propertyInfo.Name, False) Then
         Dim info = FieldManager.GetFieldData(propertyInfo)
@@ -1721,7 +1722,7 @@ Namespace Core
     ''' </summary>
     ''' <param name="propertyInfo">
     ''' PropertyInfo object containing property metadata.</param>
-    Protected Friend Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object
+    Protected Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
       Dim info = FieldManager.GetFieldData(propertyInfo)
       If info IsNot Nothing Then
         Return info.Value
@@ -2067,7 +2068,7 @@ Namespace Core
     ''' If the user is not authorized to change the 
     ''' property a SecurityException is thrown.
     ''' </remarks>
-    Protected Friend Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
+    Protected Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.SetProperty
       FieldManager.SetFieldData(propertyInfo, newValue)
     End Sub
 
@@ -2253,7 +2254,7 @@ Namespace Core
     ''' Loading values does not cause validation rules to be
     ''' invoked.
     ''' </remarks>
-    Protected Friend Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
+    Protected Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
       FieldManager.LoadFieldData(propertyInfo, newValue)
     End Sub
 
@@ -2334,6 +2335,20 @@ Namespace Core
       FieldManager.RemoveField(info)
 
     End Sub
+
+#End Region
+
+#Region " IManageProperties "
+
+    Private Function GetManagedProperties() As System.Collections.Generic.List(Of IPropertyInfo) Implements IManageProperties.GetManagedProperties
+      Return FieldManager.GetRegisteredProperties
+    End Function
+
+    Private ReadOnly Property HasManagedProperties() As Boolean Implements IManageProperties.HasManagedProperties
+      Get
+        Return mFieldManager IsNot Nothing AndAlso mFieldManager.HasFields
+      End Get
+    End Property
 
 #End Region
 

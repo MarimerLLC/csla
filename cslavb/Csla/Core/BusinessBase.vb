@@ -1357,7 +1357,9 @@ Namespace Core
 
       OnDeserialized(context)
       ValidationRules.SetTarget(Me)
-      FieldManager.SetPropertyList(Me.GetType)
+      If mFieldManager IsNot Nothing Then
+        FieldManager.SetPropertyList(Me.GetType)
+      End If
       InitializeBusinessRules()
       InitializeAuthorizationRules()
       FieldDataDeserialized()
@@ -1639,6 +1641,29 @@ Namespace Core
 
     End Function
 
+    ''' <summary>
+    ''' Gets a property's value as a specified type.
+    ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' PropertyInfo object containing property metadata.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to read the property
+    ''' value, the defaultValue value is returned as a
+    ''' result.
+    ''' </remarks>
+    Protected Friend Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object
+      Dim result As Object = Nothing
+      If CanReadProperty(propertyInfo.Name, False) Then
+        Dim info = FieldManager.GetFieldData(propertyInfo)
+        If info IsNot Nothing Then
+          result = info.Value
+        End If
+      Else
+        result = propertyInfo.DefaultValue
+      End If
+      Return result
+    End Function
+
 #End Region
 
 #Region " Read Properties"
@@ -1689,6 +1714,20 @@ Namespace Core
       End If
       Return result
 
+    End Function
+
+    ''' <summary>
+    ''' Gets a property's value as a specified type.
+    ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' PropertyInfo object containing property metadata.</param>
+    Protected Friend Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object
+      Dim info = FieldManager.GetFieldData(propertyInfo)
+      If info IsNot Nothing Then
+        Return info.Value
+      Else
+        Return Nothing
+      End If
     End Function
 
 #End Region
@@ -2015,6 +2054,23 @@ Namespace Core
 
     End Sub
 
+    ''' <summary>
+    ''' Sets a property's managed field with the 
+    ''' supplied value, first checking authorization, and then
+    ''' calling PropertyHasChanged if the value does change.
+    ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' PropertyInfo object containing property metadata.</param>
+    ''' <param name="newValue">
+    ''' The new value for the property.</param>
+    ''' <remarks>
+    ''' If the user is not authorized to change the 
+    ''' property a SecurityException is thrown.
+    ''' </remarks>
+    Protected Friend Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
+      FieldManager.SetFieldData(propertyInfo, newValue)
+    End Sub
+
 #End Region
 
 #Region " Load Properties "
@@ -2182,10 +2238,23 @@ Namespace Core
 
     End Sub
 
-    Friend Sub LoadProperty(ByVal info As IPropertyInfo, ByVal value As Object)
-
-      FieldManager.LoadFieldData(Of Object)(info, value)
-
+    ''' <summary>
+    ''' Loads a property's managed field with the 
+    ''' supplied value calling PropertyHasChanged 
+    ''' if the value does change.
+    ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' PropertyInfo object containing property metadata.</param>
+    ''' <param name="newValue">
+    ''' The new value for the property.</param>
+    ''' <remarks>
+    ''' No authorization checks occur when this method is called,
+    ''' and no PropertyChanging or PropertyChanged events are raised.
+    ''' Loading values does not cause validation rules to be
+    ''' invoked.
+    ''' </remarks>
+    Protected Friend Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
+      FieldManager.LoadFieldData(propertyInfo, newValue)
     End Sub
 
     Private Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)

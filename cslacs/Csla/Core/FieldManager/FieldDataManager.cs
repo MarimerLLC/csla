@@ -113,6 +113,17 @@ namespace Csla.Core.FieldManager
       return _fieldData[prop.Index];
     }
 
+    private IFieldData GetOrCreateFieldData(IPropertyInfo prop)
+    {
+      var field = _fieldData[prop.Index];
+      if (field == null)
+      {
+        field = prop.NewFieldData(prop.Name);
+        _fieldData[prop.Index] = field;
+      }
+      return field;
+    }
+
     internal IPropertyInfo FindProperty(object value)
     {
       var index = 0;
@@ -130,6 +141,22 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Sets the value for a specific field.
     /// </summary>
+    /// <param name="prop">
+    /// The property corresponding to the field.
+    /// </param>
+    /// <param name="value">
+    /// Value to store for field.
+    /// </param>
+    internal void SetFieldData(IPropertyInfo prop, object value)
+    {
+      value = Utilities.CoerceValue(prop.Type, value.GetType(), null, value);
+      var field = GetOrCreateFieldData(prop);
+      field.Value = value;
+    }
+
+    /// <summary>
+    /// Sets the value for a specific field.
+    /// </summary>
     /// <typeparam name="P">
     /// Type of field value.
     /// </typeparam>
@@ -141,17 +168,31 @@ namespace Csla.Core.FieldManager
     /// </param>
     internal void SetFieldData<P>(IPropertyInfo prop, P value)
     {
-      var field = _fieldData[prop.Index];
-      if (field == null)
-      {
-        field = prop.NewFieldData(prop.Name);
-        _fieldData[prop.Index] = field;
-      }
+      var field = GetOrCreateFieldData(prop);
       var fd = field as IFieldData<P>;
       if (fd != null)
         fd.Value = value;
       else
         field.Value = value;
+    }
+
+    /// <summary>
+    /// Sets the value for a specific field without
+    /// marking the field as dirty.
+    /// </summary>
+    /// <param name="prop">
+    /// The property corresponding to the field.
+    /// </param>
+    /// <param name="value">
+    /// Value to store for field.
+    /// </param>
+    internal IFieldData LoadFieldData(IPropertyInfo prop, object value)
+    {
+      value = Utilities.CoerceValue(prop.Type, value.GetType(), null, value);
+      var field = GetOrCreateFieldData(prop);
+      field.Value = value;
+      field.MarkClean();
+      return field;
     }
 
     /// <summary>
@@ -169,12 +210,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     internal IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
     {
-      var field = _fieldData[prop.Index];
-      if (field == null)
-      {
-        field = prop.NewFieldData(prop.Name);
-        _fieldData[prop.Index] = field;
-      }
+      var field = GetOrCreateFieldData(prop);
       var fd = field as IFieldData<P>;
       if (fd != null)
         fd.Value = value;
@@ -211,7 +247,7 @@ namespace Csla.Core.FieldManager
     {
       return _fieldData[propertyInfo.Index] != null;
     }
-   
+
     #endregion
 
     #region  IsValid/IsDirty

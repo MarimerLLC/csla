@@ -271,7 +271,7 @@ namespace Csla.Core
     {
       _isDirty = false;
       if (_fieldManager != null)
-      FieldManager.MarkClean();
+        FieldManager.MarkClean();
       OnUnknownPropertyChanged();
     }
 
@@ -1359,7 +1359,8 @@ namespace Csla.Core
     {
       OnDeserialized(context);
       ValidationRules.SetTarget(this);
-      FieldManager.SetPropertyList(this.GetType());
+      if (_fieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
       InitializeBusinessRules();
       InitializeAuthorizationRules();
       FieldDataDeserialized();
@@ -1645,6 +1646,32 @@ namespace Csla.Core
       return result;
     }
 
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected internal object GetProperty(IPropertyInfo propertyInfo)
+    {
+      object result = null;
+      if (CanReadProperty(propertyInfo.Name, false))
+      {
+        var info = FieldManager.GetFieldData(propertyInfo);
+        if (info != null)
+          result = info.Value;
+      }
+      else
+      {
+        result = propertyInfo.DefaultValue;
+      }
+      return result;
+    }
+
     #endregion
 
     #region  Read Properties
@@ -1693,6 +1720,20 @@ namespace Csla.Core
         FieldManager.LoadFieldData<P>(propertyInfo, result);
       }
       return result;
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    protected internal object ReadProperty(IPropertyInfo propertyInfo)
+    {
+      var info = FieldManager.GetFieldData(propertyInfo);
+      if (info != null)
+        return info.Value;
+      else
+        return null;
     }
 
     #endregion
@@ -2021,6 +2062,24 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the 
+    /// property a SecurityException is thrown.
+    /// </remarks>
+    protected internal void SetProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      FieldManager.SetFieldData(propertyInfo, newValue);
+    }
+
     #endregion
 
     #region  Load Properties
@@ -2186,9 +2245,24 @@ namespace Csla.Core
       }
     }
 
-    internal void LoadProperty(IPropertyInfo info, object value)
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value calling PropertyHasChanged 
+    /// if the value does change.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected internal void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      FieldManager.LoadFieldData<object>(info, value);
+      FieldManager.LoadFieldData(propertyInfo, newValue);
     }
 
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)

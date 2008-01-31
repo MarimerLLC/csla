@@ -13,8 +13,6 @@ namespace Csla.Core.FieldManager
   [Serializable()]
   public class FieldDataManager : IUndoableObject
   {
-    private static Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new Dictionary<Type, List<IPropertyInfo>>();
-
     [NonSerialized()]
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
@@ -34,7 +32,23 @@ namespace Csla.Core.FieldManager
       _propertyList = GetConsolidatedList(businessObjectType);
     }
 
-    private List<IPropertyInfo> GetConsolidatedList(Type type)
+    /// <summary>
+    /// Returns a copy of the property list for
+    /// the business object. Returns
+    /// null if there are no properties registered
+    /// for this object.
+    /// </summary>
+    public List<IPropertyInfo> GetRegisteredProperties()
+    {
+      return new List<IPropertyInfo>(_propertyList);
+    }
+
+
+    #region ConsolidatedPropertyList
+
+    private static Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new Dictionary<Type, List<IPropertyInfo>>();
+
+    private static List<IPropertyInfo> GetConsolidatedList(Type type)
     {
       List<IPropertyInfo> result = null;
       if (!_consolidatedLists.TryGetValue(type, out result))
@@ -51,7 +65,7 @@ namespace Csla.Core.FieldManager
       return result;
     }
 
-    private List<IPropertyInfo> CreateConsolidatedList(Type type)
+    private static List<IPropertyInfo> CreateConsolidatedList(Type type)
     {
       List<IPropertyInfo> result = new List<IPropertyInfo>();
       // get inheritance hierarchy
@@ -83,6 +97,8 @@ namespace Csla.Core.FieldManager
       return result;
     }
 
+    #endregion
+    
     #region  Get/Set/Find fields
 
     /// <summary>
@@ -92,7 +108,7 @@ namespace Csla.Core.FieldManager
     /// <param name="prop">
     /// The property corresponding to the field.
     /// </param>
-    public IFieldData GetFieldData(IPropertyInfo prop)
+    internal IFieldData GetFieldData(IPropertyInfo prop)
     {
       return _fieldData[prop.Index];
     }
@@ -123,7 +139,7 @@ namespace Csla.Core.FieldManager
     /// <param name="value">
     /// Value to store for field.
     /// </param>
-    public void SetFieldData<P>(IPropertyInfo prop, P value)
+    internal void SetFieldData<P>(IPropertyInfo prop, P value)
     {
       var field = _fieldData[prop.Index];
       if (field == null)
@@ -151,7 +167,7 @@ namespace Csla.Core.FieldManager
     /// <param name="value">
     /// Value to store for field.
     /// </param>
-    public IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
+    internal IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
     {
       var field = _fieldData[prop.Index];
       if (field == null)
@@ -176,7 +192,7 @@ namespace Csla.Core.FieldManager
     /// <param name="prop">
     /// The property corresponding to the field.
     /// </param>
-    public void RemoveField(IPropertyInfo prop)
+    internal void RemoveField(IPropertyInfo prop)
     {
       var field = _fieldData[prop.Index];
       if (field != null)
@@ -195,25 +211,7 @@ namespace Csla.Core.FieldManager
     {
       return _fieldData[propertyInfo.Index] != null;
     }
-
-    /// <summary>
-    /// Returns a list of all child objects
-    /// contained in the list of fields.
-    /// </summary>
-    /// <remarks>
-    /// This method returns a list of actual child
-    /// objects, not a list of
-    /// <see cref="IFieldData" /> container objects.
-    /// </remarks>
-    public List<object> GetChildren()
-    {
-      List<object> result = new List<object>();
-      foreach (var item in _fieldData)
-        if (item != null && (item.Value is IEditableBusinessObject || item.Value is IEditableCollection))
-          result.Add(item.Value);
-      return result;
-    }
-
+   
     #endregion
 
     #region  IsValid/IsDirty
@@ -246,7 +244,7 @@ namespace Csla.Core.FieldManager
     /// Marks all fields as clean
     /// (not dirty).
     /// </summary>
-    public void MarkClean()
+    internal void MarkClean()
     {
       foreach (var item in _fieldData)
         if (item != null && item.IsDirty)
@@ -371,7 +369,26 @@ namespace Csla.Core.FieldManager
 
     #endregion
 
-    #region  Update Children
+    #region  Child Objects 
+
+    
+    /// <summary>
+    /// Returns a list of all child objects
+    /// contained in the list of fields.
+    /// </summary>
+    /// <remarks>
+    /// This method returns a list of actual child
+    /// objects, not a list of
+    /// <see cref="IFieldData" /> container objects.
+    /// </remarks>
+    public List<object> GetChildren()
+    {
+      List<object> result = new List<object>();
+      foreach (var item in _fieldData)
+        if (item != null && (item.Value is IEditableBusinessObject || item.Value is IEditableCollection))
+          result.Add(item.Value);
+      return result;
+    }
 
     /// <summary>
     /// Invokes the data portal to update

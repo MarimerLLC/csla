@@ -13,8 +13,6 @@ Namespace Core.FieldManager
   Public Class FieldDataManager
     Implements IUndoableObject
 
-    Private Shared _consolidatedLists As Dictionary(Of Type, List(Of IPropertyInfo)) = New Dictionary(Of Type, List(Of IPropertyInfo))()
-
     <NonSerialized()> _
     Private _propertyList As List(Of IPropertyInfo)
     Private _fieldData() As IFieldData
@@ -32,7 +30,23 @@ Namespace Core.FieldManager
       _propertyList = GetConsolidatedList(businessObjectType)
     End Sub
 
-    Private Function GetConsolidatedList(ByVal type As Type) As List(Of IPropertyInfo)
+    ''' <summary>
+    ''' Returns a copy of the property list for
+    ''' the business object. Returns
+    ''' null if there are no properties registered
+    ''' for this object.
+    ''' </summary>
+    Public Function GetRegisteredProperties() As List(Of IPropertyInfo)
+
+      Return New List(Of IPropertyInfo)(_propertyList)
+
+    End Function
+
+#Region " ConsolidatedPropertyList "
+
+    Private Shared _consolidatedLists As Dictionary(Of Type, List(Of IPropertyInfo)) = New Dictionary(Of Type, List(Of IPropertyInfo))()
+
+    Private Shared Function GetConsolidatedList(ByVal type As Type) As List(Of IPropertyInfo)
       Dim result As List(Of IPropertyInfo) = Nothing
       If (Not _consolidatedLists.TryGetValue(type, result)) Then
         SyncLock _consolidatedLists
@@ -45,7 +59,7 @@ Namespace Core.FieldManager
       Return result
     End Function
 
-    Private Function CreateConsolidatedList(ByVal type As Type) As List(Of IPropertyInfo)
+    Private Shared Function CreateConsolidatedList(ByVal type As Type) As List(Of IPropertyInfo)
       Dim result As List(Of IPropertyInfo) = New List(Of IPropertyInfo)()
       ' get inheritance hierarchy
       Dim current As Type = type
@@ -72,6 +86,8 @@ Namespace Core.FieldManager
       Return result
     End Function
 
+#End Region
+
 #Region " Get/Set/Find fields"
 
     ''' <summary>
@@ -81,7 +97,7 @@ Namespace Core.FieldManager
     ''' <param name="prop">
     ''' The property corresponding to the field.
     ''' </param>
-    Public Function GetFieldData(ByVal prop As IPropertyInfo) As IFieldData
+    Friend Function GetFieldData(ByVal prop As IPropertyInfo) As IFieldData
       Return _fieldData(prop.Index)
     End Function
 
@@ -108,7 +124,7 @@ Namespace Core.FieldManager
     ''' <param name="value">
     ''' Value to store for field.
     ''' </param>
-    Public Sub SetFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P)
+    Friend Sub SetFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P)
       Dim field = _fieldData(prop.Index)
       If field Is Nothing Then
         field = prop.NewFieldData(prop.Name)
@@ -135,7 +151,7 @@ Namespace Core.FieldManager
     ''' <param name="value">
     ''' Value to store for field.
     ''' </param>
-    Public Function LoadFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P) As IFieldData
+    Friend Function LoadFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P) As IFieldData
       Dim field = _fieldData(prop.Index)
       If field Is Nothing Then
         field = prop.NewFieldData(prop.Name)
@@ -159,7 +175,7 @@ Namespace Core.FieldManager
     ''' <param name="prop">
     ''' The property corresponding to the field.
     ''' </param>
-    Public Sub RemoveField(ByVal prop As IPropertyInfo)
+    Friend Sub RemoveField(ByVal prop As IPropertyInfo)
       Dim field = _fieldData(prop.Index)
       If field IsNot Nothing Then
         field.Value = Nothing
@@ -176,25 +192,6 @@ Namespace Core.FieldManager
     ''' </param>
     Public Function FieldExists(ByVal propertyInfo As IPropertyInfo) As Boolean
       Return _fieldData(propertyInfo.Index) IsNot Nothing
-    End Function
-
-    ''' <summary>
-    ''' Returns a list of all child objects
-    ''' contained in the list of fields.
-    ''' </summary>
-    ''' <remarks>
-    ''' This method returns a list of actual child
-    ''' objects, not a list of
-    ''' <see cref="IFieldData" /> container objects.
-    ''' </remarks>
-    Public Function GetChildren() As List(Of Object)
-      Dim result As List(Of Object) = New List(Of Object)()
-      For Each item In _fieldData
-        If item IsNot Nothing AndAlso (TypeOf item.Value Is IEditableBusinessObject OrElse TypeOf item.Value Is IEditableCollection) Then
-          result.Add(item.Value)
-        End If
-      Next item
-      Return result
     End Function
 
 #End Region
@@ -231,7 +228,7 @@ Namespace Core.FieldManager
     ''' Marks all fields as clean
     ''' (not dirty).
     ''' </summary>
-    Public Sub MarkClean()
+    Friend Sub MarkClean()
       For Each item In _fieldData
         If item IsNot Nothing AndAlso item.IsDirty Then
           item.MarkClean()
@@ -339,7 +336,26 @@ Namespace Core.FieldManager
 
 #End Region
 
-#Region " Update Children"
+#Region " Child Objects "
+
+    ''' <summary>
+    ''' Returns a list of all child objects
+    ''' contained in the list of fields.
+    ''' </summary>
+    ''' <remarks>
+    ''' This method returns a list of actual child
+    ''' objects, not a list of
+    ''' <see cref="IFieldData" /> container objects.
+    ''' </remarks>
+    Public Function GetChildren() As List(Of Object)
+      Dim result As List(Of Object) = New List(Of Object)()
+      For Each item In _fieldData
+        If item IsNot Nothing AndAlso (TypeOf item.Value Is IEditableBusinessObject OrElse TypeOf item.Value Is IEditableCollection) Then
+          result.Add(item.Value)
+        End If
+      Next item
+      Return result
+    End Function
 
     ''' <summary>
     ''' Invokes the data portal to update

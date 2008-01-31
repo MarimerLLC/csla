@@ -644,7 +644,7 @@ Public MustInherit Class BusinessListBase( _
 
   End Sub
 
-  Public Function PositionOf(ByVal item As C) As Integer Implements IPositionMappable(Of C).PositionOf
+  Private Function PositionOf(ByVal item As C) As Integer Implements IPositionMappable(Of C).PositionOf
     DeferredLoadPositionMapIfNotLoaded()
     Return _positionMap.PositionOf(item)
   End Function

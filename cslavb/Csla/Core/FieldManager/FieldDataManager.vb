@@ -37,12 +37,11 @@ Namespace Core.FieldManager
     ''' for this object.
     ''' </summary>
     Public Function GetRegisteredProperties() As List(Of IPropertyInfo)
-
       Return New List(Of IPropertyInfo)(_propertyList)
-
     End Function
 
-#Region " ConsolidatedPropertyList "
+
+#Region "ConsolidatedPropertyList"
 
     Private Shared _consolidatedLists As Dictionary(Of Type, List(Of IPropertyInfo)) = New Dictionary(Of Type, List(Of IPropertyInfo))()
 
@@ -101,6 +100,15 @@ Namespace Core.FieldManager
       Return _fieldData(prop.Index)
     End Function
 
+    Private Function GetOrCreateFieldData(ByVal prop As IPropertyInfo) As IFieldData
+      Dim field = _fieldData(prop.Index)
+      If field Is Nothing Then
+        field = prop.NewFieldData(prop.Name)
+        _fieldData(prop.Index) = field
+      End If
+      Return field
+    End Function
+
     Friend Function FindProperty(ByVal value As Object) As IPropertyInfo
       Dim index = 0
       For Each item In _fieldData
@@ -115,6 +123,21 @@ Namespace Core.FieldManager
     ''' <summary>
     ''' Sets the value for a specific field.
     ''' </summary>
+    ''' <param name="prop">
+    ''' The property corresponding to the field.
+    ''' </param>
+    ''' <param name="value">
+    ''' Value to store for field.
+    ''' </param>
+    Friend Sub SetFieldData(ByVal prop As IPropertyInfo, ByVal value As Object)
+      value = Utilities.CoerceValue(prop.Type, value.GetType(), Nothing, value)
+      Dim field = GetOrCreateFieldData(prop)
+      field.Value = value
+    End Sub
+
+    ''' <summary>
+    ''' Sets the value for a specific field.
+    ''' </summary>
     ''' <typeparam name="P">
     ''' Type of field value.
     ''' </typeparam>
@@ -125,11 +148,7 @@ Namespace Core.FieldManager
     ''' Value to store for field.
     ''' </param>
     Friend Sub SetFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P)
-      Dim field = _fieldData(prop.Index)
-      If field Is Nothing Then
-        field = prop.NewFieldData(prop.Name)
-        _fieldData(prop.Index) = field
-      End If
+      Dim field = GetOrCreateFieldData(prop)
       Dim fd = TryCast(field, IFieldData(Of P))
       If fd IsNot Nothing Then
         fd.Value = value
@@ -137,6 +156,24 @@ Namespace Core.FieldManager
         field.Value = value
       End If
     End Sub
+
+    ''' <summary>
+    ''' Sets the value for a specific field without
+    ''' marking the field as dirty.
+    ''' </summary>
+    ''' <param name="prop">
+    ''' The property corresponding to the field.
+    ''' </param>
+    ''' <param name="value">
+    ''' Value to store for field.
+    ''' </param>
+    Friend Function LoadFieldData(ByVal prop As IPropertyInfo, ByVal value As Object) As IFieldData
+      value = Utilities.CoerceValue(prop.Type, value.GetType(), Nothing, value)
+      Dim field = GetOrCreateFieldData(prop)
+      field.Value = value
+      field.MarkClean()
+      Return field
+    End Function
 
     ''' <summary>
     ''' Sets the value for a specific field without
@@ -152,11 +189,7 @@ Namespace Core.FieldManager
     ''' Value to store for field.
     ''' </param>
     Friend Function LoadFieldData(Of P)(ByVal prop As IPropertyInfo, ByVal value As P) As IFieldData
-      Dim field = _fieldData(prop.Index)
-      If field Is Nothing Then
-        field = prop.NewFieldData(prop.Name)
-        _fieldData(prop.Index) = field
-      End If
+      Dim field = GetOrCreateFieldData(prop)
       Dim fd = TryCast(field, IFieldData(Of P))
       If fd IsNot Nothing Then
         fd.Value = value
@@ -337,6 +370,7 @@ Namespace Core.FieldManager
 #End Region
 
 #Region " Child Objects "
+
 
     ''' <summary>
     ''' Returns a list of all child objects

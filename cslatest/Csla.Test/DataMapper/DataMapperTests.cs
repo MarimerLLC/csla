@@ -168,6 +168,42 @@ namespace Csla.Test.DataMapper
       Csla.Data.DataMapper.SetFieldValue(target, "_smartDate", new DateTimeOffset(new DateTime(2004, 3, 2)));
       Assert.AreEqual(new Csla.SmartDate(new DateTime(2004, 3, 2)), target.MySmartDate, "SmartDate should be 3/2/2004");
     }
+
+    [TestMethod]
+    public void BasicDataMap()
+    {
+      Csla.Data.DataMap map = new Csla.Data.DataMap(typeof(DataMapTarget), typeof(DataMapTarget));
+      
+      DataMapTarget source = new DataMapTarget();
+      DataMapTarget target = new DataMapTarget();
+      source.MyInt = 123;
+      source.MyDouble = 456;
+      source.MyBool = true;
+      source.MyEnum = DataMapEnum.Second;
+      var g = Guid.NewGuid();
+      source.MyGuid = g;
+      source.MyNInt = 321;
+      source.MySmartDate = new Csla.SmartDate(new DateTime(2002, 12, 4));
+      source.MyDate = new DateTime(2002, 11, 2);
+      source.MyString = "Third";
+
+      map.AddFieldMapping("_int", "_int");
+      map.AddFieldToPropertyMapping("_double", "MyDouble");
+      map.AddPropertyMapping("MyBool", "MyBool");
+      map.AddPropertyToFieldMapping("MyGuid", "_guid");
+      map.AddPropertyMapping("MyEnum", "MyString");
+      map.AddPropertyMapping("MyString", "MyEnum");
+
+      Csla.Data.DataMapper.Map(source, target, map);
+
+      Assert.AreEqual(123, target.MyInt, "Int should match");
+      Assert.AreEqual(456, target.MyDouble, "Double should match");
+      Assert.AreEqual(true, target.MyBool, "bool should match");
+      Assert.AreEqual(g, target.MyGuid, "guid should match");
+      Assert.AreEqual("Second", target.MyString, "string should match (converted enum)");
+      Assert.AreEqual(DataMapEnum.Third, target.MyEnum, "enum should match (parsed enum)");
+      Assert.AreNotEqual(source.MyDate, target.MyDate, "Dates should not match");
+    }
   }
 
   public enum DataMapEnum
@@ -241,6 +277,13 @@ namespace Csla.Test.DataMapper
     {
       get { return _guid; }
       set { _guid = value; }
+    }
+
+    private string _string;
+    public string MyString 
+    {
+      get { return _string; }
+      set { _string = value; }
     }
   }
 }

@@ -6,6 +6,11 @@ using System.Text;
 
 namespace Csla.Data
 {
+  /// <summary>
+  /// Defines a mapping between two sets of
+  /// properties/fields for use by
+  /// DataMapper.
+  /// </summary>
   public class DataMap
   {
     #region MapElement
@@ -43,6 +48,15 @@ namespace Csla.Data
                                           BindingFlags.Instance |
                                           BindingFlags.FlattenHierarchy;
 
+    /// <summary>
+    /// Initializes an instance of the type.
+    /// </summary>
+    /// <param name="sourceType">
+    /// Type of source object.
+    /// </param>
+    /// <param name="targetType">
+    /// Type of target object.
+    /// </param>
     public DataMap(Type sourceType, Type targetType)
     {
       _sourceType = sourceType;
@@ -59,21 +73,58 @@ namespace Csla.Data
       return _map;
     }
 
+    /// <summary>
+    /// Adds a property to property
+    /// mapping.
+    /// </summary>
+    /// <param name="sourceProperty">
+    /// Name of source property.
+    /// </param>
+    /// <param name="targetProperty">
+    /// Name of target property.
+    /// </param>
     public void AddPropertyMapping(string sourceProperty, string targetProperty)
     {
       _map.Add(new MemberMapping(_sourceType.GetProperty(sourceProperty, _propertyFlags), _targetType.GetProperty(targetProperty, _propertyFlags)));
     }
 
+    /// <summary>
+    /// Adds a field to field mapping.
+    /// </summary>
+    /// <param name="sourceField">
+    /// Name of source field.
+    /// </param>
+    /// <param name="targetField">
+    /// Name of target field.
+    /// </param>
     public void AddFieldMapping(string sourceField, string targetField)
     {
       _map.Add(new MemberMapping(_sourceType.GetField(sourceField, _fieldFlags), _targetType.GetField(targetField, _fieldFlags)));
     }
 
+    /// <summary>
+    /// Adds a field to property mapping.
+    /// </summary>
+    /// <param name="sourceField">
+    /// Name of source field.
+    /// </param>
+    /// <param name="targetProperty">
+    /// Name of target property.
+    /// </param>
     public void AddFieldToPropertyMapping(string sourceField, string targetProperty)
     {
       _map.Add(new MemberMapping(_sourceType.GetField(sourceField, _fieldFlags), _targetType.GetProperty(targetProperty, _propertyFlags)));
     }
 
+    /// <summary>
+    /// Adds a property to field mapping.
+    /// </summary>
+    /// <param name="sourceProperty">
+    /// Name of source property.
+    /// </param>
+    /// <param name="targetField">
+    /// Name of target field.
+    /// </param>
     public void AddPropertyToFieldMapping(string sourceProperty, string targetField)
     {
       _map.Add(new MemberMapping(_sourceType.GetProperty(sourceProperty, _propertyFlags), _targetType.GetField(targetField, _fieldFlags)));

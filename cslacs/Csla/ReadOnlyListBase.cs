@@ -239,7 +239,7 @@ namespace Csla
   /// <summary>
   /// Extension method for implementation of LINQ methods on ReadOnlyListBase
   /// </summary>
-  public static class ReadOnlyListBase
+  public static class ReadOnlyListBaseExtension
   {
     /// <summary>
     /// Custom implementation of Where for ReadOnlyListBase - used in LINQ

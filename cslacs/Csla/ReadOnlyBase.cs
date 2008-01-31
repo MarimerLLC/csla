@@ -21,7 +21,8 @@ namespace Csla
   /// <typeparam name="T">Type of the business object.</typeparam>
   [Serializable()]
   public abstract class ReadOnlyBase<T> : ICloneable, 
-    Core.IReadOnlyObject, Csla.Security.IAuthorizeReadWrite, Server.IDataPortalTarget
+    Core.IReadOnlyObject, Csla.Security.IAuthorizeReadWrite, Server.IDataPortalTarget,
+    Core.IManageProperties
     where T : ReadOnlyBase<T>
   {
     #region Object ID Value
@@ -805,6 +806,32 @@ namespace Csla
       return result;
     }
 
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected object GetProperty(IPropertyInfo propertyInfo)
+    {
+      object result = null;
+      if (CanReadProperty(propertyInfo.Name, false))
+      {
+        var info = FieldManager.GetFieldData(propertyInfo);
+        if (info != null)
+          result = info.Value;
+      }
+      else
+      {
+        result = propertyInfo.DefaultValue;
+      }
+      return result;
+    }
+
     #endregion
 
     #region  Read Properties
@@ -853,6 +880,20 @@ namespace Csla
         FieldManager.LoadFieldData<P>(propertyInfo, result);
       }
       return result;
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    protected object ReadProperty(IPropertyInfo propertyInfo)
+    {
+      var info = FieldManager.GetFieldData(propertyInfo);
+      if (info != null)
+        return info.Value;
+      else
+        return null;
     }
 
     #endregion
@@ -956,6 +997,26 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value calling PropertyHasChanged 
+    /// if the value does change.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      FieldManager.LoadFieldData(propertyInfo, newValue);
+    }
+
     #endregion
 
     #region  Field Manager
@@ -1020,6 +1081,40 @@ namespace Csla
     void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       this.Child_OnDataPortalException(e, ex);
+    }
+
+    #endregion
+
+    #region IManageProperties Members
+
+    bool IManageProperties.HasManagedProperties
+    {
+      get { return (_fieldManager != null && _fieldManager.HasFields); }
+    }
+
+    List<IPropertyInfo> IManageProperties.GetManagedProperties()
+    {
+      return FieldManager.GetRegisteredProperties();
+    }
+
+    object IManageProperties.GetProperty(IPropertyInfo propertyInfo)
+    {
+      return GetProperty(propertyInfo);
+    }
+
+    object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
+    {
+      return ReadProperty(propertyInfo);
+    }
+
+    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      throw new NotImplementedException("IManageProperties.SetProperty");
+    }
+
+    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      LoadProperty(propertyInfo, newValue);
     }
 
     #endregion

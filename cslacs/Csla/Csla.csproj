@@ -101,6 +101,7 @@
     <Compile Include="Core\FieldManager\PropertyInfoManager.cs" />
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
+    <Compile Include="Core\IManageProperties.cs" />
     <Compile Include="Core\IPropertyInfo.cs" />
     <Compile Include="Core\ITrackStatus.cs" />
     <Compile Include="DataPortal\DataPortalMethodCache.cs" />

@@ -18,7 +18,8 @@ namespace Csla.Core
   public abstract class BusinessBase : 
     Csla.Core.UndoableBase, IEditableBusinessObject,
     System.ComponentModel.IEditableObject, System.ComponentModel.IDataErrorInfo, 
-    ICloneable, Csla.Security.IAuthorizeReadWrite, IParent, Server.IDataPortalTarget
+    ICloneable, Csla.Security.IAuthorizeReadWrite, IParent, Server.IDataPortalTarget,
+    IManageProperties
   {
 
     #region Constructors
@@ -1656,7 +1657,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected internal object GetProperty(IPropertyInfo propertyInfo)
+    protected object GetProperty(IPropertyInfo propertyInfo)
     {
       object result = null;
       if (CanReadProperty(propertyInfo.Name, false))
@@ -1727,7 +1728,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected internal object ReadProperty(IPropertyInfo propertyInfo)
+    protected object ReadProperty(IPropertyInfo propertyInfo)
     {
       var info = FieldManager.GetFieldData(propertyInfo);
       if (info != null)
@@ -2075,7 +2076,7 @@ namespace Csla.Core
     /// If the user is not authorized to change the 
     /// property a SecurityException is thrown.
     /// </remarks>
-    protected internal void SetProperty(IPropertyInfo propertyInfo, object newValue)
+    protected void SetProperty(IPropertyInfo propertyInfo, object newValue)
     {
       FieldManager.SetFieldData(propertyInfo, newValue);
     }
@@ -2260,7 +2261,7 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected internal void LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       FieldManager.LoadFieldData(propertyInfo, newValue);
     }
@@ -2399,6 +2400,40 @@ namespace Csla.Core
     void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       this.Child_OnDataPortalException(e, ex);
+    }
+
+    #endregion
+
+    #region IManageProperties Members
+
+    bool IManageProperties.HasManagedProperties
+    {
+      get { return (_fieldManager != null && _fieldManager.HasFields); }
+    }
+
+    List<IPropertyInfo> IManageProperties.GetManagedProperties()
+    {
+      return FieldManager.GetRegisteredProperties();
+    }
+
+    object IManageProperties.GetProperty(IPropertyInfo propertyInfo)
+    {
+      return GetProperty(propertyInfo);
+    }
+
+    object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
+    {
+      return ReadProperty(propertyInfo);
+    }
+
+    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      SetProperty(propertyInfo, newValue);
+    }
+
+    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      LoadProperty(propertyInfo, newValue);
     }
 
     #endregion

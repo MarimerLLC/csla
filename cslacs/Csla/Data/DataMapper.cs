@@ -312,11 +312,49 @@ namespace Csla.Data
     /// Business object with managed fields that
     /// will contain the copied values.
     /// </param>
-    public static void Load(System.Collections.IDictionary source, Core.BusinessBase target)
+    /// <param name="nameMapper">
+    /// A function that translates the target
+    /// property names into key values for the
+    /// source dictionary.
+    /// </param>
+    public static void Load(System.Collections.IDictionary source, object target, Func<string, object> nameMapper)
     {
-      var propertyList = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(target.GetType());
+      var validTarget = target as Core.IManageProperties;
+      if (validTarget == null)
+        throw new NotSupportedException();
+      var propertyList = validTarget.GetManagedProperties();
       foreach (var p in propertyList)
-        target.LoadProperty(p, source[p.Name]);
+        validTarget.LoadProperty(p, source[nameMapper(p.Name)]);
+    }
+
+    #endregion
+
+    #region  Load to IDictionary
+
+    /// <summary>
+    /// Copies values from the source into the
+    /// target.
+    /// </summary>
+    /// <param name="source">
+    /// Business object with managed fields that
+    /// contain the source values.
+    /// </param>
+    /// <param name="target">
+    /// Dictionary that will contain the resulting values.
+    /// </param>
+    /// <param name="nameMapper">
+    /// A function that translates the source
+    /// property names into key values for the
+    /// target dictionary.
+    /// </param>
+    public static void Load(object source, System.Collections.IDictionary target, Func<string, object> nameMapper)
+    {
+      var validSource = source as Core.IManageProperties;
+      if (validSource == null)
+        throw new NotSupportedException();
+      var propertyList = validSource.GetManagedProperties();
+      foreach (var p in propertyList)
+        target[nameMapper(p.Name)] = validSource.ReadProperty(p);
     }
 
     #endregion

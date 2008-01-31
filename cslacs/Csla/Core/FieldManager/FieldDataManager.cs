@@ -43,6 +43,14 @@ namespace Csla.Core.FieldManager
       return new List<IPropertyInfo>(_propertyList);
     }
 
+    /// <summary>
+    /// Gets a value indicating whether there
+    /// are any managed fields available.
+    /// </summary>
+    public bool HasFields
+    {
+      get { return _propertyList.Count > 0; }
+    }
 
     #region ConsolidatedPropertyList
 

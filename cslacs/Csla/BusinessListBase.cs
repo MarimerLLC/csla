@@ -693,7 +693,7 @@ namespace Csla
       
     }
 
-    public int PositionOf(C item)
+    int Core.IPositionMappable<C>.PositionOf(C item)
     {
       DeferredLoadPositionMapIfNotLoaded();
       return _positionMap.PositionOf(item);

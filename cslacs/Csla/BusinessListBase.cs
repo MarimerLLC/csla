@@ -367,7 +367,7 @@ namespace Csla
     private void DeleteChild(C child)
     {
       // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel);
+      Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel, false);
       // remove from the index
       RemoveIndexItem(child);
       // remove from the position map
@@ -442,7 +442,7 @@ namespace Csla
       // set parent reference
       item.SetParent(this);
       // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel);
+      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
       // when an object is inserted we assume it is
       // a new object and so the edit level when it was
       // added must be set
@@ -530,7 +530,7 @@ namespace Csla
         // set parent reference
         item.SetParent(this);
         // set child edit level
-        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel);
+        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
         // reset EditLevelAdded 
         item.EditLevelAdded = this.EditLevel;
         // update the indexes

@@ -2214,7 +2214,7 @@ namespace Csla.Core
           {
             child.SetParent(this);
             // set child edit level
-            UndoableBase.ResetChildEditLevel(child, this.EditLevel);
+            UndoableBase.ResetChildEditLevel(child, this.EditLevel, this.BindingEdit);
             // reset EditLevelAdded 
             child.EditLevelAdded = this.EditLevel;
             // hook child event
@@ -2242,10 +2242,7 @@ namespace Csla.Core
             if (undoChild != null)
             {
               // set child edit level
-              var newEditLevel = this.EditLevel;
-              if (BindingEdit)
-                newEditLevel = this.EditLevel - 1;
-              UndoableBase.ResetChildEditLevel(undoChild, newEditLevel);
+              UndoableBase.ResetChildEditLevel(undoChild, this.EditLevel, this.BindingEdit);
             }
             IBindingList pc = (IBindingList)newValue;
             pc.ListChanged += new ListChangedEventHandler(Child_ListChanged);
@@ -2310,7 +2307,7 @@ namespace Csla.Core
         if (_fieldManager == null)
         {
           _fieldManager = new FieldManager.FieldDataManager(this.GetType());
-          UndoableBase.ResetChildEditLevel(_fieldManager, this.EditLevel);
+          UndoableBase.ResetChildEditLevel(_fieldManager, this.EditLevel, this.BindingEdit);
         }
         return _fieldManager;
       }

@@ -366,16 +366,19 @@ namespace Csla.Core
 
     #region  Reset child edit level
 
-    internal static void ResetChildEditLevel(IUndoableObject child, int parentEditLevel)
+    internal static void ResetChildEditLevel(IUndoableObject child, int parentEditLevel, bool bindingEdit)
     {
+      int targetLevel = parentEditLevel;
+      if (bindingEdit && targetLevel > 0)
+        targetLevel--;
       // if item's edit level is too high,
       // reduce it to match list
-      while (child.EditLevel > parentEditLevel)
-        child.AcceptChanges(parentEditLevel);
+      while (child.EditLevel > targetLevel)
+        child.AcceptChanges(targetLevel);
       // if item's edit level is too low,
       // increase it to match list
-      while (child.EditLevel < parentEditLevel)
-        child.CopyState(parentEditLevel);
+      while (child.EditLevel < targetLevel)
+        child.CopyState(targetLevel);
     }
 
     #endregion

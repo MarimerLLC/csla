@@ -173,12 +173,6 @@ Public Class Resource
 
 #Region " Data Access "
 
-  <RunLocal()> _
-  Protected Overrides Sub DataPortal_Create()
-    ' nothing to initialize
-    ValidationRules.CheckRules()
-  End Sub
-
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)

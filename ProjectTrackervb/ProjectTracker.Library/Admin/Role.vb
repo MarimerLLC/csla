@@ -114,12 +114,6 @@ Namespace Admin
 
 #Region " Data Access "
 
-    Private Sub Child_Create()
-
-      ValidationRules.CheckRules()
-
-    End Sub
-
     Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.getRolesResult)
 
       LoadProperty(Of Integer)(IdProperty, data.Id)

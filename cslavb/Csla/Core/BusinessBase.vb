@@ -1288,6 +1288,15 @@ Namespace Core
     End Sub
 
     ''' <summary>
+    ''' Override this method to load a new business object with default
+    ''' values from the database.
+    ''' </summary>
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    Protected Overridable Sub Child_Create()
+      ValidationRules.CheckRules()
+    End Sub
+
+    ''' <summary>
     ''' Called by the server-side DataPortal prior to calling the 
     ''' requested DataPortal_XYZ method.
     ''' </summary>

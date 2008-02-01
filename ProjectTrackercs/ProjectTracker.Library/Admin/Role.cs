@@ -124,11 +124,6 @@ namespace ProjectTracker.Library
 
       #region  Data Access
 
-      private void Child_Create()
-      {
-        ValidationRules.CheckRules();
-      }
-
       private void Child_Fetch(ProjectTracker.DalLinq.getRolesResult data)
       {
         LoadProperty<int>(IdProperty, data.Id);

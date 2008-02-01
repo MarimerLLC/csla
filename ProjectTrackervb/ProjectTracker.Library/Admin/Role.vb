@@ -7,15 +7,16 @@ Namespace Admin
 #Region " Business Methods "
 
     Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(Role), New PropertyInfo(Of Integer)("Id"))
-    Private mIdSet As Boolean
     Public Property Id() As Integer
       Get
-        If Not mIdSet Then _
-          SetProperty(Of Integer)(IdProperty, GetMax() + 1)
-        Return GetProperty(Of Integer)(IdProperty)
+        Dim result = GetProperty(Of Integer)(IdProperty)
+        If result = 0 Then
+          result = GetMax() + 1
+          LoadProperty(Of Integer)(IdProperty, result)
+        End If
+        Return result
       End Get
       Set(ByVal value As Integer)
-        mIdSet = True
         SetProperty(Of Integer)(IdProperty, value)
       End Set
     End Property
@@ -23,11 +24,10 @@ Namespace Admin
     Private Function GetMax() As Integer
 
       ' generate a default id value
-      mIdSet = True
       Dim parent As Roles = CType(Me.Parent, Roles)
       Dim max As Integer = 0
       For Each item As Role In parent
-        If item.Id > max Then
+        If Not ReferenceEquals(item, Me) AndAlso item.Id > max Then
           max = item.Id
         End If
       Next
@@ -117,7 +117,6 @@ Namespace Admin
     Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.getRolesResult)
 
       LoadProperty(Of Integer)(IdProperty, data.Id)
-      mIdSet = True
       LoadProperty(Of String)(NameProperty, data.Name)
       mTimestamp = data.LastChanged.ToArray
 

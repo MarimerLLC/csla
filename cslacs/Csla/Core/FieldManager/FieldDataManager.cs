@@ -137,10 +137,8 @@ namespace Csla.Core.FieldManager
       var index = 0;
       foreach (var item in _fieldData)
       {
-        if (item != null && item.Value.Equals(value))
-        {
+        if (item != null && item.Value != null && item.Value.Equals(value))
           return _propertyList[index];
-        }
         index += 1;
       }
       return null;

@@ -2203,7 +2203,7 @@ Namespace Core
           If child IsNot Nothing Then
             child.SetParent(Me)
             ' set child edit level
-            UndoableBase.ResetChildEditLevel(child, Me.EditLevel)
+            UndoableBase.ResetChildEditLevel(child, Me.EditLevel, Me.BindingEdit)
             ' reset EditLevelAdded 
             child.EditLevelAdded = Me.EditLevel
             ' hook child event
@@ -2228,10 +2228,7 @@ Namespace Core
             Dim undoChild As IUndoableObject = TryCast(child, IUndoableObject)
             If undoChild IsNot Nothing Then
               ' set child edit level
-              Dim newEditLevel = Me.EditLevel
-              If BindingEdit Then _
-                newEditLevel = Me.EditLevel - 1
-              UndoableBase.ResetChildEditLevel(undoChild, newEditLevel)
+              UndoableBase.ResetChildEditLevel(undoChild, Me.EditLevel, Me.BindingEdit)
             End If
             Dim pc As IBindingList = DirectCast(newValue, IBindingList)
             AddHandler pc.ListChanged, AddressOf Child_ListChanged
@@ -2291,7 +2288,7 @@ Namespace Core
       Get
         If mFieldManager Is Nothing Then
           mFieldManager = New FieldManager.FieldDataManager(Me.GetType)
-          UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel)
+          UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel, Me.BindingEdit)
         End If
         Return mFieldManager
       End Get

@@ -338,7 +338,7 @@ Public MustInherit Class BusinessListBase( _
 
   Private Sub DeleteChild(ByVal child As C)
     ' set child edit level
-    UndoableBase.ResetChildEditLevel(child, Me.EditLevel)
+    UndoableBase.ResetChildEditLevel(child, Me.EditLevel, False)
     'remove from the index
     RemoveIndexItem(child)
     'remove from the position map
@@ -402,7 +402,7 @@ Public MustInherit Class BusinessListBase( _
     ' set parent reference
     item.SetParent(Me)
     ' set child edit level
-    UndoableBase.ResetChildEditLevel(item, Me.EditLevel)
+    UndoableBase.ResetChildEditLevel(item, Me.EditLevel, False)
     ' when an object is inserted we assume it is
     ' a new object and so the edit level when it was
     ' added must be set
@@ -490,7 +490,7 @@ Public MustInherit Class BusinessListBase( _
       Me.RaiseListChangedEvents = False
       item.SetParent(Me)
       ' set child edit level
-      UndoableBase.ResetChildEditLevel(item, Me.EditLevel)
+      UndoableBase.ResetChildEditLevel(item, Me.EditLevel, False)
       ' reset EditLevelAdded 
       item.EditLevelAdded = Me.EditLevel
       ' add to list

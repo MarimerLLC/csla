@@ -349,17 +349,21 @@ Namespace Core
 
 #Region " Reset child edit level "
 
-    Friend Shared Sub ResetChildEditLevel(ByVal child As IUndoableObject, ByVal parentEditLevel As Integer)
+    Friend Shared Sub ResetChildEditLevel(ByVal child As IUndoableObject, ByVal parentEditLevel As Integer, ByVal bindingEdit As Boolean)
+
+      Dim targetLevel As Integer = parentEditLevel
+      If bindingEdit AndAlso targetLevel > 0 Then _
+        targetLevel -= 1
 
       ' if item's edit level is too high,
       ' reduce it to match list
-      While child.EditLevel > parentEditLevel
-        child.AcceptChanges(parentEditLevel)
+      While child.EditLevel > targetLevel
+        child.AcceptChanges(targetLevel)
       End While
       ' if item's edit level is too low,
       ' increase it to match list
-      While child.EditLevel < parentEditLevel
-        child.CopyState(parentEditLevel)
+      While child.EditLevel < targetLevel
+        child.CopyState(targetLevel)
       End While
 
     End Sub

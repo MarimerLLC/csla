@@ -1193,9 +1193,9 @@ Namespace Core
     ''' values from the database.
     ''' </summary>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    <RunLocal()> _
     Protected Overridable Sub DataPortal_Create()
-      Throw New NotSupportedException( _
-        My.Resources.CreateNotSupportedException)
+      ValidationRules.CheckRules()
     End Sub
 
     ''' <summary>

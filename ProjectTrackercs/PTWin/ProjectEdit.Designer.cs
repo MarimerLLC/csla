@@ -56,7 +56,7 @@ namespace PTWin
       this.StartedTextBox = new System.Windows.Forms.TextBox();
       this.ErrorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
       this.ReadWriteAuthorization1 = new Csla.Windows.ReadWriteAuthorization(this.components);
-      this.BindingSourceRefresh1 = new Csla.Windows.BindingSourceRefresh(this.components);
+      this.bindingSourceRefresh1 = new Csla.Windows.BindingSourceRefresh(this.components);
       DescriptionLabel = new System.Windows.Forms.Label();
       EndedLabel = new System.Windows.Forms.Label();
       IdLabel = new System.Windows.Forms.Label();
@@ -68,6 +68,7 @@ namespace PTWin
       ((System.ComponentModel.ISupportInitialize)(this.resourcesBindingSource)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.projectBindingSource)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider1)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bindingSourceRefresh1)).BeginInit();
       this.SuspendLayout();
       // 
       // DescriptionLabel
@@ -268,7 +269,6 @@ namespace PTWin
       // roleListBindingSource
       // 
       this.roleListBindingSource.DataSource = typeof(ProjectTracker.Library.RoleList);
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.roleListBindingSource, false);
       // 
       // assignedDataGridViewTextBoxColumn
       // 
@@ -282,12 +282,12 @@ namespace PTWin
       // 
       this.resourcesBindingSource.DataMember = "Resources";
       this.resourcesBindingSource.DataSource = this.projectBindingSource;
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.resourcesBindingSource, false);
+      this.bindingSourceRefresh1.SetReadValuesOnChange(this.resourcesBindingSource, false);
       // 
       // projectBindingSource
       // 
       this.projectBindingSource.DataSource = typeof(ProjectTracker.Library.Project);
-      this.BindingSourceRefresh1.SetReadValuesOnChange(this.projectBindingSource, true);
+      this.bindingSourceRefresh1.SetReadValuesOnChange(this.projectBindingSource, true);
       // 
       // DescriptionTextBox
       // 
@@ -351,6 +351,10 @@ namespace PTWin
       this.ErrorProvider1.ContainerControl = this;
       this.ErrorProvider1.DataSource = this.projectBindingSource;
       // 
+      // bindingSourceRefresh1
+      // 
+      this.bindingSourceRefresh1.Host = this;
+      // 
       // ProjectEdit
       // 
       this.ReadWriteAuthorization1.SetApplyAuthorization(this, false);
@@ -381,6 +385,7 @@ namespace PTWin
       ((System.ComponentModel.ISupportInitialize)(this.resourcesBindingSource)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.projectBindingSource)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.ErrorProvider1)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bindingSourceRefresh1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -404,12 +409,12 @@ namespace PTWin
     internal Csla.Windows.ReadWriteAuthorization ReadWriteAuthorization1;
     internal System.Windows.Forms.ErrorProvider ErrorProvider1;
     internal System.Windows.Forms.BindingSource projectBindingSource;
-    internal Csla.Windows.BindingSourceRefresh BindingSourceRefresh1;
     internal System.Windows.Forms.BindingSource resourcesBindingSource;
     internal System.Windows.Forms.BindingSource roleListBindingSource;
     private System.Windows.Forms.DataGridViewTextBoxColumn ResourceId;
     private System.Windows.Forms.DataGridViewLinkColumn FullName;
     private System.Windows.Forms.DataGridViewComboBoxColumn Role;
     private System.Windows.Forms.DataGridViewTextBoxColumn assignedDataGridViewTextBoxColumn;
+    private Csla.Windows.BindingSourceRefresh bindingSourceRefresh1;
   }
 }

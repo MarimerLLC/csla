@@ -60,11 +60,13 @@ namespace PTWin
 
     private void ApplyAuthorizationRules()
     {
-      // have the controls enable/disable/etc
-      this.ReadWriteAuthorization1.ResetControlAuthorization();
-
       bool canEdit =
         Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));
+      if (!canEdit)
+        RebindUI(false, true);
+
+      // have the controls enable/disable/etc
+      this.ReadWriteAuthorization1.ResetControlAuthorization();
 
       // enable/disable appropriate buttons
       this.OKButton.Enabled = canEdit;

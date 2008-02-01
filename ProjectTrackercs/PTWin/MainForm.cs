@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -341,7 +342,10 @@ namespace PTWin
       ApplyAuthorizationRules();
 
       // notify all documents
-      foreach (Control ctl in Panel1.Controls)
+      List<object> tmpList = new List<object>();
+      foreach (var ctl in Panel1.Controls)
+        tmpList.Add(ctl);
+      foreach (var ctl in tmpList)
         if (ctl is WinPart)
           ((WinPart)ctl).OnCurrentPrincipalChanged(this, EventArgs.Empty);
     }

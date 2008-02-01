@@ -121,7 +121,7 @@ Namespace Core.FieldManager
     Friend Function FindProperty(ByVal value As Object) As IPropertyInfo
       Dim index = 0
       For Each item In _fieldData
-        If item IsNot Nothing AndAlso item.Value.Equals(value) Then
+        If item IsNot Nothing AndAlso item.Value IsNot Nothing AndAlso item.Value.Equals(value) Then
           Return _propertyList(index)
         End If
         index += 1

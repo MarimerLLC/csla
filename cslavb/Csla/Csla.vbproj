@@ -287,6 +287,8 @@
     <Compile Include="Web\UpdateObjectArgs.vb" />
     <Compile Include="Windows\BindingSourceRefresh.vb">
     </Compile>
+    <Compile Include="Windows\HostComponentDesigner.vb" />
+    <Compile Include="Windows\HostPropertyAttribute.vb" />
     <Compile Include="Windows\ReadWriteAuthorization.vb">
     </Compile>
     <Compile Include="Workflow\WorkflowManager.vb" />

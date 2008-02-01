@@ -1286,6 +1286,21 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// Override this method to load a new business object with default
+    /// values from the database.
+    /// </summary>
+    /// <remarks>
+    /// Normally you will overload this method to accept a strongly-typed
+    /// criteria parameter, rather than overriding the method with a
+    /// loosely-typed criteria parameter.
+    /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    protected virtual void Child_Create()
+    {
+      ValidationRules.CheckRules();
+    }
+
+    /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_XYZ method.
     /// </summary>

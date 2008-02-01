@@ -117,7 +117,7 @@ Namespace Windows
     ''' Host gets/sets the component's containing host control (form).
     ''' </summary>
     <Browsable(False)> _
-    <DefaultValue(DirectCast(Nothing, Object))> _
+    <DefaultValue(CType(Nothing, Object))> _
     Public Property Host() As ContainerControl
       Get
         Return (_host)

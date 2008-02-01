@@ -296,7 +296,11 @@ Public Class MainForm
     ApplyAuthorizationRules()
 
     ' notify all documents
+    Dim tmpList = New List(Of Object)
     For Each ctl As Control In Panel1.Controls
+      tmpList.Add(ctl)
+    Next
+    For Each ctl As Control In tmpList
       If TypeOf ctl Is WinPart Then
         CType(ctl, WinPart).OnCurrentPrincipalChanged(Me, EventArgs.Empty)
       End If

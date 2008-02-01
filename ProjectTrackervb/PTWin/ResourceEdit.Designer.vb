@@ -37,12 +37,12 @@ Partial Public Class ResourceEdit
     Me.Role = New System.Windows.Forms.DataGridViewComboBoxColumn
     Me.AssignmentsBindingSource = New System.Windows.Forms.BindingSource(Me.components)
     Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
-    Me.BindingSourceRefresh1 = New Csla.Windows.BindingSourceRefresh(Me.components)
     Me.ReadWriteAuthorization1 = New Csla.Windows.ReadWriteAuthorization(Me.components)
     Me.CloseButton = New System.Windows.Forms.Button
     Me.ApplyButton = New System.Windows.Forms.Button
     Me.Cancel_Button = New System.Windows.Forms.Button
     Me.OKButton = New System.Windows.Forms.Button
+    Me.BindingSourceRefresh1 = New Csla.Windows.BindingSourceRefresh(Me.components)
     FirstNameLabel = New System.Windows.Forms.Label
     IdLabel = New System.Windows.Forms.Label
     LastNameLabel = New System.Windows.Forms.Label
@@ -52,6 +52,7 @@ Partial Public Class ResourceEdit
     CType(Me.AssignmentsDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
     CType(Me.AssignmentsBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
     CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
+    CType(Me.BindingSourceRefresh1, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.SuspendLayout()
     '
     'FirstNameLabel
@@ -283,6 +284,10 @@ Partial Public Class ResourceEdit
     Me.OKButton.Text = "OK"
     Me.OKButton.UseVisualStyleBackColor = True
     '
+    'BindingSourceRefresh1
+    '
+    Me.BindingSourceRefresh1.Host = Me
+    '
     'ResourceEdit
     '
     Me.ReadWriteAuthorization1.SetApplyAuthorization(Me, False)
@@ -305,6 +310,7 @@ Partial Public Class ResourceEdit
     CType(Me.AssignmentsDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
     CType(Me.AssignmentsBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
     CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
+    CType(Me.BindingSourceRefresh1, System.ComponentModel.ISupportInitialize).EndInit()
     Me.ResumeLayout(False)
     Me.PerformLayout()
 
@@ -318,7 +324,6 @@ Partial Public Class ResourceEdit
   Friend WithEvents AssignmentsDataGridView As System.Windows.Forms.DataGridView
   Friend WithEvents AssignmentsBindingSource As System.Windows.Forms.BindingSource
   Friend WithEvents ErrorProvider1 As System.Windows.Forms.ErrorProvider
-  Friend WithEvents BindingSourceRefresh1 As Csla.Windows.BindingSourceRefresh
   Friend WithEvents ReadWriteAuthorization1 As Csla.Windows.ReadWriteAuthorization
   Friend WithEvents CloseButton As System.Windows.Forms.Button
   Friend WithEvents ApplyButton As System.Windows.Forms.Button
@@ -330,5 +335,6 @@ Partial Public Class ResourceEdit
   Friend WithEvents DataGridViewTextBoxColumn2 As System.Windows.Forms.DataGridViewLinkColumn
   Friend WithEvents DataGridViewTextBoxColumn1 As System.Windows.Forms.DataGridViewTextBoxColumn
   Friend WithEvents Role As System.Windows.Forms.DataGridViewComboBoxColumn
+  Friend WithEvents BindingSourceRefresh1 As Csla.Windows.BindingSourceRefresh
 
 End Class

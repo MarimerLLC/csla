@@ -52,11 +52,14 @@ Public Class ResourceEdit
 
   Private Sub ApplyAuthorizationRules()
 
-    ' have the controls enable/disable/etc
-    Me.ReadWriteAuthorization1.ResetControlAuthorization()
-
     Dim canEdit As Boolean = _
       ProjectTracker.Library.Resource.CanEditObject
+
+    If Not canEdit Then _
+      RebindUI(False, True)
+
+    ' have the controls enable/disable/etc
+    Me.ReadWriteAuthorization1.ResetControlAuthorization()
 
     ' enable/disable appropriate buttons
     Me.OKButton.Enabled = canEdit

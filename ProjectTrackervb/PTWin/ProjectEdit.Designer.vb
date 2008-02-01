@@ -26,7 +26,6 @@ Partial Class ProjectEdit
     Dim StartedLabel As System.Windows.Forms.Label
     Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
     Me.ProjectBindingSource = New System.Windows.Forms.BindingSource(Me.components)
-    Me.BindingSourceRefresh1 = New Csla.Windows.BindingSourceRefresh(Me.components)
     Me.RoleListBindingSource = New System.Windows.Forms.BindingSource(Me.components)
     Me.ResourcesBindingSource = New System.Windows.Forms.BindingSource(Me.components)
     Me.CloseButton = New System.Windows.Forms.Button
@@ -47,6 +46,7 @@ Partial Class ProjectEdit
     Me.NameTextBox = New System.Windows.Forms.TextBox
     Me.StartedTextBox = New System.Windows.Forms.TextBox
     Me.ReadWriteAuthorization1 = New Csla.Windows.ReadWriteAuthorization(Me.components)
+    Me.BindingSourceRefresh1 = New Csla.Windows.BindingSourceRefresh(Me.components)
     DescriptionLabel = New System.Windows.Forms.Label
     EndedLabel = New System.Windows.Forms.Label
     IdLabel = New System.Windows.Forms.Label
@@ -58,6 +58,7 @@ Partial Class ProjectEdit
     CType(Me.ResourcesBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.GroupBox1.SuspendLayout()
     CType(Me.ResourcesDataGridView, System.ComponentModel.ISupportInitialize).BeginInit()
+    CType(Me.BindingSourceRefresh1, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.SuspendLayout()
     '
     'DescriptionLabel
@@ -332,6 +333,10 @@ Partial Class ProjectEdit
     Me.StartedTextBox.Size = New System.Drawing.Size(460, 20)
     Me.StartedTextBox.TabIndex = 5
     '
+    'BindingSourceRefresh1
+    '
+    Me.BindingSourceRefresh1.Host = Me
+    '
     'ProjectEdit
     '
     Me.ReadWriteAuthorization1.SetApplyAuthorization(Me, False)
@@ -360,6 +365,7 @@ Partial Class ProjectEdit
     CType(Me.ResourcesBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
     Me.GroupBox1.ResumeLayout(False)
     CType(Me.ResourcesDataGridView, System.ComponentModel.ISupportInitialize).EndInit()
+    CType(Me.BindingSourceRefresh1, System.ComponentModel.ISupportInitialize).EndInit()
     Me.ResumeLayout(False)
     Me.PerformLayout()
 
@@ -374,7 +380,6 @@ Partial Class ProjectEdit
   Friend WithEvents AssignButton As System.Windows.Forms.Button
   Friend WithEvents ResourcesDataGridView As System.Windows.Forms.DataGridView
   Friend WithEvents RoleListBindingSource As System.Windows.Forms.BindingSource
-  Friend WithEvents BindingSourceRefresh1 As Csla.Windows.BindingSourceRefresh
   Friend WithEvents ResourcesBindingSource As System.Windows.Forms.BindingSource
   Friend WithEvents ProjectBindingSource As System.Windows.Forms.BindingSource
   Friend WithEvents DescriptionTextBox As System.Windows.Forms.TextBox
@@ -387,5 +392,6 @@ Partial Class ProjectEdit
   Friend WithEvents Column1 As System.Windows.Forms.DataGridViewLinkColumn
   Friend WithEvents Role As System.Windows.Forms.DataGridViewComboBoxColumn
   Friend WithEvents DataGridViewTextBoxColumn4 As System.Windows.Forms.DataGridViewTextBoxColumn
+  Friend WithEvents BindingSourceRefresh1 As Csla.Windows.BindingSourceRefresh
 
 End Class

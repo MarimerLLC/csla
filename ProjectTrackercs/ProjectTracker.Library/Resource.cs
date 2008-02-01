@@ -194,7 +194,7 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
       {
-        ctx.DataContext.deleteResource(_id);
+        ctx.DataContext.deleteResource(criteria.Value);
       }
     }
 

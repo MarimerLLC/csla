@@ -53,37 +53,13 @@ namespace Csla
     #endregion
 
     #region Filter/Unfilter
-
-    private void DoFilter()
+    /// <summary>
+    /// Applies a filter from the original Linq query to the view 
+    /// </summary>
+    public void ApplyFilter()
     {
-      int index = 0;
-      _filterIndex.Clear();
-
-      if (_provider == null)
-        _provider = DefaultFilter.Filter;
-
-      if (_filterBy == null)
-      {
-        foreach (T obj in _list)
-        {
-          if (_provider.Invoke(obj, _filter))
-            _filterIndex.Add(new ListItem(obj, index));
-          index++;
-        }
-      }
-      else
-      {
-        foreach (T obj in _list)
-        {
-          object tmp = _filterBy.GetValue(obj);
-          if (_provider.Invoke(tmp, _filter))
-            _filterIndex.Add(new ListItem(tmp, index));
-          index++;
-        }
-      }
-
+      BuildFilterIndex();
       OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
-
     }
 
     #endregion
@@ -555,8 +531,6 @@ namespace Csla
     private bool _supportsBinding;
     private IBindingList _bindingList;
     private PropertyDescriptor _filterBy;
-    private object _filter;
-    FilterProvider _provider = null;
     private List<ListItem> _filterIndex = 
       new List<ListItem>();
 
@@ -603,6 +577,15 @@ namespace Csla
       
     }
 
+    private bool ItemShouldBeInList(T item)
+    {
+      InnermostWhereFinder whereFinder = new InnermostWhereFinder();
+      MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
+      Expression<Func<T, bool>> whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
+
+      return (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody).Contains(item);
+    }
+    
     private void SourceChanged(
       object sender, ListChangedEventArgs e)
     {
@@ -620,8 +603,11 @@ namespace Csla
             newKey = _filterBy.GetValue(newItem);
           else
             newKey = newItem;
-          _filterIndex.Add(
-            new ListItem(newKey, listIndex));
+
+          //check to see if it is in the filter
+          if (ItemShouldBeInList(newItem))
+            _filterIndex.Add(
+              new ListItem(newKey, listIndex));
           filteredIndex = _filterIndex.Count - 1;
           // raise event 
           OnListChanged(
@@ -640,8 +626,9 @@ namespace Csla
               newKey = _filterBy.GetValue(newItem);
             else
               newKey = newItem;
-            _filterIndex[filteredIndex] =
-              new ListItem(newKey, listIndex);
+            if (ItemShouldBeInList(newItem))
+              _filterIndex[filteredIndex] =
+                new ListItem(newKey, listIndex);
           }
           // raise event if appropriate
           if (filteredIndex > -1)
@@ -675,7 +662,8 @@ namespace Csla
           break;
 
         default:
-          DoFilter();
+          BuildFilterIndex();
+          //DoFilter();
           OnListChanged(
             new ListChangedEventArgs(
             ListChangedType.Reset, 0));

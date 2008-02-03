@@ -693,7 +693,10 @@ namespace Csla
       
     }
 
-    int Core.IPositionMappable<C>.PositionOf(C item)
+    /// <summary>
+    /// Determines the position of a specific item from the list
+    /// </summary>
+    public int PositionOf(C item)
     {
       DeferredLoadPositionMapIfNotLoaded();
       return _positionMap.PositionOf(item);

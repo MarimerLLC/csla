@@ -951,6 +951,20 @@ Namespace Validation
     ''' the specified property and any 
     ''' dependent properties.
     ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' Property to validate.
+    ''' </param>
+    Public Sub CheckRules(ByVal propertyInfo As Csla.Core.IPropertyInfo)
+
+      CheckRules(propertyInfo.Name)
+
+    End Sub
+
+    ''' <summary>
+    ''' Invokes all rule methods associated with
+    ''' the specified property and any 
+    ''' dependent properties.
+    ''' </summary>
     ''' <param name="propertyName">The name of the property to validate.</param>
     Public Sub CheckRules(ByVal propertyName As String)
 

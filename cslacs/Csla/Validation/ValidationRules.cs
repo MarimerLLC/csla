@@ -888,6 +888,19 @@ namespace Csla.Validation
     /// the specified property and any 
     /// dependent properties.
     /// </summary>
+    /// <param name="propertyInfo">
+    /// Property to validate.
+    /// </param>
+    public void CheckRules(Csla.Core.IPropertyInfo propertyInfo)
+    {
+      CheckRules(propertyInfo.Name);
+    }
+
+    /// <summary>
+    /// Invokes all rule methods associated with
+    /// the specified property and any 
+    /// dependent properties.
+    /// </summary>
     /// <param name="propertyName">The name of the property to validate.</param>
     public void CheckRules(string propertyName)
     {

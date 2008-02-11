@@ -32,6 +32,27 @@ namespace Csla.Data
     /// Gets the ConnectionManager object for the specified
     /// connectionString.
     /// </summary>
+    /// <param name="databaseName">
+    /// Database name as shown in the config file.
+    /// </param>
+    /// <param name="getConnectionString">
+    /// True to indicate that the connection string
+    /// should be retrieved from the config file. If
+    /// False, the databaseName parameter is directly 
+    /// used as a connection string.
+    /// </param>
+    public static ConnectionManager<C> GetManager(string databaseName, bool getConnectionString)
+    {
+      if (getConnectionString)
+        return GetManager(ConfigurationManager.ConnectionStrings[databaseName].ConnectionString);
+      else
+        return GetManager(databaseName);
+    }
+
+    /// <summary>
+    /// Gets the ConnectionManager object for the specified
+    /// connectionString.
+    /// </summary>
     /// <param name="connectionString">
     /// The database connection string.
     /// </param>

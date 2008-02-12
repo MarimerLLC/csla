@@ -32,6 +32,22 @@ Namespace Data
     ''' Gets the ConnectionManager object for the specified
     ''' connectionString.
     ''' </summary>
+    ''' <param name="databaseName">
+    ''' The database name.
+    ''' </param>
+    ''' <param name="getConnectionString">
+    ''' True to get the connection string from
+    ''' the config file. False to treat the
+    ''' database name as the connection string.
+    ''' </param>
+    ''' <returns>ConnectionManager object for the connection.</returns>
+    Public Shared Function GetManager(ByVal databaseName As String, ByVal getConnectionString As Boolean) As ConnectionManager(Of C)
+    End Function
+
+    ''' <summary>
+    ''' Gets the ConnectionManager object for the specified
+    ''' connectionString.
+    ''' </summary>
     ''' <param name="connectionString">
     ''' The database connection string.
     ''' </param>

@@ -42,6 +42,14 @@ Namespace Data
     ''' </param>
     ''' <returns>ConnectionManager object for the connection.</returns>
     Public Shared Function GetManager(ByVal databaseName As String, ByVal getConnectionString As Boolean) As ConnectionManager(Of C)
+
+      If getConnectionString Then
+        Return GetManager(ConfigurationManager.ConnectionStrings(databaseName).ConnectionString)
+
+      Else
+        Return GetManager(databaseName)
+      End If
+
     End Function
 
     ''' <summary>

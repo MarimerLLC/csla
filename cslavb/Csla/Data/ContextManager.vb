@@ -35,6 +35,30 @@ Namespace Data
     ''' Gets the ContextManager object for the specified
     ''' key name.
     ''' </summary>
+    ''' <param name="databaseName">
+    ''' The database name.
+    ''' </param>
+    ''' <param name="getConnectionString">
+    ''' True to get the connection string from
+    ''' the config file. False to treat the
+    ''' database name as the connection string.
+    ''' </param>
+    ''' <returns>ContextManager object for the name.</returns>
+    Public Shared Function GetManager(ByVal databaseName As String, ByVal getConnectionString As Boolean) As ContextManager(Of C)
+
+      If getConnectionString Then
+        Return GetManager(ConfigurationManager.ConnectionStrings(databaseName).ConnectionString)
+
+      Else
+        Return GetManager(databaseName)
+      End If
+
+    End Function
+
+    ''' <summary>
+    ''' Gets the ContextManager object for the specified
+    ''' key name.
+    ''' </summary>
     ''' <param name="connectionString">
     ''' The database connection string.
     ''' </param>

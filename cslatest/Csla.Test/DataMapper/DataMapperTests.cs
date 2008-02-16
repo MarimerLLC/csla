@@ -102,6 +102,9 @@ namespace Csla.Test.DataMapper
 
       Csla.Data.DataMapper.SetPropertyValue(target, "MyEnum", "First");
       Assert.AreEqual(DataMapEnum.First, target.MyEnum, "Enum should be First");
+
+      Csla.Data.DataMapper.SetPropertyValue(target, "MyEnum", 2);
+      Assert.AreEqual(DataMapEnum.Third, target.MyEnum, "Enum should be Third");
     }
 
     [TestMethod]

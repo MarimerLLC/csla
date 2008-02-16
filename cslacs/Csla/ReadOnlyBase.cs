@@ -589,6 +589,24 @@ namespace Csla
       return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(objectType, info);
     }
 
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of property.
+    /// </typeparam>
+    /// <param name="info">
+    /// PropertyInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided IPropertyInfo object.
+    /// </returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(PropertyInfo<P> info)
+    {
+      return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
+    }
+
     #endregion
 
     #region  Get Properties

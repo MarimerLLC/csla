@@ -581,9 +581,28 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <returns>
   ''' The provided IPropertyInfo object.
   ''' </returns>
-  Protected Shared Function RegisterProperty(Of P)(ByVal objectType As Type, ByVal info As PropertyInfo(Of P)) As PropertyInfo(Of P)
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal objectType As Type, ByVal info As PropertyInfo(Of P)) As PropertyInfo(Of P)
 
     Return Core.FieldManager.PropertyInfoManager.RegisterProperty(Of P)(objectType, info)
+
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">
+  ''' Type of property.
+  ''' </typeparam>
+  ''' <param name="info">
+  ''' PropertyInfo object for the property.
+  ''' </param>
+  ''' <returns>
+  ''' The provided IPropertyInfo object.
+  ''' </returns>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal info As PropertyInfo(Of P)) As PropertyInfo(Of P)
+
+    Return Core.FieldManager.PropertyInfoManager.RegisterProperty(Of P)(GetType(T), info)
 
   End Function
 

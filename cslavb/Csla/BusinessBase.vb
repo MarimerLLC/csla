@@ -217,4 +217,27 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
 #End Region
 
+#Region " Register Properties "
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">
+  ''' Type of property.
+  ''' </typeparam>
+  ''' <param name="info">
+  ''' PropertyInfo object for the property.
+  ''' </param>
+  ''' <returns>
+  ''' The provided IPropertyInfo object.
+  ''' </returns>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal info As PropertyInfo(Of P)) As PropertyInfo(Of P)
+
+    Return Core.FieldManager.PropertyInfoManager.RegisterProperty(Of P)(GetType(T), info)
+
+  End Function
+
+#End Region
+
 End Class

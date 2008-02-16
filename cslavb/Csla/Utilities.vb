@@ -108,8 +108,10 @@ Public Module Utilities
         desiredType = Utilities.GetPropertyType(desiredType)
       End If
 
-      If desiredType.IsEnum AndAlso valueType.Equals(GetType(String)) Then
-        Return System.Enum.Parse(desiredType, value.ToString())
+      If desiredType.IsEnum AndAlso _
+          (valueType.Equals(GetType(String)) OrElse _
+           [Enum].GetUnderlyingType(desiredType).Equals(valueType)) Then
+        Return [Enum].Parse(desiredType, value.ToString())
       End If
 
       If desiredType.Equals(GetType(SmartDate)) AndAlso oldValue IsNot Nothing Then

@@ -158,7 +158,7 @@ namespace Csla
         desiredType = Utilities.GetPropertyType(desiredType);
       }
 
-      if (desiredType.IsEnum && valueType.Equals(typeof(string)))
+      if (desiredType.IsEnum && (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
         return System.Enum.Parse(desiredType, value.ToString());
 
       if (desiredType.Equals(typeof(SmartDate)) && oldValue != null)

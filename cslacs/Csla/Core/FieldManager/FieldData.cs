@@ -87,6 +87,15 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether the field
     /// has been changed.
     /// </summary>
+    public bool IsSelfDirty
+    {
+      get { return IsDirty; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the field
+    /// has been changed.
+    /// </summary>
     public bool IsDirty
     {
       get
@@ -131,7 +140,17 @@ namespace Csla.Core.FieldManager
       }
     }
 
+    bool ITrackStatus.IsSelfValid
+    {
+      get { return IsValid; }
+    }
+
     bool ITrackStatus.IsValid
+    {
+      get { return IsValid; }
+    }
+
+    private bool IsValid
     {
       get
       {

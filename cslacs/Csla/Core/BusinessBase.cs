@@ -95,7 +95,9 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object's data has been changed.
+    /// Returns <see langword="true" /> if this object's 
+    /// data, or any of its fields or child objects data, 
+    /// has been changed.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -115,6 +117,29 @@ namespace Csla.Core
     public virtual bool IsDirty
     {
       get { return _isDirty || (_fieldManager != null && FieldManager.IsDirty()); }
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if this object's data has been changed.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// When an object's data is changed, CSLA .NET makes note of that change
+    /// and considers the object to be 'dirty' or changed. This value is used to
+    /// optimize data updates, since an unchanged object does not need to be
+    /// updated into the database. All new objects are considered dirty. All objects
+    /// marked for deletion are considered dirty.
+    /// </para><para>
+    /// Once an object's data has been saved to the database (inserted or updated)
+    /// the dirty flag is cleared and the object is considered unchanged. Objects
+    /// newly loaded from the database are also considered unchanged.
+    /// </para>
+    /// </remarks>
+    /// <returns>A value indicating if this object's data has been changed.</returns>
+    [Browsable(false)]
+    public virtual bool IsSelfDirty
+    {
+      get { return _isDirty; }
     }
 
     /// <summary>
@@ -1139,8 +1164,11 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the object is currently valid, <see langword="false" /> if the
-    /// object has broken rules or is otherwise invalid.
+    /// Returns <see langword="true" /> if the object 
+    /// and its child objects are currently valid, 
+    /// <see langword="false" /> if the
+    /// object or any of its child objects have broken 
+    /// rules or are otherwise invalid.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -1160,6 +1188,27 @@ namespace Csla.Core
       get { return ValidationRules.IsValid && (_fieldManager != null || FieldManager.IsValid()); }
     }
 
+    /// <summary>
+    /// Returns <see langword="true" /> if the object is currently valid, <see langword="false" /> if the
+    /// object has broken rules or is otherwise invalid.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// By default this property relies on the underling ValidationRules
+    /// object to track whether any business rules are currently broken for this object.
+    /// </para><para>
+    /// You can override this property to provide more sophisticated
+    /// implementations of the behavior. For instance, you should always override
+    /// this method if your object has child objects, since the validity of this object
+    /// is affected by the validity of all child objects.
+    /// </para>
+    /// </remarks>
+    /// <returns>A value indicating if the object is currently valid.</returns>
+    [Browsable(false)]
+    public virtual bool IsSelfValid
+    {
+      get { return ValidationRules.IsValid; }
+    }
 
     /// <summary>
     /// Provides access to the readonly collection of broken business rules

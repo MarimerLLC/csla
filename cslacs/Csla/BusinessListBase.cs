@@ -54,6 +54,14 @@ namespace Csla
 
     #region IsDirty, IsValid, IsSavable
 
+        /// <summary>
+    /// Gets a value indicating whether this object's data has been changed.
+    /// </summary>
+    public bool IsSelfDirty
+    {
+      get { return IsDirty; }
+    }
+
     /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
@@ -74,6 +82,15 @@ namespace Csla
             return true;
         return false;
       }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this object is currently in
+    /// a valid state (has no broken validation rules).
+    /// </summary>
+    public virtual bool IsSelfValid
+    {
+      get { return IsValid; }
     }
 
     /// <summary>

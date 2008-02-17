@@ -69,7 +69,7 @@
     ''' Gets a value indicating whether the field
     ''' has been changed.
     ''' </summary>
-    Public ReadOnly Property IsDirty() As Boolean Implements ITrackStatus.IsDirty
+    Public ReadOnly Property IsDirty() As Boolean Implements ITrackStatus.IsDirty, ITrackStatus.IsSelfDirty
       Get
         Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
         If child IsNot Nothing Then
@@ -102,7 +102,7 @@
       End Get
     End Property
 
-    Private ReadOnly Property IsValid() As Boolean Implements ITrackStatus.IsValid
+    Private ReadOnly Property IsValid() As Boolean Implements ITrackStatus.IsValid, ITrackStatus.IsSelfValid
       Get
         Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
         If child IsNot Nothing Then

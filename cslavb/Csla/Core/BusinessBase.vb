@@ -102,7 +102,9 @@ Namespace Core
     End Property
 
     ''' <summary>
-    ''' Returns <see langword="true" /> if this object's data has been changed.
+    ''' Returns <see langword="true" /> if this object's 
+    ''' data, or any of its fields or child objects data, 
+    ''' has been changed.
     ''' </summary>
     ''' <remarks>
     ''' <para>
@@ -122,6 +124,30 @@ Namespace Core
     Public Overridable ReadOnly Property IsDirty() As Boolean Implements IEditableBusinessObject.IsDirty
       Get
         Return mIsDirty OrElse (mFieldManager IsNot Nothing AndAlso FieldManager.IsDirty())
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns <see langword="true" /> if this object's data has been changed.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' When an object's data is changed, CSLA .NET makes note of that change
+    ''' and considers the object to be 'dirty' or changed. This value is used to
+    ''' optimize data updates, since an unchanged object does not need to be
+    ''' updated into the database. All new objects are considered dirty. All objects
+    ''' marked for deletion are considered dirty.
+    ''' </para><para>
+    ''' Once an object's data has been saved to the database (inserted or updated)
+    ''' the dirty flag is cleared and the object is considered unchanged. Objects
+    ''' newly loaded from the database are also considered unchanged.
+    ''' </para>
+    ''' </remarks>
+    ''' <returns>A value indicating if this object's data has been changed.</returns>
+    <Browsable(False)> _
+    Public Overridable ReadOnly Property IsSelfDirty() As Boolean Implements IEditableBusinessObject.IsSelfDirty
+      Get
+        Return mIsDirty
       End Get
     End Property
 
@@ -1148,8 +1174,11 @@ Namespace Core
     End Sub
 
     ''' <summary>
-    ''' Returns <see langword="true" /> if the object is currently valid, <see langword="false" /> if the
-    ''' object has broken rules or is otherwise invalid.
+    ''' Returns <see langword="true" /> if the object 
+    ''' and its child objects are currently valid, 
+    ''' <see langword="false" /> if the
+    ''' object or any of its child objects have broken 
+    ''' rules or are otherwise invalid.
     ''' </summary>
     ''' <remarks>
     ''' <para>
@@ -1167,6 +1196,29 @@ Namespace Core
     Public Overridable ReadOnly Property IsValid() As Boolean Implements IEditableBusinessObject.IsValid
       Get
         Return ValidationRules.IsValid AndAlso (mFieldManager Is Nothing OrElse FieldManager.IsValid())
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns <see langword="true" /> if the object is currently valid, <see langword="false" /> if the
+    ''' object has broken rules or is otherwise invalid.
+    ''' </summary>
+    ''' <remarks>
+    ''' <para>
+    ''' By default this property relies on the underling ValidationRules
+    ''' object to track whether any business rules are currently broken for this object.
+    ''' </para><para>
+    ''' You can override this property to provide more sophisticated
+    ''' implementations of the behavior. For instance, you should always override
+    ''' this method if your object has child objects, since the validity of this object
+    ''' is affected by the validity of all child objects.
+    ''' </para>
+    ''' </remarks>
+    ''' <returns>A value indicating if the object is currently valid.</returns>
+    <Browsable(False)> _
+    Public Overridable ReadOnly Property IsSelfValid() As Boolean Implements IEditableBusinessObject.IsSelfValid
+      Get
+        Return ValidationRules.IsValid
       End Get
     End Property
 

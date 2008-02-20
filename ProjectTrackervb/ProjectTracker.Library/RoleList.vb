@@ -54,7 +54,7 @@ Public Class RoleList
   Private Overloads Sub DataPortal_Fetch()
 
     Me.RaiseListChangedEvents = False
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       Dim data = From r In ctx.DataContext.Roles Select r
       IsReadOnly = False
       For Each role In data

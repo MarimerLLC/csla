@@ -40,7 +40,7 @@ Public Class ProjectList
   Private Sub Fetch(ByVal nameFilter As String)
 
     RaiseListChangedEvents = False
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       Dim data = From p In ctx.DataContext.Projects Select p
       If Not String.IsNullOrEmpty(nameFilter) Then _
         data = From p In data Where p.Name Like "*" & nameFilter & "*" Select p

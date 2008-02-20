@@ -112,7 +112,7 @@ Public Class ResourceAssignment
 
 #Region " Data Access "
 
-  Private Sub Child_Create(ByVal projectId As Guid, ByVal role As Integer)
+  Private Overloads Sub Child_Create(ByVal projectId As Guid, ByVal role As Integer)
 
     Dim proj = Project.GetProject(projectId)
     mProjectId = proj.Id

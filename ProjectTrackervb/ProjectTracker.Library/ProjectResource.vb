@@ -112,13 +112,13 @@ Public Class ProjectResource
 
 #Region " Data Access "
 
-  Private Sub Child_Create()
+  Private Overloads Sub Child_Create()
 
     LoadProperty(Of SmartDate)(AssignedProperty, New SmartDate(Today))
 
   End Sub
 
-  Private Sub Child_Create(ByVal resourceId As Integer, ByVal role As Integer)
+  Private Overloads Sub Child_Create(ByVal resourceId As Integer, ByVal role As Integer)
 
     Dim res = Resource.GetResource(resourceId)
     With res

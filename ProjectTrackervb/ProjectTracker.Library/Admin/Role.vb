@@ -124,7 +124,7 @@ Namespace Admin
 
     Private Sub Child_Insert()
 
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
         Dim lastChanged As System.Data.Linq.Binary = mTimestamp
         mgr.DataContext.addRole(GetProperty(Of Integer)(IdProperty), _
                                 GetProperty(Of String)(NameProperty), _
@@ -136,7 +136,7 @@ Namespace Admin
 
     Private Sub Child_Update()
 
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
         Dim lastChanged As System.Data.Linq.Binary = Nothing
         mgr.DataContext.UpdateRole(GetProperty(Of Integer)(IdProperty), _
                                    GetProperty(Of String)(NameProperty), _
@@ -149,7 +149,7 @@ Namespace Admin
 
     Private Sub Child_DeleteSelf()
 
-      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
         mgr.DataContext.DeleteRole(Id)
       End Using
 

@@ -175,7 +175,7 @@ Public Class Resource
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       Dim data = (From r In ctx.DataContext.Resources Where r.Id = criteria.Value Select r).Single
       mId = data.Id
       mLastName = data.LastName
@@ -190,7 +190,7 @@ Public Class Resource
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Insert()
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       Dim newId As Integer?
       Dim newLastChanged As System.Data.Linq.Binary = Nothing
       ctx.DataContext.addResource(mLastName, mFirstName, newId, newLastChanged)
@@ -204,7 +204,7 @@ Public Class Resource
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Update()
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       Dim newLastChanged As System.Data.Linq.Binary = Nothing
       ctx.DataContext.UpdateResource(mId, mLastName, mFirstName, mTimestamp, newLastChanged)
       mTimestamp = newLastChanged.ToArray
@@ -223,7 +223,7 @@ Public Class Resource
   <Transactional(TransactionalTypes.TransactionScope)> _
   Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       ctx.DataContext.DeleteResource(mId)
     End Using
 
@@ -266,7 +266,7 @@ Public Class Resource
 
     Protected Overrides Sub DataPortal_Execute()
 
-      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(Database.PTrackerConnection)
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
         mExists = (From p In ctx.DataContext.Resources Where p.Id = mId).Count > 0
       End Using
 

@@ -130,7 +130,7 @@ Namespace Security
 
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As CredentialsCriteria)
 
-      Using ctx = ContextManager(Of ProjectTracker.DalLinq.Security.SecurityDataContext).GetManager(Database.SecurityConnection)
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.Security.SecurityDataContext).GetManager("Security", True)
         Dim data = From u In ctx.DataContext.Users Where u.Username = criteria.Username AndAlso u.Password = criteria.Password Select u
         If data.Count > 0 Then
           Fetch(data.Single)
@@ -144,7 +144,7 @@ Namespace Security
 
     Private Overloads Sub DataPortal_Fetch(ByVal criteria As LoadOnlyCriteria)
 
-      Using ctx = ContextManager(Of ProjectTracker.DalLinq.Security.SecurityDataContext).GetManager(Database.SecurityConnection)
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.Security.SecurityDataContext).GetManager("Security", True)
         Dim data = From u In ctx.DataContext.Users Where u.Username = criteria.Username Select u
         If data.Count > 0 Then
           Fetch(data.Single)

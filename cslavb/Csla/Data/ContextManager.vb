@@ -23,7 +23,7 @@ Namespace Data
   ''' dispose the object when the last consumer
   ''' has called Dispose."
   ''' </remarks>
-  Public Class ContextManager(Of C As {DataContext, New})
+  Public Class ContextManager(Of C As DataContext)
 
     Implements IDisposable
 

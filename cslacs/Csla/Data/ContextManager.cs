@@ -25,7 +25,7 @@ namespace Csla.Data
   /// dispose the object when the last consumer
   /// has called Dispose."
   /// </remarks>
-  public class ContextManager<C> : IDisposable where C : DataContext, new()
+  public class ContextManager<C> : IDisposable where C : DataContext
   {
     private static object _lock = new object();
     private C _context;

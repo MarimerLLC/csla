@@ -154,7 +154,7 @@ namespace ProjectTracker.Library
 
     private void DataPortal_Fetch(SingleCriteria<Project, Guid> criteria)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
       {
         // get project data
         var data = (from p in ctx.DataContext.Projects
@@ -175,7 +175,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
       {
         // insert project data
         System.Data.Linq.Binary lastChanged = null;
@@ -195,7 +195,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
       {
         // insert project data
         System.Data.Linq.Binary lastChanged = null;
@@ -222,7 +222,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     private void DataPortal_Delete(SingleCriteria<Project, Guid> criteria)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
       {
         // delete project data
         ctx.DataContext.deleteProject(criteria.Value);
@@ -265,7 +265,7 @@ namespace ProjectTracker.Library
 
       protected override void DataPortal_Execute()
       {
-        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
         {
           _exists = ((from p in ctx.DataContext.Projects
                       where p.Id == _id

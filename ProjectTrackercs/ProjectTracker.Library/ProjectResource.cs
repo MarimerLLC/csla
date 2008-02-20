@@ -118,7 +118,7 @@ namespace ProjectTracker.Library
 
     #region  Data Access
 
-    private void Child_Create()
+    protected override void Child_Create()
     {
       LoadProperty<SmartDate>(AssignedProperty, new SmartDate(System.DateTime.Today));
     }

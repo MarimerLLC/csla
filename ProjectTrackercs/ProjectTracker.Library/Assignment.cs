@@ -48,7 +48,7 @@ namespace ProjectTracker.Library
 
     public static byte[] AddAssignment(Guid projectId, int resourceId, SmartDate assigned, int role)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
       {
         System.Data.Linq.Binary lastChanged = null;
         ctx.DataContext.addAssignment(projectId, resourceId, assigned, role, ref lastChanged);
@@ -58,7 +58,7 @@ namespace ProjectTracker.Library
 
     public static byte[] UpdateAssignment(Guid projectId, int resourceId, SmartDate assigned, int newRole, byte[] timestamp)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
       {
         System.Data.Linq.Binary lastChanged = null;
         ctx.DataContext.updateAssignment(projectId, resourceId, assigned, newRole, timestamp, ref lastChanged);
@@ -68,7 +68,7 @@ namespace ProjectTracker.Library
 
     public static void RemoveAssignment(Guid projectId, int resourceId)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
       {
         ctx.DataContext.deleteAssignment(projectId, resourceId);
       }

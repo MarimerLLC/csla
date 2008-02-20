@@ -52,7 +52,7 @@ namespace ProjectTracker.Library
     private void DataPortal_Fetch()
     {
       this.RaiseListChangedEvents = false;
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(Database.PTrackerConnection))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
       {
         var data = from r in ctx.DataContext.Roles
                    select r;

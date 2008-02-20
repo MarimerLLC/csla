@@ -421,6 +421,9 @@
     <None Include="Web References\WebServiceHost\WebServicePortal.wsdl" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.el.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.zh-TW.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

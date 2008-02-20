@@ -70,7 +70,6 @@
     <Compile Include="Admin\Role.vb" />
     <Compile Include="Admin\Roles.vb" />
     <Compile Include="Assignment.vb" />
-    <Compile Include="Database.vb" />
     <Compile Include="ProjectCloser.vb" />
     <Compile Include="ProjectInfo.vb" />
     <Compile Include="ProjectList.vb" />

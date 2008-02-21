@@ -1,7 +1,4 @@
-#if !NET20
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ServiceModel;
 using Csla.Server.Hosts.WcfChannel;
 
@@ -44,4 +41,3 @@ namespace Csla.Server.Hosts
     WcfResponse Delete(DeleteRequest request);
   }
 }
-#endif

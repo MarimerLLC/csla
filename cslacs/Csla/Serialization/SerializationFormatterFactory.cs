@@ -14,14 +14,10 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter()
     {
-#if NET20
-      return new BinaryFormatterWrapper();
-#else
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)
         return new BinaryFormatterWrapper();
       else
         return new NetDataContractSerializerWrapper();
-#endif
     }
   }
 }

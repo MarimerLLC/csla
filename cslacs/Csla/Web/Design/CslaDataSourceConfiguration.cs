@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Collections;
 using System.Web.UI;
-using System.Web.UI.Design;
-using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Csla.Web.Design

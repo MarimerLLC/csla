@@ -1,6 +1,4 @@
-#if !NET20
 using System;
-using System.Collections.Generic;
 using System.Windows.Data;
 
 namespace Csla.Wpf
@@ -45,4 +43,3 @@ namespace Csla.Wpf
     #endregion
   }
 }
-#endif

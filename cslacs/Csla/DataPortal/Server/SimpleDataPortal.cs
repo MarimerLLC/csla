@@ -1,6 +1,4 @@
 using System;
-using System.Security.Principal;
-using System.Collections.Specialized;
 using Csla.Reflection;
 using Csla.Properties;
 

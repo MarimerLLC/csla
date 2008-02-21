@@ -1,9 +1,5 @@
-﻿#if !NET20
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Windows.Input;
-using System.Windows;
 using System.ComponentModel;
 
 namespace Csla.Wpf
@@ -122,4 +118,3 @@ namespace Csla.Wpf
     }
   }
 }
-#endif

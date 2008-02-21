@@ -1,7 +1,4 @@
-#if !NET20
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.Serialization;
 
 namespace Csla.Server.Hosts.WcfChannel
@@ -48,4 +45,3 @@ namespace Csla.Server.Hosts.WcfChannel
     }
   }
 }
-#endif

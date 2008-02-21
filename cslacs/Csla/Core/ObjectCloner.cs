@@ -11,21 +11,6 @@ namespace Csla.Core
   /// </summary>
   public static class ObjectCloner
   {
-#if NET20
-    /// <summary>
-    /// Clones an object.
-    /// </summary>
-    /// <param name="obj">The object to clone.</param>
-    /// <remarks>
-    /// <para>The object to be cloned must be serializable.</para>
-    /// <para>The serialization is performed using the formatter
-    /// specified in the application's configuration file
-    /// using the CslaSerializationFormatter key.</para>
-    /// <para>The default is to use the 
-    /// <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" />
-    /// </para>
-    /// </remarks>
-#else
     /// <summary>
     /// Clones an object.
     /// </summary>
@@ -41,7 +26,6 @@ namespace Csla.Core
     /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
     /// NetDataContractSerializer</see> provided as part of WCF.
     /// </remarks>
-#endif
     public static object Clone(object obj)
     {
       using (MemoryStream buffer = new MemoryStream())

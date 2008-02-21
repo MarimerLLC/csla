@@ -1,7 +1,4 @@
-#if !NET20
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ServiceModel;
 using Csla.Server;
 using Csla.Server.Hosts;
@@ -144,4 +141,3 @@ namespace Csla.DataPortalClient
     #endregion
   }
 }
-#endif

@@ -1,7 +1,4 @@
-﻿#if !NET20
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Csla.Workflow
 {
@@ -40,4 +37,3 @@ namespace Csla.Workflow
     Suspended
   }
 }
-#endif

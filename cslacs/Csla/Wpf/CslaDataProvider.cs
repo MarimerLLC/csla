@@ -1,4 +1,3 @@
-#if !NET20
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -388,4 +387,3 @@ namespace Csla.Wpf
 
   }
 }
-#endif

@@ -368,17 +368,6 @@ namespace Csla
       }
     }
 
-#if NET20
-    /// <summary>
-    /// Gets the serialization formatter type used by CSLA .NET
-    /// for all explicit object serialization (such as cloning,
-    /// n-level undo, etc).
-    /// </summary>
-    /// <remarks>
-    /// Always uses the standard Microsoft .NET 
-    /// <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/>.
-    /// </remarks>
-#else
     /// <summary>
     /// Gets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
@@ -415,7 +404,6 @@ namespace Csla
     /// NetDataContractSerializer</see> provided as part of WCF.
     /// </para>
     /// </remarks>
-#endif
     public static SerializationFormatters SerializationFormatter
     {
       get
@@ -439,14 +427,12 @@ namespace Csla
       /// <see cref="BinaryFormatter"/>.
       /// </summary>
       BinaryFormatter,
-#if !NET20
       /// <summary>
       /// Use the Microsoft .NET 3.0
       /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
       /// NetDataContractSerializer</see> provided as part of WCF.
       /// </summary>
       NetDataContractSerializer
-#endif
     }
 
     /// <summary>

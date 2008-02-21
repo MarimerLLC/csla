@@ -1,6 +1,5 @@
 using System;
 using System.Security.Principal;
-using System.Threading;
 using System.Collections.Specialized;
 
 namespace Csla.Server

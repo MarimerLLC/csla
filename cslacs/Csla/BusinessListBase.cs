@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Runtime.Serialization;
 using Csla.Properties;
 using System.Linq;

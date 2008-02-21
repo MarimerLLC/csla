@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using Csla.WebServiceHost;
 
 namespace Csla.DataPortalClient
 {

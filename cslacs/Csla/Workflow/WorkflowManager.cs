@@ -1,8 +1,6 @@
-﻿#if !NET20
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Text;
 using System.Workflow.Runtime;
 
 namespace Csla.Workflow
@@ -463,4 +461,3 @@ namespace Csla.Workflow
     }
   }
 }
-#endif

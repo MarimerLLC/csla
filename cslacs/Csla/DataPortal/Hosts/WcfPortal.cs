@@ -1,7 +1,4 @@
-#if !NET20
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Csla.Server.Hosts.WcfChannel;
 
 namespace Csla.Server.Hosts
@@ -93,4 +90,3 @@ namespace Csla.Server.Hosts
     #endregion
   }
 }
-#endif

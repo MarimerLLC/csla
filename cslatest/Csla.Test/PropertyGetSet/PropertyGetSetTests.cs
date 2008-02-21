@@ -76,6 +76,13 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual("M01", _changingName, "M01 should have been changing");
       Assert.AreEqual("M01", _changedName, "M01 should have changed");
 
+      _changedName = string.Empty;
+      _changingName = string.Empty;
+      root.M01 = "hi there";
+      Assert.AreEqual("hi there", root.M01, "String should be the same");
+      Assert.AreEqual(string.Empty, _changingName, "M01 should not have been changing");
+      Assert.AreEqual(string.Empty, _changedName, "M01 should not have changed");
+
       root.M02 = 123;
       Assert.AreEqual(123, root.M02, "Numeric should have been set");
 

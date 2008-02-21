@@ -2043,7 +2043,6 @@ Namespace Core
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F, ByVal throwOnNoAccess As Boolean)
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
-        OnPropertyChanging(propertyInfo.Name)
         Try
           Dim oldValue As P = Nothing
           Dim fieldData = FieldManager.GetFieldData(propertyInfo)
@@ -2065,7 +2064,6 @@ Namespace Core
         Catch ex As Exception
           Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
         End Try
-        PropertyHasChanged(propertyInfo.Name)
       End If
 
     End Sub
@@ -2089,7 +2087,6 @@ Namespace Core
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
 
       If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
-        OnPropertyChanging(propertyInfo.Name)
         Try
           Dim oldValue As P = Nothing
           Dim fieldData = FieldManager.GetFieldData(propertyInfo)
@@ -2111,7 +2108,6 @@ Namespace Core
         Catch ex As Exception
           Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
         End Try
-        PropertyHasChanged(propertyInfo.Name)
       End If
 
     End Sub
@@ -2247,7 +2243,9 @@ Namespace Core
             RemoveHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
           End If
           If markDirty Then
+            OnPropertyChanging(propertyInfo.Name)
             FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+            PropertyHasChanged(propertyInfo.Name)
           Else
             FieldManager.LoadFieldData(Of P)(propertyInfo, newValue)
           End If
@@ -2270,7 +2268,9 @@ Namespace Core
             RemoveHandler pc.ListChanged, AddressOf Child_ListChanged
           End If
           If markDirty Then
+            OnPropertyChanging(propertyInfo.Name)
             FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+            PropertyHasChanged(propertyInfo.Name)
           Else
             FieldManager.LoadFieldData(Of P)(propertyInfo, newValue)
           End If
@@ -2288,7 +2288,9 @@ Namespace Core
 
         Else
           If markDirty Then
+            OnPropertyChanging(propertyInfo.Name)
             FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
+            PropertyHasChanged(propertyInfo.Name)
           Else
             FieldManager.LoadFieldData(Of P)(propertyInfo, newValue)
           End If

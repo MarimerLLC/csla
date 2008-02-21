@@ -2052,7 +2052,6 @@ namespace Csla.Core
     {
       if (CanWriteProperty(propertyInfo.Name, throwOnNoAccess))
       {
-        OnPropertyChanging(propertyInfo.Name);
         try
         {
           P oldValue = default(P);
@@ -2076,7 +2075,6 @@ namespace Csla.Core
         {
           throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
         }
-        PropertyHasChanged(propertyInfo.Name);
       }
     }
 
@@ -2099,7 +2097,6 @@ namespace Csla.Core
     {
       if (CanWriteProperty(propertyInfo.Name, throwOnNoAccess))
       {
-        OnPropertyChanging(propertyInfo.Name);
         try
         {
           P oldValue = default(P);
@@ -2123,7 +2120,6 @@ namespace Csla.Core
         {
           throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
         }
-        PropertyHasChanged(propertyInfo.Name);
       }
     }
 
@@ -2255,9 +2251,15 @@ namespace Csla.Core
             pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
           }
           if (markDirty)
+          {
+            OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
+            PropertyHasChanged(propertyInfo.Name);
+          }
           else
+          {
             FieldManager.LoadFieldData<P>(propertyInfo, newValue);
+          }
           IEditableBusinessObject child = (IEditableBusinessObject)newValue;
           if (child != null)
           {
@@ -2280,9 +2282,15 @@ namespace Csla.Core
             pc.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
           }
           if (markDirty)
+          {
+            OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
+            PropertyHasChanged(propertyInfo.Name);
+          }
           else
+          {
             FieldManager.LoadFieldData<P>(propertyInfo, newValue);
+          }
           IEditableCollection child = (IEditableCollection)newValue;
           if (child != null)
           {
@@ -2300,9 +2308,15 @@ namespace Csla.Core
         else
         {
           if (markDirty)
+          {
+            OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
+            PropertyHasChanged(propertyInfo.Name);
+          }
           else
+          {
             FieldManager.LoadFieldData<P>(propertyInfo, newValue);
+          }
         }
       }
     }

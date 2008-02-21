@@ -11,8 +11,12 @@ Namespace Server
       Dim key = New MethodCacheKey(objectType.Name, methodName, MethodCaller.GetParameterTypes(parameters))
       Dim result As DataPortalMethodInfo = Nothing
       If (Not _cache.TryGetValue(key, result)) Then
-        result = New DataPortalMethodInfo(MethodCaller.GetMethod(objectType, methodName, parameters))
-        _cache.Add(key, result)
+        SyncLock _cache
+          If (Not _cache.TryGetValue(key, result)) Then
+            result = New DataPortalMethodInfo(MethodCaller.GetMethod(objectType, methodName, parameters))
+            _cache.Add(key, result)
+          End If
+        End SyncLock
       End If
       Return result
 

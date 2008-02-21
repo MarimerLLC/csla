@@ -17,8 +17,14 @@ namespace Csla.Server
       DataPortalMethodInfo result = null;
       if (!_cache.TryGetValue(key, out result))
       {
-        result = new DataPortalMethodInfo(MethodCaller.GetMethod(objectType, methodName, parameters));
-        _cache.Add(key, result);
+        lock (_cache)
+        {
+          if (!_cache.TryGetValue(key, out result))
+          {
+            result = new DataPortalMethodInfo(MethodCaller.GetMethod(objectType, methodName, parameters));
+            _cache.Add(key, result);
+          }
+        }
       }
       return result;
     }

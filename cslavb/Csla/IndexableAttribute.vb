@@ -1,9 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Text
-
-''' <summary>
+﻿''' <summary>
 ''' Marks a property to indicate that, when contained in a CSLA collection 
 ''' class, that an index should be built for the property that will
 ''' be used in LINQ queries

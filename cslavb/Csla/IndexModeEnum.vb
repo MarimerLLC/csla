@@ -1,9 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Text
-
-''' <summary>
+﻿''' <summary>
 ''' Enum used to determine how a given property should be indexed
 ''' </summary>
 Public Enum IndexModeEnum

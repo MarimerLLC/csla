@@ -1,10 +1,6 @@
-Imports System
-Imports System.Collections.Generic
 Imports System.Collections.ObjectModel
 Imports System.Reflection
-Imports System.Linq
 Imports System.Linq.Expressions
-Imports System.Text
 
 Namespace Linq
   Friend Class Index(Of T)

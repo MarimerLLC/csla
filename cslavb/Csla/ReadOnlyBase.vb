@@ -84,17 +84,17 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   <NotUndoable()> _
   <NonSerialized()> _
-  Private mReadResultCache As Dictionary(Of String, Boolean)
+  Private _readResultCache As Dictionary(Of String, Boolean)
   <NotUndoable()> _
   <NonSerialized()> _
-  Private mExecuteResultCache As Dictionary(Of String, Boolean)
+  Private _executeResultCache As Dictionary(Of String, Boolean)
   <NotUndoable()> _
   <NonSerialized()> _
-  Private mLastPrincipal As System.Security.Principal.IPrincipal
+  Private _lastPrincipal As System.Security.Principal.IPrincipal
 
   <NotUndoable()> _
   <NonSerialized()> _
-  Private mAuthorizationRules As Security.AuthorizationRules
+  Private _authorizationRules As Security.AuthorizationRules
 
   Private Sub InitializeAuthorizationRules()
 
@@ -144,10 +144,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Protected ReadOnly Property AuthorizationRules() _
     As Security.AuthorizationRules
     Get
-      If mAuthorizationRules Is Nothing Then
-        mAuthorizationRules = New Security.AuthorizationRules(Me.GetType)
+      If _authorizationRules Is Nothing Then
+        _authorizationRules = New Security.AuthorizationRules(Me.GetType)
       End If
-      Return mAuthorizationRules
+      Return _authorizationRules
     End Get
   End Property
 
@@ -241,7 +241,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
     VerifyAuthorizationCache()
 
-    If Not mReadResultCache.TryGetValue(propertyName, result) Then
+    If Not _readResultCache.TryGetValue(propertyName, result) Then
       result = True
       If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
         ' some users are explicitly granted read access
@@ -257,7 +257,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
         End If
       End If
       ' store value in cache
-      mReadResultCache(propertyName) = result
+      _readResultCache(propertyName) = result
     End If
     Return result
 
@@ -272,17 +272,17 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Private Sub VerifyAuthorizationCache()
 
-    If mReadResultCache Is Nothing Then
-      mReadResultCache = New Dictionary(Of String, Boolean)
+    If _readResultCache Is Nothing Then
+      _readResultCache = New Dictionary(Of String, Boolean)
     End If
-    If mExecuteResultCache Is Nothing Then
-      mExecuteResultCache = New Dictionary(Of String, Boolean)
+    If _executeResultCache Is Nothing Then
+      _executeResultCache = New Dictionary(Of String, Boolean)
     End If
-    If Not ReferenceEquals(Csla.ApplicationContext.User, mLastPrincipal) Then
+    If Not ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal) Then
       ' the principal has changed - reset the cache
-      mReadResultCache.Clear()
-      mExecuteResultCache.Clear()
-      mLastPrincipal = Csla.ApplicationContext.User
+      _readResultCache.Clear()
+      _executeResultCache.Clear()
+      _lastPrincipal = Csla.ApplicationContext.User
     End If
 
   End Sub
@@ -378,7 +378,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
     VerifyAuthorizationCache()
 
-    If Not mExecuteResultCache.TryGetValue(methodName, result) Then
+    If Not _executeResultCache.TryGetValue(methodName, result) Then
       result = True
       If AuthorizationRules.HasExecuteAllowedRoles(methodName) Then
         ' some users are explicitly granted read access
@@ -394,7 +394,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
         End If
       End If
       ' store value in cache
-      mExecuteResultCache(methodName) = result
+      _executeResultCache(methodName) = result
     End If
     Return result
 
@@ -1049,7 +1049,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 #Region " Field Manager "
 
   <NotUndoable()> _
-  Private mFieldManager As FieldManager.FieldDataManager
+  Private _fieldManager As FieldManager.FieldDataManager
 
   ''' <summary>
   ''' Gets the PropertyManager object for this
@@ -1057,10 +1057,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </summary>
   Protected ReadOnly Property FieldManager() As FieldManager.FieldDataManager
     Get
-      If mFieldManager Is Nothing Then
-        mFieldManager = New FieldManager.FieldDataManager(Me.GetType)
+      If _fieldManager Is Nothing Then
+        _fieldManager = New FieldManager.FieldDataManager(Me.GetType)
       End If
-      Return mFieldManager
+      Return _fieldManager
     End Get
   End Property
 
@@ -1090,7 +1090,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Private ReadOnly Property HasManagedProperties() As Boolean Implements IManageProperties.HasManagedProperties
     Get
-      Return mFieldManager IsNot Nothing AndAlso mFieldManager.HasFields
+      Return _fieldManager IsNot Nothing AndAlso _fieldManager.HasFields
     End Get
   End Property
 

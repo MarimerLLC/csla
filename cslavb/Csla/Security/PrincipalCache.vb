@@ -9,24 +9,24 @@ Namespace Security
   ''' </summary>
   Public Class PrincipalCache
 
-    Private Shared mCache As List(Of IPrincipal) = New List(Of IPrincipal)()
+    Private Shared _cache As List(Of IPrincipal) = New List(Of IPrincipal)()
 
-    Private Shared mMaxCacheSize As Integer
+    Private Shared _maxCacheSize As Integer
 
     Private Sub New()
     End Sub
 
     Private Shared ReadOnly Property MaxCacheSize() As Integer
       Get
-        If mMaxCacheSize = 0 Then
+        If _maxCacheSize = 0 Then
           Dim tmp As String = System.Configuration.ConfigurationManager.AppSettings("CslaPrincipalCacheSize")
           If String.IsNullOrEmpty(tmp) Then
-            mMaxCacheSize = 10
+            _maxCacheSize = 10
           Else
-            mMaxCacheSize = Convert.ToInt32(tmp)
+            _maxCacheSize = Convert.ToInt32(tmp)
           End If
         End If
-        Return mMaxCacheSize
+        Return _maxCacheSize
       End Get
     End Property
 
@@ -39,8 +39,8 @@ Namespace Security
     ''' The identity name associated with the principal.
     ''' </param>
     Public Shared Function GetPrincipal(ByVal name As String) As IPrincipal
-      SyncLock mCache
-        For Each item As IPrincipal In mCache
+      SyncLock _cache
+        For Each item As IPrincipal In _cache
           If item.Identity.Name = name Then
             Return item
           End If
@@ -56,11 +56,11 @@ Namespace Security
     ''' IPrincipal object to be added.
     ''' </param>
     Public Shared Sub AddPrincipal(ByVal principal As IPrincipal)
-      SyncLock mCache
-        If (Not mCache.Contains(principal)) Then
-          mCache.Add(principal)
-          If mCache.Count > MaxCacheSize Then
-            mCache.RemoveAt(0)
+      SyncLock _cache
+        If (Not _cache.Contains(principal)) Then
+          _cache.Add(principal)
+          If _cache.Count > MaxCacheSize Then
+            _cache.RemoveAt(0)
           End If
         End If
       End SyncLock
@@ -70,8 +70,8 @@ Namespace Security
     ''' Clears the cache.
     ''' </summary>
     Public Shared Sub Clear()
-      SyncLock mCache
-        mCache.Clear()
+      SyncLock _cache
+        _cache.Clear()
       End SyncLock
     End Sub
 

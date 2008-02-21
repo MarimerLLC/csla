@@ -6,15 +6,15 @@ Namespace Validation
   ''' </summary>
   Friend Class ValidationRulesManager
 
-    Private mRulesList As _
+    Private _rulesList As  _
       Generic.Dictionary(Of String, RulesList)
 
     Friend ReadOnly Property RulesDictionary() As Generic.Dictionary(Of String, RulesList)
       Get
-        If mRulesList Is Nothing Then
-          mRulesList = New Generic.Dictionary(Of String, RulesList)
+        If _rulesList Is Nothing Then
+          _rulesList = New Generic.Dictionary(Of String, RulesList)
         End If
-        Return mRulesList
+        Return _rulesList
       End Get
     End Property
 

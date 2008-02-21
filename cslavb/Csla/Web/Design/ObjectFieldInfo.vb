@@ -14,14 +14,14 @@ Namespace Web.Design
 
     Implements System.Web.UI.Design.IDataSourceFieldSchema
 
-    Private mDataType As Type
-    Private mPrimaryKey As Boolean
-    Private mIsIdentity As Boolean
-    Private mIsNullable As Boolean
-    Private mLength As Integer
-    Private mIsReadOnly As Boolean
-    Private mName As String
-    Private mNullable As Boolean
+    Private _dataType As Type
+    Private _primaryKey As Boolean
+    Private _isIdentity As Boolean
+    Private _isNullable As Boolean
+    Private _length As Integer
+    Private _isReadOnly As Boolean
+    Private _name As String
+    Private _nullable As Boolean
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -31,29 +31,29 @@ Namespace Web.Design
     Public Sub New(ByVal field As PropertyDescriptor)
 
       Dim attribute As DataObjectFieldAttribute = _
-          CType(field.Attributes.Item(GetType(DataObjectFieldAttribute)), _
+          CType(field.Attributes.Item(GetType(DataObjectFieldAttribute)),  _
           DataObjectFieldAttribute)
       If (Not attribute Is Nothing) Then
         With attribute
-          mPrimaryKey = .PrimaryKey
-          mIsIdentity = .IsIdentity
-          mIsNullable = .IsNullable
-          mLength = .Length
+          _primaryKey = .PrimaryKey
+          _isIdentity = .IsIdentity
+          _isNullable = .IsNullable
+          _length = .Length
         End With
       End If
-      mDataType = Utilities.GetPropertyType(field.PropertyType)
-      mIsReadOnly = field.IsReadOnly
-      mName = field.Name
+      _dataType = Utilities.GetPropertyType(field.PropertyType)
+      _isReadOnly = field.IsReadOnly
+      _name = field.Name
 
       Dim t As Type = field.PropertyType
-      If Not t.IsValueType OrElse mIsNullable Then
-        mNullable = True
+      If Not t.IsValueType OrElse _isNullable Then
+        _nullable = True
 
       ElseIf t.IsGenericType Then
-        mNullable = (t.GetGenericTypeDefinition Is GetType(Nullable(Of )))
+        _nullable = (t.GetGenericTypeDefinition Is GetType(Nullable(Of )))
 
       Else
-        mNullable = False
+        _nullable = False
       End If
 
     End Sub
@@ -64,7 +64,7 @@ Namespace Web.Design
     Public ReadOnly Property DataType() As System.Type _
       Implements System.Web.UI.Design.IDataSourceFieldSchema.DataType
       Get
-        Return mDataType
+        Return _dataType
       End Get
     End Property
 
@@ -79,7 +79,7 @@ Namespace Web.Design
     ''' </remarks>
     Public ReadOnly Property Identity() As Boolean Implements System.Web.UI.Design.IDataSourceFieldSchema.Identity
       Get
-        Return mIsIdentity
+        Return _isIdentity
       End Get
     End Property
 
@@ -89,7 +89,7 @@ Namespace Web.Design
     ''' </summary>
     Public ReadOnly Property IsReadOnly() As Boolean Implements System.Web.UI.Design.IDataSourceFieldSchema.IsReadOnly
       Get
-        Return mIsReadOnly
+        Return _isReadOnly
       End Get
     End Property
 
@@ -104,7 +104,7 @@ Namespace Web.Design
     ''' </returns>
     Public ReadOnly Property IsUnique() As Boolean Implements System.Web.UI.Design.IDataSourceFieldSchema.IsUnique
       Get
-        Return mPrimaryKey
+        Return _primaryKey
       End Get
     End Property
 
@@ -118,7 +118,7 @@ Namespace Web.Design
     ''' </remarks>
     Public ReadOnly Property Length() As Integer Implements System.Web.UI.Design.IDataSourceFieldSchema.Length
       Get
-        Return mLength
+        Return _length
       End Get
     End Property
 
@@ -128,7 +128,7 @@ Namespace Web.Design
     Public ReadOnly Property Name() As String _
       Implements System.Web.UI.Design.IDataSourceFieldSchema.Name
       Get
-        Return mName
+        Return _name
       End Get
     End Property
 
@@ -146,7 +146,7 @@ Namespace Web.Design
     Public ReadOnly Property Nullable() As Boolean _
       Implements System.Web.UI.Design.IDataSourceFieldSchema.Nullable
       Get
-        Return mNullable
+        Return _nullable
       End Get
     End Property
 
@@ -172,7 +172,7 @@ Namespace Web.Design
     Public ReadOnly Property PrimaryKey() As Boolean _
       Implements System.Web.UI.Design.IDataSourceFieldSchema.PrimaryKey
       Get
-        Return mPrimaryKey
+        Return _primaryKey
       End Get
     End Property
 

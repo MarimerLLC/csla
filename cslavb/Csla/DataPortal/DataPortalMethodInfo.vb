@@ -4,23 +4,23 @@ Namespace Server
 
   Friend Class DataPortalMethodInfo
 
-    Private privateRunLocal As Boolean
+    Private _runLocal As Boolean
     Public Property RunLocal() As Boolean
       Get
-        Return privateRunLocal
+        Return _runLocal
       End Get
       Private Set(ByVal value As Boolean)
-        privateRunLocal = value
+        _runLocal = value
       End Set
     End Property
 
-    Private privateTransactionalType As TransactionalTypes
+    Private _transactionalType As TransactionalTypes
     Public Property TransactionalType() As TransactionalTypes
       Get
-        Return privateTransactionalType
+        Return _transactionalType
       End Get
       Private Set(ByVal value As TransactionalTypes)
-        privateTransactionalType = value
+        _transactionalType = value
       End Set
     End Property
 

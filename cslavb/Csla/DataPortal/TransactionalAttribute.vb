@@ -28,14 +28,14 @@
 Public NotInheritable Class TransactionalAttribute
   Inherits Attribute
 
-  Private mType As TransactionalTypes
+  Private _type As TransactionalTypes
 
   ''' <summary>
   ''' Marks a method to run within a COM+
   ''' transactional context.
   ''' </summary>
   Public Sub New()
-    mType = TransactionalTypes.EnterpriseServices
+    _type = TransactionalTypes.EnterpriseServices
   End Sub
 
   ''' <summary>
@@ -46,7 +46,7 @@ Public NotInheritable Class TransactionalAttribute
   ''' Specifies the transactional context within which the
   ''' method should run.</param>
   Public Sub New(ByVal transactionType As TransactionalTypes)
-    mType = transactionType
+    _type = transactionType
   End Sub
 
   ''' <summary>
@@ -55,7 +55,7 @@ Public NotInheritable Class TransactionalAttribute
   ''' </summary>
   Public ReadOnly Property TransactionType() As TransactionalTypes
     Get
-      Return mType
+      Return _type
     End Get
   End Property
 

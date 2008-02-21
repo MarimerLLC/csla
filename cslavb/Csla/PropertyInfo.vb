@@ -28,13 +28,13 @@ Public Class PropertyInfo(Of T)
   ''' </param>
   Public Sub New(ByVal name As String, ByVal friendlyName As String)
 
-    mName = name
-    mFriendlyName = friendlyName
+    _name = name
+    _friendlyName = friendlyName
     If GetType(T).Equals(GetType(String)) Then
-      mDefaultValue = DirectCast(DirectCast(String.Empty, Object), T)
+      _defaultValue = DirectCast(DirectCast(String.Empty, Object), T)
 
     Else
-      mDefaultValue = Nothing
+      _defaultValue = Nothing
     End If
 
   End Sub
@@ -48,8 +48,8 @@ Public Class PropertyInfo(Of T)
   ''' </param>
   Public Sub New(ByVal name As String, ByVal defaultValue As T)
 
-    mName = name
-    mDefaultValue = defaultValue
+    _name = name
+    _defaultValue = defaultValue
 
   End Sub
 
@@ -65,19 +65,19 @@ Public Class PropertyInfo(Of T)
   ''' </param>
   Public Sub New(ByVal name As String, ByVal friendlyName As String, ByVal defaultValue As T)
 
-    mName = name
-    mDefaultValue = defaultValue
-    mFriendlyName = friendlyName
+    _name = name
+    _defaultValue = defaultValue
+    _friendlyName = friendlyName
 
   End Sub
 
-  Private mName As String
+  Private _name As String
   ''' <summary>
   ''' Gets the property name value.
   ''' </summary>
   Public ReadOnly Property Name() As String Implements Core.IPropertyInfo.Name
     Get
-      Return mName
+      Return _name
     End Get
   End Property
 
@@ -90,7 +90,7 @@ Public Class PropertyInfo(Of T)
     End Get
   End Property
 
-  Private mFriendlyName As String
+  Private _friendlyName As String
   ''' <summary>
   ''' Gets the friendly display name
   ''' for the property.
@@ -102,16 +102,16 @@ Public Class PropertyInfo(Of T)
   ''' </remarks>
   Public Overridable ReadOnly Property FriendlyName() As String Implements Core.IPropertyInfo.FriendlyName
     Get
-      If Not String.IsNullOrEmpty(mFriendlyName) Then
-        Return mFriendlyName
+      If Not String.IsNullOrEmpty(_friendlyName) Then
+        Return _friendlyName
 
       Else
-        Return mName
+        Return _name
       End If
     End Get
   End Property
 
-  Private mDefaultValue As T
+  Private _defaultValue As T
   ''' <summary>
   ''' Gets the default initial value for the property.
   ''' </summary>
@@ -123,13 +123,13 @@ Public Class PropertyInfo(Of T)
   ''' </remarks>
   Public Overridable ReadOnly Property DefaultValue() As T
     Get
-      Return mDefaultValue
+      Return _defaultValue
     End Get
   End Property
 
   Private ReadOnly Property IPropertyInfo_DefaultValue() As Object Implements Core.IPropertyInfo.DefaultValue
     Get
-      Return mDefaultValue
+      Return _defaultValue
     End Get
   End Property
 
@@ -145,7 +145,7 @@ Public Class PropertyInfo(Of T)
     Return New Core.FieldManager.FieldData(Of T)(name)
   End Function
 
-  Private mIndex As Integer = -1
+  Private _index As Integer = -1
 
   ''' <summary>
   ''' Gets or sets the index position for the managed
@@ -154,16 +154,16 @@ Public Class PropertyInfo(Of T)
   ''' </summary>
   Public Property Index() As Integer Implements Core.IPropertyInfo.Index
     Get
-      Return mIndex
+      Return _index
     End Get
     Set(ByVal value As Integer)
-      mIndex = value
+      _index = value
     End Set
   End Property
 
   Private Function CompareTo(ByVal obj As Object) As Integer Implements System.IComparable.CompareTo
 
-    Return mName.CompareTo(DirectCast(obj, Core.IPropertyInfo).Name)
+    Return _name.CompareTo(DirectCast(obj, Core.IPropertyInfo).Name)
 
   End Function
 

@@ -9,7 +9,7 @@ Namespace Security
   ''' </summary>
   Friend Module SharedAuthorizationRules
 
-    Private mManagers As New Dictionary(Of Type, AuthorizationRulesManager)
+    Private _managers As New Dictionary(Of Type, AuthorizationRulesManager)
 
     ''' <summary>
     ''' Gets the <see cref="AuthorizationRulesManager"/> for the 
@@ -25,11 +25,11 @@ Namespace Security
       As AuthorizationRulesManager
 
       Dim result As AuthorizationRulesManager = Nothing
-      If Not mManagers.TryGetValue(objectType, result) AndAlso create Then
-        SyncLock mManagers
-          If Not mManagers.TryGetValue(objectType, result) Then
+      If Not _managers.TryGetValue(objectType, result) AndAlso create Then
+        SyncLock _managers
+          If Not _managers.TryGetValue(objectType, result) Then
             result = New AuthorizationRulesManager
-            mManagers.Add(objectType, result)
+            _managers.Add(objectType, result)
           End If
         End SyncLock
       End If
@@ -47,7 +47,7 @@ Namespace Security
     ''' <returns><see langword="true" /> if rules exist for the type.</returns>
     Public Function RulesExistFor(ByVal objectType As Type) As Boolean
 
-      Return mManagers.ContainsKey(objectType)
+      Return _managers.ContainsKey(objectType)
 
     End Function
 

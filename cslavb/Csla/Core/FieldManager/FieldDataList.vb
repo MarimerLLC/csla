@@ -6,8 +6,8 @@
     Implements ISerializable
 
     <NonSerialized()> _
-    Private mFieldIndex As New Dictionary(Of String, Integer)
-    Private mFields As New List(Of IFieldData)
+    Private _fieldIndex As New Dictionary(Of String, Integer)
+    Private _fields As New List(Of IFieldData)
 
     Public Sub New()
       ' required due to serialization ctor
@@ -16,8 +16,8 @@
     Public Function TryGetValue(ByVal key As String, ByRef result As IFieldData) As Boolean
 
       Dim index As Integer
-      If mFieldIndex.TryGetValue(key, index) Then
-        result = mFields(index)
+      If _fieldIndex.TryGetValue(key, index) Then
+        result = _fields(index)
         Return True
 
       Else
@@ -28,25 +28,25 @@
     End Function
 
     Public Function ContainsKey(ByVal key As String) As Boolean
-      Return mFieldIndex.ContainsKey(key)
+      Return _fieldIndex.ContainsKey(key)
     End Function
 
     Public Function GetValue(ByVal key As String) As IFieldData
 
-      Return mFields(mFieldIndex(key))
+      Return _fields(_fieldIndex(key))
 
     End Function
 
     Public Sub Add(ByVal key As String, ByVal value As IFieldData)
 
-      mFields.Add(value)
-      mFieldIndex.Add(key, mFields.Count - 1)
+      _fields.Add(value)
+      _fieldIndex.Add(key, _fields.Count - 1)
 
     End Sub
 
     Friend Function FindPropertyName(ByVal value As Object) As String
 
-      For Each item In mFields
+      For Each item In _fields
         If ReferenceEquals(item.Value, value) Then
           Return item.Name
         End If
@@ -57,7 +57,7 @@
 
     Public Function GetFieldDataList() As List(Of IFieldData)
 
-      Return mFields
+      Return _fields
 
     End Function
 
@@ -65,7 +65,7 @@
 
     Protected Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
 
-      mFields = DirectCast(info.GetValue("Fields", GetType(List(Of IFieldData))), List(Of IFieldData))
+      _fields = DirectCast(info.GetValue("Fields", GetType(List(Of IFieldData))), List(Of IFieldData))
       RebuildIndex()
 
     End Sub
@@ -73,15 +73,15 @@
     Protected Sub GetObjectData(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext) _
       Implements System.Runtime.Serialization.ISerializable.GetObjectData
 
-      info.AddValue("Fields", mFields)
+      info.AddValue("Fields", _fields)
 
     End Sub
 
     Private Sub RebuildIndex()
 
       Dim position = 0
-      For Each item As IFieldData In mFields
-        mFieldIndex.Add(item.Name, position)
+      For Each item As IFieldData In _fields
+        _fieldIndex.Add(item.Name, position)
         position += 1
       Next
 

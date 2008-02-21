@@ -1,22 +1,20 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Linq.Expressions
-Imports System.Text
+﻿Imports System.Linq.Expressions
 
 Namespace Core
+
   Friend Class InnermostWhereFinder
     Inherits ExpressionVisitor
-    Private innermostWhereExpression As MethodCallExpression
+
+    Private _innermostWhereExpression As MethodCallExpression
 
     Public Function GetInnermostWhere(ByVal expression As Expression) As MethodCallExpression
       Visit(expression)
-      Return innermostWhereExpression
+      Return _innermostWhereExpression
     End Function
 
     Protected Overrides Function VisitMethodCall(ByVal expression As MethodCallExpression) As Expression
       If expression.Method.Name = "Where" Then
-        innermostWhereExpression = expression
+        _innermostWhereExpression = expression
       End If
       '{
       '  innermostWhereExpression = expression;
@@ -27,5 +25,7 @@ Namespace Core
 
       Return expression
     End Function
+
   End Class
+
 End Namespace

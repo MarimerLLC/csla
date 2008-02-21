@@ -6,8 +6,8 @@ Namespace Web
   Public Class InsertObjectArgs
     Inherits EventArgs
 
-    Private mValues As System.Collections.IDictionary
-    Private mRowsAffected As Integer
+    Private _values As System.Collections.IDictionary
+    Private _rowsAffected As Integer
 
     ''' <summary>
     ''' Gets or sets the number of rows affected
@@ -22,10 +22,10 @@ Namespace Web
     ''' </remarks>
     Public Property RowsAffected() As Integer
       Get
-        Return mRowsAffected
+        Return _rowsAffected
       End Get
       Set(ByVal value As Integer)
-        mRowsAffected = value
+        _rowsAffected = value
       End Set
     End Property
 
@@ -38,7 +38,7 @@ Namespace Web
     ''' into the database.</remarks>
     Public ReadOnly Property Values() As System.Collections.IDictionary
       Get
-        Return mValues
+        Return _values
       End Get
     End Property
 
@@ -47,7 +47,7 @@ Namespace Web
     ''' </summary>
     Public Sub New(ByVal values As System.Collections.IDictionary)
 
-      mValues = values
+      _values = values
 
     End Sub
 

@@ -6,10 +6,10 @@ Namespace Validation
   ''' </summary>
   Public Class RuleDescription
 
-    Private mScheme As String
-    Private mMethodName As String
-    Private mPropertyName As String
-    Private mArguments As Dictionary(Of String, String)
+    Private _scheme As String
+    Private _methodName As String
+    Private _propertyName As String
+    Private _arguments As Dictionary(Of String, String)
 
     ''' <summary>
     ''' Creates an instance of the object
@@ -20,20 +20,20 @@ Namespace Validation
 
       Dim uri As Uri = New Uri(ruleString)
 
-      mScheme = uri.GetLeftPart(UriPartial.Scheme)
-      mMethodName = uri.Host
-      mPropertyName = uri.LocalPath.Substring(1)
+      _scheme = uri.GetLeftPart(UriPartial.Scheme)
+      _methodName = uri.Host
+      _propertyName = uri.LocalPath.Substring(1)
 
       Dim args As String = uri.Query
       If (Not String.IsNullOrEmpty(args)) Then
         If args.StartsWith("?") Then
           args = args.Remove(0, 1)
         End If
-        mArguments = New Dictionary(Of String, String)()
+        _arguments = New Dictionary(Of String, String)()
         Dim argArray As String() = args.Split("&"c)
         For Each arg As String In argArray
           Dim argParams As String() = arg.Split("="c)
-          mArguments.Add( _
+          _arguments.Add( _
             System.Uri.UnescapeDataString(argParams(0)), _
             System.Uri.UnescapeDataString(argParams(1)))
         Next arg
@@ -60,7 +60,7 @@ Namespace Validation
     ''' </summary>
     Public ReadOnly Property Scheme() As String
       Get
-        Return mScheme
+        Return _scheme
       End Get
     End Property
 
@@ -69,7 +69,7 @@ Namespace Validation
     ''' </summary>
     Public ReadOnly Property MethodName() As String
       Get
-        Return mMethodName
+        Return _methodName
       End Get
     End Property
 
@@ -79,7 +79,7 @@ Namespace Validation
     ''' </summary>
     Public ReadOnly Property PropertyName() As String
       Get
-        Return mPropertyName
+        Return _propertyName
       End Get
     End Property
 
@@ -90,7 +90,7 @@ Namespace Validation
     ''' </summary>
     Public ReadOnly Property Arguments() As Dictionary(Of String, String)
       Get
-        Return mArguments
+        Return _arguments
       End Get
     End Property
 

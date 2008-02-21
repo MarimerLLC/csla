@@ -1,12 +1,10 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Text
+﻿Namespace Core
 
-Namespace Core
   Friend NotInheritable Class TypeSystem
+
     Private Sub New()
     End Sub
+
     Friend Shared Function GetElementType(ByVal seqType As Type) As Type
       Dim ienum As Type = FindIEnumerable(seqType)
       If ienum Is Nothing Then
@@ -49,5 +47,7 @@ Namespace Core
 
       Return Nothing
     End Function
+
   End Class
+
 End Namespace

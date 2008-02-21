@@ -1,4 +1,3 @@
-Imports System
 Imports System.Drawing
 Imports System.ComponentModel
 Imports System.Collections.Generic
@@ -21,7 +20,7 @@ Namespace Windows
 
     Implements IExtenderProvider
 
-    Private mSources As New Dictionary(Of Control, Boolean)
+    Private _sources As New Dictionary(Of Control, Boolean)
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -63,7 +62,7 @@ Namespace Windows
       ByVal source As Control) As Boolean
 
       Dim result As Boolean
-      If mSources.TryGetValue(source, result) Then
+      If _sources.TryGetValue(source, result) Then
         Return result
 
       Else
@@ -81,7 +80,7 @@ Namespace Windows
     Public Sub SetApplyAuthorization( _
       ByVal source As Control, ByVal value As Boolean)
 
-      mSources.Item(source) = value
+      _sources.Item(source) = value
 
     End Sub
 
@@ -100,7 +99,7 @@ Namespace Windows
     ''' </remarks>
     Public Sub ResetControlAuthorization()
 
-      For Each item As KeyValuePair(Of Control, Boolean) In mSources
+      For Each item As KeyValuePair(Of Control, Boolean) In _sources
         If item.Value Then
           ' apply authorization rules
           ApplyAuthorizationRules(item.Key)

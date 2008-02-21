@@ -1,7 +1,3 @@
-#If Not NET20 Then
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
 Imports System.ServiceModel
 Imports Csla.Server.Hosts.WcfChannel
 
@@ -38,4 +34,3 @@ Namespace Server.Hosts
     Function Delete(ByVal request As DeleteRequest) As WcfResponse
   End Interface
 End Namespace
-#End If

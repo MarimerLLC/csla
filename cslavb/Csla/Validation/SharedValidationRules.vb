@@ -7,7 +7,7 @@ Namespace Validation
   ''' </summary>
   Friend Module SharedValidationRules
 
-    Private mManagers As New Dictionary(Of Type, ValidationRulesManager)
+    Private _managers As New Dictionary(Of Type, ValidationRulesManager)
 
     ''' <summary>
     ''' Gets the <see cref="ValidationRulesManager"/> for the 
@@ -22,11 +22,11 @@ Namespace Validation
     Friend Function GetManager(ByVal objectType As Type, ByVal create As Boolean) As ValidationRulesManager
 
       Dim result As ValidationRulesManager = Nothing
-      If Not mManagers.TryGetValue(objectType, result) AndAlso create Then
-        SyncLock mManagers
-          If Not mManagers.TryGetValue(objectType, result) Then
+      If Not _managers.TryGetValue(objectType, result) AndAlso create Then
+        SyncLock _managers
+          If Not _managers.TryGetValue(objectType, result) Then
             result = New ValidationRulesManager
-            mManagers.Add(objectType, result)
+            _managers.Add(objectType, result)
           End If
         End SyncLock
       End If
@@ -44,7 +44,7 @@ Namespace Validation
     ''' <returns><see langword="true" /> if rules exist for the type.</returns>
     Public Function RulesExistFor(ByVal objectType As Type) As Boolean
 
-      Return mManagers.ContainsKey(objectType)
+      Return _managers.ContainsKey(objectType)
 
     End Function
 

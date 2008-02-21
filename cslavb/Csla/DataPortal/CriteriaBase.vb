@@ -5,7 +5,7 @@
 <Serializable()> _
 Public MustInherit Class CriteriaBase
 
-  Private mObjectType As Type
+  Private _objectType As Type
 
   ''' <summary>
   ''' Type of the business object to be instantiated by
@@ -13,7 +13,7 @@ Public MustInherit Class CriteriaBase
   ''' </summary>
   Public ReadOnly Property ObjectType() As Type
     Get
-      Return mObjectType
+      Return _objectType
     End Get
   End Property
 
@@ -24,7 +24,7 @@ Public MustInherit Class CriteriaBase
   ''' <param name="type">The type of the
   ''' business object the data portal should create.</param>
   Protected Sub New(ByVal type As Type)
-    mObjectType = type
+    _objectType = type
   End Sub
 
 End Class

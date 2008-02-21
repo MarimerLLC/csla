@@ -9,7 +9,7 @@ Namespace DataPortalClient
 
     Implements DataPortalClient.IDataPortalProxy
 
-    Private mPortal As Server.IDataPortalServer = _
+    Private _portal As Server.IDataPortalServer = _
       New Server.DataPortal
 
     ''' <summary>
@@ -26,7 +26,7 @@ Namespace DataPortalClient
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Create
 
-      Return mPortal.Create(objectType, criteria, context)
+      Return _portal.Create(objectType, criteria, context)
 
     End Function
 
@@ -45,7 +45,7 @@ Namespace DataPortalClient
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Fetch
 
-      Return mPortal.Fetch(objectType, criteria, context)
+      Return _portal.Fetch(objectType, criteria, context)
 
     End Function
 
@@ -62,7 +62,7 @@ Namespace DataPortalClient
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Update
 
-      Return mPortal.Update(obj, context)
+      Return _portal.Update(obj, context)
 
     End Function
 
@@ -79,7 +79,7 @@ Namespace DataPortalClient
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Delete
 
-      Return mPortal.Delete(criteria, context)
+      Return _portal.Delete(criteria, context)
 
     End Function
 

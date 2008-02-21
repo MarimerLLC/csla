@@ -15,11 +15,11 @@ Public Structure SmartDate
   Implements IConvertible
   Implements IFormattable
 
-  Private mDate As Date
-  Private mEmptyValue As EmptyValue
-  Private mFormat As String
-  Private Shared mDefaultFormat As String
-  Private mInitialized As Boolean
+  Private _date As Date
+  Private _emptyValue As EmptyValue
+  Private _format As String
+  Private Shared _defaultFormat As String
+  Private _initialized As Boolean
 
 #Region " EmptyValue enum "
 
@@ -45,7 +45,7 @@ Public Structure SmartDate
 #Region " Constructors "
 
   Shared Sub New()
-    mDefaultFormat = "d"
+    _defaultFormat = "d"
   End Sub
 
   ''' <summary>
@@ -53,8 +53,8 @@ Public Structure SmartDate
   ''' </summary>
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal emptyIsMin As Boolean)
-    mEmptyValue = GetEmptyValue(emptyIsMin)
-    SetEmptyDate(mEmptyValue)
+    _emptyValue = GetEmptyValue(emptyIsMin)
+    SetEmptyDate(_emptyValue)
   End Sub
 
   ''' <summary>
@@ -62,8 +62,8 @@ Public Structure SmartDate
   ''' </summary>
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal emptyValue As EmptyValue)
-    mEmptyValue = emptyValue
-    SetEmptyDate(mEmptyValue)
+    _emptyValue = emptyValue
+    SetEmptyDate(_emptyValue)
   End Sub
 
   ''' <summary>
@@ -75,7 +75,7 @@ Public Structure SmartDate
   ''' </remarks>
   ''' <param name="value">The initial value of the object.</param>
   Public Sub New(ByVal value As Date)
-    mEmptyValue = EmptyValue.MinDate
+    _emptyValue = EmptyValue.MinDate
     Me.Date = value
   End Sub
 
@@ -85,7 +85,7 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object.</param>
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As Date, ByVal emptyIsMin As Boolean)
-    mEmptyValue = GetEmptyValue(emptyIsMin)
+    _emptyValue = GetEmptyValue(emptyIsMin)
     Me.Date = value
   End Sub
 
@@ -95,7 +95,7 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object.</param>
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As Date, ByVal emptyValue As EmptyValue)
-    mEmptyValue = emptyValue
+    _emptyValue = emptyValue
     Me.Date = value
   End Sub
 
@@ -106,7 +106,7 @@ Public Structure SmartDate
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   ''' <param name="kind">One of the DateTimeKind values.</param>
   Public Sub New(ByVal value As Date, ByVal emptyValue As EmptyValue, ByVal kind As DateTimeKind)
-    mEmptyValue = emptyValue
+    _emptyValue = emptyValue
     Me.Date = DateTime.SpecifyKind(value, kind)
   End Sub
 
@@ -119,7 +119,7 @@ Public Structure SmartDate
   ''' </remarks>
   ''' <param name="value">The initial value of the object.</param>
   Public Sub New(ByVal value As Date?)
-    mEmptyValue = EmptyValue.MinDate
+    _emptyValue = EmptyValue.MinDate
     If value.HasValue Then
       Me.Date = value.Value
     End If
@@ -131,7 +131,7 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object.</param>
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As Date?, ByVal emptyIsMin As Boolean)
-    mEmptyValue = GetEmptyValue(emptyIsMin)
+    _emptyValue = GetEmptyValue(emptyIsMin)
     If value.HasValue Then
       Me.Date = value.Value
     End If
@@ -143,7 +143,7 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object.</param>
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As Date?, ByVal emptyValue As EmptyValue)
-    mEmptyValue = emptyValue
+    _emptyValue = emptyValue
     If value.HasValue Then
       Me.Date = value.Value
     End If
@@ -158,7 +158,7 @@ Public Structure SmartDate
   ''' </remarks>
   ''' <param name="value">The initial value of the object.</param>
   Public Sub New(ByVal value As DateTimeOffset)
-    mEmptyValue = EmptyValue.MinDate
+    _emptyValue = EmptyValue.MinDate
     Me.Date = value.DateTime
   End Sub
 
@@ -168,7 +168,7 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object.</param>
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As DateTimeOffset, ByVal emptyIsMin As Boolean)
-    mEmptyValue = GetEmptyValue(emptyIsMin)
+    _emptyValue = GetEmptyValue(emptyIsMin)
     Me.Date = value.DateTime
   End Sub
 
@@ -178,7 +178,7 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object.</param>
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As DateTimeOffset, ByVal emptyValue As EmptyValue)
-    mEmptyValue = emptyValue
+    _emptyValue = emptyValue
     Me.Date = value.DateTime
   End Sub
 
@@ -191,9 +191,9 @@ Public Structure SmartDate
   ''' </remarks>
   ''' <param name="value">The initial value of the object (as text).</param>
   Public Sub New(ByVal value As String)
-    mEmptyValue = EmptyValue.MinDate
+    _emptyValue = EmptyValue.MinDate
     Me.Text = value
-    mInitialized = True
+    _initialized = True
   End Sub
 
   ''' <summary>
@@ -202,9 +202,9 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object (as text).</param>
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As String, ByVal emptyIsMin As Boolean)
-    mEmptyValue = GetEmptyValue(emptyIsMin)
+    _emptyValue = GetEmptyValue(emptyIsMin)
     Me.Text = value
-    mInitialized = True
+    _initialized = True
   End Sub
 
   ''' <summary>
@@ -213,9 +213,9 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object (as text).</param>
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As String, ByVal emptyValue As EmptyValue)
-    mEmptyValue = emptyValue
+    _emptyValue = emptyValue
     Me.Text = value
-    mInitialized = True
+    _initialized = True
   End Sub
 
   Private Shared Function GetEmptyValue(ByVal emptyIsMin As Boolean) As EmptyValue
@@ -254,7 +254,7 @@ Public Structure SmartDate
   ''' .NET System.String.Format statement.
   ''' </param>
   Public Shared Sub SetDefaultFormatString(ByVal formatString As String)
-    mDefaultFormat = formatString
+    _defaultFormat = formatString
   End Sub
 
   ''' <summary>
@@ -268,13 +268,13 @@ Public Structure SmartDate
   ''' <value>A format string.</value>
   Public Property FormatString() As String
     Get
-      If mFormat Is Nothing Then
-        mFormat = mDefaultFormat
+      If _format Is Nothing Then
+        _format = _defaultFormat
       End If
-      Return mFormat
+      Return _format
     End Get
     Set(ByVal value As String)
-      mFormat = value
+      _format = value
     End Set
   End Property
 
@@ -295,10 +295,10 @@ Public Structure SmartDate
   ''' </remarks>
   Public Property Text() As String Implements Core.ISmartField.Text
     Get
-      Return DateToString(Me.Date, FormatString, mEmptyValue)
+      Return DateToString(Me.Date, FormatString, _emptyValue)
     End Get
     Set(ByVal value As String)
-      Me.Date = StringToDate(value, mEmptyValue)
+      Me.Date = StringToDate(value, _emptyValue)
     End Set
   End Property
 
@@ -311,15 +311,15 @@ Public Structure SmartDate
   ''' </summary>
   Public Property [Date]() As Date
     Get
-      If Not mInitialized Then
-        mDate = Date.MinValue
-        mInitialized = True
+      If Not _initialized Then
+        _date = Date.MinValue
+        _initialized = True
       End If
-      Return mDate
+      Return _date
     End Get
     Set(ByVal value As Date)
-      mDate = value
-      mInitialized = True
+      _date = value
+      _initialized = True
     End Set
   End Property
 
@@ -328,7 +328,7 @@ Public Structure SmartDate
   ''' </summary>
   Public Function ToDateTimeOffset() As DateTimeOffset
 
-    Return New DateTimeOffset(mDate)
+    Return New DateTimeOffset(_date)
 
   End Function
 
@@ -358,7 +358,7 @@ Public Structure SmartDate
       Me.Date = newDate.Value
 
     Else
-      If mEmptyValue = EmptyValue.MinDate Then
+      If _emptyValue = EmptyValue.MinDate Then
         Me.Date = Date.MinValue
 
       Else
@@ -392,7 +392,7 @@ Public Structure SmartDate
   ''' A standard .NET format string.
   ''' </param>
   Public Overloads Function ToString(ByVal format As String) As String
-    Return DateToString(Me.Date, format, mEmptyValue)
+    Return DateToString(Me.Date, format, _emptyValue)
   End Function
 
   ''' <summary>
@@ -470,7 +470,7 @@ Public Structure SmartDate
   ''' </summary>
   Public ReadOnly Property IsEmpty() As Boolean Implements Core.ISmartField.IsEmpty
     Get
-      If mEmptyValue = EmptyValue.MinDate Then
+      If _emptyValue = EmptyValue.MinDate Then
         Return Me.Date.Equals(Date.MinValue)
       Else
         Return Me.Date.Equals(Date.MaxValue)
@@ -489,7 +489,7 @@ Public Structure SmartDate
   ''' </remarks>
   Public ReadOnly Property EmptyIsMin() As Boolean
     Get
-      Return mEmptyValue = EmptyValue.MinDate
+      Return _emptyValue = EmptyValue.MinDate
     End Get
   End Property
 
@@ -780,7 +780,7 @@ Public Structure SmartDate
   ''' <param name="value">The date to which we are being compared.</param>
   ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
   Public Function CompareTo(ByVal value As String) As Integer
-    Return Me.Date.CompareTo(StringToDate(value, mEmptyValue))
+    Return Me.Date.CompareTo(StringToDate(value, _emptyValue))
   End Function
 
   ''' <summary>
@@ -1146,51 +1146,51 @@ Public Structure SmartDate
 #Region " IConvertible "
 
   Private Function GetTypeCode() As System.TypeCode Implements System.IConvertible.GetTypeCode
-    Return DirectCast(mDate, IConvertible).GetTypeCode
+    Return DirectCast(_date, IConvertible).GetTypeCode
   End Function
 
   Private Function ToBoolean(ByVal provider As System.IFormatProvider) As Boolean Implements System.IConvertible.ToBoolean
-    Return DirectCast(mDate, IConvertible).ToBoolean(provider)
+    Return DirectCast(_date, IConvertible).ToBoolean(provider)
   End Function
 
   Private Function ToByte(ByVal provider As System.IFormatProvider) As Byte Implements System.IConvertible.ToByte
-    Return DirectCast(mDate, IConvertible).ToByte(provider)
+    Return DirectCast(_date, IConvertible).ToByte(provider)
   End Function
 
   Private Function ToChar(ByVal provider As System.IFormatProvider) As Char Implements System.IConvertible.ToChar
-    Return DirectCast(mDate, IConvertible).ToChar(provider)
+    Return DirectCast(_date, IConvertible).ToChar(provider)
   End Function
 
   Private Function ToDateTime(ByVal provider As System.IFormatProvider) As Date Implements System.IConvertible.ToDateTime
-    Return DirectCast(mDate, IConvertible).ToDateTime(provider)
+    Return DirectCast(_date, IConvertible).ToDateTime(provider)
   End Function
 
   Private Function ToDecimal(ByVal provider As System.IFormatProvider) As Decimal Implements System.IConvertible.ToDecimal
-    Return DirectCast(mDate, IConvertible).ToDecimal(provider)
+    Return DirectCast(_date, IConvertible).ToDecimal(provider)
   End Function
 
   Private Function ToDouble(ByVal provider As System.IFormatProvider) As Double Implements System.IConvertible.ToDouble
-    Return DirectCast(mDate, IConvertible).ToDouble(provider)
+    Return DirectCast(_date, IConvertible).ToDouble(provider)
   End Function
 
   Private Function ToInt16(ByVal provider As System.IFormatProvider) As Short Implements System.IConvertible.ToInt16
-    Return DirectCast(mDate, IConvertible).ToInt16(provider)
+    Return DirectCast(_date, IConvertible).ToInt16(provider)
   End Function
 
   Private Function ToInt32(ByVal provider As System.IFormatProvider) As Integer Implements System.IConvertible.ToInt32
-    Return DirectCast(mDate, IConvertible).ToInt32(provider)
+    Return DirectCast(_date, IConvertible).ToInt32(provider)
   End Function
 
   Private Function ToInt64(ByVal provider As System.IFormatProvider) As Long Implements System.IConvertible.ToInt64
-    Return DirectCast(mDate, IConvertible).ToInt64(provider)
+    Return DirectCast(_date, IConvertible).ToInt64(provider)
   End Function
 
   Private Function ToSByte(ByVal provider As System.IFormatProvider) As SByte Implements System.IConvertible.ToSByte
-    Return DirectCast(mDate, IConvertible).ToSByte(provider)
+    Return DirectCast(_date, IConvertible).ToSByte(provider)
   End Function
 
   Private Function ToSingle(ByVal provider As System.IFormatProvider) As Single Implements System.IConvertible.ToSingle
-    Return DirectCast(mDate, IConvertible).ToSingle(provider)
+    Return DirectCast(_date, IConvertible).ToSingle(provider)
   End Function
 
   Private Function IConvertible_ToString(ByVal provider As System.IFormatProvider) As String Implements System.IConvertible.ToString
@@ -1202,20 +1202,20 @@ Public Structure SmartDate
       Return DirectCast(Text, IConvertible).ToType(conversionType, provider)
 
     Else
-      Return DirectCast(mDate, IConvertible).ToType(conversionType, provider)
+      Return DirectCast(_date, IConvertible).ToType(conversionType, provider)
     End If
   End Function
 
   Private Function ToUInt16(ByVal provider As System.IFormatProvider) As UShort Implements System.IConvertible.ToUInt16
-    Return DirectCast(mDate, IConvertible).ToUInt16(provider)
+    Return DirectCast(_date, IConvertible).ToUInt16(provider)
   End Function
 
   Private Function ToUInt32(ByVal provider As System.IFormatProvider) As UInteger Implements System.IConvertible.ToUInt32
-    Return DirectCast(mDate, IConvertible).ToUInt32(provider)
+    Return DirectCast(_date, IConvertible).ToUInt32(provider)
   End Function
 
   Private Function ToUInt64(ByVal provider As System.IFormatProvider) As ULong Implements System.IConvertible.ToUInt64
-    Return DirectCast(mDate, IConvertible).ToUInt64(provider)
+    Return DirectCast(_date, IConvertible).ToUInt64(provider)
   End Function
 
 #End Region

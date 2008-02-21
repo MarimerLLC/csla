@@ -1,5 +1,5 @@
 Imports System.ComponentModel.Design
-Imports System.windows.Forms
+Imports System.Windows.Forms
 Imports System.Web.UI
 
 Namespace Web.Design
@@ -10,7 +10,7 @@ Namespace Web.Design
   ''' <remarks></remarks>
   Public Class CslaDataSourceConfiguration
 
-    Private mControl As DataSourceControl
+    Private _control As DataSourceControl
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -30,7 +30,7 @@ Namespace Web.Design
     Public Sub New(ByVal control As DataSourceControl, ByVal oldTypeName As String)
 
       Me.New()
-      mControl = control
+      _control = control
       DiscoverTypes()
       Me.TypeComboBox.Text = oldTypeName
 
@@ -49,8 +49,8 @@ Namespace Web.Design
 
       ' try to get a reference to the type discovery service
       Dim discovery As ITypeDiscoveryService = Nothing
-      If Not mControl.Site Is Nothing Then
-        discovery = CType(mControl.Site.GetService(GetType(ITypeDiscoveryService)), ITypeDiscoveryService)
+      If Not _control.Site Is Nothing Then
+        discovery = CType(_control.Site.GetService(GetType(ITypeDiscoveryService)), ITypeDiscoveryService)
       End If
 
       If Not discovery Is Nothing Then

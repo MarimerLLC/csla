@@ -24,9 +24,9 @@ Namespace Data
 
     Implements IDisposable
 
-    Private Shared mLock As New Object
-    Private mConnection As C
-    Private mConnectionString As String
+    Private Shared _lock As New Object
+    Private _connection As C
+    Private _connectionString As String
 
     ''' <summary>
     ''' Gets the ConnectionManager object for the specified
@@ -62,7 +62,7 @@ Namespace Data
     ''' <returns>ConnectionManager object for the connection.</returns>
     Public Shared Function GetManager(ByVal connectionString As String) As ConnectionManager(Of C)
 
-      SyncLock mLock
+      SyncLock _lock
         Dim mgr As ConnectionManager(Of C)
         If ApplicationContext.LocalContext.Contains("__db:" & connectionString) Then
           mgr = CType(ApplicationContext.LocalContext("__db:" & connectionString), ConnectionManager(Of C))
@@ -79,12 +79,12 @@ Namespace Data
 
     Private Sub New(ByVal connectionString As String)
 
-      mConnectionString = connectionString
+      _connectionString = connectionString
 
       ' open connection
-      mConnection = New C
-      mConnection.ConnectionString = connectionString
-      mConnection.Open()
+      _connection = New C
+      _connection.ConnectionString = connectionString
+      _connection.Open()
 
     End Sub
 
@@ -93,25 +93,25 @@ Namespace Data
     ''' </summary>
     Public ReadOnly Property Connection() As C
       Get
-        Return mConnection
+        Return _connection
       End Get
     End Property
 
 #Region " Reference counting "
 
-    Private mRefCount As Integer
+    Private _refCount As Integer
 
     Private Sub AddRef()
-      mRefCount += 1
+      _refCount += 1
     End Sub
 
     Private Sub DeRef()
 
-      SyncLock mLock
-        mRefCount -= 1
-        If mRefCount = 0 Then
-          mConnection.Dispose()
-          ApplicationContext.LocalContext.Remove("__db:" & mConnectionString)
+      SyncLock _lock
+        _refCount -= 1
+        If _refCount = 0 Then
+          _connection.Dispose()
+          ApplicationContext.LocalContext.Remove("__db:" & _connectionString)
         End If
       End SyncLock
 

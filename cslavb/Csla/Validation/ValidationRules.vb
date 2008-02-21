@@ -7,21 +7,21 @@ Namespace Validation
   Public Class ValidationRules
 
     ' list of broken rules for this business object
-    Private mBrokenRules As BrokenRulesCollection
+    Private _brokenRules As BrokenRulesCollection
     ' threshold for short-circuiting to kick in
-    Private mProcessThroughPriority As Integer
+    Private _processThroughPriority As Integer
     ' reference to current business object
     <NonSerialized()> _
-    Private mTarget As Object
+    Private _target As Object
     ' reference to per-instance rules manager for this object
     <NonSerialized()> _
-    Private mInstanceRules As ValidationRulesManager
+    Private _instanceRules As ValidationRulesManager
     ' reference to per-type rules manager for this object
     <NonSerialized()> _
-    Private mTypeRules As ValidationRulesManager
+    Private _typeRules As ValidationRulesManager
     ' reference to the active set of rules for this object
     <NonSerialized()> _
-    Private mRulesToCheck As ValidationRulesManager
+    Private _rulesToCheck As ValidationRulesManager
 
     Friend Sub New(ByVal businessObject As Object)
 
@@ -31,60 +31,60 @@ Namespace Validation
 
     Friend Sub SetTarget(ByVal businessObject As Object)
 
-      mTarget = businessObject
+      _target = businessObject
 
     End Sub
 
     Private ReadOnly Property BrokenRulesList() As BrokenRulesCollection
       Get
-        If mBrokenRules Is Nothing Then
-          mBrokenRules = New BrokenRulesCollection
+        If _brokenRules Is Nothing Then
+          _brokenRules = New BrokenRulesCollection
         End If
-        Return mBrokenRules
+        Return _brokenRules
       End Get
     End Property
 
     Private Function GetInstanceRules(ByVal createObject As Boolean) As ValidationRulesManager
 
-      If mInstanceRules Is Nothing Then
+      If _instanceRules Is Nothing Then
         If createObject Then
-          mInstanceRules = New ValidationRulesManager
+          _instanceRules = New ValidationRulesManager
         End If
       End If
-      Return mInstanceRules
+      Return _instanceRules
 
     End Function
 
     Private Function GetTypeRules(ByVal createObject As Boolean) As ValidationRulesManager
 
-      If mTypeRules Is Nothing Then
-        mTypeRules = SharedValidationRules.GetManager(mTarget.GetType, createObject)
+      If _typeRules Is Nothing Then
+        _typeRules = SharedValidationRules.GetManager(_target.GetType, createObject)
       End If
-      Return mTypeRules
+      Return _typeRules
 
     End Function
 
     Private ReadOnly Property RulesToCheck() As ValidationRulesManager
       Get
-        If mRulesToCheck Is Nothing Then
+        If _rulesToCheck Is Nothing Then
           Dim instanceRules As ValidationRulesManager = GetInstanceRules(False)
           Dim typeRules As ValidationRulesManager = GetTypeRules(False)
           If instanceRules Is Nothing Then
             If typeRules Is Nothing Then
-              mRulesToCheck = Nothing
+              _rulesToCheck = Nothing
 
             Else
-              mRulesToCheck = typeRules
+              _rulesToCheck = typeRules
             End If
 
           ElseIf typeRules Is Nothing Then
-            mRulesToCheck = instanceRules
+            _rulesToCheck = instanceRules
 
           Else
             ' both have values - consolidate into instance rules
-            mRulesToCheck = instanceRules
+            _rulesToCheck = instanceRules
             For Each de As Generic.KeyValuePair(Of String, RulesList) In typeRules.RulesDictionary
-              Dim rules As RulesList = mRulesToCheck.GetRulesForProperty(de.Key, True)
+              Dim rules As RulesList = _rulesToCheck.GetRulesForProperty(de.Key, True)
               Dim instanceList As List(Of IRuleMethod) = rules.GetList(False)
               instanceList.AddRange(de.Value.GetList(False))
               Dim dependancy As List(Of String) = _
@@ -95,7 +95,7 @@ Namespace Validation
             Next
           End If
         End If
-        Return mRulesToCheck
+        Return _rulesToCheck
       End Get
     End Property
 
@@ -138,10 +138,10 @@ Namespace Validation
     ''' </remarks>
     Public Property ProcessThroughPriority() As Integer
       Get
-        Return mProcessThroughPriority
+        Return _processThroughPriority
       End Get
       Set(ByVal value As Integer)
-        mProcessThroughPriority = value
+        _processThroughPriority = value
       End Set
     End Property
 
@@ -745,7 +745,7 @@ Namespace Validation
 
     Private Function ValidateHandler(ByVal method As System.Reflection.MethodInfo) As Boolean
 
-      If Not method.IsStatic AndAlso method.DeclaringType.IsInstanceOfType(mTarget) Then
+      If Not method.IsStatic AndAlso method.DeclaringType.IsInstanceOfType(_target) Then
         Throw New InvalidOperationException( _
           String.Format("{0}: {1}", _
           My.Resources.InvalidRuleMethodException, method.Name))
@@ -929,7 +929,7 @@ Namespace Validation
 
 #Region " Checking Rules "
 
-    Private mSuppressRuleChecking As Boolean
+    Private _suppressRuleChecking As Boolean
 
     ''' <summary>
     ''' Gets or sets a value indicating whether calling
@@ -939,10 +939,10 @@ Namespace Validation
     ''' <value>True to suppress all rule method invocation.</value>
     Public Property SuppressRuleChecking() As Boolean
       Get
-        Return mSuppressRuleChecking
+        Return _suppressRuleChecking
       End Get
       Set(ByVal value As Boolean)
-        mSuppressRuleChecking = value
+        _suppressRuleChecking = value
       End Set
     End Property
 
@@ -968,7 +968,7 @@ Namespace Validation
     ''' <param name="propertyName">The name of the property to validate.</param>
     Public Sub CheckRules(ByVal propertyName As String)
 
-      If mSuppressRuleChecking Then
+      If _suppressRuleChecking Then
         Return
       End If
 
@@ -1015,7 +1015,7 @@ Namespace Validation
     ''' </summary>
     Public Sub CheckRules()
 
-      If mSuppressRuleChecking Then
+      If _suppressRuleChecking Then
         Return
       End If
 
@@ -1041,7 +1041,7 @@ Namespace Validation
       For index As Integer = 0 To list.Count - 1
         Dim rule As IRuleMethod = list(index)
         ' see if short-circuiting should kick in
-        If Not shortCircuited AndAlso (previousRuleBroken AndAlso rule.Priority > mProcessThroughPriority) Then
+        If Not shortCircuited AndAlso (previousRuleBroken AndAlso rule.Priority > _processThroughPriority) Then
           shortCircuited = True
         End If
 
@@ -1054,7 +1054,7 @@ Namespace Validation
           ' we're not short-circuited, so check rule
           Dim ruleResult As Boolean
           Try
-            ruleResult = rule.Invoke(mTarget)
+            ruleResult = rule.Invoke(_target)
 
           Catch ex As Exception
             '' force a broken rule

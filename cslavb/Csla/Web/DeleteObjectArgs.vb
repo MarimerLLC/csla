@@ -6,9 +6,9 @@ Namespace Web
   Public Class DeleteObjectArgs
     Inherits EventArgs
 
-    Private mKeys As System.Collections.IDictionary
-    Private mOldValues As System.Collections.IDictionary
-    Private mRowsAffected As Integer
+    Private _keys As System.Collections.IDictionary
+    Private _oldValues As System.Collections.IDictionary
+    Private _rowsAffected As Integer
 
     ''' <summary>
     ''' Gets or sets the number of rows affected
@@ -23,10 +23,10 @@ Namespace Web
     ''' </remarks>
     Public Property RowsAffected() As Integer
       Get
-        Return mRowsAffected
+        Return _rowsAffected
       End Get
       Set(ByVal value As Integer)
-        mRowsAffected = value
+        _rowsAffected = value
       End Set
     End Property
 
@@ -38,7 +38,7 @@ Namespace Web
     ''' object to be deleted.</remarks>
     Public ReadOnly Property Keys() As System.Collections.IDictionary
       Get
-        Return mKeys
+        Return _keys
       End Get
     End Property
 
@@ -51,7 +51,7 @@ Namespace Web
     ''' object to be deleted.</remarks>
     Public ReadOnly Property OldValues() As System.Collections.IDictionary
       Get
-        Return mOldValues
+        Return _oldValues
       End Get
     End Property
 
@@ -60,8 +60,8 @@ Namespace Web
     ''' </summary>
     Public Sub New(ByVal keys As System.Collections.IDictionary, ByVal oldValues As System.Collections.IDictionary)
 
-      mKeys = keys
-      mOldValues = oldValues
+      _keys = keys
+      _oldValues = oldValues
 
     End Sub
 

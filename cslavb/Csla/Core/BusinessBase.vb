@@ -56,9 +56,9 @@ Namespace Core
 #Region " IsNew, IsDeleted, IsDirty "
 
     ' keep track of whether we are new, deleted or dirty
-    Private mIsNew As Boolean = True
-    Private mIsDeleted As Boolean
-    Private mIsDirty As Boolean = True
+    Private _isNew As Boolean = True
+    Private _isDeleted As Boolean
+    Private _isDirty As Boolean = True
 
     ''' <summary>
     ''' Returns <see langword="true" /> if this is a new object, 
@@ -76,7 +76,7 @@ Namespace Core
     <Browsable(False)> _
     Public ReadOnly Property IsNew() As Boolean Implements IEditableBusinessObject.IsNew
       Get
-        Return mIsNew
+        Return _isNew
       End Get
     End Property
 
@@ -97,7 +97,7 @@ Namespace Core
     <Browsable(False)> _
     Public ReadOnly Property IsDeleted() As Boolean Implements IEditableBusinessObject.IsDeleted
       Get
-        Return mIsDeleted
+        Return _isDeleted
       End Get
     End Property
 
@@ -123,7 +123,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsDirty() As Boolean Implements IEditableBusinessObject.IsDirty
       Get
-        Return mIsDirty OrElse (mFieldManager IsNot Nothing AndAlso FieldManager.IsDirty())
+        Return _isDirty OrElse (_fieldManager IsNot Nothing AndAlso FieldManager.IsDirty())
       End Get
     End Property
 
@@ -147,7 +147,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsSelfDirty() As Boolean Implements IEditableBusinessObject.IsSelfDirty
       Get
-        Return mIsDirty
+        Return _isDirty
       End Get
     End Property
 
@@ -167,8 +167,8 @@ Namespace Core
     ''' </para>
     ''' </remarks>
     Protected Overridable Sub MarkNew() Implements Server.IDataPortalTarget.MarkNew
-      mIsNew = True
-      mIsDeleted = False
+      _isNew = True
+      _isDeleted = False
       MarkDirty()
     End Sub
 
@@ -191,7 +191,7 @@ Namespace Core
     ''' </para>
     ''' </remarks>
     Protected Overridable Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
-      mIsNew = False
+      _isNew = False
       MarkClean()
     End Sub
 
@@ -205,7 +205,7 @@ Namespace Core
     ''' saved to the database.
     ''' </remarks>
     Protected Sub MarkDeleted()
-      mIsDeleted = True
+      _isDeleted = True
       MarkDirty()
     End Sub
 
@@ -239,7 +239,7 @@ Namespace Core
     ''' </param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Sub MarkDirty(ByVal suppressEvent As Boolean)
-      mIsDirty = True
+      _isDirty = True
       If Not suppressEvent Then
         OnUnknownPropertyChanged()
       End If
@@ -303,8 +303,8 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Sub MarkClean()
 
-      mIsDirty = False
-      If mFieldManager IsNot Nothing Then
+      _isDirty = False
+      If _fieldManager IsNot Nothing Then
         FieldManager.MarkClean()
       End If
       OnUnknownPropertyChanged()
@@ -343,20 +343,20 @@ Namespace Core
 
     <NotUndoable()> _
     <NonSerialized()> _
-    Private mReadResultCache As Dictionary(Of String, Boolean)
+    Private _readResultCache As Dictionary(Of String, Boolean)
     <NotUndoable()> _
     <NonSerialized()> _
-    Private mWriteResultCache As Dictionary(Of String, Boolean)
+    Private _writeResultCache As Dictionary(Of String, Boolean)
     <NotUndoable()> _
     <NonSerialized()> _
-    Private mExecuteResultCache As Dictionary(Of String, Boolean)
+    Private _executeResultCache As Dictionary(Of String, Boolean)
     <NotUndoable()> _
     <NonSerialized()> _
-    Private mLastPrincipal As System.Security.Principal.IPrincipal
+    Private _lastPrincipal As System.Security.Principal.IPrincipal
 
     <NotUndoable()> _
     <NonSerialized()> _
-    Private mAuthorizationRules As Security.AuthorizationRules
+    Private _authorizationRules As Security.AuthorizationRules
 
     Private Sub InitializeAuthorizationRules()
 
@@ -410,10 +410,10 @@ Namespace Core
     Protected ReadOnly Property AuthorizationRules() _
       As Security.AuthorizationRules
       Get
-        If mAuthorizationRules Is Nothing Then
-          mAuthorizationRules = New Security.AuthorizationRules(Me.GetType)
+        If _authorizationRules Is Nothing Then
+          _authorizationRules = New Security.AuthorizationRules(Me.GetType)
         End If
-        Return mAuthorizationRules
+        Return _authorizationRules
       End Get
     End Property
 
@@ -508,7 +508,7 @@ Namespace Core
 
       VerifyAuthorizationCache()
 
-      If Not mReadResultCache.TryGetValue(propertyName, result) Then
+      If Not _readResultCache.TryGetValue(propertyName, result) Then
         result = True
         If AuthorizationRules.HasReadAllowedRoles(propertyName) Then
           ' some users are explicitly granted read access
@@ -524,7 +524,7 @@ Namespace Core
           End If
         End If
         ' store value in cache
-        mReadResultCache(propertyName) = result
+        _readResultCache(propertyName) = result
       End If
       Return result
 
@@ -617,7 +617,7 @@ Namespace Core
 
       VerifyAuthorizationCache()
 
-      If Not mWriteResultCache.TryGetValue(propertyName, result) Then
+      If Not _writeResultCache.TryGetValue(propertyName, result) Then
         result = True
         If AuthorizationRules.HasWriteAllowedRoles(propertyName) Then
           ' some users are explicitly granted write access
@@ -632,7 +632,7 @@ Namespace Core
             result = False
           End If
         End If
-        mWriteResultCache(propertyName) = result
+        _writeResultCache(propertyName) = result
       End If
       Return result
 
@@ -640,21 +640,21 @@ Namespace Core
 
     Private Sub VerifyAuthorizationCache()
 
-      If mReadResultCache Is Nothing Then
-        mReadResultCache = New Dictionary(Of String, Boolean)
+      If _readResultCache Is Nothing Then
+        _readResultCache = New Dictionary(Of String, Boolean)
       End If
-      If mWriteResultCache Is Nothing Then
-        mWriteResultCache = New Dictionary(Of String, Boolean)
+      If _writeResultCache Is Nothing Then
+        _writeResultCache = New Dictionary(Of String, Boolean)
       End If
-      If mExecuteResultCache Is Nothing Then
-        mExecuteResultCache = New Dictionary(Of String, Boolean)
+      If _executeResultCache Is Nothing Then
+        _executeResultCache = New Dictionary(Of String, Boolean)
       End If
-      If Not ReferenceEquals(Csla.ApplicationContext.User, mLastPrincipal) Then
+      If Not ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal) Then
         ' the principal has changed - reset the cache
-        mReadResultCache.Clear()
-        mWriteResultCache.Clear()
-        mExecuteResultCache.Clear()
-        mLastPrincipal = Csla.ApplicationContext.User
+        _readResultCache.Clear()
+        _writeResultCache.Clear()
+        _executeResultCache.Clear()
+        _lastPrincipal = Csla.ApplicationContext.User
       End If
 
     End Sub
@@ -751,7 +751,7 @@ Namespace Core
 
       VerifyAuthorizationCache()
 
-      If Not mExecuteResultCache.TryGetValue(methodName, result) Then
+      If Not _executeResultCache.TryGetValue(methodName, result) Then
         result = True
         If AuthorizationRules.HasExecuteAllowedRoles(methodName) Then
           ' some users are explicitly granted read access
@@ -767,7 +767,7 @@ Namespace Core
           End If
         End If
         ' store value in cache
-        mExecuteResultCache(methodName) = result
+        _executeResultCache(methodName) = result
       End If
       Return result
 
@@ -779,7 +779,7 @@ Namespace Core
 
     <NotUndoable()> _
     <NonSerialized()> _
-    Private mParent As Core.IParent
+    Private _parent As Core.IParent
 
     ''' <summary>
     ''' Provide access to the parent reference for use
@@ -791,7 +791,7 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected ReadOnly Property Parent() As Core.IParent
       Get
-        Return mParent
+        Return _parent
       End Get
     End Property
 
@@ -803,7 +803,7 @@ Namespace Core
     ''' <param name="parent">A reference to the parent collection object.</param>
     Friend Sub SetParent(ByVal parent As Core.IParent) Implements IEditableBusinessObject.SetParent
 
-      mParent = parent
+      _parent = parent
 
     End Sub
 
@@ -811,9 +811,9 @@ Namespace Core
 
 #Region " IEditableObject "
 
-    Private mNeverCommitted As Boolean = True
+    Private _neverCommitted As Boolean = True
     <NotUndoable()> _
-    Private mDisableIEditableObject As Boolean
+    Private _disableIEditableObject As Boolean
 
     ''' <summary>
     ''' Gets or sets a value indicating whether the
@@ -834,10 +834,10 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Property DisableIEditableObject() As Boolean
       Get
-        Return mDisableIEditableObject
+        Return _disableIEditableObject
       End Get
       Set(ByVal value As Boolean)
-        mDisableIEditableObject = value
+        _disableIEditableObject = value
       End Set
     End Property
 
@@ -852,7 +852,7 @@ Namespace Core
     Private Sub IEditableObject_BeginEdit() _
       Implements System.ComponentModel.IEditableObject.BeginEdit
 
-      If Not mDisableIEditableObject AndAlso Not BindingEdit Then
+      If Not _disableIEditableObject AndAlso Not BindingEdit Then
         BindingEdit = True
         BeginEdit()
       End If
@@ -872,9 +872,9 @@ Namespace Core
     Private Sub IEditableObject_CancelEdit() _
       Implements System.ComponentModel.IEditableObject.CancelEdit
 
-      If Not mDisableIEditableObject AndAlso BindingEdit Then
+      If Not _disableIEditableObject AndAlso BindingEdit Then
         CancelEdit()
-        If IsNew AndAlso mNeverCommitted AndAlso _
+        If IsNew AndAlso _neverCommitted AndAlso _
           EditLevel <= EditLevelAdded Then
           ' we're new and no EndEdit or ApplyEdit has ever been
           ' called on us, and now we've been canceled back to 
@@ -902,7 +902,7 @@ Namespace Core
     Private Sub IEditableObject_EndEdit() _
       Implements System.ComponentModel.IEditableObject.EndEdit
 
-      If Not mDisableIEditableObject AndAlso BindingEdit Then
+      If Not _disableIEditableObject AndAlso BindingEdit Then
         ApplyEdit()
       End If
 
@@ -974,7 +974,7 @@ Namespace Core
     ''' to the object's state since the last BeginEdit call.
     ''' </remarks>
     Public Sub ApplyEdit() Implements IEditableBusinessObject.ApplyEdit
-      mNeverCommitted = False
+      _neverCommitted = False
       AcceptChanges(Me.EditLevel - 1)
       BindingEdit = False
     End Sub
@@ -997,14 +997,14 @@ Namespace Core
 #Region " IsChild "
 
     <NotUndoable()> _
-    Private mIsChild As Boolean
+    Private _isChild As Boolean
 
     ''' <summary>
     ''' Returns <see langword="true" /> if this is a child (non-root) object.
     ''' </summary>
     Protected Friend ReadOnly Property IsChild() As Boolean
       Get
-        Return mIsChild
+        Return _isChild
       End Get
     End Property
 
@@ -1012,7 +1012,7 @@ Namespace Core
     ''' Marks the object as being a child object.
     ''' </summary>
     Protected Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
-      mIsChild = True
+      _isChild = True
     End Sub
 
 #End Region
@@ -1065,7 +1065,7 @@ Namespace Core
     ' level when we were added so if the user
     ' cancels below that level we can be destroyed
     <NotUndoable()> _
-    Private mEditLevelAdded As Integer
+    Private _editLevelAdded As Integer
 
     ''' <summary>
     ''' Gets or sets the current edit level of the
@@ -1077,10 +1077,10 @@ Namespace Core
     ''' </remarks>
     Friend Property EditLevelAdded() As Integer Implements IEditableBusinessObject.EditLevelAdded
       Get
-        Return mEditLevelAdded
+        Return _editLevelAdded
       End Get
       Set(ByVal Value As Integer)
-        mEditLevelAdded = Value
+        _editLevelAdded = Value
       End Set
     End Property
 
@@ -1111,7 +1111,7 @@ Namespace Core
 
 #Region " ValidationRules, IsValid "
 
-    Private mValidationRules As Validation.ValidationRules
+    Private _validationRules As Validation.ValidationRules
 
     Private Sub InitializeBusinessRules()
 
@@ -1138,10 +1138,10 @@ Namespace Core
     Protected ReadOnly Property ValidationRules() _
       As Validation.ValidationRules
       Get
-        If mValidationRules Is Nothing Then
-          mValidationRules = New Validation.ValidationRules(Me)
+        If _validationRules Is Nothing Then
+          _validationRules = New Validation.ValidationRules(Me)
         End If
-        Return mValidationRules
+        Return _validationRules
       End Get
     End Property
 
@@ -1195,7 +1195,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsValid() As Boolean Implements IEditableBusinessObject.IsValid
       Get
-        Return ValidationRules.IsValid AndAlso (mFieldManager Is Nothing OrElse FieldManager.IsValid())
+        Return ValidationRules.IsValid AndAlso (_fieldManager Is Nothing OrElse FieldManager.IsValid())
       End Get
     End Property
 
@@ -1419,7 +1419,7 @@ Namespace Core
 
       OnDeserialized(context)
       ValidationRules.SetTarget(Me)
-      If mFieldManager IsNot Nothing Then
+      If _fieldManager IsNot Nothing Then
         FieldManager.SetPropertyList(Me.GetType)
       End If
       InitializeBusinessRules()
@@ -2332,7 +2332,7 @@ Namespace Core
 
 #Region " Field Manager "
 
-    Private mFieldManager As FieldManager.FieldDataManager
+    Private _fieldManager As FieldManager.FieldDataManager
 
     ''' <summary>
     ''' Gets the PropertyManager object for this
@@ -2340,11 +2340,11 @@ Namespace Core
     ''' </summary>
     Protected ReadOnly Property FieldManager() As FieldManager.FieldDataManager
       Get
-        If mFieldManager Is Nothing Then
-          mFieldManager = New FieldManager.FieldDataManager(Me.GetType)
-          UndoableBase.ResetChildEditLevel(mFieldManager, Me.EditLevel, Me.BindingEdit)
+        If _fieldManager Is Nothing Then
+          _fieldManager = New FieldManager.FieldDataManager(Me.GetType)
+          UndoableBase.ResetChildEditLevel(_fieldManager, Me.EditLevel, Me.BindingEdit)
         End If
-        Return mFieldManager
+        Return _fieldManager
       End Get
     End Property
 
@@ -2406,7 +2406,7 @@ Namespace Core
 
     Private ReadOnly Property HasManagedProperties() As Boolean Implements IManageProperties.HasManagedProperties
       Get
-        Return mFieldManager IsNot Nothing AndAlso mFieldManager.HasFields
+        Return _fieldManager IsNot Nothing AndAlso _fieldManager.HasFields
       End Get
     End Property
 

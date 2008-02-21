@@ -5,23 +5,23 @@ Namespace Validation
   ''' </summary>
   <Serializable()> _
   Public Class BrokenRule
-    Private mRuleName As String
-    Private mDescription As String
-    Private mProperty As String
-    Private mSeverity As RuleSeverity
+    Private _ruleName As String
+    Private _description As String
+    Private _property As String
+    Private _severity As RuleSeverity
 
     Friend Sub New(ByVal rule As IRuleMethod)
-      mRuleName = rule.RuleName
-      mDescription = rule.RuleArgs.Description
-      mProperty = rule.RuleArgs.PropertyName
-      mSeverity = rule.RuleArgs.Severity
+      _ruleName = rule.RuleName
+      _description = rule.RuleArgs.Description
+      _property = rule.RuleArgs.PropertyName
+      _severity = rule.RuleArgs.Severity
     End Sub
 
     Friend Sub New(ByVal source As String, ByVal rule As BrokenRule)
-      mRuleName = String.Format("rule://{0}.{1}", source, rule.RuleName.Replace("rule://", String.Empty))
-      mDescription = rule.Description
-      mProperty = rule.Property
-      mSeverity = rule.Severity
+      _ruleName = String.Format("rule://{0}.{1}", source, rule.RuleName.Replace("rule://", String.Empty))
+      _description = rule.Description
+      _property = rule.Property
+      _severity = rule.Severity
     End Sub
 
     ''' <summary>
@@ -30,7 +30,7 @@ Namespace Validation
     ''' <value>The name of the rule.</value>
     Public ReadOnly Property RuleName() As String
       Get
-        Return mRuleName
+        Return _ruleName
       End Get
     End Property
 
@@ -40,7 +40,7 @@ Namespace Validation
     ''' <value>The description of the rule.</value>
     Public ReadOnly Property Description() As String
       Get
-        Return mDescription
+        Return _description
       End Get
     End Property
 
@@ -50,7 +50,7 @@ Namespace Validation
     ''' <value>The property affected by the rule.</value>
     Public ReadOnly Property [Property]() As String
       Get
-        Return mProperty
+        Return _property
       End Get
     End Property
 
@@ -62,7 +62,7 @@ Namespace Validation
     ''' <remarks></remarks>
     Public ReadOnly Property Severity() As RuleSeverity
       Get
-        Return mSeverity
+        Return _severity
       End Get
     End Property
 

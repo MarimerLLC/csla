@@ -8,14 +8,15 @@ Namespace Core
   Public Class SavedEventArgs
     Inherits EventArgs
 
-    Private mNewObject As Object
+    Private _newObject As Object
+
     ''' <summary>
     ''' Gets the object that was returned
     ''' as a result of the Save() operation.
     ''' </summary>
     Public ReadOnly Property NewObject() As Object
       Get
-        Return mNewObject
+        Return _newObject
       End Get
     End Property
 
@@ -27,7 +28,7 @@ Namespace Core
     ''' result of the Save() operation.
     ''' </param>
     Public Sub New(ByVal newObject As Object)
-      mNewObject = newObject
+      _newObject = newObject
     End Sub
   End Class
 

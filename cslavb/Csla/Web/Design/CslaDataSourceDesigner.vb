@@ -11,8 +11,8 @@ Namespace Web.Design
   Public Class CslaDataSourceDesigner
     Inherits DataSourceDesigner
 
-    Private mControl As DataSourceControl = Nothing
-    Private mView As CslaDesignerDataSourceView = Nothing
+    Private _control As DataSourceControl = Nothing
+    Private _view As CslaDesignerDataSourceView = Nothing
 
     ''' <summary>
     ''' Initialize the designer component.
@@ -22,13 +22,13 @@ Namespace Web.Design
     Public Overrides Sub Initialize(ByVal component As IComponent)
 
       MyBase.Initialize(component)
-      mControl = CType(component, DataSourceControl)
+      _control = CType(component, DataSourceControl)
 
     End Sub
 
     Friend ReadOnly Property Site() As System.ComponentModel.ISite
       Get
-        Return mControl.Site
+        Return _control.Site
       End Get
     End Property
     ''' <summary>
@@ -41,10 +41,10 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides Function GetView(ByVal viewName As String) As DesignerDataSourceView
 
-      If mView Is Nothing Then
-        mView = New CslaDesignerDataSourceView(Me, "Default")
+      If _view Is Nothing Then
+        _view = New CslaDesignerDataSourceView(Me, "Default")
       End If
-      Return mView
+      Return _view
 
     End Function
 
@@ -87,7 +87,7 @@ Namespace Web.Design
     ''' </summary>
     Public Overrides Sub Configure()
 
-      InvokeTransactedChange(mControl, AddressOf ConfigureCallback, Nothing, "ConfigureDataSource")
+      InvokeTransactedChange(_control, AddressOf ConfigureCallback, Nothing, "ConfigureDataSource")
 
     End Sub
 
@@ -103,8 +103,8 @@ Namespace Web.Design
           CType(DataSourceControl, CslaDataSource).TypeName, CType(DataSourceControl, CslaDataSource).TypeAssemblyName)
       End If
 
-      Dim uiService As IUIService = CType(mControl.Site.GetService(GetType(IUIService)), IUIService)
-      Dim cfg As CslaDataSourceConfiguration = New CslaDataSourceConfiguration(mControl, oldTypeName)
+      Dim uiService As IUIService = CType(_control.Site.GetService(GetType(IUIService)), IUIService)
+      Dim cfg As CslaDataSourceConfiguration = New CslaDataSourceConfiguration(_control, oldTypeName)
       If uiService.ShowDialog(cfg) = System.Windows.Forms.DialogResult.OK Then
         SuppressDataSourceEvents()
         Try
@@ -148,7 +148,7 @@ Namespace Web.Design
     ''' </summary>
     Friend ReadOnly Property DataSourceControl() As CslaDataSource
       Get
-        Return DirectCast(mControl, CslaDataSource)
+        Return DirectCast(_control, CslaDataSource)
       End Get
     End Property
 

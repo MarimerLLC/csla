@@ -5,10 +5,10 @@
 Public Class DataPortalEventArgs
   Inherits EventArgs
 
-  Private mDataPortalContext As Server.DataPortalContext
-  Private mOperation As DataPortalOperations
-  Private mException As Exception
-  Private mObjectType As Type
+  Private _dataPortalContext As Server.DataPortalContext
+  Private _operation As DataPortalOperations
+  Private _exception As Exception
+  Private _objectType As Type
 
   ''' <summary>
   ''' The DataPortalContext object passed to the
@@ -16,7 +16,7 @@ Public Class DataPortalEventArgs
   ''' </summary>
   Public ReadOnly Property DataPortalContext() As Server.DataPortalContext
     Get
-      Return mDataPortalContext
+      Return _dataPortalContext
     End Get
   End Property
 
@@ -25,7 +25,7 @@ Public Class DataPortalEventArgs
   ''' </summary>
   Public ReadOnly Property Operation() As DataPortalOperations
     Get
-      Return mOperation
+      Return _operation
     End Get
   End Property
 
@@ -40,7 +40,7 @@ Public Class DataPortalEventArgs
   ''' </remarks>
   Public ReadOnly Property Exception() As Exception
     Get
-      Return mException
+      Return _exception
     End Get
   End Property
 
@@ -50,7 +50,7 @@ Public Class DataPortalEventArgs
   ''' </summary>
   Public ReadOnly Property ObjectType() As Type
     Get
-      Return mObjectType
+      Return _objectType
     End Get
   End Property
 
@@ -67,9 +67,9 @@ Public Class DataPortalEventArgs
   ''' Data portal operation being performed.
   ''' </param>
   Public Sub New(ByVal dataPortalContext As Server.DataPortalContext, ByVal objectType As Type, ByVal operation As DataPortalOperations)
-    mDataPortalContext = dataPortalContext
-    mOperation = operation
-    mObjectType = objectType
+    _dataPortalContext = dataPortalContext
+    _operation = operation
+    _objectType = objectType
   End Sub
 
   ''' <summary>
@@ -92,7 +92,7 @@ Public Class DataPortalEventArgs
                  ByVal operation As DataPortalOperations, _
                  ByVal exception As Exception)
     Me.New(dataPortalContext, objectType, operation)
-    mException = exception
+    _exception = exception
   End Sub
 
 End Class

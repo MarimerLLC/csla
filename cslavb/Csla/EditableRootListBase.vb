@@ -1,4 +1,3 @@
-Imports System
 Imports System.ComponentModel
 
 ''' <summary>
@@ -35,7 +34,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
 #Region " SaveItem Methods "
 
-  Private mActivelySaving As Boolean
+  Private _activelySaving As Boolean
 
   ''' <summary>
   ''' Saves the specified item in the list.
@@ -72,7 +71,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
     Dim raiseEvents As Boolean = Me.RaiseListChangedEvents
     Me.RaiseListChangedEvents = False
 
-    mActivelySaving = True
+    _activelySaving = True
     Dim item As T = Me.Item(index)
     Dim editLevel As Integer = item.EditLevel
     ' commit all changes
@@ -105,7 +104,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
         item.CopyState(tmp)
       Next
 
-      mActivelySaving = False
+      _activelySaving = False
       Me.RaiseListChangedEvents = raiseEvents
     End Try
     Me.OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
@@ -170,7 +169,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
   Private Sub ApplyEditChild(ByVal child As Core.IEditableBusinessObject) Implements Core.IParent.ApplyEditChild
 
-    If Not mActivelySaving AndAlso child.EditLevel = 0 Then
+    If Not _activelySaving AndAlso child.EditLevel = 0 Then
       SaveItem(CType(child, T))
     End If
 

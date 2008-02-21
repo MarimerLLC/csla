@@ -98,9 +98,9 @@ Public Module ApplicationContext
 
 #Region " Client/Global Context "
 
-  Private mSyncClientContext As New Object
-  Private Const mClientContextName As String = "Csla.ClientContext"
-  Private Const mGlobalContextName As String = "Csla.GlobalContext"
+  Private _syncClientContext As New Object
+  Private Const _clientContextName As String = "Csla.ClientContext"
+  Private Const _globalContextName As String = "Csla.GlobalContext"
 
   ''' <summary>
   ''' Returns the application-specific context data provided
@@ -123,7 +123,7 @@ Public Module ApplicationContext
   ''' </remarks>
   Public ReadOnly Property ClientContext() As HybridDictionary
     Get
-      SyncLock mSyncClientContext
+      SyncLock _syncClientContext
         Dim ctx As HybridDictionary = GetClientContext()
         If ctx Is Nothing Then
           ctx = New HybridDictionary
@@ -163,18 +163,18 @@ Public Module ApplicationContext
 
     If HttpContext.Current Is Nothing Then
       If ExecutionLocation = ExecutionLocations.Client Then
-        SyncLock mSyncClientContext
-          Return CType(AppDomain.CurrentDomain.GetData(mClientContextName), HybridDictionary)
+        SyncLock _syncClientContext
+          Return CType(AppDomain.CurrentDomain.GetData(_clientContextName), HybridDictionary)
         End SyncLock
 
       Else
         Dim slot As System.LocalDataStoreSlot = _
-          Thread.GetNamedDataSlot(mClientContextName)
+          Thread.GetNamedDataSlot(_clientContextName)
         Return CType(Thread.GetData(slot), HybridDictionary)
       End If
 
     Else
-      Return CType(HttpContext.Current.Items(mClientContextName), _
+      Return CType(HttpContext.Current.Items(_clientContextName),  _
         HybridDictionary)
     End If
 
@@ -184,11 +184,11 @@ Public Module ApplicationContext
 
     If HttpContext.Current Is Nothing Then
       Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot(mGlobalContextName)
+        Thread.GetNamedDataSlot(_globalContextName)
       Return CType(Thread.GetData(slot), HybridDictionary)
 
     Else
-      Return CType(HttpContext.Current.Items(mGlobalContextName), HybridDictionary)
+      Return CType(HttpContext.Current.Items(_globalContextName), HybridDictionary)
     End If
 
   End Function
@@ -197,18 +197,18 @@ Public Module ApplicationContext
 
     If HttpContext.Current Is Nothing Then
       If ExecutionLocation = ExecutionLocations.Client Then
-        SyncLock mSyncClientContext
-          AppDomain.CurrentDomain.SetData(mClientContextName, clientContext)
+        SyncLock _syncClientContext
+          AppDomain.CurrentDomain.SetData(_clientContextName, clientContext)
         End SyncLock
 
       Else
         Dim slot As System.LocalDataStoreSlot = _
-          Thread.GetNamedDataSlot(mClientContextName)
+          Thread.GetNamedDataSlot(_clientContextName)
         Threading.Thread.SetData(slot, clientContext)
       End If
 
     Else
-      HttpContext.Current.Items(mClientContextName) = clientContext
+      HttpContext.Current.Items(_clientContextName) = clientContext
     End If
 
   End Sub
@@ -217,11 +217,11 @@ Public Module ApplicationContext
 
     If HttpContext.Current Is Nothing Then
       Dim slot As System.LocalDataStoreSlot = _
-        Thread.GetNamedDataSlot(mGlobalContextName)
+        Thread.GetNamedDataSlot(_globalContextName)
       Threading.Thread.SetData(slot, globalContext)
 
     Else
-      HttpContext.Current.Items(mGlobalContextName) = globalContext
+      HttpContext.Current.Items(_globalContextName) = globalContext
     End If
 
   End Sub
@@ -372,17 +372,6 @@ Public Module ApplicationContext
     End Get
   End Property
 
-#If NET20 Then
-  ''' <summary>
-  ''' Gets the serialization formatter type used by CSLA .NET
-  ''' for all explicit object serialization (such as cloning,
-  ''' n-level undo, etc).
-  ''' </summary>
-  ''' <remarks>
-  ''' Always uses the standard Microsoft .NET 
-  ''' <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/>.
-  ''' </remarks>
-#Else
   ''' <summary>
   ''' Gets the serialization formatter type used by CSLA .NET
   ''' for all explicit object serialization (such as cloning,
@@ -419,7 +408,6 @@ Public Module ApplicationContext
   ''' NetDataContractSerializer</see> provided as part of WCF.
   ''' </para>
   ''' </remarks>
-#End If
   Public ReadOnly Property SerializationFormatter() As SerializationFormatters
     Get
       Dim tmp As String = ConfigurationManager.AppSettings("CslaSerializationFormatter")
@@ -440,14 +428,12 @@ Public Module ApplicationContext
     ''' <see cref="BinaryFormatter"/>.
     ''' </summary>
     BinaryFormatter
-#If Not NET20 Then
     ''' <summary>
     ''' Use the Microsoft .NET 3.0
     ''' <see cref="System.Runtime.Serialization.NetDataContractSerializer">
     ''' NetDataContractSerializer</see> provided as part of WCF.
     ''' </summary>
     NetDataContractSerializer
-#End If
   End Enum
 
 #End Region
@@ -468,7 +454,7 @@ Public Module ApplicationContext
     Server
   End Enum
 
-  Private mExecutionLocation As ExecutionLocations = ExecutionLocations.Client
+  Private _executionLocation As ExecutionLocations = ExecutionLocations.Client
 
   ''' <summary>
   ''' Returns a value indicating whether the application code
@@ -476,13 +462,13 @@ Public Module ApplicationContext
   ''' </summary>
   Public ReadOnly Property ExecutionLocation() As ExecutionLocations
     Get
-      Return mExecutionLocation
+      Return _executionLocation
     End Get
   End Property
 
   Friend Sub SetExecutionLocation(ByVal location As ExecutionLocations)
 
-    mExecutionLocation = location
+    _executionLocation = location
 
   End Sub
 

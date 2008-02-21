@@ -1,7 +1,6 @@
 Imports System.ComponentModel
 Imports System.Collections.Specialized
 Imports Csla.Core
-Imports System.Linq
 Imports System.Linq.Expressions
 
 ''' <summary>
@@ -213,20 +212,20 @@ Public MustInherit Class BusinessListBase( _
     End If
 
     ' we are going a level deeper in editing
-    mEditLevel += 1
+    _editLevel += 1
 
     ' cascade the call to all child objects
     For Each Child In Me
-      Child.CopyState(mEditLevel)
+      Child.CopyState(_editLevel)
     Next
 
     ' cascade the call to all deleted child objects
     For Each Child In DeletedList
-      Child.CopyState(mEditLevel)
+      Child.CopyState(_editLevel)
     Next
   End Sub
 
-  Private mCompletelyRemoveChild As Boolean
+  Private _completelyRemoveChild As Boolean
 
   Private Sub UndoChanges(ByVal parentEditLevel As Integer) Implements Core.IUndoableObject.UndoChanges
     Dim child As C
@@ -238,8 +237,8 @@ Public MustInherit Class BusinessListBase( _
     End If
 
     ' we are coming up one edit level
-    mEditLevel -= 1
-    If mEditLevel < 0 Then mEditLevel = 0
+    _editLevel -= 1
+    If _editLevel < 0 Then _editLevel = 0
 
     Dim oldRLCE = RaiseListChangedEvents
     RaiseListChangedEvents = False
@@ -247,16 +246,16 @@ Public MustInherit Class BusinessListBase( _
       ' Cancel edit on all current items
       For index = Count - 1 To 0 Step -1
         child = Me(index)
-        child.UndoChanges(mEditLevel)
+        child.UndoChanges(_editLevel)
         ' if item is below its point of addition, remove
-        If child.EditLevelAdded > mEditLevel Then
+        If child.EditLevelAdded > _editLevel Then
           Dim oldAllowRemove As Boolean = Me.AllowRemove
           Try
             Me.AllowRemove = True
-            mCompletelyRemoveChild = True
+            _completelyRemoveChild = True
             RemoveAt(index)
           Finally
-            mCompletelyRemoveChild = False
+            _completelyRemoveChild = False
             Me.AllowRemove = oldAllowRemove
           End Try
         End If
@@ -265,8 +264,8 @@ Public MustInherit Class BusinessListBase( _
       ' cancel edit on all deleted items
       For index = DeletedList.Count - 1 To 0 Step -1
         child = DeletedList.Item(index)
-        child.UndoChanges(mEditLevel)
-        If child.EditLevelAdded > mEditLevel Then
+        child.UndoChanges(_editLevel)
+        If child.EditLevelAdded > _editLevel Then
           ' if item is below its point of addition, remove
           DeletedList.RemoveAt(index)
         Else
@@ -293,23 +292,23 @@ Public MustInherit Class BusinessListBase( _
     End If
 
     ' we are coming up one edit level
-    mEditLevel -= 1
-    If mEditLevel < 0 Then mEditLevel = 0
+    _editLevel -= 1
+    If _editLevel < 0 Then _editLevel = 0
 
     ' cascade the call to all child objects
     For Each child In Me
-      child.AcceptChanges(mEditLevel)
+      child.AcceptChanges(_editLevel)
       ' if item is below its point of addition, lower point of addition
-      If child.EditLevelAdded > mEditLevel Then child.EditLevelAdded = mEditLevel
+      If child.EditLevelAdded > _editLevel Then child.EditLevelAdded = _editLevel
     Next
 
     ' cascade the call to all deleted child objects
     'For Each Child In deletedList
     For index = DeletedList.Count - 1 To 0 Step -1
       child = DeletedList.Item(index)
-      child.AcceptChanges(mEditLevel)
+      child.AcceptChanges(_editLevel)
       ' if item is below its point of addition, remove
-      If child.EditLevelAdded > mEditLevel Then
+      If child.EditLevelAdded > _editLevel Then
         DeletedList.RemoveAt(index)
       End If
     Next
@@ -319,7 +318,7 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " Delete and Undelete child "
 
-  Private mDeletedList As List(Of C)
+  Private _deletedList As List(Of C)
 
   ''' <summary>
   ''' A collection containing all child objects marked
@@ -329,10 +328,10 @@ Public MustInherit Class BusinessListBase( _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected ReadOnly Property DeletedList() As List(Of C)
     Get
-      If mDeletedList Is Nothing Then
-        mDeletedList = New List(Of C)
+      If _deletedList Is Nothing Then
+        _deletedList = New List(Of C)
       End If
-      Return mDeletedList
+      Return _deletedList
     End Get
   End Property
 
@@ -406,7 +405,7 @@ Public MustInherit Class BusinessListBase( _
     ' when an object is inserted we assume it is
     ' a new object and so the edit level when it was
     ' added must be set
-    item.EditLevelAdded = mEditLevel
+    item.EditLevelAdded = _editLevel
 
     InsertIndexItem(item)
     MyBase.InsertItem(index, item)
@@ -433,7 +432,7 @@ Public MustInherit Class BusinessListBase( _
     Finally
       Me.RaiseListChangedEvents = oldRaiseListChangedEvents
     End Try
-    If Not mCompletelyRemoveChild Then
+    If Not _completelyRemoveChild Then
       ' the child shouldn't be completely removed,
       ' so copy it to the deleted list
       CopyToDeletedList(child)
@@ -672,7 +671,7 @@ Public MustInherit Class BusinessListBase( _
 #Region " Edit level tracking "
 
   ' keep track of how many edit levels we have
-  Private mEditLevel As Integer
+  Private _editLevel As Integer
 
   ''' <summary>
   ''' Returns the current edit level of the object.
@@ -680,7 +679,7 @@ Public MustInherit Class BusinessListBase( _
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Protected ReadOnly Property EditLevel() As Integer Implements IUndoableObject.EditLevel
     Get
-      Return mEditLevel
+      Return _editLevel
     End Get
   End Property
 
@@ -689,7 +688,7 @@ Public MustInherit Class BusinessListBase( _
 #Region " IsChild "
 
   <NotUndoable()> _
-  Private mIsChild As Boolean = False
+  Private _isChild As Boolean = False
 
   ''' <summary>
   ''' Indicates whether this collection object is a child object.
@@ -697,7 +696,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <returns>True if this is a child object.</returns>
   Protected ReadOnly Property IsChild() As Boolean
     Get
-      Return mIsChild
+      Return _isChild
     End Get
   End Property
 
@@ -719,7 +718,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </para>
   ''' </remarks>
   Protected Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
-    mIsChild = True
+    _isChild = True
   End Sub
 
 #End Region
@@ -916,7 +915,7 @@ Public MustInherit Class BusinessListBase( _
       Throw New NotSupportedException(My.Resources.NoSaveChildException)
     End If
 
-    If mEditLevel > 0 Then
+    If _editLevel > 0 Then
       Throw New Validation.ValidationException(My.Resources.NoSaveEditingException)
     End If
 
@@ -1053,9 +1052,9 @@ Public MustInherit Class BusinessListBase( _
 
   <NonSerialized()> _
   <NotUndoable()> _
-  Private mNonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  Private _nonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
   <NotUndoable()> _
-  Private mSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  Private _serializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
 
   ''' <summary>
   ''' Event raised when an object has been saved.
@@ -1064,24 +1063,24 @@ Public MustInherit Class BusinessListBase( _
   Public Custom Event Saved As EventHandler(Of Csla.Core.SavedEventArgs) Implements Core.ISavable.Saved
     AddHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
       If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        mSerializableSavedHandlers = CType(System.Delegate.Combine(mSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
       Else
-        mNonSerializableSavedHandlers = CType(System.Delegate.Combine(mNonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
       End If
     End AddHandler
     RemoveHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
       If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        mSerializableSavedHandlers = CType(System.Delegate.Remove(mSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
       Else
-        mNonSerializableSavedHandlers = CType(System.Delegate.Remove(mNonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
       End If
     End RemoveHandler
     RaiseEvent(ByVal sender As System.Object, ByVal e As Csla.Core.SavedEventArgs)
-      If Not mNonSerializableSavedHandlers Is Nothing Then
-        mNonSerializableSavedHandlers.Invoke(Me, e)
+      If Not _nonSerializableSavedHandlers Is Nothing Then
+        _nonSerializableSavedHandlers.Invoke(Me, e)
       End If
-      If Not mSerializableSavedHandlers Is Nothing Then
-        mSerializableSavedHandlers.Invoke(Me, e)
+      If Not _serializableSavedHandlers Is Nothing Then
+        _serializableSavedHandlers.Invoke(Me, e)
       End If
     End RaiseEvent
   End Event
@@ -1105,7 +1104,7 @@ Public MustInherit Class BusinessListBase( _
 
   <NotUndoable()> _
   <NonSerialized()> _
-  Private mParent As Core.IParent
+  Private _parent As Core.IParent
 
   ''' <summary>
   ''' Provide access to the parent reference for use
@@ -1117,7 +1116,7 @@ Public MustInherit Class BusinessListBase( _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected ReadOnly Property Parent() As Core.IParent
     Get
-      Return mParent
+      Return _parent
     End Get
   End Property
 
@@ -1129,7 +1128,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="parent">A reference to the parent collection object.</param>
   Friend Sub SetParent(ByVal parent As Core.IParent) Implements IEditableCollection.SetParent
 
-    mParent = parent
+    _parent = parent
 
   End Sub
 

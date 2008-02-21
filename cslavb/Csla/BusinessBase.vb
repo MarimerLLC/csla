@@ -169,9 +169,9 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   <NonSerialized()> _
   <NotUndoable()> _
-  Private mNonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  Private _nonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
   <NotUndoable()> _
-  Private mSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  Private _serializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
 
   ''' <summary>
   ''' Event raised when an object has been saved.
@@ -180,24 +180,24 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   Public Custom Event Saved As EventHandler(Of Csla.Core.SavedEventArgs) Implements Core.ISavable.Saved
     AddHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
       If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        mSerializableSavedHandlers = CType(System.Delegate.Combine(mSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
       Else
-        mNonSerializableSavedHandlers = CType(System.Delegate.Combine(mNonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
       End If
     End AddHandler
     RemoveHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
       If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        mSerializableSavedHandlers = CType(System.Delegate.Remove(mSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
       Else
-        mNonSerializableSavedHandlers = CType(System.Delegate.Remove(mNonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
       End If
     End RemoveHandler
     RaiseEvent(ByVal sender As System.Object, ByVal e As Csla.Core.SavedEventArgs)
-      If Not mNonSerializableSavedHandlers Is Nothing Then
-        mNonSerializableSavedHandlers.Invoke(Me, e)
+      If Not _nonSerializableSavedHandlers Is Nothing Then
+        _nonSerializableSavedHandlers.Invoke(Me, e)
       End If
-      If Not mSerializableSavedHandlers Is Nothing Then
-        mSerializableSavedHandlers.Invoke(Me, e)
+      If Not _serializableSavedHandlers Is Nothing Then
+        _serializableSavedHandlers.Invoke(Me, e)
       End If
     End RaiseEvent
   End Event

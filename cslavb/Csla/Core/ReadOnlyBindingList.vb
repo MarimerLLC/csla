@@ -1,7 +1,4 @@
 Imports System.ComponentModel
-Imports System.Collections.Specialized
-Imports Csla.Core
-Imports System.Linq
 Imports System.Linq.Expressions
 
 
@@ -24,7 +21,7 @@ Namespace Core
 
     Implements Core.IBusinessObject
 
-    Private mIsReadOnly As Boolean = True
+    Private _isReadOnly As Boolean = True
 
     ''' <summary>
     ''' Gets or sets a value indicating whether the list is readonly.
@@ -36,10 +33,10 @@ Namespace Core
     ''' <value>True indicates that the list is readonly.</value>
     Public Property IsReadOnly() As Boolean
       Get
-        Return mIsReadOnly
+        Return _isReadOnly
       End Get
       Protected Set(ByVal value As Boolean)
-        mIsReadOnly = value
+        _isReadOnly = value
       End Set
     End Property
 
@@ -240,10 +237,12 @@ Namespace Core
     End Function
 
   End Class
+
   ''' <summary>
   ''' Extension method for implementation of LINQ methods on BusinessListBase
   ''' </summary>
   Public Module ReadOnlyBindingListExtension
+
     ''' <summary>
     ''' Custom implementation of Where for BusinessListBase - used in LINQ
     ''' </summary>
@@ -251,5 +250,7 @@ Namespace Core
     Public Function Where(Of C As Core.IEditableBusinessObject)(ByVal source As ReadOnlyBindingList(Of C), ByVal expr As Expression(Of Func(Of C, Boolean))) As IEnumerable(Of C)
       Return source.SearchByExpression(expr)
     End Function
+
   End Module
+
 End Namespace

@@ -4,53 +4,53 @@ Namespace Reflection
 
   Friend Class DynamicMethodHandle
 
-    Private privateMethodName As String
+    Private _methodName As String
     Public Property MethodName() As String
       Get
-        Return privateMethodName
+        Return _methodName
       End Get
       Private Set(ByVal value As String)
-        privateMethodName = value
+        _methodName = value
       End Set
     End Property
 
-    Private privateDynamicMethod As DynamicMethodDelegate
+    Private _dynamicMethod As DynamicMethodDelegate
     Public Property DynamicMethod() As DynamicMethodDelegate
       Get
-        Return privateDynamicMethod
+        Return _dynamicMethod
       End Get
       Private Set(ByVal value As DynamicMethodDelegate)
-        privateDynamicMethod = value
+        _dynamicMethod = value
       End Set
     End Property
 
-    Private privateHasFinalArrayParam As Boolean
+    Private _hasFinalArrayParam As Boolean
     Public Property HasFinalArrayParam() As Boolean
       Get
-        Return privateHasFinalArrayParam
+        Return _hasFinalArrayParam
       End Get
       Private Set(ByVal value As Boolean)
-        privateHasFinalArrayParam = value
+        _hasFinalArrayParam = value
       End Set
     End Property
 
-    Private privateMethodParamsLength As Integer
+    Private _methodParamsLength As Integer
     Public Property MethodParamsLength() As Integer
       Get
-        Return privateMethodParamsLength
+        Return _methodParamsLength
       End Get
       Private Set(ByVal value As Integer)
-        privateMethodParamsLength = value
+        _methodParamsLength = value
       End Set
     End Property
 
-    Private privateFinalArrayElementType As Type
+    Private _finalArrayElementType As Type
     Public Property FinalArrayElementType() As Type
       Get
-        Return privateFinalArrayElementType
+        Return _finalArrayElementType
       End Get
       Private Set(ByVal value As Type)
-        privateFinalArrayElementType = value
+        _finalArrayElementType = value
       End Set
     End Property
 

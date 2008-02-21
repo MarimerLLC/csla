@@ -9,8 +9,8 @@ Imports System.Security.Permissions
 Public Class DataPortalException
   Inherits Exception
 
-  Private mBusinessObject As Object
-  Private mInnerStackTrace As String
+  Private _businessObject As Object
+  Private _innerStackTrace As String
 
   ''' <summary>
   ''' Returns a reference to the business object
@@ -26,7 +26,7 @@ Public Class DataPortalException
   ''' </remarks>
   Public ReadOnly Property BusinessObject() As Object
     Get
-      Return mBusinessObject
+      Return _businessObject
     End Get
   End Property
 
@@ -56,7 +56,7 @@ Public Class DataPortalException
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId:="System.String.Format(System.String,System.Object,System.Object,System.Object)")> _
   Public Overrides ReadOnly Property StackTrace() As String
     Get
-      Return String.Format("{0}{1}{2}", mInnerStackTrace, vbCrLf, MyBase.StackTrace)
+      Return String.Format("{0}{1}{2}", _innerStackTrace, vbCrLf, MyBase.StackTrace)
     End Get
   End Property
 
@@ -69,8 +69,8 @@ Public Class DataPortalException
   Public Sub New(ByVal message As String, ByVal businessObject As Object)
 
     MyBase.New(message)
-    mInnerStackTrace = ""
-    mBusinessObject = businessObject
+    _innerStackTrace = ""
+    _businessObject = businessObject
 
   End Sub
 
@@ -84,8 +84,8 @@ Public Class DataPortalException
   Public Sub New(ByVal message As String, ByVal ex As Exception, ByVal businessObject As Object)
 
     MyBase.New(message, ex)
-    mInnerStackTrace = ex.StackTrace
-    mBusinessObject = businessObject
+    _innerStackTrace = ex.StackTrace
+    _businessObject = businessObject
 
   End Sub
 
@@ -97,8 +97,8 @@ Public Class DataPortalException
   Protected Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
 
     MyBase.New(info, context)
-    mBusinessObject = info.GetValue("mBusinessObject", GetType(Object))
-    mInnerStackTrace = info.GetString("mInnerStackTrace")
+    _businessObject = info.GetValue("mBusinessObject", GetType(Object))
+    _innerStackTrace = info.GetString("mInnerStackTrace")
 
   End Sub
 
@@ -117,8 +117,8 @@ Public Class DataPortalException
     ByVal context As System.Runtime.Serialization.StreamingContext)
 
     MyBase.GetObjectData(info, context)
-    info.AddValue("mBusinessObject", mBusinessObject)
-    info.AddValue("mInnerStackTrace", mInnerStackTrace)
+    info.AddValue("mBusinessObject", _businessObject)
+    info.AddValue("mInnerStackTrace", _innerStackTrace)
 
   End Sub
 

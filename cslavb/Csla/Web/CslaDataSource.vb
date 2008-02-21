@@ -16,7 +16,7 @@ Namespace Web
   Public Class CslaDataSource
     Inherits DataSourceControl
 
-    Private WithEvents mDefaultView As CslaDataSourceView
+    Private WithEvents _defaultView As CslaDataSourceView
 
     ''' <summary>
     ''' Event raised when an object is to be created and
@@ -59,10 +59,10 @@ Namespace Web
     ''' <remarks>This control only contains a "Default" view.</remarks>
     Protected Overrides Function GetView(ByVal viewName As String) As System.Web.UI.DataSourceView
 
-      If mDefaultView Is Nothing Then
-        mDefaultView = New CslaDataSourceView(Me, "Default")
+      If _defaultView Is Nothing Then
+        _defaultView = New CslaDataSourceView(Me, "Default")
       End If
-      Return mDefaultView
+      Return _defaultView
 
     End Function
 
@@ -125,7 +125,7 @@ Namespace Web
       End Set
     End Property
 
-    Private Shared mTypeCache As New Dictionary(Of String, Type)
+    Private Shared _typeCache As New Dictionary(Of String, Type)
 
     ''' <summary>
     ''' Returns a <see cref="Type">Type</see> object based on the
@@ -151,12 +151,12 @@ Namespace Web
 
       Else
         ' no assembly name provided
-        result= mTypeCache(typeName)
+        result = _typeCache(typeName)
         If result Is Nothing Then
           For Each asm As Assembly In AppDomain.CurrentDomain.GetAssemblies
             result = asm.GetType(typeName, False, True)
             If result IsNot Nothing Then
-              mTypeCache.Add(typeName, result)
+              _typeCache.Add(typeName, result)
               Exit For
             End If
           Next

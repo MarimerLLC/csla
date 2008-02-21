@@ -1,14 +1,5 @@
-#If Not NET20 Then
 Imports System.Windows
-Imports System.Windows.Controls
 Imports System.Windows.Data
-Imports System.Windows.Documents
-Imports System.Windows.Input
-Imports System.Windows.Media
-Imports System.Windows.Media.Imaging
-Imports System.Windows.Navigation
-Imports System.Windows.Shapes
-Imports System.ComponentModel
 Imports System.Reflection
 Imports Csla.Security
 
@@ -57,7 +48,7 @@ Namespace Wpf
 
 #End Region
 
-    Private mSource As IAuthorizeReadWrite
+    Private _source As IAuthorizeReadWrite
 
     ''' <summary>
     ''' This method is called when the data
@@ -73,8 +64,8 @@ Namespace Wpf
     ''' all controls.
     ''' </summary>
     Public Sub Refresh()
-      mSource = TryCast(DataObject, IAuthorizeReadWrite)
-      If Not mSource Is Nothing Then
+      _source = TryCast(DataObject, IAuthorizeReadWrite)
+      If Not _source Is Nothing Then
         MyBase.FindChildBindings()
       End If
     End Sub
@@ -88,8 +79,8 @@ Namespace Wpf
     ''' <param name="control">The control containing the binding.</param>
     ''' <param name="prop">The data bound DependencyProperty.</param>
     Protected Overrides Sub FoundBinding(ByVal bnd As Binding, ByVal control As FrameworkElement, ByVal prop As DependencyProperty)
-      SetRead(bnd, CType(control, UIElement), mSource)
-      SetWrite(bnd, CType(control, UIElement), mSource)
+      SetRead(bnd, CType(control, UIElement), _source)
+      SetWrite(bnd, CType(control, UIElement), _source)
     End Sub
 
     Private Sub SetWrite(ByVal bnd As Binding, ByVal ctl As UIElement, ByVal source As IAuthorizeReadWrite)
@@ -139,4 +130,3 @@ Namespace Wpf
   End Class
 
 End Namespace
-#End If

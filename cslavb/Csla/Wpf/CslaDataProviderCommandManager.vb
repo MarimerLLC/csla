@@ -1,5 +1,4 @@
-﻿#If Not NET20 Then
-Imports System.Windows.Input
+﻿Imports System.Windows.Input
 Imports System.Windows
 Imports System.ComponentModel
 
@@ -17,17 +16,17 @@ Namespace Wpf
   Public Class CslaDataProviderCommandManager
     Inherits System.Windows.UIElement
 
-    Private mProvider As CslaDataProvider
+    Private _provider As CslaDataProvider
 
     Private ReadOnly Property Provider() As CslaDataProvider
       Get
-        Return mProvider
+        Return _provider
       End Get
     End Property
 
     Friend Sub New(ByVal provider As CslaDataProvider)
 
-      mProvider = provider
+      _provider = provider
 
     End Sub
 
@@ -131,4 +130,3 @@ Namespace Wpf
   End Class
 
 End Namespace
-#End If

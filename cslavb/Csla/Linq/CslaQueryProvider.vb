@@ -1,8 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Linq.Expressions
-Imports System.Text
+﻿Imports System.Linq.Expressions
 Imports System.Reflection
 Imports Csla.Core
 

@@ -2,33 +2,33 @@
 
   Friend Class MethodCacheKey
 
-    Private privateTypeName As String
+    Private _typeName As String
     Public Property TypeName() As String
       Get
-        Return privateTypeName
+        Return _typeName
       End Get
       Private Set(ByVal value As String)
-        privateTypeName = value
+        _typeName = value
       End Set
     End Property
 
-    Private privateMethodName As String
+    Private _methodName As String
     Public Property MethodName() As String
       Get
-        Return privateMethodName
+        Return _methodName
       End Get
       Private Set(ByVal value As String)
-        privateMethodName = value
+        _methodName = value
       End Set
     End Property
 
-    Private privateParamTypes As Type()
+    Private _paramTypes As Type()
     Public Property ParamTypes() As Type()
       Get
-        Return privateParamTypes
+        Return _paramTypes
       End Get
       Private Set(ByVal value As Type())
-        privateParamTypes = value
+        _paramTypes = value
       End Set
     End Property
 

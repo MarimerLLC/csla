@@ -18,9 +18,9 @@ Namespace Core
 
     ' keep a stack of object state values
     <NotUndoable()> _
-    Private mStateStack As New Stack(Of Byte())
+    Private _stateStack As New Stack(Of Byte())
     <NotUndoable()> _
-    Private mbindingEdit As Boolean
+    Private _bindingEdit As Boolean
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -41,10 +41,10 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Property BindingEdit() As Boolean
       Get
-        Return mbindingEdit
+        Return _bindingEdit
       End Get
       Set(ByVal value As Boolean)
-        mbindingEdit = value
+        _bindingEdit = value
       End Set
     End Property
 
@@ -54,7 +54,7 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected ReadOnly Property EditLevel() As Integer Implements IUndoableObject.EditLevel
       Get
-        Return mStateStack.Count
+        Return _stateStack.Count
       End Get
     End Property
 
@@ -118,7 +118,7 @@ Namespace Core
 
                 Else
                   ' this is a child object, cascade the call
-                  If Not mbindingEdit Then
+                  If Not _bindingEdit Then
                     DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1)
                   End If
                 End If
@@ -142,7 +142,7 @@ Namespace Core
       Using buffer As New MemoryStream
         Dim formatter As ISerializationFormatter = SerializationFormatterFactory.GetFormatter
         formatter.Serialize(buffer, state)
-        mStateStack.Push(buffer.ToArray)
+        _stateStack.Push(buffer.ToArray)
       End Using
       CopyStateComplete()
 
@@ -191,7 +191,7 @@ Namespace Core
         End If
 
         Dim state As HybridDictionary
-        Using buffer As New MemoryStream(mStateStack.Pop())
+        Using buffer As New MemoryStream(_stateStack.Pop())
           buffer.Position = 0
           Dim formatter As ISerializationFormatter = SerializationFormatterFactory.GetFormatter
           state = _
@@ -229,15 +229,15 @@ Namespace Core
                     ' make sure the variable has a value
                     If Not value Is Nothing Then
                       ' this is a child object, cascade the call
-                      If Not mbindingEdit Then
+                      If Not _bindingEdit Then
                         DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel)
                       End If
                     End If
                   End If
 
                 Else
-                    ' this is a regular field, restore its value
-                    field.SetValue(Me, state.Item(GetFieldName(field)))
+                  ' this is a regular field, restore its value
+                  field.SetValue(Me, state.Item(GetFieldName(field)))
                 End If
               End If
             End If
@@ -289,7 +289,7 @@ Namespace Core
       End If
 
       If EditLevel > 0 Then
-        mStateStack.Pop()
+        _stateStack.Pop()
 
         Dim currentType As Type = Me.GetType
         Dim fields() As FieldInfo
@@ -313,7 +313,7 @@ Namespace Core
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' this is a child object, cascade the call
-                    If Not mbindingEdit Then
+                    If Not _bindingEdit Then
                       DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel)
                     End If
                   End If

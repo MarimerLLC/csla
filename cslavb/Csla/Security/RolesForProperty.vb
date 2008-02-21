@@ -9,12 +9,12 @@ Namespace Security
   ''' <remarks></remarks>
   <Serializable()> _
   Friend Class RolesForProperty
-    Private mReadAllowed As New List(Of String)
-    Private mReadDenied As New List(Of String)
-    Private mWriteAllowed As New List(Of String)
-    Private mWriteDenied As New List(Of String)
-    Private mExecuteAllowed As New List(Of String)
-    Private mExecuteDenied As New List(Of String)
+    Private _readAllowed As New List(Of String)
+    Private _readDenied As New List(Of String)
+    Private _writeAllowed As New List(Of String)
+    Private _writeDenied As New List(Of String)
+    Private _executeAllowed As New List(Of String)
+    Private _executeDenied As New List(Of String)
 
     ''' <summary>
     ''' Returns a List(Of String) containing the list
@@ -22,7 +22,7 @@ Namespace Security
     ''' </summary>
     Public ReadOnly Property ReadAllowed() As List(Of String)
       Get
-        Return mReadAllowed
+        Return _readAllowed
       End Get
     End Property
 
@@ -32,7 +32,7 @@ Namespace Security
     ''' </summary>
     Public ReadOnly Property ReadDenied() As List(Of String)
       Get
-        Return mReadDenied
+        Return _readDenied
       End Get
     End Property
 
@@ -42,7 +42,7 @@ Namespace Security
     ''' </summary>
     Public ReadOnly Property WriteAllowed() As List(Of String)
       Get
-        Return mWriteAllowed
+        Return _writeAllowed
       End Get
     End Property
 
@@ -52,7 +52,7 @@ Namespace Security
     ''' </summary>
     Public ReadOnly Property WriteDenied() As List(Of String)
       Get
-        Return mWriteDenied
+        Return _writeDenied
       End Get
     End Property
 
@@ -62,7 +62,7 @@ Namespace Security
     ''' </summary>
     Public ReadOnly Property ExecuteAllowed() As List(Of String)
       Get
-        Return mExecuteAllowed
+        Return _executeAllowed
       End Get
     End Property
 
@@ -72,7 +72,7 @@ Namespace Security
     ''' </summary>
     Public ReadOnly Property ExecuteDenied() As List(Of String)
       Get
-        Return mExecuteDenied
+        Return _executeDenied
       End Get
     End Property
 

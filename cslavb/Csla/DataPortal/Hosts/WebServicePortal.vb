@@ -25,19 +25,19 @@ Namespace Server.Hosts
     <Serializable()> _
     Public Class CreateRequest
 
-      Private mObjectType As Type
-      Private mCriteria As Object
-      Private mContext As Server.DataPortalContext
+      Private _objectType As Type
+      Private _criteria As Object
+      Private _context As Server.DataPortalContext
 
       ''' <summary>
       ''' Type of business object to create.
       ''' </summary>
       Public Property ObjectType() As Type
         Get
-          Return mObjectType
+          Return _objectType
         End Get
         Set(ByVal value As Type)
-          mObjectType = value
+          _objectType = value
         End Set
       End Property
 
@@ -46,10 +46,10 @@ Namespace Server.Hosts
       ''' </summary>
       Public Property Criteria() As Object
         Get
-          Return mCriteria
+          Return _criteria
         End Get
         Set(ByVal value As Object)
-          mCriteria = value
+          _criteria = value
         End Set
       End Property
 
@@ -58,10 +58,10 @@ Namespace Server.Hosts
       ''' </summary>
       Public Property Context() As Server.DataPortalContext
         Get
-          Return mContext
+          Return _context
         End Get
         Set(ByVal value As Server.DataPortalContext)
-          mContext = value
+          _context = value
         End Set
       End Property
 
@@ -74,19 +74,19 @@ Namespace Server.Hosts
     <Serializable()> _
     Public Class FetchRequest
 
-      Private mObjectType As Type
-      Private mCriteria As Object
-      Private mContext As Server.DataPortalContext
+      Private _objectType As Type
+      Private _criteria As Object
+      Private _context As Server.DataPortalContext
 
       ''' <summary>
       ''' Type of business object to create.
       ''' </summary>
       Public Property ObjectType() As Type
         Get
-          Return mObjectType
+          Return _objectType
         End Get
         Set(ByVal value As Type)
-          mObjectType = value
+          _objectType = value
         End Set
       End Property
 
@@ -95,10 +95,10 @@ Namespace Server.Hosts
       ''' </summary>
       Public Property Criteria() As Object
         Get
-          Return mCriteria
+          Return _criteria
         End Get
         Set(ByVal value As Object)
-          mCriteria = value
+          _criteria = value
         End Set
       End Property
 
@@ -107,10 +107,10 @@ Namespace Server.Hosts
       ''' </summary>
       Public Property Context() As Server.DataPortalContext
         Get
-          Return mContext
+          Return _context
         End Get
         Set(ByVal value As Server.DataPortalContext)
-          mContext = value
+          _context = value
         End Set
       End Property
 
@@ -123,18 +123,18 @@ Namespace Server.Hosts
     <Serializable()> _
     Public Class UpdateRequest
 
-      Private mObject As Object
-      Private mContext As Server.DataPortalContext
+      Private _object As Object
+      Private _context As Server.DataPortalContext
 
       ''' <summary>
       ''' Business object to be updated.
       ''' </summary>
       Public Property [Object]() As Object
         Get
-          Return mObject
+          Return _object
         End Get
         Set(ByVal value As Object)
-          mObject = value
+          _object = value
         End Set
       End Property
 
@@ -143,10 +143,10 @@ Namespace Server.Hosts
       ''' </summary>
       Public Property Context() As Server.DataPortalContext
         Get
-          Return mContext
+          Return _context
         End Get
         Set(ByVal value As Server.DataPortalContext)
-          mContext = value
+          _context = value
         End Set
       End Property
 
@@ -159,18 +159,18 @@ Namespace Server.Hosts
     <Serializable()> _
     Public Class DeleteRequest
 
-      Private mCriteria As Object
-      Private mContext As Server.DataPortalContext
+      Private _criteria As Object
+      Private _context As Server.DataPortalContext
 
       ''' <summary>
       ''' Criteria object describing business object.
       ''' </summary>
       Public Property Criteria() As Object
         Get
-          Return mCriteria
+          Return _criteria
         End Get
         Set(ByVal value As Object)
-          mCriteria = value
+          _criteria = value
         End Set
       End Property
 
@@ -179,10 +179,10 @@ Namespace Server.Hosts
       ''' </summary>
       Public Property Context() As Server.DataPortalContext
         Get
-          Return mContext
+          Return _context
         End Get
         Set(ByVal value As Server.DataPortalContext)
-          mContext = value
+          _context = value
         End Set
       End Property
 

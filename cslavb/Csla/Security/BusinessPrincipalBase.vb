@@ -11,7 +11,7 @@ Namespace Security
   Public Class BusinessPrincipalBase
     Implements IPrincipal
 
-    Private mIdentity As IIdentity
+    Private _identity As IIdentity
 
     ''' <summary>
     ''' Returns the user's identity object.
@@ -19,7 +19,7 @@ Namespace Security
     Public Overridable ReadOnly Property Identity() As IIdentity _
       Implements IPrincipal.Identity
       Get
-        Return mIdentity
+        Return _identity
       End Get
     End Property
 
@@ -41,7 +41,7 @@ Namespace Security
     ''' <param name="identity">Identity object for the user.</param>
     Protected Sub New(ByVal identity As IIdentity)
 
-      mIdentity = identity
+      _identity = identity
 
     End Sub
 

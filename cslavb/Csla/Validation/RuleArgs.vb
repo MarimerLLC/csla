@@ -6,18 +6,18 @@ Namespace Validation
   ''' </summary>
   Public Class RuleArgs
 
-    Private mPropertyName As String
-    Private mPropertyFriendlyName As String
-    Private mDescription As String
-    Private mSeverity As RuleSeverity = RuleSeverity.Error
-    Private mStopProcessing As Boolean
+    Private _propertyName As String
+    Private _propertyFriendlyName As String
+    Private _description As String
+    Private _severity As RuleSeverity = RuleSeverity.Error
+    Private _stopProcessing As Boolean
 
     ''' <summary>
     ''' The name of the property to be validated.
     ''' </summary>
     Public ReadOnly Property PropertyName() As String
       Get
-        Return mPropertyName
+        Return _propertyName
       End Get
     End Property
 
@@ -28,10 +28,10 @@ Namespace Validation
     ''' </summary>
     Public Property PropertyFriendlyName() As String
       Get
-        Return mPropertyFriendlyName
+        Return _propertyFriendlyName
       End Get
       Set(ByVal value As String)
-        mPropertyFriendlyName = value
+        _propertyFriendlyName = value
       End Set
     End Property
 
@@ -47,10 +47,10 @@ Namespace Validation
     ''' </remarks>
     Public Property Description() As String
       Get
-        Return mDescription
+        Return _description
       End Get
       Set(ByVal Value As String)
-        mDescription = Value
+        _description = Value
       End Set
     End Property
 
@@ -64,10 +64,10 @@ Namespace Validation
     ''' </remarks>
     Public Property Severity() As RuleSeverity
       Get
-        Return mSeverity
+        Return _severity
       End Get
       Set(ByVal value As RuleSeverity)
-        mSeverity = value
+        _severity = value
       End Set
     End Property
 
@@ -84,10 +84,10 @@ Namespace Validation
     ''' </remarks>
     Public Property StopProcessing() As Boolean
       Get
-        Return mStopProcessing
+        Return _stopProcessing
       End Get
       Set(ByVal value As Boolean)
-        mStopProcessing = value
+        _stopProcessing = value
       End Set
     End Property
 
@@ -98,7 +98,7 @@ Namespace Validation
     ''' <param name="propertyName">The name of the property to be validated.</param>
     Public Sub New(ByVal propertyName As String)
 
-      mPropertyName = propertyName
+      _propertyName = propertyName
 
     End Sub
 
@@ -109,7 +109,7 @@ Namespace Validation
     Public Sub New(ByVal propertyInfo As Core.IPropertyInfo)
 
       Me.New(propertyInfo.Name)
-      mPropertyFriendlyName = propertyInfo.FriendlyName
+      _propertyFriendlyName = propertyInfo.FriendlyName
 
     End Sub
 
@@ -123,7 +123,7 @@ Namespace Validation
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String)
 
       Me.New(propertyName)
-      mPropertyFriendlyName = friendlyName
+      _propertyFriendlyName = friendlyName
 
     End Sub
 
@@ -148,7 +148,7 @@ Namespace Validation
     Public Sub New(ByVal propertyName As String, ByVal severity As RuleSeverity)
 
       Me.New(propertyName)
-      mSeverity = severity
+      _severity = severity
 
     End Sub
 
@@ -173,7 +173,7 @@ Namespace Validation
     Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal severity As RuleSeverity)
 
       Me.New(propertyInfo)
-      mSeverity = severity
+      _severity = severity
 
     End Sub
 
@@ -201,7 +201,7 @@ Namespace Validation
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal severity As RuleSeverity)
 
       Me.New(propertyName, friendlyName)
-      mSeverity = severity
+      _severity = severity
 
     End Sub
 
@@ -231,7 +231,7 @@ Namespace Validation
       ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean)
 
       Me.New(propertyName, severity)
-      mStopProcessing = stopProcessing
+      _stopProcessing = stopProcessing
 
     End Sub
 
@@ -260,7 +260,7 @@ Namespace Validation
     Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean)
 
       Me.New(propertyInfo, severity)
-      mStopProcessing = stopProcessing
+      _stopProcessing = stopProcessing
 
     End Sub
 
@@ -292,7 +292,7 @@ Namespace Validation
     Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal severity As RuleSeverity, ByVal stopProcessing As Boolean)
 
       Me.New(propertyName, friendlyName, severity)
-      mStopProcessing = stopProcessing
+      _stopProcessing = stopProcessing
 
     End Sub
 
@@ -300,7 +300,7 @@ Namespace Validation
     ''' Returns a string representation of the object.
     ''' </summary>
     Public Overrides Function ToString() As String
-      Return mPropertyName
+      Return _propertyName
     End Function
 
     ''' <summary>

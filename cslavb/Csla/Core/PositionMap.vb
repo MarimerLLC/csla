@@ -1,11 +1,7 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Collections
-Imports System.Linq
-Imports System.Text
+﻿Namespace Core
 
-Namespace Core
   Friend Class PositionMap(Of T As Core.IEditableBusinessObject)
+
     Private _map As Dictionary(Of T, Integer)
     Private _list As IList(Of T)
 
@@ -63,5 +59,7 @@ Namespace Core
       Next item
 
     End Sub
+
   End Class
+
 End Namespace

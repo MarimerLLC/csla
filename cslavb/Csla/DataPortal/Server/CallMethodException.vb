@@ -15,7 +15,7 @@ Namespace Server
   Public Class CallMethodException
     Inherits Exception
 
-    Private mInnerStackTrace As String
+    Private _innerStackTrace As String
 
     ''' <summary>
     ''' Get the stack trace from the original
@@ -30,7 +30,7 @@ Namespace Server
     Public Overrides ReadOnly Property StackTrace() As String
       Get
         Return String.Format("{0}{1}{2}", _
-          mInnerStackTrace, vbCrLf, MyBase.StackTrace)
+          _innerStackTrace, vbCrLf, MyBase.StackTrace)
       End Get
     End Property
 
@@ -43,7 +43,7 @@ Namespace Server
 
       MyBase.New(message, ex)
       If ex IsNot Nothing Then
-        mInnerStackTrace = ex.StackTrace
+        _innerStackTrace = ex.StackTrace
       End If
 
     End Sub
@@ -58,7 +58,7 @@ Namespace Server
       ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.New(info, context)
-      mInnerStackTrace = info.GetString("mInnerStackTrace")
+      _innerStackTrace = info.GetString("mInnerStackTrace")
 
     End Sub
 
@@ -78,7 +78,7 @@ Namespace Server
       ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.GetObjectData(info, context)
-      info.AddValue("mInnerStackTrace", mInnerStackTrace)
+      info.AddValue("mInnerStackTrace", _innerStackTrace)
 
     End Sub
 

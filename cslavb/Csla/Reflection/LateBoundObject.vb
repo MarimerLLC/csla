@@ -10,13 +10,13 @@
     ''' <summary>
     ''' Object instance managed by LateBoundObject.
     ''' </summary>
-    Private privateInstance As Object
+    Private _instance As Object
     Public Property Instance() As Object
       Get
-        Return privateInstance
+        Return _instance
       End Get
       Set(ByVal value As Object)
-        privateInstance = value
+        _instance = value
       End Set
     End Property
 

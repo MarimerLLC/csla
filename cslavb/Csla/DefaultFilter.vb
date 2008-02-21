@@ -1,7 +1,3 @@
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
-
 Friend Class DefaultFilter
 
   Public Shared Function Filter(ByVal item As Object, ByVal filterValue As Object) As Boolean

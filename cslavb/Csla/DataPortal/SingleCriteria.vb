@@ -13,14 +13,14 @@
 Public Class SingleCriteria(Of B, C)
   Inherits CriteriaBase
 
-  Private mValue As C
+  Private _value As C
 
   ''' <summary>
   ''' Gets the criteria value provided by the caller.
   ''' </summary>
   Public ReadOnly Property Value() As C
     Get
-      Return mValue
+      Return _value
     End Get
   End Property
 
@@ -34,7 +34,7 @@ Public Class SingleCriteria(Of B, C)
   ''' </param>
   Public Sub New(ByVal value As C)
     MyBase.New(GetType(B))
-    mValue = value
+    _value = value
   End Sub
 
 End Class

@@ -1,5 +1,3 @@
-#If (Not NET20) Then
-
 Imports System.Threading
 Imports System.Workflow.Runtime
 
@@ -10,11 +8,11 @@ Namespace Workflow
   ''' </summary>
   Public Class WorkflowManager
 
-    Private mWaitHandle As ManualResetEvent = Nothing
-    Private mWorkflowError As Exception = Nothing
-    Private mWorkflowRuntime As WorkflowRuntime = Nothing
-    Private mInstance As WorkflowInstance = Nothing
-    Private mStatus As WorkflowStatus = WorkflowStatus.Initializing
+    Private _waitHandle As ManualResetEvent = Nothing
+    Private _workflowError As Exception = Nothing
+    Private _workflowRuntime As WorkflowRuntime = Nothing
+    Private _instance As WorkflowInstance = Nothing
+    Private _status As WorkflowStatus = WorkflowStatus.Initializing
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -30,7 +28,7 @@ Namespace Workflow
     ''' for all operations.
     ''' </param>
     Public Sub New(ByVal workflowRuntime As WorkflowRuntime)
-      mWorkflowRuntime = workflowRuntime
+      _workflowRuntime = workflowRuntime
     End Sub
 
     ''' <summary>
@@ -40,7 +38,7 @@ Namespace Workflow
     ''' </summary>
     Public ReadOnly Property [Error]() As Exception
       Get
-        Return mWorkflowError
+        Return _workflowError
       End Get
     End Property
 
@@ -49,7 +47,7 @@ Namespace Workflow
     ''' </summary>
     Public ReadOnly Property Status() As WorkflowStatus
       Get
-        Return mStatus
+        Return _status
       End Get
     End Property
 
@@ -59,7 +57,7 @@ Namespace Workflow
     ''' </summary>
     Public ReadOnly Property WorkflowInstance() As WorkflowInstance
       Get
-        Return mInstance
+        Return _instance
       End Get
     End Property
 
@@ -69,7 +67,7 @@ Namespace Workflow
     ''' </summary>
     Public ReadOnly Property RuntimeInstance() As WorkflowRuntime
       Get
-        Return mWorkflowRuntime
+        Return _workflowRuntime
       End Get
     End Property
 
@@ -248,45 +246,45 @@ Namespace Workflow
     ''' Initializes the workflow runtime.
     ''' </summary>
     Public Sub InitializeRuntime()
-      If Not mWorkflowRuntime Is Nothing Then
+      If Not _workflowRuntime Is Nothing Then
         Return
       End If
 
-      mWaitHandle = New ManualResetEvent(False)
+      _waitHandle = New ManualResetEvent(False)
 
       ' initialize workflow runtime
-      mWorkflowRuntime = New WorkflowRuntime()
-      AddHandler mWorkflowRuntime.WorkflowCompleted, AddressOf OnWorkflowCompleted
-      AddHandler mWorkflowRuntime.WorkflowTerminated, AddressOf OnWorkflowTerminated
-      AddHandler mWorkflowRuntime.WorkflowSuspended, AddressOf OnWorkflowSuspended
-      AddHandler mWorkflowRuntime.WorkflowAborted, AddressOf OnWorkflowAborted
-      AddHandler mWorkflowRuntime.WorkflowIdled, AddressOf OnWorkflowIdled
+      _workflowRuntime = New WorkflowRuntime()
+      AddHandler _workflowRuntime.WorkflowCompleted, AddressOf OnWorkflowCompleted
+      AddHandler _workflowRuntime.WorkflowTerminated, AddressOf OnWorkflowTerminated
+      AddHandler _workflowRuntime.WorkflowSuspended, AddressOf OnWorkflowSuspended
+      AddHandler _workflowRuntime.WorkflowAborted, AddressOf OnWorkflowAborted
+      AddHandler _workflowRuntime.WorkflowIdled, AddressOf OnWorkflowIdled
     End Sub
 
     Private Sub OnWorkflowCompleted(ByVal sender As Object, ByVal e As WorkflowCompletedEventArgs)
-      mStatus = WorkflowStatus.Completed
-      mWaitHandle.Set()
+      _status = WorkflowStatus.Completed
+      _waitHandle.Set()
     End Sub
 
     Private Sub OnWorkflowTerminated(ByVal sender As Object, ByVal e As WorkflowTerminatedEventArgs)
-      mStatus = WorkflowStatus.Terminated
-      mWorkflowError = e.Exception
-      mWaitHandle.Set()
+      _status = WorkflowStatus.Terminated
+      _workflowError = e.Exception
+      _waitHandle.Set()
     End Sub
 
     Private Sub OnWorkflowSuspended(ByVal sender As Object, ByVal e As WorkflowSuspendedEventArgs)
-      mStatus = WorkflowStatus.Suspended
-      mWaitHandle.Set()
+      _status = WorkflowStatus.Suspended
+      _waitHandle.Set()
     End Sub
 
     Private Sub OnWorkflowAborted(ByVal sender As Object, ByVal e As WorkflowEventArgs)
-      mStatus = WorkflowStatus.Aborted
-      mWaitHandle.Set()
+      _status = WorkflowStatus.Aborted
+      _waitHandle.Set()
     End Sub
 
     Private Sub OnWorkflowIdled(ByVal sender As Object, ByVal e As WorkflowEventArgs)
-      mStatus = WorkflowStatus.Idled
-      mWaitHandle.Set()
+      _status = WorkflowStatus.Idled
+      _waitHandle.Set()
     End Sub
 
     ''' <summary>
@@ -338,20 +336,20 @@ Namespace Workflow
     Public Sub BeginWorkflow(ByVal workflowType As Type, ByVal parameters As Dictionary(Of String, Object))
       InitializeRuntime()
 
-      If (Not mWorkflowRuntime.IsStarted) Then
-        mWorkflowRuntime.StartRuntime()
+      If (Not _workflowRuntime.IsStarted) Then
+        _workflowRuntime.StartRuntime()
       End If
 
       ' create workflow instance
       If Not parameters Is Nothing Then
-        mInstance = mWorkflowRuntime.CreateWorkflow(workflowType, parameters)
+        _instance = _workflowRuntime.CreateWorkflow(workflowType, parameters)
       Else
-        mInstance = mWorkflowRuntime.CreateWorkflow(workflowType)
+        _instance = _workflowRuntime.CreateWorkflow(workflowType)
       End If
 
       ' execute workflow
-      mInstance.Start()
-      mStatus = WorkflowStatus.Executing
+      _instance.Start()
+      _status = WorkflowStatus.Executing
     End Sub
 
     ''' <summary>
@@ -365,12 +363,12 @@ Namespace Workflow
     Public Sub BeginResumeWorkflow(ByVal instanceId As Guid)
       InitializeRuntime()
 
-      If (Not mWorkflowRuntime.IsStarted) Then
-        mWorkflowRuntime.StartRuntime()
+      If (Not _workflowRuntime.IsStarted) Then
+        _workflowRuntime.StartRuntime()
       End If
 
       ' get workflow instance
-      mInstance = mWorkflowRuntime.GetWorkflow(instanceId)
+      _instance = _workflowRuntime.GetWorkflow(instanceId)
 
       BeginResumeWorkflow()
     End Sub
@@ -382,13 +380,13 @@ Namespace Workflow
     Public Sub BeginResumeWorkflow()
       InitializeRuntime()
 
-      If (Not mWorkflowRuntime.IsStarted) Then
-        mWorkflowRuntime.StartRuntime()
+      If (Not _workflowRuntime.IsStarted) Then
+        _workflowRuntime.StartRuntime()
       End If
 
       ' execute workflow
-      mInstance.Resume()
-      mStatus = WorkflowStatus.Executing
+      _instance.Resume()
+      _status = WorkflowStatus.Executing
     End Sub
 
     ''' <summary>
@@ -397,7 +395,7 @@ Namespace Workflow
     ''' </summary>
     Public Sub WaitForEnd()
       ' wait for workflow to complete
-      mWaitHandle.WaitOne()
+      _waitHandle.WaitOne()
     End Sub
 
     ''' <summary>
@@ -422,19 +420,17 @@ Namespace Workflow
     ''' </summary>
     Public Sub DisposeRuntime()
       ' dispose runtime
-      If Not mWorkflowRuntime Is Nothing Then
-        mWorkflowRuntime.Dispose()
+      If Not _workflowRuntime Is Nothing Then
+        _workflowRuntime.Dispose()
       End If
-      mWorkflowRuntime = Nothing
-      If Not mWaitHandle Is Nothing Then
-        mWaitHandle.Close()
+      _workflowRuntime = Nothing
+      If Not _waitHandle Is Nothing Then
+        _waitHandle.Close()
       End If
-      mWaitHandle = Nothing
-      mInstance = Nothing
+      _waitHandle = Nothing
+      _instance = Nothing
     End Sub
 
   End Class
 
 End Namespace
-
-#End If

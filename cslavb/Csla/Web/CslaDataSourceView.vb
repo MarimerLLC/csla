@@ -9,11 +9,11 @@ Namespace Web
   Public Class CslaDataSourceView
     Inherits DataSourceView
 
-    Private mOwner As CslaDataSource
-    Private mTypeAssemblyName As String
-    Private mTypeName As String
-    Private mTypeSupportsPaging As Boolean
-    Private mTypeSupportsSorting As Boolean
+    Private _owner As CslaDataSource
+    Private _typeAssemblyName As String
+    Private _typeName As String
+    Private _typeSupportsPaging As Boolean
+    Private _typeSupportsSorting As Boolean
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -24,7 +24,7 @@ Namespace Web
     Public Sub New(ByVal owner As CslaDataSource, ByVal viewName As String)
 
       MyBase.New(owner, viewName)
-      mOwner = owner
+      _owner = owner
 
     End Sub
 
@@ -34,10 +34,10 @@ Namespace Web
     ''' <value>Obsolete - do not use.</value>
     Public Property TypeAssemblyName() As String
       Get
-        Return mTypeAssemblyName
+        Return _typeAssemblyName
       End Get
       Set(ByVal value As String)
-        mTypeAssemblyName = value
+        _typeAssemblyName = value
       End Set
     End Property
 
@@ -48,10 +48,10 @@ Namespace Web
     ''' <value>Full type name of the business class.</value>
     Public Property TypeName() As String
       Get
-        Return mTypeName
+        Return _typeName
       End Get
       Set(ByVal value As String)
-        mTypeName = value
+        _typeName = value
       End Set
     End Property
 
@@ -66,10 +66,10 @@ Namespace Web
     ''' </remarks>
     Public Property TypeSupportsPaging() As Boolean
       Get
-        Return mTypeSupportsPaging
+        Return _typeSupportsPaging
       End Get
       Set(ByVal value As Boolean)
-        mTypeSupportsPaging = value
+        _typeSupportsPaging = value
       End Set
     End Property
 
@@ -79,10 +79,10 @@ Namespace Web
     ''' </summary>
     Public Property TypeSupportsSorting() As Boolean
       Get
-        Return mTypeSupportsSorting
+        Return _typeSupportsSorting
       End Get
       Set(ByVal value As Boolean)
-        mTypeSupportsSorting = value
+        _typeSupportsSorting = value
       End Set
     End Property
 
@@ -96,12 +96,12 @@ Namespace Web
     ''' <param name="arguments">Arguments object.</param>
     ''' <returns>The data returned from the select.</returns>
     Protected Overrides Function ExecuteSelect( _
-      ByVal arguments As System.Web.UI.DataSourceSelectArguments) As _
+      ByVal arguments As System.Web.UI.DataSourceSelectArguments) As  _
       System.Collections.IEnumerable
 
       ' get the object from the page
       Dim args As New SelectObjectArgs(arguments)
-      mOwner.OnSelectObject(args)
+      _owner.OnSelectObject(args)
       Dim result As Object = args.BusinessObject
 
       If arguments.RetrieveTotalRowCount Then
@@ -155,7 +155,7 @@ Namespace Web
     Public Overrides ReadOnly Property CanInsert() As Boolean
       Get
         If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
-          CslaDataSource.GetType(mTypeAssemblyName, mTypeName)) Then
+          CslaDataSource.GetType(_typeAssemblyName, _typeName)) Then
           Return True
         Else
           Return False
@@ -176,7 +176,7 @@ Namespace Web
 
       ' tell the page to insert the object
       Dim args As New InsertObjectArgs(values)
-      mOwner.OnInsertObject(args)
+      _owner.OnInsertObject(args)
       Return args.RowsAffected
 
     End Function
@@ -192,7 +192,7 @@ Namespace Web
     Public Overrides ReadOnly Property CanDelete() As Boolean
       Get
         If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
-          CslaDataSource.GetType(mTypeAssemblyName, mTypeName)) Then
+          CslaDataSource.GetType(_typeAssemblyName, _typeName)) Then
           Return True
         Else
           Return False
@@ -214,7 +214,7 @@ Namespace Web
 
       ' tell the page to delete the object
       Dim args As New DeleteObjectArgs(keys, oldValues)
-      mOwner.OnDeleteObject(args)
+      _owner.OnDeleteObject(args)
       Return args.RowsAffected
 
     End Function
@@ -230,7 +230,7 @@ Namespace Web
     Public Overrides ReadOnly Property CanUpdate() As Boolean
       Get
         If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _
-          CslaDataSource.GetType(mTypeAssemblyName, mTypeName)) Then
+          CslaDataSource.GetType(_typeAssemblyName, _typeName)) Then
           Return True
         Else
           Return False
@@ -254,7 +254,7 @@ Namespace Web
 
       ' tell the page to update the object
       Dim args As New UpdateObjectArgs(keys, values, oldValues)
-      mOwner.OnUpdateObject(args)
+      _owner.OnUpdateObject(args)
       Return args.RowsAffected
 
     End Function
@@ -269,7 +269,7 @@ Namespace Web
     ''' </summary>
     Public Overrides ReadOnly Property CanPage() As Boolean
       Get
-        Return mTypeSupportsPaging
+        Return _typeSupportsPaging
       End Get
     End Property
 
@@ -290,7 +290,7 @@ Namespace Web
     ''' </summary>
     Public Overrides ReadOnly Property CanSort() As Boolean
       Get
-        Return mTypeSupportsSorting
+        Return _typeSupportsSorting
       End Get
     End Property
 

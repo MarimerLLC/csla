@@ -1,5 +1,4 @@
 Imports System.ComponentModel
-Imports System.Reflection
 
 Namespace Core
 
@@ -25,8 +24,8 @@ Namespace Core
 #Region " INotifyPropertyChanged "
 
     <NonSerialized()> _
-    Private mNonSerializableChangedHandlers As PropertyChangedEventHandler
-    Private mSerializableChangedHandlers As PropertyChangedEventHandler
+    Private _nonSerializableChangedHandlers As PropertyChangedEventHandler
+    Private _serializableChangedHandlers As PropertyChangedEventHandler
 
     ''' <summary>
     ''' Implements a serialization-safe PropertyChanged event.
@@ -39,13 +38,13 @@ Namespace Core
         If value.Method.IsPublic AndAlso _
           (value.Method.DeclaringType.IsSerializable OrElse _
           value.Method.IsStatic) Then
-          mSerializableChangedHandlers = _
+          _serializableChangedHandlers = _
             DirectCast(System.Delegate.Combine( _
-              mSerializableChangedHandlers, value), PropertyChangedEventHandler)
+              _serializableChangedHandlers, value), PropertyChangedEventHandler)
         Else
-          mNonSerializableChangedHandlers = _
+          _nonSerializableChangedHandlers = _
             DirectCast(System.Delegate.Combine( _
-              mNonSerializableChangedHandlers, value), PropertyChangedEventHandler)
+              _nonSerializableChangedHandlers, value), PropertyChangedEventHandler)
         End If
       End AddHandler
 
@@ -53,22 +52,22 @@ Namespace Core
         If value.Method.IsPublic AndAlso _
           (value.Method.DeclaringType.IsSerializable OrElse _
           value.Method.IsStatic) Then
-          mSerializableChangedHandlers = DirectCast( _
+          _serializableChangedHandlers = DirectCast( _
             System.Delegate.Remove( _
-              mSerializableChangedHandlers, value), PropertyChangedEventHandler)
+              _serializableChangedHandlers, value), PropertyChangedEventHandler)
         Else
-          mNonSerializableChangedHandlers = DirectCast( _
+          _nonSerializableChangedHandlers = DirectCast( _
             System.Delegate.Remove( _
-              mNonSerializableChangedHandlers, value), PropertyChangedEventHandler)
+              _nonSerializableChangedHandlers, value), PropertyChangedEventHandler)
         End If
       End RemoveHandler
 
       RaiseEvent(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-        If mNonSerializableChangedHandlers IsNot Nothing Then
-          mNonSerializableChangedHandlers.Invoke(sender, e)
+        If _nonSerializableChangedHandlers IsNot Nothing Then
+          _nonSerializableChangedHandlers.Invoke(sender, e)
         End If
-        If mSerializableChangedHandlers IsNot Nothing Then
-          mSerializableChangedHandlers.Invoke(sender, e)
+        If _serializableChangedHandlers IsNot Nothing Then
+          _serializableChangedHandlers.Invoke(sender, e)
         End If
       End RaiseEvent
     End Event
@@ -125,8 +124,8 @@ Namespace Core
 #Region " INotifyPropertyChanging "
 
     <NonSerialized()> _
-    Private mNonSerializableChangingHandlers As PropertyChangingEventHandler
-    Private mSerializableChangingHandlers As PropertyChangingEventHandler
+    Private _nonSerializableChangingHandlers As PropertyChangingEventHandler
+    Private _serializableChangingHandlers As PropertyChangingEventHandler
 
     ''' <summary>
     ''' Implements a serialization-safe PropertyChanging event.
@@ -139,13 +138,13 @@ Namespace Core
         If value.Method.IsPublic AndAlso _
           (value.Method.DeclaringType.IsSerializable OrElse _
           value.Method.IsStatic) Then
-          mSerializableChangingHandlers = _
+          _serializableChangingHandlers = _
             DirectCast(System.Delegate.Combine( _
-              mSerializableChangingHandlers, value), PropertyChangingEventHandler)
+              _serializableChangingHandlers, value), PropertyChangingEventHandler)
         Else
-          mNonSerializableChangingHandlers = _
+          _nonSerializableChangingHandlers = _
             DirectCast(System.Delegate.Combine( _
-              mNonSerializableChangingHandlers, value), PropertyChangingEventHandler)
+              _nonSerializableChangingHandlers, value), PropertyChangingEventHandler)
         End If
       End AddHandler
 
@@ -153,22 +152,22 @@ Namespace Core
         If value.Method.IsPublic AndAlso _
           (value.Method.DeclaringType.IsSerializable OrElse _
           value.Method.IsStatic) Then
-          mSerializableChangingHandlers = DirectCast( _
+          _serializableChangingHandlers = DirectCast( _
             System.Delegate.Remove( _
-              mSerializableChangingHandlers, value), PropertyChangingEventHandler)
+              _serializableChangingHandlers, value), PropertyChangingEventHandler)
         Else
-          mNonSerializableChangingHandlers = DirectCast( _
+          _nonSerializableChangingHandlers = DirectCast( _
             System.Delegate.Remove( _
-              mNonSerializableChangingHandlers, value), PropertyChangingEventHandler)
+              _nonSerializableChangingHandlers, value), PropertyChangingEventHandler)
         End If
       End RemoveHandler
 
       RaiseEvent(ByVal sender As Object, ByVal e As PropertyChangingEventArgs)
-        If mNonSerializableChangingHandlers IsNot Nothing Then
-          mNonSerializableChangingHandlers.Invoke(sender, e)
+        If _nonSerializableChangingHandlers IsNot Nothing Then
+          _nonSerializableChangingHandlers.Invoke(sender, e)
         End If
-        If mSerializableChangingHandlers IsNot Nothing Then
-          mSerializableChangingHandlers.Invoke(sender, e)
+        If _serializableChangingHandlers IsNot Nothing Then
+          _serializableChangingHandlers.Invoke(sender, e)
         End If
       End RaiseEvent
     End Event

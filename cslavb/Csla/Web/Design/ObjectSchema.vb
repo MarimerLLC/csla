@@ -16,8 +16,8 @@ Namespace Web.Design
   Public Class ObjectSchema
     Implements IDataSourceSchema
 
-    Private mTypeName As String = ""
-    Private mDesigner As CslaDataSourceDesigner
+    Private _typeName As String = ""
+    Private _designer As CslaDataSourceDesigner
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -26,8 +26,8 @@ Namespace Web.Design
     ''' which the schema should be generated.</param>
     Public Sub New(ByVal designer As CslaDataSourceDesigner, ByVal typeName As String)
 
-      mTypeName = typeName
-      mDesigner = designer
+      _typeName = typeName
+      _designer = designer
 
     End Sub
 
@@ -36,13 +36,13 @@ Namespace Web.Design
     ''' Returns a single element array containing the
     ''' schema for the CSLA .NET business object.
     ''' </summary>
-    Public Function GetViews() As _
+    Public Function GetViews() As  _
       System.Web.UI.Design.IDataSourceViewSchema() _
       Implements System.Web.UI.Design.IDataSourceSchema.GetViews
 
       Dim result As IDataSourceViewSchema()
       result = New IDataSourceViewSchema() _
-        {New ObjectViewSchema(mDesigner, mTypeName)}
+        {New ObjectViewSchema(_designer, _typeName)}
       Return result
 
     End Function

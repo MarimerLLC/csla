@@ -1,8 +1,5 @@
-Imports System
 Imports System.ComponentModel
-Imports System.Collections.Generic
 Imports System.Reflection
-Imports System.Collections
 
 ''' <summary>
 ''' Provides a filtered view into an existing IList(Of T).
@@ -20,27 +17,27 @@ Public Class FilteredBindingList(Of T)
 
   Private Class ListItem
 
-    Private mKey As Object
-    Private mBaseIndex As Integer
+    Private _key As Object
+    Private _baseIndex As Integer
 
     Public ReadOnly Property Key() As Object
       Get
-        Return mKey
+        Return _key
       End Get
     End Property
 
     Public Property BaseIndex() As Integer
       Get
-        Return mBaseIndex
+        Return _baseIndex
       End Get
       Set(ByVal value As Integer)
-        mBaseIndex = value
+        _baseIndex = value
       End Set
     End Property
 
     Public Sub New(ByVal key As Object, ByVal baseIndex As Integer)
-      mKey = key
-      mBaseIndex = baseIndex
+      _key = key
+      _baseIndex = baseIndex
     End Sub
 
     Public Overrides Function ToString() As String
@@ -57,31 +54,31 @@ Public Class FilteredBindingList(Of T)
 
     Implements IEnumerator(Of T)
 
-    Private mList As IList(Of T)
-    Private mFilterIndex As List(Of ListItem)
-    Private mIndex As Integer
+    Private _list As IList(Of T)
+    Private _filterIndex As List(Of ListItem)
+    Private _index As Integer
 
     Public Sub New(ByVal list As IList(Of T), ByVal filterIndex As List(Of ListItem))
-      mList = list
-      mFilterIndex = filterIndex
+      _list = list
+      _filterIndex = filterIndex
       Reset()
     End Sub
 
     Public ReadOnly Property Current() As T Implements IEnumerator(Of T).Current
       Get
-        Return mList(mFilterIndex(mIndex).BaseIndex)
+        Return _list(_filterIndex(_index).BaseIndex)
       End Get
     End Property
 
     Private ReadOnly Property IEnumerator_Current() As Object Implements System.Collections.IEnumerator.Current
       Get
-        Return mList(mFilterIndex(mIndex).BaseIndex)
+        Return _list(_filterIndex(_index).BaseIndex)
       End Get
     End Property
 
     Public Function MoveNext() As Boolean Implements IEnumerator(Of T).MoveNext
-      If mIndex < mFilterIndex.Count - 1 Then
-        mIndex += 1
+      If _index < _filterIndex.Count - 1 Then
+        _index += 1
         Return True
       Else
         Return False
@@ -89,22 +86,22 @@ Public Class FilteredBindingList(Of T)
     End Function
 
     Public Sub Reset() Implements IEnumerator(Of T).Reset
-      mIndex = -1
+      _index = -1
     End Sub
 
 #Region "IDisposable Support"
 
-    Private mDisposedValue As Boolean = False ' To detect redundant calls.
+    Private _disposed As Boolean = False ' To detect redundant calls.
 
     ' IDisposable
     Protected Overridable Sub Dispose(ByVal disposing As Boolean)
-      If (Not mDisposedValue) Then
+      If (Not _disposed) Then
         If disposing Then
           ' TODO: free unmanaged resources when explicitly called
         End If
         ' TODO: free shared unmanaged resources
       End If
-      mDisposedValue = True
+      _disposed = True
     End Sub
 
     ' this code added to correctly implement the disposable pattern.
@@ -128,40 +125,40 @@ Public Class FilteredBindingList(Of T)
 
   Private Sub DoFilter()
     Dim index As Integer = 0
-    mFilterIndex.Clear()
+    _filterIndex.Clear()
 
-    If mProvider Is Nothing Then
-      mProvider = AddressOf DefaultFilter.Filter
+    If _provider Is Nothing Then
+      _provider = AddressOf DefaultFilter.Filter
     End If
 
-    If mFilterBy Is Nothing Then
-      For Each obj As T In mList
-        If mProvider.Invoke(obj, mFilter) Then
-          mFilterIndex.Add(New ListItem(obj, index))
+    If _filterBy Is Nothing Then
+      For Each obj As T In _list
+        If _provider.Invoke(obj, _filter) Then
+          _filterIndex.Add(New ListItem(obj, index))
         End If
         index += 1
       Next obj
     Else
-      For Each obj As T In mList
-        Dim tmp As Object = mFilterBy.GetValue(obj)
-        If mProvider.Invoke(tmp, mFilter) Then
-          mFilterIndex.Add(New ListItem(tmp, index))
+      For Each obj As T In _list
+        Dim tmp As Object = _filterBy.GetValue(obj)
+        If _provider.Invoke(tmp, _filter) Then
+          _filterIndex.Add(New ListItem(tmp, index))
         End If
         index += 1
       Next obj
     End If
 
-    mFiltered = True
+    _filtered = True
 
     OnListChanged(New ListChangedEventArgs(ListChangedType.Reset, 0))
 
   End Sub
 
   Private Sub UnDoFilter()
-    mFilterIndex.Clear()
-    mFilterBy = Nothing
-    mFilter = Nothing
-    mFiltered = False
+    _filterIndex.Clear()
+    _filterBy = Nothing
+    _filter = Nothing
+    _filtered = False
 
     OnListChanged(New ListChangedEventArgs(ListChangedType.Reset, 0))
 
@@ -175,10 +172,10 @@ Public Class FilteredBindingList(Of T)
   ''' Gets an enumerator object.
   ''' </summary>
   Public Function GetEnumerator() As IEnumerator(Of T) Implements IEnumerable(Of T).GetEnumerator
-    If mFiltered Then
-      Return New FilteredEnumerator(mList, mFilterIndex)
+    If _filtered Then
+      Return New FilteredEnumerator(_list, _filterIndex)
     Else
-      Return mList.GetEnumerator()
+      Return _list.GetEnumerator()
     End If
   End Function
 
@@ -192,8 +189,8 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="property">Property on which
   ''' to build the index.</param>
   Public Sub AddIndex(ByVal [property] As PropertyDescriptor) Implements IBindingList.AddIndex
-    If mSupportsBinding Then
-      mBindingList.AddIndex([property])
+    If _supportsBinding Then
+      _bindingList.AddIndex([property])
     End If
   End Sub
 
@@ -202,8 +199,8 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public Function AddNew() As Object Implements IBindingList.AddNew
     Dim result As T
-    If mSupportsBinding Then
-      result = CType(mBindingList.AddNew(), T)
+    If _supportsBinding Then
+      result = CType(_bindingList.AddNew(), T)
     Else
       result = Nothing
     End If
@@ -216,8 +213,8 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property AllowEdit() As Boolean Implements IBindingList.AllowEdit
     Get
-      If mSupportsBinding Then
-        Return mBindingList.AllowEdit
+      If _supportsBinding Then
+        Return _bindingList.AllowEdit
       Else
         Return False
       End If
@@ -229,8 +226,8 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property AllowNew() As Boolean Implements IBindingList.AllowNew
     Get
-      If mSupportsBinding Then
-        Return mBindingList.AllowNew
+      If _supportsBinding Then
+        Return _bindingList.AllowNew
       Else
         Return False
       End If
@@ -242,8 +239,8 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property AllowRemove() As Boolean Implements IBindingList.AllowRemove
     Get
-      If mSupportsBinding Then
-        Return mBindingList.AllowRemove
+      If _supportsBinding Then
+        Return _bindingList.AllowRemove
       Else
         Return False
       End If
@@ -258,7 +255,7 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="direction">Direction of the sort.</param>
   Public Sub ApplySort(ByVal [property] As PropertyDescriptor, ByVal direction As ListSortDirection) Implements IBindingList.ApplySort
     If SupportsSorting Then
-      mBindingList.ApplySort([property], direction)
+      _bindingList.ApplySort([property], direction)
     Else
       Throw New NotSupportedException("Sorting not supported.")
     End If
@@ -293,8 +290,8 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="property">Property to search for the key
   ''' value.</param>
   Public Function Find(ByVal [property] As PropertyDescriptor, ByVal key As Object) As Integer Implements IBindingList.Find
-    If mSupportsBinding Then
-      Return FilteredIndex(mBindingList.Find([property], key))
+    If _supportsBinding Then
+      Return FilteredIndex(_bindingList.Find([property], key))
     Else
       Return -1
     End If
@@ -306,7 +303,7 @@ Public Class FilteredBindingList(Of T)
   Public ReadOnly Property IsSorted() As Boolean Implements IBindingList.IsSorted
     Get
       If SupportsSorting Then
-        Return mBindingList.IsSorted
+        Return _bindingList.IsSorted
       Else
         Return False
       End If
@@ -340,8 +337,8 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="property">Property for which the
   ''' index should be removed.</param>
   Public Sub RemoveIndex(ByVal [property] As PropertyDescriptor) Implements IBindingList.RemoveIndex
-    If mSupportsBinding Then
-      mBindingList.RemoveIndex([property])
+    If _supportsBinding Then
+      _bindingList.RemoveIndex([property])
     End If
   End Sub
 
@@ -350,7 +347,7 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public Sub RemoveSort() Implements IBindingList.RemoveSort
     If SupportsSorting Then
-      mBindingList.RemoveSort()
+      _bindingList.RemoveSort()
     Else
       Throw New NotSupportedException("Sorting not supported")
     End If
@@ -362,7 +359,7 @@ Public Class FilteredBindingList(Of T)
   Public ReadOnly Property SortDirection() As ListSortDirection Implements IBindingList.SortDirection
     Get
       If SupportsSorting Then
-        Return mBindingList.SortDirection
+        Return _bindingList.SortDirection
       Else
         Return ListSortDirection.Ascending
       End If
@@ -375,7 +372,7 @@ Public Class FilteredBindingList(Of T)
   Public ReadOnly Property SortProperty() As PropertyDescriptor Implements IBindingList.SortProperty
     Get
       If SupportsSorting Then
-        Return mBindingList.SortProperty
+        Return _bindingList.SortProperty
       Else
         Return Nothing
       End If
@@ -397,8 +394,8 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property SupportsSearching() As Boolean Implements IBindingList.SupportsSearching
     Get
-      If mSupportsBinding Then
-        Return mBindingList.SupportsSearching
+      If _supportsBinding Then
+        Return _bindingList.SupportsSearching
       Else
         Return False
       End If
@@ -410,8 +407,8 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property SupportsSorting() As Boolean Implements IBindingList.SupportsSorting
     Get
-      If mSupportsBinding Then
-        Return mBindingList.SupportsSorting
+      If _supportsBinding Then
+        Return _bindingList.SupportsSorting
       Else
         Return False
       End If
@@ -443,10 +440,10 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property Count() As Integer Implements IList(Of T).Count, IBindingList.Count
     Get
-      If mFiltered Then
-        Return mFilterIndex.Count
+      If _filtered Then
+        Return _filterIndex.Count
       Else
-        Return mList.Count
+        Return _list.Count
       End If
     End Get
   End Property
@@ -459,7 +456,7 @@ Public Class FilteredBindingList(Of T)
 
   Private ReadOnly Property SyncRoot() As Object Implements System.Collections.ICollection.SyncRoot
     Get
-      Return mList
+      Return _list
     End Get
   End Property
 
@@ -472,12 +469,12 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   ''' <param name="item">Item to be added.</param>
   Public Sub Add(ByVal item As T) Implements IList(Of T).Add
-    mList.Add(item)
+    _list.Add(item)
   End Sub
 
   Private Function Add(ByVal value As Object) As Integer Implements System.Collections.IList.Add
     Add(CType(value, T))
-    Dim index As Integer = FilteredIndex(mList.Count - 1)
+    Dim index As Integer = FilteredIndex(_list.Count - 1)
     If index > -1 Then
       Return index
     Else
@@ -489,7 +486,7 @@ Public Class FilteredBindingList(Of T)
   ''' Clears the list.
   ''' </summary>
   Public Sub Clear() Implements IList(Of T).Clear, IBindingList.Clear
-    mList.Clear()
+    _list.Clear()
   End Sub
 
   ''' <summary>
@@ -500,7 +497,7 @@ Public Class FilteredBindingList(Of T)
   ''' <returns><see langword="true"/> if the item is
   ''' contained in the list.</returns>
   Public Function Contains(ByVal item As T) As Boolean Implements IList(Of T).Contains
-    Return mList.Contains(item)
+    Return _list.Contains(item)
   End Function
 
   Private Function Contains(ByVal value As Object) As Boolean Implements System.Collections.IList.Contains
@@ -515,7 +512,7 @@ Public Class FilteredBindingList(Of T)
   ''' <returns>0-based index of the item
   ''' in the list.</returns>
   Public Function IndexOf(ByVal item As T) As Integer Implements IList(Of T).IndexOf
-    Return FilteredIndex(mList.IndexOf(item))
+    Return FilteredIndex(_list.IndexOf(item))
   End Function
 
   Private Function IndexOf(ByVal value As Object) As Integer Implements System.Collections.IList.IndexOf
@@ -529,7 +526,7 @@ Public Class FilteredBindingList(Of T)
   ''' which to insert the item.</param>
   ''' <param name="item">Item to insert.</param>
   Public Sub Insert(ByVal index As Integer, ByVal item As T) Implements IList(Of T).Insert
-    mList.Insert(index, item)
+    _list.Insert(index, item)
   End Sub
 
   Private Sub Insert(ByVal index As Integer, ByVal value As Object) Implements System.Collections.IList.Insert
@@ -548,7 +545,7 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property IsReadOnly() As Boolean Implements IList(Of T).IsReadOnly, IBindingList.IsReadOnly
     Get
-      Return mList.IsReadOnly
+      Return _list.IsReadOnly
     End Get
   End Property
 
@@ -568,7 +565,7 @@ Public Class FilteredBindingList(Of T)
   ''' <returns><see langword="true"/> if the 
   ''' remove succeeds.</returns>
   Public Function Remove(ByVal item As T) As Boolean Implements IList(Of T).Remove
-    Return mList.Remove(item)
+    Return _list.Remove(item)
   End Function
 
   Private Sub Remove(ByVal value As Object) Implements System.Collections.IList.Remove
@@ -581,10 +578,10 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="index">Index of item
   ''' to be removed.</param>
   Public Sub RemoveAt(ByVal index As Integer) Implements IList(Of T).RemoveAt, IBindingList.RemoveAt
-    If mFiltered Then
-      mList.RemoveAt(OriginalIndex(index))
+    If _filtered Then
+      _list.RemoveAt(OriginalIndex(index))
     Else
-      mList.RemoveAt(index)
+      _list.RemoveAt(index)
     End If
   End Sub
 
@@ -597,18 +594,18 @@ Public Class FilteredBindingList(Of T)
   ''' <returns>Item at the specified index.</returns>
   Default Public Property Item(ByVal index As Integer) As T Implements IList(Of T).Item
     Get
-      If mFiltered Then
+      If _filtered Then
         Dim src As Integer = OriginalIndex(index)
-        Return mList(src)
+        Return _list(src)
       Else
-        Return mList(index)
+        Return _list(index)
       End If
     End Get
     Set(ByVal value As T)
-      If mFiltered Then
-        mList(OriginalIndex(index)) = value
+      If _filtered Then
+        _list(OriginalIndex(index)) = value
       Else
-        mList(index) = value
+        _list(index) = value
       End If
     End Set
   End Property
@@ -624,20 +621,20 @@ Public Class FilteredBindingList(Of T)
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Public ReadOnly Property SourceList() As IList(Of T)
     Get
-      Return mList
+      Return _list
     End Get
   End Property
 
 #End Region
 
-  Private mList As IList(Of T)
-  Private mSupportsBinding As Boolean
-  Private mBindingList As IBindingList
-  Private mFiltered As Boolean
-  Private mFilterBy As PropertyDescriptor
-  Private mFilter As Object
-  Private mProvider As FilterProvider = Nothing
-  Private mFilterIndex As List(Of ListItem) = New List(Of ListItem)()
+  Private _list As IList(Of T)
+  Private _supportsBinding As Boolean
+  Private _bindingList As IBindingList
+  Private _filtered As Boolean
+  Private _filterBy As PropertyDescriptor
+  Private _filter As Object
+  Private _provider As FilterProvider = Nothing
+  Private _filterIndex As List(Of ListItem) = New List(Of ListItem)()
 
   ''' <summary>
   ''' Creates a new view based on the provided IList object.
@@ -645,11 +642,11 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="list">The IList (collection) containing the data.</param>
   Public Sub New(ByVal list As IList(Of T))
 
-    mList = list
-    If TypeOf mList Is IBindingList Then
-      mSupportsBinding = True
-      mBindingList = CType(mList, IBindingList)
-      AddHandler mBindingList.ListChanged, AddressOf SourceChanged
+    _list = list
+    If TypeOf _list Is IBindingList Then
+      _supportsBinding = True
+      _bindingList = CType(_list, IBindingList)
+      AddHandler _bindingList.ListChanged, AddressOf SourceChanged
     End If
 
   End Sub
@@ -664,7 +661,7 @@ Public Class FilteredBindingList(Of T)
   Public Sub New(ByVal list As IList(Of T), ByVal filterProvider As FilterProvider)
 
     Me.New(list)
-    mProvider = filterProvider
+    _provider = filterProvider
 
   End Sub
 
@@ -683,10 +680,10 @@ Public Class FilteredBindingList(Of T)
   ''' </remarks>
   Public Property FilterProvider() As FilterProvider
     Get
-      Return mProvider
+      Return _provider
     End Get
     Set(ByVal value As FilterProvider)
-      mProvider = value
+      _provider = value
     End Set
   End Property
 
@@ -699,7 +696,7 @@ Public Class FilteredBindingList(Of T)
   ''' <remarks></remarks>
   Public ReadOnly Property FilterProperty() As PropertyDescriptor
     Get
-      Return mFilterBy
+      Return _filterBy
     End Get
   End Property
 
@@ -708,7 +705,7 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property IsFiltered() As Boolean
     Get
-      Return mFiltered
+      Return _filtered
     End Get
   End Property
 
@@ -719,7 +716,7 @@ Public Class FilteredBindingList(Of T)
   ''' </summary>
   Public Sub ApplyFilter()
 
-    If mFilterBy Is Nothing OrElse mFilter Is Nothing Then
+    If _filterBy Is Nothing OrElse _filter Is Nothing Then
       Throw New ArgumentNullException(My.Resources.FilterRequiredException)
     End If
     DoFilter()
@@ -732,20 +729,20 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="propertyName">The text name of the property on which to filter.</param>
   ''' <param name="filter">The filter criteria.</param>
   Public Sub ApplyFilter(ByVal propertyName As String, ByVal filter As Object)
-    mFilterBy = Nothing
-    mFilter = filter
+    _filterBy = Nothing
+    _filter = filter
 
     If (Not String.IsNullOrEmpty(propertyName)) Then
       Dim itemType As Type = GetType(T)
       For Each prop As PropertyDescriptor In TypeDescriptor.GetProperties(itemType)
         If prop.Name = propertyName Then
-          mFilterBy = prop
+          _filterBy = prop
           Exit For
         End If
       Next prop
     End If
 
-    ApplyFilter(mFilterBy, filter)
+    ApplyFilter(_filterBy, filter)
 
   End Sub
 
@@ -755,8 +752,8 @@ Public Class FilteredBindingList(Of T)
   ''' <param name="property">A PropertyDescriptor for the property on which to filter.</param>
   ''' <param name="filter">The filter criteria.</param>
   Public Sub ApplyFilter(ByVal [property] As PropertyDescriptor, ByVal filter As Object)
-    mFilterBy = [property]
-    mFilter = filter
+    _filterBy = [property]
+    _filter = filter
     DoFilter()
   End Sub
 
@@ -770,7 +767,7 @@ Public Class FilteredBindingList(Of T)
   End Sub
 
   Private Sub SourceChanged(ByVal sender As Object, ByVal e As ListChangedEventArgs)
-    If mFiltered Then
+    If _filtered Then
       Dim listIndex As Integer
       Dim filteredIndexValue As Integer = -1
       Dim newItem As T
@@ -779,14 +776,14 @@ Public Class FilteredBindingList(Of T)
         Case ListChangedType.ItemAdded
           listIndex = e.NewIndex
           ' add new value to index
-          newItem = mList(listIndex)
-          If Not mFilterBy Is Nothing Then
-            newKey = mFilterBy.GetValue(newItem)
+          newItem = _list(listIndex)
+          If Not _filterBy Is Nothing Then
+            newKey = _filterBy.GetValue(newItem)
           Else
             newKey = newItem
           End If
-          mFilterIndex.Add(New ListItem(newKey, listIndex))
-          filteredIndexValue = mFilterIndex.Count - 1
+          _filterIndex.Add(New ListItem(newKey, listIndex))
+          filteredIndexValue = _filterIndex.Count - 1
           ' raise event 
           OnListChanged(New ListChangedEventArgs(e.ListChangedType, filteredIndexValue))
 
@@ -795,13 +792,13 @@ Public Class FilteredBindingList(Of T)
           ' update index value
           filteredIndexValue = FilteredIndex(listIndex)
           If filteredIndexValue <> -1 Then
-            newItem = mList(listIndex)
-            If Not mFilterBy Is Nothing Then
-              newKey = mFilterBy.GetValue(newItem)
+            newItem = _list(listIndex)
+            If Not _filterBy Is Nothing Then
+              newKey = _filterBy.GetValue(newItem)
             Else
               newKey = newItem
             End If
-            mFilterIndex(filteredIndexValue) = New ListItem(newKey, listIndex)
+            _filterIndex(filteredIndexValue) = New ListItem(newKey, listIndex)
           End If
           ' raise event if appropriate
           If filteredIndexValue > -1 Then
@@ -815,10 +812,10 @@ Public Class FilteredBindingList(Of T)
           ' (if any)
           filteredIndexValue = FilteredIndex(listIndex)
           If filteredIndexValue <> -1 Then
-            mFilterIndex.RemoveAt(filteredIndexValue)
+            _filterIndex.RemoveAt(filteredIndexValue)
           End If
           ' adjust index xref values
-          For Each item As ListItem In mFilterIndex
+          For Each item As ListItem In _filterIndex
             If item.BaseIndex > e.NewIndex Then
               item.BaseIndex -= 1
             End If
@@ -841,16 +838,16 @@ Public Class FilteredBindingList(Of T)
   End Sub
 
   Private Function OriginalIndex(ByVal filteredIndex As Integer) As Integer
-    Return mFilterIndex(filteredIndex).BaseIndex
+    Return _filterIndex(filteredIndex).BaseIndex
   End Function
 
   Private Function FilteredIndex(ByVal originalIndex As Integer) As Integer
 
     Dim result As Integer = -1
-    If mFiltered Then
+    If _filtered Then
       Dim index As Integer = 0
-      Do While index < mFilterIndex.Count
-        If mFilterIndex(index).BaseIndex = originalIndex Then
+      Do While index < _filterIndex.Count
+        If _filterIndex(index).BaseIndex = originalIndex Then
           result = index
           Exit Do
         End If
@@ -868,19 +865,19 @@ Public Class FilteredBindingList(Of T)
 
   Public Sub CancelNew(ByVal itemIndex As Integer) Implements System.ComponentModel.ICancelAddNew.CancelNew
 
-    Dim can As ICancelAddNew = TryCast(mList, ICancelAddNew)
+    Dim can As ICancelAddNew = TryCast(_list, ICancelAddNew)
     If can IsNot Nothing Then
       can.CancelNew(itemIndex)
 
     Else
-      mList.RemoveAt(itemIndex)
+      _list.RemoveAt(itemIndex)
     End If
 
   End Sub
 
   Public Sub EndNew(ByVal itemIndex As Integer) Implements System.ComponentModel.ICancelAddNew.EndNew
 
-    Dim can As ICancelAddNew = TryCast(mList, ICancelAddNew)
+    Dim can As ICancelAddNew = TryCast(_list, ICancelAddNew)
     If can IsNot Nothing Then
       can.EndNew(itemIndex)
     End If

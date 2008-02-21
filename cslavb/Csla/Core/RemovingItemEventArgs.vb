@@ -7,7 +7,7 @@ Namespace Core
   Public Class RemovingItemEventArgs
     Inherits EventArgs
 
-    Private mRemovingItem As Object
+    Private _removingItem As Object
 
     ''' <summary>
     ''' Gets a reference to the item that was
@@ -15,7 +15,7 @@ Namespace Core
     ''' </summary>
     Public ReadOnly Property RemovingItem() As Object
       Get
-        Return mRemovingItem
+        Return _removingItem
       End Get
     End Property
 
@@ -27,7 +27,7 @@ Namespace Core
     ''' removed from the list.
     ''' </param>
     Public Sub New(ByVal removingItem As Object)
-      mRemovingItem = removingItem
+      _removingItem = removingItem
     End Sub
   End Class
 

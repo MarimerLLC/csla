@@ -2,37 +2,37 @@ Namespace Validation
 
   Friend Class RulesList
 
-    Private mList As New List(Of IRuleMethod)
-    Private mSorted As Boolean
-    Private mDependantProperties As List(Of String)
+    Private _list As New List(Of IRuleMethod)
+    Private _sorted As Boolean
+    Private _dependantProperties As List(Of String)
 
     Public Sub Add(ByVal item As IRuleMethod)
 
-      mList.Add(item)
-      mSorted = False
+      _list.Add(item)
+      _sorted = False
 
     End Sub
 
     Public Function GetList(ByVal applySort As Boolean) As List(Of IRuleMethod)
 
-      If applySort AndAlso Not mSorted Then
-        SyncLock mList
-          If applySort AndAlso Not mSorted Then
-            mList.Sort()
-            mSorted = True
+      If applySort AndAlso Not _sorted Then
+        SyncLock _list
+          If applySort AndAlso Not _sorted Then
+            _list.Sort()
+            _sorted = True
           End If
         End SyncLock
       End If
-      Return mList
+      Return _list
 
     End Function
 
     Public Function GetDependancyList(ByVal create As Boolean) As List(Of String)
 
-      If mDependantProperties Is Nothing AndAlso create Then
-        mDependantProperties = New List(Of String)
+      If _dependantProperties Is Nothing AndAlso create Then
+        _dependantProperties = New List(Of String)
       End If
-      Return mDependantProperties
+      Return _dependantProperties
 
     End Function
 

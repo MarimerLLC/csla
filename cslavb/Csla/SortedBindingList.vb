@@ -20,27 +20,27 @@ Public Class SortedBindingList(Of T)
   Private Class ListItem
     Implements IComparable(Of ListItem)
 
-    Private mKey As Object
-    Private mBaseIndex As Integer
+    Private _key As Object
+    Private _baseIndex As Integer
 
     Public ReadOnly Property Key() As Object
       Get
-        Return mKey
+        Return _key
       End Get
     End Property
 
     Public Property BaseIndex() As Integer
       Get
-        Return mBaseIndex
+        Return _baseIndex
       End Get
       Set(ByVal value As Integer)
-        mBaseIndex = value
+        _baseIndex = value
       End Set
     End Property
 
     Public Sub New(ByVal key As Object, ByVal baseIndex As Integer)
-      mKey = key
-      mBaseIndex = baseIndex
+      _key = key
+      _baseIndex = baseIndex
     End Sub
 
     Public Function CompareTo(ByVal other As ListItem) As Integer _
@@ -84,42 +84,42 @@ Public Class SortedBindingList(Of T)
 
     Implements IEnumerator(Of T)
 
-    Private mList As IList(Of T)
-    Private mSortIndex As List(Of ListItem)
-    Private mSortOrder As ListSortDirection
-    Private mIndex As Integer
+    Private _list As IList(Of T)
+    Private _sortIndex As List(Of ListItem)
+    Private _sortOrder As ListSortDirection
+    Private _index As Integer
 
     Public Sub New( _
       ByVal list As IList(Of T), _
       ByVal sortIndex As List(Of ListItem), _
       ByVal direction As ListSortDirection)
 
-      mList = list
-      mSortIndex = sortIndex
-      mSortOrder = direction
+      _list = list
+      _sortIndex = sortIndex
+      _sortOrder = direction
       Reset()
     End Sub
 
     Public ReadOnly Property Current() As T _
       Implements System.Collections.Generic.IEnumerator(Of T).Current
       Get
-        Return mList(mSortIndex(mIndex).BaseIndex)
+        Return _list(_sortIndex(_index).BaseIndex)
       End Get
     End Property
 
     Private ReadOnly Property CurrentItem() As Object _
       Implements System.Collections.IEnumerator.Current
       Get
-        Return mList(mSortIndex(mIndex).BaseIndex)
+        Return _list(_sortIndex(_index).BaseIndex)
       End Get
     End Property
 
     Public Function MoveNext() As Boolean _
     Implements System.Collections.IEnumerator.MoveNext
 
-      If mSortOrder = ListSortDirection.Ascending Then
-        If mIndex < mSortIndex.Count - 1 Then
-          mIndex += 1
+      If _sortOrder = ListSortDirection.Ascending Then
+        If _index < _sortIndex.Count - 1 Then
+          _index += 1
           Return True
 
         Else
@@ -127,8 +127,8 @@ Public Class SortedBindingList(Of T)
         End If
 
       Else
-        If mIndex > 0 Then
-          mIndex -= 1
+        If _index > 0 Then
+          _index -= 1
           Return True
 
         Else
@@ -139,10 +139,10 @@ Public Class SortedBindingList(Of T)
     End Function
 
     Public Sub Reset() Implements System.Collections.IEnumerator.Reset
-      If mSortOrder = ListSortDirection.Ascending Then
-        mIndex = -1
+      If _sortOrder = ListSortDirection.Ascending Then
+        _index = -1
       Else
-        mIndex = mSortIndex.Count
+        _index = _sortIndex.Count
       End If
     End Sub
 
@@ -187,23 +187,23 @@ Public Class SortedBindingList(Of T)
 
     Dim index As Integer
 
-    mSortIndex.Clear()
+    _sortIndex.Clear()
 
-    If mSortBy Is Nothing Then
-      For Each obj As T In mList
-        mSortIndex.Add(New ListItem(obj, index))
+    If _sortBy Is Nothing Then
+      For Each obj As T In _list
+        _sortIndex.Add(New ListItem(obj, index))
         index += 1
       Next
 
     Else
-      For Each obj As T In mList
-        mSortIndex.Add(New ListItem(mSortBy.GetValue(obj), index))
+      For Each obj As T In _list
+        _sortIndex.Add(New ListItem(_sortBy.GetValue(obj), index))
         index += 1
       Next
     End If
 
-    mSortIndex.Sort()
-    mSorted = True
+    _sortIndex.Sort()
+    _sorted = True
 
     OnListChanged(New ListChangedEventArgs(ListChangedType.Reset, 0))
 
@@ -211,10 +211,10 @@ Public Class SortedBindingList(Of T)
 
   Private Sub UndoSort()
 
-    mSortIndex.Clear()
-    mSortBy = Nothing
-    mSortOrder = ListSortDirection.Ascending
-    mSorted = False
+    _sortIndex.Clear()
+    _sortBy = Nothing
+    _sortOrder = ListSortDirection.Ascending
+    _sorted = False
 
     OnListChanged(New ListChangedEventArgs(ListChangedType.Reset, 0))
 
@@ -228,14 +228,14 @@ Public Class SortedBindingList(Of T)
   ''' Returns an enumerator for the list, honoring
   ''' any sort that is active at the time.
   ''' </summary>
-  Public Function GetEnumerator() As _
+  Public Function GetEnumerator() As  _
     System.Collections.Generic.IEnumerator(Of T) _
     Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
 
-    If mSorted Then
-      Return New SortedEnumerator(mList, mSortIndex, mSortOrder)
+    If _sorted Then
+      Return New SortedEnumerator(_list, _sortIndex, _sortOrder)
     Else
-      Return mList.GetEnumerator
+      Return _list.GetEnumerator
     End If
 
   End Function
@@ -250,8 +250,8 @@ Public Class SortedBindingList(Of T)
   ''' <param name="property">Property on which
   ''' to build the index.</param>
   Public Sub AddIndex(ByVal [property] As System.ComponentModel.PropertyDescriptor) Implements System.ComponentModel.IBindingList.AddIndex
-    If mSupportsBinding Then
-      mBindingList.AddIndex([property])
+    If _supportsBinding Then
+      _bindingList.AddIndex([property])
     End If
   End Sub
 
@@ -263,12 +263,12 @@ Public Class SortedBindingList(Of T)
 
     Dim result As Object
 
-    If mSupportsBinding Then
-      mInitiatedLocally = True
-      result = mBindingList.AddNew
-      mInitiatedLocally = False
+    If _supportsBinding Then
+      _initiatedLocally = True
+      result = _bindingList.AddNew
+      _initiatedLocally = False
       OnListChanged(New ListChangedEventArgs( _
-        ListChangedType.ItemAdded, mBindingList.Count - 1))
+        ListChangedType.ItemAdded, _bindingList.Count - 1))
 
     Else
       result = Nothing
@@ -284,8 +284,8 @@ Public Class SortedBindingList(Of T)
   Public ReadOnly Property AllowEdit() As Boolean _
     Implements System.ComponentModel.IBindingList.AllowEdit
     Get
-      If mSupportsBinding Then
-        Return mBindingList.AllowEdit
+      If _supportsBinding Then
+        Return _bindingList.AllowEdit
 
       Else
         Return False
@@ -298,8 +298,8 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property AllowNew() As Boolean Implements System.ComponentModel.IBindingList.AllowNew
     Get
-      If mSupportsBinding Then
-        Return mBindingList.AllowNew
+      If _supportsBinding Then
+        Return _bindingList.AllowNew
 
       Else
         Return False
@@ -312,8 +312,8 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property AllowRemove() As Boolean Implements System.ComponentModel.IBindingList.AllowRemove
     Get
-      If mSupportsBinding Then
-        Return mBindingList.AllowRemove
+      If _supportsBinding Then
+        Return _bindingList.AllowRemove
 
       Else
         Return False
@@ -330,20 +330,20 @@ Public Class SortedBindingList(Of T)
     ByVal propertyName As String, _
     ByVal direction As System.ComponentModel.ListSortDirection)
 
-    mSortBy = Nothing
+    _sortBy = Nothing
 
     If Len(propertyName) > 0 Then
       Dim itemType As Type = GetType(T)
       For Each prop As PropertyDescriptor In _
               TypeDescriptor.GetProperties(itemType)
         If prop.Name = propertyName Then
-          mSortBy = prop
+          _sortBy = prop
           Exit For
         End If
       Next
     End If
 
-    ApplySort(mSortBy, direction)
+    ApplySort(_sortBy, direction)
 
   End Sub
 
@@ -357,8 +357,8 @@ Public Class SortedBindingList(Of T)
     ByVal direction As System.ComponentModel.ListSortDirection) _
     Implements System.ComponentModel.IBindingList.ApplySort
 
-    mSortBy = [property]
-    mSortOrder = direction
+    _sortBy = [property]
+    _sortOrder = direction
     DoSort()
   End Sub
 
@@ -392,8 +392,8 @@ Public Class SortedBindingList(Of T)
   ''' <param name="property">Property to search for the key
   ''' value.</param>
   Public Function Find(ByVal [property] As System.ComponentModel.PropertyDescriptor, ByVal key As Object) As Integer Implements System.ComponentModel.IBindingList.Find
-    If mSupportsBinding Then
-      Return SortedIndex(mBindingList.Find([property], key))
+    If _supportsBinding Then
+      Return SortedIndex(_bindingList.Find([property], key))
     Else
       Return -1
     End If
@@ -404,7 +404,7 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property IsSorted() As Boolean Implements System.ComponentModel.IBindingList.IsSorted
     Get
-      Return mSorted
+      Return _sorted
     End Get
   End Property
 
@@ -434,8 +434,8 @@ Public Class SortedBindingList(Of T)
   ''' <param name="property">Property for which the
   ''' index should be removed.</param>
   Public Sub RemoveIndex(ByVal [property] As System.ComponentModel.PropertyDescriptor) Implements System.ComponentModel.IBindingList.RemoveIndex
-    If mSupportsBinding Then
-      mBindingList.RemoveIndex([property])
+    If _supportsBinding Then
+      _bindingList.RemoveIndex([property])
     End If
   End Sub
 
@@ -449,11 +449,11 @@ Public Class SortedBindingList(Of T)
   ''' <summary>
   ''' Returns the direction of the current sort.
   ''' </summary>
-  Public ReadOnly Property SortDirection() As _
+  Public ReadOnly Property SortDirection() As  _
     System.ComponentModel.ListSortDirection _
     Implements System.ComponentModel.IBindingList.SortDirection
     Get
-      Return mSortOrder
+      Return _sortOrder
     End Get
   End Property
 
@@ -462,7 +462,7 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property SortProperty() As System.ComponentModel.PropertyDescriptor Implements System.ComponentModel.IBindingList.SortProperty
     Get
-      Return mSortBy
+      Return _sortBy
     End Get
   End Property
 
@@ -481,8 +481,8 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property SupportsSearching() As Boolean Implements System.ComponentModel.IBindingList.SupportsSearching
     Get
-      If mSupportsBinding Then
-        Return mBindingList.SupportsSearching
+      If _supportsBinding Then
+        Return _bindingList.SupportsSearching
 
       Else
         Return False
@@ -525,7 +525,7 @@ Public Class SortedBindingList(Of T)
     Implements System.Collections.ICollection.Count, _
     System.Collections.Generic.ICollection(Of T).Count
     Get
-      Return mList.Count
+      Return _list.Count
     End Get
   End Property
 
@@ -537,7 +537,7 @@ Public Class SortedBindingList(Of T)
 
   Private ReadOnly Property SyncRoot() As Object Implements System.Collections.ICollection.SyncRoot
     Get
-      Return mList
+      Return _list
     End Get
   End Property
 
@@ -552,19 +552,19 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   ''' <param name="item">Item to add to the list.</param>
   Public Sub Add(ByVal item As T) Implements System.Collections.Generic.ICollection(Of T).Add
-    mList.Add(item)
+    _list.Add(item)
   End Sub
 
   Private Function Add(ByVal value As Object) As Integer Implements System.Collections.IList.Add
     Add(CType(value, T))
-    Return SortedIndex(mList.Count - 1)
+    Return SortedIndex(_list.Count - 1)
   End Function
 
   ''' <summary>
   ''' Implemented by IList source object.
   ''' </summary>
   Public Sub Clear() Implements System.Collections.IList.Clear, System.Collections.Generic.ICollection(Of T).Clear
-    mList.Clear()
+    _list.Clear()
   End Sub
 
   ''' <summary>
@@ -572,7 +572,7 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   ''' <param name="item">Item for which to search.</param>
   Public Function Contains(ByVal item As T) As Boolean Implements System.Collections.Generic.ICollection(Of T).Contains
-    Return mList.Contains(item)
+    Return _list.Contains(item)
   End Function
 
   Private Function Contains(ByVal value As Object) As Boolean Implements System.Collections.IList.Contains
@@ -584,7 +584,7 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   ''' <param name="item">Item for which to search.</param>
   Public Function IndexOf(ByVal item As T) As Integer Implements System.Collections.Generic.IList(Of T).IndexOf
-    Return SortedIndex(mList.IndexOf(item))
+    Return SortedIndex(_list.IndexOf(item))
   End Function
 
   Private Function IndexOf(ByVal value As Object) As Integer Implements System.Collections.IList.IndexOf
@@ -600,7 +600,7 @@ Public Class SortedBindingList(Of T)
   Public Sub Insert(ByVal index As Integer, ByVal item As T) _
     Implements System.Collections.Generic.IList(Of T).Insert
 
-    mList.Insert(index, item)
+    _list.Insert(index, item)
   End Sub
 
   Private Sub Insert(ByVal index As Integer, ByVal value As Object) _
@@ -620,7 +620,7 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   Public ReadOnly Property IsReadOnly() As Boolean Implements System.Collections.IList.IsReadOnly, System.Collections.Generic.ICollection(Of T).IsReadOnly
     Get
-      Return mList.IsReadOnly
+      Return _list.IsReadOnly
     End Get
   End Property
 
@@ -639,7 +639,7 @@ Public Class SortedBindingList(Of T)
   ''' </summary>
   ''' <param name="item">Item to be removed.</param>
   Public Function Remove(ByVal item As T) As Boolean Implements System.Collections.Generic.ICollection(Of T).Remove
-    Return mList.Remove(item)
+    Return _list.Remove(item)
   End Function
 
   Private Sub Remove(ByVal value As Object) Implements System.Collections.IList.Remove
@@ -659,23 +659,23 @@ Public Class SortedBindingList(Of T)
     Implements System.Collections.IList.RemoveAt, _
     System.Collections.Generic.IList(Of T).RemoveAt
 
-    If mSorted Then
-      mInitiatedLocally = True
+    If _sorted Then
+      _initiatedLocally = True
       Dim baseIndex As Integer = OriginalIndex(index)
 
       ' remove the item from the source list
-      mList.RemoveAt(baseIndex)
+      _list.RemoveAt(baseIndex)
 
-      If mList.Count <> mSortIndex.Count Then
+      If _list.Count <> _sortIndex.Count Then
         ' delete the corresponding value in the sort index
-        If mSortOrder = ListSortDirection.Ascending Then
-          mSortIndex.RemoveAt(index)
+        If _sortOrder = ListSortDirection.Ascending Then
+          _sortIndex.RemoveAt(index)
         Else
-          mSortIndex.RemoveAt(mSortIndex.Count - 1 - index)
+          _sortIndex.RemoveAt(_sortIndex.Count - 1 - index)
         End If
 
         ' now fix up all index pointers in the sort index
-        For Each item As ListItem In mSortIndex
+        For Each item As ListItem In _sortIndex
           If item.BaseIndex > baseIndex Then
             item.BaseIndex -= 1
           End If
@@ -684,10 +684,10 @@ Public Class SortedBindingList(Of T)
 
       OnListChanged( _
         New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
-      mInitiatedLocally = False
+      _initiatedLocally = False
 
     Else
-      mList.RemoveAt(index)
+      _list.RemoveAt(index)
     End If
 
   End Sub
@@ -700,17 +700,17 @@ Public Class SortedBindingList(Of T)
   Default Public Overloads Property Item(ByVal index As Integer) As T _
     Implements System.Collections.Generic.IList(Of T).Item
     Get
-      If mSorted Then
-        Return mList(OriginalIndex(index))
+      If _sorted Then
+        Return _list(OriginalIndex(index))
       Else
-        Return mList(index)
+        Return _list(index)
       End If
     End Get
     Set(ByVal value As T)
-      If mSorted Then
-        mList(OriginalIndex(index)) = value
+      If _sorted Then
+        _list(OriginalIndex(index)) = value
       Else
-        mList(index) = value
+        _list(index) = value
       End If
     End Set
   End Property
@@ -726,20 +726,20 @@ Public Class SortedBindingList(Of T)
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Public ReadOnly Property SourceList() As IList(Of T)
     Get
-      Return mList
+      Return _list
     End Get
   End Property
 
 #End Region
 
-  Private mList As IList(Of T)
-  Private mSupportsBinding As Boolean
-  Private mBindingList As IBindingList
-  Private mSorted As Boolean
-  Private mInitiatedLocally As Boolean
-  Private mSortBy As PropertyDescriptor
-  Private mSortOrder As ListSortDirection = ListSortDirection.Ascending
-  Private mSortIndex As New List(Of ListItem)
+  Private _list As IList(Of T)
+  Private _supportsBinding As Boolean
+  Private _bindingList As IBindingList
+  Private _sorted As Boolean
+  Private _initiatedLocally As Boolean
+  Private _sortBy As PropertyDescriptor
+  Private _sortOrder As ListSortDirection = ListSortDirection.Ascending
+  Private _sortIndex As New List(Of ListItem)
 
   ''' <summary>
   ''' Creates a new view based on the provided IList object.
@@ -747,12 +747,12 @@ Public Class SortedBindingList(Of T)
   ''' <param name="list">The IList (collection) containing the data.</param>
   Public Sub New(ByVal list As IList(Of T))
 
-    mList = list
+    _list = list
 
-    If TypeOf mList Is IBindingList Then
-      mSupportsBinding = True
-      mBindingList = DirectCast(mList, IBindingList)
-      AddHandler mBindingList.ListChanged, AddressOf SourceChanged
+    If TypeOf _list Is IBindingList Then
+      _supportsBinding = True
+      _bindingList = DirectCast(_list, IBindingList)
+      AddHandler _bindingList.ListChanged, AddressOf SourceChanged
     End If
 
   End Sub
@@ -760,25 +760,25 @@ Public Class SortedBindingList(Of T)
   Private Sub SourceChanged( _
     ByVal sender As Object, ByVal e As ListChangedEventArgs)
 
-    If mSorted Then
+    If _sorted Then
       Select Case e.ListChangedType
         Case ListChangedType.ItemAdded
-          Dim newItem As T = mList(e.NewIndex)
-          If e.NewIndex = mList.Count - 1 Then
+          Dim newItem As T = _list(e.NewIndex)
+          If e.NewIndex = _list.Count - 1 Then
             Dim newKey As Object
-            If mSortBy IsNot Nothing Then
-              newKey = mSortBy.GetValue(newItem)
+            If _sortBy IsNot Nothing Then
+              newKey = _sortBy.GetValue(newItem)
             Else
               newKey = newItem
             End If
 
-            If mSortOrder = ListSortDirection.Ascending Then
-              mSortIndex.Add(New ListItem(newKey, e.NewIndex))
+            If _sortOrder = ListSortDirection.Ascending Then
+              _sortIndex.Add(New ListItem(newKey, e.NewIndex))
 
             Else
-              mSortIndex.Insert(0, New ListItem(newKey, e.NewIndex))
+              _sortIndex.Insert(0, New ListItem(newKey, e.NewIndex))
             End If
-            If Not mInitiatedLocally Then
+            If Not _initiatedLocally Then
               OnListChanged( _
                 New ListChangedEventArgs( _
                   ListChangedType.ItemAdded, SortedIndex(e.NewIndex)))
@@ -796,14 +796,14 @@ Public Class SortedBindingList(Of T)
               ListChangedType.ItemChanged, SortedIndex(e.NewIndex), e.PropertyDescriptor))
 
         Case ListChangedType.ItemDeleted
-          If Not mInitiatedLocally Then
+          If Not _initiatedLocally Then
             DoSort()
           End If
 
         Case Else
           ' for anything other than add, delete or change
           ' just re-sort the list
-          If Not mInitiatedLocally Then
+          If Not _initiatedLocally Then
             DoSort()
           End If
       End Select
@@ -815,25 +815,25 @@ Public Class SortedBindingList(Of T)
   End Sub
 
   Private Function OriginalIndex(ByVal sortedIndex As Integer) As Integer
-    If mSortOrder = ListSortDirection.Ascending Then
-      Return mSortIndex.Item(sortedIndex).BaseIndex
+    If _sortOrder = ListSortDirection.Ascending Then
+      Return _sortIndex.Item(sortedIndex).BaseIndex
     Else
-      Return mSortIndex.Item(mSortIndex.Count - 1 - sortedIndex).BaseIndex
+      Return _sortIndex.Item(_sortIndex.Count - 1 - sortedIndex).BaseIndex
     End If
   End Function
 
   Private Function SortedIndex(ByVal originalIndex As Integer) As Integer
 
     Dim result As Integer
-    If mSorted Then
-      For index As Integer = 0 To mSortIndex.Count - 1
-        If mSortIndex(index).BaseIndex = originalIndex Then
+    If _sorted Then
+      For index As Integer = 0 To _sortIndex.Count - 1
+        If _sortIndex(index).BaseIndex = originalIndex Then
           result = index
           Exit For
         End If
       Next
-      If mSortOrder = ListSortDirection.Descending Then
-        result = mSortIndex.Count - 1 - result
+      If _sortOrder = ListSortDirection.Descending Then
+        result = _sortIndex.Count - 1 - result
       End If
     Else
       result = originalIndex
@@ -846,19 +846,19 @@ Public Class SortedBindingList(Of T)
 
   Public Sub CancelNew(ByVal itemIndex As Integer) Implements System.ComponentModel.ICancelAddNew.CancelNew
 
-    Dim can As ICancelAddNew = TryCast(mList, ICancelAddNew)
+    Dim can As ICancelAddNew = TryCast(_list, ICancelAddNew)
     If can IsNot Nothing Then
       can.CancelNew(itemIndex)
 
     Else
-      mList.RemoveAt(itemIndex)
+      _list.RemoveAt(itemIndex)
     End If
 
   End Sub
 
   Public Sub EndNew(ByVal itemIndex As Integer) Implements System.ComponentModel.ICancelAddNew.EndNew
 
-    Dim can As ICancelAddNew = TryCast(mList, ICancelAddNew)
+    Dim can As ICancelAddNew = TryCast(_list, ICancelAddNew)
     If can IsNot Nothing Then
       can.EndNew(itemIndex)
     End If

@@ -11,12 +11,12 @@ Namespace Server
   <Serializable()> _
   Public Class DataPortalContext
 
-    Private mPrincipal As IPrincipal
-    Private mRemotePortal As Boolean
-    Private mClientCulture As String
-    Private mClientUICulture As String
-    Private mClientContext As HybridDictionary
-    Private mGlobalContext As HybridDictionary
+    Private _principal As IPrincipal
+    Private _remotePortal As Boolean
+    Private _clientCulture As String
+    Private _clientUICulture As String
+    Private _clientContext As HybridDictionary
+    Private _globalContext As HybridDictionary
 
     ''' <summary>
     ''' The current principal object
@@ -24,7 +24,7 @@ Namespace Server
     ''' </summary>
     Public ReadOnly Property Principal() As IPrincipal
       Get
-        Return mPrincipal
+        Return _principal
       End Get
     End Property
 
@@ -35,7 +35,7 @@ Namespace Server
     ''' </summary>
     Public ReadOnly Property IsRemotePortal() As Boolean
       Get
-        Return mRemotePortal
+        Return _remotePortal
       End Get
     End Property
 
@@ -45,7 +45,7 @@ Namespace Server
     ''' </summary>
     Public ReadOnly Property ClientCulture() As String
       Get
-        Return mClientCulture
+        Return _clientCulture
       End Get
     End Property
 
@@ -55,19 +55,19 @@ Namespace Server
     ''' </summary>
     Public ReadOnly Property ClientUICulture() As String
       Get
-        Return mClientUICulture
+        Return _clientUICulture
       End Get
     End Property
 
     Friend ReadOnly Property ClientContext() As HybridDictionary
       Get
-        Return mClientContext
+        Return _clientContext
       End Get
     End Property
 
     Friend ReadOnly Property GlobalContext() As HybridDictionary
       Get
-        Return mGlobalContext
+        Return _globalContext
       End Get
     End Property
 
@@ -80,14 +80,14 @@ Namespace Server
       ByVal principal As IPrincipal, ByVal isRemotePortal As Boolean)
 
       If isRemotePortal Then
-        mPrincipal = principal
-        mRemotePortal = isRemotePortal
-        mClientCulture = _
+        _principal = principal
+        _remotePortal = isRemotePortal
+        _clientCulture = _
           System.Threading.Thread.CurrentThread.CurrentCulture.Name
-        mClientUICulture = _
+        _clientUICulture = _
           System.Threading.Thread.CurrentThread.CurrentUICulture.Name
-        mClientContext = Csla.ApplicationContext.GetClientContext
-        mGlobalContext = Csla.ApplicationContext.GetGlobalContext
+        _clientContext = Csla.ApplicationContext.GetClientContext
+        _globalContext = Csla.ApplicationContext.GetGlobalContext
       End If
 
     End Sub

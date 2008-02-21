@@ -13,10 +13,10 @@ Namespace Validation
   Public Class BrokenRulesCollection
     Inherits Core.ReadOnlyBindingList(Of BrokenRule)
 
-    Private mErrorCount As Integer
-    Private mWarningCount As Integer
-    Private mInfoCount As Integer
-    Private mCustomList As Boolean
+    Private _errorCount As Integer
+    Private _warningCount As Integer
+    Private _infoCount As Integer
+    Private _customList As Boolean
 
     ''' <summary>
     ''' Gets the number of broken rules in
@@ -26,7 +26,7 @@ Namespace Validation
     ''' <value>An integer value.</value>
     Public ReadOnly Property ErrorCount() As Integer
       Get
-        Return mErrorCount
+        Return _errorCount
       End Get
     End Property
 
@@ -38,7 +38,7 @@ Namespace Validation
     ''' <value>An integer value.</value>
     Public ReadOnly Property WarningCount() As Integer
       Get
-        Return mWarningCount
+        Return _warningCount
       End Get
     End Property
 
@@ -51,7 +51,7 @@ Namespace Validation
     ''' <value>An integer value.</value>
     Public ReadOnly Property InformationCount() As Integer
       Get
-        Return mInfoCount
+        Return _infoCount
       End Get
     End Property
 
@@ -163,11 +163,11 @@ Namespace Validation
       IncrementRevision()
       Select Case item.Severity
         Case RuleSeverity.Error
-          mErrorCount += 1
+          _errorCount += 1
         Case RuleSeverity.Warning
-          mWarningCount += 1
+          _warningCount += 1
         Case Else
-          mInfoCount += 1
+          _infoCount += 1
       End Select
 
     End Sub
@@ -177,11 +177,11 @@ Namespace Validation
       IncrementRevision()
       Select Case item.Severity
         Case RuleSeverity.Error
-          mErrorCount -= 1
+          _errorCount -= 1
         Case RuleSeverity.Warning
-          mWarningCount -= 1
+          _warningCount -= 1
         Case Else
-          mInfoCount -= 1
+          _infoCount -= 1
       End Select
 
     End Sub
@@ -315,7 +315,7 @@ Namespace Validation
     Public Shared Function CreateCollection() As BrokenRulesCollection
 
       Dim result As New BrokenRulesCollection
-      result.mCustomList = True
+      result._customList = True
       Return result
 
     End Function
@@ -344,7 +344,7 @@ Namespace Validation
     ''' </remarks>
     Public Sub Merge(ByVal source As String, ByVal list As BrokenRulesCollection)
 
-      If Not mCustomList Then
+      If Not _customList Then
         Throw New NotSupportedException(My.Resources.BrokenRulesMergeException)
       End If
       IsReadOnly = False
@@ -361,11 +361,11 @@ Namespace Validation
 
 #Region " Revision "
 
-    Private mRevision As Integer
+    Private _revision As Integer
 
     Private Sub IncrementRevision()
 
-      mRevision = (mRevision + 1) Mod Integer.MaxValue
+      _revision = (_revision + 1) Mod Integer.MaxValue
 
     End Sub
 
@@ -379,7 +379,7 @@ Namespace Validation
     ''' </remarks>
     Public ReadOnly Property Revision() As Integer
       Get
-        Return mRevision
+        Return _revision
       End Get
     End Property
 

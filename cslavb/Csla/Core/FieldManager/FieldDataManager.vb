@@ -282,14 +282,14 @@ Namespace Core.FieldManager
 
 #Region " IUndoableObject"
 
-    Private mStateStack As Stack(Of Byte()) = New Stack(Of Byte())()
+    Private _stateStack As Stack(Of Byte()) = New Stack(Of Byte())()
 
     ''' <summary>
     ''' Gets the current edit level of the object.
     ''' </summary>
     Public ReadOnly Property EditLevel() As Integer Implements IUndoableObject.EditLevel
       Get
-        Return mStateStack.Count
+        Return _stateStack.Count
       End Get
     End Property
 
@@ -318,7 +318,7 @@ Namespace Core.FieldManager
       Using buffer As New MemoryStream()
         Dim formatter = SerializationFormatterFactory.GetFormatter()
         formatter.Serialize(buffer, state)
-        mStateStack.Push(buffer.ToArray())
+        _stateStack.Push(buffer.ToArray())
       End Using
     End Sub
 
@@ -329,7 +329,7 @@ Namespace Core.FieldManager
         End If
 
         Dim state() As IFieldData = Nothing
-        Using buffer As New MemoryStream(mStateStack.Pop())
+        Using buffer As New MemoryStream(_stateStack.Pop())
           buffer.Position = 0
           Dim formatter = SerializationFormatterFactory.GetFormatter()
           state = CType(formatter.Deserialize(buffer), IFieldData())
@@ -362,7 +362,7 @@ Namespace Core.FieldManager
 
       If EditLevel > 0 Then
         ' discard latest recorded state
-        mStateStack.Pop()
+        _stateStack.Pop()
 
         For Each item In _fieldData
           If item IsNot Nothing Then

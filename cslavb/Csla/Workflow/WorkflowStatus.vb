@@ -1,5 +1,3 @@
-#If (Not NET20) Then
-
 Namespace Workflow
 
   ''' <summary>
@@ -37,5 +35,3 @@ Namespace Workflow
   End Enum
 
 End Namespace
-
-#End If

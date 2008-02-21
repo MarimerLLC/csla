@@ -11,15 +11,15 @@ Namespace Server
   Public Class DataPortalException
     Inherits Exception
 
-    Private mResult As DataPortalResult
-    Private mInnerStackTrace As String
+    Private _result As DataPortalResult
+    Private _innerStackTrace As String
 
     ''' <summary>
     ''' Returns the DataPortalResult object from the server.
     ''' </summary>
     Public ReadOnly Property Result() As DataPortalResult
       Get
-        Return mResult
+        Return _result
       End Get
     End Property
 
@@ -30,7 +30,7 @@ Namespace Server
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId:="System.String.Format(System.String,System.Object,System.Object,System.Object)")> _
     Public Overrides ReadOnly Property StackTrace() As String
       Get
-        Return String.Format("{0}{1}{2}", mInnerStackTrace, vbCrLf, MyBase.StackTrace)
+        Return String.Format("{0}{1}{2}", _innerStackTrace, vbCrLf, MyBase.StackTrace)
       End Get
     End Property
 
@@ -45,8 +45,8 @@ Namespace Server
       ByVal result As DataPortalResult)
 
       MyBase.New(message, ex)
-      mInnerStackTrace = ex.StackTrace
-      mResult = result
+      _innerStackTrace = ex.StackTrace
+      _result = result
 
     End Sub
 
@@ -58,8 +58,8 @@ Namespace Server
     Protected Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.New(info, context)
-      mResult = DirectCast(info.GetValue("mResult", GetType(DataPortalResult)), DataPortalResult)
-      mInnerStackTrace = info.GetString("mInnerStackTrace")
+      _result = DirectCast(info.GetValue("mResult", GetType(DataPortalResult)), DataPortalResult)
+      _innerStackTrace = info.GetString("mInnerStackTrace")
 
     End Sub
 
@@ -75,8 +75,8 @@ Namespace Server
     Public Overrides Sub GetObjectData(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.GetObjectData(info, context)
-      info.AddValue("mResult", mResult)
-      info.AddValue("mInnerStackTrace", mInnerStackTrace)
+      info.AddValue("mResult", _result)
+      info.AddValue("mInnerStackTrace", _innerStackTrace)
 
     End Sub
 

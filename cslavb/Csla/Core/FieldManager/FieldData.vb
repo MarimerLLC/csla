@@ -8,9 +8,9 @@
   Public Class FieldData(Of T)
     Implements IFieldData(Of T)
 
-    Private mName As String
-    Private mData As T
-    Private mIsDirty As Boolean
+    Private _name As String
+    Private _data As T
+    Private _isDirty As Boolean
 
     ''' <summary>
     ''' Creates a new instance of the object.
@@ -19,7 +19,7 @@
     ''' Name of the field.
     ''' </param>
     Public Sub New(ByVal name As String)
-      mName = name
+      _name = name
     End Sub
 
     ''' <summary>
@@ -27,7 +27,7 @@
     ''' </summary>
     Public ReadOnly Property Name() As String Implements IFieldData.Name
       Get
-        Return mName
+        Return _name
       End Get
     End Property
 
@@ -36,11 +36,11 @@
     ''' </summary>
     Public Property Value() As T Implements IFieldData(Of T).Value
       Get
-        Return mData
+        Return _data
       End Get
       Set(ByVal value As T)
-        mData = value
-        mIsDirty = True
+        _data = value
+        _isDirty = True
       End Set
     End Property
 
@@ -55,7 +55,7 @@
 
     Private ReadOnly Property IsDeleted() As Boolean Implements ITrackStatus.IsDeleted
       Get
-        Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
+        Dim child As ITrackStatus = TryCast(_data, ITrackStatus)
         If child IsNot Nothing Then
           Return child.IsDeleted
 
@@ -71,12 +71,12 @@
     ''' </summary>
     Public ReadOnly Property IsDirty() As Boolean Implements ITrackStatus.IsDirty, ITrackStatus.IsSelfDirty
       Get
-        Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
+        Dim child As ITrackStatus = TryCast(_data, ITrackStatus)
         If child IsNot Nothing Then
           Return child.IsDirty
 
         Else
-          Return mIsDirty
+          Return _isDirty
         End If
       End Get
     End Property
@@ -86,13 +86,13 @@
     ''' </summary>
     Public Sub MarkClean() Implements IFieldData.MarkClean
 
-      mIsDirty = False
+      _isDirty = False
 
     End Sub
 
     Private ReadOnly Property IsNew() As Boolean Implements ITrackStatus.IsNew
       Get
-        Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
+        Dim child As ITrackStatus = TryCast(_data, ITrackStatus)
         If child IsNot Nothing Then
           Return child.IsNew
 
@@ -104,7 +104,7 @@
 
     Private ReadOnly Property IsValid() As Boolean Implements ITrackStatus.IsValid, ITrackStatus.IsSelfValid
       Get
-        Dim child As ITrackStatus = TryCast(mData, ITrackStatus)
+        Dim child As ITrackStatus = TryCast(_data, ITrackStatus)
         If child IsNot Nothing Then
           Return child.IsValid
 

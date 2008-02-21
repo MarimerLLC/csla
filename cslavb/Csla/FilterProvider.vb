@@ -1,5 +1,3 @@
-Imports System
-
 ''' <summary>
 ''' Defines the method signature for a filter
 ''' provider method used by FilteredBindingList.

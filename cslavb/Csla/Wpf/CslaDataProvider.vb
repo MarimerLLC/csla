@@ -1,7 +1,5 @@
-#If Not NET20 Then
 Imports System.Collections.ObjectModel
 Imports System.ComponentModel
-Imports System.Text
 Imports System.Windows.Data
 Imports System.Reflection
 Imports Csla.Reflection
@@ -19,9 +17,9 @@ Namespace Wpf
     ''' Creates an instance of the object.
     ''' </summary>
     Public Sub New()
-      mCommandManager = New CslaDataProviderCommandManager(Me)
-      mFactoryParameters = New ObservableCollection(Of Object)()
-      AddHandler mFactoryParameters.CollectionChanged, AddressOf _factoryParameters_CollectionChanged
+      _commandManager = New CslaDataProviderCommandManager(Me)
+      _factoryParameters = New ObservableCollection(Of Object)()
+      AddHandler _factoryParameters.CollectionChanged, AddressOf _factoryParameters_CollectionChanged
     End Sub
 
     Private Sub _factoryParameters_CollectionChanged(ByVal sender As Object, ByVal e As System.Collections.Specialized.NotifyCollectionChangedEventArgs)
@@ -30,12 +28,12 @@ Namespace Wpf
 
 #Region " Properties "
 
-    Private mObjectType As Type = Nothing
-    Private mManageLifetime As Boolean
-    Private mFactoryMethod As String = String.Empty
-    Private mFactoryParameters As ObservableCollection(Of Object)
-    Private mIsAsynchronous As Boolean
-    Private mCommandManager As CslaDataProviderCommandManager
+    Private _objectType As Type = Nothing
+    Private _manageLifetime As Boolean
+    Private _factoryMethod As String = String.Empty
+    Private _factoryParameters As ObservableCollection(Of Object)
+    Private _isAsynchronous As Boolean
+    Private _commandManager As CslaDataProviderCommandManager
 
     ''' <summary>
     ''' Gets an object that can be used to execute
@@ -44,7 +42,7 @@ Namespace Wpf
     ''' </summary>
     Public ReadOnly Property CommandManager() As CslaDataProviderCommandManager
       Get
-        Return mCommandManager
+        Return _commandManager
       End Get
     End Property
 
@@ -54,10 +52,10 @@ Namespace Wpf
     ''' </summary>
     Public Property ObjectType() As Type
       Get
-        Return mObjectType
+        Return _objectType
       End Get
       Set(ByVal value As Type)
-        mObjectType = value
+        _objectType = value
         OnPropertyChanged(New PropertyChangedEventArgs("TypeName"))
       End Set
     End Property
@@ -70,10 +68,10 @@ Namespace Wpf
     ''' </summary>
     Public Property ManageObjectLifetime() As Boolean
       Get
-        Return mManageLifetime
+        Return _manageLifetime
       End Get
       Set(ByVal value As Boolean)
-        mManageLifetime = value
+        _manageLifetime = value
         OnPropertyChanged(New PropertyChangedEventArgs("ManageObjectLifetime"))
       End Set
     End Property
@@ -86,10 +84,10 @@ Namespace Wpf
     ''' </summary>
     Public Property FactoryMethod() As String
       Get
-        Return mFactoryMethod
+        Return _factoryMethod
       End Get
       Set(ByVal value As String)
-        mFactoryMethod = value
+        _factoryMethod = value
         OnPropertyChanged(New PropertyChangedEventArgs("GetFactoryMethod"))
       End Set
     End Property
@@ -100,7 +98,7 @@ Namespace Wpf
     ''' </summary>
     Public ReadOnly Property FactoryParameters() As IList
       Get
-        Return mFactoryParameters
+        Return _factoryParameters
       End Get
     End Property
 
@@ -111,10 +109,10 @@ Namespace Wpf
     ''' </summary>
     Public Property IsAsynchronous() As Boolean
       Get
-        Return mIsAsynchronous
+        Return _isAsynchronous
       End Get
       Set(ByVal value As Boolean)
-        mIsAsynchronous = value
+        _isAsynchronous = value
       End Set
     End Property
 
@@ -122,7 +120,7 @@ Namespace Wpf
 
 #Region " Query "
 
-    Dim mFirstRun As Boolean = True
+    Dim _firstRun As Boolean = True
 
     ''' <summary>
     ''' Overridden. Starts to create the requested object, 
@@ -135,18 +133,18 @@ Namespace Wpf
         Return
       End If
 
-      If mFirstRun Then
-        mFirstRun = False
+      If _firstRun Then
+        _firstRun = False
         If Not IsInitialLoadEnabled Then
           Return
         End If
       End If
 
       Dim request As QueryRequest = New QueryRequest()
-      request.ObjectType = mObjectType
-      request.FactoryMethod = mFactoryMethod
-      request.FactoryParameters = mFactoryParameters
-      request.ManageObjectLifetime = mManageLifetime
+      request.ObjectType = _objectType
+      request.FactoryMethod = _factoryMethod
+      request.FactoryParameters = _factoryParameters
+      request.ManageObjectLifetime = _manageLifetime
 
       If IsAsynchronous Then
         System.Threading.ThreadPool.QueueUserWorkItem(AddressOf DoQuery, request)
@@ -247,13 +245,13 @@ Namespace Wpf
       End Property
 
 
-      Private mManageObjectLifetime As Boolean
+      Private _manageObjectLifetime As Boolean
       Public Property ManageObjectLifetime() As Boolean
         Get
-          Return mManageObjectLifetime
+          Return _manageObjectLifetime
         End Get
         Set(ByVal value As Boolean)
-          mManageObjectLifetime = value
+          _manageObjectLifetime = value
         End Set
       End Property
 
@@ -276,7 +274,7 @@ Namespace Wpf
     Public Sub Cancel()
 
       Dim undo As Csla.Core.ISupportUndo = TryCast(Me.Data, Csla.Core.ISupportUndo)
-      If Not undo Is Nothing AndAlso mManageLifetime Then
+      If Not undo Is Nothing AndAlso _manageLifetime Then
         undo.CancelEdit()
         undo.BeginEdit()
       End If
@@ -314,7 +312,7 @@ Namespace Wpf
         Try
           ' apply edits in memory
           Dim undo As Csla.Core.ISupportUndo = TryCast(savable, Csla.Core.ISupportUndo)
-          If Not undo Is Nothing AndAlso mManageLifetime Then
+          If Not undo Is Nothing AndAlso _manageLifetime Then
             undo.ApplyEdit()
           End If
 
@@ -339,7 +337,7 @@ Namespace Wpf
 
           ' start editing the resulting object
           undo = TryCast(result, Csla.Core.ISupportUndo)
-          If Not undo Is Nothing AndAlso mManageLifetime Then
+          If Not undo Is Nothing AndAlso _manageLifetime Then
             undo.BeginEdit()
           End If
 
@@ -375,4 +373,3 @@ Namespace Wpf
   End Class
 
 End Namespace
-#End If

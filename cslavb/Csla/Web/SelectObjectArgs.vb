@@ -9,13 +9,13 @@ Namespace Web
   Public Class SelectObjectArgs
     Inherits EventArgs
 
-    Private mBusinessObject As Object
-    Private mSortExpression As String
-    Private mSortProperty As String
-    Private mSortDirection As ListSortDirection
-    Private mStartRowIndex As Integer
-    Private mMaximumRows As Integer
-    Private mRetrieveTotalRowCount As Boolean
+    Private _businessObject As Object
+    Private _sortExpression As String
+    Private _sortProperty As String
+    Private _sortDirection As ListSortDirection
+    Private _startRowIndex As Integer
+    Private _maximumRows As Integer
+    Private _retrieveTotalRowCount As Boolean
 
     ''' <summary>
     ''' Get or set a reference to the business object
@@ -25,10 +25,10 @@ Namespace Web
     ''' <value>A reference to a CSLA .NET business object.</value>
     Public Property BusinessObject() As Object
       Get
-        Return mBusinessObject
+        Return _businessObject
       End Get
       Set(ByVal value As Object)
-        mBusinessObject = value
+        _businessObject = value
       End Set
     End Property
 
@@ -39,7 +39,7 @@ Namespace Web
     ''' </summary>
     Public ReadOnly Property SortExpression() As String
       Get
-        Return mSortExpression
+        Return _sortExpression
       End Get
     End Property
 
@@ -55,7 +55,7 @@ Namespace Web
     ''' </remarks>
     Public ReadOnly Property SortProperty() As String
       Get
-        Return mSortProperty
+        Return _sortProperty
       End Get
     End Property
 
@@ -71,7 +71,7 @@ Namespace Web
     ''' </remarks>
     Public ReadOnly Property SortDirection() As ListSortDirection
       Get
-        Return mSortDirection
+        Return _sortDirection
       End Get
     End Property
 
@@ -83,7 +83,7 @@ Namespace Web
     ''' </summary>
     Public ReadOnly Property StartRowIndex() As Integer
       Get
-        Return mStartRowIndex
+        Return _startRowIndex
       End Get
     End Property
 
@@ -95,7 +95,7 @@ Namespace Web
     ''' </summary>
     Public ReadOnly Property MaximumRows() As Integer
       Get
-        Return mMaximumRows
+        Return _maximumRows
       End Get
     End Property
 
@@ -108,7 +108,7 @@ Namespace Web
     ''' </summary>
     Public ReadOnly Property RetrieveTotalRowCount() As Boolean
       Get
-        Return mRetrieveTotalRowCount
+        Return _retrieveTotalRowCount
       End Get
     End Property
 
@@ -119,19 +119,19 @@ Namespace Web
     ''' <param name="args">Values provided from data binding.</param>
     Public Sub New(ByVal args As System.Web.UI.DataSourceSelectArguments)
 
-      mStartRowIndex = args.StartRowIndex
-      mMaximumRows = args.MaximumRows
-      mRetrieveTotalRowCount = args.RetrieveTotalRowCount
+      _startRowIndex = args.StartRowIndex
+      _maximumRows = args.MaximumRows
+      _retrieveTotalRowCount = args.RetrieveTotalRowCount
 
-      mSortExpression = args.SortExpression
-      If Not String.IsNullOrEmpty(mSortExpression) Then
-        If Len(mSortExpression) >= 5 AndAlso Right(mSortExpression, 5) = " DESC" Then
-          mSortProperty = Left(mSortExpression, mSortExpression.Length - 5)
-          mSortDirection = ListSortDirection.Descending
+      _sortExpression = args.SortExpression
+      If Not String.IsNullOrEmpty(_sortExpression) Then
+        If Len(_sortExpression) >= 5 AndAlso Right(_sortExpression, 5) = " DESC" Then
+          _sortProperty = Left(_sortExpression, _sortExpression.Length - 5)
+          _sortDirection = ListSortDirection.Descending
 
         Else
-          mSortProperty = args.SortExpression
-          mSortDirection = ListSortDirection.Ascending
+          _sortProperty = args.SortExpression
+          _sortDirection = ListSortDirection.Ascending
         End If
       End If
 

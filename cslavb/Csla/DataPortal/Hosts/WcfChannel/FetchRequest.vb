@@ -1,7 +1,3 @@
-#If Not NET20 Then
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
 Imports System.Runtime.Serialization
 
 Namespace Server.Hosts.WcfChannel
@@ -68,4 +64,3 @@ Namespace Server.Hosts.WcfChannel
     End Property
   End Class
 End Namespace
-#End If

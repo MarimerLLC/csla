@@ -9,10 +9,10 @@ Namespace Validation
     Implements IComparable
     Implements IComparable(Of IRuleMethod)
 
-    Private mHandler As RuleHandler
-    Private mRuleName As String = ""
-    Private mArgs As RuleArgs
-    Private mPriority As Integer
+    Private _handler As RuleHandler
+    Private _ruleName As String = ""
+    Private _args As RuleArgs
+    Private _priority As Integer
 
     ''' <summary>
     ''' Returns the name of the method implementing the rule
@@ -20,7 +20,7 @@ Namespace Validation
     ''' rule applies.
     ''' </summary>
     Public Overrides Function ToString() As String
-      Return mRuleName
+      Return _ruleName
     End Function
 
     ''' <summary>
@@ -34,7 +34,7 @@ Namespace Validation
     ''' </remarks>
     Public ReadOnly Property Priority() As Integer Implements IRuleMethod.Priority
       Get
-        Return mPriority
+        Return _priority
       End Get
     End Property
 
@@ -48,7 +48,7 @@ Namespace Validation
     ''' </remarks>
     Public ReadOnly Property RuleName() As String Implements IRuleMethod.RuleName
       Get
-        Return mRuleName
+        Return _ruleName
       End Get
     End Property
 
@@ -58,7 +58,7 @@ Namespace Validation
     ''' </summary>
     Public ReadOnly Property RuleArgs() As RuleArgs Implements IRuleMethod.RuleArgs
       Get
-        Return mArgs
+        Return _args
       End Get
     End Property
 
@@ -70,10 +70,10 @@ Namespace Validation
     Public Sub New(ByVal handler As RuleHandler, _
       ByVal args As RuleArgs)
 
-      mHandler = handler
-      mArgs = args
-      mRuleName = _
-        String.Format("rule://{0}/{1}", mHandler.Method.Name, mArgs.ToString)
+      _handler = handler
+      _args = args
+      _ruleName = _
+        String.Format("rule://{0}/{1}", _handler.Method.Name, _args.ToString)
 
     End Sub
 
@@ -89,7 +89,7 @@ Namespace Validation
       ByVal args As RuleArgs, ByVal priority As Integer)
 
       Me.New(handler, args)
-      mPriority = priority
+      _priority = priority
 
     End Sub
 
@@ -101,7 +101,7 @@ Namespace Validation
     ''' <see langword="false" /> if the data is invalid.
     ''' </returns>
     Public Function Invoke(ByVal target As Object) As Boolean Implements IRuleMethod.Invoke
-      Return mHandler.Invoke(target, mArgs)
+      Return _handler.Invoke(target, _args)
     End Function
 
 #Region " IComparable "
@@ -136,10 +136,10 @@ Namespace Validation
     Implements IComparable
     Implements IComparable(Of IRuleMethod)
 
-    Private mHandler As RuleHandler(Of T, R)
-    Private mRuleName As String = ""
-    Private mArgs As R
-    Private mPriority As Integer
+    Private _handler As RuleHandler(Of T, R)
+    Private _ruleName As String = ""
+    Private _args As R
+    Private _priority As Integer
 
     ''' <summary>
     ''' Returns the name of the method implementing the rule
@@ -147,7 +147,7 @@ Namespace Validation
     ''' rule applies.
     ''' </summary>
     Public Overrides Function ToString() As String
-      Return mRuleName
+      Return _ruleName
     End Function
 
     ''' <summary>
@@ -161,7 +161,7 @@ Namespace Validation
     ''' </remarks>
     Public ReadOnly Property Priority() As Integer Implements IRuleMethod.Priority
       Get
-        Return mPriority
+        Return _priority
       End Get
     End Property
 
@@ -175,7 +175,7 @@ Namespace Validation
     ''' </remarks>
     Public ReadOnly Property RuleName() As String Implements IRuleMethod.RuleName
       Get
-        Return mRuleName
+        Return _ruleName
       End Get
     End Property
 
@@ -195,7 +195,7 @@ Namespace Validation
     ''' </summary>
     Public ReadOnly Property RuleArgs() As R
       Get
-        Return mArgs
+        Return _args
       End Get
     End Property
 
@@ -207,10 +207,10 @@ Namespace Validation
     Public Sub New(ByVal handler As RuleHandler(Of T, R), _
       ByVal args As R)
 
-      mHandler = handler
-      mArgs = args
-      mRuleName = _
-        String.Format("rule://{0}/{1}", mHandler.Method.Name, mArgs.ToString)
+      _handler = handler
+      _args = args
+      _ruleName = _
+        String.Format("rule://{0}/{1}", _handler.Method.Name, _args.ToString)
 
     End Sub
 
@@ -226,7 +226,7 @@ Namespace Validation
       ByVal args As R, ByVal priority As Integer)
 
       Me.New(handler, args)
-      mPriority = priority
+      _priority = priority
 
     End Sub
 
@@ -246,7 +246,7 @@ Namespace Validation
     ''' <see langword="false" /> if the data is invalid.
     ''' </returns>
     Public Function Invoke(ByVal target As T) As Boolean
-      Return mHandler.Invoke(target, mArgs)
+      Return _handler.Invoke(target, _args)
     End Function
 
 #Region " IComparable "

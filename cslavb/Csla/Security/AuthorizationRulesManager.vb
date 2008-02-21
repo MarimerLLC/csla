@@ -9,15 +9,15 @@ Namespace Security
   ''' </summary>
   Friend Class AuthorizationRulesManager
 
-    Private mRules As Dictionary(Of String, RolesForProperty)
+    Private _rules As Dictionary(Of String, RolesForProperty)
 
     Friend ReadOnly Property RulesList() _
       As Dictionary(Of String, RolesForProperty)
       Get
-        If mRules Is Nothing Then
-          mRules = New Dictionary(Of String, RolesForProperty)
+        If _rules Is Nothing Then
+          _rules = New Dictionary(Of String, RolesForProperty)
         End If
-        Return mRules
+        Return _rules
       End Get
     End Property
 

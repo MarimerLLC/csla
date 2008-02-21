@@ -10,8 +10,8 @@ Namespace Server
   <Serializable()> _
   Public Class DataPortalResult
 
-    Private mReturnObject As Object
-    Private mGlobalContext As HybridDictionary
+    Private _returnObject As Object
+    Private _globalContext As HybridDictionary
 
     ''' <summary>
     ''' The business object being returned from
@@ -19,7 +19,7 @@ Namespace Server
     ''' </summary>
     Public ReadOnly Property ReturnObject() As Object
       Get
-        Return mReturnObject
+        Return _returnObject
       End Get
     End Property
 
@@ -29,7 +29,7 @@ Namespace Server
     ''' </summary>
     Public ReadOnly Property GlobalContext() As HybridDictionary
       Get
-        Return mGlobalContext
+        Return _globalContext
       End Get
     End Property
 
@@ -38,7 +38,7 @@ Namespace Server
     ''' </summary>
     Public Sub New()
 
-      mGlobalContext = ApplicationContext.GetGlobalContext
+      _globalContext = ApplicationContext.GetGlobalContext
 
     End Sub
 
@@ -49,8 +49,8 @@ Namespace Server
     ''' of the result.</param>
     Public Sub New(ByVal returnObject As Object)
 
-      mReturnObject = returnObject
-      mGlobalContext = ApplicationContext.GetGlobalContext
+      _returnObject = returnObject
+      _globalContext = ApplicationContext.GetGlobalContext
 
     End Sub
   End Class

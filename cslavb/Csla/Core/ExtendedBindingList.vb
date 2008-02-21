@@ -16,8 +16,8 @@ Namespace Core
 #Region " RemovingItem event "
 
     <NonSerialized()> _
-    Private mNonSerializableHandlers As EventHandler(Of RemovingItemEventArgs)
-    Private mSerializableHandlers As EventHandler(Of RemovingItemEventArgs)
+    Private _nonSerializableHandlers As EventHandler(Of RemovingItemEventArgs)
+    Private _serializableHandlers As EventHandler(Of RemovingItemEventArgs)
 
     ''' <summary>
     ''' Implements a serialization-safe RemovingItem event.
@@ -26,26 +26,26 @@ Namespace Core
           Implements IExtendedBindingList.RemovingItem
       AddHandler(ByVal value As EventHandler(Of RemovingItemEventArgs))
         If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-          mSerializableHandlers = CType(System.Delegate.Combine(mSerializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
+          _serializableHandlers = CType(System.Delegate.Combine(_serializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
         Else
-          mNonSerializableHandlers = CType(System.Delegate.Combine(mNonSerializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
+          _nonSerializableHandlers = CType(System.Delegate.Combine(_nonSerializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
         End If
       End AddHandler
 
       RemoveHandler(ByVal value As EventHandler(Of RemovingItemEventArgs))
         If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-          mSerializableHandlers = CType(System.Delegate.Remove(mSerializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
+          _serializableHandlers = CType(System.Delegate.Remove(_serializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
         Else
-          mNonSerializableHandlers = CType(System.Delegate.Remove(mNonSerializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
+          _nonSerializableHandlers = CType(System.Delegate.Remove(_nonSerializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
         End If
       End RemoveHandler
 
       RaiseEvent(ByVal sender As System.Object, ByVal e As RemovingItemEventArgs)
-        If mNonSerializableHandlers IsNot Nothing Then
-          mNonSerializableHandlers.Invoke(sender, e)
+        If _nonSerializableHandlers IsNot Nothing Then
+          _nonSerializableHandlers.Invoke(sender, e)
         End If
-        If mSerializableHandlers IsNot Nothing Then
-          mSerializableHandlers.Invoke(sender, e)
+        If _serializableHandlers IsNot Nothing Then
+          _serializableHandlers.Invoke(sender, e)
         End If
       End RaiseEvent
     End Event

@@ -12,16 +12,12 @@ Namespace Serialization
     ''' </summary>
     Public Function GetFormatter() As ISerializationFormatter
 
-#If NET20 Then
-      Return New BinaryFormatterWrapper()
-#Else
       If ApplicationContext.SerializationFormatter = ApplicationContext.SerializationFormatters.BinaryFormatter Then
         Return New BinaryFormatterWrapper()
 
       Else
         Return New NetDataContractSerializerWrapper()
       End If
-#End If
 
     End Function
 

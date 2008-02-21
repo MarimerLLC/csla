@@ -10,7 +10,7 @@ Namespace Data
 
     Implements IDataReader
 
-    Private mDataReader As IDataReader
+    Private _dataReader As IDataReader
 
     ''' <summary>
     ''' Get a reference to the underlying data reader
@@ -19,7 +19,7 @@ Namespace Data
     ''' </summary>
     Protected ReadOnly Property DataReader() As IDataReader
       Get
-        Return mDataReader
+        Return _dataReader
       End Get
     End Property
 
@@ -29,7 +29,7 @@ Namespace Data
     ''' </summary>
     ''' <param name="dataReader">The source DataReader object containing the data.</param>
     Public Sub New(ByVal dataReader As IDataReader)
-      mDataReader = dataReader
+      _dataReader = dataReader
     End Sub
 
     ''' <summary>
@@ -42,10 +42,10 @@ Namespace Data
     Public Overridable Function GetString(ByVal i As Integer) As String _
       Implements IDataReader.GetString
 
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return ""
       Else
-        Return mDataReader.GetString(i)
+        Return _dataReader.GetString(i)
       End If
     End Function
 
@@ -66,10 +66,10 @@ Namespace Data
     ''' </summary>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetValue(ByVal i As Integer) As Object Implements IDataReader.GetValue
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return Nothing
       Else
-        Return mDataReader.GetValue(i)
+        Return _dataReader.GetValue(i)
       End If
     End Function
 
@@ -90,10 +90,10 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetInt32(ByVal i As Integer) As Integer Implements IDataReader.GetInt32
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetInt32(i)
+        Return _dataReader.GetInt32(i)
       End If
     End Function
 
@@ -117,10 +117,10 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetDouble(ByVal i As Integer) As Double Implements IDataReader.GetDouble
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetDouble(i)
+        Return _dataReader.GetDouble(i)
       End If
     End Function
 
@@ -165,11 +165,11 @@ Namespace Data
     Public Overridable Function GetSmartDate( _
       ByVal i As Integer, ByVal minIsEmpty As Boolean) As SmartDate
 
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return New SmartDate(minIsEmpty)
 
       Else
-        Return New SmartDate(mDataReader.GetDateTime(i), minIsEmpty)
+        Return New SmartDate(_dataReader.GetDateTime(i), minIsEmpty)
       End If
     End Function
 
@@ -213,10 +213,10 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetGuid(ByVal i As Integer) As Guid Implements IDataReader.GetGuid
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return Guid.Empty
       Else
-        Return mDataReader.GetGuid(i)
+        Return _dataReader.GetGuid(i)
       End If
     End Function
 
@@ -236,21 +236,21 @@ Namespace Data
     ''' Reads the next row of data from the datareader.
     ''' </summary>
     Public Function Read() As Boolean Implements IDataReader.Read
-      Return mDataReader.Read
+      Return _dataReader.Read
     End Function
 
     ''' <summary>
     ''' Moves to the next result set in the datareader.
     ''' </summary>
     Public Function NextResult() As Boolean Implements IDataReader.NextResult
-      Return mDataReader.NextResult()
+      Return _dataReader.NextResult()
     End Function
 
     ''' <summary>
     ''' Closes the datareader.
     ''' </summary>
     Public Sub Close() Implements IDataReader.Close
-      mDataReader.Close()
+      _dataReader.Close()
     End Sub
 
     ''' <summary>
@@ -258,7 +258,7 @@ Namespace Data
     ''' </summary>
     Public ReadOnly Property Depth() As Integer Implements System.Data.IDataReader.Depth
       Get
-        Return mDataReader.Depth
+        Return _dataReader.Depth
       End Get
     End Property
 
@@ -267,7 +267,7 @@ Namespace Data
     ''' </summary>
     Public ReadOnly Property FieldCount() As Integer Implements System.Data.IDataReader.FieldCount
       Get
-        Return mDataReader.FieldCount
+        Return _dataReader.FieldCount
       End Get
     End Property
 
@@ -281,10 +281,10 @@ Namespace Data
     Public Overridable Function GetBoolean(ByVal i As Integer) As Boolean _
       Implements System.Data.IDataReader.GetBoolean
 
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return False
       Else
-        Return mDataReader.GetBoolean(i)
+        Return _dataReader.GetBoolean(i)
       End If
     End Function
 
@@ -308,10 +308,10 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetByte(ByVal i As Integer) As Byte Implements System.Data.IDataReader.GetByte
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetByte(i)
+        Return _dataReader.GetByte(i)
       End If
     End Function
 
@@ -339,10 +339,10 @@ Namespace Data
     ''' <param name="fieldOffset">Offset position within the field.</param>
     ''' <param name="length">Length of data to read.</param>
     Public Overridable Function GetBytes(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Byte, ByVal bufferOffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetBytes
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetBytes(i, fieldOffset, buffer, bufferOffset, length)
+        Return _dataReader.GetBytes(i, fieldOffset, buffer, bufferOffset, length)
       End If
     End Function
 
@@ -370,11 +370,11 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetChar(ByVal i As Integer) As Char Implements System.Data.IDataReader.GetChar
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return Char.MinValue
       Else
         Dim myChar(0) As Char
-        mDataReader.GetChars(i, 0, myChar, 0, 1)
+        _dataReader.GetChars(i, 0, myChar, 0, 1)
         Return myChar(0)
       End If
     End Function
@@ -403,10 +403,10 @@ Namespace Data
     ''' <param name="fieldOffset">Offset position within the field.</param>
     ''' <param name="length">Length of data to read.</param>
     Public Overridable Function GetChars(ByVal i As Integer, ByVal fieldOffset As Long, ByVal buffer() As Char, ByVal bufferOffset As Integer, ByVal length As Integer) As Long Implements System.Data.IDataReader.GetChars
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetChars(i, fieldOffset, buffer, bufferOffset, length)
+        Return _dataReader.GetChars(i, fieldOffset, buffer, bufferOffset, length)
       End If
     End Function
 
@@ -431,7 +431,7 @@ Namespace Data
     ''' </summary>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetData(ByVal i As Integer) As System.Data.IDataReader Implements System.Data.IDataReader.GetData
-      Return mDataReader.GetData(i)
+      Return _dataReader.GetData(i)
     End Function
 
     ''' <summary>
@@ -448,7 +448,7 @@ Namespace Data
     ''' </summary>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetDataTypeName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetDataTypeName
-      Return mDataReader.GetDataTypeName(i)
+      Return _dataReader.GetDataTypeName(i)
     End Function
 
     ''' <summary>
@@ -470,10 +470,10 @@ Namespace Data
     Public Overridable Function GetDateTime(ByVal i As Integer) As Date _
       Implements System.Data.IDataReader.GetDateTime
 
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return Date.MinValue
       Else
-        Return mDataReader.GetDateTime(i)
+        Return _dataReader.GetDateTime(i)
       End If
     End Function
 
@@ -497,10 +497,10 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetDecimal(ByVal i As Integer) As Decimal Implements System.Data.IDataReader.GetDecimal
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetDecimal(i)
+        Return _dataReader.GetDecimal(i)
       End If
     End Function
 
@@ -521,7 +521,7 @@ Namespace Data
     ''' </summary>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetFieldType(ByVal i As Integer) As System.Type Implements System.Data.IDataReader.GetFieldType
-      Return mDataReader.GetFieldType(i)
+      Return _dataReader.GetFieldType(i)
     End Function
 
     ''' <summary>
@@ -541,10 +541,10 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetFloat(ByVal i As Integer) As Single Implements System.Data.IDataReader.GetFloat
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetFloat(i)
+        Return _dataReader.GetFloat(i)
       End If
     End Function
 
@@ -568,10 +568,10 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetInt16(ByVal i As Integer) As Short Implements System.Data.IDataReader.GetInt16
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetInt16(i)
+        Return _dataReader.GetInt16(i)
       End If
     End Function
 
@@ -595,10 +595,10 @@ Namespace Data
     ''' </remarks>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetInt64(ByVal i As Integer) As Long Implements System.Data.IDataReader.GetInt64
-      If mDataReader.IsDBNull(i) Then
+      If _dataReader.IsDBNull(i) Then
         Return 0
       Else
-        Return mDataReader.GetInt64(i)
+        Return _dataReader.GetInt64(i)
       End If
     End Function
 
@@ -619,7 +619,7 @@ Namespace Data
     ''' </summary>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function GetName(ByVal i As Integer) As String Implements System.Data.IDataReader.GetName
-      Return mDataReader.GetName(i)
+      Return _dataReader.GetName(i)
     End Function
 
     ''' <summary>
@@ -629,14 +629,14 @@ Namespace Data
     Public Function GetOrdinal(ByVal name As String) As Integer _
       Implements System.Data.IDataReader.GetOrdinal
 
-      Return mDataReader.GetOrdinal(name)
+      Return _dataReader.GetOrdinal(name)
     End Function
 
     ''' <summary>
     ''' Invokes the GetSchemaTable method of the underlying datareader.
     ''' </summary>
     Public Function GetSchemaTable() As System.Data.DataTable Implements System.Data.IDataReader.GetSchemaTable
-      Return mDataReader.GetSchemaTable
+      Return _dataReader.GetSchemaTable
     End Function
 
     ''' <summary>
@@ -645,7 +645,7 @@ Namespace Data
     ''' <param name="values">An array of System.Object to
     ''' copy the values into.</param>
     Public Function GetValues(ByVal values() As Object) As Integer Implements System.Data.IDataReader.GetValues
-      Return mDataReader.GetValues(values)
+      Return _dataReader.GetValues(values)
     End Function
 
     ''' <summary>
@@ -653,7 +653,7 @@ Namespace Data
     ''' </summary>
     Public ReadOnly Property IsClosed() As Boolean Implements System.Data.IDataReader.IsClosed
       Get
-        Return mDataReader.IsClosed
+        Return _dataReader.IsClosed
       End Get
     End Property
 
@@ -662,7 +662,7 @@ Namespace Data
     ''' </summary>
     ''' <param name="i">Ordinal column position of the value.</param>
     Public Overridable Function IsDBNull(ByVal i As Integer) As Boolean Implements System.Data.IDataReader.IsDBNull
-      Return mDataReader.IsDBNull(i)
+      Return _dataReader.IsDBNull(i)
     End Function
 
     ''' <summary>
@@ -680,7 +680,7 @@ Namespace Data
     ''' <param name="name">Name of the column containing the value.</param>
     Default Public Overloads ReadOnly Property Item(ByVal name As String) As Object Implements System.Data.IDataReader.Item
       Get
-        Dim value As Object = mDataReader.Item(name)
+        Dim value As Object = _dataReader.Item(name)
         If DBNull.Value.Equals(value) Then
           Return Nothing
         Else
@@ -695,10 +695,10 @@ Namespace Data
     ''' <param name="i">Ordinal column position of the value.</param>
     Default Public Overridable Overloads ReadOnly Property Item(ByVal i As Integer) As Object Implements System.Data.IDataReader.Item
       Get
-        If mDataReader.IsDBNull(i) Then
+        If _dataReader.IsDBNull(i) Then
           Return Nothing
         Else
-          Return mDataReader.Item(i)
+          Return _dataReader.Item(i)
         End If
       End Get
     End Property
@@ -708,13 +708,13 @@ Namespace Data
     ''' </summary>
     Public ReadOnly Property RecordsAffected() As Integer Implements System.Data.IDataReader.RecordsAffected
       Get
-        Return mDataReader.RecordsAffected
+        Return _dataReader.RecordsAffected
       End Get
     End Property
 
 #Region " IDisposable Support "
 
-    Private disposedValue As Boolean     ' To detect redundant calls
+    Private _disposedValue As Boolean     ' To detect redundant calls
 
     ''' <summary>
     ''' Disposes the object.
@@ -722,15 +722,15 @@ Namespace Data
     ''' <param name="disposing">True if called by
     ''' the public Dispose method.</param>
     Protected Overridable Sub Dispose(ByVal disposing As Boolean)
-      If Not Me.disposedValue Then
+      If Not Me._disposedValue Then
         If disposing Then
           ' free unmanaged resources when explicitly called
-          mDataReader.Dispose()
+          _dataReader.Dispose()
         End If
 
         ' free shared unmanaged resources
       End If
-      Me.disposedValue = True
+      Me._disposedValue = True
     End Sub
 
     ''' <summary>

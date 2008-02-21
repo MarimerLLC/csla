@@ -1,4 +1,3 @@
-#If Not NET20 Then
 Imports System.Runtime.Serialization
 
 Namespace Serialization
@@ -58,4 +57,3 @@ Namespace Serialization
   End Class
 
 End Namespace
-#End If

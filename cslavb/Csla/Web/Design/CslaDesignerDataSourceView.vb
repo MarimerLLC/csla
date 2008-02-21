@@ -13,7 +13,7 @@ Namespace Web.Design
   Public Class CslaDesignerDataSourceView
     Inherits DesignerDataSourceView
 
-    Private mOwner As CslaDataSourceDesigner = Nothing
+    Private _owner As CslaDataSourceDesigner = Nothing
 
     ''' <summary>
     ''' Creates an instance of the object.
@@ -21,7 +21,7 @@ Namespace Web.Design
     Public Sub New(ByVal owner As CslaDataSourceDesigner, ByVal viewName As String)
 
       MyBase.New(owner, viewName)
-      mOwner = owner
+      _owner = owner
 
     End Sub
 
@@ -89,8 +89,8 @@ Namespace Web.Design
     ''' </remarks>
     Public Overrides ReadOnly Property Schema() As IDataSourceViewSchema
       Get
-        Return New ObjectSchema(mOwner, _
-          mOwner.DataSourceControl.TypeName).GetViews(0)
+        Return New ObjectSchema(_owner, _
+          _owner.DataSourceControl.TypeName).GetViews(0)
       End Get
     End Property
 
@@ -110,9 +110,9 @@ Namespace Web.Design
       Try
         Dim typeService As ITypeResolutionService
         typeService = DirectCast( _
-          mOwner.Site.GetService( _
+          _owner.Site.GetService( _
           GetType(ITypeResolutionService)), ITypeResolutionService)
-        result = typeService.GetType(Me.mOwner.DataSourceControl.TypeName, True, False)
+        result = typeService.GetType(Me._owner.DataSourceControl.TypeName, True, False)
 
       Catch ex As Exception
         result = GetType(Object)
@@ -189,7 +189,7 @@ Namespace Web.Design
     ''' </summary>
     Public Overrides ReadOnly Property CanPage() As Boolean
       Get
-        Return mOwner.DataSourceControl.TypeSupportsPaging
+        Return _owner.DataSourceControl.TypeSupportsPaging
       End Get
     End Property
 
@@ -199,7 +199,7 @@ Namespace Web.Design
     ''' </summary>
     Public Overrides ReadOnly Property CanSort() As Boolean
       Get
-        Return mOwner.DataSourceControl.TypeSupportsSorting
+        Return _owner.DataSourceControl.TypeSupportsSorting
       End Get
     End Property
 

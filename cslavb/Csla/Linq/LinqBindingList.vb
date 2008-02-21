@@ -1,9 +1,5 @@
-﻿Imports System
-Imports System.ComponentModel
-Imports System.Collections.Generic
+﻿Imports System.ComponentModel
 Imports System.Reflection
-Imports System.Collections
-Imports System.Linq
 Imports System.Linq.Expressions
 Imports Csla.Core
 

@@ -1,7 +1,3 @@
-#If Not NET20 Then
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
 Imports System.ServiceModel
 Imports Csla.Server
 Imports Csla.Server.Hosts
@@ -30,7 +26,7 @@ Namespace DataPortalClient
 
 #End Region
 
-    Private mEndPoint As String = "WcfDataPortal"
+    Private _endPoint As String = "WcfDataPortal"
 
     ''' <summary>
     ''' Gets or sets the WCF endpoint used
@@ -41,10 +37,10 @@ Namespace DataPortalClient
     ''' </remarks>
     Protected Property EndPoint() As String
       Get
-        Return mEndPoint
+        Return _endPoint
       End Get
       Set(ByVal value As String)
-        mEndPoint = value
+        _endPoint = value
       End Set
     End Property
 
@@ -60,7 +56,7 @@ Namespace DataPortalClient
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Public Function Create(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Create
-      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(mEndPoint)
+      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
       Dim svr As IWcfPortal = cf.CreateChannel()
       Dim response As WcfResponse = svr.Create(New CreateRequest(objectType, criteria, context))
       cf.Close()
@@ -82,7 +78,7 @@ Namespace DataPortalClient
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Public Function Fetch(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Fetch
-      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(mEndPoint)
+      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
       Dim svr As IWcfPortal = cf.CreateChannel()
       Dim response As WcfResponse = svr.Fetch(New FetchRequest(objectType, criteria, context))
       cf.Close()
@@ -103,7 +99,7 @@ Namespace DataPortalClient
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Update
-      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(mEndPoint)
+      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
       Dim svr As IWcfPortal = cf.CreateChannel()
       Dim response As WcfResponse = svr.Update(New UpdateRequest(obj, context))
       cf.Close()
@@ -124,7 +120,7 @@ Namespace DataPortalClient
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Public Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Delete
-      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(mEndPoint)
+      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
       Dim svr As IWcfPortal = cf.CreateChannel()
       Dim response As WcfResponse = svr.Delete(New DeleteRequest(criteria, context))
       cf.Close()
@@ -141,4 +137,3 @@ Namespace DataPortalClient
   End Class
 
 End Namespace
-#End If

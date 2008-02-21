@@ -1,5 +1,3 @@
-Imports System
-Imports System.Drawing
 Imports System.ComponentModel
 Imports System.Collections.Generic
 Imports System.Windows.Forms
@@ -232,7 +230,7 @@ Namespace Windows
 
 #End Region
 
-#Region "Private Methods"
+#Region " Private Methods "
 
     ''' <summary>
     ''' RegisterControlEvents() registers all the relevant events for the container control supplied and also to all child controls

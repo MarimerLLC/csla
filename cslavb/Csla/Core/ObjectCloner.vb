@@ -10,21 +10,6 @@ Namespace Core
   ''' </summary>
   Public Module ObjectCloner
 
-#If NET20 Then
-    ''' <summary>
-    ''' Clones an object.
-    ''' </summary>
-    ''' <param name="obj">The object to clone.</param>
-    ''' <remarks>
-    ''' <para>The object to be cloned must be serializable.</para>
-    ''' <para>The serialization is performed using the formatter
-    ''' specified in the application's configuration file
-    ''' using the CslaSerializationFormatter key.</para>
-    ''' <para>The default is to use the 
-    ''' <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" />
-    ''' </para>
-    ''' </remarks>
-#Else
     ''' <summary>
     ''' Clones an object.
     ''' </summary>
@@ -40,7 +25,6 @@ Namespace Core
     ''' <see cref="System.Runtime.Serialization.NetDataContractSerializer">
     ''' NetDataContractSerializer</see> provided as part of WCF.
     ''' </remarks>
-#End If
     Public Function Clone(ByVal obj As Object) As Object
 
       Using buffer As MemoryStream = New MemoryStream()

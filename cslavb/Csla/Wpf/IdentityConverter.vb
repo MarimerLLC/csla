@@ -1,4 +1,3 @@
-#If Not NET20 Then
 Imports System.Windows.Data
 
 Namespace Wpf
@@ -48,4 +47,3 @@ Namespace Wpf
   End Class
 
 End Namespace
-#End If

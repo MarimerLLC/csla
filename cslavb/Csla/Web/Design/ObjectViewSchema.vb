@@ -14,8 +14,8 @@ Namespace Web.Design
   Public Class ObjectViewSchema
     Implements IDataSourceViewSchema
 
-    Private mTypeName As String = ""
-    Private mDesigner As CslaDataSourceDesigner
+    Private _typeName As String = ""
+    Private _designer As CslaDataSourceDesigner
 
     ''' <summary>
     ''' Create an instance of the object.
@@ -24,8 +24,8 @@ Namespace Web.Design
     ''' which to generate the schema.</param>
     Public Sub New(ByVal site As CslaDataSourceDesigner, ByVal typeName As String)
 
-      mTypeName = typeName
-      mDesigner = site
+      _typeName = typeName
+      _designer = site
 
     End Sub
 
@@ -53,22 +53,22 @@ Namespace Web.Design
     ''' <see cref="BrowsableAttribute">Browsable</see> attribute
     ''' is False.
     ''' </remarks>
-    Public Function GetFields() As _
+    Public Function GetFields() As  _
       System.Web.UI.Design.IDataSourceFieldSchema() _
       Implements System.Web.UI.Design.IDataSourceViewSchema.GetFields
 
       Dim typeService As ITypeResolutionService = Nothing
       Dim result As New List(Of ObjectFieldInfo)()
 
-      If mDesigner IsNot Nothing Then
+      If _designer IsNot Nothing Then
         Dim objectType As Type
         Try
-          If mDesigner IsNot Nothing Then
+          If _designer IsNot Nothing Then
             typeService = DirectCast( _
-              mDesigner.Site.GetService( _
+              _designer.Site.GetService( _
               GetType(ITypeResolutionService)), ITypeResolutionService)
 
-            objectType = typeService.GetType(mTypeName, True, False)
+            objectType = typeService.GetType(_typeName, True, False)
 
             If GetType(IEnumerable).IsAssignableFrom(objectType) Then
               ' this is a list so get the item type

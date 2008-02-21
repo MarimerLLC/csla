@@ -162,15 +162,15 @@ Public MustInherit Class NameValueListBase(Of K, V)
   <Serializable()> _
   Public Class NameValuePair
 
-    Private mKey As K
-    Private mValue As V
+    Private _key As K
+    Private _value As V
 
     ''' <summary>
     ''' The Key or Name value.
     ''' </summary>
     Public ReadOnly Property Key() As K
       Get
-        Return mKey
+        Return _key
       End Get
     End Property
 
@@ -179,10 +179,10 @@ Public MustInherit Class NameValueListBase(Of K, V)
     ''' </summary>
     Public Property Value() As V
       Get
-        Return mValue
+        Return _value
       End Get
       Set(ByVal value As V)
-        mValue = value
+        _value = value
       End Set
     End Property
 
@@ -192,8 +192,8 @@ Public MustInherit Class NameValueListBase(Of K, V)
     ''' <param name="key">The key.</param>
     ''' <param name="value">The value.</param>
     Public Sub New(ByVal key As K, ByVal value As V)
-      mKey = key
-      mValue = value
+      _key = key
+      _value = value
     End Sub
 
     ''' <summary>
@@ -201,7 +201,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
     ''' value for this item.
     ''' </summary>
     Public Overrides Function ToString() As String
-      Return mValue.ToString
+      Return _value.ToString
     End Function
 
   End Class

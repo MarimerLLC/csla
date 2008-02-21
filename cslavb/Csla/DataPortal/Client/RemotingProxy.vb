@@ -63,17 +63,17 @@ Namespace DataPortalClient
 
 #End Region
 
-    Private mPortal As Server.IDataPortalServer
+    Private _portal As Server.IDataPortalServer
 
     Private ReadOnly Property Portal() As Server.IDataPortalServer
       Get
-        If mPortal Is Nothing Then
-          mPortal = CType( _
+        If _portal Is Nothing Then
+          _portal = CType( _
             Activator.GetObject(GetType(Server.Hosts.RemotingPortal), _
-            ApplicationContext.DataPortalUrl.ToString), _
+            ApplicationContext.DataPortalUrl.ToString),  _
             Server.IDataPortalServer)
         End If
-        Return mPortal
+        Return _portal
       End Get
     End Property
 

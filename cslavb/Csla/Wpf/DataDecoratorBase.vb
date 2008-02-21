@@ -1,15 +1,8 @@
-#If Not NET20 Then
 Imports System.Collections.Specialized
-Imports System.Text
 Imports System.Windows
 Imports System.Windows.Controls
 Imports System.Windows.Data
-Imports System.Windows.Documents
-Imports System.Windows.Input
 Imports System.Windows.Media
-Imports System.Windows.Media.Imaging
-Imports System.Windows.Navigation
-Imports System.Windows.Shapes
 Imports System.ComponentModel
 Imports System.Reflection
 
@@ -24,8 +17,8 @@ Namespace Wpf
   Public Class DataDecoratorBase
     Inherits Decorator
 
-    Private mLoaded As Boolean
-    Private mDataObject As Object
+    Private _loaded As Boolean
+    Private _dataObject As Object
 
     ''' <summary>
     ''' Gets a reference to the current
@@ -40,7 +33,7 @@ Namespace Wpf
     ''' </remarks>
     Protected ReadOnly Property DataObject() As Object
       Get
-        Return mDataObject
+        Return _dataObject
       End Get
     End Property
 
@@ -98,11 +91,11 @@ Namespace Wpf
       UnHookDataContextEvents(e.OldValue)
 
       ' store a ref to the data object
-      mDataObject = GetDataObject(e.NewValue)
+      _dataObject = GetDataObject(e.NewValue)
 
       HookDataContextEvents(e.NewValue)
 
-      If mLoaded Then
+      If _loaded Then
         DataObjectChanged()
       End If
     End Sub
@@ -121,11 +114,11 @@ Namespace Wpf
     ''' DataContext (a DataSourceProvider) has changed.
     ''' </summary>
     Private Sub DataProvider_DataChanged(ByVal sender As Object, ByVal e As EventArgs)
-      UnHookPropertyChanged(TryCast(mDataObject, INotifyPropertyChanged))
+      UnHookPropertyChanged(TryCast(_dataObject, INotifyPropertyChanged))
 
-      mDataObject = TryCast((CType(sender, DataSourceProvider)).Data, IDataErrorInfo)
+      _dataObject = TryCast((CType(sender, DataSourceProvider)).Data, IDataErrorInfo)
 
-      HookPropertyChanged(TryCast(mDataObject, INotifyPropertyChanged))
+      HookPropertyChanged(TryCast(_dataObject, INotifyPropertyChanged))
 
       DataObjectChanged()
     End Sub
@@ -207,8 +200,8 @@ Namespace Wpf
     End Sub
 
     Private Sub Panel_Loaded(ByVal sender As Object, ByVal e As RoutedEventArgs)
-      mLoaded = True
-      If Not mDataObject Is Nothing Then
+      _loaded = True
+      If Not _dataObject Is Nothing Then
         DataObjectChanged()
       End If
     End Sub
@@ -273,4 +266,3 @@ Namespace Wpf
   End Class
 
 End Namespace
-#End If

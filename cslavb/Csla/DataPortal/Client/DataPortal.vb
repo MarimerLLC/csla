@@ -1,8 +1,4 @@
-Imports System.Threading
 Imports System.Reflection
-Imports System.Runtime.Remoting
-Imports System.Runtime.Remoting.Channels
-Imports System.Runtime.Remoting.Channels.Http
 Imports Csla.Reflection
 
 ''' <summary>
@@ -544,35 +540,35 @@ Public Module DataPortal
 
 #Region " Get DataPortal Proxy "
 
-  Private mLocalPortal As DataPortalClient.IDataPortalProxy
-  Private mPortal As DataPortalClient.IDataPortalProxy
+  Private _localPortal As DataPortalClient.IDataPortalProxy
+  Private _portal As DataPortalClient.IDataPortalProxy
 
   Private Function GetDataPortalProxy( _
     ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
 
     If forceLocal Then
-      If mLocalPortal Is Nothing Then
-        mLocalPortal = New DataPortalClient.LocalProxy
+      If _localPortal Is Nothing Then
+        _localPortal = New DataPortalClient.LocalProxy
       End If
-      Return mLocalPortal
+      Return _localPortal
 
     Else
-      If mPortal Is Nothing Then
+      If _portal Is Nothing Then
 
         Dim proxyTypeName As String = ApplicationContext.DataPortalProxy
         If proxyTypeName = "Local" Then
-          mPortal = New DataPortalClient.LocalProxy
+          _portal = New DataPortalClient.LocalProxy
 
         Else
           Dim typeName As String = _
             proxyTypeName.Substring(0, proxyTypeName.IndexOf(",")).Trim
           Dim assemblyName As String = _
             proxyTypeName.Substring(proxyTypeName.IndexOf(",") + 1).Trim
-          mPortal = DirectCast(Activator.CreateInstance(assemblyName, _
+          _portal = DirectCast(Activator.CreateInstance(assemblyName, _
             typeName).Unwrap, DataPortalClient.IDataPortalProxy)
         End If
       End If
-      Return mPortal
+      Return _portal
     End If
 
   End Function
@@ -585,11 +581,11 @@ Public Module DataPortal
   <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
   Public Sub ReleaseProxy()
 
-    Dim disp = TryCast(mPortal, IDisposable)
+    Dim disp = TryCast(_portal, IDisposable)
     If disp IsNot Nothing Then
       disp.Dispose()
     End If
-    mPortal = Nothing
+    _portal = Nothing
 
   End Sub
 #End Region

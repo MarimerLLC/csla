@@ -9,9 +9,9 @@ Namespace Security
   ''' <remarks></remarks>
   Public Class AuthorizationRules
 
-    Private mBusinessObjectType As Type
-    Private mTypeRules As AuthorizationRulesManager
-    Private mInstanceRules As AuthorizationRulesManager
+    Private _businessObjectType As Type
+    Private _typeRules As AuthorizationRulesManager
+    Private _instanceRules As AuthorizationRulesManager
 
     ''' <summary>
     ''' Creates an instance of the object, initializing
@@ -23,27 +23,27 @@ Namespace Security
     ''' </param>
     Public Sub New(ByVal businessObjectType As Type)
 
-      mBusinessObjectType = businessObjectType
+      _businessObjectType = businessObjectType
 
     End Sub
 
     Private ReadOnly Property InstanceRules() _
       As AuthorizationRulesManager
       Get
-        If mInstanceRules Is Nothing Then
-          mInstanceRules = New AuthorizationRulesManager
+        If _instanceRules Is Nothing Then
+          _instanceRules = New AuthorizationRulesManager
         End If
-        Return mInstanceRules
+        Return _instanceRules
       End Get
     End Property
 
     Private ReadOnly Property TypeRules() _
       As AuthorizationRulesManager
       Get
-        If mTypeRules Is Nothing Then
-          mTypeRules = SharedAuthorizationRules.GetManager(mBusinessObjectType, True)
+        If _typeRules Is Nothing Then
+          _typeRules = SharedAuthorizationRules.GetManager(_businessObjectType, True)
         End If
-        Return mTypeRules
+        Return _typeRules
       End Get
     End Property
 

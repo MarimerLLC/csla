@@ -27,7 +27,7 @@ Public Class ResourceList
   Private Overloads Sub DataPortal_Fetch()
 
     RaiseListChangedEvents = False
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
       Dim data = From r In ctx.DataContext.Resources Select r
       IsReadOnly = False
       For Each resource In data

@@ -217,7 +217,7 @@ Public Class Project
 
   Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of Project, Guid))
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
       ' get project data
       Dim data = (From p In ctx.DataContext.Projects Where p.Id = criteria.Value Select p).Single
       LoadProperty(Of Guid)(IdProperty, data.Id)
@@ -237,7 +237,7 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Insert()
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
       ' insert project data
       Dim lastChanged As System.Data.Linq.Binary = Nothing
       ctx.DataContext.addProject(GetProperty(Of Guid)(IdProperty), _
@@ -256,7 +256,7 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_Update()
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
       ' insert project data
       Dim lastChanged As System.Data.Linq.Binary = Nothing
       ctx.DataContext.UpdateProject(GetProperty(Of Guid)(IdProperty), _
@@ -283,7 +283,7 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Project, Guid))
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
       ' delete project data
       Dim lastChanged As System.Data.Linq.Binary = Nothing
       ctx.DataContext.DeleteProject(criteria.Value)
@@ -330,7 +330,7 @@ Public Class Project
 
     Protected Overrides Sub DataPortal_Execute()
 
-      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
         _exists = (From p In ctx.DataContext.Projects Where p.Id = _id).Count > 0
       End Using
 

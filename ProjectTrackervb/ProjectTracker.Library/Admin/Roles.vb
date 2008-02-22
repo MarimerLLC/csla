@@ -138,7 +138,7 @@ Namespace Admin
     Private Overloads Sub DataPortal_Fetch()
 
       Me.RaiseListChangedEvents = False
-      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
         For Each value In ctx.DataContext.getRoles
           Me.Add(Role.GetRole(value))
         Next
@@ -151,7 +151,7 @@ Namespace Admin
     Protected Overrides Sub DataPortal_Update()
 
       Me.RaiseListChangedEvents = False
-      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
+      Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
         Child_Update()
       End Using
       Me.RaiseListChangedEvents = True

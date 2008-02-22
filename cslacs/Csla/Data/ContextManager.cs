@@ -29,92 +29,90 @@ namespace Csla.Data
     private string _connectionString;
 
     /// <summary>
-    /// Gets the ContextManager object for the specified
-    /// connectionString.
+    /// Gets the ContextManager object for the 
+    /// specified database.
     /// </summary>
-    /// <param name="databaseName">
+    /// <param name="database">
     /// Database name as shown in the config file.
     /// </param>
-    /// <param name="getConnectionString">
-    /// True to indicate that the connection string
-    /// should be retrieved from the config file. If
-    /// False, the databaseName parameter is directly 
-    /// used as a connection string.
-    /// </param>
-    public static ContextManager<C> GetManager(string databaseName, bool getConnectionString)
+    public static ContextManager<C> GetManager(string database)
     {
-      if (getConnectionString)
-        return GetManager(ConfigurationManager.ConnectionStrings[databaseName].ConnectionString);
-      else
-        return GetManager(databaseName);
+      return GetManager(database, true);
     }
 
     /// <summary>
-    /// Gets the ContextManager object for the specified
-    /// key name.
+    /// Gets the ContextManager object for the 
+    /// specified database.
     /// </summary>
-    /// <param name="connectionString">
-    /// The database connection string.
+    /// <param name="database">
+    /// The database name or connection string.
+    /// </param>
+    /// <param name="isDatabaseName">
+    /// True to indicate that the connection string
+    /// should be retrieved from the config file. If
+    /// False, the database parameter is directly 
+    /// used as a connection string.
     /// </param>
     /// <returns>ContextManager object for the name.</returns>
-    public static ContextManager<C> GetManager(string connectionString)
+    public static ContextManager<C> GetManager(string database, bool isDatabaseName)
     {
+      if (isDatabaseName)
+        database = ConfigurationManager.ConnectionStrings[database].ConnectionString;
 
       lock (_lock)
       {
         ContextManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains("__ctx:" + connectionString))
+        if (ApplicationContext.LocalContext.Contains("__ctx:" + database))
         {
-          mgr = (ContextManager<C>)(ApplicationContext.LocalContext["__ctx:" + connectionString]);
+          mgr = (ContextManager<C>)(ApplicationContext.LocalContext["__ctx:" + database]);
 
         }
         else
         {
-          mgr = new ContextManager<C>(connectionString);
-          ApplicationContext.LocalContext["__ctx:" + connectionString] = mgr;
+          mgr = new ContextManager<C>(database);
+          ApplicationContext.LocalContext["__ctx:" + database] = mgr;
         }
         mgr.AddRef();
         return mgr;
       }
-
     }
 
     /// <summary>
     /// Gets a pre-existing ContextManager object for the 
-    /// specified database name.
+    /// specified database.
     /// </summary>
-    /// <param name="databaseName">
+    /// <param name="database">
     /// Database name as shown in the config file.
     /// </param>
-    /// <param name="getConnectionString">
-    /// True to indicate that the connection string
-    /// should be retrieved from the config file. If
-    /// False, the databaseName parameter is directly 
-    /// used as a connection string.
-    /// </param>
-    public static ContextManager<C> GetCurrentManager(string databaseName, bool getConnectionString)
+    public static ContextManager<C> GetCurrentManager(string database)
     {
-      if (getConnectionString)
-        return GetCurrentManager(ConfigurationManager.ConnectionStrings[databaseName].ConnectionString);
-      else
-        return GetCurrentManager(databaseName);
+      return GetCurrentManager(database, true);
     }
 
     /// <summary>
-    /// Gets a pre-existing ContextManager object for the specified
-    /// key name.
+    /// Gets a pre-existing ContextManager object for the 
+    /// specified database.
     /// </summary>
-    /// <param name="connectionString">
-    /// The database connection string.
+    /// <param name="database">
+    /// The database name or connection string.
+    /// </param>
+    /// <param name="isDatabaseName">
+    /// True to indicate that the connection string
+    /// should be retrieved from the config file. If
+    /// False, the database parameter is directly 
+    /// used as a connection string.
     /// </param>
     /// <returns>ContextManager object for the name.</returns>
-    public static ContextManager<C> GetCurrentManager(string connectionString)
+    public static ContextManager<C> GetCurrentManager(string database, bool isDatabaseName)
     {
+      if (isDatabaseName)
+        database = ConfigurationManager.ConnectionStrings[database].ConnectionString;
+
       lock (_lock)
       {
         ContextManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains("__ctx:" + connectionString))
-          mgr = (ContextManager<C>)(ApplicationContext.LocalContext["__ctx:" + connectionString]);
+        if (ApplicationContext.LocalContext.Contains("__ctx:" + database))
+          mgr = (ContextManager<C>)(ApplicationContext.LocalContext["__ctx:" + database]);
         else
           throw new NotSupportedException("GetCurrentManager");
         return mgr;

@@ -41,7 +41,7 @@ namespace ProjectTracker.Library
     private void Fetch(string nameFilter)
     {
       RaiseListChangedEvents = false;
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         var data = from p in ctx.DataContext.Projects
                    select p;

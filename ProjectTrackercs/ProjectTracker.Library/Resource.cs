@@ -143,7 +143,7 @@ namespace ProjectTracker.Library
 
     private void DataPortal_Fetch(SingleCriteria<Resource, int> criteria)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         var data = (from r in ctx.DataContext.Resources
                     where r.Id == criteria.Value
@@ -160,7 +160,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         int? newId = null;
         System.Data.Linq.Binary newLastChanged = null;
@@ -174,7 +174,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         System.Data.Linq.Binary newLastChanged = null;
         ctx.DataContext.updateResource(_id, _lastName, _firstName, _timestamp, ref newLastChanged);
@@ -192,7 +192,7 @@ namespace ProjectTracker.Library
     [Transactional(TransactionalTypes.TransactionScope)]
     private void DataPortal_Delete(SingleCriteria<Resource, int> criteria)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
+      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         ctx.DataContext.deleteResource(criteria.Value);
       }
@@ -235,7 +235,7 @@ namespace ProjectTracker.Library
 
       protected override void DataPortal_Execute()
       {
-        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
+        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
         {
           _exists = (from p in ctx.DataContext.Resources
                      where p.Id == _id

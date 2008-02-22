@@ -143,7 +143,7 @@ namespace ProjectTracker.Library
 
       private void DataPortal_Fetch(CredentialsCriteria criteria)
       {
-        using (var ctx = ContextManager<SecurityDataContext>.GetManager(ProjectTracker.DalLinq.Database.Security, true))
+        using (var ctx = ContextManager<SecurityDataContext>.GetManager(ProjectTracker.DalLinq.Database.Security))
         {
           var data = from u in ctx.DataContext.Users
                      where u.Username == criteria.Username && u.Password == criteria.Password
@@ -157,7 +157,7 @@ namespace ProjectTracker.Library
 
       private void DataPortal_Fetch(LoadOnlyCriteria criteria)
       {
-        using (var ctx = ContextManager<SecurityDataContext>.GetManager(ProjectTracker.DalLinq.Database.Security, true))
+        using (var ctx = ContextManager<SecurityDataContext>.GetManager(ProjectTracker.DalLinq.Database.Security))
         {
           var data = from u in ctx.DataContext.Users
                      where u.Username == criteria.Username

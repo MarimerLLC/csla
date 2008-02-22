@@ -56,7 +56,7 @@ namespace Csla
         /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
-    public bool IsSelfDirty
+    bool Core.ITrackStatus.IsSelfDirty
     {
       get { return IsDirty; }
     }
@@ -64,6 +64,7 @@ namespace Csla
     /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
+    [Browsable(false)]
     public bool IsDirty
     {
       get
@@ -83,11 +84,16 @@ namespace Csla
       }
     }
 
+    bool Core.ITrackStatus.IsSelfValid
+    {
+      get { return IsSelfValid; }
+    }
+
     /// <summary>
     /// Gets a value indicating whether this object is currently in
     /// a valid state (has no broken validation rules).
     /// </summary>
-    public virtual bool IsSelfValid
+    protected virtual bool IsSelfValid
     {
       get { return IsValid; }
     }
@@ -96,6 +102,7 @@ namespace Csla
     /// Gets a value indicating whether this object is currently in
     /// a valid state (has no broken validation rules).
     /// </summary>
+    [Browsable(false)]
     public virtual bool IsValid
     {
       get
@@ -1278,6 +1285,7 @@ namespace Csla
     /// Required for IQueryable - returns the ElementType (maps to C)
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [Browsable(false)]
     public Type ElementType
     {
       get { return typeof(C); }
@@ -1287,6 +1295,7 @@ namespace Csla
     /// Last expression used in a linq query
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [Browsable(false)]
     public Expression Expression
     {
       get { return _expression; }
@@ -1296,6 +1305,7 @@ namespace Csla
     /// Query provider currently being used
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [Browsable(false)]
     public IQueryProvider Provider
     {
       get {

@@ -33,7 +33,7 @@ Public Class ProjectWorkflow
 
 #Region " Code Activities "
 
-  'Private mProject As ProjectTracker.Library.Project
+  'Private _project As ProjectTracker.Library.Project
 
   Private Sub getProject_ExecuteCode(ByVal sender As System.Object, ByVal e As System.EventArgs)
 

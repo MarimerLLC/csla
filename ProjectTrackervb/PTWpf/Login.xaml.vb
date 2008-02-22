@@ -6,7 +6,7 @@
 Partial Public Class Login
   Inherits Window
 
-  Private mResult As Boolean
+  Private _result As Boolean
 
   Private Sub Login_Loaded(ByVal sender As Object, ByVal e As System.Windows.RoutedEventArgs) Handles Me.Loaded
 
@@ -16,20 +16,20 @@ Partial Public Class Login
 
   Public Property Result() As Boolean
     Get
-      Return mResult
+      Return _result
     End Get
     Set(ByVal value As Boolean)
-      mResult = value
+      _result = value
     End Set
   End Property
 
   Private Sub LoginButton(ByVal sender As Object, ByVal e As EventArgs)
-    mResult = True
+    _result = True
     Me.Close()
   End Sub
 
   Private Sub CancelButton(ByVal sender As Object, ByVal e As EventArgs)
-    mResult = False
+    _result = False
     Me.Close()
   End Sub
 

@@ -3,14 +3,14 @@ Imports ProjectTracker.Library.Admin
 Public Class RolesEdit
   Inherits WinPart
 
-  Private mRoles As Admin.Roles
+  Private _roles As Admin.Roles
 
   Private Sub RolesEdit_Load( _
     ByVal sender As System.Object, ByVal e As System.EventArgs) _
     Handles MyBase.Load
 
     Try
-      mRoles = Admin.Roles.GetRoles
+      _roles = Admin.Roles.GetRoles
 
     Catch ex As Csla.DataPortalException
       MessageBox.Show(ex.BusinessException.ToString, _
@@ -23,8 +23,8 @@ Public Class RolesEdit
         MessageBoxIcon.Exclamation)
     End Try
 
-    If mRoles IsNot Nothing Then
-      Me.RolesBindingSource.DataSource = mRoles
+    If _roles IsNot Nothing Then
+      Me.RolesBindingSource.DataSource = _roles
     End If
 
   End Sub
@@ -44,7 +44,7 @@ Public Class RolesEdit
     ' commit edits in memory
     UnbindBindingSource(Me.RolesBindingSource, True, True)
     Try
-      mRoles = mRoles.Save
+      _roles = _roles.Save
       Me.Close()
 
     Catch ex As Csla.DataPortalException
@@ -58,7 +58,7 @@ Public Class RolesEdit
         MessageBoxIcon.Exclamation)
 
     Finally
-      Me.RolesBindingSource.DataSource = mRoles
+      Me.RolesBindingSource.DataSource = _roles
 
       Me.RolesBindingSource.RaiseListChangedEvents = True
       Me.RolesBindingSource.ResetBindings(False)

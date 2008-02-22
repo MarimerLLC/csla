@@ -15,11 +15,11 @@ Imports ProjectTracker.Library.Security
 Public Class PrincipalPolicy
   Implements IAuthorizationPolicy
 
-  Private id_Renamed As String = Guid.NewGuid().ToString()
+  Private _id As String = Guid.NewGuid().ToString()
 
   Public ReadOnly Property Id() As String Implements IdentityModel.Policy.IAuthorizationPolicy.Id
     Get
-      Return Me.id_Renamed
+      Return Me._id
     End Get
   End Property
 

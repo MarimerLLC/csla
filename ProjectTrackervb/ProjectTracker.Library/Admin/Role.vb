@@ -45,7 +45,7 @@ Namespace Admin
       End Set
     End Property
 
-    Private mTimestamp(7) As Byte
+    Private _timestamp(7) As Byte
 
 #End Region
 
@@ -118,18 +118,18 @@ Namespace Admin
 
       LoadProperty(Of Integer)(IdProperty, data.Id)
       LoadProperty(Of String)(NameProperty, data.Name)
-      mTimestamp = data.LastChanged.ToArray
+      _timestamp = data.LastChanged.ToArray
 
     End Sub
 
     Private Sub Child_Insert()
 
       Using mgr = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
-        Dim lastChanged As System.Data.Linq.Binary = mTimestamp
+        Dim lastChanged As System.Data.Linq.Binary = _timestamp
         mgr.DataContext.addRole(GetProperty(Of Integer)(IdProperty), _
                                 GetProperty(Of String)(NameProperty), _
                                 lastChanged)
-        mTimestamp = lastChanged.ToArray
+        _timestamp = lastChanged.ToArray
       End Using
 
     End Sub
@@ -140,9 +140,9 @@ Namespace Admin
         Dim lastChanged As System.Data.Linq.Binary = Nothing
         mgr.DataContext.UpdateRole(GetProperty(Of Integer)(IdProperty), _
                                    GetProperty(Of String)(NameProperty), _
-                                   mTimestamp, _
+                                   _timestamp, _
                                    lastChanged)
-        mTimestamp = lastChanged.ToArray
+        _timestamp = lastChanged.ToArray
       End Using
 
     End Sub

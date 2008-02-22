@@ -12,17 +12,17 @@ Namespace Security
 
     Protected Overrides Function GetIdValue() As Object
 
-      Return mName
+      Return _name
 
     End Function
 
 #Region " IsInRole "
 
-    Private mRoles As New List(Of String)
+    Private _roles As New List(Of String)
 
     Friend Function IsInRole(ByVal role As String) As Boolean
 
-      Return mRoles.Contains(role)
+      Return _roles.Contains(role)
 
     End Function
 
@@ -30,8 +30,8 @@ Namespace Security
 
 #Region " IIdentity "
 
-    Private mIsAuthenticated As Boolean
-    Private mName As String = ""
+    Private _isAuthenticated As Boolean
+    Private _name As String = ""
 
     Public ReadOnly Property AuthenticationType() As String _
       Implements System.Security.Principal.IIdentity.AuthenticationType
@@ -43,14 +43,14 @@ Namespace Security
     Public ReadOnly Property IsAuthenticated() As Boolean _
       Implements System.Security.Principal.IIdentity.IsAuthenticated
       Get
-        Return mIsAuthenticated
+        Return _isAuthenticated
       End Get
     End Property
 
     Public ReadOnly Property Name() As String _
       Implements System.Security.Principal.IIdentity.Name
       Get
-        Return mName
+        Return _name
       End Get
     End Property
 
@@ -91,40 +91,40 @@ Namespace Security
     <Serializable()> _
     Private Class CredentialsCriteria
 
-      Private mUsername As String
-      Private mPassword As String
+      Private _username As String
+      Private _password As String
 
       Public ReadOnly Property Username() As String
         Get
-          Return mUsername
+          Return _username
         End Get
       End Property
 
       Public ReadOnly Property Password() As String
         Get
-          Return mPassword
+          Return _password
         End Get
       End Property
 
       Public Sub New(ByVal username As String, ByVal password As String)
-        mUsername = username
-        mPassword = password
+        _username = username
+        _password = password
       End Sub
     End Class
 
     <Serializable()> _
     Private Class LoadOnlyCriteria
 
-      Private mUsername As String
+      Private _username As String
 
       Public ReadOnly Property Username() As String
         Get
-          Return mUsername
+          Return _username
         End Get
       End Property
 
       Public Sub New(ByVal username As String)
-        mUsername = username
+        _username = username
       End Sub
     End Class
 
@@ -159,17 +159,17 @@ Namespace Security
     Private Sub Fetch(ByVal user As DalLinq.Security.User)
 
       If user IsNot Nothing Then
-        mName = user.Username
-        mIsAuthenticated = True
+        _name = user.Username
+        _isAuthenticated = True
         Dim roles = From r In user.Roles
         For Each role In roles
-          mRoles.Add(role.Role)
+          _roles.Add(role.Role)
         Next
 
       Else
-        mName = ""
-        mIsAuthenticated = False
-        mRoles.Clear()
+        _name = ""
+        _isAuthenticated = False
+        _roles.Clear()
       End If
 
     End Sub

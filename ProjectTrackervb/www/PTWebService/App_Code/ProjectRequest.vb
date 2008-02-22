@@ -2,13 +2,13 @@ Imports Microsoft.VisualBasic
 
 Public Class ProjectRequest
 
-  Private mId As Guid
+  Private _id As Guid
   Public Property Id() As Guid
     Get
-      Return mId
+      Return _id
     End Get
     Set(ByVal value As Guid)
-      mId = value
+      _id = value
     End Set
   End Property
 

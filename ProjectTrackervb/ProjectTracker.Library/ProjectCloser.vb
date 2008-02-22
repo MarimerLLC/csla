@@ -11,20 +11,20 @@ Public Class ProjectCloser
 
   End Sub
 
-  Private mProjectId As Guid
+  Private _projectId As Guid
 
   Private Sub New()
     ' require use of factory methods
   End Sub
 
   Private Sub New(ByVal id As Guid)
-    mProjectId = id
+    _projectId = id
   End Sub
 
   Protected Overrides Sub DataPortal_Execute()
 
     Dim parameters As New Dictionary(Of String, Object)
-    parameters.Add("ProjectId", mProjectId)
+    parameters.Add("ProjectId", _projectId)
 
     Dim mgr As New WorkflowManager
     mgr.ExecuteWorkflow( _

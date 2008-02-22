@@ -6,7 +6,7 @@
 Partial Public Class ResourceEdit
   Inherits EditForm
 
-  Private mResourceId As Integer
+  Private _resourceId As Integer
 
   Public Sub New()
 
@@ -19,7 +19,7 @@ Partial Public Class ResourceEdit
 
   Public Sub New(ByVal resourceId As Integer)
     Me.New()
-    mResourceId = resourceId
+    _resourceId = resourceId
   End Sub
 
   Private Sub ResourceEdit_Loaded(ByVal sender As Object, ByVal e As System.Windows.RoutedEventArgs) Handles Me.Loaded
@@ -27,12 +27,12 @@ Partial Public Class ResourceEdit
     Dim dp As Csla.Wpf.CslaDataProvider = TryCast(Me.FindResource("Resource"), Csla.Wpf.CslaDataProvider)
     Using dp.DeferRefresh()
       dp.FactoryParameters.Clear()
-      If mResourceId = 0 Then
+      If _resourceId = 0 Then
         dp.FactoryMethod = "NewResource"
 
       Else
         dp.FactoryMethod = "GetResource"
-        dp.FactoryParameters.Add(mResourceId)
+        dp.FactoryParameters.Add(_resourceId)
       End If
     End Using
 

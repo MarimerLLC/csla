@@ -4,7 +4,7 @@ Public Class Project
 
 #Region " Business Methods "
 
-  Private mTimestamp(7) As Byte
+  Private _timestamp(7) As Byte
 
   Private Shared IdProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid)(GetType(Project), New PropertyInfo(Of Guid)("Id"))
   <System.ComponentModel.DataObjectField(True, True)> _
@@ -225,7 +225,7 @@ Public Class Project
       LoadProperty(Of SmartDate, Date?)(StartedProperty, data.Started)
       LoadProperty(Of SmartDate, Date?)(EndedProperty, data.Ended)
       LoadProperty(Of String)(DescriptionProperty, data.Description)
-      mTimestamp = data.LastChanged.ToArray
+      _timestamp = data.LastChanged.ToArray
 
       ' get child data
       LoadProperty(Of ProjectResources)(ResourcesProperty, _
@@ -246,7 +246,7 @@ Public Class Project
                                  GetProperty(Of SmartDate)(EndedProperty), _
                                  GetProperty(Of String)(DescriptionProperty), _
                                  lastChanged)
-      mTimestamp = lastChanged.ToArray
+      _timestamp = lastChanged.ToArray
       ' update child objects
       DataPortal.UpdateChild(GetProperty(Of ProjectResources)(ResourcesProperty), Me)
     End Using
@@ -264,9 +264,9 @@ Public Class Project
                                     GetProperty(Of SmartDate)(StartedProperty), _
                                     GetProperty(Of SmartDate)(EndedProperty), _
                                     GetProperty(Of String)(DescriptionProperty), _
-                                    mTimestamp, _
+                                    _timestamp, _
                                     lastChanged)
-      mTimestamp = lastChanged.ToArray
+      _timestamp = lastChanged.ToArray
       ' update child objects
       DataPortal.UpdateChild(GetProperty(Of ProjectResources)(ResourcesProperty), Me)
     End Using
@@ -307,12 +307,12 @@ Public Class Project
   Private Class ExistsCommand
     Inherits CommandBase
 
-    Private mId As Guid
-    Private mExists As Boolean
+    Private _id As Guid
+    Private _exists As Boolean
 
     Public ReadOnly Property ProjectExists() As Boolean
       Get
-        Return mExists
+        Return _exists
       End Get
     End Property
 
@@ -325,13 +325,13 @@ Public Class Project
     End Function
 
     Private Sub New(ByVal id As Guid)
-      mId = id
+      _id = id
     End Sub
 
     Protected Overrides Sub DataPortal_Execute()
 
       Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
-        mExists = (From p In ctx.DataContext.Projects Where p.Id = mId).Count > 0
+        _exists = (From p In ctx.DataContext.Projects Where p.Id = _id).Count > 0
       End Using
 
     End Sub

@@ -4,35 +4,35 @@ Public Class Resource
 
 #Region " Business Methods "
 
-  Private mTimestamp(7) As Byte
+  Private _timestamp(7) As Byte
 
   Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(Resource), New PropertyInfo(Of Integer)("Id"))
-  Private mId As Integer = IdProperty.DefaultValue
+  Private _id As Integer = IdProperty.DefaultValue
   Public ReadOnly Property Id() As Integer
     Get
-      Return GetProperty(Of Integer)(IdProperty, mId)
+      Return GetProperty(Of Integer)(IdProperty, _id)
     End Get
   End Property
 
   Private Shared LastNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(Resource), New PropertyInfo(Of String)("LastName", "Last name"))
-  Private mLastName As String = LastNameProperty.DefaultValue
+  Private _lastName As String = LastNameProperty.DefaultValue
   Public Property LastName() As String
     Get
-      Return GetProperty(Of String)(LastNameProperty, mLastName)
+      Return GetProperty(Of String)(LastNameProperty, _lastName)
     End Get
     Set(ByVal value As String)
-      SetProperty(Of String)(LastNameProperty, mLastName, value)
+      SetProperty(Of String)(LastNameProperty, _lastName, value)
     End Set
   End Property
 
   Private Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(Resource), New PropertyInfo(Of String)("FirstName", "First name"))
-  Private mFirstName As String = FirstNameProperty.DefaultValue
+  Private _firstName As String = FirstNameProperty.DefaultValue
   Public Property FirstName() As String
     Get
-      Return GetProperty(Of String)(FirstNameProperty, mFirstName)
+      Return GetProperty(Of String)(FirstNameProperty, _firstName)
     End Get
     Set(ByVal value As String)
-      SetProperty(Of String)(FirstNameProperty, mFirstName, value)
+      SetProperty(Of String)(FirstNameProperty, _firstName, value)
     End Set
   End Property
 
@@ -55,7 +55,7 @@ Public Class Resource
 
   Public Overrides Function ToString() As String
 
-    Return mId.ToString
+    Return _id.ToString
 
   End Function
 
@@ -177,10 +177,10 @@ Public Class Resource
 
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       Dim data = (From r In ctx.DataContext.Resources Where r.Id = criteria.Value Select r).Single
-      mId = data.Id
-      mLastName = data.LastName
-      mFirstName = data.FirstName
-      mTimestamp = data.LastChanged.ToArray
+      _id = data.Id
+      _lastName = data.LastName
+      _firstName = data.FirstName
+      _timestamp = data.LastChanged.ToArray
 
       SetProperty(Of ResourceAssignments)(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(data.Assignments.ToArray))
     End Using
@@ -193,9 +193,9 @@ Public Class Resource
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       Dim newId As Integer?
       Dim newLastChanged As System.Data.Linq.Binary = Nothing
-      ctx.DataContext.addResource(mLastName, mFirstName, newId, newLastChanged)
-      mId = CInt(newId)
-      mTimestamp = newLastChanged.ToArray
+      ctx.DataContext.addResource(_lastName, _firstName, newId, newLastChanged)
+      _id = CInt(newId)
+      _timestamp = newLastChanged.ToArray
       FieldManager.UpdateChildren(Me)
     End Using
 
@@ -206,8 +206,8 @@ Public Class Resource
 
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
       Dim newLastChanged As System.Data.Linq.Binary = Nothing
-      ctx.DataContext.UpdateResource(mId, mLastName, mFirstName, mTimestamp, newLastChanged)
-      mTimestamp = newLastChanged.ToArray
+      ctx.DataContext.UpdateResource(_id, _lastName, _firstName, _timestamp, newLastChanged)
+      _timestamp = newLastChanged.ToArray
       FieldManager.UpdateChildren(Me)
     End Using
 
@@ -216,7 +216,7 @@ Public Class Resource
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
-    DataPortal_Delete(New SingleCriteria(Of Resource, Integer)(mId))
+    DataPortal_Delete(New SingleCriteria(Of Resource, Integer)(_id))
 
   End Sub
 
@@ -224,7 +224,7 @@ Public Class Resource
   Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
-      ctx.DataContext.DeleteResource(mId)
+      ctx.DataContext.DeleteResource(_id)
     End Using
 
   End Sub
@@ -243,12 +243,12 @@ Public Class Resource
   Private Class ExistsCommand
     Inherits CommandBase
 
-    Private mId As Integer
-    Private mExists As Boolean
+    Private _id As Integer
+    Private _exists As Boolean
 
     Public ReadOnly Property ResourceExists() As Boolean
       Get
-        Return mExists
+        Return _exists
       End Get
     End Property
 
@@ -261,13 +261,13 @@ Public Class Resource
     End Function
 
     Private Sub New(ByVal id As Integer)
-      mId = id
+      _id = id
     End Sub
 
     Protected Overrides Sub DataPortal_Execute()
 
       Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
-        mExists = (From p In ctx.DataContext.Resources Where p.Id = mId).Count > 0
+        _exists = (From p In ctx.DataContext.Resources Where p.Id = _id).Count > 0
       End Using
 
     End Sub

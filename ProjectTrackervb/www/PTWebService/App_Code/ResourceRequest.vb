@@ -2,13 +2,13 @@ Imports Microsoft.VisualBasic
 
 Public Class ResourceRequest
 
-  Private mId As Integer
+  Private _id As Integer
   Public Property Id() As Integer
     Get
-      Return mId
+      Return _id
     End Get
     Set(ByVal value As Integer)
-      mId = value
+      _id = value
     End Set
   End Property
 

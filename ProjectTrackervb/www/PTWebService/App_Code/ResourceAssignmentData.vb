@@ -4,44 +4,44 @@ Imports Microsoft.VisualBasic
 
 Public Class ResourceAssignmentData
 
-  Private mProjectId As Guid
-  Private mProjectName As String
-  Private mAssigned As String
-  Private mRole As Integer
+  Private _projectId As Guid
+  Private _projectName As String
+  Private _assigned As String
+  Private _role As Integer
 
   Public Property ProjectId() As Guid
     Get
-      Return mProjectId
+      Return _projectId
     End Get
     Set(ByVal value As Guid)
-      mProjectId = value
+      _projectId = value
     End Set
   End Property
 
   Public Property ProjectName() As String
     Get
-      Return mProjectName
+      Return _projectName
     End Get
     Set(ByVal value As String)
-      mProjectName = value
+      _projectName = value
     End Set
   End Property
 
   Public Property Assigned() As String
     Get
-      Return mAssigned
+      Return _assigned
     End Get
     Set(ByVal value As String)
-      mAssigned = value
+      _assigned = value
     End Set
   End Property
 
   Public Property Role() As Integer
     Get
-      Return mRole
+      Return _role
     End Get
     Set(ByVal value As Integer)
-      mRole = value
+      _role = value
     End Set
   End Property
 

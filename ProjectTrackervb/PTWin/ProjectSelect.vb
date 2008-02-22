@@ -3,17 +3,17 @@ Imports System.ComponentModel
 
 Public Class ProjectSelect
 
-  Private mProjectId As Guid
+  Private _projectId As Guid
 
   Public ReadOnly Property ProjectId() As Guid
     Get
-      Return mProjectId
+      Return _projectId
     End Get
   End Property
 
   Private Sub AcceptValue()
 
-    mProjectId = CType(Me.ProjectListListBox.SelectedValue, Guid)
+    _projectId = CType(Me.ProjectListListBox.SelectedValue, Guid)
     Me.DialogResult = Windows.Forms.DialogResult.OK
     Me.Close()
 

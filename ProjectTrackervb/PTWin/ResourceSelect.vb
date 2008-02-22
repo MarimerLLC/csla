@@ -2,16 +2,16 @@ Imports System.Windows.Forms
 
 Public Class ResourceSelect
 
-  Private mResourceId As Integer
+  Private _resourceId As Integer
   Public ReadOnly Property ResourceId() As Integer
     Get
-      Return mResourceId
+      Return _resourceId
     End Get
   End Property
 
   Private Sub AcceptValue()
 
-    mResourceId = CType(Me.ResourceListListBox.SelectedValue, ResourceInfo).Id
+    _resourceId = CType(Me.ResourceListListBox.SelectedValue, ResourceInfo).Id
     Me.DialogResult = Windows.Forms.DialogResult.OK
     Me.Close()
 

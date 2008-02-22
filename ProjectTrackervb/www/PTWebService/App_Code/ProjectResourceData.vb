@@ -2,54 +2,54 @@ Imports Microsoft.VisualBasic
 
 Public Class ProjectResourceData
 
-  Private mResourceId As Integer
-  Private mFirstName As String
-  Private mLastName As String
-  Private mAssigned As String
-  Private mRole As Integer
+  Private _resourceId As Integer
+  Private _firstName As String
+  Private _lastName As String
+  Private _assigned As String
+  Private _role As Integer
 
   Public Property ResourceId() As Integer
     Get
-      Return mResourceId
+      Return _resourceId
     End Get
     Set(ByVal value As Integer)
-      mResourceId = value
+      _resourceId = value
     End Set
   End Property
 
   Public Property FirstName() As String
     Get
-      Return mFirstName
+      Return _firstName
     End Get
     Set(ByVal value As String)
-      mFirstName = value
+      _firstName = value
     End Set
   End Property
 
   Public Property LastName() As String
     Get
-      Return mLastName
+      Return _lastName
     End Get
     Set(ByVal value As String)
-      mLastName = value
+      _lastName = value
     End Set
   End Property
 
   Public Property Assigned() As String
     Get
-      Return mAssigned
+      Return _assigned
     End Get
     Set(ByVal value As String)
-      mAssigned = value
+      _assigned = value
     End Set
   End Property
 
   Public Property Role() As Integer
     Get
-      Return mRole
+      Return _role
     End Get
     Set(ByVal value As Integer)
-      mRole = value
+      _role = value
     End Set
   End Property
 

@@ -2,32 +2,32 @@
 Public Class ResourceInfo
   Inherits ReadOnlyBase(Of ResourceInfo)
 
-  Private mId As Integer
-  Private mName As String
+  Private _id As Integer
+  Private _name As String
 
   Public ReadOnly Property Id() As Integer
     Get
-      Return mId
+      Return _id
     End Get
   End Property
 
   Public ReadOnly Property Name() As String
     Get
-      Return mName
+      Return _name
     End Get
   End Property
 
   Protected Overrides Function GetIdValue() As Object
-    Return mId
+    Return _id
   End Function
 
   Public Overrides Function ToString() As String
-    Return mName
+    Return _name
   End Function
 
   Friend Sub New(ByVal resource As DalLinq.Resource)
-    mId = resource.Id
-    mName = String.Format("{0}, {1}", resource.LastName, resource.FirstName)
+    _id = resource.Id
+    _name = String.Format("{0}, {1}", resource.LastName, resource.FirstName)
   End Sub
 
 End Class

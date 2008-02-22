@@ -7,7 +7,7 @@ Imports ProjectTracker.Library
 Partial Public Class ProjectEdit
   Inherits EditForm
 
-  Private mProjectId As Guid
+  Private _projectId As Guid
 
   Public Sub New()
 
@@ -20,7 +20,7 @@ Partial Public Class ProjectEdit
 
   Public Sub New(ByVal id As Guid)
     Me.New()
-    mProjectId = id
+    _projectId = id
   End Sub
 
   Private Sub ProjectEdit_Loaded(ByVal sender As Object, ByVal e As System.Windows.RoutedEventArgs) Handles Me.Loaded
@@ -28,12 +28,12 @@ Partial Public Class ProjectEdit
     Dim dp As Csla.Wpf.CslaDataProvider = TryCast(Me.FindResource("Project"), Csla.Wpf.CslaDataProvider)
     Using dp.DeferRefresh()
       dp.FactoryParameters.Clear()
-      If mProjectId.Equals(Guid.Empty) Then
+      If _projectId.Equals(Guid.Empty) Then
         dp.FactoryMethod = "NewProject"
 
       Else
         dp.FactoryMethod = "GetProject"
-        dp.FactoryParameters.Add(mProjectId)
+        dp.FactoryParameters.Add(_projectId)
       End If
     End Using
 

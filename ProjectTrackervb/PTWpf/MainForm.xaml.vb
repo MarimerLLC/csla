@@ -8,16 +8,16 @@ Partial Public Class MainForm
 
 #Region "Navigation and Plumbing"
 
-  Private Shared mPrincipal As ProjectTracker.Library.Security.PTPrincipal
-  Private Shared mMainForm As MainForm
+  Private Shared _principal As ProjectTracker.Library.Security.PTPrincipal
+  Private Shared _mainForm As MainForm
 
-  Private mCurrentControl As UserControl
+  Private _currentControl As UserControl
 
   Public Sub New()
 
     InitializeComponent()
 
-    mMainForm = Me
+    _mainForm = Me
 
     AddHandler Csla.DataPortal.DataPortalInitInvoke, AddressOf DataPortal_DataPortalInitInvoke
 
@@ -26,7 +26,7 @@ Partial Public Class MainForm
   Private Sub MainForm_Loaded(ByVal sender As Object, ByVal e As System.Windows.RoutedEventArgs) Handles Me.Loaded
 
     ProjectTracker.Library.Security.PTPrincipal.Logout()
-    mPrincipal = CType(Csla.ApplicationContext.User, ProjectTracker.Library.Security.PTPrincipal)
+    _principal = CType(Csla.ApplicationContext.User, ProjectTracker.Library.Security.PTPrincipal)
 
     Me.Title = "Project Tracker"
 
@@ -41,27 +41,27 @@ Partial Public Class MainForm
   ''' </summary>
   ''' <param name="obj"></param>
   Private Sub DataPortal_DataPortalInitInvoke(ByVal obj As Object)
-    If Not ReferenceEquals(Csla.ApplicationContext.User, mPrincipal) Then
-      Csla.ApplicationContext.User = mPrincipal
+    If Not ReferenceEquals(Csla.ApplicationContext.User, _principal) Then
+      Csla.ApplicationContext.User = _principal
     End If
   End Sub
 
 
   Public Shared Sub ShowControl(ByVal control As UserControl)
-    mMainForm.ShowUserControl(control)
+    _mainForm.ShowUserControl(control)
   End Sub
 
   Private Sub ShowUserControl(ByVal control As UserControl)
 
-    UnHookTitleEvent(mCurrentControl)
+    UnHookTitleEvent(_currentControl)
 
     contentArea.Children.Clear()
     If Not control Is Nothing Then
       contentArea.Children.Add(control)
     End If
-    mCurrentControl = control
+    _currentControl = control
 
-    HookTitleEvent(mCurrentControl)
+    HookTitleEvent(_currentControl)
 
   End Sub
 
@@ -88,9 +88,9 @@ Partial Public Class MainForm
 
     Dim form As EditForm = TryCast(sender, EditForm)
     If Not form Is Nothing AndAlso (Not String.IsNullOrEmpty(form.Title)) Then
-      mMainForm.Title = String.Format("Project Tracker - {0}", (CType(sender, EditForm)).Title)
+      _mainForm.Title = String.Format("Project Tracker - {0}", (CType(sender, EditForm)).Title)
     Else
-      mMainForm.Title = String.Format("Project Tracker")
+      _mainForm.Title = String.Format("Project Tracker")
     End If
 
   End Sub
@@ -154,9 +154,9 @@ Partial Public Class MainForm
         LoginButtonText.Text = "Log out"
       End If
     End If
-    mPrincipal = _
+    _principal = _
       CType(Csla.ApplicationContext.User, ProjectTracker.Library.Security.PTPrincipal)
-    Dim p As IRefresh = TryCast(mCurrentControl, IRefresh)
+    Dim p As IRefresh = TryCast(_currentControl, IRefresh)
     If Not p Is Nothing Then
       p.Refresh()
     End If

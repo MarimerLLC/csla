@@ -4,24 +4,24 @@ Imports Microsoft.VisualBasic
 
 Public Class RoleData
 
-  Private mId As Integer
-  Private mName As String
+  Private _id As Integer
+  Private _name As String
 
   Public Property Id() As Integer
     Get
-      Return mId
+      Return _id
     End Get
     Set(ByVal value As Integer)
-      mId = value
+      _id = value
     End Set
   End Property
 
   Public Property Name() As String
     Get
-      Return mName
+      Return _name
     End Get
     Set(ByVal value As String)
-      mName = value
+      _name = value
     End Set
   End Property
 

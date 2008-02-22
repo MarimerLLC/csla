@@ -6,7 +6,7 @@ Public Class ProjectResource
 
 #Region " Business Methods "
 
-  Private mTimestamp(7) As Byte
+  Private _timestamp(7) As Byte
 
   Private Shared ResourceIdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(ProjectResource), New PropertyInfo(Of Integer)("ResourceId", "Resource id"))
   Public ReadOnly Property ResourceId() As Integer
@@ -139,14 +139,14 @@ Public Class ProjectResource
       LoadProperty(Of String)(FirstNameProperty, .Resource.FirstName)
       LoadProperty(Of SmartDate)(AssignedProperty, .Assigned)
       LoadProperty(Of Integer)(RoleProperty, .Role)
-      mTimestamp = .LastChanged.ToArray
+      _timestamp = .LastChanged.ToArray
     End With
 
   End Sub
 
   Private Sub Child_Insert(ByVal project As Project)
 
-    mTimestamp = Assignment.AddAssignment(project.Id, _
+    _timestamp = Assignment.AddAssignment(project.Id, _
                                           GetProperty(Of Integer)(ResourceIdProperty), _
                                           GetProperty(Of SmartDate)(AssignedProperty), _
                                           GetProperty(Of Integer)(RoleProperty))
@@ -155,11 +155,11 @@ Public Class ProjectResource
 
   Private Sub Child_Update(ByVal project As Project)
 
-    mTimestamp = Assignment.UpdateAssignment(project.Id, _
+    _timestamp = Assignment.UpdateAssignment(project.Id, _
                                              GetProperty(Of Integer)(ResourceIdProperty), _
                                              GetProperty(Of SmartDate)(AssignedProperty), _
                                              GetProperty(Of Integer)(RoleProperty), _
-                                             mTimestamp)
+                                             _timestamp)
 
   End Sub
 

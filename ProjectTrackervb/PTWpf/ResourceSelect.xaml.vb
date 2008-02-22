@@ -6,11 +6,11 @@
 Partial Public Class ResourceSelect
   Inherits Window
 
-  Private mResourceId As Integer
+  Private _resourceId As Integer
 
   Public ReadOnly Property ResourceId() As Integer
     Get
-      Return mResourceId
+      Return _resourceId
     End Get
   End Property
 
@@ -19,7 +19,7 @@ Partial Public Class ResourceSelect
     Dim item As ResourceInfo = CType(ResourceListBox.SelectedItem, ResourceInfo)
     If Not item Is Nothing Then
       DialogResult = True
-      mResourceId = (item).Id
+      _resourceId = (item).Id
     Else
       DialogResult = False
     End If

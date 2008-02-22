@@ -6,11 +6,11 @@
 Partial Public Class ProjectSelect
   Inherits Window
 
-  Private mProjectId As Guid
+  Private _projectId As Guid
 
   Public ReadOnly Property ProjectId() As Guid
     Get
-      Return mProjectId
+      Return _projectId
     End Get
   End Property
 
@@ -20,7 +20,7 @@ Partial Public Class ProjectSelect
     Dim item As ProjectInfo = CType(ProjectListBox.SelectedItem, ProjectInfo)
     If Not item Is Nothing Then
       DialogResult = True
-      mProjectId = item.Id
+      _projectId = item.Id
 
     Else
       DialogResult = False

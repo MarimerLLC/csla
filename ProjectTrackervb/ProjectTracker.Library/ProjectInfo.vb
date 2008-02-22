@@ -2,33 +2,33 @@
 Public Class ProjectInfo
   Inherits ReadOnlyBase(Of ProjectInfo)
 
-  Private mId As Guid
-  Private mName As String
+  Private _id As Guid
+  Private _name As String
 
   Public Property Id() As Guid
     Get
-      Return mId
+      Return _id
     End Get
     Friend Set(ByVal value As Guid)
-      mId = value
+      _id = value
     End Set
   End Property
 
   Public Property Name() As String
     Get
-      Return mName
+      Return _name
     End Get
     Friend Set(ByVal value As String)
-      mName = value
+      _name = value
     End Set
   End Property
 
   Protected Overrides Function GetIdValue() As Object
-    Return mId
+    Return _id
   End Function
 
   Public Overrides Function ToString() As String
-    Return mName
+    Return _name
   End Function
 
   Private Sub New()
@@ -36,8 +36,8 @@ Public Class ProjectInfo
   End Sub
 
   Friend Sub New(ByVal id As Guid, ByVal name As String)
-    mId = id
-    mName = name
+    _id = id
+    _name = name
   End Sub
 
 End Class

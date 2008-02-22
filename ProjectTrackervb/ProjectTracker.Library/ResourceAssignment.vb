@@ -6,53 +6,53 @@ Public Class ResourceAssignment
 
 #Region " Business Methods "
 
-  Private mTimestamp(7) As Byte
+  Private _timestamp(7) As Byte
 
   Private Shared ProjectIdProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid)(GetType(ResourceAssignment), New PropertyInfo(Of Guid)("ProjectId", Guid.Empty))
-  Private mProjectId As Guid = ProjectIdProperty.DefaultValue
+  Private _projectId As Guid = ProjectIdProperty.DefaultValue
   Public ReadOnly Property ProjectId() As Guid
     Get
-      Return GetProperty(Of Guid)(ProjectIdProperty, mProjectId)
+      Return GetProperty(Of Guid)(ProjectIdProperty, _projectId)
     End Get
   End Property
 
   Private Shared ProjectNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(ResourceAssignment), New PropertyInfo(Of String)("ProjectName"))
-  Private mProjectName As String = ProjectNameProperty.DefaultValue
+  Private _projectName As String = ProjectNameProperty.DefaultValue
   Public ReadOnly Property ProjectName() As String
     Get
-      Return GetProperty(Of String)(ProjectNameProperty, mProjectName)
+      Return GetProperty(Of String)(ProjectNameProperty, _projectName)
     End Get
   End Property
 
   Private Shared AssignedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(GetType(ResourceAssignment), New PropertyInfo(Of SmartDate)("Assigned"))
-  Private mAssigned As New SmartDate(Today)
+  Private _assigned As New SmartDate(Today)
   Public ReadOnly Property Assigned() As String
     Get
-      Return GetProperty(Of SmartDate, String)(AssignedProperty, mAssigned)
+      Return GetProperty(Of SmartDate, String)(AssignedProperty, _assigned)
     End Get
   End Property
 
   Private Shared RoleProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(ResourceAssignment), New PropertyInfo(Of Integer)("Role"))
-  Private mRole As Integer = RoleProperty.DefaultValue
+  Private _role As Integer = RoleProperty.DefaultValue
   Public Property Role() As Integer Implements IHoldRoles.Role
     Get
-      Return GetProperty(Of Integer)(RoleProperty, mRole)
+      Return GetProperty(Of Integer)(RoleProperty, _role)
     End Get
     Set(ByVal value As Integer)
-      SetProperty(Of Integer)(RoleProperty, mRole, value)
+      SetProperty(Of Integer)(RoleProperty, _role, value)
     End Set
   End Property
 
   Public Function GetProject() As Project
 
     CanExecuteMethod("GetProject", True)
-    Return Project.GetProject(mProjectId)
+    Return Project.GetProject(_projectId)
 
   End Function
 
   Public Overrides Function ToString() As String
 
-    Return mProjectId.ToString
+    Return _projectId.ToString
 
   End Function
 
@@ -101,10 +101,10 @@ Public Class ResourceAssignment
   Private Sub New(ByVal project As Project, ByVal role As Integer)
 
     MarkAsChild()
-    mProjectId = project.Id
-    mProjectName = project.Name
-    mAssigned.Date = Assignment.GetDefaultAssignedDate
-    mRole = role
+    _projectId = project.Id
+    _projectName = project.Name
+    _assigned.Date = Assignment.GetDefaultAssignedDate
+    _role = role
 
   End Sub
 
@@ -115,40 +115,40 @@ Public Class ResourceAssignment
   Private Overloads Sub Child_Create(ByVal projectId As Guid, ByVal role As Integer)
 
     Dim proj = Project.GetProject(projectId)
-    mProjectId = proj.Id
-    mProjectName = proj.Name
-    mAssigned.Date = Assignment.GetDefaultAssignedDate
-    mRole = role
+    _projectId = proj.Id
+    _projectName = proj.Name
+    _assigned.Date = Assignment.GetDefaultAssignedDate
+    _role = role
 
   End Sub
 
   Private Sub Child_Fetch(ByVal data As ProjectTracker.DalLinq.Assignment)
 
-    mProjectId = data.ProjectId
-    mProjectName = data.Project.Name
-    mAssigned = data.Assigned
-    mRole = data.Role
-    mTimestamp = data.LastChanged.ToArray
+    _projectId = data.ProjectId
+    _projectName = data.Project.Name
+    _assigned = data.Assigned
+    _role = data.Role
+    _timestamp = data.LastChanged.ToArray
 
   End Sub
 
   Private Sub Child_Insert(ByVal resource As Resource)
 
-    mTimestamp = Assignment.AddAssignment( _
-      mProjectId, resource.Id, mAssigned, mRole)
+    _timestamp = Assignment.AddAssignment( _
+      _projectId, resource.Id, _assigned, _role)
 
   End Sub
 
   Private Sub Child_Update(ByVal resource As Resource)
 
-    mTimestamp = Assignment.UpdateAssignment( _
-      mProjectId, resource.Id, mAssigned, mRole, mTimestamp)
+    _timestamp = Assignment.UpdateAssignment( _
+      _projectId, resource.Id, _assigned, _role, _timestamp)
 
   End Sub
 
   Private Sub Child_DeleteSelf(ByVal resource As Resource)
 
-    Assignment.RemoveAssignment(mProjectId, resource.Id)
+    Assignment.RemoveAssignment(_projectId, resource.Id)
 
   End Sub
 

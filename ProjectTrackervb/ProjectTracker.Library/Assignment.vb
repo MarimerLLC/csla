@@ -47,7 +47,7 @@ Friend Module Assignment
     ByVal resourceId As Integer, ByVal assigned As SmartDate, _
     ByVal role As Integer) As Byte()
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
       Dim lastChanged As System.Data.Linq.Binary = Nothing
       ctx.DataContext.addAssignment( _
         projectId, resourceId, assigned, role, lastChanged)
@@ -61,7 +61,7 @@ Friend Module Assignment
     ByVal assigned As SmartDate, ByVal newRole As Integer, _
     ByVal timestamp() As Byte) As Byte()
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
       Dim lastChanged As System.Data.Linq.Binary = Nothing
       ctx.DataContext.UpdateAssignment( _
         projectId, resourceId, assigned, newRole, timestamp, lastChanged)
@@ -74,7 +74,7 @@ Friend Module Assignment
     ByVal projectId As Guid, _
     ByVal resourceId As Integer)
 
-    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager("PTracker", True)
+    Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker, True)
       Dim lastChanged As System.Data.Linq.Binary = Nothing
       ctx.DataContext.DeleteAssignment( _
         projectId, resourceId)

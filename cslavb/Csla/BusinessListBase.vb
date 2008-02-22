@@ -59,6 +59,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <summary>
   ''' Gets a value indicating whether this object's data has been changed.
   ''' </summary>
+  <Browsable(False)> _
   Public ReadOnly Property IsDirty() As Boolean Implements IEditableCollection.IsDirty, IEditableCollection.IsSelfDirty
     Get
       ' any non-new deletions make us dirty
@@ -82,6 +83,7 @@ Public MustInherit Class BusinessListBase( _
   ''' Gets a value indicating whether this object is currently in
   ''' a valid state (has no broken validation rules).
   ''' </summary>
+  <Browsable(False)> _
   Public Overridable ReadOnly Property IsValid() As Boolean Implements IEditableCollection.IsValid, IEditableCollection.IsSelfValid
     Get
       ' run through all the child objects
@@ -526,6 +528,7 @@ Public MustInherit Class BusinessListBase( _
   ''' Allows users of CSLA to override the indexing behavior of BLB
   ''' </summary>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  <Browsable(False)> _
   Public Property IndexingProvider() As Type
     Get
       DeferredLoadIndexIfNotLoaded()

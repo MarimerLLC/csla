@@ -134,7 +134,7 @@ namespace ProjectTracker.Library
 
       private void Child_Insert()
       {
-        using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
+        using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
         {
           System.Data.Linq.Binary lastChanged = _timestamp;
           mgr.DataContext.addRole(ReadProperty<int>(IdProperty), ReadProperty<string>(NameProperty), ref lastChanged);
@@ -144,7 +144,7 @@ namespace ProjectTracker.Library
 
       private void Child_Update()
       {
-        using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
+        using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
         {
           System.Data.Linq.Binary lastChanged = null;
           mgr.DataContext.updateRole(ReadProperty<int>(IdProperty), ReadProperty<string>(NameProperty), _timestamp, ref lastChanged);
@@ -154,7 +154,7 @@ namespace ProjectTracker.Library
 
       private void Child_DeleteSelf()
       {
-        using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager("PTracker", true))
+        using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker, true))
         {
           mgr.DataContext.deleteRole(Id);
         }

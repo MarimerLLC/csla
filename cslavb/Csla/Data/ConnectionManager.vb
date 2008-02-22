@@ -29,49 +29,93 @@ Namespace Data
     Private _connectionString As String
 
     ''' <summary>
-    ''' Gets the ConnectionManager object for the specified
-    ''' connectionString.
+    ''' Gets the ConnectionManager object for the 
+    ''' specified database.
     ''' </summary>
-    ''' <param name="databaseName">
-    ''' The database name.
+    ''' <param name="database">
+    ''' Database name as shown in the config file.
     ''' </param>
-    ''' <param name="getConnectionString">
-    ''' True to get the connection string from
-    ''' the config file. False to treat the
-    ''' database name as the connection string.
-    ''' </param>
-    ''' <returns>ConnectionManager object for the connection.</returns>
-    Public Shared Function GetManager(ByVal databaseName As String, ByVal getConnectionString As Boolean) As ConnectionManager(Of C)
+    Public Shared Function GetManager(ByVal database As String) As ConnectionManager(Of C)
 
-      If getConnectionString Then
-        Return GetManager(ConfigurationManager.ConnectionStrings(databaseName).ConnectionString)
-
-      Else
-        Return GetManager(databaseName)
-      End If
+      Return GetManager(database, True)
 
     End Function
 
     ''' <summary>
-    ''' Gets the ConnectionManager object for the specified
-    ''' connectionString.
+    ''' Gets the ConnectionManager object for the 
+    ''' specified database.
     ''' </summary>
-    ''' <param name="connectionString">
-    ''' The database connection string.
+    ''' <param name="database">
+    ''' The database name or connection string.
     ''' </param>
-    ''' <returns>ConnectionManager object for the connection.</returns>
-    Public Shared Function GetManager(ByVal connectionString As String) As ConnectionManager(Of C)
+    ''' <param name="isDatabaseName">
+    ''' True to indicate that the connection string
+    ''' should be retrieved from the config file. If
+    ''' False, the database parameter is directly 
+    ''' used as a connection string.
+    ''' </param>
+    ''' <returns>ConnectionManager object for the name.</returns>
+    Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ConnectionManager(Of C)
+
+      If isDatabaseName Then
+        database = ConfigurationManager.ConnectionStrings(database).ConnectionString
+      End If
 
       SyncLock _lock
-        Dim mgr As ConnectionManager(Of C)
-        If ApplicationContext.LocalContext.Contains("__db:" & connectionString) Then
-          mgr = CType(ApplicationContext.LocalContext("__db:" & connectionString), ConnectionManager(Of C))
+        Dim mgr As ConnectionManager(Of C) = Nothing
+        If ApplicationContext.LocalContext.Contains("__db:" & database) Then
+          mgr = CType(ApplicationContext.LocalContext("__db:" & database), ConnectionManager(Of C))
 
         Else
-          mgr = New ConnectionManager(Of C)(connectionString)
-          ApplicationContext.LocalContext("__db:" & connectionString) = mgr
+          mgr = New ConnectionManager(Of C)(database)
+          ApplicationContext.LocalContext("__db:" & database) = mgr
         End If
         mgr.AddRef()
+        Return mgr
+      End SyncLock
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a pre-existing ConnectionManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
+    ''' Database name as shown in the config file.
+    ''' </param>
+    Public Shared Function GetCurrentManager(ByVal database As String) As ConnectionManager(Of C)
+
+      Return GetCurrentManager(database, True)
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a pre-existing ConnectionManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
+    ''' The database name or connection string.
+    ''' </param>
+    ''' <param name="isDatabaseName">
+    ''' True to indicate that the connection string
+    ''' should be retrieved from the config file. If
+    ''' False, the database parameter is directly 
+    ''' used as a connection string.
+    ''' </param>
+    ''' <returns>ConnectionManager object for the name.</returns>
+    Public Shared Function GetCurrentManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ConnectionManager(Of C)
+
+      If isDatabaseName Then
+        database = ConfigurationManager.ConnectionStrings(database).ConnectionString
+      End If
+
+      SyncLock _lock
+        Dim mgr As ConnectionManager(Of C) = Nothing
+        If ApplicationContext.LocalContext.Contains("__db:" & database) Then
+          mgr = CType(ApplicationContext.LocalContext("__db:" & database), ConnectionManager(Of C))
+        Else
+          Throw New NotSupportedException("GetCurrentManager")
+        End If
         Return mgr
       End SyncLock
 

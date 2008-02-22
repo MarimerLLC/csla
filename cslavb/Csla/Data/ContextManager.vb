@@ -30,49 +30,93 @@ Namespace Data
     Private _connectionString As String
 
     ''' <summary>
-    ''' Gets the ContextManager object for the specified
-    ''' key name.
+    ''' Gets the ContextManager object for the 
+    ''' specified database.
     ''' </summary>
-    ''' <param name="databaseName">
-    ''' The database name.
+    ''' <param name="database">
+    ''' Database name as shown in the config file.
     ''' </param>
-    ''' <param name="getConnectionString">
-    ''' True to get the connection string from
-    ''' the config file. False to treat the
-    ''' database name as the connection string.
-    ''' </param>
-    ''' <returns>ContextManager object for the name.</returns>
-    Public Shared Function GetManager(ByVal databaseName As String, ByVal getConnectionString As Boolean) As ContextManager(Of C)
+    Public Shared Function GetManager(ByVal database As String) As ContextManager(Of C)
 
-      If getConnectionString Then
-        Return GetManager(ConfigurationManager.ConnectionStrings(databaseName).ConnectionString)
-
-      Else
-        Return GetManager(databaseName)
-      End If
+      Return GetManager(database, True)
 
     End Function
 
     ''' <summary>
-    ''' Gets the ContextManager object for the specified
-    ''' key name.
+    ''' Gets the ContextManager object for the 
+    ''' specified database.
     ''' </summary>
-    ''' <param name="connectionString">
-    ''' The database connection string.
+    ''' <param name="database">
+    ''' The database name or connection string.
+    ''' </param>
+    ''' <param name="isDatabaseName">
+    ''' True to indicate that the connection string
+    ''' should be retrieved from the config file. If
+    ''' False, the database parameter is directly 
+    ''' used as a connection string.
     ''' </param>
     ''' <returns>ContextManager object for the name.</returns>
-    Public Shared Function GetManager(ByVal connectionString As String) As ContextManager(Of C)
+    Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ContextManager(Of C)
+
+      If isDatabaseName Then
+        database = ConfigurationManager.ConnectionStrings(database).ConnectionString
+      End If
 
       SyncLock _lock
-        Dim mgr As ContextManager(Of C)
-        If ApplicationContext.LocalContext.Contains("__ctx:" & connectionString) Then
-          mgr = CType(ApplicationContext.LocalContext("__ctx:" & connectionString), ContextManager(Of C))
+        Dim mgr As ContextManager(Of C) = Nothing
+        If ApplicationContext.LocalContext.Contains("__ctx:" & database) Then
+          mgr = CType(ApplicationContext.LocalContext("__ctx:" & database), ContextManager(Of C))
 
         Else
-          mgr = New ContextManager(Of C)(connectionString)
-          ApplicationContext.LocalContext("__ctx:" & connectionString) = mgr
+          mgr = New ContextManager(Of C)(database)
+          ApplicationContext.LocalContext("__ctx:" & database) = mgr
         End If
         mgr.AddRef()
+        Return mgr
+      End SyncLock
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a pre-existing ContextManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
+    ''' Database name as shown in the config file.
+    ''' </param>
+    Public Shared Function GetCurrentManager(ByVal database As String) As ContextManager(Of C)
+
+      Return GetCurrentManager(database, True)
+
+    End Function
+
+    ''' <summary>
+    ''' Gets a pre-existing ContextManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
+    ''' The database name or connection string.
+    ''' </param>
+    ''' <param name="isDatabaseName">
+    ''' True to indicate that the connection string
+    ''' should be retrieved from the config file. If
+    ''' False, the database parameter is directly 
+    ''' used as a connection string.
+    ''' </param>
+    ''' <returns>ContextManager object for the name.</returns>
+    Public Shared Function GetCurrentManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ContextManager(Of C)
+
+      If isDatabaseName Then
+        database = ConfigurationManager.ConnectionStrings(database).ConnectionString
+      End If
+
+      SyncLock _lock
+        Dim mgr As ContextManager(Of C) = Nothing
+        If ApplicationContext.LocalContext.Contains("__ctx:" & database) Then
+          mgr = CType(ApplicationContext.LocalContext("__ctx:" & database), ContextManager(Of C))
+        Else
+          Throw New NotSupportedException("GetCurrentManager")
+        End If
         Return mgr
       End SyncLock
 

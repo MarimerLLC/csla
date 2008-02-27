@@ -279,7 +279,7 @@ namespace Csla.Wpf
 
     #endregion
 
-    #region Cancel/Update/New
+    #region Cancel/Update/New/Remove  
 
     /// <summary>
     /// Cancels changes to the business object, returning
@@ -382,7 +382,23 @@ namespace Csla.Wpf
       if (list != null && list.AllowNew)
         list.AddNew();
     }
-    
+
+    /// <summary>
+    /// Removes an item from the list if the object
+    /// implements IBindingList and AllowRemove is true.
+    /// </summary>
+    /// <param name="item">
+    /// The item to be removed from the list.
+    /// </param>
+    public void RemoveItem(object item)
+    {
+      // only do something if the object implements
+      // IBindingList
+      IBindingList list = this.Data as IBindingList;
+      if (list != null && list.AllowRemove)
+        list.Remove(item);
+    }
+
     #endregion
 
   }

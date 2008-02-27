@@ -39,6 +39,9 @@ namespace Csla.Wpf
 
       binding = new CommandBinding(ApplicationCommands.New, NewCommand, CanExecuteNew);
       CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
+
+      binding = new CommandBinding(ApplicationCommands.Delete, RemoveCommand, CanExecuteRemove);
+      CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
     }
 
     private static void CanExecuteSave(object target, CanExecuteRoutedEventArgs e)
@@ -115,6 +118,30 @@ namespace Csla.Wpf
       CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
       if (ctl != null && ctl.Provider != null)
         ctl.Provider.AddNew();
+    }
+
+    private static void CanExecuteRemove(object target, CanExecuteRoutedEventArgs e)
+    {
+      bool result = false;
+      CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
+      if (ctl != null && ctl.Provider != null)
+      {
+        IBindingList list = ctl.Provider.Data as IBindingList;
+        if (list != null)
+        {
+          result = list.AllowRemove;
+          if (result && !Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType()))
+            result = false;
+        }
+      }
+      e.CanExecute = result;
+    }
+
+    private static void RemoveCommand(object target, ExecutedRoutedEventArgs e)
+    {
+      CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
+      if (ctl != null && ctl.Provider != null)
+        ctl.Provider.RemoveItem(e.Parameter);
     }
   }
 }

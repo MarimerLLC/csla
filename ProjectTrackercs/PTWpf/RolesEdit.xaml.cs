@@ -28,7 +28,6 @@ namespace PTWpf
 
     protected override void ApplyAuthorization()
     {
-      this.AuthPanel.Refresh();
       if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Roles)))
       {
         this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];

@@ -77,51 +77,6 @@ Namespace Data
 
     End Function
 
-    ''' <summary>
-    ''' Gets a pre-existing ContextManager object for the 
-    ''' specified database.
-    ''' </summary>
-    ''' <param name="database">
-    ''' Database name as shown in the config file.
-    ''' </param>
-    Public Shared Function GetCurrentManager(ByVal database As String) As ContextManager(Of C)
-
-      Return GetCurrentManager(database, True)
-
-    End Function
-
-    ''' <summary>
-    ''' Gets a pre-existing ContextManager object for the 
-    ''' specified database.
-    ''' </summary>
-    ''' <param name="database">
-    ''' The database name or connection string.
-    ''' </param>
-    ''' <param name="isDatabaseName">
-    ''' True to indicate that the connection string
-    ''' should be retrieved from the config file. If
-    ''' False, the database parameter is directly 
-    ''' used as a connection string.
-    ''' </param>
-    ''' <returns>ContextManager object for the name.</returns>
-    Public Shared Function GetCurrentManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ContextManager(Of C)
-
-      If isDatabaseName Then
-        database = ConfigurationManager.ConnectionStrings(database).ConnectionString
-      End If
-
-      SyncLock _lock
-        Dim mgr As ContextManager(Of C) = Nothing
-        If ApplicationContext.LocalContext.Contains("__ctx:" & database) Then
-          mgr = CType(ApplicationContext.LocalContext("__ctx:" & database), ContextManager(Of C))
-        Else
-          Throw New NotSupportedException("GetCurrentManager")
-        End If
-        Return mgr
-      End SyncLock
-
-    End Function
-
     Private Sub New(ByVal connectionString As String)
 
       _connectionString = connectionString

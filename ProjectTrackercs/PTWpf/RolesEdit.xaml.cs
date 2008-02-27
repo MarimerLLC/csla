@@ -23,27 +23,7 @@ namespace PTWpf
     {
       InitializeComponent();
       Csla.Wpf.CslaDataProvider dp = this.FindResource("RoleList") as Csla.Wpf.CslaDataProvider;
-      dp.DataChanged += new EventHandler(dp_DataChanged);
-    }
-
-    void dp_DataChanged(object sender, EventArgs e)
-    {
-      Csla.Wpf.CslaDataProvider dp = sender as Csla.Wpf.CslaDataProvider;
-      if (dp.Error != null)
-        MessageBox.Show(dp.Error.ToString(), "Data error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-    }
-
-    void RemoveItem(object sender, EventArgs e)
-    {
-      Button btn = (Button)sender;
-      int id = (int)btn.Tag;
-      Roles roles = (Roles)((Csla.Wpf.CslaDataProvider)this.FindResource("RoleList")).Data;
-      foreach (Role role in roles)
-        if (role.Id == id)
-        {
-          roles.Remove(role);
-          break;
-        }
+      dp.DataChanged += new EventHandler(base.DataChanged);
     }
 
     protected override void ApplyAuthorization()
@@ -52,12 +32,10 @@ namespace PTWpf
       if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Roles)))
       {
         this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
-        this.AddItemButton.IsEnabled = true;
       }
       else
       {
         this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
-        this.AddItemButton.IsEnabled = false;
         ((Csla.Wpf.CslaDataProvider)this.FindResource("RoleList")).Cancel();
       }
     }

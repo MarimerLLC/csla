@@ -43,6 +43,9 @@ Namespace Wpf
       binding = New CommandBinding(ApplicationCommands.[New], AddressOf NewCommand, AddressOf CanExecuteNew)
       CommandManager.RegisterClassCommandBinding(GetType(CslaDataProviderCommandManager), binding)
 
+      binding = New CommandBinding(ApplicationCommands.Delete, AddressOf RemoveCommand, AddressOf CanExecuteRemove)
+      CommandManager.RegisterClassCommandBinding(GetType(CslaDataProviderCommandManager), binding)
+
     End Sub
 
     Private Shared Sub CanExecuteSave(ByVal target As Object, ByVal e As CanExecuteRoutedEventArgs)
@@ -123,6 +126,32 @@ Namespace Wpf
       Dim ctl As CslaDataProviderCommandManager = TryCast(target, CslaDataProviderCommandManager)
       If Not ctl Is Nothing AndAlso Not ctl.Provider Is Nothing Then
         ctl.Provider.AddNew()
+      End If
+
+    End Sub
+
+    Private Shared Sub CanExecuteRemove(ByVal target As Object, ByVal e As CanExecuteRoutedEventArgs)
+
+      Dim result As Boolean = False
+      Dim ctl As CslaDataProviderCommandManager = TryCast(target, CslaDataProviderCommandManager)
+      If Not ctl Is Nothing AndAlso Not ctl.Provider Is Nothing Then
+        Dim list As IBindingList = TryCast(ctl.Provider.Data, IBindingList)
+        If list IsNot Nothing Then
+          result = list.AllowRemove
+          If result AndAlso Not Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType) Then
+            result = False
+          End If
+        End If
+      End If
+      e.CanExecute = result
+
+    End Sub
+
+    Private Shared Sub RemoveCommand(ByVal target As Object, ByVal e As ExecutedRoutedEventArgs)
+
+      Dim ctl As CslaDataProviderCommandManager = TryCast(target, CslaDataProviderCommandManager)
+      If Not ctl Is Nothing AndAlso Not ctl.Provider Is Nothing Then
+        ctl.Provider.RemoveItem(e.Parameter)
       End If
 
     End Sub

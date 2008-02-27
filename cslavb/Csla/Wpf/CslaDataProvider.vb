@@ -261,7 +261,7 @@ Namespace Wpf
 
 #End Region
 
-#Region "Cancel/Update/New"
+#Region " Cancel/Update/New/Remove "
 
     ''' <summary>
     ''' Cancels changes to the business object, returning
@@ -364,6 +364,21 @@ Namespace Wpf
       Dim list As IBindingList = TryCast(Me.Data, IBindingList)
       If list IsNot Nothing AndAlso list.AllowNew Then
         list.AddNew()
+      End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Removes an item from the list if the object
+    ''' implements IBindingList and AllowRemove is true.
+    ''' </summary>
+    Public Sub RemoveItem(ByVal item As Object)
+
+      ' only do something if the object implements
+      ' IBindingList
+      Dim list As IBindingList = TryCast(Me.Data, IBindingList)
+      If list IsNot Nothing AndAlso list.AllowRemove Then
+        list.Remove(item)
       End If
 
     End Sub

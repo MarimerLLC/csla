@@ -77,48 +77,6 @@ namespace Csla.Data
       }
     }
 
-    /// <summary>
-    /// Gets a pre-existing ContextManager object for the 
-    /// specified database.
-    /// </summary>
-    /// <param name="database">
-    /// Database name as shown in the config file.
-    /// </param>
-    public static ContextManager<C> GetCurrentManager(string database)
-    {
-      return GetCurrentManager(database, true);
-    }
-
-    /// <summary>
-    /// Gets a pre-existing ContextManager object for the 
-    /// specified database.
-    /// </summary>
-    /// <param name="database">
-    /// The database name or connection string.
-    /// </param>
-    /// <param name="isDatabaseName">
-    /// True to indicate that the connection string
-    /// should be retrieved from the config file. If
-    /// False, the database parameter is directly 
-    /// used as a connection string.
-    /// </param>
-    /// <returns>ContextManager object for the name.</returns>
-    public static ContextManager<C> GetCurrentManager(string database, bool isDatabaseName)
-    {
-      if (isDatabaseName)
-        database = ConfigurationManager.ConnectionStrings[database].ConnectionString;
-
-      lock (_lock)
-      {
-        ContextManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains("__ctx:" + database))
-          mgr = (ContextManager<C>)(ApplicationContext.LocalContext["__ctx:" + database]);
-        else
-          throw new NotSupportedException("GetCurrentManager");
-        return mgr;
-      }
-    }
-
     private ContextManager(string connectionString)
     {
 

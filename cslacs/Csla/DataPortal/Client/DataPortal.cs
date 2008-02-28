@@ -224,7 +224,7 @@ namespace Csla
           if (proxy.IsServerRemote)
             ApplicationContext.SetGlobalContext(result.GlobalContext);
           string innerMessage = string.Empty;
-          if (ex.InnerException is Csla.Server.CallMethodException)
+          if (ex.InnerException is Csla.Reflection.CallMethodException)
           {
             if (ex.InnerException.InnerException != null)
               innerMessage = ex.InnerException.InnerException.Message;

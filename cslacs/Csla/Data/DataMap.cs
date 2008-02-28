@@ -61,11 +61,6 @@ namespace Csla.Data
       _targetType = targetType;
     }
 
-    internal Type SourceType
-    {
-      get { return _sourceType; }
-    }
-
     internal List<MemberMapping> GetMap()
     {
       return _map;

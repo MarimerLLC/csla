@@ -54,12 +54,6 @@ Namespace Data
       _targetType = targetType
     End Sub
 
-    Friend ReadOnly Property SourceType() As Type
-      Get
-        Return _sourceType
-      End Get
-    End Property
-
     Friend Function GetMap() As List(Of MemberMapping)
       Return _map
     End Function

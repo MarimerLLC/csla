@@ -128,7 +128,8 @@ Namespace Core
     End Property
 
     ''' <summary>
-    ''' Returns <see langword="true" /> if this object's data has been changed.
+    ''' Returns <see langword="true" /> if this object's data has been 
+    ''' changed, ignoring whether any child objects have been changed.
     ''' </summary>
     ''' <remarks>
     ''' <para>
@@ -1200,7 +1201,8 @@ Namespace Core
     End Property
 
     ''' <summary>
-    ''' Returns <see langword="true" /> if the object is currently valid, <see langword="false" /> if the
+    ''' Returns <see langword="true" /> if the object is currently 
+    ''' valid, <see langword="false" /> if the
     ''' object has broken rules or is otherwise invalid.
     ''' </summary>
     ''' <remarks>
@@ -1209,9 +1211,7 @@ Namespace Core
     ''' object to track whether any business rules are currently broken for this object.
     ''' </para><para>
     ''' You can override this property to provide more sophisticated
-    ''' implementations of the behavior. For instance, you should always override
-    ''' this method if your object has child objects, since the validity of this object
-    ''' is affected by the validity of all child objects.
+    ''' implementations of the behavior. 
     ''' </para>
     ''' </remarks>
     ''' <returns>A value indicating if the object is currently valid.</returns>

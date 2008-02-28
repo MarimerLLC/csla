@@ -202,13 +202,7 @@ Namespace Reflection
       Try
         result = methodHandle.DynamicMethod(obj, inParams)
       Catch ex As Exception
-        Dim inner As Exception = Nothing
-        If ex.InnerException Is Nothing Then
-          inner = ex
-        Else
-          inner = ex.InnerException
-        End If
-        Throw New CallMethodException(methodHandle.MethodName & " " & My.Resources.MethodCallFailed, inner)
+        Throw New CallMethodException(methodHandle.MethodName & " " & My.Resources.MethodCallFailed, ex)
       End Try
       Return result
     End Function

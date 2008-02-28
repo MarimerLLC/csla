@@ -222,7 +222,7 @@
     <Compile Include="Core\BusinessBase.vb" />
     <Compile Include="Core\IEditableCollection.vb" />
     <Compile Include="Core\ReadOnlyBindingList.vb" />
-    <Compile Include="DataPortal\Server\CallMethodException.vb" />
+    <Compile Include="Reflection\CallMethodException.vb" />
     <Compile Include="CommandBase.vb" />
     <Compile Include="DataPortal\CriteriaBase.vb" />
     <Compile Include="DataPortal\Client\DataPortal.vb" />

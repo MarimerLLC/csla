@@ -222,12 +222,7 @@ namespace Csla.Reflection
       }
       catch (Exception ex)
       {
-        Exception inner = null;
-        if (ex.InnerException == null)
-          inner = ex;
-        else
-          inner = ex.InnerException;
-        throw new CallMethodException(methodHandle.MethodName + " " + Resources.MethodCallFailed, inner);
+        throw new CallMethodException(methodHandle.MethodName + " " + Resources.MethodCallFailed, ex);
       }
       return result;
     }

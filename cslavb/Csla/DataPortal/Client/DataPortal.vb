@@ -96,6 +96,8 @@ Public Module DataPortal
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
     Try
+      OnDataPortalInitInvoke(Nothing)
+
       If Not Csla.Security.AuthorizationRules.CanCreateObject(objectType) Then
         Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
           "create", _
@@ -106,8 +108,6 @@ Public Module DataPortal
 
       Dim proxy As DataPortalClient.IDataPortalProxy
       proxy = GetDataPortalProxy(method.RunLocal)
-
-      OnDataPortalInitInvoke(Nothing)
 
       dpContext = New Server.DataPortalContext( _
         GetPrincipal, proxy.IsServerRemote)
@@ -191,6 +191,8 @@ Public Module DataPortal
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
     Try
+      OnDataPortalInitInvoke(Nothing)
+
       If Not Csla.Security.AuthorizationRules.CanGetObject(objectType) Then
         Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
           "get", _
@@ -201,8 +203,6 @@ Public Module DataPortal
 
       Dim proxy As DataPortalClient.IDataPortalProxy
       proxy = GetDataPortalProxy(method.RunLocal)
-
-      OnDataPortalInitInvoke(Nothing)
 
       dpContext = New Server.DataPortalContext( _
         GetPrincipal, proxy.IsServerRemote)
@@ -330,6 +330,8 @@ Public Module DataPortal
     Dim operation = DataPortalOperations.Update
     Dim objectType = obj.GetType
     Try
+      OnDataPortalInitInvoke(Nothing)
+
       Dim methodName As String
       If TypeOf obj Is CommandBase Then
         methodName = "DataPortal_Execute"
@@ -380,8 +382,6 @@ Public Module DataPortal
 
       Dim proxy As DataPortalClient.IDataPortalProxy
       proxy = GetDataPortalProxy(method.RunLocal)
-
-      OnDataPortalInitInvoke(Nothing)
 
       dpContext = New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
 
@@ -437,6 +437,8 @@ Public Module DataPortal
     Dim dpContext As Server.DataPortalContext = Nothing
     Dim objectType = MethodCaller.GetObjectType(criteria)
     Try
+      OnDataPortalInitInvoke(Nothing)
+
       If Not Csla.Security.AuthorizationRules.CanDeleteObject(objectType) Then
         Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
           "delete", _
@@ -448,8 +450,6 @@ Public Module DataPortal
 
       Dim proxy As DataPortalClient.IDataPortalProxy
       proxy = GetDataPortalProxy(method.RunLocal)
-
-      OnDataPortalInitInvoke(Nothing)
 
       dpContext = New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
 

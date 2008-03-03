@@ -106,6 +106,8 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
+        OnDataPortalInitInvoke(null);
+
         if (!Csla.Security.AuthorizationRules.CanCreateObject(objectType))
           throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "create",
@@ -115,8 +117,6 @@ namespace Csla
 
         DataPortalClient.IDataPortalProxy proxy;
         proxy = GetDataPortalProxy(method.RunLocal);
-
-        OnDataPortalInitInvoke(null);
 
         dpContext =
           new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -196,6 +196,8 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
+        OnDataPortalInitInvoke(null);
+
         if (!Csla.Security.AuthorizationRules.CanGetObject(objectType))
           throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "get",
@@ -205,8 +207,6 @@ namespace Csla
 
         DataPortalClient.IDataPortalProxy proxy;
         proxy = GetDataPortalProxy(method.RunLocal);
-
-        OnDataPortalInitInvoke(null);
 
         dpContext =
           new Server.DataPortalContext(GetPrincipal(),
@@ -273,7 +273,7 @@ namespace Csla
     /// <returns>A reference to the updated Command object.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters",
-    MessageId="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+    MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static T Execute<T>(T obj) where T : CommandBase
     {
       return (T)Update(obj);
@@ -296,12 +296,12 @@ namespace Csla
     /// <param name="obj">A reference to the Command object to be executed.</param>
     /// <returns>A reference to the updated Command object.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
-    public static CommandBase Execute(CommandBase obj) 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+    public static CommandBase Execute(CommandBase obj)
     {
       return (CommandBase)Update(obj);
     }
-    
+
     /// <summary>
     /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
@@ -342,6 +342,8 @@ namespace Csla
       Type objectType = obj.GetType();
       try
       {
+        OnDataPortalInitInvoke(null);
+
         string methodName;
         if (obj is CommandBase)
         {
@@ -394,8 +396,6 @@ namespace Csla
 
         DataPortalClient.IDataPortalProxy proxy;
         proxy = GetDataPortalProxy(method.RunLocal);
-
-        OnDataPortalInitInvoke(null);
 
         dpContext =
           new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -450,6 +450,8 @@ namespace Csla
       Type objectType = MethodCaller.GetObjectType(criteria);
       try
       {
+        OnDataPortalInitInvoke(null);
+
         if (!Csla.Security.AuthorizationRules.CanDeleteObject(objectType))
           throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "delete",
@@ -460,8 +462,6 @@ namespace Csla
 
         DataPortalClient.IDataPortalProxy proxy;
         proxy = GetDataPortalProxy(method.RunLocal);
-
-        OnDataPortalInitInvoke(null);
 
         dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
@@ -575,9 +575,9 @@ namespace Csla
             _portal = new DataPortalClient.LocalProxy();
           else
           {
-            string typeName = 
+            string typeName =
               proxyTypeName.Substring(0, proxyTypeName.IndexOf(",")).Trim();
-            string assemblyName = 
+            string assemblyName =
               proxyTypeName.Substring(proxyTypeName.IndexOf(",") + 1).Trim();
             _portal = (DataPortalClient.IDataPortalProxy)
               Activator.CreateInstance(assemblyName, typeName).Unwrap();

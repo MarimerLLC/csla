@@ -280,8 +280,8 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void PropertyHasChanged(string propertyName)
     {
-      ValidationRules.CheckRules(propertyName);
       MarkDirty(true);
+      ValidationRules.CheckRules(propertyName);
       OnPropertyChanged(propertyName);
     }
 

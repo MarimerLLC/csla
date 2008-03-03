@@ -288,8 +288,8 @@ Namespace Core
     ''' </remarks>
     Protected Overridable Sub PropertyHasChanged(ByVal propertyName As String)
 
-      ValidationRules.CheckRules(propertyName)
       MarkDirty(True)
+      ValidationRules.CheckRules(propertyName)
       OnPropertyChanged(propertyName)
 
     End Sub

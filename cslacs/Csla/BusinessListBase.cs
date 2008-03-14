@@ -1298,7 +1298,11 @@ namespace Csla
     [Browsable(false)]
     public Expression Expression
     {
-      get { return _expression; }
+      get { 
+          if (_expression == null)
+              _expression = Expression.Constant(this);
+          return _expression; 
+      }
     }
 
     /// <summary>

@@ -1204,6 +1204,9 @@ Public MustInherit Class BusinessListBase( _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Public ReadOnly Property Expression() As Expression Implements IQueryable(Of C).Expression
     Get
+      If _expression Is Nothing Then
+        _expression = Expression.Constant(Me)
+      End If
       Return _expression
     End Get
   End Property

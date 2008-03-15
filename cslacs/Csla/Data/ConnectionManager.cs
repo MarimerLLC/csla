@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
+using Csla.Properties;
 
 namespace Csla.Data
 {
@@ -56,7 +57,12 @@ namespace Csla.Data
     public static ConnectionManager<C> GetManager(string database, bool isDatabaseName)
     {
       if (isDatabaseName)
-        database = ConfigurationManager.ConnectionStrings[database].ConnectionString;
+      {
+        var conn = ConfigurationManager.ConnectionStrings[database].ConnectionString;
+        if (string.IsNullOrEmpty(conn))
+          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
+        database = conn;
+      }
 
       lock (_lock)
       {

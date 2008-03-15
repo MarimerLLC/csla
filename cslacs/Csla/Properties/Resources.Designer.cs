@@ -115,6 +115,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Database name not found in config file ({0}).
+        /// </summary>
+        internal static string DatabaseNameNotFound {
+            get {
+                return ResourceManager.GetString("DatabaseNameNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid operation - delete not allowed.
         /// </summary>
         internal static string DeleteNotSupportedException {

@@ -294,4 +294,7 @@
   <data name="UnRegisteredPropertyException" xml:space="preserve">
     <value>Can not use unregistered property. Call RegisterProperty() for property {0}</value>
   </data>
+  <data name="DatabaseNameNotFound" xml:space="preserve">
+    <value>Database name not found in config file ({0})</value>
+  </data>
 </root>

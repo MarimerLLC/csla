@@ -115,6 +115,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Database name not found in config file ({0}).
+        '''</summary>
+        Friend ReadOnly Property DatabaseNameNotFound() As String
+            Get
+                Return ResourceManager.GetString("DatabaseNameNotFound", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Invalid operation - delete not allowed.
         '''</summary>
         Friend ReadOnly Property DeleteNotSupportedException() As String

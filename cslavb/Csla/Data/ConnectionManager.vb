@@ -58,7 +58,11 @@ Namespace Data
     Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ConnectionManager(Of C)
 
       If isDatabaseName Then
-        database = ConfigurationManager.ConnectionStrings(database).ConnectionString
+        Dim conn = ConfigurationManager.ConnectionStrings(database).ConnectionString
+        If String.IsNullOrEmpty(conn) Then
+          Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
+        End If
+        database = conn
       End If
 
       SyncLock _lock

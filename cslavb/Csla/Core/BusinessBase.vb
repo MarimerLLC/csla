@@ -1492,7 +1492,7 @@ Namespace Core
     ''' </remarks>
     Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P) As P
 
-      Return GetProperty(Of P)(propertyName, field, defaultValue, False)
+      Return GetProperty(Of P)(propertyName, field, defaultValue, Security.NoAccessBehavior.SuppressException)
 
     End Function
 
@@ -1509,12 +1509,12 @@ Namespace Core
     ''' <param name="defaultValue">
     ''' Value to be returned if the user is not
     ''' authorized to read the property.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to read this property.</param>
-    Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal throwOnNoAccess As Boolean) As P
+    Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal noAccess As Security.NoAccessBehavior) As P
 
-      If CanReadProperty(propertyName, throwOnNoAccess) Then
+      If CanReadProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
         Return field
 
       Else
@@ -1540,7 +1540,7 @@ Namespace Core
     ''' </remarks>
     Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As P) As P
 
-      Return GetProperty(Of P)(propertyInfo.Name, field, propertyInfo.DefaultValue, False)
+      Return GetProperty(Of P)(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException)
 
     End Function
 
@@ -1565,7 +1565,7 @@ Namespace Core
     ''' </remarks>
     Protected Function GetProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F) As P
 
-      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, False))
+      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException))
 
     End Function
 
@@ -1583,7 +1583,7 @@ Namespace Core
     ''' The backing field for the property.</param>
     ''' <param name="propertyInfo">
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to read this property.</param>
     ''' <remarks>
@@ -1592,9 +1592,9 @@ Namespace Core
     ''' result.
     ''' </remarks>
     Protected Function GetProperty(Of F, P)( _
-      ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F, ByVal throwOnNoAccess As Boolean) As P
+      ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F, ByVal noAccess As Security.NoAccessBehavior) As P
 
-      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess))
+      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess))
 
     End Function
 
@@ -1615,7 +1615,7 @@ Namespace Core
     Protected Function GetProperty(Of P)( _
       ByVal propertyInfo As PropertyInfo(Of P)) As P
 
-      Return GetProperty(Of P)(propertyInfo, False)
+      Return GetProperty(Of P)(propertyInfo, Security.NoAccessBehavior.SuppressException)
 
     End Function
 
@@ -1640,7 +1640,7 @@ Namespace Core
     Protected Function GetProperty(Of F, P)( _
       ByVal propertyInfo As PropertyInfo(Of F)) As P
 
-      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, False))
+      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, Security.NoAccessBehavior.SuppressException))
 
     End Function
 
@@ -1657,7 +1657,7 @@ Namespace Core
     ''' </typeparam>
     ''' <param name="propertyInfo">
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to read this property.</param>
     ''' <remarks>
@@ -1666,9 +1666,9 @@ Namespace Core
     ''' result.
     ''' </remarks>
     Protected Function GetProperty(Of F, P)( _
-      ByVal propertyInfo As PropertyInfo(Of F), ByVal throwOnNoAccess As Boolean) As P
+      ByVal propertyInfo As PropertyInfo(Of F), ByVal noAccess As Security.NoAccessBehavior) As P
 
-      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, throwOnNoAccess))
+      Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, noAccess))
 
     End Function
 
@@ -1681,7 +1681,7 @@ Namespace Core
     ''' </typeparam>
     ''' <param name="propertyInfo">
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to read this property.</param>
     ''' <remarks>
@@ -1690,10 +1690,10 @@ Namespace Core
     ''' result.
     ''' </remarks>
     Protected Function GetProperty(Of P)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal throwOnNoAccess As Boolean) As P
+      ByVal propertyInfo As PropertyInfo(Of P), ByVal noAccess As Security.NoAccessBehavior) As P
 
       Dim result As P = Nothing
-      If CanReadProperty(propertyInfo.Name, throwOnNoAccess) Then
+      If CanReadProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
         result = ReadProperty(Of P)(propertyInfo)
 
       Else
@@ -1813,7 +1813,7 @@ Namespace Core
     ''' </remarks>
     Protected Sub SetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As P)
 
-      SetProperty(Of P)(propertyInfo.Name, field, newValue, True)
+      SetProperty(Of P)(propertyInfo.Name, field, newValue, Security.NoAccessBehavior.ThrowException)
 
     End Sub
 
@@ -1834,7 +1834,7 @@ Namespace Core
     ''' </remarks>
     Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P)
 
-      SetProperty(Of P)(propertyName, field, newValue, True)
+      SetProperty(Of P)(propertyName, field, newValue, Security.NoAccessBehavior.ThrowException)
 
     End Sub
 
@@ -1861,7 +1861,7 @@ Namespace Core
     ''' </remarks>
     Protected Sub SetProperty(Of P, V)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As V)
 
-      SetProperty(Of P, V)(propertyInfo, field, newValue, True)
+      SetProperty(Of P, V)(propertyInfo, field, newValue, Security.NoAccessBehavior.ThrowException)
 
     End Sub
 
@@ -1882,16 +1882,16 @@ Namespace Core
     ''' The new value for the property.</param>
     ''' <param name="propertyInfo">
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
     ''' <remarks>
     ''' If the field value is of type string, any incoming
     ''' null values are converted to string.Empty.
     ''' </remarks>
-    Protected Sub SetProperty(Of P, V)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As V, ByVal throwOnNoAccess As Boolean)
+    Protected Sub SetProperty(Of P, V)(ByVal propertyInfo As PropertyInfo(Of P), ByRef field As P, ByVal newValue As V, ByVal noAccess As Security.NoAccessBehavior)
 
-      SetProperty(Of P, V)(propertyInfo.Name, field, newValue, throwOnNoAccess)
+      SetProperty(Of P, V)(propertyInfo.Name, field, newValue, noAccess)
 
     End Sub
 
@@ -1906,12 +1906,12 @@ Namespace Core
     ''' The new value for the property.</param>
     ''' <param name="propertyName">
     ''' The name of the property.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
-    Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
+    Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P, ByVal noAccess As Security.NoAccessBehavior)
 
-      If CanWriteProperty(propertyName, throwOnNoAccess) Then
+      If CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
         Try
           If field Is Nothing Then
             If newValue IsNot Nothing Then
@@ -1953,16 +1953,16 @@ Namespace Core
     ''' The new value for the property.</param>
     ''' <param name="propertyName">
     ''' The name of the property.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
     ''' <remarks>
     ''' If the field value is of type string, any incoming
     ''' null values are converted to string.Empty.
     ''' </remarks>
-    Protected Sub SetProperty(Of P, V)(ByVal propertyName As String, ByRef field As P, ByVal newValue As V, ByVal throwOnNoAccess As Boolean)
+    Protected Sub SetProperty(Of P, V)(ByVal propertyName As String, ByRef field As P, ByVal newValue As V, ByVal noAccess As Security.NoAccessBehavior)
 
-      If CanWriteProperty(propertyName, throwOnNoAccess) Then
+      If CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
         Try
           If field Is Nothing Then
             If newValue IsNot Nothing Then
@@ -2003,7 +2003,7 @@ Namespace Core
     Protected Sub SetProperty(Of P)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
 
-      SetProperty(Of P)(propertyInfo, newValue, True)
+      SetProperty(Of P)(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException)
 
     End Sub
 
@@ -2023,7 +2023,7 @@ Namespace Core
     Protected Sub SetProperty(Of P, F)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
-      SetProperty(Of P, F)(propertyInfo, newValue, True)
+      SetProperty(Of P, F)(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException)
 
     End Sub
 
@@ -2036,13 +2036,13 @@ Namespace Core
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
     ''' <param name="newValue">
     ''' The new value for the property.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
     Protected Sub SetProperty(Of P, F)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F, ByVal throwOnNoAccess As Boolean)
+      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F, ByVal noAccess As Security.NoAccessBehavior)
 
-      If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
+      If CanWriteProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
         Try
           Dim oldValue As P = Nothing
           Dim fieldData = FieldManager.GetFieldData(propertyInfo)
@@ -2080,13 +2080,13 @@ Namespace Core
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
     ''' <param name="newValue">
     ''' The new value for the property.</param>
-    ''' <param name="throwOnNoAccess">
+    ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
     Protected Sub SetProperty(Of P)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P, ByVal throwOnNoAccess As Boolean)
+      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P, ByVal noAccess As Security.NoAccessBehavior)
 
-      If CanWriteProperty(propertyInfo.Name, throwOnNoAccess) Then
+      If CanWriteProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
         Try
           Dim oldValue As P = Nothing
           Dim fieldData = FieldManager.GetFieldData(propertyInfo)

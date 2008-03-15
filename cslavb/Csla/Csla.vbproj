@@ -195,6 +195,7 @@
     <Compile Include="Security\AccessType.vb" />
     <Compile Include="Security\AuthorizationRulesManager.vb" />
     <Compile Include="Security\IAuthorizeReadWrite.vb" />
+    <Compile Include="Security\NoAccessBehavior.vb" />
     <Compile Include="Security\ObjectAuthorizationRules.vb" />
     <Compile Include="Security\PrincipalCache.vb" />
     <Compile Include="Security\RolesForType.vb" />

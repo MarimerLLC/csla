@@ -129,6 +129,10 @@ Namespace Server
     ''' </param>
     Public Sub Update(ByVal obj As Object, ByVal ParamArray parameters() As Object)
 
+      If obj Is Nothing Then
+        Exit Sub
+      End If
+
       Dim busObj = TryCast(obj, Core.BusinessBase)
       If busObj IsNot Nothing AndAlso busObj.IsDirty = False Then
         ' if the object isn't dirty, then just exit

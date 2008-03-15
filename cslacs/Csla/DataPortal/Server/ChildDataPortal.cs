@@ -154,6 +154,9 @@ namespace Csla.Server
     /// </param>
     public void Update(object obj, params object[] parameters)
     {
+      if (obj == null)
+        return;
+
       var busObj = obj as Core.BusinessBase;
       if (busObj != null && busObj.IsDirty == false)
       {

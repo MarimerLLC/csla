@@ -1517,7 +1517,7 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue)
     {
-      return GetProperty<P>(propertyName, field, defaultValue, false);
+      return GetProperty<P>(propertyName, field, defaultValue, Security.NoAccessBehavior.SuppressException);
     }
 
     /// <summary>
@@ -1533,12 +1533,12 @@ namespace Csla.Core
     /// <param name="defaultValue">
     /// Value to be returned if the user is not
     /// authorized to read the property.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
-    protected P GetProperty<P>(string propertyName, P field, P defaultValue, bool throwOnNoAccess)
+    protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanReadProperty(propertyName, throwOnNoAccess))
+      if (CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         return field;
       else
         return defaultValue;
@@ -1561,7 +1561,7 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field)
     {
-      return GetProperty<P>(propertyInfo.Name, field, propertyInfo.DefaultValue, false);
+      return GetProperty<P>(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException);
     }
 
     /// <summary>
@@ -1585,7 +1585,7 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field)
     {
-      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, false));
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException));
     }
 
     /// <summary>
@@ -1602,7 +1602,7 @@ namespace Csla.Core
     /// The backing field for the property.</param>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
     /// <remarks>
@@ -1610,9 +1610,9 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field, bool throwOnNoAccess)
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field, Security.NoAccessBehavior noAccess)
     {
-      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess));
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess));
     }
 
     /// <summary>
@@ -1631,7 +1631,7 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo)
     {
-      return GetProperty<P>(propertyInfo, false);
+      return GetProperty<P>(propertyInfo, Security.NoAccessBehavior.SuppressException);
     }
 
     /// <summary>
@@ -1654,7 +1654,7 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo)
     {
-      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, false));
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, Security.NoAccessBehavior.SuppressException));
     }
 
     /// <summary>
@@ -1670,7 +1670,7 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
     /// <remarks>
@@ -1678,9 +1678,9 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, bool throwOnNoAccess)
+    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, Security.NoAccessBehavior noAccess)
     {
-      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, throwOnNoAccess));
+      return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, noAccess));
     }
 
     /// <summary>
@@ -1692,7 +1692,7 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
     /// <remarks>
@@ -1700,10 +1700,10 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, bool throwOnNoAccess)
+    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, Security.NoAccessBehavior noAccess)
     {
       P result = default(P);
-      if (CanReadProperty(propertyInfo.Name, throwOnNoAccess))
+      if (CanReadProperty(propertyInfo.Name, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         result = ReadProperty<P>(propertyInfo);
       else
         result = propertyInfo.DefaultValue;
@@ -1821,7 +1821,7 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, ref P field, P newValue)
     {
-      SetProperty<P>(propertyInfo.Name, ref field, newValue, true);
+      SetProperty<P>(propertyInfo.Name, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -1841,7 +1841,7 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P>(string propertyName, ref P field, P newValue)
     {
-      SetProperty<P>(propertyName, ref field, newValue, true);
+      SetProperty<P>(propertyName, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -1867,7 +1867,7 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
     {
-      SetProperty<P, V>(propertyInfo, ref field, newValue, true);
+      SetProperty<P, V>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -1887,16 +1887,16 @@ namespace Csla.Core
     /// The new value for the property.</param>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
     /// <remarks>
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, bool throwOnNoAccess)
+    protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      SetProperty<P, V>(propertyInfo.Name, ref field, newValue, throwOnNoAccess);
+      SetProperty<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
     }
 
     /// <summary>
@@ -1910,12 +1910,12 @@ namespace Csla.Core
     /// The new value for the property.</param>
     /// <param name="propertyName">
     /// The name of the property.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetProperty<P>(string propertyName, ref P field, P newValue, bool throwOnNoAccess)
+    protected void SetProperty<P>(string propertyName, ref P field, P newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyName, throwOnNoAccess))
+      if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {
@@ -1961,16 +1961,16 @@ namespace Csla.Core
     /// The new value for the property.</param>
     /// <param name="propertyName">
     /// The name of the property.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
     /// <remarks>
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetProperty<P, V>(string propertyName, ref P field, V newValue, bool throwOnNoAccess)
+    protected void SetProperty<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyName, throwOnNoAccess))
+      if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {
@@ -2014,7 +2014,7 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
     {
-      SetProperty<P>(propertyInfo, newValue, true);
+      SetProperty<P>(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -2032,7 +2032,7 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
     {
-      SetProperty<P, F>(propertyInfo, newValue, true);
+      SetProperty<P, F>(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -2044,12 +2044,12 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue, bool throwOnNoAccess)
+    protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyInfo.Name, throwOnNoAccess))
+      if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {
@@ -2089,12 +2089,12 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
-    /// <param name="throwOnNoAccess">
+    /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue, bool throwOnNoAccess)
+    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyInfo.Name, throwOnNoAccess))
+      if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {

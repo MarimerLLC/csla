@@ -630,7 +630,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </remarks>
   Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P) As P
 
-    Return GetProperty(Of P)(propertyName, field, defaultValue, False)
+    Return GetProperty(Of P)(propertyName, field, defaultValue, Security.NoAccessBehavior.SuppressException)
 
   End Function
 
@@ -647,12 +647,12 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="defaultValue">
   ''' Value to be returned if the user is not
   ''' authorized to read the property.</param>
-  ''' <param name="throwOnNoAccess">
+  ''' <param name="noAccess">
   ''' True if an exception should be thrown when the
   ''' user is not authorized to read this property.</param>
-  Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal throwOnNoAccess As Boolean) As P
+  Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal noAccess As Security.NoAccessBehavior) As P
 
-    If CanReadProperty(propertyName, throwOnNoAccess) Then
+    If CanReadProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
       Return field
 
     Else
@@ -678,7 +678,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </remarks>
   Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As P) As P
 
-    Return GetProperty(Of P)(propertyInfo.Name, field, propertyInfo.DefaultValue, False)
+    Return GetProperty(Of P)(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException)
 
   End Function
 
@@ -703,7 +703,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </remarks>
   Protected Function GetProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F) As P
 
-    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, False))
+    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException))
 
   End Function
 
@@ -721,7 +721,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' The backing field for the property.</param>
   ''' <param name="propertyInfo">
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-  ''' <param name="throwOnNoAccess">
+  ''' <param name="noAccess">
   ''' True if an exception should be thrown when the
   ''' user is not authorized to read this property.</param>
   ''' <remarks>
@@ -730,9 +730,9 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' result.
   ''' </remarks>
   Protected Function GetProperty(Of F, P)( _
-    ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F, ByVal throwOnNoAccess As Boolean) As P
+    ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F, ByVal noAccess As Security.NoAccessBehavior) As P
 
-    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, throwOnNoAccess))
+    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess))
 
   End Function
 
@@ -753,7 +753,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Protected Function GetProperty(Of P)( _
     ByVal propertyInfo As PropertyInfo(Of P)) As P
 
-    Return GetProperty(Of P)(propertyInfo, False)
+    Return GetProperty(Of P)(propertyInfo, Security.NoAccessBehavior.SuppressException)
 
   End Function
 
@@ -778,7 +778,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Protected Function GetProperty(Of F, P)( _
     ByVal propertyInfo As PropertyInfo(Of F)) As P
 
-    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, False))
+    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, Security.NoAccessBehavior.SuppressException))
 
   End Function
 
@@ -795,7 +795,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </typeparam>
   ''' <param name="propertyInfo">
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-  ''' <param name="throwOnNoAccess">
+  ''' <param name="noAccess">
   ''' True if an exception should be thrown when the
   ''' user is not authorized to read this property.</param>
   ''' <remarks>
@@ -804,9 +804,9 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' result.
   ''' </remarks>
   Protected Function GetProperty(Of F, P)( _
-    ByVal propertyInfo As PropertyInfo(Of F), ByVal throwOnNoAccess As Boolean) As P
+    ByVal propertyInfo As PropertyInfo(Of F), ByVal noAccess As Security.NoAccessBehavior) As P
 
-    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, throwOnNoAccess))
+    Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, noAccess))
 
   End Function
 
@@ -819,7 +819,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </typeparam>
   ''' <param name="propertyInfo">
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-  ''' <param name="throwOnNoAccess">
+  ''' <param name="noAccess">
   ''' True if an exception should be thrown when the
   ''' user is not authorized to read this property.</param>
   ''' <remarks>
@@ -828,10 +828,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' result.
   ''' </remarks>
   Protected Function GetProperty(Of P)( _
-    ByVal propertyInfo As PropertyInfo(Of P), ByVal throwOnNoAccess As Boolean) As P
+    ByVal propertyInfo As PropertyInfo(Of P), ByVal noAccess As Security.NoAccessBehavior) As P
 
     Dim result As P = Nothing
-    If CanReadProperty(propertyInfo.Name, throwOnNoAccess) Then
+    If CanReadProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
       result = ReadProperty(Of P)(propertyInfo)
 
     Else

@@ -27,6 +27,7 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual("n/a", root.F03, "Default value should have been set");
       Assert.AreEqual("", root.F01, "String should default to string.Empty");
       Assert.AreEqual(0, root.F02, "Numeric should default to 0");
+      Assert.AreEqual(false, root.F05, "bool should default to false");
 
       root.F01 = "hi there";
       Assert.AreEqual("hi there", root.F01, "String should have been set");
@@ -35,6 +36,9 @@ namespace Csla.Test.PropertyGetSet
 
       root.F02 = 123;
       Assert.AreEqual(123, root.F02, "Numeric should have been set");
+
+      root.F05 = true;
+      Assert.AreEqual(true, root.F05, "bool should have been set");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
@@ -70,6 +74,7 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual("n/a", root.M03, "Default value should have been set");
       Assert.AreEqual("", root.M01, "String should default to string.Empty");
       Assert.AreEqual(0, root.M02, "Numeric should default to 0");
+      Assert.AreEqual(false, root.M05, "bool should default to false");
 
       root.M01 = "hi there";
       Assert.AreEqual("hi there", root.M01, "String should have been set");
@@ -110,6 +115,9 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual("hi there", root.TopBase, "TopBase should have been set");
       Assert.AreEqual("TopBase", _changingName, "TopBase should have been changing");
       Assert.AreEqual("TopBase", _changedName, "TopBase should have changed");
+
+      root.M05 = true;
+      Assert.AreEqual(true, root.M05, "bool should have been set");
 
       root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
       root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);

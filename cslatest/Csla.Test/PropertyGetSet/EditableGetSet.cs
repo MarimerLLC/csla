@@ -32,6 +32,22 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<string>(F03Property, ref _f03, value); }
     }
 
+    private static Csla.PropertyInfo<Csla.SmartDate> F04Property = RegisterProperty<Csla.SmartDate>(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("F04"));
+    private Csla.SmartDate _F04 = F04Property.DefaultValue;
+    public string F04
+    {
+      get { return GetProperty<Csla.SmartDate, string>(F04Property, _F04); }
+      set { SetProperty<Csla.SmartDate, string>(F04Property, ref _F04, value); }
+    }
+
+    private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("F05", "field 5"));
+    private bool _f05 = F05Property.DefaultValue;
+    public bool F05
+    {
+      get { return GetProperty<bool>(F05Property, _f05); }
+      set { SetProperty<bool>(F05Property, ref _f05, value); }
+    }
+
     private static Csla.PropertyInfo<string> M01Property = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("M01"));
     public string M01
     {
@@ -53,19 +69,18 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<string>(M03Property, value); }
     }
 
-    private static Csla.PropertyInfo<Csla.SmartDate> F04Property = RegisterProperty<Csla.SmartDate>(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("F04"));
-    private Csla.SmartDate _F04 = F04Property.DefaultValue;
-    public string F04
-    {
-      get { return GetProperty<Csla.SmartDate, string>(F04Property, _F04); }
-      set { SetProperty<Csla.SmartDate, string>(F04Property, ref _F04, value); }
-    }
-
     private static Csla.PropertyInfo<Csla.SmartDate> M04Property = RegisterProperty<Csla.SmartDate>(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("M04"));
     public string M04
     {
       get { return GetProperty<Csla.SmartDate, string>(M04Property); }
       set { SetProperty<Csla.SmartDate, string>(M04Property, value); }
+    }
+
+    private static Csla.PropertyInfo<bool> M05Property = RegisterProperty<bool>(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("M05", "field 5"));
+    public bool M05
+    {
+      get { return GetProperty<bool>(M05Property); }
+      set { SetProperty<bool>(M05Property, value); }
     }
 
     private static Csla.PropertyInfo<EditableGetSet> C01Property = RegisterProperty<EditableGetSet>(typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("C01"));

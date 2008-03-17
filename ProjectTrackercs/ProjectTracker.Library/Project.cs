@@ -13,7 +13,8 @@ namespace ProjectTracker.Library
 
     private byte[] mTimestamp = new byte[8];
 
-    private static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(typeof(Project), new PropertyInfo<Guid>("Id"));
+    private static PropertyInfo<Guid> IdProperty = 
+      RegisterProperty<Guid>(typeof(Project), new PropertyInfo<Guid>("Id"));
     [System.ComponentModel.DataObjectField(true, true)]
     public Guid Id
     {

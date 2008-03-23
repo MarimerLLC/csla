@@ -213,7 +213,7 @@ End Class
 
 Public Module ReadOnlyListBaseExtension
   <Extension()> _
-  Public Function Where(Of T As ReadOnlyListBase(Of T, C), C As Core.IEditableBusinessObject)(ByVal source As ReadOnlyListBase(Of T, C), ByVal expr As Expression(Of Func(Of C, Boolean))) As IEnumerable(Of C)
+  Public Function Where(Of T As ReadOnlyListBase(Of T, C), C As Core.IReadOnlyObject)(ByVal source As ReadOnlyListBase(Of T, C), ByVal expr As Expression(Of Func(Of C, Boolean))) As IEnumerable(Of C)
     Return source.SearchByExpression(expr)
   End Function
 

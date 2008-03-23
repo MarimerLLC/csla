@@ -61,6 +61,7 @@ namespace Csla.Core
         bool oldValue = AllowRemove;
         AllowRemove = true;
         base.ClearItems();
+        DeferredLoadIndexIfNotLoaded();
         _indexSet.ClearIndexes();
         AllowRemove = oldValue;
       }

@@ -59,6 +59,7 @@ Namespace Core
         Dim oldValue As Boolean = AllowRemove
         AllowRemove = True
         MyBase.ClearItems()
+        DeferredLoadIndexIfNotLoaded()
         _indexSet.ClearIndexes()
         AllowRemove = oldValue
       Else

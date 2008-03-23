@@ -250,7 +250,7 @@ namespace Csla.Test.Basic
   }
 
   [Serializable]
-  public class TestIndexableItem : BusinessBase<TestIndexableItem>
+  public class TestIndexableItem : BusinessBase<TestIndexableItem>, Csla.Core.IReadOnlyObject 
   {
     [Indexable]
     public string IndexedString{get; set;}
@@ -258,5 +258,14 @@ namespace Csla.Test.Basic
     public int IndexedInt{get; set;}
     public string NonIndexedString{get; set;}
 
+
+    #region IReadOnlyObject Members
+
+    bool Csla.Core.IReadOnlyObject.CanReadProperty(string propertyName)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
   }
 }

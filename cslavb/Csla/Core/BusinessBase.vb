@@ -123,7 +123,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsDirty() As Boolean Implements IEditableBusinessObject.IsDirty
       Get
-        Return _isDirty OrElse (_fieldManager IsNot Nothing AndAlso FieldManager.IsDirty())
+        Return IsSelfDirty OrElse (_fieldManager IsNot Nothing AndAlso FieldManager.IsDirty())
       End Get
     End Property
 
@@ -1196,7 +1196,7 @@ Namespace Core
     <Browsable(False)> _
     Public Overridable ReadOnly Property IsValid() As Boolean Implements IEditableBusinessObject.IsValid
       Get
-        Return ValidationRules.IsValid AndAlso (_fieldManager Is Nothing OrElse FieldManager.IsValid())
+        Return IsSelfValid AndAlso (_fieldManager Is Nothing OrElse FieldManager.IsValid())
       End Get
     End Property
 

@@ -116,7 +116,7 @@ namespace Csla.Core
     [Browsable(false)]
     public virtual bool IsDirty
     {
-      get { return _isDirty || (_fieldManager != null && FieldManager.IsDirty()); }
+      get { return IsSelfDirty || (_fieldManager != null && FieldManager.IsDirty()); }
     }
 
     /// <summary>
@@ -1185,7 +1185,7 @@ namespace Csla.Core
     [Browsable(false)]
     public virtual bool IsValid
     {
-      get { return ValidationRules.IsValid && (_fieldManager == null || FieldManager.IsValid()); }
+      get { return IsSelfValid && (_fieldManager == null || FieldManager.IsValid()); }
     }
 
     /// <summary>

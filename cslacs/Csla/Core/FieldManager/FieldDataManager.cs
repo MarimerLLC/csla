@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using Csla.Serialization;
+using Csla.Properties;
 
 namespace Csla.Core.FieldManager
 {
@@ -118,18 +119,32 @@ namespace Csla.Core.FieldManager
     /// </param>
     internal IFieldData GetFieldData(IPropertyInfo prop)
     {
-      return _fieldData[prop.Index];
+      try
+      {
+        return _fieldData[prop.Index];
+      }
+      catch (IndexOutOfRangeException ex)
+      {
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
+      }
     }
 
     private IFieldData GetOrCreateFieldData(IPropertyInfo prop)
     {
-      var field = _fieldData[prop.Index];
-      if (field == null)
+      try
       {
-        field = prop.NewFieldData(prop.Name);
-        _fieldData[prop.Index] = field;
+        var field = _fieldData[prop.Index];
+        if (field == null)
+        {
+          field = prop.NewFieldData(prop.Name);
+          _fieldData[prop.Index] = field;
+        }
+        return field;
       }
-      return field;
+      catch (IndexOutOfRangeException ex)
+      {
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
+      }
     }
 
     internal IPropertyInfo FindProperty(object value)
@@ -236,9 +251,16 @@ namespace Csla.Core.FieldManager
     /// </param>
     internal void RemoveField(IPropertyInfo prop)
     {
-      var field = _fieldData[prop.Index];
-      if (field != null)
-        field.Value = null;
+      try
+      {
+        var field = _fieldData[prop.Index];
+        if (field != null)
+          field.Value = null;
+      }
+      catch (IndexOutOfRangeException ex)
+      {
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
+      }
     }
 
     /// <summary>
@@ -251,7 +273,14 @@ namespace Csla.Core.FieldManager
     /// </param>
     public bool FieldExists(IPropertyInfo propertyInfo)
     {
-      return _fieldData[propertyInfo.Index] != null;
+      try
+      {
+        return _fieldData[propertyInfo.Index] != null;
+      }
+      catch (IndexOutOfRangeException ex)
+      {
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
+      }
     }
 
     #endregion

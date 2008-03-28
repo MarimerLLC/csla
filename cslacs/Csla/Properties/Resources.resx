@@ -294,4 +294,7 @@
   <data name="DatabaseNameNotFound" xml:space="preserve">
     <value>Database name not found in config file ({0})</value>
   </data>
+  <data name="PropertyNotRegistered" xml:space="preserve">
+    <value>One or more properties are not registered for this type</value>
+  </data>
 </root>

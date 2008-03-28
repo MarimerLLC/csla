@@ -421,6 +421,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One or more properties are not registered for this type.
+        /// </summary>
+        internal static string PropertyNotRegistered {
+            get {
+                return ResourceManager.GetString("PropertyNotRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Property set not allowed.
         /// </summary>
         internal static string PropertySetNotAllowed {

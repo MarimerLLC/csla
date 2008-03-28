@@ -429,6 +429,14 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsFalse(root.L01.IsDirty, "List should not be dirty after Save");
     }
 
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void PropertyNotRegistered()
+    {
+      var root = new BadGetSet();
+      var tmp = root.Id;
+    }
+
     // ======================================================================================
     // ======================================================================================
 

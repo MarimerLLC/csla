@@ -153,6 +153,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="PropertyGetSet\BadGetSet.cs" />
     <Compile Include="PropertyGetSet\ChildList.cs" />
     <Compile Include="PropertyGetSet\EditableGetSet.cs" />
     <Compile Include="PropertyGetSet\EditableGetSetBase.cs" />

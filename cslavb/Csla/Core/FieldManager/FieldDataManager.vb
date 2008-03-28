@@ -106,16 +106,28 @@ Namespace Core.FieldManager
     ''' The property corresponding to the field.
     ''' </param>
     Friend Function GetFieldData(ByVal prop As IPropertyInfo) As IFieldData
-      Return _fieldData(prop.Index)
+      Try
+        Return _fieldData(prop.Index)
+
+      Catch ex As IndexOutOfRangeException
+        Throw New InvalidOperationException(My.Resources.PropertyNotRegistered, ex)
+      End Try
+
     End Function
 
     Private Function GetOrCreateFieldData(ByVal prop As IPropertyInfo) As IFieldData
-      Dim field = _fieldData(prop.Index)
-      If field Is Nothing Then
-        field = prop.NewFieldData(prop.Name)
-        _fieldData(prop.Index) = field
-      End If
-      Return field
+      Try
+        Dim field = _fieldData(prop.Index)
+        If field Is Nothing Then
+          field = prop.NewFieldData(prop.Name)
+          _fieldData(prop.Index) = field
+        End If
+        Return field
+
+      Catch ex As IndexOutOfRangeException
+        Throw New InvalidOperationException(My.Resources.PropertyNotRegistered, ex)
+      End Try
+
     End Function
 
     Friend Function FindProperty(ByVal value As Object) As IPropertyInfo
@@ -218,10 +230,16 @@ Namespace Core.FieldManager
     ''' The property corresponding to the field.
     ''' </param>
     Friend Sub RemoveField(ByVal prop As IPropertyInfo)
-      Dim field = _fieldData(prop.Index)
-      If field IsNot Nothing Then
-        field.Value = Nothing
-      End If
+      Try
+        Dim field = _fieldData(prop.Index)
+        If field IsNot Nothing Then
+          field.Value = Nothing
+        End If
+
+      Catch ex As IndexOutOfRangeException
+        Throw New InvalidOperationException(My.Resources.PropertyNotRegistered, ex)
+      End Try
+
     End Sub
 
     ''' <summary>
@@ -233,7 +251,13 @@ Namespace Core.FieldManager
     ''' The property corresponding to the field.
     ''' </param>
     Public Function FieldExists(ByVal propertyInfo As IPropertyInfo) As Boolean
-      Return _fieldData(propertyInfo.Index) IsNot Nothing
+      Try
+        Return _fieldData(propertyInfo.Index) IsNot Nothing
+
+      Catch ex As IndexOutOfRangeException
+        Throw New InvalidOperationException(My.Resources.PropertyNotRegistered, ex)
+      End Try
+
     End Function
 
 #End Region

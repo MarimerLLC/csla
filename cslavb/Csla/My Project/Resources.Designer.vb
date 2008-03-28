@@ -430,6 +430,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to One or more properties are not registered for this type.
+        '''</summary>
+        Friend ReadOnly Property PropertyNotRegistered() As String
+            Get
+                Return ResourceManager.GetString("PropertyNotRegistered", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Property set not allowed.
         '''</summary>
         Friend ReadOnly Property PropertySetNotAllowed() As String

@@ -28,11 +28,35 @@ public class PTService : IPTService
     }
     catch (Csla.DataPortalException ex)
     {
-      throw ex.BusinessException;
+      throw new FaultException(ex.BusinessException.Message);
     }
     catch (Exception ex)
     {
-      throw new Exception(ex.Message);
+      throw new FaultException(ex.Message);
+    }
+  }
+
+  public ProjectData GetProject(ProjectRequest request)
+  {
+    // TODO: comment out the following if using the
+    // PTWcfServiceAuth components to require a
+    // username/password from the caller
+    ProjectTracker.Library.Security.PTPrincipal.Logout();
+
+    try
+    {
+      var project = Project.GetProject(request.Id);
+      var result = new ProjectData();
+      Csla.Data.DataMapper.Map(project, result, "Resources");
+      return result;
+    }
+    catch (Csla.DataPortalException ex)
+    {
+      throw new FaultException(ex.BusinessException.Message);
+    }
+    catch (Exception ex)
+    {
+      throw new FaultException(ex.Message);
     }
   }
 

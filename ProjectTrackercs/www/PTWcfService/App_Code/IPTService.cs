@@ -7,4 +7,6 @@ public interface IPTService
 {
   [OperationContract]
   ProjectData[] GetProjectList();
+  [OperationContract]
+  ProjectData GetProject(ProjectRequest request);
 }

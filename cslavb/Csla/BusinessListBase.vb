@@ -462,6 +462,10 @@ Public MustInherit Class BusinessListBase( _
     While MyBase.Count > 0
       RemoveItem(0)
     End While
+    DeferredLoadIndexIfNotLoaded()
+    _indexSet.ClearIndexes()
+    DeferredLoadPositionMapIfNotLoaded()
+    _positionMap.ClearMap()
     MyBase.ClearItems()
   End Sub
 

@@ -23,7 +23,7 @@
         AddToMap(item)
       Else
         Dim i As Integer = _list.Count - 1
-        Do While i = position
+        Do While i > position
           _map(_list(i)) += 1
           i -= 1
         Loop

@@ -524,6 +524,7 @@ namespace Csla
       while (base.Count > 0) RemoveItem(0);
       DeferredLoadIndexIfNotLoaded();
       _indexSet.ClearIndexes();
+      DeferredLoadPositionMapIfNotLoaded();
       _positionMap.ClearMap();
       base.ClearItems();
     }

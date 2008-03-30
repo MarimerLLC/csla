@@ -137,7 +137,7 @@ Public Class Resource
     If Not CanDeleteObject() Then
       Throw New System.Security.SecurityException("User not authorized to remove a resource")
     End If
-    DataPortal.Delete(New SingleCriteria(Of Resource, Integer)(id))
+    DataPortal.Delete(Of Resource)(New SingleCriteria(Of Resource, Integer)(id))
 
   End Sub
 

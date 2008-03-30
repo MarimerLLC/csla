@@ -147,18 +147,18 @@ Public Class ProjectResource
   Private Sub Child_Insert(ByVal project As Project)
 
     _timestamp = Assignment.AddAssignment(project.Id, _
-                                          GetProperty(Of Integer)(ResourceIdProperty), _
-                                          GetProperty(Of SmartDate)(AssignedProperty), _
-                                          GetProperty(Of Integer)(RoleProperty))
+                                          ReadProperty(Of Integer)(ResourceIdProperty), _
+                                          ReadProperty(Of SmartDate)(AssignedProperty), _
+                                          ReadProperty(Of Integer)(RoleProperty))
 
   End Sub
 
   Private Sub Child_Update(ByVal project As Project)
 
     _timestamp = Assignment.UpdateAssignment(project.Id, _
-                                             GetProperty(Of Integer)(ResourceIdProperty), _
-                                             GetProperty(Of SmartDate)(AssignedProperty), _
-                                             GetProperty(Of Integer)(RoleProperty), _
+                                             ReadProperty(Of Integer)(ResourceIdProperty), _
+                                             ReadProperty(Of SmartDate)(AssignedProperty), _
+                                             ReadProperty(Of Integer)(RoleProperty), _
                                              _timestamp)
 
   End Sub
@@ -166,7 +166,7 @@ Public Class ProjectResource
   Private Sub Child_DeleteSelf(ByVal project As Project)
 
     Assignment.RemoveAssignment( _
-      project.Id, GetProperty(Of Integer)(ResourceIdProperty))
+      project.Id, ReadProperty(Of Integer)(ResourceIdProperty))
 
   End Sub
 

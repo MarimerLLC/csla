@@ -240,15 +240,15 @@ Public Class Project
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
       ' insert project data
       Dim lastChanged As System.Data.Linq.Binary = Nothing
-      ctx.DataContext.addProject(GetProperty(Of Guid)(IdProperty), _
-                                 GetProperty(Of String)(NameProperty), _
-                                 GetProperty(Of SmartDate)(StartedProperty), _
-                                 GetProperty(Of SmartDate)(EndedProperty), _
-                                 GetProperty(Of String)(DescriptionProperty), _
+      ctx.DataContext.addProject(ReadProperty(Of Guid)(IdProperty), _
+                                 ReadProperty(Of String)(NameProperty), _
+                                 ReadProperty(Of SmartDate)(StartedProperty), _
+                                 ReadProperty(Of SmartDate)(EndedProperty), _
+                                 ReadProperty(Of String)(DescriptionProperty), _
                                  lastChanged)
       _timestamp = lastChanged.ToArray
       ' update child objects
-      DataPortal.UpdateChild(GetProperty(Of ProjectResources)(ResourcesProperty), Me)
+      DataPortal.UpdateChild(ReadProperty(Of ProjectResources)(ResourcesProperty), Me)
     End Using
 
   End Sub
@@ -259,16 +259,16 @@ Public Class Project
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
       ' insert project data
       Dim lastChanged As System.Data.Linq.Binary = Nothing
-      ctx.DataContext.UpdateProject(GetProperty(Of Guid)(IdProperty), _
-                                    GetProperty(Of String)(NameProperty), _
-                                    GetProperty(Of SmartDate)(StartedProperty), _
-                                    GetProperty(Of SmartDate)(EndedProperty), _
-                                    GetProperty(Of String)(DescriptionProperty), _
+      ctx.DataContext.UpdateProject(ReadProperty(Of Guid)(IdProperty), _
+                                    ReadProperty(Of String)(NameProperty), _
+                                    ReadProperty(Of SmartDate)(StartedProperty), _
+                                    ReadProperty(Of SmartDate)(EndedProperty), _
+                                    ReadProperty(Of String)(DescriptionProperty), _
                                     _timestamp, _
                                     lastChanged)
       _timestamp = lastChanged.ToArray
       ' update child objects
-      DataPortal.UpdateChild(GetProperty(Of ProjectResources)(ResourcesProperty), Me)
+      DataPortal.UpdateChild(ReadProperty(Of ProjectResources)(ResourcesProperty), Me)
     End Using
 
   End Sub
@@ -276,7 +276,7 @@ Public Class Project
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
 
-    DataPortal_Delete(New SingleCriteria(Of Project, Guid)(GetProperty(Of Guid)(IdProperty)))
+    DataPortal_Delete(New SingleCriteria(Of Project, Guid)(ReadProperty(Of Guid)(IdProperty)))
 
   End Sub
 

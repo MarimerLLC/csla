@@ -131,8 +131,18 @@ namespace Csla.Server.Hosts
     [Serializable()]
     public class DeleteRequest
     {
+      private Type _objectType;
       private object _criteria;
       private Server.DataPortalContext _context;
+
+      /// <summary>
+      /// Type of object requested.
+      /// </summary>
+      public Type ObjectType 
+      {
+        get { return _objectType; }
+        set { _objectType = value; }
+      }
 
       /// <summary>
       /// Criteria object describing business object.
@@ -238,7 +248,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Delete(request.Criteria, request.Context);
+        result = portal.Delete(request.ObjectType, request.Criteria, request.Context);
       }
       catch (Exception ex)
       {

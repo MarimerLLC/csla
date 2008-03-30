@@ -220,11 +220,12 @@ namespace Csla.Server
     /// <summary>
     /// Delete a business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Delete(object criteria, DataPortalContext context)
+    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
     {
       try
       {
@@ -232,7 +233,7 @@ namespace Csla.Server
 
         DataPortalResult result;
 
-        var method = DataPortalMethodCache.GetMethodInfo(MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria);
+        var method = DataPortalMethodCache.GetMethodInfo(objectType, "DataPortal_Delete", criteria);
 
         IDataPortalServer portal;
         switch (method.TransactionalType)
@@ -241,7 +242,7 @@ namespace Csla.Server
             portal = new ServicedDataPortal();
             try
             {
-              result = portal.Delete(criteria, context);
+              result = portal.Delete(objectType, criteria, context);
             }
             finally
             {
@@ -250,11 +251,11 @@ namespace Csla.Server
             break;
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal();
-            result = portal.Delete(criteria, context);
+            result = portal.Delete(objectType, criteria, context);
             break;
           default:
             portal = new SimpleDataPortal();
-            result = portal.Delete(criteria, context);
+            result = portal.Delete(objectType, criteria, context);
             break;
         }
         return result;

@@ -125,13 +125,14 @@ namespace Csla.DataPortalClient
     /// Called by <see cref="DataPortal" /> to delete a
     /// business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public Server.DataPortalResult Delete(object criteria, Server.DataPortalContext context)
+    public Server.DataPortalResult Delete(Type objectType, object criteria, Server.DataPortalContext context)
     {
-      return Portal.Delete(criteria, context);
+      return Portal.Delete(objectType, criteria, context);
     }
 
     /// <summary>

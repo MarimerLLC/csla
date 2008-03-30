@@ -11,6 +11,8 @@ namespace Csla.Server.Hosts.WcfChannel
   public class DeleteRequest
   {
     [DataMember]
+    private Type _objectType;
+    [DataMember]
     private object _criteria;
     [DataMember]
     private Csla.Server.DataPortalContext _context;
@@ -18,12 +20,23 @@ namespace Csla.Server.Hosts.WcfChannel
     /// <summary>
     /// Create new instance of object.
     /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">Data portal context from client.</param>
-    public DeleteRequest(object criteria, Csla.Server.DataPortalContext context)
+    public DeleteRequest(Type objectType, object criteria, Csla.Server.DataPortalContext context)
     {
+      _objectType = objectType;
       _criteria = criteria;
       _context = context;
+    }
+
+    /// <summary>
+    /// Type being requested.
+    /// </summary>
+    public Type ObjectType
+    {
+      get { return _objectType; }
+      set { _objectType = value; }
     }
 
     /// <summary>

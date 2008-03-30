@@ -269,16 +269,16 @@ namespace Csla.Server
     /// <summary>
     /// Delete a business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
-    public DataPortalResult Delete(object criteria, DataPortalContext context)
+    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
-      Type objectType = MethodCaller.GetObjectType(criteria);
       var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete);
       try
       {

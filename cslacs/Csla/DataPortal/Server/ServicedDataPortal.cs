@@ -85,13 +85,14 @@ namespace Csla.Server
     /// but wraps that call within a COM+ transaction
     /// to provide transactional support.
     /// </remarks>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
     [AutoComplete(true)]
-    public DataPortalResult Delete(object criteria, DataPortalContext context)
+    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
     {
       SimpleDataPortal portal = new SimpleDataPortal();
-      return portal.Delete(criteria, context);
+      return portal.Delete(objectType, criteria, context);
     }
   }
 }

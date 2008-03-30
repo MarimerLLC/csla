@@ -53,14 +53,15 @@ namespace Csla.Server.Hosts
     /// <summary>
     /// Delete a business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Delete(object criteria, DataPortalContext context)
+    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Delete(criteria, context);
+      return portal.Delete(objectType, criteria, context);
     }
   }
 }

@@ -78,7 +78,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Delete(request.Criteria, request.Context);
+        result = portal.Delete(request.ObjectType, request.Criteria, request.Context);
       }
       catch (Exception ex)
       {

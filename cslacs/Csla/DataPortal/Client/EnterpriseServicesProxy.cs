@@ -87,16 +87,17 @@ namespace Csla.DataPortalClient
     /// Called by <see cref="DataPortal" /> to delete a
     /// business object.
     /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public virtual Server.DataPortalResult Delete(object criteria, Server.DataPortalContext context)
+    public virtual Server.DataPortalResult Delete(Type objectType, object criteria, Server.DataPortalContext context)
     {
       Server.Hosts.EnterpriseServicesPortal svc = GetServerObject();
       try
       {
-        return svc.Delete(criteria, context);
+        return svc.Delete(objectType, criteria, context);
       }
       finally
       {

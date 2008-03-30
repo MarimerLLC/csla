@@ -443,11 +443,33 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+    public static void Delete<T>(object criteria)
+    {
+      Delete(typeof(T), criteria);
+    }
+
+    /// <summary>
+    /// Called by a Shared (static in C#) method in the business class to cause
+    /// immediate deletion of a specific object from the database.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static void Delete(object criteria)
+    {
+      Type objectType = MethodCaller.GetObjectType(criteria);
+      Delete(objectType, criteria);
+    }
+
+    /// <summary>
+    /// Called by a Shared (static in C#) method in the business class to cause
+    /// immediate deletion of a specific object from the database.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
+    private static void Delete(Type objectType, object criteria)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
-      Type objectType = MethodCaller.GetObjectType(criteria);
       try
       {
         OnDataPortalInitInvoke(null);
@@ -469,7 +491,7 @@ namespace Csla
 
         try
         {
-          result = proxy.Delete(criteria, dpContext);
+          result = proxy.Delete(objectType, criteria, dpContext);
         }
         catch (Server.DataPortalException ex)
         {

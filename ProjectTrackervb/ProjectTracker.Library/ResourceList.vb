@@ -28,11 +28,10 @@ Public Class ResourceList
 
     RaiseListChangedEvents = False
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
-      Dim data = From r In ctx.DataContext.Resources Select r
+      Dim data = From r In ctx.DataContext.Resources _
+                 Select New ResourceInfo(r.Id, r.LastName, r.FirstName)
       IsReadOnly = False
-      For Each resource In data
-        Me.Add(New ResourceInfo(resource))
-      Next
+      Me.AddRange(data)
       IsReadOnly = True
     End Using
     RaiseListChangedEvents = True

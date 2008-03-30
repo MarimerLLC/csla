@@ -41,13 +41,14 @@ Public Class ProjectList
 
     RaiseListChangedEvents = False
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
-      Dim data = From p In ctx.DataContext.Projects Select p
+      Dim data = From p In ctx.DataContext.Projects _
+                 Select New ProjectInfo(p.Id, p.Name)
       If Not String.IsNullOrEmpty(nameFilter) Then _
-        data = From p In data Where p.Name Like "*" & nameFilter & "*" Select p
+        data = From p In ctx.DataContext.Projects _
+               Where p.Name Like "*" & nameFilter & "*" _
+               Select New ProjectInfo(p.Id, p.Name)
       IsReadOnly = False
-      For Each project In data
-        Me.Add(New ProjectInfo(project.Id, project.Name))
-      Next
+      Me.AddRange(data)
       IsReadOnly = True
     End Using
     RaiseListChangedEvents = True

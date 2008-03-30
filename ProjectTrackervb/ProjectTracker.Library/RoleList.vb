@@ -55,11 +55,10 @@ Public Class RoleList
 
     Me.RaiseListChangedEvents = False
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
-      Dim data = From r In ctx.DataContext.Roles Select r
+      Dim data = From role In ctx.DataContext.Roles _
+                 Select New NameValuePair(role.Id, role.Name)
       IsReadOnly = False
-      For Each role In data
-        Me.Add(New NameValuePair(role.Id, role.Name))
-      Next
+      Me.AddRange(data)
       IsReadOnly = True
     End Using
     Me.RaiseListChangedEvents = True

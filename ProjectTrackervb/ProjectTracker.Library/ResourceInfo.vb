@@ -25,9 +25,9 @@ Public Class ResourceInfo
     Return _name
   End Function
 
-  Friend Sub New(ByVal resource As DalLinq.Resource)
-    _id = resource.Id
-    _name = String.Format("{0}, {1}", resource.LastName, resource.FirstName)
+  Friend Sub New(ByVal id As Integer, ByVal lastname As String, ByVal firstname As String)
+    _id = id
+    _name = String.Format("{0}, {1}", lastname, firstname)
   End Sub
 
 End Class

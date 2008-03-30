@@ -5,7 +5,7 @@ namespace Csla.Core
 {
   /// <summary>
   /// Extends BindingList of T by adding extra
-  /// events.
+  /// behaviors.
   /// </summary>
   /// <typeparam name="T">Type of item contained in list.</typeparam>
   [Serializable]
@@ -66,6 +66,8 @@ namespace Csla.Core
 
     #endregion
 
+    #region RemoveItem
+
     /// <summary>
     /// Remove the item at the
     /// specified index.
@@ -79,5 +81,21 @@ namespace Csla.Core
       OnRemovingItem(this[index]);
       base.RemoveItem(index);
     }
+
+    #endregion
+
+    #region AddRange
+
+    /// <summary>
+    /// Add a range of items to the list.
+    /// </summary>
+    /// <param name="range">List of items to add.</param>
+    public void AddRange(System.Collections.Generic.IEnumerable<T> range)
+    {
+      foreach (var element in range)
+        this.Add(element);
+    }
+
+    #endregion
   }
 }

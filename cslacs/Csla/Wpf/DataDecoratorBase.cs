@@ -95,13 +95,7 @@ namespace Csla.Wpf
     /// </summary>
     private void Panel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-      UnHookDataContextEvents(e.OldValue);
-
-      // store a ref to the data object
-      _dataObject = GetDataObject(e.NewValue);
-
-      HookDataContextEvents(e.NewValue);
-
+      UpdateDataObject(e.OldValue, e.NewValue);
       if (_loaded)
         DataObjectChanged();
     }
@@ -121,13 +115,18 @@ namespace Csla.Wpf
     /// </summary>
     private void DataProvider_DataChanged(object sender, EventArgs e)
     {
-      UnHookPropertyChanged(_dataObject as INotifyPropertyChanged);
-
-      _dataObject = ((DataSourceProvider)sender).Data as IDataErrorInfo;
-
-      HookPropertyChanged(_dataObject as INotifyPropertyChanged);
-
+      UpdateDataObject(_dataObject, ((DataSourceProvider)sender).Data);
       DataObjectChanged();
+    }
+
+    private void UpdateDataObject(object oldObject, object newObject)
+    {
+      UnHookDataContextEvents(oldObject);
+
+      // store a ref to the data object
+      _dataObject = GetDataObject(newObject);
+
+      HookDataContextEvents(newObject);
     }
 
     private void UnHookDataContextEvents(object oldValue)

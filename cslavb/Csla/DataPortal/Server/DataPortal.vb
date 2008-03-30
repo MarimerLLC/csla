@@ -206,11 +206,13 @@ Namespace Server
     ''' <summary>
     ''' Delete a business object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to create.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Public Function Delete( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Delete
@@ -221,13 +223,13 @@ Namespace Server
         Dim result As DataPortalResult
 
         Dim method = Server.DataPortalMethodCache.GetMethodInfo( _
-          MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
+          objectType, "DataPortal_Delete", criteria)
 
         Select Case method.TransactionalType
           Case TransactionalTypes.EnterpriseServices
             Dim portal As New ServicedDataPortal
             Try
-              result = portal.Delete(criteria, context)
+              result = portal.Delete(objectType, criteria, context)
 
             Finally
               portal.Dispose()
@@ -235,11 +237,11 @@ Namespace Server
 
           Case TransactionalTypes.TransactionScope
             Dim portal As New TransactionalDataPortal
-            result = portal.Delete(criteria, context)
+            result = portal.Delete(objectType, criteria, context)
 
           Case Else
             Dim portal As New SimpleDataPortal
-            result = portal.Delete(criteria, context)
+            result = portal.Delete(objectType, criteria, context)
         End Select
 
         ClearContext(context)

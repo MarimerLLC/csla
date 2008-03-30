@@ -227,16 +227,19 @@ Namespace Server
     ''' <summary>
     ''' Delete a business object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to create.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")> _
-    Public Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Delete
+    Public Function Delete( _
+      ByVal objectType As Type, _
+      ByVal criteria As Object, _
+      ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalServer.Delete
 
       Dim obj As LateBoundObject = Nothing
       Dim target As IDataPortalTarget = Nothing
-      Dim objectType As Type = MethodCaller.GetObjectType(criteria)
       Dim eventArgs = New DataPortalEventArgs(context, objectType, DataPortalOperations.Delete)
       Try
         ' create an instance of the business objet

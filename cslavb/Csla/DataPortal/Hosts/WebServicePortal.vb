@@ -159,8 +159,21 @@ Namespace Server.Hosts
     <Serializable()> _
     Public Class DeleteRequest
 
+      Private _objectType As Type
       Private _criteria As Object
       Private _context As Server.DataPortalContext
+
+      ''' <summary>
+      ''' Type of object requested.
+      ''' </summary>
+      Public Property ObjectType() As Type
+        Get
+          Return _objectType
+        End Get
+        Set(ByVal value As Type)
+          _objectType = value
+        End Set
+      End Property
 
       ''' <summary>
       ''' Criteria object describing business object.
@@ -270,7 +283,7 @@ Namespace Server.Hosts
       Dim portal As New Server.DataPortal
       Dim result As Object
       Try
-        result = portal.Delete(request.Criteria, request.Context)
+        result = portal.Delete(request.ObjectType, request.Criteria, request.Context)
 
       Catch ex As Exception
         result = ex

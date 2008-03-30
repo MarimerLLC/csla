@@ -116,9 +116,11 @@ Namespace Server
     ''' to provide transactional support via
     ''' System.Transactions.
     ''' </remarks>
+    ''' <param name="objectType">Type of business object to create.</param>
     ''' <param name="criteria">Object-specific criteria.</param>
     ''' <param name="context">Context data from the client.</param>
     Public Function Delete( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Delete
@@ -126,7 +128,7 @@ Namespace Server
       Dim result As DataPortalResult
       Using tr As New TransactionScope
         Dim portal As New SimpleDataPortal
-        result = portal.Delete(criteria, context)
+        result = portal.Delete(objectType, criteria, context)
         tr.Complete()
       End Using
       Return result

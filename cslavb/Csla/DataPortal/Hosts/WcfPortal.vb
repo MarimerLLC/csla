@@ -62,7 +62,7 @@ Namespace Server.Hosts
       Dim portal As Server.DataPortal = New Server.DataPortal
       Dim result As Object
       Try
-        result = portal.Delete(request.Criteria, request.Context)
+        result = portal.Delete(request.ObjectType, request.Criteria, request.Context)
       Catch ex As Exception
         result = ex
       End Try

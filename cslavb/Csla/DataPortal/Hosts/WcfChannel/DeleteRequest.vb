@@ -8,6 +8,8 @@ Namespace Server.Hosts.WcfChannel
   <DataContract()> _
   Public Class DeleteRequest
     <DataMember()> _
+    Private _objectType As Type
+    <DataMember()> _
     Private _criteria As Object
     <DataMember()> _
     Private _context As Server.DataPortalContext
@@ -15,12 +17,27 @@ Namespace Server.Hosts.WcfChannel
     ''' <summary>
     ''' Create new instance of object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to create.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">Data portal context from client.</param>
-    Public Sub New(ByVal criteria As Object, ByVal context As Server.DataPortalContext)
+    Public Sub New(ByVal objectType As Type, ByVal criteria As Object, ByVal context As Server.DataPortalContext)
+      _objectType = objectType
       _criteria = criteria
       _context = context
     End Sub
+
+    ''' <summary>
+    ''' The type of the business object
+    ''' to be retrieved.
+    ''' </summary>
+    Public Property ObjectType() As Type
+      Get
+        Return _objectType
+      End Get
+      Set(ByVal value As Type)
+        _objectType = value
+      End Set
+    End Property
 
     ''' <summary>
     ''' Criteria object describing business object.

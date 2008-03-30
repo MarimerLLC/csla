@@ -431,11 +431,32 @@ Public Module DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage( _
     "Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
+  Public Sub Delete(Of T)(ByVal criteria As Object)
+
+    Delete(GetType(T), criteria)
+
+  End Sub
+
+  ''' <summary>
+  ''' Called by a Shared (static in C#) method in the business class to cause
+  ''' immediate deletion of a specific object from the database.
+  ''' </summary>
+  ''' <param name="criteria">Object-specific criteria.</param>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage( _
+    "Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
+    MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
   Public Sub Delete(ByVal criteria As Object)
+
+    Dim objectType = MethodCaller.GetObjectType(criteria)
+    Delete(objectType, criteria)
+
+  End Sub
+
+
+  Private Sub Delete(ByVal objectType As Type, ByVal criteria As Object)
 
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
-    Dim objectType = MethodCaller.GetObjectType(criteria)
     Try
       OnDataPortalInitInvoke(Nothing)
 
@@ -456,7 +477,7 @@ Public Module DataPortal
       OnDataPortalInvoke(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete))
 
       Try
-        result = proxy.Delete(criteria, dpContext)
+        result = proxy.Delete(objectType, criteria, dpContext)
 
       Catch ex As Server.DataPortalException
         result = ex.Result

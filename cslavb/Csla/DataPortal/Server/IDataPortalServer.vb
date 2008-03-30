@@ -42,11 +42,13 @@ Namespace Server
     ''' <summary>
     ''' Delete a business object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to create.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Function Delete( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As DataPortalContext) As DataPortalResult
   End Interface

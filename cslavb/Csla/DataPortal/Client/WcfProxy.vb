@@ -115,14 +115,19 @@ Namespace DataPortalClient
     ''' Called by <see cref="DataPortal" /> to delete a
     ''' business object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to create.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    Public Function Delete(ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Delete
+    Public Function Delete( _
+      ByVal objectType As Type, _
+      ByVal criteria As Object, _
+      ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Delete
+
       Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
       Dim svr As IWcfPortal = cf.CreateChannel()
-      Dim response As WcfResponse = svr.Delete(New DeleteRequest(criteria, context))
+      Dim response As WcfResponse = svr.Delete(New DeleteRequest(objectType, criteria, context))
       cf.Close()
 
       Dim result As Object = response.Result

@@ -100,18 +100,20 @@ Namespace Server
     ''' but wraps that call within a COM+ transaction
     ''' to provide transactional support.
     ''' </remarks>
+    ''' <param name="objectType">Type of business object to create.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     <AutoComplete(True)> _
     Public Function Delete( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Delete
 
       Dim portal As New SimpleDataPortal
-      Return portal.Delete(criteria, context)
+      Return portal.Delete(objectType, criteria, context)
 
     End Function
 

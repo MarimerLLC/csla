@@ -98,18 +98,20 @@ Namespace DataPortalClient
     ''' Called by <see cref="DataPortal" /> to delete a
     ''' business object.
     ''' </summary>
+    ''' <param name="objectType">Type of business object to create.</param>
     ''' <param name="criteria">Criteria object describing business object.</param>
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
     Public Overridable Function Delete( _
+      ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Delete
 
       Dim svc As Server.Hosts.EnterpriseServicesPortal = GetServerObject()
       Try
-        Return svc.Delete(criteria, context)
+        Return svc.Delete(objectType, criteria, context)
 
       Finally
         If svc IsNot Nothing Then

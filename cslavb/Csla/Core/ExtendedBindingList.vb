@@ -4,7 +4,7 @@ Namespace Core
 
   ''' <summary>
   ''' Extends BindingList of T by adding extra
-  ''' events.
+  ''' behaviors.
   ''' </summary>
   ''' <typeparam name="T">Type of item contained in list.</typeparam>
   <Serializable()> _
@@ -66,6 +66,8 @@ Namespace Core
 
 #End Region
 
+#Region " RemoveItem "
+
     ''' <summary>
     ''' Remove the item at the
     ''' specified index.
@@ -78,6 +80,24 @@ Namespace Core
       OnRemovingItem(Me(index))
       MyBase.RemoveItem(index)
     End Sub
+
+#End Region
+
+#Region " AddRange "
+
+    ''' <summary>
+    ''' Add a range of items to the list.
+    ''' </summary>
+    ''' <param name="range">List of items to add.</param>
+    Public Sub AddRange(ByVal range As IEnumerable(Of T))
+
+      For Each element In range
+        Me.Add(element)
+      Next
+
+    End Sub
+
+#End Region
 
   End Class
 

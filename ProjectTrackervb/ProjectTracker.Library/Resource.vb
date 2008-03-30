@@ -224,7 +224,7 @@ Public Class Resource
   Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Resource, Integer))
 
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
-      ctx.DataContext.DeleteResource(_id)
+      ctx.DataContext.DeleteResource(criteria.Value)
     End Using
 
   End Sub

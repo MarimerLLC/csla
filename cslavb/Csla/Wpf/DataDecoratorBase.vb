@@ -88,16 +88,12 @@ Namespace Wpf
     ''' control has changed.
     ''' </summary>
     Private Sub Panel_DataContextChanged(ByVal sender As Object, ByVal e As DependencyPropertyChangedEventArgs)
-      UnHookDataContextEvents(e.OldValue)
 
-      ' store a ref to the data object
-      _dataObject = GetDataObject(e.NewValue)
-
-      HookDataContextEvents(e.NewValue)
-
+      UpdateDataObject(e.OldValue, e.NewValue)
       If _loaded Then
         DataObjectChanged()
       End If
+
     End Sub
 
     Private Function GetDataObject(ByVal dataContext As Object) As Object
@@ -114,13 +110,21 @@ Namespace Wpf
     ''' DataContext (a DataSourceProvider) has changed.
     ''' </summary>
     Private Sub DataProvider_DataChanged(ByVal sender As Object, ByVal e As EventArgs)
-      UnHookPropertyChanged(TryCast(_dataObject, INotifyPropertyChanged))
 
-      _dataObject = TryCast((CType(sender, DataSourceProvider)).Data, IDataErrorInfo)
-
-      HookPropertyChanged(TryCast(_dataObject, INotifyPropertyChanged))
-
+      UpdateDataObject(_dataObject, (CType(sender, DataSourceProvider)).Data)
       DataObjectChanged()
+
+    End Sub
+
+    Private Sub UpdateDataObject(ByVal oldObject As Object, ByVal newObject As Object)
+
+      UnHookDataContextEvents(oldObject)
+
+      ' store a ref to the data object
+      _dataObject = GetDataObject(newObject)
+
+      HookDataContextEvents(newObject)
+
     End Sub
 
     Private Sub UnHookDataContextEvents(ByVal oldValue As Object)

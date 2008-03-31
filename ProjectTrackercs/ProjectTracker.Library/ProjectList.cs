@@ -44,16 +44,15 @@ namespace ProjectTracker.Library
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         var data = from p in ctx.DataContext.Projects
-                   select p;
+                   select new ProjectInfo(p.Id, p.Name);
         if (!(string.IsNullOrEmpty(nameFilter)))
         {
-          data = from p in data
+          data = from p in ctx.DataContext.Projects
                  where p.Name.Contains(nameFilter)
-                 select p;
+                 select new ProjectInfo(p.Id, p.Name);
         }
         IsReadOnly = false;
-        foreach (var project in data)
-          this.Add(new ProjectInfo(project.Id, project.Name));
+        this.AddRange(data);
         IsReadOnly = true;
       }
       RaiseListChangedEvents = true;

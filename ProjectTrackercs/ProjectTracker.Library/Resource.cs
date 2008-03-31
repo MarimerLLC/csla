@@ -126,7 +126,7 @@ namespace ProjectTracker.Library
 
     public static void DeleteResource(int id)
     {
-      DataPortal.Delete(new SingleCriteria<Resource, int>(id));
+      DataPortal.Delete<Resource>(new SingleCriteria<Resource, int>(id));
     }
 
     public static Resource GetResource(int id)

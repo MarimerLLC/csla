@@ -35,10 +35,10 @@ namespace ProjectTracker.Library
       return _name;
     }
 
-    internal ResourceInfo(DalLinq.Resource resource)
+    internal ResourceInfo(int id, string lastname, string firstname)
     {
-      _id = resource.Id;
-      _name = string.Format("{0}, {1}", resource.LastName, resource.FirstName);
+      _id = id;
+      _name = string.Format("{0}, {1}", lastname, firstname);
     }
   }
 }

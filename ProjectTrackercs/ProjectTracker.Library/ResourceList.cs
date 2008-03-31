@@ -33,10 +33,9 @@ namespace ProjectTracker.Library
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         var data = from r in ctx.DataContext.Resources
-                   select r;
+                   select new ResourceInfo(r.Id, r.LastName, r.FirstName);
         IsReadOnly = false;
-        foreach (var resource in data)
-          this.Add(new ResourceInfo(resource));
+        this.AddRange(data);
         IsReadOnly = true;
       }
       RaiseListChangedEvents = true;

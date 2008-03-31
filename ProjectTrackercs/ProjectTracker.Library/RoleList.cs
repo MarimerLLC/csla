@@ -54,11 +54,10 @@ namespace ProjectTracker.Library
       this.RaiseListChangedEvents = false;
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
-        var data = from r in ctx.DataContext.Roles
-                   select r;
+        var data = from role in ctx.DataContext.Roles
+                   select new NameValuePair(role.Id, role.Name);
         IsReadOnly = false;
-        foreach (var role in data)
-          this.Add(new NameValuePair(role.Id, role.Name));
+        this.AddRange(data);
         IsReadOnly = true;
       }
       this.RaiseListChangedEvents = true;

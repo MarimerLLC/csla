@@ -430,15 +430,19 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
+    public void LoadNullProperty()
+    {
+      var root = EditableGetSet.GetObject();
+      Assert.AreEqual(Guid.Empty, root.M06, "Guid should be null");
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
     {
       var root = new BadGetSet();
       var tmp = root.Id;
     }
-
-    // ======================================================================================
-    // ======================================================================================
 
     private string _changingName;
     private string _changedName;

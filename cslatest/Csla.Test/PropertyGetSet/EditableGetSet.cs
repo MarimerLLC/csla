@@ -83,6 +83,13 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<bool>(M05Property, value); }
     }
 
+    private static Csla.PropertyInfo<Guid> M06Property = RegisterProperty<Guid>(typeof(EditableGetSet), new Csla.PropertyInfo<Guid>("M06", "field 6"));
+    public Guid M06
+    {
+      get { return GetProperty<Guid>(M06Property); }
+      set { SetProperty<Guid>(M06Property, value); }
+    }
+
     private static Csla.PropertyInfo<EditableGetSet> C01Property = RegisterProperty<EditableGetSet>(typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("C01"));
     public EditableGetSet C01
     {
@@ -130,7 +137,21 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
-    #region Data Access 
+    #region Factory Methods
+
+    public static EditableGetSet GetObject()
+    {
+      return Csla.DataPortal.Fetch<EditableGetSet>();
+    }
+
+    #endregion
+
+    #region Data Access
+
+    private void DataPortal_Fetch()
+    {
+      LoadProperty(M06Property, null);
+    }
 
     protected override void DataPortal_Insert()
     {

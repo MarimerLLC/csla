@@ -49,7 +49,11 @@
         Return Me.Value
       End Get
       Set(ByVal value As Object)
-        Me.Value = CType(value, T)
+        If value Is Nothing Then
+          Me.Value = Nothing
+        Else
+          Me.Value = CType(value, T)
+        End If
       End Set
     End Property
 

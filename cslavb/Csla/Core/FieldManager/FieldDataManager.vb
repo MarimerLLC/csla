@@ -151,7 +151,13 @@ Namespace Core.FieldManager
     ''' Value to store for field.
     ''' </param>
     Friend Sub SetFieldData(ByVal prop As IPropertyInfo, ByVal value As Object)
-      value = Utilities.CoerceValue(prop.Type, value.GetType(), Nothing, value)
+      Dim valueType As Type
+      If value IsNot Nothing Then
+        valueType = value.GetType
+      Else
+        valueType = prop.Type
+      End If
+      value = Utilities.CoerceValue(prop.Type, valueType, Nothing, value)
       Dim field = GetOrCreateFieldData(prop)
       field.Value = value
     End Sub
@@ -189,7 +195,13 @@ Namespace Core.FieldManager
     ''' Value to store for field.
     ''' </param>
     Friend Function LoadFieldData(ByVal prop As IPropertyInfo, ByVal value As Object) As IFieldData
-      value = Utilities.CoerceValue(prop.Type, value.GetType(), Nothing, value)
+      Dim valueType As Type
+      If value IsNot Nothing Then
+        valueType = value.GetType
+      Else
+        valueType = prop.Type
+      End If
+      value = Utilities.CoerceValue(prop.Type, valueType, Nothing, value)
       Dim field = GetOrCreateFieldData(prop)
       field.Value = value
       field.MarkClean()

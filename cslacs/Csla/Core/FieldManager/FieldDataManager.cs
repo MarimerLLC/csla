@@ -170,7 +170,12 @@ namespace Csla.Core.FieldManager
     /// </param>
     internal void SetFieldData(IPropertyInfo prop, object value)
     {
-      value = Utilities.CoerceValue(prop.Type, value.GetType(), null, value);
+      Type valueType;
+      if (value != null)
+        valueType = value.GetType();
+      else
+        valueType = prop.Type;
+      value = Utilities.CoerceValue(prop.Type, valueType, null, value);
       var field = GetOrCreateFieldData(prop);
       field.Value = value;
     }
@@ -209,7 +214,12 @@ namespace Csla.Core.FieldManager
     /// </param>
     internal IFieldData LoadFieldData(IPropertyInfo prop, object value)
     {
-      value = Utilities.CoerceValue(prop.Type, value.GetType(), null, value);
+      Type valueType;
+      if (value != null)
+        valueType = value.GetType();
+      else
+        valueType = prop.Type;
+      value = Utilities.CoerceValue(prop.Type, valueType, null, value);
       var field = GetOrCreateFieldData(prop);
       field.Value = value;
       field.MarkClean();

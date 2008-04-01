@@ -59,7 +59,10 @@ namespace Csla.Core.FieldManager
       }
       set
       {
-        this.Value = (T)value;
+        if (value == null)
+          this.Value = default(T);
+        else
+          this.Value = (T)value;
       }
     }
 

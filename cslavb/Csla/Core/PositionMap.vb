@@ -15,7 +15,7 @@
     End Sub
 
     Public Sub AddToMap(ByVal item As T)
-      If _map.ContainsKey(item) Then
+      If Not _map.ContainsKey(item) Then
         _map.Add(item, _list.Count - 1)
       End If
     End Sub

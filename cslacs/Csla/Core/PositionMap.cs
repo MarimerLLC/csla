@@ -12,7 +12,7 @@ namespace Csla.Core
     public PositionMap(IList<T> list)
     {
       _list = list;
-      ClearMap();
+      RebuildMap();
     }
 
     public void ClearMap()
@@ -22,7 +22,8 @@ namespace Csla.Core
 
     public void AddToMap(T item)
     {
-      _map.Add(item, _list.Count - 1);
+      if (!_map.ContainsKey(item))
+        _map.Add(item, _list.Count - 1);
     }
 
     public void InsertIntoMap(T item, int position)

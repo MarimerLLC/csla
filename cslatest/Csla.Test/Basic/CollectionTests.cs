@@ -43,6 +43,16 @@ namespace Csla.Test.Basic
     }
 
     [TestMethod]
+    public void DoubleAdd()
+    {
+      var someObj = new TestIndexableItem();
+      var someCol = new TestBusinessListBaseCollection(1);
+      someCol.Add(someObj);
+      someCol.Add(someObj);
+      Assert.IsTrue(true);
+    }
+
+    [TestMethod]
     public void IndexOnReadOnlyWorks()
     {
       var sampleSize = 100000;

@@ -7,7 +7,7 @@
 
     Public Sub New(ByVal list As IList(Of T))
       _list = list
-      ClearMap()
+      RebuildMap()
     End Sub
 
     Public Sub ClearMap()
@@ -15,7 +15,9 @@
     End Sub
 
     Public Sub AddToMap(ByVal item As T)
-      _map.Add(item, _list.Count - 1)
+      If _map.ContainsKey(item) Then
+        _map.Add(item, _list.Count - 1)
+      End If
     End Sub
 
     Public Sub InsertIntoMap(ByVal item As T, ByVal position As Integer)

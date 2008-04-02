@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using System.Diagnostics;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,6 +20,127 @@ namespace Csla.Test.Serialization
     public class SerializationTests
     {
 
+        [Serializable]
+        private class TestBusinessListBaseCollection : BusinessListBase<TestBusinessListBaseCollection, TestIndexableItem>
+        {
+            public TestBusinessListBaseCollection(int sampleSize)
+                : this(sampleSize, 100, true) { }
+            public TestBusinessListBaseCollection(int sampleSize, int sparsenessFactor, bool randomize)
+            {
+                Random rnd = new Random();
+                for (int i = 0; i < sampleSize; i++)
+                {
+                    int nextRnd;
+                    if (randomize)
+                        nextRnd = rnd.Next(sampleSize / sparsenessFactor);
+                    else
+                        nextRnd = i / sparsenessFactor;
+                    Add(
+                      new TestIndexableItem
+                      {
+                          IndexedString = nextRnd.ToString(),
+                          IndexedInt = nextRnd,
+                          NonIndexedString = nextRnd.ToString()
+                      }
+                      );
+                }
+            }
+        }
+
+        
+        [Serializable]
+        private class TestCollection : BusinessListBase<TestCollection, TestItem>
+        {
+        }
+
+        [Serializable]
+        private class TestItem : BusinessBase<TestItem>
+        {
+            protected override object GetIdValue()
+            {
+                return 0;
+            }
+
+            public TestItem()
+            {
+                MarkAsChild();
+            }
+        }
+
+        [Serializable]
+        private class TestIndexableItem : BusinessBase<TestIndexableItem>, Csla.Core.IReadOnlyObject
+        {
+            [Indexable]
+            public string IndexedString { get; set; }
+            [Indexable]
+            public int IndexedInt { get; set; }
+            public string NonIndexedString { get; set; }
+
+
+            #region IReadOnlyObject Members
+
+            bool Csla.Core.IReadOnlyObject.CanReadProperty(string propertyName)
+            {
+                throw new NotImplementedException();
+            }
+
+            #endregion
+        }
+
+        [TestMethod()]
+        public void TestIndexAfterSerialization()
+        {
+            var sampleSize = 100000;
+            Console.WriteLine("Creating " + sampleSize + " element collection...");
+            var blbCollection = new TestBusinessListBaseCollection(sampleSize);
+            Console.WriteLine("Collection established.");
+
+            //first query establishes the index
+            var controlSet = blbCollection.ToList();
+
+            var primeQuery = from i in blbCollection where i.IndexedString == "42" select i;
+            var forcedPrimeITeration = primeQuery.ToArray();
+
+            Stopwatch watch = new Stopwatch();
+            //clone a collection - this will force a serialization/unserialization cycle
+            var clonedCollection = blbCollection.Clone();
+            //prime the clone, which will build the index since the cloned collection will lack one
+            //  initially
+            var primeClone = from i in clonedCollection where i.IndexedString == "42" select i;
+
+            watch.Start();
+            var indexedQuery = from i in clonedCollection where i.IndexedString == "42" select i;
+            var forcedIterationIndexed = indexedQuery.ToArray();
+            watch.Stop();
+
+            var indexedRead = watch.ElapsedMilliseconds;
+
+            watch.Reset();
+
+            watch.Start();
+            var nonIndexedQuery = from i in clonedCollection where i.NonIndexedString == "42" select i;
+            var forcedIterationNonIndexed = nonIndexedQuery.ToArray();
+            watch.Stop();
+
+            var nonIndexedRead = watch.ElapsedMilliseconds;
+
+            watch.Reset();
+
+            watch.Start();
+            var controlQuery = from i in controlSet where i.IndexedString == "42" select i;
+            var forcedControlIteration = controlQuery.ToArray();
+            watch.Stop();
+
+            var controlRead = watch.ElapsedMilliseconds;
+
+
+            Console.WriteLine("Sample size = " + sampleSize);
+            Console.WriteLine("Indexed Read = " + indexedRead + "ms");
+            Console.WriteLine("Non-Indexed Read = " + nonIndexedRead + "ms");
+            Console.WriteLine("Standard Linq-to-objects Read = " + controlRead + "ms");
+            Assert.IsTrue(indexedRead < nonIndexedRead);
+            Assert.IsTrue(forcedIterationIndexed.Count() == forcedIterationNonIndexed.Count());
+        }
         [TestMethod()]
         public void TestWithoutSerializableHandler()
         {

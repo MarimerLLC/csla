@@ -15,6 +15,7 @@ using TestMethod = NUnit.Framework.TestAttribute;
 
 namespace Csla.Test.CslaQueryProvider
 {
+  [Serializable]
   public class RandomThing : BusinessBase<RandomThing>, IConvertible 
   {
     [Indexable(IndexModeEnum.IndexModeAlways)]
@@ -117,6 +118,7 @@ namespace Csla.Test.CslaQueryProvider
     #endregion
   }
 
+  [Serializable]
   class CollectionExtendingIQueryable<T> : BusinessListBase<CollectionExtendingIQueryable<T>, T> where T : Csla.Core.IEditableBusinessObject { }
 
   class CustomRandomThingComparer : IEqualityComparer<RandomThing>
@@ -286,6 +288,30 @@ namespace Csla.Test.CslaQueryProvider
                               select r.SomeVal;
       foreach (var result in subFilteredResult)
         Assert.IsTrue(result is int);    
+    }
+
+    [TestMethod]
+    public void TestQueryProviderSelectProjectionWithSerialization()
+    {
+      CollectionExtendingIQueryable<RandomThing> randomBase = new CollectionExtendingIQueryable<RandomThing>();
+      var random = randomBase.Clone();
+
+      Random rnd = new Random();
+      for (int i = 0; i < 99; i++)
+        random.Add(new RandomThing(rnd.Next(300)));
+
+      var filteredResult = from r in random
+                           where r.SomeVal < 100
+                           select r;
+
+      foreach (var result in filteredResult)
+        Assert.IsTrue(result is RandomThing);
+
+      var subFilteredResult = from r in filteredResult
+                              where r.SomeVal < 50
+                              select r.SomeVal;
+      foreach (var result in subFilteredResult)
+        Assert.IsTrue(result is int);
     }
 
     [TestMethod]

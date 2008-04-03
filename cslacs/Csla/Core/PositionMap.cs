@@ -36,7 +36,8 @@ namespace Csla.Core
       {
         for (int i = _list.Count - 1; i > position; i--)
           _map[_list[i]]++;
-        _map.Add(item, position);
+        if (!_map.ContainsKey(item))
+          _map.Add(item, position);
       }
     }
 

@@ -29,7 +29,9 @@
           _map(_list(i)) += 1
           i -= 1
         Loop
-        _map.Add(item, position)
+        If Not _map.ContainsKey(item) Then
+          _map.Add(item, position)
+        End If
       End If
     End Sub
 

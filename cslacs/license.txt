@@ -1,6 +1,6 @@
 LICENSE AND WARRANTY
 
-The CSLA .NET framework is Copyright 2007 by Rockford Lhotka. 
+The CSLA .NET framework is Copyright 2008 by Rockford Lhotka. 
 
 You can use this Software for any noncommercial purpose, including 
 distributing derivative works. You can use this Software for any commercial 

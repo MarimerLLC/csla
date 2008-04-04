@@ -34,10 +34,12 @@ namespace Csla.Core
       }
       else
       {
-        for (int i = _list.Count - 1; i > position; i--)
-          _map[_list[i]]++;
         if (!_map.ContainsKey(item))
+        {
+          for (int i = _list.Count - 1; i > position; i--)
+            _map[_list[i]]++;
           _map.Add(item, position);
+        }
       }
     }
 

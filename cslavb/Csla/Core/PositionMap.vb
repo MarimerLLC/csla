@@ -24,12 +24,12 @@
       If position = _list.Count - 1 Then
         AddToMap(item)
       Else
-        Dim i As Integer = _list.Count - 1
-        Do While i > position
-          _map(_list(i)) += 1
-          i -= 1
-        Loop
         If Not _map.ContainsKey(item) Then
+          Dim i As Integer = _list.Count - 1
+          Do While i > position
+            _map(_list(i)) += 1
+            i -= 1
+          Loop
           _map.Add(item, position)
         End If
       End If

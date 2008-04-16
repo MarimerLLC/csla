@@ -446,7 +446,10 @@ namespace Csla
     /// </param>
     public string ToString(string format)
     {
-      return DateToString(this.Date, format, _emptyValue);
+      if (string.IsNullOrEmpty(format))
+        return this.ToString();
+      else
+        return DateToString(this.Date, format, _emptyValue);
     }
 
     /// <summary>

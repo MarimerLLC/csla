@@ -392,7 +392,11 @@ Public Structure SmartDate
   ''' A standard .NET format string.
   ''' </param>
   Public Overloads Function ToString(ByVal format As String) As String
-    Return DateToString(Me.Date, format, _emptyValue)
+    If String.IsNullOrEmpty(format) Then
+      Return Me.ToString
+    Else
+      Return DateToString(Me.Date, format, _emptyValue)
+    End If
   End Function
 
   ''' <summary>

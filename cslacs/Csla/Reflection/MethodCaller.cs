@@ -429,11 +429,12 @@ namespace Csla.Reflection
     /// </param>
     public static Type GetObjectType(object criteria)
     {
-      if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
+      var strong = criteria as ICriteria;
+      if (strong != null)
       {
         // get the type of the actual business object
-        // from CriteriaBase 
-        return ((CriteriaBase)criteria).ObjectType;
+        // from the ICriteria
+        return strong.ObjectType;
       }
       else
       {

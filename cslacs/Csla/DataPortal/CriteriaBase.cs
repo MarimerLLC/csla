@@ -8,7 +8,7 @@ namespace Csla
   /// derived in a business class. 
   /// </summary>
   [Serializable()]
-  public abstract class CriteriaBase
+  public abstract class CriteriaBase : ICriteria
   {
     private Type _objectType;
 
@@ -19,6 +19,7 @@ namespace Csla
     public Type ObjectType
     {
       get { return _objectType; }
+      protected set { _objectType = value; }
     }
 
     /// <summary>
@@ -31,5 +32,13 @@ namespace Csla
     {
       _objectType = type;
     }
+
+    /// <summary>
+    /// Initializes empty CriteriaBase. The type of
+    /// business object to be created by the DataPortal
+    /// MUST be supplied by the subclass.
+    /// </summary>
+    protected CriteriaBase()
+    { }
   }
 }

@@ -156,6 +156,7 @@
     <Compile Include="DataPortal\Hosts\WebServicePortal.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DataPortal\ICriteria.vb" />
     <Compile Include="DataPortal\Server\ChildDataPortal.vb" />
     <Compile Include="DataPortal\Server\DataPortalContext.vb" />
     <Compile Include="DataPortal\Server\IDataPortalServer.vb" />

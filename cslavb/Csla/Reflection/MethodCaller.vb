@@ -381,10 +381,11 @@ Namespace Reflection
     ''' Criteria object.
     ''' </param>
     Public Function GetObjectType(ByVal criteria As Object) As Type
-      If criteria.GetType().IsSubclassOf(GetType(CriteriaBase)) Then
+      Dim strong As ICriteria = TryCast(criteria, ICriteria)
+      If strong IsNot Nothing Then
         ' get the type of the actual business object
         ' from CriteriaBase 
-        Return (CType(criteria, CriteriaBase)).ObjectType
+        Return strong.ObjectType
       Else
         ' get the type of the actual business object
         ' based on the nested class scheme in the book

@@ -5,13 +5,15 @@
 <Serializable()> _
 Public MustInherit Class CriteriaBase
 
+  Implements ICriteria
+
   Private _objectType As Type
 
   ''' <summary>
   ''' Type of the business object to be instantiated by
   ''' the server-side DataPortal. 
   ''' </summary>
-  Public ReadOnly Property ObjectType() As Type
+  Public ReadOnly Property ObjectType() As Type Implements ICriteria.ObjectType
     Get
       Return _objectType
     End Get

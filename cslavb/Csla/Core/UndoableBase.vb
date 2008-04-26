@@ -118,7 +118,7 @@ Namespace Core
 
                 Else
                   ' this is a child object, cascade the call
-                  If Not _bindingEdit Then
+                  If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
                     DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1)
                   End If
                 End If
@@ -229,7 +229,7 @@ Namespace Core
                     ' make sure the variable has a value
                     If Not value Is Nothing Then
                       ' this is a child object, cascade the call
-                      If Not _bindingEdit Then
+                      If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
                         DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel)
                       End If
                     End If
@@ -313,7 +313,7 @@ Namespace Core
                   ' make sure the variable has a value
                   If Not value Is Nothing Then
                     ' this is a child object, cascade the call
-                    If Not _bindingEdit Then
+                    If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
                       DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel)
                     End If
                   End If

@@ -1,0 +1,148 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla</RootNamespace>
+    <AssemblyName>Csla</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>ClientBin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>ClientBin\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows" />
+    <Reference Include="mscorlib" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessBase.cs" />
+    <Compile Include="BusinessListBase.cs" />
+    <Compile Include="Core\ExtendedBindingList.cs" />
+    <Compile Include="Core\FieldManager\FieldData.cs" />
+    <Compile Include="Core\FieldManager\FieldDataList.cs" />
+    <Compile Include="Core\FieldManager\FieldDataManager.cs" />
+    <Compile Include="Core\FieldManager\IFieldData.cs" />
+    <Compile Include="Core\FieldManager\IFieldDataT.cs" />
+    <Compile Include="Core\FieldManager\PropertyInfoManager.cs" />
+    <Compile Include="Core\IBindingList.cs" />
+    <Compile Include="Core\IBusinessObject.cs" />
+    <Compile Include="Core\IExtendedBindingList.cs" />
+    <Compile Include="Core\IPropertyInfo.cs" />
+    <Compile Include="Core\ITrackStatus.cs" />
+    <Compile Include="Core\IUndoableObject.cs" />
+    <Compile Include="Core\ObjectCloner.cs" />
+    <Compile Include="Core\ReadOnlyBindingList.cs" />
+    <Compile Include="Core\RemovingItemEventArgs.cs" />
+    <Compile Include="Core\UndoException.cs" />
+    <Compile Include="DataPortal.cs" />
+    <Compile Include="Core\BusinessBase.cs" />
+    <Compile Include="DataPortalException.cs" />
+    <Compile Include="DataPortalResult.cs" />
+    <Compile Include="ICloneable.cs" />
+    <Compile Include="PropertyInfo.cs" />
+    <Compile Include="Serialization\Mobile\IMobileObject.cs" />
+    <Compile Include="Serialization\Mobile\ISerializationFormatter.cs" />
+    <Compile Include="Serialization\Mobile\ISerializationNotification.cs" />
+    <Compile Include="Serialization\Mobile\MobileFormatter.cs" />
+    <Compile Include="Serialization\TypeExtensions.cs" />
+    <Compile Include="Silverlight\CriteriaBase.cs" />
+    <Compile Include="Silverlight\MobileFactoryAttribute.cs" />
+    <Compile Include="Silverlight\MobileList.cs" />
+    <Compile Include="Silverlight\MobileObject.cs" />
+    <Compile Include="Serialization\NonSerializedAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\SerializationAttribute.cs" />
+    <Compile Include="Serialization\Mobile\SerializationFormatterFactory.cs" />
+    <Compile Include="Serialization\Mobile\SerializationInfo.cs" />
+    <Compile Include="Service References\WcfPortal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Silverlight\SingleCriteria.cs" />
+    <Compile Include="Validation\BrokenRule.cs" />
+    <Compile Include="Validation\BrokenRulesCollection.cs" />
+    <Compile Include="Validation\IRuleMethod.cs" />
+    <Compile Include="Validation\RuleArgs.cs" />
+    <Compile Include="Validation\RuleHandler.cs" />
+    <Compile Include="Validation\RuleMethod.cs" />
+    <Compile Include="Validation\RuleSeverity.cs" />
+    <Compile Include="Validation\RulesList.cs" />
+    <Compile Include="Validation\ValidationRules.cs" />
+    <Compile Include="Validation\ValidationRulesManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\configuration91.svcinfo" />
+    <None Include="Service References\WcfPortal\configuration.svcinfo" />
+    <None Include="Service References\WcfPortal\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="ServiceReferences.ClientConfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfPortal\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CslaKey.snk" />
+    <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal1.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal2.xsd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

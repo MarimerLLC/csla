@@ -1,0 +1,17 @@
+﻿<configuration>
+    <system.serviceModel>
+        <bindings>
+            <basicHttpBinding>
+                <binding name="BasicHttpBinding_IWcfPortal" maxBufferSize="65536"
+                    maxReceivedMessageSize="65536">
+                    <security mode="None" />
+                </binding>
+            </basicHttpBinding>
+        </bindings>
+        <client>
+            <endpoint address="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc"
+                binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IWcfPortal"
+                contract="Csla.WcfPortal.IWcfPortal" name="BasicHttpBinding_IWcfPortal" />
+        </client>
+    </system.serviceModel>
+</configuration>

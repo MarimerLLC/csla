@@ -2,7 +2,7 @@
 
 namespace Csla
 {
-  public class DataPortalResult<T>
+  public class DataPortalResult<T> : EventArgs
   {
     public T Object { get; private set; }
     public Exception Error { get; private set; }

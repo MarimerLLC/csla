@@ -361,7 +361,7 @@ namespace Csla.WcfPortal {
         
         private static System.ServiceModel.Channels.Binding defaultBinding = new System.ServiceModel.BasicHttpBinding();
         
-        private static System.ServiceModel.EndpointAddress defaultAddress = new System.ServiceModel.EndpointAddress("http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc");
+        private static System.ServiceModel.EndpointAddress defaultAddress = new System.ServiceModel.EndpointAddress("http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc");
         
         public WcfPortalClient() : 
                 this(defaultBinding, defaultAddress) {

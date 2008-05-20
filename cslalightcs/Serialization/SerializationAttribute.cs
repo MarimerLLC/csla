@@ -6,7 +6,7 @@ namespace Csla.Serialization
   /// Indicates that an object may be
   /// serialized by the MobileFormatter.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Class)]
+  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
   public class SerializableAttribute : Attribute
   {
   }

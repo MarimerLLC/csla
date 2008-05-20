@@ -17,14 +17,14 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc?wsdl" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc?wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="WcfPortal.wsdl" MetadataType="Wsdl" ID="470f1629-6cf5-4f32-a27e-9ba0a94285b1" SourceId="1" SourceUrl="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc?wsdl=wsdl0" />
-    <MetadataFile FileName="WcfPortal1.wsdl" MetadataType="Wsdl" ID="bec223fc-8b0d-45a7-9a04-08e4310ea75b" SourceId="1" SourceUrl="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc?wsdl" />
-    <MetadataFile FileName="WcfPortal.xsd" MetadataType="Schema" ID="b2f9ee7b-59c7-42e2-a0d8-0672d1e79f9a" SourceId="1" SourceUrl="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc?xsd=xsd0" />
-    <MetadataFile FileName="WcfPortal1.xsd" MetadataType="Schema" ID="980a7065-c9d3-4513-a200-9c806d6478b1" SourceId="1" SourceUrl="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc?xsd=xsd1" />
-    <MetadataFile FileName="WcfPortal2.xsd" MetadataType="Schema" ID="03948cfa-9bf8-4492-8093-be2a4dc89769" SourceId="1" SourceUrl="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc?xsd=xsd2" />
+    <MetadataFile FileName="WcfPortal.xsd" MetadataType="Schema" ID="b2f9ee7b-59c7-42e2-a0d8-0672d1e79f9a" SourceId="1" SourceUrl="http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc?xsd=xsd0" />
+    <MetadataFile FileName="WcfPortal1.wsdl" MetadataType="Wsdl" ID="bec223fc-8b0d-45a7-9a04-08e4310ea75b" SourceId="1" SourceUrl="http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc?wsdl" />
+    <MetadataFile FileName="WcfPortal2.xsd" MetadataType="Schema" ID="03948cfa-9bf8-4492-8093-be2a4dc89769" SourceId="1" SourceUrl="http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc?xsd=xsd2" />
+    <MetadataFile FileName="WcfPortal1.xsd" MetadataType="Schema" ID="980a7065-c9d3-4513-a200-9c806d6478b1" SourceId="1" SourceUrl="http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc?xsd=xsd1" />
+    <MetadataFile FileName="WcfPortal.wsdl" MetadataType="Wsdl" ID="470f1629-6cf5-4f32-a27e-9ba0a94285b1" SourceId="1" SourceUrl="http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc?wsdl=wsdl0" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

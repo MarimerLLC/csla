@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="iK7b/7Tlo8/m4F0paH6ViFN5H2w=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="6tALeqTspOBAtoKiT7SVD8D/byk=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="BasicHttpBinding_IWcfPortal">
       <properties>
@@ -100,10 +100,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="BasicHttpBinding_IWcfPortal" contract="Csla.WcfPortal.IWcfPortal" bindingType="basicHttpBinding" address="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc" bindingConfiguration="BasicHttpBinding_IWcfPortal">
+    <endpoint name="BasicHttpBinding_IWcfPortal" contract="Csla.WcfPortal.IWcfPortal" bindingType="basicHttpBinding" address="http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc" bindingConfiguration="BasicHttpBinding_IWcfPortal">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc</serializedValue>
+          <serializedValue>http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

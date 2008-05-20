@@ -79,7 +79,7 @@ namespace Csla.Core
         bool oldValue = AllowRemove;
         AllowRemove = true;
         base.ClearItems();
-        DeferredLoadIndexIfNotLoaded();
+        //DeferredLoadIndexIfNotLoaded();
         AllowRemove = oldValue;
       }
       else
@@ -106,7 +106,7 @@ namespace Csla.Core
     {
       if (!IsReadOnly)
       {
-        InsertIndexItem(item);
+        //InsertIndexItem(item);
         base.InsertItem(index, item);
       }
       else
@@ -124,7 +124,7 @@ namespace Csla.Core
       {
         bool oldValue = AllowRemove;
         AllowRemove = true;
-        RemoveIndexItem(this[index]);
+        //RemoveIndexItem(this[index]);
         base.RemoveItem(index);
         AllowRemove = oldValue;
       }
@@ -143,9 +143,9 @@ namespace Csla.Core
     {
       if (!IsReadOnly)
       {
-        RemoveIndexItem(this[index]);
+        //RemoveIndexItem(this[index]);
         base.SetItem(index, item);
-        InsertIndexItem(item);
+        //InsertIndexItem(item);
       }
       else
         throw new NotSupportedException(Resources.ChangeInvalidException);

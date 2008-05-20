@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://ws.lhotka.net/WcfDataPortal" elementFormDefault="qualified" targetNamespace="http://ws.lhotka.net/WcfDataPortal" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://localhost:1051/SilverlightApplication1_Web/WcfPortal.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight" />
+  <xs:import schemaLocation="http://localhost:1440/SilverlightApplication1_Web/WcfPortal.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight" />
   <xs:element name="Create">
     <xs:complexType>
       <xs:sequence>

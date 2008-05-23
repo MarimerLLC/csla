@@ -62,19 +62,22 @@ namespace Csla.Core
       get { return _stateStack.Count; }
     }
 
-    void IUndoableObject.CopyState(int parentEditLevel)
+    void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
-      CopyState(parentEditLevel);
+      if (!parentBindingEdit)
+        CopyState(parentEditLevel);
     }
 
-    void IUndoableObject.UndoChanges(int parentEditLevel)
+    void IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
     {
-      UndoChanges(parentEditLevel);
+      if (!parentBindingEdit)
+        UndoChanges(parentEditLevel);
     }
 
-    void IUndoableObject.AcceptChanges(int parentEditLevel)
+    void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
-      AcceptChanges(parentEditLevel);
+      if (!parentBindingEdit)
+        AcceptChanges(parentEditLevel);
     }
 
     /// <summary>
@@ -141,8 +144,8 @@ namespace Csla.Core
                 else
                 {
                   // this is a child object, cascade the call
-                  if (!_bindingEdit || value is FieldManager.FieldDataManager)
-                    ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1);
+                  //if (!_bindingEdit || value is FieldManager.FieldDataManager)
+                    ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1, BindingEdit);
                 }
               }
               else
@@ -254,7 +257,7 @@ namespace Csla.Core
                     {
                       // this is a child object, cascade the call.
                       if (!_bindingEdit || value is FieldManager.FieldDataManager)
-                        ((Core.IUndoableObject)value).UndoChanges(this.EditLevel);
+                        ((Core.IUndoableObject)value).UndoChanges(this.EditLevel, BindingEdit);
                     }
                   }
                 }
@@ -337,7 +340,7 @@ namespace Csla.Core
                   {
                     // it is a child object so cascade the call
                     if (!_bindingEdit || value is FieldManager.FieldDataManager)
-                      ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel);
+                      ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel, BindingEdit);
                   }
                 }
               }
@@ -373,11 +376,11 @@ namespace Csla.Core
       // if item's edit level is too high,
       // reduce it to match list
       while (child.EditLevel > targetLevel)
-        child.AcceptChanges(targetLevel);
+        child.AcceptChanges(targetLevel, bindingEdit);
       // if item's edit level is too low,
       // increase it to match list
       while (child.EditLevel < targetLevel)
-        child.CopyState(targetLevel);
+        child.CopyState(targetLevel, bindingEdit);
     }
 
     #endregion

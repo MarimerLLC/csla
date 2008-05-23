@@ -227,19 +227,22 @@ namespace Csla
 
     #region N-level undo
 
-    void Core.IUndoableObject.CopyState(int parentEditLevel)
+    void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
-      CopyState(parentEditLevel);
+      if (!parentBindingEdit)
+        CopyState(parentEditLevel);
     }
 
-    void Core.IUndoableObject.UndoChanges(int parentEditLevel)
+    void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
     {
-      UndoChanges(parentEditLevel);
+      if (!parentBindingEdit)
+        UndoChanges(parentEditLevel);
     }
 
-    void Core.IUndoableObject.AcceptChanges(int parentEditLevel)
+    void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
-      AcceptChanges(parentEditLevel);
+      if (!parentBindingEdit)
+        AcceptChanges(parentEditLevel);
     }
 
     private void CopyState(int parentEditLevel)
@@ -252,11 +255,11 @@ namespace Csla
 
       // cascade the call to all child objects
       foreach (C child in this)
-        child.CopyState(_editLevel);
+        child.CopyState(_editLevel, false);
 
       // cascade the call to all deleted child objects
       foreach (C child in DeletedList)
-        child.CopyState(_editLevel);
+        child.CopyState(_editLevel, false);
     }
 
     private bool _completelyRemoveChild;
@@ -287,7 +290,7 @@ namespace Csla
           DeferredLoadIndexIfNotLoaded();
           _indexSet.RemoveItem(child);
 
-          child.UndoChanges(_editLevel);
+          child.UndoChanges(_editLevel, false);
 
           //ACE: Now that we have undone the changes, we can add the item
           //     back in the index.
@@ -316,7 +319,7 @@ namespace Csla
         for (int index = DeletedList.Count - 1; index >= 0; index--)
         {
           child = DeletedList[index];
-          child.UndoChanges(_editLevel);
+          child.UndoChanges(_editLevel, false);
           if (child.EditLevelAdded > _editLevel)
           {
             // if item is below its point of addition, remove
@@ -348,7 +351,7 @@ namespace Csla
       // cascade the call to all child objects
       foreach (C child in this)
       {
-        child.AcceptChanges(_editLevel);
+        child.AcceptChanges(_editLevel, false);
         // if item is below its point of addition, lower point of addition
         if (child.EditLevelAdded > _editLevel) child.EditLevelAdded = _editLevel;
       }
@@ -357,7 +360,7 @@ namespace Csla
       for (int index = DeletedList.Count - 1; index >= 0; index--)
       {
         C child = DeletedList[index];
-        child.AcceptChanges(_editLevel);
+        child.AcceptChanges(_editLevel, false);
         // if item is below its point of addition, remove
         if (child.EditLevelAdded > _editLevel)
           DeletedList.RemoveAt(index);

@@ -79,7 +79,7 @@ namespace Csla
       int editLevel = item.EditLevel;
       // commit all changes
       for (int tmp = 1; tmp <= editLevel; tmp++)
-        item.AcceptChanges(editLevel - tmp);
+        item.AcceptChanges(editLevel - tmp, false);
       try
       {
         T savable = item;
@@ -106,7 +106,7 @@ namespace Csla
       {
         // restore edit level to previous level
         for (int tmp = 1; tmp <= editLevel; tmp++)
-          item.CopyState(tmp);
+          item.CopyState(tmp, false);
         _activelySaving = false;
         this.RaiseListChangedEvents = raisingEvents;
       }

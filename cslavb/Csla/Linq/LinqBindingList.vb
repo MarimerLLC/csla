@@ -678,9 +678,10 @@ Public Class LinqBindingList(Of T)
     Dim whereBody As Expression(Of Func(Of T, Boolean)) = CType((CType(whereExpression.Arguments(1), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
 
     _filterIndex.Clear()
-    If TypeOf _list Is Linq.IIndexSearchable(Of T) Then
+    Dim searchable = TryCast(_list, Linq.IIndexSearchable(Of T))
+    If searchable IsNot Nothing Then
       'before we can start, we do have to go through the whole thing once to make our filterindex.  
-      For Each item As T In (TryCast(_list, Linq.IIndexSearchable(Of T))).SearchByExpression(whereBody)
+      For Each item As T In searchable.SearchByExpression(whereBody)
         If Not _filterBy Is Nothing Then
           Dim tmp As Object = _filterBy.GetValue(item)
           _filterIndex.Add(New ListItem(tmp, (CType(_list, IPositionMappable(Of T))).PositionOf(item)))

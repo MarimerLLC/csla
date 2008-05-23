@@ -583,7 +583,11 @@ namespace Csla
       MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
       Expression<Func<T, bool>> whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
 
-      return (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody).Contains(item);
+      var searchable = _list as Linq.IIndexSearchable<T>;
+      if (searchable == null)
+        return false;
+      else
+        return searchable.SearchByExpression(whereBody).Contains(item);
     }
     
     private void SourceChanged(

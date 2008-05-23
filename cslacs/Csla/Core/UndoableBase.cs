@@ -144,8 +144,7 @@ namespace Csla.Core
                 else
                 {
                   // this is a child object, cascade the call
-                  //if (!_bindingEdit || value is FieldManager.FieldDataManager)
-                    ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1, BindingEdit);
+                  ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1, BindingEdit);
                 }
               }
               else
@@ -256,8 +255,7 @@ namespace Csla.Core
                     if (value != null)
                     {
                       // this is a child object, cascade the call.
-                      if (!_bindingEdit || value is FieldManager.FieldDataManager)
-                        ((Core.IUndoableObject)value).UndoChanges(this.EditLevel, BindingEdit);
+                      ((Core.IUndoableObject)value).UndoChanges(this.EditLevel, BindingEdit);
                     }
                   }
                 }
@@ -339,8 +337,7 @@ namespace Csla.Core
                   if (value != null)
                   {
                     // it is a child object so cascade the call
-                    if (!_bindingEdit || value is FieldManager.FieldDataManager)
-                      ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel, BindingEdit);
+                    ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel, BindingEdit);
                   }
                 }
               }

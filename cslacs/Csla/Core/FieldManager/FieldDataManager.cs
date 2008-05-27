@@ -373,6 +373,8 @@ namespace Csla.Core.FieldManager
           {
             // cascade call to child
             child.CopyState(parentEditLevel, parentBindingEdit);
+            // indicate that there was a value here
+            state[index] = new FieldData<bool>(item.Name);
           }
           else
           {
@@ -410,18 +412,24 @@ namespace Csla.Core.FieldManager
         {
           var oldItem = state[index];
           var item = _fieldData[index];
-          if (oldItem != null)
+          if (item != null)
           {
-            // see if current value is undoable
             var undoable = item.Value as IUndoableObject;
             if (undoable != null)
             {
-              undoable.UndoChanges(parentEditLevel, parentBindingEdit);
+              // current value is undoable
+              if (oldItem != null)
+                undoable.UndoChanges(parentEditLevel, parentBindingEdit);
+              else
+                _fieldData[index] = null;
               continue;
             }
           }
-          // restore IFieldData object into field collection
-          _fieldData[index] = oldItem;
+          else
+          {
+            // restore IFieldData object into field collection
+            _fieldData[index] = oldItem;
+          }
         }
       }
     }

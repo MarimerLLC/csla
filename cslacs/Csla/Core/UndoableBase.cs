@@ -373,11 +373,11 @@ namespace Csla.Core
       // if item's edit level is too high,
       // reduce it to match list
       while (child.EditLevel > targetLevel)
-        child.AcceptChanges(targetLevel, bindingEdit);
+        child.AcceptChanges(targetLevel, false);
       // if item's edit level is too low,
       // increase it to match list
       while (child.EditLevel < targetLevel)
-        child.CopyState(targetLevel, bindingEdit);
+        child.CopyState(targetLevel, false);
     }
 
     #endregion

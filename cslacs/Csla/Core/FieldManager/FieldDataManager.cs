@@ -346,14 +346,14 @@ namespace Csla.Core.FieldManager
 
     #region  IUndoableObject
 
-    private Stack<byte[]> mStateStack = new Stack<byte[]>();
+    private Stack<byte[]> _stateStack = new Stack<byte[]>();
 
     /// <summary>
     /// Gets the current edit level of the object.
     /// </summary>
     public int EditLevel
     {
-      get { return mStateStack.Count; }
+      get { return _stateStack.Count; }
     }
 
     void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
@@ -387,7 +387,7 @@ namespace Csla.Core.FieldManager
       {
         var formatter = SerializationFormatterFactory.GetFormatter();
         formatter.Serialize(buffer, state);
-        mStateStack.Push(buffer.ToArray());
+        _stateStack.Push(buffer.ToArray());
       }
     }
 
@@ -399,7 +399,7 @@ namespace Csla.Core.FieldManager
           throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
 
         IFieldData[] state = null;
-        using (MemoryStream buffer = new MemoryStream(mStateStack.Pop()))
+        using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           var formatter = SerializationFormatterFactory.GetFormatter();
@@ -410,25 +410,18 @@ namespace Csla.Core.FieldManager
         {
           var oldItem = state[index];
           var item = _fieldData[index];
-          if (oldItem == null && item != null)
+          if (oldItem != null)
           {
-            // potential child object
-            var child = item.Value as IUndoableObject;
-            if (child != null)
+            // see if current value is undoable
+            var undoable = item.Value as IUndoableObject;
+            if (undoable != null)
             {
-              child.UndoChanges(parentEditLevel, parentBindingEdit);
-            }
-            else
-            {
-              // null value
-              _fieldData[index] = null;
+              undoable.UndoChanges(parentEditLevel, parentBindingEdit);
+              continue;
             }
           }
-          else
-          {
-            // restore IFieldData object into field collection
-            _fieldData[index] = state[index];
-          }
+          // restore IFieldData object into field collection
+          _fieldData[index] = oldItem;
         }
       }
     }
@@ -441,7 +434,7 @@ namespace Csla.Core.FieldManager
       if (EditLevel > 0)
       {
         // discard latest recorded state
-        mStateStack.Pop();
+        _stateStack.Pop();
 
         foreach (var item in _fieldData)
         {

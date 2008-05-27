@@ -201,6 +201,22 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
         Exit For
       End If
     Next
+    OnChildPropertyChanged(sender, e)
+
+  End Sub
+
+  ''' <summary>
+  ''' Override this method to be notified when a child object
+  ''' has been changed.
+  ''' </summary>
+  ''' <param name="sender">
+  ''' Child object where the PropertyChanged event originated.
+  ''' </param>
+  ''' <param name="e">
+  ''' PropertyChangedEventArgs from the child object.
+  ''' </param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub OnChildPropertyChanged(ByVal sender As Object, ByVal e As System.ComponentModel.PropertyChangedEventArgs)
 
   End Sub
 

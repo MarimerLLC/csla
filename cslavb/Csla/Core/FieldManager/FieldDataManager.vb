@@ -414,10 +414,9 @@ Namespace Core.FieldManager
               End If
               Continue For
             End If
-          Else
-            ' restore IFieldData object into field collection
-            _fieldData(index) = oldItem
           End If
+          ' restore IFieldData object into field collection
+          _fieldData(index) = oldItem
         Next index
       End If
     End Sub

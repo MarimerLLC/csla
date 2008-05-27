@@ -25,13 +25,21 @@ namespace Csla.Security
 
     #region Get Roles
 
+    private static object _rolesLock = new object();
+
     internal RolesForProperty GetRolesForProperty(string propertyName)
     {
       RolesForProperty currentRoles = null;
       if (!RulesList.TryGetValue(propertyName, out currentRoles))
       {
-        currentRoles = new RolesForProperty();
-        RulesList.Add(propertyName, currentRoles);
+        lock (_rolesLock)
+        {
+          if (!RulesList.TryGetValue(propertyName, out currentRoles))
+          {
+            currentRoles = new RolesForProperty();
+            RulesList.Add(propertyName, currentRoles);
+          }
+        }
       }
       return currentRoles;
     }

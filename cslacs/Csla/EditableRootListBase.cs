@@ -205,7 +205,22 @@ namespace Csla
           return;
         }
       }
+      OnChildPropertyChanged(sender, e);
     }
+
+    /// <summary>
+    /// Override this method to be notified when a child object
+    /// has been changed.
+    /// </summary>
+    /// <param name="sender">
+    /// Child object where the PropertyChanged event originated.
+    /// </param>
+    /// <param name="e">
+    /// PropertyChangedEventArgs from the child object.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnChildPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    { }
 
     private static PropertyDescriptorCollection _propertyDescriptors;
 

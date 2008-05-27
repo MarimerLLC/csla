@@ -517,7 +517,11 @@ namespace Csla
     /// </summary>
     public void Clear()
     {
-      _list.Clear();
+      if (_filtered)
+        for (int index = Count - 1; index >= 0; index--)
+          RemoveAt(index);
+      else
+        _list.Clear();
     }
 
     /// <summary>

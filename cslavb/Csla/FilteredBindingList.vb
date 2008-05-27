@@ -486,7 +486,13 @@ Public Class FilteredBindingList(Of T)
   ''' Clears the list.
   ''' </summary>
   Public Sub Clear() Implements IList(Of T).Clear, IBindingList.Clear
-    _list.Clear()
+    If _filtered Then
+      For index As Integer = Count - 1 To 0 Step -1
+        RemoveAt(index)
+      Next index
+    Else
+      _list.Clear()
+    End If
   End Sub
 
   ''' <summary>

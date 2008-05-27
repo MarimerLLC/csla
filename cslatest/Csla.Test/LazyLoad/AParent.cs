@@ -18,24 +18,40 @@ namespace Csla.Test.LazyLoad
       }
     }
 
-    private AChildList _children;
+    private static PropertyInfo<AChildList> ChildListProperty = 
+      RegisterProperty<AChildList>(typeof(AParent), new PropertyInfo<AChildList>("ChildList", "Child list"));
     public AChildList ChildList
     {
       get 
       {
-        if (_children == null)
-        {
-          _children = new AChildList();
-          for (int count = 0; count < EditLevel; count++)
-            ((Csla.Core.IUndoableObject)_children).CopyState(EditLevel);
-        }
-        return _children; 
+        if (!FieldManager.FieldExists(ChildListProperty))
+          LoadProperty<AChildList>(ChildListProperty, new AChildList());
+        return GetProperty<AChildList>(ChildListProperty); 
       }
     }
 
+    //private AChildList _children;
+    //public AChildList ChildList
+    //{
+    //  get 
+    //  {
+    //    if (_children == null)
+    //    {
+    //      _children = new AChildList();
+    //      for (int count = 0; count < EditLevel; count++)
+    //        ((Csla.Core.IUndoableObject)_children).CopyState(EditLevel);
+    //    }
+    //    return _children; 
+    //  }
+    //}
+
     public AChildList GetChildList()
     {
-      return _children;
+      if (FieldManager.FieldExists(ChildListProperty))
+        return ReadProperty<AChildList>(ChildListProperty);
+      else
+        return null;
+      //return _children;
     }
 
     public int EditLevel

@@ -329,7 +329,8 @@ Namespace Core.FieldManager
       End Get
     End Property
 
-    Private Sub CopyState(ByVal parentEditLevel As Integer) Implements Core.IUndoableObject.CopyState
+    Private Sub CopyState(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements Core.IUndoableObject.CopyState
+
       If Me.EditLevel + 1 > parentEditLevel Then
         Throw New UndoException(String.Format(My.Resources.EditLevelMismatchException, "CopyState"))
       End If
@@ -342,7 +343,9 @@ Namespace Core.FieldManager
           Dim child = TryCast(item.Value, IUndoableObject)
           If child IsNot Nothing Then
             ' cascade call to child
-            child.CopyState(parentEditLevel)
+            child.CopyState(parentEditLevel, parentBindingEdit)
+            ' indicate that there was a value here
+            state(index) = New FieldData(Of Boolean)(item.Name)
           Else
             ' add the IFieldData object
             state(index) = item
@@ -358,7 +361,8 @@ Namespace Core.FieldManager
       End Using
     End Sub
 
-    Private Sub UndoChanges(ByVal parentEditLevel As Integer) Implements Core.IUndoableObject.UndoChanges
+    Private Sub UndoChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements Core.IUndoableObject.UndoChanges
+
       If EditLevel > 0 Then
         If Me.EditLevel - 1 < parentEditLevel Then
           Throw New UndoException(String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
@@ -374,21 +378,26 @@ Namespace Core.FieldManager
         For index = 0 To _fieldData.Length - 1
           Dim oldItem = state(index)
           Dim item = _fieldData(index)
-          If oldItem IsNot Nothing Then
-            ' see if current value is undoable
+          If item IsNot Nothing Then
             Dim undoable = TryCast(item.Value, IUndoableObject)
             If undoable IsNot Nothing Then
-              undoable.UndoChanges(parentEditLevel)
+              ' current value is undoable
+              If oldItem IsNot Nothing Then
+                undoable.UndoChanges(parentEditLevel, parentBindingEdit)
+              Else
+                _fieldData(index) = Nothing
+              End If
               Continue For
             End If
+          Else
+            ' restore IFieldData object into field collection
+            _fieldData(index) = oldItem
           End If
-          ' restore IFieldData object into field collection
-          _fieldData(index) = oldItem
         Next index
       End If
     End Sub
 
-    Private Sub AcceptChanges(ByVal parentEditLevel As Integer) Implements Core.IUndoableObject.AcceptChanges
+    Private Sub AcceptChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements Core.IUndoableObject.AcceptChanges
       If Me.EditLevel - 1 < parentEditLevel Then
         Throw New UndoException(String.Format(My.Resources.EditLevelMismatchException, "AcceptChanges"))
       End If
@@ -402,7 +411,7 @@ Namespace Core.FieldManager
             Dim child = TryCast(item.Value, IUndoableObject)
             If child IsNot Nothing Then
               ' cascade call to child
-              child.AcceptChanges(parentEditLevel)
+              child.AcceptChanges(parentEditLevel, parentBindingEdit)
             End If
           End If
         Next item

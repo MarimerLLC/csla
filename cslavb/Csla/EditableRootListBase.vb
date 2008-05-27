@@ -76,7 +76,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
     Dim editLevel As Integer = item.EditLevel
     ' commit all changes
     For tmp As Integer = 1 To editLevel
-      item.AcceptChanges(editLevel - tmp)
+      item.AcceptChanges(editLevel - tmp, False)
     Next
     Try
       Dim savable As T = item
@@ -101,7 +101,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
     Finally
       ' restore edit level to previous level
       For tmp As Integer = 1 To editLevel
-        item.CopyState(tmp)
+        item.CopyState(tmp, False)
       Next
 
       _activelySaving = False

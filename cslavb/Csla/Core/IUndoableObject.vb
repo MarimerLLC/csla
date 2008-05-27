@@ -20,7 +20,10 @@ Namespace Core
     ''' <param name="parentEditLevel">
     ''' Parent object's edit level.
     ''' </param>
-    Sub CopyState(ByVal parentEditLevel As Integer)
+    ''' <param name="parentBindingEdit">
+    ''' Indicates whether parent is in edit mode due to data binding.
+    ''' </param>
+    Sub CopyState(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean)
     ''' <summary>
     ''' Restores the object's state to the most recently
     ''' copied values from the state stack.
@@ -34,7 +37,10 @@ Namespace Core
     ''' <param name="parentEditLevel">
     ''' Parent object's edit level.
     ''' </param>
-    Sub UndoChanges(ByVal parentEditLevel As Integer)
+    ''' <param name="parentBindingEdit">
+    ''' Indicates whether parent is in edit mode due to data binding.
+    ''' </param>
+    Sub UndoChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean)
     ''' <summary>
     ''' Accepts any changes made to the object since the last
     ''' state copy was made.
@@ -47,7 +53,10 @@ Namespace Core
     ''' <param name="parentEditLevel">
     ''' Parent object's edit level.
     ''' </param>
-    Sub AcceptChanges(ByVal parentEditLevel As Integer)
+    ''' <param name="parentBindingEdit">
+    ''' Indicates whether parent is in edit mode due to data binding.
+    ''' </param>
+    Sub AcceptChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean)
   End Interface
 
 End Namespace

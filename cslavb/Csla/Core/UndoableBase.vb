@@ -76,12 +76,31 @@ Namespace Core
 
     End Sub
 
+    Private Sub CopyState(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements IUndoableObject.CopyState
+      If Not parentBindingEdit Then
+        CopyState(parentEditLevel)
+      End If
+    End Sub
+
+    Private Sub UndoChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements IUndoableObject.UndoChanges
+      If Not parentBindingEdit Then
+        UndoChanges(parentEditLevel)
+      End If
+    End Sub
+
+    Protected Friend Sub AcceptChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) _
+      Implements IUndoableObject.AcceptChanges
+      If Not parentBindingEdit Then
+        AcceptChanges(parentEditLevel)
+      End If
+    End Sub
+
     ''' <summary>
     ''' Copies the state of the object and places the copy
     ''' onto the state stack.
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub CopyState(ByVal parentEditLevel As Integer) Implements IUndoableObject.CopyState
+    Protected Friend Sub CopyState(ByVal parentEditLevel As Integer)
 
       CopyingState()
 
@@ -119,7 +138,7 @@ Namespace Core
                 Else
                   ' this is a child object, cascade the call
                   If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
-                    DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1)
+                    DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1, BindingEdit)
                   End If
                 End If
 
@@ -177,7 +196,7 @@ Namespace Core
     ''' of the object.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub UndoChanges(ByVal parentEditLevel As Integer) Implements IUndoableObject.UndoChanges
+    Protected Friend Sub UndoChanges(ByVal parentEditLevel As Integer)
 
       UndoingChanges()
 
@@ -230,7 +249,7 @@ Namespace Core
                     If Not value Is Nothing Then
                       ' this is a child object, cascade the call
                       If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
-                        DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel)
+                        DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel, BindingEdit)
                       End If
                     End If
                   End If
@@ -278,8 +297,7 @@ Namespace Core
     ''' to the object's state.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Friend Sub AcceptChanges(ByVal parentEditLevel As Integer) _
-      Implements IUndoableObject.AcceptChanges
+    Protected Friend Sub AcceptChanges(ByVal parentEditLevel As Integer)
 
       AcceptingChanges()
 
@@ -314,7 +332,7 @@ Namespace Core
                   If Not value Is Nothing Then
                     ' this is a child object, cascade the call
                     If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
-                      DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel)
+                      DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel, BindingEdit)
                     End If
                   End If
                 End If
@@ -358,12 +376,12 @@ Namespace Core
       ' if item's edit level is too high,
       ' reduce it to match list
       While child.EditLevel > targetLevel
-        child.AcceptChanges(targetLevel)
+        child.AcceptChanges(targetLevel, False)
       End While
       ' if item's edit level is too low,
       ' increase it to match list
       While child.EditLevel < targetLevel
-        child.CopyState(targetLevel)
+        child.CopyState(targetLevel, False)
       End While
 
     End Sub

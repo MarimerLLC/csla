@@ -44,6 +44,14 @@ namespace Csla.Test.LazyLoad
       Assert.IsNotNull(list, "ChildList should not be null");
       Assert.IsNotNull(parent.GetChildList(), "GetChildList should not be null");
 
+      parent.BeginEdit();
+      list = parent.ChildList;
+      Assert.IsNotNull(list, "ChildList should not be null");
+      Assert.IsNotNull(parent.GetChildList(), "GetChildList should not be null after 2nd BeginEdit");
+
+      parent.CancelEdit();
+      Assert.IsNotNull(parent.GetChildList(), "GetChildList should not be null after 1st CancelEdit");
+
       parent.CancelEdit();
       Assert.IsNull(parent.GetChildList(), "GetChildList should be null after CancelEdit");
     }

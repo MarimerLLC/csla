@@ -272,6 +272,31 @@ Namespace Core.FieldManager
 
     End Function
 
+    ''' <summary>
+    ''' Gets a value indicating whether the specified field
+    ''' has been changed.
+    ''' </summary>
+    ''' <param name="propertyInfo">
+    ''' The property corresponding to the field.
+    ''' </param>
+    ''' <returns>True if the field has been changed.</returns>
+    Public Function IsFieldDirty(ByVal propertyInfo As IPropertyInfo) As Boolean
+      Try
+        Dim result As Boolean
+        Dim field = _fieldData(propertyInfo.Index)
+        If field IsNot Nothing Then
+          result = field.IsDirty
+
+        Else
+          result = False
+        End If
+        Return result
+
+      Catch ex As IndexOutOfRangeException
+        Throw New InvalidOperationException(My.Resources.PropertyNotRegistered, ex)
+      End Try
+    End Function
+
 #End Region
 
 #Region " IsValid/IsDirty"

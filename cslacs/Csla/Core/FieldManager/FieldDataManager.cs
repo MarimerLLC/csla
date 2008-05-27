@@ -452,11 +452,8 @@ namespace Csla.Core.FieldManager
               continue;
             }
           }
-          else
-          {
-            // restore IFieldData object into field collection
-            _fieldData[index] = oldItem;
-          }
+          // restore IFieldData object into field collection
+          _fieldData[index] = oldItem;
         }
       }
     }

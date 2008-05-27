@@ -456,5 +456,14 @@ namespace Csla.Test.PropertyGetSet
       _changedName = e.PropertyName;
     }
 
+    [TestMethod]
+    public void FieldDirty()
+    {
+      EditableGetSet root = new EditableGetSet();
+      Assert.IsFalse(root.M01Dirty, "M01 should not be dirty");
+      root.M01 = "hi there";
+      Assert.IsTrue(root.M01Dirty, "M01 should be dirty");
+    }
+
   }
 }

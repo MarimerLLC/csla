@@ -55,6 +55,11 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<string>(M01Property, value); }
     }
 
+    public bool M01Dirty
+    {
+      get { return FieldManager.IsFieldDirty(M01Property); }
+    }
+
     private static Csla.PropertyInfo<int> M02Property = RegisterProperty<int>(typeof(EditableGetSet), new Csla.PropertyInfo<int>("M02"));
     public int M02
     {

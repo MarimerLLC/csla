@@ -23,13 +23,18 @@ Namespace Security
 
 #Region " Get Roles "
 
-    Friend Function GetRolesForProperty( _
-      ByVal propertyName As String) As RolesForProperty
+    Private Shared _rolesLock As Object = New Object()
+
+    Friend Function GetRolesForProperty(ByVal propertyName As String) As RolesForProperty
 
       Dim currentRoles As RolesForProperty = Nothing
-      If Not RulesList.TryGetValue(propertyName, currentRoles) Then
-        currentRoles = New RolesForProperty
-        RulesList.Add(propertyName, currentRoles)
+      If (Not RulesList.TryGetValue(propertyName, currentRoles)) Then
+        SyncLock _rolesLock
+          If (Not RulesList.TryGetValue(propertyName, currentRoles)) Then
+            currentRoles = New RolesForProperty()
+            RulesList.Add(propertyName, currentRoles)
+          End If
+        End SyncLock
       End If
       Return currentRoles
 

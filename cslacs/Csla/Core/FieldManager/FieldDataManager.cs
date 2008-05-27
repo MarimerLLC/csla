@@ -303,6 +303,33 @@ namespace Csla.Core.FieldManager
       }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the specified field
+    /// has been changed.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// The property corresponding to the field.
+    /// </param>
+    /// <returns>True if the field has been changed.</returns>
+    public bool IsFieldDirty(IPropertyInfo propertyInfo)
+    {
+      try
+      {
+        bool result = false;
+        var field = _fieldData[propertyInfo.Index];
+        if (field != null)
+          result = field.IsDirty;
+        else
+          result = false;
+        return result;
+
+      }
+      catch (IndexOutOfRangeException ex)
+      {
+        throw new InvalidOperationException(Properties.Resources.PropertyNotRegistered, ex);
+      }
+    }
+
     #endregion
 
     #region  IsValid/IsDirty

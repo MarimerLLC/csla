@@ -374,19 +374,16 @@ Namespace Core.FieldManager
         For index = 0 To _fieldData.Length - 1
           Dim oldItem = state(index)
           Dim item = _fieldData(index)
-          If oldItem Is Nothing AndAlso item IsNot Nothing Then
-            ' potential child object
-            Dim child = TryCast(item.Value, IUndoableObject)
-            If child IsNot Nothing Then
-              child.UndoChanges(parentEditLevel)
-            Else
-              ' null value
-              _fieldData(index) = Nothing
+          If oldItem IsNot Nothing Then
+            ' see if current value is undoable
+            Dim undoable = TryCast(item.Value, IUndoableObject)
+            If undoable IsNot Nothing Then
+              undoable.UndoChanges(parentEditLevel)
+              Continue For
             End If
-          Else
-            ' restore IFieldData object into field collection
-            _fieldData(index) = state(index)
           End If
+          ' restore IFieldData object into field collection
+          _fieldData(index) = oldItem
         Next index
       End If
     End Sub

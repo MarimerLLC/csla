@@ -370,7 +370,7 @@ Namespace Core
     Friend Shared Sub ResetChildEditLevel(ByVal child As IUndoableObject, ByVal parentEditLevel As Integer, ByVal bindingEdit As Boolean)
 
       Dim targetLevel As Integer = parentEditLevel
-      If bindingEdit AndAlso targetLevel > 0 Then _
+      If bindingEdit AndAlso targetLevel > 0 AndAlso Not TypeOf child Is FieldManager.FieldDataManager Then _
         targetLevel -= 1
 
       ' if item's edit level is too high,

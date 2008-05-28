@@ -368,7 +368,7 @@ namespace Csla.Core
     internal static void ResetChildEditLevel(IUndoableObject child, int parentEditLevel, bool bindingEdit)
     {
       int targetLevel = parentEditLevel;
-      if (bindingEdit && targetLevel > 0)
+      if (bindingEdit && targetLevel > 0 && !(child is FieldManager.FieldDataManager))
         targetLevel--;
       // if item's edit level is too high,
       // reduce it to match list

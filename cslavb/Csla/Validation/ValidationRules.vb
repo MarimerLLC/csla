@@ -815,6 +815,7 @@ Namespace Validation
     ''' with that property.
     ''' </remarks>
     <Obsolete("Use AddDependentProperty")> _
+    <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Never)> _
     Public Sub AddDependantProperty(ByVal propertyName As String, ByVal dependantPropertyName As String)
 
       AddDependentProperty(propertyName, dependantPropertyName)

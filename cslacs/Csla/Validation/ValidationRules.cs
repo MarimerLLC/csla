@@ -763,6 +763,7 @@ namespace Csla.Validation
     /// with that property.
     /// </remarks>
     [Obsolete("Use AddDependentProperty")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public void AddDependantProperty(string propertyName, string dependantPropertyName)
     {
       AddDependentProperty(propertyName, dependantPropertyName);
@@ -902,10 +903,13 @@ namespace Csla.Validation
     /// dependent properties.
     /// </summary>
     /// <param name="propertyName">The name of the property to validate.</param>
-    public void CheckRules(string propertyName)
+    public string[] CheckRules(string propertyName)
     {
       if (_suppressRuleChecking)
-        return;
+        return new string[] {};
+
+      var result = new List<string>();
+      result.Add(propertyName);
 
       // get the rules dictionary
       ValidationRulesManager rules = RulesToCheck;
@@ -925,11 +929,13 @@ namespace Csla.Validation
             for (int i = 0; i < dependancies.Count; i++)
             {
               string dependentProperty = dependancies[i];
+              result.Add(dependentProperty);
               CheckRules(rules, dependentProperty);
             }
           }
         }
       }
+      return result.ToArray();
     }
 
     private void CheckRules(ValidationRulesManager rules, string propertyName)

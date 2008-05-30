@@ -416,6 +416,34 @@ namespace Csla
       }
     }
 
+    private static PropertyChangedModes _propertyChangedMode;
+    private static bool _propertyChangedModeSet;
+    /// <summary>
+    /// Gets or sets a value specifying how CSLA .NET should
+    /// raise PropertyChanged events.
+    /// </summary>
+    public static PropertyChangedModes PropertyChangedMode
+    {
+      get
+      {
+        if (!_propertyChangedModeSet)
+        {
+          string tmp = ConfigurationManager.AppSettings["CslaPropertyChangedMode"];
+          if (string.IsNullOrEmpty(tmp))
+            tmp = "Windows";
+          _propertyChangedMode = (PropertyChangedModes)
+            Enum.Parse(typeof(PropertyChangedModes), tmp);
+          _propertyChangedModeSet = true;
+        }
+        return _propertyChangedMode;
+      }
+      set
+      {
+        _propertyChangedMode = value;
+        _propertyChangedModeSet = true;
+      }
+    }
+
     /// <summary>
     /// Enum representing the serialization formatters
     /// supported by CSLA .NET.
@@ -448,6 +476,24 @@ namespace Csla
       /// The code is executing on the application server.
       /// </summary>
       Server
+    }
+
+    /// <summary>
+    /// Enum representing the way in which CSLA .NET
+    /// should raise PropertyChanged events.
+    /// </summary>
+    public enum PropertyChangedModes
+    {
+      /// <summary>
+      /// Raise PropertyChanged events as required
+      /// by Windows Forms data binding.
+      /// </summary>
+      Windows,
+      /// <summary>
+      /// Raise PropertyChanged events as required
+      /// by XAML data binding in WPF.
+      /// </summary>
+      Xaml
     }
 
     #endregion

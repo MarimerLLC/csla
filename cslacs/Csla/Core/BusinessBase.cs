@@ -259,6 +259,7 @@ namespace Csla.Core
     [System.Runtime.CompilerServices.MethodImpl(
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     [Obsolete("Use overload requiring explicit property name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     protected void PropertyHasChanged()
     {
       string propertyName = 
@@ -281,8 +282,12 @@ namespace Csla.Core
     protected virtual void PropertyHasChanged(string propertyName)
     {
       MarkDirty(true);
-      ValidationRules.CheckRules(propertyName);
-      OnPropertyChanged(propertyName);
+      var propertyNames = ValidationRules.CheckRules(propertyName);
+      if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)
+        OnPropertyChanged(propertyName);
+      else
+        foreach (var name in propertyNames)
+          OnPropertyChanged(name);
     }
 
     /// <summary>
@@ -422,6 +427,7 @@ namespace Csla.Core
     [System.Runtime.CompilerServices.MethodImpl(
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     [Obsolete("Use overload requiring explicit property name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public bool CanReadProperty(bool throwOnFalse)
     {
       string propertyName = 
@@ -468,6 +474,7 @@ namespace Csla.Core
     /// <returns><see langword="true" /> if read is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     [Obsolete("Use overload requiring explicit property name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public bool CanReadProperty()
     {
       string propertyName = 
@@ -532,6 +539,7 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     [Obsolete("Use overload requiring explicit property name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public bool CanWriteProperty(bool throwOnFalse)
     {
       string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
@@ -574,6 +582,7 @@ namespace Csla.Core
     /// <returns><see langword="true" /> if write is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     [Obsolete("Use overload requiring explicit property name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public bool CanWriteProperty()
     {
       string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
@@ -654,6 +663,7 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     [Obsolete("Use overload requiring explicit method name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public bool CanExecuteMethod(bool throwOnFalse)
     {
 
@@ -698,6 +708,7 @@ namespace Csla.Core
     /// <returns><see langword="true" /> if execute is allowed.</returns>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     [Obsolete("Use overload requiring explicit method name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public bool CanExecuteMethod()
     {
 

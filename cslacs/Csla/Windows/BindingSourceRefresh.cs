@@ -9,71 +9,6 @@ using System.Windows.Forms;
 
 namespace Csla.Windows
 {
-  #region Delegates
-
-  /// <summary>
-  /// BindingErrorEventHandler delegates is the event handling definition for handling data binding errors that occurred due to exceptions.
-  /// </summary>
-  /// <param name="sender">The object that triggered the event.</param>
-  /// <param name="e">The event arguments.</param>
-  public delegate void BindingErrorEventHandler(object sender, BindingErrorEventArgs e);
-
-  #endregion
-
-  #region BindingErrorEventArgs Class
-
-  /// <summary>
-  /// BindingErrorEventArgs defines the event arguments for reporting a data binding error due to a exception.
-  /// </summary>
-  public class BindingErrorEventArgs : EventArgs
-  {
-
-    #region Property Fields
-
-    private Exception _exception = null;
-    private Binding _binding = null;
-
-    #endregion
-
-    #region Properties
-
-    /// <summary>
-    /// Exception gets the exception that caused the binding error.
-    /// </summary>
-    public Exception Exception
-    {
-      get { return (_exception); }
-    }
-
-    /// <summary>
-    /// Binding gets the binding that caused the exception.
-    /// </summary>
-    public Binding Binding
-    {
-      get { return (_binding); }
-    }
-
-    #endregion
-
-    #region Constructors
-
-    /// <summary>
-    /// Constructor creates a new BindingErrorEventArgs object instance using the information specified.
-    /// </summary>
-    /// <param name="binding">The binding that caused th exception.</param>
-    /// <param name="exception">The exception that caused the error.</param>
-    public BindingErrorEventArgs(Binding binding, Exception exception)
-    {
-      _binding = binding;
-      _exception = exception;
-    }
-
-    #endregion
-
-  }
-
-  #endregion
-
   /// <summary>
   /// BindingSourceRefresh contains functionality for refreshing the data bound to controls on Host as well as a mechinism for catching data
   /// binding errors that occur in Host.
@@ -405,4 +340,69 @@ namespace Csla.Windows
     #endregion
 
   }
+
+  #region Delegates
+
+  /// <summary>
+  /// BindingErrorEventHandler delegates is the event handling definition for handling data binding errors that occurred due to exceptions.
+  /// </summary>
+  /// <param name="sender">The object that triggered the event.</param>
+  /// <param name="e">The event arguments.</param>
+  public delegate void BindingErrorEventHandler(object sender, BindingErrorEventArgs e);
+
+  #endregion
+
+  #region BindingErrorEventArgs Class
+
+  /// <summary>
+  /// BindingErrorEventArgs defines the event arguments for reporting a data binding error due to a exception.
+  /// </summary>
+  public class BindingErrorEventArgs : EventArgs
+  {
+
+    #region Property Fields
+
+    private Exception _exception = null;
+    private Binding _binding = null;
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Exception gets the exception that caused the binding error.
+    /// </summary>
+    public Exception Exception
+    {
+      get { return (_exception); }
+    }
+
+    /// <summary>
+    /// Binding gets the binding that caused the exception.
+    /// </summary>
+    public Binding Binding
+    {
+      get { return (_binding); }
+    }
+
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    /// Constructor creates a new BindingErrorEventArgs object instance using the information specified.
+    /// </summary>
+    /// <param name="binding">The binding that caused th exception.</param>
+    /// <param name="exception">The exception that caused the error.</param>
+    public BindingErrorEventArgs(Binding binding, Exception exception)
+    {
+      _binding = binding;
+      _exception = exception;
+    }
+
+    #endregion
+
+  }
+
+  #endregion
 }

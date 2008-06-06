@@ -43,8 +43,8 @@ namespace Csla.Linq
     private bool MethodsEquivalent(MethodCallExpression mex, MethodInfo info)
     {
       ParameterInfo[] parms = info.GetParameters();
-      
-      if (info.Name == mex.Method.Name && mex.Arguments.Count == parms.Length )
+
+      if (info.Name == mex.Method.Name && mex.Arguments.Count == parms.Length)
       {
         object[] arguments = new object[mex.Arguments.Count];
         for (int i = 0; i < mex.Arguments.Count; i++)
@@ -52,7 +52,7 @@ namespace Csla.Linq
         for (int i = 0; i < parms.Length; i++)
         {
           //for each parameter, determine if the type is supported
-          if (parms[i].ParameterType.Name == arguments[i].GetType().Name) 
+          if (parms[i].ParameterType.Name == arguments[i].GetType().Name)
             continue;
           if (parms[i].ParameterType.IsGenericParameter)
             continue;
@@ -60,7 +60,18 @@ namespace Csla.Linq
           {
             Type[] genArgs = arguments[i].GetType().GetGenericArguments();
             if (parms[i].ParameterType.Name == genArgs[0].Name)
+            {
+              if (genArgs[0].IsGenericType)
+              {
+                //check if the second level
+                var genArgsLevel2 = genArgs[0].GetGenericArguments();
+                var parmsArgsLevel2 = parms[i].ParameterType.GetGenericArguments();
+                for (int j = 0; j < genArgsLevel2.Length; j++)
+                  if (genArgsLevel2[j].Name != parmsArgsLevel2[j].Name && !parmsArgsLevel2[j].IsGenericParameter)
+                    return false;
+              }
               continue;
+            }
           }
           bool supported = false;
           Type[] supportedInterfaces = arguments[i].GetType().GetInterfaces();
@@ -71,8 +82,6 @@ namespace Csla.Linq
               break;
             }
           if (!supported) return false;
-          //if (!parms[i].ParameterType.IsAssignableFrom(arguments[i].GetType()))
-          //  return false;
         }
         return true;
       }

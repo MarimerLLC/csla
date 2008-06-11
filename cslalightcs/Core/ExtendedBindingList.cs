@@ -13,26 +13,6 @@ namespace Csla.Core
   public class ExtendedBindingList<T> : BindingList<T>,
     IExtendedBindingList
   {
-    #region Serialization
-
-    protected override object GetValue(System.Reflection.FieldInfo field)
-    {
-      if (field.DeclaringType == typeof(ExtendedBindingList<T>))
-        return field.GetValue(this);
-      else
-        return base.GetValue(field);
-    }
-
-    protected override void SetValue(System.Reflection.FieldInfo field, object value)
-    {
-      if (field.DeclaringType == typeof(ExtendedBindingList<T>))
-        field.SetValue(this, value);
-      else
-        base.SetValue(field, value);
-    }
-
-    #endregion
-
     #region RemovingItem event
 
     [NonSerialized()]

@@ -21,25 +21,6 @@ namespace Csla.Core
   public abstract class ReadOnlyBindingList<C> :
     Core.ExtendedBindingList<C>, Core.IBusinessObject
   {
-    #region Serialization
-
-    protected override object GetValue(System.Reflection.FieldInfo field)
-    {
-      if (field.DeclaringType == typeof(ReadOnlyBindingList<C>))
-        return field.GetValue(this);
-      else
-        return base.GetValue(field);
-    }
-
-    protected override void SetValue(System.Reflection.FieldInfo field, object value)
-    {
-      if (field.DeclaringType == typeof(ReadOnlyBindingList<C>))
-        field.SetValue(this, value);
-      else
-        base.SetValue(field, value);
-    }
-
-    #endregion
 
     private bool _isReadOnly = true;
 

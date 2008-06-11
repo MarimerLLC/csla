@@ -1,40 +1,40 @@
 ﻿using System;
 using Csla.Serialization;
+using Csla.Core.FieldManager;
 
 namespace Csla.Silverlight
 {
   [Serializable]
   public class SingleCriteria<T> : CriteriaBase
   {
-    #region Serialization
-
-    protected override object GetValue(System.Reflection.FieldInfo field)
+    static SingleCriteria()
     {
-      if (field.DeclaringType == typeof(SingleCriteria<T>))
-        return field.GetValue(this);
-      else
-        return base.GetValue(field);
     }
 
-    protected override void SetValue(System.Reflection.FieldInfo field, object value)
+    public static readonly PropertyInfo<T> ValueProperty = PropertyInfoManager.RegisterProperty<T>(
+        typeof(SingleCriteria<T>),
+        new PropertyInfo<T>("Value"));
+
+    public T Value
     {
-      if (field.DeclaringType == typeof(SingleCriteria<T>))
-        field.SetValue(this, value);
-      else
-        base.SetValue(field, value);
+      get
+      {
+        return GetProperty<T>(ValueProperty);
+      }
+      private set
+      {
+        SetProperty<T>(ValueProperty, value);
+      }
     }
 
-    #endregion
-
-    public T Value { get; private set; }
+    public SingleCriteria() 
+      : base()
+    { }
 
     public SingleCriteria(Type objectType, T value)
       : base(objectType)
     {
       this.Value = value;
     }
-
-    private SingleCriteria()
-    { }
   }
 }

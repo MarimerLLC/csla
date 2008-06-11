@@ -20,7 +20,10 @@ namespace Csla.Serialization.Mobile
     /// <param name="formatter">
     /// Reference to the formatter performing the serialization.
     /// </param>
-    void Serialize(SerializationInfo info, MobileFormatter formatter);
+    void GetState(SerializationInfo info);
+
+    void GetChildren(SerializationInfo info, MobileFormatter formatter);
+
     /// <summary>
     /// Method called by MobileFormatter when an object
     /// should be deserialized. The data should be
@@ -32,6 +35,8 @@ namespace Csla.Serialization.Mobile
     /// <param name="formatter">
     /// Reference to the formatter performing the deserialization.
     /// </param>
-    void Deserialize(SerializationInfo info, MobileFormatter formatter);
+    void SetState(SerializationInfo info);
+
+    void SetChildren(SerializationInfo info, MobileFormatter formatter);
   }
 }

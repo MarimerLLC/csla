@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.ComponentModel;
 using System.Reflection;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
+using Csla.Core.FieldManager;
+using Csla.Core;
 
 namespace Csla.Silverlight
 {
@@ -13,156 +16,99 @@ namespace Csla.Silverlight
   [Serializable]
   public abstract class MobileObject : IMobileObject
   {
-    #region Serialize
+    #region Field Manager
 
-    void IMobileObject.Serialize(SerializationInfo info, MobileFormatter formatter)
+    private FieldDataManager _fieldManager;
+
+    protected FieldDataManager FieldManager
     {
-      var thisType = this.GetType();
-      info.TypeName = thisType.FullName + "," + thisType.Assembly.FullName;
-      Serialize(info, formatter);
-    }
-
-    /// <summary>
-    /// Method called by MobileFormatter when an object
-    /// should serialize its data. The data should be
-    /// serialized into the SerializationInfo parameter.
-    /// </summary>
-    /// <param name="info">
-    /// Object to contain the serialized data.
-    /// </param>
-    /// <param name="formatter">
-    /// Reference to the formatter performing the serialization.
-    /// </param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Serialize(SerializationInfo info, MobileFormatter formatter)
-    {
-      FieldInfo[] fields;
-
-      var currentType = this.GetType();
-
-      while (currentType != null)
+      get
       {
-        // get the list of fields in this type
-        fields = currentType.GetFields(
-          BindingFlags.NonPublic |
-          BindingFlags.Instance |
-          BindingFlags.Public);
-
-        foreach (FieldInfo field in fields)
+        if (_fieldManager == null)
         {
-          // see if this field is marked as not undoable
-          if (!field.IsNotSerialized && !IsNonSerialized(field))
-          {
-            var value = GetValue(field);
-            var mobile = value as IMobileObject;
-            if (mobile == null)
-              info.AddValue(
-                string.Format("{0}!{1}", field.DeclaringType.Name, field.Name),
-                value);
-            else
-              info.AddValue(
-                string.Format("{0}!{1}", field.DeclaringType.Name, field.Name),
-                formatter.SerializeObject(mobile));
-          }
+          _fieldManager = new FieldDataManager(this.GetType());
         }
-        currentType = currentType.BaseType;
+        return _fieldManager;
       }
     }
 
-    /// <summary>
-    /// Override in a subclass to return the value
-    /// of the requested field. Remember you can
-    /// only return values of fields declared directly
-    /// in your class.
-    /// </summary>
-    /// <param name="field">
-    /// FieldInfo describing the field to be retrieved.
-    /// </param>
-    /// <returns></returns>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual object GetValue(FieldInfo field)
+    public T GetProperty<T>(IPropertyInfo propertyInfo)
     {
-      throw new NotImplementedException("GetValue must be overridden in all subclasses");
+      return (T)FieldManager.GetFieldData(propertyInfo).Value;
     }
 
-    private static bool IsNonSerialized(FieldInfo field)
+    public void SetProperty<T>(IPropertyInfo propertyInfo, T value)
     {
-      var a = field.GetCustomAttributes(typeof(Csla.Serialization.NonSerializedAttribute), false);
-      return a.Length > 0;
+      FieldManager.SetFieldData<T>(propertyInfo, value);
     }
+
+    #endregion
+
+    #region Serialize
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (_fieldManager != null)
+      {
+        FieldManager.GetRegisteredProperties().ForEach(p =>
+        {
+          if (typeof(IMobileObject).IsAssignableFrom(p.Type))
+          {
+            IFieldData data = FieldManager.GetFieldData(p);
+            SerializationInfo childInfo = formatter.SerializeObject(data.Value);
+            info.AddChild(p.Name, childInfo.ReferenceId);
+          }
+        });
+      }
+      OnGetChildren(info, formatter);
+    }
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      if (_fieldManager != null)
+      {
+        FieldManager.GetRegisteredProperties().ForEach(p =>
+        {
+          if (!typeof(IMobileObject).IsAssignableFrom(p.Type))
+          {
+            IFieldData data = FieldManager.GetFieldData(p);
+            info.AddValue(data.Name, data.Value);
+          }
+        });
+      }
+      OnGetState(info);
+    }
+
+    protected virtual void OnGetState(SerializationInfo info) { }
+
+    protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) { }
 
     #endregion
 
     #region Deserialize
 
-    void IMobileObject.Deserialize(SerializationInfo info, MobileFormatter formatter)
+    void IMobileObject.SetState(SerializationInfo info)
     {
-      Deserialize(info, formatter);
-    }
-
-    /// <summary>
-    /// Method called by MobileFormatter when an object
-    /// should be deserialized. The data should be
-    /// deserialized from the SerializationInfo parameter.
-    /// </summary>
-    /// <param name="info">
-    /// Object containing the serialized data.
-    /// </param>
-    /// <param name="formatter">
-    /// Reference to the formatter performing the deserialization.
-    /// </param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Deserialize(SerializationInfo info, MobileFormatter formatter)
-    {
-      FieldInfo[] fields;
-
-      var currentType = this.GetType();
-
-      while (currentType != null)
+      if (info.Values != null && info.Values.Count > 0)
       {
-        // get the list of fields in this type
-        fields = currentType.GetFields(
-          BindingFlags.NonPublic |
-          BindingFlags.Instance |
-          BindingFlags.Public);
-
-        foreach (FieldInfo field in fields)
+        var properties = FieldManager.GetRegisteredProperties();
+        foreach (var data in info.Values)
         {
-          // see if this field is marked as not undoable
-          if (!field.IsNotSerialized && !IsNonSerialized(field))
-          {
-            var value = info.GetValue(
-              string.Format("{0}!{1}", field.DeclaringType.Name, field.Name));
-            var valueInfo = value as SerializationInfo;
-            if (valueInfo == null)
-              SetValue(field, Convert.ChangeType(value, field.FieldType, null));
-            else
-              SetValue(field, formatter.GetObject(valueInfo.ReferenceId));
-          }
+          var property = properties.First(p => p.Name == data.Key);
+          FieldManager.LoadFieldData(property, (object)data.Value);
         }
-        currentType = currentType.BaseType;
       }
+      OnSetState(info);
     }
 
-    /// <summary>
-    /// Override in a subclass to set the value
-    /// of the requested field. Remember you can
-    /// only set values of fields declared directly
-    /// in your class.
-    /// </summary>
-    /// <param name="field">
-    /// FieldInfo describing the field to be set.
-    /// </param>
-    /// <param name="value">
-    /// Value to be set into the field.
-    /// </param>
-    /// <returns></returns>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void SetValue(FieldInfo field, object value)
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      throw new NotImplementedException("SetValue must be overridden in all subclasses");
     }
 
+    protected virtual void OnSetState(SerializationInfo info) { }
+
+    protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter) { }
+    
     #endregion
   }
 }

@@ -9,26 +9,6 @@ namespace Csla.Validation
   [Serializable()]
   public class BrokenRule : Csla.Silverlight.MobileObject
   {
-    #region Serialization
-
-    protected override object GetValue(System.Reflection.FieldInfo field)
-    {
-      if (field.DeclaringType == typeof(BrokenRule))
-        return field.GetValue(this);
-      else
-        return base.GetValue(field);
-    }
-
-    protected override void SetValue(System.Reflection.FieldInfo field, object value)
-    {
-      if (field.DeclaringType == typeof(BrokenRule))
-        field.SetValue(this, value);
-      else
-        base.SetValue(field, value);
-    }
-
-    #endregion
-
     private string _ruleName;
     private string _description;
     private string _property;

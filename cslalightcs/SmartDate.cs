@@ -17,116 +17,116 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   public struct SmartDate : Csla.Core.ISmartField,
-    IComparable, IConvertible, IFormattable, Csla.Serialization.Mobile.IMobileObject
+    IComparable, IConvertible, IFormattable//, Csla.Serialization.Mobile.IMobileObject
   {
-    #region Serialize
+    //#region Serialize
 
-    void IMobileObject.Serialize(SerializationInfo info, MobileFormatter formatter)
-    {
-      var thisType = this.GetType();
-      info.TypeName = thisType.FullName + "," + thisType.Assembly.FullName;
-      Serialize(info, formatter);
-    }
+    //void IMobileObject.Serialize(SerializationInfo info, MobileFormatter formatter)
+    //{
+    //  var thisType = this.GetType();
+    //  info.TypeName = thisType.FullName + "," + thisType.Assembly.FullName;
+    //  Serialize(info, formatter);
+    //}
 
-    private void Serialize(SerializationInfo info, MobileFormatter formatter)
-    {
-      FieldInfo[] fields;
+    //private void Serialize(SerializationInfo info, MobileFormatter formatter)
+    //{
+    //  FieldInfo[] fields;
 
-      var currentType = this.GetType();
+    //  var currentType = this.GetType();
 
-      while (currentType != null)
-      {
-        // get the list of fields in this type
-        fields = currentType.GetFields(
-          BindingFlags.NonPublic |
-          BindingFlags.Instance |
-          BindingFlags.Public);
+    //  while (currentType != null)
+    //  {
+    //    // get the list of fields in this type
+    //    fields = currentType.GetFields(
+    //      BindingFlags.NonPublic |
+    //      BindingFlags.Instance |
+    //      BindingFlags.Public);
 
-        foreach (FieldInfo field in fields)
-        {
-          // see if this field is marked as not undoable
-          if (!field.IsNotSerialized && !IsNonSerialized(field))
-          {
-            var value = GetValue(field);
-            var mobile = value as IMobileObject;
-            if (mobile == null)
-              info.AddValue(
-                string.Format("{0}!{1}", field.DeclaringType.Name, field.Name),
-                value);
-            else
-              info.AddValue(
-                string.Format("{0}!{1}", field.DeclaringType.Name, field.Name),
-                formatter.SerializeObject(mobile));
-          }
-        }
-        currentType = currentType.BaseType;
-      }
-    }
+    //    foreach (FieldInfo field in fields)
+    //    {
+    //      // see if this field is marked as not undoable
+    //      if (!field.IsNotSerialized && !IsNonSerialized(field))
+    //      {
+    //        var value = GetValue(field);
+    //        var mobile = value as IMobileObject;
+    //        if (mobile == null)
+    //          info.AddValue(
+    //            string.Format("{0}!{1}", field.DeclaringType.Name, field.Name),
+    //            value);
+    //        else
+    //          info.AddValue(
+    //            string.Format("{0}!{1}", field.DeclaringType.Name, field.Name),
+    //            formatter.SerializeObject(mobile));
+    //      }
+    //    }
+    //    currentType = currentType.BaseType;
+    //  }
+    //}
 
-    private static bool IsNonSerialized(FieldInfo field)
-    {
-      var a = field.GetCustomAttributes(typeof(Csla.Serialization.NonSerializedAttribute), false);
-      return a.Length > 0;
-    }
+    //private static bool IsNonSerialized(FieldInfo field)
+    //{
+    //  var a = field.GetCustomAttributes(typeof(Csla.Serialization.NonSerializedAttribute), false);
+    //  return a.Length > 0;
+    //}
 
-    #endregion
+    //#endregion
 
-    #region Deserialize
+    //#region Deserialize
 
-    void IMobileObject.Deserialize(SerializationInfo info, MobileFormatter formatter)
-    {
-      Deserialize(info, formatter);
-    }
+    //void IMobileObject.Deserialize(SerializationInfo info, MobileFormatter formatter)
+    //{
+    //  Deserialize(info, formatter);
+    //}
 
-    private void Deserialize(SerializationInfo info, MobileFormatter formatter)
-    {
-      FieldInfo[] fields;
+    //private void Deserialize(SerializationInfo info, MobileFormatter formatter)
+    //{
+    //  FieldInfo[] fields;
 
-      var currentType = this.GetType();
+    //  var currentType = this.GetType();
 
-      while (currentType != null)
-      {
-        // get the list of fields in this type
-        fields = currentType.GetFields(
-          BindingFlags.NonPublic |
-          BindingFlags.Instance |
-          BindingFlags.Public);
+    //  while (currentType != null)
+    //  {
+    //    // get the list of fields in this type
+    //    fields = currentType.GetFields(
+    //      BindingFlags.NonPublic |
+    //      BindingFlags.Instance |
+    //      BindingFlags.Public);
 
-        foreach (FieldInfo field in fields)
-        {
-          // see if this field is marked as not undoable
-          if (!field.IsNotSerialized && !IsNonSerialized(field))
-          {
-            var value = info.GetValue(
-              string.Format("{0}!{1}", field.DeclaringType.Name, field.Name));
-            var valueInfo = value as SerializationInfo;
-            if (valueInfo == null)
-              SetValue(field, Convert.ChangeType(value, field.FieldType, null));
-            else
-              SetValue(field, formatter.GetObject(valueInfo.ReferenceId));
-          }
-        }
-        currentType = currentType.BaseType;
-      }
-    }
+    //    foreach (FieldInfo field in fields)
+    //    {
+    //      // see if this field is marked as not undoable
+    //      if (!field.IsNotSerialized && !IsNonSerialized(field))
+    //      {
+    //        var value = info.GetValue(
+    //          string.Format("{0}!{1}", field.DeclaringType.Name, field.Name));
+    //        var valueInfo = value as SerializationInfo;
+    //        if (valueInfo == null)
+    //          SetValue(field, Convert.ChangeType(value, field.FieldType, null));
+    //        else
+    //          SetValue(field, formatter.GetObject(valueInfo.ReferenceId));
+    //      }
+    //    }
+    //    currentType = currentType.BaseType;
+    //  }
+    //}
 
-    private object GetValue(System.Reflection.FieldInfo field)
-    {
-      if (field.DeclaringType == typeof(SmartDate))
-        return field.GetValue(this);
-      else
-        throw new Exception(string.Format("GetValue failed to get value for {0}", field.Name));
-    }
+    //private object GetValue(System.Reflection.FieldInfo field)
+    //{
+    //  if (field.DeclaringType == typeof(SmartDate))
+    //    return field.GetValue(this);
+    //  else
+    //    throw new Exception(string.Format("GetValue failed to get value for {0}", field.Name));
+    //}
 
-    private void SetValue(System.Reflection.FieldInfo field, object value)
-    {
-      if (field.DeclaringType == typeof(SmartDate))
-        field.SetValue(this, value);
-      else
-        throw new Exception(string.Format("SetValue failed to set value for {0}", field.Name));
-    }
+    //private void SetValue(System.Reflection.FieldInfo field, object value)
+    //{
+    //  if (field.DeclaringType == typeof(SmartDate))
+    //    field.SetValue(this, value);
+    //  else
+    //    throw new Exception(string.Format("SetValue failed to set value for {0}", field.Name));
+    //}
 
-    #endregion
+    //#endregion
 
     private DateTime _date;
     private bool _initialized;

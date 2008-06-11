@@ -14,27 +14,7 @@ namespace Csla.Core
     private bool _isChild;
     private int _editLevelAdded;
     private Validation.ValidationRules _validationRules;
-    private FieldManager.FieldDataManager _fieldManager;
-
-    #region Serialization
-
-    protected override object GetValue(System.Reflection.FieldInfo field)
-    {
-      if (field.DeclaringType == typeof(BusinessBase))
-        return field.GetValue(this);
-      else
-        return base.GetValue(field);
-    }
-
-    protected override void SetValue(System.Reflection.FieldInfo field, object value)
-    {
-      if (field.DeclaringType == typeof(BusinessBase))
-        field.SetValue(this, value);
-      else
-        base.SetValue(field, value);
-    }
-
-    #endregion
+    //private FieldManager.FieldDataManager _fieldManager;
 
     #region ICloneable
 

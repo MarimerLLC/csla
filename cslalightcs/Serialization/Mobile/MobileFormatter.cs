@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Csla.Serialization.Mobile
 {
@@ -68,13 +69,11 @@ namespace Csla.Serialization.Mobile
     {
       _serializationReferences.Clear();
 
-      var document = new XDocument();
       SerializeObject(graph);
-      var root = new XElement("g");
-      foreach (var item in _serializationReferences)
-        root.Add(item.Value.ToXElement());
-      document.Add(root);
-      document.Save(writer);
+
+      List<SerializationInfo> serialized = _serializationReferences.Values.ToList();
+      DataContractSerializer dc = new DataContractSerializer(typeof(List<SerializationInfo>));
+      dc.WriteObject(writer, serialized);
     }
 
     internal SerializationInfo SerializeObject(object obj)
@@ -94,7 +93,11 @@ namespace Csla.Serialization.Mobile
       {
         info = new SerializationInfo(_serializationReferences.Count + 1);
         _serializationReferences.Add(mobile, info);
-        mobile.Serialize(info, this);
+
+        info.TypeName = thisType.FullName + ", " + thisType.Assembly.FullName;
+
+        mobile.GetState(info);
+        mobile.GetChildren(info, this);
       }
       return info;
     }
@@ -153,48 +156,25 @@ namespace Csla.Serialization.Mobile
     /// <returns></returns>
     public object Deserialize(XmlReader reader)
     {
-      XDocument doc = XDocument.Load(reader);
-      XElement root = (XElement)doc.FirstNode;
-
-      _deserializationReferences.Clear();
-
-      var objects = from e in root.Elements()
-                    where e.Name == "o"
-                    select e;
-
-      var infos = new Dictionary<int, SerializationInfo>();
-
-      // create basic SerializationInfo objects
-      // and empty target objects
-      foreach (var item in objects)
+      DataContractSerializer dc = new DataContractSerializer(typeof(List<SerializationInfo>));
+      List<SerializationInfo> deserialized = dc.ReadObject(reader) as List<SerializationInfo>;
+      Dictionary<int, IMobileObject> objects = new Dictionary<int, IMobileObject>();
+      foreach (SerializationInfo info in deserialized)
       {
-        var info = new SerializationInfo(item);
-        infos.Add(info.ReferenceId, info);
-        var objType = Type.GetType(info.TypeName);
-        var mobile = Activator.CreateInstance(objType) as IMobileObject;
-        _deserializationReferences.Add(info.ReferenceId, mobile);
+        Type type = Type.GetType(info.TypeName);
+        IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
+        objects.Add(info.ReferenceId, mobile);
+
+        mobile.SetState(info);
       }
 
-      // fill out rest of SerializationInfo
-      foreach (var item in objects)
+      foreach (SerializationInfo info in deserialized)
       {
-        var referenceId = Convert.ToInt32(item.Attribute("i").Value);
-        var info = infos[referenceId];
-        info.Deserialize(item, this);
+        IMobileObject mobile = objects[info.ReferenceId];
+        mobile.SetChildren(info, this);
       }
 
-      // deserialize objects
-      foreach (var info in infos)
-        GetObject(info.Value.ReferenceId).Deserialize(info.Value, this);
-
-      foreach (var obj in _deserializationReferences)
-      {
-        var notify = obj.Value as ISerializationNotification;
-        if (notify != null)
-          notify.Deserialized();
-      }
-
-      return _deserializationReferences[1];
+      return objects[1];
     }
 
     internal IMobileObject GetObject(int referenceId)

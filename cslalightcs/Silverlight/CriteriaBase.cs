@@ -1,39 +1,37 @@
 ﻿using System;
 using Csla.Serialization;
+using Csla.Core.FieldManager;
 
 namespace Csla.Silverlight
 {
   [Serializable]
   public class CriteriaBase : MobileObject
   {
-    #region Serialization
-
-    protected override object GetValue(System.Reflection.FieldInfo field)
+    static CriteriaBase()
     {
-      if (field.DeclaringType == typeof(CriteriaBase))
-        return field.GetValue(this);
-      else
-        return base.GetValue(field);
+      TypeNameProperty = PropertyInfoManager.RegisterProperty<string>(
+        typeof(CriteriaBase),
+        new PropertyInfo<string>("TypeName"));
     }
 
-    protected override void SetValue(System.Reflection.FieldInfo field, object value)
+    public static PropertyInfo<string> TypeNameProperty;
+
+    public string TypeName
     {
-      if (field.DeclaringType == typeof(CriteriaBase))
-        field.SetValue(this, value);
-      else
-        base.SetValue(field, value);
+      get
+      {
+        return GetProperty<string>(TypeNameProperty);
+      }
+      protected set
+      {
+        SetProperty<string>(TypeNameProperty, value);
+      }
     }
 
-    #endregion
-
-    public string TypeName { get; protected set; }
-
+    public CriteriaBase() { }
     public CriteriaBase(Type objectType)
     {
       this.TypeName = objectType.FullName + "," + objectType.Assembly.FullName;
     }
-
-    protected CriteriaBase()
-    { }
   }
 }

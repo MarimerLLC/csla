@@ -16,26 +16,6 @@ namespace Csla.Validation
   [Serializable]
   public class BrokenRulesCollection : Core.ReadOnlyBindingList<BrokenRule>
   {
-    #region Serialization
-
-    protected override object GetValue(System.Reflection.FieldInfo field)
-    {
-      if (field.DeclaringType == typeof(BrokenRulesCollection))
-        return field.GetValue(this);
-      else
-        return base.GetValue(field);
-    }
-
-    protected override void SetValue(System.Reflection.FieldInfo field, object value)
-    {
-      if (field.DeclaringType == typeof(BrokenRulesCollection))
-        field.SetValue(this, value);
-      else
-        base.SetValue(field, value);
-    }
-
-    #endregion
-
     private int _errorCount;
     private int _warningCount;
     private int _infoCount;

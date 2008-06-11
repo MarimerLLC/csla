@@ -56,6 +56,15 @@ Namespace Linq
           If arguments(i).GetType().IsGenericType AndAlso parms(i).ParameterType.Name.StartsWith("Func") Then
             Dim genArgs() As Type = arguments(i).GetType().GetGenericArguments()
             If parms(i).ParameterType.Name = genArgs(0).Name Then
+              If genArgs(0).IsGenericType Then
+                Dim genArgsLevel2 = genArgs(0).GetGenericArguments()
+                Dim parmsArgsLevel2 = parms(i).ParameterType.GetGenericArguments()
+                For j = 0 To genArgsLevel2.Length - 1
+                  If genArgsLevel2(j).Name <> parmsArgsLevel2(j).Name AndAlso Not parmsArgsLevel2(j).IsGenericParameter Then
+                    Return False
+                  End If
+                Next
+              End If
               Continue For
             End If
           End If
@@ -70,8 +79,6 @@ Namespace Linq
           If (Not supported) Then
             Return False
           End If
-          'if (!parms[i].ParameterType.IsAssignableFrom(arguments[i].GetType()))
-          '  return false;
         Next i
         Return True
       Else

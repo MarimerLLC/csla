@@ -7,6 +7,7 @@ Public Class MainForm
     If Csla.ApplicationContext.AuthenticationType = "Windows" Then
       AppDomain.CurrentDomain.SetPrincipalPolicy( _
         System.Security.Principal.PrincipalPolicy.WindowsPrincipal)
+      ApplyAuthorizationRules()
 
     Else
       DoLogin()
@@ -14,7 +15,6 @@ Public Class MainForm
     If DocumentCount = 0 Then
       Me.DocumentsToolStripDropDownButton.Enabled = False
     End If
-    ApplyAuthorizationRules()
 
   End Sub
 

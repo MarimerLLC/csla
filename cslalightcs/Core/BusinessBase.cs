@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Csla.Core.FieldManager;
 
 namespace Csla.Core
 {
@@ -35,5 +36,11 @@ namespace Csla.Core
 
     #endregion
 
+    static BusinessBase() { }
+
+    public static PropertyInfo<T> RegisterProperty<T>(Type ownerType, PropertyInfo<T> property)
+    {
+      return PropertyInfoManager.RegisterProperty<T>(ownerType, property);
+    }
   }
 }

@@ -32,7 +32,7 @@ namespace Csla.Core
     /// in order to alter the collection's data.
     /// </remarks>
     /// <value>True indicates that the list is readonly.</value>
-    public bool IsReadOnly
+    public new bool IsReadOnly
     {
       get { return _isReadOnly; }
       protected set { _isReadOnly = value; }

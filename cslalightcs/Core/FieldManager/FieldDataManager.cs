@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core.FieldManager
 {
@@ -11,15 +12,19 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <remarks></remarks>
   [Serializable()]
-  public class FieldDataManager : IUndoableObject
+  public class FieldDataManager : IUndoableObject, IMobileObject
   {
+    private string _businessObjectType;
+
     [NonSerialized()]
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
+    public FieldDataManager() { }
+
     internal FieldDataManager(Type businessObjectType)
     {
-      _propertyList = GetConsolidatedList(businessObjectType);
+      SetPropertyList(businessObjectType);
       _fieldData = new IFieldData[_propertyList.Count];
     }
 
@@ -29,6 +34,9 @@ namespace Csla.Core.FieldManager
     /// </summary>
     internal void SetPropertyList(Type businessObjectType)
     {
+      // we need this for the mobileformatter
+      _businessObjectType = businessObjectType.FullName + ", " + businessObjectType.Assembly.FullName;
+
       _propertyList = GetConsolidatedList(businessObjectType);
     }
 
@@ -472,6 +480,93 @@ namespace Csla.Core.FieldManager
 
     #endregion
 
+
+    #region IMobileObject Members
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      info.AddValue("_businessObjectType", _businessObjectType);
+
+      foreach (IFieldData data in _fieldData)
+      {
+        if (data != null)
+        {
+          IMobileObject mobile = data.Value as IMobileObject;
+          if (mobile == null)
+            info.AddValue(data.Name, data.Value, data.IsDirty);
+        }
+      }
+      
+      OnGetState(info);
+    }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (IFieldData data in _fieldData)
+      {
+        if (data != null)
+        {
+          IMobileObject mobile = data.Value as IMobileObject;
+          if (mobile != null)
+          {
+            SerializationInfo childInfo = formatter.SerializeObject(mobile);
+            info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
+          }
+        }
+      }
+
+      OnGetChildren(info, formatter);
+    }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      string type = (string)info.Values["_businessObjectType"].Value;
+      Type businessObjecType = Type.GetType(type);
+      SetPropertyList(businessObjecType);      
+      _fieldData = new IFieldData[_propertyList.Count];
+
+      foreach (IPropertyInfo property in _propertyList)
+      {
+        if (info.Values.ContainsKey(property.Name))
+        {
+          SerializationInfo.FieldData value = info.Values[property.Name];
+
+          IFieldData data = GetOrCreateFieldData(property);
+          data.Value = value.Value;
+          if (!value.IsDirty)
+            data.MarkClean();
+        }
+      }
+
+      OnSetState(info);
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (IPropertyInfo property in _propertyList)
+      {
+        if (info.Children.ContainsKey(property.Name))
+        {
+          SerializationInfo.ChildData childData = info.Children[property.Name];
+
+          IFieldData data = GetOrCreateFieldData(property);
+          data.Value = formatter.GetObject(childData.ReferenceId);
+          if (!childData.IsDirty)
+            data.MarkClean();
+        }
+      }
+      OnSetChildren(info, formatter);
+    }
+
+    protected virtual void OnGetState(SerializationInfo info) { }
+
+    protected virtual void OnSetState(SerializationInfo info) { }
+
+    protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) { }
+    
+    protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter) { }
+
+    #endregion
   }
 
 }

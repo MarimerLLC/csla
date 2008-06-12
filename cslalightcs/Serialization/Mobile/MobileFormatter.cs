@@ -72,7 +72,11 @@ namespace Csla.Serialization.Mobile
       SerializeObject(graph);
 
       List<SerializationInfo> serialized = _serializationReferences.Values.ToList();
-      DataContractSerializer dc = new DataContractSerializer(typeof(List<SerializationInfo>));
+      
+      DataContractSerializer dc = new DataContractSerializer(
+        typeof(List<SerializationInfo>), 
+        new Type[] { typeof(List<int>)});
+
       dc.WriteObject(writer, serialized);
     }
 
@@ -96,8 +100,8 @@ namespace Csla.Serialization.Mobile
 
         info.TypeName = thisType.FullName + ", " + thisType.Assembly.FullName;
 
-        mobile.GetState(info);
         mobile.GetChildren(info, this);
+        mobile.GetState(info);
       }
       return info;
     }
@@ -156,25 +160,29 @@ namespace Csla.Serialization.Mobile
     /// <returns></returns>
     public object Deserialize(XmlReader reader)
     {
-      DataContractSerializer dc = new DataContractSerializer(typeof(List<SerializationInfo>));
+      DataContractSerializer dc = new DataContractSerializer(
+        typeof(List<SerializationInfo>),
+        new Type[] { typeof(List<int>) });
+
       List<SerializationInfo> deserialized = dc.ReadObject(reader) as List<SerializationInfo>;
-      Dictionary<int, IMobileObject> objects = new Dictionary<int, IMobileObject>();
+
+      _deserializationReferences = new Dictionary<int, IMobileObject>();
       foreach (SerializationInfo info in deserialized)
       {
         Type type = Type.GetType(info.TypeName);
         IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
-        objects.Add(info.ReferenceId, mobile);
+        _deserializationReferences.Add(info.ReferenceId, mobile);
 
         mobile.SetState(info);
       }
 
       foreach (SerializationInfo info in deserialized)
       {
-        IMobileObject mobile = objects[info.ReferenceId];
+        IMobileObject mobile = _deserializationReferences[info.ReferenceId];
         mobile.SetChildren(info, this);
       }
 
-      return objects[1];
+      return _deserializationReferences[1];
     }
 
     internal IMobileObject GetObject(int referenceId)

@@ -14,17 +14,34 @@ namespace Csla.Serialization.Mobile
   [DataContract]
   public class SerializationInfo
   {
-    private Dictionary<string, int> _children = new Dictionary<string, int>();
+    [DataContract]
+    public class FieldData
+    {
+      [DataMember]
+      public object Value { get; set; }
+      [DataMember]
+      public bool IsDirty { get; set; }
+    }
+    [DataContract]
+    public class ChildData
+    {
+      [DataMember]
+      public int ReferenceId { get; set; }
+      [DataMember]
+      public bool IsDirty { get; set; }
+    }
+
+    private Dictionary<string, ChildData> _children = new Dictionary<string, ChildData>();
     [DataMember()]
-    public Dictionary<string, int> Children
+    public Dictionary<string, ChildData> Children
     {
       get { return _children; }
       set { _children = value; }
     }
 
-    private Dictionary<string, string> _values = new Dictionary<string, string>();
+    private Dictionary<string, FieldData> _values = new Dictionary<string, FieldData>();
     [DataMember()]
-    public Dictionary<string, string> Values
+    public Dictionary<string, FieldData> Values
     {
       get { return _values; }
       set { _values = value; }
@@ -55,13 +72,21 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void AddValue(string name, object value)
     {
-      // TODO: convert to string properly
-      _values.Add(name, value.ToString());
+      AddValue(name, value, false);
+    }
+
+    public void AddValue(string name, object value, bool isDirty)
+    {
+      _values.Add(name, new FieldData { Value = value, IsDirty = isDirty });
     }
 
     public void AddChild(string name, int referenceId)
     {
-      _children.Add(name, referenceId);
+      AddChild(name, referenceId, false);
+    }
+    public void AddChild(string name, int referenceId, bool isDirty)
+    {
+      _children.Add(name, new ChildData { ReferenceId = referenceId, IsDirty = isDirty });
     }
   }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using System.Reflection;
@@ -32,12 +34,13 @@ namespace Csla.Silverlight
       }
     }
 
-    public T GetProperty<T>(IPropertyInfo propertyInfo)
+    protected T GetProperty<T>(IPropertyInfo propertyInfo)
     {
-      return (T)FieldManager.GetFieldData(propertyInfo).Value;
+      IFieldData data = FieldManager.GetFieldData(propertyInfo);
+      return (T)(data != null ? data.Value : null);
     }
 
-    public void SetProperty<T>(IPropertyInfo propertyInfo, T value)
+    protected void SetProperty<T>(IPropertyInfo propertyInfo, T value)
     {
       FieldManager.SetFieldData<T>(propertyInfo, value);
     }
@@ -48,34 +51,14 @@ namespace Csla.Silverlight
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (_fieldManager != null)
-      {
-        FieldManager.GetRegisteredProperties().ForEach(p =>
-        {
-          if (typeof(IMobileObject).IsAssignableFrom(p.Type))
-          {
-            IFieldData data = FieldManager.GetFieldData(p);
-            SerializationInfo childInfo = formatter.SerializeObject(data.Value);
-            info.AddChild(p.Name, childInfo.ReferenceId);
-          }
-        });
-      }
+      SerializationInfo fieldManagerInfo = formatter.SerializeObject(_fieldManager);
+      info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
+
       OnGetChildren(info, formatter);
     }
 
     void IMobileObject.GetState(SerializationInfo info)
     {
-      if (_fieldManager != null)
-      {
-        FieldManager.GetRegisteredProperties().ForEach(p =>
-        {
-          if (!typeof(IMobileObject).IsAssignableFrom(p.Type))
-          {
-            IFieldData data = FieldManager.GetFieldData(p);
-            info.AddValue(data.Name, data.Value);
-          }
-        });
-      }
       OnGetState(info);
     }
 
@@ -89,20 +72,15 @@ namespace Csla.Silverlight
 
     void IMobileObject.SetState(SerializationInfo info)
     {
-      if (info.Values != null && info.Values.Count > 0)
-      {
-        var properties = FieldManager.GetRegisteredProperties();
-        foreach (var data in info.Values)
-        {
-          var property = properties.First(p => p.Name == data.Key);
-          FieldManager.LoadFieldData(property, (object)data.Value);
-        }
-      }
       OnSetState(info);
     }
 
     void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
+      SerializationInfo.ChildData childData = info.Children["_fieldManager"];
+      _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
+
+      OnSetChildren(info, formatter);
     }
 
     protected virtual void OnSetState(SerializationInfo info) { }

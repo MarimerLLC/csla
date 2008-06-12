@@ -29,13 +29,17 @@ namespace PTWin
     private void MainForm_Load(object sender, EventArgs e)
     {
       if (Csla.ApplicationContext.AuthenticationType == "Windows")
+      {
         AppDomain.CurrentDomain.SetPrincipalPolicy(
           System.Security.Principal.PrincipalPolicy.WindowsPrincipal);
+        ApplyAuthorizationRules();
+      }
       else
+      {
         DoLogin();
+      }
       if (DocumentCount == 0)
         this.DocumentsToolStripDropDownButton.Enabled = false;
-      ApplyAuthorizationRules();
     }
 
     #region Projects

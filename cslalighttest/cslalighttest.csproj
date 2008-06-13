@@ -48,15 +48,15 @@
   <ItemGroup>
     <Reference Include="Microsoft.Silverlight.Testing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Microsoft.Silverlight.Testing.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Silverlight.Testing.Framework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Microsoft.Silverlight.Testing.Framework.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.Silverlight.Testing.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
@@ -87,7 +87,7 @@
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\cslalightcs\CslaLight.csproj">
+    <ProjectReference Include="..\cslalightcs\Csla\CslaLight.csproj">
       <Project>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</Project>
       <Name>CslaLight</Name>
     </ProjectReference>

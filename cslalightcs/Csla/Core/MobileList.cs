@@ -51,30 +51,6 @@ namespace Csla.Core
 
     #region IMobileObject Members
 
-    public void GetState(SerializationInfo info)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void GetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void SetState(SerializationInfo info)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void SetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion
-
-    #region Serialize
-
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (_fieldManager != null)
@@ -108,16 +84,11 @@ namespace Csla.Core
 
     protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) { }
 
-    #endregion
-
-    #region Deserialize
 
     void IMobileObject.SetState(SerializationInfo info)
     {
       if(info.Values.ContainsKey("_fieldManager"))
         _fieldManager = (FieldDataManager)info.Values["_fieldManager"].Value;
-
-      // TODO: set field values for MobileList
 
       OnSetState(info);
     }

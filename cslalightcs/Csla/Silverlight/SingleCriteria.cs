@@ -7,23 +7,17 @@ namespace Csla.Silverlight
   [Serializable]
   public class SingleCriteria<T> : CriteriaBase
   {
-    static SingleCriteria()
-    {
-    }
-
-    public static readonly PropertyInfo<T> ValueProperty = PropertyInfoManager.RegisterProperty<T>(
-        typeof(SingleCriteria<T>),
-        new PropertyInfo<T>("Value"));
+    private T _value;
 
     public T Value
     {
       get
       {
-        return GetProperty<T>(ValueProperty);
+        return _value;
       }
       private set
       {
-        SetProperty<T>(ValueProperty, value);
+        _value = value;
       }
     }
 

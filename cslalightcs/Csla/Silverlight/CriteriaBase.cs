@@ -5,33 +5,39 @@ using Csla.Core.FieldManager;
 namespace Csla.Silverlight
 {
   [Serializable]
-  public class CriteriaBase : Core.MobileObject
+  public class CriteriaBase : Csla.ReadOnlyBase<CriteriaBase>
   {
-    static CriteriaBase()
-    {
-      TypeNameProperty = PropertyInfoManager.RegisterProperty<string>(
-        typeof(CriteriaBase),
-        new PropertyInfo<string>("TypeName"));
-    }
-
-    public static PropertyInfo<string> TypeNameProperty;
+    private Type _objectType;
 
     public string TypeName
     {
-      get
+      get 
       {
-        return GetProperty<string>(TypeNameProperty);
-      }
-      protected set
-      {
-        SetProperty<string>(TypeNameProperty, value);
+        if (_objectType != null)
+          return _objectType.FullName + "," + _objectType.Assembly.FullName;
+        else
+          return null;
       }
     }
 
     public CriteriaBase() { }
+
     public CriteriaBase(Type objectType)
     {
-      this.TypeName = objectType.FullName + "," + objectType.Assembly.FullName;
+      _objectType = objectType;
+    }
+
+    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      base.OnGetState(info);
+      info.AddValue("Csla.Silverlight.CriteriaBase.typeName", TypeName);
+    }
+
+    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      base.OnSetState(info);
+      string typeName = info.Values["Csla.Silverlight.CriteriaBase.typeName"].ToString();
+      _objectType = Type.GetType(typeName);
     }
   }
 }

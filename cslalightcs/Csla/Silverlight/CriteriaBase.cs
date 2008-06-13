@@ -36,7 +36,7 @@ namespace Csla.Silverlight
     protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
     {
       base.OnSetState(info);
-      string typeName = info.Values["Csla.Silverlight.CriteriaBase.typeName"].ToString();
+      string typeName = info.GetValue<string>("Csla.Silverlight.CriteriaBase.typeName"); //info.Values["Csla.Silverlight.CriteriaBase.typeName"].Value.ToString();
       _objectType = Type.GetType(typeName);
     }
   }

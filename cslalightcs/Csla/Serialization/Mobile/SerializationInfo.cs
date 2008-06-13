@@ -80,6 +80,16 @@ namespace Csla.Serialization.Mobile
       _values.Add(name, new FieldData { Value = value, IsDirty = isDirty });
     }
 
+    public T GetValue<T>(string name)
+    {
+      return Utilities.CoerceValue<T>(typeof(string), null, _values[name].Value);
+    }
+
+    public bool IsDirty(string name)
+    {
+      return _values[name].IsDirty;
+    }
+
     public void AddChild(string name, int referenceId)
     {
       AddChild(name, referenceId, false);

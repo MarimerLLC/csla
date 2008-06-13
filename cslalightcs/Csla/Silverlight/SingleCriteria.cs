@@ -30,5 +30,17 @@ namespace Csla.Silverlight
     {
       this.Value = value;
     }
+
+    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      base.OnGetState(info);
+      info.AddValue("Csla.Silverlight.SingleCriteria._value", _value);
+    }
+
+    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      base.OnSetState(info);
+      _value = info.GetValue<T>("Csla.Silverlight.SingleCriteria._value");
+    }
   }
 }

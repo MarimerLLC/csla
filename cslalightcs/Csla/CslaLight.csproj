@@ -76,6 +76,7 @@
     <Compile Include="Core\ReadOnlyBindingList.cs" />
     <Compile Include="Core\RemovingItemEventArgs.cs" />
     <Compile Include="Core\UndoException.cs" />
+    <Compile Include="CriteriaBase.cs" />
     <Compile Include="DataPortal.cs" />
     <Compile Include="Core\BusinessBase.cs" />
     <Compile Include="DataPortalException.cs" />

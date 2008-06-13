@@ -48,6 +48,9 @@
     <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
+      <Link>Serialization\ISerializationFormatter.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\IMobileObject.cs">
       <Link>Serialization\Mobile\IMobileObject.cs</Link>
     </Compile>
@@ -100,8 +103,6 @@
     <Compile Include="PropertyInfo.cs" />
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="Resources.cs" />
-    <Compile Include="Serialization\ISerializationFormatter.cs" />
-    <Compile Include="Serialization\TypeExtensions.cs" />
     <Compile Include="Silverlight\MobileFactoryAttribute.cs" />
     <Compile Include="Serialization\NonSerializedAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

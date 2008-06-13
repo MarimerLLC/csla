@@ -2,61 +2,62 @@
 using Csla.Serialization;
 using Csla.Core.FieldManager;
 
-namespace Csla.Silverlight
+namespace Csla
 {
   /// <summary>
   /// A single-value criteria used to retrieve business
   /// objects that only require one criteria value.
   /// </summary>
-  /// <typeparam name="T">
+  /// <typeparam name="B">
+  /// Type of business object to retrieve.
+  /// </typeparam>
+  /// <typeparam name="C">
   /// Type of the criteria value.
   /// </typeparam>
   /// <remarks></remarks>
-  [Serializable]
-  public class SingleCriteria<T> : CriteriaBase
+  [Serializable()]
+  public class SingleCriteria<B, C> : CriteriaBase
   {
-    private T _value;
+    private C _value;
 
     /// <summary>
     /// Gets the criteria value provided by the caller.
     /// </summary>
-    public T Value
+    public C Value
     {
       get
       {
         return _value;
       }
-      private set
-      {
-        _value = value;
-      }
     }
-
-    /// <summary>
-    /// Creates an instance of the object. For use by
-    /// MobileFormatter only - you must provide a 
-    /// Type parameter in your code.
-    /// </summary>
-    public SingleCriteria() 
-      : base()
-    { }
 
     /// <summary>
     /// Creates an instance of the type,
     /// initializing it with the criteria
     /// value.
     /// </summary>
-    /// <param name="objectType">
-    /// Type of business object to retrieve.
-    /// </param>
     /// <param name="value">
     /// The criteria value.
     /// </param>
-    public SingleCriteria(Type objectType, T value)
-      : base(objectType)
+    public SingleCriteria(C value)
+      : base(typeof(B))
     {
-      this.Value = value;
+      _value = value;
     }
+
+#if SILVERLIGHT
+    /// <summary>
+    /// Creates an instance of the type.
+    /// This is for use by the MobileFormatter,
+    /// you must provide a criteria value
+    /// parameter.
+    /// </summary>
+    public SingleCriteria()
+    { }
+#else
+    private SingleCriteria()
+    { }
+#endif
 
     #region MobileFormatter
 
@@ -83,7 +84,7 @@ namespace Csla.Silverlight
     protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
     {
       base.OnSetState(info);
-      _value = info.GetValue<T>("Csla.Silverlight.SingleCriteria._value");
+      _value = info.GetValue<C>("Csla.Silverlight.SingleCriteria._value");
     }
 
     #endregion

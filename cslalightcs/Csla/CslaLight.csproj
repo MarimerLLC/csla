@@ -117,7 +117,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Silverlight\SingleCriteria.cs" />
+    <Compile Include="SingleCriteria.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Validation\BrokenRule.cs" />

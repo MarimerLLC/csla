@@ -103,6 +103,9 @@
     <Compile Include="PropertyInfo.cs" />
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="Serialization\TypeExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Silverlight\MobileFactoryAttribute.cs" />
     <Compile Include="Serialization\NonSerializedAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

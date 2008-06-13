@@ -9,10 +9,10 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla;
 using Csla.Silverlight;
 using Csla.Serialization.Mobile;
 using cslalighttest.Mock.Serialization;
-using Csla;
 
 namespace cslalighttest.Serialization
 {

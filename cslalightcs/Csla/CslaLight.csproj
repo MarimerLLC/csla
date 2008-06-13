@@ -48,6 +48,18 @@
     <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\IMobileObject.cs">
+      <Link>Serialization\Mobile\IMobileObject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\ISerializationNotification.cs">
+      <Link>Serialization\Mobile\ISerializationNotification.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\MobileFormatter.cs">
+      <Link>Serialization\Mobile\MobileFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\SerializationInfo.cs">
+      <Link>Serialization\Mobile\SerializationInfo.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
       <Link>Serialization\SerializationFormatterFactory.cs</Link>
     </Compile>
@@ -140,9 +152,6 @@
     <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
     <None Include="Service References\WcfPortal\WcfPortal1.xsd" />
     <None Include="Service References\WcfPortal\WcfPortal2.xsd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Serialization\Mobile\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

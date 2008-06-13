@@ -89,7 +89,6 @@
     <Compile Include="Serialization\Mobile\ISerializationNotification.cs" />
     <Compile Include="Serialization\Mobile\MobileFormatter.cs" />
     <Compile Include="Serialization\TypeExtensions.cs" />
-    <Compile Include="Silverlight\CriteriaBase.cs" />
     <Compile Include="Silverlight\MobileFactoryAttribute.cs" />
     <Compile Include="Serialization\NonSerializedAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

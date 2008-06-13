@@ -1,15 +1,16 @@
 ﻿using System;
+#if SILVERLIGHT
 using Csla.Serialization;
-using Csla.Core.FieldManager;
+#endif
 
-namespace Csla.Silverlight
+namespace Csla
 {
   /// <summary>
   /// Base type from which Criteria classes can be
   /// derived in a business class. 
   /// </summary>
   [Serializable]
-  public class CriteriaBase : Csla.ReadOnlyBase<CriteriaBase>
+  public class CriteriaBase : Csla.Core.MobileObject
   {
     private Type _objectType;
 
@@ -20,6 +21,7 @@ namespace Csla.Silverlight
     public Type ObjectType
     {
       get { return _objectType; }
+      protected set { _objectType = value; }
     }
 
     /// <summary>
@@ -38,12 +40,23 @@ namespace Csla.Silverlight
       }
     }
 
+#if SILVERLIGHT
     /// <summary>
     /// Creates an instance of the object. For use by
     /// MobileFormatter only - you must provide a 
     /// Type parameter in your code.
     /// </summary>
-    public CriteriaBase() { }
+    public CriteriaBase() 
+    { }
+#else 
+    /// <summary>
+    /// Initializes empty CriteriaBase. The type of
+    /// business object to be created by the DataPortal
+    /// MUST be supplied by the subclass.
+    /// </summary>
+    protected CriteriaBase()
+    { }
+#endif
 
     /// <summary>
     /// Initializes CriteriaBase with the type of
@@ -51,9 +64,9 @@ namespace Csla.Silverlight
     /// </summary>
     /// <param name="type">The type of the
     /// business object the data portal should create.</param>
-    public CriteriaBase(Type objectType)
+    protected CriteriaBase(Type type)
     {
-      _objectType = objectType;
+      _objectType = type;
     }
 
     #region MobileFormatter

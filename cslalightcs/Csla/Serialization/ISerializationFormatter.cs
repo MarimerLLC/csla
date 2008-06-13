@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Csla.Serialization.Mobile
+namespace Csla.Serialization
 {
   /// <summary>
   /// Defines an object that can serialize and deserialize

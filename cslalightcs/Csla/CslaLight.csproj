@@ -85,8 +85,8 @@
     <Compile Include="PropertyInfo.cs" />
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="Serialization\ISerializationFormatter.cs" />
     <Compile Include="Serialization\Mobile\IMobileObject.cs" />
-    <Compile Include="Serialization\Mobile\ISerializationFormatter.cs" />
     <Compile Include="Serialization\Mobile\ISerializationNotification.cs" />
     <Compile Include="Serialization\Mobile\MobileFormatter.cs" />
     <Compile Include="Serialization\TypeExtensions.cs" />

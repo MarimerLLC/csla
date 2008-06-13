@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core

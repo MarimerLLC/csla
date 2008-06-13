@@ -30,15 +30,15 @@ namespace Csla
       }
     }
 
-    protected T GetProperty<T>(IPropertyInfo propertyInfo)
+    protected P GetProperty<P>(IPropertyInfo propertyInfo)
     {
       IFieldData data = FieldManager.GetFieldData(propertyInfo);
-      return (T)(data != null ? data.Value : null);
+      return (P)(data != null ? data.Value : null);
     }
 
-    protected void SetProperty<T>(IPropertyInfo propertyInfo, T value)
+    protected void SetProperty<P>(IPropertyInfo propertyInfo, P value)
     {
-      FieldManager.SetFieldData<T>(propertyInfo, value);
+      FieldManager.SetFieldData<P>(propertyInfo, value);
     }
 
     #endregion

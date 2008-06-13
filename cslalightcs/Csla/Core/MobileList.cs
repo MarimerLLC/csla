@@ -20,45 +20,10 @@ namespace Csla.Core
   [Serializable]
   public class MobileList<T> : BindingList<T>, IMobileObject
   {
-    #region Field Manager
-
-    private FieldDataManager _fieldManager;
-
-    protected FieldDataManager FieldManager
-    {
-      get
-      {
-        if (_fieldManager == null)
-        {
-          _fieldManager = new FieldDataManager(this.GetType());
-        }
-        return _fieldManager;
-      }
-    }
-
-    protected T GetProperty(IPropertyInfo propertyInfo)
-    {
-      IFieldData data = FieldManager.GetFieldData(propertyInfo);
-      return (T)(data != null ? data.Value : null);
-    }
-
-    protected void SetProperty(IPropertyInfo propertyInfo, T value)
-    {
-      FieldManager.SetFieldData<T>(propertyInfo, value);
-    }
-
-    #endregion
-
     #region IMobileObject Members
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (_fieldManager != null)
-      {
-        SerializationInfo fieldManagerInfo = formatter.SerializeObject(_fieldManager);
-        info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
-      }
-
       List<int> references = new List<int>();
       for(int x=0;x<this.Count;x++)
       {
@@ -87,9 +52,6 @@ namespace Csla.Core
 
     void IMobileObject.SetState(SerializationInfo info)
     {
-      if(info.Values.ContainsKey("_fieldManager"))
-        _fieldManager = (FieldDataManager)info.Values["_fieldManager"].Value;
-
       OnSetState(info);
     }
 

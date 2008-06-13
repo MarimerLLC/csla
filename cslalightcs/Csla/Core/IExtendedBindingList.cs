@@ -7,7 +7,7 @@ namespace Csla.Core
   /// Extends <see cref="IBindingList" /> by adding extra
   /// events.
   /// </summary>
-  public interface IExtendedBindingList : IBindingList
+  public interface IExtendedBindingList
   {
     /// <summary>
     /// Event indicating that an item is being

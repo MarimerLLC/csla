@@ -11,8 +11,14 @@ using System.Windows.Shapes;
 
 namespace Csla.Core
 {
-  public class ListChangedEventArgs : EventArgs
+  public class AddedNewEventArgs<T> : EventArgs
   {
+    public T NewObject { get; protected set; }
 
+    public AddedNewEventArgs() { }
+    public AddedNewEventArgs(T newObject)
+    {
+      NewObject = newObject;
+    }
   }
 }

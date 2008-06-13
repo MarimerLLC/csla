@@ -7,149 +7,47 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core.FieldManager;
 using Csla.Core;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Csla.Core
 {
-  public class BindingList<T> : IList<T>, IBindingList
+  public class BindingList<T> : ObservableCollection<T>
   {
-    protected bool AllowEdit { get; set; }
-    protected bool AllowNew { get; set; }
-    protected bool AllowRemove { get; set; }
-    protected bool RaiseListChangedEvents { get; set; }
-
-    private List<T> _list = new List<T>();
-
-    #region IList<T> Members
-
-    public int IndexOf(T item)
-    {
-      return _list.IndexOf(item);
-    }
-
-    public void Insert(int index, T item)
-    {
-      InsertItem(index, item);
-    }
-
-    protected virtual void InsertItem(int index, T item)
-    {
-      _list.Insert(index, item);
-    }
-
-    public void RemoveAt(int index)
-    {
-      RemoveItem(index);
-    }
-
-    protected virtual void RemoveItem(int index)
-    {
-      _list.RemoveAt(index);
-    }
-
-    public T this[int index]
-    {
-      get
-      {
-        return _list[index];
-      }
-      set
-      {
-        SetItem(index, value);
-      }
-    }
-
-    protected virtual void SetItem(int index, T item)
-    {
-      _list[index] = item;
-    }
-
-
-    #endregion
-
-    #region ICollection<T> Members
-
-    public void Add(T item)
-    {
-      _list.Add(item);
-    }
-
-    public object AddNew()
-    {
-      return AddNewCore();
-    }
-
-    protected virtual object AddNewCore()
-    {
-      T t = (T)Activator.CreateInstance(typeof(T));
-      Add(t);
-      return t;
-    }
-
-    public void Clear()
-    {
-      ClearItems();
-    }
-
-    protected virtual void ClearItems()
-    {
-      _list.Clear();
-    }
-
-    public bool Contains(T item)
-    {
-      return _list.Contains(item);
-    }
-
-    public void CopyTo(T[] array, int arrayIndex)
-    {
-      _list.CopyTo(array, arrayIndex);
-    }
-
-    public int Count
-    {
-      get { return _list.Count; }
-    }
-
-    public virtual bool IsReadOnly
-    {
-      get { return false; }
-    }
-
-    public bool Remove(T item)
-    {
-      return _list.Remove(item);
-    }
-
-    #endregion
-
-    #region IEnumerable<T> Members
-
-    public IEnumerator<T> GetEnumerator()
-    {
-      return _list.GetEnumerator();
-    }
-
-    #endregion
-
-    #region IEnumerable Members
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return ((IEnumerable)_list).GetEnumerator();
-    }
-
-    #endregion
+    protected virtual bool SupportsChangeNotificationCore { get; set; }
+    protected bool IsReadOnlyCore { get; set; }
 
     #region IBindingList Members
+    
+    public bool AllowEdit { get; set; }
+    public bool AllowNew { get; set; }
+    public bool AllowRemove { get; set; }
+    public bool RaiseListChangedEvents { get; set; }
 
-    public event EventHandler<ListChangedEventArgs> ListChanged;
-
-    protected virtual void OnListChanged(ListChangedEventArgs e)
+    public void AddNew()
     {
-      if (ListChanged != null)
-        ListChanged(this, e);
+      AddNewCore();
     }
 
     #endregion
+
+    public event EventHandler<AddedNewEventArgs<T>> AddedNew;
+
+    public virtual void OnAddedNew(T item)
+    {
+      if (AddedNew != null)
+        AddedNew(this, new AddedNewEventArgs<T>(item));
+    }
+
+    protected virtual void AddNewCore()
+    {
+      throw new NotImplementedException("Add new core must be overriden");
+    }
+
+    protected virtual void OnCoreAdded(object sender, DataPortalResult<T> e)
+    {
+      Add(e.Object);
+      OnAddedNew(e.Object);
+    }
   }
 }

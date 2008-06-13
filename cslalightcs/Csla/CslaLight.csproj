@@ -69,6 +69,7 @@
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessListBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
+    <Compile Include="Core\AddedNewEventArgs.cs" />
     <Compile Include="Core\BindingList.cs" />
     <Compile Include="Core\ExtendedBindingList.cs" />
     <Compile Include="Core\FieldManager\FieldData.cs" />
@@ -77,18 +78,17 @@
     <Compile Include="Core\FieldManager\IFieldData.cs" />
     <Compile Include="Core\FieldManager\IFieldDataT.cs" />
     <Compile Include="Core\FieldManager\PropertyInfoManager.cs" />
-    <Compile Include="Core\IBindingList.cs" />
     <Compile Include="Core\IBusinessObject.cs" />
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IEditableCollection.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
     <Compile Include="Core\IParent.cs" />
     <Compile Include="Core\IPropertyInfo.cs" />
+    <Compile Include="Core\IReadOnlyCollection.cs" />
     <Compile Include="Core\ISmartField.cs" />
     <Compile Include="Core\ISupportUndo.cs" />
     <Compile Include="Core\ITrackStatus.cs" />
     <Compile Include="Core\IUndoableObject.cs" />
-    <Compile Include="Core\ListChangedEventArgs.cs" />
     <Compile Include="Core\MobileList.cs" />
     <Compile Include="Core\MobileObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />
@@ -103,6 +103,7 @@
     <Compile Include="DataPortalResult.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="PropertyInfo.cs" />
+    <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">

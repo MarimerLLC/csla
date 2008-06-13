@@ -21,9 +21,6 @@ namespace Csla.Core
   public abstract class ReadOnlyBindingList<C> :
     Core.ExtendedBindingList<C>, Core.IBusinessObject
   {
-
-    private bool _isReadOnly = true;
-
     /// <summary>
     /// Gets or sets a value indicating whether the list is readonly.
     /// </summary>
@@ -32,10 +29,10 @@ namespace Csla.Core
     /// in order to alter the collection's data.
     /// </remarks>
     /// <value>True indicates that the list is readonly.</value>
-    public new bool IsReadOnly
+    public bool IsReadOnly
     {
-      get { return _isReadOnly; }
-      protected set { _isReadOnly = value; }
+      get { return IsReadOnlyCore; }
+      protected set { IsReadOnlyCore = value; }
     }
 
     /// <summary>
@@ -43,11 +40,11 @@ namespace Csla.Core
     /// </summary>
     protected ReadOnlyBindingList()
     {
-      this.RaiseListChangedEvents = false;
+      this.SupportsChangeNotificationCore = false;
       AllowEdit = false;
       AllowRemove = false;
       AllowNew = false;
-      this.RaiseListChangedEvents = true;
+      this.SupportsChangeNotificationCore = true;
     }
 
     /// <summary>
@@ -70,10 +67,10 @@ namespace Csla.Core
     /// <summary>
     /// Prevents insertion of items into the collection.
     /// </summary>
-    protected override object AddNewCore()
+    protected override void AddNewCore()
     {
       if (!IsReadOnly)
-        return base.AddNewCore();
+        base.AddNewCore();
       else
         throw new NotSupportedException(Resources.InsertInvalidException);
     }

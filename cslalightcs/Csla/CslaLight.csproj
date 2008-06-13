@@ -68,6 +68,7 @@
     </Compile>
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessListBase.cs" />
+    <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BindingList.cs" />
     <Compile Include="Core\ExtendedBindingList.cs" />
     <Compile Include="Core\FieldManager\FieldData.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Core\ObjectCloner.cs" />
     <Compile Include="Core\ReadOnlyBindingList.cs" />
     <Compile Include="Core\RemovingItemEventArgs.cs" />
+    <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="Core\UndoException.cs" />
     <Compile Include="CriteriaBase.cs" />
     <Compile Include="DataPortal.cs" />

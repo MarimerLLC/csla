@@ -480,7 +480,6 @@ namespace Csla.Core.FieldManager
 
     #endregion
 
-
     #region IMobileObject Members
 
     void IMobileObject.GetState(SerializationInfo info)

@@ -5,7 +5,7 @@ using Csla.Core.FieldManager;
 namespace Csla.Core
 {
   [Serialization.Serializable]
-  public class BusinessBase : MobileObject, ICloneable
+  public class BusinessBase : UndoableBase, ICloneable
   {
     private bool _isNew = true;
     private bool _isDeleted;

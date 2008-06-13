@@ -11,7 +11,8 @@ using System.Windows.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Silverlight;
 using Csla.Serialization.Mobile;
-using Example.Business;
+using cslalighttest.Mock.Serialization;
+using Csla;
 
 namespace cslalighttest.Serialization
 {
@@ -21,7 +22,7 @@ namespace cslalighttest.Serialization
     [TestMethod]
     public void SerializeCriteriaSuccess()
     {
-      var criteria = new SingleCriteria<string>(typeof(SerializationTests), "success");
+      var criteria = new SingleCriteria<SerializationTests, string>("success");
       var actual = MobileFormatter.Serialize(criteria);
 
       Assert.IsNotNull(actual);
@@ -30,10 +31,10 @@ namespace cslalighttest.Serialization
     [TestMethod]
     public void DeserializeCriteriaSuccess()
     {
-      var expected = new SingleCriteria<string>(typeof(SerializationTests), "success");
+      var expected = new SingleCriteria<SerializationTests, string>("success");
       var buffer = MobileFormatter.Serialize(expected);
-      
-      var actual = MobileFormatter.Deserialize(buffer) as SingleCriteria<string>;
+
+      var actual = (SingleCriteria<SerializationTests, string>)MobileFormatter.Deserialize(buffer);
 
       Assert.AreEqual(expected.TypeName, actual.TypeName);
       Assert.AreEqual(expected.Value, actual.Value);
@@ -77,15 +78,17 @@ namespace cslalighttest.Serialization
 
       AddressList expectedAddressList = new AddressList();
       expectedPerson.Addresses = expectedAddressList;
-
-      Address expectedA1 = (Address)expectedAddressList.AddNew();
+      
+      Address expectedA1 = new Address();
       expectedA1.City = "Minneapolis";
       expectedA1.ZipCode = "55414";
-
-      Address expectedA2 = (Address)expectedAddressList.AddNew();
+      
+      Address expectedA2 = new Address();
       expectedA2.City = "Eden Prairie";
       expectedA2.ZipCode = "55403";
 
+      expectedAddressList.Add(expectedA1);
+      expectedAddressList.Add(expectedA2);
       expectedPerson.PrimaryAddress = expectedAddressList[1];
 
       var buffer = MobileFormatter.Serialize(expectedPerson);
@@ -97,7 +100,7 @@ namespace cslalighttest.Serialization
       Assert.AreEqual(actualPerson.Unserialized, string.Empty);
       Assert.IsNotNull(expectedPerson.Unserialized);
       Assert.AreSame(expectedPerson.PrimaryAddress, expectedAddressList[1]);
-      
+
       var actualAddressList = actualPerson.Addresses;
       Assert.IsNotNull(actualAddressList);
       Assert.AreEqual(expectedAddressList.Count, actualAddressList.Count);
@@ -109,6 +112,22 @@ namespace cslalighttest.Serialization
       Assert.AreEqual(expectedAddressList[1].ZipCode, actualAddressList[1].ZipCode);
 
       Assert.AreSame(actualPerson.PrimaryAddress, actualAddressList[1]);
+    }
+
+    [TestMethod]
+    public void SerializeAndDeserializeReadOnly()
+    {
+      MockReadOnly ro = new MockReadOnly(1);
+      MockReadOnlyList expected = new MockReadOnlyList(ro);
+
+      byte[] serialized = MobileFormatter.Serialize(expected);
+
+      // Deserialization should not throw an exception when adding
+      // deserialized items back into the list.
+      MockReadOnlyList actual = (MockReadOnlyList)MobileFormatter.Deserialize(serialized);
+
+      Assert.AreEqual(expected.Count, actual.Count);
+      Assert.AreEqual(expected[0].Id, actual[0].Id);
     }
   }
 }

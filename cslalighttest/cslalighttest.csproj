@@ -67,13 +67,18 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mock\Address.cs" />
-    <Compile Include="Mock\AddressBase.cs" />
-    <Compile Include="Mock\AddressList.cs" />
+    <Compile Include="ReadOnly\ReadOnlyTests.cs" />
+    <Compile Include="Serialization\Address.cs" />
+    <Compile Include="Serialization\AddressBase.cs" />
+    <Compile Include="Serialization\AddressList.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Mock\Person.cs" />
+    <Compile Include="Serialization\Person.cs" />
+    <Compile Include="ReadOnly\MockReadOnly.cs" />
+    <Compile Include="ReadOnly\MockReadOnlyList.cs" />
+    <Compile Include="Serialization\MockReadOnly.cs" />
+    <Compile Include="Serialization\MockReadOnlyList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />
   </ItemGroup>

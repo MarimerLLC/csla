@@ -5,7 +5,7 @@ using Csla.Serialization;
 using Csla.Silverlight;
 using Csla.Core.FieldManager;
 
-namespace Example.Business
+namespace cslalighttest.Serialization
 {
   [Serializable]
   public partial class Person : BusinessBase<Person>

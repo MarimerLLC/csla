@@ -2,7 +2,7 @@
 using Csla;
 using Csla.Serialization;
 
-namespace Example.Business
+namespace cslalighttest.Serialization
 {
   [Serializable]
   public class AddressBase : BusinessBase<AddressBase>

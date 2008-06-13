@@ -2,11 +2,17 @@
 using Csla;
 using Csla.Serialization;
 
-namespace Example.Business
+namespace cslalighttest.Serialization
 {
   [Serializable]
   public class AddressList : BusinessListBase<AddressList, Address>
   {
+    protected override void AddNewCore()
+    {
+      Address a = new Address();
+      Add(a);
+      OnAddedNew(a);
+    }
 
     public override bool Equals(object theOtherAddressList)
     {

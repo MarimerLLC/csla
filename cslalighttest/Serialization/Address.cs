@@ -3,7 +3,7 @@ using Csla.Silverlight;
 using Csla.Serialization;
 using Csla;
 
-namespace Example.Business
+namespace cslalighttest.Serialization
 {
   [Serializable]
   public class Address : AddressBase

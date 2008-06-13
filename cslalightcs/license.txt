@@ -1,23 +1,23 @@
 LICENSE AND WARRANTY
 
-The CSLA .NET framework is Copyright 2008 by Rockford Lhotka. 
+The CSLA Light framework is Copyright 2008 by Rockford Lhotka. 
 
 You can use this Software for any noncommercial purpose, including 
 distributing derivative works. You can use this Software for any commercial 
 purpose other than you may not use it, in whole or in part, to create a 
 commercial framework product. 
 
-In short, you can use CSLA .NET and modify it to create other commercial or 
+In short, you can use CSLA Light and modify it to create other commercial or 
 business software, you just can't take the framework itself, modify it and 
 sell it as a product. 
 
 In return, the owner simply requires that you agree: 
 
 This Software License Agreement ("Agreement") is effective 
-upon your use of CSLA .NET ("Software").
+upon your use of CSLA Light ("Software").
 
 1. Ownership.
-The CSLA .NET framework is Copyright 2007 by Rockford Lhotka, 
+The CSLA Light framework is Copyright 2007 by Rockford Lhotka, 
 Eden Prairie, MN, USA. 
 
 2. Copyright Notice.

@@ -5,7 +5,7 @@ using Csla.Core.FieldManager;
 namespace Csla.Silverlight
 {
   [Serializable]
-  public class CriteriaBase : MobileObject
+  public class CriteriaBase : Core.MobileObject
   {
     static CriteriaBase()
     {

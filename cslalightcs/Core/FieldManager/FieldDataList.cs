@@ -5,11 +5,11 @@ using Csla.Serialization;
 namespace Csla.Core.FieldManager
 {
   [Serializable]
-  internal class FieldDataList : Csla.Silverlight.MobileObject, Csla.Serialization.Mobile.ISerializationNotification
+  internal class FieldDataList : Csla.Core.MobileObject, Csla.Serialization.Mobile.ISerializationNotification
   {
     [NonSerialized()]
     private Dictionary<string, int> _fieldIndex = new Dictionary<string, int>();
-    private Csla.Silverlight.MobileList<IFieldData> _fields = new Csla.Silverlight.MobileList<IFieldData>();
+    private Csla.Core.MobileList<IFieldData> _fields = new Csla.Core.MobileList<IFieldData>();
 
     public FieldDataList()
     { /* required due to serialization ctor */ }
@@ -53,7 +53,7 @@ namespace Csla.Core.FieldManager
       return null;
     }
 
-    public Csla.Silverlight.MobileList<IFieldData> GetFieldDataList()
+    public Csla.Core.MobileList<IFieldData> GetFieldDataList()
     {
       return _fields;
     }

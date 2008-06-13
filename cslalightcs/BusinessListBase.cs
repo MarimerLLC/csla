@@ -6,7 +6,7 @@ using Csla.Silverlight;
 namespace Csla
 {
   [Serializable]
-  public class BusinessListBase<T, C> : MobileList<C>, ICloneable
+  public class BusinessListBase<T, C> : Core.ExtendedBindingList<C>, ICloneable
     where T: BusinessListBase<T, C>
   {
     #region ICloneable

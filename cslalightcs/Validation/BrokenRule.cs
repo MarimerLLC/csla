@@ -7,7 +7,7 @@ namespace Csla.Validation
   /// Stores details about a specific broken business rule.
   /// </summary>
   [Serializable()]
-  public class BrokenRule : Csla.Silverlight.MobileObject
+  public class BrokenRule : Csla.Core.MobileObject
   {
     private string _ruleName;
     private string _description;

@@ -9,7 +9,7 @@ namespace Csla.Validation
   /// Tracks the business rules broken within a business object.
   /// </summary>
   [Serializable]
-  public class ValidationRules : Csla.Silverlight.MobileObject
+  public class ValidationRules : Csla.Core.MobileObject
   {
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;

@@ -9,7 +9,7 @@ using Csla.Serialization.Mobile;
 using Csla.Core.FieldManager;
 using Csla.Core;
 
-namespace Csla.Silverlight
+namespace Csla.Core
 {
   /// <summary>
   /// Inherit from this base class to easily

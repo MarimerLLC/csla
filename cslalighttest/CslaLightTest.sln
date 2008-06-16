@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cslalighttest", "cslalighttest.csproj", "{5E30B543-3988-4241-98D9-B0D2E44FA02A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaLight", "..\cslalightcs\Csla\CslaLight.csproj", "{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{BA105340-59DD-4708-B9B4-555B03269B80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cslalighttest", "CslaLight.Testing\cslalighttest.csproj", "{5E30B543-3988-4241-98D9-B0D2E44FA02A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaLight.Testing.Client", "CslaLight.Testing\Client\CslaLight.Testing.Client.csproj", "{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaLight.Testing.Server", "CslaLight.Testing\Server\CslaLight.Testing.Server.csproj", "{3374389D-59D8-44B1-B6D0-015819DB482C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "..\cslacs\Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,14 +19,30 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA105340-59DD-4708-B9B4-555B03269B80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA105340-59DD-4708-B9B4-555B03269B80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA105340-59DD-4708-B9B4-555B03269B80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA105340-59DD-4708-B9B4-555B03269B80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

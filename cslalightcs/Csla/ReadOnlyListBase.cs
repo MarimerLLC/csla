@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization;
+using System;
 
 namespace Csla
 {

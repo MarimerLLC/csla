@@ -12,25 +12,18 @@ using Csla;
 using Csla.Serialization;
 using Csla.Silverlight;
 
-namespace cslalighttest.Mock.Serialization
+namespace cslalighttest.ReadOnly
 {
   [Serializable]
   public class MockReadOnlyList : ReadOnlyListBase<MockReadOnlyList, MockReadOnly>
   {
     public MockReadOnlyList() { }
 
-    public MockReadOnlyList(params MockReadOnly[] items)
+    public MockReadOnlyList(MockReadOnly mock)
     {
       IsReadOnly = false;
-      AddRange(items);
+      Add(mock);
       IsReadOnly = true;
-    }
-
-    protected override void AddNewCore()
-    {
-      DataPortal<MockReadOnly> dp = new DataPortal<MockReadOnly>();
-      dp.CreateCompleted += OnCoreAdded;
-      dp.SendCreate();
     }
   }
 }

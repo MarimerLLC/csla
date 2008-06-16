@@ -12,7 +12,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla;
 using Csla.Silverlight;
 using Csla.Serialization.Mobile;
-using cslalighttest.Mock.Serialization;
 
 namespace cslalighttest.Serialization
 {

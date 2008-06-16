@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -41,6 +42,7 @@ namespace Csla.Core
     protected ReadOnlyBindingList()
     {
       this.SupportsChangeNotificationCore = false;
+      IsReadOnlyCore = true;
       AllowEdit = false;
       AllowRemove = false;
       AllowNew = false;
@@ -127,6 +129,11 @@ namespace Csla.Core
       }
       else
         throw new NotSupportedException(Resources.ChangeInvalidException);
+    }
+
+    protected override void OnGetState(SerializationInfo info)
+    {
+      base.OnGetState(info);
     }
   }
 }

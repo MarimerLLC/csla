@@ -11,20 +11,11 @@ using System.Windows.Shapes;
 using Csla;
 using Csla.Serialization;
 
-namespace cslalighttest.Mock.Serialization
+namespace cslalighttest.ReadOnly
 {
   [Serializable]
   public class MockReadOnly : BusinessBase<MockReadOnly>
   {
-    /// <summary>
-    /// For constructing test mockreadonly objects
-    /// </summary>
-    /// <param name="id"></param>
-    public MockReadOnly(int id)
-    {
-      SetProperty<int>(IdProperty, id);
-    }
-
     public MockReadOnly() { }
 
     private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(

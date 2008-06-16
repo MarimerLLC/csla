@@ -49,5 +49,11 @@ namespace Csla.Core
       Add(e.Object);
       OnAddedNew(e.Object);
     }
+
+    protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+    {
+      if(SupportsChangeNotificationCore)
+        base.OnCollectionChanged(e);
+    }
   }
 }

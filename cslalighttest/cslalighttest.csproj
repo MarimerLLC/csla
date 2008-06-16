@@ -58,6 +58,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
     <Reference Include="system" />
@@ -74,6 +75,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Serialization\CustomMobileList.cs" />
+    <Compile Include="Serialization\BindingListTests.cs" />
+    <Compile Include="Serialization\MockNonBusinessObject.cs" />
     <Compile Include="Serialization\Person.cs" />
     <Compile Include="ReadOnly\MockReadOnly.cs" />
     <Compile Include="ReadOnly\MockReadOnlyList.cs" />

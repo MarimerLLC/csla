@@ -12,6 +12,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla;
 using Csla.Silverlight;
 using Csla.Serialization.Mobile;
+using Csla.Core;
+using System.Runtime.Serialization;
 
 namespace cslalighttest.Serialization
 {
@@ -127,6 +129,38 @@ namespace cslalighttest.Serialization
 
       Assert.AreEqual(expected.Count, actual.Count);
       Assert.AreEqual(expected[0].Id, actual[0].Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void SerializeMobileListWithPrimitiveTypes()
+    {
+      var expected = new MobileList<int>();
+      expected.Add(1);
+      byte[] buffer = MobileFormatter.Serialize(expected);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void MobileListWithNonBusinessObjectReferenceType()
+    {
+      var expected = new MobileList<MockNonBusinessObject>();
+      expected.Add(new MockNonBusinessObject { Member = "xyz" });
+
+      byte[] buffer = MobileFormatter.Serialize(expected);
+    }
+
+    [TestMethod]
+    public void CustomMobileList()
+    {
+      var expected = new CustomMobileList();
+      expected.Add(new MockNonBusinessObject { Member = "xyz" });
+
+      byte[] buffer = MobileFormatter.Serialize(expected);
+      var actual = (CustomMobileList)MobileFormatter.Deserialize(buffer);
+
+      Assert.AreEqual(expected.Count, actual.Count);
+      Assert.AreEqual(expected[0].Member, actual[0].Member);
     }
   }
 }

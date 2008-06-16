@@ -23,9 +23,32 @@ namespace Csla.Core
     #region IMobileObject Members
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    { 
+      OnGetChildren(info, formatter);
+    }
+
+    void IMobileObject.GetState(SerializationInfo info)
     {
+      OnGetState(info);
+    }
+
+    protected virtual void OnGetState(SerializationInfo info)
+    {
+      info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", IsReadOnlyCore);
+      info.AddValue("Csla.Core.ReadOnlyBindingList.AllowEdit", AllowEdit);
+      info.AddValue("Csla.Core.ReadOnlyBindingList.AllowNew", AllowNew);
+      info.AddValue("Csla.Core.ReadOnlyBindingList.AllowRemove", AllowRemove);
+      info.AddValue("Csla.Core.ReadOnlyBindingList.RaiseListChangedEvents", RaiseListChangedEvents);
+      info.AddValue("Csla.Core.ReadOnlyBindingList.SupportsChangeNotificationCore", SupportsChangeNotificationCore); 
+    }
+
+    protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) 
+    {
+      if (!typeof(IMobileObject).IsAssignableFrom(typeof(T)))
+        throw new NotSupportedException(Resources.CannotSerializeCollectionsNotOfIMobileObject);
+      
       List<int> references = new List<int>();
-      for(int x=0;x<this.Count;x++)
+      for (int x = 0; x < this.Count; x++)
       {
         T child = this[x];
         if (child != null)
@@ -36,19 +59,7 @@ namespace Csla.Core
       }
       if (references.Count > 0)
         info.AddValue("$list", references);
-
-      OnGetChildren(info, formatter);
     }
-
-    void IMobileObject.GetState(SerializationInfo info)
-    {
-      OnGetState(info);
-    }
-
-    protected virtual void OnGetState(SerializationInfo info) { }
-
-    protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) { }
-
 
     void IMobileObject.SetState(SerializationInfo info)
     {
@@ -57,22 +68,39 @@ namespace Csla.Core
 
     void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
+      OnSetChildren(info, formatter);
+    }
+
+    protected virtual void OnSetState(SerializationInfo info)
+    {
+      IsReadOnlyCore = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList._isReadOnly");
+      AllowEdit = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.AllowEdit");
+      AllowNew = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.AllowNew");
+      AllowRemove = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.AllowRemove");
+      RaiseListChangedEvents = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.RaiseListChangedEvents");
+      SupportsChangeNotificationCore = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.SupportsChangeNotificationCore");
+    }
+
+    protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (!typeof(IMobileObject).IsAssignableFrom(typeof(T)))
+        throw new NotSupportedException("Cannot deserialize collections not of type IMobileObject");
+
       if (info.Values.ContainsKey("$list"))
       {
+        bool oldValue = IsReadOnlyCore;
+        IsReadOnlyCore = false;
+      
         List<int> references = (List<int>)info.Values["$list"].Value;
         foreach (int reference in references)
         {
           T child = (T)formatter.GetObject(reference);
           this.Add(child);
         }
+        
+        IsReadOnlyCore = oldValue;
       }
-
-      OnSetChildren(info, formatter);
     }
-
-    protected virtual void OnSetState(SerializationInfo info) { }
-
-    protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter) { }
 
     #endregion
   }

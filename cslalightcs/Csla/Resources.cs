@@ -17,5 +17,6 @@ namespace Csla
     public const string SmartDateTom = "SmartDateTom";
     public const string SmartDateTomorrow = "SmartDateTomorrow";
     public const string ValueNotSmartDateException = "ValueNotSmartDateException";
+    public const string CannotSerializeCollectionsNotOfIMobileObject = "Cannot serialize collections not of type IMobileObject";
   }
 }

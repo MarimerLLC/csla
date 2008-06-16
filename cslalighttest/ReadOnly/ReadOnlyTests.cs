@@ -48,5 +48,13 @@ namespace cslalighttest.ReadOnly
       MockReadOnlyList list = new MockReadOnlyList();
       list.AddNew();
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotSupportedException))]
+    public void ClearReadOnlyFail()
+    {
+      MockReadOnlyList list = new MockReadOnlyList();
+      list.Clear();
+    }
   }
 }

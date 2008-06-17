@@ -46,10 +46,17 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Server\EditableRootTests\MockEditableRoot.cs">
+      <Link>EditableRootTests\MockEditableRoot.cs</Link>
+    </Compile>
+    <Compile Include="EditableRootTests\MockEditableRoot.partial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="EditableRootTests\" />
+    <ProjectReference Include="..\..\..\cslalightcs\Csla\CslaLight.csproj">
+      <Project>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</Project>
+      <Name>CslaLight</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

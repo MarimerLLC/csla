@@ -155,11 +155,11 @@
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal.xsd" />
-    <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal1.xsd" />
-    <None Include="Service References\WcfPortal\WcfPortal2.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal21.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal3.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal31.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal32.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using Microsoft.Silverlight.Testing;
+using cslalighttest.Engine;
 
 namespace cslalighttest
 {
@@ -27,13 +18,14 @@ namespace cslalighttest
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
-      this.RootVisual = (UIElement)UnitTestSystem.CreateTestPage(this);
+      this.RootVisual = new TestEngine();
     }
 
     private void Application_Exit(object sender, EventArgs e)
     {
 
     }
+
     private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
     {
       // If the app is running outside of the debugger then report the exception using

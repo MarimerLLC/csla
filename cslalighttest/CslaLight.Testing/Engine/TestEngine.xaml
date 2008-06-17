@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="cslalighttest.Engine.TestEngine"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:e="clr-namespace:cslalighttest.Engine">
+  <UserControl.Resources>
+    <e:TestStatusConverter x:Key="statusConverter" />
+    
+    <DataTemplate x:Key="method">
+      <Grid Background="{Binding Status, Converter={StaticResource statusConverter}}">        
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Name}"/>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="type">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="Type: "/>
+          <TextBlock Text="{Binding Name}"/>
+        </StackPanel>
+        <ListBox Grid.Row="1" ItemTemplate="{StaticResource method}" ItemsSource="{Binding Methods}" />
+      </Grid>
+    </DataTemplate>
+  </UserControl.Resources>
+  
+  <Grid x:Name="LayoutRoot" Background="White">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <TextBlock Text="CSLA Test Engine" />
+    <ListBox x:Name="types" Grid.Row="1" ItemTemplate="{StaticResource type}" />
+  </Grid>
+</UserControl>

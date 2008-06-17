@@ -46,18 +46,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Silverlight.Testing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Microsoft.Silverlight.Testing.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Silverlight.Testing.Framework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Microsoft.Silverlight.Testing.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
-    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
@@ -68,6 +56,21 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Engine\Assert.cs" />
+    <Compile Include="Engine\AsyncAsserter.cs" />
+    <Compile Include="Engine\AsyncTestContext.cs" />
+    <Compile Include="Engine\ExpectedExceptionAttribute.cs" />
+    <Compile Include="Engine\MethodTester.cs" />
+    <Compile Include="Engine\MethodTesterStatus.cs" />
+    <Compile Include="Engine\ObservableObject.cs" />
+    <Compile Include="Engine\TestClassAttribute.cs" />
+    <Compile Include="Engine\TestEngine.xaml.cs">
+      <DependentUpon>TestEngine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Engine\TestException.cs" />
+    <Compile Include="Engine\TestMethodAttribute.cs" />
+    <Compile Include="Engine\TestStatusConverter.cs" />
+    <Compile Include="Engine\TypeTester.cs" />
     <Compile Include="ReadOnly\ReadOnlyTests.cs" />
     <Compile Include="Serialization\Address.cs" />
     <Compile Include="Serialization\AddressBase.cs" />
@@ -107,6 +110,12 @@
       <Project>{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}</Project>
       <Name>CslaLight.Testing.Client</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Engine\TestEngine.xaml">
+      <SubType>Page</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

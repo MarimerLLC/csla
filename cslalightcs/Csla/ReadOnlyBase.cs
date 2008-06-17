@@ -13,9 +13,9 @@ namespace Csla
 
     private FieldDataManager _fieldManager;
 
-    public static PropertyInfo<T> RegisterProperty<T>(Type ownerType, PropertyInfo<T> property)
+    public static PropertyInfo<P> RegisterProperty<P>(Type ownerType, PropertyInfo<P> property)
     {
-      return PropertyInfoManager.RegisterProperty<T>(ownerType, property);
+      return PropertyInfoManager.RegisterProperty<P>(ownerType, property);
     }
 
     protected FieldDataManager FieldManager

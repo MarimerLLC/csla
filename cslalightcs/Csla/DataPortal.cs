@@ -7,6 +7,36 @@ namespace Csla
 {
   public class DataPortal<T> where T: IMobileObject
   {
+    public DataPortal()
+    {
+      this.Binding = new BasicHttpBinding();
+    }
+
+    public DataPortal(string dataPortalUrl)
+      : this()
+    {
+      this.DataPortalUrl = dataPortalUrl;
+    }
+
+    public DataPortal(string dataPortalUrl, System.ServiceModel.Channels.Binding binding)
+    {
+      this.DataPortalUrl = dataPortalUrl;
+      this.Binding = binding;
+    }
+
+    public System.ServiceModel.Channels.Binding Binding { get; set; }
+    public string DataPortalUrl { get; set; }
+
+    private WcfPortal.WcfPortalClient GetProxy()
+    {
+      if (string.IsNullOrEmpty(this.DataPortalUrl))
+        throw new ArgumentOutOfRangeException("DataPortalUrl must be a valid URL");
+      if (this.Binding == null)
+        throw new ArgumentOutOfRangeException("Binding must be a valid WCF binding");
+      var address = new EndpointAddress(this.DataPortalUrl);
+      return new WcfPortal.WcfPortalClient(this.Binding, address);
+    }
+
     #region Create
 
     public event EventHandler<DataPortalResult<T>> CreateCompleted;
@@ -23,7 +53,7 @@ namespace Csla
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
       request.CriteriaData = null;
 
-      var proxy = new WcfPortal.WcfPortalClient();
+      var proxy = GetProxy();
       proxy.CreateCompleted += new EventHandler<Csla.WcfPortal.CreateCompletedEventArgs>(proxy_CreateCompleted);
       proxy.CreateAsync(request);
     }
@@ -34,7 +64,7 @@ namespace Csla
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
 
-      var proxy = new WcfPortal.WcfPortalClient();
+      var proxy = GetProxy();
       proxy.CreateCompleted += new EventHandler<Csla.WcfPortal.CreateCompletedEventArgs>(proxy_CreateCompleted);
       proxy.CreateAsync(request);
     }
@@ -85,7 +115,7 @@ namespace Csla
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
       request.CriteriaData = null;
 
-      var proxy = new WcfPortal.WcfPortalClient();
+      var proxy = GetProxy();
       proxy.FetchCompleted += new EventHandler<Csla.WcfPortal.FetchCompletedEventArgs>(proxy_FetchCompleted);
       proxy.FetchAsync(request);
     }
@@ -146,7 +176,7 @@ namespace Csla
       var request = new WcfPortal.UpdateRequest();
       request.ObjectData = MobileFormatter.Serialize(criteria);
 
-      var proxy = new WcfPortal.WcfPortalClient();
+      var proxy = GetProxy();
       proxy.UpdateCompleted += new EventHandler<Csla.WcfPortal.UpdateCompletedEventArgs>(proxy_UpdateCompleted);
       proxy.UpdateAsync(request);
     }
@@ -197,7 +227,7 @@ namespace Csla
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
 
-      var proxy = new WcfPortal.WcfPortalClient();
+      var proxy = GetProxy();
       proxy.DeleteCompleted += new EventHandler<Csla.WcfPortal.DeleteCompletedEventArgs>(proxy_DeleteCompleted);
       proxy.DeleteAsync(request);
     }

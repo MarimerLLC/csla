@@ -66,6 +66,7 @@
     <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
       <Link>Serialization\SerializationFormatterFactory.cs</Link>
     </Compile>
+    <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessListBase.cs" />
     <Compile Include="Core\BindableBase.cs" />

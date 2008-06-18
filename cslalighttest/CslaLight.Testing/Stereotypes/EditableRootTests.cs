@@ -17,17 +17,61 @@ namespace cslalighttest.Stereotypes
     [TestMethod]
     public void TestCreateNew(AsyncTestContext context)
     {
-      Guid expectedId = new Guid("{7E7127CF-F22C-4903-BDCE-1714C81A9E89}");
-
-      MockEditableRoot.CreateNew((o, e) =>
+      MockEditableRoot.CreateNew((actual, error) =>
       {
-        MockEditableRoot actual = o;
-        Exception error = e;
-
         context.Assert.IsNull(error);
         context.Assert.IsNotNull(actual);
-        context.Assert.AreEqual(expectedId, actual.Id);
+        context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
+        context.Assert.IsTrue(actual.IsNew);
+        context.Assert.IsTrue(actual.IsDirty);
+        context.Assert.IsTrue(actual.IsDeleted);
+
+        context.Success();
       });
+    }
+
+    [TestMethod]
+    public void TestInsert(AsyncTestContext context)
+    {
+      MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, true);
+      root.Name = "justin";
+      //root.Save((o, e) => 
+      //{
+      //  context.Assert.IsFalse(root.IsNew);
+      //  context.Assert.IsFalse(root.IsDirty);
+      //  context.Success();
+      //});
+
+      context.Fail();
+    }
+
+    [TestMethod]
+    public void TestUpdate(AsyncTestContext context)
+    {
+      MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, false);
+      root.Name = "justin";
+      //root.Save((o, e) => 
+      //{
+      //  context.Assert.IsFalse(root.IsNew);
+      //  context.Assert.IsFalse(root.IsDirty);
+      //  context.Success();
+      //});
+
+      context.Fail();
+    }
+
+    [TestMethod]
+    public void TestDelete(AsyncTestContext context)
+    {
+      MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, false);
+      //root.Delete((o, e) => 
+      //{
+      //  context.Assert.IsFalse(root.IsNew);
+      //  context.Assert.IsFalse(root.IsDirty);
+      //  context.Success();
+      //});
+
+      context.Fail();
     }
   }
 }

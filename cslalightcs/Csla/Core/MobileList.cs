@@ -7,6 +7,7 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core.FieldManager;
 using Csla.Core;
+using Csla.Properties;
 
 namespace Csla.Core
 {

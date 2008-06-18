@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
+using Csla.Properties;
 
 namespace Csla
 {

@@ -13,6 +13,13 @@ namespace cslalighttest.Engine
 {
   public class AsyncAsserter
   {
+    public event AsyncAssertError Error;
+    protected virtual void OnError(Exception exception)
+    {
+      if (Error != null)
+        Error(exception);
+    }
+
     public void IsNotNull(object actual)
     {
       if (actual == null)
@@ -31,11 +38,16 @@ namespace cslalighttest.Engine
         Error(new TestException("Assert.AreEqual failed."));
     }
 
-    public event AsyncAssertError Error;
-    protected virtual void OnError(Exception exception)
+    public void IsFalse(bool actual)
     {
-      if (Error != null)
-        Error(exception);
+      if (actual)
+        Error(new TestException("Assert.IsFalse failed."));
+    }
+
+    public void IsTrue(bool actual)
+    {
+      if (!actual)
+        Error(new TestException("Assert.IsTrue failed."));
     }
   }
 

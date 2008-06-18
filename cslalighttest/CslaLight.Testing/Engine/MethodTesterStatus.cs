@@ -15,7 +15,7 @@ namespace cslalighttest.Engine
   {
     Evaluating,
     Success,
-    Error,
+    Fail,
     Indeterminate
   }
 }

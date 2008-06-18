@@ -10,7 +10,7 @@ namespace Csla.Testing.Business.EditableRootTests
   [Serializable]
   public partial class MockEditableRoot : BusinessBase<MockEditableRoot>
   {
-    private static readonly Guid MockEditableRootId = new Guid("{7E7127CF-F22C-4903-BDCE-1714C81A9E89}");
+    public static readonly Guid MockEditableRootId = new Guid("{7E7127CF-F22C-4903-BDCE-1714C81A9E89}");
 
     #region  Business Methods
 

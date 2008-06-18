@@ -26,7 +26,7 @@ namespace cslalighttest.Engine
           return new SolidColorBrush(Colors.Yellow);
         case MethodTesterStatus.Success:
           return new SolidColorBrush(Colors.Green);
-        case MethodTesterStatus.Error:
+        case MethodTesterStatus.Fail:
           return new SolidColorBrush(Colors.Red);
         case MethodTesterStatus.Evaluating:
         default:

@@ -4,7 +4,14 @@ using Csla.Serialization;
 namespace Csla.Testing.Business.EditableRootTests
 {
   partial class MockEditableRoot
-  {    
+  {
+    public MockEditableRoot() { }
+    public MockEditableRoot(Guid id, bool isnew)
+    {
+      //SetProperty<Guid>(IdProperty, id);
+      //if(isnew)
+    }
+
     #region  Factory Methods
 
     public static void CreateNew(Action<MockEditableRoot, Exception> completed)

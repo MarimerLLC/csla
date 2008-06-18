@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
+using Csla.Properties;
 
 namespace Csla.Core
 {

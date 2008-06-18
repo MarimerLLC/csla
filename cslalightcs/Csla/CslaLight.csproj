@@ -103,10 +103,17 @@
     <Compile Include="DataPortalException.cs" />
     <Compile Include="DataPortalResult.cs" />
     <Compile Include="ICloneable.cs" />
+    <Compile Include="NotUndoableAttribute.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="PropertyInfo.cs" />
+    <Compile Include="PropertyLoaderException.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="ReadOnlyBase.cs" />
-    <Compile Include="Resources.cs" />
+    <Compile Include="Security\NoAccessBehavior.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -160,6 +167,12 @@
     <None Include="Service References\WcfPortal\WcfPortal3.xsd" />
     <None Include="Service References\WcfPortal\WcfPortal31.xsd" />
     <None Include="Service References\WcfPortal\WcfPortal32.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -63,10 +63,10 @@ namespace cslalighttest.Engine
           {
             if(expectsException)
             {
-              if(e.Status == MethodTesterStatus.Error && expectedException.Type.IsAssignableFrom( e.Error.GetType()))
+              if(e.Status == MethodTesterStatus.Fail && expectedException.Type.IsAssignableFrom( e.Error.GetType()))
                 Status = MethodTesterStatus.Success;
               else
-                Status = MethodTesterStatus.Error;
+                Status = MethodTesterStatus.Fail;
             }
             else
               Status = e.Status;
@@ -78,7 +78,7 @@ namespace cslalighttest.Engine
         }
         catch(Exception ex)
         {
-          Status = MethodTesterStatus.Error;
+          Status = MethodTesterStatus.Fail;
         }
       }
       else
@@ -87,7 +87,7 @@ namespace cslalighttest.Engine
         {
           _method.Invoke(instance, null);
           if(expectsException)
-            Status = MethodTesterStatus.Error;
+            Status = MethodTesterStatus.Fail;
           else
             Status = MethodTesterStatus.Success;
         }
@@ -96,7 +96,7 @@ namespace cslalighttest.Engine
           if(expectsException && expectedException.Type.IsAssignableFrom(ex.InnerException.GetType()))
             Status = MethodTesterStatus.Success;
           else
-            Status = MethodTesterStatus.Error;
+            Status = MethodTesterStatus.Fail;
         }
       }
     }

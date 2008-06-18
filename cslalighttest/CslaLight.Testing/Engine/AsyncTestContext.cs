@@ -13,6 +13,13 @@ namespace cslalighttest.Engine
 {
   public class AsyncTestContext
   {
+    public event AsyncTestCompleteDelegate Complete;
+    protected virtual void OnComplete(MethodTesterStatus status, Exception error)
+    {
+      if (Complete != null)
+        Complete(this, new AsyncTestCompleteEventArgs(status, error));
+    }
+
     private AsyncAsserter _asserter;
     public AsyncAsserter Assert
     {
@@ -33,7 +40,7 @@ namespace cslalighttest.Engine
       if(_asserter!=null)
         _asserter.Error -= Error;
 
-      OnComplete(MethodTesterStatus.Error, ex);
+      OnComplete(MethodTesterStatus.Fail, ex);
     }
 
     public virtual void Success()
@@ -46,11 +53,9 @@ namespace cslalighttest.Engine
       OnComplete(MethodTesterStatus.Indeterminate, null);
     }
 
-    public event AsyncTestCompleteDelegate Complete;
-    protected virtual void OnComplete(MethodTesterStatus status, Exception error)
+    internal void Fail()
     {
-      if (Complete != null)
-        Complete(this, new AsyncTestCompleteEventArgs(status, error));
+      OnComplete(MethodTesterStatus.Fail, null);
     }
   }
 

@@ -21,7 +21,7 @@ namespace Csla.Core
     /// <param name="parentEditLevel">
     /// Parent object's edit level.
     /// </param>
-    void CopyState(int parentEditLevel);
+    void CopyState(int parentEditLevel, bool parentBindingEdit);
     /// <summary>
     /// Restores the object's state to the most recently
     /// copied values from the state stack.
@@ -35,7 +35,7 @@ namespace Csla.Core
     /// <param name="parentEditLevel">
     /// Parent object's edit level.
     /// </param>
-    void UndoChanges(int parentEditLevel);
+    void UndoChanges(int parentEditLevel, bool parentBindingEdit);
     /// <summary>
     /// Accepts any changes made to the object since the last
     /// state copy was made.
@@ -48,6 +48,6 @@ namespace Csla.Core
     /// <param name="parentEditLevel">
     /// Parent object's edit level.
     /// </param>
-    void AcceptChanges(int parentEditLevel);
+    void AcceptChanges(int parentEditLevel, bool parentBindingEdit);
   }
 }

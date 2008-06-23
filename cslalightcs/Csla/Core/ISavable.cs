@@ -12,7 +12,7 @@ namespace Csla.Core
     /// Saves the object to the database.
     /// </summary>
     /// <returns>A new object containing the saved values.</returns>
-    object Save();
+    void Save();
     /// <summary>
     /// INTERNAL CSLA .NET USE ONLY.
     /// </summary>

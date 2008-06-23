@@ -58,9 +58,8 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual T Save()
+    public virtual void Save()
     {
-      T result;
       if (this.IsChild)
         throw new NotSupportedException(Resources.NoSaveChildException);
       if (EditLevel > 0)
@@ -69,14 +68,15 @@ namespace Csla
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
       if (IsDirty)
       {
-        // TODO: Implement call to DataPortal Update here.
-        //result = (T)DataPortal.Update(this);
-        result = (T)this;
+        // TODO: Read this url from the ClientConfig!
+        DataPortal<T> dp = new DataPortal<T>("http://localhost:2752/WcfPortal.svc");
+        dp.UpdateCompleted += (o, e) =>
+          {
+            T result = e.Object;
+            OnSaved(result);
+          };
+        dp.BeginUpdate(this);
       }
-      else
-        result = (T)this;
-      OnSaved(result);
-      return result;
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ namespace Csla
     /// when implementing the Update method in your 
     /// data wrapper object.
     /// </remarks>
-    public T Save(bool forceUpdate)
+    public void Save(bool forceUpdate)
     {
       if (forceUpdate && IsNew)
       {
@@ -103,16 +103,16 @@ namespace Csla
         // now mark the object as dirty so it can save
         MarkDirty(true);
       }
-      return this.Save();
+      this.Save();
     }
 
     #endregion
 
     #region ISavable Members
 
-    object Csla.Core.ISavable.Save()
+    void Csla.Core.ISavable.Save()
     {
-      return Save();
+      Save();
     }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)

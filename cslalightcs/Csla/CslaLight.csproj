@@ -48,6 +48,9 @@
     <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\Core\MobileObject.cs">
+      <Link>Core\MobileObject.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
       <Link>Serialization\ISerializationFormatter.cs</Link>
     </Compile>
@@ -92,7 +95,6 @@
     <Compile Include="Core\ITrackStatus.cs" />
     <Compile Include="Core\IUndoableObject.cs" />
     <Compile Include="Core\MobileList.cs" />
-    <Compile Include="Core\MobileObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />
     <Compile Include="Core\ReadOnlyBindingList.cs" />
     <Compile Include="Core\RemovingItemEventArgs.cs" />

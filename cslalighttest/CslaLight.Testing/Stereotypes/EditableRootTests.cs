@@ -37,8 +37,10 @@ namespace cslalighttest.Stereotypes
       root.Name = "justin";
       root.Saved += (o, e) =>
       {
-        context.Assert.IsFalse(root.IsNew);
-        context.Assert.IsFalse(root.IsDirty);
+        var actual = (MockEditableRoot)e.NewObject;
+        context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
+        context.Assert.IsFalse(actual.IsNew);
+        context.Assert.IsFalse(actual.IsDirty);
         context.Assert.Success();
       };
       root.Save();
@@ -51,8 +53,10 @@ namespace cslalighttest.Stereotypes
       root.Name = "justin";
       root.Saved += (o, e) =>
       {
-        context.Assert.IsFalse(root.IsNew);
-        context.Assert.IsFalse(root.IsDirty);
+        var actual = (MockEditableRoot)e.NewObject;
+        context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
+        context.Assert.IsFalse(actual.IsNew);
+        context.Assert.IsFalse(actual.IsDirty);
         context.Assert.Success();
       };
       root.Save();

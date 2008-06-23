@@ -10,8 +10,9 @@ namespace Csla.Testing.Business.EditableRootTests
     public MockEditableRoot() { }
     public MockEditableRoot(Guid id, bool isnew)
     {
-      //SetProperty<Guid>(IdProperty, id);
-      //if(isnew)
+      SetProperty<Guid>(IdProperty, id);
+      if (!isnew)
+        MarkOld();
     }
 
     #region  Factory Methods

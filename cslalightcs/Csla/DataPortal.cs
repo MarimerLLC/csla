@@ -183,15 +183,19 @@ namespace Csla
 
     private void proxy_UpdateCompleted(object sender, Csla.WcfPortal.UpdateCompletedEventArgs e)
     {
-      var response = e.Result;
       try
       {
-        if (e.Error == null && response.ErrorData == null)
+        if (e.Error == null && e.Result.ErrorData == null)
         {
+          var response = e.Result;
           var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
           OnUpdateCompleted(new DataPortalResult<T>(obj, null));
+        }
+        else if (e.Error != null)
+        {
+          OnUpdateCompleted(new DataPortalResult<T>(default(T), e.Error));
         }
         else if (e.Result.ErrorData != null)
         {

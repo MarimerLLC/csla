@@ -27,7 +27,11 @@ namespace Csla.Testing.Business.EditableRootTests
     public static void Fetch(Guid id, Action<MockEditableRoot, Exception> completed)
     {
       DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>(DataPortalUrl);
-      dp.FetchCompleted += (o, e) => { completed(e.Object, e.Error); };
+      dp.FetchCompleted += (o, e) => 
+      { 
+        if(completed!=null)
+          completed(e.Object, e.Error); 
+      };
       dp.BeginFetch(new SingleCriteria<MockEditableRoot, Guid>(id));
     }
 

@@ -80,5 +80,21 @@ namespace cslalighttest.Stereotypes
       root.Delete();
       root.Save();
     }
+
+    [TestMethod]
+    public void TestFetch(AsyncTestContext context)
+    {
+      MockEditableRoot.Fetch(
+        MockEditableRoot.MockEditableRootId,
+        (actual, error) =>
+        {
+          context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
+          context.Assert.AreEqual("fetch", actual.DataPortalMethod);
+          context.Assert.IsFalse(actual.IsNew);
+          context.Assert.IsFalse(actual.IsDeleted);
+          context.Assert.IsFalse(actual.IsDirty);
+          context.Assert.Success();
+        });
+    }
   }
 }

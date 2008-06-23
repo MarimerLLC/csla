@@ -35,12 +35,13 @@ namespace cslalighttest.Stereotypes
     {
       MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, true);
       root.Name = "justin";
-      //root.Save((o, e) => 
-      //{
-      //  context.Assert.IsFalse(root.IsNew);
-      //  context.Assert.IsFalse(root.IsDirty);
-      //  context.Success();
-      //});
+      root.Saved += (o, e) =>
+      {
+        context.Assert.IsFalse(root.IsNew);
+        context.Assert.IsFalse(root.IsDirty);
+        context.Success();
+      };
+      root.Save();
 
       context.Fail();
     }
@@ -50,14 +51,13 @@ namespace cslalighttest.Stereotypes
     {
       MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, false);
       root.Name = "justin";
-      //root.Save((o, e) => 
-      //{
-      //  context.Assert.IsFalse(root.IsNew);
-      //  context.Assert.IsFalse(root.IsDirty);
-      //  context.Success();
-      //});
-
-      context.Fail();
+      root.Saved += (o, e) =>
+      {
+        context.Assert.IsFalse(root.IsNew);
+        context.Assert.IsFalse(root.IsDirty);
+        context.Success();
+      };
+      root.Save();
     }
 
     [TestMethod]

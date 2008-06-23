@@ -86,6 +86,7 @@
     <Compile Include="Core\IParent.cs" />
     <Compile Include="Core\IPropertyInfo.cs" />
     <Compile Include="Core\IReadOnlyCollection.cs" />
+    <Compile Include="Core\ISavable.cs" />
     <Compile Include="Core\ISmartField.cs" />
     <Compile Include="Core\ISupportUndo.cs" />
     <Compile Include="Core\ITrackStatus.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Core\ObjectCloner.cs" />
     <Compile Include="Core\ReadOnlyBindingList.cs" />
     <Compile Include="Core\RemovingItemEventArgs.cs" />
+    <Compile Include="Core\SavedEventArgs.cs" />
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="Core\UndoException.cs" />
     <Compile Include="CriteriaBase.cs" />

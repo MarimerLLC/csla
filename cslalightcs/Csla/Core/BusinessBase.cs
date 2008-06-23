@@ -13,7 +13,6 @@ namespace Csla.Core
 
     private bool _neverCommitted = true;
     private bool _disableIEditableObject;
-    private bool _isChild;
     private int _editLevelAdded;
 
     // TODO: Implement validation
@@ -21,6 +20,29 @@ namespace Csla.Core
     public bool IsValid { get { return _isValid; } }
     private Validation.ValidationRules _validationRules;
 
+
+    #region IsChild
+
+    [NotUndoable()]
+    private bool _isChild;
+
+    /// <summary>
+    /// Returns <see langword="true" /> if this is a child (non-root) object.
+    /// </summary>
+    protected internal bool IsChild
+    {
+      get { return _isChild; }
+    }
+
+    /// <summary>
+    /// Marks the object as being a child object.
+    /// </summary>
+    protected void MarkAsChild()
+    {
+      _isChild = true;
+    }
+
+    #endregion
 
     #region IsNew, IsDeleted, IsDirty, IsSavable
 

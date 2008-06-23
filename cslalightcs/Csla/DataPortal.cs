@@ -47,7 +47,7 @@ namespace Csla
         CreateCompleted(this, e);
     }
 
-    public void SendCreate()
+    public void BeginCreate()
     {
       var request = new WcfPortal.CriteriaRequest();
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
@@ -58,7 +58,7 @@ namespace Csla
       proxy.CreateAsync(request);
     }
 
-    public void SendCreate(object criteria)
+    public void BeginCreate(object criteria)
     {
       var request = new WcfPortal.CriteriaRequest();
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
@@ -109,7 +109,7 @@ namespace Csla
         FetchCompleted(this, e);
     }
 
-    public void SendFetch()
+    public void BeginFetch()
     {
       var request = new WcfPortal.CriteriaRequest();
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
@@ -120,7 +120,7 @@ namespace Csla
       proxy.FetchAsync(request);
     }
 
-    public void SendFetch(object criteria)
+    public void BeginFetch(object criteria)
     {
       var request = new WcfPortal.CriteriaRequest();
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
@@ -171,7 +171,7 @@ namespace Csla
         UpdateCompleted(this, e);
     }
 
-    public void SendUpdate(object criteria)
+    public void BeginUpdate(object criteria)
     {
       var request = new WcfPortal.UpdateRequest();
       request.ObjectData = MobileFormatter.Serialize(criteria);
@@ -221,7 +221,7 @@ namespace Csla
         DeleteCompleted(this, e);
     }
 
-    public void SendDelete(object criteria)
+    public void BeginDelete(object criteria)
     {
       var request = new WcfPortal.CriteriaRequest();
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;

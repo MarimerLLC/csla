@@ -13,43 +13,66 @@ namespace cslalighttest.Engine
 {
   public class AsyncAsserter
   {
-    public event AsyncAssertError Error;
-    protected virtual void OnError(Exception exception)
+    public event AsyncAssertComplete Complete;
+    private void OnComplete(Exception exception)
     {
-      if (Error != null)
-        Error(exception);
+      OnComplete(MethodTesterStatus.Fail, exception);
+    }
+    private void OnComplete(MethodTesterStatus status)
+    {
+      OnComplete(status, null);
+    }
+    protected virtual void OnComplete(MethodTesterStatus status, Exception exception)
+    {
+      if (Complete != null)
+        Complete(status, exception);
+    }
+
+    public virtual void Success()
+    {
+      OnComplete(MethodTesterStatus.Success);
+    }
+
+    public virtual void Indeterminate()
+    {
+      OnComplete(MethodTesterStatus.Indeterminate);
+    }
+
+    internal void Fail()
+    {
+      OnComplete(MethodTesterStatus.Fail);
     }
 
     public void IsNotNull(object actual)
     {
       if (actual == null)
-        Error(new TestException("Assert.IsNotNull failed."));
+        OnComplete(new TestException("Assert.IsNotNull failed."));
     }
 
     public void IsNull(object actual)
     {
       if (actual != null)
-        Error(new TestException("Assert.IsNull failed."));
+        OnComplete(new TestException("Assert.IsNull failed."));
     }
 
     public void AreEqual(object expected, object actual)
     {
       if (!object.Equals(expected, actual))
-        Error(new TestException("Assert.AreEqual failed."));
+        OnComplete(new TestException("Assert.AreEqual failed."));
     }
 
     public void IsFalse(bool actual)
     {
       if (actual)
-        Error(new TestException("Assert.IsFalse failed."));
+        OnComplete(new TestException("Assert.IsFalse failed."));
     }
 
     public void IsTrue(bool actual)
     {
       if (!actual)
-        Error(new TestException("Assert.IsTrue failed."));
+        OnComplete(new TestException("Assert.IsTrue failed."));
     }
   }
 
-  public delegate void AsyncAssertError(Exception exception);
+  public delegate void AsyncAssertComplete(MethodTesterStatus status, Exception exception);
 }

@@ -1259,6 +1259,18 @@ namespace Csla.Core
       info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded);
     }
 
+    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      base.OnSetState(info);
+      _isNew = info.GetValue<bool>("Csla.Core.BusinessBase._isNew");
+      _isDeleted = info.GetValue<bool>("Csla.Core.BusinessBase._isDeleted");
+      _isDirty = info.GetValue<bool>("Csla.Core.BusinessBase._isDirty");
+      _neverCommitted = info.GetValue<bool>("Csla.Core.BusinessBase._neverCommitted");
+      _disableIEditableObject = info.GetValue<bool>("Csla.Core.BusinessBase._disableIEditableObject");
+      _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
+      _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
+    }
+
     protected override void OnGetChildren(
       Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
@@ -1273,12 +1285,7 @@ namespace Csla.Core
       _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
       base.OnSetChildren(info, formatter);
     }
-
-    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
-    {
-      base.OnSetState(info);
-    }
-    
+        
     #endregion
 
     #region ICloneable

@@ -24,9 +24,9 @@ namespace cslalighttest.Stereotypes
         context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
         context.Assert.IsTrue(actual.IsNew);
         context.Assert.IsTrue(actual.IsDirty);
-        context.Assert.IsTrue(actual.IsDeleted);
+        context.Assert.IsFalse(actual.IsDeleted);
 
-        context.Success();
+        context.Assert.Success();
       });
     }
 
@@ -39,11 +39,9 @@ namespace cslalighttest.Stereotypes
       {
         context.Assert.IsFalse(root.IsNew);
         context.Assert.IsFalse(root.IsDirty);
-        context.Success();
+        context.Assert.Success();
       };
       root.Save();
-
-      context.Fail();
     }
 
     [TestMethod]
@@ -55,7 +53,7 @@ namespace cslalighttest.Stereotypes
       {
         context.Assert.IsFalse(root.IsNew);
         context.Assert.IsFalse(root.IsDirty);
-        context.Success();
+        context.Assert.Success();
       };
       root.Save();
     }
@@ -71,7 +69,7 @@ namespace cslalighttest.Stereotypes
       //  context.Success();
       //});
 
-      context.Fail();
+      context.Assert.Fail();
     }
   }
 }

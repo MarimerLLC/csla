@@ -22,6 +22,10 @@ namespace Csla.Testing.Business.EditableRootTests
       typeof(MockEditableRoot), 
       new PropertyInfo<string>("Name"));
 
+    private static PropertyInfo<string> DataPortalMethodProperty = RegisterProperty<string>(
+      typeof(MockEditableRoot),
+      new PropertyInfo<string>("DataPortalMethod"));
+
     public Guid Id
     {
       get { return GetProperty<Guid>(IdProperty); }
@@ -31,6 +35,12 @@ namespace Csla.Testing.Business.EditableRootTests
     {
       get { return GetProperty<string>(NameProperty); }
       set { SetProperty<string>(NameProperty, value); }
+    }
+
+    public string DataPortalMethod
+    {
+      get { return GetProperty<string>(DataPortalMethodProperty); }
+      set { SetProperty<string>(DataPortalMethodProperty, value); }
     }
 
     public override string ToString()

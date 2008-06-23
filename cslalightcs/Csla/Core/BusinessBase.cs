@@ -1320,5 +1320,45 @@ namespace Csla.Core
     }
 
     #endregion
+
+    #region Delete
+
+    /// <summary>
+    /// Marks the object for deletion. The object will be deleted as part of the
+    /// next save operation.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// CSLA .NET supports both immediate and deferred deletion of objects. This
+    /// method is part of the support for deferred deletion, where an object
+    /// can be marked for deletion, but isn't actually deleted until the object
+    /// is saved to the database. This method is called by the UI developer to
+    /// mark the object for deletion.
+    /// </para><para>
+    /// To 'undelete' an object, use n-level undo as discussed in Chapters 2 and 3.
+    /// </para>
+    /// </remarks>
+    public virtual void Delete()
+    {
+      if (this.IsChild)
+        throw new NotSupportedException(Resources.ChildDeleteException);
+
+      MarkDeleted();
+    }
+
+    /// <summary>
+    /// Called by a parent object to mark the child
+    /// for deferred deletion.
+    /// </summary>
+    internal void DeleteChild()
+    {
+      if (!this.IsChild)
+        throw new NotSupportedException(Resources.NoDeleteRootException);
+
+      BindingEdit = false;
+      MarkDeleted();
+    }
+
+    #endregion
   }
 }

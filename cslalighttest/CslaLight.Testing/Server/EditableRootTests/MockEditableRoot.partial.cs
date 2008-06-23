@@ -17,11 +17,17 @@ namespace Csla.Testing.Business.EditableRootTests
     {
       LoadProperty<Guid>(IdProperty, MockEditableRootId);
       ValidationRules.CheckRules();
+
+      LoadProperty<string>(DataPortalMethodProperty, "create");
     }
 
     private void DataPortal_Fetch(SingleCriteria<MockEditableRoot, Guid> criteria)
     {
-        LoadProperty<Guid>(IdProperty, MockEditableRootId);
+      if (criteria.Value != MockEditableRootId)
+        throw new Exception();
+
+      LoadProperty<Guid>(IdProperty, MockEditableRootId);
+      LoadProperty<string>(DataPortalMethodProperty, "fetch");
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
@@ -30,6 +36,8 @@ namespace Csla.Testing.Business.EditableRootTests
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
         throw new Exception();
+
+      LoadProperty<string>(DataPortalMethodProperty, "insert");
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
@@ -38,6 +46,8 @@ namespace Csla.Testing.Business.EditableRootTests
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
         throw new Exception();
+
+      LoadProperty<string>(DataPortalMethodProperty, "update");
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
@@ -52,6 +62,8 @@ namespace Csla.Testing.Business.EditableRootTests
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
         throw new Exception();
+
+      LoadProperty<string>(DataPortalMethodProperty, "delete");
     }
 
     #endregion

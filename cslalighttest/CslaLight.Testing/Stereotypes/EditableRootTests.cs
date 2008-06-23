@@ -25,7 +25,7 @@ namespace cslalighttest.Stereotypes
         context.Assert.IsTrue(actual.IsNew);
         context.Assert.IsTrue(actual.IsDirty);
         context.Assert.IsFalse(actual.IsDeleted);
-
+        context.Assert.AreEqual("create", actual.DataPortalMethod);
         context.Assert.Success();
       });
     }
@@ -41,6 +41,7 @@ namespace cslalighttest.Stereotypes
         context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
         context.Assert.IsFalse(actual.IsNew);
         context.Assert.IsFalse(actual.IsDirty);
+        context.Assert.AreEqual("insert", actual.DataPortalMethod);
         context.Assert.Success();
       };
       root.Save();
@@ -57,6 +58,7 @@ namespace cslalighttest.Stereotypes
         context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
         context.Assert.IsFalse(actual.IsNew);
         context.Assert.IsFalse(actual.IsDirty);
+        context.Assert.AreEqual("update", actual.DataPortalMethod);
         context.Assert.Success();
       };
       root.Save();
@@ -66,14 +68,17 @@ namespace cslalighttest.Stereotypes
     public void TestDelete(AsyncTestContext context)
     {
       MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, false);
-      //root.Delete((o, e) => 
-      //{
-      //  context.Assert.IsFalse(root.IsNew);
-      //  context.Assert.IsFalse(root.IsDirty);
-      //  context.Success();
-      //});
-
-      context.Assert.Fail();
+      root.Saved += (o, e) =>
+      {
+        var actual = (MockEditableRoot)e.NewObject;
+        context.Assert.IsTrue(actual.IsNew);
+        context.Assert.IsTrue(actual.IsDirty);
+        context.Assert.IsFalse(actual.IsDeleted);
+        context.Assert.AreEqual("delete", actual.DataPortalMethod);
+        context.Assert.Success();
+      };
+      root.Delete();
+      root.Save();
     }
   }
 }

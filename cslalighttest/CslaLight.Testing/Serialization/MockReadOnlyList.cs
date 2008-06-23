@@ -30,7 +30,7 @@ namespace cslalighttest.Serialization
     {
       DataPortal<MockReadOnly> dp = new DataPortal<MockReadOnly>();
       dp.CreateCompleted += OnCoreAdded;
-      dp.SendCreate();
+      dp.BeginCreate();
     }
   }
 }

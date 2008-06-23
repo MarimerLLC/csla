@@ -44,11 +44,15 @@ namespace cslalighttest.Engine
       }
     }
 
-    public void RunTests()
+    public void RunTests(TestContext context)
     {
       object instance = Activator.CreateInstance(_type);
+      context.Total += _methods.Count;
+
       foreach (MethodTester tester in _methods)
-        tester.RunTest(instance);
+      {
+        tester.RunTest(instance, context);
+      }
     }
   }
 }

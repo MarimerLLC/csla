@@ -60,10 +60,12 @@
     <Compile Include="Engine\AsyncAsserter.cs" />
     <Compile Include="Engine\AsyncTestContext.cs" />
     <Compile Include="Engine\ExpectedExceptionAttribute.cs" />
+    <Compile Include="Engine\Extensions.cs" />
     <Compile Include="Engine\MethodTester.cs" />
     <Compile Include="Engine\MethodTesterStatus.cs" />
     <Compile Include="Engine\ObservableObject.cs" />
     <Compile Include="Engine\TestClassAttribute.cs" />
+    <Compile Include="Engine\TestContext.cs" />
     <Compile Include="Engine\TestEngine.xaml.cs">
       <DependentUpon>TestEngine.xaml</DependentUpon>
     </Compile>

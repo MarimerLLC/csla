@@ -16,25 +16,30 @@ namespace cslalighttest.Engine
 {
   public partial class TestEngine : UserControl
   {
+    private TestContext _context = new TestContext();
+    public TestContext Context
+    {
+      get { return _context; }
+    }
+
     public TestEngine()
     {
+      DataContext = Context;
+
       InitializeComponent();
-
-      ObservableCollection<TypeTester> testers = new ObservableCollection<TypeTester>();
-
+      
       Assembly a = this.GetType().Assembly;
       foreach (Type t in a.GetTypes())
       {
         if (t.IsPublic && t.IsDefined(typeof(TestClassAttribute), true))
         {
           TypeTester tester = new TypeTester(t);
-          testers.Add(tester);
+          _context.Testers.Add(tester);
         }
       }
-      types.ItemsSource = testers;
 
-      foreach (TypeTester tester in testers)
-        tester.RunTests();
+      foreach (TypeTester tester in _context.Testers)
+        tester.RunTests(_context);
     }
   }
 }

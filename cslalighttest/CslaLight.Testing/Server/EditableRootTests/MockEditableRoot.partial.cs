@@ -15,7 +15,7 @@ namespace Csla.Testing.Business.EditableRootTests
     [RunLocal()]
     protected override void DataPortal_Create()
     {
-      LoadProperty<Guid>(IdProperty, Guid.NewGuid());
+      LoadProperty<Guid>(IdProperty, MockEditableRootId);
       ValidationRules.CheckRules();
     }
 

@@ -14,11 +14,14 @@ namespace cslalighttest.Engine
 {
   public class MethodTester : ObservableObject
   {
+    #region Member fields and properties
+
     private MethodTesterStatus _status;
     private MethodInfo _method;
+    private string _message;
 
-    public MethodTesterStatus Status 
-    { 
+    public MethodTesterStatus Status
+    {
       get { return _status; }
       protected set
       {
@@ -26,7 +29,22 @@ namespace cslalighttest.Engine
         OnPropertyChanged("Status");
       }
     }
+
+    public string Message
+    {
+      get { return _message; }
+      private set
+      {
+        _message = value;
+        OnPropertyChanged("Message");
+      }
+    }
+
     public string Name { get { return _method.Name; } }
+
+    #endregion
+
+    #region Constructors
 
     public MethodTester(MethodInfo method)
     {
@@ -39,7 +57,9 @@ namespace cslalighttest.Engine
       _status = MethodTesterStatus.Evaluating;
     }
 
-    public void RunTest(object instance)
+    #endregion
+
+    public void RunTest(object instance, TestContext testContext)
     {
       ParameterInfo[] parameters = _method.GetParameters();
       ExpectedExceptionAttribute expectedException = null;
@@ -70,6 +90,15 @@ namespace cslalighttest.Engine
             }
             else
               Status = e.Status;
+
+            if (Status == MethodTesterStatus.Success)
+            {
+              testContext.Succeeded++;
+            }
+            else if (e.Error != null)
+            {
+              Message = e.Error.Innermost().Message;
+            }            
           };
 
         try
@@ -79,6 +108,7 @@ namespace cslalighttest.Engine
         catch(Exception ex)
         {
           Status = MethodTesterStatus.Fail;
+          Message = ex.Innermost().Message;
         }
       }
       else
@@ -86,18 +116,30 @@ namespace cslalighttest.Engine
         try
         {
           _method.Invoke(instance, null);
-          if(expectsException)
+          if (expectsException)
+          {
             Status = MethodTesterStatus.Fail;
+          }
           else
+          {
             Status = MethodTesterStatus.Success;
+          }
         }
         catch(Exception ex)
         {
-          if(expectsException && expectedException.Type.IsAssignableFrom(ex.InnerException.GetType()))
+          if (expectsException && expectedException.Type.IsAssignableFrom(ex.InnerException.GetType()))
+          {
             Status = MethodTesterStatus.Success;
+          }
           else
+          {
             Status = MethodTesterStatus.Fail;
+            Message = ex.Innermost().Message;
+          }
         }
+
+        if (Status == MethodTesterStatus.Success)
+          testContext.Succeeded++;
       }
     }
   }

@@ -6,16 +6,17 @@
     <e:TestStatusConverter x:Key="statusConverter" />
     
     <DataTemplate x:Key="method">
-      <Grid Background="{Binding Status, Converter={StaticResource statusConverter}}">        
+      <Grid Background="{Binding Status, Converter={StaticResource statusConverter}}" HorizontalAlignment="Stretch">        
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="1*" />
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock Text="{Binding Name}"/>
+        <TextBlock Text="{Binding Message}" Grid.Column="1" Margin="10,0,0,0"/>
       </Grid>
     </DataTemplate>
     <DataTemplate x:Key="type">
-      <Grid>
+      <Grid HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
           <RowDefinition/>
@@ -24,7 +25,7 @@
           <TextBlock Text="Type: "/>
           <TextBlock Text="{Binding Name}"/>
         </StackPanel>
-        <ListBox Grid.Row="1" ItemTemplate="{StaticResource method}" ItemsSource="{Binding Methods}" />
+        <ListBox Grid.Row="1" ItemTemplate="{StaticResource method}" ItemsSource="{Binding Methods}" HorizontalContentAlignment="Stretch" />
       </Grid>
     </DataTemplate>
   </UserControl.Resources>
@@ -35,7 +36,12 @@
       <RowDefinition />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
-    <TextBlock Text="CSLA Test Engine" />
-    <ListBox x:Name="types" Grid.Row="1" ItemTemplate="{StaticResource type}" />
+    <StackPanel Orientation="Horizontal">
+      <TextBlock Text="CSLA Test Engine:" />
+      <TextBlock Text="{Binding Succeeded}" Margin="5,0,0,0" />
+      <TextBlock Text="/" Margin="3,0,3,0" />
+      <TextBlock Text="{Binding Total}" />
+    </StackPanel>    
+    <ListBox x:Name="types" Grid.Row="1" ItemTemplate="{StaticResource type}" ItemsSource="{Binding Testers}" HorizontalContentAlignment="Stretch" />
   </Grid>
 </UserControl>

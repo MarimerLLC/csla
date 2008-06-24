@@ -1294,14 +1294,11 @@ namespace Csla
     object IConvertible.ToType(System.Type conversionType, System.IFormatProvider provider)
     {
       if (conversionType.Equals(typeof(string)))
-      {
         return ((IConvertible)Text).ToType(conversionType, provider);
-
-      }
+      else if (conversionType.Equals(typeof(SmartDate)))
+        return this;
       else
-      {
         return ((IConvertible)_date).ToType(conversionType, provider);
-      }
     }
 
     ushort IConvertible.ToUInt16(System.IFormatProvider provider)

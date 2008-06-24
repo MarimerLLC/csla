@@ -1205,6 +1205,9 @@ Public Structure SmartDate
     If conversionType.Equals(GetType(String)) Then
       Return DirectCast(Text, IConvertible).ToType(conversionType, provider)
 
+    ElseIf conversionType.Equals(GetType(SmartDate)) Then
+      Return Me
+
     Else
       Return DirectCast(_date, IConvertible).ToType(conversionType, provider)
     End If

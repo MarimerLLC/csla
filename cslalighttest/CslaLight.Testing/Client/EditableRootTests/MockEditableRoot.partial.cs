@@ -19,14 +19,16 @@ namespace Csla.Testing.Business.EditableRootTests
 
     public static void CreateNew(Action<MockEditableRoot, Exception> completed)
     {
-      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>(DataPortalUrl);
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = DataPortalUrl;
+      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>();
       dp.CreateCompleted += (o, e) => { completed(e.Object, e.Error); };
       dp.BeginCreate();
     }
 
     public static void Fetch(Guid id, Action<MockEditableRoot, Exception> completed)
     {
-      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>(DataPortalUrl);
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = DataPortalUrl;
+      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>();
       dp.FetchCompleted += (o, e) => 
       { 
         if(completed!=null)
@@ -38,7 +40,8 @@ namespace Csla.Testing.Business.EditableRootTests
     public static void Delete(Guid id) { Delete(id, null); }
     public static void Delete(Guid id, Action<MockEditableRoot, Exception> completed)
     {
-      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>(DataPortalUrl);
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = DataPortalUrl;
+      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>();
       dp.DeleteCompleted += (o, e) => 
       {
         if (completed != null)

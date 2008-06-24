@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
+using System.Xml;
+using System.Runtime.Serialization;
 
 namespace Csla.Core.FieldManager
 {
@@ -358,7 +361,7 @@ namespace Csla.Core.FieldManager
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format("Edit level mismatch in {0}", "CopyState"));
 
-      IFieldData[] state = new IFieldData[_propertyList.Count];
+      SerializationInfo state = new SerializationInfo(0);
 
       for (var index = 0; index < _fieldData.Length; index++)
       {
@@ -374,7 +377,7 @@ namespace Csla.Core.FieldManager
           else
           {
             // add the IFieldData object
-            state[index] = item;
+            state.AddValue(item.Name, item.Value, item.IsDirty);
           }
         }
       }
@@ -382,8 +385,11 @@ namespace Csla.Core.FieldManager
       // serialize the state and stack it
       using (MemoryStream buffer = new MemoryStream())
       {
-        var formatter = new Csla.Serialization.Mobile.MobileFormatter();
-        formatter.Serialize(buffer, state);
+        XmlWriter writer = XmlWriter.Create(buffer);
+        DataContractSerializer dc = new DataContractSerializer(typeof(SerializationInfo));
+        dc.WriteObject(writer, state);
+        writer.Flush();
+        
         mStateStack.Push(buffer.ToArray());
       }
     }
@@ -395,36 +401,44 @@ namespace Csla.Core.FieldManager
         if (this.EditLevel - 1 < parentEditLevel)
           throw new UndoException(string.Format("Edit level mismatch in {0}", "UndoChanges"));
 
-        IFieldData[] state = null;
+        SerializationInfo state = null;
         using (MemoryStream buffer = new MemoryStream(mStateStack.Pop()))
         {
-          buffer.Position = 0;
-          var formatter = new Csla.Serialization.Mobile.MobileFormatter();
-          state = (IFieldData[])(formatter.Deserialize(buffer));
+          XmlReader reader = XmlReader.Create(buffer);
+          DataContractSerializer dc = new DataContractSerializer(typeof(SerializationInfo));
+          state = (SerializationInfo)dc.ReadObject(reader);
         }
 
         for (var index = 0; index < _fieldData.Length; index++)
         {
-          var oldItem = state[index];
           var item = _fieldData[index];
-          if (oldItem == null && item != null)
+          if (item != null)
           {
-            // potential child object
-            var child = item.Value as IUndoableObject;
-            if (child != null)
+            SerializationInfo.FieldData oldItem = null;
+            if(state.Values.ContainsKey(item.Name))
+              oldItem = state.Values[item.Name];
+
+            if (oldItem == null && item != null)
             {
-              child.UndoChanges(parentEditLevel, parentBindingEdit);
+              // potential child object
+              var child = item.Value as IUndoableObject;
+              if (child != null)
+              {
+                child.UndoChanges(parentEditLevel, parentBindingEdit);
+              }
+              else
+              {
+                // null value
+                _fieldData[index] = null;
+              }
             }
             else
             {
-              // null value
-              _fieldData[index] = null;
+              // restore IFieldData object into field collection
+              _fieldData[index].Value = oldItem.Value;
+              if (!oldItem.IsDirty)
+                _fieldData[index].MarkClean();
             }
-          }
-          else
-          {
-            // restore IFieldData object into field collection
-            _fieldData[index] = state[index];
           }
         }
       }

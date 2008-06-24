@@ -51,6 +51,9 @@
     <Compile Include="..\..\cslacs\Csla\Core\MobileObject.cs">
       <Link>Core\MobileObject.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\StateMode.cs">
+      <Link>Core\StateMode.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
       <Link>Serialization\ISerializationFormatter.cs</Link>
     </Compile>

@@ -1,6 +1,8 @@
 ﻿using System;
 using Csla.Serialization;
 using Csla.Core.FieldManager;
+using Csla.Serialization.Mobile;
+using Csla.Core;
 
 namespace Csla
 {
@@ -68,9 +70,9 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
-      base.OnGetState(info);
+      base.OnGetState(info, mode);
       info.AddValue("Csla.Silverlight.SingleCriteria._value", _value);
     }
 
@@ -81,9 +83,9 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      base.OnSetState(info);
+      base.OnSetState(info, mode);
       _value = info.GetValue<C>("Csla.Silverlight.SingleCriteria._value");
     }
 

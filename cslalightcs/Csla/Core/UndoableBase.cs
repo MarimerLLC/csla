@@ -14,7 +14,7 @@ namespace Csla.Core
   {
     // keep a stack of object state values.
     [NotUndoable()]
-    private Stack<byte[]> _stateStack = new Stack<byte[]>();
+    private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
     [NotUndoable]
     private bool _bindingEdit;
 
@@ -103,66 +103,19 @@ namespace Csla.Core
     {
       CopyingState();
 
-      Type currentType = this.GetType();
-      Dictionary<string, object> state = new Dictionary<string, object>();
-      FieldInfo[] fields;
-
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
 
-      do
-      {
-        // get the list of fields in this type
-        fields = currentType.GetFields(
-            BindingFlags.NonPublic |
-            BindingFlags.Instance |
-            BindingFlags.Public);
-
-        foreach (FieldInfo field in fields)
-        {
-          // make sure we process only our variables
-          if (field.DeclaringType == currentType)
-          {
-            // see if this field is marked as not undoable
-            if (!NotUndoableField(field))
-            {
-              // the field is undoable, so it needs to be processed.
-              object value = field.GetValue(this);
-
-              if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
-              {
-                // make sure the variable has a value
-                if (value == null)
-                {
-                  // variable has no value - store that fact
-                  state.Add(GetFieldName(field), null);
-                }
-                else
-                {
-                  // this is a child object, cascade the call
-                  ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1, BindingEdit);
-                }
-              }
-              else
-              {
-                // this is a normal field, simply trap the value
-                state.Add(GetFieldName(field), value);
-              }
-            }
-          }
-        }
-        currentType = currentType.BaseType;
-      } while (currentType != typeof(UndoableBase));
-
-      // serialize the state and stack it
-      using (MemoryStream buffer = new MemoryStream())
-      {
-        ISerializationFormatter formatter =
-          SerializationFormatterFactory.GetFormatter();
-        formatter.Serialize(buffer, state);
-        _stateStack.Push(buffer.ToArray());
-      }
+      SerializationInfo state = new SerializationInfo(0);
+      OnCopyState(state);
+      _stateStack.Push(state);
+      
       CopyStateComplete();
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnCopyState(SerializationInfo state)
+    {
     }
 
     /// <summary>
@@ -198,76 +151,18 @@ namespace Csla.Core
     {
       UndoingChanges();
 
-      // if we are a child object we might be asked to
-      // undo below the level of stacked states,
-      // so just do nothing in that case
-      if (EditLevel > 0)
-      {
-        if (this.EditLevel - 1 < parentEditLevel)
-          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+      if (parentEditLevel < 0 || this.EditLevel - 1 < parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
 
-        Dictionary<string, object> state;
-        using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
-        {
-          buffer.Position = 0;
-          ISerializationFormatter formatter =
-            SerializationFormatterFactory.GetFormatter();
-          state = (Dictionary<string, object>)formatter.Deserialize(buffer);
-        }
-
-        Type currentType = this.GetType();
-        FieldInfo[] fields;
-
-        do
-        {
-          // get the list of fields in this type
-          fields = currentType.GetFields(
-              BindingFlags.NonPublic |
-              BindingFlags.Instance |
-              BindingFlags.Public);
-          foreach (FieldInfo field in fields)
-          {
-            // make sure we process only our variables
-            if (field.DeclaringType == currentType)
-            {
-              // see if the field is undoable or not
-              if (!NotUndoableField(field))
-              {
-                // the field is undoable, so restore its value
-                object value = field.GetValue(this);
-
-                if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
-                {
-                  // this is a child object
-                  // see if the previous value was empty
-                  if (state.ContainsKey(GetFieldName(field)))
-                  {
-                    // previous value was empty - restore to empty
-                    field.SetValue(this, null);
-                  }
-                  else
-                  {
-                    // make sure the variable has a value
-                    if (value != null)
-                    {
-                      // this is a child object, cascade the call.
-                      ((Core.IUndoableObject)value).UndoChanges(this.EditLevel, BindingEdit);
-                    }
-                  }
-                }
-                else
-                {
-                  // this is a regular field, restore its value
-                  field.SetValue(this, state[GetFieldName(field)]);
-                }
-              }
-            }
-          }
-          currentType = currentType.BaseType;
-        } while (currentType != typeof(UndoableBase));
-      }
+      SerializationInfo state = _stateStack.Pop();
+      OnUndoChanges(state);
+      
       UndoChangesComplete();
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnUndoChanges(SerializationInfo state)
+    { }
 
     /// <summary>
     /// This method is invoked before the AcceptChanges
@@ -305,44 +200,14 @@ namespace Csla.Core
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
 
       if (EditLevel > 0)
-      {
         _stateStack.Pop();
-        Type currentType = this.GetType();
-        FieldInfo[] fields;
-
-        do
-        {
-          // get the list of fields in this type
-          fields = currentType.GetFields(
-              BindingFlags.NonPublic |
-              BindingFlags.Instance |
-              BindingFlags.Public);
-          foreach (FieldInfo field in fields)
-          {
-            // make sure we process only our variables
-            if (field.DeclaringType == currentType)
-            {
-              // see if the field is undoable or not
-              if (!NotUndoableField(field))
-              {
-                // the field is undoable so see if it is a child object
-                if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
-                {
-                  object value = field.GetValue(this);
-                  // make sure the variable has a value
-                  if (value != null)
-                  {
-                    // it is a child object so cascade the call
-                    ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel, BindingEdit);
-                  }
-                }
-              }
-            }
-          }
-          currentType = currentType.BaseType;
-        } while (currentType != typeof(UndoableBase));
-      }
+      
       AcceptChangesComplete();
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnAcceptChanges()
+    {
     }
 
     #region Helper Functions

@@ -3,23 +3,161 @@ using System.ComponentModel;
 using Csla.Core.FieldManager;
 using Csla.Properties;
 using System.Collections.Specialized;
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
+using Csla.DataPortalClient;
 
 namespace Csla.Core
 {
   [Serialization.Serializable]
-  public class BusinessBase : UndoableBase, ICloneable, IParent, DataPortalClient.IDataPortalTarget
+  public class BusinessBase : UndoableBase, ICloneable, IParent, IDataPortalTarget, IEditableBusinessObject
   {
     static BusinessBase() { }
 
+    #region Parent/Child link
+
+    [NotUndoable]
+    [NonSerialized]
+    private Core.IParent _parent;
+
+    /// <summary>
+    /// Provide access to the parent reference for use
+    /// in child object code.
+    /// </summary>
+    /// <remarks>
+    /// This value will be Nothing for root objects.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected IParent Parent
+    {
+      get { return _parent; }
+    }
+
+    /// <summary>
+    /// Used by BusinessListBase as a child object is 
+    /// created to tell the child object about its
+    /// parent.
+    /// </summary>
+    /// <param name="parent">A reference to the parent collection object.</param>
+    internal void SetParent(IParent parent)
+    {
+      _parent = parent;
+    }
+
+    #endregion
+
+    #region IEditableBusinessObject Members
+
+    int IEditableBusinessObject.EditLevelAdded
+    {
+      get
+      {
+        return this.EditLevelAdded;
+      }
+      set
+      {
+        this.EditLevelAdded = value;
+      }
+    }
+
+    void IEditableBusinessObject.DeleteChild()
+    {
+      this.DeleteChild();
+    }
+
+    void IEditableBusinessObject.SetParent(IParent parent)
+    {
+      this.SetParent(parent);
+    }
+
+    #endregion
+
+    #region Begin/Cancel/ApplyEdit
+
     private bool _neverCommitted = true;
-    private bool _disableIEditableObject;
-    private int _editLevelAdded;
 
-    // TODO: Implement validation
-    private bool _isValid = true; 
-    public bool IsValid { get { return _isValid; } }
-    private Validation.ValidationRules _validationRules;
+    /// <summary>
+    /// Starts a nested edit on the object.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// When this method is called the object takes a snapshot of
+    /// its current state (the values of its variables). This snapshot
+    /// can be restored by calling CancelEdit
+    /// or committed by calling ApplyEdit.
+    /// </para><para>
+    /// This is a nested operation. Each call to BeginEdit adds a new
+    /// snapshot of the object's state to a stack. You should ensure that 
+    /// for each call to BeginEdit there is a corresponding call to either 
+    /// CancelEdit or ApplyEdit to remove that snapshot from the stack.
+    /// </para><para>
+    /// See Chapters 2 and 3 for details on n-level undo and state stacking.
+    /// </para>
+    /// </remarks>
+    public void BeginEdit()
+    {
+      CopyState(this.EditLevel + 1);
+    }
 
+    /// <summary>
+    /// Cancels the current edit process, restoring the object's state to
+    /// its previous values.
+    /// </summary>
+    /// <remarks>
+    /// Calling this method causes the most recently taken snapshot of the 
+    /// object's state to be restored. This resets the object's values
+    /// to the point of the last BeginEdit call.
+    /// </remarks>
+    public void CancelEdit()
+    {
+      UndoChanges(this.EditLevel - 1);
+    }
+
+    /// <summary>
+    /// Called when an undo operation has completed.
+    /// </summary>
+    /// <remarks> 
+    /// This method resets the object as a result of
+    /// deserialization and raises PropertyChanged events
+    /// to notify data binding that the object has changed.
+    /// </remarks>
+    protected override void UndoChangesComplete()
+    {
+      // TODO: repair calls to business rules
+      BindingEdit = false;
+      //ValidationRules.SetTarget(this);
+      //InitializeBusinessRules();
+      OnUnknownPropertyChanged();
+      base.UndoChangesComplete();
+    }
+
+    /// <summary>
+    /// Commits the current edit process.
+    /// </summary>
+    /// <remarks>
+    /// Calling this method causes the most recently taken snapshot of the 
+    /// object's state to be discarded, thus committing any changes made
+    /// to the object's state since the last BeginEdit call.
+    /// </remarks>
+    public void ApplyEdit()
+    {
+      _neverCommitted = false;
+      AcceptChanges(this.EditLevel - 1);
+      BindingEdit = false;
+    }
+
+    /// <summary>
+    /// Notifies the parent object (if any) that this
+    /// child object's edits have been accepted.
+    /// </summary>
+    protected override void AcceptChangesComplete()
+    {
+      if (Parent != null)
+        Parent.ApplyEditChild(this);
+      base.AcceptChangesComplete();
+    }
+
+    #endregion
 
     #region IsChild
 
@@ -1245,28 +1383,52 @@ namespace Csla.Core
 
     #endregion
 
+    #region UndoableBase overrides
+
+    protected override void OnCopyState(SerializationInfo state)
+    {
+      OnGetState(state, StateMode.Undo);
+      ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false); 
+
+      base.OnCopyState(state);
+    }
+
+    protected override void OnUndoChanges(SerializationInfo state)
+    {
+      OnSetState(state, StateMode.Undo);
+      ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false); 
+
+      base.OnUndoChanges(state);
+    }
+
+    protected override void AcceptingChanges()
+    {
+      ((IUndoableObject)FieldManager).AcceptChanges(this.EditLevel - 1, false);
+
+      base.AcceptingChanges();
+    }
+    #endregion
+
     #region MobileFormatter
 
-    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
-      base.OnGetState(info);
+      base.OnGetState(info, mode);
       info.AddValue("Csla.Core.BusinessBase._isNew", _isNew);
       info.AddValue("Csla.Core.BusinessBase._isDeleted", _isDeleted);
       info.AddValue("Csla.Core.BusinessBase._isDirty", _isDirty);
       info.AddValue("Csla.Core.BusinessBase._neverCommitted", _neverCommitted);
-      info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", _disableIEditableObject);
       info.AddValue("Csla.Core.BusinessBase._isChild", _isChild);
       info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded);
     }
 
-    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      base.OnSetState(info);
+      base.OnSetState(info, mode);
       _isNew = info.GetValue<bool>("Csla.Core.BusinessBase._isNew");
       _isDeleted = info.GetValue<bool>("Csla.Core.BusinessBase._isDeleted");
       _isDirty = info.GetValue<bool>("Csla.Core.BusinessBase._isDirty");
       _neverCommitted = info.GetValue<bool>("Csla.Core.BusinessBase._neverCommitted");
-      _disableIEditableObject = info.GetValue<bool>("Csla.Core.BusinessBase._disableIEditableObject");
       _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
       _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
     }
@@ -1307,16 +1469,155 @@ namespace Csla.Core
 
     #endregion
 
-    #region IParent Members
+    #region ValidationRules, IsValid
 
-    public void RemoveChild(IEditableBusinessObject child)
+    private Validation.ValidationRules _validationRules;
+
+    private void InitializeBusinessRules()
     {
-      throw new NotImplementedException();
+      AddInstanceBusinessRules();
+      if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
+      {
+        lock (this.GetType())
+        {
+          if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
+          {
+            Validation.SharedValidationRules.GetManager(this.GetType(), true);
+            AddBusinessRules();
+          }
+        }
+      }
     }
 
-    public void ApplyEditChild(IEditableBusinessObject child)
+    /// <summary>
+    /// Provides access to the broken rules functionality.
+    /// </summary>
+    /// <remarks>
+    /// This property is used within your business logic so you can
+    /// easily call the AddRule() method to associate validation
+    /// rules with your object's properties.
+    /// </remarks>
+    protected Validation.ValidationRules ValidationRules
     {
-      throw new NotImplementedException();
+      get
+      {
+        if (_validationRules == null)
+          _validationRules = new Csla.Validation.ValidationRules(this);
+        return _validationRules;
+      }
+    }
+
+    /// <summary>
+    /// Override this method in your business class to
+    /// be notified when you need to set up business
+    /// rules.
+    /// </summary>
+    /// <remarks>
+    /// This method is automatically called by CSLA .NET
+    /// when your object should associate per-instance
+    /// validation rules with its properties.
+    /// </remarks>
+    protected virtual void AddInstanceBusinessRules()
+    {
+
+    }
+
+    /// <summary>
+    /// Override this method in your business class to
+    /// be notified when you need to set up shared 
+    /// business rules.
+    /// </summary>
+    /// <remarks>
+    /// This method is automatically called by CSLA .NET
+    /// when your object should associate per-type 
+    /// validation rules with its properties.
+    /// </remarks>
+    protected virtual void AddBusinessRules()
+    {
+
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the object 
+    /// and its child objects are currently valid, 
+    /// <see langword="false" /> if the
+    /// object or any of its child objects have broken 
+    /// rules or are otherwise invalid.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// By default this property relies on the underling ValidationRules
+    /// object to track whether any business rules are currently broken for this object.
+    /// </para><para>
+    /// You can override this property to provide more sophisticated
+    /// implementations of the behavior. For instance, you should always override
+    /// this method if your object has child objects, since the validity of this object
+    /// is affected by the validity of all child objects.
+    /// </para>
+    /// </remarks>
+    /// <returns>A value indicating if the object is currently valid.</returns>
+    public virtual bool IsValid
+    {
+      get { return IsSelfValid && (_fieldManager == null || FieldManager.IsValid()); }
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the object is currently 
+    /// valid, <see langword="false" /> if the
+    /// object has broken rules or is otherwise invalid.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// By default this property relies on the underling ValidationRules
+    /// object to track whether any business rules are currently broken for this object.
+    /// </para><para>
+    /// You can override this property to provide more sophisticated
+    /// implementations of the behavior. 
+    /// </para>
+    /// </remarks>
+    /// <returns>A value indicating if the object is currently valid.</returns>
+    public virtual bool IsSelfValid
+    {
+      get { return ValidationRules.IsValid; }
+    }
+
+    /// <summary>
+    /// Provides access to the readonly collection of broken business rules
+    /// for this object.
+    /// </summary>
+    /// <returns>A Csla.Validation.RulesCollection object.</returns>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual Validation.BrokenRulesCollection BrokenRulesCollection
+    {
+      get { return ValidationRules.GetBrokenRules(); }
+    }
+
+    #endregion
+
+    #region  IParent
+
+    /// <summary>
+    /// Override this method to be notified when a child object's
+    /// <see cref="Core.BusinessBase.ApplyEdit" /> method has
+    /// completed.
+    /// </summary>
+    /// <param name="child">The child object that was edited.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void EditChildComplete(Core.IEditableBusinessObject child)
+    {
+      // do nothing, we don't really care
+      // when a child has its edits applied
+    }
+
+    void IParent.ApplyEditChild(Core.IEditableBusinessObject child)
+    {
+      this.EditChildComplete(child);
+    }
+
+    void IParent.RemoveChild(IEditableBusinessObject child)
+    {
+      var info = FieldManager.FindProperty(child);
+      FieldManager.RemoveField(info);
     }
 
     #endregion
@@ -1357,6 +1658,38 @@ namespace Csla.Core
 
       BindingEdit = false;
       MarkDeleted();
+    }
+
+    #endregion
+
+    #region Edit Level Tracking (child only)
+
+    // we need to keep track of the edit
+    // level when we weere added so if the user
+    // cancels below that level we can be destroyed
+    [NotUndoable]
+    private int _editLevelAdded;
+
+    /// <summary>
+    /// Gets or sets the current edit level of the
+    /// object.
+    /// </summary>
+    /// <remarks>
+    /// Allow the collection object to use the
+    /// edit level as needed.
+    /// </remarks>
+    internal int EditLevelAdded
+    {
+      get { return _editLevelAdded; }
+      set { _editLevelAdded = value; }
+    }
+
+    int IUndoableObject.EditLevel
+    {
+      get
+      {
+        return this.EditLevel;
+      }
     }
 
     #endregion

@@ -91,6 +91,7 @@
     <Compile Include="Serialization\MockReadOnlyList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />
+    <Compile Include="Serialization\UndoTests.cs" />
     <Compile Include="Stereotypes\EditableChildTests.cs" />
     <Compile Include="Stereotypes\EditableRootTests.cs" />
   </ItemGroup>

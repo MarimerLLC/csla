@@ -1,6 +1,8 @@
 ﻿using System;
 #if SILVERLIGHT
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
+using Csla.Core;
 #endif
 
 namespace Csla
@@ -78,9 +80,9 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
-      base.OnGetState(info);
+      base.OnGetState(info, mode);
       info.AddValue("Csla.Silverlight.CriteriaBase.typeName", TypeName);
     }
 
@@ -91,9 +93,9 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      base.OnSetState(info);
+      base.OnSetState(info, mode);
       string typeName = info.GetValue<string>("Csla.Silverlight.CriteriaBase.typeName"); //info.Values["Csla.Silverlight.CriteriaBase.typeName"].Value.ToString();
       _objectType = Type.GetType(typeName);
     }

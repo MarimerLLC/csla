@@ -8,7 +8,7 @@ namespace Csla.Core
   /// This class implements INotifyPropertyChanged.
   /// </summary>
   [Serializable]
-  public abstract class BindableBase : MobileObject, System.ComponentModel.INotifyPropertyChanged
+  public abstract class BindableBase : MobileObject, INotifyPropertyChanged
   {
     /// <summary>
     /// Creates an instance of the object.

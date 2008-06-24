@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 namespace Csla.Core
 {
   [Serialization.Serializable]
-  public class BusinessBase : UndoableBase, ICloneable, IParent
+  public class BusinessBase : UndoableBase, ICloneable, IParent, DataPortalClient.IDataPortalTarget
   {
     static BusinessBase() { }
 
@@ -1357,6 +1357,25 @@ namespace Csla.Core
 
       BindingEdit = false;
       MarkDeleted();
+    }
+
+    #endregion
+
+    #region IDataPortalTarget Members
+
+    void Csla.DataPortalClient.IDataPortalTarget.MarkAsChild()
+    {
+      MarkAsChild();
+    }
+
+    void Csla.DataPortalClient.IDataPortalTarget.MarkNew()
+    {
+      MarkNew();
+    }
+
+    void Csla.DataPortalClient.IDataPortalTarget.MarkOld()
+    {
+      MarkOld();
     }
 
     #endregion

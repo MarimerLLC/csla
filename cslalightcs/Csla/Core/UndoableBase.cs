@@ -10,8 +10,7 @@ using System.IO;
 namespace Csla.Core
 {
   [Serializable]
-  public class UndoableBase : BindableBase,
-    IUndoableObject, IMobileObject
+  public class UndoableBase : BindableBase, IUndoableObject
   {
     // keep a stack of object state values.
     [NotUndoable()]

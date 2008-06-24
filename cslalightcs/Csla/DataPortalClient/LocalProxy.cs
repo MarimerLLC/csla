@@ -7,16 +7,22 @@ namespace Csla.DataPortalClient
 {
   public class LocalProxy<T> : IDataPortalProxy<T> where T : IMobileObject
   {
-    public delegate void CompletedHandler(DataPortalResult<T> e);
+    public delegate void CompletedHandler(T result, Exception ex);
 
     #region Create
 
     public event EventHandler<DataPortalResult<T>> CreateCompleted;
 
-    protected virtual void OnCreateCompleted(DataPortalResult<T> e)
+    private void OnCreateCompleted(T result, Exception ex)
     {
+      if (result != null)
+      {
+        var target = result as IDataPortalTarget;
+        if (target != null)
+          target.MarkNew();
+      }
       if (CreateCompleted != null)
-        CreateCompleted(this, e);
+        CreateCompleted(this, new DataPortalResult<T>(result, ex));
     }
 
     public void BeginCreate()
@@ -44,10 +50,16 @@ namespace Csla.DataPortalClient
 
     public event EventHandler<DataPortalResult<T>> FetchCompleted;
 
-    protected virtual void OnFetchCompleted(DataPortalResult<T> e)
+    private void OnFetchCompleted(T result, Exception ex)
     {
+      if (result != null)
+      {
+        var target = result as IDataPortalTarget;
+        if (target != null)
+          target.MarkOld();
+      }
       if (FetchCompleted != null)
-        FetchCompleted(this, e);
+        FetchCompleted(this, new DataPortalResult<T>(result, ex));
     }
 
     public void BeginFetch()
@@ -70,16 +82,56 @@ namespace Csla.DataPortalClient
 
     public event EventHandler<DataPortalResult<T>> UpdateCompleted;
 
-    protected virtual void OnUpdateCompleted(DataPortalResult<T> e)
+    private void OnUpdateCompleted(T result, Exception ex)
     {
+      if (result != null)
+      {
+        var target = result as IDataPortalTarget;
+        if (target != null)
+        {
+          var busObj = result as Core.BusinessBase;
+          if (busObj != null)
+          {
+            if (busObj.IsDeleted)
+              target.MarkNew();
+            else
+              target.MarkOld();
+          }
+          else
+          {
+            target.MarkOld();
+          }
+        }
+      }
       if (UpdateCompleted != null)
-        UpdateCompleted(this, e);
+        UpdateCompleted(this, new DataPortalResult<T>(result, ex));
     }
 
     public void BeginUpdate(object obj)
     {
       var handler = new CompletedHandler(OnUpdateCompleted);
-      MethodCaller.CallMethod(obj, "DataPortal_Update", handler);
+      var busObj = obj as Core.BusinessBase;
+      if (busObj != null)
+      {
+        if (busObj.IsDeleted)
+        {
+          if (!busObj.IsNew)
+            MethodCaller.CallMethod(obj, "DataPortal_DeleteSelf", handler);
+          else
+            handler((T)obj, null);
+        }
+        else
+        {
+          if (busObj.IsNew)
+            MethodCaller.CallMethod(obj, "DataPortal_Insert", handler);
+          else
+            MethodCaller.CallMethod(obj, "DataPortal_Update", handler);
+        }
+      }
+      else
+      {
+        MethodCaller.CallMethod(obj, "DataPortal_Update", handler);
+      }
     }
 
     #endregion
@@ -88,10 +140,16 @@ namespace Csla.DataPortalClient
 
     public event EventHandler<DataPortalResult<T>> DeleteCompleted;
 
-    protected virtual void OnDeleteCompleted(DataPortalResult<T> e)
+    private void OnDeleteCompleted(T result, Exception ex)
     {
+      if (result != null)
+      {
+        var target = result as IDataPortalTarget;
+        if (target != null)
+          target.MarkNew();
+      }
       if (DeleteCompleted != null)
-        DeleteCompleted(this, e);
+        DeleteCompleted(this, new DataPortalResult<T>(result, ex));
     }
 
     public void BeginDelete(object criteria)

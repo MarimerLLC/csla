@@ -142,15 +142,7 @@ namespace Csla.Testing.LocalDataPortalTests.EditableRootTests
       handler(this, null);
     }
 
-
-    public void DataPortal_Delete(
-      Csla.DataPortalClient.LocalProxy<MockEditableRoot>.CompletedHandler handler,
-      SingleCriteria<MockEditableRoot, Guid> criteria)
-    {
-      handler(this, null);
-    }
-
-    private void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<MockEditableRoot>.CompletedHandler handler)
+    public void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
@@ -160,7 +152,7 @@ namespace Csla.Testing.LocalDataPortalTests.EditableRootTests
       handler(this, null);
     }
 
-    private void DataPortal_Update(Csla.DataPortalClient.LocalProxy<MockEditableRoot>.CompletedHandler handler)
+    public void DataPortal_Update(Csla.DataPortalClient.LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
@@ -170,9 +162,17 @@ namespace Csla.Testing.LocalDataPortalTests.EditableRootTests
       handler(this, null);
     }
 
-    private void DataPortal_DeleteSelf(Csla.DataPortalClient.LocalProxy<MockEditableRoot>.CompletedHandler handler)
+    public void DataPortal_DeleteSelf(Csla.DataPortalClient.LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       DataPortal_Delete(handler, new SingleCriteria<MockEditableRoot, Guid>(this.Id));
+      handler(this, null);
+    }
+
+    public void DataPortal_Delete(
+      Csla.DataPortalClient.LocalProxy<MockEditableRoot>.CompletedHandler handler,
+      SingleCriteria<MockEditableRoot, Guid> criteria)
+    {
+      LoadProperty<string>(DataPortalMethodProperty, "delete");
       handler(this, null);
     }
 

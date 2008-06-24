@@ -73,6 +73,7 @@
     <Compile Include="Engine\TestMethodAttribute.cs" />
     <Compile Include="Engine\TestStatusConverter.cs" />
     <Compile Include="Engine\TypeTester.cs" />
+    <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="ReadOnly\ReadOnlyTests.cs" />
     <Compile Include="Serialization\Address.cs" />
     <Compile Include="Serialization\AddressBase.cs" />

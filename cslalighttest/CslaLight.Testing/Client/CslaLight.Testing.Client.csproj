@@ -50,6 +50,7 @@
       <Link>EditableRootTests\MockEditableRoot.cs</Link>
     </Compile>
     <Compile Include="EditableRootTests\MockEditableRoot.partial.cs" />
+    <Compile Include="LocalDataPortalTests\MockEditableRoot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

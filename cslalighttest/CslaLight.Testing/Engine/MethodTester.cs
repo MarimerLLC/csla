@@ -97,7 +97,7 @@ namespace cslalighttest.Engine
             }
             else if (e.Error != null)
             {
-              Message = e.Error.Innermost().Message;
+              Message = string.Format("{0}: {1}", e.Error.Innermost().GetType().FullName, e.Error.Innermost().Message);
             }            
           };
 
@@ -108,7 +108,7 @@ namespace cslalighttest.Engine
         catch(Exception ex)
         {
           Status = MethodTesterStatus.Fail;
-          Message = ex.Innermost().Message;
+          Message = string.Format("{0}: {1}", ex.Innermost().GetType().FullName, ex.Innermost().Message);
         }
       }
       else
@@ -134,7 +134,7 @@ namespace cslalighttest.Engine
           else
           {
             Status = MethodTesterStatus.Fail;
-            Message = ex.Innermost().Message;
+            Message = string.Format("{0}: {1}", ex.Innermost().GetType().FullName, ex.Innermost().Message);
           }
         }
 

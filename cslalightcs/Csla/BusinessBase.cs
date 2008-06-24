@@ -69,7 +69,7 @@ namespace Csla
       if (IsDirty)
       {
         // TODO: Read this url from the ClientConfig!
-        DataPortal<T> dp = new DataPortal<T>("http://localhost:2752/WcfPortal.svc");
+        DataPortal<T> dp = new DataPortal<T>();
         dp.UpdateCompleted += (o, e) =>
           {
             T result = e.Object;

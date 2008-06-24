@@ -5,36 +5,54 @@ using Csla.Serialization.Mobile;
 
 namespace Csla
 {
-  public class DataPortal<T> where T: IMobileObject
+  public static class DataPortal
   {
+    private static string _proxyTypeName;
+
+    public static string ProxyTypeName
+    {
+      get
+      {
+        if (string.IsNullOrEmpty(_proxyTypeName))
+          _proxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+        return _proxyTypeName;
+      }
+      set { _proxyTypeName = value; }
+    }
+
+    private static DataPortalClient.ProxyFactory _factory;
+
+    public static DataPortalClient.ProxyFactory ProxyFactory
+    {
+      get
+      {
+        if (_factory == null)
+          _factory = new Csla.DataPortalClient.ProxyFactory();
+        return _factory;
+      }
+      set
+      {
+        _factory = value;
+      }
+    }
+  }
+
+  public class DataPortal<T> : DataPortalClient.IDataPortalProxy<T> where T : IMobileObject
+  {
+    private DataPortalClient.IDataPortalProxy<T> _proxy;
+
     public DataPortal()
     {
-      this.Binding = new BasicHttpBinding();
+      _proxy = DataPortal.ProxyFactory.GetProxy<T>();
+      HookEvents(_proxy);
     }
 
-    public DataPortal(string dataPortalUrl)
-      : this()
+    private void HookEvents(DataPortalClient.IDataPortalProxy<T> proxy)
     {
-      this.DataPortalUrl = dataPortalUrl;
-    }
-
-    public DataPortal(string dataPortalUrl, System.ServiceModel.Channels.Binding binding)
-    {
-      this.DataPortalUrl = dataPortalUrl;
-      this.Binding = binding;
-    }
-
-    public System.ServiceModel.Channels.Binding Binding { get; set; }
-    public string DataPortalUrl { get; set; }
-
-    private WcfPortal.WcfPortalClient GetProxy()
-    {
-      if (string.IsNullOrEmpty(this.DataPortalUrl))
-        throw new ArgumentOutOfRangeException("DataPortalUrl must be a valid URL");
-      if (this.Binding == null)
-        throw new ArgumentOutOfRangeException("Binding must be a valid WCF binding");
-      var address = new EndpointAddress(this.DataPortalUrl);
-      return new WcfPortal.WcfPortalClient(this.Binding, address);
+      _proxy.CreateCompleted += new EventHandler<DataPortalResult<T>>(proxy_CreateCompleted);
+      _proxy.FetchCompleted += new EventHandler<DataPortalResult<T>>(proxy_FetchCompleted);
+      _proxy.UpdateCompleted += new EventHandler<DataPortalResult<T>>(proxy_UpdateCompleted);
+      _proxy.DeleteCompleted += new EventHandler<DataPortalResult<T>>(proxy_DeleteCompleted);
     }
 
     #region Create
@@ -49,52 +67,17 @@ namespace Csla
 
     public void BeginCreate()
     {
-      var request = new WcfPortal.CriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
-      request.CriteriaData = null;
-
-      var proxy = GetProxy();
-      proxy.CreateCompleted += new EventHandler<Csla.WcfPortal.CreateCompletedEventArgs>(proxy_CreateCompleted);
-      proxy.CreateAsync(request);
+      _proxy.BeginCreate();
     }
 
     public void BeginCreate(object criteria)
     {
-      var request = new WcfPortal.CriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
-      request.CriteriaData = MobileFormatter.Serialize(criteria);
-
-      var proxy = GetProxy();
-      proxy.CreateCompleted += new EventHandler<Csla.WcfPortal.CreateCompletedEventArgs>(proxy_CreateCompleted);
-      proxy.CreateAsync(request);
+      _proxy.BeginCreate(criteria);
     }
 
-    private void proxy_CreateCompleted(object sender, Csla.WcfPortal.CreateCompletedEventArgs e)
+    private void proxy_CreateCompleted(object sender, DataPortalResult<T> e)
     {
-      var response = e.Result;
-      try
-      {
-        if (e.Error == null && response.ErrorData == null)
-        {
-          var buffer = new System.IO.MemoryStream(response.ObjectData);
-          var formatter = new MobileFormatter();
-          T obj = (T)formatter.Deserialize(buffer);
-          OnCreateCompleted(new DataPortalResult<T>(obj, null));
-        }
-        else if (e.Result.ErrorData != null)
-        {
-          var ex = new DataPortalException(e.Result.ErrorData);
-          OnCreateCompleted(new DataPortalResult<T>(default(T), ex));
-        }
-        else
-        {
-          OnCreateCompleted(new DataPortalResult<T>(default(T), e.Error));
-        }
-      }
-      catch (Exception ex)
-      {
-        OnFetchCompleted(new DataPortalResult<T>(default(T), ex));
-      }
+      OnCreateCompleted(e);
     }
 
     #endregion
@@ -111,52 +94,17 @@ namespace Csla
 
     public void BeginFetch()
     {
-      var request = new WcfPortal.CriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
-      request.CriteriaData = null;
-
-      var proxy = GetProxy();
-      proxy.FetchCompleted += new EventHandler<Csla.WcfPortal.FetchCompletedEventArgs>(proxy_FetchCompleted);
-      proxy.FetchAsync(request);
+      _proxy.BeginFetch();
     }
 
     public void BeginFetch(object criteria)
     {
-      var request = new WcfPortal.CriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
-      request.CriteriaData = MobileFormatter.Serialize(criteria);
-
-      var proxy = new WcfPortal.WcfPortalClient();
-      proxy.FetchCompleted += new EventHandler<Csla.WcfPortal.FetchCompletedEventArgs>(proxy_FetchCompleted);
-      proxy.FetchAsync(request);
+      _proxy.BeginFetch(criteria);
     }
 
-    private void proxy_FetchCompleted(object sender, Csla.WcfPortal.FetchCompletedEventArgs e)
+    private void proxy_FetchCompleted(object sender, DataPortalResult<T> e)
     {
-      var response = e.Result;
-      try
-      {
-        if (e.Error == null && response.ErrorData == null)
-        {
-          var buffer = new System.IO.MemoryStream(response.ObjectData);
-          var formatter = new MobileFormatter();
-          T obj = (T)formatter.Deserialize(buffer);
-          OnFetchCompleted(new DataPortalResult<T>(obj, null));
-        }
-        else if (e.Result.ErrorData != null)
-        {
-          var ex = new DataPortalException(e.Result.ErrorData);
-          OnFetchCompleted(new DataPortalResult<T>(default(T), ex));
-        }
-        else
-        {
-          OnFetchCompleted(new DataPortalResult<T>(default(T), e.Error));
-        }
-      }
-      catch (Exception ex)
-      {
-        OnFetchCompleted(new DataPortalResult<T>(default(T), ex));
-      }
+      OnFetchCompleted(e);
     }
 
     #endregion
@@ -171,46 +119,14 @@ namespace Csla
         UpdateCompleted(this, e);
     }
 
-    public void BeginUpdate(object criteria)
+    public void BeginUpdate(object obj)
     {
-      var request = new WcfPortal.UpdateRequest();
-      request.ObjectData = MobileFormatter.Serialize(criteria);
-
-      var proxy = GetProxy();
-      proxy.UpdateCompleted += new EventHandler<Csla.WcfPortal.UpdateCompletedEventArgs>(proxy_UpdateCompleted);
-      proxy.UpdateAsync(request);
+      _proxy.BeginUpdate(obj);
     }
 
-    private void proxy_UpdateCompleted(object sender, Csla.WcfPortal.UpdateCompletedEventArgs e)
+    private void proxy_UpdateCompleted(object sender, DataPortalResult<T> e)
     {
-      try
-      {
-        if (e.Error == null && e.Result.ErrorData == null)
-        {
-          var response = e.Result;
-          var buffer = new System.IO.MemoryStream(response.ObjectData);
-          var formatter = new MobileFormatter();
-          T obj = (T)formatter.Deserialize(buffer);
-          OnUpdateCompleted(new DataPortalResult<T>(obj, null));
-        }
-        else if (e.Error != null)
-        {
-          OnUpdateCompleted(new DataPortalResult<T>(default(T), e.Error));
-        }
-        else if (e.Result.ErrorData != null)
-        {
-          var ex = new DataPortalException(e.Result.ErrorData);
-          OnUpdateCompleted(new DataPortalResult<T>(default(T), ex));
-        }
-        else
-        {
-          OnUpdateCompleted(new DataPortalResult<T>(default(T), e.Error));
-        }
-      }
-      catch (Exception ex)
-      {
-        OnFetchCompleted(new DataPortalResult<T>(default(T), ex));
-      }
+      OnUpdateCompleted(e);
     }
 
     #endregion
@@ -227,38 +143,12 @@ namespace Csla
 
     public void BeginDelete(object criteria)
     {
-      var request = new WcfPortal.CriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
-      request.CriteriaData = MobileFormatter.Serialize(criteria);
-
-      var proxy = GetProxy();
-      proxy.DeleteCompleted += new EventHandler<Csla.WcfPortal.DeleteCompletedEventArgs>(proxy_DeleteCompleted);
-      proxy.DeleteAsync(request);
+      _proxy.BeginDelete(criteria);
     }
 
-    private void proxy_DeleteCompleted(object sender, Csla.WcfPortal.DeleteCompletedEventArgs e)
+    private void proxy_DeleteCompleted(object sender, DataPortalResult<T> e)
     {
-      var response = e.Result;
-      try
-      {
-        if (e.Error == null && response.ErrorData == null)
-        {
-          OnDeleteCompleted(new DataPortalResult<T>(default(T), null));
-        }
-        else if (e.Result.ErrorData != null)
-        {
-          var ex = new DataPortalException(e.Result.ErrorData);
-          OnDeleteCompleted(new DataPortalResult<T>(default(T), ex));
-        }
-        else
-        {
-          OnDeleteCompleted(new DataPortalResult<T>(default(T), e.Error));
-        }
-      }
-      catch (Exception ex)
-      {
-        OnFetchCompleted(new DataPortalResult<T>(default(T), ex));
-      }
+      OnDeleteCompleted(e);
     }
 
     #endregion

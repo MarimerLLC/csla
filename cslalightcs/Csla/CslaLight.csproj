@@ -104,6 +104,10 @@
     <Compile Include="CriteriaBase.cs" />
     <Compile Include="DataPortal.cs" />
     <Compile Include="Core\BusinessBase.cs" />
+    <Compile Include="DataPortalClient\IDataPortalProxy.cs" />
+    <Compile Include="DataPortalClient\LocalProxy.cs" />
+    <Compile Include="DataPortalClient\ProxyFactory.cs" />
+    <Compile Include="DataPortalClient\WcfProxy.cs" />
     <Compile Include="DataPortalException.cs" />
     <Compile Include="DataPortalResult.cs" />
     <Compile Include="ICloneable.cs" />
@@ -117,6 +121,12 @@
     <Compile Include="PropertyLoaderException.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="ReadOnlyBase.cs" />
+    <Compile Include="Reflection\CallMethodException.cs" />
+    <Compile Include="Reflection\DynamicMethodHandle.cs" />
+    <Compile Include="Reflection\DynamicMethodHandlerFactory.cs" />
+    <Compile Include="Reflection\LateBoundObject.cs" />
+    <Compile Include="Reflection\MethodCacheKey.cs" />
+    <Compile Include="Reflection\MethodCaller.cs" />
     <Compile Include="Security\NoAccessBehavior.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>

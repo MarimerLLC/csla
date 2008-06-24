@@ -13,18 +13,6 @@ namespace Csla.DataPortalClient
 
     public event EventHandler<DataPortalResult<T>> CreateCompleted;
 
-    private void OnCreateCompleted(T result, Exception ex)
-    {
-      if (result != null)
-      {
-        var target = result as IDataPortalTarget;
-        if (target != null)
-          target.MarkNew();
-      }
-      if (CreateCompleted != null)
-        CreateCompleted(this, new DataPortalResult<T>(result, ex));
-    }
-
     public void BeginCreate()
     {
       var obj = Activator.CreateInstance<T>();
@@ -39,28 +27,23 @@ namespace Csla.DataPortalClient
       MethodCaller.CallMethod(obj, "DataPortal_Create", handler, criteria);
     }
 
-    //public void DataPortal_Create(CompletedHandler completed, SingleCriteria<Customer, int> criteria)
-    //{
-    //  completed(new DataPortalResult<T>(default(T), new Exception()));
-    //}
+    private void OnCreateCompleted(T result, Exception ex)
+    {
+      if (result != null)
+      {
+        var target = result as IDataPortalTarget;
+        if (target != null)
+          target.MarkNew();
+      }
+      if (CreateCompleted != null)
+        CreateCompleted(this, new DataPortalResult<T>(result, ex));
+    }
 
     #endregion
 
     #region Fetch
 
     public event EventHandler<DataPortalResult<T>> FetchCompleted;
-
-    private void OnFetchCompleted(T result, Exception ex)
-    {
-      if (result != null)
-      {
-        var target = result as IDataPortalTarget;
-        if (target != null)
-          target.MarkOld();
-      }
-      if (FetchCompleted != null)
-        FetchCompleted(this, new DataPortalResult<T>(result, ex));
-    }
 
     public void BeginFetch()
     {
@@ -76,11 +59,55 @@ namespace Csla.DataPortalClient
       MethodCaller.CallMethod(obj, "DataPortal_Fetch", handler, criteria);
     }
 
+    private void OnFetchCompleted(T result, Exception ex)
+    {
+      if (result != null)
+      {
+        var target = result as IDataPortalTarget;
+        if (target != null)
+          target.MarkOld();
+      }
+      if (FetchCompleted != null)
+        FetchCompleted(this, new DataPortalResult<T>(result, ex));
+    }
+
     #endregion
 
     #region Update
 
     public event EventHandler<DataPortalResult<T>> UpdateCompleted;
+
+    public void BeginUpdate(object obj)
+    {
+      var handler = new CompletedHandler(OnUpdateCompleted);
+
+      var cloneable = obj as ICloneable;
+      if (cloneable != null)
+        obj = cloneable.Clone();
+
+      var busObj = obj as Core.BusinessBase;
+      if (busObj != null)
+      {
+        if (busObj.IsDeleted)
+        {
+          if (!busObj.IsNew)
+            MethodCaller.CallMethod(obj, "DataPortal_DeleteSelf", handler);
+          else
+            handler((T)obj, null);
+        }
+        else
+        {
+          if (busObj.IsNew)
+            MethodCaller.CallMethod(obj, "DataPortal_Insert", handler);
+          else
+            MethodCaller.CallMethod(obj, "DataPortal_Update", handler);
+        }
+      }
+      else
+      {
+        MethodCaller.CallMethod(obj, "DataPortal_Update", handler);
+      }
+    }
 
     private void OnUpdateCompleted(T result, Exception ex)
     {
@@ -105,33 +132,6 @@ namespace Csla.DataPortalClient
       }
       if (UpdateCompleted != null)
         UpdateCompleted(this, new DataPortalResult<T>(result, ex));
-    }
-
-    public void BeginUpdate(object obj)
-    {
-      var handler = new CompletedHandler(OnUpdateCompleted);
-      var busObj = obj as Core.BusinessBase;
-      if (busObj != null)
-      {
-        if (busObj.IsDeleted)
-        {
-          if (!busObj.IsNew)
-            MethodCaller.CallMethod(obj, "DataPortal_DeleteSelf", handler);
-          else
-            handler((T)obj, null);
-        }
-        else
-        {
-          if (busObj.IsNew)
-            MethodCaller.CallMethod(obj, "DataPortal_Insert", handler);
-          else
-            MethodCaller.CallMethod(obj, "DataPortal_Update", handler);
-        }
-      }
-      else
-      {
-        MethodCaller.CallMethod(obj, "DataPortal_Update", handler);
-      }
     }
 
     #endregion

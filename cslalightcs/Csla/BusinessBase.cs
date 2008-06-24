@@ -68,7 +68,6 @@ namespace Csla
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
       if (IsDirty)
       {
-        // TODO: Read this url from the ClientConfig!
         DataPortal<T> dp = new DataPortal<T>();
         dp.UpdateCompleted += (o, e) =>
           {

@@ -58,7 +58,16 @@ namespace cslalighttest.Engine
     public void AreEqual(object expected, object actual)
     {
       if (!object.Equals(expected, actual))
-        OnComplete(new TestException("Assert.AreEqual failed."));
+      {
+        string act;
+        if (actual != null)
+          act = actual.ToString();
+        else
+          act = "<null>";
+        if (string.IsNullOrEmpty(act))
+          act = "string.Empty";
+        OnComplete(new TestException(string.Format("Assert.AreEqual failed; expected '{0}', was '{1}'.", expected.ToString(), act)));
+      }
     }
 
     public void IsFalse(bool actual)

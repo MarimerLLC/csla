@@ -1422,6 +1422,7 @@ namespace Csla.Core
       info.AddValue("Csla.Core.BusinessBase._isDeleted", _isDeleted);
       info.AddValue("Csla.Core.BusinessBase._isDirty", _isDirty);
       info.AddValue("Csla.Core.BusinessBase._neverCommitted", _neverCommitted);
+      info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", false); // keep for compatibility with csla objects.
       info.AddValue("Csla.Core.BusinessBase._isChild", _isChild);
       info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded);
     }

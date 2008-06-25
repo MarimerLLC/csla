@@ -69,15 +69,14 @@ namespace cslalighttest.Engine
         IsRunning = _methods.Any(m => m.IsRunning);
     }
 
-    public void RunTests(TestContext context)
+    public void RunTests()
     {
       IsRunning = true;
       object instance = Activator.CreateInstance(_type);
-      context.Total += _methods.Count;
-
+      
       foreach (MethodTester tester in _methods)
       {
-        tester.RunTest(instance, context);
+        tester.RunTest(instance);
       }
     }
   }

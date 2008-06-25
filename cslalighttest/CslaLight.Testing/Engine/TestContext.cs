@@ -47,11 +47,19 @@ namespace cslalighttest.Engine
     }
     public int Succeeded
     {
-      get { return _succeeded; }
-      set
+      get
       {
-        _succeeded = value;
-        OnPropertyChanged("Succeeded");
+        var count = (from t in Testers
+                     select 
+                     (
+                       from m in t.Methods
+                       where m.Status == MethodTesterStatus.Success
+                       select m 
+                     )
+                     .Count())
+                     .Sum();
+
+        return count;
       }
     }
 
@@ -73,7 +81,10 @@ namespace cslalighttest.Engine
     void tester_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
       if (e.PropertyName == "IsRunning")
+      {
         IsRunning = Testers.Any(t => t.IsRunning);
+        OnPropertyChanged("Succeeded");
+      }
     }
 
     public ObservableCollection<TypeTester> Testers
@@ -85,7 +96,7 @@ namespace cslalighttest.Engine
     {
       IsRunning = true;
       foreach (TypeTester tester in Testers)
-        tester.RunTests(this);
+        tester.RunTests();
     }
   }
 }

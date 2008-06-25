@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="Engine\TestException.cs" />
     <Compile Include="Engine\TestMethodAttribute.cs" />
+    <Compile Include="Engine\TestSetup.cs" />
     <Compile Include="Engine\TestStatusConverter.cs" />
     <Compile Include="Engine\TypeTester.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />

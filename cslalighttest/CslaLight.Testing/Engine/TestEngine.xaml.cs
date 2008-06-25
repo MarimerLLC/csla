@@ -43,7 +43,7 @@ namespace cslalighttest.Engine
     {
       Button b = (Button)sender;
       TypeTester tester = (TypeTester)b.DataContext;
-      tester.RunTests(_context);
+      tester.RunTests();
     }
 
     private void RunMethod_Click(object sender, RoutedEventArgs e)
@@ -52,7 +52,7 @@ namespace cslalighttest.Engine
       MethodTester tester = (MethodTester)b.DataContext;
 
       object instance = Activator.CreateInstance(tester.Method.DeclaringType);
-      tester.RunTest(instance, _context);
+      tester.RunTest(instance);
     }
   }
 }

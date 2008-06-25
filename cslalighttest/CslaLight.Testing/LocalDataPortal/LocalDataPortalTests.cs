@@ -1,13 +1,19 @@
 ﻿using Csla.Core;
 using Csla.Serialization.Mobile;
 using cslalighttest.Engine;
-using Csla.Testing.LocalDataPortalTests.EditableRootTests;
+using Csla.Testing.Business.EditableRootTests;
 
 namespace cslalighttest.LocalDataPortal
 {
   [TestClass]
   public class LocalDataPortalTests
   {
+    [TestSetup]
+    public void Setup()
+    {
+      Csla.DataPortal.ProxyTypeName = "Local"; // "Csla.DataPortalClient.WcfProxy, Csla";
+    }
+
     [TestMethod]
     public void CanConstructTest()
     {

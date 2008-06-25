@@ -6,12 +6,16 @@ using System.Diagnostics;
 
 namespace cslalighttest.Stereotypes
 {
-#if TESTING
-  [DebuggerNonUserCode]
-#endif
   [TestClass]
   public class EditableRootTests
   {
+    [TestSetup]
+    public void Setup()
+    {
+      Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = MockEditableRoot.DataPortalUrl;
+    }
+
     [TestMethod]
     public void CanConstructTest()
     {
@@ -42,6 +46,7 @@ namespace cslalighttest.Stereotypes
       root.Saved += (o, e) =>
       {
         var actual = (MockEditableRoot)e.NewObject;
+        context.Assert.IsNotNull(actual);
         context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
         context.Assert.IsFalse(actual.IsNew);
         context.Assert.IsFalse(actual.IsDirty);
@@ -59,6 +64,7 @@ namespace cslalighttest.Stereotypes
       root.Saved += (o, e) =>
       {
         var actual = (MockEditableRoot)e.NewObject;
+        context.Assert.IsNotNull(actual);
         context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
         context.Assert.IsFalse(actual.IsNew);
         context.Assert.IsFalse(actual.IsDirty);
@@ -75,6 +81,7 @@ namespace cslalighttest.Stereotypes
       root.Saved += (o, e) =>
       {
         var actual = (MockEditableRoot)e.NewObject;
+        context.Assert.IsNotNull(actual);
         context.Assert.IsTrue(actual.IsNew);
         context.Assert.IsTrue(actual.IsDirty);
         context.Assert.IsFalse(actual.IsDeleted);

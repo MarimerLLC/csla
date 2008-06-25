@@ -82,7 +82,7 @@ namespace cslalighttest.Engine
 
     #endregion
 
-    public void RunTest(object instance, TestContext testContext)
+    public void RunTest(object instance)
     {
       IsRunning = true;
       ParameterInfo[] parameters = _method.GetParameters();
@@ -100,6 +100,15 @@ namespace cslalighttest.Engine
         expectedException = attributes[0] as ExpectedExceptionAttribute;
       }
 
+      foreach (MethodInfo m in _method.DeclaringType.GetMethods())
+      {
+        if (m.IsDefined(typeof(TestSetup), true))
+        {
+          m.Invoke(instance, null);
+          break;
+        }
+      }
+
       if(isAsync)
       {
         AsyncTestContext context = new AsyncTestContext();
@@ -115,13 +124,11 @@ namespace cslalighttest.Engine
             else
               Status = e.Status;
 
-            if (Status == MethodTesterStatus.Success)
+            if (e.Error != null)
             {
-              testContext.Succeeded++;
-            }
-            else if (e.Error != null)
-            {
-              Message = string.Format("{0}: {1}", e.Error.Innermost().GetType().FullName, e.Error.Innermost().Message);
+              Message = string.Format("{0}: {1}", 
+                e.Error.Innermost().GetType().FullName, 
+                e.Error.Innermost().Message);
             }            
           };
 
@@ -161,9 +168,6 @@ namespace cslalighttest.Engine
             Message = string.Format("{0}: {1}", ex.Innermost().GetType().FullName, ex.Innermost().Message);
           }
         }
-
-        if (Status == MethodTesterStatus.Success)
-          testContext.Succeeded++;
       }
     }
   }

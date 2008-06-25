@@ -1,8 +1,12 @@
 ﻿using System;
 using Csla.Serialization;
+using System.Diagnostics;
 
 namespace Csla.Testing.Business.EditableRootTests
 {
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
   partial class MockEditableRoot
   {
     private const string DataPortalUrl = "http://localhost:2752/WcfPortal.svc";

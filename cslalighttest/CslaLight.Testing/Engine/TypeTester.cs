@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,12 +15,29 @@ using System.Reflection;
 
 namespace cslalighttest.Engine
 {
-  public class TypeTester
+  public class TypeTester : ObservableObject
   {
     private Type _type;
+    private bool _isRunning;
+    private ObservableCollection<MethodTester> _methods = new ObservableCollection<MethodTester>();
+
+    public bool IsRunning
+    {
+      get { return _isRunning; }
+      private set
+      {
+        _isRunning = value;
+        OnPropertyChanged("IsRunning");
+        OnPropertyChanged("IsNotRunning");
+      }
+    }
+    public bool IsNotRunning
+    {
+      get { return !_isRunning; }
+    }
+
     public string Name { get { return _type.Name; } }
 
-    private ObservableCollection<MethodTester> _methods = new ObservableCollection<MethodTester>();
     public ObservableCollection<MethodTester> Methods
     {
       get { return _methods; }
@@ -39,13 +57,21 @@ namespace cslalighttest.Engine
         if (method.IsPublic && method.IsDefined(typeof(TestMethodAttribute), true))
         {
           MethodTester tester = new MethodTester(method);
+          tester.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(tester_PropertyChanged);
           _methods.Add(tester);
         }
       }
     }
 
+    void tester_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+      if(e.PropertyName == "IsRunning")
+        IsRunning = _methods.Any(m => m.IsRunning);
+    }
+
     public void RunTests(TestContext context)
     {
+      IsRunning = true;
       object instance = Activator.CreateInstance(_type);
       context.Total += _methods.Count;
 

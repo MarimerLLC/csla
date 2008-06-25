@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
+using System.Diagnostics;
 
 namespace Csla
 {
@@ -37,6 +38,9 @@ namespace Csla
     }
   }
 
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
   public class DataPortal<T> : DataPortalClient.IDataPortalProxy<T> where T : IMobileObject
   {
     private DataPortalClient.IDataPortalProxy<T> _proxy;

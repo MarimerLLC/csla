@@ -19,6 +19,22 @@ namespace cslalighttest.Engine
     private MethodTesterStatus _status;
     private MethodInfo _method;
     private string _message;
+    private bool _isRunning;
+
+    public bool IsRunning
+    {
+      get { return _isRunning; }
+      set
+      {
+        _isRunning = value;
+        OnPropertyChanged("IsRunning");
+        OnPropertyChanged("IsNotRunning");
+      }
+    }
+    public bool IsNotRunning
+    {
+      get { return !_isRunning; }
+    }
 
     public MethodTesterStatus Status
     {
@@ -27,6 +43,8 @@ namespace cslalighttest.Engine
       {
         _status = value;
         OnPropertyChanged("Status");
+
+        IsRunning = false;
       }
     }
 
@@ -41,6 +59,11 @@ namespace cslalighttest.Engine
     }
 
     public string Name { get { return _method.Name; } }
+
+    public MethodInfo Method
+    {
+      get { return _method; }
+    }
 
     #endregion
 
@@ -61,6 +84,7 @@ namespace cslalighttest.Engine
 
     public void RunTest(object instance, TestContext testContext)
     {
+      IsRunning = true;
       ParameterInfo[] parameters = _method.GetParameters();
       ExpectedExceptionAttribute expectedException = null;
 

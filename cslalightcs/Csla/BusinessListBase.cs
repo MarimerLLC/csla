@@ -6,9 +6,13 @@ using Csla.Core;
 using Csla.Properties;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace Csla
 {
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
   [Serializable]
   public class BusinessListBase<T, C> : Core.ExtendedBindingList<C>, ICloneable, IUndoableObject
     where T: BusinessListBase<T, C>

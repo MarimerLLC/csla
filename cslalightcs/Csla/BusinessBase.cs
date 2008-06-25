@@ -2,10 +2,15 @@
 using Csla.Core;
 using System.ComponentModel;
 using Csla.Properties;
+using Csla.Serialization;
+using System.Diagnostics;
 
 namespace Csla
 {
-  [Serialization.Serializable]
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
+  [Serializable]
   public class BusinessBase<T> : BusinessBase, ISavable
     where T: BusinessBase<T>
   {

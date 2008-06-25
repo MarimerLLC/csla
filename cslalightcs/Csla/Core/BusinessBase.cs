@@ -6,10 +6,14 @@ using System.Collections.Specialized;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.DataPortalClient;
+using System.Diagnostics;
 
 namespace Csla.Core
 {
-  [Serialization.Serializable]
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
+  [Serializable]
   public class BusinessBase : UndoableBase, ICloneable, IParent, IDataPortalTarget, IEditableBusinessObject
   {
     static BusinessBase() { }

@@ -6,6 +6,7 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.Xml;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace Csla.Core.FieldManager
 {
@@ -14,7 +15,10 @@ namespace Csla.Core.FieldManager
   /// a business object.
   /// </summary>
   /// <remarks></remarks>
-  [Serializable()]
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
+  [Serializable]
   public class FieldDataManager : IUndoableObject, IMobileObject
   {
     private string _businessObjectType;
@@ -346,7 +350,7 @@ namespace Csla.Core.FieldManager
 
     #region  IUndoableObject
 
-    private Stack<byte[]> mStateStack = new Stack<byte[]>();
+    private Stack<SerializationInfo> mStateStack = new Stack<SerializationInfo>();
 
     /// <summary>
     /// Gets the current edit level of the object.
@@ -382,16 +386,7 @@ namespace Csla.Core.FieldManager
         }
       }
 
-      // serialize the state and stack it
-      using (MemoryStream buffer = new MemoryStream())
-      {
-        XmlWriter writer = XmlWriter.Create(buffer);
-        DataContractSerializer dc = new DataContractSerializer(typeof(SerializationInfo));
-        dc.WriteObject(writer, state);
-        writer.Flush();
-        
-        mStateStack.Push(buffer.ToArray());
-      }
+      mStateStack.Push(state);
     }
 
     void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
@@ -401,13 +396,7 @@ namespace Csla.Core.FieldManager
         if (this.EditLevel - 1 < parentEditLevel)
           throw new UndoException(string.Format("Edit level mismatch in {0}", "UndoChanges"));
 
-        SerializationInfo state = null;
-        using (MemoryStream buffer = new MemoryStream(mStateStack.Pop()))
-        {
-          XmlReader reader = XmlReader.Create(buffer);
-          DataContractSerializer dc = new DataContractSerializer(typeof(SerializationInfo));
-          state = (SerializationInfo)dc.ReadObject(reader);
-        }
+        SerializationInfo state = mStateStack.Pop();
 
         for (var index = 0; index < _fieldData.Length; index++)
         {

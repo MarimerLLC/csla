@@ -8,11 +8,13 @@
     <DataTemplate x:Key="method">
       <Grid Background="{Binding Status, Converter={StaticResource statusConverter}}" HorizontalAlignment="Stretch">        
         <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="1*" />
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Name}"/>
-        <TextBlock Text="{Binding Message}" Grid.Column="1" Margin="10,0,0,0"/>
+        <Button Content="Run" x:Name="RunMethod" Click="RunMethod_Click" IsEnabled="{Binding IsNotRunning}"/>
+        <TextBlock Grid.Column="1" Text="{Binding Name}"/>
+        <TextBlock Text="{Binding Message}" Grid.Column="2" Margin="10,0,0,0"/>
       </Grid>
     </DataTemplate>
     <DataTemplate x:Key="type">
@@ -22,6 +24,7 @@
           <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
+          <Button Content="Run All" x:Name="RunType" Click="RunType_Click" IsEnabled="{Binding IsNotRunning}" />
           <TextBlock Text="Type: "/>
           <TextBlock Text="{Binding Name}"/>
         </StackPanel>
@@ -37,6 +40,7 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <StackPanel Orientation="Horizontal">
+      <Button Content="Run All" Click="RunAll_Click" IsEnabled="{Binding IsNotRunning}" />
       <TextBlock Text="CSLA Test Engine:" />
       <TextBlock Text="{Binding Succeeded}" Margin="5,0,0,0" />
       <TextBlock Text="/" Margin="3,0,3,0" />

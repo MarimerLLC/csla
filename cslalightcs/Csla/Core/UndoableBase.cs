@@ -6,9 +6,13 @@ using System.Collections.Generic;
 using Csla.Properties;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 namespace Csla.Core
 {
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
   [Serializable]
   public class UndoableBase : BindableBase, IUndoableObject
   {

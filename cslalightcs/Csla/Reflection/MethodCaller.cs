@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Csla.Properties;
+using System.Diagnostics;
 
 namespace Csla.Reflection
 {
@@ -37,6 +38,9 @@ namespace Csla.Reflection
     /// throwing an exception if it is not
     /// implemented on the target object.
     /// </summary>
+#if TESTING
+    [DebuggerNonUserCode]
+#endif
     public static object CallMethod(
       object obj, string method, params object[] parameters)
     {

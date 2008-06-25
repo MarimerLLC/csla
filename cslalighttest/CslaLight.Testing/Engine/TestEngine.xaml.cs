@@ -11,12 +11,13 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace cslalighttest.Engine
 {
   public partial class TestEngine : UserControl
   {
-    private TestContext _context = new TestContext();
+    private TestContext _context;
     public TestContext Context
     {
       get { return _context; }
@@ -24,22 +25,34 @@ namespace cslalighttest.Engine
 
     public TestEngine()
     {
-      DataContext = Context;
-
-      InitializeComponent();
-      
-      Assembly a = this.GetType().Assembly;
-      foreach (Type t in a.GetTypes())
+      if (!DesignerProperties.GetIsInDesignMode(this))
       {
-        if (t.IsPublic && t.IsDefined(typeof(TestClassAttribute), true))
-        {
-          TypeTester tester = new TypeTester(t);
-          _context.Testers.Add(tester);
-        }
-      }
+        _context = new TestContext();
+        DataContext = Context;
 
-      foreach (TypeTester tester in _context.Testers)
-        tester.RunTests(_context);
+        InitializeComponent();        
+      }
+    }
+
+    private void RunAll_Click(object sender, RoutedEventArgs e)
+    {
+      _context.Run();
+    }
+
+    private void RunType_Click(object sender, RoutedEventArgs e)
+    {
+      Button b = (Button)sender;
+      TypeTester tester = (TypeTester)b.DataContext;
+      tester.RunTests(_context);
+    }
+
+    private void RunMethod_Click(object sender, RoutedEventArgs e)
+    {
+      Button b = (Button)sender;
+      MethodTester tester = (MethodTester)b.DataContext;
+
+      object instance = Activator.CreateInstance(tester.Method.DeclaringType);
+      tester.RunTest(instance, _context);
     }
   }
 }

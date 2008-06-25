@@ -2,9 +2,13 @@
 using System.Threading;
 using Csla.Testing.Business.EditableRootTests;
 using cslalighttest.Engine;
+using System.Diagnostics;
 
 namespace cslalighttest.Stereotypes
 {
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
   [TestClass]
   public class EditableRootTests
   {

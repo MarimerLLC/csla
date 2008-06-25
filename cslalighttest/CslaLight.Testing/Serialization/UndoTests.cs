@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using cslalighttest.Engine;
 using Csla.Core;
+using System.Diagnostics;
 
 namespace cslalighttest.Serialization
 {
@@ -63,6 +64,7 @@ namespace cslalighttest.Serialization
 
     [TestMethod]
     [ExpectedException(typeof(UndoException))]
+    [DebuggerNonUserCode]
     public void UndoFail()
     {
       Person p = new Person();
@@ -94,6 +96,7 @@ namespace cslalighttest.Serialization
 
     [TestMethod]
     [ExpectedException(typeof(UndoException))]
+    [DebuggerNonUserCode]
     public void UndoChildFail()
     {
       Person p = new Person();
@@ -135,6 +138,7 @@ namespace cslalighttest.Serialization
 
     [TestMethod]
     [ExpectedException(typeof(UndoException))]
+    [DebuggerNonUserCode]
     public void UndoAfterApplyEditFail()
     {
       Person p = new Person();
@@ -177,6 +181,7 @@ namespace cslalighttest.Serialization
 
     [TestMethod]
     [ExpectedException(typeof(UndoException))]
+    [DebuggerNonUserCode]
     public void ApplyEditOnChildThenRoot()
     {
       Person p = new Person();

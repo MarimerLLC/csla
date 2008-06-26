@@ -585,7 +585,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException));
     }
@@ -612,7 +612,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field, Security.NoAccessBehavior noAccess)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field, Security.NoAccessBehavior noAccess)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess));
     }
@@ -654,7 +654,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, Security.NoAccessBehavior.SuppressException));
     }
@@ -680,7 +680,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, Security.NoAccessBehavior noAccess)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, Security.NoAccessBehavior noAccess)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, noAccess));
     }
@@ -757,7 +757,7 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadProperty<F, P>(PropertyInfo<F> propertyInfo)
+    protected P ReadPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, ReadProperty<F>(propertyInfo));
     }
@@ -869,9 +869,9 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
+    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
     {
-      SetProperty<P, V>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
+      SetPropertyConvert<P, V>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -898,7 +898,7 @@ namespace Csla.Core
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
       SetProperty<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
     }
@@ -1034,9 +1034,9 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
     {
-      SetProperty<P, F>(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException);
+      SetPropertyConvert<P, F>(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -1051,7 +1051,7 @@ namespace Csla.Core
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
     {
       //if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
       //{
@@ -1163,7 +1163,7 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
     {
       try
       {

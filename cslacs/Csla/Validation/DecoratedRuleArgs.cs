@@ -465,13 +465,16 @@ namespace Csla.Validation
             first = false;
           else
             sb.Append("&");
-          var itemString = System.Uri.EscapeDataString(item.Key);
-          if (itemString == null)
-            itemString = string.Empty;
-          var valueString = System.Uri.EscapeDataString(item.Value.ToString());
-          if (valueString == null)
-            valueString = string.Empty;
-          sb.AppendFormat("{0}={1}", itemString, valueString);
+          if (item.Key != null)
+          {
+            var itemString = System.Uri.EscapeDataString(item.Key);
+            string valueString;
+            if (item.Value == null)
+              valueString = string.Empty;
+            else
+              valueString = System.Uri.EscapeDataString(item.Value.ToString());
+            sb.AppendFormat("{0}={1}", itemString, valueString);
+          }
         }
       }
       return sb.ToString();

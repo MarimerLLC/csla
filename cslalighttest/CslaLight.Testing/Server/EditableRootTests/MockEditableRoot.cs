@@ -14,33 +14,33 @@ namespace Csla.Testing.Business.EditableRootTests
 
     #region  Business Methods
 
-    private static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(
+    private static PropertyInfo<Guid> IdProperty = RegisterProperty(
       typeof(MockEditableRoot), 
       new PropertyInfo<Guid>("Id"));
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(
+    private static PropertyInfo<string> NameProperty = RegisterProperty(
       typeof(MockEditableRoot), 
       new PropertyInfo<string>("Name"));
 
-    private static PropertyInfo<string> DataPortalMethodProperty = RegisterProperty<string>(
+    private static PropertyInfo<string> DataPortalMethodProperty = RegisterProperty(
       typeof(MockEditableRoot),
       new PropertyInfo<string>("DataPortalMethod"));
 
     public Guid Id
     {
-      get { return GetProperty<Guid>(IdProperty); }
+      get { return GetProperty(IdProperty); }
     }
-
+    private string _name = NameProperty.DefaultValue;
     public string Name
     {
-      get { return GetProperty<string>(NameProperty); }
-      set { SetProperty<string>(NameProperty, value); }
+      get { return GetProperty(NameProperty, _name); }
+      set { SetProperty(NameProperty, ref _name, value); }
     }
 
     public string DataPortalMethod
     {
-      get { return GetProperty<string>(DataPortalMethodProperty); }
-      set { SetProperty<string>(DataPortalMethodProperty, value); }
+      get { return GetProperty(DataPortalMethodProperty); }
+      set { SetProperty(DataPortalMethodProperty, value); }
     }
 
     public override string ToString()

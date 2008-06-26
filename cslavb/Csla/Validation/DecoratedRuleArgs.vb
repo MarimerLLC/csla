@@ -443,7 +443,11 @@ Namespace Validation
           Else
             sb.Append("&")
           End If
-          sb.AppendFormat("{0}={1}", item.Key, item.Value.ToString())
+          Dim itemString = System.Uri.EscapeDataString(item.Key)
+          If itemString Is Nothing Then itemString = String.Empty
+          Dim valueString = System.Uri.EscapeDataString(item.Value.ToString)
+          If valueString Is Nothing Then valueString = String.Empty
+          sb.AppendFormat("{0}={1}", itemString, valueString)
         Next item
       End If
       Return sb.ToString()

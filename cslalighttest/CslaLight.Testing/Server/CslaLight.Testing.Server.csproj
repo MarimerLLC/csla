@@ -56,6 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditableChildTests\GrandChild.cs" />
+    <Compile Include="EditableChildTests\GrandChild.partial.cs" />
+    <Compile Include="EditableChildTests\GrandChildList.cs" />
+    <Compile Include="EditableChildTests\GrandChildList.partial.cs" />
     <Compile Include="EditableChildTests\MockEditableChild.cs" />
     <Compile Include="EditableChildTests\MockEditableChild.partial.cs" />
     <Compile Include="EditableChildTests\MockList.cs" />

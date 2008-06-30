@@ -12,24 +12,25 @@ using Csla.DataPortalClient;
 
 namespace Csla.Testing.Business.EditableChildTests
 {
-  public partial class MockEditableChild
+  public partial class GrandChild
   {
     #region Factories
-    internal static MockEditableChild Load(Guid Id, string name)
+
+    internal static GrandChild Load(int id, Guid parentId, string name)
     {
-      ChildDataPortal<MockEditableChild> dp = new ChildDataPortal<MockEditableChild>();
-      return (MockEditableChild)dp.Fetch(Id, name);
+      ChildDataPortal<GrandChild> dp = new ChildDataPortal<GrandChild>();
+      return (GrandChild)dp.Fetch(id, parentId, name);
     }
+
     #endregion
 
     #region Data Access
 
-    public void Child_Fetch(Guid id, string name)
+    public void Child_Fetch(int id, Guid parentId, string name)
     {
-      LoadProperty<Guid>(IdProperty, id);
+      LoadProperty<int>(IdProperty, id);
+      LoadProperty<Guid>(ParentIdProperty, parentId);
       LoadProperty<string>(NameProperty, name);
-
-      LoadProperty<GrandChildList>(GrandChildrenProperty, GrandChildList.Load(id));
     }
 
     #endregion

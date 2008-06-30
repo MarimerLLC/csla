@@ -24,9 +24,9 @@ namespace Csla.Testing.Business.EditableChildTests
     {
       RaiseListChangedEvents = false;
 
-      MockEditableChild c1 = MockEditableChild.LoadMockEditableChild(MockEditableChildId1, "c1");
-      MockEditableChild c2 = MockEditableChild.LoadMockEditableChild(MockEditableChildId2, "c2");
-      MockEditableChild c3 = MockEditableChild.LoadMockEditableChild(MockEditableChildId3, "c3");
+      MockEditableChild c1 = MockEditableChild.Load(MockEditableChildId1, "c1");
+      MockEditableChild c2 = MockEditableChild.Load(MockEditableChildId2, "c2");
+      MockEditableChild c3 = MockEditableChild.Load(MockEditableChildId3, "c3");
       MockEditableChild[] children = new MockEditableChild[] { c1, c2, c3 };
 
       var found = from c in children

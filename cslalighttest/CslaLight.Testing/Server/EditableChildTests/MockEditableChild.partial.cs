@@ -9,7 +9,7 @@ namespace Csla.Testing.Business.EditableChildTests
   {
     #region Server Factories
 
-    public static MockEditableChild LoadMockEditableChild(Guid Id, string name)
+    public static MockEditableChild Load(Guid Id, string name)
     {
       return DataPortal.FetchChild<MockEditableChild>(Id, name);
     }
@@ -22,6 +22,8 @@ namespace Csla.Testing.Business.EditableChildTests
     {
       LoadProperty<Guid>(IdProperty, id);
       LoadProperty<string>(NameProperty, name);
+
+      LoadProperty<GrandChildList>(GrandChildrenProperty, GrandChildList.Load(id));
     }
 
     #endregion

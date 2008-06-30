@@ -19,9 +19,9 @@ namespace Csla.Testing.Business.EditableChildTests
       typeof(MockEditableChild),
       new PropertyInfo<string>("Name"));
 
-    private static PropertyInfo<string> DataPortalMethodProperty = RegisterProperty<string>(
+    private static PropertyInfo<GrandChildList> GrandChildrenProperty = RegisterProperty<GrandChildList>(
       typeof(MockEditableChild),
-      new PropertyInfo<string>("DataPortalMethod"));
+      new PropertyInfo<GrandChildList>("GrandChildren"));
 
     public Guid Id
     {
@@ -35,10 +35,10 @@ namespace Csla.Testing.Business.EditableChildTests
       set { SetProperty<string>(NameProperty, value); }
     }
 
-    public string DataPortalMethod
+    public GrandChildList GrandChildren
     {
-      get { return GetProperty<string>(DataPortalMethodProperty); }
-      set { SetProperty<string>(DataPortalMethodProperty, value); }
+      get { return GetProperty<GrandChildList>(GrandChildrenProperty); }
+      set { SetProperty<GrandChildList>(GrandChildrenProperty, value); }
     }
 
     public override string ToString()

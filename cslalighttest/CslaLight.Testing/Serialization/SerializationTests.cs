@@ -151,5 +151,28 @@ namespace cslalighttest.Serialization
       Assert.AreEqual(expected.Count, actual.Count);
       Assert.AreEqual(expected[0].Member, actual[0].Member);
     }
+
+    [TestMethod]
+    public void ReadOnlyBaseTest()
+    {
+      ReadOnlyPerson expected = ReadOnlyPerson.GetReadOnlyPerson("John Does", 1980);
+      byte[] buffer = MobileFormatter.Serialize(expected);
+      ReadOnlyPerson actual = (ReadOnlyPerson)MobileFormatter.Deserialize(buffer);
+
+      Assert.AreEqual(expected.Birthdate,actual.Birthdate);
+      Assert.AreEqual(expected.Name, actual.Name);
+    }
+
+    [TestMethod]
+    public void ReadOnlyListBaseTest()
+    {
+      ReadOnlyPersonList expected = ReadOnlyPersonList.GetReadOnlyPersonList();
+      byte[] buffer = MobileFormatter.Serialize(expected);
+      ReadOnlyPersonList actual = (ReadOnlyPersonList)MobileFormatter.Deserialize(buffer);
+
+      Assert.AreEqual(expected.Count, actual.Count);
+      Assert.AreEqual(expected[1].Name, actual[1].Name);
+      Assert.AreEqual(expected[0].Birthdate, actual[0].Birthdate);
+    }
   }
 }

@@ -3,6 +3,7 @@ using System.ServiceModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.Diagnostics;
+using Csla.DataPortalClient;
 
 namespace Csla
 {

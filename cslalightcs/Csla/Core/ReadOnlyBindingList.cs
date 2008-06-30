@@ -23,6 +23,8 @@ namespace Csla.Core
   public abstract class ReadOnlyBindingList<C> :
     Core.ExtendedBindingList<C>, Core.IBusinessObject
   {
+    private bool _isReadOnly;
+
     /// <summary>
     /// Gets or sets a value indicating whether the list is readonly.
     /// </summary>
@@ -35,6 +37,12 @@ namespace Csla.Core
     {
       get { return IsReadOnlyCore; }
       protected set { IsReadOnlyCore = value; }
+    }
+
+    protected virtual bool IsReadOnlyCore
+    {
+      get { return _isReadOnly; }
+      set { _isReadOnly = value; }
     }
 
     /// <summary>
@@ -132,9 +140,26 @@ namespace Csla.Core
         throw new NotSupportedException(Resources.ChangeInvalidException);
     }
 
+    #region MobileObject overrides
+
     protected override void OnGetState(SerializationInfo info)
     {
+      info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", _isReadOnly);
       base.OnGetState(info);
     }
+    protected override void OnSetState(SerializationInfo info)
+    {
+      _isReadOnly = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList._isReadOnly");
+      base.OnSetState(info);
+    }
+
+    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      IsReadOnlyCore = false;
+      base.OnSetChildren(info, formatter);
+      IsReadOnlyCore = true;
+    }
+
+    #endregion
   }
 }

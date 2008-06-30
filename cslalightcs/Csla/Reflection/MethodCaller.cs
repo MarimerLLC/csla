@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -18,6 +18,53 @@ namespace Csla.Reflection
       BindingFlags.DeclaredOnly |
       BindingFlags.Instance |
       BindingFlags.Public;
+
+    private const BindingFlags ctorFlags = 
+      BindingFlags.Instance | 
+      BindingFlags.Public;
+
+    #region Dynamic Constructor Cache
+
+    // TODO: Make dynamic when time permits.
+    private static Dictionary<Type, ConstructorInfo> _ctorCache = new Dictionary<Type, ConstructorInfo>();
+
+    private static ConstructorInfo GetCachedConstructor(Type objectType)
+    {
+      ConstructorInfo result = null;
+      if (!_ctorCache.TryGetValue(objectType, out result))
+      {
+        lock (_ctorCache)
+        {
+          if (!_ctorCache.TryGetValue(objectType, out result))
+          {
+            ConstructorInfo info =
+              objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
+            result = info; // DynamicMethodHandlerFactory.CreateConstructor(info);
+            _ctorCache.Add(objectType, result);
+          }
+        }
+      }
+      return result;
+    }
+
+    #endregion
+
+    #region Create Instance
+
+    /// <summary>
+    /// Uses reflection to create an object using its 
+    /// default constructor.
+    /// </summary>
+    /// <param name="objectType">Type of object to create.</param>
+    public static object CreateInstance(Type objectType)
+    {
+      var ctor = GetCachedConstructor(objectType);
+      if (ctor == null)
+        throw new NotImplementedException("Default constructor " + Resources.MethodNotImplemented);
+      return ctor.Invoke(null);
+    }
+
+    #endregion
 
     /// <summary>
     /// Uses reflection to dynamically invoke a method
@@ -77,8 +124,7 @@ namespace Csla.Reflection
     /// Uses reflection to locate a matching method
     /// on the target object.
     /// </summary>
-    public static MethodInfo GetMethod(
-      Type objectType, string method, params object[] parameters)
+    public static MethodInfo GetMethod(Type objectType, string method, params object[] parameters)
     {
       MethodInfo result = null;
 

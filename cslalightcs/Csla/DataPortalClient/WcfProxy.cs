@@ -139,25 +139,27 @@ namespace Csla.DataPortalClient
 
     private void proxy_FetchCompleted(object sender, Csla.WcfPortal.FetchCompletedEventArgs e)
     {
-      var response = e.Result;
       try
       {
-        if (e.Error == null && response.ErrorData == null)
+        if (e.Error == null && e.Result.ErrorData == null)
         {
-          var buffer = new System.IO.MemoryStream(response.ObjectData);
+          var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
           OnFetchCompleted(new DataPortalResult<T>(obj, null));
+        }
+        else if (e.Error != null)
+        {
+          var ex = new DataPortalException(e.Error.ToErrorInfo());
+          OnFetchCompleted(new DataPortalResult<T>(default(T), ex));
         }
         else if (e.Result.ErrorData != null)
         {
           var ex = new DataPortalException(e.Result.ErrorData);
           OnFetchCompleted(new DataPortalResult<T>(default(T), ex));
         }
-        else
-        {
-          OnFetchCompleted(new DataPortalResult<T>(default(T), e.Error));
-        }
+        else 
+          throw new InvalidOperationException("Server must return an object or an error");
       }
       catch (Exception ex)
       {

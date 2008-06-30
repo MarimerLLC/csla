@@ -1701,21 +1701,213 @@ namespace Csla.Core
 
     #region IDataPortalTarget Members
 
-    void Csla.DataPortalClient.IDataPortalTarget.MarkAsChild()
+    void IDataPortalTarget.MarkAsChild()
     {
       MarkAsChild();
     }
 
-    void Csla.DataPortalClient.IDataPortalTarget.MarkNew()
+    void IDataPortalTarget.MarkNew()
     {
       MarkNew();
     }
 
-    void Csla.DataPortalClient.IDataPortalTarget.MarkOld()
+    void IDataPortalTarget.MarkOld()
     {
       MarkOld();
     }
 
+    void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+      this.DataPortal_OnDataPortalInvoke(e);
+    }
+
+    void IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+      this.DataPortal_OnDataPortalInvokeComplete(e);
+    }
+
+    void IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+      this.DataPortal_OnDataPortalException(e, ex);
+    }
+
+    void IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+      this.Child_OnDataPortalInvoke(e);
+    }
+
+    void IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+      this.Child_OnDataPortalInvokeComplete(e);
+    }
+
+    void IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+      this.Child_OnDataPortalException(e, ex);
+    }
+
     #endregion
+
+    #region Data Access
+
+    /// <summary>
+    /// Override this method to load a new business object with default
+    /// values from the database.
+    /// </summary>
+    /// <remarks>
+    /// Normally you will overload this method to accept a strongly-typed
+    /// criteria parameter, rather than overriding the method with a
+    /// loosely-typed criteria parameter.
+    /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [RunLocal]
+    protected virtual void DataPortal_Create()
+    {
+      ValidationRules.CheckRules();
+    }
+
+    /// <summary>
+    /// Override this method to allow retrieval of an existing business
+    /// object based on data in the database.
+    /// </summary>
+    /// <remarks>
+    /// Normally you will overload this method to accept a strongly-typed
+    /// criteria parameter, rather than overriding the method with a
+    /// loosely-typed criteria parameter.
+    /// </remarks>
+    /// <param name="criteria">An object containing criteria values to identify the object.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    protected virtual void DataPortal_Fetch(object criteria)
+    {
+      throw new NotSupportedException(Resources.FetchNotSupportedException);
+    }
+
+    /// <summary>
+    /// Override this method to allow insertion of a business
+    /// object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    protected virtual void DataPortal_Insert()
+    {
+      throw new NotSupportedException(Resources.InsertNotSupportedException);
+    }
+
+    /// <summary>
+    /// Override this method to allow update of a business
+    /// object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    protected virtual void DataPortal_Update()
+    {
+      throw new NotSupportedException(Resources.UpdateNotSupportedException);
+    }
+
+    /// <summary>
+    /// Override this method to allow deferred deletion of a business object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    protected virtual void DataPortal_DeleteSelf()
+    {
+      throw new NotSupportedException(Resources.DeleteNotSupportedException);
+    }
+
+    /// <summary>
+    /// Override this method to allow immediate deletion of a business object.
+    /// </summary>
+    /// <param name="criteria">An object containing criteria values to identify the object.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    protected virtual void DataPortal_Delete(object criteria)
+    {
+      throw new NotSupportedException(Resources.DeleteNotSupportedException);
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal prior to calling the 
+    /// requested DataPortal_XYZ method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal after calling the 
+    /// requested DataPortal_XYZ method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal if an exception
+    /// occurs during data access.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    /// <param name="ex">The Exception thrown during data access.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+
+    }
+
+    /// <summary>
+    /// Override this method to load a new business object with default
+    /// values from the database.
+    /// </summary>
+    /// <remarks>
+    /// Normally you will overload this method to accept a strongly-typed
+    /// criteria parameter, rather than overriding the method with a
+    /// loosely-typed criteria parameter.
+    /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    protected virtual void Child_Create()
+    {
+      ValidationRules.CheckRules();
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal prior to calling the 
+    /// requested DataPortal_XYZ method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal after calling the 
+    /// requested DataPortal_XYZ method.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+    }
+
+    /// <summary>
+    /// Called by the server-side DataPortal if an exception
+    /// occurs during data access.
+    /// </summary>
+    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    /// <param name="ex">The Exception thrown during data access.</param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+    }
+
+    #endregion
+
   }
 }

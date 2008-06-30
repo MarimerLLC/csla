@@ -56,6 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditableChildTests\MockEditableChild.cs" />
+    <Compile Include="EditableChildTests\MockEditableChild.partial.cs" />
+    <Compile Include="EditableChildTests\MockList.cs" />
+    <Compile Include="EditableChildTests\MockList.partial.cs" />
     <Compile Include="EditableRootTests\MockEditableRoot.cs" />
     <Compile Include="EditableRootTests\MockEditableRoot.partial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,9 +72,6 @@
       <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
       <Name>Csla</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EditableChildTests\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

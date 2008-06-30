@@ -87,6 +87,11 @@
     <Compile Include="Engine\TestStatusConverter.cs" />
     <Compile Include="Engine\TypeTester.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ReadOnly\ReadOnlyTests.cs" />
     <Compile Include="Serialization\Address.cs" />
     <Compile Include="Serialization\AddressBase.cs" />
@@ -107,7 +112,8 @@
     <Compile Include="Serialization\ReadOnlyPersonList.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />
     <Compile Include="Serialization\UndoTests.cs" />
-    <Compile Include="Stereotypes\EditableChildTests.cs" />
+    <Compile Include="Stereotypes\EditableChildTestsLocal.cs" />
+    <Compile Include="Stereotypes\EditableChildTestsRemote.cs" />
     <Compile Include="Stereotypes\EditableRootTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +141,12 @@
       <SubType>Page</SubType>
       <Generator>MSBuild:MarkupCompilePass1</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

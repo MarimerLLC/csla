@@ -3,6 +3,7 @@ using System.Threading;
 using Csla.Testing.Business.EditableRootTests;
 using cslalighttest.Engine;
 using System.Diagnostics;
+using cslalighttest.Properties;
 
 namespace cslalighttest.Stereotypes
 {
@@ -13,7 +14,7 @@ namespace cslalighttest.Stereotypes
     public void Setup()
     {
       Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
-      Csla.DataPortalClient.WcfProxy.DefaultUrl = MockEditableRoot.DataPortalUrl;
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = Resources.RemotePortalUrl;
     }
 
     [TestMethod]

@@ -36,5 +36,17 @@ namespace cslalighttest.Engine
       if (!object.Equals(expected, actual))
         throw new TestException("Assert.AreSame failed.");
     }
+
+    public static void IsTrue(bool value)
+    {
+      if (!value)
+        throw new TestException("Assert.IsTrue failed.");
+    }
+
+    public static void IsFalse(bool value)
+    {
+      if (value)
+        throw new TestException("Assert.IsFalse failed.");
+    }
   }
 }

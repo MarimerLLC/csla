@@ -12,7 +12,7 @@ namespace Csla.Testing.Business.EditableRootTests
   {
     public static readonly Guid MockEditableRootId = new Guid("{7E7127CF-F22C-4903-BDCE-1714C81A9E89}");
 
-    #region  Business Methods
+    #region  Properties
 
     private static PropertyInfo<Guid> IdProperty = RegisterProperty(
       typeof(MockEditableRoot), 

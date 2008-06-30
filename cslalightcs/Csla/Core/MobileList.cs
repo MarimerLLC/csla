@@ -35,12 +35,11 @@ namespace Csla.Core
 
     protected virtual void OnGetState(SerializationInfo info)
     {
-      info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", IsReadOnlyCore);
-      info.AddValue("Csla.Core.ReadOnlyBindingList.AllowEdit", AllowEdit);
-      info.AddValue("Csla.Core.ReadOnlyBindingList.AllowNew", AllowNew);
-      info.AddValue("Csla.Core.ReadOnlyBindingList.AllowRemove", AllowRemove);
-      info.AddValue("Csla.Core.ReadOnlyBindingList.RaiseListChangedEvents", RaiseListChangedEvents);
-      info.AddValue("Csla.Core.ReadOnlyBindingList.SupportsChangeNotificationCore", SupportsChangeNotificationCore); 
+      info.AddValue("Csla.Core.MobileList.AllowEdit", AllowEdit);
+      info.AddValue("Csla.Core.MobileList.AllowNew", AllowNew);
+      info.AddValue("Csla.Core.MobileList.AllowRemove", AllowRemove);
+      info.AddValue("Csla.Core.MobileList.RaiseListChangedEvents", RaiseListChangedEvents);
+      info.AddValue("Csla.Core.MobileList.SupportsChangeNotificationCore", SupportsChangeNotificationCore); 
     }
 
     protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) 
@@ -74,12 +73,11 @@ namespace Csla.Core
 
     protected virtual void OnSetState(SerializationInfo info)
     {
-      IsReadOnlyCore = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList._isReadOnly");
-      AllowEdit = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.AllowEdit");
-      AllowNew = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.AllowNew");
-      AllowRemove = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.AllowRemove");
-      RaiseListChangedEvents = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.RaiseListChangedEvents");
-      SupportsChangeNotificationCore = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList.SupportsChangeNotificationCore");
+      AllowEdit = info.GetValue<bool>("Csla.Core.MobileList.AllowEdit");
+      AllowNew = info.GetValue<bool>("Csla.Core.MobileList.AllowNew");
+      AllowRemove = info.GetValue<bool>("Csla.Core.MobileList.AllowRemove");
+      RaiseListChangedEvents = info.GetValue<bool>("Csla.Core.MobileList.RaiseListChangedEvents");
+      SupportsChangeNotificationCore = info.GetValue<bool>("Csla.Core.MobileList.SupportsChangeNotificationCore");
     }
 
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
@@ -88,18 +86,13 @@ namespace Csla.Core
         throw new NotSupportedException("Cannot deserialize collections not of type IMobileObject");
 
       if (info.Values.ContainsKey("$list"))
-      {
-        bool oldValue = IsReadOnlyCore;
-        IsReadOnlyCore = false;
-      
+      {      
         List<int> references = (List<int>)info.Values["$list"].Value;
         foreach (int reference in references)
         {
           T child = (T)formatter.GetObject(reference);
           this.Add(child);
         }
-        
-        IsReadOnlyCore = oldValue;
       }
     }
 

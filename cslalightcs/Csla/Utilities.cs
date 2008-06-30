@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Reflection;
+using Csla.WcfPortal;
 
 namespace Csla
 {
@@ -213,6 +214,26 @@ namespace Csla
     public static D CoerceValue<D>(Type valueType, object oldValue, object value)
     {
       return (D)(CoerceValue(typeof(D), valueType, oldValue, value));
+    }
+
+    #endregion
+
+    #region Error Handling
+
+    public static WcfErrorInfo ToErrorInfo(this Exception ex)
+    {
+      WcfErrorInfo info = null;
+      if (ex != null)
+      {
+        info = new WcfErrorInfo
+        {
+          Message = ex.Message,
+          StackTrace = ex.StackTrace,
+          InnerError = ex.InnerException.ToErrorInfo()
+        };
+      }
+
+      return info;
     }
 
     #endregion

@@ -12,7 +12,7 @@ namespace Csla
   /// derived in a business class. 
   /// </summary>
   [Serializable]
-  public class CriteriaBase : Csla.Core.MobileObject
+  public class CriteriaBase : Csla.Core.MobileObject, ICriteria
   {
     private Type _objectType;
 

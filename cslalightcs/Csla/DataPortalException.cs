@@ -1,10 +1,17 @@
 ﻿using System;
+using Csla.WcfPortal;
 
 namespace Csla
 {
   public class DataPortalException : Exception
   {
     public WcfPortal.WcfErrorInfo ErrorInfo { get; private set; }
+
+    public DataPortalException(string message, Exception ex)
+      : base(message)
+    {
+      ErrorInfo = ex.ToErrorInfo();
+    }
 
     public DataPortalException(WcfPortal.WcfErrorInfo info)
       : base(info.Message)

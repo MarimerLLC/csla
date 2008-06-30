@@ -7,5 +7,12 @@ namespace Csla.DataPortalClient
     void MarkAsChild();
     void MarkNew();
     void MarkOld();
+
+    void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e);
+    void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e);
+    void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex);
+    void Child_OnDataPortalInvoke(DataPortalEventArgs e);
+    void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e);
+    void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex);
   }
 }

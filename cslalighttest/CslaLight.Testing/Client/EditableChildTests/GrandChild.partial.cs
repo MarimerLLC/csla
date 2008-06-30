@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Csla.DataPortalClient;
+using System.ComponentModel;
 
 namespace Csla.Testing.Business.EditableChildTests
 {
@@ -26,11 +27,20 @@ namespace Csla.Testing.Business.EditableChildTests
 
     #region Data Access
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public void Child_Fetch(int id, Guid parentId, string name)
     {
       LoadProperty<int>(IdProperty, id);
       LoadProperty<Guid>(ParentIdProperty, parentId);
       LoadProperty<string>(NameProperty, name);
+
+      LoadProperty<string>(DataPortalMethodProperty, "Child_Fetch");
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void Child_Update()
+    {
+      LoadProperty<string>(DataPortalMethodProperty, "Child_Update");
     }
 
     #endregion

@@ -23,8 +23,14 @@ namespace Csla.Testing.Business.EditableChildTests
       LoadProperty<int>(IdProperty, id);
       LoadProperty<Guid>(ParentIdProperty, parentId);
       LoadProperty<string>(NameProperty, name);
+
+      LoadProperty<string>(DataPortalMethodProperty, "Child_Fetch");
     }
 
+    private void Child_Update()
+    {
+      LoadProperty<string>(DataPortalMethodProperty, "Child_Update");
+    }
     #endregion
   }
 }

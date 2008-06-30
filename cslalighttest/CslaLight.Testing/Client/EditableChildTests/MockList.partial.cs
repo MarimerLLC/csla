@@ -45,7 +45,7 @@ namespace Csla.Testing.Business.EditableChildTests
     {
       Fetch(completed, criteria.Value);
     }
-
+    
     #endregion
   }
 }

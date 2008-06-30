@@ -42,6 +42,11 @@ namespace Csla.Testing.Business.EditableChildTests
 #endif
     }
 
+    protected override void DataPortal_Update()
+    {
+      Child_Update();
+    }
+
     #endregion
   }
 }

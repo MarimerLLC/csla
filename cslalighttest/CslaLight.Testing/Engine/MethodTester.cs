@@ -113,24 +113,24 @@ namespace cslalighttest.Engine
       {
         AsyncTestContext context = new AsyncTestContext();
         context.Complete += (o, e) =>
+        {
+          if(expectsException)
           {
-            if(expectsException)
-            {
-              if(e.Status == MethodTesterStatus.Fail && expectedException.Type.IsAssignableFrom( e.Error.GetType()))
-                Status = MethodTesterStatus.Success;
-              else
-                Status = MethodTesterStatus.Fail;
-            }
+            if(e.Status == MethodTesterStatus.Fail && expectedException.Type.IsAssignableFrom( e.Error.GetType()))
+              Status = MethodTesterStatus.Success;
             else
-              Status = e.Status;
+              Status = MethodTesterStatus.Fail;
+          }
+          else
+            Status = e.Status;
 
-            if (e.Error != null)
-            {
-              Message = string.Format("{0}: {1}", 
-                e.Error.Innermost().GetType().FullName, 
-                e.Error.Innermost().Message);
-            }            
-          };
+          if (Status == MethodTesterStatus.Fail && e.Error != null)
+          {
+            Message = string.Format("{0}: {1}", 
+              e.Error.Innermost().GetType().FullName, 
+              e.Error.Innermost().Message);
+          }            
+        };
 
         try
         {

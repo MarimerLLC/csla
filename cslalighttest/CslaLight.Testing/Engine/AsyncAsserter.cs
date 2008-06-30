@@ -81,6 +81,18 @@ namespace cslalighttest.Engine
       if (!actual)
         OnComplete(new TestException("Assert.IsTrue failed."));
     }
+
+    public void Try(Action action)
+    {
+      try
+      {
+        action.Invoke();
+      }
+      catch (Exception ex)
+      {
+        OnComplete(ex);
+      }
+    }
   }
 
   public delegate void AsyncAssertComplete(MethodTesterStatus status, Exception exception);

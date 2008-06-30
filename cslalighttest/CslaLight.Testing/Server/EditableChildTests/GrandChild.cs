@@ -23,6 +23,16 @@ namespace Csla.Testing.Business.EditableChildTests
       typeof(GrandChild),
       new PropertyInfo<string>("Name"));
 
+    private static PropertyInfo<string> DataPortalMethodProperty = RegisterProperty(
+      typeof(GrandChild),
+      new PropertyInfo<string>("DataPortalMethod"));
+
+    public string DataPortalMethod
+    {
+      get { return GetProperty(DataPortalMethodProperty); }
+      set { SetProperty(DataPortalMethodProperty, value); }
+    }
+
     public int Id
     {
       get { return GetProperty<int>(IdProperty); }
@@ -42,5 +52,10 @@ namespace Csla.Testing.Business.EditableChildTests
     }
 
     #endregion
+
+    protected override void DataPortal_Update()
+    {
+      LoadProperty<string>(DataPortalMethodProperty, "DataPortal_Update");
+    }
   }
 }

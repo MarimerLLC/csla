@@ -22,8 +22,16 @@ namespace Csla.Testing.Business.EditableChildTests
     {
       LoadProperty<Guid>(IdProperty, id);
       LoadProperty<string>(NameProperty, name);
+      LoadProperty<string>(DataPortalMethodProperty, "Child_Fetch");
 
       LoadProperty<GrandChildList>(GrandChildrenProperty, GrandChildList.Load(id));
+    }
+    
+    private void Child_Update()
+    {
+      LoadProperty<string>(DataPortalMethodProperty, "Child_Update");
+
+      DataPortal.UpdateChild(GrandChildren);
     }
 
     #endregion

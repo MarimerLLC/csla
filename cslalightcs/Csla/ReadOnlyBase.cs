@@ -41,6 +41,40 @@ namespace Csla
       FieldManager.SetFieldData<P>(propertyInfo, value);
     }
 
+    protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      FieldManager.LoadFieldData(propertyInfo, newValue);
+    }
+
+    protected object ReadProperty(IPropertyInfo propertyInfo)
+    {
+      var info = FieldManager.GetFieldData(propertyInfo);
+      if (info != null)
+        return info.Value;
+      else
+        return null;
+    }
+
     #endregion
+
+    #region MobileFormatter
+
+    protected override void OnGetChildren(
+      Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      base.OnGetChildren(info, formatter);
+      var fieldManagerInfo = formatter.SerializeObject(_fieldManager);
+      info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
+    }
+
+    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      var childData = info.Children["_fieldManager"];
+      _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
+      base.OnSetChildren(info, formatter);
+    }
+
+    #endregion
+
   }
 }

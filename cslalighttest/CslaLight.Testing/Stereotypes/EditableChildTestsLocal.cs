@@ -17,9 +17,10 @@ namespace cslalighttest.Stereotypes
     [TestMethod]
     public void ListWithChildrenNoCriteria()
     {
-      MockList.FetchAll((l, e) =>
+      MockList.FetchAll((o, e) =>
       {
-        Assert.IsNull(e);
+        MockList l = (MockList)e.Object;
+        Assert.IsNull(e.Error);
         Assert.IsNotNull(l);
         Assert.AreEqual(3, l.Count);
         Assert.AreEqual(MockList.MockEditableChildId1, l[0].Id);
@@ -45,9 +46,10 @@ namespace cslalighttest.Stereotypes
     [TestMethod]
     public void ListWithChildrenCriteria()
     {
-      MockList.FetchByName("c2", (l, e) =>
+      MockList.FetchByName("c2", (o, e) =>
       {
-        Assert.IsNull(e);
+        MockList l = (MockList)e.Object;
+        Assert.IsNull(e.Error);
         Assert.IsNotNull(l);
         Assert.AreEqual(1, l.Count);
         Assert.AreEqual(MockList.MockEditableChildId2, l[0].Id);
@@ -67,11 +69,11 @@ namespace cslalighttest.Stereotypes
     [ExpectedException(typeof(NotSupportedException))]
     public void SaveChildFail(AsyncTestContext context)
     {
-      MockList.FetchByName("c2", (l, e) =>
+      MockList.FetchByName("c2", (o, e) =>
       {
-        context.Assert.IsNull(e);
-        context.Assert.IsNotNull(l);
-        context.Assert.Try(() => l[0].Save());
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(e.Object);
+        context.Assert.Try(() => e.Object[0].Save());
       });
     }
 
@@ -79,11 +81,13 @@ namespace cslalighttest.Stereotypes
     [ExpectedException(typeof(NotSupportedException))]
     public void SaveGrandChildListFail(AsyncTestContext context)
     {
-      MockList.FetchByName("c2", (l, e) =>
+      MockList.FetchByName("c2", 
+      (o, e) =>
       {
-        context.Assert.IsNull(e);
-        context.Assert.IsNotNull(l);
-        context.Assert.Try(() => l[0].GrandChildren.Save());
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(e.Object);
+        context.Assert.Try(() => e.Object[0].GrandChildren.Save());
+        context.Assert.Fail();
       });
     }
 
@@ -91,48 +95,50 @@ namespace cslalighttest.Stereotypes
     [ExpectedException(typeof(NotSupportedException))]
     public void SaveGrandChildFail(AsyncTestContext context)
     {
-      MockList.FetchByName("c2", (l, e) =>
+      MockList.FetchByName("c2", (o, e) =>
       {
-        context.Assert.IsNull(e);
-        context.Assert.IsNotNull(l);
-        context.Assert.Try(() => l[0].GrandChildren[0].Save());
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(e.Object);
+        context.Assert.Try(() => e.Object[0].GrandChildren[0].Save());
+        context.Assert.Fail();
       });
     }
 
     [TestMethod]
     public void UpdateMockEditableChild(AsyncTestContext context)
     {
-      MockList.FetchByName("c2", (l, e) =>
+      MockList.FetchByName("c2", (o, e) =>
       {
-        context.Assert.IsNull(e);
-        context.Assert.IsNotNull(l);
-        context.Assert.AreEqual(1, l.Count);
-        context.Assert.AreEqual("c2", l[0].Name);
+        context.Assert.IsNull(e.Error);
+        context.Assert.IsNotNull(e.Object);
+        context.Assert.AreEqual(1, e.Object.Count);
+        context.Assert.AreEqual("c2", e.Object[0].Name);
 
-        l[0].Name = "saving";
-        l.Saved += (o, e2) =>
+        e.Object[0].Name = "saving";
+        e.Object.Saved += (o2, e2) =>
         {
-          context.Assert.IsNotNull(e2.NewObject);
           MockList l2 = (MockList)e2.NewObject;
+          context.Assert.IsNotNull(l2);
 
-          context.Assert.AreEqual(l.Count, l2.Count);
-          context.Assert.AreEqual(l[0].Id, l2[0].Id);
-          context.Assert.AreEqual(l[0].Name, l2[0].Name);
+          context.Assert.AreEqual(e.Object.Count, l2.Count);
+          context.Assert.AreEqual(e.Object[0].Id, l2[0].Id);
+          context.Assert.AreEqual(e.Object[0].Name, l2[0].Name);
 
-          context.Assert.AreEqual("Child_Fetch", l[0].DataPortalMethod);
+          context.Assert.AreEqual("Child_Fetch", e.Object[0].DataPortalMethod);
           context.Assert.AreEqual("Child_Update", l2[0].DataPortalMethod);
 
-          context.Assert.IsTrue(l[0].IsDirty);
+          context.Assert.IsTrue(e.Object[0].IsDirty);
           context.Assert.IsFalse(l2[0].IsDirty);
 
-          context.Assert.AreEqual(l[0].GrandChildren.Count, l2[0].GrandChildren.Count);
+          context.Assert.AreEqual(e.Object[0].GrandChildren.Count, l2[0].GrandChildren.Count);
 
           l2[0].GrandChildren[0].Name = "saving";
-          l2.Saved += (o2, e3) =>
+          l2.Saved += (o3, e3) =>
           {
             MockList l3 = (MockList)e3.NewObject;
             context.Assert.AreEqual("Child_Fetch", l2[0].GrandChildren[0].DataPortalMethod);
             context.Assert.IsTrue(l2[0].GrandChildren[0].IsDirty);
+            
             context.Assert.AreEqual("Child_Update", l3[0].GrandChildren[0].DataPortalMethod);
             context.Assert.IsFalse(l3[0].GrandChildren[0].IsDirty);
 
@@ -140,7 +146,7 @@ namespace cslalighttest.Stereotypes
           };
           l2.Save();
         };
-        l.Save();
+        e.Object.Save();
       });
     }
   }

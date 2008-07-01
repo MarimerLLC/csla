@@ -23,9 +23,10 @@ namespace cslalighttest.LocalDataPortal
     [TestMethod]
     public void TestCreateNew(AsyncTestContext context)
     {
-      MockEditableRoot.CreateNew((actual, error) =>
+      MockEditableRoot.CreateNew((o, e) =>
       {
-        context.Assert.IsNull(error);
+        MockEditableRoot actual = e.Object;
+        context.Assert.IsNull(e.Error);
         context.Assert.IsNotNull(actual);
         context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
         context.Assert.IsTrue(actual.IsNew);
@@ -92,8 +93,10 @@ namespace cslalighttest.LocalDataPortal
     {
       MockEditableRoot.Fetch(
         MockEditableRoot.MockEditableRootId,
-        (actual, error) =>
+        (o, e) =>
         {
+          MockEditableRoot actual = e.Object;
+          context.Assert.IsNull(e.Error);
           context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
           context.Assert.AreEqual("fetch", actual.DataPortalMethod);
           context.Assert.IsFalse(actual.IsNew);

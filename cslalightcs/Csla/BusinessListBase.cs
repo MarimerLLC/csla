@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Csla.DataPortalClient;
+using Csla.Serialization.Mobile;
 
 namespace Csla
 {
@@ -20,7 +21,8 @@ namespace Csla
     ICloneable, 
     IUndoableObject,
     ISavable,
-    ITrackStatus
+    ITrackStatus,
+    IDataPortalTarget
     where T: BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -296,6 +298,22 @@ namespace Csla
         if (child.EditLevelAdded > _editLevel)
           DeletedList.RemoveAt(index);
       }
+    }
+
+    #endregion
+
+    #region Mobile Object overrides
+
+    protected override void OnGetState(SerializationInfo info)
+    {
+      info.AddValue("Csla.BusinessListBase._isChild", _isChild);
+      base.OnGetState(info);
+    }
+
+    protected override void OnSetState(SerializationInfo info)
+    {
+      _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
+      base.OnSetState(info);
     }
 
     #endregion
@@ -674,5 +692,49 @@ namespace Csla
 
     #endregion
 
+    #region IDataPortalTarget Members
+
+    void IDataPortalTarget.MarkAsChild()
+    {
+      this.MarkAsChild();
+    }
+
+    void IDataPortalTarget.MarkNew()
+    { }
+
+    void IDataPortalTarget.MarkOld()
+    { }
+
+    void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+      this.DataPortal_OnDataPortalInvoke(e);
+    }
+
+    void IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+      this.DataPortal_OnDataPortalInvokeComplete(e);
+    }
+
+    void IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+      this.DataPortal_OnDataPortalException(e, ex);
+    }
+
+    void IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+      this.Child_OnDataPortalInvoke(e);
+    }
+
+    void IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+      this.Child_OnDataPortalInvokeComplete(e);
+    }
+
+    void IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+      this.Child_OnDataPortalException(e, ex);
+    }
+
+    #endregion
   }
 }

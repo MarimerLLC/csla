@@ -18,17 +18,17 @@ namespace Csla.Testing.Business.EditableChildTests
   {    
     #region  Factory Methods
 
-    public static void FetchAll(Action<MockList, Exception> completed)
+    public static void FetchAll(EventHandler<DataPortalResult<MockList>> completed)
     {
       DataPortal<MockList> dp = new DataPortal<MockList>();
-      dp.FetchCompleted += (o, e) => { completed(e.Object, e.Error); };
+      dp.FetchCompleted += completed;
       dp.BeginFetch();
     }
 
-    public static void FetchByName(string name, Action<MockList, Exception> completed)
+    public static void FetchByName(string name, EventHandler<DataPortalResult<MockList>> completed)
     {
       DataPortal<MockList> dp = new DataPortal<MockList>();
-      dp.FetchCompleted += (o, e) => { completed(e.Object, e.Error);};
+      dp.FetchCompleted += completed;
       dp.BeginFetch(new SingleCriteria<MockList, string>(name));
     }
 

@@ -4,6 +4,7 @@ using Csla.Testing.Business.EditableRootTests;
 using cslalighttest.Engine;
 using System.Diagnostics;
 using cslalighttest.Properties;
+using Csla;
 
 namespace cslalighttest.Stereotypes
 {
@@ -26,9 +27,10 @@ namespace cslalighttest.Stereotypes
     [TestMethod]
     public void TestCreateNew(AsyncTestContext context)
     {
-      MockEditableRoot.CreateNew((actual, error) =>
+      MockEditableRoot.CreateNew((o, e) =>
       {
-        context.Assert.IsNull(error);
+        MockEditableRoot actual = e.Object;
+        context.Assert.IsNull(e.Error);
         context.Assert.IsNotNull(actual);
         context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
         context.Assert.IsTrue(actual.IsNew);
@@ -98,8 +100,10 @@ namespace cslalighttest.Stereotypes
     {
       MockEditableRoot.Fetch(
         MockEditableRoot.MockEditableRootId,
-        (actual, error) =>
+        (o, e) =>
         {
+          MockEditableRoot actual = e.Object;
+          context.Assert.IsNull(e.Error);
           context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
           context.Assert.AreEqual("fetch", actual.DataPortalMethod);
           context.Assert.IsFalse(actual.IsNew);

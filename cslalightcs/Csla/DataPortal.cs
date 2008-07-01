@@ -37,6 +37,73 @@ namespace Csla
         _factory = value;
       }
     }
+
+    #region Static Helpers
+    
+    #region Begin Create
+
+    public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.CreateCompleted += callback;
+      dp.BeginCreate();
+    }
+    public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
+      where T: IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.CreateCompleted += callback;
+      dp.BeginCreate(criteria);
+    }
+
+    #endregion
+
+    #region Begin Fetch
+
+    public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.FetchCompleted += callback;
+      dp.BeginFetch();
+    }
+
+    public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.FetchCompleted += callback;
+      dp.BeginFetch(criteria);
+    } 
+
+    #endregion
+
+    #region Begin Update
+
+    public static void BeginUpdate<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.UpdateCompleted += callback;
+      dp.BeginUpdate(criteria);
+    }
+
+    #endregion
+
+    #region Begin Delete
+
+    public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.UpdateCompleted += callback;
+      dp.BeginDelete(criteria);
+    }
+
+    #endregion
+
+    #endregion
   }
 
 #if TESTING

@@ -73,13 +73,11 @@ namespace Csla
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
       if (IsDirty)
       {
-        DataPortal<T> dp = new DataPortal<T>();
-        dp.UpdateCompleted += (o, e) =>
-          {
-            T result = e.Object;
-            OnSaved(result);
-          };
-        dp.BeginUpdate(this);
+        DataPortal.BeginUpdate<T>(this,(o, e) =>
+        {
+          T result = e.Object;
+          OnSaved(result);
+        });
       }
     }
 

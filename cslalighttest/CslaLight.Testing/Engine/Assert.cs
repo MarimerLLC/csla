@@ -8,9 +8,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace cslalighttest.Engine
 {
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
   public static class Assert
   {
     public static void AreEqual(object expected, object actual)

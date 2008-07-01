@@ -20,34 +20,24 @@ namespace Csla.Testing.Business.EditableRootTests
 
     #region  Factory Methods
 
-    public static void CreateNew(Action<MockEditableRoot, Exception> completed)
+    public static void CreateNew(EventHandler<DataPortalResult<MockEditableRoot>> completed)
     {
-      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>();
-      dp.CreateCompleted += (o, e) => { completed(e.Object, e.Error); };
-      dp.BeginCreate();
+      DataPortal.BeginCreate<MockEditableRoot>(completed);
     }
 
-    public static void Fetch(Guid id, Action<MockEditableRoot, Exception> completed)
+    public static void Fetch(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
     {
-      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>();
-      dp.FetchCompleted += (o, e) => 
-      { 
-        if(completed!=null)
-          completed(e.Object, e.Error); 
-      };
-      dp.BeginFetch(new SingleCriteria<MockEditableRoot, Guid>(id));
+      DataPortal.BeginFetch<MockEditableRoot>(
+        new SingleCriteria<MockEditableRoot, Guid>(id),
+        completed);
     }
 
     public static void Delete(Guid id) { Delete(id, null); }
-    public static void Delete(Guid id, Action<MockEditableRoot, Exception> completed)
+    public static void Delete(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
     {
-      DataPortal<MockEditableRoot> dp = new DataPortal<MockEditableRoot>();
-      dp.DeleteCompleted += (o, e) => 
-      {
-        if (completed != null)
-          completed(e.Object, e.Error);
-      };
-      dp.BeginDelete(new SingleCriteria<MockEditableRoot, Guid>(id));
+      DataPortal.BeginDelete<MockEditableRoot>(
+        new SingleCriteria<MockEditableRoot, Guid>(id),
+        completed);
     }
 
     #endregion

@@ -19,8 +19,8 @@ namespace Csla.Reflection
       BindingFlags.Instance |
       BindingFlags.Public;
 
-    private const BindingFlags ctorFlags = 
-      BindingFlags.Instance | 
+    private const BindingFlags ctorFlags =
+      BindingFlags.Instance |
       BindingFlags.Public;
 
     #region Dynamic Constructor Cache
@@ -70,8 +70,7 @@ namespace Csla.Reflection
     /// Uses reflection to dynamically invoke a method
     /// if that method is implemented on the target object.
     /// </summary>
-    public static object CallMethodIfImplemented(
-      object obj, string method, params object[] parameters)
+    public static object CallMethodIfImplemented(object obj, string method, params object[] parameters)
     {
       MethodInfo info = GetMethod(obj.GetType(), method, parameters);
       if (info != null)
@@ -85,39 +84,72 @@ namespace Csla.Reflection
     /// throwing an exception if it is not
     /// implemented on the target object.
     /// </summary>
-#if TESTING
-    [DebuggerNonUserCode]
-#endif
-    public static object CallMethod(
-      object obj, string method, params object[] parameters)
+    public static object CallMethod(object obj, string method, params object[] parameters)
     {
       MethodInfo info = GetMethod(obj.GetType(), method, parameters);
       if (info == null)
-        throw new NotImplementedException(
-          method + " " + Resources.MethodNotImplemented);
+        throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
+
       return CallMethod(obj, info, parameters);
     }
 
     /// <summary>
     /// Uses reflection to dynamically invoke a method,
-    /// throwing an exception if it is not
-    /// implemented on the target object.
+    /// throwing an exception if it is not implemented
+    /// on the target object.
     /// </summary>
-    public static object CallMethod(
-      object obj, MethodInfo info, params object[] parameters)
+    public static object CallMethod(object obj, MethodInfo info, params object[] parameters)
     {
-      // call a private method on the object
-      object result;
+      object result = null;
+      var infoParams = info.GetParameters();
+      object[] inParams = null;
+      if (parameters == null)
+        inParams = new object[] { null };
+      else
+        inParams = parameters;
+      var pCount = infoParams.Length;
+      if ((pCount > 0 && infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0) || (pCount == 1 && infoParams[0].ParameterType.IsArray))
+      {
+        // last param is a param array or only param is an array
+        var extras = inParams.Length - (pCount - 1);
+        // 1 or more params go in the param array
+        // copy extras into an array
+        object[] extraArray = GetExtrasArray(extras, infoParams[pCount - 1].ParameterType);
+        Array.Copy(inParams, extraArray, extras);
+        //For pos = 0 To extras - 1
+        //  extraArray(pos) = inParams(pCount - 1 + pos)
+        //Next
+
+        // copy items into new array
+        object[] paramList = new object[pCount];
+        for (var pos = 0; pos <= pCount - 2; pos++)
+        {
+          paramList[pos] = parameters[pos];
+        }
+        paramList[paramList.Length - 1] = extraArray;
+
+        // use new array
+        inParams = paramList;
+      }
       try
       {
-        result = info.Invoke(obj, parameters);
+        result = info.Invoke(obj, inParams);
       }
       catch (Exception e)
       {
-        throw new Csla.Reflection.CallMethodException(
-          info.Name + " " + Resources.MethodCallFailed, e.InnerException);
+        Exception inner = null;
+        if (e.InnerException == null)
+          inner = e;
+        else
+          inner = e.InnerException;
+        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
       }
       return result;
+    }
+
+    private static object[] GetExtrasArray(int count, Type arrayType)
+    {
+      return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
     }
 
     /// <summary>
@@ -128,17 +160,23 @@ namespace Csla.Reflection
     {
       MethodInfo result = null;
 
+      object[] inParams = null;
+      if (parameters == null)
+        inParams = new object[] { null };
+      else
+        inParams = parameters;
+
       // try to find a strongly typed match
 
       // first see if there's a matching method
       // where all params match types
-      result = FindMethod(objectType, method, GetParameterTypes(parameters));
+      result = FindMethod(objectType, method, GetParameterTypes(inParams));
 
       if (result == null)
       {
         // no match found - so look for any method
         // with the right number of parameters
-        result = FindMethod(objectType, method, parameters.Length);
+        result = FindMethod(objectType, method, inParams.Length);
       }
 
       // no strongly typed match found, get default
@@ -152,13 +190,17 @@ namespace Csla.Reflection
         {
           MethodInfo[] methods = objectType.GetMethods();
           foreach (MethodInfo m in methods)
-            if (m.Name == method && m.GetParameters().Length == parameters.Length)
+          {
+            if (m.Name == method && m.GetParameters().Length == inParams.Length)
             {
               result = m;
               break;
             }
+          }
           if (result == null)
+          {
             throw;
+          }
         }
       }
       return result;
@@ -167,11 +209,25 @@ namespace Csla.Reflection
     internal static Type[] GetParameterTypes(object[] parameters)
     {
       List<Type> result = new List<Type>();
-      foreach (object item in parameters)
-        if (item == null)
-          result.Add(typeof(object));
-        else
-          result.Add(item.GetType());
+
+      if (parameters == null)
+      {
+        result.Add(typeof(object));
+      }
+      else
+      {
+        foreach (object item in parameters)
+        {
+          if (item == null)
+          {
+            result.Add(typeof(object));
+          }
+          else
+          {
+            result.Add(item.GetType());
+          }
+        }
+      }
       return result.ToArray();
     }
 
@@ -184,7 +240,7 @@ namespace Csla.Reflection
       if (criteria.GetType().IsSubclassOf(typeof(CriteriaBase)))
       {
         // get the type of the actual business object
-        // from ICriteria
+        // from CriteriaBase 
         return ((CriteriaBase)criteria).ObjectType;
       }
       else
@@ -206,11 +262,10 @@ namespace Csla.Reflection
       MethodInfo info = null;
       do
       {
-        //find for a strongly typed match
+        // find for a strongly typed match
         info = objType.GetMethod(method, oneLevelFlags, null, types, null);
         if (info != null)
-          break;  //match found
-
+          break; // match found
         objType = objType.BaseType;
       } while (objType != null);
 
@@ -234,7 +289,19 @@ namespace Csla.Reflection
         MethodInfo info = currentType.GetMethod(method, oneLevelFlags);
         if (info != null)
         {
-          if (info.GetParameters().Length == parameterCount)
+          var infoParams = info.GetParameters();
+          var pCount = infoParams.Length;
+          if ((pCount > 0 && infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0) || (pCount == 1 && infoParams[0].ParameterType.IsArray))
+          {
+            // last param is a param array or only param is an array
+            if (parameterCount >= pCount - 1)
+            {
+              // got a match so use it
+              result = info;
+              break;
+            }
+          }
+          else if (pCount == parameterCount)
           {
             // got a match so use it
             result = info;
@@ -243,6 +310,7 @@ namespace Csla.Reflection
         }
         currentType = currentType.BaseType;
       } while (currentType != null);
+
       return result;
     }
   }

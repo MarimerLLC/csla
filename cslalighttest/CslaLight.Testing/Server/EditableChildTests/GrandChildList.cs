@@ -38,11 +38,6 @@ namespace Csla.Testing.Business.EditableChildTests
       RaiseListChangedEvents = true;
     }
 
-    protected override void DataPortal_Update()
-    {
-      Child_Update();
-    }
-
     #endregion
   }
 }

@@ -24,6 +24,11 @@ namespace Csla.Testing.Business.EditableChildTests
       Fetch(criteria.Value);
     }
 
+    protected override void DataPortal_Update()
+    {
+      Child_Update();
+    }
+
     #endregion
   }
 }

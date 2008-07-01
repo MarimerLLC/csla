@@ -458,7 +458,7 @@ namespace Csla
     /// methods.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Child_Update(params object[] parameters)
+    public virtual void Child_Update(params object[] parameters)
     {
       var oldRLCE = this.RaiseListChangedEvents;
       this.RaiseListChangedEvents = false;

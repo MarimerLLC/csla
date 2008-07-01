@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Csla.DataPortalClient;
+using System.ComponentModel;
 
 namespace Csla.Testing.Business.EditableChildTests
 {
@@ -35,17 +36,27 @@ namespace Csla.Testing.Business.EditableChildTests
 
     #region  Data Access
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public void DataPortal_Fetch(LocalProxy<MockList>.CompletedHandler completed)
     {
       // fetch with no filter
       Fetch(completed, "");
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public void DataPortal_Fetch(LocalProxy<MockList>.CompletedHandler completed, SingleCriteria<MockList, string> criteria)
     {
       Fetch(completed, criteria.Value);
     }
-    
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void DataPortal_Update(LocalProxy<MockList>.CompletedHandler completed)
+    {
+      Child_Update();
+
+      completed(this, null);
+    }
+
     #endregion
   }
 }

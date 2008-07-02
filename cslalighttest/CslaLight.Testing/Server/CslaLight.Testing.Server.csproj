@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3374389D-59D8-44B1-B6D0-015819DB482C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -67,6 +67,9 @@
     <Compile Include="EditableRootTests\MockEditableRoot.cs" />
     <Compile Include="EditableRootTests\MockEditableRoot.partial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyTest\ReadOnlyPerson.cs" />
+    <Compile Include="ReadOnlyTest\ReadOnlyPerson.partial.cs" />
+    <Compile Include="ReadOnlyTest\ReadOnlyPersonList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

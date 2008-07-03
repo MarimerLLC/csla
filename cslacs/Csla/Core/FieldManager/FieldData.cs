@@ -38,7 +38,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Gets or sets the value of the field.
     /// </summary>
-    public T Value
+    public virtual T Value
     {
       get
       {
@@ -87,7 +87,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether the field
     /// has been changed.
     /// </summary>
-    public bool IsSelfDirty
+    public virtual bool IsSelfDirty
     {
       get { return IsDirty; }
     }
@@ -96,7 +96,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether the field
     /// has been changed.
     /// </summary>
-    public bool IsDirty
+    public virtual bool IsDirty
     {
       get
       {
@@ -118,7 +118,6 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public void MarkClean()
     {
-
       _isDirty = false;
 
     }
@@ -150,7 +149,7 @@ namespace Csla.Core.FieldManager
       get { return IsValid; }
     }
 
-    private bool IsValid
+    protected virtual bool IsValid
     {
       get
       {

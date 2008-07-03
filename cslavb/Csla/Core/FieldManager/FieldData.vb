@@ -34,7 +34,7 @@
     ''' <summary>
     ''' Gets or sets the value of the field.
     ''' </summary>
-    Public Property Value() As T Implements IFieldData(Of T).Value
+    Public Overridable Property Value() As T Implements IFieldData(Of T).Value
       Get
         Return _data
       End Get
@@ -73,7 +73,17 @@
     ''' Gets a value indicating whether the field
     ''' has been changed.
     ''' </summary>
-    Public ReadOnly Property IsDirty() As Boolean Implements ITrackStatus.IsDirty, ITrackStatus.IsSelfDirty
+    Public Overridable ReadOnly Property IsSelfDirty() As Boolean Implements ITrackStatus.IsSelfDirty
+      Get
+        Return IsDirty
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Gets a value indicating whether the field
+    ''' has been changed.
+    ''' </summary>
+    Public Overridable ReadOnly Property IsDirty() As Boolean Implements ITrackStatus.IsDirty
       Get
         Dim child As ITrackStatus = TryCast(_data, ITrackStatus)
         If child IsNot Nothing Then
@@ -106,7 +116,7 @@
       End Get
     End Property
 
-    Private ReadOnly Property IsValid() As Boolean Implements ITrackStatus.IsValid, ITrackStatus.IsSelfValid
+    Protected Overridable ReadOnly Property IsValid() As Boolean Implements ITrackStatus.IsValid, ITrackStatus.IsSelfValid
       Get
         Dim child As ITrackStatus = TryCast(_data, ITrackStatus)
         If child IsNot Nothing Then

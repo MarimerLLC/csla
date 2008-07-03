@@ -19,16 +19,16 @@ namespace cslalighttest.Engine
 
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
-      MethodTesterStatus status = (MethodTesterStatus)value;
+      TestResult status = (TestResult)value;
       switch (status)
       {
-        case MethodTesterStatus.Indeterminate:
+        case TestResult.Indeterminate:
           return new SolidColorBrush(Colors.Yellow);
-        case MethodTesterStatus.Success:
+        case TestResult.Success:
           return new SolidColorBrush(Colors.Green);
-        case MethodTesterStatus.Fail:
+        case TestResult.Fail:
           return new SolidColorBrush(Colors.Red);
-        case MethodTesterStatus.Evaluating:
+        case TestResult.Evaluating:
         default:
           return new SolidColorBrush(Colors.LightGray);
       }

@@ -16,13 +16,13 @@ namespace cslalighttest.Engine
     public event AsyncAssertComplete Complete;
     private void OnComplete(Exception exception)
     {
-      OnComplete(MethodTesterStatus.Fail, exception);
+      OnComplete(TestResult.Fail, exception);
     }
-    private void OnComplete(MethodTesterStatus status)
+    private void OnComplete(TestResult status)
     {
       OnComplete(status, null);
     }
-    protected virtual void OnComplete(MethodTesterStatus status, Exception exception)
+    protected virtual void OnComplete(TestResult status, Exception exception)
     {
       if (Complete != null)
         Complete(status, exception);
@@ -30,17 +30,17 @@ namespace cslalighttest.Engine
 
     public virtual void Success()
     {
-      OnComplete(MethodTesterStatus.Success);
+      OnComplete(TestResult.Success);
     }
 
     public virtual void Indeterminate()
     {
-      OnComplete(MethodTesterStatus.Indeterminate);
+      OnComplete(TestResult.Indeterminate);
     }
 
     internal void Fail()
     {
-      OnComplete(MethodTesterStatus.Fail);
+      OnComplete(TestResult.Fail);
     }
 
     public void IsNotNull(object actual)
@@ -95,5 +95,5 @@ namespace cslalighttest.Engine
     }
   }
 
-  public delegate void AsyncAssertComplete(MethodTesterStatus status, Exception exception);
+  public delegate void AsyncAssertComplete(TestResult status, Exception exception);
 }

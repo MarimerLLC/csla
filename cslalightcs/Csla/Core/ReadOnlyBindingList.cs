@@ -50,12 +50,10 @@ namespace Csla.Core
     /// </summary>
     protected ReadOnlyBindingList()
     {
-      this.SupportsChangeNotificationCore = false;
       IsReadOnlyCore = true;
       AllowEdit = false;
       AllowRemove = false;
       AllowNew = false;
-      this.SupportsChangeNotificationCore = true;
     }
 
     /// <summary>

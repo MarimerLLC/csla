@@ -53,7 +53,7 @@ namespace cslalighttest.Engine
                      select 
                      (
                        from m in t.Methods
-                       where m.Status == MethodTesterStatus.Success
+                       where m.Status == TestResult.Success
                        select m 
                      )
                      .Count())

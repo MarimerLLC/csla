@@ -51,8 +51,7 @@ namespace cslalighttest.Engine
       Button b = (Button)sender;
       MethodTester tester = (MethodTester)b.DataContext;
 
-      object instance = Activator.CreateInstance(tester.Method.DeclaringType);
-      tester.RunTest(instance);
+      tester.RunTest();
     }
   }
 }

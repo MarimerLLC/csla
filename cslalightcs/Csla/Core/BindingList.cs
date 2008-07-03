@@ -14,7 +14,8 @@ namespace Csla.Core
 {
   public class BindingList<T> : ObservableCollection<T>
   {
-    protected virtual bool SupportsChangeNotificationCore { get; set; }
+    private bool _supportsChangeNotificationCore = true;
+    protected virtual bool SupportsChangeNotificationCore { get { return _supportsChangeNotificationCore; } }
     //protected bool IsReadOnlyCore { get; set; }
 
     #region IBindingList Members

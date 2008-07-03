@@ -8,12 +8,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using System.Runtime.Serialization;
 
-namespace cslalighttest.Serialization
+namespace cslalighttest.Engine
 {
-  public class MockNonBusinessObject
+  public enum TestResult
   {
-    public string Member { get; set; }
+    Evaluating,
+    Success,
+    Fail,
+    Indeterminate
   }
 }

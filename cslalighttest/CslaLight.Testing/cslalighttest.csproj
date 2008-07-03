@@ -68,14 +68,72 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\ReadOnly\MockReadOnly.cs">
+      <Link>ReadOnly\MockReadOnly.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\ReadOnly\MockReadOnlyList.cs">
+      <Link>ReadOnly\MockReadOnlyList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\ReadOnly\ReadOnlyTests.cs">
+      <Link>ReadOnly\ReadOnlyTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\Address.cs">
+      <Link>Serialization\Address.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\AddressBase.cs">
+      <Link>Serialization\AddressBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\AddressList.cs">
+      <Link>Serialization\AddressList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\BindingListTests.cs">
+      <Link>Serialization\BindingListTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\CustomMobileList.cs">
+      <Link>Serialization\CustomMobileList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\MockNonBusinessObject.cs">
+      <Link>Serialization\MockNonBusinessObject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\MockReadOnly.cs">
+      <Link>Serialization\MockReadOnly.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\MockReadOnlyList.cs">
+      <Link>Serialization\MockReadOnlyList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\Person.cs">
+      <Link>Serialization\Person.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\ReadOnlyPerson.cs">
+      <Link>Serialization\ReadOnlyPerson.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\ReadOnlyPersonList.cs">
+      <Link>Serialization\ReadOnlyPersonList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\SerializationTests.cs">
+      <Link>Serialization\SerializationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\UndoTests.cs">
+      <Link>Serialization\UndoTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Stereotypes\EditableChildTestsLocal.cs">
+      <Link>Stereotypes\EditableChildTestsLocal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Stereotypes\EditableChildTestsRemote.cs">
+      <Link>Stereotypes\EditableChildTestsRemote.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Stereotypes\EditableRootTests.cs">
+      <Link>Stereotypes\EditableRootTests.cs</Link>
+    </Compile>
     <Compile Include="Engine\Assert.cs" />
     <Compile Include="Engine\AsyncAsserter.cs" />
-    <Compile Include="Engine\AsyncTestContext.cs" />
+    <Compile Include="Engine\UnitTestContext.cs" />
     <Compile Include="Engine\ExpectedExceptionAttribute.cs" />
     <Compile Include="Engine\Extensions.cs" />
     <Compile Include="Engine\MethodTester.cs" />
-    <Compile Include="Engine\MethodTesterStatus.cs" />
+    <Compile Include="Engine\TestResult.cs" />
     <Compile Include="Engine\ObservableObject.cs" />
+    <Compile Include="Engine\TestBase.cs" />
     <Compile Include="Engine\TestClassAttribute.cs" />
     <Compile Include="Engine\TestContext.cs" />
     <Compile Include="Engine\TestEngine.xaml.cs">
@@ -92,30 +150,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ReadOnly\ReadOnlyTests.cs" />
-    <Compile Include="Serialization\Address.cs" />
-    <Compile Include="Serialization\AddressBase.cs" />
-    <Compile Include="Serialization\AddressList.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Serialization\CustomMobileList.cs" />
-    <Compile Include="Serialization\BindingListTests.cs" />
-    <Compile Include="Serialization\MockNonBusinessObject.cs" />
-    <Compile Include="Serialization\Person.cs" />
-    <Compile Include="ReadOnly\MockReadOnly.cs" />
-    <Compile Include="ReadOnly\MockReadOnlyList.cs" />
-    <Compile Include="Serialization\MockReadOnly.cs" />
-    <Compile Include="Serialization\MockReadOnlyList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\ReadOnlyPerson.cs" />
-    <Compile Include="Serialization\ReadOnlyPersonList.cs" />
-    <Compile Include="Serialization\SerializationTests.cs" />
-    <Compile Include="Serialization\UndoTests.cs" />
-    <Compile Include="Stereotypes\EditableChildTestsLocal.cs" />
-    <Compile Include="Stereotypes\EditableChildTestsRemote.cs" />
-    <Compile Include="Stereotypes\EditableRootTests.cs" />
-    <Compile Include="Stereotypes\ReadOnlyTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -147,6 +185,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />

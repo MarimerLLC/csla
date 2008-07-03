@@ -72,12 +72,8 @@ namespace cslalighttest.Engine
     public void RunTests()
     {
       IsRunning = true;
-      object instance = Activator.CreateInstance(_type);
-      
       foreach (MethodTester tester in _methods)
-      {
-        tester.RunTest(instance);
-      }
+        tester.RunTest();
     }
   }
 }

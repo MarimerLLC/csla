@@ -58,23 +58,26 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Server\EditableChildTests\GrandChild.cs">
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\GrandChild.cs">
       <Link>EditableChildTests\GrandChild.cs</Link>
     </Compile>
-    <Compile Include="..\Server\EditableChildTests\GrandChildList.cs">
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\GrandChildList.cs">
       <Link>EditableChildTests\GrandChildList.cs</Link>
     </Compile>
-    <Compile Include="..\Server\EditableChildTests\MockEditableChild.cs">
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\MockEditableChild.cs">
       <Link>EditableChildTests\MockEditableChild.cs</Link>
     </Compile>
-    <Compile Include="..\Server\EditableChildTests\MockList.cs">
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\MockList.cs">
       <Link>EditableChildTests\MockList.cs</Link>
     </Compile>
-    <Compile Include="..\Server\EditableRootTests\MockEditableRoot.cs">
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableRootTests\MockEditableRoot.cs">
       <Link>EditableRootTests\MockEditableRoot.cs</Link>
     </Compile>
-    <Compile Include="..\Server\ReadOnlyTest\ReadOnlyPerson.cs">
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\ReadOnlyTests\ReadOnlyPerson.cs">
       <Link>ReadOnlyTest\ReadOnlyPerson.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\ReadOnlyTests\ReadOnlyPersonList.cs">
+      <Link>ReadOnlyTest\ReadOnlyPersonList.cs</Link>
     </Compile>
     <Compile Include="EditableChildTests\GrandChild.partial.cs" />
     <Compile Include="EditableChildTests\GrandChildList.partial.cs" />

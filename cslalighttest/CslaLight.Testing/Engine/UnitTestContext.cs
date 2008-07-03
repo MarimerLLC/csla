@@ -11,17 +11,19 @@ using System.Windows.Shapes;
 
 namespace cslalighttest.Engine
 {
-  public class AsyncTestContext
+  public class UnitTestContext
   {
-    public event AsyncTestCompleteDelegate Complete;
-    protected virtual void OnComplete(MethodTesterStatus status, Exception error)
+    public event AsyncTestCompleteDelegate Completed;
+    protected virtual void OnComplete(TestResult status, Exception error)
     {
       if (_asserter != null)
         _asserter.Complete -= OnComplete;
 
-      if (Complete != null)
-        Complete(this, new AsyncTestCompleteEventArgs(status, error));
+      if (Completed != null)
+        Completed(this, new AsyncTestCompleteEventArgs(status, error));
     }
+
+    public void Complete() { }
 
     private AsyncAsserter _asserter;
     public AsyncAsserter Assert
@@ -44,12 +46,12 @@ namespace cslalighttest.Engine
   public sealed class AsyncTestCompleteEventArgs : EventArgs
   {
     private Exception _error;
-    private MethodTesterStatus _status;
+    private TestResult _status;
 
     public Exception Error { get { return _error; } }
-    public MethodTesterStatus Status { get { return _status; } }
+    public TestResult Status { get { return _status; } }
 
-    public AsyncTestCompleteEventArgs(MethodTesterStatus status, Exception error)
+    public AsyncTestCompleteEventArgs(TestResult status, Exception error)
     {
       _status = status;
       _error = error;

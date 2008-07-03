@@ -155,13 +155,16 @@ namespace Csla.Core
     {
       UndoingChanges();
 
-      if (parentEditLevel < 0 || this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 < parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
 
-      SerializationInfo state = _stateStack.Pop();
-      OnUndoChanges(state);
-      
-      UndoChangesComplete();
+      if (parentEditLevel >= 0)
+      {
+        SerializationInfo state = _stateStack.Pop();
+        OnUndoChanges(state);
+
+        UndoChangesComplete();
+      }
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]

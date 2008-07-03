@@ -10,38 +10,6 @@ namespace Csla.Testing.Business.EditableRootTests
 #endif
   partial class MockEditableRoot
   {
-    public MockEditableRoot() { }
-    public MockEditableRoot(Guid id, bool isnew)
-    {
-      SetProperty<Guid>(IdProperty, id);
-      if (!isnew)
-        MarkOld();
-    }
-
-    #region  Factory Methods
-
-    public static void CreateNew(EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      DataPortal.BeginCreate<MockEditableRoot>(completed);
-    }
-
-    public static void Fetch(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      DataPortal.BeginFetch<MockEditableRoot>(
-        new SingleCriteria<MockEditableRoot, Guid>(id),
-        completed);
-    }
-
-    public static void Delete(Guid id) { Delete(id, null); }
-    public static void Delete(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      DataPortal.BeginDelete<MockEditableRoot>(
-        new SingleCriteria<MockEditableRoot, Guid>(id),
-        completed);
-    }
-
-    #endregion
-
     // For local data portal tests
     #region Data Access
 

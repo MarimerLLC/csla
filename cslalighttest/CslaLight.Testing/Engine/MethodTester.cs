@@ -16,7 +16,7 @@ namespace cslalighttest.Engine
   {
     #region Member fields and properties
 
-    private MethodTesterStatus _status;
+    private TestResult _status;
     private MethodInfo _method;
     private string _message;
     private bool _isRunning;
@@ -36,7 +36,7 @@ namespace cslalighttest.Engine
       get { return !_isRunning; }
     }
 
-    public MethodTesterStatus Status
+    public TestResult Status
     {
       get { return _status; }
       protected set
@@ -77,18 +77,18 @@ namespace cslalighttest.Engine
         throw new ArgumentException("Method must be public");
 
       _method = method;
-      _status = MethodTesterStatus.Evaluating;
+      _status = TestResult.Evaluating;
     }
 
     #endregion
 
-    public void RunTest(object instance)
+    public void RunTest()
     {
       IsRunning = true;
-      ParameterInfo[] parameters = _method.GetParameters();
       ExpectedExceptionAttribute expectedException = null;
+      PropertyInfo contextProperty = _method.DeclaringType.GetProperty("Context");
 
-      bool isAsync = (parameters.Length > 0 && typeof(AsyncTestContext).IsAssignableFrom(parameters[0].ParameterType));
+      bool isAsync = (contextProperty != null && typeof(UnitTestContext).IsAssignableFrom(contextProperty.PropertyType));
       bool expectsException = _method.IsDefined(typeof(ExpectedExceptionAttribute), true);
       
       if(expectsException)
@@ -100,31 +100,23 @@ namespace cslalighttest.Engine
         expectedException = attributes[0] as ExpectedExceptionAttribute;
       }
 
-      foreach (MethodInfo m in _method.DeclaringType.GetMethods())
-      {
-        if (m.IsDefined(typeof(TestSetup), true))
-        {
-          m.Invoke(instance, null);
-          break;
-        }
-      }
-
+      object instance = InitializeInstance();
       if(isAsync)
       {
-        AsyncTestContext context = new AsyncTestContext();
-        context.Complete += (o, e) =>
+        UnitTestContext context = (UnitTestContext)contextProperty.GetValue(instance, null);
+        context.Completed += (o, e) =>
         {
           if(expectsException)
           {
-            if(e.Status == MethodTesterStatus.Fail && expectedException.Type.IsAssignableFrom( e.Error.GetType()))
-              Status = MethodTesterStatus.Success;
+            if(e.Status == TestResult.Fail && expectedException.Type.IsAssignableFrom( e.Error.GetType()))
+              Status = TestResult.Success;
             else
-              Status = MethodTesterStatus.Fail;
+              Status = TestResult.Fail;
           }
           else
             Status = e.Status;
 
-          if (Status == MethodTesterStatus.Fail && e.Error != null)
+          if (Status == TestResult.Fail && e.Error != null)
           {
             Message = string.Format("{0}: {1}", 
               e.Error.Innermost().GetType().FullName, 
@@ -134,11 +126,11 @@ namespace cslalighttest.Engine
 
         try
         {
-          _method.Invoke(instance, new object[]{ context });
+          _method.Invoke(instance, null);
         }
         catch(Exception ex)
         {
-          Status = MethodTesterStatus.Fail;
+          Status = TestResult.Fail;
           Message = string.Format("{0}: {1}", ex.Innermost().GetType().FullName, ex.Innermost().Message);
         }
       }
@@ -149,26 +141,40 @@ namespace cslalighttest.Engine
           _method.Invoke(instance, null);
           if (expectsException)
           {
-            Status = MethodTesterStatus.Fail;
+            Status = TestResult.Fail;
           }
           else
           {
-            Status = MethodTesterStatus.Success;
+            Status = TestResult.Success;
           }
         }
         catch(Exception ex)
         {
           if (expectsException && expectedException.Type.IsAssignableFrom(ex.InnerException.GetType()))
           {
-            Status = MethodTesterStatus.Success;
+            Status = TestResult.Success;
           }
           else
           {
-            Status = MethodTesterStatus.Fail;
+            Status = TestResult.Fail;
             Message = string.Format("{0}: {1}", ex.Innermost().GetType().FullName, ex.Innermost().Message);
           }
         }
       }
+    }
+
+    private object InitializeInstance()
+    {
+      object instance = Activator.CreateInstance(_method.DeclaringType);
+      foreach (MethodInfo m in _method.DeclaringType.GetMethods())
+      {
+        if (m.IsDefined(typeof(TestSetup), true))
+        {
+          m.Invoke(instance, null);
+          break;
+        }
+      }
+      return instance;
     }
   }
 }

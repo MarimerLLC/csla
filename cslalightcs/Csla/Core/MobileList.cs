@@ -39,13 +39,12 @@ namespace Csla.Core
       info.AddValue("Csla.Core.MobileList.AllowNew", AllowNew);
       info.AddValue("Csla.Core.MobileList.AllowRemove", AllowRemove);
       info.AddValue("Csla.Core.MobileList.RaiseListChangedEvents", RaiseListChangedEvents);
-      info.AddValue("Csla.Core.MobileList.SupportsChangeNotificationCore", SupportsChangeNotificationCore); 
     }
 
     protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) 
     {
       if (!typeof(IMobileObject).IsAssignableFrom(typeof(T)))
-        throw new NotSupportedException(Resources.CannotSerializeCollectionsNotOfIMobileObject);
+        throw new InvalidOperationException(Resources.CannotSerializeCollectionsNotOfIMobileObject);
       
       List<int> references = new List<int>();
       for (int x = 0; x < this.Count; x++)
@@ -77,13 +76,12 @@ namespace Csla.Core
       AllowNew = info.GetValue<bool>("Csla.Core.MobileList.AllowNew");
       AllowRemove = info.GetValue<bool>("Csla.Core.MobileList.AllowRemove");
       RaiseListChangedEvents = info.GetValue<bool>("Csla.Core.MobileList.RaiseListChangedEvents");
-      SupportsChangeNotificationCore = info.GetValue<bool>("Csla.Core.MobileList.SupportsChangeNotificationCore");
     }
 
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (!typeof(IMobileObject).IsAssignableFrom(typeof(T)))
-        throw new NotSupportedException("Cannot deserialize collections not of type IMobileObject");
+        throw new InvalidOperationException("Cannot deserialize collections not of type IMobileObject");
 
       if (info.Values.ContainsKey("$list"))
       {      

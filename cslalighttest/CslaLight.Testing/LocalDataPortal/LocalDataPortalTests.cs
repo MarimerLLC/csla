@@ -6,7 +6,7 @@ using Csla.Testing.Business.EditableRootTests;
 namespace cslalighttest.LocalDataPortal
 {
   [TestClass]
-  public class LocalDataPortalTests
+  public class LocalDataPortalTests : TestBase
   {
     [TestSetup]
     public void Setup()
@@ -17,12 +17,15 @@ namespace cslalighttest.LocalDataPortal
     [TestMethod]
     public void CanConstructTest()
     {
+      UnitTestContext context = GetContext();
       MockEditableRoot root = new MockEditableRoot();
+      context.Assert.Success();
     }
 
     [TestMethod]
-    public void TestCreateNew(AsyncTestContext context)
+    public void TestCreateNew()
     {
+      UnitTestContext context = GetContext();
       MockEditableRoot.CreateNew((o, e) =>
       {
         MockEditableRoot actual = e.Object;
@@ -35,11 +38,14 @@ namespace cslalighttest.LocalDataPortal
         context.Assert.AreEqual("create", actual.DataPortalMethod);
         context.Assert.Success();
       });
+
+      context.Complete();
     }
 
     [TestMethod]
-    public void TestInsert(AsyncTestContext context)
+    public void TestInsert()
     {
+      UnitTestContext context = GetContext();
       MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, true);
       root.Name = "justin";
       root.Saved += (o, e) =>
@@ -52,11 +58,13 @@ namespace cslalighttest.LocalDataPortal
         context.Assert.Success();
       };
       root.Save();
+      context.Complete();
     }
 
     [TestMethod]
-    public void TestUpdate(AsyncTestContext context)
+    public void TestUpdate()
     {
+      UnitTestContext context = GetContext();
       MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, false);
       root.Name = "justin";
       root.Saved += (o, e) =>
@@ -69,11 +77,13 @@ namespace cslalighttest.LocalDataPortal
         context.Assert.Success();
       };
       root.Save();
+      context.Complete();
     }
 
     [TestMethod]
-    public void TestDelete(AsyncTestContext context)
+    public void TestDelete()
     {
+      UnitTestContext context = GetContext();
       MockEditableRoot root = new MockEditableRoot(MockEditableRoot.MockEditableRootId, false);
       root.Saved += (o, e) =>
       {
@@ -86,24 +96,27 @@ namespace cslalighttest.LocalDataPortal
       };
       root.Delete();
       root.Save();
+      context.Complete();
     }
 
     [TestMethod]
-    public void TestFetch(AsyncTestContext context)
+    public void TestFetch()
     {
+      UnitTestContext context = GetContext();
       MockEditableRoot.Fetch(
-        MockEditableRoot.MockEditableRootId,
-        (o, e) =>
-        {
-          MockEditableRoot actual = e.Object;
-          context.Assert.IsNull(e.Error);
-          context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
-          context.Assert.AreEqual("fetch", actual.DataPortalMethod);
-          context.Assert.IsFalse(actual.IsNew);
-          context.Assert.IsFalse(actual.IsDeleted);
-          context.Assert.IsFalse(actual.IsDirty);
-          context.Assert.Success();
-        });
+      MockEditableRoot.MockEditableRootId,
+      (o, e) =>
+      {
+        MockEditableRoot actual = e.Object;
+        context.Assert.IsNull(e.Error);
+        context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);
+        context.Assert.AreEqual("fetch", actual.DataPortalMethod);
+        context.Assert.IsFalse(actual.IsNew);
+        context.Assert.IsFalse(actual.IsDeleted);
+        context.Assert.IsFalse(actual.IsDirty);
+        context.Assert.Success();
+      });
+      context.Complete();
     }
   }
 }

@@ -11,11 +11,11 @@ using System.Windows.Shapes;
 
 namespace cslalighttest.Engine
 {
-  public enum MethodTesterStatus
+  public abstract class TestBase
   {
-    Evaluating,
-    Success,
-    Fail,
-    Indeterminate
+    private UnitTestContext _context = new UnitTestContext();
+    public UnitTestContext Context { get { return _context; } set { _context = value; } }
+
+    public UnitTestContext GetContext() { return Context; }
   }
 }

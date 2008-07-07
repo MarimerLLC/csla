@@ -66,6 +66,9 @@
     <Compile Include="..\..\cslacs\Csla\Core\StateMode.cs">
       <Link>Core\StateMode.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\NoAccessBehavior.cs">
+      <Link>Security\NoAccessBehavior.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
       <Link>Serialization\ISerializationFormatter.cs</Link>
     </Compile>
@@ -83,6 +86,51 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
       <Link>Serialization\SerializationFormatterFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\BrokenRule.cs">
+      <Link>Validation\BrokenRule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\BrokenRulesCollection.cs">
+      <Link>Validation\BrokenRulesCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\CommonRules.cs">
+      <Link>Validation\CommonRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\DecoratedRuleArgs.cs">
+      <Link>Validation\DecoratedRuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\IRuleMethod.cs">
+      <Link>Validation\IRuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleArgs.cs">
+      <Link>Validation\RuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleDescription.cs">
+      <Link>Validation\RuleDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleHandler.cs">
+      <Link>Validation\RuleHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleMethod.cs">
+      <Link>Validation\RuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleSeverity.cs">
+      <Link>Validation\RuleSeverity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RulesList.cs">
+      <Link>Validation\RulesList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\SharedValidationRules.cs">
+      <Link>Validation\SharedValidationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\ValidationException.cs">
+      <Link>Validation\ValidationException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\ValidationRules.cs">
+      <Link>Validation\ValidationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\ValidationRulesManager.cs">
+      <Link>Validation\ValidationRulesManager.cs</Link>
     </Compile>
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
@@ -147,7 +195,6 @@
     <Compile Include="Reflection\CallMethodException.cs" />
     <Compile Include="Reflection\LateBoundObject.cs" />
     <Compile Include="Reflection\MethodCaller.cs" />
-    <Compile Include="Security\NoAccessBehavior.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -163,18 +210,6 @@
     <Compile Include="SingleCriteria.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="Validation\BrokenRule.cs" />
-    <Compile Include="Validation\BrokenRulesCollection.cs" />
-    <Compile Include="Validation\IRuleMethod.cs" />
-    <Compile Include="Validation\RuleArgs.cs" />
-    <Compile Include="Validation\RuleHandler.cs" />
-    <Compile Include="Validation\RuleMethod.cs" />
-    <Compile Include="Validation\RuleSeverity.cs" />
-    <Compile Include="Validation\RulesList.cs" />
-    <Compile Include="Validation\SharedValidationRules.cs" />
-    <Compile Include="Validation\ValidationException.cs" />
-    <Compile Include="Validation\ValidationRules.cs" />
-    <Compile Include="Validation\ValidationRulesManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\WcfPortal\configuration91.svcinfo" />

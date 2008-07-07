@@ -57,29 +57,46 @@ namespace cslalighttest.Engine
 
     public void AreEqual(object expected, object actual)
     {
+      string act;
+      if (actual != null)
+        act = actual.ToString();
+      else
+        act = "<null>";
+      if (string.IsNullOrEmpty(act))
+        act = "string.Empty";
+
+      AreEqual(expected, actual, string.Format("Assert.AreEqual failed; expected '{0}', was '{1}'.", expected.ToString(), act));
+    }
+
+    public void AreEqual(object expected, object actual, string message)
+    {
       if (!object.Equals(expected, actual))
       {
-        string act;
-        if (actual != null)
-          act = actual.ToString();
-        else
-          act = "<null>";
-        if (string.IsNullOrEmpty(act))
-          act = "string.Empty";
-        OnComplete(new TestException(string.Format("Assert.AreEqual failed; expected '{0}', was '{1}'.", expected.ToString(), act)));
+        
+        OnComplete(new TestException(message));
       }
     }
 
     public void IsFalse(bool actual)
     {
+      IsFalse(actual, "Assert.IsFalse failed.");
+    }
+
+    public void IsFalse(bool actual, string message)
+    {
       if (actual)
-        OnComplete(new TestException("Assert.IsFalse failed."));
+        OnComplete(new TestException(message));
     }
 
     public void IsTrue(bool actual)
     {
+      IsTrue(actual, "Assert.IsTrue failed.");
+    }
+
+    public void IsTrue(bool actual, string message)
+    {
       if (!actual)
-        OnComplete(new TestException("Assert.IsTrue failed."));
+        OnComplete(new TestException(message));
     }
 
     public void Try(Action action)

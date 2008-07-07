@@ -7,6 +7,8 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.DataPortalClient;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Csla.Core
 {
@@ -467,6 +469,461 @@ namespace Csla.Core
           auth = true; // Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
         return (IsDirty && IsValid && auth);
       }
+    }
+
+    #endregion
+
+    #region Authorization
+    // TODO: Implement authorization!
+
+    /// <summary>
+    /// The code in this region is purely a stub implementation at this point. Some if it is required
+    /// to get the tests for Validation to build.
+    /// </summary>
+    
+    //[NotUndoable()]
+    //[NonSerialized()]
+    //private Dictionary<string, bool> _readResultCache;
+    //[NotUndoable()]
+    //[NonSerialized()]
+    //private Dictionary<string, bool> _writeResultCache;
+    //[NotUndoable()]
+    //[NonSerialized()]
+    //private Dictionary<string, bool> _executeResultCache;
+    //[NotUndoable()]
+    //[NonSerialized()]
+    //private System.Security.Principal.IPrincipal _lastPrincipal;
+
+    //[NotUndoable()]
+    //[NonSerialized()]
+    //private Security.AuthorizationRules _authorizationRules;
+
+    private void InitializeAuthorizationRules()
+    {
+      //AddInstanceAuthorizationRules();
+      //if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
+      //{
+      //  lock (this.GetType())
+      //  {
+      //    if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
+      //    {
+      //      Csla.Security.SharedAuthorizationRules.GetManager(this.GetType(), true);
+      //      AddAuthorizationRules();
+      //    }
+      //  }
+      //}
+    }
+
+    /// <summary>
+    /// Override this method to add authorization
+    /// rules for your object's properties.
+    /// </summary>
+    /// <remarks>
+    /// AddInstanceAuthorizationRules is automatically called by CSLA .NET
+    /// when your object should associate per-instance authorization roles
+    /// with its properties.
+    /// </remarks>
+    protected virtual void AddInstanceAuthorizationRules()
+    {
+
+    }
+
+    /// <summary>
+    /// Override this method to add per-type
+    /// authorization rules for your type's properties.
+    /// </summary>
+    /// <remarks>
+    /// AddAuthorizationRules is automatically called by CSLA .NET
+    /// when your object should associate per-type authorization roles
+    /// with its properties.
+    /// </remarks>
+    protected virtual void AddAuthorizationRules()
+    {
+
+    }
+
+    /// <summary>
+    /// Provides access to the AuthorizationRules object for this
+    /// object.
+    /// </summary>
+    /// <remarks>
+    /// Use this object to add a list of allowed and denied roles for
+    /// reading and writing properties of the object. Typically these
+    /// values are added once when the business object is instantiated.
+    /// </remarks>
+    //protected Security.AuthorizationRules AuthorizationRules
+    //{
+    //  get
+    //  {
+    //    if (_authorizationRules == null)
+    //      _authorizationRules = new Security.AuthorizationRules(this.GetType());
+    //    return _authorizationRules;
+    //  }
+    //}
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool CanReadProperty(bool throwOnFalse)
+    {
+      //string propertyName =
+      //  new System.Diagnostics.StackTrace().
+      //  GetFrame(1).GetMethod().Name.Substring(4);
+      //bool result = CanReadProperty(propertyName);
+      //if (throwOnFalse && result == false)
+      //{
+      //  System.Security.SecurityException ex = new System.Security.SecurityException(
+      //    String.Format("{0} ({1})",
+      //    Resources.PropertyGetNotAllowed, propertyName));
+      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
+      //  throw ex;
+      //}
+      //return result;
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <param name="propertyName">Name of the property to read.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    public bool CanReadProperty(string propertyName, bool throwOnFalse)
+    {
+      //bool result = CanReadProperty(propertyName);
+      //if (throwOnFalse && result == false)
+      //{
+      //  System.Security.SecurityException ex = new System.Security.SecurityException(
+      //    String.Format("{0} ({1})",
+      //    Resources.PropertyGetNotAllowed, propertyName));
+      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
+      //  throw ex;
+      //}
+      //return result;
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool CanReadProperty()
+    {
+      //string propertyName =
+      //  new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      //return CanReadProperty(propertyName);
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// specified property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property to read.</param>
+    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <remarks>
+    /// <para>
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can read. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
+    /// </para><para>
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied read access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have read access.
+    /// </para>
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanReadProperty(string propertyName)
+    {
+      bool result = true;
+
+      //VerifyAuthorizationCache();
+
+      //if (!_readResultCache.TryGetValue(propertyName, out result))
+      //{
+      //  result = true;
+      //  if (AuthorizationRules.HasReadAllowedRoles(propertyName))
+      //  {
+      //    // some users are explicitly granted read access
+      //    // in which case all other users are denied
+      //    if (!AuthorizationRules.IsReadAllowed(propertyName))
+      //      result = false;
+      //  }
+      //  else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
+      //  {
+      //    // some users are explicitly denied read access
+      //    if (AuthorizationRules.IsReadDenied(propertyName))
+      //      result = false;
+      //  }
+      //  // store value in cache
+      //  _readResultCache[propertyName] = result;
+      //}
+      return result;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if write is allowed.</returns>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool CanWriteProperty(bool throwOnFalse)
+    {
+      //string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      //bool result = CanWriteProperty(propertyName);
+      //if (throwOnFalse && result == false)
+      //{
+      //  System.Security.SecurityException ex = new System.Security.SecurityException(
+      //    String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
+      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
+      //  throw ex;
+      //}
+      //return result;
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if write is allowed.</returns>
+    /// <param name="propertyName">Name of the property to write.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    public bool CanWriteProperty(string propertyName, bool throwOnFalse)
+    {
+      //bool result = CanWriteProperty(propertyName);
+      //if (throwOnFalse && result == false)
+      //{
+      //  System.Security.SecurityException ex = new System.Security.SecurityException(
+      //    String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
+      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
+      //  throw ex;
+      //}
+      //return result;
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// calling property.
+    /// </summary>
+    /// <returns><see langword="true" /> if write is allowed.</returns>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit property name")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool CanWriteProperty()
+    {
+      //string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      //return CanWriteProperty(propertyName);
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// specified property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property to write.</param>
+    /// <returns><see langword="true" /> if write is allowed.</returns>
+    /// <remarks>
+    /// <para>
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can write. If no list of allowed roles is provided then
+    /// the list of denied roles is checked.
+    /// </para><para>
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are denied write access. All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will have write access.
+    /// </para>
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanWriteProperty(string propertyName)
+    {
+      bool result = true;
+
+      //VerifyAuthorizationCache();
+
+      //if (!_writeResultCache.TryGetValue(propertyName, out result))
+      //{
+      //  result = true;
+      //  if (this.AuthorizationRules.HasWriteAllowedRoles(propertyName))
+      //  {
+      //    // some users are explicitly granted write access
+      //    // in which case all other users are denied
+      //    if (!AuthorizationRules.IsWriteAllowed(propertyName))
+      //      result = false;
+      //  }
+      //  else if (AuthorizationRules.HasWriteDeniedRoles(propertyName))
+      //  {
+      //    // some users are explicitly denied write access
+      //    if (AuthorizationRules.IsWriteDenied(propertyName))
+      //      result = false;
+      //  }
+      //  _writeResultCache[propertyName] = result;
+      //}
+      return result;
+    }
+
+    private void VerifyAuthorizationCache()
+    {
+      //if (_readResultCache == null)
+      //  _readResultCache = new Dictionary<string, bool>();
+      //if (_writeResultCache == null)
+      //  _writeResultCache = new Dictionary<string, bool>();
+      //if (_executeResultCache == null)
+      //  _executeResultCache = new Dictionary<string, bool>();
+      //if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
+      //{
+      //  // the principal has changed - reset the cache
+      //  _readResultCache.Clear();
+      //  _writeResultCache.Clear();
+      //  _executeResultCache.Clear();
+      //  _lastPrincipal = Csla.ApplicationContext.User;
+      //}
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the calling method.
+    /// </summary>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit method name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public bool CanExecuteMethod(bool throwOnFalse)
+    {
+      //string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+      //bool result = CanExecuteMethod(methodName);
+      //if (throwOnFalse && result == false)
+      //{
+      //  System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
+      //  throw ex;
+      //}
+      //return result;
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the specified method.
+    /// </summary>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <param name="methodName">Name of the method to execute.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    public bool CanExecuteMethod(string methodName, bool throwOnFalse)
+    {
+      //bool result = CanExecuteMethod(methodName);
+      //if (throwOnFalse && result == false)
+      //{
+      //  System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
+      //  throw ex;
+      //}
+      //return result;
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the calling method.
+    /// </summary>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    [Obsolete("Use overload requiring explicit method name")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public bool CanExecuteMethod()
+    {
+      //string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+      //return CanExecuteMethod(methodName);
+
+      return true;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the specified method.
+    /// </summary>
+    /// <param name="methodName">Name of the method to execute.</param>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <remarks>
+    /// <para>
+    /// If a list of allowed roles is provided then only users in those
+    /// roles can execute the method. If no list of allowed roles is 
+    /// provided then the list of denied roles is checked.
+    /// </para><para>
+    /// If a list of denied roles is provided then users in the denied
+    /// roles are not allowed to execute the method. 
+    /// All other users are allowed.
+    /// </para><para>
+    /// If neither a list of allowed nor denied roles is provided then
+    /// all users will be allowed to execute the method..
+    /// </para>
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanExecuteMethod(string methodName)
+    {
+      bool result = true;
+
+      //VerifyAuthorizationCache();
+
+      //if (!_executeResultCache.TryGetValue(methodName, out result))
+      //{
+      //  result = true;
+      //  if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
+      //  {
+      //    // some users are explicitly granted read access
+      //    // in which case all other users are denied
+      //    if (!(AuthorizationRules.IsExecuteAllowed(methodName)))
+      //    {
+      //      result = false;
+      //    }
+
+      //  }
+      //  else if (AuthorizationRules.HasExecuteDeniedRoles(methodName))
+      //  {
+      //    // some users are explicitly denied read access
+      //    if (AuthorizationRules.IsExecuteDenied(methodName))
+      //    {
+      //      result = false;
+      //    }
+      //  }
+      //  // store value in cache
+      //  _executeResultCache[methodName] = result;
+      //}
+      return result;
     }
 
     #endregion
@@ -1908,6 +2365,5 @@ namespace Csla.Core
     }
 
     #endregion
-
   }
 }

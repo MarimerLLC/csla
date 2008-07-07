@@ -14,6 +14,18 @@ namespace Csla
   public class BusinessBase<T> : BusinessBase, ISavable
     where T: BusinessBase<T>
   {
+    #region Object ID Value
+
+    /// <summary>
+    /// Override this method to return a unique identifying
+    /// value for this object.
+    /// </summary>
+    protected virtual object GetIdValue()
+    {
+      return null;
+    }
+
+    #endregion
 
     #region ICloneable
 

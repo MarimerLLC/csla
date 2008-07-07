@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Reflection;
 using Csla.WcfPortal;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace Csla
 {
@@ -236,6 +238,64 @@ namespace Csla
       return info;
     }
 
+    #endregion
+
+    #region Uri
+    //  RFC 2396                   URI Generic Syntax                August 1998
+
+    // Characters in the "reserved" set are not reserved in all contexts.
+    // The set of characters actually reserved within any given URI
+    // component is defined by that component. In general, a character is
+    // reserved if the semantics of the URI changes if the character is
+    // replaced with its escaped US-ASCII encoding.
+
+    //  2.3. Unreserved Characters
+
+    // Data characters that are allowed in a URI but do not have a reserved
+    // purpose are called unreserved.  These include upper and lower case
+    // letters, decimal digits, and a limited set of punctuation marks and
+    // symbols.
+
+    //   unreserved  = alphanum | mark
+
+    //   mark        = "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
+
+    // Unreserved characters can be escaped without changing the semantics
+    // of the URI, but this should not be done unless the URI is being used
+    // in a context that does not allow the unescaped character to appear.
+    private static Regex Unreserved = new Regex(@"[0-9A-Za-z-_.!~*'()]");
+
+    /// <summary>
+    /// Escpaes a string according to RFC 2396. This is meant as a replacement for the missing Uri.EscapeDataString
+    /// method in silverlight.
+    /// </summary>
+    /// <param name="data">The string to escape.</param>
+    /// <returns>An escaped version of data.</returns>
+    /// <remarks>
+    /// For linked files calling Uri.EscapeDataString you can use the following C# code snippet 
+    /// to ensure platform compatibility:
+    /// 
+    /// #if SILVERLIGHT
+    /// using Uri = Csla.Utilities;
+    /// #endif
+    /// </remarks>
+    public static string EscapeDataString(string data)
+    {
+      StringBuilder sb = new StringBuilder();
+      foreach (char c in data)
+      {
+        if (Unreserved.IsMatch(c.ToString()))
+        {
+          sb.Append(c);
+        }
+        else
+        {
+          sb.Append("%");
+          sb.Append(string.Format("{0:x2}", (int)c).ToUpper());
+        }
+      }
+      return sb.ToString();
+    }
     #endregion
   }
 

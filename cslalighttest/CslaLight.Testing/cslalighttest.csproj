@@ -128,6 +128,45 @@
     <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs">
       <Link>Stereotypes\ReadOnlyListTestsLocalAndRemote.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\BrokenRulesMergeRoot.cs">
+      <Link>Validation\BrokenRulesMergeRoot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasBadSharedRule.cs">
+      <Link>Validation\HasBadSharedRule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasPerTypeClasses.cs">
+      <Link>Validation\HasPerTypeClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasPerTypeRules.cs">
+      <Link>Validation\HasPerTypeRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasRegEx.cs">
+      <Link>Validation\HasRegEx.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasRulesManager.cs">
+      <Link>Validation\HasRulesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasRulesManager2.cs">
+      <Link>Validation\HasRulesManager2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\MaxLengthArgs.cs">
+      <Link>Validation\MaxLengthArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\SeverityClasses.cs">
+      <Link>Validation\SeverityClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\SeverityTests.cs">
+      <Link>Validation\SeverityTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\ShortCircuitClasses.cs">
+      <Link>Validation\ShortCircuitClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\ShortCircuitTests.cs">
+      <Link>Validation\ShortCircuitTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\ValidationTests.cs">
+      <Link>Validation\ValidationTests.cs</Link>
+    </Compile>
     <Compile Include="Engine\Assert.cs" />
     <Compile Include="Engine\AsyncAsserter.cs" />
     <Compile Include="Engine\UnitTestContext.cs" />
@@ -157,6 +196,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\EscapeTests.cs" />
+    <Compile Include="Validation\HasRulesManager.partial.cs" />
+    <Compile Include="Validation\HasRulesManager2.partial.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

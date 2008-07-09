@@ -683,6 +683,28 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   End Function
 
   ''' <summary>
+  ''' Gets a property's value, first checking authorization.
+  ''' </summary>
+  ''' <typeparam name="P">
+  ''' Type of the property.
+  ''' </typeparam>
+  ''' <param name="field">
+  ''' The backing field for the property.</param>
+  ''' <param name="propertyInfo">
+  ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
+  ''' <param name="defaultValue">
+  ''' Value to be returned if the user is not
+  ''' authorized to read the property.</param>
+  ''' <param name="noAccess">
+  ''' True if an exception should be thrown when the
+  ''' user is not authorized to read this property.</param>
+  Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal field As P, ByVal defaultValue As P, ByVal noAccess As Security.NoAccessBehavior) As P
+
+    Return GetProperty(Of P)(propertyInfo.Name, field, defaultValue, noAccess)
+
+  End Function
+
+  ''' <summary>
   ''' Gets a property's value as 
   ''' a specified type, first checking authorization.
   ''' </summary>

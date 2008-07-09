@@ -17,7 +17,7 @@ This Software License Agreement ("Agreement") is effective
 upon your use of CSLA Light ("Software").
 
 1. Ownership.
-The CSLA Light framework is Copyright 2007 by Rockford Lhotka, 
+The CSLA Light framework is Copyright 2008 by Rockford Lhotka, 
 Eden Prairie, MN, USA. 
 
 2. Copyright Notice.

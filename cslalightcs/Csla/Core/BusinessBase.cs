@@ -9,6 +9,7 @@ using Csla.DataPortalClient;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Csla.Validation;
 
 namespace Csla.Core
 {
@@ -16,9 +17,38 @@ namespace Csla.Core
   [DebuggerNonUserCode]
 #endif
   [Serializable]
-  public class BusinessBase : UndoableBase, ICloneable, IParent, IDataPortalTarget, IEditableBusinessObject
+  public abstract class BusinessBase : UndoableBase, 
+    ICloneable, 
+    IParent, 
+    IDataPortalTarget, 
+    IEditableBusinessObject,
+    ISerializationNotification
   {
-    static BusinessBase() { }
+    #region Constructors
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    protected BusinessBase()
+    {
+      Initialize();
+      InitializeBusinessRules();
+      InitializeAuthorizationRules();
+    }
+
+    #endregion
+
+    #region Initialize
+
+    /// <summary>
+    /// Override this method to set up event handlers so user
+    /// code in a partial class can respond to events raised by
+    /// generated code.
+    /// </summary>
+    protected virtual void Initialize()
+    { /* allows subclass to initialize events before any other activity occurs */ }
+
+    #endregion
 
     #region Parent/Child link
 
@@ -129,10 +159,9 @@ namespace Csla.Core
     /// </remarks>
     protected override void UndoChangesComplete()
     {
-      // TODO: repair calls to business rules
       BindingEdit = false;
-      //ValidationRules.SetTarget(this);
-      //InitializeBusinessRules();
+      ValidationRules.SetTarget(this);
+      InitializeBusinessRules();
       OnUnknownPropertyChanged();
       base.UndoChangesComplete();
     }
@@ -419,8 +448,7 @@ namespace Csla.Core
     {
       MarkDirty(true);
 
-      // TODO: Implement validation rule checking here.
-      var propertyNames = new string[] { }; // ValidationRules.CheckRules(propertyName);
+      var propertyNames = ValidationRules.CheckRules(propertyName);
       if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)
         OnPropertyChanged(propertyName);
       else
@@ -1852,6 +1880,30 @@ namespace Csla.Core
       }
     }
 
+    private void FieldDataDeserialized()
+    {
+      foreach (object item in FieldManager.GetChildren())
+      {
+        IEditableBusinessObject eo = item as IEditableBusinessObject;
+        if (eo != null)
+        {
+          eo.SetParent(this);
+          INotifyPropertyChanged pc = (INotifyPropertyChanged)item;
+          pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+        }
+        else
+        {
+          IEditableCollection el = item as IEditableCollection;
+          if (el != null)
+          {
+            el.SetParent(this);
+            INotifyCollectionChanged bl = (INotifyCollectionChanged)item;
+            bl.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+          }
+        }
+      }
+    }
+
     protected T GetProperty<T>(IPropertyInfo propertyInfo)
     {
       IFieldData data = FieldManager.GetFieldData(propertyInfo);
@@ -1916,18 +1968,37 @@ namespace Csla.Core
       _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
     }
 
-    protected override void OnGetChildren(
-      Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       base.OnGetChildren(info, formatter);
-      var fieldManagerInfo = formatter.SerializeObject(_fieldManager);
-      info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
+      
+      if (_fieldManager != null)
+      {
+        var fieldManagerInfo = formatter.SerializeObject(_fieldManager);
+        info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
+      }
+
+      if (_validationRules != null)
+      {
+        var vrInfo = formatter.SerializeObject(_validationRules);
+        info.AddChild("_validationRules", vrInfo.ReferenceId);
+      }
     }
 
-    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      var childData = info.Children["_fieldManager"];
-      _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
+      if (info.Children.ContainsKey("_fieldManager"))
+      {
+        var childData = info.Children["_fieldManager"];
+        _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
+      }
+
+      if (info.Children.ContainsKey("_validationRules"))
+      {
+        int refId = info.Children["_validationRules"].ReferenceId;
+        _validationRules = (ValidationRules)formatter.GetObject(refId);
+      }
+
       base.OnSetChildren(info, formatter);
     }
         
@@ -2383,6 +2454,33 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
+    }
+
+    #endregion
+
+    #region Serialization Notification
+
+    void ISerializationNotification.Deserialized()
+    {
+      OnDeserialized();
+      ValidationRules.SetTarget(this);
+      if (_fieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
+      InitializeBusinessRules();
+      InitializeAuthorizationRules();
+      FieldDataDeserialized();
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    /// <param name="context">Serialization context object.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnDeserialized()
+    {
+      // do nothing - this is here so a subclass
+      // could override if needed
     }
 
     #endregion

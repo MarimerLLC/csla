@@ -7,6 +7,7 @@ using Csla.Properties;
 using System.Reflection;
 using System.IO;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace Csla.Core
 {
@@ -19,6 +20,7 @@ namespace Csla.Core
     // keep a stack of object state values.
     [NotUndoable()]
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
+
     [NotUndoable]
     private bool _bindingEdit;
 
@@ -246,6 +248,38 @@ namespace Csla.Core
       // increase it to match list
       while (child.EditLevel < targetLevel)
         child.CopyState(targetLevel, false);
+    }
+
+    #endregion
+
+    #region MobileObject overrides
+
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    {
+      if (_stateStack.Count > 0)
+      {
+        string xml = Utilities.XmlSerialize(_stateStack.ToArray());
+        info.AddValue("_stateStack", xml);
+      }
+
+      info.AddValue("_bindingEdit", _bindingEdit);
+      base.OnGetState(info, mode);
+    }
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      _stateStack.Clear();
+
+      if (info.Values.ContainsKey("_stateStack"))
+      {
+        string xml = info.GetValue<string>("_stateStack");
+        SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
+        Array.Reverse(layers);
+        foreach (SerializationInfo layer in layers)
+          _stateStack.Push(layer);
+      }
+
+      _bindingEdit = info.GetValue<bool>("_bindingEdit");
+      base.OnSetState(info, mode);
     }
 
     #endregion

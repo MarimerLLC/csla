@@ -136,6 +136,7 @@
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessListBase.cs" />
     <Compile Include="CommandBase.cs" />
+    <Compile Include="Core\ContextDictionary.cs" />
     <Compile Include="Core\ICommandObject.cs" />
     <Compile Include="DataPortalClient\ChildDataPortal.cs" />
     <Compile Include="Core\BindableBase.cs" />
@@ -210,6 +211,8 @@
     <Compile Include="SingleCriteria.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="Validation\BrokenRule.partial.cs" />
+    <Compile Include="Validation\ValidationRules.partial.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\WcfPortal\configuration91.svcinfo" />

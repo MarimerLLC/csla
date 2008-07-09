@@ -3,6 +3,7 @@ using System.Threading;
 using System.Security.Principal;
 using System.Collections.Generic;
 using System.Configuration;
+using Csla.Core;
 
 namespace Csla
 {
@@ -44,6 +45,7 @@ namespace Csla
 
     private const string _localContextName = "Csla.LocalContext";
 
+    private static ContextDictionary _localContext;
     /// <summary>
     /// Returns the application-specific context data that
     /// is local to the current AppDomain.
@@ -57,35 +59,23 @@ namespace Csla
     /// the client and server.
     /// </para>
     /// </remarks>
-    public static Dictionary<string, object> LocalContext
+    public static ContextDictionary LocalContext
     {
       get
       {
-        var ctx = GetLocalContext();
-        if (ctx == null)
+        if (_localContext == null)
           lock (_syncLocalContext)
-          {
-            ctx = new Dictionary<string, object>();
-            SetLocalContext(ctx);
-          }
-        return ctx;
+            if(_localContext == null)
+              _localContext = new ContextDictionary();
+
+        return _localContext;
       }
-    }
-
-    private static Dictionary<string, object> GetLocalContext()
-    {
-      return (Dictionary<string, object>)AppDomain.CurrentDomain.GetData(_localContextName);
-    }
-
-    private static void SetLocalContext(Dictionary<string, object> localContext)
-    {
-      AppDomain.CurrentDomain.SetData(_localContextName, localContext);
     }
 
     #endregion
 
     #region Client/Global Context
-
+    
     private static object _syncClientContext = new object();
     public static object ClientContextSync
     {
@@ -101,6 +91,7 @@ namespace Csla
     private const string _clientContextName = "Csla.ClientContext";
     private const string _globalContextName = "Csla.GlobalContext";
 
+    private static ContextDictionary _clientContext;
     /// <summary>
     /// Returns the application-specific context data provided
     /// by the client.
@@ -120,21 +111,20 @@ namespace Csla
     /// client setting (i.e. in your ASP.NET UI).
     /// </para>
     /// </remarks>
-    public static Dictionary<string, object> ClientContext
+    public static ContextDictionary ClientContext
     {
       get
       {
-        var ctx = GetClientContext();
-        if (ctx == null)
+        if (_clientContext == null)
           lock (_syncClientContext)
-          {
-            ctx = new Dictionary<string, object>();
-            SetClientContext(ctx);
-          }
-        return ctx;
+            if(_clientContext == null)
+              _clientContext = new ContextDictionary();
+
+        return _clientContext;
       }
     }
 
+    private static ContextDictionary _globalContext;
     /// <summary>
     /// Returns the application-specific context data shared
     /// on both client and server.
@@ -149,49 +139,27 @@ namespace Csla
     /// will be transferred bi-directionally across the network.
     /// </para>
     /// </remarks>
-    public static Dictionary<string, object> GlobalContext
+    public static ContextDictionary GlobalContext
     {
       get
       {
-        var ctx = GetGlobalContext();
-        if (ctx == null)
+        if (_globalContext == null)
           lock (_syncGlobalContext)
-          {
-            ctx = new Dictionary<string, object>();
-            SetGlobalContext(ctx);
-          }
-        return ctx;
+            if(_globalContext == null)
+              _globalContext = new ContextDictionary();
+
+        return _globalContext;
       }
     }
 
-    internal static Dictionary<string, object> GetClientContext()
-    {
-      return (Dictionary<string, object>)AppDomain.CurrentDomain.GetData(_clientContextName);
-    }
-
-    internal static Dictionary<string, object> GetGlobalContext()
-    {
-      return (Dictionary<string, object>)AppDomain.CurrentDomain.GetData(_globalContextName);
-    }
-
-    private static void SetClientContext(Dictionary<string, object> clientContext)
-    {
-      AppDomain.CurrentDomain.SetData(_clientContextName, clientContext);
-    }
-
-    private static void SetGlobalContext(Dictionary<string, object> globalContext)
-    {
-      AppDomain.CurrentDomain.SetData(_globalContextName, globalContext);
-    }
-
     internal static void SetContext(
-      Dictionary<string, object> clientContext,
-      Dictionary<string, object> globalContext)
+      ContextDictionary clientContext,
+      ContextDictionary globalContext)
     {
       lock (_syncClientContext)
-        SetClientContext(clientContext);
+        _clientContext = clientContext;
       lock (_syncGlobalContext)
-        SetGlobalContext(globalContext);
+        _globalContext = globalContext;
     }
 
     /// <summary>
@@ -201,7 +169,7 @@ namespace Csla
     {
       SetContext(null, null);
       lock (_syncLocalContext)
-        SetLocalContext(null);
+        _localContext = null;
     }
 
     #endregion

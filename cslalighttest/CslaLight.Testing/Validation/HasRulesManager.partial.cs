@@ -8,6 +8,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using Csla.DataPortalClient;
+using Csla.Serialization.Mobile;
+using Csla.Core;
 
 namespace Csla.Test.ValidationRules
 {
@@ -17,13 +20,15 @@ namespace Csla.Test.ValidationRules
       : base()
     { }
 
-    private void DataPortal_Create(object criteria)
+    public void DataPortal_Create(LocalProxy<HasRulesManager>.CompletedHandler completed, object criteria)
     {
       Criteria crit = (Criteria)(criteria);
       _name = crit._name;
       //Name = crit._name;
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Created");
       this.ValidationRules.CheckRules();
+
+      completed(this, null);
     }
 
     protected override void DataPortal_Fetch(object criteria)
@@ -62,6 +67,18 @@ namespace Csla.Test.ValidationRules
     {
       //we would delete here
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Deleted");
+    }
+
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    {
+      info.AddValue("Name", Name);
+      base.OnGetState(info, mode);
+    }
+
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      Name = info.GetValue<string>("Name");
+      base.OnSetState(info, mode);
     }
   }
 }

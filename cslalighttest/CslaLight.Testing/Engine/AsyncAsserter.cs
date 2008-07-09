@@ -77,6 +77,24 @@ namespace cslalighttest.Engine
       }
     }
 
+    public void AreSame(object expected, object actual)
+    {
+      string act;
+      if (actual != null)
+        act = actual.ToString();
+      else
+        act = "<null>";
+      if (string.IsNullOrEmpty(act))
+        act = "string.Empty";
+      AreSame(expected, actual, act);
+    }
+
+    public void AreSame(object expected, object actual, string message)
+    {
+      if (expected != actual)
+        OnComplete(new TestException(message));
+    }
+
     public void IsFalse(bool actual)
     {
       IsFalse(actual, "Assert.IsFalse failed.");

@@ -1576,6 +1576,27 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// Gets a property's value, first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="field">
+    /// The backing field for the property.</param>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="defaultValue">
+    /// Value to be returned if the user is not
+    /// authorized to read the property.</param>
+    /// <param name="noAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field, P defaultValue, Security.NoAccessBehavior noAccess)
+    {
+      return GetProperty<P>(propertyInfo.Name, field, defaultValue, noAccess);
+    }
+
+    /// <summary>
     /// Gets a property's value as 
     /// a specified type, first checking authorization.
     /// </summary>

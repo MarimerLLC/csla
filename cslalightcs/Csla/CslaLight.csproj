@@ -87,6 +87,21 @@
     <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
       <Link>Serialization\SerializationFormatterFactory.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleCompleteEventArgs.cs">
+      <Link>Validation\AsyncRuleCompleteEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleCompleteHandler.cs">
+      <Link>Validation\AsyncRuleCompleteHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleHandler.cs">
+      <Link>Validation\AsyncRuleHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleMethod.cs">
+      <Link>Validation\AsyncRuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleResultHandler.cs">
+      <Link>Validation\AsyncRuleResultHandler.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\BrokenRule.cs">
       <Link>Validation\BrokenRule.cs</Link>
     </Compile>
@@ -98,6 +113,9 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\DecoratedRuleArgs.cs">
       <Link>Validation\DecoratedRuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\IAsyncRuleMethod.cs">
+      <Link>Validation\IAsyncRuleMethod.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\IRuleMethod.cs">
       <Link>Validation\IRuleMethod.cs</Link>

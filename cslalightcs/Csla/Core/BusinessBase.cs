@@ -13,9 +13,6 @@ using Csla.Validation;
 
 namespace Csla.Core
 {
-#if TESTING
-  [DebuggerNonUserCode]
-#endif
   [Serializable]
   public abstract class BusinessBase : UndoableBase, 
     ICloneable, 
@@ -495,7 +492,7 @@ namespace Csla.Core
           auth = true; //Csla.Security.AuthorizationRules.CanCreateObject(this.GetType());
         else
           auth = true; // Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
-        return (IsDirty && IsValid && auth);
+        return (IsDirty && IsValid && !ValidationRules.IsValidating && auth);
       }
     }
 
@@ -2027,6 +2024,20 @@ namespace Csla.Core
 
     private Validation.ValidationRules _validationRules;
 
+    public event EventHandler ValidationComplete;
+
+    protected virtual void OnValidationComplete()
+    {
+      if (ValidationComplete != null)
+      {
+        // TODO: These will probably need to be called somewhere, is this the best place / way?
+        PropertyHasChanged("IsValid");
+        PropertyHasChanged("IsSavable");
+
+        ValidationComplete(this, EventArgs.Empty);
+      }
+    }
+
     private void InitializeBusinessRules()
     {
       AddInstanceBusinessRules();
@@ -2056,9 +2067,18 @@ namespace Csla.Core
       get
       {
         if (_validationRules == null)
+        {
           _validationRules = new Csla.Validation.ValidationRules(this);
+          _validationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
+        }
         return _validationRules;
       }
+    }
+
+    void ValidatingRules_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      if (!ValidationRules.IsValidating)
+        OnValidationComplete();
     }
 
     /// <summary>

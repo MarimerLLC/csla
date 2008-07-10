@@ -128,8 +128,14 @@
     <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs">
       <Link>Stereotypes\ReadOnlyListTestsLocalAndRemote.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\AsyncRuleTests.cs">
+      <Link>Validation\AsyncRuleTests.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\BrokenRulesMergeRoot.cs">
       <Link>Validation\BrokenRulesMergeRoot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasAsyncRule.cs">
+      <Link>Validation\HasAsyncRule.cs</Link>
     </Compile>
     <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasBadSharedRule.cs">
       <Link>Validation\HasBadSharedRule.cs</Link>

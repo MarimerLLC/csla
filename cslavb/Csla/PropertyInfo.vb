@@ -43,20 +43,6 @@ Public Class PropertyInfo(Of T)
   ''' Creates a new instance of this class.
   ''' </summary>
   ''' <param name="name">Name of the property.</param>
-  ''' <param name="defaultValue">
-  ''' Default value for the property.
-  ''' </param>
-  Public Sub New(ByVal name As String, ByVal defaultValue As T)
-
-    _name = name
-    _defaultValue = defaultValue
-
-  End Sub
-
-  ''' <summary>
-  ''' Creates a new instance of this class.
-  ''' </summary>
-  ''' <param name="name">Name of the property.</param>
   ''' <param name="friendlyName">
   ''' Friendly display name for the property.
   ''' </param>

@@ -39,19 +39,6 @@ namespace Csla
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="name">Name of the property.</param>
-    /// <param name="defaultValue">
-    /// Default value for the property.
-    /// </param>
-    public PropertyInfo(string name, T defaultValue)
-    {
-      _name = name;
-      _defaultValue = defaultValue;
-    }
-
-    /// <summary>
-    /// Creates a new instance of this class.
-    /// </summary>
-    /// <param name="name">Name of the property.</param>
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>

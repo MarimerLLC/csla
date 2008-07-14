@@ -10,7 +10,7 @@ namespace ProjectTracker.Library
 
     private byte[] _timestamp = new byte[8];
 
-    private static PropertyInfo<Guid> ProjectIdProperty = RegisterProperty<Guid>(typeof(ResourceAssignment), new PropertyInfo<Guid>("ProjectId", Guid.Empty));
+    private static PropertyInfo<Guid> ProjectIdProperty = RegisterProperty<Guid>(typeof(ResourceAssignment), new PropertyInfo<Guid>("ProjectId", "Project id", Guid.Empty));
     private Guid _projectId = ProjectIdProperty.DefaultValue;
     public Guid ProjectId
     {

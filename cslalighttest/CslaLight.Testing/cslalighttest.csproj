@@ -140,6 +140,9 @@
     <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasBadSharedRule.cs">
       <Link>Validation\HasBadSharedRule.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasInvalidAsyncRule.cs">
+      <Link>Validation\HasInvalidAsyncRule.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\HasPerTypeClasses.cs">
       <Link>Validation\HasPerTypeClasses.cs</Link>
     </Compile>

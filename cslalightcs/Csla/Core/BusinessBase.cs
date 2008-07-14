@@ -2029,13 +2029,7 @@ namespace Csla.Core
     protected virtual void OnValidationComplete()
     {
       if (ValidationComplete != null)
-      {
-        // TODO: These will probably need to be called somewhere, is this the best place / way?
-        PropertyHasChanged("IsValid");
-        PropertyHasChanged("IsSavable");
-
         ValidationComplete(this, EventArgs.Empty);
-      }
     }
 
     private void InitializeBusinessRules()
@@ -2048,7 +2042,16 @@ namespace Csla.Core
           if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
           {
             Validation.SharedValidationRules.GetManager(this.GetType(), true);
-            AddBusinessRules();
+            try { AddBusinessRules(); }
+            catch
+            {
+              // Prevent incomplete rule managers from being created. This will cause
+              // rules to be recreated for every instance until successful. This fixes
+              // a bug where it's possible to create an instance with an invalid rule
+              // if you catch the InvalidOperationException the first time.
+              Validation.SharedValidationRules.RemoveManager(this.GetType());
+              throw;
+            }
           }
         }
       }
@@ -2077,8 +2080,15 @@ namespace Csla.Core
 
     void ValidatingRules_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-      if (!ValidationRules.IsValidating)
-        OnValidationComplete();
+      if (e.Action == NotifyCollectionChangedAction.Remove)
+      {
+        foreach (IAsyncRuleMethod rule in e.OldItems)
+          foreach(IPropertyInfo property in rule.AsyncRuleArgs.Properties)
+            OnPropertyChanged(property.Name);
+
+        if (!ValidationRules.IsValidating)
+          OnValidationComplete();
+      }
     }
 
     /// <summary>

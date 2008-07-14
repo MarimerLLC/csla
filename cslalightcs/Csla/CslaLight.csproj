@@ -87,8 +87,8 @@
     <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
       <Link>Serialization\SerializationFormatterFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleCompleteEventArgs.cs">
-      <Link>Validation\AsyncRuleCompleteEventArgs.cs</Link>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleArgs.cs">
+      <Link>Validation\AsyncRuleArgs.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleCompleteHandler.cs">
       <Link>Validation\AsyncRuleCompleteHandler.cs</Link>
@@ -98,6 +98,9 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleMethod.cs">
       <Link>Validation\AsyncRuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleResult.cs">
+      <Link>Validation\AsyncRuleResult.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleResultHandler.cs">
       <Link>Validation\AsyncRuleResultHandler.cs</Link>

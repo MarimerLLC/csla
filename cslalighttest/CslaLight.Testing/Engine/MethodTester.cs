@@ -108,10 +108,13 @@ namespace cslalighttest.Engine
         {
           if(expectsException)
           {
-            if(e.Status == TestResult.Fail && expectedException.Type.IsAssignableFrom( e.Error.GetType()))
+            if (e.Status == TestResult.Fail &&
+              e.Error != null &&
+              expectedException.Type.IsAssignableFrom(e.Error.GetType()))
+            {
               Status = TestResult.Success;
-            else
-              Status = TestResult.Fail;
+            }
+            else Status = TestResult.Fail;
           }
           else
             Status = e.Status;

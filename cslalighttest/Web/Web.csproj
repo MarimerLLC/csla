@@ -103,8 +103,7 @@
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>2752</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
+          <IISUrl>http://localhost/SLTestWeb</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>

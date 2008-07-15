@@ -49,6 +49,7 @@
     <NoConfig>true</NoConfig>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
     <Reference Include="system" />
@@ -78,6 +79,12 @@
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\ReadOnlyTests\ReadOnlyPersonList.cs">
       <Link>ReadOnlyTest\ReadOnlyPersonList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightIdentity.cs">
+      <Link>Security\SilverlightIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightPrincipal.cs">
+      <Link>Security\SilverlightPrincipal.cs</Link>
     </Compile>
     <Compile Include="EditableChildTests\GrandChild.partial.cs" />
     <Compile Include="EditableChildTests\GrandChildList.partial.cs" />

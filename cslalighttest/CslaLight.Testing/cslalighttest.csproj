@@ -77,6 +77,9 @@
     <Compile Include="..\..\cslatest\Csla.Test\Silverlight\ReadOnly\ReadOnlyTests.cs">
       <Link>ReadOnly\ReadOnlyTests.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Security\SecurityTests.cs">
+      <Link>Security\SecurityTests.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslatest\Csla.Test\Silverlight\Serialization\Address.cs">
       <Link>Serialization\Address.cs</Link>
     </Compile>

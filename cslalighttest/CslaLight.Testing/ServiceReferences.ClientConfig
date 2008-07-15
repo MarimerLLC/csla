@@ -4,7 +4,6 @@
             <basicHttpBinding>
                 <binding name="BasicHttpBinding_IWcfPortal" maxBufferSize="65536"
                     maxReceivedMessageSize="65536">
-                    <security mode="None" />
                 </binding>
             </basicHttpBinding>
         </bindings>

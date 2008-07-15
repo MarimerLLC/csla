@@ -66,8 +66,17 @@
     <Compile Include="..\..\cslacs\Csla\Core\StateMode.cs">
       <Link>Core\StateMode.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\BusinessPrincipalBase.cs">
+      <Link>Security\BusinessPrincipalBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\CSLAIdentity.cs">
+      <Link>Security\CSLAIdentity.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\NoAccessBehavior.cs">
       <Link>Security\NoAccessBehavior.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\WindowsIdentity.cs">
+      <Link>Security\WindowsIdentity.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
       <Link>Serialization\ISerializationFormatter.cs</Link>

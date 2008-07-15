@@ -66,6 +66,10 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
+    <Reference Include="UnitDriven, Version=0.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\UnitDriven\Build\UnitDrivenLight\UnitDriven.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\cslatest\Csla.Test\Silverlight\ReadOnly\MockReadOnly.cs">
@@ -179,25 +183,6 @@
     <Compile Include="..\..\cslatest\Csla.Test\ValidationRules\ValidationTests.cs">
       <Link>Validation\ValidationTests.cs</Link>
     </Compile>
-    <Compile Include="Engine\Assert.cs" />
-    <Compile Include="Engine\AsyncAsserter.cs" />
-    <Compile Include="Engine\UnitTestContext.cs" />
-    <Compile Include="Engine\ExpectedExceptionAttribute.cs" />
-    <Compile Include="Engine\Extensions.cs" />
-    <Compile Include="Engine\MethodTester.cs" />
-    <Compile Include="Engine\TestResult.cs" />
-    <Compile Include="Engine\ObservableObject.cs" />
-    <Compile Include="Engine\TestBase.cs" />
-    <Compile Include="Engine\TestClassAttribute.cs" />
-    <Compile Include="Engine\TestContext.cs" />
-    <Compile Include="Engine\TestEngine.xaml.cs">
-      <DependentUpon>TestEngine.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Engine\TestException.cs" />
-    <Compile Include="Engine\TestMethodAttribute.cs" />
-    <Compile Include="Engine\TestSetup.cs" />
-    <Compile Include="Engine\TestStatusConverter.cs" />
-    <Compile Include="Engine\TypeTester.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -231,12 +216,6 @@
       <Project>{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}</Project>
       <Name>CslaLight.Testing.Client</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Engine\TestEngine.xaml">
-      <SubType>Page</SubType>
-      <Generator>MSBuild:MarkupCompilePass1</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

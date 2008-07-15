@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
-using cslalighttest.Engine;
+using UnitDriven;
+using System.Reflection;
 
 namespace cslalighttest
 {
@@ -18,12 +19,11 @@ namespace cslalighttest
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
-      this.RootVisual = new TestEngine();
+      this.RootVisual = new TestEngine(Assembly.GetExecutingAssembly());
     }
 
     private void Application_Exit(object sender, EventArgs e)
     {
-
     }
 
     private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)

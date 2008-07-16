@@ -18,6 +18,11 @@ namespace Csla
       return PropertyInfoManager.RegisterProperty<P>(ownerType, property);
     }
 
+    protected static PropertyInfo<P> RegisterProperty<P>(PropertyInfo<P> info)
+    {
+      return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
+    }
+
     protected FieldDataManager FieldManager
     {
       get

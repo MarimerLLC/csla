@@ -78,6 +78,9 @@
     <Compile Include="..\..\cslacs\Csla\Security\NoAccessBehavior.cs">
       <Link>Security\NoAccessBehavior.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedIdentity.cs">
+      <Link>Security\UnauthenticatedIdentity.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\WindowsIdentity.cs">
       <Link>Security\WindowsIdentity.cs</Link>
     </Compile>

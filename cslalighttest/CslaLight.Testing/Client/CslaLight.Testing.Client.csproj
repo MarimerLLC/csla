@@ -83,6 +83,9 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightIdentity.cs">
       <Link>Security\SilverlightIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightMembershipIdentity.cs">
+      <Link>Security\SilverlightMembershipIdentity.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightPrincipal.cs">
       <Link>Security\SilverlightPrincipal.cs</Link>
     </Compile>

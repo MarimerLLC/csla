@@ -3,7 +3,7 @@
         <bindings>
             <basicHttpBinding>
                 <binding name="BasicHttpBinding_IWcfPortal" maxBufferSize="65536"
-                    maxReceivedMessageSize="65536">
+                    maxReceivedMessageSize="65536" receiveTimeout="10" sendTimeout="10">
                 </binding>
             </basicHttpBinding>
         </bindings>

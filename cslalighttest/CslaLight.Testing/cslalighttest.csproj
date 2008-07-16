@@ -66,9 +66,9 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
-    <Reference Include="UnitDriven, Version=0.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UnitDrivenLight, Version=0.0.1.20412, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\UnitDriven\Build\UnitDrivenLight\UnitDriven.dll</HintPath>
+      <HintPath>..\..\Dependencies\UnitDriven\UnitDrivenLight.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

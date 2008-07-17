@@ -1,12 +1,11 @@
 ﻿using System;
 using Csla.Serialization;
-using System.Diagnostics;
 using Csla.DataPortalClient;
 
 namespace Csla.Testing.Business.EditableRootTests
 {
 #if TESTING
-  [DebuggerNonUserCode]
+  [System.Diagnostics.DebuggerStepThrough]
 #endif
   partial class MockEditableRoot
   {

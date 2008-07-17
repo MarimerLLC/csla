@@ -39,6 +39,7 @@ namespace Csla.DataPortalClient
         throw new ArgumentOutOfRangeException("DataPortalUrl must be a valid URL");
       if (this.Binding == null)
         throw new ArgumentOutOfRangeException("Binding must be a valid WCF binding");
+      
       var address = new EndpointAddress(this.DataPortalUrl);
       return new WcfPortal.WcfPortalClient(this.Binding, address);
     }
@@ -191,15 +192,19 @@ namespace Csla.DataPortalClient
 
     private void proxy_UpdateCompleted(object sender, Csla.WcfPortal.UpdateCompletedEventArgs e)
     {
-      var response = e.Result;
       try
       {
-        if (e.Error == null && response.ErrorData == null)
+        if (e.Error == null && e.Result.ErrorData == null)
         {
-          var buffer = new System.IO.MemoryStream(response.ObjectData);
+          var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
           OnUpdateCompleted(new DataPortalResult<T>(obj, null));
+        }
+        else if (e.Error != null)
+        {
+          var ex = new DataPortalException(e.Error.ToErrorInfo());
+          OnUpdateCompleted(new DataPortalResult<T>(default(T), ex));
         }
         else if (e.Result.ErrorData != null)
         {

@@ -6,13 +6,12 @@ using System.Collections.Generic;
 using Csla.Properties;
 using System.Reflection;
 using System.IO;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Csla.Core
 {
 #if TESTING
-  [DebuggerNonUserCode]
+  [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
   public class UndoableBase : BindableBase, IUndoableObject

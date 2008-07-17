@@ -6,7 +6,6 @@ using Csla.Core;
 using Csla.Properties;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Csla.DataPortalClient;
 using Csla.Serialization.Mobile;
@@ -14,7 +13,7 @@ using Csla.Serialization.Mobile;
 namespace Csla
 {
 #if TESTING
-  [DebuggerNonUserCode]
+  [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
   public class BusinessListBase<T, C> : Core.ExtendedBindingList<C>, 

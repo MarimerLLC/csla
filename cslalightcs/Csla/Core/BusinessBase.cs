@@ -13,6 +13,9 @@ using Csla.Validation;
 
 namespace Csla.Core
 {
+#if TESTING
+  [System.Diagnostics.DebuggerStepThrough]
+#endif
   [Serializable]
   public abstract class BusinessBase : UndoableBase, 
     ICloneable, 

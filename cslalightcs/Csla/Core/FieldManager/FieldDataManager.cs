@@ -6,7 +6,6 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.Xml;
 using System.Runtime.Serialization;
-using System.Diagnostics;
 
 namespace Csla.Core.FieldManager
 {
@@ -16,7 +15,7 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <remarks></remarks>
 #if TESTING
-  [DebuggerNonUserCode]
+  [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
   public class FieldDataManager : MobileObject, IUndoableObject

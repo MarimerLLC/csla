@@ -8,7 +8,7 @@ using System.Diagnostics;
 namespace Csla
 {
 #if TESTING
-  [DebuggerNonUserCode]
+  [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
   public class BusinessBase<T> : BusinessBase, ISavable

@@ -149,6 +149,10 @@ namespace Csla.Core.FieldManager
       get { return IsValid; }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the
+    /// field contains a valid value.
+    /// </summary>
     protected virtual bool IsValid
     {
       get

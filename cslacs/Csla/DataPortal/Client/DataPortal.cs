@@ -464,6 +464,9 @@ namespace Csla
     /// Called by a Shared (static in C#) method in the business class to cause
     /// immediate deletion of a specific object from the database.
     /// </summary>
+    /// <param name="objectType">
+    /// Type of object being deleted.
+    /// </param>
     /// <param name="criteria">Object-specific criteria.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     private static void Delete(Type objectType, object criteria)

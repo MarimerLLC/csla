@@ -205,9 +205,11 @@ Public Class Resource
   Protected Overrides Sub DataPortal_Update()
 
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
-      Dim newLastChanged As System.Data.Linq.Binary = Nothing
-      ctx.DataContext.UpdateResource(_id, _lastName, _firstName, _timestamp, newLastChanged)
-      _timestamp = newLastChanged.ToArray
+      If IsSelfDirty Then
+        Dim newLastChanged As System.Data.Linq.Binary = Nothing
+        ctx.DataContext.UpdateResource(_id, _lastName, _firstName, _timestamp, newLastChanged)
+        _timestamp = newLastChanged.ToArray
+      End If
       FieldManager.UpdateChildren(Me)
     End Using
 

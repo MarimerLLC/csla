@@ -257,16 +257,18 @@ Public Class Project
   Protected Overrides Sub DataPortal_Update()
 
     Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)
-      ' insert project data
-      Dim lastChanged As System.Data.Linq.Binary = Nothing
-      ctx.DataContext.UpdateProject(ReadProperty(Of Guid)(IdProperty), _
-                                    ReadProperty(Of String)(NameProperty), _
-                                    ReadProperty(Of SmartDate)(StartedProperty), _
-                                    ReadProperty(Of SmartDate)(EndedProperty), _
-                                    ReadProperty(Of String)(DescriptionProperty), _
-                                    _timestamp, _
-                                    lastChanged)
-      _timestamp = lastChanged.ToArray
+      If IsSelfDirty Then
+        ' insert project data
+        Dim lastChanged As System.Data.Linq.Binary = Nothing
+        ctx.DataContext.UpdateProject(ReadProperty(Of Guid)(IdProperty), _
+                                      ReadProperty(Of String)(NameProperty), _
+                                      ReadProperty(Of SmartDate)(StartedProperty), _
+                                      ReadProperty(Of SmartDate)(EndedProperty), _
+                                      ReadProperty(Of String)(DescriptionProperty), _
+                                      _timestamp, _
+                                      lastChanged)
+        _timestamp = lastChanged.ToArray
+      End If
       ' update child objects
       DataPortal.UpdateChild(ReadProperty(Of ProjectResources)(ResourcesProperty), Me)
     End Using

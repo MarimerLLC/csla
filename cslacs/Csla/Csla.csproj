@@ -90,6 +90,7 @@
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BusinessBase.cs" />
+    <Compile Include="Core\ChildChangedEventArgs.cs" />
     <Compile Include="Core\ExpressionTreeHelpers.cs" />
     <Compile Include="Core\ExpressionVisitor.cs" />
     <Compile Include="Core\ExtendedBindingList.cs" />

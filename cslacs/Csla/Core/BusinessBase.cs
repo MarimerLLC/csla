@@ -2372,16 +2372,62 @@ namespace Csla.Core
       FieldManager.LoadFieldData(propertyInfo, newValue);
     }
 
+    #endregion
+
+    #region Child Change Notification
+
+    [NonSerialized]
+    [NotUndoable]
+    private EventHandler<Csla.Core.ChildChangedEventArgs> _childChangedHandlers;
+
+    /// <summary>
+    /// Event raised when a child object has been changed.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+      "CA1062:ValidateArgumentsOfPublicMethods")]
+    public event EventHandler<Csla.Core.ChildChangedEventArgs> ChildChanged
+    {
+      add
+      {
+        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
+          System.Delegate.Combine(_childChangedHandlers, value);
+      }
+      remove
+      {
+        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
+          System.Delegate.Remove(_childChangedHandlers, value);
+      }
+    }
+
+    /// <summary>
+    /// Raises the ChildChanged event, indicating that a child
+    /// object has been changed.
+    /// </summary>
+    /// <param name="source">
+    /// Reference to the object that was changed.
+    /// </param>
+    /// <param name="listArgs">
+    /// ListChangedEventArgs object or null.
+    /// </param>
+    /// <param name="propertyArgs">
+    /// PropertyChangedEventArgs object or null.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnChildChanged(object source, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+    {
+      Csla.Core.ChildChangedEventArgs args = new Csla.Core.ChildChangedEventArgs(source, propertyArgs, listArgs);
+      if (_childChangedHandlers != null)
+        _childChangedHandlers.Invoke(this, args);
+    }
+
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      var data = FieldManager.FindProperty(sender);
-      OnPropertyChanged(data.Name);
+      OnChildChanged(sender, e, null);
     }
 
     private void Child_ListChanged(object sender, ListChangedEventArgs e)
     {
-      var data = FieldManager.FindProperty(sender);
-      OnPropertyChanged(data.Name);
+      OnChildChanged(sender, null, e);
     }
 
     #endregion

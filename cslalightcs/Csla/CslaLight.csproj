@@ -60,6 +60,9 @@
     <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\Core\MobileBindingList.cs">
+      <Link>Core\MobileBindingList.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\MobileList.cs">
       <Link>Core\MobileList.cs</Link>
     </Compile>

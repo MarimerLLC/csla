@@ -10,7 +10,7 @@ namespace Csla.Core
   /// </summary>
   /// <typeparam name="T">Type of item contained in list.</typeparam>
   [Serializable]
-  public class ExtendedBindingList<T> : MobileList<T>,
+  public class ExtendedBindingList<T> : MobileBindingList<T>,
     IExtendedBindingList
   {
     #region RemovingItem event

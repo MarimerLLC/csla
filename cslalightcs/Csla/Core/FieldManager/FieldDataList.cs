@@ -9,7 +9,7 @@ namespace Csla.Core.FieldManager
   {
     [NonSerialized()]
     private Dictionary<string, int> _fieldIndex = new Dictionary<string, int>();
-    private Csla.Core.MobileList<IFieldData> _fields = new Csla.Core.MobileList<IFieldData>();
+    private Csla.Core.MobileBindingList<IFieldData> _fields = new Csla.Core.MobileBindingList<IFieldData>();
 
     public FieldDataList()
     { /* required due to serialization ctor */ }
@@ -53,7 +53,7 @@ namespace Csla.Core.FieldManager
       return null;
     }
 
-    public Csla.Core.MobileList<IFieldData> GetFieldDataList()
+    public Csla.Core.MobileBindingList<IFieldData> GetFieldDataList()
     {
       return _fields;
     }

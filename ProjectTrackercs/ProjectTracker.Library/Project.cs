@@ -21,7 +21,7 @@ namespace ProjectTracker.Library
       get { return GetProperty<Guid>(IdProperty); }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(typeof(Project), new PropertyInfo<string>("Name"));
+    private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name"));
     public string Name
     {
       get { return GetProperty<string>(NameProperty); }
@@ -198,17 +198,20 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
-        // insert project data
-        System.Data.Linq.Binary lastChanged = null;
-        ctx.DataContext.updateProject(
-          ReadProperty<Guid>(IdProperty),
-          ReadProperty<string>(NameProperty),
-          ReadProperty<SmartDate>(StartedProperty),
-          ReadProperty<SmartDate>(EndedProperty),
-          ReadProperty<string>(DescriptionProperty),
-          mTimestamp,
-          ref lastChanged);
-        mTimestamp = lastChanged.ToArray();
+        if (IsSelfDirty)
+        {
+          // insert project data
+          System.Data.Linq.Binary lastChanged = null;
+          ctx.DataContext.updateProject(
+            ReadProperty<Guid>(IdProperty),
+            ReadProperty<string>(NameProperty),
+            ReadProperty<SmartDate>(StartedProperty),
+            ReadProperty<SmartDate>(EndedProperty),
+            ReadProperty<string>(DescriptionProperty),
+            mTimestamp,
+            ref lastChanged);
+          mTimestamp = lastChanged.ToArray();
+        }
         // update child objects
         DataPortal.UpdateChild(ReadProperty<ProjectResources>(ResourcesProperty), this);
       }

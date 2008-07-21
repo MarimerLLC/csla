@@ -176,9 +176,12 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
-        System.Data.Linq.Binary newLastChanged = null;
-        ctx.DataContext.updateResource(_id, _lastName, _firstName, _timestamp, ref newLastChanged);
-        _timestamp = newLastChanged.ToArray();
+        if (IsSelfDirty)
+        {
+          System.Data.Linq.Binary newLastChanged = null;
+          ctx.DataContext.updateResource(_id, _lastName, _firstName, _timestamp, ref newLastChanged);
+          _timestamp = newLastChanged.ToArray();
+        }
         FieldManager.UpdateChildren(this);
       }
     }

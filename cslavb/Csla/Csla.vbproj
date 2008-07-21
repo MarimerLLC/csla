@@ -100,6 +100,7 @@
     <Compile Include="ApplicationContext.vb" />
     <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessListBase.vb" />
+    <Compile Include="Core\ChildChangedEventArgs.vb" />
     <Compile Include="Core\ExpressionVisitor.vb" />
     <Compile Include="Core\ExtendedBindingList.vb" />
     <Compile Include="Core\FieldManager\FieldDataList.vb" />

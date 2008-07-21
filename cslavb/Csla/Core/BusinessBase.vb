@@ -2347,14 +2347,54 @@ Namespace Core
       FieldManager.LoadFieldData(propertyInfo, newValue)
     End Sub
 
+#End Region
+
+#Region " Child Change Notification "
+
+    <NonSerialized(), NotUndoable()> _
+    Private _childChangedHandlers As EventHandler(Of Csla.Core.ChildChangedEventArgs)
+
+    ''' <summary>
+    ''' Event raised when a child object has been changed.
+    ''' </summary>
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+    Public Custom Event ChildChanged As EventHandler(Of Csla.Core.ChildChangedEventArgs)
+      AddHandler(ByVal value As EventHandler(Of Csla.Core.ChildChangedEventArgs))
+        _childChangedHandlers = CType(System.Delegate.Combine(_childChangedHandlers, value), EventHandler(Of Csla.Core.ChildChangedEventArgs))
+      End AddHandler
+      RemoveHandler(ByVal value As EventHandler(Of Csla.Core.ChildChangedEventArgs))
+        _childChangedHandlers = CType(System.Delegate.Remove(_childChangedHandlers, value), EventHandler(Of Csla.Core.ChildChangedEventArgs))
+      End RemoveHandler
+      RaiseEvent(ByVal sender As System.Object, ByVal e As Csla.Core.ChildChangedEventArgs)
+        _childChangedHandlers.Invoke(sender, e)
+      End RaiseEvent
+    End Event
+
+    ''' <summary>
+    ''' Raises the ChildChanged event, indicating that a child
+    ''' object has been changed.
+    ''' </summary>
+    ''' <param name="source">
+    ''' Reference to the object that was changed.
+    ''' </param>
+    ''' <param name="listArgs">
+    ''' ListChangedEventArgs object or null.
+    ''' </param>
+    ''' <param name="propertyArgs">
+    ''' PropertyChangedEventArgs object or null.
+    ''' </param>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub OnChildChanged(ByVal source As Object, ByVal propertyArgs As PropertyChangedEventArgs, ByVal listArgs As ListChangedEventArgs)
+      Dim args As New Csla.Core.ChildChangedEventArgs(source, propertyArgs, listArgs)
+      RaiseEvent ChildChanged(Me, args)
+    End Sub
+
     Private Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-      Dim data = FieldManager.FindProperty(sender)
-      OnPropertyChanged(data.Name)
+      OnChildChanged(sender, e, Nothing)
     End Sub
 
     Private Sub Child_ListChanged(ByVal sender As Object, ByVal e As ListChangedEventArgs)
-      Dim data = FieldManager.FindProperty(sender)
-      OnPropertyChanged(data.Name)
+      OnChildChanged(sender, Nothing, e)
     End Sub
 
 #End Region

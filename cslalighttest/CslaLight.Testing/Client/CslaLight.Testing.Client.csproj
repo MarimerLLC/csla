@@ -89,6 +89,9 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightPrincipal.cs">
       <Link>Security\SilverlightPrincipal.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightWindowsIdentity.cs">
+      <Link>Security\SilverlightWindowsIdentity.cs</Link>
+    </Compile>
     <Compile Include="EditableChildTests\GrandChild.partial.cs" />
     <Compile Include="EditableChildTests\GrandChildList.partial.cs" />
     <Compile Include="EditableChildTests\MockEditableChild.partial.cs" />

@@ -59,37 +59,37 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\GrandChild.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\GrandChild.cs">
       <Link>EditableChildTests\GrandChild.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\GrandChildList.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\GrandChildList.cs">
       <Link>EditableChildTests\GrandChildList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\MockEditableChild.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\MockEditableChild.cs">
       <Link>EditableChildTests\MockEditableChild.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\MockList.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\MockList.cs">
       <Link>EditableChildTests\MockList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableRootTests\MockEditableRoot.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableRootTests\MockEditableRoot.cs">
       <Link>EditableRootTests\MockEditableRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\ReadOnlyTests\ReadOnlyPerson.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ReadOnlyTests\ReadOnlyPerson.cs">
       <Link>ReadOnlyTest\ReadOnlyPerson.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\ReadOnlyTests\ReadOnlyPersonList.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ReadOnlyTests\ReadOnlyPersonList.cs">
       <Link>ReadOnlyTest\ReadOnlyPersonList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightIdentity.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightIdentity.cs">
       <Link>Security\SilverlightIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightMembershipIdentity.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightMembershipIdentity.cs">
       <Link>Security\SilverlightMembershipIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightPrincipal.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightPrincipal.cs">
       <Link>Security\SilverlightPrincipal.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightWindowsIdentity.cs">
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightWindowsIdentity.cs">
       <Link>Security\SilverlightWindowsIdentity.cs</Link>
     </Compile>
     <Compile Include="EditableChildTests\GrandChild.partial.cs" />
@@ -101,7 +101,7 @@
     <Compile Include="ReadOnlyTest\ReadOnlyPerson.partial.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\cslalightcs\Csla\CslaLight.csproj">
+    <ProjectReference Include="..\..\..\..\cslalightcs\Csla\CslaLight.csproj">
       <Project>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</Project>
       <Name>CslaLight</Name>
     </ProjectReference>

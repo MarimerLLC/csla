@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="DataBinding.Test.Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    Width="400" Height="300">
+    <UserControl.Resources>
+        <DataTemplate x:Key="customer">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="id" Text="{Binding Id}"/>
+                <TextBox x:Name="name" Text="{Binding Name}"/>
+                <TextBlock x:Name="birthdate" Text="{Binding BirthDate}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid x:Name="LayoutRoot" Background="White">
+        <ListBox ItemTemplate="{StaticResource customer}" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" />
+    </Grid>
+</UserControl>

@@ -10,8 +10,6 @@ namespace DataBinding.Business
   [Serializable]
   public partial class Customer : BusinessBase<Customer>
   {
-    private Customer() { }
-
     #region Properties
 
     private static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id"));

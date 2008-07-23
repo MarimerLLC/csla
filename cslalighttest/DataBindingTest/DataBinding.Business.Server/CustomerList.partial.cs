@@ -8,6 +8,8 @@ namespace DataBinding.Business
 {
   public partial class CustomerList
   {
+    private CustomerList() { }
+
     private void DataPortal_Fetch(SingleCriteria<CustomerList, string> criteria)
     {
       Fetch(criteria.Value);
@@ -18,8 +20,8 @@ namespace DataBinding.Business
       RaiseListChangedEvents = false;
 
       Customer c1 = Customer.Load(1, "justin", new DateTime(1980, 2, 3));
-      Customer c2 = Customer.Load(1, "sam", new DateTime(1974, 5, 16));
-      Customer c3 = Customer.Load(1, "john", new DateTime(1991, 12, 29));
+      Customer c2 = Customer.Load(2, "sam", new DateTime(1974, 5, 16));
+      Customer c3 = Customer.Load(3, "john", new DateTime(1991, 12, 29));
       Customer[] children = new Customer[] { c1, c2, c3 };
 
       var found = from c in children

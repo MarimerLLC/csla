@@ -52,6 +52,8 @@
     <Compile Include="..\DataBinding.Business.Server\CustomerList.cs">
       <Link>CustomerList.cs</Link>
     </Compile>
+    <Compile Include="Customer.partial.cs" />
+    <Compile Include="CustomerList.partial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

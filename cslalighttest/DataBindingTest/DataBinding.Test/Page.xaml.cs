@@ -19,13 +19,16 @@ namespace DataBinding.Test
     public Page()
     {
       InitializeComponent();
-
-      CustomerList.FetchByName(null, FetchComplete);
     }
 
     private void FetchComplete(object sender, DataPortalResult<CustomerList> result)
     {
       this.DataContext = result.Object;
+    }
+
+    private void fetch_Click(object sender, RoutedEventArgs e)
+    {
+      CustomerList.FetchByName(null, FetchComplete);
     }
   }
 }

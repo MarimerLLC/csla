@@ -10,8 +10,6 @@ namespace DataBinding.Business
   [Serializable]
   public partial class CustomerList : BusinessListBase<CustomerList, Customer>
   {
-    private CustomerList() { }
-
     public static void FetchByName(string name, EventHandler<DataPortalResult<CustomerList>> completed)
     {
       DataPortal<CustomerList> dp = new DataPortal<CustomerList>();

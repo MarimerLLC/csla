@@ -6,17 +6,22 @@
         <DataTemplate x:Key="customer">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="id" Text="{Binding Id}"/>
-                <TextBox x:Name="name" Text="{Binding Name}"/>
-                <TextBlock x:Name="birthdate" Text="{Binding BirthDate}"/>
+                <TextBlock x:Name="id" HorizontalAlignment="Center" Width="25" Text="{Binding Id}"/>
+                <TextBox x:Name="name" Width="100" Text="{Binding Name}" Grid.Column="1"/>
+                <TextBox x:Name="birthdate" Width="150" Text="{Binding BirthDate}" Grid.Column="2" />
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
     <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
         <ListBox ItemTemplate="{StaticResource customer}" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" />
+        <Button Grid.Row="1" x:Name="fetch" Content="fetch" Click="fetch_Click"/>
     </Grid>
 </UserControl>

@@ -28,7 +28,7 @@ namespace DataBinding.Test
     private void Application_Startup(object sender, StartupEventArgs e)
     {
       Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
-      Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:2752/WcfPortal.svc";
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:2752/WcfPortal.svc"; 
 
       this.RootVisual = new Page();
     }

@@ -8,6 +8,8 @@ namespace DataBinding.Business
 {
   public partial class Customer
   {
+    private Customer() { }
+
     #region Server Factories
 
     public static Customer Load(int Id, string name, DateTime birthDate)

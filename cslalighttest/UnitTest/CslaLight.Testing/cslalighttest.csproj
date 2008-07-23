@@ -72,6 +72,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\AuthTests.cs">
+      <Link>Authorization\AuthTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\PermissionsRoot.cs">
+      <Link>Authorization\PermissionsRoot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\PerTypeAuthClasses.cs">
+      <Link>Authorization\PerTypeAuthClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\PerTypeAuthorization.cs">
+      <Link>Authorization\PerTypeAuthorization.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\TestIdentity.cs">
+      <Link>Authorization\TestIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\TestPrincipal.cs">
+      <Link>Authorization\TestPrincipal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\DpRoot.cs">
+      <Link>DataPortal\DpRoot.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\ReadOnly\MockReadOnly.cs">
       <Link>ReadOnly\MockReadOnly.cs</Link>
     </Compile>

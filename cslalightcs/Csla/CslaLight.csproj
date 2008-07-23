@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -72,11 +72,20 @@
     <Compile Include="..\..\cslacs\Csla\Core\StateMode.cs">
       <Link>Core\StateMode.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRules.cs">
+      <Link>Security\AuthorizationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRulesManager.cs">
+      <Link>Security\AuthorizationRulesManager.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\BusinessPrincipalBase.cs">
       <Link>Security\BusinessPrincipalBase.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\CSLAIdentity.cs">
       <Link>Security\CSLAIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\IAuthorizeReadWrite.cs">
+      <Link>Security\IAuthorizeReadWrite.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\MembershipIdentity.cs">
       <Link>Security\MembershipIdentity.cs</Link>
@@ -84,8 +93,23 @@
     <Compile Include="..\..\cslacs\Csla\Security\NoAccessBehavior.cs">
       <Link>Security\NoAccessBehavior.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\ObjectAuthorizationRules.cs">
+      <Link>Security\ObjectAuthorizationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\RolesForProperty.cs">
+      <Link>Security\RolesForProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\RolesForType.cs">
+      <Link>Security\RolesForType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\SharedAuthorizationRules.cs">
+      <Link>Security\SharedAuthorizationRules.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedIdentity.cs">
       <Link>Security\UnauthenticatedIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedPrincipal.cs">
+      <Link>Security\UnauthenticatedPrincipal.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
       <Link>Serialization\ISerializationFormatter.cs</Link>
@@ -238,6 +262,7 @@
     <Compile Include="Reflection\CallMethodException.cs" />
     <Compile Include="Reflection\LateBoundObject.cs" />
     <Compile Include="Reflection\MethodCaller.cs" />
+    <Compile Include="Security\PrincipalCache.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>
     </Compile>

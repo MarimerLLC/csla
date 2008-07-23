@@ -25,6 +25,10 @@ namespace Csla
     {
       get
       {
+        if (_principal == null)
+        {
+          _principal = new Csla.Security.UnauthenticatedPrincipal();
+        }
         return _principal;
       }
       set
@@ -237,6 +241,31 @@ namespace Csla
         string result = null; // = ConfigurationManager.AppSettings["CslaDataPortalProxy"];
         if (string.IsNullOrEmpty(result))
           result = "Local";
+        return result;
+      }
+    }
+
+
+    /// <summary>
+    /// Gets a qualified name for a method that implements
+    /// the IsInRole() behavior used for authorization.
+    /// </summary>
+    /// <returns>
+    /// Returns a value in the form
+    /// "Namespace.Class, Assembly, MethodName".
+    /// </returns>
+    /// <remarks>
+    /// The default is to use a simple IsInRole() call against
+    /// the current principal. If another method is supplied
+    /// it must conform to the IsInRoleProvider delegate.
+    /// </remarks>
+    public static string IsInRoleProvider
+    {
+      get
+      {
+        string result = null; //ConfigurationManager.AppSettings["CslaIsInRoleProvider"];
+        if (string.IsNullOrEmpty(result))
+          result = string.Empty;
         return result;
       }
     }

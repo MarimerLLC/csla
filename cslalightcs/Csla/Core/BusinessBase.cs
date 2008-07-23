@@ -502,44 +502,38 @@ namespace Csla.Core
     #endregion
 
     #region Authorization
-    // TODO: Implement authorization!
 
-    /// <summary>
-    /// The code in this region is purely a stub implementation at this point. Some if it is required
-    /// to get the tests for Validation to build.
-    /// </summary>
-    
-    //[NotUndoable()]
-    //[NonSerialized()]
-    //private Dictionary<string, bool> _readResultCache;
-    //[NotUndoable()]
-    //[NonSerialized()]
-    //private Dictionary<string, bool> _writeResultCache;
-    //[NotUndoable()]
-    //[NonSerialized()]
-    //private Dictionary<string, bool> _executeResultCache;
-    //[NotUndoable()]
-    //[NonSerialized()]
-    //private System.Security.Principal.IPrincipal _lastPrincipal;
+    [NotUndoable()]
+    [NonSerialized()]
+    private Dictionary<string, bool> _readResultCache;
+    [NotUndoable()]
+    [NonSerialized()]
+    private Dictionary<string, bool> _writeResultCache;
+    [NotUndoable()]
+    [NonSerialized()]
+    private Dictionary<string, bool> _executeResultCache;
+    [NotUndoable()]
+    [NonSerialized()]
+    private System.Security.Principal.IPrincipal _lastPrincipal;
 
-    //[NotUndoable()]
-    //[NonSerialized()]
-    //private Security.AuthorizationRules _authorizationRules;
+    [NotUndoable()]
+    [NonSerialized()]
+    private Security.AuthorizationRules _authorizationRules;
 
     private void InitializeAuthorizationRules()
     {
-      //AddInstanceAuthorizationRules();
-      //if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
-      //{
-      //  lock (this.GetType())
-      //  {
-      //    if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
-      //    {
-      //      Csla.Security.SharedAuthorizationRules.GetManager(this.GetType(), true);
-      //      AddAuthorizationRules();
-      //    }
-      //  }
-      //}
+      AddInstanceAuthorizationRules();
+      if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
+      {
+        lock (this.GetType())
+        {
+          if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
+          {
+            Csla.Security.SharedAuthorizationRules.GetManager(this.GetType(), true);
+            AddAuthorizationRules();
+          }
+        }
+      }
     }
 
     /// <summary>
@@ -579,15 +573,15 @@ namespace Csla.Core
     /// reading and writing properties of the object. Typically these
     /// values are added once when the business object is instantiated.
     /// </remarks>
-    //protected Security.AuthorizationRules AuthorizationRules
-    //{
-    //  get
-    //  {
-    //    if (_authorizationRules == null)
-    //      _authorizationRules = new Security.AuthorizationRules(this.GetType());
-    //    return _authorizationRules;
-    //  }
-    //}
+    protected Security.AuthorizationRules AuthorizationRules
+    {
+      get
+      {
+        if (_authorizationRules == null)
+          _authorizationRules = new Security.AuthorizationRules(this.GetType());
+        return _authorizationRules;
+      }
+    }
 
     /// <summary>
     /// Returns <see langword="true" /> if the user is allowed to read the
@@ -601,21 +595,19 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool CanReadProperty(bool throwOnFalse)
     {
-      //string propertyName =
-      //  new System.Diagnostics.StackTrace().
-      //  GetFrame(1).GetMethod().Name.Substring(4);
-      //bool result = CanReadProperty(propertyName);
-      //if (throwOnFalse && result == false)
-      //{
-      //  System.Security.SecurityException ex = new System.Security.SecurityException(
-      //    String.Format("{0} ({1})",
-      //    Resources.PropertyGetNotAllowed, propertyName));
-      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
-      //  throw ex;
-      //}
-      //return result;
+      string propertyName =
+        new System.Diagnostics.StackTrace().
+        GetFrame(1).GetMethod().Name.Substring(4);
+      bool result = CanReadProperty(propertyName);
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(
+          String.Format("{0} ({1})",
+          Resources.PropertyGetNotAllowed, propertyName));
+        throw ex;
+      }
+      return result;
 
-      return true;
     }
 
     /// <summary>
@@ -628,18 +620,15 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     public bool CanReadProperty(string propertyName, bool throwOnFalse)
     {
-      //bool result = CanReadProperty(propertyName);
-      //if (throwOnFalse && result == false)
-      //{
-      //  System.Security.SecurityException ex = new System.Security.SecurityException(
-      //    String.Format("{0} ({1})",
-      //    Resources.PropertyGetNotAllowed, propertyName));
-      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
-      //  throw ex;
-      //}
-      //return result;
-
-      return true;
+      bool result = CanReadProperty(propertyName);
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(
+          String.Format("{0} ({1})",
+          Resources.PropertyGetNotAllowed, propertyName));
+        throw ex;
+      }
+      return result;
     }
 
     /// <summary>
@@ -652,11 +641,9 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool CanReadProperty()
     {
-      //string propertyName =
-      //  new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      //return CanReadProperty(propertyName);
-
-      return true;
+      string propertyName =
+        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      return CanReadProperty(propertyName);
     }
 
     /// <summary>
@@ -683,27 +670,27 @@ namespace Csla.Core
     {
       bool result = true;
 
-      //VerifyAuthorizationCache();
+      VerifyAuthorizationCache();
 
-      //if (!_readResultCache.TryGetValue(propertyName, out result))
-      //{
-      //  result = true;
-      //  if (AuthorizationRules.HasReadAllowedRoles(propertyName))
-      //  {
-      //    // some users are explicitly granted read access
-      //    // in which case all other users are denied
-      //    if (!AuthorizationRules.IsReadAllowed(propertyName))
-      //      result = false;
-      //  }
-      //  else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
-      //  {
-      //    // some users are explicitly denied read access
-      //    if (AuthorizationRules.IsReadDenied(propertyName))
-      //      result = false;
-      //  }
-      //  // store value in cache
-      //  _readResultCache[propertyName] = result;
-      //}
+      if (!_readResultCache.TryGetValue(propertyName, out result))
+      {
+        result = true;
+        if (AuthorizationRules.HasReadAllowedRoles(propertyName))
+        {
+          // some users are explicitly granted read access
+          // in which case all other users are denied
+          if (!AuthorizationRules.IsReadAllowed(propertyName))
+            result = false;
+        }
+        else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
+        {
+          // some users are explicitly denied read access
+          if (AuthorizationRules.IsReadDenied(propertyName))
+            result = false;
+        }
+        // store value in cache
+        _readResultCache[propertyName] = result;
+      }
       return result;
     }
 
@@ -719,18 +706,15 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool CanWriteProperty(bool throwOnFalse)
     {
-      //string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      //bool result = CanWriteProperty(propertyName);
-      //if (throwOnFalse && result == false)
-      //{
-      //  System.Security.SecurityException ex = new System.Security.SecurityException(
-      //    String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
-      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
-      //  throw ex;
-      //}
-      //return result;
-
-      return true;
+      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      bool result = CanWriteProperty(propertyName);
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(
+          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
+        throw ex;
+      }
+      return result;
     }
 
     /// <summary>
@@ -743,17 +727,14 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     public bool CanWriteProperty(string propertyName, bool throwOnFalse)
     {
-      //bool result = CanWriteProperty(propertyName);
-      //if (throwOnFalse && result == false)
-      //{
-      //  System.Security.SecurityException ex = new System.Security.SecurityException(
-      //    String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
-      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
-      //  throw ex;
-      //}
-      //return result;
-
-      return true;
+      bool result = CanWriteProperty(propertyName);
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(
+          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
+        throw ex;
+      }
+      return result;
     }
 
     /// <summary>
@@ -766,10 +747,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool CanWriteProperty()
     {
-      //string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      //return CanWriteProperty(propertyName);
-
-      return true;
+      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
+      return CanWriteProperty(propertyName);
     }
 
     /// <summary>
@@ -796,45 +775,45 @@ namespace Csla.Core
     {
       bool result = true;
 
-      //VerifyAuthorizationCache();
+      VerifyAuthorizationCache();
 
-      //if (!_writeResultCache.TryGetValue(propertyName, out result))
-      //{
-      //  result = true;
-      //  if (this.AuthorizationRules.HasWriteAllowedRoles(propertyName))
-      //  {
-      //    // some users are explicitly granted write access
-      //    // in which case all other users are denied
-      //    if (!AuthorizationRules.IsWriteAllowed(propertyName))
-      //      result = false;
-      //  }
-      //  else if (AuthorizationRules.HasWriteDeniedRoles(propertyName))
-      //  {
-      //    // some users are explicitly denied write access
-      //    if (AuthorizationRules.IsWriteDenied(propertyName))
-      //      result = false;
-      //  }
-      //  _writeResultCache[propertyName] = result;
-      //}
+      if (!_writeResultCache.TryGetValue(propertyName, out result))
+      {
+        result = true;
+        if (this.AuthorizationRules.HasWriteAllowedRoles(propertyName))
+        {
+          // some users are explicitly granted write access
+          // in which case all other users are denied
+          if (!AuthorizationRules.IsWriteAllowed(propertyName))
+            result = false;
+        }
+        else if (AuthorizationRules.HasWriteDeniedRoles(propertyName))
+        {
+          // some users are explicitly denied write access
+          if (AuthorizationRules.IsWriteDenied(propertyName))
+            result = false;
+        }
+        _writeResultCache[propertyName] = result;
+      }
       return result;
     }
 
     private void VerifyAuthorizationCache()
     {
-      //if (_readResultCache == null)
-      //  _readResultCache = new Dictionary<string, bool>();
-      //if (_writeResultCache == null)
-      //  _writeResultCache = new Dictionary<string, bool>();
-      //if (_executeResultCache == null)
-      //  _executeResultCache = new Dictionary<string, bool>();
-      //if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
-      //{
-      //  // the principal has changed - reset the cache
-      //  _readResultCache.Clear();
-      //  _writeResultCache.Clear();
-      //  _executeResultCache.Clear();
-      //  _lastPrincipal = Csla.ApplicationContext.User;
-      //}
+      if (_readResultCache == null)
+        _readResultCache = new Dictionary<string, bool>();
+      if (_writeResultCache == null)
+        _writeResultCache = new Dictionary<string, bool>();
+      if (_executeResultCache == null)
+        _executeResultCache = new Dictionary<string, bool>();
+      if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
+      {
+        // the principal has changed - reset the cache
+        _readResultCache.Clear();
+        _writeResultCache.Clear();
+        _executeResultCache.Clear();
+        _lastPrincipal = Csla.ApplicationContext.User;
+      }
     }
 
     /// <summary>
@@ -849,17 +828,14 @@ namespace Csla.Core
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public bool CanExecuteMethod(bool throwOnFalse)
     {
-      //string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-      //bool result = CanExecuteMethod(methodName);
-      //if (throwOnFalse && result == false)
-      //{
-      //  System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
-      //  throw ex;
-      //}
-      //return result;
-
-      return true;
+      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+      bool result = CanExecuteMethod(methodName);
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+        throw ex;
+      }
+      return result;
     }
 
     /// <summary>
@@ -872,16 +848,13 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     public bool CanExecuteMethod(string methodName, bool throwOnFalse)
     {
-      //bool result = CanExecuteMethod(methodName);
-      //if (throwOnFalse && result == false)
-      //{
-      //  System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-      //  ex.Action = System.Security.Permissions.SecurityAction.Deny;
-      //  throw ex;
-      //}
-      //return result;
-
-      return true;
+      bool result = CanExecuteMethod(methodName);
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+        throw ex;
+      }
+      return result;
     }
 
     /// <summary>
@@ -894,10 +867,8 @@ namespace Csla.Core
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public bool CanExecuteMethod()
     {
-      //string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-      //return CanExecuteMethod(methodName);
-
-      return true;
+      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+      return CanExecuteMethod(methodName);
     }
 
     /// <summary>
@@ -925,32 +896,32 @@ namespace Csla.Core
     {
       bool result = true;
 
-      //VerifyAuthorizationCache();
+      VerifyAuthorizationCache();
 
-      //if (!_executeResultCache.TryGetValue(methodName, out result))
-      //{
-      //  result = true;
-      //  if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
-      //  {
-      //    // some users are explicitly granted read access
-      //    // in which case all other users are denied
-      //    if (!(AuthorizationRules.IsExecuteAllowed(methodName)))
-      //    {
-      //      result = false;
-      //    }
+      if (!_executeResultCache.TryGetValue(methodName, out result))
+      {
+        result = true;
+        if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
+        {
+          // some users are explicitly granted read access
+          // in which case all other users are denied
+          if (!(AuthorizationRules.IsExecuteAllowed(methodName)))
+          {
+            result = false;
+          }
 
-      //  }
-      //  else if (AuthorizationRules.HasExecuteDeniedRoles(methodName))
-      //  {
-      //    // some users are explicitly denied read access
-      //    if (AuthorizationRules.IsExecuteDenied(methodName))
-      //    {
-      //      result = false;
-      //    }
-      //  }
-      //  // store value in cache
-      //  _executeResultCache[methodName] = result;
-      //}
+        }
+        else if (AuthorizationRules.HasExecuteDeniedRoles(methodName))
+        {
+          // some users are explicitly denied read access
+          if (AuthorizationRules.IsExecuteDenied(methodName))
+          {
+            result = false;
+          }
+        }
+        // store value in cache
+        _executeResultCache[methodName] = result;
+      }
       return result;
     }
 
@@ -1024,11 +995,10 @@ namespace Csla.Core
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      // TODO: Implement access rules
-      //if (CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         return field;
-      //else
-      //  return defaultValue;
+      else
+        return defaultValue;
     }
 
     /// <summary>
@@ -1210,12 +1180,11 @@ namespace Csla.Core
     /// </remarks>
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, Security.NoAccessBehavior noAccess)
     {
-      // TODO: Implement access rules
       P result = default(P);
-      //if (CanReadProperty(propertyInfo.Name, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
+      if (CanReadProperty(propertyInfo.Name, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         result = ReadProperty<P>(propertyInfo);
-      //else
-      //  result = propertyInfo.DefaultValue;
+      else
+        result = propertyInfo.DefaultValue;
       return result;
     }
 
@@ -1231,18 +1200,17 @@ namespace Csla.Core
     /// </remarks>
     protected object GetProperty(IPropertyInfo propertyInfo)
     {
-      // TODO: implement access rules
       object result = null;
-      //if (CanReadProperty(propertyInfo.Name, false))
-      //{
+      if (CanReadProperty(propertyInfo.Name, false))
+      {
         var info = FieldManager.GetFieldData(propertyInfo);
         if (info != null)
           result = info.Value;
-      //}
-      //else
-      //{
-      //  result = propertyInfo.DefaultValue;
-      //}
+      }
+      else
+      {
+        result = propertyInfo.DefaultValue;
+      }
       return result;
     }
 
@@ -1425,15 +1393,14 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(string propertyName, ref P field, P newValue, Security.NoAccessBehavior noAccess)
     {
-      //if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
-      //{
+      if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      {
         try
         {
           if (field == null)
           {
             if (newValue != null)
             {
-              //OnPropertyChanging(propertyName);
               field = newValue;
               PropertyHasChanged(propertyName);
             }
@@ -1442,7 +1409,6 @@ namespace Csla.Core
           {
             if (newValue is string && newValue == null)
               newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
-            //OnPropertyChanging(propertyName);
             field = newValue;
             PropertyHasChanged(propertyName);
           }
@@ -1451,7 +1417,7 @@ namespace Csla.Core
         {
           throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message));
         }
-      //}
+      }
     }
 
     /// <summary>
@@ -1480,15 +1446,14 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      //if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
-      //{
+      if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      {
         try
         {
           if (field == null)
           {
             if (newValue != null)
             {
-              //OnPropertyChanging(propertyName);
               field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
               PropertyHasChanged(propertyName);
             }
@@ -1497,7 +1462,6 @@ namespace Csla.Core
           {
             if (newValue is string && newValue == null)
               newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
-            //OnPropertyChanging(propertyName);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
             PropertyHasChanged(propertyName);
           }
@@ -1506,7 +1470,7 @@ namespace Csla.Core
         {
           throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message));
         }
-      //}
+      }
     }
 
     /// <summary>
@@ -1559,8 +1523,8 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
     {
-      //if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
-      //{
+      if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      {
         try
         {
           P oldValue = default(P);
@@ -1584,7 +1548,7 @@ namespace Csla.Core
         {
           throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
         }
-      //}
+      }
     }
 
     /// <summary>
@@ -1604,8 +1568,8 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue, Security.NoAccessBehavior noAccess)
     {
-      //if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
-      //{
+      if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      {
         try
         {
           P oldValue = default(P);
@@ -1629,7 +1593,7 @@ namespace Csla.Core
         {
           throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
         }
-      //}
+      }
     }
 
     /// <summary>
@@ -1761,7 +1725,6 @@ namespace Csla.Core
           }
           if (markDirty)
           {
-            //OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
             PropertyHasChanged(propertyInfo.Name);
           }
@@ -1792,7 +1755,6 @@ namespace Csla.Core
           }
           if (markDirty)
           {
-            //OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
             PropertyHasChanged(propertyInfo.Name);
           }
@@ -1818,7 +1780,6 @@ namespace Csla.Core
         {
           if (markDirty)
           {
-            //OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
             PropertyHasChanged(propertyInfo.Name);
           }

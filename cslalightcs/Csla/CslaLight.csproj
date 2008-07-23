@@ -87,9 +87,6 @@
     <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedIdentity.cs">
       <Link>Security\UnauthenticatedIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\WindowsIdentity.cs">
-      <Link>Security\WindowsIdentity.cs</Link>
-    </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
       <Link>Serialization\ISerializationFormatter.cs</Link>
     </Compile>
@@ -107,6 +104,9 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
       <Link>Serialization\SerializationFormatterFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Silverlight\Security\WindowsIdentity.cs">
+      <Link>Silverlight\Security\WindowsIdentity.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleArgs.cs">
       <Link>Validation\AsyncRuleArgs.cs</Link>

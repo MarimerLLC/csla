@@ -858,6 +858,7 @@ namespace Csla.Validation
     /// will also be checked.
     /// </remarks>
     [Obsolete("Use AddDependentProperty")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public void AddDependantProperty(string propertyName, string dependantPropertyName, bool isBidirectional)
     {
       ValidationRulesManager mgr = GetTypeRules(true);

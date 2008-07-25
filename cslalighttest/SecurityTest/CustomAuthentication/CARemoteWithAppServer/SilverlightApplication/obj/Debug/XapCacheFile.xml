@@ -1,7 +1,0 @@
-<xapCache source="C:\Projects\CSLALight\cslalighttest\SecurityTest\CustomAuthentication\CARemoteWithAppServer\SilverlightApplication\Bin\Debug\SilverlightApplication.xap" lastWriteTime="7/24/2008 1:33:34 PM">
-  <file source="C:\Projects\CSLALight\cslalighttest\SecurityTest\CustomAuthentication\CARemoteWithAppServer\SilverlightApplication\obj\Debug\SilverlightApplication.dll" archivePath="SilverlightApplication.dll" lastWriteTime="7/24/2008 1:33:32 PM" />
-  <file source="C:\Projects\CSLALight\cslalighttest\SecurityTest\CustomAuthentication\CARemoteWithAppServer\SilverlightClassLibrary\Bin\Debug\ClassLibrary.dll" archivePath="ClassLibrary.dll" lastWriteTime="7/24/2008 1:33:15 PM" />
-  <file source="C:\Projects\CSLALight\cslalightcs\Csla\ClientBin\Csla.dll" archivePath="Csla.dll" lastWriteTime="7/24/2008 1:33:14 PM" />
-  <file source="C:\Projects\CSLALight\cslalighttest\SecurityTest\CustomAuthentication\CARemoteWithAppServer\SilverlightApplication\ServiceReferences.ClientConfig" archivePath="ServiceReferences.ClientConfig" lastWriteTime="7/23/2008 1:08:53 PM" />
-  <file source="C:\Projects\CSLALight\cslalighttest\SecurityTest\CustomAuthentication\CARemoteWithAppServer\SilverlightApplication\Bin\Debug\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="7/24/2008 1:33:34 PM" />
-</xapCache>

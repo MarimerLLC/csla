@@ -916,6 +916,7 @@ Namespace Validation
     ''' will also be checked.
     ''' </remarks>
     <Obsolete("Use AddDependentProperty")> _
+    <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Never)> _
     Public Sub AddDependantProperty(ByVal propertyName As String, ByVal dependantPropertyName As String, ByVal isBidirectional As Boolean)
 
       Dim mgr As ValidationRulesManager = GetTypeRules(True)

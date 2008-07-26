@@ -35,13 +35,13 @@ namespace Csla.DataPortalClient
 
     private WcfPortal.WcfPortalClient GetProxy()
     {
-      if (string.IsNullOrEmpty(this.DataPortalUrl))
-        throw new ArgumentOutOfRangeException("DataPortalUrl must be a valid URL");
-      if (this.Binding == null)
-        throw new ArgumentOutOfRangeException("Binding must be a valid WCF binding");
-      
-      var address = new EndpointAddress(this.DataPortalUrl);
-      return new WcfPortal.WcfPortalClient(this.Binding, address);
+      if (!string.IsNullOrEmpty(this.DataPortalUrl) && this.Binding != null)
+      {
+        var address = new EndpointAddress(this.DataPortalUrl);
+        return new WcfPortal.WcfPortalClient(this.Binding, address);
+      }
+      else
+        return new WcfPortal.WcfPortalClient();
     }
 
     #region Create

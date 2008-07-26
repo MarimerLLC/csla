@@ -293,13 +293,17 @@ namespace Csla
     public enum ExecutionLocations
     {
       /// <summary>
-      /// The code is executing on the client.
+      /// The code is executing on the .NET client.
       /// </summary>
       Client,
       /// <summary>
       /// The code is executing on the application server.
       /// </summary>
-      Server
+      Server,
+      /// <summary>
+      /// The code is executing on the Silverlight client.
+      /// </summary>
+      Silverlight
     }
 
     /// <summary>
@@ -325,7 +329,7 @@ namespace Csla
     #region In-Memory Settings
 
     private static ExecutionLocations _executionLocation =
-      ExecutionLocations.Client;
+      ExecutionLocations.Silverlight;
 
     /// <summary>
     /// Returns a value indicating whether the application code

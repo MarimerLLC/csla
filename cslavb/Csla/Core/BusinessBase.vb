@@ -2366,7 +2366,9 @@ Namespace Core
         _childChangedHandlers = CType(System.Delegate.Remove(_childChangedHandlers, value), EventHandler(Of Csla.Core.ChildChangedEventArgs))
       End RemoveHandler
       RaiseEvent(ByVal sender As System.Object, ByVal e As Csla.Core.ChildChangedEventArgs)
-        _childChangedHandlers.Invoke(sender, e)
+        If _childChangedHandlers IsNot Nothing Then
+          _childChangedHandlers.Invoke(sender, e)
+        End If
       End RaiseEvent
     End Event
 

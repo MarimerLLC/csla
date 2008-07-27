@@ -95,7 +95,8 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<Guid>(M06Property, value); }
     }
 
-    private static Csla.PropertyInfo<EditableGetSet> C01Property = RegisterProperty<EditableGetSet>(typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("C01"));
+    private static Csla.PropertyInfo<EditableGetSet> C01Property = 
+      RegisterProperty(new Csla.PropertyInfo<EditableGetSet>("C01"));
     public EditableGetSet C01
     {
       get 

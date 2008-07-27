@@ -177,25 +177,21 @@ namespace Csla.Test.PropertyGetSet
     public void SimpleChildProperties()
     {
       EditableGetSet root = new EditableGetSet();
-      root.PropertyChanging += new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanged += root_PropertyChanged;
+      root.ChildChanged += root_ChildChanged;
       
       EditableGetSet child = root.C01;
       Assert.IsNotNull(child, "Child should not be null");
-      Assert.AreEqual("C01", _changingName, "C01 should have been changing");
       Assert.AreEqual("C01", _changedName, "C01 should have changed");
-      _changingName = "";
       _changedName = "";
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
       Assert.IsTrue(child.IsDirty, "Child should be dirty");
 
       child.F01 = "hi there";
-      Assert.AreEqual("", _changingName, "C01 should NOT have been changing");
-      Assert.AreEqual("C01", _changedName, "C01 should have changed");
+      Assert.AreEqual("F01", _childChangedName, "C01.F01 should have changed");
 
-      root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
-      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.ChildChanged -= root_ChildChanged;
     }
 
     [TestMethod]
@@ -208,6 +204,7 @@ namespace Csla.Test.PropertyGetSet
       root = root.Clone();
       root.PropertyChanging += new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.ChildChanged += root_ChildChanged;
 
       child = root.C01;
       Assert.IsNotNull(child, "Child should not be null");
@@ -219,8 +216,7 @@ namespace Csla.Test.PropertyGetSet
       _changingName = "";
       _changedName = "";
       child.F01 = "I've been cloned!";
-      Assert.AreEqual("", _changingName, "C01 should NOT have been changing");
-      Assert.AreEqual("C01", _changedName, "C01 should have changed");
+      Assert.AreEqual("F01", _childChangedName, "C01.FO1 should have changed");
 
       root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
       root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
@@ -446,6 +442,7 @@ namespace Csla.Test.PropertyGetSet
 
     private string _changingName;
     private string _changedName;
+    private string _childChangedName;
     void root_PropertyChanging(object sender, System.ComponentModel.PropertyChangingEventArgs e)
     {
       _changingName = e.PropertyName;
@@ -454,6 +451,11 @@ namespace Csla.Test.PropertyGetSet
     void root_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
       _changedName = e.PropertyName;
+    }
+
+    void root_ChildChanged(object sender, Csla.Core.ChildChangedEventArgs e)
+    {
+      _childChangedName = e.PropertyChangedArgs.PropertyName;
     }
 
     [TestMethod]

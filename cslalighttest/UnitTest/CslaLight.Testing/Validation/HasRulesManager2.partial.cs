@@ -28,6 +28,8 @@ namespace Csla.Test.ValidationRules
       completed(this, null);
     }
 
+    #if !SILVERLIGHT
+
     protected override void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
@@ -65,6 +67,8 @@ namespace Csla.Test.ValidationRules
       //we would delete here
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Deleted");
     }
+
+#endif
 
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {

@@ -84,6 +84,12 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\PerTypeAuthorization.cs">
       <Link>Authorization\PerTypeAuthorization.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\ReadonlyAuthorizationTests.cs">
+      <Link>Authorization\ReadonlyAuthorizationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\ReadOnlyPerson.cs">
+      <Link>Authorization\ReadOnlyPerson.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\TestIdentity.cs">
       <Link>Authorization\TestIdentity.cs</Link>
     </Compile>

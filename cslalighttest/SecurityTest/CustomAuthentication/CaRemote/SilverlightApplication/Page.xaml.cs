@@ -23,9 +23,9 @@ namespace SilverlightApplication
       Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:4769/WcfPortal.svc";
     }
 
-    private void btnRemoteSuccessfulLogin_Click(object sender, RoutedEventArgs e)
+    private void btnSuccessfulLogin_Click(object sender, RoutedEventArgs e)
     {
-      txtRemoteSuccessfulLogin.Text = String.Empty;
+      txtSuccessfulLogin.Text = String.Empty;
 
       SLPrincipal.Logout();
       SLPrincipal.Login("TestUser", "1234", "", (o, e2) =>
@@ -34,18 +34,18 @@ namespace SilverlightApplication
           && Csla.ApplicationContext.User.Identity.IsAuthenticated
           && ((SLPrincipal.LoginEventArgs)e2).LoginSucceded)
         {
-          txtRemoteSuccessfulLogin.Text = "Pass";
+          txtSuccessfulLogin.Text = "Pass";
         }
         else
         {
-          txtRemoteSuccessfulLogin.Text = "Fail";
+          txtSuccessfulLogin.Text = "Fail";
         }
       });
     }
 
-    private void btnRemoteUnsuccessfulLogin_Click(object sender, RoutedEventArgs e)
+    private void btnUnsuccessfulLogin_Click(object sender, RoutedEventArgs e)
     {
-      txtRemoteUnsuccessfulLogin.Text = String.Empty;
+      txtUnsuccessfulLogin.Text = String.Empty;
 
       SLPrincipal.Logout();
       SLPrincipal.Login("invaliduser", "invalidpassword", "", (o, e2) =>
@@ -53,18 +53,18 @@ namespace SilverlightApplication
         if (Csla.ApplicationContext.User.Identity.GetType() == typeof(Csla.Security.UnauthenticatedIdentity)
            && !((SLPrincipal.LoginEventArgs)e2).LoginSucceded)
         {
-          txtRemoteUnsuccessfulLogin.Text = "Pass";
+          txtUnsuccessfulLogin.Text = "Pass";
         }
         else
         {
-          txtRemoteUnsuccessfulLogin.Text = "Fail";
+          txtUnsuccessfulLogin.Text = "Fail";
         }
       });
     }
 
-    private void btnRemoteRoles_Click(object sender, RoutedEventArgs e)
+    private void btnRoles_Click(object sender, RoutedEventArgs e)
     {
-      txtRemoteRoles.Text = String.Empty;
+      txtRoles.Text = String.Empty;
 
       SLPrincipal.Logout();
       SLPrincipal.Login("TestUser", "1234", "User;Admin", (o, e2) =>
@@ -73,31 +73,11 @@ namespace SilverlightApplication
           && Csla.ApplicationContext.User.IsInRole("Admin")
           && !Csla.ApplicationContext.User.IsInRole("invalidrole"))
         {
-          txtRemoteRoles.Text = "Pass";
+          txtRoles.Text = "Pass";
         }
         else
         {
-          txtRemoteRoles.Text = "Fail";
-        }
-      });
-    }
-
-    private void btnRemoteAuthorizationA_Click(object sender, RoutedEventArgs e)
-    {
-      txtRemoteRoles.Text = String.Empty;
-
-      SLPrincipal.Logout();
-      SLPrincipal.Login("TestUser", "1234", "User;Admin", (o, e2) =>
-      {
-        if (Csla.ApplicationContext.User.IsInRole("User")
-          && Csla.ApplicationContext.User.IsInRole("Admin")
-          && !Csla.ApplicationContext.User.IsInRole("invalidrole"))
-        {
-          txtRemoteRoles.Text = "Pass";
-        }
-        else
-        {
-          txtRemoteRoles.Text = "Fail";
+          txtRoles.Text = "Fail";
         }
       });
     }

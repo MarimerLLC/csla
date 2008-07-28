@@ -51,11 +51,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SilverlightClassLibrary\ClassA.cs">
-      <Link>ClassA.cs</Link>
+    <Compile Include="..\SilverlightClassLibrary\ClassA1.cs">
+      <Link>ClassA1.cs</Link>
     </Compile>
-    <Compile Include="..\SilverlightClassLibrary\ClassB.cs">
-      <Link>ClassB.cs</Link>
+    <Compile Include="..\SilverlightClassLibrary\ClassA2.cs">
+      <Link>ClassA2.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\ClassB1.cs">
+      <Link>ClassB1.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\ClassB2.cs">
+      <Link>ClassB2.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\ClassC1.cs">
+      <Link>ClassC1.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\ClassC2.cs">
+      <Link>ClassC2.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\ClassD1.cs">
+      <Link>ClassD1.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\ClassD2.cs">
+      <Link>ClassD2.cs</Link>
     </Compile>
     <Compile Include="..\SilverlightClassLibrary\SLPrincipal.cs">
       <Link>SLPrincipal.cs</Link>

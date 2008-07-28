@@ -120,6 +120,48 @@ namespace Csla
       this.Save();
     }
 
+    /// <summary>
+    /// Override this method to load a new business object with default
+    /// values from the database.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    {
+      ValidationRules.CheckRules();
+    }
+
+    /// <summary>
+    /// Override this method to allow insertion of a business
+    /// object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    {
+      throw new NotSupportedException(Resources.InsertNotSupportedException);
+    }
+
+    /// <summary>
+    /// Override this method to allow update of a business
+    /// object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_Update(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    {
+      throw new NotSupportedException(Resources.UpdateNotSupportedException);
+    }
+
+    /// <summary>
+    /// Override this method to allow deferred deletion of a business object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_DeleteSelf(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    {
+      throw new NotSupportedException(Resources.DeleteNotSupportedException);
+    }
+
     #endregion
 
     #region ISavable Members

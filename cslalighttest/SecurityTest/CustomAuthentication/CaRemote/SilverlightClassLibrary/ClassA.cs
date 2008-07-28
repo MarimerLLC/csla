@@ -24,6 +24,12 @@ namespace ClassLibrary
       A = "test";
       B = "test";
     }
+    
+    [RunLocal()]
+    protected override void DataPortal_Create()
+    {
+
+    }
 #endif
     #endregion
 

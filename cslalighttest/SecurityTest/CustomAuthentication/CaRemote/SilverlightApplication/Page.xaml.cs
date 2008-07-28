@@ -206,6 +206,9 @@ namespace SilverlightApplication
           try
           {
             ClassA classA = new ClassA();
+            classA.A = "test";
+            classA.B = "test";
+            classA.Save();
             pass = false;
           }
           catch (SecurityException ex)
@@ -247,6 +250,9 @@ namespace SilverlightApplication
           try
           {
             ClassA classA = new ClassA();
+            classA.A = "test";
+            classA.B = "test";
+            classA.Save();
             pass = false;
           }
           catch (SecurityException ex)

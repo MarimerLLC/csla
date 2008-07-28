@@ -11,11 +11,12 @@ namespace SilverlightClassLibrary
     { }
 
 #if SILVERLIGHT
-    public static void Login(string username, string password, EventHandler<EventArgs> completed)
+    public static void Login(string username, string password, string roles, EventHandler<EventArgs> completed)
     {
       SLMembershipIdentity.GetMembershipIdentity<SLMembershipIdentity>((o, e) =>
       {
         bool result = SetPrincipal(e.Object);
+        e.Object.SetRoles(roles);
         completed(null, new LoginEventArgs(result));
       }, username, password, true);
     }

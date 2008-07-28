@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SilverlightClassLibrary\ClassA.cs">
+      <Link>ClassA.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\ClassB.cs">
+      <Link>ClassB.cs</Link>
+    </Compile>
     <Compile Include="..\SilverlightClassLibrary\SLMembershipIdentity.cs">
       <Link>SLMembershipIdentity.cs</Link>
     </Compile>

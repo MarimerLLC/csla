@@ -19,9 +19,9 @@ namespace SilverlightClassLibrary
       : base(identity)
     { }
 
-    public static void Login(string username, string password, EventHandler<EventArgs> completed)
+    public static void Login(string username, string password, string roles, EventHandler<EventArgs> completed)
     {
-      SLIdentity.GetIdentity(username, password, (o, e) =>
+      SLIdentity.GetIdentity(username, password, roles, (o, e) =>
       {
         bool result = SetPrincipal(e.Object);
         completed(null, new LoginEventArgs(result));

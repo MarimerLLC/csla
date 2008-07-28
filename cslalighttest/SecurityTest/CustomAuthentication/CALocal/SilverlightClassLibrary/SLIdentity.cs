@@ -26,9 +26,9 @@ namespace SilverlightClassLibrary
     [Serializable()]
     public class CredentialsCriteria : CriteriaBase
     {
-
       private string _username;
       private string _password;
+      private string _roles;
 
       public string Username
       {
@@ -46,22 +46,32 @@ namespace SilverlightClassLibrary
         }
       }
 
+      public string Roles
+      {
+        get
+        {
+          return _roles;
+        }
+      }
+
 #if !SILVERLIGHT
       private CredentialsCriteria()
       { }
 #endif
 
-      public CredentialsCriteria(string username, string password)
+      public CredentialsCriteria(string username, string password, string roles)
         : base(typeof(SLIdentity))
       {
         _username = username;
         _password = password;
+        _roles = roles;
       }
 
       protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
       {
         info.AddValue("_username", _username);
         info.AddValue("_password", _password);
+        info.AddValue("_roles", _roles);
         base.OnGetState(info, mode);
       }
 
@@ -69,6 +79,7 @@ namespace SilverlightClassLibrary
       {
         _username = (string)info.Values["_username"].Value;
         _password = (string)info.Values["_password"].Value;
+        _roles = (string)info.Values["_roles"].Value;
         base.OnSetState(info, mode);
       }
     }
@@ -78,7 +89,7 @@ namespace SilverlightClassLibrary
     {
       if (criteria.Username == "TestUser" && criteria.Password == "1234")
       {
-        SetCslaIdentity(new MobileList<string>(new string[] { "User", "Admin" }), true, criteria.Username);
+        SetCslaIdentity(new MobileList<string>(criteria.Roles.Split(';')), true, criteria.Username);
         completed(this, null);
       }
       else
@@ -88,9 +99,9 @@ namespace SilverlightClassLibrary
       }
     }
 
-    public static void GetIdentity(string username, string password, EventHandler<DataPortalResult<SLIdentity>> completed)
+    public static void GetIdentity(string username, string password, string roles, EventHandler<DataPortalResult<SLIdentity>> completed)
     {
-      GetCslaIdentity<SLIdentity>(completed, new CredentialsCriteria(username, password));
+      GetCslaIdentity<SLIdentity>(completed, new CredentialsCriteria(username, password, roles));
     }
 #endif
   }

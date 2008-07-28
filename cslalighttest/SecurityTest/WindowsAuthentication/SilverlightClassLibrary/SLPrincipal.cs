@@ -17,6 +17,15 @@ namespace ClassLibrary
 #if SILVERLIGHT
     public static void Login(EventHandler<EventArgs> completed)
     {
+      Login(string.Empty, completed);
+    }
+    public static void Login(string role, EventHandler<EventArgs> completed)
+    {
+      if (!String.IsNullOrEmpty(role))
+      {
+
+      }
+
       SLWindowsIdentity.GetSLWindowsIdentity((o, e) =>
       {
         if (e.Error == null)

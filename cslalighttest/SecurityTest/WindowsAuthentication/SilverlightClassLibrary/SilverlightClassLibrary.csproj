@@ -46,6 +46,16 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassA.cs" />
+    <Compile Include="ClassA1.cs" />
+    <Compile Include="ClassA2.cs" />
+    <Compile Include="ClassB.cs" />
+    <Compile Include="ClassB1.cs" />
+    <Compile Include="ClassB2.cs" />
+    <Compile Include="ClassC1.cs" />
+    <Compile Include="ClassC2.cs" />
+    <Compile Include="ClassD1.cs" />
+    <Compile Include="ClassD2.cs" />
     <Compile Include="SLPrincipal.cs" />
     <Compile Include="SLWindowsIdentity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

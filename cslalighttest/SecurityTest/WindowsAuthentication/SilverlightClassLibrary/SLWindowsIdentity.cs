@@ -10,6 +10,7 @@ using System.Net;
 //using System.Windows.Shapes;
 using Csla;
 using Csla.Serialization;
+using Csla.Core;
 
 namespace ClassLibrary
 {

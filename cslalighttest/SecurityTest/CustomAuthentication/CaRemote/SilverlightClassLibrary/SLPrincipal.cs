@@ -10,6 +10,7 @@ using System.Net;
 //using System.Windows.Shapes;
 using System.Security.Principal;
 using Csla.DataPortalClient;
+using Csla.Core;
 
 namespace ClassLibrary
 {
@@ -20,9 +21,9 @@ namespace ClassLibrary
     { }
 
 #if SILVERLIGHT
-    public static void Login(string username, string password, EventHandler<EventArgs> completed)
+    public static void Login(string username, string password, string roles, EventHandler<EventArgs> completed)
       {        
-        SLIdentity.GetIdentity(username, password,(o, e) =>
+        SLIdentity.GetIdentity(username, password, roles,(o, e) =>
         {
           bool result = SetPrincipal(e.Object);
           completed(null, new LoginEventArgs(result));

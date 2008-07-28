@@ -12,7 +12,7 @@ namespace ClassLibrary
     {
       if (criteria.Username == "TestUser" && criteria.Password == "1234")
       {
-        SetCslaIdentity(new MobileList<string>(new string[] { "User", "Admin" }), true, criteria.Username);
+        SetCslaIdentity(new MobileList<string>(criteria.Roles.Split(';')), true, criteria.Username);
       }
       else
       {

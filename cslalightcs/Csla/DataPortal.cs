@@ -6,10 +6,38 @@ using Csla.DataPortalClient;
 
 namespace Csla
 {
+  /// <summary>
+  /// Creates, retrieves, updates or deletes a
+  /// business object.
+  /// </summary>
   public static class DataPortal
   {
+    /// <summary>
+    /// Data portal proxy mode options.
+    /// </summary>
+    public enum ProxyModes
+    {
+      /// <summary>
+      /// Allow the data portal to auto-detect
+      /// the mode based on configuration.
+      /// </summary>
+      Auto,
+      /// <summary>
+      /// Force the data portal to only
+      /// execute in local mode.
+      /// </summary>
+      LocalOnly
+    }
+
     private static string _proxyTypeName;
 
+    /// <summary>
+    /// Gets or sets the assembly qualified type
+    /// name of the proxy object to be loaded
+    /// by the data portal. "Local" is a special
+    /// value used to indicate that the data
+    /// portal should run in local mode.
+    /// </summary>
     public static string ProxyTypeName
     {
       get
@@ -23,6 +51,11 @@ namespace Csla
 
     private static DataPortalClient.ProxyFactory _factory;
 
+    /// <summary>
+    /// Gets or sets a reference to a ProxyFactory object
+    /// that is used to create an instance of the data
+    /// portal proxy object.
+    /// </summary>
     public static DataPortalClient.ProxyFactory ProxyFactory
     {
       get
@@ -41,6 +74,16 @@ namespace Csla
     
     #region Begin Create
 
+    /// <summary>
+    /// Creates and initializes a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -48,6 +91,20 @@ namespace Csla
       dp.CreateCompleted += callback;
       dp.BeginCreate();
     }
+
+    /// <summary>
+    /// Creates and initializes a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria object passed to DataPortal_Create().
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T: IMobileObject
     {
@@ -60,6 +117,16 @@ namespace Csla
 
     #region Begin Fetch
 
+    /// <summary>
+    /// Retrieves an existing business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -68,6 +135,19 @@ namespace Csla
       dp.BeginFetch();
     }
 
+    /// <summary>
+    /// Retrieves an existing business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria object passed to DataPortal_Fetch().
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -80,18 +160,44 @@ namespace Csla
 
     #region Begin Update
 
-    public static void BeginUpdate<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
+    /// <summary>
+    /// Updates a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Business object to update.
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    public static void BeginUpdate<T>(object obj, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
       DataPortal<T> dp = new DataPortal<T>();
       dp.UpdateCompleted += callback;
-      dp.BeginUpdate(criteria);
+      dp.BeginUpdate(obj);
     }
 
     #endregion
 
     #region Begin Delete
 
+    /// <summary>
+    /// Deletes an existing business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria object passed to DataPortal_Delete().
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
@@ -105,6 +211,13 @@ namespace Csla
     #endregion
   }
 
+  /// <summary>
+  /// Creates, retrieves, updates or deletes a
+  /// business object.
+  /// </summary>
+  /// <typeparam name="T">
+  /// Type of business object.
+  /// </typeparam>
 #if TESTING
   [System.Diagnostics.DebuggerStepThrough]
 #endif
@@ -112,9 +225,25 @@ namespace Csla
   {
     private DataPortalClient.IDataPortalProxy<T> _proxy;
 
-    public DataPortal()
+    /// <summary>
+    /// Creates an instance of the data portal
+    /// object, choosing a proxy object based
+    /// on current configuration.
+    /// </summary>
+    public DataPortal() : this(DataPortal.ProxyModes.Auto)
+    { }
+
+    /// <summary>
+    /// Creates an instance of the data portal
+    /// object, allowing the caller to specify
+    /// the type of proxy object to use.
+    /// </summary>
+    /// <param name="proxyMode">
+    /// Proxy mode used by this data portal instance.
+    /// </param>
+    public DataPortal(DataPortal.ProxyModes proxyMode)
     {
-      _proxy = DataPortal.ProxyFactory.GetProxy<T>();
+      _proxy = DataPortal.ProxyFactory.GetProxy<T>(proxyMode);
       HookEvents(_proxy);
     }
 
@@ -128,19 +257,39 @@ namespace Csla
 
     #region Create
 
+    /// <summary>
+    /// Event raised when an asynchronous create method
+    /// completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> CreateCompleted;
 
+    /// <summary>
+    /// Raises the CreateCompleted event
+    /// </summary>
+    /// <param name="e">
+    /// Object containing the results of the data portal call.
+    /// </param>
     protected virtual void OnCreateCompleted(DataPortalResult<T> e)
     {
       if (CreateCompleted != null)
         CreateCompleted(this, e);
     }
 
+    /// <summary>
+    /// Starts an asynchronous create operation.
+    /// </summary>
     public void BeginCreate()
     {
       _proxy.BeginCreate();
     }
 
+    /// <summary>
+    /// Starts an asynchronous create operation.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria object provided to the
+    /// DataPortal_Create() method.
+    /// </param>
     public void BeginCreate(object criteria)
     {
       _proxy.BeginCreate(criteria);
@@ -155,19 +304,39 @@ namespace Csla
 
     #region Fetch
 
+    /// <summary>
+    /// Event raised when an asynchronous fetch method
+    /// completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> FetchCompleted;
 
+    /// <summary>
+    /// Raises the FetchCompleted event
+    /// </summary>
+    /// <param name="e">
+    /// Object containing the results of the data portal call.
+    /// </param>
     protected virtual void OnFetchCompleted(DataPortalResult<T> e)
     {
       if (FetchCompleted != null)
         FetchCompleted(this, e);
     }
 
+    /// <summary>
+    /// Starts an asynchronous fetch operation.
+    /// </summary>
     public void BeginFetch()
     {
       _proxy.BeginFetch();
     }
 
+    /// <summary>
+    /// Starts an asynchronous fetch operation.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria object provided to the
+    /// DataPortal_Fetch() method.
+    /// </param>
     public void BeginFetch(object criteria)
     {
       _proxy.BeginFetch(criteria);
@@ -182,14 +351,30 @@ namespace Csla
 
     #region Update
 
+    /// <summary>
+    /// Event raised when an asynchronous update method
+    /// completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> UpdateCompleted;
 
+    /// <summary>
+    /// Raises the UpdateCompleted event
+    /// </summary>
+    /// <param name="e">
+    /// Object containing the results of the data portal call.
+    /// </param>
     protected virtual void OnUpdateCompleted(DataPortalResult<T> e)
     {
       if (UpdateCompleted != null)
         UpdateCompleted(this, e);
     }
 
+    /// <summary>
+    /// Starts an asynchronous update operation.
+    /// </summary>
+    /// <param name="obj">
+    /// Business object to update.
+    /// </param>
     public void BeginUpdate(object obj)
     {
       _proxy.BeginUpdate(obj);
@@ -204,14 +389,31 @@ namespace Csla
 
     #region Delete
 
+    /// <summary>
+    /// Event raised when an asynchronous delete method
+    /// completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> DeleteCompleted;
 
+    /// <summary>
+    /// Raises the DeleteCompleted event
+    /// </summary>
+    /// <param name="e">
+    /// Object containing the results of the data portal call.
+    /// </param>
     protected virtual void OnDeleteCompleted(DataPortalResult<T> e)
     {
       if (DeleteCompleted != null)
         DeleteCompleted(this, e);
     }
 
+    /// <summary>
+    /// Starts an asynchronous delete operation.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria object provided to the
+    /// DataPortal_Delete() method.
+    /// </param>
     public void BeginDelete(object criteria)
     {
       _proxy.BeginDelete(criteria);

@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using ClassLibrary;
 using System.Security;
+using System.Threading;
 
 namespace SilverlightApplication
 {
@@ -21,6 +22,9 @@ namespace SilverlightApplication
       InitializeComponent();
       Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
       Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:4769/WcfPortal.svc";
+
+      ClassA.AddObjectAuthorizationRules();
+      ClassB.AddObjectAuthorizationRules();
     }
 
     private void btnSuccessfulLogin_Click(object sender, RoutedEventArgs e)
@@ -99,24 +103,40 @@ namespace SilverlightApplication
           if (classA.A != "test" || classA.B != "test")
             pass = false;
 
-          ClassB classB = new ClassB();
-          classB.A = "test";
-          classB.B = "test";
-          if (classB.A != "test" || classB.B != "test")
-            pass = false;
+          if (!pass)
+            throw new Exception();
+
+          ClassA.Fetch((o3, e3) =>
+          {
+            try
+            {
+              if (e3.Object == null || (e3.Object.A != "test" && e3.Object.B != "test"))
+                pass = false;
+
+              ClassB classB = new ClassB();
+              classB.A = "test";
+              classB.B = "test";
+              if (classB.A != "test" || classB.B != "test")
+                pass = false;
+
+              if (pass)
+              {
+                txtAuthorizationA.Text = "Pass";
+              }
+              else
+              {
+                txtAuthorizationA.Text = "Fail";
+              }
+            }
+            catch (Exception ex)
+            {
+              txtAuthorizationA.Text = "Fail";
+            }
+          });          
         }
         catch (Exception ex)
         {
           pass = false;
-        }
-
-        if (pass)
-        {
-          txtAuthorizationA.Text = "Pass";
-        }
-        else
-        {
-          txtAuthorizationA.Text = "Fail";
         }
       });
     }

@@ -28,7 +28,7 @@ namespace ClassLibrary
       AuthorizationRules.AllowRead(AProperty, "PropertyARole");
     }
 
-    protected static void AddObjectAuthorizationRules()
+    public static void AddObjectAuthorizationRules()
     {
     }
   }

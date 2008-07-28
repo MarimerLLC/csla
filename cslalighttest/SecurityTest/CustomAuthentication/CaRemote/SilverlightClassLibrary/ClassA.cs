@@ -9,6 +9,24 @@ namespace ClassLibrary
   [Serializable()]
   public class ClassA : BusinessBase<ClassA>
   {
+    #region Factory Methods
+    public static void Fetch(EventHandler<DataPortalResult<ClassA>> completed)
+    {
+      DataPortal<ClassA> dp = new DataPortal<ClassA>();
+      dp.FetchCompleted += completed;
+      dp.BeginFetch();
+    }
+    #endregion
+    #region Data Access
+#if !SILVERLIGHT
+    private void DataPortal_Fetch()
+    {
+      A = "test";
+      B = "test";
+    }
+#endif
+    #endregion
+
     private static PropertyInfo<string> AProperty = RegisterProperty(new PropertyInfo<string>("A"));
     public string A
     {
@@ -28,8 +46,9 @@ namespace ClassLibrary
       AuthorizationRules.AllowRead(AProperty, "PropertyARole");
     }
 
-    protected static void AddObjectAuthorizationRules()
+    public static void AddObjectAuthorizationRules()
     {
+      AuthorizationRules.AllowGet(typeof(ClassA), "ClassARole");
       AuthorizationRules.AllowCreate(typeof(ClassA), "ClassARole");
       AuthorizationRules.AllowEdit(typeof(ClassA), "ClassARole");
       AuthorizationRules.AllowDelete(typeof(ClassA), "ClassARole");

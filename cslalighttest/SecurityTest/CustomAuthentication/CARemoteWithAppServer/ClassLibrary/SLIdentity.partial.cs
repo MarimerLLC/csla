@@ -12,17 +12,15 @@ namespace ClassLibrary
     public void DataPortal_Fetch(ClassLibrary.SLIdentity.CredentialsCriteria criteria)
     {
       BasicHttpBinding bind = new BasicHttpBinding();
-      EndpointAddress endpoint = new EndpointAddress("http://localhost:4769/Authentication.svc");
+      EndpointAddress endpoint = new EndpointAddress("http://localhost:3833/Authentication.svc");
 
       ClassLibrary.AuthenticationService.AuthenticationClient client = 
         new ClassLibrary.AuthenticationService.AuthenticationClient(bind, endpoint);
-      string response = client.Authenticate(criteria.Username, criteria.Password);
+      bool response = client.Authenticate(criteria.Username, criteria.Password);
 
-      string[] results = response.Split(';');
-
-      if (Boolean.Parse(results[0]))
+      if (response)
       {
-        SetCslaIdentity(new MobileList<string>(results[1].Split(',')), true, criteria.Username);
+        SetCslaIdentity(new MobileList<string>(criteria.Roles.Split(';')), true, criteria.Username);
       }
       else
       {

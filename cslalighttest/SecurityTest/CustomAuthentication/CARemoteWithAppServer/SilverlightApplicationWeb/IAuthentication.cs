@@ -12,6 +12,6 @@ namespace SilverlightApplicationWeb
   public interface IAuthentication
   {
     [OperationContract]
-    string Authenticate(string username, string password);
+    bool Authenticate(string username, string password);
   }
 }

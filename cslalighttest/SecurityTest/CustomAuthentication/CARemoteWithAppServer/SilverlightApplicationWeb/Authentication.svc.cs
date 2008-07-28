@@ -10,12 +10,12 @@ namespace SilverlightApplicationWeb
   // NOTE: If you change the class name "Authentication" here, you must also update the reference to "Authentication" in Web.config.
   public class Authentication : IAuthentication
   {
-    public string Authenticate(string username, string password)
+    public bool Authenticate(string username, string password)
     {
       if (username == "TestUser" && password == "1234")
-        return "true;User,Admin";
+        return true;
       else
-        return "false;";
+        return false;
     }
   }
 }

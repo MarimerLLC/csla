@@ -51,6 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SilverlightClassLibrary\ClassA.cs">
+      <Link>ClassA.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\ClassB.cs">
+      <Link>ClassB.cs</Link>
+    </Compile>
     <Compile Include="..\SilverlightClassLibrary\SLIdentity.cs">
       <Link>SLIdentity.cs</Link>
     </Compile>
@@ -76,6 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Service References\AuthenticationService\Authentication.xsd" />
+    <None Include="Service References\AuthenticationService\Authentication1.xsd" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\AuthenticationService\" />
@@ -83,8 +91,6 @@
   <ItemGroup>
     <None Include="Service References\AuthenticationService\Authentication.disco" />
     <None Include="Service References\AuthenticationService\Authentication.wsdl" />
-    <None Include="Service References\AuthenticationService\Authentication.xsd" />
-    <None Include="Service References\AuthenticationService\Authentication1.xsd" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\AuthenticationService\configuration91.svcinfo" />

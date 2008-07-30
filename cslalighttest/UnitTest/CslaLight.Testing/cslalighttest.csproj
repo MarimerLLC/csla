@@ -58,6 +58,7 @@
     <NoConfig>true</NoConfig>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
@@ -138,6 +139,9 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Serialization\Person.cs">
       <Link>Serialization\Person.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Serialization\PersonWIthSmartDateField.cs">
+      <Link>Serialization\PersonWIthSmartDateField.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Serialization\ReadOnlyPerson.cs">
       <Link>Serialization\ReadOnlyPerson.cs</Link>
     </Compile>
@@ -161,6 +165,9 @@
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs">
       <Link>Stereotypes\ReadOnlyListTestsLocalAndRemote.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\SmartDate\SmartDateTests.cs">
+      <Link>SmartDate\SmartDateTests.cs</Link>
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\AsyncRuleTests.cs">
       <Link>Validation\AsyncRuleTests.cs</Link>

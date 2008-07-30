@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Csla;
 using Csla.Serialization;
+using Csla.Validation;
+using System.Text.RegularExpressions;
 
 namespace DataBinding.Business
 {
@@ -42,6 +44,42 @@ namespace DataBinding.Business
       return Name;
     } 
 
+    #endregion
+
+    #region Business rules
+
+    protected override void AddBusinessRules()
+    {
+      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, NameProperty);
+      ValidationRules.AddRule(NiceName, NameProperty);
+      ValidationRules.AddRule(HasNumbers, NameProperty);
+      base.AddBusinessRules();
+    }
+
+    public static bool NiceName(object target, RuleArgs e)
+    {
+      string value = (string)Utilities.CallByName(target, e.PropertyName, CallType.Get);
+      if (!string.IsNullOrEmpty(value) && value.ToLower().StartsWith("justin"))
+      {
+        e.Severity = RuleSeverity.Information;
+        e.Description = "Nice name!";
+        return false;
+      }
+      return true;
+    }
+
+    private static Regex HasNumbersRegex = new Regex("[0-9]");
+    public static bool HasNumbers(object target, RuleArgs e)
+    {
+      string value = (string)Utilities.CallByName(target, e.PropertyName, CallType.Get);
+      if (!string.IsNullOrEmpty(value) && HasNumbersRegex.IsMatch(value))
+      {
+        e.Severity = RuleSeverity.Warning;
+        e.Description = "Names shouldn't have numbers, you should probably correct this!";
+        return false;
+      }
+      return true;
+    }
     #endregion
   }
 }

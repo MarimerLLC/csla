@@ -1,7 +1,8 @@
 ﻿<UserControl x:Class="DataBinding.Test.Page"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-    Width="400" Height="300">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla">
+            
     <UserControl.Resources>
         <DataTemplate x:Key="customer">
             <Grid>
@@ -11,17 +12,53 @@
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="id" HorizontalAlignment="Center" Width="25" Text="{Binding Id}"/>
-                <TextBox x:Name="name" Width="100" Text="{Binding Name}" Grid.Column="1"/>
-                <TextBox x:Name="birthdate" Width="150" Text="{Binding BirthDate}" Grid.Column="2" />
+                <TextBlock x:Name="name" Width="100" Text="{Binding Name}" Grid.Column="1"/>
+                <TextBlock x:Name="birthdate" Width="150" Text="{Binding BirthDate}" Grid.Column="2" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="details">
+            <Grid Width="400" Height="300">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Id" />
+                <TextBlock Grid.Column="1" Text="{Binding Id}" />
+                
+                <TextBlock Text="Name" Grid.Row="1" />
+                <TextBox x:Name="txtName" Grid.Column="1" Grid.Row="1" Text="{Binding Name, Mode=TwoWay}" />
+                <csla:Validator Property="Name" Source="{Binding}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" />
+                                
+                <TextBlock Text="Birthdate" Grid.Row="2" />
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding BirthDate}" />
+                
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
+                    <Button Content="Save" Margin="2,2,2,2" />
+                    <Button Content="Delete" Margin="2,2,2,2" />                    
+                </StackPanel>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid x:Name="LayoutRoot" Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <ListBox ItemTemplate="{StaticResource customer}" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch" />
-        <Button Grid.Row="1" x:Name="fetch" Content="fetch" Click="fetch_Click"/>
-    </Grid>
+    <StackPanel x:Name="LayoutRoot"  Orientation="Horizontal">
+        <Grid Background="White" Width="400" Height="300">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <ListBox SelectionChanged="ListBox_SelectionChanged" 
+                     ItemTemplate="{StaticResource customer}" 
+                     ItemsSource="{Binding}" 
+                     DisplayMemberPath=""
+                     HorizontalContentAlignment="Stretch" />
+            <Button Grid.Row="1" x:Name="fetch" Content="fetch" Click="fetch_Click"/>
+        </Grid>
+        <ContentControl x:Name="details" ContentTemplate="{StaticResource details}" />
+    </StackPanel>
 </UserControl>

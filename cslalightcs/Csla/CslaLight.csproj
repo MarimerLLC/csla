@@ -281,6 +281,15 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="Validation\BrokenRule.partial.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />
+    <Compile Include="Wpf\Authorizer.cs" />
+    <Compile Include="Wpf\BrokenRuleSeverityConverter.cs" />
+    <Compile Include="Wpf\CslaDataProvider.cs" />
+    <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
+    <Compile Include="Wpf\DataDecoratorBase.cs" />
+    <Compile Include="Wpf\IdentityConverter.cs" />
+    <Compile Include="Wpf\ObjectStatus.cs" />
+    <Compile Include="Wpf\Validator.cs" />
+    <Compile Include="Wpf\VisibilityMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\WcfPortal\configuration91.svcinfo" />
@@ -289,6 +298,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\Information.png" />
+    <Resource Include="Resources\Error.png" />
+    <Resource Include="Resources\Warning.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
@@ -314,6 +326,11 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Generic.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

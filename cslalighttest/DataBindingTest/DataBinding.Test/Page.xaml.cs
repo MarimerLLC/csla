@@ -30,5 +30,16 @@ namespace DataBinding.Test
     {
       CustomerList.FetchByName(null, FetchComplete);
     }
+
+    private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      Customer selected = null;
+      if (e.AddedItems.Count > 0)
+      {
+        selected = (Customer)e.AddedItems[0];
+      }
+
+      details.Content = selected;
+    }
   }
 }

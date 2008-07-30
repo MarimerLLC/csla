@@ -23,6 +23,10 @@ namespace ClassLibrary
     {
       A = "test";
       B = "test";
+      GlobalContext = (string)Csla.ApplicationContext.GlobalContext["Test"];
+      ClientContext = (string)Csla.ApplicationContext.ClientContext["TestClient"];
+      Csla.ApplicationContext.GlobalContext["Test"] = "GlobalChangedByPortal";
+      Csla.ApplicationContext.ClientContext["TestClient"] = "ClientChangedByPortal";
     }
     
     [RunLocal()]
@@ -45,6 +49,21 @@ namespace ClassLibrary
       get { return GetProperty<string>(BProperty); }
       set { SetProperty<string>(BProperty, value); }
     }
+
+    private static PropertyInfo<string> ClientContextProperty = RegisterProperty(new PropertyInfo<string>("ClientContext"));
+    public string ClientContext
+    {
+      get { return GetProperty<string>(ClientContextProperty); }
+      set { SetProperty<string>(ClientContextProperty, value); }
+    }
+
+    private static PropertyInfo<string> GlobalContextProperty = RegisterProperty(new PropertyInfo<string>("GlobalContext"));
+    public string GlobalContext
+    {
+      get { return GetProperty<string>(GlobalContextProperty); }
+      set { SetProperty<string>(GlobalContextProperty, value); }
+    }
+
 
     protected override void AddAuthorizationRules()
     {

@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightApplication", "SilverlightApplication\SilverlightApplication.csproj", "{7E5AC96F-B575-4761-8615-091B3E2CAB7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightApplicationWeb", "SilverlightApplicationWeb\SilverlightApplicationWeb.csproj", "{39CA2A45-6EBC-4572-81CB-FF2DB65043D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31ACE448-AE63-4CFA-81AA-C50BC6F35A0F} = {31ACE448-AE63-4CFA-81AA-C50BC6F35A0F}
+		{458394C6-8425-4CAB-99EA-42BCAA6DE6F4} = {458394C6-8425-4CAB-99EA-42BCAA6DE6F4}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "..\..\..\..\cslacs\Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject

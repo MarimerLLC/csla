@@ -11,16 +11,21 @@ using System.Net;
 using System.Security.Principal;
 using Csla.DataPortalClient;
 using Csla.Core;
+using Csla.Serialization;
 
 namespace ClassLibrary
 {
+  [Serializable()]
   public class SLPrincipal:Csla.Security.BusinessPrincipalBase
   {
     private SLPrincipal(IIdentity identity)
       : base(identity)
     { }
 
+    public SLPrincipal(): base() {  }
+
 #if SILVERLIGHT
+
     public static void Login(string username, string password, string roles, EventHandler<EventArgs> completed)
       {        
         SLIdentity.GetIdentity(username, password, roles,(o, e) =>

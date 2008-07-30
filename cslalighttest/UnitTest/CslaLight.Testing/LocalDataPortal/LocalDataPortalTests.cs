@@ -57,7 +57,11 @@ namespace cslalighttest.LocalDataPortal
         context.Assert.AreEqual("insert", actual.DataPortalMethod);
         context.Assert.Success();
       };
+#if SILVERLIGHT
+      root.BeginSave((o1, e1) => { context.Assert.IsNull(e1.Error); });
+#else
       root.Save();
+#endif 
       context.Complete();
     }
 
@@ -76,7 +80,11 @@ namespace cslalighttest.LocalDataPortal
         context.Assert.AreEqual("update", actual.DataPortalMethod);
         context.Assert.Success();
       };
+#if SILVERLIGHT
+      root.BeginSave((o1, e1) => { context.Assert.IsNull(e1.Error); });
+#else
       root.Save();
+#endif 
       context.Complete();
     }
 
@@ -95,7 +103,11 @@ namespace cslalighttest.LocalDataPortal
         context.Assert.Success();
       };
       root.Delete();
+#if SILVERLIGHT
+      root.BeginSave((o1, e1) => { context.Assert.IsNull(e1.Error); });
+#else
       root.Save();
+#endif 
       context.Complete();
     }
 

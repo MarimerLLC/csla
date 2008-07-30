@@ -33,7 +33,7 @@ namespace SilverlightApplication
 
       SLPrincipal.Logout();
       SLPrincipal.Login("TestUser", "1234", "", (o, e2) =>
-      { 
+      {
         if (Csla.ApplicationContext.User.Identity.Name == "TestUser"
           && Csla.ApplicationContext.User.Identity.IsAuthenticated
           && ((SLPrincipal.LoginEventArgs)e2).LoginSucceded)
@@ -132,7 +132,7 @@ namespace SilverlightApplication
             {
               txtAuthorizationA.Text = "Fail";
             }
-          });          
+          });
         }
         catch (Exception ex)
         {
@@ -200,40 +200,45 @@ namespace SilverlightApplication
       SLPrincipal.Login("TestUser", "1234", "PropertyARole", (o, e2) =>
       {
         bool pass = true;
-
         try
         {
-          try
-          {
-            ClassA classA = new ClassA();
-            classA.A = "test";
-            classA.B = "test";
-            classA.Save();
-            pass = false;
-          }
-          catch (SecurityException ex)
-          { }
-
           ClassB classB = new ClassB();
           classB.A = "test";
           classB.B = "test";
           if (classB.A != "test" || classB.B != "test")
             pass = false;
+          if (pass == true)
+          {
+            ClassA classA = new ClassA();
+            classA.A = "test";
+            classA.B = "test";
+            classA.Saved += ((savedObj, savedArgs) =>
+              {
+                if (savedArgs.Error != null)
+                {
+                  txtAuthorizationC.Text = "Pass";
+                }
+                else
+                {
+                  txtAuthorizationC.Text = "Fail";
+                };
+              }
+            );
+            classA.BeginSave();
+          }
+          else
+          {
+            txtAuthorizationC.Text = "Fail";
+          }
         }
         catch (Exception ex)
         {
-          pass = false;
-        }
-
-        if (pass)
-        {
-          txtAuthorizationC.Text = "Pass";
-        }
-        else
-        {
           txtAuthorizationC.Text = "Fail";
         }
-      });
+
+
+      }
+      );
     }
 
     private void btnAuthorizationD_Click(object sender, RoutedEventArgs e)
@@ -252,7 +257,7 @@ namespace SilverlightApplication
             ClassA classA = new ClassA();
             classA.A = "test";
             classA.B = "test";
-            classA.Save();
+            classA.BeginSave();
             pass = false;
           }
           catch (SecurityException ex)
@@ -284,6 +289,59 @@ namespace SilverlightApplication
           txtAuthorizationD.Text = "Fail";
         }
       });
+    }
+
+    private void btnContextTest_Click(object sender, RoutedEventArgs e)
+    {
+      txtAuthorizationD.Text = String.Empty;
+      bool pass = true;
+      SLPrincipal.Logout();
+      SLPrincipal.Login("TestUser", "1234", "ClassARole;PropertyARole", (o, e2) =>
+      {
+        Csla.ApplicationContext.GlobalContext["Test"] = "testValue";
+        Csla.ApplicationContext.ClientContext["TestClient"] = "testClientValue";
+        ClassA.Fetch((o3, e3) =>
+        {
+          try
+          {
+            if (e3.Object == null || e3.Error != null || (e3.Object.A != "test" && e3.Object.B != "test"))
+              pass = false;
+            if (pass)
+            {
+              if ((string)Csla.ApplicationContext.GlobalContext["Test"] != "GlobalChangedByPortal")
+              {
+                pass = false;
+              }
+              if ((string)Csla.ApplicationContext.ClientContext["TestClient"] != "testClientValue")
+              {
+                pass = false;
+              }
+              if (e3.Object.GlobalContext != "testValue")
+              {
+                pass = false;
+              }
+              if (e3.Object.ClientContext != "testClientValue")
+              {
+                pass = false;
+              }
+           
+            }
+            if (pass)
+            {
+              txtContextTest.Text = "Pass";
+            }
+            else
+            {
+              txtContextTest.Text = "Fail";
+            }
+          }
+          catch (Exception ex)
+          {
+            txtContextTest.Text = "Fail";
+          }
+        });
+      });
+      
     }
   }
 }

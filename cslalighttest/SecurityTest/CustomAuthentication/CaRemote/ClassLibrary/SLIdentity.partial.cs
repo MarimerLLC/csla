@@ -12,11 +12,17 @@ namespace ClassLibrary
     {
       if (criteria.Username == "TestUser" && criteria.Password == "1234")
       {
-        SetCslaIdentity(new MobileList<string>(criteria.Roles.Split(';')), true, criteria.Username);
+        this.Roles = new MobileList<string>(criteria.Roles.Split(';'));
+        this.IsAuthenticated = true;
+        this.Name = criteria.Username;
+        this.AuthenticationType = "Custom";
       }
       else
       {
-        SetCslaIdentity(null, false, "");
+        this.Roles = new MobileList<string>();
+        this.IsAuthenticated = false;
+        this.Name = string.Empty;
+        this.AuthenticationType = "";
       }
     }
   }

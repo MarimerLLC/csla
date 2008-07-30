@@ -145,6 +145,10 @@ namespace Csla.Wpf
 
     private void UpdateState()
     {
+      Popup popup = (Popup)FindChild(this, "popup");
+      if (popup != null)
+        popup.IsOpen = false;
+
       BusinessBase businessObject = Source as BusinessBase;
       if (businessObject != null)
       {
@@ -183,26 +187,19 @@ namespace Csla.Wpf
 
     #region Image
     
-    // ToolTip is not currently bindable in Silverlight so we will manually set it for now...
-    private void UpdateToolTip(FrameworkElement image, string value)
-    {
-      if (image != null)
-        image.SetValue(ToolTipService.ToolTipProperty, value);
-    }
-
     private void EnablePopup(FrameworkElement image)
     {
       if(image!=null)
-        image.MouseLeftButtonDown += new MouseButtonEventHandler(image_MouseLeftButtonDown);
+        image.MouseEnter += new MouseEventHandler(image_MouseEnter);
     }
 
     private void DisablePopup(FrameworkElement image)
     {
       if(image!=null)
-        image.MouseLeftButtonDown -= new MouseButtonEventHandler(image_MouseLeftButtonDown);
+        image.MouseEnter -= new MouseEventHandler(image_MouseEnter);
     }
 
-    private void image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void image_MouseEnter(object sender, MouseEventArgs e)
     {
       Popup popup = (Popup)FindChild(this, "popup");
       if (popup != null)
@@ -214,8 +211,8 @@ namespace Csla.Wpf
         popup.Child.MouseLeave += new MouseEventHandler(popup_MouseLeave);
         ((ItemsControl)popup.Child).ItemsSource = BrokenRules;
 
-        popup.VerticalOffset = p.Y;
-        popup.HorizontalOffset = p.X;
+        popup.VerticalOffset = p.Y - 5;
+        popup.HorizontalOffset = p.X - 5;
         popup.IsOpen = true;
       }
     }
@@ -232,7 +229,6 @@ namespace Csla.Wpf
 
     private void GoToState(bool useTransitions)
     {
-      UpdateToolTip(_lastImage, null);
       DisablePopup(_lastImage);
 
       if (_isValid)
@@ -254,7 +250,6 @@ namespace Csla.Wpf
             _lastImage = (FrameworkElement)FindChild(this, "informationImage");
             break;
         }
-        UpdateToolTip(_lastImage, "Click to view messages...");
         EnablePopup(_lastImage);
       }
     }

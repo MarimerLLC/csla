@@ -18,8 +18,40 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   public struct SmartDate : Csla.Core.ISmartField,
-    IComparable, IConvertible, IFormattable//, Csla.Serialization.Mobile.IMobileObject
+    IComparable, IConvertible, IFormattable, Csla.Serialization.Mobile.IMobileObject
   {
+
+    #region IMobileObject Members
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      info.AddValue("SmartDate._date", _date);
+      info.AddValue("SmartDate._defaultFormat", _defaultFormat);
+      info.AddValue("SmartDate._emptyValue", _emptyValue.ToString());
+      info.AddValue("SmartDate._initialized", _initialized);
+      info.AddValue("SmartDate._format", _format);
+    }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      _date = info.GetValue<DateTime>("SmartDate._date");
+      _defaultFormat = info.GetValue<string>("SmartDate._defaultFormat");
+      _emptyValue = (EmptyValue)System.Enum.Parse(typeof(EmptyValue), info.GetValue<string>("SmartDate._emptyValue"), true);
+      _format = info.GetValue<string>("SmartDate._format");
+      _initialized = info.GetValue<bool>("SmartDate._initialized");
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      //
+    }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      //
+    }
+
+    #endregion
     //#region Serialize
 
     //void IMobileObject.Serialize(SerializationInfo info, MobileFormatter formatter)
@@ -1443,5 +1475,6 @@ namespace Csla
     }
 
     #endregion
+
   }
 }

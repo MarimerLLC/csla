@@ -10,6 +10,13 @@ namespace Csla.Security
 {
   public abstract partial class CslaIdentity : ReadOnlyBase<CslaIdentity>, IIdentity
   {
+    #region Constructor
+    public CslaIdentity()
+    {
+    }
+
+    #endregion
+
     public static void GetCslaIdentity<T>(EventHandler<DataPortalResult<T>> completed, object criteria) where T : CslaIdentity
     {
       DataPortal<T> dp = new DataPortal<T>();

@@ -10,9 +10,11 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
+using Csla.Serialization;
 
 namespace Csla.Core
 {
+  [Serializable()]
   public class ContextDictionary : Dictionary<string, object>, IMobileObject
   {
     #region IMobileObject Members

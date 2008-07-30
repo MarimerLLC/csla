@@ -527,23 +527,36 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual void Save()
+    public virtual void BeginSave()
     {
       if (this.IsChild)
-        throw new NotSupportedException(Resources.NoSaveChildException);
+        OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
 
-      if (_editLevel > 0)
-        throw new Validation.ValidationException(Resources.NoSaveEditingException);
+      else if (_editLevel > 0)
+        OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
 
-      if (!IsValid)
-        throw new Validation.ValidationException(Resources.NoSaveInvalidException);
+      else if (!IsValid)
+        OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
 
-      if (IsDirty)
+      else
       {
-        DataPortal<T> dp = new DataPortal<T>();
-        dp.UpdateCompleted += (o, e) => { OnSaved(e.Object); };
-        dp.BeginUpdate(this);
+        if (IsDirty)
+        {
+          DataPortal<T> dp = new DataPortal<T>();
+          dp.UpdateCompleted += (o, e) => { OnSaved(e.Object, e.Error); };
+          dp.BeginUpdate(this);
+        }
+        else
+        {
+          OnSaved((T)this, null);
+        }
       }
+    }
+
+    public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
+    {
+      Saved += handler;
+      BeginSave();
     }
 
     /// <summary>
@@ -632,12 +645,12 @@ namespace Csla
 
     void ISavable.Save()
     {
-      Save();
+      BeginSave();
     }
 
     void ISavable.SaveComplete(object newObject)
     {
-      OnSaved((T)newObject);
+      OnSaved((T)newObject, null);
     }
 
     /// <summary>
@@ -651,10 +664,10 @@ namespace Csla
     /// to the new object instance.
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
-    protected void OnSaved(T newObject)
+    protected void OnSaved(T newObject, Exception error)
     {
       if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject));
+        Saved(this, new SavedEventArgs(newObject, error));
     }
 
     #endregion

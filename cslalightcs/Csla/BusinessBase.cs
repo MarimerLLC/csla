@@ -75,22 +75,35 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual void Save()
+    public virtual void BeginSave()
     {
       if (this.IsChild)
-        throw new NotSupportedException(Resources.NoSaveChildException);
-      if (EditLevel > 0)
-        throw new Validation.ValidationException(Resources.NoSaveEditingException);
-      if (!IsValid && !IsDeleted)
-        throw new Validation.ValidationException(Resources.NoSaveInvalidException);
-      if (IsDirty)
+          OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
+      else if (EditLevel > 0)
+        OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
+      else if (!IsValid && !IsDeleted)
+        OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
+      else
       {
-        DataPortal.BeginUpdate<T>(this,(o, e) =>
+        if (IsDirty)
         {
-          T result = e.Object;
-          OnSaved(result);
-        });
+          DataPortal.BeginUpdate<T>(this, (o, e) =>
+          {
+            T result = e.Object;
+            OnSaved(result, e.Error);
+          });
+        }
+        else
+        {
+          OnSaved((T)this, null);
+        }
       }
+    }
+
+    public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
+    {
+      Saved += handler;
+      BeginSave();
     }
 
     /// <summary>
@@ -107,7 +120,7 @@ namespace Csla
     /// when implementing the Update method in your 
     /// data wrapper object.
     /// </remarks>
-    public void Save(bool forceUpdate)
+    public void BeginSave(bool forceUpdate)
     {
       if (forceUpdate && IsNew)
       {
@@ -117,7 +130,20 @@ namespace Csla
         // now mark the object as dirty so it can save
         MarkDirty(true);
       }
-      this.Save();
+      this.BeginSave();
+    }
+
+    public void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler)
+    {
+      if (forceUpdate && IsNew)
+      {
+        // mark the object as old - which makes it
+        // not dirty
+        MarkOld();
+        // now mark the object as dirty so it can save
+        MarkDirty(true);
+      }
+      this.BeginSave(handler);
     }
 
     /// <summary>
@@ -168,12 +194,12 @@ namespace Csla
 
     void Csla.Core.ISavable.Save()
     {
-      Save();
+      BeginSave();
     }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
-      OnSaved((T)newObject);
+      OnSaved((T)newObject, null);
     }
 
     /// <summary>
@@ -188,10 +214,10 @@ namespace Csla
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject)
+    protected void OnSaved(T newObject, Exception error)
     {
       if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject));
+        Saved(this, new SavedEventArgs(newObject, error));
     }
 
     #endregion

@@ -166,6 +166,13 @@ namespace Csla
         _globalContext = globalContext;
     }
 
+    internal static void SetGlobalContext(
+      ContextDictionary globalContext)
+    {
+      lock (_syncGlobalContext)
+        _globalContext = globalContext;
+    }
+
     /// <summary>
     /// Clears all context collections.
     /// </summary>

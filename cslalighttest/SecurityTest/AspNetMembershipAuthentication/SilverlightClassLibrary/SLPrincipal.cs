@@ -45,11 +45,6 @@ namespace SilverlightClassLibrary
       Csla.ApplicationContext.User = principal;
     }
 
-    public override bool IsInRole(string role)
-    {
-      return ((SLMembershipIdentity)base.Identity).InRole(role);
-    }
-
     public class LoginEventArgs : EventArgs
     {
 

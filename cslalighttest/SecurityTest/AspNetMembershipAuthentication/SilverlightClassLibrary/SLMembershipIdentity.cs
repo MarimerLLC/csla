@@ -9,6 +9,11 @@ namespace SilverlightClassLibrary
   [Serializable()]
   public class SLMembershipIdentity:MembershipIdentity
   {
+    protected override void LoadCustomData()
+    {
+      base.LoadCustomData();
+    }
+
     public void SetRoles(string roles)
     {
       if (IsAuthenticated)

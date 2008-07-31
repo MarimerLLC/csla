@@ -51,7 +51,7 @@ namespace ProjectTracker.Library
     {
       get
       {
-        return GetProperty<SmartDate, string>(AssignedProperty);
+        return GetPropertyConvert<SmartDate, string>(AssignedProperty);
       }
     }
 

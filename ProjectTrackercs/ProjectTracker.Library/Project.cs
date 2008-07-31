@@ -31,15 +31,15 @@ namespace ProjectTracker.Library
     private static PropertyInfo<SmartDate> StartedProperty = RegisterProperty<SmartDate>(typeof(Project), new PropertyInfo<SmartDate>("Started"));
     public string Started
     {
-      get { return GetProperty<SmartDate, string>(StartedProperty); }
-      set { SetProperty<SmartDate, string>(StartedProperty, value); }
+      get { return GetPropertyConvert<SmartDate, string>(StartedProperty); }
+      set { SetPropertyConvert<SmartDate, string>(StartedProperty, value); }
     }
 
     private static PropertyInfo<SmartDate> EndedProperty = RegisterProperty<SmartDate>(typeof(Project), new PropertyInfo<SmartDate>("Ended", new SmartDate(SmartDate.EmptyValue.MaxDate)));
     public string Ended
     {
-      get { return GetProperty<SmartDate, string>(EndedProperty); }
-      set { SetProperty<SmartDate, string>(EndedProperty, value); }
+      get { return GetPropertyConvert<SmartDate, string>(EndedProperty); }
+      set { SetPropertyConvert<SmartDate, string>(EndedProperty, value); }
     }
 
     private static PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(typeof(Project), new PropertyInfo<string>("Description"));
@@ -163,8 +163,8 @@ namespace ProjectTracker.Library
                     select p).Single();
         LoadProperty<Guid>(IdProperty, data.Id);
         LoadProperty<string>(NameProperty, data.Name);
-        LoadProperty<SmartDate, System.DateTime?>(StartedProperty, data.Started);
-        LoadProperty<SmartDate, System.DateTime?>(EndedProperty, data.Ended);
+        LoadPropertyConvert<SmartDate, System.DateTime?>(StartedProperty, data.Started);
+        LoadPropertyConvert<SmartDate, System.DateTime?>(EndedProperty, data.Ended);
         LoadProperty<string>(DescriptionProperty, data.Description);
         mTimestamp = data.LastChanged.ToArray();
 

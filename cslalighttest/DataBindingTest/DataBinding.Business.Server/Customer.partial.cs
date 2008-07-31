@@ -26,6 +26,7 @@ namespace DataBinding.Business
       LoadProperty<int>(IdProperty, id);
       LoadProperty<string>(NameProperty, name);
       LoadProperty<DateTime>(BirthDateProperty, birthDate);
+      ValidationRules.CheckRules();
     }
     
     private void Child_Update()

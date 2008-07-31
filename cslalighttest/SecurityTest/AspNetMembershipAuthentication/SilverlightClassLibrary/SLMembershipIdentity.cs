@@ -13,13 +13,8 @@ namespace SilverlightClassLibrary
     {
       if (IsAuthenticated)
       {
-        AddRoles(new MobileList<string>(roles.Split(';')));
+        base.Roles = new MobileList<string>(roles.Split(';'));
       }
-    }
-
-    internal bool InRole(string role)
-    {
-      return base.IsInRole(role);
     }
   }
 }

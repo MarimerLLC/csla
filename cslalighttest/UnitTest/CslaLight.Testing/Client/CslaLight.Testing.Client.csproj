@@ -59,6 +59,9 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ApplicationContext\ContextBOVerifier.cs">
+      <Link>ApplicationContext\ContextBOVerifier.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\GrandChild.cs">
       <Link>EditableChildTests\GrandChild.cs</Link>
     </Compile>
@@ -92,6 +95,7 @@
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\Security\SilverlightWindowsIdentity.cs">
       <Link>Security\SilverlightWindowsIdentity.cs</Link>
     </Compile>
+    <Compile Include="ApplicationContext\ContextBOVerifier.client.cs" />
     <Compile Include="EditableChildTests\GrandChild.partial.cs" />
     <Compile Include="EditableChildTests\GrandChildList.partial.cs" />
     <Compile Include="EditableChildTests\MockEditableChild.partial.cs" />

@@ -103,8 +103,8 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\ApplicationContext\ClientContextTests.cs">
       <Link>ApplicationContext\ClientContextTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\ApplicationContext\GlobalContextClass.cs">
-      <Link>ApplicationContext\GlobalContextClass.cs</Link>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\ApplicationContext\GlobalContextTests.cs">
+      <Link>ApplicationContext\GlobalContextTests.cs</Link>
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\ReadOnly\MockReadOnly.cs">
       <Link>ReadOnly\MockReadOnly.cs</Link>
@@ -223,7 +223,7 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\ValidationTests.cs">
       <Link>Validation\ValidationTests.cs</Link>
     </Compile>
-    <Compile Include="ApplicationContext\ClientContextTests.silverlight.cs" />
+    <Compile Include="ApplicationContext\ClientContextTests.client.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

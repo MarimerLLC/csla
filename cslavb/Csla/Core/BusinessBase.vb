@@ -290,8 +290,14 @@ Namespace Core
     Protected Overridable Sub PropertyHasChanged(ByVal propertyName As String)
 
       MarkDirty(True)
-      ValidationRules.CheckRules(propertyName)
-      OnPropertyChanged(propertyName)
+      Dim propertyNames = ValidationRules.CheckRules(propertyName)
+      If ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows Then
+        OnPropertyChanged(propertyName)
+      Else
+        For Each name In propertyNames
+          OnPropertyChanged(name)
+        Next name
+      End If
 
     End Sub
 

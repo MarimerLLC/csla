@@ -418,6 +418,30 @@ Public Module ApplicationContext
     End Get
   End Property
 
+  Private _propertyChangedMode As PropertyChangedModes
+  Private _propertyChangedModeSet As Boolean
+  ''' <summary>
+  ''' Gets or sets a value specifying how CSLA .NET should
+  ''' raise PropertyChanged events.
+  ''' </summary>
+  Public Property PropertyChangedMode() As PropertyChangedModes
+    Get
+      If (Not _propertyChangedModeSet) Then
+        Dim tmp As String = ConfigurationManager.AppSettings("CslaPropertyChangedMode")
+        If String.IsNullOrEmpty(tmp) Then
+          tmp = "Windows"
+        End If
+        _propertyChangedMode = CType(System.Enum.Parse(GetType(PropertyChangedModes), tmp), PropertyChangedModes)
+        _propertyChangedModeSet = True
+      End If
+      Return _propertyChangedMode
+    End Get
+    Set(ByVal value As PropertyChangedModes)
+      _propertyChangedMode = value
+      _propertyChangedModeSet = True
+    End Set
+  End Property
+
   ''' <summary>
   ''' Enum representing the serialization formatters
   ''' supported by CSLA .NET.
@@ -434,6 +458,23 @@ Public Module ApplicationContext
     ''' NetDataContractSerializer</see> provided as part of WCF.
     ''' </summary>
     NetDataContractSerializer
+  End Enum
+
+  ''' <summary>
+  ''' Enum representing the way in which CSLA .NET
+  ''' should raise PropertyChanged events.
+  ''' </summary>
+  Public Enum PropertyChangedModes
+    ''' <summary>
+    ''' Raise PropertyChanged events as required
+    ''' by Windows Forms data binding.
+    ''' </summary>
+    Windows
+    ''' <summary>
+    ''' Raise PropertyChanged events as required
+    ''' by XAML data binding in WPF.
+    ''' </summary>
+    Xaml
   End Enum
 
 #End Region

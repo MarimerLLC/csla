@@ -956,11 +956,12 @@ Namespace Validation
     ''' <param name="propertyInfo">
     ''' Property to validate.
     ''' </param>
-    Public Sub CheckRules(ByVal propertyInfo As Csla.Core.IPropertyInfo)
+    Public Function CheckRules(ByVal propertyInfo As Csla.Core.IPropertyInfo) As String()
 
       CheckRules(propertyInfo.Name)
+      Return New String() {propertyInfo.Name}
 
-    End Sub
+    End Function
 
     ''' <summary>
     ''' Invokes all rule methods associated with
@@ -968,10 +969,13 @@ Namespace Validation
     ''' dependent properties.
     ''' </summary>
     ''' <param name="propertyName">The name of the property to validate.</param>
-    Public Sub CheckRules(ByVal propertyName As String)
+    Public Function CheckRules(ByVal propertyName As String) As String()
+
+      Dim result As New List(Of String)
+      result.Add(propertyName)
 
       If _suppressRuleChecking Then
-        Return
+        Return result.ToArray
       End If
 
       ' get the rules dictionary
@@ -990,12 +994,14 @@ Namespace Validation
             For i As Integer = 0 To dependencies.Count - 1
               Dim dependentProperty As String = dependencies(i)
               CheckRules(rules, dependentProperty)
+              result.Add(dependentProperty)
             Next
           End If
         End If
       End If
+      Return result.ToArray
 
-    End Sub
+    End Function
 
     Private Sub CheckRules(ByVal rules As ValidationRulesManager, ByVal propertyName As String)
 

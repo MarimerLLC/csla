@@ -6,7 +6,7 @@ Public Class Project
 
   Private _timestamp(7) As Byte
 
-  Private Shared IdProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid)(GetType(Project), New PropertyInfo(Of Guid)("Id"))
+  Private Shared IdProperty As PropertyInfo(Of Guid) = RegisterProperty(New PropertyInfo(Of Guid)("Id"))
   <System.ComponentModel.DataObjectField(True, True)> _
   Public ReadOnly Property Id() As Guid
     Get
@@ -14,7 +14,7 @@ Public Class Project
     End Get
   End Property
 
-  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(Project), New PropertyInfo(Of String)("Name"))
+  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))
   Public Property Name() As String
     Get
       Return GetProperty(Of String)(NameProperty)
@@ -24,7 +24,7 @@ Public Class Project
     End Set
   End Property
 
-  Private Shared StartedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(GetType(Project), New PropertyInfo(Of SmartDate)("Started"))
+  Private Shared StartedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(New PropertyInfo(Of SmartDate)("Started"))
   Public Property Started() As String
     Get
       Return GetProperty(Of SmartDate, String)(StartedProperty)
@@ -34,7 +34,7 @@ Public Class Project
     End Set
   End Property
 
-  Private Shared EndedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(GetType(Project), New PropertyInfo(Of SmartDate)("Ended", New SmartDate(SmartDate.EmptyValue.MaxDate)))
+  Private Shared EndedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(New PropertyInfo(Of SmartDate)("Ended", New SmartDate(SmartDate.EmptyValue.MaxDate)))
   Public Property Ended() As String
     Get
       Return GetProperty(Of SmartDate, String)(EndedProperty)
@@ -44,7 +44,7 @@ Public Class Project
     End Set
   End Property
 
-  Private Shared DescriptionProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(Project), New PropertyInfo(Of String)("Description"))
+  Private Shared DescriptionProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Description"))
   Public Property Description() As String
     Get
       Return GetProperty(Of String)(DescriptionProperty)
@@ -54,11 +54,11 @@ Public Class Project
     End Set
   End Property
 
-  Private Shared ResourcesProperty As PropertyInfo(Of ProjectResources) = RegisterProperty(Of ProjectResources)(GetType(Project), New PropertyInfo(Of ProjectResources)("Resources"))
+  Private Shared ResourcesProperty As PropertyInfo(Of ProjectResources) = RegisterProperty(New PropertyInfo(Of ProjectResources)("Resources"))
   Public ReadOnly Property Resources() As ProjectResources
     Get
       If Not FieldManager.FieldExists(ResourcesProperty) Then
-        SetProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.NewProjectResources())
+        LoadProperty(Of ProjectResources)(ResourcesProperty, ProjectResources.NewProjectResources())
       End If
       Return GetProperty(Of ProjectResources)(ResourcesProperty)
     End Get

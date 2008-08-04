@@ -8,7 +8,7 @@ Public Class ResourceAssignment
 
   Private _timestamp(7) As Byte
 
-  Private Shared ProjectIdProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid)(GetType(ResourceAssignment), New PropertyInfo(Of Guid)("ProjectId", Guid.Empty))
+  Private Shared ProjectIdProperty As PropertyInfo(Of Guid) = RegisterProperty(New PropertyInfo(Of Guid)("ProjectId", "Project id", Guid.Empty))
   Private _projectId As Guid = ProjectIdProperty.DefaultValue
   Public ReadOnly Property ProjectId() As Guid
     Get
@@ -16,7 +16,7 @@ Public Class ResourceAssignment
     End Get
   End Property
 
-  Private Shared ProjectNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(ResourceAssignment), New PropertyInfo(Of String)("ProjectName"))
+  Private Shared ProjectNameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("ProjectName"))
   Private _projectName As String = ProjectNameProperty.DefaultValue
   Public ReadOnly Property ProjectName() As String
     Get
@@ -24,7 +24,7 @@ Public Class ResourceAssignment
     End Get
   End Property
 
-  Private Shared AssignedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(GetType(ResourceAssignment), New PropertyInfo(Of SmartDate)("Assigned"))
+  Private Shared AssignedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(New PropertyInfo(Of SmartDate)("Assigned"))
   Private _assigned As New SmartDate(Today)
   Public ReadOnly Property Assigned() As String
     Get
@@ -32,7 +32,7 @@ Public Class ResourceAssignment
     End Get
   End Property
 
-  Private Shared RoleProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(ResourceAssignment), New PropertyInfo(Of Integer)("Role"))
+  Private Shared RoleProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Role"))
   Private _role As Integer = RoleProperty.DefaultValue
   Public Property Role() As Integer Implements IHoldRoles.Role
     Get

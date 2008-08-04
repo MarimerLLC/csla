@@ -13,7 +13,7 @@ namespace ProjectTracker.Library
 
     private byte[] mTimestamp = new byte[8];
 
-    private static PropertyInfo<Guid> IdProperty = 
+    private static PropertyInfo<Guid> IdProperty =
       RegisterProperty<Guid>(typeof(Project), new PropertyInfo<Guid>("Id"));
     [System.ComponentModel.DataObjectField(true, true)]
     public Guid Id
@@ -28,35 +28,35 @@ namespace ProjectTracker.Library
       set { SetProperty<string>(NameProperty, value); }
     }
 
-    private static PropertyInfo<SmartDate> StartedProperty = RegisterProperty<SmartDate>(typeof(Project), new PropertyInfo<SmartDate>("Started"));
+    private static PropertyInfo<SmartDate> StartedProperty = RegisterProperty(new PropertyInfo<SmartDate>("Started"));
     public string Started
     {
-      get { return GetPropertyConvert<SmartDate, string>(StartedProperty); }
-      set { SetPropertyConvert<SmartDate, string>(StartedProperty, value); }
+      get { return GetProperty<SmartDate, string>(StartedProperty); }
+      set { SetProperty<SmartDate, string>(StartedProperty, value); }
     }
 
-    private static PropertyInfo<SmartDate> EndedProperty = RegisterProperty<SmartDate>(typeof(Project), new PropertyInfo<SmartDate>("Ended", new SmartDate(SmartDate.EmptyValue.MaxDate)));
+    private static PropertyInfo<SmartDate> EndedProperty = RegisterProperty(new PropertyInfo<SmartDate>("Ended", new SmartDate(SmartDate.EmptyValue.MaxDate)));
     public string Ended
     {
-      get { return GetPropertyConvert<SmartDate, string>(EndedProperty); }
-      set { SetPropertyConvert<SmartDate, string>(EndedProperty, value); }
+      get { return GetProperty<SmartDate, string>(EndedProperty); }
+      set { SetProperty<SmartDate, string>(EndedProperty, value); }
     }
 
-    private static PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(typeof(Project), new PropertyInfo<string>("Description"));
+    private static PropertyInfo<string> DescriptionProperty = RegisterProperty(new PropertyInfo<string>("Description"));
     public string Description
     {
       get { return GetProperty<string>(DescriptionProperty); }
       set { SetProperty<string>(DescriptionProperty, value); }
     }
 
-    private static PropertyInfo<ProjectResources> ResourcesProperty = RegisterProperty<ProjectResources>(typeof(Project), new PropertyInfo<ProjectResources>("Resources"));
+    private static PropertyInfo<ProjectResources> ResourcesProperty = RegisterProperty(new PropertyInfo<ProjectResources>("Resources"));
     public ProjectResources Resources
     {
       get
       {
         if (!(FieldManager.FieldExists(ResourcesProperty)))
         {
-          SetProperty<ProjectResources>(ResourcesProperty, ProjectResources.NewProjectResources());
+          LoadProperty<ProjectResources>(ResourcesProperty, ProjectResources.NewProjectResources());
         }
         return GetProperty<ProjectResources>(ResourcesProperty);
       }
@@ -163,8 +163,8 @@ namespace ProjectTracker.Library
                     select p).Single();
         LoadProperty<Guid>(IdProperty, data.Id);
         LoadProperty<string>(NameProperty, data.Name);
-        LoadPropertyConvert<SmartDate, System.DateTime?>(StartedProperty, data.Started);
-        LoadPropertyConvert<SmartDate, System.DateTime?>(EndedProperty, data.Ended);
+        LoadProperty<SmartDate, System.DateTime?>(StartedProperty, data.Started);
+        LoadProperty<SmartDate, System.DateTime?>(EndedProperty, data.Ended);
         LoadProperty<string>(DescriptionProperty, data.Description);
         mTimestamp = data.LastChanged.ToArray();
 

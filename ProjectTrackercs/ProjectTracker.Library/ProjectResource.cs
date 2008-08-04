@@ -11,7 +11,7 @@ namespace ProjectTracker.Library
 
     private byte[] _timestamp = new byte[8];
 
-    private static PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(typeof(ProjectResource), new PropertyInfo<int>("ResourceId", "Resource id"));
+    private static PropertyInfo<int> ResourceIdProperty = RegisterProperty(new PropertyInfo<int>("ResourceId", "Resource id"));
     public int ResourceId
     {
       get
@@ -20,7 +20,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(typeof(ProjectResource), new PropertyInfo<string>("FirstName", "First name"));
+    private static PropertyInfo<string> FirstNameProperty = RegisterProperty(new PropertyInfo<string>("FirstName", "First name"));
     public string FirstName
     {
       get
@@ -29,7 +29,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(typeof(ProjectResource), new PropertyInfo<string>("LastName", "Last name"));
+    private static PropertyInfo<string> LastNameProperty = RegisterProperty(new PropertyInfo<string>("LastName", "Last name"));
     public string LastName
     {
       get
@@ -46,16 +46,16 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<SmartDate> AssignedProperty = RegisterProperty<SmartDate>(typeof(ProjectResource), new PropertyInfo<SmartDate>("Assigned", "Date assigned"));
+    private static PropertyInfo<SmartDate> AssignedProperty = RegisterProperty(new PropertyInfo<SmartDate>("Assigned", "Date assigned"));
     public string Assigned
     {
       get
       {
-        return GetPropertyConvert<SmartDate, string>(AssignedProperty);
+        return GetProperty<SmartDate, string>(AssignedProperty);
       }
     }
 
-    private static PropertyInfo<int> RoleProperty = RegisterProperty<int>(typeof(ProjectResource), new PropertyInfo<int>("Role", "Role assigned"));
+    private static PropertyInfo<int> RoleProperty = RegisterProperty(new PropertyInfo<int>("Role", "Role assigned"));
     public int Role
     {
       get

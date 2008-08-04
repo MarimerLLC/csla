@@ -34,9 +34,15 @@ namespace ProjectTracker.Library
 
       public static void Logout()
       {
-        var identity = PTIdentity.UnauthenticatedIdentity();
+        PTIdentity identity = PTIdentity.UnauthenticatedIdentity();
         PTPrincipal principal = new PTPrincipal(identity);
         Csla.ApplicationContext.User = principal;
+      }
+
+      public override bool IsInRole(string role)
+      {
+        PTIdentity identity = (PTIdentity)this.Identity;
+        return identity.IsInRole(role);
       }
     }
   }

@@ -10,7 +10,7 @@ namespace ProjectTracker.Library
 
     private byte[] _timestamp = new byte[8];
 
-    private static PropertyInfo<Guid> ProjectIdProperty = RegisterProperty<Guid>(typeof(ResourceAssignment), new PropertyInfo<Guid>("ProjectId", "Project id", Guid.Empty));
+    private static PropertyInfo<Guid> ProjectIdProperty = RegisterProperty(new PropertyInfo<Guid>("ProjectId", "Project id", Guid.Empty));
     private Guid _projectId = ProjectIdProperty.DefaultValue;
     public Guid ProjectId
     {
@@ -20,7 +20,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<string> ProjectNameProperty = RegisterProperty<string>(typeof(ResourceAssignment), new PropertyInfo<string>("ProjectName"));
+    private static PropertyInfo<string> ProjectNameProperty = RegisterProperty(new PropertyInfo<string>("ProjectName"));
     private string _projectName = ProjectNameProperty.DefaultValue;
     public string ProjectName
     {
@@ -30,17 +30,17 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<SmartDate> AssignedProperty = RegisterProperty<SmartDate>(typeof(ResourceAssignment), new PropertyInfo<SmartDate>("Assigned"));
+    private static PropertyInfo<SmartDate> AssignedProperty = RegisterProperty(new PropertyInfo<SmartDate>("Assigned"));
     private SmartDate _assigned = new SmartDate(System.DateTime.Today);
     public string Assigned
     {
       get
       {
-        return GetPropertyConvert<SmartDate, string>(AssignedProperty, _assigned);
+        return GetProperty<SmartDate, string>(AssignedProperty, _assigned);
       }
     }
 
-    private static PropertyInfo<int> RoleProperty = RegisterProperty<int>(typeof(ResourceAssignment), new PropertyInfo<int>("Role"));
+    private static PropertyInfo<int> RoleProperty = RegisterProperty(new PropertyInfo<int>("Role"));
     private int _role = RoleProperty.DefaultValue;
     public int Role
     {

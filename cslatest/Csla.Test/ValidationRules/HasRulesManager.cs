@@ -22,7 +22,7 @@ namespace Csla.Test.ValidationRules
                 if (this._name != value)
                 {
                     this._name = value;
-                    ValidationRules.CheckRules("Name");
+                    var x = ValidationRules.CheckRules("Name");
                     MarkDirty();
                 }
             }

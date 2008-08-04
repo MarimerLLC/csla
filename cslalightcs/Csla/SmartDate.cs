@@ -21,146 +21,6 @@ namespace Csla
     IComparable, IConvertible, IFormattable, Csla.Serialization.Mobile.IMobileObject
   {
 
-    #region IMobileObject Members
-
-    void IMobileObject.GetState(SerializationInfo info)
-    {
-      info.AddValue("SmartDate._date", _date);
-      info.AddValue("SmartDate._defaultFormat", _defaultFormat);
-      info.AddValue("SmartDate._emptyValue", _emptyValue.ToString());
-      info.AddValue("SmartDate._initialized", _initialized);
-      info.AddValue("SmartDate._format", _format);
-    }
-
-    void IMobileObject.SetState(SerializationInfo info)
-    {
-      _date = info.GetValue<DateTime>("SmartDate._date");
-      _defaultFormat = info.GetValue<string>("SmartDate._defaultFormat");
-      _emptyValue = (EmptyValue)System.Enum.Parse(typeof(EmptyValue), info.GetValue<string>("SmartDate._emptyValue"), true);
-      _format = info.GetValue<string>("SmartDate._format");
-      _initialized = info.GetValue<bool>("SmartDate._initialized");
-    }
-
-    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      //
-    }
-
-    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      //
-    }
-
-    #endregion
-    //#region Serialize
-
-    //void IMobileObject.Serialize(SerializationInfo info, MobileFormatter formatter)
-    //{
-    //  var thisType = this.GetType();
-    //  info.TypeName = thisType.FullName + "," + thisType.Assembly.FullName;
-    //  Serialize(info, formatter);
-    //}
-
-    //private void Serialize(SerializationInfo info, MobileFormatter formatter)
-    //{
-    //  FieldInfo[] fields;
-
-    //  var currentType = this.GetType();
-
-    //  while (currentType != null)
-    //  {
-    //    // get the list of fields in this type
-    //    fields = currentType.GetFields(
-    //      BindingFlags.NonPublic |
-    //      BindingFlags.Instance |
-    //      BindingFlags.Public);
-
-    //    foreach (FieldInfo field in fields)
-    //    {
-    //      // see if this field is marked as not undoable
-    //      if (!field.IsNotSerialized && !IsNonSerialized(field))
-    //      {
-    //        var value = GetValue(field);
-    //        var mobile = value as IMobileObject;
-    //        if (mobile == null)
-    //          info.AddValue(
-    //            string.Format("{0}!{1}", field.DeclaringType.Name, field.Name),
-    //            value);
-    //        else
-    //          info.AddValue(
-    //            string.Format("{0}!{1}", field.DeclaringType.Name, field.Name),
-    //            formatter.SerializeObject(mobile));
-    //      }
-    //    }
-    //    currentType = currentType.BaseType;
-    //  }
-    //}
-
-    //private static bool IsNonSerialized(FieldInfo field)
-    //{
-    //  var a = field.GetCustomAttributes(typeof(Csla.Serialization.NonSerializedAttribute), false);
-    //  return a.Length > 0;
-    //}
-
-    //#endregion
-
-    //#region Deserialize
-
-    //void IMobileObject.Deserialize(SerializationInfo info, MobileFormatter formatter)
-    //{
-    //  Deserialize(info, formatter);
-    //}
-
-    //private void Deserialize(SerializationInfo info, MobileFormatter formatter)
-    //{
-    //  FieldInfo[] fields;
-
-    //  var currentType = this.GetType();
-
-    //  while (currentType != null)
-    //  {
-    //    // get the list of fields in this type
-    //    fields = currentType.GetFields(
-    //      BindingFlags.NonPublic |
-    //      BindingFlags.Instance |
-    //      BindingFlags.Public);
-
-    //    foreach (FieldInfo field in fields)
-    //    {
-    //      // see if this field is marked as not undoable
-    //      if (!field.IsNotSerialized && !IsNonSerialized(field))
-    //      {
-    //        var value = info.GetValue(
-    //          string.Format("{0}!{1}", field.DeclaringType.Name, field.Name));
-    //        var valueInfo = value as SerializationInfo;
-    //        if (valueInfo == null)
-    //          SetValue(field, Convert.ChangeType(value, field.FieldType, null));
-    //        else
-    //          SetValue(field, formatter.GetObject(valueInfo.ReferenceId));
-    //      }
-    //    }
-    //    currentType = currentType.BaseType;
-    //  }
-    //}
-
-    //private object GetValue(System.Reflection.FieldInfo field)
-    //{
-    //  if (field.DeclaringType == typeof(SmartDate))
-    //    return field.GetValue(this);
-    //  else
-    //    throw new Exception(string.Format("GetValue failed to get value for {0}", field.Name));
-    //}
-
-    //private void SetValue(System.Reflection.FieldInfo field, object value)
-    //{
-    //  if (field.DeclaringType == typeof(SmartDate))
-    //    field.SetValue(this, value);
-    //  else
-    //    throw new Exception(string.Format("SetValue failed to set value for {0}", field.Name));
-    //}
-
-    //#endregion
-
     private DateTime _date;
     private bool _initialized;
     private EmptyValue _emptyValue;
@@ -1466,7 +1326,6 @@ namespace Csla
 
     #endregion
 
-
     #region IFormattable Members
 
     string IFormattable.ToString(string format, IFormatProvider formatProvider)
@@ -1476,5 +1335,36 @@ namespace Csla
 
     #endregion
 
+    #region IMobileObject Members
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      info.AddValue("SmartDate._date", _date);
+      info.AddValue("SmartDate._defaultFormat", _defaultFormat);
+      info.AddValue("SmartDate._emptyValue", _emptyValue.ToString());
+      info.AddValue("SmartDate._initialized", _initialized);
+      info.AddValue("SmartDate._format", _format);
+    }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      _date = info.GetValue<DateTime>("SmartDate._date");
+      _defaultFormat = info.GetValue<string>("SmartDate._defaultFormat");
+      _emptyValue = (EmptyValue)System.Enum.Parse(typeof(EmptyValue), info.GetValue<string>("SmartDate._emptyValue"), true);
+      _format = info.GetValue<string>("SmartDate._format");
+      _initialized = info.GetValue<bool>("SmartDate._initialized");
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      //
+    }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      //
+    }
+
+    #endregion
   }
 }

@@ -12,7 +12,7 @@ namespace Csla
 #endif
   [Serializable]
   public class BusinessBase<T> : BusinessBase, ISavable
-    where T: BusinessBase<T>
+    where T : BusinessBase<T>
   {
     #region Object ID Value
 
@@ -78,7 +78,7 @@ namespace Csla
     public virtual void BeginSave()
     {
       if (this.IsChild)
-          OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
+        OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
       else if (EditLevel > 0)
         OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
       else if (!IsValid && !IsDeleted)
@@ -102,8 +102,46 @@ namespace Csla
 
     public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
     {
-      Saved += handler;
-      BeginSave();
+      if (this.IsChild)
+      {
+        NotSupportedException error = new NotSupportedException(Resources.NoSaveChildException);
+        OnSaved(null, error);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error));
+      }
+      else if (EditLevel > 0)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error));
+      }
+      else if (!IsValid && !IsDeleted)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error));
+      }
+      else
+      {
+        if (IsDirty)
+        {
+          DataPortal.BeginUpdate<T>(this, (o, e) =>
+          {
+            T result = e.Object;
+            OnSaved(result, e.Error);
+            if (handler != null)
+              handler(result, new SavedEventArgs(result, e.Error));
+          });
+        }
+        else
+        {
+          OnSaved((T)this, null);
+          if (handler != null)
+            handler(this, new SavedEventArgs(this, null));
+        }
+      }
     }
 
     /// <summary>

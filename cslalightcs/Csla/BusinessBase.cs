@@ -75,30 +75,30 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual void BeginSave()
-    {
-      if (this.IsChild)
-        OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
-      else if (EditLevel > 0)
-        OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
-      else if (!IsValid && !IsDeleted)
-        OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
-      else
+      public virtual void BeginSave()
       {
-        if (IsDirty)
-        {
-          DataPortal.BeginUpdate<T>(this, (o, e) =>
-          {
-            T result = e.Object;
-            OnSaved(result, e.Error);
-          });
-        }
+        if (this.IsChild)
+          OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
+        else if (EditLevel > 0)
+          OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
+        else if (!IsValid && !IsDeleted)
+          OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
         else
         {
-          OnSaved((T)this, null);
+          if (IsDirty)
+          {
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error);
+            });
+          }
+          else
+          {
+            OnSaved((T)this, null);
+          }
         }
       }
-    }
 
     public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
     {

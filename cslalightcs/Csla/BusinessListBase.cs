@@ -531,20 +531,19 @@ namespace Csla
     {
       if (this.IsChild)
         OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
-
-      else if (_editLevel > 0)
+      else if (EditLevel > 0)
         OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
-
       else if (!IsValid)
         OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
-
       else
       {
         if (IsDirty)
         {
-          DataPortal<T> dp = new DataPortal<T>();
-          dp.UpdateCompleted += (o, e) => { OnSaved(e.Object, e.Error); };
-          dp.BeginUpdate(this);
+          DataPortal.BeginUpdate<T>(this, (o, e) =>
+          {
+            T result = e.Object;
+            OnSaved(result, e.Error);
+          });
         }
         else
         {
@@ -555,8 +554,46 @@ namespace Csla
 
     public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
     {
-      Saved += handler;
-      BeginSave();
+      if (this.IsChild)
+      {
+        NotSupportedException error = new NotSupportedException(Resources.NoSaveChildException);
+        OnSaved(null, error);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error));
+      }
+      else if (EditLevel > 0)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error));
+      }
+      else if (!IsValid)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error));
+      }
+      else
+      {
+        if (IsDirty)
+        {
+          DataPortal.BeginUpdate<T>(this, (o, e) =>
+          {
+            T result = e.Object;
+            OnSaved(result, e.Error);
+            if (handler != null)
+              handler(result, new SavedEventArgs(result, e.Error));
+          });
+        }
+        else
+        {
+          OnSaved((T)this, null);
+          if (handler != null)
+            handler(this, new SavedEventArgs(this, null));
+        }
+      }
     }
 
     /// <summary>

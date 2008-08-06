@@ -97,7 +97,10 @@ namespace Csla.Test.CslaQueryProvider
 
     object IConvertible.ToType(Type conversionType, IFormatProvider provider)
     {
-      throw new NotImplementedException();
+      if (conversionType == typeof(RandomThing))
+        return this;
+      else
+        throw new NotImplementedException();
     }
 
     ushort IConvertible.ToUInt16(IFormatProvider provider)
@@ -698,6 +701,23 @@ namespace Csla.Test.CslaQueryProvider
 
       Assert.IsTrue(emptyset.Count() == 0);
       Assert.IsTrue(fullset.Count() == random.Count());
+    }
+
+    [TestMethod]
+    public void TestQueryProviderCastFrom()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+
+      random.Add(new RandomThing(1));
+      random.Add(new RandomThing(2));
+      random.Add(new RandomThing(3));
+      random.Add(new RandomThing(4));
+      random.Add(new RandomThing(5));
+
+      var result = from RandomThing r in random
+                   where r.SomeVal == 2
+                   select r;
+      Assert.IsTrue(result.Count() == 1);
     }
 
     [TestMethod]

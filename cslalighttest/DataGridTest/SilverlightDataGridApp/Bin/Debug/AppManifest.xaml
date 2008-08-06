@@ -1,8 +1,0 @@
-﻿<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="SilverlightDataGridApp" EntryPointType="SilverlightDataGridApp.App" RuntimeVersion="2.0.30523.6">
-  <Deployment.Parts>
-    <AssemblyPart x:Name="SilverlightDataGridApp" Source="SilverlightDataGridApp.dll" />
-    <AssemblyPart x:Name="ClassLibrary.Business" Source="ClassLibrary.Business.dll" />
-    <AssemblyPart x:Name="Csla" Source="Csla.dll" />
-    <AssemblyPart x:Name="System.Windows.Controls.Data" Source="System.Windows.Controls.Data.dll" />
-  </Deployment.Parts>
-</Deployment>

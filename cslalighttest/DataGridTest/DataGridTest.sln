@@ -17,7 +17,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "SilverlightDataGridAppWeb", "SilverlightDataGridAppWeb\", "{81B7AC13-D252-47A0-A0F8-D16E912BFE65}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
-		ProjectReferences = ""
+		ProjectReferences = "{517B47C5-0E83-4A9B-9DFC-79CAC1B23BD3}|ClassLibrary.Business.dll;{9DA591ED-C570-47AC-8E5D-35B039E07973}|Csla.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/SilverlightDataGridAppWeb"
 		Debug.AspNetCompiler.PhysicalPath = "SilverlightDataGridAppWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\SilverlightDataGridAppWeb\"

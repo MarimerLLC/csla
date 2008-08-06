@@ -1,0 +1,7 @@
+C:\Visual Studio Projects\csla\cslalighttest\DataGridTest\ClassLibrary.Business.Silverlight\Bin\Debug\ClassLibrary.Business.dll
+C:\Visual Studio Projects\csla\cslalighttest\DataGridTest\ClassLibrary.Business.Silverlight\Bin\Debug\ClassLibrary.Business.pdb
+C:\Visual Studio Projects\csla\cslalighttest\DataGridTest\ClassLibrary.Business.Silverlight\Bin\Debug\Csla.dll
+C:\Visual Studio Projects\csla\cslalighttest\DataGridTest\ClassLibrary.Business.Silverlight\Bin\Debug\Csla.pdb
+C:\Visual Studio Projects\csla\cslalighttest\DataGridTest\ClassLibrary.Business.Silverlight\obj\Debug\ResolveAssemblyReference.cache
+C:\Visual Studio Projects\csla\cslalighttest\DataGridTest\ClassLibrary.Business.Silverlight\obj\Debug\ClassLibrary.Business.dll
+C:\Visual Studio Projects\csla\cslalighttest\DataGridTest\ClassLibrary.Business.Silverlight\obj\Debug\ClassLibrary.Business.pdb

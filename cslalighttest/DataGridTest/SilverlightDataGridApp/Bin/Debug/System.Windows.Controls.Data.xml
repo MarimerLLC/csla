@@ -1,0 +1,1511 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Windows.Controls.Data</name>
+  </assembly>
+  <members>
+    <member name="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1">
+      <summary>Represents a read-only <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />.</summary>
+      <typeparam name="T">The type of objects that the collection holds.</typeparam>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.#ctor(System.Collections.ObjectModel.ObservableCollection{`0})">
+      <summary>Initializes a new instance of the <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> class that serves as a wrapper for the specified <see cref="T:System.Collections.ObjectModel.ObservableCollection`1" />.</summary>
+      <param name="list">The collection to wrap.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged">
+      <summary>Occurs when an item is added or removed.</summary>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+      <summary>Raises the <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.CollectionChanged" /> event. </summary>
+      <param name="args">The event data.</param>
+    </member>
+    <member name="M:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>Raises the <see cref="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged" /> event. </summary>
+      <param name="args">The event data.</param>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.PropertyChanged">
+      <summary>Occurs when a property value changes.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#Collections#Specialized#INotifyCollectionChanged#CollectionChanged">
+      <summary>For a description of this member, see <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" />.</summary>
+    </member>
+    <member name="E:System.Collections.ObjectModel.ReadOnlyObservableCollection`1.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>For a description of this member, see <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" />.</summary>
+    </member>
+    <member name="T:System.ComponentModel.CurrentChangingEventArgs">
+      <summary>Provides data for the <see cref="E:System.ComponentModel.ICollectionView.CurrentChanging" /> event.</summary>
+    </member>
+    <member name="M:System.ComponentModel.CurrentChangingEventArgs.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.CurrentChangingEventArgs" /> class and sets the <see cref="P:System.ComponentModel.CurrentChangingEventArgs.IsCancelable" /> property to true.</summary>
+    </member>
+    <member name="M:System.ComponentModel.CurrentChangingEventArgs.#ctor(System.Boolean)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.CurrentChangingEventArgs" /> class and sets the <see cref="P:System.ComponentModel.CurrentChangingEventArgs.IsCancelable" /> property to the specified value.</summary>
+      <param name="isCancelable">true to disable the ability to cancel a <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> change; false to enable cancellation.</param>
+    </member>
+    <member name="P:System.ComponentModel.CurrentChangingEventArgs.Cancel">
+      <summary>Gets or sets a value that indicates whether the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> change should be canceled. </summary>
+      <returns>true if the event should be canceled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:System.ComponentModel.CurrentChangingEventArgs.IsCancelable">
+      <summary>Gets a value that indicates whether the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> change can be canceled. </summary>
+      <returns>true if the event can be canceled; false if the event cannot be canceled.</returns>
+    </member>
+    <member name="T:System.ComponentModel.CurrentChangingEventHandler">
+      <summary>Represents a method that can handle the <see cref="E:System.ComponentModel.ICollectionView.CurrentChanging" /> event of an <see cref="T:System.ComponentModel.ICollectionView" /> implementation. </summary>
+    </member>
+    <member name="T:System.ComponentModel.GroupDescription">
+      <summary>Provides a base class for defining how to divide the items in a collection into groups.</summary>
+    </member>
+    <member name="M:System.ComponentModel.GroupDescription.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.GroupDescription" /> class. </summary>
+    </member>
+    <member name="M:System.ComponentModel.GroupDescription.GroupNameFromItem(System.Object,System.Int32,System.Globalization.CultureInfo)">
+      <summary>Returns the group name or names for the specified item.</summary>
+      <returns>An object that represents the group name or names.</returns>
+      <param name="item">The item to return the group name for.</param>
+      <param name="level">The level of the group within the grouping hierarchy.</param>
+      <param name="culture">The culture information that affects grouping.</param>
+    </member>
+    <member name="P:System.ComponentModel.GroupDescription.GroupNames">
+      <summary>Gets the collection of group names.</summary>
+      <returns>The collection of group names. </returns>
+    </member>
+    <member name="M:System.ComponentModel.GroupDescription.NamesMatch(System.Object,System.Object)">
+      <summary>Indicates whether the specified item belongs in the specified group.</summary>
+      <returns>true if the item belongs in the group; otherwise, false.</returns>
+      <param name="groupName">The name of the group to check.</param>
+      <param name="itemName">The name of the item to check.</param>
+    </member>
+    <member name="M:System.ComponentModel.GroupDescription.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)">
+      <summary>Raises the <see cref="E:System.ComponentModel.GroupDescription.PropertyChanged" /> event. </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="E:System.ComponentModel.GroupDescription.PropertyChanged">
+      <summary>Occurs when a property value has changed.</summary>
+    </member>
+    <member name="M:System.ComponentModel.GroupDescription.ShouldSerializeGroupNames">
+      <summary>Indicates whether the group names should be serialized.</summary>
+      <returns>true if the group names should be serialized; otherwise, false.</returns>
+    </member>
+    <member name="E:System.ComponentModel.GroupDescription.System#ComponentModel#INotifyPropertyChanged#PropertyChanged">
+      <summary>For a description of this member, see <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" />.</summary>
+    </member>
+    <member name="T:System.ComponentModel.ICollectionView">
+      <summary>Enables collections to have the functionalities of current record management, custom sorting, filtering, and grouping.</summary>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.CanFilter">
+      <summary>Gets a value that indicates whether this view supports filtering by way of the <see cref="P:System.ComponentModel.ICollectionView.Filter" /> property.</summary>
+      <returns>true if this view supports filtering; otherwise, false.</returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.CanGroup">
+      <summary>Gets a value that indicates whether this view supports grouping by way of the <see cref="P:System.ComponentModel.ICollectionView.GroupDescriptions" /> property.</summary>
+      <returns>true if this view supports grouping; otherwise, false.</returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.CanSort">
+      <summary>Gets a value that indicates whether this view supports sorting by way of the <see cref="P:System.ComponentModel.ICollectionView.SortDescriptions" /> property.</summary>
+      <returns>true if this view supports sorting; otherwise, false.</returns>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.Contains(System.Object)">
+      <summary>Indicates whether the specified item belongs to this collection view. </summary>
+      <returns>true if the item belongs to this collection view; otherwise, false.</returns>
+      <param name="item">The object to check. </param>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.Culture">
+      <summary>Gets or sets the cultural information for any operations of the view that may differ by culture, such as sorting.</summary>
+      <returns>The culture information to use during culture-sensitive operations. </returns>
+    </member>
+    <member name="E:System.ComponentModel.ICollectionView.CurrentChanged">
+      <summary>Occurs after the current item has been changed.</summary>
+    </member>
+    <member name="E:System.ComponentModel.ICollectionView.CurrentChanging">
+      <summary>Occurs before the current item changes.</summary>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.CurrentItem">
+      <summary>Gets the current item in the view.</summary>
+      <returns>The current item in the view or null if there is no current item.</returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.CurrentPosition">
+      <summary>Gets the ordinal position of the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> in the view.</summary>
+      <returns>The ordinal position of the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> in the view.</returns>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.DeferRefresh">
+      <summary>Enters a defer cycle that you can use to merge changes to the view and delay automatic refresh. </summary>
+      <returns>The typical usage is to create a using scope with an implementation of this method and then include multiple view-changing calls within the scope. The implementation should delay automatic refresh until after the using scope exits. </returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.Filter">
+      <summary>Gets or sets a callback that is used to determine whether an item is appropriate for inclusion in the view. </summary>
+      <returns>A method that is used to determine whether an item is appropriate for inclusion in the view.</returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.GroupDescriptions">
+      <summary>Gets a collection of <see cref="T:System.ComponentModel.GroupDescription" /> objects that describe how the items in the collection are grouped in the view. </summary>
+      <returns>A collection of objects that describe how the items in the collection are grouped in the view. </returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.Groups">
+      <summary>Gets the top-level groups.</summary>
+      <returns>A read-only collection of the top-level groups or null if there are no groups.</returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.IsCurrentAfterLast">
+      <summary>Gets a value that indicates whether the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> of the view is beyond the end of the collection.</summary>
+      <returns>true if the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> of the view is beyond the end of the collection; otherwise, false.</returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.IsCurrentBeforeFirst">
+      <summary>Gets a value that indicates whether the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> of the view is beyond the start of the collection.</summary>
+      <returns>true if the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> of the view is beyond the start of the collection; otherwise, false.</returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.IsEmpty">
+      <summary>Gets a value that indicates whether the view is empty.</summary>
+      <returns>true if the view is empty; otherwise, false.</returns>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.MoveCurrentTo(System.Object)">
+      <summary>Sets the specified item in the view as the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" />.</summary>
+      <returns>true if the resulting <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> is an item in the view; otherwise, false.</returns>
+      <param name="item">The item to set as the current item.</param>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.MoveCurrentToFirst">
+      <summary>Sets the first item in the view as the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" />.</summary>
+      <returns>true if the resulting <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> is an item in the view; otherwise, false.</returns>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.MoveCurrentToLast">
+      <summary>Sets the last item in the view as the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" />.</summary>
+      <returns>true if the resulting <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> is an item in the view; otherwise, false.</returns>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.MoveCurrentToNext">
+      <summary>Sets the item after the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> in the view as the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" />.</summary>
+      <returns>true if the resulting <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> is an item in the view; otherwise, false.</returns>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.MoveCurrentToPosition(System.Int32)">
+      <summary>Sets the item at the specified index to be the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> in the view.</summary>
+      <returns>true if the resulting <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> is an item in the view; otherwise, false.</returns>
+      <param name="position">The index to set the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> to.</param>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.MoveCurrentToPrevious">
+      <summary>Sets the item before the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> in the view to the <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" />.</summary>
+      <returns>true if the resulting <see cref="P:System.ComponentModel.ICollectionView.CurrentItem" /> is an item in the view; otherwise, false.</returns>
+    </member>
+    <member name="M:System.ComponentModel.ICollectionView.Refresh">
+      <summary>Recreates the view.</summary>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.SortDescriptions">
+      <summary>Gets a collection of <see cref="T:System.ComponentModel.SortDescription" /> instances that describe how the items in the collection are sorted in the view.</summary>
+      <returns>A collection of values that describe how the items in the collection are sorted in the view.</returns>
+    </member>
+    <member name="P:System.ComponentModel.ICollectionView.SourceCollection">
+      <summary>Gets the underlying collection.</summary>
+      <returns>The underlying collection.</returns>
+    </member>
+    <member name="T:System.ComponentModel.InvalidEnumArgumentException">
+      <summary>The exception that is thrown when you pass an enumeration value that is not valid as a method argument. </summary>
+    </member>
+    <member name="M:System.ComponentModel.InvalidEnumArgumentException.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.InvalidEnumArgumentException" /> with the specified error message. </summary>
+      <param name="message">The error message.</param>
+    </member>
+    <member name="M:System.ComponentModel.InvalidEnumArgumentException.#ctor(System.String,System.Int32,System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.InvalidEnumArgumentException" /> class with the specified argument name, value, and type. </summary>
+      <param name="argumentName">The name of the argument that is not valid.</param>
+      <param name="invalidValue">The argument value that is not valid.</param>
+      <param name="enumClass">The expected enumeration type.</param>
+    </member>
+    <member name="T:System.ComponentModel.ListSortDirection">
+      <summary>Specifies the direction of a sort operation.</summary>
+    </member>
+    <member name="F:System.ComponentModel.ListSortDirection.Ascending">
+      <summary>Sorts in ascending order.</summary>
+    </member>
+    <member name="F:System.ComponentModel.ListSortDirection.Descending">
+      <summary>Sorts in descending order.</summary>
+    </member>
+    <member name="T:System.ComponentModel.SortDescription">
+      <summary>Defines the direction and the property name that will be used as the criteria for sorting a collection.</summary>
+    </member>
+    <member name="M:System.ComponentModel.SortDescription.#ctor(System.String,System.ComponentModel.ListSortDirection)">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.SortDescription" /> structure. </summary>
+      <param name="propertyName">The name of the property to sort the list by.</param>
+      <param name="direction">The sort order.</param>
+    </member>
+    <member name="P:System.ComponentModel.SortDescription.Direction">
+      <summary>Gets or sets a value that indicates whether to sort in ascending or descending order.</summary>
+      <returns>A value that indicates the sort direction. </returns>
+    </member>
+    <member name="M:System.ComponentModel.SortDescription.Equals(System.Object)">
+      <summary>Compares the specified instance and the current instance of <see cref="T:System.ComponentModel.SortDescription" /> for value equality.</summary>
+      <returns>true if <paramref name="obj" /> and this <see cref="T:System.ComponentModel.SortDescription" /> instance have the same <see cref="P:System.ComponentModel.SortDescription.PropertyName" /> and <see cref="P:System.ComponentModel.SortDescription.Direction" /> values; otherwise, false.</returns>
+      <param name="obj">The <see cref="T:System.ComponentModel.SortDescription" /> instance to compare.</param>
+    </member>
+    <member name="M:System.ComponentModel.SortDescription.GetHashCode">
+      <summary>Returns the hash code for the current instance.</summary>
+      <returns>The hash code for the current instance.</returns>
+    </member>
+    <member name="P:System.ComponentModel.SortDescription.IsSealed">
+      <summary>Gets a value that indicates whether this structure is in an immutable state. </summary>
+      <returns>true if this object is being used; otherwise, false.</returns>
+    </member>
+    <member name="M:System.ComponentModel.SortDescription.op_Equality(System.ComponentModel.SortDescription,System.ComponentModel.SortDescription)">
+      <summary>Compares two <see cref="T:System.ComponentModel.SortDescription" /> instances for value equality. </summary>
+      <returns>true if the two <see cref="T:System.ComponentModel.SortDescription" /> instances have the same <see cref="P:System.ComponentModel.SortDescription.PropertyName" /> and <see cref="P:System.ComponentModel.SortDescription.Direction" /> values; otherwise, false.</returns>
+      <param name="sd1">The first <see cref="T:System.ComponentModel.SortDescription" /> instance to compare.</param>
+      <param name="sd2">The second <see cref="T:System.ComponentModel.SortDescription" /> instance to compare.</param>
+    </member>
+    <member name="M:System.ComponentModel.SortDescription.op_Inequality(System.ComponentModel.SortDescription,System.ComponentModel.SortDescription)">
+      <summary>Compares two <see cref="T:System.ComponentModel.SortDescription" /> instances for value inequality. </summary>
+      <returns>true if the two <see cref="T:System.ComponentModel.SortDescription" /> instances do not have the same <see cref="P:System.ComponentModel.SortDescription.PropertyName" /> and <see cref="P:System.ComponentModel.SortDescription.Direction" /> values; otherwise, false.</returns>
+      <param name="sd1">The first <see cref="T:System.ComponentModel.SortDescription" /> instance to compare.</param>
+      <param name="sd2">The second <see cref="T:System.ComponentModel.SortDescription" /> instance to compare.</param>
+    </member>
+    <member name="P:System.ComponentModel.SortDescription.PropertyName">
+      <summary>Gets or sets the property name being used as the sorting criteria.</summary>
+      <returns>The name of the property to sort by.</returns>
+    </member>
+    <member name="T:System.ComponentModel.SortDescriptionCollection">
+      <summary>Represents a collection of <see cref="T:System.ComponentModel.SortDescription" /> instances.</summary>
+    </member>
+    <member name="M:System.ComponentModel.SortDescriptionCollection.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.ComponentModel.SortDescriptionCollection" /> class.</summary>
+    </member>
+    <member name="M:System.ComponentModel.SortDescriptionCollection.ClearItems">
+      <summary>Removes all <see cref="T:System.ComponentModel.SortDescription" /> instances from the collection.</summary>
+    </member>
+    <member name="E:System.ComponentModel.SortDescriptionCollection.CollectionChanged">
+      <summary>Occurs when a <see cref="T:System.ComponentModel.SortDescription" /> is added or removed.</summary>
+    </member>
+    <member name="F:System.ComponentModel.SortDescriptionCollection.Empty">
+      <summary>Gets an empty and non-modifiable <see cref="T:System.ComponentModel.SortDescriptionCollection" />.</summary>
+    </member>
+    <member name="M:System.ComponentModel.SortDescriptionCollection.InsertItem(System.Int32,System.ComponentModel.SortDescription)">
+      <summary>Inserts a <see cref="T:System.ComponentModel.SortDescription" /> into the collection at the specified index.</summary>
+      <param name="index">The zero-based index where the <see cref="T:System.ComponentModel.SortDescription" /> is inserted.</param>
+      <param name="item">The <see cref="T:System.ComponentModel.SortDescription" /> to insert.</param>
+    </member>
+    <member name="M:System.ComponentModel.SortDescriptionCollection.RemoveItem(System.Int32)">
+      <summary>Removes the <see cref="T:System.ComponentModel.SortDescription" /> at the specified index in the collection.</summary>
+      <param name="index">The zero-based index of the <see cref="T:System.ComponentModel.SortDescription" /> to remove. </param>
+    </member>
+    <member name="M:System.ComponentModel.SortDescriptionCollection.SetItem(System.Int32,System.ComponentModel.SortDescription)">
+      <summary>Replaces the <see cref="T:System.ComponentModel.SortDescription" /> at the specified index.</summary>
+      <param name="index">The zero-based index of the <see cref="T:System.ComponentModel.SortDescription" /> to replace.</param>
+      <param name="item">The new value for the <see cref="T:System.ComponentModel.SortDescription" /> at the specified index.</param>
+    </member>
+    <member name="E:System.ComponentModel.SortDescriptionCollection.System#Collections#Specialized#INotifyCollectionChanged#CollectionChanged">
+      <summary>For a description of this member, see <see cref="E:System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged" />.</summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGrid">
+      <summary>Displays data in a customizable grid.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGrid" /> class. </summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.AlternatingRowBackground">
+      <summary>Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint the background of odd-numbered rows.</summary>
+      <returns>The brush that is used to paint the background of odd-numbered rows. The default is a <see cref="T:System.Windows.Media.SolidColorBrush" /> with a <see cref="P:System.Windows.Media.SolidColorBrush.Color" /> value of opaque white (ARGB value #FFFFFFFF).</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.AlternatingRowBackgroundProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.AlternatingRowBackground" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.AlternatingRowBackground" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.AreRowDetailsFrozen">
+      <summary>Gets or sets a value that indicates whether the row details sections remain fixed at the width of the display area or can scroll horizontally.</summary>
+      <returns>true if the row details sections are prevented from scrolling horizontally; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.AreRowDetailsFrozenProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.AreRowDetailsFrozen" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.AreRowDetailsFrozen" /> dependency property.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.ArrangeOverride(System.Windows.Size)">
+      <summary>Arranges the content of the <see cref="T:System.Windows.Controls.DataGrid" />.</summary>
+      <param name="finalSize">The final area within the parent that this element should use to arrange itself and its children.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.AutoGenerateColumns">
+      <summary>Gets or sets a value that indicates whether columns are created automatically when the <see cref="P:System.Windows.Controls.DataGrid.ItemsSource" /> property is set.</summary>
+      <returns>true if columns are generated automatically; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.AutoGenerateColumnsProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.AutoGenerateColumns" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.AutoGenerateColumns" /> dependency property.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.AutoGeneratingColumn">
+      <summary>Occurs one time for each public, non-static property in the bound data type when the <see cref="P:System.Windows.Controls.DataGrid.ItemsSource" /> property is changed and the <see cref="P:System.Windows.Controls.DataGrid.AutoGenerateColumns" /> property is true. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.BeginEdit">
+      <summary>Causes the grid to enter editing mode for the current cell and current row, unless the grid is already in editing mode.</summary>
+      <returns>true if the grid enters editing mode; otherwise, false.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.BeginEdit(System.Windows.RoutedEventArgs)">
+      <summary>Causes the grid to enter editing mode for the current cell and current row in the specified keyboard and mouse state.</summary>
+      <returns>true if the grid enters editing mode; otherwise, false.</returns>
+      <param name="editingEventArgs">Provides information about the keyboard or mouse gesture that prompted the method call. Can be null.</param>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.BeginningEdit">
+      <summary>Occurs before a cell or row enters editing mode. </summary>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.CancelingEdit">
+      <summary>Occurs when editing mode for a cell or row is canceled.</summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.CanUserReorderColumns">
+      <summary>Gets or sets a value that indicates whether the user can change the column display order by dragging column headers with the mouse.</summary>
+      <returns>true if the user can reorder columns; otherwise, false.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.CanUserReorderColumnsProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.CanUserReorderColumns" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.CanUserReorderColumns" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.CanUserResizeColumns">
+      <summary>Gets or sets a value that indicates whether the user can adjust column widths using the mouse.</summary>
+      <returns>true if the user can resize columns; otherwise, false. The default is true.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.CanUserResizeColumnsProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.CanUserResizeColumns" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.CanUserResizeColumns" /> dependency property.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.ColumnDisplayIndexChanged">
+      <summary>Occurs when the <see cref="P:System.Windows.Controls.DataGridColumnBase.DisplayIndex" /> property of a column changes. </summary>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.ColumnHeaderDragCompleted">
+      <summary>Occurs when the user drops a column header that was being dragged using the mouse. </summary>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.ColumnHeaderDragDelta">
+      <summary>Occurs one or more times while the user drags a column header using the mouse. </summary>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.ColumnHeaderDragStarted">
+      <summary>Occurs when the user begins dragging a column header using the mouse. </summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.ColumnHeaderHeight">
+      <summary>Gets or sets the height of the column headers row.</summary>
+      <returns>The height of the column headers row in pixels. The default is 22.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">When setting this property, the specified value is less than 4 or greater than 32768.</exception>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.ColumnHeaderHeightProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.ColumnHeaderHeight" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.ColumnHeaderHeight" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.ColumnHeaderStyle">
+      <summary>Gets or sets the style that is used when rendering the column headers.</summary>
+      <returns>The style applied to column headers. The default is null.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.ColumnHeaderStyleProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.ColumnHeaderStyle" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.ColumnHeaderStyle" /> dependency property.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.ColumnReordered">
+      <summary>Occurs when a <see cref="T:System.Windows.Controls.DataGrid" /> column has moved to a new position in the display order. </summary>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.ColumnReordering">
+      <summary>Occurs before a <see cref="T:System.Windows.Controls.DataGrid" /> column moves to a new position in the display order.</summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.Columns">
+      <summary>Gets a collection that contains all the columns in the control.</summary>
+      <returns>The columns in the control.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.ColumnWidth">
+      <summary>Gets or sets the standard width or automatic sizing mode of columns in the control.</summary>
+      <returns>A structure that represents the standard width or automatic sizing mode of columns in the <see cref="T:System.Windows.Controls.DataGrid" />. </returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.ColumnWidthProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.ColumnWidth" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.ColumnWidth" /> dependency property.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.CommittingEdit">
+      <summary>Occurs before a cell or row edit is committed to the data source.</summary>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.CurrentCellChanged">
+      <summary>Occurs when a different cell becomes the current cell. </summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.CurrentColumn">
+      <summary>Gets or sets the column that contains the current cell.</summary>
+      <returns>The column that contains the current cell.</returns>
+      <exception cref="T:System.ArgumentNullException">When setting this property, the specified value is null.</exception>
+      <exception cref="T:System.ArgumentException">When setting this property, the specified column is not in this <see cref="T:System.Windows.Controls.DataGrid" />.</exception>
+      <exception cref="T:System.InvalidOperationException">When setting this property, the specified column has a <see cref="P:System.Windows.Controls.DataGridColumn.Visibility" /> property value of <see cref="F:System.Windows.Visibility.Collapsed" />.-or-When changing the value of this property while the control is in editing mode, the edit cannot be committed or reverted.</exception>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.CurrentItem">
+      <summary>Gets the data item bound to the row that contains the current cell.</summary>
+      <returns>The data item bound to the row that contains the current cell.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.DataError">
+      <summary>Occurs when an external data-parsing or validation operation throws an exception, or when an attempt to commit data to a data source fails.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.EndEdit(System.Boolean,System.Boolean)">
+      <summary>Causes the grid to commit or cancel the current edit, and optionally exit editing mode. </summary>
+      <returns>true if the operation was successful; false if a data error occurred and the operation was canceled.</returns>
+      <param name="commitChanges">true to commit changes to the data source; false to revert to the original value. </param>
+      <param name="exitEditingMode">true to exit editing mode; otherwise, false. </param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.FrozenColumnCount">
+      <summary>Gets or sets the number of columns that the user cannot scroll horizontally.</summary>
+      <returns>The number of non-scrolling columns. </returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.FrozenColumnCountProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.FrozenColumnCount" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.FrozenColumnCount" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.GridlinesVisibility">
+      <summary>Gets or sets a value that indicates which grid lines separating inner cells are shown.</summary>
+      <returns>One of the enumeration values indicating which grid lines are shown. The default is <see cref="F:System.Windows.Controls.DataGridGridlines.All" />.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.GridlinesVisibilityProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.GridlinesVisibility" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.GridlinesVisibility" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.HeadersVisibility">
+      <summary>Gets or sets a value that indicates the visibility of row and column headers.</summary>
+      <returns>One of the enumeration values that indicates the visibility of row and column headers. The default is <see cref="F:System.Windows.Controls.DataGridHeaders.All" />.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.HeadersVisibilityProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.HeadersVisibility" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.HeadersVisibility" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.HorizontalGridlinesBrush">
+      <summary>Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint grid lines separating rows.</summary>
+      <returns>The brush that is used to paint horizontal grid lines. The default is a <see cref="T:System.Windows.Media.SolidColorBrush" /> with a <see cref="P:System.Windows.Media.SolidColorBrush.Color" /> value of opaque grey (ARGB value #FFACACAC).</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.HorizontalGridlinesBrushProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.HorizontalGridlinesBrush" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.HorizontalGridlinesBrush" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.HorizontalScrollBarVisibility">
+      <summary>Gets or sets a value that indicates how the horizontal scroll bar is displayed.</summary>
+      <returns>One of the enumeration values that specifies the horizontal scroll bar visibility. The default is <see cref="F:System.Windows.Controls.ScrollBarVisibility.Auto" />.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.HorizontalScrollBarVisibilityProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.HorizontalScrollBarVisibility" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.HorizontalScrollBarVisibility" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.IsReadOnly">
+      <summary>Gets or sets a value that indicates whether the user can edit the values in the control.</summary>
+      <returns>true if the control is read-only; otherwise, false. The default is false.</returns>
+      <exception cref="T:System.InvalidOperationException">When setting this property to true while the control is in editing mode, the edit cannot be committed or reverted. </exception>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.IsReadOnlyProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.IsReadOnly" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.IsReadOnly" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.ItemsSource">
+      <summary>Gets or sets a collection that is used to generate the content of the control.</summary>
+      <returns>The collection that is used to generate the content of the control. The default is null.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.ItemsSourceProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.ItemsSource" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.ItemsSource" /> dependency property.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.LoadingRow">
+      <summary>Occurs after a <see cref="T:System.Windows.Controls.DataGridRow" /> is instantiated, so that you can customize it before it is used.</summary>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.LoadingRowDetails">
+      <summary>Occurs when a new row details template is applied to a row, so that you can customize the details section before it is used.</summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.MaxColumnWidth">
+      <summary>Gets or sets the maximum width of columns in the <see cref="T:System.Windows.Controls.DataGrid" />.</summary>
+      <returns>The maximum column width in pixels.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">When setting this property, the specified value is less than zero or less than <see cref="P:System.Windows.Controls.DataGrid.MinColumnWidth" />.</exception>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.MaxColumnWidthProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.MaxColumnWidth" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.MaxColumnWidth" /> dependency property.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.MeasureOverride(System.Windows.Size)">
+      <summary>Measures the children of a <see cref="T:System.Windows.Controls.DataGrid" /> in preparation of arranging them during the <see cref="M:System.Windows.Controls.DataGrid.ArrangeOverride(System.Windows.Size)" /> pass. </summary>
+      <param name="availableSize">The available size that this element can give to child elements. Indicates an upper limit that child elements should not exceed.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.MinColumnWidth">
+      <summary>Gets or sets the minimum width of columns in the <see cref="T:System.Windows.Controls.DataGrid" />.</summary>
+      <returns>The minimum column width in pixels.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">When setting this property, the specified value is less than zero or greater than <see cref="P:System.Windows.Controls.DataGrid.MaxColumnWidth" />.</exception>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.MinColumnWidthProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.MinColumnWidth" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.MinColumnWidth" /> dependency property.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnApplyTemplate">
+      <summary>Builds the visual tree for the <see cref="T:System.Windows.Controls.DataGrid" /> control when a new template is applied.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnAutoGeneratingColumn(System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.AutoGeneratingColumn" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnBeginningEdit(System.Windows.Controls.DataGridBeginningEditEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.BeginningEdit" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnCancelingEdit(System.Windows.Controls.DataGridEndingEditEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.CancelingEdit" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnColumnDisplayIndexChanged(System.Windows.Controls.DataGridColumnEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.ColumnDisplayIndexChanged" /> event. </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnColumnReordered(System.Windows.Controls.DataGridColumnEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.ColumnReordered" /> event. </summary>
+      <param name="e">The event data</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnColumnReordering(System.Windows.Controls.DataGridColumnReorderingEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.ColumnReordering" /> event. </summary>
+      <param name="e">The event data. </param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnCommittingEdit(System.Windows.Controls.DataGridEndingEditEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.CommittingEdit" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnCurrentCellChanged(System.EventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.CurrentCellChanged" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnDataError(System.Windows.Controls.DataGridDataErrorEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.DataError" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnLoadingRow(System.Windows.Controls.DataGridRowEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.LoadingRow" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnLoadingRowDetails(System.Windows.Controls.DataGridRowDetailsEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.LoadingRow" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnPreparingCellForEdit(System.Windows.Controls.DataGridPreparingCellForEditEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.PreparingCellForEdit" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnRowDetailsVisibilityChanged(System.Windows.Controls.DataGridRowDetailsEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.RowDetailsVisibilityChanged" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnSelectionChanged(System.EventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.SelectionChanged" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnUnloadingRow(System.Windows.Controls.DataGridRowEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.UnloadingRow" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.OnUnloadingRowDetails(System.Windows.Controls.DataGridRowDetailsEventArgs)">
+      <summary>Raises the <see cref="E:System.Windows.Controls.DataGrid.UnloadingRowDetails" /> event.</summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.PreparingCellForEdit">
+      <summary>Occurs when a cell in a <see cref="T:System.Windows.Controls.DataGridTemplateColumn" /> enters editing mode.</summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.RowBackground">
+      <summary>Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint row backgrounds.</summary>
+      <returns>The brush that is used to paint row backgrounds. The default is a <see cref="T:System.Windows.Media.SolidColorBrush" /> with a <see cref="P:System.Windows.Media.SolidColorBrush.Color" /> value of opaque light grey (ARGB value #FFF2F2F2).</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.RowBackgroundProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.RowBackground" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.RowBackground" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.RowDetailsTemplate">
+      <summary>Gets or sets the template that is used to display the content of the details section of rows.</summary>
+      <returns>The template that is used to display row details. The default is null.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.RowDetailsTemplateProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.RowDetailsTemplate" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.RowDetailsTemplate" /> dependency property.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.RowDetailsVisibilityChanged">
+      <summary>Occurs when the <see cref="P:System.Windows.Controls.DataGrid.RowDetailsVisibilityMode" /> property value changes.</summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.RowDetailsVisibilityMode">
+      <summary>Gets or sets a value that indicates when the details sections of rows are displayed.</summary>
+      <returns>An enumeration value that specifies the visibility of row details. The default is <see cref="F:System.Windows.Controls.DataGridRowDetailsVisibilityMode.Collapsed" />.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.RowDetailsVisibilityModeProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.RowDetailsVisibilityMode" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.RowDetailsVisibilityMode" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.RowHeaderStyle">
+      <summary>Gets or sets the style that is used when rendering the row headers.</summary>
+      <returns>The style applied to row headers. The default is null.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.RowHeaderStyleProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.RowHeaderStyle" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.RowHeaderStyle" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.RowHeaderWidth">
+      <summary>Gets or sets the width of the row header column.</summary>
+      <returns>The width of the row header column in pixels. The default is 40.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">When setting this property, the specified value is less than 4 or greater than 32768.</exception>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.RowHeaderWidthProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.RowHeaderWidth" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.RowHeaderWidth" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.RowHeight">
+      <summary>Gets or sets the standard height of rows in the control.</summary>
+      <returns>The standard height of rows in pixels. The default is 22.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">When setting this property, the specified value is greater than 65536.</exception>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.RowHeightProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.RowHeight" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.RowHeight" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.RowStyle">
+      <summary>Gets or sets the style that is used when rendering the rows.</summary>
+      <returns>The style applied to rows. The default is null.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.RowStyleProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.RowStyle" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.RowStyle" /> dependency property.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGrid.ScrollIntoView(System.Object,System.Windows.Controls.DataGridColumn)">
+      <summary>Scrolls the <see cref="T:System.Windows.Controls.DataGrid" /> vertically to display the row for the specified data item and scrolls the <see cref="T:System.Windows.Controls.DataGrid" /> horizontally to display the specified column.</summary>
+      <param name="item">The data item (row) to scroll to.</param>
+      <param name="column">The column to scroll to.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.SelectedIndex">
+      <summary>Gets or sets the index of the current selection.</summary>
+      <returns>The index of the current selection, or -1 if the selection is empty.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.SelectedIndexProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.SelectedIndex" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.SelectedIndex" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.SelectedItem">
+      <summary>Gets or sets the data item corresponding to the selected row.</summary>
+      <returns>The data item corresponding to the selected row.</returns>
+      <exception cref="T:System.InvalidOperationException">When setting this property to a new value while the control is in editing mode, the edit cannot be committed or reverted. </exception>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.SelectedItemProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.SelectedItem" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.SelectedItem" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.SelectedItems">
+      <summary>Gets a list that contains the data items corresponding to the selected rows.</summary>
+      <returns>A list of the data items corresponding to the selected rows.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.SelectionChanged">
+      <summary>Occurs when the <see cref="P:System.Windows.Controls.DataGrid.SelectedItem" /> or <see cref="P:System.Windows.Controls.DataGrid.SelectedItems" /> property value changes.</summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.SelectionMode">
+      <summary>Gets or sets the selection behavior of the grid.</summary>
+      <returns>One of the enumeration values specifying the selection behavior. The default is <see cref="F:System.Windows.Controls.DataGridSelectionMode.SingleFullRow" />.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.SelectionModeProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.SelectionMode" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.SelectionMode" /> dependency property.</returns>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.UnloadingRow">
+      <summary>Occurs when a <see cref="T:System.Windows.Controls.DataGridRow" /> object becomes available for reuse.</summary>
+    </member>
+    <member name="E:System.Windows.Controls.DataGrid.UnloadingRowDetails">
+      <summary>Occurs when a row details element becomes available for reuse.</summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.VerticalGridlinesBrush">
+      <summary>Gets or sets the <see cref="T:System.Windows.Media.Brush" /> that is used to paint grid lines separating columns.</summary>
+      <returns>The brush that is used to paint vertical grid lines. The default is a <see cref="T:System.Windows.Media.SolidColorBrush" /> with a <see cref="P:System.Windows.Media.SolidColorBrush.Color" /> value of opaque grey (ARGB value #FFACACAC).</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.VerticalGridlinesBrushProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.VerticalGridlinesBrush" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.VerticalGridlinesBrush" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGrid.VerticalScrollBarVisibility">
+      <summary>Gets or sets a value that indicates how the vertical scroll bar is displayed.</summary>
+      <returns>One of the enumeration values that specifies the vertical scroll bar visibility. The default is <see cref="F:System.Windows.Controls.ScrollBarVisibility.Auto" />.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGrid.VerticalScrollBarVisibilityProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGrid.VerticalScrollBarVisibility" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGrid.VerticalScrollBarVisibility" /> dependency property.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs">
+      <summary>Provides data for the <see cref="E:System.Windows.Controls.DataGrid.AutoGeneratingColumn" /> event. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs.#ctor(System.Reflection.PropertyInfo,System.Windows.Controls.DataGridBoundColumn)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs" /> class.</summary>
+      <param name="property">Information about the property bound to the generated column.</param>
+      <param name="column">The generated column.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs.Cancel">
+      <summary>Gets or sets a value indicating whether the event should be canceled.</summary>
+      <returns>true if the event should be canceled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs.Column">
+      <summary>Gets the generated column.</summary>
+      <returns>The generated column.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs.Property">
+      <summary>Gets information about the property bound to the generated column.</summary>
+      <returns>Information about the property bound to the generated column.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridBeginningEditEventArgs">
+      <summary>Provides data for the <see cref="E:System.Windows.Controls.DataGrid.BeginningEdit" /> event.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridBeginningEditEventArgs.#ctor(System.Windows.Controls.DataGridColumn,System.Windows.Controls.DataGridRow,System.Windows.RoutedEventArgs)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridBeginningEditEventArgs" /> class.</summary>
+      <param name="column">The column that contains the cell to be edited.</param>
+      <param name="row">The row that contains the cell to be edited.</param>
+      <param name="editingEventArgs">Information about the user gesture that caused the cell to enter edit mode.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridBeginningEditEventArgs.Cancel">
+      <summary>Gets or sets a value that indicates whether the event should be canceled.</summary>
+      <returns>true if the event should be canceled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridBeginningEditEventArgs.Column">
+      <summary>Gets the column that contains the cell to be edited.</summary>
+      <returns>The column that contains the cell to be edited.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridBeginningEditEventArgs.EditingEventArgs">
+      <summary>Gets information about the user gesture that caused the cell to enter edit mode.</summary>
+      <returns>Information about the user gesture that caused the cell to enter edit mode.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridBeginningEditEventArgs.Row">
+      <summary>Gets the row that contains the cell to be edited.</summary>
+      <returns>The row that contains the cell to be edited.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridBoundColumn">
+      <summary>Represents a <see cref="T:System.Windows.Controls.DataGrid" /> column that can bind to a property in the grid's data source.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridBoundColumn.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridBoundColumn" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridBoundColumn.CancelCellEdit(System.Windows.FrameworkElement,System.Object)">
+      <summary>Causes the column cell being edited to revert to the specified value.</summary>
+      <param name="editingElement">The element that the column displays for a cell in editing mode.</param>
+      <param name="uneditedValue">The previous, unedited value in the cell being edited.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding">
+      <summary>Gets or sets the binding that associates the column with a property in the data source.</summary>
+      <returns>The binding to the column's display property in the data source. The default is null.</returns>
+      <exception cref="T:System.InvalidOperationException">When changing the value of this property, the current cell edit cannot be committed or reverted. </exception>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridBoundColumn.EditingElementStyle">
+      <summary>Gets or sets the style that is used when rendering the element that the column displays for a cell in editing mode.</summary>
+      <returns>The style that is used when rendering an editing element. The default is null.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridBoundColumn.ElementStyle">
+      <summary>Gets or sets the style that is used when rendering the element that the column displays for a cell that is not in editing mode.</summary>
+      <returns>The style that is used when rendering a display-only element. The default is null.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridBoundColumn.GenerateEditingElement(System.Object)">
+      <summary>When overridden in a derived class, returns an editing element that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</summary>
+      <returns>A new editing element that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</returns>
+      <param name="dataItem"></param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridBoundColumn.GenerateElement(System.Object)">
+      <summary>When overridden in a derived class, returns a read-only element that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</summary>
+      <returns>A new, read-only element that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</returns>
+      <param name="dataItem"></param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridBoundColumn.PrepareCellForEdit(System.Windows.FrameworkElement,System.Windows.RoutedEventArgs)">
+      <summary>When overridden in a derived class, called when a cell in the column enters editing mode.</summary>
+      <returns>The unedited value.</returns>
+      <param name="editingElement">The element that the column displays for a cell in editing mode.</param>
+      <param name="editingEventArgs">Information about the user gesture that is causing a cell to enter editing mode.</param>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridCell">
+      <summary>Represents an individual <see cref="T:System.Windows.Controls.DataGrid" /> cell.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCell.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridCell" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCell.OnApplyTemplate">
+      <summary>Builds the visual tree for the cell control when a new template is applied.</summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridCellEventArgs">
+      <summary>Provides data for <see cref="T:System.Windows.Controls.DataGrid" /> cell-related events.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCellEventArgs.#ctor(System.Windows.Controls.DataGridColumn,System.Windows.Controls.DataGridRow,System.Windows.FrameworkElement)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridCellEventArgs" /> class. </summary>
+      <param name="dataGridColumn">The column containing the cell that the event occurs for.</param>
+      <param name="dataGridRow">The row containing the cell that the event occurs for.</param>
+      <param name="element">The value of the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property for the cell that the event occurs for.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dataGridColumn" /> is null.-or-<paramref name="dataGridRow" /> is null.-or-<paramref name="element" /> is null.</exception>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridCellEventArgs.Column">
+      <summary>Gets the column containing the cell that the event occurs for.</summary>
+      <returns>The column containing the cell that the event occurs for.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridCellEventArgs.Element">
+      <summary>Gets the value of the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property for the cell that the event occurs for.</summary>
+      <returns>The value of the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property for the cell that the event occurs for.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridCellEventArgs.Row">
+      <summary>Gets the row containing the cell that the event occurs for.</summary>
+      <returns>The row containing the cell that the event occurs for.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridCellsPresenter">
+      <summary>Used within the template of a <see cref="T:System.Windows.Controls.DataGrid" /> to specify the location in the control's visual tree where the cells are to be added. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCellsPresenter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridCellsPresenter" /> class. </summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridCheckBoxColumn">
+      <summary>Represents a <see cref="T:System.Windows.Controls.DataGrid" /> column that hosts <see cref="T:System.Windows.Controls.CheckBox" /> controls in its cells.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCheckBoxColumn.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridCheckBoxColumn" /> class. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCheckBoxColumn.CancelCellEdit(System.Windows.FrameworkElement,System.Object)">
+      <summary>Causes the column cell being edited to revert to the specified value.</summary>
+      <param name="editingElement">The element that the column displays for a cell in editing mode.</param>
+      <param name="uneditedValue">The previous, unedited value in the cell being edited.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridCheckBoxColumn.Content">
+      <summary>Gets or sets the binding that associates check box content with a property in the data source.</summary>
+      <returns>The binding between the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property of check boxes in the column and a property in the data source. The default is null.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCheckBoxColumn.GenerateEditingElement(System.Object)">
+      <summary>Gets a <see cref="T:System.Windows.Controls.CheckBox" /> control that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</summary>
+      <returns>A new <see cref="T:System.Windows.Controls.CheckBox" /> control that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</returns>
+      <param name="dataItem"></param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCheckBoxColumn.GenerateElement(System.Object)">
+      <summary>Gets a read-only <see cref="T:System.Windows.Controls.CheckBox" /> control that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</summary>
+      <returns>A new, read-only <see cref="T:System.Windows.Controls.CheckBox" /> control that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</returns>
+      <param name="dataItem"></param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridCheckBoxColumn.IsThreeState">
+      <summary>Gets or sets a value that indicates whether the hosted <see cref="T:System.Windows.Controls.CheckBox" /> controls allow three states or two. </summary>
+      <returns>true if the hosted controls support three states; false if they support two states. The default is false. </returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCheckBoxColumn.PrepareCellForEdit(System.Windows.FrameworkElement,System.Windows.RoutedEventArgs)">
+      <summary>Called when a cell in the column enters editing mode.</summary>
+      <returns>The unedited value. </returns>
+      <param name="editingElement">The element that the column displays for a cell in editing mode.</param>
+      <param name="editingEventArgs">Information about the user gesture that is causing a cell to enter editing mode.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridCheckBoxColumn.RefreshCellContent(System.Windows.FrameworkElement,System.String)">
+      <summary>Refreshes the contents of a cell in the column in response to a column property value change.</summary>
+      <param name="element">The <see cref="T:System.Windows.Controls.CheckBox" /> returned by the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property of the cell to update.</param>
+      <param name="propertyName">The name of the column property that has changed.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="element" /> is not a <see cref="T:System.Windows.Controls.CheckBox" />.</exception>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridColumn">
+      <summary>Represents a <see cref="T:System.Windows.Controls.DataGrid" /> column.</summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.ActualWidth">
+      <summary>Gets the current width of the column in pixels.</summary>
+      <returns>The width of the column in pixels.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.CanUserReorder">
+      <summary>Gets or sets a value that indicates whether the user can change the column display position by dragging the column header.</summary>
+      <returns>true if the user can drag the column header to a new position; otherwise, false. The default is the current <see cref="P:System.Windows.Controls.DataGrid.CanUserReorderColumns" /> property value.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.CanUserResize">
+      <summary>Gets or sets a value that indicates whether the user can adjust the column width using the mouse.</summary>
+      <returns>true if the user can resize the column; false if the user cannot resize the column.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.CellStyle">
+      <summary>Gets or sets the style that is used when rendering cells in the column.</summary>
+      <returns>The style that is used when rendering cells in the column. The default is null.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.DisplayIndex">
+      <summary>Gets or sets the display position of the column relative to the other columns in the <see cref="T:System.Windows.Controls.DataGrid" />.</summary>
+      <returns>The zero-based position of the column as it is displayed in the associated <see cref="T:System.Windows.Controls.DataGrid" />. The default is the <see cref="P:System.Windows.Controls.DataGridColumn.Index" /> property value.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">When setting this property, the specified value is less than -1 or equal to <see cref="F:System.Int32.MaxValue" />.-or-When setting this property on a column in a <see cref="T:System.Windows.Controls.DataGrid" />, the specified value is less than zero or greater than or equal to the number of columns in the <see cref="T:System.Windows.Controls.DataGrid" />.</exception>
+      <exception cref="T:System.InvalidOperationException">When setting this property, the <see cref="T:System.Windows.Controls.DataGrid" /> is already making <see cref="P:System.Windows.Controls.DataGridColumn.DisplayIndex" /> adjustments. For example, this exception is thrown when you attempt to set <see cref="P:System.Windows.Controls.DataGridColumn.DisplayIndex" /> in a <see cref="E:System.Windows.Controls.DataGrid.ColumnDisplayIndexChanged" /> event handler.</exception>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumn.GetCellContent(System.Object)">
+      <summary>Gets the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property value for the cell at the intersection of this column and the row that represents the specified data item.</summary>
+      <returns>The cell content.</returns>
+      <param name="dataItem">The data item represented by the row that contains the intended cell.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dataItem" /> is null.</exception>
+      <exception cref="T:System.InvalidOperationException">This column has not been added to a <see cref="T:System.Windows.Controls.DataGrid" />.</exception>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumn.GetCellContent(System.Windows.Controls.DataGridRow)">
+      <summary>Gets the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property value for the cell at the intersection of this column and the specified row.</summary>
+      <returns>The cell content.</returns>
+      <param name="dataGridRow">The row that contains the intended cell.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dataGridRow" /> is null.</exception>
+      <exception cref="T:System.InvalidOperationException">This column has not been added to a <see cref="T:System.Windows.Controls.DataGrid" />.</exception>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.Header">
+      <summary>Gets or sets the content of the column header.</summary>
+      <returns>The column header content. The default is null.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.HeaderStyle">
+      <summary>Gets or sets the style that is used when rendering the column header.</summary>
+      <returns>The style that is used when rendering the column header, or null to use the <see cref="P:System.Windows.Controls.DataGrid.ColumnHeaderStyle" /> setting. The default is null.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.IsAutoGenerated">
+      <summary>Gets a value that indicates whether the column is auto-generated.</summary>
+      <returns>true if the column is auto-generated; otherwise, false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.IsFrozen">
+      <summary>Gets a value that indicates whether the column is prevented from scrolling horizontally.</summary>
+      <returns>true if the column cannot be scrolled horizontally; otherwise, false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.IsReadOnly">
+      <summary>Gets or sets a value that indicates whether cells in the column can be edited.</summary>
+      <returns>true if cells in the column can be edited; otherwise, false. The default is false.</returns>
+      <exception cref="T:System.InvalidOperationException">When setting this property to false on a column derived from <see cref="T:System.Windows.Controls.DataGridBoundColumn" />, the column <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property indicates a data source that is read-only.-or-When setting this property to true on a column with a cell that is in edit mode, the cell edit cannot be committed or reverted. </exception>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.MaxWidth">
+      <summary>Gets or sets the maximum column width in pixels.</summary>
+      <returns>The maximum column width in pixels.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.MinWidth">
+      <summary>Gets or sets the minimum column width in pixels.</summary>
+      <returns>The minimum column width in pixels. The default is 20.</returns>
+      <exception cref="T:System.ArgumentOutOfRangeException">When setting this property, the specified value is not 0 and is less than 2. </exception>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumn.NotifyPropertyChanged(System.String)">
+      <summary>Called by a specific column type when one of its properties changes and its current cells need to be updated.</summary>
+      <param name="propertyName">The name of the column property that has changed.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumn.RefreshCellContent(System.Windows.FrameworkElement,System.String)">
+      <summary>Refreshes the contents of a cell in the column in response to a column property value change.</summary>
+      <param name="element">The element returned by the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property of the cell to refresh.</param>
+      <param name="propertyName">The name of the column property that has changed.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.SortMemberPath">
+      <summary>Gets or sets a property name, or a period-delimited hierarchy of property names, that indicates the member to sort by.</summary>
+      <returns>The path to the data-item member to sort by.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.Visibility">
+      <summary>Gets or sets the visibility of the column.</summary>
+      <returns>An enumeration value that specifies the column visibility. The default is <see cref="F:System.Windows.Visibility.Visible" />.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumn.Width">
+      <summary>Gets or sets the column width or automatic sizing mode.</summary>
+      <returns>A structure that represents the column width or automatic sizing mode. The default is the <see cref="P:System.Windows.Controls.DataGrid.ColumnWidth" /> property value.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridColumnEventArgs">
+      <summary>Provides data for <see cref="T:System.Windows.Controls.DataGrid" /> column-related events.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumnEventArgs.#ctor(System.Windows.Controls.DataGridColumn)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridColumnEventArgs" /> class.</summary>
+      <param name="column">The column that the event occurs for.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="column" /> is null.</exception>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumnEventArgs.Column">
+      <summary>Gets the column that the event occurs for.</summary>
+      <returns>The column that the event occurs for.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridColumnHeader">
+      <summary>Represents an individual <see cref="T:System.Windows.Controls.DataGrid" /> column header.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumnHeader.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridColumnHeader" /> class. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumnHeader.OnApplyTemplate">
+      <summary>Builds the visual tree for the column header when a new template is applied. </summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumnHeader.SeparatorBrush">
+      <summary>Gets or sets the <see cref="T:System.Windows.Media.Brush" /> used to paint the column header separator lines.</summary>
+      <returns>The brush used to paint column header separator lines.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridColumnHeader.SeparatorBrushProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGridColumnHeader.SeparatorBrush" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGridColumnHeader.SeparatorBrush" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumnHeader.SeparatorVisibility">
+      <summary>Gets or sets a value indicating whether the column header separator lines are visible.</summary>
+      <returns>One of the enumeration values that specifies the visibility of the column header separator lines. The default is <see cref="F:System.Windows.Visibility.Visible" />.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridColumnHeader.SeparatorVisibilityProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGridColumnHeader.SeparatorVisibility" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGridColumnHeader.SeparatorVisibility" /> dependency property.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridColumnHeadersPresenter">
+      <summary>Used within the template of a <see cref="T:System.Windows.Controls.DataGrid" /> to specify the location in the control's visual tree where the column headers are to be added. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumnHeadersPresenter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridColumnHeadersPresenter" /> class. </summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridColumnReorderingEventArgs">
+      <summary>Provides data for the <see cref="E:System.Windows.Controls.DataGrid.ColumnReordering" /> event. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridColumnReorderingEventArgs.#ctor(System.Windows.Controls.DataGridColumn)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridColumnReorderingEventArgs" /> class. </summary>
+      <param name="dataGridColumn">The column that is being moved.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumnReorderingEventArgs.Cancel">
+      <summary>Gets or sets a value that indicates whether the event has been handled, meaning that no additional processing is necessary. </summary>
+      <returns>true if the event has been handled; otherwise, false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumnReorderingEventArgs.Column">
+      <summary>Gets the column that is being moved.</summary>
+      <returns>The column that is being moved.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumnReorderingEventArgs.DragIndicatorContent">
+      <summary>Gets or sets the template that is used to display the visual indicator of a column header while the user drags it.</summary>
+      <returns>The template that is used to display a dragged column header. </returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridColumnReorderingEventArgs.DropLocationIndicator">
+      <summary>Gets or sets the template that is used to display the visual indicator of the current drop location during a column drag operation.</summary>
+      <returns>The template that is used to display the drop location indicator during a column drag operation. </returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridDataErrorEventArgs">
+      <summary>Provides data for the <see cref="E:System.Windows.Controls.DataGrid.DataError" /> event.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridDataErrorEventArgs.#ctor(System.Exception,System.Windows.Controls.DataGridColumn,System.Windows.Controls.DataGridRow)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridDataErrorEventArgs" /> class. </summary>
+      <param name="exception">The exception that represents the data error.</param>
+      <param name="dataGridColumn">The column that contains the cell in which the error occurred.</param>
+      <param name="dataGridRow">The row that contains the cell in which the error occurred.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dataGridColumn" /> is null.</exception>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridDataErrorEventArgs.Cancel">
+      <summary>Gets or sets a value indicating whether the event should be canceled.</summary>
+      <returns>true if the event should be canceled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridDataErrorEventArgs.Column">
+      <summary>Gets the column that contains the cell in which the error occurred.</summary>
+      <returns>The column that contains the cell in which the error occurred.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridDataErrorEventArgs.Exception">
+      <summary>Gets the exception that represents the data error.</summary>
+      <returns>The exception that represents the data error.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridDataErrorEventArgs.Row">
+      <summary>Gets the row that contains the cell in which the error occurred.</summary>
+      <returns>The row that contains the cell in which the error occurred.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridDataErrorEventArgs.ThrowException">
+      <summary>Gets or sets a value indicating whether to throw the exception after the event handler is finished with it.</summary>
+      <returns>true if the exception should be thrown; otherwise, false. The default is false.</returns>
+      <exception cref="T:System.ArgumentException">
+        <see cref="P:System.Windows.Controls.DataGridDataErrorEventArgs.Exception" /> is null when setting this property to true. </exception>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridDetailsPresenter">
+      <summary>Used within the template of a <see cref="T:System.Windows.Controls.DataGrid" /> to specify the location in the control's visual tree where the row details are to be added. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridDetailsPresenter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridDetailsPresenter" /> class. </summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridEditingTriggerInfo">
+      <summary>Provides information about the user gesture that causes a <see cref="T:System.Windows.Controls.DataGrid" /> cell to enter edit mode.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridEditingTriggerInfo.#ctor(System.Windows.Input.ModifierKeys,System.Windows.Input.KeyEventArgs,System.Windows.Input.MouseButtonEventArgs)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridEditingTriggerInfo" /> class. </summary>
+      <param name="modifierKeys">The modifier keys (SHIFT, CTRL, ALT, or the Windows logo key) that are pressed when the cell enters edit mode.</param>
+      <param name="keyEventArgs">Data about the keyboard key used to enter edit mode.</param>
+      <param name="mouseButtonEventArgs">Data about the mouse button used to enter edit mode.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEditingTriggerInfo.ContainsFocus">
+      <summary>Gets a value indicating whether the cell entering edit mode has keyboard input focus.</summary>
+      <returns>true if the cell entering edit mode has input focus; otherwise, false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEditingTriggerInfo.KeyEventArgs">
+      <summary>Gets data about the keyboard key used to enter edit mode.</summary>
+      <returns>Data about the key used to enter edit mode.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEditingTriggerInfo.ModifierKeys">
+      <summary>Gets a value indicating which modifier keys (SHIFT, CTRL, ALT, or the Windows logo key) are pressed when the cell enters edit mode.</summary>
+      <returns>A bitwise combination of the enumeration values indicating which modifier keys are pressed when the cell enters edit mode.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEditingTriggerInfo.MouseButtonEventArgs">
+      <summary>Gets data about the mouse button used to enter edit mode.</summary>
+      <returns>Data about the mouse button used to enter edit mode.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridEditingUnit">
+      <summary>Specifies constants that define whether editing is enabled on a cell level or on a row level.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridEditingUnit.Cell">
+      <summary>Cell editing is enabled.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridEditingUnit.Row">
+      <summary>Row editing is enabled.</summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridEndingEditEventArgs">
+      <summary>Provides data for the <see cref="E:System.Windows.Controls.DataGrid.CancelingEdit" /> event.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridEndingEditEventArgs.#ctor(System.Windows.Controls.DataGridColumn,System.Windows.Controls.DataGridRow,System.Windows.FrameworkElement,System.Windows.Controls.DataGridEditingUnit)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridEndingEditEventArgs" /> class.</summary>
+      <param name="column">The column that contains the cell to be edited.</param>
+      <param name="row">The row that contains the cell to be edited.</param>
+      <param name="editingElement">The element that the column displays for a cell in editing mode.</param>
+      <param name="editingUnit">A member of the <see cref="T:System.Windows.Controls.DataGridEditingUnit" /> enumeration that indicates whether editing is enabled at the cell-level or row-level.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEndingEditEventArgs.Cancel">
+      <summary>Gets or sets a value that indicates whether the event should be canceled.</summary>
+      <returns>true if the event should be canceled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEndingEditEventArgs.Column">
+      <summary>Gets the column that contains the cell to be edited.</summary>
+      <returns>The column that contains the cell to be edited.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEndingEditEventArgs.EditingElement">
+      <summary>Gets the element that the column displays for a cell in editing mode.</summary>
+      <returns>The element that the column displays for a cell in editing mode.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEndingEditEventArgs.EditingUnit">
+      <summary>Gets a value that indicates whether editing is enabled at the cell-level or row-level.</summary>
+      <returns>
+        <see cref="F:System.Windows.Controls.DataGridEditingUnit.Cell" /> if editing is enabled at the cell-level; <see cref="F:System.Windows.Controls.DataGridEditingUnit.Row" /> if editing is enabled at the row-level.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridEndingEditEventArgs.Row">
+      <summary>Gets the row that contains the cell to be edited.</summary>
+      <returns>The row that contains the cell to be edited.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridGridlines">
+      <summary>Specifies constants that define which grid lines separating <see cref="T:System.Windows.Controls.DataGrid" /> inner cells are shown.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridGridlines.None">
+      <summary>No grid lines are shown.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridGridlines.Horizontal">
+      <summary>Only horizontal grid lines, separating rows, are shown.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridGridlines.Vertical">
+      <summary>Only vertical grid lines, separating columns, are shown.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridGridlines.All">
+      <summary>Both horizontal and vertical grid lines are shown.</summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridHeaders">
+      <summary>Specifies constants that define which <see cref="T:System.Windows.Controls.DataGrid" /> header cells are displayed. </summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridHeaders.All">
+      <summary>Both column and row header cells are displayed.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridHeaders.Column">
+      <summary>Only column header cells are displayed.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridHeaders.Row">
+      <summary>Only row header cells are displayed.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridHeaders.None">
+      <summary>No header cells are displayed.</summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridLength">
+      <summary>Represents the lengths of elements within the <see cref="T:System.Windows.Controls.DataGrid" /> control.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLength.#ctor(System.Double)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridLength" /> class. </summary>
+      <param name="value">The absolute pixel value to initialize the length to.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridLength.Auto">
+      <summary>Gets a <see cref="T:System.Windows.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.</summary>
+      <returns>A <see cref="T:System.Windows.Controls.DataGridLength" /> structure that represents the standard automatic sizing mode.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLength.Equals(System.Object)">
+      <summary>Determines whether the specified object is equal to the current <see cref="T:System.Windows.Controls.DataGridLength" />.</summary>
+      <returns>true if the specified object is a <see cref="T:System.Windows.Controls.DataGridLength" /> with the same value or sizing mode as the current <see cref="T:System.Windows.Controls.DataGridLength" />; otherwise, false.</returns>
+      <param name="obj">The object to compare to the current instance.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLength.Equals(System.Windows.Controls.DataGridLength)">
+      <summary>Determines whether the specified <see cref="T:System.Windows.Controls.DataGridLength" /> is equal to the current <see cref="T:System.Windows.Controls.DataGridLength" />.</summary>
+      <returns>true if the specified object is a <see cref="T:System.Windows.Controls.DataGridLength" /> with the same value or sizing mode as the current <see cref="T:System.Windows.Controls.DataGridLength" />; otherwise, false.</returns>
+      <param name="other">The <see cref="T:System.Windows.Controls.DataGridLength" /> to compare to the current instance.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLength.GetHashCode">
+      <summary>Gets a hash code for the <see cref="T:System.Windows.Controls.DataGridLength" />.</summary>
+      <returns>A hash code for the current <see cref="T:System.Windows.Controls.DataGridLength" />.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLength.op_Equality(System.Windows.Controls.DataGridLength,System.Windows.Controls.DataGridLength)">
+      <summary>Compares two <see cref="T:System.Windows.Controls.DataGridLength" /> structures for equality.</summary>
+      <returns>true if the two <see cref="T:System.Windows.Controls.DataGridLength" /> instances have the same value or sizing mode; otherwise, false.</returns>
+      <param name="gl1">The first <see cref="T:System.Windows.Controls.DataGridLength" /> instance to compare.</param>
+      <param name="gl2">The second <see cref="T:System.Windows.Controls.DataGridLength" /> instance to compare.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLength.op_Inequality(System.Windows.Controls.DataGridLength,System.Windows.Controls.DataGridLength)">
+      <summary>Compares two <see cref="T:System.Windows.Controls.DataGridLength" /> structures to determine whether they are not equal.</summary>
+      <returns>true if the two <see cref="T:System.Windows.Controls.DataGridLength" /> instances do not have the same value or sizing mode; otherwise, false.</returns>
+      <param name="gl1">The first <see cref="T:System.Windows.Controls.DataGridLength" /> instance to compare.</param>
+      <param name="gl2">The second <see cref="T:System.Windows.Controls.DataGridLength" /> instance to compare.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridLength.SizeToCells">
+      <summary>Gets a <see cref="T:System.Windows.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.</summary>
+      <returns>A <see cref="T:System.Windows.Controls.DataGridLength" /> structure that represents the cell-based automatic sizing mode.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridLength.SizeToHeader">
+      <summary>Gets a <see cref="T:System.Windows.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.</summary>
+      <returns>A <see cref="T:System.Windows.Controls.DataGridLength" /> structure that represents the header-based automatic sizing mode.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridLength.Value">
+      <summary>Gets the absolute value of the <see cref="T:System.Windows.Controls.DataGridLength" /> in pixels.</summary>
+      <returns>The absolute value of the <see cref="T:System.Windows.Controls.DataGridLength" /> in pixels.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridLengthConverter">
+      <summary>Converts instances of other types to and from <see cref="T:System.Windows.Controls.DataGridLength" /> instances.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLengthConverter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridLengthConverter" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLengthConverter.CanConvertFrom(System.Type)">
+      <summary>Determines whether conversion is possible from a specified type to a <see cref="T:System.Windows.Controls.DataGridLength" />.</summary>
+      <returns>true if this converter can perform the conversion; otherwise, false.</returns>
+      <param name="sourceType">The type to convert from. </param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLengthConverter.CanConvertTo(System.Type)">
+      <summary>Determines whether conversion is possible to a specified type from a <see cref="T:System.Windows.Controls.DataGridLength" />.</summary>
+      <returns>true if this converter can perform the conversion; otherwise, false.</returns>
+      <param name="destinationType">The type to convert to.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLengthConverter.ConvertFrom(System.Object)">
+      <summary>Converts the specified value to a <see cref="T:System.Windows.Controls.DataGridLength" /> instance.</summary>
+      <returns>The converted value.</returns>
+      <param name="value">The value to convert.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridLengthConverter.ConvertTo(System.Object,System.Type)">
+      <summary>Converts this <see cref="T:System.Windows.Controls.DataGridLength" /> instance to an instance of the specified type.</summary>
+      <returns>The converted value.</returns>
+      <param name="value">The <see cref="T:System.Windows.Controls.DataGridLength" /> to convert.</param>
+      <param name="destinationType">The type to convert the value to.</param>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridPreparingCellForEditEventArgs">
+      <summary>Provides data for the <see cref="E:System.Windows.Controls.DataGrid.PreparingCellForEdit" /> event.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridPreparingCellForEditEventArgs.#ctor(System.Windows.Controls.DataGridColumn,System.Windows.Controls.DataGridRow,System.Windows.RoutedEventArgs,System.Windows.FrameworkElement)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridPreparingCellForEditEventArgs" /> class.</summary>
+      <param name="column">The column that contains the cell to be edited.</param>
+      <param name="row">The row that contains the cell to be edited.</param>
+      <param name="editingEventArgs">Information about the user gesture that caused the cell to enter edit mode.</param>
+      <param name="editingElement">The element that the column displays for a cell in editing mode.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridPreparingCellForEditEventArgs.Column">
+      <summary>Gets the column that contains the cell to be edited.</summary>
+      <returns>The column that contains the cell to be edited.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridPreparingCellForEditEventArgs.EditingElement">
+      <summary>Gets the element that the column displays for a cell in editing mode.</summary>
+      <returns>The element that the column displays for a cell in editing mode.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridPreparingCellForEditEventArgs.EditingEventArgs">
+      <summary>Gets information about the user gesture that caused the cell to enter edit mode.</summary>
+      <returns>Information about the user gesture that caused the cell to enter edit mode.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridPreparingCellForEditEventArgs.Row">
+      <summary>Gets the row that contains the cell to be edited.</summary>
+      <returns>The row that contains the cell to be edited.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridRow">
+      <summary>Represents a <see cref="T:System.Windows.Controls.DataGrid" /> row.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRow.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridRow" /> class. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRow.ArrangeOverride(System.Windows.Size)">
+      <summary>Arranges the content of the <see cref="T:System.Windows.Controls.DataGridRow" />.</summary>
+      <param name="finalSize">The final area within the parent that this element should use to arrange itself and its children.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRow.DetailsTemplate">
+      <summary>Gets or sets the template that is used to display the details section of the row. </summary>
+      <returns>The template that is used to display the row details section or null to use the <see cref="P:System.Windows.Controls.DataGrid.RowDetailsTemplate" /> setting. The default is null.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRow.DetailsTemplateProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGridRow.DetailsTemplate" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGridRow.DetailsTemplate" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRow.DetailsVisibility">
+      <summary>Gets or sets a value that indicates when the details section of the row is displayed.</summary>
+      <returns>An enumeration value that specifies the visibility of row details. The default is <see cref="F:System.Windows.Controls.DataGridRowDetailsVisibility.Collapsed" />.</returns>
+      <exception cref="T:System.InvalidOperationException">The row has not been added to a <see cref="T:System.Windows.Controls.DataGrid" />.</exception>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRow.DetailsVisibilityProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGridRow.DetailsVisibility" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGridRow.DetailsVisibility" /> dependency property.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRow.GetIndex">
+      <summary>Returns the index of the current row.</summary>
+      <returns>The index of the current row.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRow.GetRowContainingElement(System.Windows.FrameworkElement)">
+      <summary>Returns the <see cref="T:System.Windows.Controls.DataGridRow" /> that contains the specified element.</summary>
+      <returns>The <see cref="T:System.Windows.Controls.DataGridRow" /> that contains the specified element.</returns>
+      <param name="element">An element contained in a row to be found.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRow.Header">
+      <summary>Gets or sets the row header.</summary>
+      <returns>The row header. The default is null.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRow.HeaderProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGridRow.Header" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGridRow.Header" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRow.HeaderStyle">
+      <summary>Gets or sets the style that is used when rendering the row header.</summary>
+      <returns>The style that is used when rendering the row header. The default is null.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRow.HeaderStyleProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGridRow.HeaderStyle" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGridRow.HeaderStyle" /> dependency property.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRow.MeasureOverride(System.Windows.Size)">
+      <summary>Measures the children of a <see cref="T:System.Windows.Controls.DataGridRow" /> to prepare for arranging them during the <see cref="M:System.Windows.Controls.DataGridRow.ArrangeOverride(System.Windows.Size)" /> pass. </summary>
+      <param name="availableSize">The available size that this element can give to child elements. Indicates an upper limit that child elements should not exceed.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRow.OnApplyTemplate">
+      <summary>Builds the visual tree for the column header when a new template is applied.</summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridRowCancelEventArgs">
+      <summary>Provides data for <see cref="T:System.Windows.Controls.DataGrid" /> row-related events that can be canceled.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRowCancelEventArgs.#ctor(System.Windows.Controls.DataGridRow)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridRowCancelEventArgs" /> class. </summary>
+      <param name="dataGridRow">The row that the event occurs for.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRowCancelEventArgs.Cancel">
+      <summary>Gets or sets a value that indicates whether the event should be canceled.</summary>
+      <returns>true if the event should be canceled; otherwise, false. The default is false.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRowCancelEventArgs.Row">
+      <summary>Gets the row that the event occurred for. </summary>
+      <returns>The row that the event occurred for.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridRowDetailsEventArgs">
+      <summary>Provides data for the <see cref="E:System.Windows.Controls.DataGrid.LoadingRowDetails" /> and <see cref="E:System.Windows.Controls.DataGrid.UnloadingRowDetails" /> events.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRowDetailsEventArgs.#ctor(System.Windows.Controls.DataGridRow,System.Windows.FrameworkElement)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridRowDetailsEventArgs" /> class. </summary>
+      <param name="row">The row that the event occurs for.</param>
+      <param name="detailsElement">The row details section as a framework element.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRowDetailsEventArgs.DetailsElement">
+      <summary>Gets the row details section as a framework element.</summary>
+      <returns>The row details section.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRowDetailsEventArgs.Row">
+      <summary>Gets the row that the event occurs for.</summary>
+      <returns>The row that the event occurs for.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridRowDetailsVisibilityMode">
+      <summary>Specifies constants that define when <see cref="T:System.Windows.Controls.DataGrid" /> row details are displayed.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRowDetailsVisibilityMode.Collapsed">
+      <summary>The details section is not displayed for any rows.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRowDetailsVisibilityMode.Visible">
+      <summary>The details section is displayed for all rows.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRowDetailsVisibilityMode.VisibleWhenSelected">
+      <summary>The details section is displayed only for selected rows.</summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridRowEventArgs">
+      <summary>Provides data for <see cref="T:System.Windows.Controls.DataGrid" /> row-related events.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRowEventArgs.#ctor(System.Windows.Controls.DataGridRow)">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridRowEventArgs" /> class.</summary>
+      <param name="dataGridRow">The row that the event occurs for.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="dataGridRow" /> is null.</exception>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRowEventArgs.Row">
+      <summary>Gets the row that the event occurs for.</summary>
+      <returns>The row that the event occurs for.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridRowHeader">
+      <summary>Represents an individual <see cref="T:System.Windows.Controls.DataGrid" /> row header.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRowHeader.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridRowHeader" /> class. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRowHeader.MeasureOverride(System.Windows.Size)">
+      <summary>Measures the children of a <see cref="T:System.Windows.Controls.DataGridRowHeader" /> to prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.</summary>
+      <param name="availableSize">The available size that this element can give to child elements. Indicates an upper limit that child elements should not exceed.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRowHeader.OnApplyTemplate">
+      <summary>Builds the visual tree for the row header when a new template is applied. </summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRowHeader.SeparatorBrush">
+      <summary>Gets or sets the <see cref="T:System.Windows.Media.Brush" /> used to paint the row header separator lines.</summary>
+      <returns>The brush used to paint row header separator lines.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRowHeader.SeparatorBrushProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGridRowHeader.SeparatorBrush" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGridRowHeader.SeparatorBrush" /> dependency property.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridRowHeader.SeparatorVisibility">
+      <summary>Gets or sets a value indicating whether the row header separator lines are visible.</summary>
+      <returns>One of the enumeration values that specifies the visibility of the row header separator lines. The default is <see cref="F:System.Windows.Visibility.Visible" />.</returns>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridRowHeader.SeparatorVisibilityProperty">
+      <summary>Identifies the <see cref="P:System.Windows.Controls.DataGridRowHeader.SeparatorVisibility" /> dependency property.</summary>
+      <returns>The identifier for the <see cref="P:System.Windows.Controls.DataGridRowHeader.SeparatorVisibility" /> dependency property.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridRowsPresenter">
+      <summary>Used within the template of a <see cref="T:System.Windows.Controls.DataGrid" /> to specify the location in the control's visual tree where the rows are to be added. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridRowsPresenter.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridRowsPresenter" /> class. </summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridSelectionMode">
+      <summary>Specifies constants that define the <see cref="T:System.Windows.Controls.DataGrid" /> selection modes.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridSelectionMode.Extended">
+      <summary>The user can select multiple items while holding down the SHIFT or CTRL keys.</summary>
+    </member>
+    <member name="F:System.Windows.Controls.DataGridSelectionMode.Single">
+      <summary>The user can select only one item at a time.</summary>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridTemplateColumn">
+      <summary>Represents a <see cref="T:System.Windows.Controls.DataGrid" /> column that hosts template-specified content in its cells.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridTemplateColumn.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridTemplateColumn" /> class. </summary>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridTemplateColumn.CellEditingTemplate">
+      <summary>Gets or sets the template that is used to display the contents of a cell that is in editing mode.</summary>
+      <returns>The template that is used to display the contents of a cell that is in editing mode. The default is null.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridTemplateColumn.CellTemplate">
+      <summary>Gets or sets the template that is used to display the contents of a cell that is not in editing mode. </summary>
+      <returns>The template that is used to display the contents of a cell that is not in editing mode. The default is null.</returns>
+    </member>
+    <member name="T:System.Windows.Controls.DataGridTextColumn">
+      <summary>Represents a <see cref="T:System.Windows.Controls.DataGrid" /> column that hosts textual content in its cells.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridTextColumn.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridTextColumn" /> class.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridTextColumn.CancelCellEdit(System.Windows.FrameworkElement,System.Object)">
+      <summary>Causes the column cell being edited to revert to the specified value.</summary>
+      <param name="editingElement">The element that the column displays for a cell in editing mode.</param>
+      <param name="uneditedValue">The previous, unedited value in the cell being edited.</param>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridTextColumn.FontFamily">
+      <summary>Gets or sets the font family of the content of cells in the column.</summary>
+      <returns>The font family of the content of cells in the column. The default is the font family named "Trebuchet MS".</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridTextColumn.FontSize">
+      <summary>Gets or sets the font size of the content of cells in the column.</summary>
+      <returns>The font size of the content of cells in the column. The default is 11.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridTextColumn.FontStyle">
+      <summary>Gets or sets the font style of the content of cells in the column.</summary>
+      <returns>The font style of the content of cells in the column. The default is <see cref="P:System.Windows.FontStyles.Normal" />.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridTextColumn.FontWeight">
+      <summary>Gets or sets the font weight of the contents of cells in the column.</summary>
+      <returns>The font weight of the contents of cells in the column. The default is <see cref="P:System.Windows.FontWeights.Normal" />.</returns>
+    </member>
+    <member name="P:System.Windows.Controls.DataGridTextColumn.Foreground">
+      <summary>Gets or sets the brush that is used to paint the text contents of cells in the column.</summary>
+      <returns>The brush that is used to paint the contents of cells in the column. The default is null.</returns>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridTextColumn.GenerateEditingElement(System.Object)">
+      <summary>Gets a <see cref="T:System.Windows.Controls.TextBox" /> control that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</summary>
+      <returns>A new <see cref="T:System.Windows.Controls.TextBox" /> control that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</returns>
+      <param name="dataItem"></param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridTextColumn.GenerateElement(System.Object)">
+      <summary>Gets a read-only <see cref="T:System.Windows.Controls.TextBlock" /> element that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</summary>
+      <returns>A new, read-only <see cref="T:System.Windows.Controls.TextBlock" /> element that is bound to the column's <see cref="P:System.Windows.Controls.DataGridBoundColumn.DisplayMemberBinding" /> property value.</returns>
+      <param name="dataItem"></param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridTextColumn.PrepareCellForEdit(System.Windows.FrameworkElement,System.Windows.RoutedEventArgs)">
+      <summary>Called when a cell in the column enters editing mode.</summary>
+      <returns>The unedited value. </returns>
+      <param name="editingElement">The element that the column displays for a cell in editing mode.</param>
+      <param name="editingEventArgs">Information about the user gesture that is causing a cell to enter editing mode.</param>
+    </member>
+    <member name="M:System.Windows.Controls.DataGridTextColumn.RefreshCellContent(System.Windows.FrameworkElement,System.String)">
+      <summary>Refreshes the contents of a cell in the column in response to a column property value change.</summary>
+      <param name="element">The <see cref="T:System.Windows.Controls.TextBox" /> returned by the <see cref="P:System.Windows.Controls.ContentControl.Content" /> property of the cell to refresh.</param>
+      <param name="propertyName">The name of the column property that has changed.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="element" /> is null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="element" /> is not a <see cref="T:System.Windows.Controls.TextBlock" /> or <see cref="T:System.Windows.Controls.TextBox" />.</exception>
+    </member>
+    <member name="T:System.Windows.Controls.IEditableObject">
+      <summary>Represents an object that has an editing mode and the ability to commit or revert changes. </summary>
+    </member>
+    <member name="M:System.Windows.Controls.IEditableObject.BeginEdit">
+      <summary>Causes the object to enter editing mode.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.IEditableObject.CancelEdit">
+      <summary>Causes the object to leave editing mode and revert to the previous, unedited value.</summary>
+    </member>
+    <member name="M:System.Windows.Controls.IEditableObject.EndEdit">
+      <summary>Causes the object to leave editing mode and commit the edited value.</summary>
+    </member>
+  </members>
+</doc>

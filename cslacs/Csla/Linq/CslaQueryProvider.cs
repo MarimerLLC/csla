@@ -189,14 +189,14 @@ namespace Csla.Linq
       if (expression is MethodCallExpression)
       {
         MethodCallExpression mex = (MethodCallExpression) expression;
-        if (mex.Method.Name == "OfType")
+        if (mex.Method.Name == "OfType" || mex.Method.Name == "Cast")
         {
           Type listType = typeof(Enumerable);
           List<C> listFrom = _parent.ToList<C>();
           List<object> paramList = new List<object>();
           paramList.Add(listFrom);
           foreach(MethodInfo method in listType.GetMethods())
-            if (method.Name == "OfType" )
+            if (method.Name == mex.Method.Name)
             {
               Type[] genericArguments = { mex.Method.GetGenericArguments().First() };
               MethodInfo genericMethodInfo = method.MakeGenericMethod(genericArguments);

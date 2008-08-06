@@ -249,6 +249,7 @@
     <Compile Include="DataPortalClient\WcfProxy.cs" />
     <Compile Include="DataPortalException.cs" />
     <Compile Include="DataPortalResult.cs" />
+    <Compile Include="EditableRootListBase.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="ICriteria.cs" />
     <Compile Include="NameValueListBase.cs" />

@@ -19,7 +19,7 @@ namespace Csla.Core
     /// <param name="newObject">
     /// The new object returned as a result of the save.
     /// </param>
-    void SaveComplete(object newObject);
+    void SaveComplete(object newObject, Exception error);
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>

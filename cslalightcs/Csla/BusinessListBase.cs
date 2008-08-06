@@ -685,9 +685,9 @@ namespace Csla
       BeginSave();
     }
 
-    void ISavable.SaveComplete(object newObject)
+    void ISavable.SaveComplete(object newObject, Exception error)
     {
-      OnSaved((T)newObject, null);
+      OnSaved((T)newObject, error);
     }
 
     /// <summary>

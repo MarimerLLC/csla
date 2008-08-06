@@ -175,13 +175,13 @@ Namespace Linq
       Dim elementType As Type = TypeSystem.GetElementType(expression.Type)
       If TypeOf expression Is MethodCallExpression Then
         Dim mex As MethodCallExpression = TryCast(expression, MethodCallExpression)
-        If mex.Method.Name = "OfType" Then
+        If mex.Method.Name = "OfType" Or mex.Method.Name = "Cast" Then
           Dim listType As Type = GetType(Enumerable)
           Dim listFrom As List(Of C) = _parent.ToList()
           Dim paramList As List(Of Object) = New List(Of Object)()
           paramList.Add(listFrom)
           For Each method As MethodInfo In listType.GetMethods()
-            If method.Name = "OfType" Then
+            If method.Name = mex.Method.Name Then
               Dim genericArguments() As Type = {mex.Method.GetGenericArguments().First()}
               Dim genericMethodInfo As MethodInfo = method.MakeGenericMethod(genericArguments)
               Dim thingWeGotBack As System.Collections.IEnumerable = CType(genericMethodInfo.Invoke(Nothing, paramList.ToArray()), System.Collections.IEnumerable)

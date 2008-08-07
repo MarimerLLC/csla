@@ -237,7 +237,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\SecurityTests.silverlight.cs" />
+    <Compile Include="Security\SecurityTests.client.cs" />
     <Compile Include="Utilities\EscapeTests.cs" />
     <Compile Include="Validation\HasRulesManager.partial.cs" />
     <Compile Include="Validation\HasRulesManager2.partial.cs" />

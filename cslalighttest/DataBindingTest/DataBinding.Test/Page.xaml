@@ -141,6 +141,6 @@
                 <Button Content="Logout" x:Name="btnLogout" Click="btnLogout_Click" />
             </StackPanel>
         </Grid>
-        <csla:ObjectStatus x:Name="details" Content="{Binding}" Template="{StaticResource details}" />
+        <csla:ObjectStatus x:Name="details" Source="{Binding}" Template="{StaticResource details}" />
     </StackPanel>
 </UserControl>

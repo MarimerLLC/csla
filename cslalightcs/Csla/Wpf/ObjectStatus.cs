@@ -17,19 +17,31 @@ namespace Csla.Wpf
   [TemplateVisualState(Name = "DenyDelete", GroupName = "CanDelete")]
   [TemplateVisualState(Name = "AllowGet", GroupName = "CanGet")]
   [TemplateVisualState(Name = "DenyGet", GroupName = "CanGet")]
-  public class ObjectStatus : ContentControl
+  public class ObjectStatus : Control
   {
+    public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
+      "Source",
+      typeof(object),
+      typeof(ObjectStatus),
+      new PropertyMetadata((o, e) => ((ObjectStatus)o).Source = e.NewValue));
+
+    private object _source;
+
+    public object Source
+    {
+      get { return _source; }
+      set 
+      {
+        DetachSource(_source as INotifyPropertyChanged);
+        _source = value;
+        AttachSource(_source as INotifyPropertyChanged);
+        OnSourceChanged();
+      }
+    }
+
     public ObjectStatus()
     {
       DefaultStyleKey = typeof(ObjectStatus);
-    }
-
-    protected override void OnContentChanged(object oldContent, object newContent)
-    {
-      DetachSource(oldContent as INotifyPropertyChanged);
-      base.OnContentChanged(oldContent, newContent);
-      AttachSource(newContent as INotifyPropertyChanged);
-      OnSourceChanged();
     }
 
     private void AttachSource(INotifyPropertyChanged source)
@@ -52,10 +64,8 @@ namespace Csla.Wpf
     private void OnSourceChanged()
     {
       Type sourceType = null;
-      if (Content != null)
-        sourceType = Content.GetType();
-      if (DataContext != null)
-        sourceType = DataContext.GetType();
+      if (Source != null)
+        sourceType = Source.GetType();
 
       if(sourceType!=null)
       {

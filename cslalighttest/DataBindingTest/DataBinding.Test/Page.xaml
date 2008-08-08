@@ -1,7 +1,9 @@
 ﻿<UserControl x:Class="DataBinding.Test.Page"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla">
+             xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"
+             xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
+             xmlns:System="clr-namespace:System;assembly=mscorlib">
             
     <UserControl.Resources>
         <DataTemplate x:Key="customer">
@@ -16,49 +18,129 @@
                 <TextBlock x:Name="birthdate" Width="150" Text="{Binding BirthDate}" Grid.Column="2" />
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="details">
-            <Grid Width="400" Height="300">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="200" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Id" />
-                <TextBlock Grid.Column="1" Text="{Binding Id}" />
-                
-                <TextBlock Text="Name" Grid.Row="1" />
-                <TextBox x:Name="txtName" Grid.Column="1" Grid.Row="1" Text="{Binding Name, Mode=TwoWay}" />
-                <csla:Validator Property="Name" Source="{Binding}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" />
-                                
-                <TextBlock Text="Birthdate" Grid.Row="2" />
-                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding BirthDate}" />
-                
-                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
-                    <Button Content="Save" Margin="2,2,2,2" />
-                    <Button Content="Delete" Margin="2,2,2,2" />                    
-                </StackPanel>
+        <ControlTemplate x:Key="details" >
+            <Grid>
+                <vsm:VisualStateManager.VisualStateGroups>
+                    <vsm:VisualStateGroup x:Name="CanGet">
+                        <vsm:VisualState x:Name="AllowGet">
+                            <Storyboard />
+                        </vsm:VisualState>
+                        <vsm:VisualState x:Name="DenyGet" >
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="canGet"
+                                                               Storyboard.TargetProperty="Visibility"
+                                                               Duration="0">
+                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                        <DiscreteObjectKeyFrame.Value>
+                                            <Visibility>Collapsed</Visibility>
+                                        </DiscreteObjectKeyFrame.Value>
+                                    </DiscreteObjectKeyFrame>
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="denyGet"
+                                                               Storyboard.TargetProperty="Visibility"
+                                                               Duration="0">
+                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                        <DiscreteObjectKeyFrame.Value>
+                                            <Visibility>Visible</Visibility>
+                                        </DiscreteObjectKeyFrame.Value>
+                                    </DiscreteObjectKeyFrame>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </vsm:VisualState>
+                    </vsm:VisualStateGroup>
+                    <vsm:VisualStateGroup x:Name="CanEdit">
+                        <vsm:VisualState x:Name="AllowEdit">
+                            <Storyboard />
+                        </vsm:VisualState>
+                        <vsm:VisualState x:Name="DenyEdit">
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="btnSave"
+                                                               Storyboard.TargetProperty="Visibility"
+                                                               Duration="0">
+                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                        <DiscreteObjectKeyFrame.Value>
+                                            <Visibility>Collapsed</Visibility>
+                                        </DiscreteObjectKeyFrame.Value>
+                                    </DiscreteObjectKeyFrame>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </vsm:VisualState>
+                    </vsm:VisualStateGroup>
+                    <vsm:VisualStateGroup x:Name="CanDelete">
+                        <vsm:VisualState x:Name="AllowDelete">
+                            <Storyboard />
+                        </vsm:VisualState>
+                        <vsm:VisualState x:Name="DenyDelete">
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="btnDelete"
+                                                               Storyboard.TargetProperty="Visibility"
+                                                               Duration="0">
+                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                        <DiscreteObjectKeyFrame.Value>
+                                            <Visibility>Collapsed</Visibility>
+                                        </DiscreteObjectKeyFrame.Value>
+                                    </DiscreteObjectKeyFrame>
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </vsm:VisualState>
+                    </vsm:VisualStateGroup>
+                </vsm:VisualStateManager.VisualStateGroups>
+
+                <Grid Width="400" Height="300" x:Name="canGet">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Id" />
+                    <TextBlock Grid.Column="1" Text="{Binding Id}" />
+                    
+                    <TextBlock Text="Name" Grid.Row="1" />
+                    <TextBox x:Name="txtName" Grid.Column="1" Grid.Row="1" Text="{Binding Name, Mode=TwoWay}" />
+                    <csla:PropertyStatus Property="Name" RelativeTargetName="txtName" Source="{Binding}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" />
+                                    
+                    <TextBlock Text="Birthdate" Grid.Row="2" />
+                    <TextBox x:Name="txtBirthdate" Grid.Column="1" Grid.Row="2" Text="{Binding BirthDate, Mode=TwoWay}" />
+                    <csla:PropertyStatus Property="BirthDate" RelativeTargetName="txtBirthdate" Source="{Binding}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" />
+                    
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
+                        <Button Content="Save" Margin="2,2,2,2" x:Name="btnSave" />
+                        <Button Content="Delete" Margin="2,2,2,2" x:Name="btnDelete" />
+                    </StackPanel>
+                </Grid>
+                <Grid Width="400" Height="300" x:Name="denyGet" Visibility="Collapsed">
+                    <TextBlock Foreground="Red" Text="You are unauthorized to view this data" />
+                </Grid>
             </Grid>
-        </DataTemplate>
+        </ControlTemplate>
     </UserControl.Resources>
     <StackPanel x:Name="LayoutRoot"  Orientation="Horizontal">
         <Grid Background="White" Width="400" Height="300">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <ListBox SelectionChanged="ListBox_SelectionChanged" 
+            <ListBox x:Name="list" 
+                     SelectionChanged="ListBox_SelectionChanged" 
                      ItemTemplate="{StaticResource customer}" 
                      ItemsSource="{Binding}" 
                      DisplayMemberPath=""
                      HorizontalContentAlignment="Stretch" />
             <Button Grid.Row="1" x:Name="fetch" Content="fetch" Click="fetch_Click"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="2">
+                <Button Content="Run as Administrator" x:Name="btnAdmin" Click="btnAdmin_Click"/>
+                <Button Content="Run as User" x:Name="btnUser" Click="btnUser_Click" />
+                <Button Content="Run as Guest" x:Name="btnGuest" Click="btnGuest_Click" />
+                <Button Content="Logout" x:Name="btnLogout" Click="btnLogout_Click" />
+            </StackPanel>
         </Grid>
-        <ContentControl x:Name="details" ContentTemplate="{StaticResource details}" />
+        <csla:ObjectStatus x:Name="details" Content="{Binding}" Template="{StaticResource details}" />
     </StackPanel>
 </UserControl>

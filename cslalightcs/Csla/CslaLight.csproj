@@ -286,15 +286,10 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="Validation\BrokenRule.partial.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />
-    <Compile Include="Wpf\Authorizer.cs" />
-    <Compile Include="Wpf\BrokenRuleSeverityConverter.cs" />
-    <Compile Include="Wpf\CslaDataProvider.cs" />
-    <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
-    <Compile Include="Wpf\DataDecoratorBase.cs" />
-    <Compile Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Wpf\ObjectStatus.cs" />
-    <Compile Include="Wpf\Validator.cs" />
-    <Compile Include="Wpf\VisibilityMode.cs" />
+    <Compile Include="Wpf\BrokenRuleSeverityConverter.cs" />
+    <Compile Include="Wpf\IdentityConverter.cs" />
+    <Compile Include="Wpf\PropertyStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\WcfPortal\configuration91.svcinfo" />

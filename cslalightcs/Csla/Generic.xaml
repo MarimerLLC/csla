@@ -19,12 +19,23 @@
         </Grid>
     </DataTemplate>
     
-    <Style TargetType="csla:Validator">
+    <Style TargetType="csla:ObjectStatus">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="csla:ObjectStatus">
+                    <ContentPresenter x:Name="presenter"
+                            Content="{TemplateBinding DataContext}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="csla:PropertyStatus">
         <Setter Property="Width" Value="16" />
         <Setter Property="Height" Value="16" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="csla:Validator">
+                <ControlTemplate TargetType="csla:PropertyStatus">
                     <Grid>
                         <vsm:VisualStateManager.VisualStateGroups>
                             <vsm:VisualStateGroup x:Name="CommonStates">
@@ -111,9 +122,9 @@
                         <Popup x:Name="popup">
                             <!-- The child of popup must be of Type ItemsControl -->
                             <!-- {TemplateBinding BrokenRules} does not work (SL bug?) so we have to set
-                                 the ItemsSource in the codebehind
+                                 the DataContext in the codebehind, which will trigger the Binding
                             -->
-                            <ListBox ItemTemplate="{StaticResource BrokenRuleTemplate}" BorderThickness="0" />
+                            <ListBox ItemsSource="{Binding}" ItemTemplate="{StaticResource BrokenRuleTemplate}" BorderThickness="0" />
                         </Popup>                               
                     </Grid>
                 </ControlTemplate>

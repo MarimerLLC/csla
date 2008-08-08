@@ -33,13 +33,38 @@ namespace DataBinding.Test
 
     private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-      Customer selected = null;
-      if (e.AddedItems.Count > 0)
-      {
-        selected = (Customer)e.AddedItems[0];
-      }
+      BindDetails();
+    }
 
-      details.Content = selected;
+    private void BindDetails()
+    {
+      Customer selected = list.SelectedItem as Customer;
+      details.DataContext = null;
+      details.DataContext = selected;
+    }
+
+    private void btnAdmin_Click(object sender, RoutedEventArgs e)
+    {
+      MockPrincipal.Login("admin");
+      BindDetails();
+    }
+
+    private void btnUser_Click(object sender, RoutedEventArgs e)
+    {
+      MockPrincipal.Login("user");
+      BindDetails();
+    }
+
+    private void btnGuest_Click(object sender, RoutedEventArgs e)
+    {
+      MockPrincipal.Login("guest");
+      BindDetails();
+    }
+
+    private void btnLogout_Click(object sender, RoutedEventArgs e)
+    {
+      MockPrincipal.Logout();
+      BindDetails();
     }
   }
 }

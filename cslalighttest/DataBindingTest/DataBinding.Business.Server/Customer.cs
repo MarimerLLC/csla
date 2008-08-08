@@ -6,6 +6,7 @@ using Csla;
 using Csla.Serialization;
 using Csla.Validation;
 using System.Text.RegularExpressions;
+using Csla.Security;
 
 namespace DataBinding.Business
 {
@@ -56,6 +57,29 @@ namespace DataBinding.Business
       base.AddBusinessRules();
     }
 
+    protected override void AddInstanceAuthorizationRules()
+    {
+      AuthorizationRules.AllowRead(BirthDateProperty, "Administrators");
+      AuthorizationRules.AllowWrite(BirthDateProperty, "Administrators");
+
+      AuthorizationRules.AllowRead(BirthDateProperty, "Users");
+      AuthorizationRules.DenyWrite(BirthDateProperty, "Users");
+
+      AuthorizationRules.DenyRead(BirthDateProperty, "Guests");
+    }
+    public static void AddObjectAuthorizationRules()
+    {
+      AuthorizationRules.AllowGet(typeof(Customer), "Administrators");
+      AuthorizationRules.AllowEdit(typeof(Customer), "Administrators");
+      AuthorizationRules.AllowDelete(typeof(Customer), "Administrators");
+      AuthorizationRules.AllowCreate(typeof(Customer), "Administrators");
+
+      AuthorizationRules.AllowGet(typeof(Customer), "Users");
+      AuthorizationRules.AllowEdit(typeof(Customer), "Users");
+
+      AuthorizationRules.AllowGet(typeof(Customer), "Guests");
+    }
+     
     public static bool NiceName(object target, RuleArgs e)
     {
       string value = (string)Utilities.CallByName(target, e.PropertyName, CallType.Get);

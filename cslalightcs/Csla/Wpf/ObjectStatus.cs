@@ -1,191 +1,84 @@
 using System;
 using System.Windows;
+using System.Windows.Data;
+using System.Reflection;
+using Csla.Security;
+using System.Windows.Controls;
 using System.ComponentModel;
-using Csla.Core;
+using System.Windows.Media.Animation;
 
 namespace Csla.Wpf
 {
-  /// <summary>
-  /// Container for other UI controls that exposes
-  /// various status values from the CSLA .NET
-  /// business object acting as DataContext.
-  /// </summary>
-  /// <remarks>
-  /// This control provides access to the IsDirty,
-  /// IsNew, IsDeleted, IsValid and IsSavable properties
-  /// of a business object. The purpose behind this
-  /// control is to expose those properties in a way
-  /// that supports WFP data binding against those
-  /// values.
-  /// </remarks>
-  //public class ObjectStatus : DataDecoratorBase
-  //{
-  //  #region Dependency Properties
+  [TemplateVisualState(Name = "AllowEdit", GroupName = "CanEdit")]
+  [TemplateVisualState(Name = "DenyEdit", GroupName = "CanEdit")]
+  [TemplateVisualState(Name = "AllowCreate", GroupName = "CanCreate")]
+  [TemplateVisualState(Name = "DenyCreate", GroupName = "CanCreate")]
+  [TemplateVisualState(Name = "AllowDelete", GroupName = "CanDelete")]
+  [TemplateVisualState(Name = "DenyDelete", GroupName = "CanDelete")]
+  [TemplateVisualState(Name = "AllowGet", GroupName = "CanGet")]
+  [TemplateVisualState(Name = "DenyGet", GroupName = "CanGet")]
+  public class ObjectStatus : ContentControl
+  {
+    public ObjectStatus()
+    {
+      DefaultStyleKey = typeof(ObjectStatus);
+    }
 
-  //  private static readonly DependencyProperty IsDeletedProperty =
-  //    DependencyProperty.Register("IsDeleted", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
-  //  private static readonly DependencyProperty IsDirtyProperty =
-  //    DependencyProperty.Register("IsDirty", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
-  //  private static readonly DependencyProperty IsNewProperty =
-  //    DependencyProperty.Register("IsNew", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
-  //  private static readonly DependencyProperty IsSavableProperty =
-  //    DependencyProperty.Register("IsSavable", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
-  //  private static readonly DependencyProperty IsValidProperty =
-  //    DependencyProperty.Register("IsValid", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+    protected override void OnContentChanged(object oldContent, object newContent)
+    {
+      DetachSource(oldContent as INotifyPropertyChanged);
+      base.OnContentChanged(oldContent, newContent);
+      AttachSource(newContent as INotifyPropertyChanged);
+      OnSourceChanged();
+    }
 
-  //  /// <summary>
-  //  /// Exposes the IsDeleted property of the
-  //  /// DataContext business object.
-  //  /// </summary>
-  //  public bool IsDeleted
-  //  {
-  //    get { return (bool)base.GetValue(IsDeletedProperty); }
-  //    set 
-  //    {
-  //      bool old = IsDeleted;
-  //      base.SetValue(IsDeletedProperty, value);
-  //      OnPropertyChanged(
-  //        new DependencyPropertyChangedEventArgs(IsDeletedProperty, old, value));
-  //    }
-  //  }
+    private void AttachSource(INotifyPropertyChanged source)
+    {
+      if (source != null)
+        source.PropertyChanged += new PropertyChangedEventHandler(source_PropertyChanged);
+    }
 
-  //  /// <summary>
-  //  /// Exposes the IsDirty property of the
-  //  /// DataContext business object.
-  //  /// </summary>
-  //  public bool IsDirty
-  //  {
-  //    get { return (bool)base.GetValue(IsDirtyProperty); }
-  //    set
-  //    {
-  //      bool old = IsDirty;
-  //      base.SetValue(IsDirtyProperty, value);
-  //      if (old != value)
-  //        OnPropertyChanged(
-  //          new DependencyPropertyChangedEventArgs(IsDirtyProperty, old, value));
-  //    }
-  //  }
+    private void DetachSource(INotifyPropertyChanged source)
+    {
+      if (source != null)
+        source.PropertyChanged -= new PropertyChangedEventHandler(source_PropertyChanged);
+    }
 
-  //  /// <summary>
-  //  /// Exposes the IsNew property of the
-  //  /// DataContext business object.
-  //  /// </summary>
-  //  public bool IsNew
-  //  {
-  //    get { return (bool)base.GetValue(IsNewProperty); }
-  //    set
-  //    {
-  //      bool old = IsNew;
-  //      base.SetValue(IsNewProperty, value);
-  //      if (old != value)
-  //        OnPropertyChanged(
-  //          new DependencyPropertyChangedEventArgs(IsNewProperty, old, value));
-  //    }
-  //  }
+    private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      OnSourceChanged();
+    }
 
-  //  /// <summary>
-  //  /// Exposes the IsSavable property of the
-  //  /// DataContext business object.
-  //  /// </summary>
-  //  public bool IsSavable
-  //  {
-  //    get { return (bool)base.GetValue(IsSavableProperty); }
-  //    set
-  //    {
-  //      bool old = IsSavable;
-  //      base.SetValue(IsSavableProperty, value);
-  //      if (old != value)
-  //        OnPropertyChanged(
-  //          new DependencyPropertyChangedEventArgs(IsSavableProperty, old, value));
-  //    }
-  //  }
+    private void OnSourceChanged()
+    {
+      Type sourceType = null;
+      if (Content != null)
+        sourceType = Content.GetType();
+      if (DataContext != null)
+        sourceType = DataContext.GetType();
 
-  //  /// <summary>
-  //  /// Exposes the IsValid property of the
-  //  /// DataContext business object.
-  //  /// </summary>
-  //  public bool IsValid
-  //  {
-  //    get { return (bool)base.GetValue(IsValidProperty); }
-  //    set
-  //    {
-  //      bool old = IsValid;
-  //      base.SetValue(IsValidProperty, value);
-  //      if (old != value)
-  //        OnPropertyChanged(
-  //          new DependencyPropertyChangedEventArgs(IsValidProperty, old, value));
-  //    }
-  //  }
+      if(sourceType!=null)
+      {
+        if (Csla.Security.AuthorizationRules.CanCreateObject(sourceType))
+          VisualStateManager.GoToState(this, "AllowCreate", true);
+        else
+          VisualStateManager.GoToState(this, "DenyCreate", true);
 
-  //  #endregion
+        if (Csla.Security.AuthorizationRules.CanDeleteObject(sourceType))
+          VisualStateManager.GoToState(this, "AllowDelete", true);
+        else
+          VisualStateManager.GoToState(this, "DenyDelete", true);
 
-  //  /// <summary>
-  //  /// This method is called when the data
-  //  /// object to which the control is bound
-  //  /// has changed.
-  //  /// </summary>
-  //  protected override void DataObjectChanged()
-  //  {
-  //    Refresh();
-  //  }
+        if (Csla.Security.AuthorizationRules.CanEditObject(sourceType))
+          VisualStateManager.GoToState(this, "AllowEdit", true);
+        else
+          VisualStateManager.GoToState(this, "DenyEdit", true);
 
-  //  /// <summary>
-  //  /// This method is called when a property
-  //  /// of the data object to which the 
-  //  /// control is bound has changed.
-  //  /// </summary>
-  //  protected override void DataPropertyChanged(PropertyChangedEventArgs e)
-  //  {
-  //    Refresh();
-  //  }
-
-  //  /// <summary>
-  //  /// This method is called if the data
-  //  /// object is an INotifyCollectionChanged, 
-  //  /// and the CollectionChanged event was 
-  //  /// raised by the data object.
-  //  /// </summary>
-  //  protected override void DataObservableCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-  //  {
-  //    Refresh();
-  //  }
-
-  //  /// <summary>
-  //  /// Refreshes the control's property
-  //  /// values to reflect the values of
-  //  /// the underlying business object.
-  //  /// </summary>
-  //  public void Refresh()
-  //  {
-  //    IEditableBusinessObject source = DataObject as IEditableBusinessObject;
-  //    if (source != null)
-  //    {
-  //      if (IsDeleted != source.IsDeleted)
-  //        IsDeleted = source.IsDeleted;
-  //      if (IsDirty != source.IsDirty)
-  //        IsDirty = source.IsDirty;
-  //      if (IsNew != source.IsNew)
-  //        IsNew = source.IsNew;
-  //      if (IsSavable != source.IsSavable)
-  //        IsSavable = source.IsSavable;
-  //      if (IsValid != source.IsValid)
-  //        IsValid = source.IsValid;
-  //    }
-  //    else
-  //    {
-  //      IEditableCollection sourceList = DataObject as IEditableCollection;
-  //      if (sourceList != null)
-  //      {
-  //        if (IsDirty != sourceList.IsDirty)
-  //          IsDirty = sourceList.IsDirty;
-  //        if (IsValid != sourceList.IsValid)
-  //          IsValid = sourceList.IsValid;
-  //        if (IsSavable != sourceList.IsSavable)
-  //          IsSavable = sourceList.IsSavable;
-  //        IsDeleted = false;
-  //        IsNew = false;
-  //      }
-  //    }
-  //  }
-  //}
+        if (Csla.Security.AuthorizationRules.CanGetObject(sourceType))
+          VisualStateManager.GoToState(this, "AllowGet", true);
+        else
+          VisualStateManager.GoToState(this, "DenyGet", true);
+      }
+    }
+  }
 }

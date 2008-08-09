@@ -1097,14 +1097,20 @@ namespace Csla
       Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
       base.OnGetChildren(info, formatter);
-      var fieldManagerInfo = formatter.SerializeObject(_fieldManager);
-      info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
+      if (_fieldManager != null)
+      {
+        var fieldManagerInfo = formatter.SerializeObject(_fieldManager);
+        info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
+      }
     }
 
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
-      var childData = info.Children["_fieldManager"];
-      _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
+      if (info.Children.ContainsKey("_fieldManager"))
+      {
+        var childData = info.Children["_fieldManager"];
+        _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
+      }
       base.OnSetChildren(info, formatter);
     }
 

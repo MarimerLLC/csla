@@ -42,6 +42,14 @@ namespace Csla
 
     #region  SaveItem Methods
 
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void OnSaved(T newObject, Exception error)
+    {
+      if (Saved != null)
+        Saved(this, new SavedEventArgs(newObject, error));
+    }
 
     /// <summary>
     /// Saves the specified item in the list.
@@ -96,49 +104,54 @@ namespace Csla
                 {
                   c.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(Child_PropertyChanged);
                 }
-                NotifyCollectionChangedEventArgs args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
-                OnCollectionChanged(args);
-                
-                //base.RemoveItem(index);
+                //SafeRemoveItem  will raise INotifyCollectionChanged event
+                SafeRemoveItem(index);
               }
               else
               {
                 
                 for (int tmp = 1; tmp <= editLevel; tmp++)
                   e.Object.CopyState(tmp, false);
-                //base.SetItem(index, e.Object);
-                //OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, this[index], item, index));
+
+                SafeSetItem(index, e.Object);
+                //Because SL Data Grid does not support replace action.
+                // we have to artificially raise remove/insert events
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
+
               }
               item.SaveComplete(e.Object, null);
+              OnSaved(e.Object, null);
             }
             else
             {
               item.SaveComplete(item, e.Error);
+              OnSaved(item, e.Error);
             }
           };
         dp.BeginUpdate(savable);
       }
     }
 
-    public void SetItemAtIndex(T item, int index)
+    private void SafeSetItem(int index, T newObject)
     {
-      base.SetItem(index, item);
+      //This is needed because we cannot call base.SetItem from lambda expression
+      newObject.SetParent(this);
+      base.SetItem(index, newObject);
     }
 
-    public void RemoveItemAtIndex(int index)
+    private void SafeRemoveItem(int index)
     {
-      T item = this[index];
-
-      // only delete/save the item if it is not new
-      if (!item.IsNew)
+      //This is needed because we cannot call base.RemoveItem from lambda expression
+      // disconnect event handler if necessary
+      System.ComponentModel.INotifyPropertyChanged c = this[index] as System.ComponentModel.INotifyPropertyChanged;
+      if (c != null)
       {
-        if (!item.IsDeleted)
-        {
-          // delete item from database
-          item.Delete();
-          SaveItem(index);
-        }
+        c.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(Child_PropertyChanged);
       }
+
+      this[index].SetParent(null);
+      base.RemoveItem(index);
     }
 
     #endregion
@@ -162,10 +175,19 @@ namespace Csla
     ///// </summary>
     ///// <param name="index">Index of the item
     ///// to be removed.</param>
-    //protected override void RemoveItem(int index)
-    //{
-    //  base.RemoveAt(index);      
-    //}
+    protected override void RemoveItem(int index)
+    {
+      T item = this[index];
+      if (item.IsDeleted == false)
+      {
+        // only delete/save the item if it is not new
+        if (!item.IsNew)
+        {
+          item.Delete();
+          SaveItem(index);
+        }
+      }
+    }
 
     /// <summary>
     /// Replaces item in the list.
@@ -185,7 +207,8 @@ namespace Csla
 
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-      if (this.RaiseListChangedEvents)
+      // SL Data Grid's DataGridDataConnection object does not support replace action.  It throws an excpetioon when this occurs.
+      if (this.RaiseListChangedEvents && e.Action != NotifyCollectionChangedAction.Replace)
         base.OnCollectionChanged(e);
     }
 
@@ -193,13 +216,13 @@ namespace Csla
     {
       get
       {
-        return false;
+        return true;
       }
     }
 
     void Csla.Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
     {
-      if (child.EditLevel != 0)
+      if (child.EditLevel == 0)
         SaveItem((T)child);
     }
 
@@ -215,15 +238,15 @@ namespace Csla
 
     private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-      for (int index = 0; index < this.Count; index++)
-      {
-        if (ReferenceEquals(this[index], sender))
-        {
-          NotifyCollectionChangedEventArgs args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, this[index], this[index], index);
-          OnCollectionChanged(args);
-          return;
-        }
-      }
+      //for (int index = 0; index < this.Count; index++)
+      //{
+      //  if (ReferenceEquals(this[index], sender))
+      //  {
+      //    NotifyCollectionChangedEventArgs args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, this[index], this[index], index);
+      //    OnCollectionChanged(args);
+      //    return;
+      //  }
+      //}
       OnChildPropertyChanged(sender, e);
     }
 

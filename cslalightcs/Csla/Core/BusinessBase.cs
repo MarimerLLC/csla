@@ -22,7 +22,9 @@ namespace Csla.Core
     IParent, 
     IDataPortalTarget, 
     IEditableBusinessObject,
-    ISerializationNotification
+    ISerializationNotification,
+    System.Windows.Controls.IEditableObject
+
   {
     #region Constructors
 
@@ -1959,7 +1961,7 @@ namespace Csla.Core
       info.AddValue("Csla.Core.BusinessBase._isDeleted", _isDeleted);
       info.AddValue("Csla.Core.BusinessBase._isDirty", _isDirty);
       info.AddValue("Csla.Core.BusinessBase._neverCommitted", _neverCommitted);
-      info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", false); // keep for compatibility with csla objects.
+      info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", _disableIEditableObject);
       info.AddValue("Csla.Core.BusinessBase._isChild", _isChild);
       info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded);
     }
@@ -1971,6 +1973,7 @@ namespace Csla.Core
       _isDeleted = info.GetValue<bool>("Csla.Core.BusinessBase._isDeleted");
       _isDirty = info.GetValue<bool>("Csla.Core.BusinessBase._isDirty");
       _neverCommitted = info.GetValue<bool>("Csla.Core.BusinessBase._neverCommitted");
+      _disableIEditableObject = info.GetValue<bool>("Csla.Core.BusinessBase._disableIEditableObject");
       _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
       _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
     }
@@ -2450,6 +2453,60 @@ namespace Csla.Core
     {
       // do nothing - this is here so a subclass
       // could override if needed
+    }
+
+    #endregion
+
+    #region IEditableObject Members
+
+    [NotUndoable]
+    private bool _disableIEditableObject;
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected bool DisableIEditableObject
+    {
+      get
+      {
+        return _disableIEditableObject;
+      }
+      set
+      {
+        _disableIEditableObject = value;
+      }
+    }
+
+    void System.Windows.Controls.IEditableObject.BeginEdit()
+    {
+      if (!_disableIEditableObject && !BindingEdit)
+      {
+        BindingEdit = true;
+        BeginEdit();
+      }
+    }
+
+    void System.Windows.Controls.IEditableObject.CancelEdit()
+    {
+      if (!_disableIEditableObject && BindingEdit)
+      {
+        CancelEdit();
+        if (IsNew && _neverCommitted && EditLevel <= EditLevelAdded)
+        {
+          // we're new and no EndEdit or ApplyEdit has ever been
+          // called on us, and now we've been cancelled back to
+          // where we were added so we should have ourselves
+          // removed from the parent collection
+          if (Parent != null)
+            Parent.RemoveChild(this);
+        }
+      }
+    }
+
+    void System.Windows.Controls.IEditableObject.EndEdit()
+    {
+      if (!_disableIEditableObject && BindingEdit)
+      {
+        ApplyEdit();
+      }
     }
 
     #endregion

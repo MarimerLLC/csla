@@ -49,7 +49,7 @@
     <Compile Include="ClassA.cs" />
     <Compile Include="ClassB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SLMembershipIdentity.cs" />
+    <Compile Include="MembershipIdentityStub.cs" />
     <Compile Include="SLPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>

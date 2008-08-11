@@ -6,20 +6,20 @@ using Csla.Serialization;
 
 namespace ClassLibrary
 {
-  [Serializable()]
+  [Serializable]
   public class ClassA : BusinessBase<ClassA>
   {
     private static PropertyInfo<string> AProperty = RegisterProperty(new PropertyInfo<string>("A"));
     public string A
     {
-      get { return GetProperty<string>(AProperty); }
-      set { SetProperty<string>(AProperty, value); }
+      get { return GetProperty(AProperty); }
+      set { SetProperty(AProperty, value); }
     }
     private static PropertyInfo<string> BProperty = RegisterProperty(new PropertyInfo<string>("B"));
     public string B
     {
-      get { return GetProperty<string>(BProperty); }
-      set { SetProperty<string>(BProperty, value); }
+      get { return GetProperty(BProperty); }
+      set { SetProperty(BProperty, value); }
     }
 
     protected override void AddAuthorizationRules()

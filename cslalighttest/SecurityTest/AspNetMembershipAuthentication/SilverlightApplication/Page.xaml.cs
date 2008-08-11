@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using SilverlightClassLibrary;
 using ClassLibrary;
 using System.Security;
@@ -109,6 +101,7 @@ namespace SilverlightApplication
     {
       txtAuthorizationA.Text = String.Empty;
 
+
       SLPrincipal.Logout();
       SLPrincipal.Login("TestUser", "1234", "ClassARole;PropertyARole", (o, e2) =>
       {
@@ -116,15 +109,13 @@ namespace SilverlightApplication
 
         try
         {
-          ClassA classA = new ClassA();
-          classA.A = "test";
-          classA.B = "test";
+          var classA = new ClassA {A = "test", B = "test"};
+
           if (classA.A != "test" || classA.B != "test")
             pass = false;
 
-          ClassB classB = new ClassB();
-          classB.A = "test";
-          classB.B = "test";
+          var classB = new ClassB {A = "test", B = "test"};
+
           if (classB.A != "test" || classB.B != "test")
             pass = false;
         }

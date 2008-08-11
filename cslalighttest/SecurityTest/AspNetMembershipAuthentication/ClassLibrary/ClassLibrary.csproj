@@ -53,8 +53,8 @@
     <Compile Include="..\SilverlightClassLibrary\ClassB.cs">
       <Link>ClassB.cs</Link>
     </Compile>
-    <Compile Include="..\SilverlightClassLibrary\SLMembershipIdentity.cs">
-      <Link>SLMembershipIdentity.cs</Link>
+    <Compile Include="..\SilverlightClassLibrary\MembershipIdentityStub.cs">
+      <Link>MembershipIdentityStub.cs</Link>
     </Compile>
     <Compile Include="..\SilverlightClassLibrary\SLPrincipal.cs">
       <Link>SLPrincipal.cs</Link>

@@ -65,7 +65,9 @@
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="UnitDrivenLight, Version=0.0.1.32215, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
@@ -91,12 +93,6 @@
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\ReadOnlyPerson.cs">
       <Link>Authorization\ReadOnlyPerson.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\TestIdentity.cs">
-      <Link>Authorization\TestIdentity.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\TestPrincipal.cs">
-      <Link>Authorization\TestPrincipal.cs</Link>
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\DpRoot.cs">
       <Link>DataPortal\DpRoot.cs</Link>
@@ -228,6 +224,7 @@
       <Link>Validation\ValidationTests.cs</Link>
     </Compile>
     <Compile Include="ApplicationContext\ClientContextTests.client.cs" />
+    <Compile Include="EditableRootListTests\EditableRootListTests.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

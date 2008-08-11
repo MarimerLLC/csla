@@ -93,29 +93,6 @@ namespace SilverlightDataGridApp
     private void ItemsGrid_CommittingEdit(object sender, DataGridEndingEditEventArgs e)
     {
       _editing = false;
-      if (e.EditingUnit == DataGridEditingUnit.Row && e.Row.DataContext != null)
-      {
-        int index = _currentList.IndexOf((SingleItem)e.Row.DataContext);
-        if (((SingleItem)e.Row.DataContext).IsDirty)
-        {
-          ((SingleItem)e.Row.DataContext).Saved += (o, e1) =>
-          {
-            if (e1.Error == null)
-            {
-              LoginStatus.Text = "Saved Item " + ((SingleItem)e1.NewObject).Name;
-              _currentList.SetItemAtIndex(((SingleItem)e1.NewObject), index);
-              ItemsGrid.ItemsSource = null;
-              ItemsGrid.ItemsSource = _currentList;
-              ItemsGrid.SelectedItem = _currentList[index];
-            }
-            else
-            {
-              LoginStatus.Text = "Error Saving Item " + ((SingleItem)e.Row.DataContext).Name;
-            }
-          };
-          _currentList.SaveItem((SingleItem)e.Row.DataContext);
-        }
-      }
     }
 
     private void ItemsGrid_KeyDown(object sender, KeyEventArgs e)
@@ -125,39 +102,10 @@ namespace SilverlightDataGridApp
         if (ItemsGrid.SelectedItem != null)
         {
           int index = _currentList.IndexOf((SingleItem)ItemsGrid.SelectedItem);
-          ((SingleItem)ItemsGrid.SelectedItem).Saved += (o, e1) =>
-          {
-            if (e1.Error == null)
-            {
-              LoginStatus.Text = "Deleted Item " + ((SingleItem)e1.NewObject).Name;
-              _currentList.RemoveAt(index);
-              ItemsGrid.ItemsSource = null;
-              ItemsGrid.ItemsSource = _currentList;
-              if (_currentList.Count > index)
-              {
-                ItemsGrid.SelectedIndex = index;
-              }
-            }
-            else
-            {
-              LoginStatus.Text = "Error Deleting Item " + ((SingleItem)ItemsGrid.SelectedItem).Name;
-            }
-          };
-          _currentList.RemoveItemAtIndex(index);
+          _currentList.RemoveAt(index);
         }
       }
     }
 
-    private void ItemsGrid_SelectionChanged(object sender, EventArgs e)
-    {
-      ItemsGrid.EndEdit(true, true);
-      SingleItem item = (SingleItem)ItemsGrid.SelectedItem;
-
-    }
-
-    private void DispatcherTimer_Tick(object sender, EventArgs e)
-    {
-
-    }
   }
 }

@@ -60,6 +60,12 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Authorization\TestIdentity.cs">
+      <Link>Security\TestIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Authorization\TestPrincipal.cs">
+      <Link>Security\TestPrincipal.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ApplicationContext\ContextBOVerifier.cs">
       <Link>ApplicationContext\ContextBOVerifier.cs</Link>
     </Compile>
@@ -74,6 +80,12 @@
     </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableChildTests\MockList.cs">
       <Link>EditableChildTests\MockList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableRootListTests\RootSingleItemsList.cs">
+      <Link>EditableRootListTests\RootSingleItemsList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableRootListTests\SingleItem.cs">
+      <Link>EditableRootListTests\SingleItem.cs</Link>
     </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\EditableRootTests\MockEditableRoot.cs">
       <Link>EditableRootTests\MockEditableRoot.cs</Link>

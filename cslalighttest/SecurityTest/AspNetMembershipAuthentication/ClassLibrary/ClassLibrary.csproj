@@ -56,11 +56,11 @@
     <Compile Include="..\SilverlightClassLibrary\MembershipIdentityStub.cs">
       <Link>MembershipIdentityStub.cs</Link>
     </Compile>
-    <Compile Include="..\SilverlightClassLibrary\SLPrincipal.cs">
-      <Link>SLPrincipal.cs</Link>
+    <Compile Include="..\SilverlightClassLibrary\SilverlightPrincipal.cs">
+      <Link>SilverlightPrincipal.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SLMembershipProvider.cs" />
+    <Compile Include="SilverlightPrincipal.server.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\cslacs\Csla\Csla.csproj">

@@ -19,7 +19,6 @@ namespace SilverlightApplication
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
-      //this.RootVisual = new Page();
       RootVisual = new TestEngine(Assembly.GetExecutingAssembly());
     }
 

@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web.Security;
 
-namespace ClassLibrary
+namespace SilverlightApplicationWeb
 {
-  class SLMembershipProvider:MembershipProvider
+  /// <summary>
+  /// Stubs are another type of "Fake" objects that unlike Mocks
+  /// </summary>
+  public class MockMembershipProvider : MembershipProvider
   {
     public override bool ValidateUser(string username, string password)
     {
-      if (username == "TestUser" && password == "1234")
-        return true;
-      else
-        return false;
+      return (username == "user" && password == "1234") ||
+        (username == "admin" && password == "12345");
     }
 
     public override string ApplicationName

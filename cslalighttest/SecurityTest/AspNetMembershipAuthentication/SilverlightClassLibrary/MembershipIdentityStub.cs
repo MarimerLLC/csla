@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Net;
-using Csla.DataPortalClient;
+//using System.Web.Security;
 using Csla.Security;
-using Csla.Serialization;
 using Csla.Core;
+
+using Csla.Serialization;
 
 namespace SilverlightClassLibrary
 {
@@ -12,46 +12,15 @@ namespace SilverlightClassLibrary
   {
     public MembershipIdentityStub(){}
 
+    #if !SILVERLIGHT
+
     protected override void LoadCustomData()
     {
       base.LoadCustomData();
-    }
 
-    public void SetRoles(string roles)
-    {
-      if (IsAuthenticated)
-      {
-        base.Roles = new MobileList<string>(roles.Split(';'));
-      }
+      Roles = new MobileList<string>(
+          System.Web.Security.Roles.GetRolesForUser(Name));
     }
-
-    private void DataPortal_Fetch(object criteria)
-    {
-      if (((SLPrincipal.Criteria)criteria).Name == "invalidusername")
-      {
-        Roles = new MobileList<string>();
-        IsAuthenticated = false;
-        Name = string.Empty;
-        AuthenticationType = "Csla";
-      }
-      else
-      {
-        Roles = new MobileList<string>(new string[] { "Admin", "User" });
-        IsAuthenticated = true;
-        Name = "SilverlightIdentity";
-        AuthenticationType = "SilverLight";
-      }
-    }
-    
-    #if SILVERLIGHT
-    public void DataPortal_Fetch(LocalProxy<MembershipIdentityStub>.CompletedHandler completed, object criteria)
-    {
-      Roles = new MobileList<string>(new string[] { "Admin", "User" });
-      IsAuthenticated = true;
-      Name = "SilverlightIdentity";
-      AuthenticationType = "SilverLight";
-      completed(this, null);
-    } 
     #endif
   }
 }

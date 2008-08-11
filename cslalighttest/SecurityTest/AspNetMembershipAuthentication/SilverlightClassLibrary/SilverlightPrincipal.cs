@@ -7,11 +7,11 @@ using Csla.Serialization;
 namespace SilverlightClassLibrary
 {
   [Serializable]
-  public class SLPrincipal : Csla.Security.BusinessPrincipalBase
+  public partial class SilverlightPrincipal : Csla.Security.BusinessPrincipalBase
   {
     #region Constructor
-
-    public SLPrincipal(IIdentity identity)
+    public SilverlightPrincipal(){}
+    public SilverlightPrincipal(IIdentity identity)
       : base(identity)
     { }
 
@@ -20,20 +20,6 @@ namespace SilverlightClassLibrary
 
     #region Login/Logout
 
-    #if SILVERLIGHT
-    public static void Login(string username, string password, string roles, EventHandler<EventArgs> completed)
-    {
-      MembershipIdentity.GetMembershipIdentity<MembershipIdentityStub>((o, e) =>
-      {
-       var slIdentity = e.Object;
-       var result = SetPrincipal(slIdentity);
-
-       slIdentity.SetRoles(roles);
-       completed(null, new LoginEventArgs(result));
-
-      }, username, password, true);
-    }
-
     private static bool SetPrincipal(IIdentity identity)
     {
       if (identity == null)
@@ -41,39 +27,14 @@ namespace SilverlightClassLibrary
 
       ApplicationContext.User =
         identity.IsAuthenticated ?
-          new SLPrincipal(identity) :
-          new SLPrincipal(new MembershipIdentityStub());
+          new SilverlightPrincipal(identity) :
+          new SilverlightPrincipal(new MembershipIdentityStub());
 
       return identity.IsAuthenticated;
     }
-
-    #endif
     public static void Logout()
     {
-      ApplicationContext.User = new SLPrincipal(new MembershipIdentityStub());
-    }
-
-    #endregion
-
-    #region LoginEventArgs
-
-    public class LoginEventArgs : EventArgs
-    {
-
-      private bool _loginSucceded;
-
-      public bool LoginSucceded
-      {
-        get
-        {
-          return _loginSucceded;
-        }
-      }
-
-      public LoginEventArgs(bool loginSucceded)
-      {
-        _loginSucceded = loginSucceded;
-      }
+      ApplicationContext.User = new SilverlightPrincipal(new MembershipIdentityStub());
     }
 
     #endregion

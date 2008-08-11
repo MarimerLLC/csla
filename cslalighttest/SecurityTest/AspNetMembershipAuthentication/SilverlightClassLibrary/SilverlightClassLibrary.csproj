@@ -50,7 +50,8 @@
     <Compile Include="ClassB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MembershipIdentityStub.cs" />
-    <Compile Include="SLPrincipal.cs" />
+    <Compile Include="SilverlightPrincipal.client.cs" />
+    <Compile Include="SilverlightPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\cslalightcs\Csla\CslaLight.csproj">

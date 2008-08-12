@@ -19,10 +19,10 @@ namespace Csla.Core
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public abstract class BusinessBase : UndoableBase, 
-    ICloneable, 
-    IParent, 
-    IDataPortalTarget, 
+  public abstract class BusinessBase : UndoableBase,
+    ICloneable,
+    IParent,
+    IDataPortalTarget,
     IEditableBusinessObject,
     ISerializationNotification,
     INotifyPropertyBusy,
@@ -1546,7 +1546,7 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        if ((oldValue!= null && !oldValue.Equals(newValue)) && 
+        if ((oldValue != null && !oldValue.Equals(newValue)) &&
           CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
           LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), true);
       }
@@ -1594,8 +1594,9 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        if ((oldValue != null && !oldValue.Equals(newValue)) &&
-          CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+        if (((oldValue == null && newValue != null) || 
+            (oldValue != null && !oldValue.Equals(newValue))) && 
+            CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
           LoadPropertyValue<P>(propertyInfo, oldValue, newValue, true);
       }
       catch (SecurityException)
@@ -1941,7 +1942,7 @@ namespace Csla.Core
     protected override void OnCopyState(SerializationInfo state)
     {
       OnGetState(state, StateMode.Undo);
-      ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false); 
+      ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false);
 
       base.OnCopyState(state);
     }
@@ -1949,7 +1950,7 @@ namespace Csla.Core
     protected override void OnUndoChanges(SerializationInfo state)
     {
       OnSetState(state, StateMode.Undo);
-      ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false); 
+      ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false);
 
       base.OnUndoChanges(state);
     }
@@ -1991,7 +1992,7 @@ namespace Csla.Core
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       base.OnGetChildren(info, formatter);
-      
+
       if (_fieldManager != null)
       {
         var fieldManagerInfo = formatter.SerializeObject(_fieldManager);
@@ -2021,7 +2022,7 @@ namespace Csla.Core
 
       base.OnSetChildren(info, formatter);
     }
-        
+
     #endregion
 
     #region ICloneable
@@ -2175,7 +2176,7 @@ namespace Csla.Core
     {
 
     }
-    
+
     /// <summary>
     /// Returns <see langword="true" /> if the object 
     /// and its child objects are currently valid, 

@@ -49,6 +49,13 @@ namespace SilverlightDataGridApp
                 ItemsGrid.ItemsSource = ef.Object;
                 LoginStatus.Text = "Got data.";
                 _currentList = ef.Object;
+                _currentList.Saved += (o1, e1) =>
+                  {
+                    if (e1.Error == null)
+                      Status.Text = "Saved item " + ((SingleItem)e1.NewObject).Id.ToString();
+                    else
+                      Status.Text = "Could not save item " + ((SingleItem)e1.NewObject).Id.ToString() + ".  Error: " + e1.Error.ToString();
+                  };
                 if (_currentList.Count > 0)
                   ItemsGrid.SelectedItem = _currentList[0];
               }

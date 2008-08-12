@@ -7,6 +7,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="25"/>
       <RowDefinition Height="4*"/>
+      <RowDefinition Height="25"/>
       <RowDefinition Height="1*"/>
     </Grid.RowDefinitions>
     <StackPanel Orientation="Horizontal" Grid.Row="0">
@@ -18,6 +19,11 @@
     <gridControl:DataGrid x:Name="ItemsGrid" Visibility="Collapsed" AutoGenerateColumns="True" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="1" Margin="7,7,7,7"   BeginningEdit="ItemsGrid_BeginningEdit" CancelingEdit="ItemsGrid_CancelingEdit" CommittingEdit="ItemsGrid_CommittingEdit" KeyDown="ItemsGrid_KeyDown">
 
     </gridControl:DataGrid>
-    <TextBox x:Name="Instructions" Text="To load grid with data, click on Login Successfully button.  After that you can edit data in the grid.  If rows are saved successfully, the description will change to contain test _updated.  Currently there is a refresh problem, and you need to scroll the grid to refresh the display." TextWrapping="Wrap" Grid.Row="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True"/> 
+    <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Stretch">
+      <TextBlock Text="Status: "/>
+      <TextBox x:Name="Status" Text="" Width="500" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True" HorizontalAlignment="Stretch"/>
+    </StackPanel>
+    
+    <TextBox x:Name="Instructions" Text="To load grid with data, click on Login Successfully button.  After that you can edit data in the grid.  If rows are saved successfully, the description will change to contain test _updated.  Status will update as rows are saved, whether successfully or not." TextWrapping="Wrap" Grid.Row="3" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True"/> 
   </Grid>
 </UserControl>

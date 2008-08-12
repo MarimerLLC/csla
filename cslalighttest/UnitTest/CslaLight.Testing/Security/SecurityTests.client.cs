@@ -60,7 +60,7 @@ namespace Csla.Test.Silverlight.Security
           context.Assert.IsNotNull(Csla.ApplicationContext.User);
           context.Assert.IsTrue(Csla.ApplicationContext.User.Identity.IsAuthenticated);
           context.Assert.AreEqual(SilverlightPrincipal.VALID_TEST_UID, Csla.ApplicationContext.User.Identity.Name);
-          context.Assert.IsTrue(Csla.ApplicationContext.User.IsInRole(AdminRoleName));
+          context.Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("User Role"));
           context.Assert.Success();
         });
       context.Complete();
@@ -80,7 +80,7 @@ namespace Csla.Test.Silverlight.Security
           context.Assert.IsNotNull(Csla.ApplicationContext.User);
           context.Assert.IsTrue(Csla.ApplicationContext.User.Identity.IsAuthenticated);
           context.Assert.AreEqual(SilverlightPrincipal.VALID_TEST_UID, Csla.ApplicationContext.User.Identity.Name);
-          context.Assert.IsTrue(Csla.ApplicationContext.User.IsInRole(AdminRoleName));
+          context.Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("User Role"));
           context.Assert.Success();
         });
       context.Complete();

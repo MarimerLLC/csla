@@ -189,6 +189,7 @@ namespace Csla
         else
         {
           SafeRemoveItem(index);
+          OnSaved(item, null);
         }
       }
     }

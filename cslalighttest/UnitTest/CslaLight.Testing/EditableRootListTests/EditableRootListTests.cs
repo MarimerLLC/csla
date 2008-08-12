@@ -66,8 +66,8 @@ namespace cslalighttest.EditableRootListTests
 
         list.RemoveAt(2);
         context.Assert.AreEqual(2, list.Count, "Incorrect count after remove");
-        context.Assert.IsNull(ApplicationContext.GlobalContext["ERLBDeleteSelf"], "Object should not have done a delete");
-        Assert.IsTrue(item.IsNew, "Object should be new after delete");
+        context.Assert.IsNull(ApplicationContext.GlobalContext["ERLBDeleteSelf"]);
+        context.Assert.IsTrue(item.IsNew,"Object should be new after delete");
 
         context.Assert.Success();
       }

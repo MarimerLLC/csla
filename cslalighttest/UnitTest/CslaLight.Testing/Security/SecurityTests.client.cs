@@ -1,5 +1,4 @@
-﻿using Csla;
-using Csla.DataPortalClient;
+﻿using Csla.DataPortalClient;
 using Csla.Testing.Business.Security;
 using cslalighttest.Properties;
 using UnitDriven;
@@ -13,7 +12,7 @@ namespace Csla.Test.Silverlight.Security
     [TestMethod]
     public void SetCSLAPrincipalLocal()
     {
-      UnitTestContext context = GetContext();
+      var context = GetContext();
       Csla.DataPortal.ProxyTypeName = "Local";
 
       SilverlightPrincipal.LoginUsingCSLA(
@@ -31,7 +30,7 @@ namespace Csla.Test.Silverlight.Security
     [TestMethod]
     public void SetCSLAPrincipalRemote()
     {
-      UnitTestContext context = GetContext();
+      var context = GetContext();
       Csla.DataPortal.ProxyTypeName = WcfProxyTypeName;
       WcfProxy.DefaultUrl = Resources.RemotePortalUrl;
 
@@ -51,7 +50,7 @@ namespace Csla.Test.Silverlight.Security
     public void SetMembershipPrincipalWebServer()
     {
 
-      UnitTestContext context = GetContext();
+      var context = GetContext();
       Csla.DataPortal.ProxyTypeName = WcfProxyTypeName;
       WcfProxy.DefaultUrl = Resources.RemotePortalUrl;
 
@@ -60,7 +59,7 @@ namespace Csla.Test.Silverlight.Security
         {
           context.Assert.IsNotNull(Csla.ApplicationContext.User);
           context.Assert.IsTrue(Csla.ApplicationContext.User.Identity.IsAuthenticated);
-          context.Assert.AreEqual("sergeyb", Csla.ApplicationContext.User.Identity.Name);
+          context.Assert.AreEqual(SilverlightPrincipal.VALID_TEST_UID, Csla.ApplicationContext.User.Identity.Name);
           context.Assert.IsTrue(Csla.ApplicationContext.User.IsInRole(AdminRoleName));
           context.Assert.Success();
         });
@@ -71,7 +70,7 @@ namespace Csla.Test.Silverlight.Security
     public void SetMembershipPrincipalDataPortal()
     {
 
-      UnitTestContext context = GetContext();
+      var context = GetContext();
       Csla.DataPortal.ProxyTypeName = WcfProxyTypeName;
       WcfProxy.DefaultUrl = Resources.RemotePortalUrl;
 
@@ -80,7 +79,7 @@ namespace Csla.Test.Silverlight.Security
         {
           context.Assert.IsNotNull(Csla.ApplicationContext.User);
           context.Assert.IsTrue(Csla.ApplicationContext.User.Identity.IsAuthenticated);
-          context.Assert.AreEqual("sergeyb", Csla.ApplicationContext.User.Identity.Name);
+          context.Assert.AreEqual(SilverlightPrincipal.VALID_TEST_UID, Csla.ApplicationContext.User.Identity.Name);
           context.Assert.IsTrue(Csla.ApplicationContext.User.IsInRole(AdminRoleName));
           context.Assert.Success();
         });
@@ -91,7 +90,7 @@ namespace Csla.Test.Silverlight.Security
     public void SetInvalidMembershipPrincipal()
     {
 
-      UnitTestContext context = GetContext();
+      var context = GetContext();
       Csla.DataPortal.ProxyTypeName = WcfProxyTypeName;
       WcfProxy.DefaultUrl = Resources.RemotePortalUrl;
 

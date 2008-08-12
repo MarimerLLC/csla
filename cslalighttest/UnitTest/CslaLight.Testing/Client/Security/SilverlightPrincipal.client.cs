@@ -11,8 +11,8 @@ namespace Csla.Testing.Business.Security
     public static void LoginUsingCSLA(EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
     {
       CslaIdentity.GetCslaIdentity<SilverlightIdentity>(
-        (o, e) => 
-        OnGetIdentityComplete(e, completed), new Criteria(TEST_UID, TEST_PWD));
+        (o, e) =>
+        OnGetIdentityComplete(e, completed), new Criteria(VALID_TEST_UID, VALID_TEST_PWD));
     }
 
     #endregion
@@ -22,22 +22,22 @@ namespace Csla.Testing.Business.Security
     public static void LoginUsingMembershipProviderWebServer(EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
     {
       MembershipIdentity.GetMembershipIdentity<SilverlightMembershipIdentity>(
-        (o, e) => 
-        OnGetIdentityComplete(e, completed), TEST_UID, TEST_PWD, true);
+        (o, e) =>
+        OnGetIdentityComplete(e, completed), VALID_TEST_UID, VALID_TEST_PWD, true);
     }
 
     public static void LoginUsingMembershipProviderDatPortal(EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
     {
       MembershipIdentity.GetMembershipIdentity<SilverlightMembershipIdentity>(
-        (o, e) => 
-        OnGetIdentityComplete(e, completed), TEST_UID, TEST_PWD, false);
+        (o, e) =>
+        OnGetIdentityComplete(e, completed), VALID_TEST_UID, VALID_TEST_PWD, false);
     }
 
     public static void LoginUsingInvalidMembershipProvider(EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
     {
       MembershipIdentity.GetMembershipIdentity<SilverlightMembershipIdentity>(
-        (o, e) => 
-        OnGetIdentityComplete(e, completed), "invalidusername", TEST_PWD, true);
+        (o, e) =>
+        OnGetIdentityComplete(e, completed), "invalidusername", VALID_TEST_PWD, true);
     }
 
     #endregion
@@ -55,24 +55,12 @@ namespace Csla.Testing.Business.Security
     private static void OnGetIdentityComplete<T>(DataPortalResult<T> e, EventHandler<DataPortalResult<SilverlightPrincipal>> completed) where T : IIdentity
     {
       if (e.Error == null)
-        OnLoggedIn(e, completed);
+        SetPrincipal(e.Object);
       else
-        OnLoginFailed(completed);
-    }
+        SetPrincipal(CslaIdentity.UnauthenticatedIdentity());
 
-
-    private static void OnLoggedIn<T>(DataPortalResult<T> e, EventHandler<DataPortalResult<SilverlightPrincipal>> completed) where T : IIdentity
-    {
-      SetPrincipal(e.Object);
       if (completed != null)
         completed(Csla.ApplicationContext.User, null);      
-    }
-
-    private static void OnLoginFailed(EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
-    {
-      SetPrincipal(CslaIdentity.UnauthenticatedIdentity());
-      if (completed != null)
-        completed(Csla.ApplicationContext.User, null);
     }
 
   }

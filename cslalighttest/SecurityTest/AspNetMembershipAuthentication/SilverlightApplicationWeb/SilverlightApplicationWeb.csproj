@@ -63,6 +63,7 @@
   <ItemGroup>
     <Content Include="ClientBin\SilverlightApplication.xap" />
     <Content Include="Default.aspx" />
+    <Content Include="ReadMe.htm" />
     <Content Include="SilverlightApplicationTestPage.aspx" />
     <Content Include="SilverlightApplicationTestPage.html" />
     <Content Include="WcfPortal.svc" />

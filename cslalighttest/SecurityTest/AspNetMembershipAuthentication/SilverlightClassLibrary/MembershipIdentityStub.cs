@@ -1,8 +1,5 @@
 ﻿using System;
-//using System.Web.Security;
 using Csla.Security;
-using Csla.Core;
-
 using Csla.Serialization;
 
 namespace SilverlightClassLibrary
@@ -13,13 +10,11 @@ namespace SilverlightClassLibrary
     public MembershipIdentityStub(){}
 
     #if !SILVERLIGHT
-
     protected override void LoadCustomData()
     {
       base.LoadCustomData();
-
-      Roles = new MobileList<string>(
-          System.Web.Security.Roles.GetRolesForUser(Name));
+      
+      //Custom information to be retrieved from web server goes here
     }
     #endif
   }

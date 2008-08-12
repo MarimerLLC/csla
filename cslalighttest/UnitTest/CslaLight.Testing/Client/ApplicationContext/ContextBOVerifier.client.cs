@@ -6,6 +6,7 @@ namespace Csla.Testing.Business.ApplicationContext
   [Serializable]
   public class ClientContextBOVerifier : ContextBOVerifier<ClientContextBOVerifier>
   {
+    public ClientContextBOVerifier():this(true){}
     public ClientContextBOVerifier(bool isNew): base(isNew){}
 
     //DataPortal_Insert is used to verify that the ClientContext["MSG"] is received on the server
@@ -31,6 +32,7 @@ namespace Csla.Testing.Business.ApplicationContext
   [Serializable]
   public class GlobalContextBOVerifier : ContextBOVerifier<GlobalContextBOVerifier>
   {
+    public GlobalContextBOVerifier():this(true){}
     public GlobalContextBOVerifier(bool isNew) : base(isNew) { }
 
     //DataPortal_Insert is used to verify that the GlobalContext["MSG"] is received on the server

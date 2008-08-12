@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using DataBinding.Business;
 using Csla;
+using Csla.Wpf;
 
 namespace DataBinding.Test
 {
@@ -24,11 +25,7 @@ namespace DataBinding.Test
     private void FetchComplete(object sender, DataPortalResult<CustomerList> result)
     {
       this.DataContext = result.Object;
-    }
-
-    private void fetch_Click(object sender, RoutedEventArgs e)
-    {
-      CustomerList.FetchByName(null, FetchComplete);
+      BindDetails();
     }
 
     private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -36,35 +33,47 @@ namespace DataBinding.Test
       BindDetails();
     }
 
+    private void Fetch()
+    {
+      busy.IsRunning = true;
+      CustomerList.FetchByName(null, FetchComplete);
+    }
+
     private void BindDetails()
     {
       Customer selected = list.SelectedItem as Customer;
       details.DataContext = null;
       details.DataContext = selected;
+      busy.IsRunning = false;
+    }
+
+    private void fetch_Click(object sender, RoutedEventArgs e)
+    {
+      Fetch();
     }
 
     private void btnAdmin_Click(object sender, RoutedEventArgs e)
     {
       MockPrincipal.Login("admin");
-      BindDetails();
+      Fetch();
     }
 
     private void btnUser_Click(object sender, RoutedEventArgs e)
     {
       MockPrincipal.Login("user");
-      BindDetails();
+      Fetch();
     }
 
     private void btnGuest_Click(object sender, RoutedEventArgs e)
     {
       MockPrincipal.Login("guest");
-      BindDetails();
+      Fetch();
     }
 
     private void btnLogout_Click(object sender, RoutedEventArgs e)
     {
       MockPrincipal.Logout();
-      BindDetails();
+      Fetch();
     }
   }
 }

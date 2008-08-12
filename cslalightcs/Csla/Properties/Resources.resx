@@ -126,6 +126,9 @@
   <data name="CannotSerializeCollectionsNotOfIMobileObject" xml:space="preserve">
     <value>Cannot serialize collections not of type IMobileObject</value>
   </data>
+  <data name="CanReadAuthorizationRuleDescription" xml:space="preserve">
+    <value>You are not authorized to read this field</value>
+  </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Changing an element is an invalid operation</value>
   </data>
@@ -299,5 +302,8 @@
   </data>
   <data name="ValueNotSmartDateException" xml:space="preserve">
     <value>Value is not a SmartDate</value>
+  </data>
+  <data name="CanWriteAuthorizationRuleDescription" xml:space="preserve">
+    <value>You are not authorized to write to this field</value>
   </data>
 </root>

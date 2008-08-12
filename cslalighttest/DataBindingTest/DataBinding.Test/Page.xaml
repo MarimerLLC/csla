@@ -106,7 +106,7 @@
                     <csla:PropertyStatus Property="Name" RelativeTargetName="txtName" Source="{Binding}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" />
                                     
                     <TextBlock Text="Birthdate" Grid.Row="2" />
-                    <TextBox x:Name="txtBirthdate" Grid.Column="1" Grid.Row="2" Text="{Binding BirthDate, Mode=TwoWay}" />
+                    <TextBox x:Name="txtBirthdate" BorderThickness="2" Grid.Column="1" Grid.Row="2" Text="{Binding BirthDate, Mode=TwoWay}" />
                     <csla:PropertyStatus Property="BirthDate" RelativeTargetName="txtBirthdate" Source="{Binding}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" />
                     
                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
@@ -133,6 +133,12 @@
                      ItemsSource="{Binding}" 
                      DisplayMemberPath=""
                      HorizontalContentAlignment="Stretch" />
+            <csla:BusyAnimation x:Name="busy"
+                                Foreground="#dd43a71f" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Width="64" 
+                                Height="64" />
             <Button Grid.Row="1" x:Name="fetch" Content="fetch" Click="fetch_Click"/>
             <StackPanel Orientation="Horizontal" Grid.Row="2">
                 <Button Content="Run as Administrator" x:Name="btnAdmin" Click="btnAdmin_Click"/>

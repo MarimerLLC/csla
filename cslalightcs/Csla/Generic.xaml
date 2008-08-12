@@ -96,11 +96,15 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </vsm:VisualState>
+                                <vsm:VisualState x:Name="Busy">
+                                    <Storyboard />
+                                </vsm:VisualState>
                                 <vsm:VisualStateGroup.Transitions>
                                     <vsm:VisualTransition Duration="0:0:0"/>
                                 </vsm:VisualStateGroup.Transitions>
                             </vsm:VisualStateGroup>
                         </vsm:VisualStateManager.VisualStateGroups>
+                        <csla:BusyAnimation x:Name="busy" />
                         <Image x:Name="errorImage" 
                                Opacity="0"
                                Visibility="Collapsed"
@@ -131,4 +135,265 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="csla:BusyAnimation">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="StepInterval" Value="100" />
+        <Setter Property="Foreground" Value="Gray" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Black" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="csla:BusyAnimation">
+                    <Canvas Background="{TemplateBinding Background}">
+                        <vsm:VisualStateManager.VisualStateGroups>
+                            <vsm:VisualStateGroup x:Name="CommonStates">
+                                <vsm:VisualState x:Name="normal">
+                                    <Storyboard />
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="state1" >
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="part6"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".25" />
+                                        <DoubleAnimation Storyboard.TargetName="part7"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".5" />
+                                        <DoubleAnimation Storyboard.TargetName="part8"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".75" />
+                                        <DoubleAnimation Storyboard.TargetName="part1"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To="1" />
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="state2" >
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="part7"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".25" />
+                                        <DoubleAnimation Storyboard.TargetName="part8"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".5" />
+                                        <DoubleAnimation Storyboard.TargetName="part1"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".75" />
+                                        <DoubleAnimation Storyboard.TargetName="part2"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To="1" />
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="state3" >
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="part8"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".25" />
+                                        <DoubleAnimation Storyboard.TargetName="part1"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".5" />
+                                        <DoubleAnimation Storyboard.TargetName="part2"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".75" />
+                                        <DoubleAnimation Storyboard.TargetName="part3"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To="1" />
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="state4" >
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="part1"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".25" />
+                                        <DoubleAnimation Storyboard.TargetName="part2"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".5" />
+                                        <DoubleAnimation Storyboard.TargetName="part3"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".75" />
+                                        <DoubleAnimation Storyboard.TargetName="part4"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To="1" />
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="state5" >
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="part2"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".25" />
+                                        <DoubleAnimation Storyboard.TargetName="part3"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".5" />
+                                        <DoubleAnimation Storyboard.TargetName="part4"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".75" />
+                                        <DoubleAnimation Storyboard.TargetName="part5"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To="1" />
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="state6" >
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="part3"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".25" />
+                                        <DoubleAnimation Storyboard.TargetName="part4"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".5" />
+                                        <DoubleAnimation Storyboard.TargetName="part5"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".75" />
+                                        <DoubleAnimation Storyboard.TargetName="part6"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To="1" />
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="state7" >
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="part4"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".25" />
+                                        <DoubleAnimation Storyboard.TargetName="part5"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".5" />
+                                        <DoubleAnimation Storyboard.TargetName="part6"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".75" />
+                                        <DoubleAnimation Storyboard.TargetName="part7"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To="1" />
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualState x:Name="state8" >
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="part5"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".25" />
+                                        <DoubleAnimation Storyboard.TargetName="part6"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".5" />
+                                        <DoubleAnimation Storyboard.TargetName="part7"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To=".75" />
+                                        <DoubleAnimation Storyboard.TargetName="part8"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         From="0"
+                                                         To="1" />
+                                    </Storyboard>
+                                </vsm:VisualState>
+                                <vsm:VisualStateGroup.Transitions>
+                                    <vsm:VisualTransition Duration="0:0:0"/>
+                                </vsm:VisualStateGroup.Transitions>
+                            </vsm:VisualStateGroup>
+                        </vsm:VisualStateManager.VisualStateGroups>
+                        <Border x:Name="part1" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Foreground}" 
+                                Opacity="0" />
+                        <Border x:Name="part2" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Foreground}" 
+                                Opacity="0" />
+                        <Border x:Name="part3" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Foreground}" 
+                                Opacity="0" />
+                        <Border x:Name="part4" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Foreground}" 
+                                Opacity="0" />
+                        <Border x:Name="part5" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Foreground}" 
+                                Opacity="0" />
+                        <Border x:Name="part6" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Foreground}" 
+                                Opacity="0" />
+                        <Border x:Name="part7" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Foreground}" 
+                                Opacity="0" />
+                        <Border x:Name="part8" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Foreground}" 
+                                Opacity="0" />
+                    </Canvas>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

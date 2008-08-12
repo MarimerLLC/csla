@@ -49,6 +49,8 @@
     <Compile Include="Customer.partial.cs" />
     <Compile Include="CustomerList.cs" />
     <Compile Include="CustomerList.partial.cs" />
+    <Compile Include="MockIdentity.cs" />
+    <Compile Include="MockPrincipal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

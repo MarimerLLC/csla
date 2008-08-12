@@ -211,6 +211,7 @@
     <Compile Include="BusinessListBase.cs" />
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\ChildChangedEventArgs.cs" />
+    <Compile Include="Core\INotifyPropertyBusy.cs" />
     <Compile Include="Core\ContextDictionary.cs" />
     <Compile Include="Core\ICommandObject.cs" />
     <Compile Include="DataPortalClient\ChildDataPortal.cs" />
@@ -291,10 +292,12 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="Validation\BrokenRule.partial.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />
+    <Compile Include="Wpf\BusyAnimation.cs" />
     <Compile Include="Wpf\ObjectStatus.cs" />
     <Compile Include="Wpf\BrokenRuleSeverityConverter.cs" />
     <Compile Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Wpf\PropertyStatus.cs" />
+    <Compile Include="Wpf\VisualTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\WcfPortal\configuration91.svcinfo" />

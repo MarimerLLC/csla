@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Csla.Validation;
+using System.Security;
+using System.Windows.Controls;
 
 namespace Csla.Core
 {
@@ -23,8 +25,8 @@ namespace Csla.Core
     IDataPortalTarget, 
     IEditableBusinessObject,
     ISerializationNotification,
-    System.Windows.Controls.IEditableObject
-
+    INotifyPropertyBusy,
+    IEditableObject
   {
     #region Constructors
 
@@ -1395,30 +1397,31 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(string propertyName, ref P field, P newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      try
       {
-        try
+        if (field == null)
         {
-          if (field == null)
+          if (newValue != null && CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
           {
-            if (newValue != null)
-            {
-              field = newValue;
-              PropertyHasChanged(propertyName);
-            }
-          }
-          else if (!(field.Equals(newValue)))
-          {
-            if (newValue is string && newValue == null)
-              newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
             field = newValue;
             PropertyHasChanged(propertyName);
           }
         }
-        catch (Exception ex)
+        else if (!(field.Equals(newValue)) && CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         {
-          throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message));
+          if (newValue is string && newValue == null)
+            newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
+          field = newValue;
+          PropertyHasChanged(propertyName);
         }
+      }
+      catch (SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message));
       }
     }
 
@@ -1448,30 +1451,31 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      try
       {
-        try
+        if (field == null)
         {
-          if (field == null)
+          if (newValue != null && CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
           {
-            if (newValue != null)
-            {
-              field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-              PropertyHasChanged(propertyName);
-            }
-          }
-          else if (!(field.Equals(newValue)))
-          {
-            if (newValue is string && newValue == null)
-              newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
             PropertyHasChanged(propertyName);
           }
         }
-        catch (Exception ex)
+        else if (!(field.Equals(newValue)) && CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         {
-          throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message));
+          if (newValue is string && newValue == null)
+            newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
+          field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
+          PropertyHasChanged(propertyName);
         }
+      }
+      catch (SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message));
       }
     }
 
@@ -1525,31 +1529,34 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      try
       {
-        try
+        P oldValue = default(P);
+        var fieldData = FieldManager.GetFieldData(propertyInfo);
+        if (fieldData == null)
         {
-          P oldValue = default(P);
-          var fieldData = FieldManager.GetFieldData(propertyInfo);
-          if (fieldData == null)
-          {
-            oldValue = propertyInfo.DefaultValue;
-            fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
-          }
+          oldValue = propertyInfo.DefaultValue;
+          fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+        }
+        else
+        {
+          var fd = fieldData as FieldManager.IFieldData<P>;
+          if (fd != null)
+            oldValue = fd.Value;
           else
-          {
-            var fd = fieldData as FieldManager.IFieldData<P>;
-            if (fd != null)
-              oldValue = fd.Value;
-            else
-              oldValue = (P)fieldData.Value;
-          }
+            oldValue = (P)fieldData.Value;
+        }
+        if ((oldValue!= null && !oldValue.Equals(newValue)) && 
+          CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
           LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), true);
-        }
-        catch (Exception ex)
-        {
-          throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
-        }
+      }
+      catch (SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
       }
     }
 
@@ -1570,31 +1577,34 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      try
       {
-        try
+        P oldValue = default(P);
+        var fieldData = FieldManager.GetFieldData(propertyInfo);
+        if (fieldData == null)
         {
-          P oldValue = default(P);
-          var fieldData = FieldManager.GetFieldData(propertyInfo);
-          if (fieldData == null)
-          {
-            oldValue = propertyInfo.DefaultValue;
-            fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
-          }
+          oldValue = propertyInfo.DefaultValue;
+          fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+        }
+        else
+        {
+          var fd = fieldData as FieldManager.IFieldData<P>;
+          if (fd != null)
+            oldValue = fd.Value;
           else
-          {
-            var fd = fieldData as FieldManager.IFieldData<P>;
-            if (fd != null)
-              oldValue = fd.Value;
-            else
-              oldValue = (P)fieldData.Value;
-          }
+            oldValue = (P)fieldData.Value;
+        }
+        if ((oldValue != null && !oldValue.Equals(newValue)) &&
+          CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
           LoadPropertyValue<P>(propertyInfo, oldValue, newValue, true);
-        }
-        catch (Exception ex)
-        {
-          throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
-        }
+      }
+      catch (SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
       }
     }
 
@@ -2096,12 +2106,44 @@ namespace Csla.Core
       if (e.Action == NotifyCollectionChangedAction.Remove)
       {
         foreach (IAsyncRuleMethod rule in e.OldItems)
-          foreach(IPropertyInfo property in rule.AsyncRuleArgs.Properties)
+          foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
+          {
             OnPropertyChanged(property.Name);
+            OnPropertyIdle(property.Name);
+          }
 
         if (!ValidationRules.IsValidating)
+        {
           OnValidationComplete();
+          OnPropertyChanged("IsBusy");
+        }
       }
+      else if (e.Action == NotifyCollectionChangedAction.Add)
+      {
+        foreach (IAsyncRuleMethod rule in e.NewItems)
+          foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
+            OnPropertyBusy(property.Name);
+      }
+    }
+
+    public event PropertyChangedEventHandler PropertyBusy;
+    protected virtual void OnPropertyBusy(string propertyName)
+    {
+      if (PropertyBusy != null)
+        PropertyBusy(this, new PropertyChangedEventArgs(propertyName));
+    }
+    public event PropertyChangedEventHandler PropertyIdle;
+    protected virtual void OnPropertyIdle(string propertyName)
+    {
+      if (PropertyIdle != null)
+        PropertyIdle(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    // TODO: Add comments
+    // TODO: Port to CSLA.NET
+    public virtual bool IsBusy
+    {
+      get { return ValidationRules.IsValidating; }
     }
 
     /// <summary>
@@ -2133,7 +2175,7 @@ namespace Csla.Core
     {
 
     }
-
+    
     /// <summary>
     /// Returns <see langword="true" /> if the object 
     /// and its child objects are currently valid, 
@@ -2436,6 +2478,7 @@ namespace Csla.Core
     {
       OnDeserialized();
       ValidationRules.SetTarget(this);
+      ValidationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
       InitializeBusinessRules();

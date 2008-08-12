@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
-using System.Net;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Reflection;
-using System.ComponentModel;
 using Csla.Core;
-using System.Globalization;
-using System.Windows.Controls.Primitives;
-using Csla.Validation;
-using System.Collections.ObjectModel;
-using System.Windows.Media.Imaging;
 using Csla.Reflection;
-using Csla.Security;
+using Csla.Validation;
+using System.Windows.Media.Animation;
 
 namespace Csla.Wpf
 {
@@ -30,6 +25,8 @@ namespace Csla.Wpf
   [TemplateVisualState(Name = "Information", GroupName = "CommonStates")]
   public class PropertyStatus : ContentControl
   {
+    #region Constructors
+
     public PropertyStatus()
     {
       DefaultStyleKey = typeof(PropertyStatus);
@@ -40,7 +37,7 @@ namespace Csla.Wpf
       Loaded += (o, e) => { GoToState(true); };
     }
 
-
+    #endregion
 
     #region Dependency properties
 
@@ -77,21 +74,22 @@ namespace Csla.Wpf
     #endregion
 
     #region Member fields and properties
-    private FrameworkElement _target;
+    private DependencyObject _target;
     private object _source;
     private bool _isValid = true;
     private RuleSeverity _worst;
     private FrameworkElement _lastImage;
+    private bool _isBusy;
 
     public object Source
     {
       get { return _source; }
       set
       {
-        DetachSource(_source as INotifyPropertyChanged);
+        DetachSource(_source as INotifyPropertyBusy);
         _source = value;
         UpdateState();
-        AttachSource(_source as INotifyPropertyChanged);
+        AttachSource(_source as INotifyPropertyBusy);
       }
     }
 
@@ -131,16 +129,40 @@ namespace Csla.Wpf
 
     #region Source
 
-    private void AttachSource(INotifyPropertyChanged source)
+    private void AttachSource(INotifyPropertyBusy source)
     {
       if (source != null)
+      {
+        source.PropertyIdle += new PropertyChangedEventHandler(source_PropertyIdle);
+        source.PropertyBusy += new PropertyChangedEventHandler(source_PropertyBusy);
         source.PropertyChanged += new PropertyChangedEventHandler(source_PropertyChanged);
+      }
     }
 
-    private void DetachSource(INotifyPropertyChanged source)
+    private void DetachSource(INotifyPropertyBusy source)
     {
       if (source != null)
+      {
+        source.PropertyIdle -= new PropertyChangedEventHandler(source_PropertyIdle);
+        source.PropertyBusy -= new PropertyChangedEventHandler(source_PropertyBusy);
         source.PropertyChanged -= new PropertyChangedEventHandler(source_PropertyChanged);
+      }
+    }
+
+    void source_PropertyIdle(object sender, PropertyChangedEventArgs e)
+    {
+      if (e.PropertyName == Property)
+        _isBusy = false;
+
+      UpdateState();
+    }
+
+    void source_PropertyBusy(object sender, PropertyChangedEventArgs e)
+    {
+      if (e.PropertyName == Property)
+        _isBusy = true;
+
+      UpdateState();
     }
 
     private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -179,12 +201,16 @@ namespace Csla.Wpf
                             orderby r.Severity
                             select r).FirstOrDefault();
 
-
-        RuleSeverity severity = RuleSeverity.Error;
         if (worst != null)
           _worst = worst.Severity;
 
         _isValid = BrokenRules.Count == 0;
+        GoToState(true);
+      }
+      else
+      {
+        BrokenRules.Clear();
+        _isValid = true;
         GoToState(true);
       }
     }
@@ -239,7 +265,15 @@ namespace Csla.Wpf
       EnsureTarget();
       HandleTarget();
 
-      if (_isValid)
+      BusyAnimation busy = FindChild(this, "busy") as BusyAnimation;
+      if (busy != null)
+        busy.IsRunning = _isBusy;
+
+      if (_isBusy)
+      {
+        VisualStateManager.GoToState(this, "Busy", useTransitions);
+      }
+      else if (_isValid)
       {
         VisualStateManager.GoToState(this, "Valid", useTransitions);
       }
@@ -260,10 +294,9 @@ namespace Csla.Wpf
     {
       if (_target == null)
       {
-        var parentPath = new Queue<string>(RelativeTargetPath.Split('.'));
-        _target = FindParent(parentPath, this);
+        _target = VisualTree.FindParent(RelativeTargetPath, this);
         if (!string.IsNullOrEmpty(RelativeTargetName))
-          _target = FindByName(_target, RelativeTargetName);
+          _target = VisualTree.FindByName(RelativeTargetName, _target);
       }
     }
 
@@ -288,70 +321,17 @@ namespace Csla.Wpf
             MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", false);
           }
 
-          if(canRead)
-            ToolTipService.SetToolTip(_target, null);
+          if (canRead)
+          {
+          }
           else
-            ToolTipService.SetToolTip(_target, "You are not authorized to read this property");
+          {
+            MethodCaller.CallMethodIfImplemented(_target, "set_Content", null);
+            MethodCaller.CallMethodIfImplemented(_target, "set_Text", "");
+          }
         }
       }
     }
-
-    private FrameworkElement FindParent(Queue<string> queue, FrameworkElement current)
-    {
-      string propertyName = queue.Dequeue();
-
-      object[] indexParameters = new object[0];
-      if (propertyName.Contains('['))
-      {
-        int start = propertyName.IndexOf('[');
-        int end = propertyName.IndexOf(']');
-        if (end != propertyName.Length - 1)
-          throw new InvalidOperationException("Indexed expressions must be closed");
-
-        int length = (end - start) - 1;
-        indexParameters = propertyName.Substring(start + 1, length).Split(',').Cast<object>().ToArray();
-
-        propertyName = propertyName.Substring(0, start);
-      }
-
-      PropertyInfo property = current.GetType().GetProperty(propertyName);
-      if (property == null)
-        throw new InvalidOperationException(string.Format(
-          "The specified property name '{0}' does not exist",
-          propertyName));
-
-      ParameterInfo[] parameters = property.GetIndexParameters();
-      if (parameters.Length != indexParameters.Length)
-        throw new InvalidOperationException(string.Format(
-          "This property requires {0} index arguments, {1} were provided",
-          parameters.Length,
-          indexParameters.Length));
-
-      for (int x = 0; x < parameters.Length; x++)
-      {
-        indexParameters[x] = Convert.ChangeType(
-          indexParameters[x],
-          parameters[x].ParameterType,
-          CultureInfo.InvariantCulture);
-      }
-
-      return (FrameworkElement)property.GetValue(current, (indexParameters.Length > 0 ? indexParameters : null));
-
-    }
-
-    private FrameworkElement FindByName(FrameworkElement parent, string name)
-    {
-      for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-      {
-        FrameworkElement child = VisualTreeHelper.GetChild(parent, i) as FrameworkElement;
-        if (child != null && child.Name == name)
-        {
-          return child;
-        }
-      }
-
-      return null;
-    } 
 
     #endregion
 
@@ -375,6 +355,7 @@ namespace Csla.Wpf
 
       return found;
     }
+
     #endregion
   }
 }

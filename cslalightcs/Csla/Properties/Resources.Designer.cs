@@ -88,6 +88,24 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are not authorized to read this field.
+        /// </summary>
+        internal static string CanReadAuthorizationRuleDescription {
+            get {
+                return ResourceManager.GetString("CanReadAuthorizationRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not authorized to write to this field.
+        /// </summary>
+        internal static string CanWriteAuthorizationRuleDescription {
+            get {
+                return ResourceManager.GetString("CanWriteAuthorizationRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Changing an element is an invalid operation.
         /// </summary>
         internal static string ChangeInvalidException {

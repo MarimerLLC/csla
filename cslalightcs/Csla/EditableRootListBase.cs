@@ -186,6 +186,10 @@ namespace Csla
           item.Delete();
           SaveItem(index);
         }
+        else
+        {
+          SafeRemoveItem(index);
+        }
       }
     }
 

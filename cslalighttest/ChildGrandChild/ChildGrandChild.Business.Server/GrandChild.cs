@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using Csla.Security;
 
 
-namespace DataBinding.Business
+namespace ChildGrandChild.Business
 {
     [Serializable]
     public class Grandchild : BusinessBase<Grandchild>

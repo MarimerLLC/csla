@@ -8,7 +8,7 @@ using Csla.Validation;
 using System.Text.RegularExpressions;
 using Csla.Security;
 
-namespace DataBinding.Business
+namespace ChildGrandChild.Business
 {
     [Serializable]
     public class GrandchildList : BusinessListBase<GrandchildList, Grandchild>

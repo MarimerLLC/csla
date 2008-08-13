@@ -8,8 +8,8 @@
     <ProjectGuid>{D1DB72A7-851D-4362-9235-AA01F42C8017}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChildGrandChild.Business.Server</RootNamespace>
-    <AssemblyName>ChildGrandChild.Business.Server</AssemblyName>
+    <RootNamespace>ChildGrandChild.Business</RootNamespace>
+    <AssemblyName>ChildGrandChild.Business</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

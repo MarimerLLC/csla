@@ -7,7 +7,7 @@ using Csla.Serialization;
 
 
 
-namespace DataBinding.Business
+namespace ChildGrandChild.Business
 {
     [Serializable]
     public class ChildList : BusinessListBase<ChildList, Child>
@@ -31,6 +31,13 @@ namespace DataBinding.Business
                 item.DumpEditLevels(sb);
             foreach (Child item in this)
                 item.DumpEditLevels(sb);
+        }
+
+        public static void FetchByName(string name, EventHandler<DataPortalResult<ChildList>> completed)
+        {
+            DataPortal<ChildList> dp = new DataPortal<ChildList>();
+            dp.FetchCompleted += completed;
+            dp.BeginFetch(new SingleCriteria<ChildList, string>(name));
         }
     }
 }

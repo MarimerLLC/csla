@@ -56,7 +56,7 @@ Namespace Wpf
       End Get
       Set(ByVal value As Type)
         _objectType = value
-        OnPropertyChanged(New PropertyChangedEventArgs("TypeName"))
+        OnPropertyChanged(New PropertyChangedEventArgs("ObjectType"))
       End Set
     End Property
 
@@ -88,7 +88,7 @@ Namespace Wpf
       End Get
       Set(ByVal value As String)
         _factoryMethod = value
-        OnPropertyChanged(New PropertyChangedEventArgs("GetFactoryMethod"))
+        OnPropertyChanged(New PropertyChangedEventArgs("FactoryMethod"))
       End Set
     End Property
 

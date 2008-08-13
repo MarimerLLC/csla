@@ -15,10 +15,11 @@ using Csla.Reflection;
 using Csla.Validation;
 using System.Windows.Media.Animation;
 
-namespace Csla.Wpf
+namespace Csla.Silverlight
 {
   [TemplatePart(Name = "image", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "popup", Type = typeof(Popup))]
+  [TemplatePart(Name = "busy", Type=typeof(BusyAnimation))]
   [TemplateVisualState(Name = "Valid", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Error", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Warning", GroupName = "CommonStates")]
@@ -41,31 +42,31 @@ namespace Csla.Wpf
 
     #region Dependency properties
 
-    public static DependencyProperty SourceProperty = DependencyProperty.Register(
+    public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
       "Source",
       typeof(object),
       typeof(PropertyStatus),
       new PropertyMetadata((o, e) => ((PropertyStatus)o).Source = e.NewValue));
 
-    public static DependencyProperty PropertyProperty = DependencyProperty.Register(
+    public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
       "Property",
       typeof(string),
       typeof(PropertyStatus),
       new PropertyMetadata((o, e) => ((PropertyStatus)o).Property = (string)e.NewValue));
 
-    public static DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
+    public static readonly DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
       "BrokenRules",
       typeof(ObservableCollection<BrokenRule>),
       typeof(PropertyStatus),
       null);
 
-    public static DependencyProperty RelativeTargetPathProperty = DependencyProperty.Register(
+    public static readonly DependencyProperty RelativeTargetPathProperty = DependencyProperty.Register(
       "RelativeTargetPath",
       typeof(string),
       typeof(PropertyStatus),
       new PropertyMetadata((o, e) => ((PropertyStatus)o).RelativeTargetPath = (string)e.NewValue));
 
-    public static DependencyProperty RelativeTargetNameProperty = DependencyProperty.Register(
+    public static readonly DependencyProperty RelativeTargetNameProperty = DependencyProperty.Register(
       "RelativeTargetName",
       typeof(string),
       typeof(PropertyStatus),
@@ -321,10 +322,7 @@ namespace Csla.Wpf
             MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", false);
           }
 
-          if (canRead)
-          {
-          }
-          else
+          if (!canRead)
           {
             MethodCaller.CallMethodIfImplemented(_target, "set_Content", null);
             MethodCaller.CallMethodIfImplemented(_target, "set_Text", "");

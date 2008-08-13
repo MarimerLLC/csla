@@ -499,7 +499,7 @@ namespace Csla.Core
           auth = true; //Csla.Security.AuthorizationRules.CanCreateObject(this.GetType());
         else
           auth = true; // Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
-        return (IsDirty && IsValid && !ValidationRules.IsValidating && auth);
+        return (IsDirty && IsValid && !IsBusy && auth);
       }
     }
 
@@ -2107,17 +2107,24 @@ namespace Csla.Core
       if (e.Action == NotifyCollectionChangedAction.Remove)
       {
         foreach (IAsyncRuleMethod rule in e.OldItems)
-          foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
+        {
+          lock (_validationRules.ValidatingRules)
           {
-            OnPropertyChanged(property.Name);
-            OnPropertyIdle(property.Name);
+            // This rule could be validating multiple times simultaneously, we only want to call
+            // OnPropertyIdle if the rule is completely removed from the list.
+            if (!_validationRules.ValidatingRules.Contains(rule))
+            {
+              foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
+              {
+                OnPropertyChanged(property.Name);
+                OnPropertyIdle(property.Name);
+              }
+            }
           }
+        }
 
         if (!ValidationRules.IsValidating)
-        {
           OnValidationComplete();
-          OnPropertyChanged("IsBusy");
-        }
       }
       else if (e.Action == NotifyCollectionChangedAction.Add)
       {
@@ -2125,6 +2132,9 @@ namespace Csla.Core
           foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
             OnPropertyBusy(property.Name);
       }
+
+      OnPropertyChanged("IsBusy");
+      OnPropertyChanged("IsSavable");
     }
 
     public event PropertyChangedEventHandler PropertyBusy;

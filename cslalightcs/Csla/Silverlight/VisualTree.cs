@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Csla.Wpf
+namespace Csla.Silverlight
 {
   public static class VisualTree
   {
@@ -72,12 +72,15 @@ namespace Csla.Wpf
           break;
       }
 
-      for (int i = 0; i < numChildren; i++)
+      if (child == null)
       {
-        child = VisualTreeHelper.GetChild(parent, i) as DependencyObject;
-        child = FindByName(child, name);
-        if (child != null && (child.GetValue(FrameworkElement.NameProperty) as string) == name)
-          break;
+        for (int i = 0; i < numChildren; i++)
+        {
+          child = VisualTreeHelper.GetChild(parent, i) as DependencyObject;
+          child = FindByName(child, name);
+          if (child != null && (child.GetValue(FrameworkElement.NameProperty) as string) == name)
+            break;
+        }
       }
 
       return child;

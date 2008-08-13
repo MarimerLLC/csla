@@ -114,24 +114,24 @@ namespace DataBinding.Business
       return true;
     }
 
-    public static void IsReserved(Dictionary<string, object> propertyValues, AsyncRuleArgs inargs, AsyncRuleResult outargs, AsyncRuleResultHandler result)
+    public static void IsReserved(AsyncValidationRuleContext context)
     {
       BackgroundWorker worker = new BackgroundWorker();
       worker.DoWork += (o, e) =>
       {
         Thread.Sleep(3000); // simulate network call or long running process
 
-        string name = (string)propertyValues["Name"];
+        string name = (string)context.PropertyValues["Name"];
         if (name == "<reserved>")
         {
-          outargs.Description = "This value is reserved, you must select a new value";
-          outargs.Severity = RuleSeverity.Error;
-          outargs.Result = false;
+          context.OutArgs.Description = "This value is reserved, you must select a new value";
+          context.OutArgs.Severity = RuleSeverity.Error;
+          context.OutArgs.Result = false;
         }
       };
       worker.RunWorkerCompleted += (o, e) =>
       {
-        result(outargs);
+        context.Complete();
       };
 
       worker.RunWorkerAsync();

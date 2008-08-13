@@ -6,7 +6,5 @@ namespace Csla.Core
   {
     event PropertyChangedEventHandler PropertyBusy;
     event PropertyChangedEventHandler PropertyIdle;
-
-    bool IsBusy { get; }
   }
 }

@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Resources;
 
-namespace Csla.Wpf
+namespace Csla.Silverlight
 {
   public class BrokenRuleSeverityConverter : IValueConverter
   {

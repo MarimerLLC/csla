@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="DataBinding.Test.Page"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"
+             xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"
              xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
              xmlns:System="clr-namespace:System;assembly=mscorlib">
             
@@ -110,7 +110,7 @@
                     <csla:PropertyStatus Property="BirthDate" RelativeTargetName="txtBirthdate" Source="{Binding}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" />
                     
                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
-                        <Button Content="Save" Margin="2,2,2,2" x:Name="btnSave" />
+                        <Button Content="Save" Margin="2,2,2,2" x:Name="btnSave" IsEnabled="{Binding IsSavable}" />
                         <Button Content="Delete" Margin="2,2,2,2" x:Name="btnDelete" />
                     </StackPanel>
                 </Grid>
@@ -134,7 +134,7 @@
                      DisplayMemberPath=""
                      HorizontalContentAlignment="Stretch" />
             <csla:BusyAnimation x:Name="busy"
-                                Foreground="#dd43a71f" 
+                                Foreground="#7743a71f"
                                 HorizontalAlignment="Center" 
                                 VerticalAlignment="Center" 
                                 Width="64" 

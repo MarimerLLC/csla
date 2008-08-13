@@ -248,11 +248,9 @@ namespace cslalighttest.EditableRootListTests
         obj.BeginEdit();
         item.Name = "test";
         obj.EndEdit();
-      }
-        );
+      });
       context.Complete();
 
     }
-
   }
 }

@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using System.Threading;
 using System.Windows.Threading;
 
-namespace Csla.Wpf
+namespace Csla.Silverlight
 {
   [TemplatePart(Name = "part1", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "part2", Type = typeof(FrameworkElement))]
@@ -179,7 +179,6 @@ namespace Csla.Wpf
 
           item.Width = itemScale;
           item.Height = itemScale;
-          item.SetValue(Border.CornerRadiusProperty, new CornerRadius(itemScale / 2));
           item.SetValue(Canvas.LeftProperty, x);
           item.SetValue(Canvas.TopProperty, y);
         }

@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using System.Windows.Media.Animation;
 
-namespace Csla.Wpf
+namespace Csla.Silverlight
 {
   [TemplateVisualState(Name = "AllowEdit", GroupName = "CanEdit")]
   [TemplateVisualState(Name = "DenyEdit", GroupName = "CanEdit")]

@@ -11,7 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using DataBinding.Business;
 using Csla;
-using Csla.Wpf;
+using Csla.Silverlight;
 
 namespace DataBinding.Test
 {

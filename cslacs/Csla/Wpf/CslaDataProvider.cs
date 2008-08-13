@@ -69,7 +69,7 @@ namespace Csla.Wpf
       set 
       { 
         _objectType = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("TypeName"));
+        OnPropertyChanged(new PropertyChangedEventArgs("ObjectType"));
       }
     }
 
@@ -107,7 +107,7 @@ namespace Csla.Wpf
       set
       {
         _factoryMethod = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("GetFactoryMethod"));
+        OnPropertyChanged(new PropertyChangedEventArgs("FactoryMethod"));
       }
     }
 

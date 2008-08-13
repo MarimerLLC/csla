@@ -2,7 +2,12 @@
 
 namespace Csla
 {
-  public class DataPortalResult<T> : EventArgs
+  public interface IDataPortalResult 
+  {
+    object Object { get; }
+  }
+
+  public class DataPortalResult<T> : EventArgs, IDataPortalResult
   {
     public T Object { get; private set; }
     public Exception Error { get; private set; }
@@ -12,5 +17,14 @@ namespace Csla
       this.Object = obj;
       this.Error = ex;
     }
+
+    #region IDataPortalResult Members
+
+    object IDataPortalResult.Object
+    {
+      get { return this.Object; }
+    }
+
+    #endregion
   }
 }

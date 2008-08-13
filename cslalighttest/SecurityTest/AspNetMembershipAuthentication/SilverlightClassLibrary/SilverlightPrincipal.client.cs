@@ -15,28 +15,25 @@ namespace SilverlightClassLibrary
         OnGetIdentityComplete(e, completed), uid, pwd, false);
     }
 
+    public static void LoginUsingMembershipProviderWebServer(string uid, string pwd, EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
+    {
+      MembershipIdentity.GetMembershipIdentity<MembershipIdentityStub>(
+        (o, e) =>
+        OnGetIdentityComplete(e, completed), uid, pwd, true);
+    }
 
     private static void OnGetIdentityComplete<T>(DataPortalResult<T> e, EventHandler<DataPortalResult<SilverlightPrincipal>> completed) where T : IIdentity
     {
       if (e.Error == null)
-        OnLoggedIn(e, completed);
+        SetPrincipal(e.Object);
       else
-        OnLoginFailed(completed);
+        SetPrincipal(CslaIdentity.UnauthenticatedIdentity());
+
+      if (completed != null)
+        completed(Csla.ApplicationContext.User, null);
+
     }
 
 
-    private static void OnLoggedIn<T>(DataPortalResult<T> e, EventHandler<DataPortalResult<SilverlightPrincipal>> completed) where T : IIdentity
-    {
-      SetPrincipal(e.Object);
-      if (completed != null)
-        completed(Csla.ApplicationContext.User, null);
-    }
-
-    private static void OnLoginFailed(EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
-    {
-      SetPrincipal(CslaIdentity.UnauthenticatedIdentity());
-      if (completed != null)
-        completed(Csla.ApplicationContext.User, null);
-    }    
   }
 }

@@ -37,6 +37,7 @@ namespace SilverlightClassLibrary
       ApplicationContext.User = new SilverlightPrincipal(new MembershipIdentityStub());
     }
 
+
     #endregion
 
     [Serializable]

@@ -1,6 +1,6 @@
 ﻿using System.Web.Security;
 
-namespace SilverlightApplicationWeb
+namespace SilverlightClassLibrary
 {
   public class MockRoleProvider : RoleProvider
   {

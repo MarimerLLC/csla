@@ -8,7 +8,13 @@ namespace SilverlightClassLibrary
     public static void LoginUsingMembershipProviderDataPortal(string name, string password)
     {
       var identity = MembershipIdentity.GetMembershipIdentity<MembershipIdentityStub>(name, password, false);
-      var result = SetPrincipal(identity);
+      SetPrincipal(identity);
+    }
+
+    public static void LoginUsingMembershipProviderWebServer(string name, string password)
+    {
+      var identity = MembershipIdentity.GetMembershipIdentity<MembershipIdentityStub>(name, password, true);
+      SetPrincipal(identity);
     }
   }
 }

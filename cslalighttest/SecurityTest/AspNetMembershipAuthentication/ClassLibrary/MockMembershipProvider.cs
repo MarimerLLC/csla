@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Web.Security;
 
-namespace SilverlightApplicationWeb
+namespace SilverlightClassLibrary
 {
   /// <summary>
-  /// Stubs are another type of "Fake" objects that unlike Mocks
+  /// Mock implementation of a MembershipProvider that gives us predetermined responses for our tests
   /// </summary>
   public class MockMembershipProvider : MembershipProvider
   {

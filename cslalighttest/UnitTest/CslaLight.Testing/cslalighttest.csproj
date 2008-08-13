@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5E30B543-3988-4241-98D9-B0D2E44FA02A}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -102,6 +102,9 @@
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\ApplicationContext\GlobalContextTests.cs">
       <Link>ApplicationContext\GlobalContextTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\CommandBase\CommandBaseTests.cs">
+      <Link>CommandBase\CommandBaseTests.cs</Link>
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\NameValueList\NameValueListTests.cs">
       <Link>NameValueList\NameValueListTests.cs</Link>

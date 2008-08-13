@@ -7,9 +7,13 @@ using Csla.DataPortalClient;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
+using System.Diagnostics;
 
 namespace Csla
 {
+#if TESTING
+  [DebuggerNonUserCode]
+#endif
   [Serializable]
   public class ReadOnlyBase<T> : Csla.Core.MobileObject, ICloneable, Csla.Security.IAuthorizeReadWrite, Csla.DataPortalClient.IDataPortalTarget, Csla.Serialization.Mobile.IMobileObject, ISerializationNotification
     where T : ReadOnlyBase<T>

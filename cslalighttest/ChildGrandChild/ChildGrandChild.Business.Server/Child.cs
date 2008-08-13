@@ -12,7 +12,7 @@ namespace ChildGrandChild.Business
 {
   [Serializable]
 
-  public class Child : BusinessBase<Child>
+  public partial class Child : BusinessBase<Child>
   {
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(typeof(Child), new PropertyInfo<int>("Id", "Id"));
     public int Id

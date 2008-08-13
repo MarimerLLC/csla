@@ -10,7 +10,8 @@ using Csla.Serialization;
 namespace ChildGrandChild.Business
 {
     [Serializable]
-    public class ChildList : BusinessListBase<ChildList, Child>
+
+    public partial class ChildList : BusinessListBase<ChildList, Child>
     {
       //  protected override object AddNewCore()
       //  {
@@ -39,5 +40,8 @@ namespace ChildGrandChild.Business
             dp.FetchCompleted += completed;
             dp.BeginFetch(new SingleCriteria<ChildList, string>(name));
         }
+
+        
+       
     }
 }

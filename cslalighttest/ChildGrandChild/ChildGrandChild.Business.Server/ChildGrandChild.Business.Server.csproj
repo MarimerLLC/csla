@@ -51,8 +51,10 @@
   <ItemGroup>
     <Compile Include="Child.cs" />
     <Compile Include="ChildList.cs" />
+    <Compile Include="childListProcess.cs" />
     <Compile Include="GrandChild.cs" />
     <Compile Include="GrandChildList.cs" />
+    <Compile Include="partialChild.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

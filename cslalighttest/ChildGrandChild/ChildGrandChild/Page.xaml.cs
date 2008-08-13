@@ -29,10 +29,12 @@ namespace ChildGrandChild
            // BindDetails();
         }
 
-        private void Fetch()
+       
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //busy.IsRunning = true;
-                  ChildList.FetchByName(null,FetchComplete);
+            ChildList.FetchByName(null, FetchComplete);
         }
     }
 }

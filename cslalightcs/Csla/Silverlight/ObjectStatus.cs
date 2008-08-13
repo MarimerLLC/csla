@@ -6,6 +6,7 @@ using Csla.Security;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Windows.Media.Animation;
+using System.Windows.Input;
 
 namespace Csla.Silverlight
 {
@@ -30,7 +31,7 @@ namespace Csla.Silverlight
     public object Source
     {
       get { return _source; }
-      set 
+      set
       {
         DetachSource(_source as INotifyPropertyChanged);
         _source = value;
@@ -67,7 +68,7 @@ namespace Csla.Silverlight
       if (Source != null)
         sourceType = Source.GetType();
 
-      if(sourceType!=null)
+      if (sourceType != null)
       {
         if (Csla.Security.AuthorizationRules.CanCreateObject(sourceType))
           VisualStateManager.GoToState(this, "AllowCreate", true);

@@ -292,6 +292,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Silverlight\ValidatedDataGridColumn.cs" />
+    <Compile Include="Silverlight\ValidatedDataGridTextColumn.cs" />
     <Compile Include="SingleCriteria.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="Utilities.cs" />

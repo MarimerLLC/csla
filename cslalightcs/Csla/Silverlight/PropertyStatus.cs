@@ -89,8 +89,13 @@ namespace Csla.Silverlight
       {
         DetachSource(_source as INotifyPropertyBusy);
         _source = value;
-        UpdateState();
         AttachSource(_source as INotifyPropertyBusy);
+
+        BusinessBase bb = value as BusinessBase;
+        if (bb != null)
+          _isBusy = bb.IsBusy;
+
+        UpdateState();
       }
     }
 
@@ -124,6 +129,12 @@ namespace Csla.Silverlight
         SetValue(RelativeTargetNameProperty, value);
         _target = null;
       }
+    }
+
+    public DependencyObject Target
+    {
+      get { return _target; }
+      set { _target = value; }
     }
 
     #endregion

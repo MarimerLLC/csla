@@ -25,6 +25,7 @@ namespace DataBinding.Test
     private void FetchComplete(object sender, DataPortalResult<CustomerList> result)
     {
       this.DataContext = result.Object;
+      grid.ItemsSource = result.Object;
       BindDetails();
     }
 
@@ -45,11 +46,6 @@ namespace DataBinding.Test
       details.DataContext = null;
       details.DataContext = selected;
       busy.IsRunning = false;
-    }
-
-    private void fetch_Click(object sender, RoutedEventArgs e)
-    {
-      Fetch();
     }
 
     private void btnAdmin_Click(object sender, RoutedEventArgs e)

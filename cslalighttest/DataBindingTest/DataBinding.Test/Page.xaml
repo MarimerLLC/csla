@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
              xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"
              xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
+             xmlns:c="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data"
              xmlns:System="clr-namespace:System;assembly=mscorlib">
             
     <UserControl.Resources>
@@ -139,7 +140,18 @@
                                 VerticalAlignment="Center" 
                                 Width="64" 
                                 Height="64" />
-            <Button Grid.Row="1" x:Name="fetch" Content="fetch" Click="fetch_Click"/>
+            <c:DataGrid Grid.Row="1" x:Name="grid" AutoGenerateColumns="False" >
+                <c:DataGrid.Columns>
+                    <csla:ValidatedDataGridTextColumn Header="Name" DisplayMemberBinding="{Binding Name}">
+                        <csla:ValidatedDataGridTextColumn.PropertyStatusStyle>
+                            <Style TargetType="csla:PropertyStatus">
+                                <Setter Property="Margin" Value="5,0,0,0" />
+                                <Setter Property="Foreground" Value="Yellow" />
+                            </Style>
+                        </csla:ValidatedDataGridTextColumn.PropertyStatusStyle>
+                    </csla:ValidatedDataGridTextColumn>
+                </c:DataGrid.Columns>
+            </c:DataGrid>
             <StackPanel Orientation="Horizontal" Grid.Row="2">
                 <Button Content="Run as Administrator" x:Name="btnAdmin" Click="btnAdmin_Click"/>
                 <Button Content="Run as User" x:Name="btnUser" Click="btnUser_Click" />

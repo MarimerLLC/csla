@@ -208,6 +208,31 @@ namespace Csla
 
     #endregion
 
+    #region Begin Execute
+
+    /// <summary>
+    /// Updates a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Business object to update.
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    public static void BeginExecute<T>(T command, EventHandler<DataPortalResult<T>> callback)
+      where T : CommandBase
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.ExecuteCompleted += callback;
+      dp.BeginExecute(command);
+    }
+
+    #endregion
+
     #endregion
   }
 
@@ -253,6 +278,7 @@ namespace Csla
       _proxy.FetchCompleted += new EventHandler<DataPortalResult<T>>(proxy_FetchCompleted);
       _proxy.UpdateCompleted += new EventHandler<DataPortalResult<T>>(proxy_UpdateCompleted);
       _proxy.DeleteCompleted += new EventHandler<DataPortalResult<T>>(proxy_DeleteCompleted);
+      _proxy.ExecuteCompleted += new EventHandler<DataPortalResult<T>>(proxy_ExecuteCompleted);
     }
 
     #region Create
@@ -422,6 +448,28 @@ namespace Csla
     private void proxy_DeleteCompleted(object sender, DataPortalResult<T> e)
     {
       OnDeleteCompleted(e);
+    }
+
+    #endregion
+
+    #region Execute
+
+    public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
+
+    public void BeginExecute(T command)
+    {
+      _proxy.BeginExecute(command);
+    }
+
+    private void proxy_ExecuteCompleted(object sender, DataPortalResult<T> e)
+    {
+      OnExecuteCompleted(e);
+    }
+
+    protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
+    {
+      if (ExecuteCompleted != null)
+        ExecuteCompleted(this, e);
     }
 
     #endregion

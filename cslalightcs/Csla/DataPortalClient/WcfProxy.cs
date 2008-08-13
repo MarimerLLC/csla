@@ -181,7 +181,7 @@ namespace Csla.DataPortalClient
           var ex = new DataPortalException(e.Result.ErrorData);
           OnFetchCompleted(new DataPortalResult<T>(default(T), ex));
         }
-        else 
+        else
           throw new InvalidOperationException("Server must return an object or an error");
       }
       catch (Exception ex)
@@ -291,6 +291,61 @@ namespace Csla.DataPortalClient
       catch (Exception ex)
       {
         OnUpdateCompleted(new DataPortalResult<T>(default(T), ex));
+      }
+    }
+
+    #endregion
+
+    #region Execute
+
+    public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
+
+    protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
+    {
+      if (ExecuteCompleted != null)
+        ExecuteCompleted(this, e);
+    }
+
+    public void BeginExecute(T command)
+    {
+      var request = GetBaseUpdateCriteriaRequest();
+      request.ObjectData = MobileFormatter.Serialize(command);
+
+      var proxy = GetProxy();
+      proxy.UpdateCompleted += new EventHandler<Csla.WcfPortal.UpdateCompletedEventArgs>(proxy_ExecuteCompleted);
+      proxy.UpdateAsync(request);
+    }
+
+    private void proxy_ExecuteCompleted(object sender, Csla.WcfPortal.UpdateCompletedEventArgs e)
+    {
+      try
+      {
+        if (e.Error == null && e.Result.ErrorData == null)
+        {
+          var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
+          var formatter = new MobileFormatter();
+          T obj = (T)formatter.Deserialize(buffer);
+          ApplicationContext.SetGlobalContext((ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext));
+          OnExecuteCompleted(new DataPortalResult<T>(obj, null));
+        }
+        else if (e.Error != null)
+        {
+          var ex = new DataPortalException(e.Error.ToErrorInfo());
+          OnExecuteCompleted(new DataPortalResult<T>(default(T), ex));
+        }
+        else if (e.Result.ErrorData != null)
+        {
+          var ex = new DataPortalException(e.Result.ErrorData);
+          OnExecuteCompleted(new DataPortalResult<T>(default(T), ex));
+        }
+        else
+        {
+          OnExecuteCompleted(new DataPortalResult<T>(default(T), e.Error));
+        }
+      }
+      catch (Exception ex)
+      {
+        OnExecuteCompleted(new DataPortalResult<T>(default(T), ex));
       }
     }
 

@@ -52,5 +52,9 @@ namespace Csla.DataPortalClient
     /// complete.
     /// </summary>
     event EventHandler<DataPortalResult<T>> DeleteCompleted;
+
+    void BeginExecute(T command);
+
+    event EventHandler<DataPortalResult<T>> ExecuteCompleted;
   }
 }

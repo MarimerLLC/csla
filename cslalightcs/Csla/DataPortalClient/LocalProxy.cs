@@ -161,5 +161,29 @@ namespace Csla.DataPortalClient
     }
 
     #endregion
+
+    #region Execute
+
+    public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
+
+    protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
+    {
+      if (ExecuteCompleted != null)
+        ExecuteCompleted(this, e);
+    }
+
+    public void BeginExecute(T command)
+    {
+      var handler = new CompletedHandler(OnExecuteCompleted);
+      MethodCaller.CallMethod(command, "DataPortal_Execute", handler);
+    }
+
+    private void OnExecuteCompleted(T result, Exception ex)
+    {
+      if (ExecuteCompleted != null)
+        ExecuteCompleted(this, new DataPortalResult<T>(result, ex));
+    }
+
+    #endregion
   }
 }

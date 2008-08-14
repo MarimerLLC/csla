@@ -14,14 +14,8 @@ namespace SilverlightApplication
   /// </summary>
   
   [TestClass]
-  public class AuthenticationTests : TestBase
+  public class AuthenticationTests : MembershipTestBase
   {
-    [TestSetup]
-    public void Setup()
-    {
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
-      Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:3372/WcfPortal.svc";
-    }
 
     #region DataPortal
 

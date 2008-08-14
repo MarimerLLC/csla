@@ -1,5 +1,4 @@
 ﻿using Csla;
-using Csla.DataPortalClient;
 using SilverlightClassLibrary;
 using UnitDriven;
 
@@ -15,18 +14,8 @@ namespace SilverlightApplication
   /// This in turn allows us to test that csla is passing correct information from server to the client.
   /// </summary>
   [TestClass]
-  public class RolesTests : TestBase
+  public class RolesTests : MembershipTestBase
   {
-    #region Setup/Teardown
-
-    [TestSetup]
-    public void Setup()
-    {
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
-      WcfProxy.DefaultUrl = "http://localhost:3372/WcfPortal.svc";
-    }
-
-    #endregion
 
     #region DataPortal
 

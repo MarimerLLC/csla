@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Net;
-using Csla.Serialization;
 using Csla;
 using Csla.Security;
+using Csla.Serialization;
 
 namespace ClassLibrary
 {
   [Serializable]
-  public class ClassB : BusinessBase<ClassB>
+  public class UserAndAdminCanCreateAndWrite : BusinessBase<UserAndAdminCanCreateAndWrite>
   {
     private static PropertyInfo<string> AProperty = RegisterProperty(new PropertyInfo<string>("A"));
     public string A
@@ -24,12 +24,15 @@ namespace ClassLibrary
 
     protected override void AddAuthorizationRules()
     {
-      AuthorizationRules.AllowWrite(AProperty, "PropertyARole");
-      AuthorizationRules.AllowRead(AProperty, "PropertyARole");
+      AuthorizationRules.AllowWrite(AProperty, "User Role");
+      AuthorizationRules.AllowRead(BProperty, "User Role");
     }
 
     protected static void AddObjectAuthorizationRules()
     {
+      AuthorizationRules.AllowCreate(typeof(UserAndAdminCanCreateAndWrite), "User Role");
+      AuthorizationRules.AllowEdit(typeof(UserAndAdminCanCreateAndWrite), "User Role");
+      AuthorizationRules.AllowDelete(typeof(UserAndAdminCanCreateAndWrite), "User Role");
     }
   }
 }

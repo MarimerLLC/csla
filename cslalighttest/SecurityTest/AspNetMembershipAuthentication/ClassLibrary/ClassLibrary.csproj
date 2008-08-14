@@ -47,14 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SilverlightClassLibrary\ClassA.cs">
-      <Link>ClassA.cs</Link>
-    </Compile>
-    <Compile Include="..\SilverlightClassLibrary\ClassB.cs">
-      <Link>ClassB.cs</Link>
-    </Compile>
     <Compile Include="..\SilverlightClassLibrary\MembershipIdentityStub.cs">
       <Link>MembershipIdentityStub.cs</Link>
+    </Compile>
+    <Compile Include="..\SilverlightClassLibrary\OnlyAdminCanWrite.cs">
+      <Link>OnlyAdminCanWrite.cs</Link>
     </Compile>
     <Compile Include="..\SilverlightClassLibrary\SilverlightPrincipal.cs">
       <Link>SilverlightPrincipal.cs</Link>
@@ -63,6 +60,7 @@
     <Compile Include="MockRoleProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SilverlightPrincipal.server.cs" />
+    <Compile Include="UserAndAdminCanCreateAndWrite.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\cslacs\Csla\Csla.csproj">

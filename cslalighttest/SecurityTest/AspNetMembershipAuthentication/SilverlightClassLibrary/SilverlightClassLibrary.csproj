@@ -47,8 +47,8 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassA.cs" />
-    <Compile Include="ClassB.cs" />
+    <Compile Include="UserAndAdminCanCreateAndWrite.cs" />
+    <Compile Include="OnlyAdminCanWrite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MembershipIdentityStub.cs" />
     <Compile Include="SilverlightPrincipal.client.cs" />

@@ -65,6 +65,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\Core\ITrackStatus.cs">
+      <Link>Core\ITrackStatus.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\MobileBindingList.cs">
       <Link>Core\MobileBindingList.cs</Link>
     </Compile>
@@ -238,7 +241,6 @@
     <Compile Include="Core\ISavable.cs" />
     <Compile Include="Core\ISmartField.cs" />
     <Compile Include="Core\ISupportUndo.cs" />
-    <Compile Include="Core\ITrackStatus.cs" />
     <Compile Include="Core\IUndoableObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />
     <Compile Include="Core\ReadOnlyBindingList.cs" />
@@ -281,6 +283,7 @@
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Silverlight\ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="Silverlight\CslaDataProvider.cs" />
     <Compile Include="Silverlight\InvokeMethod.cs" />
     <Compile Include="Silverlight\MobileFactoryAttribute.cs" />

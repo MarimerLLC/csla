@@ -150,6 +150,7 @@
                             </Style>
                         </csla:ValidatedDataGridTextColumn.PropertyStatusStyle>
                     </csla:ValidatedDataGridTextColumn>
+                    <csla:ValidatedDataGridCheckBoxColumn Header="Preferred" DisplayMemberBinding="{Binding IsPreferred}" />
                 </c:DataGrid.Columns>
             </c:DataGrid>
             <StackPanel Orientation="Horizontal" Grid.Row="2">

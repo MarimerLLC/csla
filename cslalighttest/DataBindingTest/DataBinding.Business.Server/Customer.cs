@@ -20,6 +20,7 @@ namespace DataBinding.Business
     private static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id"));
     private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name"));
     private static PropertyInfo<DateTime> BirthDateProperty = RegisterProperty(new PropertyInfo<DateTime>("BirthDate"));
+    private static PropertyInfo<bool> IsPreferredProperty = RegisterProperty(new PropertyInfo<bool>("IsPreferred"));
 
     public int Id
     {
@@ -36,7 +37,13 @@ namespace DataBinding.Business
     {
       get { return GetProperty(BirthDateProperty); }
       set { SetProperty(BirthDateProperty, value); }
-    } 
+    }
+
+    public bool IsPreferred
+    {
+      get { return GetProperty(IsPreferredProperty); }
+      set { SetProperty(IsPreferredProperty, value); }
+    }
 
     #endregion
 
@@ -63,6 +70,7 @@ namespace DataBinding.Business
       ValidationRules.AddRule(HasNumbers, NameProperty);
 
       ValidationRules.AddRule(IsReserved, new AsyncRuleArgs(NameProperty));
+      ValidationRules.AddRule(HasNotes, new AsyncRuleArgs(IsPreferredProperty, NameProperty));
       base.AddBusinessRules();
     }
 
@@ -126,6 +134,31 @@ namespace DataBinding.Business
         {
           context.OutArgs.Description = "This value is reserved, you must select a new value";
           context.OutArgs.Severity = RuleSeverity.Error;
+          context.OutArgs.Result = false;
+        }
+      };
+      worker.RunWorkerCompleted += (o, e) =>
+      {
+        context.Complete();
+      };
+
+      worker.RunWorkerAsync();
+    }
+
+    public static void HasNotes(AsyncValidationRuleContext context)
+    {
+
+      BackgroundWorker worker = new BackgroundWorker();
+      worker.DoWork += (o, e) =>
+      {
+        Thread.Sleep(1000); // simulate network call or long running process
+
+        bool isPreferred = (bool)context.PropertyValues["IsPreferred"];
+        string name = (string)context.PropertyValues["Name"];
+        if (isPreferred && name == "justin")
+        {
+          context.OutArgs.Description = "This customer is extra special, please take good care of him!";
+          context.OutArgs.Severity = RuleSeverity.Information;
           context.OutArgs.Result = false;
         }
       };

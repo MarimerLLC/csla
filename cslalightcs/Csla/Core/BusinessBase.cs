@@ -2134,7 +2134,6 @@ namespace Csla.Core
       }
 
       OnPropertyChanged("IsBusy");
-      OnPropertyChanged("IsSavable");
     }
 
     public event PropertyChangedEventHandler PropertyBusy;

@@ -12,20 +12,21 @@ namespace DataBinding.Business
 
     #region Server Factories
 
-    public static Customer Load(int Id, string name, DateTime birthDate)
+    public static Customer Load(int Id, string name, DateTime birthDate, bool isPreferred)
     {
-      return DataPortal.FetchChild<Customer>(Id, name, birthDate);
+      return DataPortal.FetchChild<Customer>(Id, name, birthDate, isPreferred);
     }
 
     #endregion
 
     #region Data Access
 
-    private void Child_Fetch(int id, string name, DateTime birthDate)
+    private void Child_Fetch(int id, string name, DateTime birthDate, bool isPreferred)
     {
       LoadProperty<int>(IdProperty, id);
       LoadProperty<string>(NameProperty, name);
       LoadProperty<DateTime>(BirthDateProperty, birthDate);
+      LoadProperty<bool>(IsPreferredProperty, isPreferred);
       ValidationRules.CheckRules();
     }
     

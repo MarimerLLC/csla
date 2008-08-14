@@ -167,5 +167,15 @@ namespace Csla.Core.FieldManager
         }
       }
     }
+
+    #region ITrackStatus Members
+
+
+    bool ITrackStatus.IsSavable
+    {
+      get { return true; }
+    }
+
+    #endregion
   }
 }

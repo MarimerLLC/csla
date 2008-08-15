@@ -17,8 +17,6 @@ namespace SilverlightApplication
       SilverlightPrincipal.LoginUsingMembershipProviderDatPortal("user", "invalid_password", (o, e) => 
         DataPortal.BeginCreate<UserAndAdminCanCreateAndWrite>((o2, e2) =>
         {
-          //ND correct way to run the assert below would be the assert in commented line above and we will switch to it once the e.Error.InnerException serialization problem is fixed
-          //context.Assert.IsTrue(e2.Error.InnerException is System.Security.SecurityException);
           context.Assert.IsTrue(((DataPortalException)e2.Error).ErrorInfo.ExceptionTypeName =="System.Security.SecurityException") ;
           context.Assert.Success();
         }));
@@ -51,8 +49,8 @@ namespace SilverlightApplication
       var context = GetContext();
 
       SilverlightPrincipal.Logout();
-      SilverlightPrincipal.LoginUsingMembershipProviderDatPortal("user", "1234", (o, e) => 
-        DataPortal.BeginCreate<UserAndAdminCanCreateAndWrite>((o2,e2) =>
+      SilverlightPrincipal.LoginUsingMembershipProviderDatPortal("user", "1234", (o, e) =>
+        DataPortal.BeginCreate<UserAndAdminCanCreateAndWrite>((o2, e2) =>
         {
           context.Assert.IsNotNull(e2.Object);
           context.Assert.Success();
@@ -84,16 +82,14 @@ namespace SilverlightApplication
       var context = GetContext();
 
       SilverlightPrincipal.Logout();
-  
       SilverlightPrincipal.LoginUsingMembershipProviderDatPortal("user", "1234", (o, e) =>
-         DataPortal.BeginCreate<UserAndAdminCanCreateAndWrite>((o2, e2) =>
-         {
-           var item = e2.Object;
+      {
+        var item = new UserAndAdminCanCreateAndWrite();
 
-           item.A = "test";
+        item.A = "test";//no SecurityException
 
-           context.Assert.Success();
-         }));
+        context.Assert.Success();
+      });
 
       context.Complete();
     }
@@ -105,14 +101,13 @@ namespace SilverlightApplication
 
       SilverlightPrincipal.Logout();
       SilverlightPrincipal.LoginUsingMembershipProviderDatPortal("admin", "12345", (o, e) =>
-        DataPortal.BeginCreate<UserAndAdminCanCreateAndWrite>((o2, e2) =>
-        {
-          var item = e2.Object;
+      {
+        var item = new UserAndAdminCanCreateAndWrite();
 
-          item.A = "test";
+        item.A = "test";//no SecurityException
 
-          context.Assert.Success();
-        }));
+        context.Assert.Success();
+      });
 
 
       context.Complete();
@@ -125,19 +120,17 @@ namespace SilverlightApplication
       var context = GetContext();
 
       SilverlightPrincipal.Logout();
-      
       SilverlightPrincipal.LoginUsingMembershipProviderDatPortal("user", "1234", (o, e) =>
-         DataPortal.BeginCreate<OnlyAdminCanWrite>((o2, e2) =>
-         {
-           var item = e2.Object;
+      {
+        var item = new OnlyAdminCanWrite();
 
-           context.Assert.Try(() =>
-            {
-              item.A = "test";
-            });
-           context.Assert.Fail();//assure that exception was thrown for Assert.Try
-           context.Assert.Success();
-         }));
+        context.Assert.Try(() =>
+        {
+          item.A = "test";
+        });
+        context.Assert.Fail();//assure that exception was thrown for Assert.Try
+        context.Assert.Success();
+      });
 
       context.Complete();
     }
@@ -148,17 +141,14 @@ namespace SilverlightApplication
       var context = GetContext();
 
       SilverlightPrincipal.Logout();
-
-      //OnlyAdminCanWrite item = new 
       SilverlightPrincipal.LoginUsingMembershipProviderDatPortal("admin", "12345", (o, e) =>
-        DataPortal.BeginCreate<OnlyAdminCanWrite>((o2, e2) =>
-        {
-          var item = e2.Object;
+      {
+        var item = new OnlyAdminCanWrite();
 
-          item.A = "test";
+        item.A = "test";//no SecurityException
 
-          context.Assert.Success();
-        }));
+        context.Assert.Success();
+      });
 
       context.Complete();
     }

@@ -66,8 +66,26 @@ namespace Csla.Silverlight
       return (string)element.GetValue(TriggerEventProperty);
     }
 
+    public static readonly DependencyProperty MethodParameterProperty =
+      DependencyProperty.RegisterAttached("MethodParameter",
+      typeof(object),
+      typeof(InvokeMethod),
+      null);
+
+    public static void SetMethodParameter(UIElement element, object value)
+    {
+      element.SetValue(MethodParameterProperty, value);
+      new InvokeMethod(element);
+    }
+
+    public static object GetMethodParameter(UIElement element)
+    {
+      return (string)element.GetValue(MethodParameterProperty);
+    }
+
     #endregion
 
+    private UIElement _element;
     private System.Reflection.MethodInfo _targetMethod;
     private object _target;
 
@@ -82,6 +100,9 @@ namespace Csla.Silverlight
           var triggerEvent = (string)element.GetValue(TriggerEventProperty);
           if (!string.IsNullOrEmpty(triggerEvent))
           {
+            // at this point all required fields have been set,
+            // so hook up the event
+            _element = element;
             _targetMethod = _target.GetType().GetMethod(methodName);
 
             var eventRef = element.GetType().GetEvent(triggerEvent);
@@ -92,9 +113,9 @@ namespace Csla.Silverlight
               if (p.Length==2)
               {
                 if (typeof(RoutedEventArgs).IsAssignableFrom(p[1].ParameterType))
-                  eventRef.AddEventHandler(element, new RoutedEventHandler(EventHandler));
+                  eventRef.AddEventHandler(element, new RoutedEventHandler(CallMethod));
                 else if (typeof(EventArgs).IsAssignableFrom(p[1].ParameterType))
-                  eventRef.AddEventHandler(element, new EventHandler(EventHandler));
+                  eventRef.AddEventHandler(element, new EventHandler(CallMethod));
                 else
                   throw new NotSupportedException();
               }
@@ -106,9 +127,13 @@ namespace Csla.Silverlight
       }
     }
 
-    private void EventHandler(object sender, EventArgs e)
+    private void CallMethod(object sender, EventArgs e)
     {
-      _targetMethod.Invoke(_target, null);
+      object p = _element.GetValue(MethodParameterProperty);
+      if (p == null)
+        _targetMethod.Invoke(_target, null);
+      else
+        _targetMethod.Invoke(_target, new object[] { p });
     }
   }
 }

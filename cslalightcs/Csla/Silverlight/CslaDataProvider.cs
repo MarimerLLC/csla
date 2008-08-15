@@ -10,9 +10,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using Csla.Properties;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Creates, retrieves and manages business objects
+  /// from XAML in a form.
+  /// </summary>
   public class CslaDataProvider : INotifyPropertyChanged
   {
     private object _dataObject;
@@ -30,9 +35,12 @@ namespace Csla.Silverlight
       set
       {
         _dataObject = value;
-        var undoable = _dataObject as Csla.Core.ISupportUndo;
-        if (undoable != null)
-          undoable.BeginEdit();
+        if (_manageObjectLifetime)
+        {
+          var undoable = _dataObject as Csla.Core.ISupportUndo;
+          if (undoable != null)
+            undoable.BeginEdit();
+        }
 
         try
         {
@@ -47,28 +55,46 @@ namespace Csla.Silverlight
       }
     }
 
-    public void CreateCompleted(object sender, IDataPortalResult e)
+    private bool _manageObjectLifetime = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether
+    /// the business object's lifetime should
+    /// be managed automatically.
+    /// </summary>
+    public bool ManageObjectLifetime
     {
-      Data = e.Object;
+      get { return _manageObjectLifetime; }
+      set 
+      {
+        if (_dataObject != null)
+          throw new NotSupportedException(Resources.ObjectNotNull);
+        _manageObjectLifetime = value; 
+      }
     }
 
-    public void FetchCompleted(object sender, IDataPortalResult e)
-    {
-      Data = e.Object;
-    }
-
-    public void UpdateCompleted(object sender, IDataPortalResult e)
-    {
-      Data = e.Object;
-    }
-
-    public void DeleteCompleted(object sender, IDataPortalResult e)
+    /// <summary>
+    /// Async event handler to be called when a
+    /// data portal create or fetch operation
+    /// completes.
+    /// </summary>
+    /// <param name="sender">
+    /// Data portal object completing the async operation.
+    /// </param>
+    /// <param name="e">
+    /// Async data portal result object.
+    /// </param>
+    public void DataPortalMethodCompleted(object sender, IDataPortalResult e)
     {
       Data = e.Object;
     }
 
     private Exception _error;
 
+    /// <summary>
+    /// Gets a reference to the Exception object
+    /// (if any) from the last data portal operation.
+    /// </summary>
     public Exception Error
     {
       get { return _error; }
@@ -79,21 +105,35 @@ namespace Csla.Silverlight
       }
     }
 
+    /// <summary>
+    /// Cancels any changes to the object.
+    /// </summary>
     public void Cancel()
     {
-      var undoable = _dataObject as Csla.Core.ISupportUndo;
-      if (undoable != null)
+      if (_manageObjectLifetime)
       {
-        undoable.CancelEdit();
-        undoable.BeginEdit();
+        var undoable = _dataObject as Csla.Core.ISupportUndo;
+        if (undoable != null)
+        {
+          undoable.CancelEdit();
+          undoable.BeginEdit();
+        }
       }
     }
 
+    /// <summary>
+    /// Accepts any changes to the object and
+    /// invokes the object's BeginSave() method.
+    /// </summary>
     public void Save()
     {
-      var undoable = _dataObject as Csla.Core.ISupportUndo;
-      if (undoable != null)
-        undoable.ApplyEdit();
+      Error = null;
+      if (_manageObjectLifetime)
+      {
+        var undoable = _dataObject as Csla.Core.ISupportUndo;
+        if (undoable != null)
+          undoable.ApplyEdit();
+      }
       var obj = _dataObject as Csla.Core.ISavable;
       if (obj != null)
       {
@@ -107,18 +147,58 @@ namespace Csla.Silverlight
       if (e.Error != null)
         Error = e.Error;
       else
-      {
-        var undoable = e.NewObject as Csla.Core.ISupportUndo;
-        if (undoable != null)
-          undoable.BeginEdit();
         Data = e.NewObject;
-      }
     }
 
+    /// <summary>
+    /// Marks an editable root object for deletion.
+    /// </summary>
+    public void Delete()
+    {
+      var obj = _dataObject as Csla.Core.BusinessBase;
+      if (obj != null && !obj.IsChild)
+        obj.Delete();
+    }
+
+    /// <summary>
+    /// Begins an async add new operation to add a 
+    /// new item to an editable list business object.
+    /// </summary>
+    public void AddNewItem()
+    {
+      var obj = _dataObject as Csla.Core.IBindingList;
+      if (obj != null)
+        obj.AddNew();
+    }
+
+    /// <summary>
+    /// Removes an item from an editable list
+    /// business object.
+    /// </summary>
+    /// <param name="item">
+    /// Reference to the child item to remove.
+    /// </param>
+    public void RemoveItem(object item)
+    {
+      var obj = _dataObject as System.Collections.IList;
+      if (obj != null)
+        obj.Remove(item);
+    }
+    
     #region INotifyPropertyChanged Members
 
+    /// <summary>
+    /// Event raised when a property of the
+    /// object has changed.
+    /// </summary>
     public event PropertyChangedEventHandler PropertyChanged;
 
+    /// <summary>
+    /// Raises the PropertyChanged event.
+    /// </summary>
+    /// <param name="e">
+    /// Arguments for event.
+    /// </param>
     protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
     {
       if (PropertyChanged != null)

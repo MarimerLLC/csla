@@ -12,7 +12,7 @@ using System.Collections.Specialized;
 
 namespace Csla.Core
 {
-  public class BindingList<T> : ObservableCollection<T>
+  public class BindingList<T> : ObservableCollection<T>, IBindingList
   {
     private bool _supportsChangeNotificationCore = true;
     protected virtual bool SupportsChangeNotificationCore { get { return _supportsChangeNotificationCore; } }
@@ -36,8 +36,9 @@ namespace Csla.Core
 
     public virtual void OnAddedNew(T item)
     {
+      var args = new AddedNewEventArgs<T>(item);
       if (AddedNew != null)
-        AddedNew(this, new AddedNewEventArgs<T>(item));
+        AddedNew(this, args);
     }
 
     protected virtual void AddNewCore()
@@ -56,5 +57,14 @@ namespace Csla.Core
       if(SupportsChangeNotificationCore)
         base.OnCollectionChanged(e);
     }
+
+    #region IBindingList Members
+
+    void IBindingList.AddNew()
+    {
+      AddNew();
+    }
+
+    #endregion
   }
 }

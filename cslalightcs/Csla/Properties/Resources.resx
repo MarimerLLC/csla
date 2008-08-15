@@ -306,4 +306,7 @@
   <data name="CanWriteAuthorizationRuleDescription" xml:space="preserve">
     <value>You are not authorized to write to this field</value>
   </data>
+  <data name="ObjectNotNull" xml:space="preserve">
+    <value>Can not set property if data object is not null</value>
+  </data>
 </root>

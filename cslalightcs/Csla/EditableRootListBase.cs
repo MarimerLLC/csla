@@ -84,7 +84,7 @@ namespace Csla
     {
 
       T item = this[index];
-      if (item.IsDirty || item.IsDeleted)
+      if (item.IsValid && (item.IsDirty || item.IsDeleted))
       {
         int editLevel = item.EditLevel;
         // commit all changes

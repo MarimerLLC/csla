@@ -25,7 +25,7 @@ namespace SilverlightDataGridApp
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
       Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
-      Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:1324/SilverlightDataGridAppWeb/WcfPortal.svc";
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:1431/WcfPortal.svc";
     }
 
     private void Login_Click(object sender, RoutedEventArgs e)

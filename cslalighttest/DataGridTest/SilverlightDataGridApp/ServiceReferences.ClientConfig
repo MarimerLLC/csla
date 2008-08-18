@@ -8,7 +8,7 @@
             </basicHttpBinding>
         </bindings>
         <client>
-            <endpoint address="http://localhost:1324/SilverlightDataGridAppWeb/WcfPortal.svc"
+            <endpoint address="http://localhost:1431/WcfPortal.svc"
                 binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IWcfPortal"
                 contract="Csla.WcfPortal.IWcfPortal" name="BasicHttpBinding_IWcfPortal" />
         </client>

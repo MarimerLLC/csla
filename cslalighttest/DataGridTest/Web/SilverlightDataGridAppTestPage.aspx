@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" %>
+﻿<%@ Page Language="c#" AutoEventWireup="true" %>
 
 <%@ Register Assembly="System.Web.Silverlight" Namespace="System.Web.UI.SilverlightControls"
     TagPrefix="asp" %>
@@ -7,7 +7,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%;">
 <head runat="server">
-    <title>Test Page For SilverlightDataGridApp</title>
+    <title>Web Applicaiton For Grid Test</title>
 </head>
 <body style="height:100%;margin:0;">
     <form id="form1" runat="server" style="height:100%;">

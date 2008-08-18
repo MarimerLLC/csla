@@ -61,6 +61,22 @@ namespace ClassLibrary.Business
       }
     }
 
+    protected override void AddBusinessRules()
+    {
+      ValidationRules.AddRule(Csla.Validation.CommonRules.IntegerMinValue, new Csla.Validation.CommonRules.IntegerMinValueRuleArgs(IdProperty,1));
+      ValidationRules.AddRule<SingleItem>(IsDateValid,new Csla.Validation.RuleArgs(DateCreatedProperty));
+    }
+
+    private static bool IsDateValid(SingleItem sender, Csla.Validation.RuleArgs e)
+    {
+      if (sender.ReadProperty<SmartDate>(DateCreatedProperty) < new SmartDate(new DateTime(2000, 1, 1)))
+      {
+        e.Description = "Date cannot be in the last century!";
+        return false;
+      }
+      return true;
+    }
+
 #if !SILVERLIGHT
     internal static SingleItem GetSingleItem(int id, string name, DateTime createdOn)
     {

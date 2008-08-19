@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Csla.Security;
 using System.ComponentModel;
 using System.Threading;
+using Csla.Core;
 
 namespace DataBinding.Business
 {
@@ -21,6 +22,7 @@ namespace DataBinding.Business
     private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name"));
     private static PropertyInfo<DateTime> BirthDateProperty = RegisterProperty(new PropertyInfo<DateTime>("BirthDate"));
     private static PropertyInfo<bool> IsPreferredProperty = RegisterProperty(new PropertyInfo<bool>("IsPreferred"));
+    private static PropertyInfo<AddressList> AddressesProperty = RegisterProperty(new PropertyInfo<AddressList>("Addresses"));
 
     public int Id
     {
@@ -43,6 +45,17 @@ namespace DataBinding.Business
     {
       get { return GetProperty(IsPreferredProperty); }
       set { SetProperty(IsPreferredProperty, value); }
+    }
+
+    public AddressList Addresses
+    {
+      get
+      {
+        if (!FieldManager.FieldExists(AddressesProperty))
+          LoadPropertyAsync<AddressList, int>(AddressesProperty, AddressList.FetchByCustomer, Id);
+        
+        return GetProperty(AddressesProperty);
+      }
     }
 
     #endregion

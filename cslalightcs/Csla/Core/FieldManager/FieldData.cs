@@ -168,12 +168,40 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    #region ITrackStatus Members
-
-
     bool ITrackStatus.IsSavable
     {
       get { return true; }
+    }
+
+    #region INotifyBusy Members
+
+    event System.ComponentModel.PropertyChangedEventHandler INotifyBusy.PropertyBusy
+    {
+      add { throw new NotImplementedException(); }
+      remove { throw new NotImplementedException(); }
+    }
+
+    event System.ComponentModel.PropertyChangedEventHandler INotifyBusy.PropertyIdle
+    {
+      add { throw new NotImplementedException(); }
+      remove { throw new NotImplementedException(); }
+    }
+
+    public bool IsBusy
+    {
+      get
+      {
+        bool isbusy = false;
+        ITrackStatus child = _data as ITrackStatus;
+        if (child != null)
+          isbusy = child.IsBusy;
+        return isbusy;
+      }
+    }
+
+    bool INotifyBusy.IsSelfBusy
+    {
+      get { return IsBusy; }
     }
 
     #endregion

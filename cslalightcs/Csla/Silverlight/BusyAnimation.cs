@@ -10,6 +10,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Threading;
 using System.Windows.Threading;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace Csla.Silverlight
 {
@@ -46,10 +48,10 @@ namespace Csla.Silverlight
       new PropertyMetadata((o, e) => ((BusyAnimation)o).StepInterval = (int)e.NewValue));
 
     public static readonly DependencyProperty IsRunningProperty = DependencyProperty.Register(
-      "IsRunning", 
-      typeof(bool), 
-      typeof(BusyAnimation), 
-      new PropertyMetadata((o, e) => ((BusyAnimation)o).IsRunning = (bool)e.NewValue));
+      "IsRunning",
+      typeof(object),
+      typeof(BusyAnimation),
+      new PropertyMetadata((o, e) => { })); //((BusyAnimation)o).IsRunning = e.NewValue));
 
     #endregion
 
@@ -68,13 +70,20 @@ namespace Csla.Silverlight
       }
     }
 
-    public bool IsRunning
+    public object IsRunning
     {
-      get { return (bool)GetValue(IsRunningProperty); }
-      set 
+      get 
       { 
-        SetValue(IsRunningProperty, value);
-        if (value)
+        object val = GetValue(IsRunningProperty);
+        return (val != null ?
+          (bool)Convert.ChangeType(val, typeof(bool), CultureInfo.InvariantCulture) :
+          false);
+      }
+      set 
+      {
+        bool val = (bool)Convert.ChangeType(value, typeof(bool), CultureInfo.InvariantCulture);
+        SetValue(IsRunningProperty, val);
+        if (val)
           StartTimer();
         else
           StopTimer();
@@ -137,7 +146,7 @@ namespace Csla.Silverlight
 
     private void GoToState(bool useTransitions)
     {
-      if (IsRunning)
+      if ((bool)IsRunning)
         VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
       else
         VisualStateManager.GoToState(this, "normal", useTransitions);

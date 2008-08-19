@@ -345,6 +345,14 @@ namespace Csla.Core.FieldManager
           item.MarkClean();
     }
 
+    internal bool IsBusy()
+    {
+      foreach (var item in _fieldData)
+        if (item != null && item.IsBusy)
+          return true;
+      return false;
+    }
+
     #endregion
 
     #region  IUndoableObject

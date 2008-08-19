@@ -45,6 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Address.cs" />
+    <Compile Include="Address.partial.cs" />
+    <Compile Include="AddressList.cs" />
+    <Compile Include="AddressList.partial.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="Customer.partial.cs" />
     <Compile Include="CustomerList.cs" />

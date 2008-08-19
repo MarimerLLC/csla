@@ -149,7 +149,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="csla:BusyAnimation">
-                    <Canvas Background="{TemplateBinding Background}">
+                    <Canvas Background="{TemplateBinding Background}" Visibility="{TemplateBinding Visibility}">
                         <vsm:VisualStateManager.VisualStateGroups>
                             <vsm:VisualStateGroup x:Name="CommonStates">
                                 <vsm:VisualState x:Name="normal">
@@ -356,42 +356,50 @@
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="{TemplateBinding BorderThickness}"
                                  Fill="{TemplateBinding Foreground}"
-                                 Opacity="0" />
+                                 Opacity="0"
+                                 Visibility="{TemplateBinding Visibility}"/>
                         <Ellipse x:Name="part2"
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="{TemplateBinding BorderThickness}"
                                  Fill="{TemplateBinding Foreground}"
-                                 Opacity="0" />
+                                 Opacity="0"
+                                 Visibility="{TemplateBinding Visibility}"/>
                         <Ellipse x:Name="part3"
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="{TemplateBinding BorderThickness}"
                                  Fill="{TemplateBinding Foreground}"
-                                 Opacity="0" />
+                                 Opacity="0"
+                                 Visibility="{TemplateBinding Visibility}"/>
                         <Ellipse x:Name="part4"
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="{TemplateBinding BorderThickness}"
                                  Fill="{TemplateBinding Foreground}"
-                                 Opacity="0" />
+                                 Opacity="0"
+                                 Visibility="{TemplateBinding Visibility}"/>
                         <Ellipse x:Name="part5"
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="{TemplateBinding BorderThickness}"
                                  Fill="{TemplateBinding Foreground}"
-                                 Opacity="0" />
+                                 Opacity="0"
+                                 Visibility="{TemplateBinding Visibility}"/>
                         <Ellipse x:Name="part6"
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="{TemplateBinding BorderThickness}"
                                  Fill="{TemplateBinding Foreground}"
-                                 Opacity="0" />
+                                 Opacity="0"
+                                 Visibility="{TemplateBinding Visibility}"/>
                         <Ellipse x:Name="part7"
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="{TemplateBinding BorderThickness}"
                                  Fill="{TemplateBinding Foreground}"
-                                 Opacity="0" />
+                                 Opacity="0"
+                                 Visibility="{TemplateBinding Visibility}"/>
                         <Ellipse x:Name="part8"
                                  Stroke="{TemplateBinding BorderBrush}"
                                  StrokeThickness="{TemplateBinding BorderThickness}"
                                  Fill="{TemplateBinding Foreground}"
-                                 Opacity="0" />
+                                 Opacity="0"
+                                 Visibility="{TemplateBinding Visibility}"/>
                     </Canvas>
                 </ControlTemplate>
             </Setter.Value>

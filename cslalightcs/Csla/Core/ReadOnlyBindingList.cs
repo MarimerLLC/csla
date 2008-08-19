@@ -138,6 +138,28 @@ namespace Csla.Core
         throw new NotSupportedException(Resources.ChangeInvalidException);
     }
 
+    #region ITrackStatus
+
+    public override bool IsBusy
+    {
+      get
+      {
+        // run through all the child objects
+        // and if any are dirty then then
+        // collection is dirty
+        foreach (C child in this)
+        {
+          INotifyBusy busy = child as INotifyBusy;
+          if (busy != null && busy.IsBusy)
+            return true;
+        }
+
+        return false;
+      }
+    }
+
+    #endregion
+
     #region MobileObject overrides
 
     protected override void OnGetState(SerializationInfo info)

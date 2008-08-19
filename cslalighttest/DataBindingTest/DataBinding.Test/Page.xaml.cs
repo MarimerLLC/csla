@@ -25,7 +25,6 @@ namespace DataBinding.Test
     private void FetchComplete(object sender, DataPortalResult<CustomerList> result)
     {
       this.DataContext = result.Object;
-      grid.ItemsSource = result.Object;
       BindDetails();
     }
 

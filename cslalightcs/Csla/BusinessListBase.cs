@@ -433,6 +433,26 @@ namespace Csla
       }
     }
 
+    public override bool IsBusy
+    {
+      get
+      {
+        // any non-new deletions make us dirty
+        foreach (C item in DeletedList)
+          if (item.IsBusy)
+            return true;
+
+        // run through all the child objects
+        // and if any are dirty then then
+        // collection is dirty
+        foreach (C child in this)
+          if (child.IsBusy)
+            return true;
+
+        return false;
+      }
+    }
+
     #endregion
 
     #region  ITrackStatus

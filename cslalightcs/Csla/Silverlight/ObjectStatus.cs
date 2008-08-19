@@ -7,9 +7,12 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
+using Csla.Core;
 
 namespace Csla.Silverlight
 {
+  [TemplateVisualState(Name = "Busy", GroupName = "IsBusy")]
+  [TemplateVisualState(Name = "Idle", GroupName = "IsBusy")]
   [TemplateVisualState(Name = "AllowEdit", GroupName = "CanEdit")]
   [TemplateVisualState(Name = "DenyEdit", GroupName = "CanEdit")]
   [TemplateVisualState(Name = "AllowCreate", GroupName = "CanCreate")]
@@ -26,6 +29,18 @@ namespace Csla.Silverlight
       typeof(ObjectStatus),
       new PropertyMetadata((o, e) => ((ObjectStatus)o).Source = e.NewValue));
 
+    public static readonly DependencyProperty IsBusyProperty = DependencyProperty.Register(
+      "IsBusy",
+      typeof(bool),
+      typeof(ObjectStatus),
+      new PropertyMetadata((o, e) => ((ObjectStatus)o).IsBusy = (bool)e.NewValue));
+
+    public bool IsBusy
+    {
+      get { return (bool)GetValue(IsBusyProperty); }
+      protected set { SetValue(IsBusyProperty, value); }
+    }
+
     private object _source;
 
     public object Source
@@ -33,9 +48,9 @@ namespace Csla.Silverlight
       get { return _source; }
       set
       {
-        DetachSource(_source as INotifyPropertyChanged);
+        DetachSource(_source);
         _source = value;
-        AttachSource(_source as INotifyPropertyChanged);
+        AttachSource(_source);
         OnSourceChanged();
       }
     }
@@ -43,18 +58,52 @@ namespace Csla.Silverlight
     public ObjectStatus()
     {
       DefaultStyleKey = typeof(ObjectStatus);
+      Loaded += new RoutedEventHandler(ObjectStatus_Loaded);
     }
 
-    private void AttachSource(INotifyPropertyChanged source)
+    void ObjectStatus_Loaded(object sender, RoutedEventArgs e)
     {
-      if (source != null)
-        source.PropertyChanged += new PropertyChangedEventHandler(source_PropertyChanged);
+      GoToState(true);
     }
 
-    private void DetachSource(INotifyPropertyChanged source)
+    private void AttachSource(object source)
     {
-      if (source != null)
-        source.PropertyChanged -= new PropertyChangedEventHandler(source_PropertyChanged);
+      INotifyPropertyChanged npc = source as INotifyPropertyChanged;
+      if (npc != null)
+        npc.PropertyChanged += new PropertyChangedEventHandler(source_PropertyChanged);
+
+      INotifyBusy npb = source as INotifyBusy;
+      if (npb != null)
+      {
+        npb.PropertyBusy += new PropertyChangedEventHandler(source_PropertyBusy);
+        npb.PropertyIdle += new PropertyChangedEventHandler(source_PropertyIdle);
+      }
+    }
+
+    private void DetachSource(object source)
+    {
+      INotifyPropertyChanged npc = source as INotifyPropertyChanged;
+      if (npc != null)
+        npc.PropertyChanged -= new PropertyChangedEventHandler(source_PropertyChanged);
+
+      INotifyBusy npb = source as INotifyBusy;
+      if (npb != null)
+      {
+        npb.PropertyBusy -= new PropertyChangedEventHandler(source_PropertyBusy);
+        npb.PropertyIdle -= new PropertyChangedEventHandler(source_PropertyIdle);
+      }
+    }
+
+    void source_PropertyIdle(object sender, PropertyChangedEventArgs e)
+    {
+      IsBusy = false;
+      GoToState(true);
+    }
+
+    void source_PropertyBusy(object sender, PropertyChangedEventArgs e)
+    {
+      IsBusy = true;
+      GoToState(true);
     }
 
     private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -62,7 +111,12 @@ namespace Csla.Silverlight
       OnSourceChanged();
     }
 
-    private void OnSourceChanged()
+    protected virtual void OnSourceChanged()
+    {
+      GoToState(true);
+    }
+
+    private void GoToState(bool useTransitions)
     {
       Type sourceType = null;
       if (Source != null)
@@ -71,25 +125,30 @@ namespace Csla.Silverlight
       if (sourceType != null)
       {
         if (Csla.Security.AuthorizationRules.CanCreateObject(sourceType))
-          VisualStateManager.GoToState(this, "AllowCreate", true);
+          VisualStateManager.GoToState(this, "AllowCreate", useTransitions);
         else
-          VisualStateManager.GoToState(this, "DenyCreate", true);
+          VisualStateManager.GoToState(this, "DenyCreate", useTransitions);
 
         if (Csla.Security.AuthorizationRules.CanDeleteObject(sourceType))
-          VisualStateManager.GoToState(this, "AllowDelete", true);
+          VisualStateManager.GoToState(this, "AllowDelete", useTransitions);
         else
-          VisualStateManager.GoToState(this, "DenyDelete", true);
+          VisualStateManager.GoToState(this, "DenyDelete", useTransitions);
 
         if (Csla.Security.AuthorizationRules.CanEditObject(sourceType))
-          VisualStateManager.GoToState(this, "AllowEdit", true);
+          VisualStateManager.GoToState(this, "AllowEdit", useTransitions);
         else
-          VisualStateManager.GoToState(this, "DenyEdit", true);
+          VisualStateManager.GoToState(this, "DenyEdit", useTransitions);
 
         if (Csla.Security.AuthorizationRules.CanGetObject(sourceType))
-          VisualStateManager.GoToState(this, "AllowGet", true);
+          VisualStateManager.GoToState(this, "AllowGet", useTransitions);
         else
-          VisualStateManager.GoToState(this, "DenyGet", true);
+          VisualStateManager.GoToState(this, "DenyGet", useTransitions);
       }
+
+      if(IsBusy)
+        VisualStateManager.GoToState(this, "Busy", useTransitions);
+      else
+        VisualStateManager.GoToState(this, "Idle", useTransitions);
     }
   }
 }

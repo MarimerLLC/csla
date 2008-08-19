@@ -47,6 +47,12 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\DataBinding.Business.Server\Address.cs">
+      <Link>Address.cs</Link>
+    </Compile>
+    <Compile Include="..\DataBinding.Business.Server\AddressList.cs">
+      <Link>AddressList.cs</Link>
+    </Compile>
     <Compile Include="..\DataBinding.Business.Server\Customer.cs">
       <Link>Customer.cs</Link>
     </Compile>
@@ -59,8 +65,6 @@
     <Compile Include="..\DataBinding.Business.Server\MockPrincipal.cs">
       <Link>MockPrincipal.cs</Link>
     </Compile>
-    <Compile Include="Customer.partial.cs" />
-    <Compile Include="CustomerList.partial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

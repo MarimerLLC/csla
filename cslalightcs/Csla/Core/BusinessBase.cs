@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using Csla.Validation;
 using System.Security;
 using System.Windows.Controls;
+using Csla.Core.LoadManager;
 
 namespace Csla.Core
 {
@@ -25,7 +26,6 @@ namespace Csla.Core
     IDataPortalTarget,
     IEditableBusinessObject,
     ISerializationNotification,
-    INotifyPropertyBusy,
     IEditableObject
   {
     #region Constructors
@@ -1824,6 +1824,38 @@ namespace Csla.Core
       FieldManager.LoadFieldData(propertyInfo, newValue);
     }
 
+    private AsyncLoadManager _loadManager;
+    internal AsyncLoadManager LoadManager
+    {
+      get
+      {
+        if (_loadManager == null)
+        {
+          _loadManager = new AsyncLoadManager();
+          _loadManager.PropertyBusy += new PropertyChangedEventHandler(loadManager_PropertyBusy);
+          _loadManager.PropertyIdle += new PropertyChangedEventHandler(loadManager_PropertyIdle);
+        }
+        return _loadManager;
+      }
+    }
+
+    void loadManager_PropertyIdle(object sender, PropertyChangedEventArgs e)
+    {
+      OnPropertyIdle(e);
+    }
+
+    void loadManager_PropertyBusy(object sender, PropertyChangedEventArgs e)
+    {
+      OnPropertyBusy(e);
+    }
+
+
+    protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, parameter);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
     #endregion
 
     #region Child Change Notification
@@ -2117,7 +2149,7 @@ namespace Csla.Core
               foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
               {
                 OnPropertyChanged(property.Name);
-                OnPropertyIdle(property.Name);
+                OnPropertyIdle(new PropertyChangedEventArgs(property.Name));
               }
             }
           }
@@ -2130,30 +2162,8 @@ namespace Csla.Core
       {
         foreach (IAsyncRuleMethod rule in e.NewItems)
           foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
-            OnPropertyBusy(property.Name);
+            OnPropertyBusy(new PropertyChangedEventArgs(property.Name));
       }
-
-      OnPropertyChanged("IsBusy");
-    }
-
-    public event PropertyChangedEventHandler PropertyBusy;
-    protected virtual void OnPropertyBusy(string propertyName)
-    {
-      if (PropertyBusy != null)
-        PropertyBusy(this, new PropertyChangedEventArgs(propertyName));
-    }
-    public event PropertyChangedEventHandler PropertyIdle;
-    protected virtual void OnPropertyIdle(string propertyName)
-    {
-      if (PropertyIdle != null)
-        PropertyIdle(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    // TODO: Add comments
-    // TODO: Port to CSLA.NET
-    public virtual bool IsBusy
-    {
-      get { return ValidationRules.IsValidating; }
     }
 
     /// <summary>
@@ -2239,6 +2249,81 @@ namespace Csla.Core
     public virtual Validation.BrokenRulesCollection BrokenRulesCollection
     {
       get { return ValidationRules.GetBrokenRules(); }
+    }
+
+    #endregion
+
+    #region IsBusy / IsIdle
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _isBusy;
+
+    protected void MarkBusy()
+    {
+      // TODO: Review resource string
+      if (_isBusy)
+        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
+
+      _isBusy = true;
+      OnPropertyBusy(new PropertyChangedEventArgs("IsBusy"));
+    }
+
+    protected void MarkIdle()
+    {
+      _isBusy = false;
+      OnPropertyIdle(new PropertyChangedEventArgs("IsBusy"));
+    }
+
+    public bool IsBusy
+    {
+      get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
+    }
+
+    public bool IsSelfBusy
+    {
+      get { return _isBusy || ValidationRules.IsValidating || LoadManager.IsLoading; }
+    }
+
+    void Child_PropertyIdle(object sender, PropertyChangedEventArgs e)
+    {
+      OnPropertyIdle(e);
+    }
+
+    void Child_PropertyBusy(object sender, PropertyChangedEventArgs e)
+    {
+      OnPropertyBusy(e);
+    }
+
+    [NotUndoable]
+    [NonSerialized]
+    private PropertyChangedEventHandler _propertyBusy;
+    [NotUndoable]
+    [NonSerialized]
+    private PropertyChangedEventHandler _propertyIdle;
+
+    public event PropertyChangedEventHandler PropertyBusy
+    {
+      add { _propertyBusy = (PropertyChangedEventHandler)Delegate.Combine(_propertyBusy, value); }
+      remove { _propertyBusy = (PropertyChangedEventHandler)Delegate.Remove(_propertyBusy, value); }
+    }
+
+    public event PropertyChangedEventHandler PropertyIdle
+    {
+      add { _propertyIdle = (PropertyChangedEventHandler)Delegate.Combine(_propertyIdle, value); }
+      remove { _propertyIdle = (PropertyChangedEventHandler)Delegate.Remove(_propertyIdle, value); }
+    }
+
+    protected void OnPropertyBusy(PropertyChangedEventArgs args)
+    {
+      if (_propertyBusy != null)
+        _propertyBusy(this, args);
+    }
+
+    protected void OnPropertyIdle(PropertyChangedEventArgs args)
+    {
+      if (_propertyIdle != null)
+        _propertyIdle(this, args);
     }
 
     #endregion

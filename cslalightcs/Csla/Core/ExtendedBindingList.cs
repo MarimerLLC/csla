@@ -11,7 +11,8 @@ namespace Csla.Core
   /// <typeparam name="T">Type of item contained in list.</typeparam>
   [Serializable]
   public class ExtendedBindingList<T> : MobileBindingList<T>,
-    IExtendedBindingList
+    IExtendedBindingList,
+    INotifyBusy
   {
     #region RemovingItem event
 
@@ -96,6 +97,51 @@ namespace Csla.Core
     {
       foreach (var element in range)
         this.Add(element);
+    }
+
+    #endregion
+
+    #region INotifyPropertyBusy Members
+
+    [NotUndoable]
+    [NonSerialized]
+    private PropertyChangedEventHandler _propertyBusy = null;
+    [NotUndoable]
+    [NonSerialized]
+    private PropertyChangedEventHandler _propertyIdle = null;
+
+    public event PropertyChangedEventHandler PropertyBusy
+    {
+      add { _propertyBusy = (PropertyChangedEventHandler)Delegate.Combine(_propertyBusy, value); }
+      remove { _propertyBusy = (PropertyChangedEventHandler)Delegate.Remove(_propertyBusy, value); }
+    }
+
+    public event PropertyChangedEventHandler PropertyIdle
+    {
+      add { _propertyIdle = (PropertyChangedEventHandler)Delegate.Combine(_propertyIdle, value); }
+      remove { _propertyIdle = (PropertyChangedEventHandler)Delegate.Remove(_propertyIdle, value); }
+    }
+
+    protected void OnPropertyBusy(PropertyChangedEventArgs args)
+    {
+      if (_propertyBusy != null)
+        _propertyBusy(this, args);
+    }
+
+    protected void OnPropertyIdle(PropertyChangedEventArgs args)
+    {
+      if (_propertyIdle != null)
+        _propertyIdle(this, args);
+    }
+
+    public virtual bool IsBusy
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public virtual bool IsSelfBusy
+    {
+      get { return IsBusy; }
     }
 
     #endregion

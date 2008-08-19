@@ -19,7 +19,7 @@
                 <TextBlock x:Name="birthdate" Width="150" Text="{Binding BirthDate}" Grid.Column="2" />
             </Grid>
         </DataTemplate>
-        <ControlTemplate x:Key="details" >
+        <ControlTemplate x:Key="details" TargetType="csla:ObjectStatus" >
             <Grid>
                 <vsm:VisualStateManager.VisualStateGroups>
                     <vsm:VisualStateGroup x:Name="CanGet">
@@ -85,9 +85,23 @@
                             </Storyboard>
                         </vsm:VisualState>
                     </vsm:VisualStateGroup>
+                    <vsm:VisualStateGroup x:Name="IsBusy">
+                        <vsm:VisualState x:Name="Busy">
+                            <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="objectBusy"
+                                                               Storyboard.TargetProperty="IsRunning"
+                                                               Duration="0">
+                                    <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </vsm:VisualState>
+                        <vsm:VisualState x:Name="Idle">
+                            <Storyboard />
+                        </vsm:VisualState>
+                    </vsm:VisualStateGroup>
                 </vsm:VisualStateManager.VisualStateGroups>
 
-                <Grid Width="400" Height="300" x:Name="canGet">
+                <Grid Width="700" Height="300" x:Name="canGet">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
@@ -98,6 +112,7 @@
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="200" />
                         <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="300" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Id" />
                     <TextBlock Grid.Column="1" Text="{Binding Id}" />
@@ -110,9 +125,22 @@
                     <TextBox x:Name="txtBirthdate" BorderThickness="2" Grid.Column="1" Grid.Row="2" Text="{Binding BirthDate, Mode=TwoWay}" />
                     <csla:PropertyStatus Property="BirthDate" RelativeTargetName="txtBirthdate" Source="{Binding}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" />
                     
+                    <c:DataGrid ItemsSource="{Binding Addresses}" 
+                                AutoGenerateColumns="False"
+                                Grid.Column="3" 
+                                Grid.RowSpan="4" 
+                                VerticalAlignment="Stretch" 
+                                HorizontalAlignment="Stretch">
+                        <c:DataGrid.Columns>
+                            <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding City}" />
+                            <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding State}" />
+                        </c:DataGrid.Columns>
+                    </c:DataGrid>
+                    
                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
                         <Button Content="Save" Margin="2,2,2,2" x:Name="btnSave" IsEnabled="{Binding IsSavable}" />
                         <Button Content="Delete" Margin="2,2,2,2" x:Name="btnDelete" />
+                        <csla:BusyAnimation x:Name="objectBusy" />
                     </StackPanel>
                 </Grid>
                 <Grid Width="400" Height="300" x:Name="denyGet" Visibility="Collapsed">
@@ -140,19 +168,6 @@
                                 VerticalAlignment="Center" 
                                 Width="64" 
                                 Height="64" />
-            <c:DataGrid Grid.Row="1" x:Name="grid" AutoGenerateColumns="False" >
-                <c:DataGrid.Columns>
-                    <csla:ValidatedDataGridTextColumn Header="Name" DisplayMemberBinding="{Binding Name}">
-                        <csla:ValidatedDataGridTextColumn.PropertyStatusStyle>
-                            <Style TargetType="csla:PropertyStatus">
-                                <Setter Property="Margin" Value="5,0,0,0" />
-                                <Setter Property="Foreground" Value="Yellow" />
-                            </Style>
-                        </csla:ValidatedDataGridTextColumn.PropertyStatusStyle>
-                    </csla:ValidatedDataGridTextColumn>
-                    <csla:ValidatedDataGridCheckBoxColumn Header="Preferred" DisplayMemberBinding="{Binding IsPreferred}" />
-                </c:DataGrid.Columns>
-            </c:DataGrid>
             <StackPanel Orientation="Horizontal" Grid.Row="2">
                 <Button Content="Run as Administrator" x:Name="btnAdmin" Click="btnAdmin_Click"/>
                 <Button Content="Run as User" x:Name="btnUser" Click="btnUser_Click" />

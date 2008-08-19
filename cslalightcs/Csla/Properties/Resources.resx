@@ -309,4 +309,7 @@
   <data name="ObjectNotNull" xml:space="preserve">
     <value>Can not set property if data object is not null</value>
   </data>
+  <data name="BusyObjectsMayNotBeMarkedBusy" xml:space="preserve">
+    <value>Objects that are marked busy may not be marked busy again</value>
+  </data>
 </root>

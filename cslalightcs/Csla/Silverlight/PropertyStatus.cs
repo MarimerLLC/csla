@@ -87,9 +87,9 @@ namespace Csla.Silverlight
       get { return _source; }
       set
       {
-        DetachSource(_source as INotifyPropertyBusy);
+        DetachSource(_source);
         _source = value;
-        AttachSource(_source as INotifyPropertyBusy);
+        AttachSource(_source);
 
         BusinessBase bb = value as BusinessBase;
         if (bb != null)
@@ -141,24 +141,32 @@ namespace Csla.Silverlight
 
     #region Source
 
-    private void AttachSource(INotifyPropertyBusy source)
+    private void AttachSource(object source)
     {
-      if (source != null)
+      INotifyBusy busy = source as INotifyBusy;
+      if (busy != null)
       {
-        source.PropertyIdle += new PropertyChangedEventHandler(source_PropertyIdle);
-        source.PropertyBusy += new PropertyChangedEventHandler(source_PropertyBusy);
-        source.PropertyChanged += new PropertyChangedEventHandler(source_PropertyChanged);
+        busy.PropertyIdle += new PropertyChangedEventHandler(source_PropertyIdle);
+        busy.PropertyBusy += new PropertyChangedEventHandler(source_PropertyBusy);
       }
+
+      INotifyPropertyChanged changed = source as INotifyPropertyChanged;
+      if (changed != null)
+        changed.PropertyChanged += new PropertyChangedEventHandler(source_PropertyChanged);
     }
 
-    private void DetachSource(INotifyPropertyBusy source)
+    private void DetachSource(object source)
     {
-      if (source != null)
+      INotifyBusy busy = source as INotifyBusy;
+      if (busy != null)
       {
-        source.PropertyIdle -= new PropertyChangedEventHandler(source_PropertyIdle);
-        source.PropertyBusy -= new PropertyChangedEventHandler(source_PropertyBusy);
-        source.PropertyChanged -= new PropertyChangedEventHandler(source_PropertyChanged);
+        busy.PropertyIdle -= new PropertyChangedEventHandler(source_PropertyIdle);
+        busy.PropertyBusy -= new PropertyChangedEventHandler(source_PropertyBusy);
       }
+
+      INotifyPropertyChanged changed = source as INotifyPropertyChanged;
+      if (changed != null)
+        changed.PropertyChanged -= new PropertyChangedEventHandler(source_PropertyChanged);
     }
 
     void source_PropertyIdle(object sender, PropertyChangedEventArgs e)

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -65,8 +65,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\Core\AsyncFactoryDelegates.cs">
+      <Link>Core\AsyncFactoryDelegates.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\INotifyBusy.cs">
+      <Link>Core\INotifyBusy.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\ITrackStatus.cs">
       <Link>Core\ITrackStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\LoadManager\AsyncLoader.cs">
+      <Link>Core\LoadManager\AsyncLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\LoadManager\AsyncLoadManager.cs">
+      <Link>Core\LoadManager\AsyncLoadManager.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\MobileBindingList.cs">
       <Link>Core\MobileBindingList.cs</Link>
@@ -143,6 +155,9 @@
     <Compile Include="..\..\cslacs\Csla\Silverlight\Security\WindowsIdentity.cs">
       <Link>Silverlight\Security\WindowsIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Threading\BusyLock.cs">
+      <Link>Threading\BusyLock.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleArgs.cs">
       <Link>Validation\AsyncRuleArgs.cs</Link>
     </Compile>
@@ -218,7 +233,6 @@
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\ChildChangedEventArgs.cs" />
     <Compile Include="Core\IBindingList.cs" />
-    <Compile Include="Core\INotifyPropertyBusy.cs" />
     <Compile Include="Core\ContextDictionary.cs" />
     <Compile Include="Core\ICommandObject.cs" />
     <Compile Include="DataPortalClient\ChildDataPortal.cs" />

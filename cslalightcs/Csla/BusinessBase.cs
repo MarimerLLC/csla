@@ -87,6 +87,7 @@ namespace Csla
         {
           if (IsDirty)
           {
+            MarkBusy();
             DataPortal.BeginUpdate<T>(this, (o, e) =>
             {
               T result = e.Object;

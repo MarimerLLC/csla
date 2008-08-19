@@ -1832,21 +1832,15 @@ namespace Csla.Core
         if (_loadManager == null)
         {
           _loadManager = new AsyncLoadManager();
-          _loadManager.PropertyBusy += new PropertyChangedEventHandler(loadManager_PropertyBusy);
-          _loadManager.PropertyIdle += new PropertyChangedEventHandler(loadManager_PropertyIdle);
+          _loadManager.BusyChanged += new BusyChangedEventHandler(loadManager_BusyChanged);
         }
         return _loadManager;
       }
     }
 
-    void loadManager_PropertyIdle(object sender, PropertyChangedEventArgs e)
+    void loadManager_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      OnPropertyIdle(e);
-    }
-
-    void loadManager_PropertyBusy(object sender, PropertyChangedEventArgs e)
-    {
-      OnPropertyBusy(e);
+      OnBusyChanged(e);
     }
 
     protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
@@ -2172,7 +2166,7 @@ namespace Csla.Core
               foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
               {
                 OnPropertyChanged(property.Name);
-                OnPropertyIdle(new PropertyChangedEventArgs(property.Name));
+                OnBusyChanged(new BusyChangedEventArgs(property.Name, false, null));
               }
             }
           }
@@ -2185,7 +2179,7 @@ namespace Csla.Core
       {
         foreach (IAsyncRuleMethod rule in e.NewItems)
           foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
-            OnPropertyBusy(new PropertyChangedEventArgs(property.Name));
+            OnBusyChanged(new BusyChangedEventArgs(property.Name, true, null));
       }
     }
 
@@ -2289,13 +2283,13 @@ namespace Csla.Core
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
 
       _isBusy = true;
-      OnPropertyBusy(new PropertyChangedEventArgs("IsBusy"));
+      OnBusyChanged(new BusyChangedEventArgs("", true, null));
     }
 
     protected void MarkIdle()
     {
       _isBusy = false;
-      OnPropertyIdle(new PropertyChangedEventArgs("IsBusy"));
+      OnBusyChanged(new BusyChangedEventArgs("", false, null));
     }
 
     public bool IsBusy
@@ -2308,45 +2302,25 @@ namespace Csla.Core
       get { return _isBusy || ValidationRules.IsValidating || LoadManager.IsLoading; }
     }
 
-    void Child_PropertyIdle(object sender, PropertyChangedEventArgs e)
+    void Child_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      OnPropertyIdle(e);
-    }
-
-    void Child_PropertyBusy(object sender, PropertyChangedEventArgs e)
-    {
-      OnPropertyBusy(e);
+      OnBusyChanged(e);
     }
 
     [NotUndoable]
     [NonSerialized]
-    private PropertyChangedEventHandler _propertyBusy;
-    [NotUndoable]
-    [NonSerialized]
-    private PropertyChangedEventHandler _propertyIdle;
+    private BusyChangedEventHandler _busyChanged;
 
-    public event PropertyChangedEventHandler PropertyBusy
+    public event BusyChangedEventHandler BusyChanged
     {
-      add { _propertyBusy = (PropertyChangedEventHandler)Delegate.Combine(_propertyBusy, value); }
-      remove { _propertyBusy = (PropertyChangedEventHandler)Delegate.Remove(_propertyBusy, value); }
+      add { _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value); }
+      remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
-    public event PropertyChangedEventHandler PropertyIdle
+    protected void OnBusyChanged(BusyChangedEventArgs args)
     {
-      add { _propertyIdle = (PropertyChangedEventHandler)Delegate.Combine(_propertyIdle, value); }
-      remove { _propertyIdle = (PropertyChangedEventHandler)Delegate.Remove(_propertyIdle, value); }
-    }
-
-    protected void OnPropertyBusy(PropertyChangedEventArgs args)
-    {
-      if (_propertyBusy != null)
-        _propertyBusy(this, args);
-    }
-
-    protected void OnPropertyIdle(PropertyChangedEventArgs args)
-    {
-      if (_propertyIdle != null)
-        _propertyIdle(this, args);
+      if (_busyChanged != null)
+        _busyChanged(this, args);
     }
 
     #endregion

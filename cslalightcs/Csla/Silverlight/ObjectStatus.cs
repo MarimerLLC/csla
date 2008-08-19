@@ -74,10 +74,7 @@ namespace Csla.Silverlight
 
       INotifyBusy npb = source as INotifyBusy;
       if (npb != null)
-      {
-        npb.PropertyBusy += new PropertyChangedEventHandler(source_PropertyBusy);
-        npb.PropertyIdle += new PropertyChangedEventHandler(source_PropertyIdle);
-      }
+        npb.BusyChanged += new BusyChangedEventHandler(source_PropertyBusy);
     }
 
     private void DetachSource(object source)
@@ -88,21 +85,14 @@ namespace Csla.Silverlight
 
       INotifyBusy npb = source as INotifyBusy;
       if (npb != null)
-      {
-        npb.PropertyBusy -= new PropertyChangedEventHandler(source_PropertyBusy);
-        npb.PropertyIdle -= new PropertyChangedEventHandler(source_PropertyIdle);
-      }
+        npb.BusyChanged -= new BusyChangedEventHandler(source_PropertyBusy);
+
     }
 
-    void source_PropertyIdle(object sender, PropertyChangedEventArgs e)
+    void source_PropertyBusy(object sender, BusyChangedEventArgs e)
     {
-      IsBusy = false;
-      GoToState(true);
-    }
-
-    void source_PropertyBusy(object sender, PropertyChangedEventArgs e)
-    {
-      IsBusy = true;
+      INotifyBusy busy = (INotifyBusy)sender;
+      IsBusy = busy.IsBusy;
       GoToState(true);
     }
 

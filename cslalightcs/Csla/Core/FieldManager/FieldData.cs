@@ -175,13 +175,7 @@ namespace Csla.Core.FieldManager
 
     #region INotifyBusy Members
 
-    event System.ComponentModel.PropertyChangedEventHandler INotifyBusy.PropertyBusy
-    {
-      add { throw new NotImplementedException(); }
-      remove { throw new NotImplementedException(); }
-    }
-
-    event System.ComponentModel.PropertyChangedEventHandler INotifyBusy.PropertyIdle
+    event BusyChangedEventHandler INotifyBusy.BusyChanged
     {
       add { throw new NotImplementedException(); }
       remove { throw new NotImplementedException(); }

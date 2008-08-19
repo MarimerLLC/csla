@@ -105,33 +105,18 @@ namespace Csla.Core
 
     [NotUndoable]
     [NonSerialized]
-    private PropertyChangedEventHandler _propertyBusy = null;
-    [NotUndoable]
-    [NonSerialized]
-    private PropertyChangedEventHandler _propertyIdle = null;
+    private BusyChangedEventHandler _busyChanged = null;
 
-    public event PropertyChangedEventHandler PropertyBusy
+    public event BusyChangedEventHandler BusyChanged
     {
-      add { _propertyBusy = (PropertyChangedEventHandler)Delegate.Combine(_propertyBusy, value); }
-      remove { _propertyBusy = (PropertyChangedEventHandler)Delegate.Remove(_propertyBusy, value); }
+      add { _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value); }
+      remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
-    public event PropertyChangedEventHandler PropertyIdle
+    protected void OnBusyChanged(BusyChangedEventArgs args)
     {
-      add { _propertyIdle = (PropertyChangedEventHandler)Delegate.Combine(_propertyIdle, value); }
-      remove { _propertyIdle = (PropertyChangedEventHandler)Delegate.Remove(_propertyIdle, value); }
-    }
-
-    protected void OnPropertyBusy(PropertyChangedEventArgs args)
-    {
-      if (_propertyBusy != null)
-        _propertyBusy(this, args);
-    }
-
-    protected void OnPropertyIdle(PropertyChangedEventArgs args)
-    {
-      if (_propertyIdle != null)
-        _propertyIdle(this, args);
+      if (_busyChanged != null)
+        _busyChanged(this, args);
     }
 
     public virtual bool IsBusy

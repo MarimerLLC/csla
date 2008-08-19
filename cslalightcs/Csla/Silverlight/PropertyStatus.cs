@@ -145,10 +145,7 @@ namespace Csla.Silverlight
     {
       INotifyBusy busy = source as INotifyBusy;
       if (busy != null)
-      {
-        busy.PropertyIdle += new PropertyChangedEventHandler(source_PropertyIdle);
-        busy.PropertyBusy += new PropertyChangedEventHandler(source_PropertyBusy);
-      }
+        busy.BusyChanged += new BusyChangedEventHandler(source_BusyChanged);
 
       INotifyPropertyChanged changed = source as INotifyPropertyChanged;
       if (changed != null)
@@ -159,28 +156,17 @@ namespace Csla.Silverlight
     {
       INotifyBusy busy = source as INotifyBusy;
       if (busy != null)
-      {
-        busy.PropertyIdle -= new PropertyChangedEventHandler(source_PropertyIdle);
-        busy.PropertyBusy -= new PropertyChangedEventHandler(source_PropertyBusy);
-      }
+        busy.BusyChanged -= new BusyChangedEventHandler(source_BusyChanged);
 
       INotifyPropertyChanged changed = source as INotifyPropertyChanged;
       if (changed != null)
         changed.PropertyChanged -= new PropertyChangedEventHandler(source_PropertyChanged);
     }
 
-    void source_PropertyIdle(object sender, PropertyChangedEventArgs e)
+    void source_BusyChanged(object sender, BusyChangedEventArgs e)
     {
       if (e.PropertyName == Property)
-        _isBusy = false;
-
-      UpdateState();
-    }
-
-    void source_PropertyBusy(object sender, PropertyChangedEventArgs e)
-    {
-      if (e.PropertyName == Property)
-        _isBusy = true;
+        _isBusy = e.Busy;
 
       UpdateState();
     }

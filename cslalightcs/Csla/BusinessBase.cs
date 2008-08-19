@@ -43,6 +43,80 @@ namespace Csla
     #region Data Access
 
     /// <summary>
+    /// Override this method to load a new business object with default
+    /// values from the database.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    {
+      ValidationRules.CheckRules();
+    }
+
+    /// <summary>
+    /// Override this method to allow insertion of a business
+    /// object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    {
+      throw new NotSupportedException(Resources.InsertNotSupportedException);
+    }
+
+    /// <summary>
+    /// Override this method to allow update of a business
+    /// object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_Update(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    {
+      throw new NotSupportedException(Resources.UpdateNotSupportedException);
+    }
+
+    /// <summary>
+    /// Override this method to allow deferred deletion of a business object.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_DeleteSelf(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    {
+      throw new NotSupportedException(Resources.DeleteNotSupportedException);
+    }
+
+    #endregion
+
+    #region ISavable Members
+
+    void Csla.Core.ISavable.BeginSave()
+    {
+      BeginSave();
+    }
+
+    void ISavable.SaveComplete(object newObject, Exception error)
+    {
+      OnSaved((T)newObject, error);
+    }
+
+    /// <summary>
+    /// Event raised when an object has been saved.
+    /// </summary>
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+
+    /// <summary>
+    /// Raises the Saved event, indicating that the
+    /// object has been saved, and providing a reference
+    /// to the new object instance.
+    /// </summary>
+    /// <param name="newObject">The new object instance.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void OnSaved(T newObject, Exception error)
+    {
+      if (Saved != null)
+        Saved(this, new SavedEventArgs(newObject, error));
+    }
+
+    /// <summary>
     /// Saves the object to the database.
     /// </summary>
     /// <remarks>
@@ -75,31 +149,31 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-      public virtual void BeginSave()
+    public virtual void BeginSave()
+    {
+      if (this.IsChild)
+        OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
+      else if (EditLevel > 0)
+        OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
+      else if (!IsValid && !IsDeleted)
+        OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
+      else
       {
-        if (this.IsChild)
-          OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
-        else if (EditLevel > 0)
-          OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
-        else if (!IsValid && !IsDeleted)
-          OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
+        if (IsDirty)
+        {
+          MarkBusy();
+          DataPortal.BeginUpdate<T>(this, (o, e) =>
+          {
+            T result = e.Object;
+            OnSaved(result, e.Error);
+          });
+        }
         else
         {
-          if (IsDirty)
-          {
-            MarkBusy();
-            DataPortal.BeginUpdate<T>(this, (o, e) =>
-            {
-              T result = e.Object;
-              OnSaved(result, e.Error);
-            });
-          }
-          else
-          {
-            OnSaved((T)this, null);
-          }
+          OnSaved((T)this, null);
         }
       }
+    }
 
     public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
     {
@@ -183,80 +257,6 @@ namespace Csla
         MarkDirty(true);
       }
       this.BeginSave(handler);
-    }
-
-    /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
-    {
-      ValidationRules.CheckRules();
-    }
-
-    /// <summary>
-    /// Override this method to allow insertion of a business
-    /// object.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
-    {
-      throw new NotSupportedException(Resources.InsertNotSupportedException);
-    }
-
-    /// <summary>
-    /// Override this method to allow update of a business
-    /// object.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual void DataPortal_Update(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
-    {
-      throw new NotSupportedException(Resources.UpdateNotSupportedException);
-    }
-
-    /// <summary>
-    /// Override this method to allow deferred deletion of a business object.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual void DataPortal_DeleteSelf(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
-    {
-      throw new NotSupportedException(Resources.DeleteNotSupportedException);
-    }
-
-    #endregion
-
-    #region ISavable Members
-
-    void Csla.Core.ISavable.Save()
-    {
-      BeginSave();
-    }
-
-    void ISavable.SaveComplete(object newObject, Exception error)
-    {
-      OnSaved((T)newObject, error);
-    }
-
-    /// <summary>
-    /// Event raised when an object has been saved.
-    /// </summary>
-    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
-
-    /// <summary>
-    /// Raises the Saved event, indicating that the
-    /// object has been saved, and providing a reference
-    /// to the new object instance.
-    /// </summary>
-    /// <param name="newObject">The new object instance.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception error)
-    {
-      if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject, error));
     }
 
     #endregion

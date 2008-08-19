@@ -700,7 +700,7 @@ namespace Csla
 
     #region ISavable Members
 
-    void ISavable.Save()
+    void ISavable.BeginSave()
     {
       BeginSave();
     }

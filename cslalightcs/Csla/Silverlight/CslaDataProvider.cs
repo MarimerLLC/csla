@@ -138,7 +138,7 @@ namespace Csla.Silverlight
       if (obj != null)
       {
         obj.Saved += new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
-        obj.Save();
+        obj.BeginSave();
       }
     }
 

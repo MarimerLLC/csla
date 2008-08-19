@@ -9,10 +9,10 @@ namespace Csla.Core
   public interface ISavable
   {
     /// <summary>
-    /// Saves the object to the database.
+    /// Saves the object to the database asynchronously. The saved event will contain
+    /// the new object when the save operation completes.
     /// </summary>
-    /// <returns>A new object containing the saved values.</returns>
-    void Save();
+    void BeginSave();
     /// <summary>
     /// INTERNAL CSLA .NET USE ONLY.
     /// </summary>

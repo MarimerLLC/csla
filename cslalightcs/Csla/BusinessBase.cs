@@ -112,6 +112,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnSaved(T newObject, Exception error)
     {
+      MarkIdle();
       if (Saved != null)
         Saved(this, new SavedEventArgs(newObject, error));
     }

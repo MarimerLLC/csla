@@ -21,7 +21,9 @@ namespace Csla
     IUndoableObject,
     ISavable,
     ITrackStatus,
-    IDataPortalTarget
+    IDataPortalTarget,
+    IParent,
+    ISupportUndo
     where T: BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -118,6 +120,244 @@ namespace Csla
     public bool ContainsDeleted(C item)
     {
       return DeletedList.Contains(item);
+    }
+
+    #endregion
+
+    #region Begin/Cancel/ApplyEdit
+
+    /// <summary>
+    /// Starts a nested edit on the object.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// When this method is called the object takes a snapshot of
+    /// its current state (the values of its variables). This snapshot
+    /// can be restored by calling <see cref="CancelEdit" />
+    /// or committed by calling <see cref="ApplyEdit" />.
+    /// </para><para>
+    /// This is a nested operation. Each call to BeginEdit adds a new
+    /// snapshot of the object's state to a stack. You should ensure that 
+    /// for each call to BeginEdit there is a corresponding call to either 
+    /// CancelEdit or ApplyEdit to remove that snapshot from the stack.
+    /// </para><para>
+    /// See Chapters 2 and 3 for details on n-level undo and state stacking.
+    /// </para><para>
+    /// This method triggers the copying of all child object states.
+    /// </para>
+    /// </remarks>
+    public void BeginEdit()
+    {
+      if (this.IsChild)
+        throw new NotSupportedException(Resources.NoBeginEditChildException);
+
+      CopyState(this.EditLevel + 1);
+    }
+
+    /// <summary>
+    /// Cancels the current edit process, restoring the object's state to
+    /// its previous values.
+    /// </summary>
+    /// <remarks>
+    /// Calling this method causes the most recently taken snapshot of the 
+    /// object's state to be restored. This resets the object's values
+    /// to the point of the last <see cref="BeginEdit" />
+    /// call.
+    /// <para>
+    /// This method triggers an undo in all child objects.
+    /// </para>
+    /// </remarks>
+    public void CancelEdit()
+    {
+      if (this.IsChild)
+        throw new NotSupportedException(Resources.NoCancelEditChildException);
+
+      UndoChanges(this.EditLevel - 1);
+    }
+
+    /// <summary>
+    /// Commits the current edit process.
+    /// </summary>
+    /// <remarks>
+    /// Calling this method causes the most recently taken snapshot of the 
+    /// object's state to be discarded, thus committing any changes made
+    /// to the object's state since the last 
+    /// <see cref="BeginEdit" /> call.
+    /// <para>
+    /// This method triggers an <see cref="Core.BusinessBase.ApplyEdit"/>
+    ///  in all child objects.
+    /// </para>
+    /// </remarks>
+    public void ApplyEdit()
+    {
+      if (this.IsChild)
+        throw new NotSupportedException(Resources.NoApplyEditChildException);
+
+      AcceptChanges(this.EditLevel - 1);
+    }
+    #endregion
+
+    #region Insert, Remove, Clear
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnChildPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    { }
+
+    private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+     
+      OnChildPropertyChanged(sender, e);
+    }
+
+    void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
+    {
+      //RemoveFromMap((C)child);
+      Remove((C)child);
+      //RemoveIndexItem((C)child);
+    }
+
+    void Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
+    {
+      EditChildComplete(child);
+    }
+
+    /// <summary>
+    /// Override this method to be notified when a child object's
+    /// <see cref="Core.BusinessBase.ApplyEdit" /> method has
+    /// completed.
+    /// </summary>
+    /// <param name="child">The child object that was edited.</param>
+    protected virtual void EditChildComplete(Core.IEditableBusinessObject child)
+    {
+
+      // do nothing, we don't really care
+      // when a child has its edits applied
+    }
+
+    /// <summary>
+    /// Sets the edit level of the child object as it is added.
+    /// </summary>
+    /// <param name="index">Index of the item to insert.</param>
+    /// <param name="item">Item to insert.</param>
+    protected override void InsertItem(int index, C item)
+    {
+      // set parent reference
+      item.SetParent(this);
+      // set child edit level
+      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+      // when an object is inserted we assume it is
+      // a new object and so the edit level when it was
+      // added must be set
+      item.EditLevelAdded = _editLevel;
+      //InsertIndexItem(item);
+      base.InsertItem(index, item);
+      //InsertIntoMap(item, index);
+    }
+
+    /// <summary>
+    /// Marks the child object for deletion and moves it to
+    /// the collection of deleted objects.
+    /// </summary>
+    /// <param name="index">Index of the item to remove.</param>
+    protected override void RemoveItem(int index)
+    {
+      // when an object is 'removed' it is really
+      // being deleted, so do the deletion work
+      C child = this[index];
+      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
+      try
+      {
+        this.RaiseListChangedEvents = false;
+        //RemoveIndexItem(child);
+        //RemoveFromMap(child);
+        base.RemoveItem(index);
+      }
+      finally
+      {
+        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
+      }
+      if (!_completelyRemoveChild)
+      {
+        // the child shouldn't be completely removed,
+        // so copy it to the deleted list
+        CopyToDeletedList(child);
+      }
+      //if (RaiseListChangedEvents)
+        //OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
+    }
+
+    private void CopyToDeletedList(C child)
+    {
+      DeleteChild(child);
+      INotifyPropertyChanged c = child as INotifyPropertyChanged;
+      if (c != null)
+        c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+
+      //INotifyBusy b = child as INotifyBusy;
+      //if (b != null)
+      //{
+      //  b.PropertyBusy -= new PropertyChangedEventHandler(Child_PropertyBusy);
+      //  b.PropertyIdle -= new PropertyChangedEventHandler(Child_PropertyIdle);
+      //}
+    }
+
+    /// <summary>
+    /// Clears the collection, moving all active
+    /// items to the deleted list.
+    /// </summary>
+    protected override void ClearItems()
+    {
+      while (base.Count > 0) RemoveItem(0);
+      //DeferredLoadIndexIfNotLoaded();
+      //_indexSet.ClearIndexes();
+      //DeferredLoadPositionMapIfNotLoaded();
+      //_positionMap.ClearMap();
+      base.ClearItems();
+    }
+
+    /// <summary>
+    /// Replaces the item at the specified index with
+    /// the specified item, first moving the original
+    /// item to the deleted list.
+    /// </summary>
+    /// <param name="index">The zero-based index of the item to replace.</param>
+    /// <param name="item">
+    /// The new value for the item at the specified index. 
+    /// The value can be null for reference types.
+    /// </param>
+    /// <remarks></remarks>
+    protected override void SetItem(int index, C item)
+    {
+      C child = default(C);
+      if (!(ReferenceEquals((C)(this[index]), item)))
+        child = this[index];
+      // replace the original object with this new
+      // object
+      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
+      try
+      {
+        this.RaiseListChangedEvents = false;
+        // set parent reference
+        item.SetParent(this);
+        // set child edit level
+        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+        // reset EditLevelAdded 
+        item.EditLevelAdded = this.EditLevel;
+        // update the indexes
+        //ReIndexItem(item);
+        //RemoveFromMap(item);
+        // add to list
+        base.SetItem(index, item);
+        //InsertIntoMap(item, index);
+      }
+      finally
+      {
+        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
+      }
+      if (child != null)
+        CopyToDeletedList(child);
+      //if (RaiseListChangedEvents)
+      //  OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
     }
 
     #endregion

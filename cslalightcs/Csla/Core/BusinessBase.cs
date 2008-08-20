@@ -2035,7 +2035,8 @@ namespace Csla.Core
       _neverCommitted = info.GetValue<bool>("Csla.Core.BusinessBase._neverCommitted");
       _disableIEditableObject = info.GetValue<bool>("Csla.Core.BusinessBase._disableIEditableObject");
       _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
-      _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
+      if (mode != StateMode.Undo)
+        _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
     }
 
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)

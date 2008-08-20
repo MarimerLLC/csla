@@ -11,6 +11,10 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Csla.Properties;
+using System.Reflection;
+using Csla.Reflection;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Csla.Silverlight
 {
@@ -20,17 +24,19 @@ namespace Csla.Silverlight
   /// </summary>
   public class CslaDataProvider : INotifyPropertyChanged
   {
+
+    #region Properties
     private object _dataObject;
 
     /// <summary>
     /// Gets or sets a reference to the
     /// object containing the data for binding.
     /// </summary>
-    public object Data 
+    public object Data
     {
-      get 
-      { 
-        return _dataObject; 
+      get
+      {
+        return _dataObject;
       }
       set
       {
@@ -51,7 +57,7 @@ namespace Csla.Silverlight
           // Silverlight seems to throw a meaningless null ref exception
           // and this is a workaround to ignore it
           var o = ex;
-        } 
+        }
       }
     }
 
@@ -65,28 +71,92 @@ namespace Csla.Silverlight
     public bool ManageObjectLifetime
     {
       get { return _manageObjectLifetime; }
-      set 
+      set
       {
         if (_dataObject != null)
           throw new NotSupportedException(Resources.ObjectNotNull);
-        _manageObjectLifetime = value; 
+        _manageObjectLifetime = value;
       }
     }
 
-    /// <summary>
-    /// Async event handler to be called when a
-    /// data portal create or fetch operation
-    /// completes.
-    /// </summary>
-    /// <param name="sender">
-    /// Data portal object completing the async operation.
-    /// </param>
-    /// <param name="e">
-    /// Async data portal result object.
-    /// </param>
-    public void DataPortalMethodCompleted(object sender, IDataPortalResult e)
+    private bool _isInitialLoadEnabled = false;
+    private bool _isInitialLoadCompleted = false;
+
+    public bool IsInitialLoadEnabled
     {
-      Data = e.Object;
+      get { return _isInitialLoadEnabled; }
+      set
+      {
+        if (_dataObject != null)
+          throw new NotSupportedException(Resources.ObjectNotNull);
+        _isInitialLoadEnabled = value;
+        InitialFetch();
+      }
+    }
+
+    private string _objectType;
+    public string ObjectType
+    {
+      get
+      {
+        return _objectType;
+      }
+      set
+      {
+        _objectType = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("ObjectType"));
+        InitialFetch();
+      }
+    }
+
+    private string _fetchFactoryMethod;
+    public string FetchFactoryMethod
+    {
+      get
+      {
+        return _fetchFactoryMethod;
+      }
+      set
+      {
+        _fetchFactoryMethod = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("FetchFactoryMethod"));
+        InitialFetch();
+      }
+    }
+
+    private string _createFactoryMethod;
+    public string CreateFactoryMethod
+    {
+      get
+      {
+        return _createFactoryMethod;
+      }
+      set
+      {
+        _createFactoryMethod = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("CreateFactoryMethod"));
+      }
+    }
+
+    private ObservableCollection<object> _factoryParameters;
+    public ObservableCollection<object> FactoryParameters
+    {
+      get 
+      {
+        if (_factoryParameters == null)
+          _factoryParameters = new ObservableCollection<object>();
+        return _factoryParameters; 
+      }
+      set
+      {
+        _factoryParameters =
+          new ObservableCollection<object>();
+        List<object> temp = new List<object>(value);
+        foreach (object oneParameters in temp)
+        {
+          _factoryParameters.Add(oneParameters);
+        }
+      }
     }
 
     private Exception _error;
@@ -104,7 +174,9 @@ namespace Csla.Silverlight
         OnPropertyChanged(new PropertyChangedEventArgs("Error"));
       }
     }
+    #endregion
 
+    #region Operations
     /// <summary>
     /// Cancels any changes to the object.
     /// </summary>
@@ -137,6 +209,7 @@ namespace Csla.Silverlight
       var obj = _dataObject as Csla.Core.ISavable;
       if (obj != null)
       {
+        obj.Saved -= new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
         obj.Saved += new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
         obj.BeginSave();
       }
@@ -158,6 +231,126 @@ namespace Csla.Silverlight
       var obj = _dataObject as Csla.Core.BusinessBase;
       if (obj != null && !obj.IsChild)
         obj.Delete();
+    }
+
+    public void FetchCompleted(object sender, CslaDataProviderQueryCompletedEventArgs e)
+    {
+      if (_manageObjectLifetime && e.Data != null && e.Error == null)
+      {
+        this.Data = e.Data;
+        this.Error = e.Error;
+        _isInitialLoadCompleted = true;
+      }
+    }
+
+    private void InitialFetch()
+    {
+      if (_isInitialLoadEnabled && !_isInitialLoadCompleted)
+      {
+        Fetch();
+      }
+    }
+    
+    public void Fetch()
+    {
+      if (_objectType != null && _fetchFactoryMethod != null)
+        try
+        {
+          BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+          List<object> parameters = new List<object>(FactoryParameters);
+          parameters.Add(new EventHandler<CslaDataProviderQueryCompletedEventArgs>(FetchCompleted));
+          Type objectType = Type.GetType(_objectType);
+          MethodInfo factory = objectType.GetMethod(
+            _fetchFactoryMethod, flags, null,
+            MethodCaller.GetParameterTypes(parameters.ToArray()), null);
+
+          if (factory == null)
+          {
+            // strongly typed factory couldn't be found
+            // so find one with the correct number of
+            // parameters 
+            int parameterCount = parameters.ToArray().Length;
+            MethodInfo[] methods = objectType.GetMethods(flags);
+            foreach (MethodInfo method in methods)
+              if (method.Name == _fetchFactoryMethod && method.GetParameters().Length == parameterCount)
+              {
+                factory = method;
+                break;
+              }
+          }
+          if (factory == null)
+          {
+            // no matching factory could be found
+            // so throw exception
+            throw new InvalidOperationException(
+              string.Format(Resources.NoSuchFactoryMethod, _fetchFactoryMethod));
+          }
+
+          // invoke factory method
+          try
+          {
+            factory.Invoke(null,parameters.ToArray());
+          }
+          catch (Exception ex)
+          {
+            _error = ex;
+          }
+        }
+        catch (Exception ex)
+        {
+          _error = ex;
+        }
+    }
+
+    public void Create()
+    {
+      if (_objectType != null && _fetchFactoryMethod != null)
+        try
+        {
+          BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+          List<object> parameters = new List<object>(FactoryParameters);
+          parameters.Add(new EventHandler<CslaDataProviderQueryCompletedEventArgs>(FetchCompleted));
+          Type objectType = Type.GetType(_objectType);
+          MethodInfo factory = objectType.GetMethod(
+            _createFactoryMethod, flags, null,
+            MethodCaller.GetParameterTypes(parameters.ToArray()), null);
+
+          if (factory == null)
+          {
+            // strongly typed factory couldn't be found
+            // so find one with the correct number of
+            // parameters 
+            int parameterCount = parameters.ToArray().Length;
+            MethodInfo[] methods = objectType.GetMethods(flags);
+            foreach (MethodInfo method in methods)
+              if (method.Name == _fetchFactoryMethod && method.GetParameters().Length == parameterCount)
+              {
+                factory = method;
+                break;
+              }
+          }
+          if (factory == null)
+          {
+            // no matching factory could be found
+            // so throw exception
+            throw new InvalidOperationException(
+              string.Format(Resources.NoSuchFactoryMethod, _fetchFactoryMethod));
+          }
+
+          // invoke factory method
+          try
+          {
+            factory.Invoke(null, parameters.ToArray());
+          }
+          catch (Exception ex)
+          {
+            _error = ex;
+          }
+        }
+        catch (Exception ex)
+        {
+          _error = ex;
+        }
     }
 
     /// <summary>
@@ -184,7 +377,8 @@ namespace Csla.Silverlight
       if (obj != null)
         obj.Remove(item);
     }
-    
+    #endregion
+
     #region INotifyPropertyChanged Members
 
     /// <summary>

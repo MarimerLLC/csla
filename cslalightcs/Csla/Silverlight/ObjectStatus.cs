@@ -86,7 +86,6 @@ namespace Csla.Silverlight
       INotifyBusy npb = source as INotifyBusy;
       if (npb != null)
         npb.BusyChanged -= new BusyChangedEventHandler(source_PropertyBusy);
-
     }
 
     void source_PropertyBusy(object sender, BusyChangedEventArgs e)

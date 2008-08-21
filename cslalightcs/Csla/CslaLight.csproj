@@ -71,8 +71,14 @@
     <Compile Include="..\..\cslacs\Csla\Core\BusyChangedEventArgs.cs">
       <Link>Core\BusyChangedEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\ErrorEventArgs.cs">
+      <Link>Core\ErrorEventArgs.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\INotifyBusy.cs">
       <Link>Core\INotifyBusy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\INotifyUnhandledAsyncException.cs">
+      <Link>Core\INotifyUnhandledAsyncException.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\ITrackStatus.cs">
       <Link>Core\ITrackStatus.cs</Link>

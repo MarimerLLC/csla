@@ -16,14 +16,14 @@ namespace Csla
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class BusinessListBase<T, C> : Core.ExtendedBindingList<C>, 
+  public abstract class BusinessListBase<T, C> : ExtendedBindingList<C>, 
     ICloneable, 
     IUndoableObject,
     ISavable,
     ITrackStatus,
     IDataPortalTarget,
     IParent,
-    ISupportUndo
+    IEditableCollection
     where T: BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -195,26 +195,6 @@ namespace Csla
 
       AcceptChanges(this.EditLevel - 1);
     }
-    #endregion
-
-    #region Insert, Remove, Clear
-
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnChildPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    { }
-
-    private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-     
-      OnChildPropertyChanged(sender, e);
-    }
-
-    void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
-    {
-      //RemoveFromMap((C)child);
-      Remove((C)child);
-      //RemoveIndexItem((C)child);
-    }
 
     void Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
     {
@@ -234,6 +214,39 @@ namespace Csla
       // when a child has its edits applied
     }
 
+    #endregion
+
+    #region Insert, Remove, Clear
+
+    //[EditorBrowsable(EditorBrowsableState.Advanced)]
+    //protected virtual void OnChildPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    //{ }
+
+    //private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    //{
+    //  OnChildPropertyChanged(sender, e);
+    //}
+
+    /// <summary>
+    /// This method is called by a child object when it
+    /// wants to be removed from the collection.
+    /// </summary>
+    /// <param name="child">The child object to remove.</param>
+    void IEditableCollection.RemoveChild(IEditableBusinessObject child)
+    {
+      Remove((C)child);
+    }
+
+    /// <summary>
+    /// This method is called by a child object when it
+    /// wants to be removed from the collection.
+    /// </summary>
+    /// <param name="child">The child object to remove.</param>
+    void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
+    {
+      Remove((C)child);
+    }
+
     /// <summary>
     /// Sets the edit level of the child object as it is added.
     /// </summary>
@@ -249,9 +262,7 @@ namespace Csla
       // a new object and so the edit level when it was
       // added must be set
       item.EditLevelAdded = _editLevel;
-      //InsertIndexItem(item);
       base.InsertItem(index, item);
-      //InsertIntoMap(item, index);
     }
 
     /// <summary>
@@ -268,8 +279,6 @@ namespace Csla
       try
       {
         this.RaiseListChangedEvents = false;
-        //RemoveIndexItem(child);
-        //RemoveFromMap(child);
         base.RemoveItem(index);
       }
       finally
@@ -280,39 +289,10 @@ namespace Csla
       {
         // the child shouldn't be completely removed,
         // so copy it to the deleted list
-        CopyToDeletedList(child);
+        DeleteChild(child);
       }
-      //if (RaiseListChangedEvents)
-        //OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
-    }
-
-    private void CopyToDeletedList(C child)
-    {
-      DeleteChild(child);
-      INotifyPropertyChanged c = child as INotifyPropertyChanged;
-      if (c != null)
-        c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
-
-      //INotifyBusy b = child as INotifyBusy;
-      //if (b != null)
-      //{
-      //  b.PropertyBusy -= new PropertyChangedEventHandler(Child_PropertyBusy);
-      //  b.PropertyIdle -= new PropertyChangedEventHandler(Child_PropertyIdle);
-      //}
-    }
-
-    /// <summary>
-    /// Clears the collection, moving all active
-    /// items to the deleted list.
-    /// </summary>
-    protected override void ClearItems()
-    {
-      while (base.Count > 0) RemoveItem(0);
-      //DeferredLoadIndexIfNotLoaded();
-      //_indexSet.ClearIndexes();
-      //DeferredLoadPositionMapIfNotLoaded();
-      //_positionMap.ClearMap();
-      base.ClearItems();
+      if (RaiseListChangedEvents)
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index));
     }
 
     /// <summary>
@@ -343,21 +323,31 @@ namespace Csla
         Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
         // reset EditLevelAdded 
         item.EditLevelAdded = this.EditLevel;
-        // update the indexes
-        //ReIndexItem(item);
-        //RemoveFromMap(item);
         // add to list
         base.SetItem(index, item);
-        //InsertIntoMap(item, index);
       }
       finally
       {
         this.RaiseListChangedEvents = oldRaiseListChangedEvents;
       }
       if (child != null)
-        CopyToDeletedList(child);
-      //if (RaiseListChangedEvents)
-      //  OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+        DeleteChild(child);
+      if (RaiseListChangedEvents)
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index));
+    }
+
+    /// <summary>
+    /// Clears the collection, moving all active
+    /// items to the deleted list.
+    /// </summary>
+    protected override void ClearItems()
+    {
+      while (base.Count > 0) RemoveItem(0);
+      //DeferredLoadIndexIfNotLoaded();
+      //_indexSet.ClearIndexes();
+      //DeferredLoadPositionMapIfNotLoaded();
+      //_positionMap.ClearMap();
+      base.ClearItems();
     }
 
     #endregion
@@ -715,6 +705,19 @@ namespace Csla
 
     #endregion
 
+    #region Serialization Notification
+
+    protected internal override void OnDeserializedInternal()
+    {
+      foreach (Core.IEditableBusinessObject child in this)
+        child.SetParent(this);
+
+      foreach (Core.IEditableBusinessObject child in DeletedList)
+        child.SetParent(this);
+    }
+
+    #endregion
+
     #region  Child Data Access
 
     /// <summary>
@@ -968,6 +971,40 @@ namespace Csla
     }
 
     #endregion
+    
+    #region  Parent/Child link
+
+    [NotUndoable(), NonSerialized()]
+    private Core.IParent _parent;
+
+    /// <summary>
+    /// Provide access to the parent reference for use
+    /// in child object code.
+    /// </summary>
+    /// <remarks>
+    /// This value will be Nothing for root objects.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected Core.IParent Parent
+    {
+      get
+      {
+        return _parent;
+      }
+    }
+
+    /// <summary>
+    /// Used by BusinessListBase as a child object is 
+    /// created to tell the child object about its
+    /// parent.
+    /// </summary>
+    /// <param name="parent">A reference to the parent collection object.</param>
+    void Core.IEditableCollection.SetParent(Core.IParent parent)
+    {
+      _parent = parent;
+    }
+
+    #endregion
 
     #region IDataPortalTarget Members
 
@@ -1013,5 +1050,6 @@ namespace Csla
     }
 
     #endregion
+
   }
 }

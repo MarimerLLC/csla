@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using Csla.Serialization;
+using System.Collections.Generic;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -12,7 +14,8 @@ namespace Csla.Core
   [Serializable]
   public class ExtendedBindingList<T> : MobileBindingList<T>,
     IExtendedBindingList,
-    INotifyBusy
+    INotifyBusy,
+    ISerializationNotification
   {
     #region RemovingItem event
 
@@ -82,6 +85,7 @@ namespace Csla.Core
     protected override void RemoveItem(int index)
     {
       OnRemovingItem(this[index]);
+      RemoveEventHooks(this[index]);
       base.RemoveItem(index);
     }
 
@@ -93,10 +97,77 @@ namespace Csla.Core
     /// Add a range of items to the list.
     /// </summary>
     /// <param name="range">List of items to add.</param>
-    public void AddRange(System.Collections.Generic.IEnumerable<T> range)
+    public void AddRange(IEnumerable<T> range)
     {
       foreach (var element in range)
         this.Add(element);
+    }
+
+    #endregion
+
+    #region AddChildHooks
+
+    protected override void InsertItem(int index, T item)
+    {
+      base.InsertItem(index, item);
+      AddEventHooks(item);
+    }
+
+    private void AddEventHooks(T item)
+    {
+      INotifyBusy busy = item as INotifyBusy;
+      if(busy!=null)
+        busy.BusyChanged += new BusyChangedEventHandler(busy_BusyChanged);
+
+      INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
+      if(unhandled!=null)
+        unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+
+      OnAddEventHooks(item);
+    }
+
+    protected virtual void OnAddEventHooks(T item)
+    {
+    }
+
+    private void RemoveEventHooks(T item)
+    {
+      INotifyBusy busy = item as INotifyBusy;
+      if (busy != null)
+        busy.BusyChanged -= new BusyChangedEventHandler(busy_BusyChanged);
+
+      INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
+      if (unhandled != null)
+        unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+
+      OnRemoveEventHooks(item);
+    }
+
+    protected virtual void OnRemoveEventHooks(T item)
+    {
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete, it is only implemented
+    /// by internal classes to guarantee that they are executed.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected internal virtual void OnDeserializedInternal()
+    {
+      foreach (T item in this)
+        OnAddEventHooks(item);
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnDeserialized()
+    {
+      // do nothing - this is here so a subclass
+      // could override if needed
     }
 
     #endregion
@@ -113,7 +184,12 @@ namespace Csla.Core
       remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
-    protected void OnBusyChanged(BusyChangedEventArgs args)
+    protected void OnBusyChanged(string propertyName, bool busy)
+    {
+      OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
+    }
+
+    protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
       if (_busyChanged != null)
         _busyChanged(this, args);
@@ -127,6 +203,51 @@ namespace Csla.Core
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }
+    }
+
+    void busy_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      OnBusyChanged(e);
+    }
+
+    #endregion
+
+    #region INotifyUnhandledAsyncException Members
+
+    [NotUndoable]
+    [NonSerialized]
+    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+
+    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    {
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+    }
+
+    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    {
+      if (_unhandledAsyncException != null)
+        _unhandledAsyncException(this, error);
+    }
+
+    protected void OnUnhandledAsyncException(object originalSender, Exception error)
+    {
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
+    }
+
+    void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    {
+      OnUnhandledAsyncException(e);
+    }
+
+    #endregion
+
+    #region ISerializationNotification Members
+
+    void ISerializationNotification.Deserialized()
+    {
+      OnDeserializedInternal();
+      OnDeserialized();
     }
 
     #endregion

@@ -1735,6 +1735,10 @@ namespace Csla.Core
           {
             INotifyPropertyChanged pc = (INotifyPropertyChanged)oldValue;
             pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+
+            INotifyBusy nb = (INotifyBusy)oldValue;
+            nb.BusyChanged -= new BusyChangedEventHandler(Child_BusyChanged);
+            nb.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
           }
           if (markDirty)
           {
@@ -1756,6 +1760,10 @@ namespace Csla.Core
             // hook child event
             INotifyPropertyChanged pc = (INotifyPropertyChanged)newValue;
             pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+
+            INotifyBusy nb = (INotifyBusy)newValue;
+            nb.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
+            nb.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
           }
         }
         else if (typeof(IEditableCollection).IsAssignableFrom(propertyInfo.Type))
@@ -1765,6 +1773,10 @@ namespace Csla.Core
           {
             INotifyCollectionChanged pc = (INotifyCollectionChanged)oldValue;
             pc.CollectionChanged -= new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+
+            INotifyBusy nb = (INotifyBusy)oldValue;
+            nb.BusyChanged -= new BusyChangedEventHandler(Child_BusyChanged);
+            nb.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
           }
           if (markDirty)
           {
@@ -1787,6 +1799,10 @@ namespace Csla.Core
             }
             INotifyCollectionChanged pc = (INotifyCollectionChanged)newValue;
             pc.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+
+            INotifyBusy nb = (INotifyBusy)oldValue;
+            nb.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
+            nb.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
           }
         }
         else
@@ -1969,6 +1985,13 @@ namespace Csla.Core
             INotifyCollectionChanged bl = (INotifyCollectionChanged)item;
             bl.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
           }
+        }
+
+        INotifyBusy nb = item as INotifyBusy;
+        if (nb != null)
+        {
+          nb.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
+          nb.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
         }
       }
     }
@@ -2167,7 +2190,7 @@ namespace Csla.Core
               foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
               {
                 OnPropertyChanged(property.Name);
-                OnBusyChanged(new BusyChangedEventArgs(property.Name, false, null));
+                OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
               }
             }
           }
@@ -2180,7 +2203,7 @@ namespace Csla.Core
       {
         foreach (IAsyncRuleMethod rule in e.NewItems)
           foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
-            OnBusyChanged(new BusyChangedEventArgs(property.Name, true, null));
+            OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
       }
     }
 
@@ -2284,13 +2307,13 @@ namespace Csla.Core
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
 
       _isBusy = true;
-      OnBusyChanged(new BusyChangedEventArgs("", true, null));
+      OnBusyChanged(new BusyChangedEventArgs("", true));
     }
 
     protected void MarkIdle()
     {
       _isBusy = false;
-      OnBusyChanged(new BusyChangedEventArgs("", false, null));
+      OnBusyChanged(new BusyChangedEventArgs("", false));
     }
 
     public bool IsBusy
@@ -2308,6 +2331,11 @@ namespace Csla.Core
       OnBusyChanged(e);
     }
 
+    void Child_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    {
+      OnUnhandledAsyncException(e);
+    }
+
     [NotUndoable]
     [NonSerialized]
     private BusyChangedEventHandler _busyChanged;
@@ -2322,6 +2350,31 @@ namespace Csla.Core
     {
       if (_busyChanged != null)
         _busyChanged(this, args);
+    }
+
+    #endregion
+
+    #region INotifyUnhandledAsyncException Members
+
+    [NotUndoable]
+    [NonSerialized]
+    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+
+    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    {
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+    }
+
+    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    {
+      if (_unhandledAsyncException != null)
+        _unhandledAsyncException(this, error);
+    }
+
+    protected void OnUnhandledAsyncException(object originalSender, Exception error)
+    {
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
     }
 
     #endregion

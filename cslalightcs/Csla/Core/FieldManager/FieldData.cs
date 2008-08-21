@@ -199,5 +199,30 @@ namespace Csla.Core.FieldManager
     }
 
     #endregion
+
+    #region INotifyUnhandledAsyncException Members
+
+    [NotUndoable]
+    [NonSerialized]
+    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+
+    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    {
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+    }
+
+    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    {
+      if (_unhandledAsyncException != null)
+        _unhandledAsyncException(this, error);
+    }
+
+    protected void OnUnhandledAsyncException(object originalSender, Exception error)
+    {
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
+    }
+
+    #endregion
   }
 }

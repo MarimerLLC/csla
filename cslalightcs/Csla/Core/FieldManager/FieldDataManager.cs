@@ -546,6 +546,12 @@ namespace Csla.Core.FieldManager
           if (!value.IsDirty)
             data.MarkClean();
         }
+        else
+        {
+          IFieldData data = GetFieldData(property);
+          if (data != null)
+            data.Value = property.DefaultValue;
+        }
       }
 
       base.OnSetState(info, mode);

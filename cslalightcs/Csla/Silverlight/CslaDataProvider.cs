@@ -25,6 +25,16 @@ namespace Csla.Silverlight
   public class CslaDataProvider : INotifyPropertyChanged
   {
 
+    #region Events
+    public event EventHandler DataChanged;
+    protected void OnDataChanged()
+    {
+      if (DataChanged != null)
+        DataChanged(this, EventArgs.Empty);
+    }
+    #endregion
+
+
     #region Properties
     private object _dataObject;
 
@@ -51,6 +61,7 @@ namespace Csla.Silverlight
         try
         {
           OnPropertyChanged(new PropertyChangedEventArgs("Data"));
+          OnDataChanged();
         }
         catch (NullReferenceException ex)
         {
@@ -141,11 +152,11 @@ namespace Csla.Silverlight
     private ObservableCollection<object> _factoryParameters;
     public ObservableCollection<object> FactoryParameters
     {
-      get 
+      get
       {
         if (_factoryParameters == null)
           _factoryParameters = new ObservableCollection<object>();
-        return _factoryParameters; 
+        return _factoryParameters;
       }
       set
       {
@@ -233,13 +244,18 @@ namespace Csla.Silverlight
         obj.Delete();
     }
 
-    public void FetchCompleted(object sender, CslaDataProviderQueryCompletedEventArgs e)
+    private void QueryCompleted(object sender, CslaDataProviderQueryCompletedEventArgs e)
     {
       if (_manageObjectLifetime && e.Data != null && e.Error == null)
       {
         this.Data = e.Data;
         this.Error = e.Error;
         _isInitialLoadCompleted = true;
+      }
+      else if (e.Error != null)
+      {
+        this.Error = e.Error;
+        OnDataChanged();
       }
     }
 
@@ -250,7 +266,7 @@ namespace Csla.Silverlight
         Fetch();
       }
     }
-    
+
     public void Fetch()
     {
       if (_objectType != null && _fetchFactoryMethod != null)
@@ -258,7 +274,7 @@ namespace Csla.Silverlight
         {
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
-          parameters.Add(new EventHandler<CslaDataProviderQueryCompletedEventArgs>(FetchCompleted));
+          parameters.Add(new EventHandler<CslaDataProviderQueryCompletedEventArgs>(QueryCompleted));
           Type objectType = Type.GetType(_objectType);
           MethodInfo factory = objectType.GetMethod(
             _fetchFactoryMethod, flags, null,
@@ -289,7 +305,7 @@ namespace Csla.Silverlight
           // invoke factory method
           try
           {
-            factory.Invoke(null,parameters.ToArray());
+            factory.Invoke(null, parameters.ToArray());
           }
           catch (Exception ex)
           {
@@ -309,7 +325,7 @@ namespace Csla.Silverlight
         {
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
-          parameters.Add(new EventHandler<CslaDataProviderQueryCompletedEventArgs>(FetchCompleted));
+          parameters.Add(new EventHandler<CslaDataProviderQueryCompletedEventArgs>(QueryCompleted));
           Type objectType = Type.GetType(_objectType);
           MethodInfo factory = objectType.GetMethod(
             _createFactoryMethod, flags, null,

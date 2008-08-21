@@ -1800,7 +1800,7 @@ namespace Csla.Core
             INotifyCollectionChanged pc = (INotifyCollectionChanged)newValue;
             pc.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
 
-            INotifyBusy nb = (INotifyBusy)oldValue;
+            INotifyBusy nb = (INotifyBusy)newValue;
             nb.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
             nb.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
           }

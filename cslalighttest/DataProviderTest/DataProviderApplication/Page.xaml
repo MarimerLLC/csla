@@ -9,6 +9,7 @@
     <csla:CslaDataProvider x:Key="CustomerData"
                            ManageObjectLifetime="True"
                            PropertyChanged="CslaDataProvider_PropertyChanged"
+                           DataChanged="CslaDataProvider_DataChanged"
                            IsInitialLoadEnabled="True"
                            ObjectType="ClassLibrary.Business.Customer, ClassLibrary.Business, Version=..., Culture=neutral, PublicKeyToken=null"
                            FetchFactoryMethod="GetCustomer"
@@ -16,6 +17,7 @@
     <csla:CslaDataProvider x:Key="CustomerListData"
                            ManageObjectLifetime="True"
                            PropertyChanged="CslaDataProvider_PropertyChanged"
+                           DataChanged="CslaDataProvider_DataChanged"
                            IsInitialLoadEnabled="True"
                            ObjectType="ClassLibrary.Business.CustomerList, ClassLibrary.Business, Version=..., Culture=neutral, PublicKeyToken=null"
                            FetchFactoryMethod="GetCustomerList"/>                           

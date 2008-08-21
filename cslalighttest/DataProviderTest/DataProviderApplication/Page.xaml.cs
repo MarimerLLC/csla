@@ -26,18 +26,6 @@ namespace DataProviderApplication
     {
       if (e.PropertyName == "Error" && ((Csla.Silverlight.CslaDataProvider)sender).Error != null)
         System.Windows.Browser.HtmlPage.Window.Alert(((Csla.Silverlight.CslaDataProvider)sender).Error.Message);
-      if (e.PropertyName == "Data" && ((Csla.Silverlight.CslaDataProvider)sender).Data != null && Csla.ApplicationContext.GlobalContext.Count>0)
-      {
-        System.Text.StringBuilder builder = new System.Text.StringBuilder();
-        builder.AppendLine("Global Context Information");
-        builder.AppendLine("");
-        foreach (var oneKey in Csla.ApplicationContext.GlobalContext.Keys)
-        {
-          builder.AppendLine(oneKey.ToString() + " = " + Csla.ApplicationContext.GlobalContext[oneKey].ToString());
-        }
-        System.Windows.Browser.HtmlPage.Window.Alert(builder.ToString());
-      }
-      Csla.ApplicationContext.GlobalContext.Clear();
 
     }
 
@@ -97,6 +85,22 @@ namespace DataProviderApplication
           ((CustomerList)((Csla.Silverlight.CslaDataProvider)this.Resources["CustomerListData"]).Data).Remove((Customer)ContactsDetailsGrid.SelectedItem);
         }
       }
+    }
+
+    private void CslaDataProvider_DataChanged(object sender, EventArgs e)
+    {
+      if (((Csla.Silverlight.CslaDataProvider)sender).Data != null && Csla.ApplicationContext.GlobalContext.Count > 0)
+      {
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        builder.AppendLine("Global Context Information");
+        builder.AppendLine("");
+        foreach (var oneKey in Csla.ApplicationContext.GlobalContext.Keys)
+        {
+          builder.AppendLine(oneKey.ToString() + " = " + Csla.ApplicationContext.GlobalContext[oneKey].ToString());
+        }
+        System.Windows.Browser.HtmlPage.Window.Alert(builder.ToString());
+      }
+      Csla.ApplicationContext.GlobalContext.Clear();
     }
   }
 }

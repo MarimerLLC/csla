@@ -233,6 +233,7 @@
       <Link>Validation\ValidationTests.cs</Link>
     </Compile>
     <Compile Include="ApplicationContext\ClientContextTests.client.cs" />
+    <Compile Include="CslaDataProvider\CslaDataProviderTest.cs" />
     <Compile Include="EditableRootListTests\EditableRootListTests.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

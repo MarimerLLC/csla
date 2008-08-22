@@ -8,8 +8,19 @@ namespace Csla.DataPortalClient
 {
   public class LocalProxy<T> : IDataPortalProxy<T> where T : IMobileObject
   {
+    #region Events and Fields
     public delegate void CompletedHandler(T result, Exception ex);
     private object _userState;
+    #endregion
+
+    #region GlobalContext
+
+    public Csla.Core.ContextDictionary GlobalContext
+    {
+      get { return Csla.ApplicationContext.GlobalContext; }
+    }
+
+    #endregion
 
     #region Create
 

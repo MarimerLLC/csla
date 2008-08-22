@@ -18,6 +18,21 @@ namespace Csla
 #endif
   public class DataPortal<T> : DataPortalClient.IDataPortalProxy<T> where T : IMobileObject
   {
+    #region GlobalContext
+
+    public Csla.Core.ContextDictionary GlobalContext
+    {
+      get 
+      {
+        if (_proxy == null)
+          return Csla.ApplicationContext.GlobalContext;
+        else
+          return _proxy.GlobalContext; 
+      }
+    }
+
+    #endregion
+
     private DataPortalClient.IDataPortalProxy<T> _proxy;
 
     /// <summary>

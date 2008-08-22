@@ -62,5 +62,7 @@ namespace Csla.DataPortalClient
     void BeginExecute(T command, object userState);
 
     event EventHandler<DataPortalResult<T>> ExecuteCompleted;
+
+    Csla.Core.ContextDictionary GlobalContext {get;}
   }
 }

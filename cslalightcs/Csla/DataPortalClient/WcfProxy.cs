@@ -59,6 +59,17 @@ namespace Csla.DataPortalClient
         return new WcfPortal.WcfPortalClient();
     }
 
+    #region GlobalContext
+
+    private Csla.Core.ContextDictionary _globalContext;
+
+    public Csla.Core.ContextDictionary GlobalContext
+    {
+      get { return _globalContext; }
+    }
+
+    #endregion
+
     #region Cirteria
     private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
     {
@@ -79,6 +90,7 @@ namespace Csla.DataPortalClient
       return request;
     }
     #endregion
+
     #region Create
 
     public event EventHandler<DataPortalResult<T>> CreateCompleted;
@@ -127,7 +139,7 @@ namespace Csla.DataPortalClient
           var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
-          ApplicationContext.SetGlobalContext((ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext));
+          _globalContext =  (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);
           OnCreateCompleted(new DataPortalResult<T>(obj, null, e.UserState));
         }
         else if (e.Result.ErrorData != null)
@@ -196,7 +208,7 @@ namespace Csla.DataPortalClient
           var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
-          ApplicationContext.SetGlobalContext((ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext));
+          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);
           OnFetchCompleted(new DataPortalResult<T>(obj, null, e.UserState));
         }
         else if (e.Error != null)
@@ -257,7 +269,7 @@ namespace Csla.DataPortalClient
           var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
-          ApplicationContext.SetGlobalContext((ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext));
+          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);
           OnUpdateCompleted(new DataPortalResult<T>(obj, null, e.UserState));
         }
         else if (e.Error != null)
@@ -317,7 +329,7 @@ namespace Csla.DataPortalClient
       {
         if (e.Error == null && response.ErrorData == null)
         {
-          ApplicationContext.SetGlobalContext((ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext));
+          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);
           OnDeleteCompleted(new DataPortalResult<T>(default(T), null, e.UserState));
         }
         else if (e.Result.ErrorData != null)
@@ -375,7 +387,7 @@ namespace Csla.DataPortalClient
           var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
-          ApplicationContext.SetGlobalContext((ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext));
+          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);
           OnExecuteCompleted(new DataPortalResult<T>(obj, null, e.UserState));
         }
         else if (e.Error != null)

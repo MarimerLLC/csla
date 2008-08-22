@@ -546,11 +546,15 @@ namespace Csla.Core.FieldManager
           if (!value.IsDirty)
             data.MarkClean();
         }
-        else
+        else if(mode == StateMode.Undo)
         {
           IFieldData data = GetFieldData(property);
           if (data != null)
-            data.Value = property.DefaultValue;
+          {
+            // We don't want to reset children during an undo.
+            if(!typeof(IBusinessObject).IsAssignableFrom(data.Value.GetType()))
+              data.Value = property.DefaultValue;
+          }
         }
       }
 

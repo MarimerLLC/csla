@@ -236,6 +236,7 @@
     <Compile Include="CslaDataProvider\CslaDataProviderTest.cs" />
     <Compile Include="EditableRootListTests\EditableRootListTests.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
+    <Compile Include="LocalDataPortal\UserStateForPortalTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

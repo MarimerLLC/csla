@@ -85,7 +85,7 @@ namespace Csla.Core
     protected override void RemoveItem(int index)
     {
       OnRemovingItem(this[index]);
-      RemoveEventHooks(this[index]);
+      OnRemoveEventHooksInternal(this[index]);
       base.RemoveItem(index);
     }
 
@@ -105,15 +105,15 @@ namespace Csla.Core
 
     #endregion
 
-    #region AddChildHooks
+    #region Bubbling event Hooks
 
     protected override void InsertItem(int index, T item)
     {
       base.InsertItem(index, item);
-      AddEventHooks(item);
+      OnAddEventHooksInternal(item);
     }
 
-    private void AddEventHooks(T item)
+    protected internal virtual void OnAddEventHooksInternal(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
       if(busy!=null)
@@ -130,7 +130,7 @@ namespace Csla.Core
     {
     }
 
-    private void RemoveEventHooks(T item)
+    protected internal virtual void OnRemoveEventHooksInternal(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
       if (busy != null)
@@ -155,8 +155,6 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal virtual void OnDeserializedInternal()
     {
-      foreach (T item in this)
-        OnAddEventHooks(item);
     }
 
     /// <summary>

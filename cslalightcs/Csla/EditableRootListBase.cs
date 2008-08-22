@@ -98,12 +98,6 @@ namespace Csla
             {
               if (item.IsDeleted)
               {
-                // disconnect event handler if necessary
-                System.ComponentModel.INotifyPropertyChanged c = item as System.ComponentModel.INotifyPropertyChanged;
-                if (c != null)
-                {
-                  c.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(Child_PropertyChanged);
-                }
                 //SafeRemoveItem  will raise INotifyCollectionChanged event
                 SafeRemoveItem(index);
               }
@@ -142,14 +136,6 @@ namespace Csla
 
     private void SafeRemoveItem(int index)
     {
-      //This is needed because we cannot call base.RemoveItem from lambda expression
-      // disconnect event handler if necessary
-      System.ComponentModel.INotifyPropertyChanged c = this[index] as System.ComponentModel.INotifyPropertyChanged;
-      if (c != null)
-      {
-        c.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(Child_PropertyChanged);
-      }
-
       this[index].SetParent(null);
       base.RemoveItem(index);
     }
@@ -239,69 +225,15 @@ namespace Csla
 
     #endregion
 
-    #region  Cascade Child events
-
-    private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-      //for (int index = 0; index < this.Count; index++)
-      //{
-      //  if (ReferenceEquals(this[index], sender))
-      //  {
-      //    NotifyCollectionChangedEventArgs args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, this[index], this[index], index);
-      //    OnCollectionChanged(args);
-      //    return;
-      //  }
-      //}
-      OnChildPropertyChanged(sender, e);
-    }
-
-
-    /// <summary>
-    /// Override this method to be notified when a child object
-    /// has been changed.
-    /// </summary>
-    /// <param name="sender">
-    /// Child object where the PropertyChanged event originated.
-    /// </param>
-    /// <param name="e">
-    /// PropertyChangedEventArgs from the child object.
-    /// </param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnChildPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    { }
-
-    #endregion
 
     #region  Serialization Notification
 
-    void ISerializationNotification.Deserialized()
+    protected internal override void OnDeserializedInternal()
     {
-
-      OnDeserialized();
-      foreach (Core.IEditableBusinessObject child in this)
-      {
+      foreach (IEditableBusinessObject child in this)
         child.SetParent(this);
-        System.ComponentModel.INotifyPropertyChanged c = child as System.ComponentModel.INotifyPropertyChanged;
-        if (c != null)
-        {
-          c.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Child_PropertyChanged);
-        }
-      }
-
-    }
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    /// <param name="context">Serialization context object.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized()
-    {
-
-      // do nothing - this is here so a subclass
-      // could override if needed
-
+      
+      base.OnDeserializedInternal();
     }
 
     #endregion

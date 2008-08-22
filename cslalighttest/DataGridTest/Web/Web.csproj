@@ -57,8 +57,6 @@
   <ItemGroup>
     <Content Include="ClientBin\SilverlightDataGridApp.xap" />
     <Content Include="Default.aspx" />
-    <Content Include="SilverlightDataGridAppTestPage.aspx" />
-    <Content Include="SilverlightDataGridAppTestPage.html" />
     <Content Include="WcfPortal.svc" />
     <Content Include="Web.config" />
   </ItemGroup>

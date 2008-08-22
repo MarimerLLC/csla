@@ -1728,18 +1728,15 @@ namespace Csla.Core
 
       if (valuesDiffer)
       {
+        IBusinessObject old = oldValue as IBusinessObject;
+        if (old != null)
+          OnRemoveEventHooksInternal(old);
+        IBusinessObject @new = newValue as IBusinessObject;
+        if (@new != null)
+          OnAddEventHooksInternal(@new);
+
         if (typeof(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type))
         {
-          // remove old event hook
-          if (oldValue != null)
-          {
-            INotifyPropertyChanged pc = (INotifyPropertyChanged)oldValue;
-            pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
-
-            INotifyBusy nb = (INotifyBusy)oldValue;
-            nb.BusyChanged -= new BusyChangedEventHandler(Child_BusyChanged);
-            nb.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
-          }
           if (markDirty)
           {
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
@@ -1757,27 +1754,10 @@ namespace Csla.Core
             UndoableBase.ResetChildEditLevel(child, this.EditLevel, this.BindingEdit);
             // reset EditLevelAdded 
             child.EditLevelAdded = this.EditLevel;
-            // hook child event
-            INotifyPropertyChanged pc = (INotifyPropertyChanged)newValue;
-            pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
-
-            INotifyBusy nb = (INotifyBusy)newValue;
-            nb.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
-            nb.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
           }
         }
         else if (typeof(IEditableCollection).IsAssignableFrom(propertyInfo.Type))
         {
-          // remove old event hooks
-          if (oldValue != null)
-          {
-            INotifyCollectionChanged pc = (INotifyCollectionChanged)oldValue;
-            pc.CollectionChanged -= new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
-
-            INotifyBusy nb = (INotifyBusy)oldValue;
-            nb.BusyChanged -= new BusyChangedEventHandler(Child_BusyChanged);
-            nb.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
-          }
           if (markDirty)
           {
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
@@ -1797,12 +1777,6 @@ namespace Csla.Core
               // set child edit level
               UndoableBase.ResetChildEditLevel(undoChild, this.EditLevel, this.BindingEdit);
             }
-            INotifyCollectionChanged pc = (INotifyCollectionChanged)newValue;
-            pc.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
-
-            INotifyBusy nb = (INotifyBusy)newValue;
-            nb.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
-            nb.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
           }
         }
         else
@@ -1969,30 +1943,9 @@ namespace Csla.Core
     {
       foreach (object item in FieldManager.GetChildren())
       {
-        IEditableBusinessObject eo = item as IEditableBusinessObject;
-        if (eo != null)
-        {
-          eo.SetParent(this);
-          INotifyPropertyChanged pc = (INotifyPropertyChanged)item;
-          pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
-        }
-        else
-        {
-          IEditableCollection el = item as IEditableCollection;
-          if (el != null)
-          {
-            el.SetParent(this);
-            INotifyCollectionChanged bl = (INotifyCollectionChanged)item;
-            bl.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
-          }
-        }
-
-        INotifyBusy nb = item as INotifyBusy;
-        if (nb != null)
-        {
-          nb.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
-          nb.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
-        }
+        IBusinessObject business = item as IBusinessObject;
+        if (business != null)
+          OnAddEventHooksInternal(business);
       }
     }
 
@@ -2005,6 +1958,74 @@ namespace Csla.Core
     protected void SetProperty<T>(IPropertyInfo propertyInfo, T value)
     {
       FieldManager.SetFieldData<T>(propertyInfo, value);
+    }
+
+    #endregion
+
+    #region Bubbling event Hooks
+
+    protected internal virtual void OnAddEventHooksInternal(IBusinessObject child)
+    {
+      INotifyBusy busy = child as INotifyBusy;
+      if (busy != null)
+        busy.BusyChanged += new BusyChangedEventHandler(busy_BusyChanged);
+
+      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
+      if (unhandled != null)
+        unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+
+      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
+      if (pc != null)
+        pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+
+      INotifyCollectionChanged cc = child as INotifyCollectionChanged;
+      if(cc!=null)
+        cc.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+
+      OnAddEventHooks(child);
+    }
+
+    protected virtual void OnAddEventHooks(IBusinessObject child)
+    {
+    }
+
+    protected internal virtual void OnRemoveEventHooksInternal(IBusinessObject child)
+    {
+      INotifyBusy busy = child as INotifyBusy;
+      if (busy != null)
+        busy.BusyChanged -= new BusyChangedEventHandler(busy_BusyChanged);
+
+      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
+      if (unhandled != null)
+        unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+
+      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
+      if (pc != null)
+        pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+
+      INotifyCollectionChanged cc = child as INotifyCollectionChanged;
+      if (cc != null)
+        cc.CollectionChanged -= new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+
+      OnRemoveEventHooks(child);
+    }
+
+    protected virtual void OnRemoveEventHooks(IBusinessObject child)
+    {
+    }
+
+    #endregion
+
+    #region Busy / Unhandled exception bubbling
+
+    void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    {
+      OnUnhandledAsyncException(e);
+    }
+
+    void busy_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      OnBusyChanged(e);
     }
 
     #endregion
@@ -2346,7 +2367,12 @@ namespace Csla.Core
       remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
-    protected void OnBusyChanged(BusyChangedEventArgs args)
+    protected void OnBusyChanged(string propertyName, bool busy)
+    {
+      OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
+    }
+
+    protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
       if (_busyChanged != null)
         _busyChanged(this, args);
@@ -2622,6 +2648,7 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
+      OnDeserializedInternal();
       OnDeserialized();
       ValidationRules.SetTarget(this);
       ValidationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
@@ -2630,6 +2657,16 @@ namespace Csla.Core
       InitializeBusinessRules();
       InitializeAuthorizationRules();
       FieldDataDeserialized();
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete, it is only implemented
+    /// by internal classes to guarantee that they are executed.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected internal virtual void OnDeserializedInternal()
+    {
     }
 
     /// <summary>

@@ -48,7 +48,7 @@ namespace Csla
     protected void OnSaved(T newObject, Exception error)
     {
       if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject, error));
+        Saved(this, new SavedEventArgs(newObject, error, null));
     }
 
     /// <summary>
@@ -120,12 +120,12 @@ namespace Csla
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
 
               }
-              item.SaveComplete(e.Object, null);
+              item.SaveComplete(e.Object, null, null);
               OnSaved(e.Object, null);
             }
             else
             {
-              item.SaveComplete(item, e.Error);
+              item.SaveComplete(item, e.Error, null);
               OnSaved(item, e.Error);
             }
           };

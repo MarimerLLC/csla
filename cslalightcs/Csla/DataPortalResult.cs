@@ -11,11 +11,13 @@ namespace Csla
   {
     public T Object { get; private set; }
     public Exception Error { get; private set; }
+    public object UserState { get; private set; }
 
-    internal DataPortalResult(T obj, Exception ex)
+    internal DataPortalResult(T obj, Exception ex, object userState)
     {
       this.Object = obj;
       this.Error = ex;
+      this.UserState = userState;
     }
 
     #region IDataPortalResult Members

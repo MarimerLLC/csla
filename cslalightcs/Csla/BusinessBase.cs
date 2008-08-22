@@ -93,9 +93,9 @@ namespace Csla
       BeginSave();
     }
 
-    void ISavable.SaveComplete(object newObject, Exception error)
+    void ISavable.SaveComplete(object newObject, Exception error, object userState)
     {
-      OnSaved((T)newObject, error);
+      OnSaved((T)newObject, error, userState);
     }
 
     /// <summary>
@@ -110,11 +110,11 @@ namespace Csla
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception error)
+    protected void OnSaved(T newObject, Exception error, object userState)
     {
       MarkIdle();
       if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject, error));
+        Saved(this, new SavedEventArgs(newObject, error, userState));
     }
 
     /// <summary>
@@ -152,70 +152,86 @@ namespace Csla
     /// <returns>A new object containing the saved values.</returns>
     public virtual void BeginSave()
     {
-      if (this.IsChild)
-        OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
-      else if (EditLevel > 0)
-        OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
-      else if (!IsValid && !IsDeleted)
-        OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
-      else
-      {
-        if (IsDirty)
-        {
-          MarkBusy();
-          DataPortal.BeginUpdate<T>(this, (o, e) =>
-          {
-            T result = e.Object;
-            OnSaved(result, e.Error);
-          });
-        }
-        else
-        {
-          OnSaved((T)this, null);
-        }
-      }
+      BeginSave(false, null, null);
+    }
+
+    public virtual void BeginSave(object userState)
+    {
+      BeginSave(false, null, userState);
     }
 
     public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
     {
+      BeginSave(false, handler, null);
+    }
+
+    public virtual void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
+    {
+      BeginSave(false, handler, userState);
+    }
+
+    public virtual void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
+    {
+      if (forceUpdate && IsNew)
+      {
+        // mark the object as old - which makes it
+        // not dirty
+        MarkOld();
+        // now mark the object as dirty so it can save
+        MarkDirty(true);
+      }
+
       if (this.IsChild)
       {
         NotSupportedException error = new NotSupportedException(Resources.NoSaveChildException);
-        OnSaved(null, error);
+        OnSaved(null, error, userState);
         if (handler != null)
-          handler(this, new SavedEventArgs(null, error));
+          handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (EditLevel > 0)
       {
         Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
-        OnSaved(null, error);
+        OnSaved(null, error, userState);
         if (handler != null)
-          handler(this, new SavedEventArgs(null, error));
+          handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (!IsValid && !IsDeleted)
       {
         Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
-        OnSaved(null, error);
+        OnSaved(null, error, userState);
         if (handler != null)
-          handler(this, new SavedEventArgs(null, error));
+          handler(this, new SavedEventArgs(null, error, userState));
       }
       else
       {
         if (IsDirty)
         {
-          DataPortal.BeginUpdate<T>(this, (o, e) =>
+          if (userState == null)
           {
-            T result = e.Object;
-            OnSaved(result, e.Error);
-            if (handler != null)
-              handler(result, new SavedEventArgs(result, e.Error));
-          });
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error, userState);
+              if (handler != null)
+                handler(result, new SavedEventArgs(result, e.Error, userState));
+            });
+          }
+          else
+          {
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error, e.UserState);
+              if (handler != null)
+                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
+            }, userState);
+          }
         }
         else
         {
-          OnSaved((T)this, null);
+          OnSaved((T)this, null, userState);
           if (handler != null)
-            handler(this, new SavedEventArgs(this, null));
+            handler(this, new SavedEventArgs(this, null, userState));
         }
       }
     }
@@ -236,28 +252,17 @@ namespace Csla
     /// </remarks>
     public void BeginSave(bool forceUpdate)
     {
-      if (forceUpdate && IsNew)
-      {
-        // mark the object as old - which makes it
-        // not dirty
-        MarkOld();
-        // now mark the object as dirty so it can save
-        MarkDirty(true);
-      }
-      this.BeginSave();
+      BeginSave(forceUpdate, null, null);
+    }
+
+    public void BeginSave(bool forceUpdate, object userState)
+    {
+      BeginSave(forceUpdate, null, userState);
     }
 
     public void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler)
     {
-      if (forceUpdate && IsNew)
-      {
-        // mark the object as old - which makes it
-        // not dirty
-        MarkOld();
-        // now mark the object as dirty so it can save
-        MarkDirty(true);
-      }
-      this.BeginSave(handler);
+      this.BeginSave(forceUpdate, handler, null);
     }
 
     #endregion

@@ -117,6 +117,14 @@ namespace Csla
       dp.BeginCreate(criteria);
     }
 
+    public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.CreateCompleted += callback;
+      dp.BeginCreate(criteria, userState);
+    }
+
     #endregion
 
     #region Begin Fetch
@@ -158,6 +166,14 @@ namespace Csla
       DataPortal<T> dp = new DataPortal<T>();
       dp.FetchCompleted += callback;
       dp.BeginFetch(criteria);
+    }
+
+    public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
+     where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.FetchCompleted += callback;
+      dp.BeginFetch(criteria, userState);
     } 
 
     #endregion
@@ -185,6 +201,14 @@ namespace Csla
       dp.BeginUpdate(obj);
     }
 
+    public static void BeginUpdate<T>(object obj, EventHandler<DataPortalResult<T>> callback, object userState)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.UpdateCompleted += callback;
+      dp.BeginUpdate(obj, userState);
+    }
+
     #endregion
 
     #region Begin Delete
@@ -206,9 +230,18 @@ namespace Csla
       where T : IMobileObject
     {
       DataPortal<T> dp = new DataPortal<T>();
-      dp.UpdateCompleted += callback;
+      dp.DeleteCompleted += callback;
       dp.BeginDelete(criteria);
     }
+
+    public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.DeleteCompleted += callback;
+      dp.BeginDelete(criteria, userState);
+    }
+
 
     #endregion
 
@@ -233,6 +266,14 @@ namespace Csla
       DataPortal<T> dp = new DataPortal<T>();
       dp.ExecuteCompleted += callback;
       dp.BeginExecute(command);
+    }
+
+    public static void BeginExecute<T>(T command, EventHandler<DataPortalResult<T>> callback, object userState)
+      where T : CommandBase
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.ExecuteCompleted += callback;
+      dp.BeginExecute(command, userState);
     }
 
     #endregion

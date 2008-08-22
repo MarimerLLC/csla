@@ -92,6 +92,11 @@ namespace Csla
       _proxy.BeginCreate(criteria);
     }
 
+    public void BeginCreate(object criteria, object userState)
+    {
+      _proxy.BeginCreate(criteria, userState);
+    }
+
     private void proxy_CreateCompleted(object sender, DataPortalResult<T> e)
     {
       OnCreateCompleted(e);
@@ -139,6 +144,11 @@ namespace Csla
       _proxy.BeginFetch(criteria);
     }
 
+    public void BeginFetch(object criteria, object userState)
+    {
+      _proxy.BeginFetch(criteria, userState);
+    }
+
     private void proxy_FetchCompleted(object sender, DataPortalResult<T> e)
     {
       OnFetchCompleted(e);
@@ -175,6 +185,11 @@ namespace Csla
     public void BeginUpdate(object obj)
     {
       _proxy.BeginUpdate(obj);
+    }
+
+    public void BeginUpdate(object obj, object userState)
+    {
+      _proxy.BeginUpdate(obj, userState);
     }
 
     private void proxy_UpdateCompleted(object sender, DataPortalResult<T> e)
@@ -216,6 +231,11 @@ namespace Csla
       _proxy.BeginDelete(criteria);
     }
 
+    public void BeginDelete(object criteria, object userState)
+    {
+      _proxy.BeginDelete(criteria, userState);
+    }
+
     private void proxy_DeleteCompleted(object sender, DataPortalResult<T> e)
     {
       OnDeleteCompleted(e);
@@ -230,6 +250,11 @@ namespace Csla
     public void BeginExecute(T command)
     {
       _proxy.BeginExecute(command);
+    }
+
+    public void BeginExecute(T command, object userState)
+    {
+      _proxy.BeginExecute(command, userState);
     }
 
     private void proxy_ExecuteCompleted(object sender, DataPortalResult<T> e)

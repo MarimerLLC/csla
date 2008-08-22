@@ -20,6 +20,7 @@ namespace Csla.DataPortalClient
     /// Event raised when the create operation is
     /// complete.
     /// </summary>
+    void BeginCreate(object criteria, object userState);
     event EventHandler<DataPortalResult<T>> CreateCompleted;
     /// <summary>
     /// Get an existing business object.
@@ -33,11 +34,13 @@ namespace Csla.DataPortalClient
     /// Event raised when the fetch operation is
     /// complete.
     /// </summary>
+    void BeginFetch(object criteria, object userState);
     event EventHandler<DataPortalResult<T>> FetchCompleted;
     /// <summary>
     /// Update a business object.
     /// </summary>
     void BeginUpdate(object obj);
+    void BeginUpdate(object obj, object userState);
     /// <summary>
     /// Event raised when the update operation is
     /// complete.
@@ -47,6 +50,7 @@ namespace Csla.DataPortalClient
     /// Delete a business object.
     /// </summary>
     void BeginDelete(object criteria);
+    void BeginDelete(object criteria, object userState);
     /// <summary>
     /// Event raised when the delete operation is
     /// complete.
@@ -54,6 +58,8 @@ namespace Csla.DataPortalClient
     event EventHandler<DataPortalResult<T>> DeleteCompleted;
 
     void BeginExecute(T command);
+
+    void BeginExecute(T command, object userState);
 
     event EventHandler<DataPortalResult<T>> ExecuteCompleted;
   }

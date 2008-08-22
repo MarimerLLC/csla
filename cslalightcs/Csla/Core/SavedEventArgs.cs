@@ -28,6 +28,12 @@ namespace Csla.Core
       }
     }
 
+    private object _userState;
+    public object UserState
+    {
+      get { return _userState; }
+    }
+
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -35,7 +41,7 @@ namespace Csla.Core
     /// The object that was returned as a
     /// result of the Save() operation.
     /// </param>
-    public SavedEventArgs(object newObject, Exception error)
+    public SavedEventArgs(object newObject, Exception error, object userState)
     {
       _newObject = newObject;
       _error = error;

@@ -792,69 +792,72 @@ namespace Csla
     /// <returns>A new object containing the saved values.</returns>
     public virtual void BeginSave()
     {
-      if (this.IsChild)
-        OnSaved(null, new NotSupportedException(Resources.NoSaveChildException));
-      else if (EditLevel > 0)
-        OnSaved(null, new Validation.ValidationException(Resources.NoSaveEditingException));
-      else if (!IsValid)
-        OnSaved(null, new Validation.ValidationException(Resources.NoSaveInvalidException));
-      else
-      {
-        if (IsDirty)
-        {
-          DataPortal.BeginUpdate<T>(this, (o, e) =>
-          {
-            T result = e.Object;
-            OnSaved(result, e.Error);
-          });
-        }
-        else
-        {
-          OnSaved((T)this, null);
-        }
-      }
+      BeginSave(null, null);
+    }
+
+    public virtual void BeginSave(object userState)
+    {
+      BeginSave(null, userState);
     }
 
     public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
     {
+      BeginSave(handler, null);
+    }
+
+    public virtual void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
+    {
       if (this.IsChild)
       {
         NotSupportedException error = new NotSupportedException(Resources.NoSaveChildException);
-        OnSaved(null, error);
+        OnSaved(null, error, userState);
         if (handler != null)
-          handler(this, new SavedEventArgs(null, error));
+          handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (EditLevel > 0)
       {
         Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
-        OnSaved(null, error);
+        OnSaved(null, error, userState);
         if (handler != null)
-          handler(this, new SavedEventArgs(null, error));
+          handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (!IsValid)
       {
         Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
-        OnSaved(null, error);
+        OnSaved(null, error, userState);
         if (handler != null)
-          handler(this, new SavedEventArgs(null, error));
+          handler(this, new SavedEventArgs(null, error, userState));
       }
       else
       {
         if (IsDirty)
         {
-          DataPortal.BeginUpdate<T>(this, (o, e) =>
+          if (userState == null)
           {
-            T result = e.Object;
-            OnSaved(result, e.Error);
-            if (handler != null)
-              handler(result, new SavedEventArgs(result, e.Error));
-          });
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error, userState);
+              if (handler != null)
+                handler(result, new SavedEventArgs(result, e.Error, userState));
+            });
+          }
+          else
+          {
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error, e.UserState);
+              if (handler != null)
+                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
+            }, userState);
+          }
         }
         else
         {
-          OnSaved((T)this, null);
+          OnSaved((T)this, null, userState);
           if (handler != null)
-            handler(this, new SavedEventArgs(this, null));
+            handler(this, new SavedEventArgs(this, null, userState));
         }
       }
     }
@@ -948,9 +951,9 @@ namespace Csla
       BeginSave();
     }
 
-    void ISavable.SaveComplete(object newObject, Exception error)
+    void ISavable.SaveComplete(object newObject, Exception error, object userState)
     {
-      OnSaved((T)newObject, error);
+      OnSaved((T)newObject, error, userState);
     }
 
     /// <summary>
@@ -964,10 +967,10 @@ namespace Csla
     /// to the new object instance.
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
-    protected void OnSaved(T newObject, Exception error)
+    protected void OnSaved(T newObject, Exception error, object userState)
     {
       if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject, error));
+        Saved(this, new SavedEventArgs(newObject, error, userState));
     }
 
     #endregion

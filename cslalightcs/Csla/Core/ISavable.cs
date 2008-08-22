@@ -13,13 +13,15 @@ namespace Csla.Core
     /// the new object when the save operation completes.
     /// </summary>
     void BeginSave();
+
+    void BeginSave(object userState);
     /// <summary>
     /// INTERNAL CSLA .NET USE ONLY.
     /// </summary>
     /// <param name="newObject">
     /// The new object returned as a result of the save.
     /// </param>
-    void SaveComplete(object newObject, Exception error);
+    void SaveComplete(object newObject, Exception error, object userState);
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>

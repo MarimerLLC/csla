@@ -9,6 +9,7 @@ namespace Csla.DataPortalClient
   public class LocalProxy<T> : IDataPortalProxy<T> where T : IMobileObject
   {
     public delegate void CompletedHandler(T result, Exception ex);
+    private object _userState;
 
     #region Create
 
@@ -16,13 +17,19 @@ namespace Csla.DataPortalClient
 
     public void BeginCreate()
     {
+      _userState = null;
       var obj = Activator.CreateInstance<T>();
       var handler = new CompletedHandler(OnCreateCompleted);
       MethodCaller.CallMethod(obj, "DataPortal_Create", handler);
     }
-
     public void BeginCreate(object criteria)
     {
+      _userState = null;
+      BeginCreate(criteria, null);
+    }
+    public void BeginCreate(object criteria, object userState)
+    {
+      _userState = userState;
       var obj = Activator.CreateInstance<T>();
       var handler = new CompletedHandler(OnCreateCompleted);
       MethodCaller.CallMethod(obj, "DataPortal_Create", handler, criteria);
@@ -37,7 +44,7 @@ namespace Csla.DataPortalClient
           target.MarkNew();
       }
       if (CreateCompleted != null)
-        CreateCompleted(this, new DataPortalResult<T>(result, ex));
+        CreateCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
 
     #endregion
@@ -48,6 +55,7 @@ namespace Csla.DataPortalClient
 
     public void BeginFetch()
     {
+      _userState = null;
       var obj = Activator.CreateInstance<T>();
       var handler = new CompletedHandler(OnFetchCompleted);
       MethodCaller.CallMethod(obj, "DataPortal_Fetch", handler);
@@ -55,6 +63,12 @@ namespace Csla.DataPortalClient
 
     public void BeginFetch(object criteria)
     {
+      BeginFetch(criteria, null);
+    }
+
+    public void BeginFetch(object criteria, object userState)
+    {
+      _userState = userState;
       var obj = Activator.CreateInstance<T>();
       var handler = new CompletedHandler(OnFetchCompleted);
       MethodCaller.CallMethod(obj, "DataPortal_Fetch", handler, criteria);
@@ -69,7 +83,7 @@ namespace Csla.DataPortalClient
           target.MarkOld();
       }
       if (FetchCompleted != null)
-        FetchCompleted(this, new DataPortalResult<T>(result, ex));
+        FetchCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
 
     #endregion
@@ -80,8 +94,12 @@ namespace Csla.DataPortalClient
 
     public void BeginUpdate(object obj)
     {
+      BeginUpdate(obj, null);
+    }
+    public void BeginUpdate(object obj, object userState)
+    {
       var handler = new CompletedHandler(OnUpdateCompleted);
-
+      _userState = userState;
       var cloneable = obj as ICloneable;
       if (cloneable != null)
         obj = cloneable.Clone();
@@ -132,7 +150,7 @@ namespace Csla.DataPortalClient
         }
       }
       if (UpdateCompleted != null)
-        UpdateCompleted(this, new DataPortalResult<T>(result, ex));
+        UpdateCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
 
     #endregion
@@ -150,11 +168,17 @@ namespace Csla.DataPortalClient
           target.MarkNew();
       }
       if (DeleteCompleted != null)
-        DeleteCompleted(this, new DataPortalResult<T>(result, ex));
+        DeleteCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
 
     public void BeginDelete(object criteria)
     {
+      BeginDelete(criteria, null);
+    }
+
+    public void BeginDelete(object criteria, object userState)
+    {
+      _userState = userState;
       var obj = Activator.CreateInstance<T>();
       var handler = new CompletedHandler(OnDeleteCompleted);
       MethodCaller.CallMethod(obj, "DataPortal_Delete", handler, criteria);
@@ -174,6 +198,11 @@ namespace Csla.DataPortalClient
 
     public void BeginExecute(T command)
     {
+      BeginExecute(command, null);
+    }
+    public void BeginExecute(T command, object userState)
+    {
+      _userState = userState;
       var handler = new CompletedHandler(OnExecuteCompleted);
       MethodCaller.CallMethod(command, "DataPortal_Execute", handler);
     }
@@ -181,7 +210,7 @@ namespace Csla.DataPortalClient
     private void OnExecuteCompleted(T result, Exception ex)
     {
       if (ExecuteCompleted != null)
-        ExecuteCompleted(this, new DataPortalResult<T>(result, ex));
+        ExecuteCompleted(this, new DataPortalResult<T>(result, ex,  _userState));
     }
 
     #endregion

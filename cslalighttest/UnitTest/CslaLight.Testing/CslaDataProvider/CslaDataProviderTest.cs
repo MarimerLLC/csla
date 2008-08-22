@@ -113,7 +113,7 @@ namespace cslalighttest.CslaDataProvider
         {
           if (e2.PropertyName == "Data")
           {
-            context.Assert.AreEqual("Updating Customer new test name", Csla.ApplicationContext.GlobalContext["CustomerUpdate"].ToString());
+            context.Assert.AreEqual("Updating Customer new test name", ((Customer)provider.Data).Method);
             context.Assert.Success();
           }
         };

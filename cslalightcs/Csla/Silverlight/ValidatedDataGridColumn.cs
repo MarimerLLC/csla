@@ -37,8 +37,9 @@ namespace Csla.Silverlight
     protected abstract FrameworkElement CreateEditingElement();
 
     protected abstract DependencyProperty ElementProperty { get; }
-    protected abstract DependencyProperty EditingElementProperty { get; } 
+    protected abstract DependencyProperty EditingElementProperty { get; }
 
+    private FrameworkElement _editControl;
     #endregion
     
     #region Generate elements
@@ -50,9 +51,9 @@ namespace Csla.Silverlight
 
       if (dataItem != null && DisplayMemberBinding != null)
       {
-        FrameworkElement element = CreateEditingElement();
-        element.SetBinding(EditingElementProperty, DisplayMemberBinding);
-        panel.Children.Add(element);
+        _editControl = CreateEditingElement();
+        _editControl.SetBinding(EditingElementProperty, DisplayMemberBinding);
+        panel.Children.Add(_editControl);
 
         PropertyStatus status = new PropertyStatus();
         Binding binding = new Binding();
@@ -61,7 +62,7 @@ namespace Csla.Silverlight
         status.Style = PropertyStatusStyle;
         status.SetBinding(PropertyStatus.SourceProperty, binding);
         status.Property = DisplayMemberBinding.Path.Path;
-        status.Target = element;
+        status.Target = _editControl;
 
         panel.Children.Add(status);
       }
@@ -93,7 +94,14 @@ namespace Csla.Silverlight
       }
 
       return panel;
-    } 
+    }
+
+    protected override void CancelCellEdit(FrameworkElement editingElement, object uneditedValue)
+    {
+      _editControl.SetValue(EditingElementProperty, uneditedValue);
+
+      base.CancelCellEdit(editingElement, uneditedValue);
+    }
 
     #endregion
   }

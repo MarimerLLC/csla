@@ -28,10 +28,10 @@ namespace Csla.Silverlight
           KeyEventArgs args = editingEventArgs as KeyEventArgs;
           if ((args != null) && (args.Key == Key.F2))
           {
-            box.Select(length, length);
+            box.Select(0, length);
             return text;
           }
-          box.Select(0, length);
+          box.Select(length, length);
         }
       }
       return text;

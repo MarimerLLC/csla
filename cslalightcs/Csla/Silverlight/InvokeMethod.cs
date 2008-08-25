@@ -8,6 +8,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
+using Csla.Core;
 
 namespace Csla.Silverlight
 {
@@ -16,15 +19,19 @@ namespace Csla.Silverlight
     #region Attached properties
 
     public static readonly DependencyProperty ResourceProperty =
-      DependencyProperty.RegisterAttached("Resource", 
+      DependencyProperty.RegisterAttached("Resource",
       typeof(object),
-      typeof(InvokeMethod), 
+      typeof(InvokeMethod),
       null);
 
     public static void SetResource(UIElement element, object value)
     {
       element.SetValue(ResourceProperty, value);
-      new InvokeMethod(element);
+      InvokeMethod attachedObject = new InvokeMethod(element);
+      if (attachedObject._target is CslaDataProvider)
+      {
+        ((CslaDataProvider)attachedObject._target).DataChanged += new EventHandler(attachedObject.target_DataChanged);
+      }
     }
 
     public static object GetResource(UIElement element)
@@ -83,6 +90,8 @@ namespace Csla.Silverlight
       return (string)element.GetValue(MethodParameterProperty);
     }
 
+    private ContentControl _contentControl;
+
     #endregion
 
     private UIElement _element;
@@ -91,6 +100,9 @@ namespace Csla.Silverlight
 
     public InvokeMethod(UIElement element)
     {
+      if (element is ContentControl)
+        _contentControl = (ContentControl)element;
+      _element = element;
       _target = element.GetValue(ResourceProperty);
       if (_target != null)
       {
@@ -102,15 +114,17 @@ namespace Csla.Silverlight
           {
             // at this point all required fields have been set,
             // so hook up the event
-            _element = element;
+
             _targetMethod = _target.GetType().GetMethod(methodName);
 
             var eventRef = element.GetType().GetEvent(triggerEvent);
             if (eventRef != null)
             {
+              Refresh();
+
               var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
               var p = invoke.GetParameters();
-              if (p.Length==2)
+              if (p.Length == 2)
               {
                 if (typeof(RoutedEventArgs).IsAssignableFrom(p[1].ParameterType))
                   eventRef.AddEventHandler(element, new RoutedEventHandler(CallMethod));
@@ -125,6 +139,73 @@ namespace Csla.Silverlight
           }
         }
       }
+    }
+
+    private void Refresh()
+    {
+      if (_target != null && ((CslaDataProvider)_target).Data != null)
+      {
+        ITrackStatus targetObject = ((CslaDataProvider)_target).Data as ITrackStatus;
+        IEditableCollection list = ((CslaDataProvider)_target).Data as IEditableCollection;
+        if (_contentControl != null && targetObject != null && _element.GetValue(MethodNameProperty) != null)
+        {
+
+          if (_element.GetValue(MethodNameProperty).ToString() == "Save")
+          {
+
+            if (Csla.Security.AuthorizationRules.CanEditObject(((CslaDataProvider)_target).Data.GetType()) && targetObject.IsSavable)
+              _contentControl.IsEnabled = true;
+            else
+              _contentControl.IsEnabled = false;
+          }
+          else if (_element.GetValue(MethodNameProperty).ToString() == "Cancel")
+          {
+            if (Csla.Security.AuthorizationRules.CanEditObject(((CslaDataProvider)_target).Data.GetType()) && targetObject.IsDirty)
+              _contentControl.IsEnabled = true;
+            else
+              _contentControl.IsEnabled = false;
+          }
+          else if (_element.GetValue(MethodNameProperty).ToString() == "Fetch")
+          {
+            if (Csla.Security.AuthorizationRules.CanGetObject(((CslaDataProvider)_target).Data.GetType()) && !targetObject.IsDirty)
+              _contentControl.IsEnabled = true;
+            else
+              _contentControl.IsEnabled = false;
+          }
+          else if (list != null && _element.GetValue(MethodNameProperty).ToString() == "AddNewItem")
+          {
+            Type innerType = Csla.Utilities.GetChildItemType(((CslaDataProvider)_target).Data.GetType());
+            if (innerType == null)
+              innerType = ((CslaDataProvider)_target).Data.GetType();
+            if (Csla.Security.AuthorizationRules.CanCreateObject(innerType))
+              _contentControl.IsEnabled = true;
+            else
+              _contentControl.IsEnabled = false;
+          }
+          else if (_element.GetValue(MethodNameProperty).ToString() == "RemoveItem")
+          {
+            Type innerType = Csla.Utilities.GetChildItemType(((CslaDataProvider)_target).Data.GetType());
+            if (innerType == null)
+              innerType = ((CslaDataProvider)_target).Data.GetType();
+            if (Csla.Security.AuthorizationRules.CanDeleteObject(innerType))
+              _contentControl.IsEnabled = true;
+            else
+              _contentControl.IsEnabled = false;
+          }
+          else if (_element.GetValue(MethodNameProperty).ToString() == "Delete")
+          {
+            if (Csla.Security.AuthorizationRules.CanDeleteObject(((CslaDataProvider)_target).Data.GetType()))
+              _contentControl.IsEnabled = true;
+            else
+              _contentControl.IsEnabled = false;
+          }
+        }
+      }
+    }
+
+    private void target_DataChanged(object sender, EventArgs e)
+    {
+      Refresh();
     }
 
     private void CallMethod(object sender, EventArgs e)

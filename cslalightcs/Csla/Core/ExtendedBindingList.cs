@@ -16,7 +16,8 @@ namespace Csla.Core
   public class ExtendedBindingList<T> : MobileBindingList<T>,
     IExtendedBindingList,
     INotifyBusy,
-    ISerializationNotification
+    ISerializationNotification,
+    INotifyChildChanged
   {
     #region RemovingItem event
 

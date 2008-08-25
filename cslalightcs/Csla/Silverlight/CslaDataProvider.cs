@@ -15,6 +15,8 @@ using System.Reflection;
 using Csla.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using Csla.Core;
 
 namespace Csla.Silverlight
 {
@@ -32,10 +34,21 @@ namespace Csla.Silverlight
       if (DataChanged != null)
         DataChanged(this, EventArgs.Empty);
     }
+
+    private void dataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      OnDataChanged();
+    }
+
+    private void dataObject_ChildChanged(object sender, ChildChangedEventArgs e)
+    {
+      OnDataChanged();
+    }
+
     #endregion
-
-
+    
     #region Properties
+    
     private object _dataObject;
 
     /// <summary>
@@ -50,6 +63,12 @@ namespace Csla.Silverlight
       }
       set
       {
+        //hook up event handlers for notificaiton propagation
+        if (_dataObject != null && _dataObject is INotifyPropertyChanged)
+          ((INotifyPropertyChanged)_dataObject).PropertyChanged -= new PropertyChangedEventHandler(dataObject_PropertyChanged);
+        if (_dataObject != null && _dataObject is INotifyCollectionChanged && _dataObject is INotifyChildChanged)
+          ((INotifyChildChanged)_dataObject).ChildChanged -= new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
+
         _dataObject = value;
         if (_manageObjectLifetime)
         {
@@ -57,6 +76,11 @@ namespace Csla.Silverlight
           if (undoable != null)
             undoable.BeginEdit();
         }
+
+        if (_dataObject != null && _dataObject is INotifyPropertyChanged)
+          ((INotifyPropertyChanged)_dataObject).PropertyChanged += new PropertyChangedEventHandler(dataObject_PropertyChanged);
+        if (_dataObject != null && _dataObject is INotifyCollectionChanged && _dataObject is INotifyChildChanged)
+          ((INotifyChildChanged)_dataObject).ChildChanged += new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
 
         try
         {

@@ -1904,11 +1904,22 @@ namespace Csla.Core
     /// PropertyChangedEventArgs object or null.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnChildChanged(object source, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+    protected void OnChildChanged(object source, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
     {
-      Csla.Core.ChildChangedEventArgs args = new Csla.Core.ChildChangedEventArgs(source, propertyArgs, listArgs);
+      ChildChangedEventArgs args = new ChildChangedEventArgs(source, propertyArgs, listArgs);
+      OnChildChangedInternal(this, args);
+    }
+
+    protected internal virtual void OnChildChangedInternal(object sender, ChildChangedEventArgs e)
+    {
+      OnChildChanged(sender, e);
+
       if (_childChangedHandlers != null)
-        _childChangedHandlers.Invoke(this, args);
+        _childChangedHandlers.Invoke(this, e);
+    }
+
+    protected virtual void OnChildChanged(object sender, ChildChangedEventArgs e)
+    {
     }
 
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1920,7 +1931,12 @@ namespace Csla.Core
     {
       OnChildChanged(sender, null, e);
     }
-
+    
+    void Child_Changed(object sender, ChildChangedEventArgs e)
+    {
+      OnChildChangedInternal(this, e);
+    }
+    
     #endregion
 
     #region FieldManager
@@ -1982,6 +1998,10 @@ namespace Csla.Core
       if(cc!=null)
         cc.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
 
+      INotifyChildChanged childChanged = child as INotifyChildChanged;
+      if(childChanged!=null)
+        childChanged.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
+
       OnAddEventHooks(child);
     }
 
@@ -2006,6 +2026,10 @@ namespace Csla.Core
       INotifyCollectionChanged cc = child as INotifyCollectionChanged;
       if (cc != null)
         cc.CollectionChanged -= new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+
+      INotifyChildChanged childChanged = child as INotifyChildChanged;
+      if (childChanged != null)
+        childChanged.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
 
       OnRemoveEventHooks(child);
     }

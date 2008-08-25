@@ -77,6 +77,9 @@
     <Compile Include="..\..\cslacs\Csla\Core\INotifyBusy.cs">
       <Link>Core\INotifyBusy.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\INotifyChildChanged.cs">
+      <Link>Core\INotifyChildChanged.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\INotifyUnhandledAsyncException.cs">
       <Link>Core\INotifyUnhandledAsyncException.cs</Link>
     </Compile>

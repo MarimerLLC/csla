@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
+using System.Collections.Specialized;
 
 namespace Csla.Core
 {
@@ -123,6 +124,18 @@ namespace Csla.Core
       if(unhandled!=null)
         unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
 
+      INotifyPropertyChanged c = item as INotifyPropertyChanged;
+      if (c != null)
+        c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+
+      INotifyCollectionChanged col = item as INotifyCollectionChanged;
+      if(col!=null)
+        col.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+
+      INotifyChildChanged child = item as INotifyChildChanged;
+      if (child != null)
+        child.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
+
       OnAddEventHooks(item);
     }
 
@@ -139,6 +152,18 @@ namespace Csla.Core
       INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
       if (unhandled != null)
         unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+
+      INotifyPropertyChanged c = item as INotifyPropertyChanged;
+      if (c != null)
+        c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+
+      INotifyCollectionChanged col = item as INotifyCollectionChanged;
+      if (col != null)
+        col.CollectionChanged -= new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+
+      INotifyChildChanged child = item as INotifyChildChanged;
+      if (child != null)
+        child.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
 
       OnRemoveEventHooks(item);
     }
@@ -182,16 +207,23 @@ namespace Csla.Core
       remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
-    protected void OnBusyChanged(string propertyName, bool busy)
+    protected internal virtual void OnBusyChangedInternal(BusyChangedEventArgs args)
     {
-      OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
+      OnBusyChanged(args);
+
+      if (_busyChanged != null)
+        _busyChanged(this, args);
     }
 
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
-      if (_busyChanged != null)
-        _busyChanged(this, args);
     }
+
+    protected void OnBusyChanged(string propertyName, bool busy)
+    {
+      OnBusyChangedInternal(new BusyChangedEventArgs(propertyName, busy));
+    }
+
 
     public virtual bool IsBusy
     {
@@ -205,7 +237,7 @@ namespace Csla.Core
 
     void busy_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      OnBusyChanged(e);
+      OnBusyChangedInternal(e);
     }
 
     #endregion
@@ -222,20 +254,26 @@ namespace Csla.Core
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
     }
 
-    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    protected internal virtual void OnUnhandledAsyncExceptionInternal(ErrorEventArgs error)
     {
+      OnUnhandledAsyncException(error);
+
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
     }
 
+    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    {
+    }
+
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
-      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
+      OnUnhandledAsyncExceptionInternal(new ErrorEventArgs(originalSender, error));
     }
 
     void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
     {
-      OnUnhandledAsyncException(e);
+      OnUnhandledAsyncExceptionInternal(e);
     }
 
     #endregion
@@ -246,6 +284,81 @@ namespace Csla.Core
     {
       OnDeserializedInternal();
       OnDeserialized();
+    }
+
+    #endregion
+
+    #region Child Change Notification
+
+    [NonSerialized]
+    [NotUndoable]
+    private EventHandler<Csla.Core.ChildChangedEventArgs> _childChangedHandlers;
+
+    /// <summary>
+    /// Event raised when a child object has been changed.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+      "CA1062:ValidateArgumentsOfPublicMethods")]
+    public event EventHandler<Csla.Core.ChildChangedEventArgs> ChildChanged
+    {
+      add
+      {
+        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
+          System.Delegate.Combine(_childChangedHandlers, value);
+      }
+      remove
+      {
+        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
+          System.Delegate.Remove(_childChangedHandlers, value);
+      }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected internal virtual void OnChildChangedInternal(object source, ChildChangedEventArgs e)
+    {
+      OnChildChanged(source, e);
+
+      if (_childChangedHandlers != null)
+        _childChangedHandlers.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Raises the ChildChanged event, indicating that a child
+    /// object has been changed.
+    /// </summary>
+    /// <param name="source">
+    /// Reference to the object that was changed.
+    /// </param>
+    /// <param name="listArgs">
+    /// ListChangedEventArgs object or null.
+    /// </param>
+    /// <param name="propertyArgs">
+    /// PropertyChangedEventArgs object or null.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void OnChildChanged(object source, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs collectionArgs)
+    {
+      OnChildChangedInternal(this, new ChildChangedEventArgs(source, propertyArgs, collectionArgs));
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnChildChanged(object sender, ChildChangedEventArgs e)
+    {
+    }
+
+    private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      OnChildChangedInternal(this, new ChildChangedEventArgs(sender, e, null));
+    }
+
+    private void Child_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      OnChildChangedInternal(this, new ChildChangedEventArgs(sender, null, e));
+    }
+
+    private void Child_Changed(object sender, ChildChangedEventArgs e)
+    {
+      OnChildChangedInternal(this, e);
     }
 
     #endregion

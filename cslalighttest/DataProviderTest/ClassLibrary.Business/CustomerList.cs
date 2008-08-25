@@ -45,6 +45,15 @@ namespace ClassLibrary.Business
     protected override void DataPortal_Update()
     {
       Csla.ApplicationContext.GlobalContext["CustomerUpdate"] = "Updating Customer List";
+      foreach (var oneCustomer in DeletedList)
+      {
+        oneCustomer.DataPortal_DeleteSelf();
+      }
+      DeletedList.Clear();
+      foreach (var oneCustomer in this)
+      {
+        oneCustomer.DataPortal_Update();
+      }
     }
 
 #else

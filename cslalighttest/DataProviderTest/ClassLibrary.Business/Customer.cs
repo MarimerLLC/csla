@@ -77,6 +77,12 @@ namespace ClassLibrary.Business
       }
     }
 
+    protected override void AddAuthorizationRules()
+    {
+      AuthorizationRules.AllowCreate(typeof(Customer), new string[1] { "admin1"});
+      AuthorizationRules.AllowDelete(typeof(Customer), new string[1] { "admin" });
+    }
+
     protected override void AddBusinessRules()
     {
       ValidationRules.AddRule(Csla.Validation.CommonRules.IntegerMinValue, new Csla.Validation.CommonRules.IntegerMinValueRuleArgs(IdProperty, 1));
@@ -178,18 +184,20 @@ namespace ClassLibrary.Business
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(0));
     }
 
-    protected override void DataPortal_DeleteSelf()
+    protected internal void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext["CustomerDelete"] = "Deleted Customer " + GetProperty<string>(NameProperty);
     }
 
-    protected override void DataPortal_Insert()
+    protected internal void DataPortal_Insert()
     {
       Csla.ApplicationContext.GlobalContext["CustomerInsert"] = "Inserted Customer " + GetProperty<string>(NameProperty);
+      MarkClean();
     }
-    protected override void DataPortal_Update()
+    protected internal void DataPortal_Update()
     {
       Csla.ApplicationContext.GlobalContext["CustomerUpdate"] = "Updating Customer " + GetProperty<string>(NameProperty);
+      MarkClean();
     }
 #endif
 

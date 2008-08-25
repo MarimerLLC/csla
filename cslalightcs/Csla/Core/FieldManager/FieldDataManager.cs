@@ -552,7 +552,7 @@ namespace Csla.Core.FieldManager
           if (data != null)
           {
             // We don't want to reset children during an undo.
-            if(!typeof(IBusinessObject).IsAssignableFrom(data.Value.GetType()))
+            if (!typeof(IMobileObject).IsAssignableFrom(data.Value.GetType()))
               data.Value = property.DefaultValue;
           }
         }

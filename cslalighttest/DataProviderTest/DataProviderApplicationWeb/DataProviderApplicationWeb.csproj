@@ -56,8 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ClientBin\DataProviderApplication.xap" />
-    <Content Include="DataProviderApplicationTestPage.aspx" />
-    <Content Include="DataProviderApplicationTestPage.html" />
     <Content Include="Default.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>

@@ -26,7 +26,8 @@ namespace Csla.Core
     IDataPortalTarget,
     IEditableBusinessObject,
     ISerializationNotification,
-    IEditableObject
+    IEditableObject,
+    INotifyChildChanged
   {
     #region Constructors
 

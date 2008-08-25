@@ -54,7 +54,7 @@ namespace Csla.Core
 
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-      if(SupportsChangeNotificationCore)
+      if (SupportsChangeNotificationCore && RaiseListChangedEvents)
         base.OnCollectionChanged(e);
     }
 

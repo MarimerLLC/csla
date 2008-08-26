@@ -68,7 +68,7 @@ namespace ClassLibrary.Business
       }
     }
 
-    private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(new PropertyInfo<CustomerContactList>("Contacts", "Contacts List"));
+    private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(typeof(Customer),new PropertyInfo<CustomerContactList>("Contacts", "Contacts List"));
     public CustomerContactList Contacts
     {
       get
@@ -79,8 +79,8 @@ namespace ClassLibrary.Business
 
     protected override void AddAuthorizationRules()
     {
-      AuthorizationRules.AllowCreate(typeof(Customer), new string[1] { "admin1"});
-      AuthorizationRules.AllowDelete(typeof(Customer), new string[1] { "admin" });
+      //AuthorizationRules.AllowCreate(typeof(Customer), new string[1] { "admin"});
+      //AuthorizationRules.AllowDelete(typeof(Customer), new string[1] { "admin" });
     }
 
     protected override void AddBusinessRules()

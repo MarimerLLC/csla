@@ -165,6 +165,13 @@ namespace Csla.Silverlight
             else
               _contentControl.IsEnabled = false;
           }
+          else if (_element.GetValue(MethodNameProperty).ToString() == "Create")
+          {
+            if (Csla.Security.AuthorizationRules.CanCreateObject(((CslaDataProvider)_target).Data.GetType()) && targetObject.IsDirty)
+              _contentControl.IsEnabled = true;
+            else
+              _contentControl.IsEnabled = false;
+          }
           else if (_element.GetValue(MethodNameProperty).ToString() == "Fetch")
           {
             if (Csla.Security.AuthorizationRules.CanGetObject(((CslaDataProvider)_target).Data.GetType()) && !targetObject.IsDirty)

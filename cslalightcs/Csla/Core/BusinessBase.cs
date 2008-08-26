@@ -2061,6 +2061,7 @@ namespace Csla.Core
     {
       OnGetState(state, StateMode.Undo);
       ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false);
+      ((IUndoableObject)ValidationRules).CopyState(this.EditLevel + 1, false);
 
       base.OnCopyState(state);
     }
@@ -2069,6 +2070,7 @@ namespace Csla.Core
     {
       OnSetState(state, StateMode.Undo);
       ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false);
+      ((IUndoableObject)ValidationRules).UndoChanges(this.EditLevel - 1, false);
 
       base.OnUndoChanges(state);
     }
@@ -2076,6 +2078,7 @@ namespace Csla.Core
     protected override void AcceptingChanges()
     {
       ((IUndoableObject)FieldManager).AcceptChanges(this.EditLevel - 1, false);
+      ((IUndoableObject)ValidationRules).AcceptChanges(this.EditLevel - 1, false);
 
       base.AcceptingChanges();
     }

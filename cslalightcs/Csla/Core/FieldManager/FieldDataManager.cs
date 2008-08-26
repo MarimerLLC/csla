@@ -370,7 +370,7 @@ namespace Csla.Core.FieldManager
     void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format("Edit level mismatch in {0}", "CopyState"));
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
 
       SerializationInfo state = new SerializationInfo(0);
       OnGetState(state, StateMode.Undo);
@@ -399,7 +399,7 @@ namespace Csla.Core.FieldManager
       if (EditLevel > 0)
       {
         if (this.EditLevel - 1 < parentEditLevel)
-          throw new UndoException(string.Format("Edit level mismatch in {0}", "UndoChanges"));
+          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
 
         SerializationInfo state = _stateStack.Pop();
         OnSetState(state, StateMode.Undo);
@@ -423,7 +423,7 @@ namespace Csla.Core.FieldManager
     void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (this.EditLevel - 1 < parentEditLevel)
-        throw new UndoException(string.Format("Edit level mismatch in {0}", "AcceptChanges"));
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
 
       if (EditLevel > 0)
       {

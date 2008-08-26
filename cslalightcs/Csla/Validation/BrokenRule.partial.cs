@@ -8,6 +8,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using Csla.Core;
+using System.Collections.Generic;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Validation
 {

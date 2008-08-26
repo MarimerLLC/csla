@@ -149,7 +149,6 @@ namespace Csla.Silverlight
         IEditableCollection list = ((CslaDataProvider)_target).Data as IEditableCollection;
         if (_contentControl != null && targetObject != null && _element.GetValue(MethodNameProperty) != null)
         {
-
           if (_element.GetValue(MethodNameProperty).ToString() == "Save")
           {
 

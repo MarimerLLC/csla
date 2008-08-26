@@ -173,7 +173,7 @@ namespace Csla.Silverlight
 
     private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (e.PropertyName == Property)
+      if (e.PropertyName == Property || string.IsNullOrEmpty(e.PropertyName))
         UpdateState();
     }
 

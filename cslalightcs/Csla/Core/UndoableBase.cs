@@ -161,9 +161,10 @@ namespace Csla.Core
 
       if (parentEditLevel >= 0)
       {
-        SerializationInfo state = _stateStack.Pop();
+        SerializationInfo state = _stateStack.Peek();
         OnUndoChanges(state);
 
+        _stateStack.Pop();
         UndoChangesComplete();
       }
     }
@@ -255,10 +256,13 @@ namespace Csla.Core
 
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
-      if (_stateStack.Count > 0)
+      if (mode == StateMode.Serialization)
       {
-        string xml = Utilities.XmlSerialize(_stateStack.ToArray());
-        info.AddValue("_stateStack", xml);
+        if (_stateStack.Count > 0)
+        {
+          string xml = Utilities.XmlSerialize(_stateStack.ToArray());
+          info.AddValue("_stateStack", xml);
+        }
       }
 
       info.AddValue("_bindingEdit", _bindingEdit);
@@ -266,15 +270,18 @@ namespace Csla.Core
     }
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      _stateStack.Clear();
-
-      if (info.Values.ContainsKey("_stateStack"))
+      if (mode == StateMode.Serialization)
       {
-        string xml = info.GetValue<string>("_stateStack");
-        SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
-        Array.Reverse(layers);
-        foreach (SerializationInfo layer in layers)
-          _stateStack.Push(layer);
+        _stateStack.Clear();
+
+        if (info.Values.ContainsKey("_stateStack"))
+        {
+          string xml = info.GetValue<string>("_stateStack");
+          SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
+          Array.Reverse(layers);
+          foreach (SerializationInfo layer in layers)
+            _stateStack.Push(layer);
+        }
       }
 
       _bindingEdit = info.GetValue<bool>("_bindingEdit");

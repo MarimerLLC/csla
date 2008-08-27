@@ -173,6 +173,16 @@ namespace Csla.Core
     {
     }
 
+    #endregion
+
+    #region ISerializationNotification Members
+
+    void ISerializationNotification.Deserialized()
+    {
+      OnDeserializedInternal();
+      OnDeserialized();
+    }
+
     /// <summary>
     /// This method is called on a newly deserialized object
     /// after deserialization is complete, it is only implemented
@@ -275,16 +285,6 @@ namespace Csla.Core
     void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
     {
       OnUnhandledAsyncExceptionInternal(e);
-    }
-
-    #endregion
-
-    #region ISerializationNotification Members
-
-    void ISerializationNotification.Deserialized()
-    {
-      OnDeserializedInternal();
-      OnDeserialized();
     }
 
     #endregion

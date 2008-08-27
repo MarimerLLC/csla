@@ -7,6 +7,9 @@ using System.Diagnostics;
 
 namespace Csla.Reflection
 {
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   internal static class MethodCaller
   {
     const BindingFlags allLevelFlags =

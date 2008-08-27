@@ -18,6 +18,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace cslalighttest.CslaDataProvider
 {
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   [TestClass]
   public class CslaDataProviderTest : TestBase
   {

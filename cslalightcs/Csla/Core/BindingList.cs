@@ -19,11 +19,13 @@ namespace Csla.Core
     //protected bool IsReadOnlyCore { get; set; }
 
     #region IBindingList Members
+
+    private bool _raiseListChangedEvents = true;
     
     public bool AllowEdit { get; set; }
     public bool AllowNew { get; set; }
     public bool AllowRemove { get; set; }
-    public bool RaiseListChangedEvents { get; set; }
+    public bool RaiseListChangedEvents { get { return _raiseListChangedEvents; } set { _raiseListChangedEvents = value; } }
 
     public void AddNew()
     {

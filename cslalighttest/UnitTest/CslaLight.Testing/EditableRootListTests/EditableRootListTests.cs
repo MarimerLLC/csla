@@ -19,6 +19,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace cslalighttest.EditableRootListTests
 {
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   [TestClass]
   public class EditableRootListTests : TestBase
   {

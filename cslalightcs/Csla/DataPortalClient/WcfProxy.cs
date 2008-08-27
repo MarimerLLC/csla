@@ -37,6 +37,9 @@ namespace Csla.DataPortalClient
     }
   }
 
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   public class WcfProxy<T> : IDataPortalProxy<T> where T : IMobileObject
   {
     public WcfProxy()

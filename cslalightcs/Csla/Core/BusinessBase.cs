@@ -1925,7 +1925,8 @@ namespace Csla.Core
 
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      OnChildChanged(sender, e, null);
+      if(!(sender is INotifyCollectionChanged && (e.PropertyName == "Count" || e.PropertyName == "Item[]")))
+        OnChildChanged(sender, e, null);
     }
 
     private void Child_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

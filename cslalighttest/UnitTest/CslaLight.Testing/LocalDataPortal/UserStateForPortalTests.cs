@@ -20,6 +20,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace cslalighttest.UserStateForPortal
 {
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   [TestClass]
   public class UserStateForPortalTests : TestBase
   {

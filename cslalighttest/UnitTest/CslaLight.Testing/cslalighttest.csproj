@@ -97,6 +97,24 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\DpRoot.cs">
       <Link>DataPortal\DpRoot.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\PropertyGetSet\BadGetSet.cs">
+      <Link>PropertyGetSet\BadGetSet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\PropertyGetSet\ChildList.cs">
+      <Link>PropertyGetSet\ChildList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\PropertyGetSet\EditableGetSet.cs">
+      <Link>PropertyGetSet\EditableGetSet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\PropertyGetSet\EditableGetSetBase.cs">
+      <Link>PropertyGetSet\EditableGetSetBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\PropertyGetSet\EditableGetSetTopBase.cs">
+      <Link>PropertyGetSet\EditableGetSetTopBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\PropertyGetSet\PropertyGetSetTests.cs">
+      <Link>PropertyGetSet\PropertyGetSetTests.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\ApplicationContext\ClientContextTests.cs">
       <Link>ApplicationContext\ClientContextTests.cs</Link>
     </Compile>

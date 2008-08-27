@@ -306,6 +306,33 @@ namespace Csla.Core.FieldManager
       }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the specified field
+    /// has been changed.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// The property corresponding to the field.
+    /// </param>
+    /// <returns>True if the field has been changed.</returns>
+    public bool IsFieldDirty(IPropertyInfo propertyInfo)
+    {
+      try
+      {
+        bool result = false;
+        var field = _fieldData[propertyInfo.Index];
+        if (field != null)
+          result = field.IsDirty;
+        else
+          result = false;
+        return result;
+
+      }
+      catch (IndexOutOfRangeException ex)
+      {
+        throw new InvalidOperationException(Properties.Resources.PropertyNotRegistered, ex);
+      }
+    }
+
     #endregion
 
     #region  IsValid/IsDirty
@@ -476,7 +503,7 @@ namespace Csla.Core.FieldManager
     {
       info.AddValue("_businessObjectType", _businessObjectType);
 
-      if (_stateStack.Count > 0)
+      if (mode == StateMode.Serialization && _stateStack.Count > 0)
       {
         string xml = Utilities.XmlSerialize(_stateStack.ToArray());
         info.AddValue("_stateStack", xml);
@@ -489,6 +516,8 @@ namespace Csla.Core.FieldManager
           IMobileObject mobile = data.Value as IMobileObject;
           if (mobile == null)
             info.AddValue(data.Name, data.Value, data.IsDirty);
+          else
+            info.AddValue("child_" + data.Name, true, false);
         }
       }
 
@@ -519,14 +548,17 @@ namespace Csla.Core.FieldManager
       Type businessObjecType = Type.GetType(type);
       SetPropertyList(businessObjecType);
 
-      _stateStack.Clear();
-      if (info.Values.ContainsKey("_stateStack"))
+      if (mode == StateMode.Serialization)
       {
-        string xml = info.GetValue<string>("_stateStack");
-        SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
-        Array.Reverse(layers);
-        foreach (SerializationInfo layer in layers)
-          _stateStack.Push(layer);
+        _stateStack.Clear();
+        if (info.Values.ContainsKey("_stateStack"))
+        {
+          string xml = info.GetValue<string>("_stateStack");
+          SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
+          Array.Reverse(layers);
+          foreach (SerializationInfo layer in layers)
+            _stateStack.Push(layer);
+        }
       }
 
       // Only clear this list on serialization, otherwise you'll lose
@@ -551,8 +583,11 @@ namespace Csla.Core.FieldManager
           IFieldData data = GetFieldData(property);
           if (data != null)
           {
+            if (!info.Values.ContainsKey("child_" + property.Name) || !info.GetValue<bool>("child_" + property.Name))
+              _fieldData[property.Index] = null;
+            
             // We don't want to reset children during an undo.
-            if (!typeof(IMobileObject).IsAssignableFrom(data.Value.GetType()))
+            else if (!typeof(IMobileObject).IsAssignableFrom(data.Value.GetType()))
               data.Value = property.DefaultValue;
           }
         }

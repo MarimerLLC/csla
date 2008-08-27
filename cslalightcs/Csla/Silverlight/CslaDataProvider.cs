@@ -46,9 +46,20 @@ namespace Csla.Silverlight
     }
 
     #endregion
-    
+
     #region Properties
-    
+
+    private bool _isBusy = false;
+    public bool IsBusy
+    {
+      get { return _isBusy; }
+      protected set
+      {
+        _isBusy = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("IsBusy"));
+      }
+    }
+
     private object _dataObject;
 
     /// <summary>
@@ -68,6 +79,8 @@ namespace Csla.Silverlight
           ((INotifyPropertyChanged)_dataObject).PropertyChanged -= new PropertyChangedEventHandler(dataObject_PropertyChanged);
         if (_dataObject != null && _dataObject is INotifyChildChanged)
           ((INotifyChildChanged)_dataObject).ChildChanged -= new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
+        if (_dataObject != null && _dataObject is INotifyBusy)
+          ((INotifyBusy)_dataObject).BusyChanged -= new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
 
         _dataObject = value;
         if (_manageObjectLifetime)
@@ -82,6 +95,9 @@ namespace Csla.Silverlight
         if (_dataObject != null && _dataObject is INotifyCollectionChanged && _dataObject is INotifyChildChanged)
           ((INotifyChildChanged)_dataObject).ChildChanged += new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
 
+        if (_dataObject != null && _dataObject is INotifyBusy)
+          ((INotifyBusy)_dataObject).BusyChanged += new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
+
         try
         {
           OnPropertyChanged(new PropertyChangedEventArgs("Data"));
@@ -94,6 +110,11 @@ namespace Csla.Silverlight
           var o = ex;
         }
       }
+    }
+
+    void CslaDataProvider_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      IsBusy = e.Busy;
     }
 
     private bool _manageObjectLifetime = true;
@@ -344,7 +365,7 @@ namespace Csla.Silverlight
 
     public void Create()
     {
-      if (_objectType != null && _fetchFactoryMethod != null)
+      if (_objectType != null && _createFactoryMethod != null)
         try
         {
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
@@ -363,18 +384,35 @@ namespace Csla.Silverlight
             int parameterCount = parameters.ToArray().Length;
             MethodInfo[] methods = objectType.GetMethods(flags);
             foreach (MethodInfo method in methods)
-              if (method.Name == _fetchFactoryMethod && method.GetParameters().Length == parameterCount)
+            {
+              if (method.Name == _createFactoryMethod && method.GetParameters().Length == parameterCount)
               {
                 factory = method;
                 break;
               }
+            }
+            if (factory == null)
+            {
+              foreach (MethodInfo method in methods)
+              {
+                if (method.Name == _createFactoryMethod && method.GetParameters().Length == 1)
+                {
+                  factory = method;
+                  while (parameters.Count > 1)
+                  {
+                    parameters.RemoveAt(0);
+                  }
+                  break;
+                }
+              }
+            }
           }
           if (factory == null)
           {
             // no matching factory could be found
             // so throw exception
             throw new InvalidOperationException(
-              string.Format(Resources.NoSuchFactoryMethod, _fetchFactoryMethod));
+              string.Format(Resources.NoSuchFactoryMethod, _createFactoryMethod));
           }
 
           // invoke factory method

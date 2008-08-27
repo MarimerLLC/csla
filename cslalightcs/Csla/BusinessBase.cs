@@ -206,6 +206,7 @@ namespace Csla
       {
         if (IsDirty)
         {
+          MarkBusy();
           if (userState == null)
           {
             DataPortal.BeginUpdate<T>(this, (o, e) =>

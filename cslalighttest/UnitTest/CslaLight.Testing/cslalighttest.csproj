@@ -106,6 +106,9 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\CommandBase\CommandBaseTests.cs">
       <Link>CommandBase\CommandBaseTests.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\DataPortal\AuthorizeDataPortalTests.cs">
+      <Link>DataPortal\AuthorizeDataPortalTests.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\NameValueList\NameValueListTests.cs">
       <Link>NameValueList\NameValueListTests.cs</Link>
     </Compile>

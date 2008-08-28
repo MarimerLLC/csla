@@ -26,6 +26,9 @@ namespace ChildGrandChild
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+
+            Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+            Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:3390/ChildGrandChildWeb/WcfPortal.svc";
             this.RootVisual = new Page();
         }
 

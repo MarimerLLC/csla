@@ -57,6 +57,12 @@
     <Compile Include="..\ChildGrandChild.Business.Server\ChildList.cs">
       <Link>ChildList.cs</Link>
     </Compile>
+    <Compile Include="..\ChildGrandChild.Business.Server\Customer.cs">
+      <Link>Customer.cs</Link>
+    </Compile>
+    <Compile Include="..\ChildGrandChild.Business.Server\CustomerList.cs">
+      <Link>CustomerList.cs</Link>
+    </Compile>
     <Compile Include="..\ChildGrandChild.Business.Server\GrandChild.cs">
       <Link>GrandChild.cs</Link>
     </Compile>

@@ -3,9 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChildGrandChild", "ChildGrandChild\ChildGrandChild.csproj", "{7F9148CD-5D18-47D3-8D15-6FEA8342EA61}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ChildGrandChildWeb", "ChildGrandChildWeb", "{87C8E00F-596D-459A-AB24-6DF60BE46CAC}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ChildGrandChildWeb", "ChildGrandChildWeb\", "{87C8E00F-596D-459A-AB24-6DF60BE46CAC}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
+		ProjectReferences = "{D1DB72A7-851D-4362-9235-AA01F42C8017}|ChildGrandChild.Business.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/ChildGrandChildWeb"
 		Debug.AspNetCompiler.PhysicalPath = "ChildGrandChildWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\ChildGrandChildWeb\"
@@ -20,7 +21,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ChildGrandChildWeb", "Child
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "1142"
+		VWDPort = "3390"
 		DefaultWebSiteLanguage = "Visual C#"
 		ProjOutputReferences = "{7F9148CD-5D18-47D3-8D15-6FEA8342EA61}|ClientBin|false;"
 	EndProjectSection

@@ -20,10 +20,10 @@ namespace ChildGrandChild.Business
       //      return item;
       //  }
 
-        public ChildList()
-        {
-            AllowNew = true;
-        }
+       // public ChildList()
+       // {
+       //     AllowNew = true;
+       // }
 
         public void DumpEditLevels(StringBuilder sb)
         {
@@ -34,14 +34,16 @@ namespace ChildGrandChild.Business
                 item.DumpEditLevels(sb);
         }
 
+         
         public static void FetchByName(string name, EventHandler<DataPortalResult<ChildList>> completed)
-        {
+        {            
             DataPortal<ChildList> dp = new DataPortal<ChildList>();
             dp.FetchCompleted += completed;
             dp.BeginFetch(new SingleCriteria<ChildList, string>(name));
         }
 
-        
        
+
+               
     }
 }

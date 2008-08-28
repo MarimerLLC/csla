@@ -3,20 +3,30 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     Width="400" Height="300" Loaded="UserControl_Loaded">
     <Grid x:Name="LayoutRoot" Background="White">
-        <ListBox x:Name="McListBox" Width="300" Height="200">
+        <StackPanel x:Name="LayoutRootq" Background="White" Margin="10,10,10,10">
 
-            <ListBoxItem Content="Coffie"></ListBoxItem>
+            <TextBlock Text="ListBox with bound data:" />
+        <ListBox x:Name="listBox1" Width="350" Margin="0,5,0,10" 
+             DisplayMemberPath="LastName"/>
 
-            <ListBoxItem Content="Tea"></ListBoxItem>
-
-            <ListBoxItem Content="Orange Juice"></ListBoxItem>
-
-            <ListBoxItem Content="Milk"></ListBoxItem>
-
-            <ListBoxItem Content="Iced Tea"></ListBoxItem>
-
-            <ListBoxItem Content="Mango Shake"></ListBoxItem>
-
+        <TextBlock Text="ListBox with ItemTemplate:" />        
+        <ListBox x:Name="listBox2" Width="350" Margin="0,5,0,10">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Padding="5,0,5,0"
+                            Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text=", " />
+                        <TextBlock Text="{Binding Id}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
-    </Grid>
+     <TextBlock Name="textBlock1" />
+
+    </StackPanel>
+
+
+</Grid>
 </UserControl>

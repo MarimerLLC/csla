@@ -52,6 +52,10 @@
     <Compile Include="Child.cs" />
     <Compile Include="ChildList.cs" />
     <Compile Include="childListProcess.cs" />
+    <Compile Include="Customer.cs" />
+    <Compile Include="Customer.partial.cs" />
+    <Compile Include="CustomerList.cs" />
+    <Compile Include="CustomerList.partial.cs" />
     <Compile Include="GrandChild.cs" />
     <Compile Include="GrandChildList.cs" />
     <Compile Include="partialChild.cs" />

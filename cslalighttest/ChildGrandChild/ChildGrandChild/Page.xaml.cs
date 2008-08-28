@@ -23,7 +23,7 @@ namespace ChildGrandChild
         }
 
 
-        private void FetchComplete(object sender, DataPortalResult<ChildList> result)
+        private void FetchComplete(object sender, DataPortalResult<CustomerList> result)
         {
             //this.DataContext = result.Object;
            // BindDetails();
@@ -34,7 +34,10 @@ namespace ChildGrandChild
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //busy.IsRunning = true;
-            ChildList.FetchByName(null, FetchComplete);
+           // ChildList.FetchByName(null, FetchComplete);
+           // CustomerList.FetchByName(null, FetchComplete);
+           CustomerList.FetchByName(null, FetchComplete);
+           //C//ustomerList.FetchByName(null, FetchComplete);
         }
     }
 }

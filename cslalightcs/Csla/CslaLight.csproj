@@ -284,6 +284,7 @@
     <Compile Include="DataPortalClient\IDataPortalTarget.cs" />
     <Compile Include="DataPortalClient\LocalProxy.cs" />
     <Compile Include="DataPortalClient\ProxyFactory.cs" />
+    <Compile Include="DataPortalClient\SynchronizedWcfProxy.cs" />
     <Compile Include="DataPortalClient\WcfProxy.cs" />
     <Compile Include="DataPortalException.cs" />
     <Compile Include="DataPortalResult.cs" />
@@ -328,6 +329,7 @@
     <Compile Include="Silverlight\ValidatedDataGridTextColumn.cs" />
     <Compile Include="SingleCriteria.cs" />
     <Compile Include="SmartDate.cs" />
+    <Compile Include="Threading\Semaphore.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Validation\BrokenRule.partial.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />

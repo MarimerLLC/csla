@@ -13,9 +13,15 @@ namespace Csla.DataPortalClient
       where T : Csla.Serialization.Mobile.IMobileObject
     {
       if (proxyMode == DataPortal.ProxyModes.LocalOnly || Csla.DataPortal.ProxyTypeName == "Local")
+      {
         return new LocalProxy<T>();
+      }
       else
-        return new WcfProxy<T>();
+      {
+        Type proxyType = Type.GetType(Csla.DataPortal.ProxyTypeName);
+        Type generixProxyType = proxyType.MakeGenericType(typeof(T));
+        return (IDataPortalProxy<T>)Activator.CreateInstance(generixProxyType);
+      }
     }
   }
 }

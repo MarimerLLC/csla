@@ -28,7 +28,7 @@ namespace cslalighttest.CslaDataProvider
     public void TestCslaDataProviderFetchNoParameters()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
 
       Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
@@ -53,7 +53,7 @@ namespace cslalighttest.CslaDataProvider
     public void TestCslaDataProviderFetchWithParameter()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       int custId = (new Random()).Next(1, 10);
       Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
@@ -79,7 +79,7 @@ namespace cslalighttest.CslaDataProvider
     public void TestCslaDataProviderCancel()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
       Customer.GetCustomer((o1,e1) =>
@@ -101,7 +101,7 @@ namespace cslalighttest.CslaDataProvider
     public void TestCslaDataProviderSave()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
@@ -129,7 +129,7 @@ namespace cslalighttest.CslaDataProvider
     public void TestCslaDataProviderAddRemove()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
       provider.ManageObjectLifetime = true;

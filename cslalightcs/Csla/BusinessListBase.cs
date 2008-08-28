@@ -535,15 +535,15 @@ namespace Csla
 
     protected override void OnGetState(SerializationInfo info)
     {
-      info.AddValue("_editLevel", _editLevel);
-      info.AddValue("_isChild", _isChild);
+      info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
+      info.AddValue("Csla.BusinessListBase._isChild", _isChild);
       base.OnGetState(info);
     }
 
     protected override void OnSetState(SerializationInfo info)
     {
-      _editLevel = info.GetValue<int>("_editLevel");
-      _isChild = info.GetValue<bool>("_isChild");
+      _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
+      _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
       base.OnSetState(info);
     }
 

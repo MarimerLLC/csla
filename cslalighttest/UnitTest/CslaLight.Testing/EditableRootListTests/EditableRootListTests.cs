@@ -30,7 +30,7 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -53,7 +53,7 @@ namespace cslalighttest.EditableRootListTests
     public void RemoveNewItem()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -84,7 +84,7 @@ namespace cslalighttest.EditableRootListTests
     public void RemoveNewItemViaListSaved()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -118,7 +118,7 @@ namespace cslalighttest.EditableRootListTests
     public void RemoveOldItem()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -151,7 +151,7 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -190,7 +190,7 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -226,24 +226,25 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
-      RootSingleItemsList list;
       RootSingleItemsList.GetRootSingleItemsList(1, 2, (o, e) =>
       {
-        context.Assert.IsNotNull(e.Object);
-        list = e.Object;
-        context.Assert.AreEqual(2, list.Count, "Count should be 2");
-        list.Saved += (o1, e1) =>
+        context.Assert.Try(() =>
         {
-          context.Assert.IsNull(e1.Error);
-          context.Assert.AreEqual(2, list.Count, "Incorrect count after remove");
-          context.Assert.AreEqual("DataPortal_Update", ((SingleItem)e1.NewObject).MethodCalled, "Object should have been updated");
-          context.Assert.IsFalse(list[0].IsDirty, "Object should not be dirty");
-          context.Assert.Success();
-        };
+          context.Assert.IsNotNull(e.Object);
+          RootSingleItemsList list = e.Object;
+          context.Assert.AreEqual(2, list.Count, "Count should be 2");
+          list.Saved += (o1, e1) =>
+          {
+            context.Assert.IsNull(e1.Error);
+            context.Assert.AreEqual(2, list.Count, "Incorrect count after remove");
+            context.Assert.AreEqual("DataPortal_Update", ((SingleItem)e1.NewObject).MethodCalled, "Object should have been updated");
+            context.Assert.IsFalse(list[0].IsDirty, "Object should not be dirty");
+            context.Assert.Success();
+          };
 
         // simulate grid edit
         SingleItem item = list[0];
@@ -251,9 +252,9 @@ namespace cslalighttest.EditableRootListTests
         obj.BeginEdit();
         item.Name = "test";
         obj.EndEdit();
+        });
       });
       context.Complete();
-
     }
   }
 }

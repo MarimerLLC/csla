@@ -6,6 +6,9 @@ using System.Diagnostics;
 
 namespace Csla.DataPortalClient
 {
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   public class LocalProxy<T> : IDataPortalProxy<T> where T : IMobileObject
   {
     #region Events and Fields

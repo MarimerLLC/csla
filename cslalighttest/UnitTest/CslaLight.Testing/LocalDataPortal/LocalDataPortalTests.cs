@@ -8,7 +8,7 @@ namespace cslalighttest.LocalDataPortal
   [TestClass]
   public class LocalDataPortalTests : TestBase
   {
-    [TestSetup]
+    [TestInitialize]
     public void Setup()
     {
       Csla.DataPortal.ProxyTypeName = "Local"; // "Csla.DataPortalClient.WcfProxy, Csla";

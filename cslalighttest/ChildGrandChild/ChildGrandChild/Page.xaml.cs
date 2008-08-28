@@ -25,19 +25,35 @@ namespace ChildGrandChild
 
         private void FetchComplete(object sender, DataPortalResult<CustomerList> result)
         {
-            //this.DataContext = result.Object;
-           // BindDetails();
+            this.DataContext = result.Object;
+          //  BindDetails();
         }
 
-       
+
+        private void FetchComplete(object sender, DataPortalResult<ChildList> result)
+        {
+            this.DataContext = result.Object;
+           //  BindDetails();
+        }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //busy.IsRunning = true;
-           // ChildList.FetchByName(null, FetchComplete);
+            ChildList.FetchByName(null, FetchComplete);
            // CustomerList.FetchByName(null, FetchComplete);
-           CustomerList.FetchByName(null, FetchComplete);
+          // CustomerList.FetchByName(null, FetchComplete);
            //C//ustomerList.FetchByName(null, FetchComplete);
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //Customer selected = null;
+            if (e.AddedItems.Count > 0)
+            {
+              //  selected = (child)e.AddedItems[0];
+            }
+
+            //details.Content = selected;
         }
     }
 }

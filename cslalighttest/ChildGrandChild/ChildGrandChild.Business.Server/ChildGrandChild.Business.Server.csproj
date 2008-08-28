@@ -50,15 +50,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Child.cs" />
+    <Compile Include="Child.partial.cs" />
     <Compile Include="ChildList.cs" />
-    <Compile Include="childListProcess.cs" />
+    <Compile Include="ChildList.partial.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="Customer.partial.cs" />
     <Compile Include="CustomerList.cs" />
     <Compile Include="CustomerList.partial.cs" />
     <Compile Include="GrandChild.cs" />
     <Compile Include="GrandChildList.cs" />
-    <Compile Include="partialChild.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

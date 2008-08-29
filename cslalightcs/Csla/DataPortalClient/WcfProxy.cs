@@ -194,7 +194,7 @@ namespace Csla.DataPortalClient
       request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
 
-      var proxy = new WcfPortal.WcfPortalClient();
+      var proxy = GetProxy();
       proxy.FetchCompleted += new EventHandler<Csla.WcfPortal.FetchCompletedEventArgs>(proxy_FetchCompleted);
       if (userState != null)
         proxy.FetchAsync(request, userState);

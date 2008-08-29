@@ -46,7 +46,8 @@ namespace Csla
       {
         if (string.IsNullOrEmpty(_proxyTypeName))
           //_proxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
-          _proxyTypeName = "Csla.DataPortalClient.SynchronizedWcfProxy<>, Csla";
+          //_proxyTypeName = "Csla.DataPortalClient.SynchronizedWcfProxy<>, Csla";
+          _proxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
         return _proxyTypeName;
       }
       set { _proxyTypeName = value; }
@@ -111,7 +112,7 @@ namespace Csla
     /// when the async operation is complete.
     /// </param>
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
-      where T: IMobileObject
+      where T : IMobileObject
     {
       DataPortal<T> dp = new DataPortal<T>();
       dp.CreateCompleted += callback;
@@ -175,7 +176,7 @@ namespace Csla
       DataPortal<T> dp = new DataPortal<T>();
       dp.FetchCompleted += callback;
       dp.BeginFetch(criteria, userState);
-    } 
+    }
 
     #endregion
 

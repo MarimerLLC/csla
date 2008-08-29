@@ -4,6 +4,11 @@
         <name>UnitDrivenLight</name>
     </assembly>
     <members>
+        <member name="F:UnitDriven.Commanding.CommandBase.DefaultTimeout">
+            <summary>
+            Default timeout is 30 seconds.
+            </summary>
+        </member>
         <member name="T:UnitDriven.Properties.Resources">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

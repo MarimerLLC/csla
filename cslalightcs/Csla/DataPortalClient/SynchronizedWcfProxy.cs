@@ -97,14 +97,8 @@ namespace Csla.DataPortalClient
 
     private void OnCompleted(object sender, DataPortalResult<T> e, EventHandler<DataPortalResult<T>> method)
     {
-      try
-      {
+      using(_semaphore)
         method(sender, e);
-      }        
-      finally
-      {
-        _semaphore.Dispose();
-      }
     }
 
     public event EventHandler<DataPortalResult<T>> CreateCompleted;

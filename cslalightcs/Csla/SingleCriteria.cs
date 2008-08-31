@@ -57,7 +57,7 @@ namespace Csla
     public SingleCriteria()
     { }
 #else
-    private SingleCriteria()
+    protected SingleCriteria()
     { }
 #endif
 

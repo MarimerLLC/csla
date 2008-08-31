@@ -84,6 +84,9 @@
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\CslaDataProvider\CustomerList.cs">
       <Link>CslaDataProvider\CustomerList.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\CslaDataProvider\IDCriteria.cs">
+      <Link>CslaDataProvider\IDCriteria.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\DataPortal\SetAppSettingValueCmd.cs">
       <Link>DataPortal\SetAppSettingValueCmd.cs</Link>
     </Compile>

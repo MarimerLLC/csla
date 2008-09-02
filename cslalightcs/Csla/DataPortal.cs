@@ -45,8 +45,6 @@ namespace Csla
       get
       {
         if (string.IsNullOrEmpty(_proxyTypeName))
-          //_proxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
-          //_proxyTypeName = "Csla.DataPortalClient.SynchronizedWcfProxy<>, Csla";
           _proxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
         return _proxyTypeName;
       }

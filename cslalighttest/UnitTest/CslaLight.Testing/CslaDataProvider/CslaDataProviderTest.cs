@@ -84,7 +84,7 @@ namespace cslalighttest.CslaDataProvider
       Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
       Customer.GetCustomer((o1,e1) =>
         {
-          Customer cust = ((Customer)e1.Data);
+          Customer cust = ((Customer)e1.Object);
           int custID = cust.Id;
           string custName = cust.Name;
           provider.Data = cust;
@@ -107,7 +107,7 @@ namespace cslalighttest.CslaDataProvider
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
-        Customer cust = ((Customer)e1.Data);
+        Customer cust = ((Customer)e1.Object);
         int custID = cust.Id;
         string custName = cust.Name;
         provider.Data = cust;
@@ -136,7 +136,7 @@ namespace cslalighttest.CslaDataProvider
       CustomerList.GetCustomerList((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
-        CustomerList custs = (CustomerList)e1.Data;
+        CustomerList custs = (CustomerList)e1.Object;
         int count = custs.Count;
         provider.Data = custs;
         provider.RemoveItem(custs[0]);

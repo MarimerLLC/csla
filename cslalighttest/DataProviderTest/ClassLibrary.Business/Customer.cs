@@ -25,6 +25,14 @@ namespace ClassLibrary.Business
       return returnValue;
     }
 
+    internal static Customer NewChildCustomer()
+    {
+      Customer returnValue = new Customer();
+      returnValue.Name = "New";
+      returnValue.MarkAsChild();
+      return returnValue;
+    }
+
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "Customer Id", 0));
     public int Id
     {
@@ -129,33 +137,23 @@ namespace ClassLibrary.Business
       dp.BeginFetch(new SingleCriteria<Customer, int>(customerID));
     }
 #if SILVERLIGHT
-    public static void GetCustomer(EventHandler<Csla.Silverlight.CslaDataProviderQueryCompletedEventArgs> handler)
+   
+    public static void GetCustomer(EventHandler<DataPortalResult<Customer>> handler)
     {
       int customerID = (new Random()).Next(1, 10);
       DataPortal<Customer> dp = new DataPortal<Customer>();
-      dp.FetchCompleted += (o,e) =>
-      {
-        if (handler != null)
-        {
-          handler(e.Object, new Csla.Silverlight.CslaDataProviderQueryCompletedEventArgs(e.Object, e.Error));
-        }
-      };
+      dp.FetchCompleted += handler;
       dp.BeginFetch(new SingleCriteria<Customer, int>(customerID));
     }
 
-    public static void CreateCustomer(EventHandler<Csla.Silverlight.CslaDataProviderQueryCompletedEventArgs> handler)
+    public static void CreateCustomer(EventHandler<DataPortalResult<Customer>> handler)
     {
       int customerID = (new Random()).Next(1, 10);
       DataPortal<Customer> dp = new DataPortal<Customer>();
-      dp.CreateCompleted += (o, e) =>
-      {
-        if (handler != null)
-        {
-          handler(e.Object, new Csla.Silverlight.CslaDataProviderQueryCompletedEventArgs(e.Object, e.Error));
-        }
-      };
+      dp.CreateCompleted += handler;
       dp.BeginCreate(new SingleCriteria<Customer, int>(customerID));
     }
+    
 #endif
 #if !SILVERLIGHT
 

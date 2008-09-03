@@ -27,7 +27,7 @@ namespace DataProviderApplication
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
-      Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      //Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
       //Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:2581/WcfPortal.svc";
       BusinessPrincipal.Login("SergeyB", "1234", "admin;user", (o2, e2) =>
       {

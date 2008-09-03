@@ -17,7 +17,7 @@ namespace ClassLibrary.Business
 
     protected override void AddNewCore()
     {
-      Customer newItem = Customer.NewCustomer();
+      Customer newItem = Customer.NewChildCustomer();
       this.Add(newItem);
     }
 
@@ -57,16 +57,10 @@ namespace ClassLibrary.Business
     }
 
 #else
-     public static void GetCustomerList(EventHandler<Csla.Silverlight.CslaDataProviderQueryCompletedEventArgs> handler)
+    public static void GetCustomerList(EventHandler<DataPortalResult<CustomerList>> handler)
     {
       DataPortal<CustomerList> dp = new DataPortal<CustomerList>();
-      dp.FetchCompleted += (o,e) =>
-      {
-        if (handler != null)
-        {
-          handler(e.Object, new Csla.Silverlight.CslaDataProviderQueryCompletedEventArgs(e.Object, e.Error));
-        }
-      };
+      dp.FetchCompleted += handler;
       dp.BeginFetch();
     }
 #endif

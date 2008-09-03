@@ -67,26 +67,31 @@
                 csla:InvokeMethod.MethodName="Save"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Save" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Cancel"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Cancel" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Delete"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Delete" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Fetch"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Fetch" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Create"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Create" />
     </StackPanel>
     
@@ -100,11 +105,13 @@
         <gridControl:DataGridTemplateColumn>
           <gridControl:DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
-              <Button Content="Delete" 
+              <Button 
                 csla:InvokeMethod.MethodName="RemoveItem"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.MethodParameter="{Binding}"/>
+                csla:InvokeMethod.MethodParameter="{Binding}"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                Content="Delete" />
             </DataTemplate>
           </gridControl:DataGridTemplateColumn.CellTemplate>
         </gridControl:DataGridTemplateColumn>
@@ -115,21 +122,25 @@
                 csla:InvokeMethod.MethodName="Save"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Save" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Cancel"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Cancel" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Fetch"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Fetch" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="AddNewItem"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
+                csla:InvokeMethod.ManageEnabledStateForControl="True"
                 Content="Add" />                
     </StackPanel>
   </Grid>

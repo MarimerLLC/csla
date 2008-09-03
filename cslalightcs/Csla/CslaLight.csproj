@@ -65,6 +65,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\CommandBase.cs">
+      <Link>CommandBase.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\AsyncFactoryDelegates.cs">
       <Link>Core\AsyncFactoryDelegates.cs</Link>
     </Compile>
@@ -92,6 +95,9 @@
     <Compile Include="..\..\cslacs\Csla\Core\LoadManager\AsyncLoadManager.cs">
       <Link>Core\LoadManager\AsyncLoadManager.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\ManagedObjectBase.cs">
+      <Link>Core\ManagedObjectBase.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\MobileBindingList.cs">
       <Link>Core\MobileBindingList.cs</Link>
     </Compile>
@@ -103,6 +109,9 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\StateMode.cs">
       <Link>Core\StateMode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\CriteriaBase.cs">
+      <Link>CriteriaBase.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRules.cs">
       <Link>Security\AuthorizationRules.cs</Link>
@@ -242,7 +251,6 @@
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessListBase.cs" />
-    <Compile Include="CommandBase.cs" />
     <Compile Include="Core\ChildChangedEventArgs.cs" />
     <Compile Include="Core\IBindingList.cs" />
     <Compile Include="Core\ContextDictionary.cs" />
@@ -275,7 +283,6 @@
     <Compile Include="Core\SavedEventArgs.cs" />
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="Core\UndoException.cs" />
-    <Compile Include="CriteriaBase.cs" />
     <Compile Include="DataPortal.cs" />
     <Compile Include="Core\BusinessBase.cs" />
     <Compile Include="DataPortalClient\DataPortalEventArgs.cs" />

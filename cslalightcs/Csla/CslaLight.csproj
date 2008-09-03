@@ -312,7 +312,6 @@
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Silverlight\CslaDataProviderQueryCompletedEventArgs.cs" />
     <Compile Include="Silverlight\ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="Silverlight\CslaDataProvider.cs" />
     <Compile Include="Silverlight\InvokeMethod.cs" />

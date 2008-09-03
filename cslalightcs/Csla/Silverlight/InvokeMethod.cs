@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Csla.Core;
+using System.Collections.Generic;
 
 namespace Csla.Silverlight
 {
@@ -30,8 +31,13 @@ namespace Csla.Silverlight
       InvokeMethod attachedObject = new InvokeMethod(element);
       if (attachedObject._target is CslaDataProvider)
       {
-        ((CslaDataProvider)attachedObject._target).DataChanged += new EventHandler(attachedObject.target_DataChanged);
+        ((CslaDataProvider)attachedObject._target).PropertyChanged += new PropertyChangedEventHandler(attachedObject.InvokeMethod_PropertyChanged);
       }
+    }
+
+    private void InvokeMethod_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      Refresh();
     }
 
     public static object GetResource(UIElement element)
@@ -90,6 +96,38 @@ namespace Csla.Silverlight
       return (string)element.GetValue(MethodParameterProperty);
     }
 
+    public static readonly DependencyProperty ManageEnabledStateForControlProperty =
+      DependencyProperty.RegisterAttached("ManageEnabledStateForControl",
+      typeof(bool),
+      typeof(InvokeMethod),
+      null);
+
+    public static void SetManageEnabledStateForControl(UIElement element, object value)
+    {
+      element.SetValue(ManageEnabledStateForControlProperty, value);
+      new InvokeMethod(element);
+    }
+
+    public static object GetManageEnabledStateForControl(UIElement element)
+    {
+      return (bool)element.GetValue(ManageEnabledStateForControlProperty);
+    }
+
+    private static List<int> processedControls = new List<int>();
+    private static object locker = new object();
+    private static bool AddControl(int controlId)
+    {
+      lock (locker)
+      {
+        if (processedControls.Contains(controlId))
+          return false;
+        else
+        {
+          processedControls.Add(controlId);
+          return true;
+        }
+      }
+    }
     private ContentControl _contentControl;
 
     #endregion
@@ -106,6 +144,11 @@ namespace Csla.Silverlight
       _target = element.GetValue(ResourceProperty);
       if (_target != null)
       {
+        var manageStateValue = element.GetValue(ManageEnabledStateForControlProperty);
+        if (manageStateValue == null)
+        {
+          element.SetValue(ManageEnabledStateForControlProperty, false);
+        }
         var methodName = (string)element.GetValue(MethodNameProperty);
         if (!string.IsNullOrEmpty(methodName))
         {
@@ -118,7 +161,7 @@ namespace Csla.Silverlight
             _targetMethod = _target.GetType().GetMethod(methodName);
 
             var eventRef = element.GetType().GetEvent(triggerEvent);
-            if (eventRef != null)
+            if (eventRef != null && AddControl(element.GetHashCode()))
             {
               Refresh();
 
@@ -127,9 +170,13 @@ namespace Csla.Silverlight
               if (p.Length == 2)
               {
                 if (typeof(RoutedEventArgs).IsAssignableFrom(p[1].ParameterType))
+                {
                   eventRef.AddEventHandler(element, new RoutedEventHandler(CallMethod));
+                }
                 else if (typeof(EventArgs).IsAssignableFrom(p[1].ParameterType))
+                {
                   eventRef.AddEventHandler(element, new EventHandler(CallMethod));
+                }
                 else
                   throw new NotSupportedException();
               }
@@ -143,64 +190,34 @@ namespace Csla.Silverlight
 
     private void Refresh()
     {
-      if (_target != null && ((CslaDataProvider)_target).Data != null)
+      if (_target != null && _element != null && _contentControl != null && _element.GetValue(MethodNameProperty) != null)
       {
-        ITrackStatus targetObject = ((CslaDataProvider)_target).Data as ITrackStatus;
-        IEditableCollection list = ((CslaDataProvider)_target).Data as IEditableCollection;
-        if (_contentControl != null && targetObject != null && _element.GetValue(MethodNameProperty) != null)
+        if ((bool)_element.GetValue(ManageEnabledStateForControlProperty) == true)
         {
-          if (_element.GetValue(MethodNameProperty).ToString() == "Save")
+          if (_target is CslaDataProvider)
           {
-
-            if (Csla.Security.AuthorizationRules.CanEditObject(((CslaDataProvider)_target).Data.GetType()) && targetObject.IsSavable)
-              _contentControl.IsEnabled = true;
-            else
-              _contentControl.IsEnabled = false;
+            CslaDataProvider targetProvider = _target as CslaDataProvider;
+            if (_element.GetValue(MethodNameProperty).ToString() == "Save")
+              _contentControl.IsEnabled = targetProvider.CanSave;
+            if (_element.GetValue(MethodNameProperty).ToString() == "Cancel")
+              _contentControl.IsEnabled = targetProvider.CanCancel;
+            if (_element.GetValue(MethodNameProperty).ToString() == "Create")
+              _contentControl.IsEnabled = targetProvider.CanCreate;
+            if (_element.GetValue(MethodNameProperty).ToString() == "Fetch")
+              _contentControl.IsEnabled = targetProvider.CanFetch;
+            if (_element.GetValue(MethodNameProperty).ToString() == "Delete")
+              _contentControl.IsEnabled = targetProvider.CanDelete;
+            if (_element.GetValue(MethodNameProperty).ToString() == "RemoveItem")
+              _contentControl.IsEnabled = targetProvider.CanRemoveItem;
+            if (_element.GetValue(MethodNameProperty).ToString() == "AddNewItem")
+              _contentControl.IsEnabled = targetProvider.CanAddNewItem;
           }
-          else if (_element.GetValue(MethodNameProperty).ToString() == "Cancel")
+          else
           {
-            if (Csla.Security.AuthorizationRules.CanEditObject(((CslaDataProvider)_target).Data.GetType()) && targetObject.IsDirty)
-              _contentControl.IsEnabled = true;
-            else
-              _contentControl.IsEnabled = false;
-          }
-          else if (_element.GetValue(MethodNameProperty).ToString() == "Create")
-          {
-            if (Csla.Security.AuthorizationRules.CanCreateObject(((CslaDataProvider)_target).Data.GetType()) && !targetObject.IsDirty)
-              _contentControl.IsEnabled = true;
-            else
-              _contentControl.IsEnabled = false;
-          }
-          else if (_element.GetValue(MethodNameProperty).ToString() == "Fetch")
-          {
-            if (Csla.Security.AuthorizationRules.CanGetObject(((CslaDataProvider)_target).Data.GetType()) && !targetObject.IsDirty)
-              _contentControl.IsEnabled = true;
-            else
-              _contentControl.IsEnabled = false;
-          }
-          else if (list != null && _element.GetValue(MethodNameProperty).ToString() == "AddNewItem")
-          {
-            Type innerType = Csla.Utilities.GetChildItemType(((CslaDataProvider)_target).Data.GetType());
-            if (innerType == null)
-              innerType = ((CslaDataProvider)_target).Data.GetType();
-            if (Csla.Security.AuthorizationRules.CanCreateObject(innerType))
-              _contentControl.IsEnabled = true;
-            else
-              _contentControl.IsEnabled = false;
-          }
-          else if (_element.GetValue(MethodNameProperty).ToString() == "RemoveItem")
-          {
-            Type innerType = Csla.Utilities.GetChildItemType(((CslaDataProvider)_target).Data.GetType());
-            if (innerType == null)
-              innerType = ((CslaDataProvider)_target).Data.GetType();
-            if (Csla.Security.AuthorizationRules.CanDeleteObject(innerType))
-              _contentControl.IsEnabled = true;
-            else
-              _contentControl.IsEnabled = false;
-          }
-          else if (_element.GetValue(MethodNameProperty).ToString() == "Delete")
-          {
-            if (Csla.Security.AuthorizationRules.CanDeleteObject(((CslaDataProvider)_target).Data.GetType()))
+            string targetMethodName = (string)_element.GetValue(MethodNameProperty);
+            string canMethodName = "Can" + targetMethodName;
+            object returnValue = Csla.Reflection.MethodCaller.CallMethodIfImplemented(_target, canMethodName, null);
+            if (returnValue != null && returnValue is bool && (bool)returnValue == true)
               _contentControl.IsEnabled = true;
             else
               _contentControl.IsEnabled = false;
@@ -209,10 +226,6 @@ namespace Csla.Silverlight
       }
     }
 
-    private void target_DataChanged(object sender, EventArgs e)
-    {
-      Refresh();
-    }
 
     private void CallMethod(object sender, EventArgs e)
     {

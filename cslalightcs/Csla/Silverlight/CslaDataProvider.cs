@@ -37,12 +37,12 @@ namespace Csla.Silverlight
 
     private void dataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      OnDataChanged();
+      RefreshCanOperaionsValues();
     }
 
     private void dataObject_ChildChanged(object sender, ChildChangedEventArgs e)
     {
-      OnDataChanged();
+      RefreshCanOperaionsValues();
     }
 
     #endregion
@@ -59,6 +59,12 @@ namespace Csla.Silverlight
         OnPropertyChanged(new PropertyChangedEventArgs("IsBusy"));
       }
     }
+
+    void CslaDataProvider_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      IsBusy = e.Busy;
+    }
+
 
     private object _dataObject;
 
@@ -110,11 +116,6 @@ namespace Csla.Silverlight
           var o = ex;
         }
       }
-    }
-
-    void CslaDataProvider_BusyChanged(object sender, BusyChangedEventArgs e)
-    {
-      IsBusy = e.Busy;
     }
 
     private bool _manageObjectLifetime = true;
@@ -289,19 +290,20 @@ namespace Csla.Silverlight
         obj.Delete();
     }
 
-    private void QueryCompleted(object sender, CslaDataProviderQueryCompletedEventArgs e)
+    private void QueryCompleted(object sender, EventArgs e)
     {
-      if (_manageObjectLifetime && e.Data != null && e.Error == null)
+      IDataPortalResult eventArgs = e as IDataPortalResult;
+      if (_manageObjectLifetime && eventArgs.Object != null && eventArgs.Error == null)
       {
-        this.Data = e.Data;
-        this.Error = e.Error;
+        this.Data = eventArgs.Object;
+        this.Error = eventArgs.Error;
         _isInitialLoadCompleted = true;
       }
-      else if (e.Error != null)
+      else if (eventArgs.Error != null)
       {
-        this.Error = e.Error;
-        OnDataChanged();
+        this.Error = eventArgs.Error;
       }
+      RefreshCanOperaionsValues();
     }
 
     private void InitialFetch()
@@ -312,6 +314,15 @@ namespace Csla.Silverlight
       }
     }
 
+    private Delegate CreateHandler(Type objectType)
+    {
+      var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
+      MethodInfo method = this.GetType().GetMethod("QueryCompleted", BindingFlags.Instance | BindingFlags.NonPublic);
+      Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
+      return handler;
+    }
+
+
     public void Fetch()
     {
       if (_objectType != null && _fetchFactoryMethod != null)
@@ -319,8 +330,10 @@ namespace Csla.Silverlight
         {
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
-          parameters.Add(new EventHandler<CslaDataProviderQueryCompletedEventArgs>(QueryCompleted));
           Type objectType = Type.GetType(_objectType);
+
+          parameters.Add(CreateHandler(objectType));
+
           MethodInfo factory = objectType.GetMethod(
             _fetchFactoryMethod, flags, null,
             MethodCaller.GetParameterTypes(parameters.ToArray()), null);
@@ -370,8 +383,8 @@ namespace Csla.Silverlight
         {
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
-          parameters.Add(new EventHandler<CslaDataProviderQueryCompletedEventArgs>(QueryCompleted));
           Type objectType = Type.GetType(_objectType);
+          parameters.Add(CreateHandler(objectType));
           MethodInfo factory = objectType.GetMethod(
             _createFactoryMethod, flags, null,
             MethodCaller.GetParameterTypes(parameters.ToArray()), null);
@@ -440,6 +453,7 @@ namespace Csla.Silverlight
       var obj = _dataObject as Csla.Core.IBindingList;
       if (obj != null)
         obj.AddNew();
+      RefreshCanOperaionsValues();
     }
 
     /// <summary>
@@ -454,9 +468,205 @@ namespace Csla.Silverlight
       var obj = _dataObject as System.Collections.IList;
       if (obj != null)
         obj.Remove(item);
+      RefreshCanOperaionsValues();
     }
     #endregion
 
+    #region  Can Methods
+
+    private bool _canSave = false;
+    public bool CanSave
+    {
+      get
+      {
+        return _canSave;
+      }
+      private set
+      {
+        if (_canSave != value)
+        {
+          _canSave = value;
+          OnPropertyChanged(new PropertyChangedEventArgs("CanSave"));
+        }
+      }
+    }
+
+    private bool _canCancel = false;
+    public bool CanCancel
+    {
+      get
+      {
+        return _canCancel;
+      }
+      private set
+      {
+        if (_canCancel != value)
+        {
+          _canCancel = value;
+          OnPropertyChanged(new PropertyChangedEventArgs("CanCancel"));
+        }
+      }
+    }
+
+    private bool _canCreate = false;
+    public bool CanCreate
+    {
+      get
+      {
+        return _canCreate;
+      }
+      private set
+      {
+        if (_canCreate != value)
+        {
+          _canCreate = value;
+          OnPropertyChanged(new PropertyChangedEventArgs("CanCreate"));
+        }
+      }
+    }
+
+    private bool _canDelete = false;
+    public bool CanDelete
+    {
+      get
+      {
+        return _canDelete;
+      }
+      private set
+      {
+        if (_canDelete != value)
+        {
+          _canDelete = value;
+          OnPropertyChanged(new PropertyChangedEventArgs("CanDelete"));
+        }
+      }
+    }
+
+    private bool _canFetch = false;
+    public bool CanFetch
+    {
+      get
+      {
+        return _canFetch;
+      }
+      private set
+      {
+        if (_canFetch != value)
+        {
+          _canFetch = value;
+          OnPropertyChanged(new PropertyChangedEventArgs("CanFetch"));
+        }
+      }
+    }
+
+    private bool _canRemoveItem = false;
+    public bool CanRemoveItem
+    {
+      get
+      {
+        return _canRemoveItem;
+      }
+      private set
+      {
+        if (_canRemoveItem != value)
+        {
+          _canRemoveItem = value;
+          OnPropertyChanged(new PropertyChangedEventArgs("CanRemoveItem"));
+        }
+      }
+    }
+
+    private bool _canAddNewItem = false;
+    public bool CanAddNewItem
+    {
+      get
+      {
+        return _canAddNewItem;
+      }
+      private set
+      {
+        if (_canAddNewItem != value)
+        {
+          _canAddNewItem = value;
+          OnPropertyChanged(new PropertyChangedEventArgs("CanAddNewItem"));
+        }
+      }
+    }
+
+    private void RefreshCanOperaionsValues()
+    {
+      ITrackStatus targetObject = this.Data as ITrackStatus;
+      IEditableCollection list = this.Data as IEditableCollection;
+      if (this.Data != null && targetObject != null)
+      {
+
+        if (Csla.Security.AuthorizationRules.CanEditObject(this.Data.GetType()) && targetObject.IsSavable)
+          this.CanSave = true;
+        else
+          this.CanSave = false;
+
+        if (Csla.Security.AuthorizationRules.CanEditObject(this.Data.GetType()) && targetObject.IsDirty)
+          this.CanCancel = true;
+        else
+          this.CanCancel = false;
+
+        if (Csla.Security.AuthorizationRules.CanCreateObject(this.Data.GetType()) && !targetObject.IsDirty)
+          this.CanCreate = true;
+        else
+          this.CanCreate = false;
+
+        if (Csla.Security.AuthorizationRules.CanDeleteObject(this.Data.GetType()))
+          this.CanDelete = true;
+        else
+          this.CanDelete = false;
+
+        if (Csla.Security.AuthorizationRules.CanGetObject(this.Data.GetType()) && !targetObject.IsDirty)
+          this.CanFetch = true;
+        else
+          this.CanFetch = false;
+
+        if (list != null)
+        {
+          Type itemType = Csla.Utilities.GetChildItemType(this.Data.GetType());
+          if (itemType != null)
+          {
+
+            if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && ((ICollection)this.Data).Count > 0)
+              this.CanRemoveItem = true;
+            else
+              this.CanRemoveItem = false;
+
+            if (Csla.Security.AuthorizationRules.CanCreateObject(itemType))
+              this.CanAddNewItem = true;
+            else
+              this.CanAddNewItem = false;
+          }
+          else
+          {
+            this.CanAddNewItem = false;
+            this.CanRemoveItem = false;
+          }
+        }
+        else
+        {
+          this.CanRemoveItem = false;
+          this.CanAddNewItem = false;
+        }
+      }
+      else
+      {
+        this.CanCancel = false;
+        this.CanCreate = false;
+        this.CanDelete = false;
+        this.CanFetch = true;
+        this.CanSave = false;
+        this.CanRemoveItem = false;
+        this.CanAddNewItem = false;
+      }
+    }
+
+    #endregion
+    
     #region INotifyPropertyChanged Members
 
     /// <summary>

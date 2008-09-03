@@ -5,6 +5,7 @@ namespace Csla
   public interface IDataPortalResult 
   {
     object Object { get; }
+    Exception Error { get; }
   }
 
   public class DataPortalResult<T> : EventArgs, IDataPortalResult
@@ -25,6 +26,11 @@ namespace Csla
     object IDataPortalResult.Object
     {
       get { return this.Object; }
+    }
+
+    Exception IDataPortalResult.Error
+    {
+      get { return this.Error; }
     }
 
     #endregion

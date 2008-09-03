@@ -98,7 +98,7 @@ namespace Csla.Silverlight
 
         if (_dataObject != null && _dataObject is INotifyPropertyChanged)
           ((INotifyPropertyChanged)_dataObject).PropertyChanged += new PropertyChangedEventHandler(dataObject_PropertyChanged);
-        if (_dataObject != null && _dataObject is INotifyCollectionChanged && _dataObject is INotifyChildChanged)
+        if (_dataObject != null && _dataObject is INotifyChildChanged)
           ((INotifyChildChanged)_dataObject).ChildChanged += new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
 
         if (_dataObject != null && _dataObject is INotifyBusy)

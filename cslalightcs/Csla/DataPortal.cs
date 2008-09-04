@@ -278,6 +278,27 @@ namespace Csla
 
     #endregion
 
+    #region Child
+
+    public static T FetchChild<T>(params object[] parameters)
+    {
+      ChildDataPortal<T> dp = new ChildDataPortal<T>();
+      return (T)dp.Fetch(parameters);
+    }
+
+    public static T CreateChild<T>(params object[] parameters)
+    {
+      ChildDataPortal<T> dp = new ChildDataPortal<T>();
+      return (T)dp.Create(parameters);
+    }
+
+    public static void UpdateChild<T>(T child, params object[] parameters)
+    {
+      ChildDataPortal<T> dp = new ChildDataPortal<T>();
+      dp.Update(child, parameters);
+    }
+    #endregion
+
     #endregion
   }
 }

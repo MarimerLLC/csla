@@ -18,8 +18,7 @@ namespace Csla.Testing.Business.EditableChildTests
     #region Factories
     internal static MockEditableChild Load(Guid Id, string name)
     {
-      ChildDataPortal<MockEditableChild> dp = new ChildDataPortal<MockEditableChild>();
-      return (MockEditableChild)dp.Fetch(Id, name);
+      return Csla.DataPortal.FetchChild<MockEditableChild>(Id, name);
     }
     #endregion
 
@@ -39,8 +38,7 @@ namespace Csla.Testing.Business.EditableChildTests
     {
       LoadProperty<string>(DataPortalMethodProperty, "Child_Update");
 
-      ChildDataPortal<GrandChildList> dp = new ChildDataPortal<GrandChildList>();
-      dp.Update(GrandChildren);
+      Csla.DataPortal.UpdateChild<GrandChildList>(GrandChildren);
     }
 
     #endregion

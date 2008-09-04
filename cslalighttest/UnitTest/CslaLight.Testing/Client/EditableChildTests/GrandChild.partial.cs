@@ -19,8 +19,7 @@ namespace Csla.Testing.Business.EditableChildTests
 
     internal static GrandChild Load(int id, Guid parentId, string name)
     {
-      ChildDataPortal<GrandChild> dp = new ChildDataPortal<GrandChild>();
-      return (GrandChild)dp.Fetch(id, parentId, name);
+      return Csla.DataPortal.FetchChild<GrandChild>(id, parentId, name);
     }
 
     #endregion

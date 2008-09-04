@@ -50,6 +50,7 @@ namespace Csla
     public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
     {
       ValidationRules.CheckRules();
+      handler((T)this, null);
     }
 
     /// <summary>

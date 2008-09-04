@@ -304,6 +304,7 @@ namespace Csla.Silverlight
         this.Error = eventArgs.Error;
       }
       RefreshCanOperaionsValues();
+      this.IsBusy = false;
     }
 
     private void InitialFetch()
@@ -328,6 +329,7 @@ namespace Csla.Silverlight
       if (_objectType != null && _fetchFactoryMethod != null)
         try
         {
+          this.IsBusy = true;
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
           Type objectType = Type.GetType(_objectType);
@@ -381,6 +383,7 @@ namespace Csla.Silverlight
       if (_objectType != null && _createFactoryMethod != null)
         try
         {
+          this.IsBusy = true;
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
           Type objectType = Type.GetType(_objectType);

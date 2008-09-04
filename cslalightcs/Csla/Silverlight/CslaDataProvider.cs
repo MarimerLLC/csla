@@ -248,13 +248,21 @@ namespace Csla.Silverlight
     /// </summary>
     public void Cancel()
     {
+      _error = null;
       if (_manageObjectLifetime)
       {
-        var undoable = _dataObject as Csla.Core.ISupportUndo;
-        if (undoable != null)
+        try
         {
-          undoable.CancelEdit();
-          undoable.BeginEdit();
+          var undoable = _dataObject as Csla.Core.ISupportUndo;
+          if (undoable != null)
+          {
+            undoable.CancelEdit();
+            undoable.BeginEdit();
+          }
+        }
+        catch (Exception ex)
+        {
+          this.Error = ex;
         }
       }
     }
@@ -266,18 +274,25 @@ namespace Csla.Silverlight
     public void Save()
     {
       Error = null;
-      if (_manageObjectLifetime)
+      try
       {
-        var undoable = _dataObject as Csla.Core.ISupportUndo;
-        if (undoable != null)
-          undoable.ApplyEdit();
+        if (_manageObjectLifetime)
+        {
+          var undoable = _dataObject as Csla.Core.ISupportUndo;
+          if (undoable != null)
+            undoable.ApplyEdit();
+        }
+        var obj = _dataObject as Csla.Core.ISavable;
+        if (obj != null)
+        {
+          obj.Saved -= new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
+          obj.Saved += new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
+          obj.BeginSave();
+        }
       }
-      var obj = _dataObject as Csla.Core.ISavable;
-      if (obj != null)
+      catch (Exception ex)
       {
-        obj.Saved -= new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
-        obj.Saved += new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
-        obj.BeginSave();
+        this.Error = ex;
       }
     }
 
@@ -294,9 +309,17 @@ namespace Csla.Silverlight
     /// </summary>
     public void Delete()
     {
-      var obj = _dataObject as Csla.Core.BusinessBase;
-      if (obj != null && !obj.IsChild)
-        obj.Delete();
+      _error = null;
+      try
+      {
+        var obj = _dataObject as Csla.Core.BusinessBase;
+        if (obj != null && !obj.IsChild)
+          obj.Delete();
+      }
+      catch (Exception ex)
+      {
+        this.Error = ex;
+      }
     }
 
     private void QueryCompleted(object sender, EventArgs e)
@@ -338,6 +361,7 @@ namespace Csla.Silverlight
       if (_objectType != null && _fetchFactoryMethod != null)
         try
         {
+          _error = null;
           this.IsBusy = true;
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
@@ -378,12 +402,12 @@ namespace Csla.Silverlight
           }
           catch (Exception ex)
           {
-            _error = ex;
+            this.Error = ex;
           }
         }
         catch (Exception ex)
         {
-          _error = ex;
+          this.Error = ex;
         }
     }
 
@@ -392,6 +416,7 @@ namespace Csla.Silverlight
       if (_objectType != null && _createFactoryMethod != null)
         try
         {
+          _error = null;
           this.IsBusy = true;
           BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
@@ -447,12 +472,12 @@ namespace Csla.Silverlight
           }
           catch (Exception ex)
           {
-            _error = ex;
+            this.Error = ex;
           }
         }
         catch (Exception ex)
         {
-          _error = ex;
+          this.Error = ex;
         }
     }
 
@@ -462,10 +487,18 @@ namespace Csla.Silverlight
     /// </summary>
     public void AddNewItem()
     {
-      var obj = _dataObject as Csla.Core.IBindingList;
-      if (obj != null)
-        obj.AddNew();
-      RefreshCanOperaionsValues();
+      _error = null;
+      try
+      {
+        var obj = _dataObject as Csla.Core.IBindingList;
+        if (obj != null)
+          obj.AddNew();
+        RefreshCanOperaionsValues();
+      }
+      catch (Exception ex)
+      {
+        this.Error = ex;
+      }
     }
 
     /// <summary>
@@ -477,10 +510,18 @@ namespace Csla.Silverlight
     /// </param>
     public void RemoveItem(object item)
     {
-      var obj = _dataObject as System.Collections.IList;
-      if (obj != null)
-        obj.Remove(item);
-      RefreshCanOperaionsValues();
+      try
+      {
+        _error = null;
+        var obj = _dataObject as System.Collections.IList;
+        if (obj != null)
+          obj.Remove(item);
+        RefreshCanOperaionsValues();
+      }
+      catch (Exception ex)
+      {
+        this.Error = ex;
+      }
     }
     #endregion
 
@@ -608,7 +649,7 @@ namespace Csla.Silverlight
     private void RefreshCanOperaionsValues()
     {
       ITrackStatus targetObject = this.Data as ITrackStatus;
-      IEditableCollection list = this.Data as IEditableCollection;
+      ICollection list = this.Data as ICollection;
       if (this.Data != null && targetObject != null)
       {
 
@@ -665,12 +706,34 @@ namespace Csla.Silverlight
           this.CanAddNewItem = false;
         }
       }
+      else if (list != null)
+      {
+        Type itemType = Csla.Utilities.GetChildItemType(this.Data.GetType());
+        if (itemType != null)
+        {
+
+          if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && ((ICollection)this.Data).Count > 0 && !this.IsBusy)
+            this.CanRemoveItem = true;
+          else
+            this.CanRemoveItem = false;
+
+          if (Csla.Security.AuthorizationRules.CanCreateObject(itemType) && !this.IsBusy)
+            this.CanAddNewItem = true;
+          else
+            this.CanAddNewItem = false;
+        }
+        else
+        {
+          this.CanAddNewItem = false;
+          this.CanRemoveItem = false;
+        }
+      }
       else
       {
         this.CanCancel = false;
         this.CanCreate = false;
         this.CanDelete = false;
-        this.CanFetch =  !this.IsBusy;
+        this.CanFetch = !this.IsBusy;
         this.CanSave = false;
         this.CanRemoveItem = false;
         this.CanAddNewItem = false;

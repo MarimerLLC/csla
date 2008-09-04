@@ -31,6 +31,7 @@ namespace Csla.Silverlight
     public event EventHandler DataChanged;
     protected void OnDataChanged()
     {
+      RefreshCanOperaionsValues();
       if (DataChanged != null)
         DataChanged(this, EventArgs.Empty);
     }
@@ -57,7 +58,15 @@ namespace Csla.Silverlight
       {
         _isBusy = value;
         OnPropertyChanged(new PropertyChangedEventArgs("IsBusy"));
+        OnPropertyChanged(new PropertyChangedEventArgs("IsNotBusy"));
+        RefreshCanOperaionsValues();
       }
+    }
+
+    public bool IsNotBusy
+    {
+      get
+      { return !IsBusy; }
     }
 
     void CslaDataProvider_BusyChanged(object sender, BusyChangedEventArgs e)
@@ -603,27 +612,27 @@ namespace Csla.Silverlight
       if (this.Data != null && targetObject != null)
       {
 
-        if (Csla.Security.AuthorizationRules.CanEditObject(this.Data.GetType()) && targetObject.IsSavable)
+        if (Csla.Security.AuthorizationRules.CanEditObject(this.Data.GetType()) && targetObject.IsSavable && !this.IsBusy)
           this.CanSave = true;
         else
           this.CanSave = false;
 
-        if (Csla.Security.AuthorizationRules.CanEditObject(this.Data.GetType()) && targetObject.IsDirty)
+        if (Csla.Security.AuthorizationRules.CanEditObject(this.Data.GetType()) && targetObject.IsDirty && !this.IsBusy)
           this.CanCancel = true;
         else
           this.CanCancel = false;
 
-        if (Csla.Security.AuthorizationRules.CanCreateObject(this.Data.GetType()) && !targetObject.IsDirty)
+        if (Csla.Security.AuthorizationRules.CanCreateObject(this.Data.GetType()) && !targetObject.IsDirty && !this.IsBusy)
           this.CanCreate = true;
         else
           this.CanCreate = false;
 
-        if (Csla.Security.AuthorizationRules.CanDeleteObject(this.Data.GetType()))
+        if (Csla.Security.AuthorizationRules.CanDeleteObject(this.Data.GetType()) && !this.IsBusy)
           this.CanDelete = true;
         else
           this.CanDelete = false;
 
-        if (Csla.Security.AuthorizationRules.CanGetObject(this.Data.GetType()) && !targetObject.IsDirty)
+        if (Csla.Security.AuthorizationRules.CanGetObject(this.Data.GetType()) && !targetObject.IsDirty && !this.IsBusy)
           this.CanFetch = true;
         else
           this.CanFetch = false;
@@ -634,12 +643,12 @@ namespace Csla.Silverlight
           if (itemType != null)
           {
 
-            if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && ((ICollection)this.Data).Count > 0)
+            if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && ((ICollection)this.Data).Count > 0 && !this.IsBusy)
               this.CanRemoveItem = true;
             else
               this.CanRemoveItem = false;
 
-            if (Csla.Security.AuthorizationRules.CanCreateObject(itemType))
+            if (Csla.Security.AuthorizationRules.CanCreateObject(itemType) && !this.IsBusy)
               this.CanAddNewItem = true;
             else
               this.CanAddNewItem = false;
@@ -661,7 +670,7 @@ namespace Csla.Silverlight
         this.CanCancel = false;
         this.CanCreate = false;
         this.CanDelete = false;
-        this.CanFetch = true;
+        this.CanFetch =  !this.IsBusy;
         this.CanSave = false;
         this.CanRemoveItem = false;
         this.CanAddNewItem = false;

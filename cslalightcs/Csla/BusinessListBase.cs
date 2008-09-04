@@ -792,17 +792,17 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual void BeginSave()
+    public void BeginSave()
     {
       BeginSave(null, null);
     }
 
-    public virtual void BeginSave(object userState)
+    public void BeginSave(object userState)
     {
       BeginSave(null, userState);
     }
 
-    public virtual void BeginSave(EventHandler<SavedEventArgs> handler)
+    public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(handler, null);
     }

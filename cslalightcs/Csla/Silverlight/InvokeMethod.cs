@@ -96,21 +96,21 @@ namespace Csla.Silverlight
       return (string)element.GetValue(MethodParameterProperty);
     }
 
-    public static readonly DependencyProperty ManageEnabledStateForControlProperty =
-      DependencyProperty.RegisterAttached("ManageEnabledStateForControl",
+    public static readonly DependencyProperty ManageEnabledStateProperty =
+      DependencyProperty.RegisterAttached("ManageEnabledState",
       typeof(bool),
       typeof(InvokeMethod),
       null);
 
-    public static void SetManageEnabledStateForControl(UIElement element, object value)
+    public static void SetManageEnabledState(UIElement element, object value)
     {
-      element.SetValue(ManageEnabledStateForControlProperty, value);
+      element.SetValue(ManageEnabledStateProperty, value);
       new InvokeMethod(element);
     }
 
-    public static object GetManageEnabledStateForControl(UIElement element)
+    public static object GetManageEnabledState(UIElement element)
     {
-      return (bool)element.GetValue(ManageEnabledStateForControlProperty);
+      return (bool)element.GetValue(ManageEnabledStateProperty);
     }
 
     private static List<int> processedControls = new List<int>();
@@ -144,10 +144,10 @@ namespace Csla.Silverlight
       _target = element.GetValue(ResourceProperty);
       if (_target != null)
       {
-        var manageStateValue = element.GetValue(ManageEnabledStateForControlProperty);
+        var manageStateValue = element.GetValue(ManageEnabledStateProperty);
         if (manageStateValue == null)
         {
-          element.SetValue(ManageEnabledStateForControlProperty, false);
+          element.SetValue(ManageEnabledStateProperty, false);
         }
         var methodName = (string)element.GetValue(MethodNameProperty);
         if (!string.IsNullOrEmpty(methodName))
@@ -190,9 +190,9 @@ namespace Csla.Silverlight
 
     private void Refresh()
     {
-      if (_target != null && _element != null && _contentControl != null && _element.GetValue(MethodNameProperty) != null)
+      if (_target != null && _element != null && _contentControl != null)
       {
-        if ((bool)_element.GetValue(ManageEnabledStateForControlProperty) == true)
+        if ((bool)_element.GetValue(ManageEnabledStateProperty) == true)
         {
           if (_target is CslaDataProvider)
           {
@@ -214,13 +214,16 @@ namespace Csla.Silverlight
           }
           else
           {
-            string targetMethodName = (string)_element.GetValue(MethodNameProperty);
-            string canMethodName = "Can" + targetMethodName;
-            object returnValue = Csla.Reflection.MethodCaller.CallMethodIfImplemented(_target, canMethodName, null);
-            if (returnValue != null && returnValue is bool && (bool)returnValue == true)
-              _contentControl.IsEnabled = true;
-            else
-              _contentControl.IsEnabled = false;
+            if (_element.GetValue(MethodNameProperty) != null)
+            {
+              string targetMethodName = (string)_element.GetValue(MethodNameProperty);
+              string canMethodName = "Can" + targetMethodName;
+              object returnValue = Csla.Reflection.MethodCaller.CallMethodIfImplemented(_target, canMethodName, null);
+              if (returnValue != null && returnValue is bool && (bool)returnValue == true)
+                _contentControl.IsEnabled = true;
+              else
+                _contentControl.IsEnabled = false;
+            }
           }
         }
       }

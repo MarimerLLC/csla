@@ -175,32 +175,18 @@ namespace Csla.Silverlight
       }
     }
 
-    private string _fetchFactoryMethod;
-    public string FetchFactoryMethod
+    private string _factoryMethod;
+    public string FactoryMethod
     {
       get
       {
-        return _fetchFactoryMethod;
+        return _factoryMethod;
       }
       set
       {
-        _fetchFactoryMethod = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("FetchFactoryMethod"));
+        _factoryMethod = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("FactoryMethod"));
         InitialFetch();
-      }
-    }
-
-    private string _createFactoryMethod;
-    public string CreateFactoryMethod
-    {
-      get
-      {
-        return _createFactoryMethod;
-      }
-      set
-      {
-        _createFactoryMethod = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("CreateFactoryMethod"));
       }
     }
 
@@ -222,6 +208,7 @@ namespace Csla.Silverlight
         {
           _factoryParameters.Add(oneParameters);
         }
+        OnPropertyChanged(new PropertyChangedEventArgs("FactoryParameters"));
       }
     }
 
@@ -239,6 +226,7 @@ namespace Csla.Silverlight
         _error = value;
         IsBusy = false;
         OnPropertyChanged(new PropertyChangedEventArgs("Error"));
+        OnDataChanged();
       }
     }
     #endregion
@@ -274,7 +262,7 @@ namespace Csla.Silverlight
     /// </summary>
     public void Save()
     {
-      Error = null;
+      _error = null;
       try
       {
         if (_manageObjectLifetime)
@@ -348,138 +336,14 @@ namespace Csla.Silverlight
       }
     }
 
-    private Delegate CreateHandler(Type objectType)
-    {
-      var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
-      MethodInfo method = this.GetType().GetMethod("QueryCompleted", BindingFlags.Instance | BindingFlags.NonPublic);
-      Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
-      return handler;
-    }
-
-
     public void Fetch()
     {
-      if (_objectType != null && _fetchFactoryMethod != null)
-        try
-        {
-          _error = null;
-          this.IsBusy = true;
-          BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
-          List<object> parameters = new List<object>(FactoryParameters);
-          Type objectType = Type.GetType(_objectType);
-
-          parameters.Add(CreateHandler(objectType));
-
-          MethodInfo factory = objectType.GetMethod(
-            _fetchFactoryMethod, flags, null,
-            MethodCaller.GetParameterTypes(parameters.ToArray()), null);
-
-          if (factory == null)
-          {
-            // strongly typed factory couldn't be found
-            // so find one with the correct number of
-            // parameters 
-            int parameterCount = parameters.ToArray().Length;
-            MethodInfo[] methods = objectType.GetMethods(flags);
-            foreach (MethodInfo method in methods)
-              if (method.Name == _fetchFactoryMethod && method.GetParameters().Length == parameterCount)
-              {
-                factory = method;
-                break;
-              }
-          }
-          if (factory == null)
-          {
-            // no matching factory could be found
-            // so throw exception
-            throw new InvalidOperationException(
-              string.Format(Resources.NoSuchFactoryMethod, _fetchFactoryMethod));
-          }
-
-          // invoke factory method
-          try
-          {
-            factory.Invoke(null, parameters.ToArray());
-          }
-          catch (Exception ex)
-          {
-            this.Error = ex;
-          }
-        }
-        catch (Exception ex)
-        {
-          this.Error = ex;
-        }
+      Refresh();
     }
 
     public void Create()
     {
-      if (_objectType != null && _createFactoryMethod != null)
-        try
-        {
-          _error = null;
-          this.IsBusy = true;
-          BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
-          List<object> parameters = new List<object>(FactoryParameters);
-          Type objectType = Type.GetType(_objectType);
-          parameters.Add(CreateHandler(objectType));
-          MethodInfo factory = objectType.GetMethod(
-            _createFactoryMethod, flags, null,
-            MethodCaller.GetParameterTypes(parameters.ToArray()), null);
-
-          if (factory == null)
-          {
-            // strongly typed factory couldn't be found
-            // so find one with the correct number of
-            // parameters 
-            int parameterCount = parameters.ToArray().Length;
-            MethodInfo[] methods = objectType.GetMethods(flags);
-            foreach (MethodInfo method in methods)
-            {
-              if (method.Name == _createFactoryMethod && method.GetParameters().Length == parameterCount)
-              {
-                factory = method;
-                break;
-              }
-            }
-            if (factory == null)
-            {
-              foreach (MethodInfo method in methods)
-              {
-                if (method.Name == _createFactoryMethod && method.GetParameters().Length == 1)
-                {
-                  factory = method;
-                  while (parameters.Count > 1)
-                  {
-                    parameters.RemoveAt(0);
-                  }
-                  break;
-                }
-              }
-            }
-          }
-          if (factory == null)
-          {
-            // no matching factory could be found
-            // so throw exception
-            throw new InvalidOperationException(
-              string.Format(Resources.NoSuchFactoryMethod, _createFactoryMethod));
-          }
-
-          // invoke factory method
-          try
-          {
-            factory.Invoke(null, parameters.ToArray());
-          }
-          catch (Exception ex)
-          {
-            this.Error = ex;
-          }
-        }
-        catch (Exception ex)
-        {
-          this.Error = ex;
-        }
+      Refresh();
     }
 
     /// <summary>
@@ -524,6 +388,70 @@ namespace Csla.Silverlight
         this.Error = ex;
       }
     }
+
+    private Delegate CreateHandler(Type objectType)
+    {
+      var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
+      MethodInfo method = this.GetType().GetMethod("QueryCompleted", BindingFlags.Instance | BindingFlags.NonPublic);
+      Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
+      return handler;
+    }
+
+    public void Refresh()
+    {
+      if (_objectType != null && _factoryMethod != null)
+        try
+        {
+          _error = null;
+          this.IsBusy = true;
+          BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+          List<object> parameters = new List<object>(FactoryParameters);
+          Type objectType = Type.GetType(_objectType);
+
+          parameters.Add(CreateHandler(objectType));
+
+          MethodInfo factory = objectType.GetMethod(
+            _factoryMethod, flags, null,
+            MethodCaller.GetParameterTypes(parameters.ToArray()), null);
+
+          if (factory == null)
+          {
+            // strongly typed factory couldn't be found
+            // so find one with the correct number of
+            // parameters 
+            int parameterCount = parameters.ToArray().Length;
+            MethodInfo[] methods = objectType.GetMethods(flags);
+            foreach (MethodInfo method in methods)
+              if (method.Name == _factoryMethod && method.GetParameters().Length == parameterCount)
+              {
+                factory = method;
+                break;
+              }
+          }
+          if (factory == null)
+          {
+            // no matching factory could be found
+            // so throw exception
+            throw new InvalidOperationException(
+              string.Format(Resources.NoSuchFactoryMethod, _factoryMethod));
+          }
+
+          // invoke factory method
+          try
+          {
+            factory.Invoke(null, parameters.ToArray());
+          }
+          catch (Exception ex)
+          {
+            this.Error = ex;
+          }
+        }
+        catch (Exception ex)
+        {
+          this.Error = ex;
+        }
+    }
+
     #endregion
 
     #region  Can Methods

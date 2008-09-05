@@ -237,6 +237,7 @@ namespace Csla.Silverlight
       private set
       {
         _error = value;
+        IsBusy = false;
         OnPropertyChanged(new PropertyChangedEventArgs("Error"));
       }
     }

@@ -82,8 +82,9 @@ namespace DataBinding.Business
       ValidationRules.AddRule(NiceName, NameProperty);
       ValidationRules.AddRule(HasNumbers, NameProperty);
 
-      ValidationRules.AddRule(IsReserved, new AsyncRuleArgs(NameProperty));
-      ValidationRules.AddRule(HasNotes, new AsyncRuleArgs(IsPreferredProperty, NameProperty));
+      ValidationRules.AddRule(ExceptionRule, NameProperty);
+      ValidationRules.AddRule(IsReserved, NameProperty);
+      ValidationRules.AddRule(HasNotes, IsPreferredProperty, NameProperty);
       base.AddBusinessRules();
     }
 
@@ -155,6 +156,30 @@ namespace DataBinding.Business
         context.Complete();
       };
 
+      worker.RunWorkerAsync();
+    }
+
+    public static void ExceptionRule(AsyncValidationRuleContext context)
+    {
+      BackgroundWorker worker = new BackgroundWorker();
+      worker.DoWork += (o, e) =>
+      {
+        string name = (string)context.PropertyValues["Name"];
+        if (name == "error")
+          throw new NullReferenceException("This message should never be displayed to the user");
+      };
+      worker.RunWorkerCompleted += (o, e) =>
+      {
+        if (e.Error != null)
+        {
+          context.OutArgs.Result = false;
+          context.OutArgs.Description = "There was an error validating this field.";
+          context.OutArgs.Severity = RuleSeverity.Error;
+        }
+        else context.OutArgs.Result = true;
+
+        context.Complete();
+      };
       worker.RunWorkerAsync();
     }
 

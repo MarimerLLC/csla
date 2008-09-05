@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.ComponentModel;
 using Csla.Core.FieldManager;
 using Csla.Properties;
@@ -2405,6 +2406,22 @@ namespace Csla.Core
     {
       if (_busyChanged != null)
         _busyChanged(this, args);
+    }
+
+    public bool IsPropertyBusy(string propertyName)
+    {
+      bool isbusy = false;
+      if (_validationRules != null)
+      {
+        lock (_validationRules.ValidatingRules)
+        {
+          isbusy = (from rules in _validationRules.ValidatingRules
+                    from property in rules.AsyncRuleArgs.Properties
+                    where property.Name == propertyName
+                    select rules).Count() > 0;
+        }
+      }
+      return isbusy;
     }
 
     #endregion

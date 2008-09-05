@@ -92,8 +92,8 @@ namespace Csla.Silverlight
         AttachSource(_source);
 
         BusinessBase bb = value as BusinessBase;
-        if (bb != null)
-          _isBusy = bb.IsBusy;
+        if (bb != null && !string.IsNullOrEmpty(Property))
+          _isBusy = bb.IsPropertyBusy(Property);
 
         UpdateState();
       }

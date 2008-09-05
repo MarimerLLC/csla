@@ -12,15 +12,14 @@
                            DataChanged="CslaDataProvider_DataChanged"
                            IsInitialLoadEnabled="True"
                            ObjectType="ClassLibrary.Business.Customer, ClassLibrary.Business, Version=..., Culture=neutral, PublicKeyToken=null"
-                           FetchFactoryMethod="GetCustomer"
-                           CreateFactoryMethod="CreateCustomer"/>
+                           FactoryMethod="GetCustomer"/>
     <csla:CslaDataProvider x:Key="CustomerListData"
                            ManageObjectLifetime="True"
                            PropertyChanged="CslaDataProvider_PropertyChanged"
                            DataChanged="CslaDataProvider_DataChanged"
                            IsInitialLoadEnabled="True"
                            ObjectType="ClassLibrary.Business.CustomerList, ClassLibrary.Business, Version=..., Culture=neutral, PublicKeyToken=null"
-                           FetchFactoryMethod="GetCustomerList"/>                           
+                           FactoryMethod="GetCustomerList"/>                           
   </UserControl.Resources>
   <Grid x:Name="LayoutRoot" Background="White" DataContext="{Binding Source={StaticResource CustomerData}, Path=Data}">
     <Grid.RowDefinitions>

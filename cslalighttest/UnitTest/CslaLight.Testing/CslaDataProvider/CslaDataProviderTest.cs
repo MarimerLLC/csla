@@ -24,6 +24,31 @@ namespace cslalighttest.CslaDataProvider
   [TestClass]
   public class CslaDataProviderTest : TestBase
   {
+
+    [TestMethod]
+    public void TestCslaDataProviderCreate()
+    {
+      UnitTestContext context = GetContext();
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+
+      Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
+      provider.PropertyChanged += (o1, e1) =>
+      {
+        if (e1.PropertyName == "Data")
+        {
+          context.Assert.AreEqual(true, ((Customer)provider.Data).Id > 0 && ((Customer)provider.Data).Id < 11);
+          context.Assert.Success();
+        }
+      };
+      provider.IsInitialLoadEnabled = true;
+      provider.ManageObjectLifetime = true;
+      provider.FactoryMethod = "CreateCustomer";
+      provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+
+      context.Complete();
+    }
+
     [TestMethod]
     public void TestCslaDataProviderFetchNoParameters()
     {
@@ -42,8 +67,7 @@ namespace cslalighttest.CslaDataProvider
         };
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
-      provider.CreateFactoryMethod = "NewCustomer";
-      provider.FetchFactoryMethod = "GetCustomer";
+      provider.FactoryMethod = "GetCustomer";
       provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       context.Complete();
@@ -68,8 +92,7 @@ namespace cslalighttest.CslaDataProvider
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
       provider.FactoryParameters.Add(custId);
-      provider.CreateFactoryMethod = "NewCustomer";
-      provider.FetchFactoryMethod = "GetCustomer";
+      provider.FactoryMethod = "GetCustomer";
       provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       context.Complete();

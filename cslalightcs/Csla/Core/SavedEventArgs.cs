@@ -45,6 +45,7 @@ namespace Csla.Core
     {
       _newObject = newObject;
       _error = error;
+      _userState = userState;
     }
   }
 }

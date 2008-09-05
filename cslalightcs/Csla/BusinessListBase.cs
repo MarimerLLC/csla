@@ -16,15 +16,15 @@ namespace Csla
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public abstract class BusinessListBase<T, C> : ExtendedBindingList<C>, 
-    ICloneable, 
+  public abstract class BusinessListBase<T, C> : ExtendedBindingList<C>,
+    ICloneable,
     IUndoableObject,
     ISavable,
     ITrackStatus,
     IDataPortalTarget,
     IParent,
     IEditableCollection
-    where T: BusinessListBase<T, C>
+    where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
     #region ICloneable
@@ -57,7 +57,7 @@ namespace Csla
 
     #region Delete and Undelete child
 
-    private List<C> _deletedList;
+    private MobileList<C> _deletedList;
 
     /// <summary>
     /// A collection containing all child objects marked
@@ -66,12 +66,12 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
       "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected List<C> DeletedList
+    protected MobileList<C> DeletedList
     {
       get
       {
         if (_deletedList == null)
-          _deletedList = new List<C>();
+          _deletedList = new MobileList<C>();
         return _deletedList;
       }
     }
@@ -103,7 +103,7 @@ namespace Csla
       // we need to preserve the object's editleveladded value
       // because it will be changed by the normal add process
       int saveLevel = child.EditLevelAdded;
-      
+
       // TODO: implement i4o
       //InsertIndexItem(child);
 
@@ -535,16 +535,34 @@ namespace Csla
 
     protected override void OnGetState(SerializationInfo info)
     {
-      info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
       base.OnGetState(info);
     }
 
     protected override void OnSetState(SerializationInfo info)
     {
-      _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
       base.OnSetState(info);
+    }
+
+    protected override void OnGetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      base.OnGetChildren(info, formatter);
+      if (_deletedList != null)
+      {
+        var fieldManagerInfo = formatter.SerializeObject(_deletedList);
+        info.AddChild("_deletedList", fieldManagerInfo.ReferenceId);
+      }
+    }
+
+    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      if (info.Children.ContainsKey("_deletedList"))
+      {
+        var childData = info.Children["_deletedList"];
+        _deletedList = (MobileList<C>)formatter.GetObject(childData.ReferenceId);
+      }
+      base.OnSetChildren(info, formatter);
     }
 
     #endregion
@@ -749,7 +767,7 @@ namespace Csla
         ChildDataPortal<C> dp = new ChildDataPortal<C>();
         foreach (var child in DeletedList)
           dp.Update(child, parameters);
-        
+
         DeletedList.Clear();
 
         foreach (var child in this)
@@ -976,7 +994,7 @@ namespace Csla
     }
 
     #endregion
-    
+
     #region  Parent/Child link
 
     [NotUndoable(), NonSerialized()]

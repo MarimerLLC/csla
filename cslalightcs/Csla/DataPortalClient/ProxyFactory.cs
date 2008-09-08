@@ -1,4 +1,5 @@
 ﻿using System;
+using Csla.Server;
 
 namespace Csla.DataPortalClient
 {
@@ -14,7 +15,11 @@ namespace Csla.DataPortalClient
     {
       if (proxyMode == DataPortal.ProxyModes.LocalOnly || Csla.DataPortal.ProxyTypeName == "Local")
       {
-        return new LocalProxy<T>();
+        ObjectFactoryAttribute factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(typeof(T));
+        if (factoryInfo != null)
+          return new FactoryProxy<T>(factoryInfo);
+        else
+          return new LocalProxy<T>();
       }
       else
       {

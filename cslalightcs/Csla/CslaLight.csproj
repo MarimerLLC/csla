@@ -173,6 +173,9 @@
     <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
       <Link>Serialization\SerializationFormatterFactory.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Server\ObjectFactoryAttribute.cs">
+      <Link>Server\ObjectFactoryAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Silverlight\Security\WindowsIdentity.cs">
       <Link>Silverlight\Security\WindowsIdentity.cs</Link>
     </Compile>
@@ -287,6 +290,7 @@
     <Compile Include="Core\BusinessBase.cs" />
     <Compile Include="DataPortalClient\DataPortalEventArgs.cs" />
     <Compile Include="DataPortalClient\DataPortalOperations.cs" />
+    <Compile Include="DataPortalClient\FactoryProxy.cs" />
     <Compile Include="DataPortalClient\IDataPortalProxy.cs" />
     <Compile Include="DataPortalClient\IDataPortalTarget.cs" />
     <Compile Include="DataPortalClient\LocalProxy.cs" />
@@ -319,6 +323,7 @@
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Server\ObjectFactory.cs" />
     <Compile Include="Silverlight\ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="Silverlight\CslaDataProvider.cs" />
     <Compile Include="Silverlight\InvokeMethod.cs" />

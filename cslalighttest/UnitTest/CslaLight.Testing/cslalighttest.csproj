@@ -205,6 +205,9 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\SmartDate\SmartDateTests.cs">
       <Link>SmartDate\SmartDateTests.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Threading\BusyLockTests.cs">
+      <Link>Threading\BusyLockTests.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\AsyncRuleTests.cs">
       <Link>Validation\AsyncRuleTests.cs</Link>
     </Compile>

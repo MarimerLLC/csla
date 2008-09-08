@@ -117,6 +117,15 @@
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\NameValueList\BasicNameValueList.cs">
       <Link>NameValueList\BasicNameValueList.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ObjectFactory\BusinessItem.cs">
+      <Link>ObjectFactory\BusinessItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ObjectFactory\ObjectFactoryBusinessItem.cs">
+      <Link>ObjectFactory\ObjectFactoryBusinessItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ObjectFactory\ObjectFactoryBusinessItemFactory.cs">
+      <Link>ObjectFactory\ObjectFactoryBusinessItemFactory.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ReadOnlyTests\ReadOnlyPerson.cs">
       <Link>ReadOnlyTest\ReadOnlyPerson.cs</Link>
     </Compile>

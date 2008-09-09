@@ -94,6 +94,9 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Authorization\ReadOnlyPerson.cs">
       <Link>Authorization\ReadOnlyPerson.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\AsynchDataPortalTest.cs">
+      <Link>DataPortal\AsynchDataPortalTest.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\DpRoot.cs">
       <Link>DataPortal\DpRoot.cs</Link>
     </Compile>

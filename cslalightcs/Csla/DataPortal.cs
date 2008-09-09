@@ -91,9 +91,15 @@ namespace Csla
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
+      var dp = new DataPortal<T>();
       dp.CreateCompleted += callback;
       dp.BeginCreate();
+    }
+
+    public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback, object userState)
+      where T : IMobileObject
+    {
+      BeginCreate<T>(null, callback, userState);
     }
 
     /// <summary>
@@ -112,15 +118,13 @@ namespace Csla
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
-      dp.CreateCompleted += callback;
-      dp.BeginCreate(criteria);
+      BeginCreate<T>(criteria, callback, null);
     }
 
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
+      var dp = new DataPortal<T>();
       dp.CreateCompleted += callback;
       dp.BeginCreate(criteria, userState);
     }
@@ -142,7 +146,7 @@ namespace Csla
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
+      var dp = new DataPortal<T>();
       dp.FetchCompleted += callback;
       dp.BeginFetch();
     }
@@ -163,15 +167,18 @@ namespace Csla
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
-      dp.FetchCompleted += callback;
-      dp.BeginFetch(criteria);
+      BeginFetch<T>(criteria, callback, null);
     }
 
+    public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback, object userState)
+      where T : IMobileObject
+    {
+      BeginFetch<T>(null, callback, userState);
+    }
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
      where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
+      var dp = new DataPortal<T>();
       dp.FetchCompleted += callback;
       dp.BeginFetch(criteria, userState);
     }
@@ -196,15 +203,13 @@ namespace Csla
     public static void BeginUpdate<T>(object obj, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
-      dp.UpdateCompleted += callback;
-      dp.BeginUpdate(obj);
+      BeginUpdate<T>(obj, callback, null);
     }
 
     public static void BeginUpdate<T>(object obj, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
+      var dp = new DataPortal<T>();
       dp.UpdateCompleted += callback;
       dp.BeginUpdate(obj, userState);
     }
@@ -229,15 +234,13 @@ namespace Csla
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
-      dp.DeleteCompleted += callback;
-      dp.BeginDelete(criteria);
+      BeginDelete<T>(criteria, callback, null);
     }
 
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
-      DataPortal<T> dp = new DataPortal<T>();
+      var dp = new DataPortal<T>();
       dp.DeleteCompleted += callback;
       dp.BeginDelete(criteria, userState);
     }
@@ -253,9 +256,6 @@ namespace Csla
     /// <typeparam name="T">
     /// Type of business object.
     /// </typeparam>
-    /// <param name="obj">
-    /// Business object to update.
-    /// </param>
     /// <param name="callback">
     /// Delegate reference to a method that is invoked
     /// when the async operation is complete.
@@ -263,15 +263,13 @@ namespace Csla
     public static void BeginExecute<T>(T command, EventHandler<DataPortalResult<T>> callback)
       where T : CommandBase
     {
-      DataPortal<T> dp = new DataPortal<T>();
-      dp.ExecuteCompleted += callback;
-      dp.BeginExecute(command);
+      BeginExecute<T>(command, callback, null);
     }
 
     public static void BeginExecute<T>(T command, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : CommandBase
     {
-      DataPortal<T> dp = new DataPortal<T>();
+      var dp = new DataPortal<T>();
       dp.ExecuteCompleted += callback;
       dp.BeginExecute(command, userState);
     }

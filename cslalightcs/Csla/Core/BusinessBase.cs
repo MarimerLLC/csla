@@ -493,14 +493,13 @@ namespace Csla.Core
     {
       get
       {
-        // TODO: Implement authorization rule checking.
         bool auth;
         if (IsDeleted)
-          auth = true; // Csla.Security.AuthorizationRules.CanDeleteObject(this.GetType());
+          auth = Csla.Security.AuthorizationRules.CanDeleteObject(this.GetType());
         else if (IsNew)
-          auth = true; //Csla.Security.AuthorizationRules.CanCreateObject(this.GetType());
+          auth = Csla.Security.AuthorizationRules.CanCreateObject(this.GetType());
         else
-          auth = true; // Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
+          auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
         return (IsDirty && IsValid && !IsBusy && auth);
       }
     }

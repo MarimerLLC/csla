@@ -679,8 +679,7 @@ namespace Csla
     {
       get
       {
-        // TODO: implement authorization rules
-        bool auth = true; // Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
+        bool auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
         return (IsDirty && IsValid && auth);
       }
     }

@@ -404,47 +404,11 @@ namespace Csla.Silverlight
         {
           _error = null;
           this.IsBusy = true;
-          BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
           List<object> parameters = new List<object>(FactoryParameters);
           Type objectType = Type.GetType(_objectType);
-
           parameters.Add(CreateHandler(objectType));
 
-          MethodInfo factory = objectType.GetMethod(
-            _factoryMethod, flags, null,
-            MethodCaller.GetParameterTypes(parameters.ToArray()), null);
-
-          if (factory == null)
-          {
-            // strongly typed factory couldn't be found
-            // so find one with the correct number of
-            // parameters 
-            int parameterCount = parameters.ToArray().Length;
-            MethodInfo[] methods = objectType.GetMethods(flags);
-            foreach (MethodInfo method in methods)
-              if (method.Name == _factoryMethod && method.GetParameters().Length == parameterCount)
-              {
-                factory = method;
-                break;
-              }
-          }
-          if (factory == null)
-          {
-            // no matching factory could be found
-            // so throw exception
-            throw new InvalidOperationException(
-              string.Format(Resources.NoSuchFactoryMethod, _factoryMethod));
-          }
-
-          // invoke factory method
-          try
-          {
-            factory.Invoke(null, parameters.ToArray());
-          }
-          catch (Exception ex)
-          {
-            this.Error = ex;
-          }
+          MethodCaller.CallFactoryMethod(objectType, _factoryMethod, parameters.ToArray());
         }
         catch (Exception ex)
         {

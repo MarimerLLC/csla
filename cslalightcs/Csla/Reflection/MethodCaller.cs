@@ -26,6 +26,11 @@ namespace Csla.Reflection
       BindingFlags.Instance |
       BindingFlags.Public;
 
+    private const BindingFlags factoryFlags =
+      BindingFlags.Static | 
+      BindingFlags.Public | 
+      BindingFlags.FlattenHierarchy;
+
     #region Dynamic Constructor Cache
 
     // TODO: Make dynamic when time permits.
@@ -150,10 +155,57 @@ namespace Csla.Reflection
       return result;
     }
 
+
+    public static object CallFactoryMethod(Type objectType, string method, params object[] parameters)
+    {
+      object returnValue;
+      MethodInfo factory = objectType.GetMethod(
+           method, factoryFlags, null,
+           MethodCaller.GetParameterTypes(parameters), null);
+
+      if (factory == null)
+      {
+        // strongly typed factory couldn't be found
+        // so find one with the correct number of
+        // parameters 
+        int parameterCount = parameters.Length;
+        MethodInfo[] methods = objectType.GetMethods(factoryFlags);
+        foreach (MethodInfo oneMethod in methods)
+          if (oneMethod.Name == method && oneMethod.GetParameters().Length == parameterCount)
+          {
+            factory = oneMethod;
+            break;
+          }
+      }
+      if (factory == null)
+      {
+        // no matching factory could be found
+        // so throw exception
+        throw new InvalidOperationException(
+          string.Format(Resources.NoSuchFactoryMethod, method));
+      }
+      try
+      {
+        returnValue = factory.Invoke(null, parameters);
+      }
+      catch (Exception ex)
+      {
+        Exception inner = null;
+        if (ex.InnerException == null)
+          inner = ex;
+        else
+          inner = ex.InnerException;
+        throw new CallMethodException(factory.Name + " " + Resources.MethodCallFailed, inner);
+      }
+      return returnValue;
+    }
+
     private static object[] GetExtrasArray(int count, Type arrayType)
     {
       return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
     }
+
+
 
     /// <summary>
     /// Uses reflection to locate a matching method

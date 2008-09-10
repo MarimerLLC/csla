@@ -21,6 +21,8 @@ namespace Csla.Silverlight
   [TemplateVisualState(Name = "DenyDelete", GroupName = "CanDelete")]
   [TemplateVisualState(Name = "AllowGet", GroupName = "CanGet")]
   [TemplateVisualState(Name = "DenyGet", GroupName = "CanGet")]
+  [TemplateVisualState(Name = "AllowSave", GroupName = "CanSave")]
+  [TemplateVisualState(Name = "DenySave", GroupName = "CanSave")]
   public class ObjectStatus : Control
   {
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
@@ -132,6 +134,15 @@ namespace Csla.Silverlight
           VisualStateManager.GoToState(this, "AllowGet", useTransitions);
         else
           VisualStateManager.GoToState(this, "DenyGet", useTransitions);
+
+        ITrackStatus trackable = Source as ITrackStatus;
+        if (trackable != null)
+        {
+          if (trackable.IsSavable)
+            VisualStateManager.GoToState(this, "AllowSave", useTransitions);
+          else
+            VisualStateManager.GoToState(this, "DenySave", useTransitions);
+        }
       }
 
       if(IsBusy)

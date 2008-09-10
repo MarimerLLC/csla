@@ -28,7 +28,8 @@ namespace Csla.Core
     IEditableBusinessObject,
     ISerializationNotification,
     IEditableObject,
-    INotifyChildChanged
+    INotifyChildChanged,
+    ITrackStatus
   {
     #region Constructors
 

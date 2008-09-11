@@ -348,7 +348,6 @@
     <Compile Include="Silverlight\BusyAnimation.cs" />
     <Compile Include="Silverlight\ObjectStatus.cs" />
     <Compile Include="Silverlight\BrokenRuleSeverityConverter.cs" />
-    <Compile Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Silverlight\PropertyStatus.cs" />
     <Compile Include="Silverlight\VisualTree.cs" />
   </ItemGroup>

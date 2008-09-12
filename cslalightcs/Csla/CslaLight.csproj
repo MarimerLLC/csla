@@ -364,9 +364,15 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <Resource Include="Resources\Information.png" />
-    <Resource Include="Resources\Error.png" />
-    <Resource Include="Resources\Warning.png" />
+    <Resource Include="..\..\cslacs\Csla\Resources\Error.png">
+      <Link>Resources\Error.png</Link>
+    </Resource>
+    <Resource Include="..\..\cslacs\Csla\Resources\Information.png">
+      <Link>Resources\Information.png</Link>
+    </Resource>
+    <Resource Include="..\..\cslacs\Csla\Resources\Warning.png">
+      <Link>Resources\Warning.png</Link>
+    </Resource>
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>

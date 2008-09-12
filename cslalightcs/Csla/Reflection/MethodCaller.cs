@@ -31,6 +31,11 @@ namespace Csla.Reflection
       BindingFlags.Public | 
       BindingFlags.FlattenHierarchy;
 
+    private const BindingFlags propertyFlags = 
+      BindingFlags.Public | 
+      BindingFlags.Instance | 
+      BindingFlags.FlattenHierarchy;
+
     #region Dynamic Constructor Cache
 
     // TODO: Make dynamic when time permits.
@@ -155,6 +160,44 @@ namespace Csla.Reflection
       return result;
     }
 
+    
+    public static object GetPropertyValue(object obj, PropertyInfo info)
+    {
+      object result = null;
+      try
+      {
+        result = info.GetValue(obj, null);
+      }
+      catch (Exception e)
+      {
+        Exception inner = null;
+        if (e.InnerException == null)
+          inner = e;
+        else
+          inner = e.InnerException;
+        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+      }
+      return result;
+    }
+
+    public static object CallMethod(object obj, MethodInfo info)
+    {
+      object result = null;
+      try
+      {
+        result = info.Invoke(obj, null);
+      }
+      catch (Exception e)
+      {
+        Exception inner = null;
+        if (e.InnerException == null)
+          inner = e;
+        else
+          inner = e.InnerException;
+        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+      }
+      return result;
+    }
 
     public static object CallFactoryMethod(Type objectType, string method, params object[] parameters)
     {
@@ -205,7 +248,10 @@ namespace Csla.Reflection
       return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
     }
 
-
+    public static PropertyInfo GetProperty(Type objectType, string propertyName)
+    {
+      return objectType.GetProperty(propertyName, propertyFlags);
+    }
 
     /// <summary>
     /// Uses reflection to locate a matching method

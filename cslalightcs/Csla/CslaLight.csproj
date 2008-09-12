@@ -49,6 +49,10 @@
     <NoConfig>true</NoConfig>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.Data.Services.Client, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows" />
@@ -302,6 +306,7 @@
     <Compile Include="DataPortalException.cs" />
     <Compile Include="DataPortalResult.cs" />
     <Compile Include="DataPortalT.cs" />
+    <Compile Include="Data\DataServiceContextManager.cs" />
     <Compile Include="EditableRootListBase.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="ICriteria.cs" />

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Web")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("cslalighttest web")]
+[assembly: AssemblyDescription("CSLA .NET for Silverlight test web")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Web")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2008")]
+[assembly: AssemblyCompany("Rockford Lhotka")]
+[assembly: AssemblyProduct("CSLA .NET")]
+[assembly: AssemblyCopyright("Copyright © 2008 Rockford Lhotka")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

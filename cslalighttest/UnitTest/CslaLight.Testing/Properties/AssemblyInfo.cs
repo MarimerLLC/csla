@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("cslalighttest")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("CSLA .NET for Silverlight tests")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("cslalighttest")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2008")]
+[assembly: AssemblyCompany("Rockford Lhotka")]
+[assembly: AssemblyProduct("CSLA .NET")]
+[assembly: AssemblyCopyright("Copyright © 2008 Rockford Lhotka")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

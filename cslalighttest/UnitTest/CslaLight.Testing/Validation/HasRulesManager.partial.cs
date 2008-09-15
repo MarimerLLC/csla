@@ -20,7 +20,7 @@ namespace Csla.Test.ValidationRules
       : base()
     { }
 
-    public void DataPortal_Create(LocalProxy<HasRulesManager>.CompletedHandler completed, object criteria)
+    public void DataPortal_Create(object criteria, LocalProxy<HasRulesManager>.CompletedHandler completed)
     {
       Criteria crit = (Criteria)(criteria);
       _name = crit._name;

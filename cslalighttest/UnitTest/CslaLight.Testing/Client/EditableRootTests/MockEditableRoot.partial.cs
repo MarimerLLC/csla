@@ -23,8 +23,8 @@ namespace Csla.Testing.Business.EditableRootTests
     }
 
     public void DataPortal_Fetch(
-      LocalProxy<MockEditableRoot>.CompletedHandler handler,
-      SingleCriteria<MockEditableRoot, Guid> criteria)
+      SingleCriteria<MockEditableRoot, Guid> criteria, 
+      LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       if (criteria.Value != MockEditableRootId)
         throw new Exception();
@@ -57,13 +57,13 @@ namespace Csla.Testing.Business.EditableRootTests
 
     public void DataPortal_DeleteSelf(LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
-      DataPortal_Delete(handler, new SingleCriteria<MockEditableRoot, Guid>(this.Id));
+      DataPortal_Delete(new SingleCriteria<MockEditableRoot, Guid>(this.Id), handler);
       handler(this, null);
     }
 
     public void DataPortal_Delete(
-      LocalProxy<MockEditableRoot>.CompletedHandler handler,
-      SingleCriteria<MockEditableRoot, Guid> criteria)
+      SingleCriteria<MockEditableRoot, Guid> criteria, 
+      LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       LoadProperty<string>(DataPortalMethodProperty, "delete");
       handler(this, null);

@@ -22,13 +22,13 @@ namespace Csla.Testing.Business.EditableChildTests
     public void DataPortal_Fetch(LocalProxy<MockList>.CompletedHandler completed)
     {
       // fetch with no filter
-      Fetch(completed, "");
+      Fetch("", completed);
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Fetch(LocalProxy<MockList>.CompletedHandler completed, SingleCriteria<MockList, string> criteria)
+    public void DataPortal_Fetch(SingleCriteria<MockList, string> criteria, LocalProxy<MockList>.CompletedHandler completed)
     {
-      Fetch(completed, criteria.Value);
+      Fetch(criteria.Value, completed);
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]

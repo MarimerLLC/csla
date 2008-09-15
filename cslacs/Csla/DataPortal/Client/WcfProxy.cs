@@ -49,6 +49,29 @@ namespace Csla.DataPortalClient
     }
 
     /// <summary>
+    /// Returns an instance of the channel factory
+    /// used by GetProxy() to create the WCF proxy
+    /// object.
+    /// </summary>
+    protected virtual ChannelFactory<IWcfPortal> GetChannelFactory()
+    {
+      return new ChannelFactory<IWcfPortal>(_endPoint);
+    }
+
+    /// <summary>
+    /// Returns the WCF proxy object used for
+    /// communication with the data portal
+    /// server.
+    /// </summary>
+    /// <param name="cf">
+    /// The ChannelFactory created by GetChannelFactory().
+    /// </param>
+    protected virtual IWcfPortal GetProxy(ChannelFactory<IWcfPortal> cf)
+    {
+      return cf.CreateChannel();
+    }
+
+    /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
     /// new business object.
     /// </summary>
@@ -59,11 +82,12 @@ namespace Csla.DataPortalClient
     /// </param>
     public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
     {
-      ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint);
-      IWcfPortal svr = cf.CreateChannel();
+      ChannelFactory<IWcfPortal> cf = GetChannelFactory();
+      IWcfPortal svr = GetProxy(cf);
       WcfResponse response =
         svr.Create(new CreateRequest(objectType, criteria, context));
-      cf.Close();
+      if (cf != null)
+        cf.Close();
 
       object result = response.Result;
       if (result is Exception)
@@ -82,11 +106,12 @@ namespace Csla.DataPortalClient
     /// </param>
     public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
-      ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint);
-      IWcfPortal svr = cf.CreateChannel();
+      ChannelFactory<IWcfPortal> cf = GetChannelFactory();
+      IWcfPortal svr = GetProxy(cf);
       WcfResponse response =
         svr.Fetch(new FetchRequest(objectType, criteria, context));
-      cf.Close();
+      if (cf != null)
+        cf.Close();
 
       object result = response.Result;
       if (result is Exception)
@@ -104,11 +129,12 @@ namespace Csla.DataPortalClient
     /// </param>
     public DataPortalResult Update(object obj, DataPortalContext context)
     {
-      ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint);
-      IWcfPortal svr = cf.CreateChannel();
+      ChannelFactory<IWcfPortal> cf = GetChannelFactory();
+      IWcfPortal svr = GetProxy(cf);
       WcfResponse response =
         svr.Update(new UpdateRequest(obj, context));
-      cf.Close();
+      if (cf != null)
+        cf.Close();
 
       object result = response.Result;
       if (result is Exception)
@@ -127,11 +153,12 @@ namespace Csla.DataPortalClient
     /// </param>
     public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
     {
-      ChannelFactory<IWcfPortal> cf = new ChannelFactory<IWcfPortal>(_endPoint);
-      IWcfPortal svr = cf.CreateChannel();
+      ChannelFactory<IWcfPortal> cf = GetChannelFactory();
+      IWcfPortal svr = GetProxy(cf);
       WcfResponse response =
         svr.Delete(new DeleteRequest(objectType, criteria, context));
-      cf.Close();
+      if (cf != null)
+        cf.Close();
 
       object result = response.Result;
       if (result is Exception)

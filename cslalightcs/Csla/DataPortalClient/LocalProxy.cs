@@ -46,7 +46,7 @@ namespace Csla.DataPortalClient
       _userState = userState;
       var obj = Activator.CreateInstance<T>();
       var handler = new CompletedHandler(OnCreateCompleted);
-      MethodCaller.CallMethod(obj, "DataPortal_Create", handler, criteria);
+      MethodCaller.CallMethod(obj, "DataPortal_Create", criteria, handler);
     }
 
     private void OnCreateCompleted(T result, Exception ex)
@@ -85,7 +85,7 @@ namespace Csla.DataPortalClient
       _userState = userState;
       var obj = Activator.CreateInstance<T>();
       var handler = new CompletedHandler(OnFetchCompleted);
-      MethodCaller.CallMethod(obj, "DataPortal_Fetch", handler, criteria);
+      MethodCaller.CallMethod(obj, "DataPortal_Fetch", criteria, handler);
     }
 
     private void OnFetchCompleted(T result, Exception ex)
@@ -195,7 +195,7 @@ namespace Csla.DataPortalClient
       _userState = userState;
       var obj = Activator.CreateInstance<T>();
       var handler = new CompletedHandler(OnDeleteCompleted);
-      MethodCaller.CallMethod(obj, "DataPortal_Delete", handler, criteria);
+      MethodCaller.CallMethod(obj, "DataPortal_Delete", criteria, handler);
     }
 
     #endregion

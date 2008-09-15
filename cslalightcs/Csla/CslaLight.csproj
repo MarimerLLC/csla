@@ -307,6 +307,7 @@
     <Compile Include="DataPortalResult.cs" />
     <Compile Include="DataPortalT.cs" />
     <Compile Include="Data\DataServiceContextManager.cs" />
+    <Compile Include="Data\ServiceClientManager.cs" />
     <Compile Include="EditableRootListBase.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="ICriteria.cs" />

@@ -10,9 +10,10 @@ Namespace DataPortalClient
   ''' calls to a remote application server by using WCF.
   ''' </summary>
   Public Class WcfProxy
-    Implements DataPortalClient.IDataPortalProxy
 
-#Region " IDataPortalProxy Members "
+    Implements IDataPortalProxy
+
+#Region "IDataPortalProxy Members"
 
     ''' <summary>
     ''' Gets a value indicating whether the data portal
@@ -25,6 +26,8 @@ Namespace DataPortalClient
     End Property
 
 #End Region
+
+#Region "IDataPortalServer Members"
 
     Private _endPoint As String = "WcfDataPortal"
 
@@ -44,7 +47,26 @@ Namespace DataPortalClient
       End Set
     End Property
 
-#Region "IDataPortalServer Members"
+    ''' <summary>
+    ''' Returns an instance of the channel factory
+    ''' used by GetProxy() to create the WCF proxy
+    ''' object.
+    ''' </summary>
+    Protected Overridable Function GetChannelFactory() As ChannelFactory(Of IWcfPortal)
+      Return New ChannelFactory(Of IWcfPortal)(_endPoint)
+    End Function
+
+    ''' <summary>
+    ''' Returns the WCF proxy object used for
+    ''' communication with the data portal
+    ''' server.
+    ''' </summary>
+    ''' <param name="cf">
+    ''' The ChannelFactory created by GetChannelFactory().
+    ''' </param>
+    Protected Overridable Function GetProxy(ByVal cf As ChannelFactory(Of IWcfPortal)) As IWcfPortal
+      Return cf.CreateChannel()
+    End Function
 
     ''' <summary>
     ''' Called by <see cref="DataPortal" /> to create a
@@ -55,11 +77,15 @@ Namespace DataPortalClient
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    Public Function Create(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Create
-      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
-      Dim svr As IWcfPortal = cf.CreateChannel()
+    Public Function Create(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult _
+      Implements IDataPortalProxy.Create
+
+      Dim cf As ChannelFactory(Of IWcfPortal) = GetChannelFactory()
+      Dim svr As IWcfPortal = GetProxy(cf)
       Dim response As WcfResponse = svr.Create(New CreateRequest(objectType, criteria, context))
-      cf.Close()
+      If cf IsNot Nothing Then
+        cf.Close()
+      End If
 
       Dim result As Object = response.Result
       If TypeOf result Is Exception Then
@@ -77,11 +103,15 @@ Namespace DataPortalClient
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    Public Function Fetch(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Fetch
-      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
-      Dim svr As IWcfPortal = cf.CreateChannel()
+    Public Function Fetch(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult _
+      Implements IDataPortalProxy.Fetch
+
+      Dim cf As ChannelFactory(Of IWcfPortal) = GetChannelFactory()
+      Dim svr As IWcfPortal = GetProxy(cf)
       Dim response As WcfResponse = svr.Fetch(New FetchRequest(objectType, criteria, context))
-      cf.Close()
+      If cf IsNot Nothing Then
+        cf.Close()
+      End If
 
       Dim result As Object = response.Result
       If TypeOf result Is Exception Then
@@ -98,11 +128,15 @@ Namespace DataPortalClient
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Update
-      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
-      Dim svr As IWcfPortal = cf.CreateChannel()
+    Public Function Update(ByVal obj As Object, ByVal context As DataPortalContext) As DataPortalResult _
+      Implements IDataPortalProxy.Update
+
+      Dim cf As ChannelFactory(Of IWcfPortal) = GetChannelFactory()
+      Dim svr As IWcfPortal = GetProxy(cf)
       Dim response As WcfResponse = svr.Update(New UpdateRequest(obj, context))
-      cf.Close()
+      If cf IsNot Nothing Then
+        cf.Close()
+      End If
 
       Dim result As Object = response.Result
       If TypeOf result Is Exception Then
@@ -120,15 +154,15 @@ Namespace DataPortalClient
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    Public Function Delete( _
-      ByVal objectType As Type, _
-      ByVal criteria As Object, _
-      ByVal context As DataPortalContext) As DataPortalResult Implements IDataPortalProxy.Delete
+    Public Function Delete(ByVal objectType As Type, ByVal criteria As Object, ByVal context As DataPortalContext) As DataPortalResult _
+      Implements IDataPortalProxy.Delete
 
-      Dim cf As ChannelFactory(Of IWcfPortal) = New ChannelFactory(Of IWcfPortal)(_endPoint)
-      Dim svr As IWcfPortal = cf.CreateChannel()
+      Dim cf As ChannelFactory(Of IWcfPortal) = GetChannelFactory()
+      Dim svr As IWcfPortal = GetProxy(cf)
       Dim response As WcfResponse = svr.Delete(New DeleteRequest(objectType, criteria, context))
-      cf.Close()
+      If cf IsNot Nothing Then
+        cf.Close()
+      End If
 
       Dim result As Object = response.Result
       If TypeOf result Is Exception Then

@@ -28,11 +28,8 @@ namespace Csla.Silverlight
     public static void SetResource(UIElement element, object value)
     {
       element.SetValue(ResourceProperty, value);
-      InvokeMethod attachedObject = new InvokeMethod(element);
-      if (attachedObject._target is CslaDataProvider)
-      {
-        ((CslaDataProvider)attachedObject._target).PropertyChanged += new PropertyChangedEventHandler(attachedObject.InvokeMethod_PropertyChanged);
-      }
+      new InvokeMethod(element);
+
     }
 
     private void InvokeMethod_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -96,21 +93,21 @@ namespace Csla.Silverlight
       return (string)element.GetValue(MethodParameterProperty);
     }
 
-    public static readonly DependencyProperty ManageEnabledStateProperty =
-      DependencyProperty.RegisterAttached("ManageEnabledState",
+    public static readonly DependencyProperty ManualEnableControlProperty =
+      DependencyProperty.RegisterAttached("ManualEnableControl",
       typeof(bool),
       typeof(InvokeMethod),
       null);
 
-    public static void SetManageEnabledState(UIElement element, object value)
+    public static void SetManualEnableControl(UIElement element, object value)
     {
-      element.SetValue(ManageEnabledStateProperty, value);
+      element.SetValue(ManualEnableControlProperty, value);
       new InvokeMethod(element);
     }
 
     public static object GetManageEnabledState(UIElement element)
     {
-      return (bool)element.GetValue(ManageEnabledStateProperty);
+      return (bool)element.GetValue(ManualEnableControlProperty);
     }
 
     private static List<int> processedControls = new List<int>();
@@ -144,11 +141,6 @@ namespace Csla.Silverlight
       _target = element.GetValue(ResourceProperty);
       if (_target != null)
       {
-        var manageStateValue = element.GetValue(ManageEnabledStateProperty);
-        if (manageStateValue == null)
-        {
-          element.SetValue(ManageEnabledStateProperty, false);
-        }
         var methodName = (string)element.GetValue(MethodNameProperty);
         if (!string.IsNullOrEmpty(methodName))
         {
@@ -172,10 +164,20 @@ namespace Csla.Silverlight
                 if (typeof(RoutedEventArgs).IsAssignableFrom(p[1].ParameterType))
                 {
                   eventRef.AddEventHandler(element, new RoutedEventHandler(CallMethod));
+                  if (_target is CslaDataProvider)
+                  {
+                    ((CslaDataProvider)_target).PropertyChanged -= new PropertyChangedEventHandler(InvokeMethod_PropertyChanged);
+                    ((CslaDataProvider)_target).PropertyChanged += new PropertyChangedEventHandler(InvokeMethod_PropertyChanged);
+                  }
                 }
                 else if (typeof(EventArgs).IsAssignableFrom(p[1].ParameterType))
                 {
                   eventRef.AddEventHandler(element, new EventHandler(CallMethod));
+                  if (_target is CslaDataProvider)
+                  {
+                    ((CslaDataProvider)_target).PropertyChanged -= new PropertyChangedEventHandler(InvokeMethod_PropertyChanged);
+                    ((CslaDataProvider)_target).PropertyChanged += new PropertyChangedEventHandler(InvokeMethod_PropertyChanged);
+                  }
                 }
                 else
                   throw new NotSupportedException();
@@ -192,7 +194,7 @@ namespace Csla.Silverlight
     {
       if (_target != null && _element != null && _contentControl != null)
       {
-        if ((bool)_element.GetValue(ManageEnabledStateProperty) == true)
+        if ((bool)_element.GetValue(ManualEnableControlProperty) == false)
         {
           if (_target is CslaDataProvider)
           {

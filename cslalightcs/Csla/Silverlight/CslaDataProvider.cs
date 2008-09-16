@@ -642,7 +642,28 @@ namespace Csla.Silverlight
     protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
     {
       if (PropertyChanged != null)
-        PropertyChanged(this, e);
+      {
+        Delegate[] targets = PropertyChanged.GetInvocationList();
+        foreach (var oneTarget in targets)
+        {
+          try
+          {
+            oneTarget.DynamicInvoke(this, e);
+          }
+          catch (TargetInvocationException ex)
+          {
+            if (ex.InnerException != null && ex.InnerException is NullReferenceException)
+            {
+              //TODO: should revisit after RTM - should uncomment code below
+              // can be thrown due to bug in SL
+            }
+            else
+              throw;
+          }
+        }
+      }
+      //if (PropertyChanged != null)
+      //  PropertyChanged(this, e);
     }
 
     #endregion

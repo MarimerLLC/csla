@@ -166,14 +166,23 @@ namespace Csla.Silverlight
     void source_BusyChanged(object sender, BusyChangedEventArgs e)
     {
       if (e.PropertyName == Property)
-        _isBusy = e.Busy;
+      {
+        bool busy = e.Busy;
+        BusinessBase bb = Source as BusinessBase;
+        if (bb != null)
+          busy = bb.IsPropertyBusy(Property);
 
-      UpdateState();
+        if (busy != _isBusy)
+        {
+          _isBusy = busy;
+          UpdateState();
+        }
+      }
     }
 
     private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (e.PropertyName == Property || string.IsNullOrEmpty(e.PropertyName))
+      if (!_isBusy && e.PropertyName == Property || string.IsNullOrEmpty(e.PropertyName))
         UpdateState();
     }
 

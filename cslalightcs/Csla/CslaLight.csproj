@@ -332,6 +332,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Server\ObjectFactory.cs" />
+    <Compile Include="Silverlight\SimpleConverter.cs" />
     <Compile Include="Silverlight\ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="Silverlight\CslaDataProvider.cs" />
     <Compile Include="Silverlight\InvokeMethod.cs" />
@@ -365,15 +366,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <Resource Include="..\..\cslacs\Csla\Resources\Error.png">
-      <Link>Resources\Error.png</Link>
-    </Resource>
-    <Resource Include="..\..\cslacs\Csla\Resources\Information.png">
-      <Link>Resources\Information.png</Link>
-    </Resource>
-    <Resource Include="..\..\cslacs\Csla\Resources\Warning.png">
-      <Link>Resources\Warning.png</Link>
-    </Resource>
+    <Resource Include="Resources\Error.png" />
+    <Resource Include="Resources\Information.png" />
+    <Resource Include="Resources\Warning.png" />
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>

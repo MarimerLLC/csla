@@ -332,7 +332,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Server\ObjectFactory.cs" />
-    <Compile Include="Silverlight\SimpleConverter.cs" />
     <Compile Include="Silverlight\ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="Silverlight\CslaDataProvider.cs" />
     <Compile Include="Silverlight\InvokeMethod.cs" />

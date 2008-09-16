@@ -1,8 +1,6 @@
 ﻿using Csla;
 using Csla.DataPortalClient;
-//using Csla.Testing.Business.ReadOnlyTest;
 using System;
-//using Csla.Testing.Business.Security;
 using UnitDriven;
 
 #if NUNIT
@@ -32,7 +30,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [TestMethod]
-    public void TestCslaDataProviderCreate()
+    public void When_Create_instantiates_Customer_with_random_id_between_1_and_10_DataSource_receives_that_record()
     {
       var context = GetContext();
 
@@ -55,20 +53,20 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [TestMethod]
-    public void TestCslaDataProviderFetchNoParameters()
+    public void When_Fetch_with_no_parameters_loads_Customer_with_random_id_between_1_and_10_DataSource_receives_that_record()
     {
       var context = GetContext();
 
       var provider = new Csla.Silverlight.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
+      {
+        if (e1.PropertyName == "Data")
         {
-          if (e1.PropertyName == "Data")
-          {
-            var customer = (Customer)provider.Data;
-            context.Assert.AreEqual(true, customer.Id > 0 && customer.Id<11);
-            context.Assert.Success();
-          }
-        };
+          var customer = (Customer)provider.Data;
+          context.Assert.AreEqual(true, customer.Id > 0 && customer.Id<11);
+          context.Assert.Success();
+        }
+      };
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomer";
@@ -78,7 +76,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [TestMethod]
-    public void TestCslaDataProviderFetchWithParameter()
+    public void When_Fetch_called_with_random_value_between_1_and_10_parameter_DataSource_receives_that_record()
     {
       var context = GetContext();
 
@@ -102,23 +100,23 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [TestMethod]
-    public void TestCslaDataProviderCancel()
+    public void Cancel_reverts_property_values_on_bound_BO_back_to_the_original_values()
     {
       var context = GetContext();
 
       var provider = new Csla.Silverlight.CslaDataProvider();
       Customer.GetCustomer((o1,e1) =>
-        {
-          var cust = e1.Object;
-          int custID = cust.Id;
-          string custName = cust.Name;
-          provider.Data = cust;
-          cust.Name = "new test name";
-          provider.Cancel();
-          context.Assert.AreEqual(custID, ((Customer)provider.Data).Id);
-          context.Assert.AreEqual(custName, ((Customer)provider.Data).Name);
-          context.Assert.Success();
-        });
+      {
+        var cust = e1.Object;
+        int custID = cust.Id;
+        string custName = cust.Name;
+        provider.Data = cust;
+        cust.Name = "new test name";
+        provider.Cancel();
+        context.Assert.AreEqual(custID, ((Customer)provider.Data).Id);
+        context.Assert.AreEqual(custName, ((Customer)provider.Data).Name);
+        context.Assert.Success();
+      });
       context.Complete();
     }
 
@@ -150,7 +148,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [TestMethod]
-    public void TestCslaDataProviderAddRemove()
+    public void If_Fetch_returns_X_items_and_then_DataSource_removes_one_and_adds_two_Count_should_be_X_plus_1()
     {
       var context = GetContext();
 
@@ -193,6 +191,31 @@ namespace cslalighttest.CslaDataProvider
 
       context.Complete();
       
+    }
+
+    [TestMethod]
+    public void Refresh_Calls_FactoryMethod_second_time()
+    {
+      var context = GetContext();
+      int dataLoadedNTimes = 0;
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      provider.PropertyChanged += (o1, e1) =>
+      {
+        if (e1.PropertyName == "Data" && ++dataLoadedNTimes==2)
+        {
+          context.Assert.Success();
+        }
+      };
+      provider.IsInitialLoadEnabled = true;
+      provider.ManageObjectLifetime = true;
+      provider.FactoryMethod = "GetCustomer";
+      provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+
+      //Second call
+      provider.Refresh();
+
+      context.Complete();
+
     }
   }
 }

@@ -1,8 +1,8 @@
 ﻿using Csla;
 using Csla.DataPortalClient;
-using Csla.Testing.Business.ReadOnlyTest;
+//using Csla.Testing.Business.ReadOnlyTest;
 using System;
-using Csla.Testing.Business.Security;
+//using Csla.Testing.Business.Security;
 using UnitDriven;
 
 #if NUNIT
@@ -24,20 +24,25 @@ namespace cslalighttest.CslaDataProvider
   [TestClass]
   public class CslaDataProviderTest : TestBase
   {
+    [TestInitialize]
+    public void Setup()
+    {
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+    }
 
     [TestMethod]
     public void TestCslaDataProviderCreate()
     {
-      UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
-      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+      var context = GetContext();
 
-      Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Silverlight.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
       {
         if (e1.PropertyName == "Data")
         {
-          context.Assert.AreEqual(true, ((Customer)provider.Data).Id > 0 && ((Customer)provider.Data).Id < 11);
+          var customer = (Customer)provider.Data;
+          context.Assert.AreEqual(true, customer.Id > 0 && customer.Id < 11);
           context.Assert.Success();
         }
       };
@@ -52,16 +57,15 @@ namespace cslalighttest.CslaDataProvider
     [TestMethod]
     public void TestCslaDataProviderFetchNoParameters()
     {
-      UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
-      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+      var context = GetContext();
 
-      Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Silverlight.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
         {
           if (e1.PropertyName == "Data")
           {
-            context.Assert.AreEqual(true, ((Customer)provider.Data).Id > 0 && ((Customer)provider.Data).Id<11);
+            var customer = (Customer)provider.Data;
+            context.Assert.AreEqual(true, customer.Id > 0 && customer.Id<11);
             context.Assert.Success();
           }
         };
@@ -76,11 +80,10 @@ namespace cslalighttest.CslaDataProvider
     [TestMethod]
     public void TestCslaDataProviderFetchWithParameter()
     {
-      UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
-      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+      var context = GetContext();
+
       int custId = (new Random()).Next(1, 10);
-      Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Silverlight.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
       {
         if (e1.PropertyName == "Data")
@@ -101,13 +104,12 @@ namespace cslalighttest.CslaDataProvider
     [TestMethod]
     public void TestCslaDataProviderCancel()
     {
-      UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
-      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
-      Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
       Customer.GetCustomer((o1,e1) =>
         {
-          Customer cust = ((Customer)e1.Object);
+          var cust = e1.Object;
           int custID = cust.Id;
           string custName = cust.Name;
           provider.Data = cust;
@@ -123,14 +125,13 @@ namespace cslalighttest.CslaDataProvider
     [TestMethod]
     public void TestCslaDataProviderSave()
     {
-      UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
-      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
-      Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
-        Customer cust = ((Customer)e1.Object);
+        var cust = e1.Object;
         int custID = cust.Id;
         string custName = cust.Name;
         provider.Data = cust;
@@ -151,15 +152,14 @@ namespace cslalighttest.CslaDataProvider
     [TestMethod]
     public void TestCslaDataProviderAddRemove()
     {
-      UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
-      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
-      Csla.Silverlight.CslaDataProvider provider = new Csla.Silverlight.CslaDataProvider();
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
       provider.ManageObjectLifetime = true;
       CustomerList.GetCustomerList((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
-        CustomerList custs = (CustomerList)e1.Object;
+        var custs = e1.Object;
         int count = custs.Count;
         provider.Data = custs;
         provider.RemoveItem(custs[0]);
@@ -170,6 +170,29 @@ namespace cslalighttest.CslaDataProvider
 
       });
       context.Complete();
+    }
+
+    [TestMethod]
+    public void IF_BO_Throws_Exception_DataSource_Error_property_contains_Exception_info()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      provider.PropertyChanged += (o1, e1) =>
+      {
+        if (e1.PropertyName == "Error")
+        {
+          context.Assert.IsNotNull(provider.Error);
+          context.Assert.Success();
+        }
+      };
+      provider.IsInitialLoadEnabled = true;
+      provider.ManageObjectLifetime = true;
+      provider.FactoryMethod = "GetCustomerWithException";
+      provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+
+      context.Complete();
+      
     }
   }
 }

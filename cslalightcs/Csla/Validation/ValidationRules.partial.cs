@@ -80,5 +80,42 @@ namespace Csla.Validation
     }
 
     #endregion
+
+    #region MobileObject overrides
+
+    protected virtual void OnGetStatePartial(SerializationInfo info, StateMode mode)
+    {
+      if (mode == StateMode.Serialization)
+      {
+        if (_stateStack.Count > 0)
+        {
+          string xml = Utilities.XmlSerialize(_stateStack.ToArray());
+          info.AddValue("_stateStack", xml);
+        }
+      }
+
+      base.OnGetState(info, mode);
+    }
+
+    protected virtual void OnSetStatePartial(SerializationInfo info, StateMode mode)
+    {
+      if (mode == StateMode.Serialization)
+      {
+        _stateStack.Clear();
+
+        if (info.Values.ContainsKey("_stateStack"))
+        {
+          string xml = info.GetValue<string>("_stateStack");
+          SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
+          Array.Reverse(layers);
+          foreach (SerializationInfo layer in layers)
+            _stateStack.Push(layer);
+        }
+      }
+
+      base.OnSetState(info, mode);
+    }
+
+    #endregion
   }
 }

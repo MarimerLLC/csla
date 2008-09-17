@@ -15,22 +15,6 @@ namespace Csla.Silverlight
 
   public abstract class ValidatedDataGridColumn : DataGridBoundColumn
   {
-    Style _propertyStatusStyle;
-
-    public Style PropertyStatusStyle
-    {
-      get { return _propertyStatusStyle;  }
-      set { _propertyStatusStyle = value; }
-    }
-
-    //public static readonly DependencyProperty PropertyStatusStyleProperty = DependencyProperty.Register(
-    //  "PropertyStatusStyle", 
-    //  typeof(Style), 
-    //  typeof(ValidatedDataGridColumn), 
-    //  new PropertyMetadata((o, e) => ((ValidatedDataGridColumn)o).PropertyStatusStyle = (Style)e.NewValue));
-
-
-
     #region Abstract members
 
     protected abstract FrameworkElement CreateElement();
@@ -59,7 +43,6 @@ namespace Csla.Silverlight
         Binding binding = new Binding();
         binding.Source = DisplayMemberBinding.Source;
         binding.Mode = BindingMode.OneWay;
-        status.Style = PropertyStatusStyle;
         status.SetBinding(PropertyStatus.SourceProperty, binding);
         status.Property = DisplayMemberBinding.Path.Path;
         status.Target = _editControl;
@@ -85,7 +68,6 @@ namespace Csla.Silverlight
         Binding binding = new Binding();
         binding.Source = DisplayMemberBinding.Source;
         binding.Mode = BindingMode.OneWay;
-        status.Style = PropertyStatusStyle;
         status.SetBinding(PropertyStatus.SourceProperty, binding);
         status.Property = DisplayMemberBinding.Path.Path;
         status.Target = element;

@@ -23,15 +23,16 @@ namespace Csla.Silverlight
         TextBox box = panel.Children[0] as TextBox;
         if (box != null)
         {
+          box.Focus();
           text = box.Text;
           int length = text.Length;
           KeyEventArgs args = editingEventArgs as KeyEventArgs;
-          if ((args != null) && (args.Key == Key.F2))
+          if ((args != null)) // && (args.Key == Key.F2))
           {
+            args.Handled = true;
             box.Select(0, length);
-            return text;
           }
-          box.Select(length, length);
+          else box.Select(length, length);
         }
       }
       return text;

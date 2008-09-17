@@ -430,7 +430,7 @@ namespace Csla
     {
       C child;
 
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
 
       // we are coming up one edit level
@@ -503,7 +503,7 @@ namespace Csla
 
     private void AcceptChanges(int parentEditLevel)
     {
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
 
       // we are coming up one edit level

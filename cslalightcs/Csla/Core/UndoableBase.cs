@@ -156,7 +156,7 @@ namespace Csla.Core
     {
       UndoingChanges();
 
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
 
       if (parentEditLevel >= 0)
@@ -205,7 +205,7 @@ namespace Csla.Core
     {
       AcceptingChanges();
 
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
 
       if (EditLevel > 0)

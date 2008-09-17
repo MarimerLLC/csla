@@ -425,7 +425,7 @@ namespace Csla.Core.FieldManager
     {
       if (EditLevel > 0)
       {
-        if (this.EditLevel - 1 < parentEditLevel)
+        if (this.EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
 
         SerializationInfo state = _stateStack.Pop();
@@ -449,7 +449,7 @@ namespace Csla.Core.FieldManager
 
     void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
 
       if (EditLevel > 0)

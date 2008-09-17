@@ -1,6 +1,7 @@
 ﻿using Csla;
 using Csla.DataPortalClient;
 using System;
+using Csla.Serialization;
 using UnitDriven;
 
 #if NUNIT
@@ -26,7 +27,7 @@ namespace cslalighttest.CslaDataProvider
     public void Setup()
     {
       DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
-      //WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+      WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
     }
 
     [TestMethod]
@@ -47,7 +48,7 @@ namespace cslalighttest.CslaDataProvider
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "CreateCustomer";
-      provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       context.Complete();
     }
@@ -70,7 +71,7 @@ namespace cslalighttest.CslaDataProvider
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomer";
-      provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       context.Complete();
     }
@@ -94,7 +95,7 @@ namespace cslalighttest.CslaDataProvider
       provider.ManageObjectLifetime = true;
       provider.FactoryParameters.Add(custId);
       provider.FactoryMethod = "GetCustomer";
-      provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       context.Complete();
     }
@@ -187,7 +188,7 @@ namespace cslalighttest.CslaDataProvider
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomerWithException";
-      provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       context.Complete();
       
@@ -209,7 +210,7 @@ namespace cslalighttest.CslaDataProvider
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomer";
-      provider.ObjectType = "cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       //Second call
       provider.Refresh();
@@ -217,5 +218,52 @@ namespace cslalighttest.CslaDataProvider
       context.Complete();
 
     }
+    [TestMethod]
+    public void Fetch_call_on_BO_that_does_not_implement_DP_Fetch_returns_Exception_info_in_Error_property()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      provider.PropertyChanged += (o1, e1) =>
+      {
+        if (e1.PropertyName == "Error")
+        {
+          context.Assert.IsNotNull(provider.Error);
+          context.Assert.Success();
+        }
+      };
+      provider.IsInitialLoadEnabled = true;
+      provider.ManageObjectLifetime = true;
+      provider.FactoryMethod = "GetCustomer";
+      provider.ObjectType = typeof (CustomerWO_DP_XYZ).AssemblyQualifiedName;// "cslalighttest.CslaDataProvider.CustomerWO_DP_XYZ, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+
+      context.Complete();
+      
+    }
+
+    [TestMethod]
+    public void Create_call_on_BO_that_does_not_implement_DP_Create_returns_Exception_info_in_Error_property()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      provider.PropertyChanged += (o1, e1) =>
+      {
+        if (e1.PropertyName == "Error")
+        {
+          context.Assert.IsNotNull(provider.Error);
+          context.Assert.Success();
+        }
+      };
+      provider.IsInitialLoadEnabled = true;
+      provider.ManageObjectLifetime = true;
+      provider.FactoryMethod = "CreateCustomer";
+      provider.ObjectType = typeof(CustomerWO_DP_XYZ).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.CustomerWO_DP_XYZ, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+
+      context.Complete();
+
+    }
+
   }
+
 }

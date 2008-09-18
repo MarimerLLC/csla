@@ -680,7 +680,7 @@ namespace Csla
       get
       {
         bool auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
-        return (IsDirty && IsValid && auth);
+        return (IsDirty && IsValid && auth && !IsBusy);
       }
     }
 
@@ -845,6 +845,14 @@ namespace Csla
       else if (!IsValid)
       {
         Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else if (IsBusy)
+      {
+        // TODO: Review this resource text
+        Validation.ValidationException error = new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
         OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));

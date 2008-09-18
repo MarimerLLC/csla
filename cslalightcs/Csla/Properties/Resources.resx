@@ -312,4 +312,7 @@
   <data name="BusyObjectsMayNotBeMarkedBusy" xml:space="preserve">
     <value>Objects that are marked busy may not be marked busy again</value>
   </data>
+  <data name="BusyObjectsMayNotBeSaved" xml:space="preserve">
+    <value>Objects that are marked busy may not be saved</value>
+  </data>
 </root>

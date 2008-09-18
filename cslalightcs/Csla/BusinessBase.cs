@@ -203,6 +203,13 @@ namespace Csla
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
       }
+      else if (IsBusy)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
       else
       {
         if (IsDirty)

@@ -241,8 +241,12 @@ namespace cslalighttest.CslaDataProvider
       
     }
 
+    /// <summary>
+    /// Create is an exception - called with SingleCriteria, if BO does not have DP_Create() overload
+    /// with that signature, ends up calling parameterless DP_Create() - this is by design
+    /// </summary>
     [TestMethod]
-    public void Create_call_on_BO_that_does_not_implement_DP_Create_returns_Exception_info_in_Error_property()
+    public void Create_call_on_BO_that_does_not_implement_DP_Create_returns_no_Exception_info_in_Error_property()
     {
       var context = GetContext();
 
@@ -251,7 +255,7 @@ namespace cslalighttest.CslaDataProvider
       {
         if (e1.PropertyName == "Error")
         {
-          context.Assert.IsNotNull(provider.Error);
+          context.Assert.IsNull(provider.Error);
           context.Assert.Success();
         }
       };

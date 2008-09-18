@@ -69,6 +69,12 @@
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ApplicationContext\ContextBOVerifier.cs">
       <Link>ApplicationContext\ContextBOVerifier.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\BusyStatus\ItemWithAsynchRule.cs">
+      <Link>BusyStatus\ItemWithAsynchRule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\BusyStatus\ItemWithAsynchRuleList.cs">
+      <Link>BusyStatus\ItemWithAsynchRuleList.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\CommandBase\TestCommandBase.cs">
       <Link>CommandBase\TestCommandBase.cs</Link>
     </Compile>

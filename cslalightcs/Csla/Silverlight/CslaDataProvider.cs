@@ -22,6 +22,7 @@ namespace Csla.Silverlight
     protected void OnDataChanged()
     {
       RefreshCanOperaionsValues();
+      RefreshCanOpertaionsOnObjectLevel();
       if (DataChanged != null)
         DataChanged(this, EventArgs.Empty);
     }
@@ -411,9 +412,16 @@ namespace Csla.Silverlight
         }
     }
 
+    public void Rebind()
+    {
+      object tmp = Data;
+      Data = null;
+      Data = tmp;
+    }
+
     #endregion
 
-    #region  Can Methods
+    #region  Can methods that account for user rights and object state
 
     private bool _canSave = false;
     public bool CanSave
@@ -633,7 +641,83 @@ namespace Csla.Silverlight
     }
 
     #endregion
-    
+
+    #region Can methods that only account for user rights
+
+    private bool _canCreateObject;
+    public bool CanCreateObject
+    {
+      get { return _canCreateObject; }
+      protected set
+      {
+        _canCreateObject = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("CanCreateObject"));
+      }
+    }
+
+    private bool _canGetObject;
+    public bool CanGetObject
+    {
+      get { return _canGetObject; }
+      protected set
+      {
+        _canGetObject = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("CanGetObject"));
+      }
+    }
+
+    private bool _canEditObject;
+    public bool CanEditObject
+    {
+      get { return _canEditObject; }
+      protected set
+      {
+        _canEditObject = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("CanEditObject"));
+      }
+    }
+
+    private bool _canDeleteObject;
+    public bool CanDeleteObject
+    {
+      get { return _canDeleteObject; }
+      protected set
+      {
+        _canDeleteObject = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("CanDeleteObject"));
+      }
+    }
+
+    private void RefreshCanOpertaionsOnObjectLevel()
+    {
+      if (Data != null)
+      {
+        Type sourceType = Data.GetType();
+        if (CanCreateObject != Csla.Security.AuthorizationRules.CanCreateObject(sourceType))
+          CanCreateObject = Csla.Security.AuthorizationRules.CanCreateObject(sourceType);
+
+        if (CanGetObject != Csla.Security.AuthorizationRules.CanGetObject(sourceType))
+          CanGetObject = Csla.Security.AuthorizationRules.CanGetObject(sourceType);
+
+        if (CanEditObject != Csla.Security.AuthorizationRules.CanEditObject(sourceType))
+          CanEditObject = Csla.Security.AuthorizationRules.CanEditObject(sourceType);
+
+        if (CanDeleteObject != Csla.Security.AuthorizationRules.CanDeleteObject(sourceType))
+          CanDeleteObject = Csla.Security.AuthorizationRules.CanDeleteObject(sourceType);
+
+      }
+      else
+      {
+        this.CanCreateObject = false;
+        this.CanDeleteObject = false;
+        this.CanGetObject = false;
+        this.CanEditObject = false;
+      }
+
+    }
+
+    #endregion
+
     #region INotifyPropertyChanged Members
 
     /// <summary>

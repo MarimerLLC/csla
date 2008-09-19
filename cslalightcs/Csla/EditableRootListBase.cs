@@ -225,6 +225,22 @@ namespace Csla
 
     #endregion
 
+    #region IsBusy
+    public override bool IsBusy
+    {
+      get
+      {
+        // run through all the child objects
+        // and if any are dirty then then
+        // collection is dirty
+        foreach (T child in this)
+          if (child.IsBusy)
+            return true;
+
+        return false;
+      }
+    }
+    #endregion
 
     #region  Serialization Notification
 

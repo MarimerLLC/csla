@@ -10,7 +10,7 @@ using Csla.Core;
 
 namespace Csla.Security
 {
-  public abstract partial class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity
+  public partial class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity
   {
     public static void GetMembershipIdentity<T>(EventHandler<DataPortalResult<T>> completed, string userName, string password, bool isRunOnWebServer) where T : MembershipIdentity
     {

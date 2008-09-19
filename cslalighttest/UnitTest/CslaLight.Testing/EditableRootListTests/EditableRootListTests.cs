@@ -256,5 +256,22 @@ namespace cslalighttest.EditableRootListTests
       });
       context.Complete();
     }
+
+    [TestMethod]
+    public void BusyImplemented()
+    {
+
+      UnitTestContext context = GetContext();
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+      ApplicationContext.GlobalContext.Clear();
+
+      RootSingleItemsList.GetRootSingleItemsList(1, 2, (o, e) =>
+      {
+        context.Assert.IsFalse(e.Object.IsBusy);
+        context.Assert.Success();
+      });
+      context.Complete();
+    }
   }
 }

@@ -64,7 +64,7 @@ namespace cslalighttest.CslaDataProvider
         if (e1.PropertyName == "Data")
         {
           var customer = (Customer)provider.Data;
-          context.Assert.AreEqual(true, customer.Id > 0 && customer.Id<11);
+          context.Assert.AreEqual(true, customer.Id > 0 && customer.Id < 11);
           context.Assert.Success();
         }
       };
@@ -106,7 +106,7 @@ namespace cslalighttest.CslaDataProvider
       var context = GetContext();
 
       var provider = new Csla.Silverlight.CslaDataProvider();
-      Customer.GetCustomer((o1,e1) =>
+      Customer.GetCustomer((o1, e1) =>
       {
         var cust = e1.Object;
         int custID = cust.Id;
@@ -164,7 +164,7 @@ namespace cslalighttest.CslaDataProvider
         provider.RemoveItem(custs[0]);
         provider.AddNewItem();
         provider.AddNewItem();
-        context.Assert.AreEqual(count -1 + 2,custs.Count);
+        context.Assert.AreEqual(count - 1 + 2, custs.Count);
         context.Assert.Success();
 
       });
@@ -191,7 +191,7 @@ namespace cslalighttest.CslaDataProvider
       provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       context.Complete();
-      
+
     }
 
     [TestMethod]
@@ -202,7 +202,7 @@ namespace cslalighttest.CslaDataProvider
       var provider = new Csla.Silverlight.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
       {
-        if (e1.PropertyName == "Data" && ++dataLoadedNTimes==2)
+        if (e1.PropertyName == "Data" && ++dataLoadedNTimes == 2)
         {
           context.Assert.Success();
         }
@@ -235,10 +235,10 @@ namespace cslalighttest.CslaDataProvider
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomer";
-      provider.ObjectType = typeof (CustomerWO_DP_XYZ).AssemblyQualifiedName;// "cslalighttest.CslaDataProvider.CustomerWO_DP_XYZ, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      provider.ObjectType = typeof(CustomerWO_DP_XYZ).AssemblyQualifiedName;// "cslalighttest.CslaDataProvider.CustomerWO_DP_XYZ, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
 
       context.Complete();
-      
+
     }
 
     /// <summary>
@@ -266,6 +266,87 @@ namespace cslalighttest.CslaDataProvider
 
       context.Complete();
 
+    }
+
+    [TestMethod]
+    public void TestCslaDataProviderCanOperationsObjectLevel()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      Customer.GetCustomer((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var cust = e1.Object;
+        int custID = cust.Id;
+        string custName = cust.Name;
+
+
+        context.Assert.AreEqual(provider.CanEditObject, false);
+        context.Assert.AreEqual(provider.CanGetObject, false);
+        context.Assert.AreEqual(provider.CanDeleteObject, false);
+        context.Assert.AreEqual(provider.CanCreateObject, false);
+
+        System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
+
+        provider.PropertyChanged += (o3, e3) =>
+          {
+            list.Add(e3.PropertyName);
+          };
+        context.Completed += (o5, e5) =>
+          {
+            bool success = list.Contains("CanDeleteObject") &&
+                              list.Contains("CanDeleteObject") &&
+                              list.Contains("CanDeleteObject") &&
+                              list.Contains("CanDeleteObject");
+            context.Assert.IsTrue(success);
+          };
+        provider.Data = cust;
+
+        context.Assert.AreEqual(provider.CanEditObject, Csla.Security.AuthorizationRules.CanEditObject(typeof(Customer)));
+        context.Assert.AreEqual(provider.CanGetObject, Csla.Security.AuthorizationRules.CanGetObject(typeof(Customer)));
+        context.Assert.AreEqual(provider.CanDeleteObject, Csla.Security.AuthorizationRules.CanDeleteObject(typeof(Customer)));
+        context.Assert.AreEqual(provider.CanCreateObject, Csla.Security.AuthorizationRules.CanCreateObject(typeof(Customer)));
+        context.Assert.Success();
+
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void TestCslaDataProviderRebind()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      Customer.GetCustomer((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var cust = e1.Object;
+        int custID = cust.Id;
+        string custName = cust.Name;
+        provider.Data = cust;
+        bool changedToNull = false;
+        bool changedToData = false;
+
+        provider.DataChanged += (o2, e2) =>
+        {
+          if (provider.Data == null)
+            changedToNull = true;
+
+          if (provider.Data == cust)
+            changedToData = true;
+
+          if (changedToNull && changedToData)
+          {
+            context.Assert.IsTrue(true);
+            context.Assert.Success();
+          }
+        };
+        provider.Rebind();
+
+      });
+      context.Complete();
     }
 
   }

@@ -513,11 +513,13 @@ namespace Csla.Core.FieldManager
       {
         if (data != null)
         {
-          IMobileObject mobile = data.Value as IMobileObject;
-          if (mobile == null)
-            info.AddValue(data.Name, data.Value, data.IsDirty);
-          else
+          if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
+          else if (mode == StateMode.Undo && data.Value is IMobileObject) // is IMobileObject but isn't IUndoableObject (such as SmartDate)
+            info.AddValue(data.Name, MobileFormatter.Serialize(data.Value), data.IsDirty);
+          else if(!(data.Value is IMobileObject))
+            info.AddValue(data.Name, data.Value, data.IsDirty);
+            
         }
       }
 
@@ -565,8 +567,7 @@ namespace Csla.Core.FieldManager
       // your children during an undo.
       if (mode == StateMode.Serialization)
         _fieldData = new IFieldData[_propertyList.Count];
-
-
+      
       foreach (IPropertyInfo property in _propertyList)
       {
         if (info.Values.ContainsKey(property.Name))
@@ -574,7 +575,14 @@ namespace Csla.Core.FieldManager
           SerializationInfo.FieldData value = info.Values[property.Name];
 
           IFieldData data = GetOrCreateFieldData(property);
-          data.Value = value.Value;
+          if (mode == StateMode.Undo &&
+            typeof(IMobileObject).IsAssignableFrom(property.Type) &&
+            !typeof(IUndoableObject).IsAssignableFrom(property.Type))
+          {
+            data.Value = MobileFormatter.Deserialize((byte[])value.Value);
+          }
+          else data.Value = value.Value;
+
           if (!value.IsDirty)
             data.MarkClean();
         }

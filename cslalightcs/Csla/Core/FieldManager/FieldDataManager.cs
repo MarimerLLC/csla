@@ -6,6 +6,7 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.Xml;
 using System.Runtime.Serialization;
+using Csla.Properties;
 
 namespace Csla.Core.FieldManager
 {
@@ -41,8 +42,7 @@ namespace Csla.Core.FieldManager
     internal void SetPropertyList(Type businessObjectType)
     {
       // we need this for the mobileformatter
-      _businessObjectType = businessObjectType.FullName + ", " + businessObjectType.Assembly.FullName;
-
+      _businessObjectType = businessObjectType.AssemblyQualifiedName;
       _propertyList = GetConsolidatedList(businessObjectType);
     }
 
@@ -138,7 +138,7 @@ namespace Csla.Core.FieldManager
       }
       catch (IndexOutOfRangeException ex)
       {
-        throw new InvalidOperationException("Property not registered", ex);
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
       }
     }
 
@@ -156,7 +156,7 @@ namespace Csla.Core.FieldManager
       }
       catch (IndexOutOfRangeException ex)
       {
-        throw new InvalidOperationException("Property not registered", ex);
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
       }
     }
 
@@ -282,7 +282,7 @@ namespace Csla.Core.FieldManager
       }
       catch (IndexOutOfRangeException ex)
       {
-        throw new InvalidOperationException("Property not registered", ex);
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
       }
     }
 
@@ -302,7 +302,7 @@ namespace Csla.Core.FieldManager
       }
       catch (IndexOutOfRangeException ex)
       {
-        throw new InvalidOperationException("Property not registered", ex);
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
       }
     }
 

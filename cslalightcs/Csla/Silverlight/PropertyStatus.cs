@@ -30,10 +30,9 @@ namespace Csla.Silverlight
 
     public PropertyStatus()
     {
-      DefaultStyleKey = typeof(PropertyStatus);
       RelativeTargetPath = "Parent";
       BrokenRules = new ObservableCollection<BrokenRule>();
-      GoToState(true);
+      DefaultStyleKey = typeof(PropertyStatus);
 
       Loaded += (o, e) => { GoToState(true); };
     }
@@ -46,13 +45,13 @@ namespace Csla.Silverlight
       "Source",
       typeof(object),
       typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).Source = e.NewValue));
+      new PropertyMetadata((o, e) => ((PropertyStatus)o).SetSource(e.OldValue, e.NewValue)));
 
     public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
       "Property",
       typeof(string),
       typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).Property = (string)e.NewValue));
+      null);
 
     public static readonly DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
       "BrokenRules",
@@ -64,19 +63,19 @@ namespace Csla.Silverlight
       "RelativeTargetPath",
       typeof(string),
       typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).RelativeTargetPath = (string)e.NewValue));
+      new PropertyMetadata((o, e) => ((PropertyStatus)o).Target = null));
 
     public static readonly DependencyProperty RelativeTargetNameProperty = DependencyProperty.Register(
       "RelativeTargetName",
       typeof(string),
       typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).RelativeTargetName = (string)e.NewValue));
+      new PropertyMetadata((o, e) => ((PropertyStatus)o).Target = null));
 
     #endregion
 
     #region Member fields and properties
+    
     private DependencyObject _target;
-    private object _source;
     private bool _isValid = true;
     private RuleSeverity _worst;
     private FrameworkElement _lastImage;
@@ -84,19 +83,25 @@ namespace Csla.Silverlight
 
     public object Source
     {
-      get { return _source; }
-      set
+      get { return GetValue(SourceProperty); }
+      set 
       {
-        DetachSource(_source);
-        _source = value;
-        AttachSource(_source);
+        object old = Source;
+        SetValue(SourceProperty, value);
+        SetSource(old, value);
+      }
+    }
 
-        BusinessBase bb = value as BusinessBase;
+    private void SetSource(object old, object @new)
+    { 
+        DetachSource(old);
+        AttachSource(@new);
+
+        BusinessBase bb = @new as BusinessBase;
         if (bb != null && !string.IsNullOrEmpty(Property))
           _isBusy = bb.IsPropertyBusy(Property);
 
         UpdateState();
-      }
     }
 
     public string Property
@@ -300,7 +305,6 @@ namespace Csla.Silverlight
       }
     }
 
-    
     #endregion
 
     #region RelativeTarget

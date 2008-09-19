@@ -73,7 +73,7 @@ namespace Csla.Reflection
     {
       var ctor = GetCachedConstructor(objectType);
       if (ctor == null)
-        throw new NotImplementedException("Default constructor " + Resources.MethodNotImplemented);
+        throw new NotImplementedException(Resources.DefaultConstructor + " " + Resources.MethodNotImplemented);
       return ctor.Invoke(null);
     }
 

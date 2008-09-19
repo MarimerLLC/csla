@@ -107,7 +107,7 @@ namespace Csla.DataPortalClient
     public void BeginCreate()
     {
       var request = GetBaseCriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
+      request.TypeName = typeof(T).AssemblyQualifiedName;
 
       var proxy = GetProxy();
       proxy.CreateCompleted += new EventHandler<Csla.WcfPortal.CreateCompletedEventArgs>(proxy_CreateCompleted);
@@ -121,7 +121,7 @@ namespace Csla.DataPortalClient
     public void BeginCreate(object criteria, object userState)
     {
       var request = GetBaseCriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
+      request.TypeName = typeof(T).AssemblyQualifiedName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
 
       var proxy = GetProxy();
@@ -176,7 +176,7 @@ namespace Csla.DataPortalClient
     public void BeginFetch()
     {
       var request = GetBaseCriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
+      request.TypeName = typeof(T).AssemblyQualifiedName;
       request.CriteriaData = null;
 
       var proxy = GetProxy();
@@ -191,7 +191,7 @@ namespace Csla.DataPortalClient
     public void BeginFetch(object criteria, object userState)
     {
       var request = GetBaseCriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
+      request.TypeName = typeof(T).AssemblyQualifiedName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
 
       var proxy = GetProxy();
@@ -219,13 +219,11 @@ namespace Csla.DataPortalClient
           var ex = new DataPortalException(e.Error.ToErrorInfo());
           OnFetchCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
-        else if (e.Result.ErrorData != null)
+        else // if (e.Result.ErrorData != null)
         {
           var ex = new DataPortalException(e.Result.ErrorData);
           OnFetchCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
-        else
-          throw new InvalidOperationException("Server must return an object or an error");
       }
       catch (Exception ex)
       {
@@ -314,7 +312,7 @@ namespace Csla.DataPortalClient
     public void BeginDelete(object criteria, object userState)
     {
       var request = GetBaseCriteriaRequest();
-      request.TypeName = typeof(T).FullName + "," + typeof(T).Assembly.FullName;
+      request.TypeName = typeof(T).AssemblyQualifiedName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
 
       var proxy = GetProxy();

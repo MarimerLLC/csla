@@ -9,6 +9,7 @@ using Csla.Core.FieldManager;
 using Csla.Core;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using Csla.Properties;
 
 namespace Csla.Core
 {
@@ -45,7 +46,8 @@ namespace Csla.Core
 
     protected virtual void AddNewCore()
     {
-      throw new NotImplementedException("Add new core must be overriden");
+      // TODO: Evaluate this resource
+      throw new NotImplementedException(Resources.AddNewCoreMustBeOverriden);
     }
 
     protected virtual void OnCoreAdded(object sender, DataPortalResult<T> e)

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using Csla.Properties;
 
 namespace Csla.Silverlight
 {
@@ -25,7 +26,7 @@ namespace Csla.Silverlight
         int start = propertyName.IndexOf('[');
         int end = propertyName.IndexOf(']');
         if (end != propertyName.Length - 1)
-          throw new InvalidOperationException("Indexed expressions must be closed");
+          throw new InvalidOperationException(Resources.IndexedExpressionsMustBeClosed);
 
         int length = (end - start) - 1;
         indexParameters = propertyName.Substring(start + 1, length).Split(',').Cast<object>().ToArray();
@@ -36,13 +37,13 @@ namespace Csla.Silverlight
       PropertyInfo property = current.GetType().GetProperty(propertyName);
       if (property == null)
         throw new InvalidOperationException(string.Format(
-          "The specified property name '{0}' does not exist",
+          Resources.PropertyNameDoesNotExist,
           propertyName));
 
       ParameterInfo[] parameters = property.GetIndexParameters();
       if (parameters.Length != indexParameters.Length)
         throw new InvalidOperationException(string.Format(
-          "This property requires {0} index arguments, {1} were provided",
+          Resources.PropertyRequiresIndexArguments,
           parameters.Length,
           indexParameters.Length));
 

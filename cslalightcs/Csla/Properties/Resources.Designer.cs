@@ -61,6 +61,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AddNewCore must be overridden.
+        /// </summary>
+        internal static string AddNewCoreMustBeOverriden {
+            get {
+                return ResourceManager.GetString("AddNewCoreMustBeOverriden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge only allowed on custom collection objects.
         /// </summary>
         internal static string BrokenRulesMergeException {
@@ -169,6 +178,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default Constructor.
+        /// </summary>
+        internal static string DefaultConstructor {
+            get {
+                return ResourceManager.GetString("DefaultConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid operation - delete not allowed.
         /// </summary>
         internal static string DeleteNotSupportedException {
@@ -250,6 +268,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indexed expressions must be closed.
+        /// </summary>
+        internal static string IndexedExpressionsMustBeClosed {
+            get {
+                return ResourceManager.GetString("IndexedExpressionsMustBeClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Insert is an invalid operation.
         /// </summary>
         internal static string InsertInvalidException {
@@ -318,6 +345,24 @@ namespace Csla.Properties {
         internal static string MinValueRule {
             get {
                 return ResourceManager.GetString("MinValueRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Type &apos;{0}&apos; was unable to be deserialized, double check that the assembly containing this class has the same name on the Client and Server and that it is referenced by your server application.
+        /// </summary>
+        internal static string MobileFormatterUnableToDeserialize {
+            get {
+                return ResourceManager.GetString("MobileFormatterUnableToDeserialize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type {0} must implement IMobileObject.
+        /// </summary>
+        internal static string MustImplementIMobileObject {
+            get {
+                return ResourceManager.GetString("MustImplementIMobileObject", resourceCulture);
             }
         }
         
@@ -430,6 +475,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object not serializable ({0}).
+        /// </summary>
+        internal static string ObjectNotSerializableFormatted {
+            get {
+                return ResourceManager.GetString("ObjectNotSerializableFormatted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parent value can only be set for child objects.
         /// </summary>
         internal static string ParentSetException {
@@ -475,11 +529,29 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified property name &apos;{0}&apos; does not exist.
+        /// </summary>
+        internal static string PropertyNameDoesNotExist {
+            get {
+                return ResourceManager.GetString("PropertyNameDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more properties are not registered for this type.
         /// </summary>
         internal static string PropertyNotRegistered {
             get {
                 return ResourceManager.GetString("PropertyNotRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This property requires {0} index arguments, {1} were provided.
+        /// </summary>
+        internal static string PropertyRequiresIndexArguments {
+            get {
+                return ResourceManager.GetString("PropertyRequiresIndexArguments", resourceCulture);
             }
         }
         
@@ -507,6 +579,15 @@ namespace Csla.Properties {
         internal static string RemoveInvalidException {
             get {
                 return ResourceManager.GetString("RemoveInvalidException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The server must return a value.
+        /// </summary>
+        internal static string ServerMustReturnValue {
+            get {
+                return ResourceManager.GetString("ServerMustReturnValue", resourceCulture);
             }
         }
         

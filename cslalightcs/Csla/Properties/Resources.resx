@@ -315,4 +315,31 @@
   <data name="BusyObjectsMayNotBeSaved" xml:space="preserve">
     <value>Objects that are marked busy may not be saved</value>
   </data>
+  <data name="AddNewCoreMustBeOverriden" xml:space="preserve">
+    <value>AddNewCore must be overridden</value>
+  </data>
+  <data name="ServerMustReturnValue" xml:space="preserve">
+    <value>The server must return a value</value>
+  </data>
+  <data name="DefaultConstructor" xml:space="preserve">
+    <value>Default Constructor</value>
+  </data>
+  <data name="IndexedExpressionsMustBeClosed" xml:space="preserve">
+    <value>Indexed expressions must be closed</value>
+  </data>
+  <data name="MobileFormatterUnableToDeserialize" xml:space="preserve">
+    <value>The Type '{0}' was unable to be deserialized, double check that the assembly containing this class has the same name on the Client and Server and that it is referenced by your server application</value>
+  </data>
+  <data name="MustImplementIMobileObject" xml:space="preserve">
+    <value>Type {0} must implement IMobileObject</value>
+  </data>
+  <data name="ObjectNotSerializableFormatted" xml:space="preserve">
+    <value>Object not serializable ({0})</value>
+  </data>
+  <data name="PropertyNameDoesNotExist" xml:space="preserve">
+    <value>The specified property name '{0}' does not exist</value>
+  </data>
+  <data name="PropertyRequiresIndexArguments" xml:space="preserve">
+    <value>This property requires {0} index arguments, {1} were provided</value>
+  </data>
 </root>

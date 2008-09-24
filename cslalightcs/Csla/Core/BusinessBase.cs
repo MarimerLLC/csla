@@ -1965,6 +1965,17 @@ namespace Csla.Core
         IBusinessObject business = item as IBusinessObject;
         if (business != null)
           OnAddEventHooksInternal(business);
+
+        IEditableBusinessObject child = item as IEditableBusinessObject;
+        if (child != null)
+        {
+          child.SetParent(this);
+        }
+        IEditableCollection childCollection = item as IEditableCollection;
+        if (childCollection != null)
+        {
+          childCollection.SetParent(this);
+        }
       }
     }
 
@@ -2747,7 +2758,7 @@ namespace Csla.Core
       }
     }
 
-    void System.Windows.Controls.IEditableObject.BeginEdit()
+    void System.ComponentModel.IEditableObject.BeginEdit()
     {
       if (!_disableIEditableObject && !BindingEdit)
       {
@@ -2756,7 +2767,7 @@ namespace Csla.Core
       }
     }
 
-    void System.Windows.Controls.IEditableObject.CancelEdit()
+    void System.ComponentModel.IEditableObject.CancelEdit()
     {
       if (!_disableIEditableObject && BindingEdit)
       {
@@ -2773,7 +2784,7 @@ namespace Csla.Core
       }
     }
 
-    void System.Windows.Controls.IEditableObject.EndEdit()
+    void System.ComponentModel.IEditableObject.EndEdit()
     {
       if (!_disableIEditableObject && BindingEdit)
       {

@@ -263,6 +263,7 @@
       <Link>Validation\ValidationTests.cs</Link>
     </Compile>
     <Compile Include="CslaDataProvider\CslaDataProviderTest.cs" />
+    <Compile Include="DataPortal\ChildParentDataPortalTests.cs" />
     <Compile Include="EditableRootListTests\EditableRootListTests.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="LocalDataPortal\UserStateForPortalTests.cs" />

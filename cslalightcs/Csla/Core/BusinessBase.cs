@@ -2758,7 +2758,7 @@ namespace Csla.Core
       }
     }
 
-    void System.ComponentModel.IEditableObject.BeginEdit()
+    void IEditableObject.BeginEdit()
     {
       if (!_disableIEditableObject && !BindingEdit)
       {
@@ -2767,7 +2767,7 @@ namespace Csla.Core
       }
     }
 
-    void System.ComponentModel.IEditableObject.CancelEdit()
+    void IEditableObject.CancelEdit()
     {
       if (!_disableIEditableObject && BindingEdit)
       {
@@ -2784,7 +2784,7 @@ namespace Csla.Core
       }
     }
 
-    void System.ComponentModel.IEditableObject.EndEdit()
+    void IEditableObject.EndEdit()
     {
       if (!_disableIEditableObject && BindingEdit)
       {

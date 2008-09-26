@@ -103,6 +103,15 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\DpRoot.cs">
       <Link>DataPortal\DpRoot.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\MethodCaller\Caller1.cs">
+      <Link>MethodCaller\Caller1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\MethodCaller\Caller2.cs">
+      <Link>MethodCaller\Caller2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\MethodCaller\Caller3.cs">
+      <Link>MethodCaller\Caller3.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\PropertyGetSet\BadGetSet.cs">
       <Link>PropertyGetSet\BadGetSet.cs</Link>
     </Compile>
@@ -267,6 +276,7 @@
     <Compile Include="EditableRootListTests\EditableRootListTests.cs" />
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="LocalDataPortal\UserStateForPortalTests.cs" />
+    <Compile Include="MethodCaller\MethodCallerTests.cs" />
     <Compile Include="ObjectFactory\ObjectFactoryTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -30,7 +30,7 @@ namespace NavigationApp
 
     public string Title
     {
-      get { return "Title for Control One"; }
+      get { return "Control Two - " + this.ParametersBlock.Text; }
     }
 
     #endregion

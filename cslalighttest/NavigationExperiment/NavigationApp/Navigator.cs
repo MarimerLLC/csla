@@ -135,6 +135,7 @@ namespace NavigationApp
         _bookmarks.Add(bookMarkId, new BoomarkInformation(controlTypeName, parameters, title));
         AddBookmark(bookMarkId, title);
       }
+      System.Windows.Browser.HtmlPage.Document.SetProperty("Title", title);
     }
 
     private void AddBookmark(int bookmarkId, string title)

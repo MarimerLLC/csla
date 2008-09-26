@@ -27,7 +27,7 @@ namespace NavigationApp
       Navigator.Current.BeforeNavigation += (o1, e1) =>
       {
         if (e1.ControlTypeName == typeof(ControlTwo).AssemblyQualifiedName)
-          e1.Parameters = "Random Parameter for Control 2=" + (new Random()).Next(1,100).ToString();
+          e1.Parameters = "Parameter=" + (new Random()).Next(1,100).ToString();
       };
     }
 

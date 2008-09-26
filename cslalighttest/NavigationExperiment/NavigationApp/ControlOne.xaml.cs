@@ -31,7 +31,7 @@ namespace NavigationApp
 
     public string Title
     {
-      get { return "Title for Control One"; }
+      get { return "Control One"; }
     }
 
     #endregion

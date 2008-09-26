@@ -69,6 +69,7 @@
     <Compile Include="NavigationBookmarkProcessedEventArgs.cs" />
     <Compile Include="NavigationEventArgs.cs" />
     <Compile Include="Navigator.cs" />
+    <Compile Include="NavigatorProvider.cs" />
     <Compile Include="Page.xaml.cs">
       <DependentUpon>Page.xaml</DependentUpon>
     </Compile>

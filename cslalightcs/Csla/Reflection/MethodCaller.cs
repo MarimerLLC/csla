@@ -10,7 +10,7 @@ namespace Csla.Reflection
 #if TESTING
   [System.Diagnostics.DebuggerNonUserCode]
 #endif
-  internal static class MethodCaller
+  public static class MethodCaller
   {
     const BindingFlags allLevelFlags =
       BindingFlags.FlattenHierarchy |
@@ -259,6 +259,7 @@ namespace Csla.Reflection
     /// </summary>
     public static MethodInfo GetMethod(Type objectType, string method, params object[] parameters)
     {
+
       MethodInfo result = null;
 
       object[] inParams = null;
@@ -277,33 +278,72 @@ namespace Csla.Reflection
       {
         // no match found - so look for any method
         // with the right number of parameters
-        result = FindMethod(objectType, method, inParams.Length);
-      }
-
-      // no strongly typed match found, get default
-      if (result == null)
-      {
         try
         {
-          result = objectType.GetMethod(method, allLevelFlags);
+          result = FindMethod(objectType, method, inParams.Length);
         }
         catch (AmbiguousMatchException)
         {
-          MethodInfo[] methods = objectType.GetMethods();
+          // we have multiple methods matching by name and parameter count
+          result = FindMethodUsingFuzzyMatching(objectType, method, inParams);
+        }
+      }
+
+      // no strongly typed match found, get default based on name only
+      if (result == null)
+      {
+        result = objectType.GetMethod(method, allLevelFlags);
+      }
+      return result;
+    }
+
+    private static MethodInfo FindMethodUsingFuzzyMatching(Type objectType, string method, object[] parameters)
+    {
+      MethodInfo result = null;
+      Type currentType = objectType;
+      do
+      {
+        MethodInfo[] methods = currentType.GetMethods(oneLevelFlags);
+        int parameterCount = parameters.Length;
+        // Match based on name and parameter types and parameter arrays
+        foreach (MethodInfo m in methods)
+        {
+          if (m.Name == method)
+          {
+            var infoParams = m.GetParameters();
+            var pCount = infoParams.Length;
+            if (pCount > 0 &&
+               ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
+               (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
+            {
+              // last param is a param array or only param is an array
+              if (parameterCount >= pCount - 1)
+              {
+                // got a match so use it
+                result = m;
+                break;
+              }
+            }
+          }
+        }
+        if (result == null)
+        {
+          // match based on parameter name and number of parameters
           foreach (MethodInfo m in methods)
           {
-            if (m.Name == method && m.GetParameters().Length == inParams.Length)
+            if (m.Name == method && m.GetParameters().Length == parameterCount)
             {
               result = m;
               break;
             }
           }
-          if (result == null)
-          {
-            throw;
-          }
         }
-      }
+        if (result != null)
+          break;
+        currentType = currentType.BaseType;
+      } while (currentType != null);
+
+
       return result;
     }
 

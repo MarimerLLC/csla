@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace NavigationApp
 {
-  public partial class ControlTwo : UserControl
+  public partial class ControlTwo : UserControl, ISupportsNavigation
   {
     public ControlTwo()
     {
@@ -20,5 +20,19 @@ namespace NavigationApp
     }
 
     public const string Bookmark = "ControlTwo";
+
+    #region ISupportsNavigation Members
+
+    public void SetParameters(string parameters)
+    {
+      this.ParametersBlock.Text = parameters;
+    }
+
+    public string Title
+    {
+      get { return "Title for Control One"; }
+    }
+
+    #endregion
   }
 }

@@ -24,6 +24,11 @@ namespace NavigationApp
     void Page_Loaded(object sender, RoutedEventArgs e)
     {
       Navigator.Current.ContentPlaceholder = this.PlaceHolder;
+      Navigator.Current.BeforeNavigation += (o1, e1) =>
+      {
+        if (e1.ControlTypeName == typeof(ControlTwo).AssemblyQualifiedName)
+          e1.Parameters = "Random Parameter for Control 2=" + (new Random()).Next(1,100).ToString();
+      };
     }
 
     private void ControlOne_Click(object sender, RoutedEventArgs e)

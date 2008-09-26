@@ -4,5 +4,6 @@
     Width="400" Height="300">
     <Canvas x:Name="LayoutRoot" Background="Green">
     <TextBlock Text="Two" Width="30" Height="30"></TextBlock>
-    </Canvas>
+    <TextBlock x:Name="ParametersBlock" Text=""  Canvas.Top="40" Width="100" Height="30"/>
+  </Canvas>
 </UserControl>

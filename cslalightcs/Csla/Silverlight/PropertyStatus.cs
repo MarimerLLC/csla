@@ -33,6 +33,7 @@ namespace Csla.Silverlight
       RelativeTargetPath = "Parent";
       BrokenRules = new ObservableCollection<BrokenRule>();
       DefaultStyleKey = typeof(PropertyStatus);
+      IsTabStop = false;
 
       Loaded += (o, e) => { GoToState(true); };
     }
@@ -254,17 +255,17 @@ namespace Csla.Silverlight
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
       Popup popup = (Popup)FindChild(this, "popup");
-      if (popup != null)
+      if (popup != null && sender is UIElement)
       {
-        Point p = e.GetPosition(Application.Current.RootVisual);
-        
+        Point p = e.GetPosition((UIElement)sender);
+        Size size = ((UIElement)sender).DesiredSize;
         // ensure events are attached only once.
         popup.Child.MouseLeave -= new MouseEventHandler(popup_MouseLeave);
         popup.Child.MouseLeave += new MouseEventHandler(popup_MouseLeave);
         ((ItemsControl)popup.Child).ItemsSource = BrokenRules;
 
-        popup.VerticalOffset = p.Y - 5;
-        popup.HorizontalOffset = p.X - 5;
+        popup.VerticalOffset = p.Y + size.Height;
+        popup.HorizontalOffset = p.X + size.Width;
         popup.IsOpen = true;
       }
     }

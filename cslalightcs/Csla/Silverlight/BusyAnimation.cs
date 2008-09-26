@@ -23,6 +23,7 @@ namespace Csla.Silverlight
   [TemplatePart(Name = "part6", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "part7", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "part8", Type = typeof(FrameworkElement))]
+  [TemplateVisualState(Name = "normal", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "state1", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "state2", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "state3", GroupName = "CommonStates")]
@@ -147,7 +148,9 @@ namespace Csla.Silverlight
     private void GoToState(bool useTransitions)
     {
       if ((bool)IsRunning)
-        VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
+      {
+        bool result = VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
+      }
       else
         VisualStateManager.GoToState(this, "normal", useTransitions);
     }

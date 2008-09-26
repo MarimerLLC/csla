@@ -395,7 +395,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Generic.xaml">
+    <Resource Include="themes\Generic.xaml">
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>

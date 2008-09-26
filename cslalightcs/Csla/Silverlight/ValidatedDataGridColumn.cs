@@ -28,23 +28,23 @@ namespace Csla.Silverlight
     
     #region Generate elements
 
-    protected override FrameworkElement GenerateEditingElement(object dataItem)
+    protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
     {
       StackPanel panel = new StackPanel();
       panel.Orientation = Orientation.Horizontal;
 
-      if (dataItem != null && DisplayMemberBinding != null)
+      if (dataItem != null && Binding != null)
       {
         _editControl = CreateEditingElement();
-        _editControl.SetBinding(EditingElementProperty, DisplayMemberBinding);
+        _editControl.SetBinding(EditingElementProperty, Binding);
         panel.Children.Add(_editControl);
 
         PropertyStatus status = new PropertyStatus();
         Binding binding = new Binding();
-        binding.Source = DisplayMemberBinding.Source;
+        binding.Source = Binding.Source;
         binding.Mode = BindingMode.OneWay;
         status.SetBinding(PropertyStatus.SourceProperty, binding);
-        status.Property = DisplayMemberBinding.Path.Path;
+        status.Property = Binding.Path.Path;
         status.Target = _editControl;
 
         panel.Children.Add(status);
@@ -53,23 +53,24 @@ namespace Csla.Silverlight
       return panel;
     }
 
-    protected override FrameworkElement GenerateElement(object dataItem)
+    protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
+   
     {
       StackPanel panel = new StackPanel();
       panel.Orientation = Orientation.Horizontal;
 
-      if (dataItem != null && DisplayMemberBinding != null)
+      if (dataItem != null && Binding != null)
       {
         FrameworkElement element = CreateElement();
-        element.SetBinding(ElementProperty, DisplayMemberBinding);
+        element.SetBinding(ElementProperty, Binding);
         panel.Children.Add(element);
 
         PropertyStatus status = new PropertyStatus();
         Binding binding = new Binding();
-        binding.Source = DisplayMemberBinding.Source;
+        binding.Source = Binding.Source;
         binding.Mode = BindingMode.OneWay;
         status.SetBinding(PropertyStatus.SourceProperty, binding);
-        status.Property = DisplayMemberBinding.Path.Path;
+        status.Property = Binding.Path.Path;
         status.Target = element;
 
         panel.Children.Add(status);

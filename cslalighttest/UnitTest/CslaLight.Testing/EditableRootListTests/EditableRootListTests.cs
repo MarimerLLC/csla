@@ -2,6 +2,8 @@
 using Csla.DataPortalClient;
 using Csla.Testing.Business.ReadOnlyTest;
 using System;
+using System.ComponentModel;
+using System.Windows.Controls;
 using Csla.Testing.Business.Security;
 using UnitDriven;
 using Csla.Testing.Business.EditableRootListTests;
@@ -175,7 +177,7 @@ namespace cslalighttest.EditableRootListTests
 
         // simulate grid edit
         item = list[2];
-        System.Windows.Controls.IEditableObject obj = (System.Windows.Controls.IEditableObject)item;
+        IEditableObject obj = (IEditableObject)item;
         obj.BeginEdit();
         item.Name = "test";
         obj.EndEdit();
@@ -211,7 +213,7 @@ namespace cslalighttest.EditableRootListTests
 
         // simulate grid edit
         SingleItem item = list[0];
-        System.Windows.Controls.IEditableObject obj = (System.Windows.Controls.IEditableObject)item;
+        IEditableObject obj = (IEditableObject)item;
         obj.BeginEdit();
         item.Name = "test";
         obj.EndEdit();
@@ -248,7 +250,7 @@ namespace cslalighttest.EditableRootListTests
 
         // simulate grid edit
         SingleItem item = list[0];
-        System.Windows.Controls.IEditableObject obj = (System.Windows.Controls.IEditableObject)item;
+        IEditableObject obj = (IEditableObject)item;
         obj.BeginEdit();
         item.Name = "test";
         obj.EndEdit();

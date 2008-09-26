@@ -58,13 +58,17 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BoomarkInformation.cs" />
     <Compile Include="ControlOne.xaml.cs">
       <DependentUpon>ControlOne.xaml</DependentUpon>
     </Compile>
     <Compile Include="ControlTwo.xaml.cs">
       <DependentUpon>ControlTwo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NavigationHandler.cs" />
+    <Compile Include="ISupportsNavigation.cs" />
+    <Compile Include="NavigationBookmarkProcessedEventArgs.cs" />
+    <Compile Include="NavigationEventArgs.cs" />
+    <Compile Include="Navigator.cs" />
     <Compile Include="Page.xaml.cs">
       <DependentUpon>Page.xaml</DependentUpon>
     </Compile>

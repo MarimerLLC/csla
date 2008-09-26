@@ -16,11 +16,6 @@ namespace NavigationApp
   public partial class App : Application
   {
 
-    private NavigationHandler _navHandler = new NavigationHandler();
-    public NavigationHandler NavHandler
-    {
-      get { return _navHandler; }
-    }
     public App()
     {
       this.Startup += this.Application_Startup;
@@ -33,22 +28,12 @@ namespace NavigationApp
     private void Application_Startup(object sender, StartupEventArgs e)
     {
       this.RootVisual = new Page();
-      InitScripts();
+      Navigator.Current.RegisterNavigator("Xaml1");
     }
 
     private void Application_Exit(object sender, EventArgs e)
     {
 
-    }
-
-    private void InitScripts()
-    {
-      HtmlPage.RegisterScriptableObject("NavHandler", _navHandler);
-      string initScript = @" 
-          var __navigateHandler = new Function('obj','args','document.getElementById(\'Xaml1\').Content.NavHandler.HandleNavigate(args.get_state())');
-          Sys.Application.add_navigate(__navigateHandler);
-          __navigateHandler(this, new Sys.HistoryEventArgs(Sys.Application._state));";
-      HtmlPage.Window.Eval(initScript);
     }
 
     private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)

@@ -30,7 +30,7 @@ namespace NavigationApp
 
     public event EventHandler AfterNavigation;
 
-    public event EventHandler<NavigationBookmarkProcessedEventArgs>  AfterBookmarkProcessing;
+    public event EventHandler<NavigationBookmarkProcessedEventArgs> AfterBookmarkProcessing;
 
     protected void OnBeforeNavigation(NavigationEventArgs args)
     {
@@ -62,7 +62,7 @@ namespace NavigationApp
     public void HandleNavigate(ScriptObject state)
     {
       if (_processBrowserEvents)
-        Navigate(); 
+        Navigate();
     }
 
     #endregion
@@ -127,11 +127,11 @@ namespace NavigationApp
       if (navigatable != null)
       {
         navigatable.SetParameters(parameters);
-        title = navigatable.Title;
       }
       ContentPlaceholder.Content = newControl;
       if (addBookmark)
       {
+        title = navigatable.Title;
         _bookmarks.Add(bookMarkId, new BoomarkInformation(controlTypeName, parameters, title));
         AddBookmark(bookMarkId, title);
       }

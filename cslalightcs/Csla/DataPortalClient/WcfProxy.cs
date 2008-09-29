@@ -123,6 +123,7 @@ namespace Csla.DataPortalClient
       var request = GetBaseCriteriaRequest();
       request.TypeName = typeof(T).AssemblyQualifiedName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
+      request = ConvertRequest(request);
 
       var proxy = GetProxy();
       proxy.CreateCompleted += new EventHandler<Csla.WcfPortal.CreateCompletedEventArgs>(proxy_CreateCompleted);
@@ -134,7 +135,7 @@ namespace Csla.DataPortalClient
 
     private void proxy_CreateCompleted(object sender, Csla.WcfPortal.CreateCompletedEventArgs e)
     {
-      var response = e.Result;
+      var response = ConvertResponse(e.Result);
       try
       {
         if (e.Error == null && response.ErrorData == null)
@@ -178,7 +179,7 @@ namespace Csla.DataPortalClient
       var request = GetBaseCriteriaRequest();
       request.TypeName = typeof(T).AssemblyQualifiedName;
       request.CriteriaData = null;
-
+      request = ConvertRequest(request);
       var proxy = GetProxy();
       proxy.FetchCompleted += new EventHandler<Csla.WcfPortal.FetchCompletedEventArgs>(proxy_FetchCompleted);
       proxy.FetchAsync(request);
@@ -193,7 +194,7 @@ namespace Csla.DataPortalClient
       var request = GetBaseCriteriaRequest();
       request.TypeName = typeof(T).AssemblyQualifiedName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
-
+      request = ConvertRequest(request);
       var proxy = GetProxy();
       proxy.FetchCompleted += new EventHandler<Csla.WcfPortal.FetchCompletedEventArgs>(proxy_FetchCompleted);
       if (userState != null)
@@ -206,12 +207,13 @@ namespace Csla.DataPortalClient
     {
       try
       {
-        if (e.Error == null && e.Result.ErrorData == null)
+        var response = ConvertResponse(e.Result);
+        if (e.Error == null && response.ErrorData == null)
         {
-          var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
+          var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
-          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);
+          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
           OnFetchCompleted(new DataPortalResult<T>(obj, null, e.UserState));
         }
         else if (e.Error != null)
@@ -221,7 +223,7 @@ namespace Csla.DataPortalClient
         }
         else // if (e.Result.ErrorData != null)
         {
-          var ex = new DataPortalException(e.Result.ErrorData);
+          var ex = new DataPortalException(response.ErrorData);
           OnFetchCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
       }
@@ -252,7 +254,7 @@ namespace Csla.DataPortalClient
     {
       var request = GetBaseUpdateCriteriaRequest();
       request.ObjectData = MobileFormatter.Serialize(criteria);
-
+      request = ConvertRequest(request);
       var proxy = GetProxy();
       proxy.UpdateCompleted += new EventHandler<Csla.WcfPortal.UpdateCompletedEventArgs>(proxy_UpdateCompleted);
       if (userState !=null)
@@ -265,12 +267,13 @@ namespace Csla.DataPortalClient
     {
       try
       {
-        if (e.Error == null && e.Result.ErrorData == null)
+        var response = ConvertResponse(e.Result);
+        if (e.Error == null && response.ErrorData == null)
         {
-          var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
+          var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
-          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);
+          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
           OnUpdateCompleted(new DataPortalResult<T>(obj, null, e.UserState));
         }
         else if (e.Error != null)
@@ -278,9 +281,9 @@ namespace Csla.DataPortalClient
           var ex = new DataPortalException(e.Error.ToErrorInfo());
           OnUpdateCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
-        else if (e.Result.ErrorData != null)
+        else if (response.ErrorData != null)
         {
-          var ex = new DataPortalException(e.Result.ErrorData);
+          var ex = new DataPortalException(response.ErrorData);
           OnUpdateCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
         else
@@ -314,7 +317,7 @@ namespace Csla.DataPortalClient
       var request = GetBaseCriteriaRequest();
       request.TypeName = typeof(T).AssemblyQualifiedName;
       request.CriteriaData = MobileFormatter.Serialize(criteria);
-
+      request = ConvertRequest(request);
       var proxy = GetProxy();
       proxy.DeleteCompleted += new EventHandler<Csla.WcfPortal.DeleteCompletedEventArgs>(proxy_DeleteCompleted);
       if (userState != null)
@@ -325,7 +328,7 @@ namespace Csla.DataPortalClient
 
     private void proxy_DeleteCompleted(object sender, Csla.WcfPortal.DeleteCompletedEventArgs e)
     {
-      var response = e.Result;
+      var response = ConvertResponse(e.Result);
       try
       {
         if (e.Error == null && response.ErrorData == null)
@@ -370,7 +373,7 @@ namespace Csla.DataPortalClient
     {
       var request = GetBaseUpdateCriteriaRequest();
       request.ObjectData = MobileFormatter.Serialize(command);
-
+      request = ConvertRequest(request);
       var proxy = GetProxy();
       proxy.UpdateCompleted += new EventHandler<Csla.WcfPortal.UpdateCompletedEventArgs>(proxy_ExecuteCompleted);
       if (userState != null)
@@ -383,12 +386,13 @@ namespace Csla.DataPortalClient
     {
       try
       {
-        if (e.Error == null && e.Result.ErrorData == null)
+        var response = ConvertResponse(e.Result);
+        if (e.Error == null && response.ErrorData == null)
         {
-          var buffer = new System.IO.MemoryStream(e.Result.ObjectData);
+          var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();
           T obj = (T)formatter.Deserialize(buffer);
-          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);
+          _globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
           OnExecuteCompleted(new DataPortalResult<T>(obj, null, e.UserState));
         }
         else if (e.Error != null)
@@ -396,9 +400,9 @@ namespace Csla.DataPortalClient
           var ex = new DataPortalException(e.Error.ToErrorInfo());
           OnExecuteCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
-        else if (e.Result.ErrorData != null)
+        else if (response.ErrorData != null)
         {
-          var ex = new DataPortalException(e.Result.ErrorData);
+          var ex = new DataPortalException(response.ErrorData);
           OnExecuteCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
         else
@@ -410,6 +414,25 @@ namespace Csla.DataPortalClient
       {
         OnExecuteCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
       }
+    }
+
+    #endregion
+
+    #region Extention Method for Requests
+
+    protected virtual WcfPortal.UpdateRequest ConvertRequest(WcfPortal.UpdateRequest request)
+    {
+      return request;
+    }
+
+    protected virtual WcfPortal.CriteriaRequest ConvertRequest(WcfPortal.CriteriaRequest request)
+    {
+      return request;
+    }
+
+    protected virtual WcfPortal.WcfResponse ConvertResponse(WcfPortal.WcfResponse response)
+    {
+      return response;
     }
 
     #endregion

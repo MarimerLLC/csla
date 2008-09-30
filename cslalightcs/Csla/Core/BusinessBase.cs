@@ -1816,6 +1816,8 @@ namespace Csla.Core
       FieldManager.LoadFieldData(propertyInfo, newValue);
     }
 
+    [NotUndoable]
+    [NonSerialized]
     private AsyncLoadManager _loadManager;
     internal AsyncLoadManager LoadManager
     {

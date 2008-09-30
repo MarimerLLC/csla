@@ -19,7 +19,7 @@ namespace Csla.Silverlight
 {
   [TemplatePart(Name = "image", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "popup", Type = typeof(Popup))]
-  [TemplatePart(Name = "busy", Type=typeof(BusyAnimation))]
+  [TemplatePart(Name = "busy", Type = typeof(BusyAnimation))]
   [TemplateVisualState(Name = "Valid", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Error", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Warning", GroupName = "CommonStates")]
@@ -29,6 +29,7 @@ namespace Csla.Silverlight
     #region Constructors
 
     public PropertyStatus()
+      : base()
     {
       RelativeTargetPath = "Parent";
       BrokenRules = new ObservableCollection<BrokenRule>();
@@ -36,6 +37,12 @@ namespace Csla.Silverlight
       IsTabStop = false;
 
       Loaded += (o, e) => { GoToState(true); };
+    }
+
+    public override void OnApplyTemplate()
+    {
+      base.OnApplyTemplate();
+      UpdateState();
     }
 
     #endregion
@@ -75,7 +82,7 @@ namespace Csla.Silverlight
     #endregion
 
     #region Member fields and properties
-    
+
     private DependencyObject _target;
     private bool _isValid = true;
     private RuleSeverity _worst;
@@ -85,7 +92,7 @@ namespace Csla.Silverlight
     public object Source
     {
       get { return GetValue(SourceProperty); }
-      set 
+      set
       {
         object old = Source;
         SetValue(SourceProperty, value);
@@ -94,15 +101,15 @@ namespace Csla.Silverlight
     }
 
     private void SetSource(object old, object @new)
-    { 
-        DetachSource(old);
-        AttachSource(@new);
+    {
+      DetachSource(old);
+      AttachSource(@new);
 
-        BusinessBase bb = @new as BusinessBase;
-        if (bb != null && !string.IsNullOrEmpty(Property))
-          _isBusy = bb.IsPropertyBusy(Property);
+      BusinessBase bb = @new as BusinessBase;
+      if (bb != null && !string.IsNullOrEmpty(Property))
+        _isBusy = bb.IsPropertyBusy(Property);
 
-        UpdateState();
+      UpdateState();
     }
 
     public string Property
@@ -239,7 +246,7 @@ namespace Csla.Silverlight
     #endregion
 
     #region Image
-    
+
     private void EnablePopup(FrameworkElement image)
     {
       if (image != null)

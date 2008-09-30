@@ -242,14 +242,20 @@ namespace Csla.Silverlight
     
     private void EnablePopup(FrameworkElement image)
     {
-      if(image!=null)
+      if (image != null)
+      {
         image.MouseEnter += new MouseEventHandler(image_MouseEnter);
+        image.MouseLeave += new MouseEventHandler(image_MouseLeave);
+      }
     }
 
     private void DisablePopup(FrameworkElement image)
     {
-      if(image!=null)
+      if (image != null)
+      {
         image.MouseEnter -= new MouseEventHandler(image_MouseEnter);
+        image.MouseLeave -= new MouseEventHandler(image_MouseLeave);
+      }
     }
 
     private void image_MouseEnter(object sender, MouseEventArgs e)
@@ -268,6 +274,12 @@ namespace Csla.Silverlight
         popup.HorizontalOffset = p.X + size.Width;
         popup.IsOpen = true;
       }
+    }
+
+    private void image_MouseLeave(object sender, MouseEventArgs e)
+    {
+      Popup popup = (Popup)FindChild(this, "popup");
+      popup.IsOpen = false;
     }
 
     void popup_MouseLeave(object sender, MouseEventArgs e)

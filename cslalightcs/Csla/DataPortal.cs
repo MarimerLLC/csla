@@ -45,7 +45,13 @@ namespace Csla
       get
       {
         if (string.IsNullOrEmpty(_proxyTypeName))
+        {
+#if DEBUG
           _proxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+#else
+          _proxyTypeName = typeof(WcfProxy<>).AssemblyQualifiedName;
+#endif
+        }
         return _proxyTypeName;
       }
       set { _proxyTypeName = value; }

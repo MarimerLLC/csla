@@ -7,6 +7,7 @@ using Csla.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using Csla.Core;
+using System.Windows;
 
 namespace Csla.Silverlight
 {
@@ -241,8 +242,15 @@ namespace Csla.Silverlight
           var undoable = _dataObject as Csla.Core.ISupportUndo;
           if (undoable != null)
           {
+            IsBusy = true;
+            Data = null;
             undoable.CancelEdit();
-            undoable.BeginEdit();
+            Data = undoable;
+            var trackable = _dataObject as ITrackStatus;
+            if (trackable != null)
+              IsBusy = trackable.IsBusy;
+            else
+              IsBusy = false;
           }
         }
         catch (Exception ex)
@@ -299,7 +307,15 @@ namespace Csla.Silverlight
       {
         var obj = _dataObject as Csla.Core.BusinessBase;
         if (obj != null && !obj.IsChild)
+        {
+          IsBusy = true;
           obj.Delete();
+          var trackable = _dataObject as ITrackStatus;
+          if (trackable != null)
+            IsBusy = trackable.IsBusy;
+          else
+            IsBusy = false;
+        }
       }
       catch (Exception ex)
       {
@@ -353,7 +369,15 @@ namespace Csla.Silverlight
       {
         var obj = _dataObject as Csla.Core.IBindingList;
         if (obj != null)
+        {
+          IsBusy = true;
           obj.AddNew();
+          var trackable = _dataObject as ITrackStatus;
+          if (trackable != null)
+            IsBusy = trackable.IsBusy;
+          else
+            IsBusy = false;
+        }
         RefreshCanOperaionsValues();
       }
       catch (Exception ex)
@@ -376,7 +400,15 @@ namespace Csla.Silverlight
         _error = null;
         var obj = _dataObject as System.Collections.IList;
         if (obj != null)
+        {
+          IsBusy = true;
           obj.Remove(item);
+          var trackable = _dataObject as ITrackStatus;
+          if (trackable != null)
+            IsBusy = trackable.IsBusy;
+          else
+            IsBusy = false;
+        }
         RefreshCanOperaionsValues();
       }
       catch (Exception ex)

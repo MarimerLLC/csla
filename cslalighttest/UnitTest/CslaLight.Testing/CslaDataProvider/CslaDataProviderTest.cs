@@ -349,6 +349,40 @@ namespace cslalighttest.CslaDataProvider
       context.Complete();
     }
 
+    [TestMethod]
+    public void TestCslaDataProviderCancelShouldBeBusy()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      Customer.GetCustomer((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var cust = e1.Object;
+        bool wasBusy = false;
+        bool wasNotBusy = false;
+        context.Completed += (o5, e5) =>
+        {
+          context.Assert.IsTrue(wasBusy);
+          context.Assert.IsTrue(wasNotBusy);
+        };
+        provider.Data = cust;
+        cust.Name = "blah";
+        provider.PropertyChanged += (o3, e3) =>
+        {
+          if (e3.PropertyName == "IsBusy" && provider.IsBusy)
+            wasBusy = true;
+          if (e3.PropertyName == "IsNotBusy" && provider.IsNotBusy && wasBusy)
+            wasNotBusy = true;
+        };
+        provider.Data = cust;
+        provider.Cancel();
+        context.Assert.Success();
+
+      });
+      context.Complete();
+    }
+
   }
 
 }

@@ -296,6 +296,7 @@
     <Compile Include="Core\BusinessBase.cs" />
     <Compile Include="DataPortalClient\DataPortalEventArgs.cs" />
     <Compile Include="DataPortalClient\DataPortalOperations.cs" />
+    <Compile Include="DataPortalClient\DesignTimeProxy.cs" />
     <Compile Include="DataPortalClient\FactoryProxy.cs" />
     <Compile Include="DataPortalClient\IDataPortalProxy.cs" />
     <Compile Include="DataPortalClient\IDataPortalTarget.cs" />

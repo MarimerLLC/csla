@@ -3,6 +3,8 @@ using System.ServiceModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.DataPortalClient;
+using System.Windows;
+using System.ComponentModel;
 
 namespace Csla
 {
@@ -75,6 +77,19 @@ namespace Csla
       set
       {
         _factory = value;
+      }
+    }
+
+    public static bool IsInDesignMode
+    {
+      get
+      {
+        if (Application.Current != null && Application.Current.RootVisual != null)
+        {
+          return DesignerProperties.GetIsInDesignMode(Application.Current.RootVisual);
+        }
+        else
+          return false;
       }
     }
 

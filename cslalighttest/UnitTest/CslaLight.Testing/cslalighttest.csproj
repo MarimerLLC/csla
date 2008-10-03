@@ -97,6 +97,18 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\BusyStatus\BusyStatusTests.cs">
       <Link>BusyStatus\BusyStatusTests.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\BypassPropertyChecks\BypassBusinessBase.cs">
+      <Link>BypassPropertyChecks\BypassBusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\BypassPropertyChecks\BypassBusinessBaseUsingFactory.cs">
+      <Link>BypassPropertyChecks\BypassBusinessBaseUsingFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\BypassPropertyChecks\BypassPropertyChecksTests.cs">
+      <Link>BypassPropertyChecks\BypassPropertyChecksTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\BypassPropertyChecks\TestObjectFactory.cs">
+      <Link>BypassPropertyChecks\TestObjectFactory.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\AsynchDataPortalTest.cs">
       <Link>DataPortal\AsynchDataPortalTest.cs</Link>
     </Compile>

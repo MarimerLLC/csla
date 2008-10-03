@@ -1001,7 +1001,7 @@ namespace Csla.Core
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         return field;
       else
         return defaultValue;
@@ -1187,7 +1187,7 @@ namespace Csla.Core
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, Security.NoAccessBehavior noAccess)
     {
       P result = default(P);
-      if (CanReadProperty(propertyInfo.Name, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanReadProperty(propertyInfo.Name, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         result = ReadProperty<P>(propertyInfo);
       else
         result = propertyInfo.DefaultValue;
@@ -1207,7 +1207,7 @@ namespace Csla.Core
     protected object GetProperty(IPropertyInfo propertyInfo)
     {
       object result = null;
-      if (CanReadProperty(propertyInfo.Name, false))
+      if (_bypassPropertyChecks || CanReadProperty(propertyInfo.Name, false))
       {
         var info = FieldManager.GetFieldData(propertyInfo);
         if (info != null)
@@ -1403,18 +1403,18 @@ namespace Csla.Core
       {
         if (field == null)
         {
-          if (newValue != null && CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+          if (newValue != null && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
           {
             field = newValue;
-            PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
         }
-        else if (!(field.Equals(newValue)) && CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+        else if (!(field.Equals(newValue)) && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
         {
           if (newValue is string && newValue == null)
             newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
           field = newValue;
-          PropertyHasChanged(propertyName);
+          if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
         }
       }
       catch (SecurityException)
@@ -1457,18 +1457,18 @@ namespace Csla.Core
       {
         if (field == null)
         {
-          if (newValue != null && CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+          if (newValue != null && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
           {
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-            PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
         }
-        else if (!(field.Equals(newValue)) && CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+        else if (!(field.Equals(newValue)) && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
         {
           if (newValue is string && newValue == null)
             newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
           field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-          PropertyHasChanged(propertyName);
+          if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
         }
       }
       catch (SecurityException)
@@ -1549,8 +1549,8 @@ namespace Csla.Core
             oldValue = (P)fieldData.Value;
         }
         if ((oldValue != null && !oldValue.Equals(newValue)) &&
-          CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
-          LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), true);
+          (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException)))
+          LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), !_bypassPropertyChecks);
       }
       catch (SecurityException)
       {
@@ -1596,10 +1596,10 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        if (((oldValue == null && newValue != null) || 
-            (oldValue != null && !oldValue.Equals(newValue))) && 
-            CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
-          LoadPropertyValue<P>(propertyInfo, oldValue, newValue, true);
+        if (((oldValue == null && newValue != null) ||
+            (oldValue != null && !oldValue.Equals(newValue))) &&
+            (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException)))
+          LoadPropertyValue<P>(propertyInfo, oldValue, newValue, !_bypassPropertyChecks);
       }
       catch (SecurityException)
       {
@@ -1626,7 +1626,22 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      FieldManager.SetFieldData(propertyInfo, newValue);
+      try
+      {
+        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, true))
+        {
+          FieldManager.SetFieldData(propertyInfo, newValue);
+          if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo.Name);
+        }
+      }
+      catch (SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+      }
     }
 
     #endregion
@@ -1928,7 +1943,7 @@ namespace Csla.Core
 
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if(!(sender is INotifyCollectionChanged && (e.PropertyName == "Count" || e.PropertyName == "Item[]")))
+      if (!(sender is INotifyCollectionChanged && (e.PropertyName == "Count" || e.PropertyName == "Item[]")))
         OnChildChanged(sender, e, null);
     }
 
@@ -1936,12 +1951,12 @@ namespace Csla.Core
     {
       OnChildChanged(sender, null, e);
     }
-    
+
     void Child_Changed(object sender, ChildChangedEventArgs e)
     {
       OnChildChangedInternal(this, e);
     }
-    
+
     #endregion
 
     #region FieldManager
@@ -2011,11 +2026,11 @@ namespace Csla.Core
         pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
 
       INotifyCollectionChanged cc = child as INotifyCollectionChanged;
-      if(cc!=null)
+      if (cc != null)
         cc.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
 
       INotifyChildChanged childChanged = child as INotifyChildChanged;
-      if(childChanged!=null)
+      if (childChanged != null)
         childChanged.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
 
       OnAddEventHooks(child);
@@ -2792,6 +2807,58 @@ namespace Csla.Core
       {
         ApplyEdit();
       }
+    }
+
+    #endregion
+
+    #region Property Checks ByPass
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _bypassPropertyChecks = false;
+
+    /// <summary>
+    /// By wrapping this property inside Using block
+    /// you can set property values on current business object
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    protected internal BypassPropertyChecksObject BypassPropertyChecks
+    {
+      get { return new BypassPropertyChecksObject(this); }
+    }
+
+    /// <summary>
+    /// Class that allows setting of property values on 
+    /// current business object
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    protected internal class BypassPropertyChecksObject : IDisposable
+    {
+      private BusinessBase _businessObject;
+      private BypassPropertyChecksObject() { }
+      internal BypassPropertyChecksObject(BusinessBase businessObject)
+      {
+        _businessObject = businessObject;
+        _businessObject._bypassPropertyChecks = true;
+      }
+      #region IDisposable Members
+
+      public void Dispose()
+      {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+      }
+
+      protected void Dispose(bool dispose)
+      {
+        _businessObject._bypassPropertyChecks = false;
+        _businessObject = null;
+      }
+
+
+      #endregion
     }
 
     #endregion

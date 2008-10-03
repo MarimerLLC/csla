@@ -56,5 +56,25 @@ namespace Csla.Server
       else
         MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild", null);
     }
+
+    /// <summary>
+    /// By wrapping this property inside Using block
+    /// you can set property values on 
+    /// <paramref name="businessObject">business object</paramref>
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    /// <param name="businessObject">
+    /// Object on with you would like to set property values
+    /// </param>
+    /// <returns>
+    /// An instance of IDisposable object that allows
+    /// bypassing of normal authorization checks during
+    /// property setting.
+    /// </returns>
+    protected IDisposable BypassPropertyChecks(Csla.Core.BusinessBase businessObject)
+    {
+      return businessObject.BypassPropertyChecks;
+    }
   }
 }

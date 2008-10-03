@@ -367,6 +367,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please set NavigatorProvider prior to TriggerEvent property..
+        /// </summary>
+        internal static string NavigatorProviderSetPriorToTriggerEvent {
+            get {
+                return ResourceManager.GetString("NavigatorProviderSetPriorToTriggerEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ApplyEdit is not valid on a child object.
         /// </summary>
         internal static string NoApplyEditChildException {

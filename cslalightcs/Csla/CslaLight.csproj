@@ -333,6 +333,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Server\ObjectFactory.cs" />
+    <Compile Include="Silverlight\BoomarkInformation.cs" />
+    <Compile Include="Silverlight\ISupportNavigation.cs" />
+    <Compile Include="Silverlight\NavigationBookmarkProcessedEventArgs.cs" />
+    <Compile Include="Silverlight\NavigationEventArgs.cs" />
+    <Compile Include="Silverlight\Navigator.cs" />
+    <Compile Include="Silverlight\NavigatorProvider.cs" />
     <Compile Include="Silverlight\ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="Silverlight\CslaDataProvider.cs" />
     <Compile Include="Silverlight\InvokeMethod.cs" />

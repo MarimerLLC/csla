@@ -342,4 +342,7 @@
   <data name="PropertyRequiresIndexArguments" xml:space="preserve">
     <value>This property requires {0} index arguments, {1} were provided</value>
   </data>
+  <data name="NavigatorProviderSetPriorToTriggerEvent" xml:space="preserve">
+    <value>Please set NavigatorProvider prior to TriggerEvent property.</value>
+  </data>
 </root>

@@ -74,14 +74,18 @@ namespace Csla
       this.RaiseListChangedEvents = false;
 
       _activelySaving = true;
-
-      T item = this[index];
-      int editLevel = item.EditLevel;
-      // commit all changes
-      for (int tmp = 1; tmp <= editLevel; tmp++)
-        item.AcceptChanges(editLevel - tmp, false);
+      T item = default(T);
+      int editLevel = 0;
+     
       try
       {
+
+        item = this[index];
+        editLevel = item.EditLevel;
+        // commit all changes
+        for (int tmp = 1; tmp <= editLevel; tmp++)
+          item.AcceptChanges(editLevel - tmp, false);
+
         T savable = item;
         if (!Csla.ApplicationContext.AutoCloneOnUpdate)
         {
@@ -105,8 +109,11 @@ namespace Csla
       finally
       {
         // restore edit level to previous level
-        for (int tmp = 1; tmp <= editLevel; tmp++)
-          item.CopyState(tmp, false);
+        if (item != null)
+        {
+          for (int tmp = 1; tmp <= editLevel; tmp++)
+            item.CopyState(tmp, false);
+        }
         _activelySaving = false;
         this.RaiseListChangedEvents = raisingEvents;
       }

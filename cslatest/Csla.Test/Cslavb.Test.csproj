@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{002E4164-CFAF-4923-BEBB-B3A11281AB48}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -172,6 +172,8 @@
     <Compile Include="Serialization\TestEventSink.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
+    <Compile Include="Utilities\CorerseValueTests.cs" />
+    <Compile Include="Utilities\UtilitiesTestHelper.cs" />
     <Compile Include="ValidationRules\BrokenRulesMergeRoot.cs" />
     <Compile Include="ValidationRules\HasBadSharedRule.cs" />
     <Compile Include="ValidationRules\HasPerTypeClasses.cs" />

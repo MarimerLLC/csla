@@ -72,13 +72,16 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
     Me.RaiseListChangedEvents = False
 
     _activelySaving = True
-    Dim item As T = Me.Item(index)
-    Dim editLevel As Integer = item.EditLevel
-    ' commit all changes
-    For tmp As Integer = 1 To editLevel
-      item.AcceptChanges(editLevel - tmp, False)
-    Next
+    Dim item As T = Nothing
+    Dim editLevel As Integer = 0
     Try
+      item = Me.Item(index)
+      editLevel = item.EditLevel
+      ' commit all changes
+      For tmp As Integer = 1 To editLevel
+        item.AcceptChanges(editLevel - tmp, False)
+      Next
+
       Dim savable As T = item
       If Not Csla.ApplicationContext.AutoCloneOnUpdate Then
         ' clone the object if possible
@@ -100,10 +103,11 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
     Finally
       ' restore edit level to previous level
-      For tmp As Integer = 1 To editLevel
-        item.CopyState(tmp, False)
-      Next
-
+      If item IsNot Nothing Then
+        For tmp As Integer = 1 To editLevel
+          item.CopyState(tmp, False)
+        Next
+      End If
       _activelySaving = False
       Me.RaiseListChangedEvents = raiseEvents
     End Try

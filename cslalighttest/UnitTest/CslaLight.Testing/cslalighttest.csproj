@@ -235,6 +235,12 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Threading\BusyLockTests.cs">
       <Link>Threading\BusyLockTests.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Utilities\CorerseValueTests.cs">
+      <Link>Utilities\CorerseValueTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Utilities\UtilitiesTestHelper.cs">
+      <Link>Utilities\UtilitiesTestHelper.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\AsyncRuleTests.cs">
       <Link>Validation\AsyncRuleTests.cs</Link>
     </Compile>

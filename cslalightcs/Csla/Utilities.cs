@@ -180,7 +180,13 @@ namespace Csla
           valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
         value = 0;
 
-      return Convert.ChangeType(value, desiredType, null);
+
+      if (desiredType.Equals(typeof(string)) && value != null)
+      {
+        return value.ToString();
+      }
+      else
+        return Convert.ChangeType(value, desiredType, null);
     }
 
 

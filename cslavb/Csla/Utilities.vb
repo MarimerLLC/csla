@@ -129,8 +129,11 @@ Public Module Utilities
       End If
 
       Try
-        Return Convert.ChangeType(value, desiredType)
-
+        If desiredType.Equals(GetType(String)) AndAlso value IsNot Nothing Then
+          Return value.ToString()
+        Else
+          Return Convert.ChangeType(value, desiredType)
+        End If
       Catch
         Dim cnv As TypeConverter = TypeDescriptor.GetConverter(desiredType)
         If cnv IsNot Nothing AndAlso cnv.CanConvertFrom(valueType) Then

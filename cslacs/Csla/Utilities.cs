@@ -170,13 +170,18 @@ namespace Csla
         return tmp;
       }
 
-      if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) && 
+      if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) &&
           valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
         value = 0;
 
       try
       {
-        return Convert.ChangeType(value, desiredType);
+        if (desiredType.Equals(typeof(string)) && value != null)
+        {
+          return value.ToString();
+        }
+        else
+          return Convert.ChangeType(value, desiredType);
       }
       catch
       {

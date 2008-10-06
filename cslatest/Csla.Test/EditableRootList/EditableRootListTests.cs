@@ -107,5 +107,22 @@ namespace Csla.Test.EditableRootList
       Assert.AreEqual("Update", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been updated");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
     }
+
+    [TestMethod]
+    public void ErrorRecoveryTest()
+    {
+      ERlist list = new ERlist();
+      bool errorOccurred = false;
+      try
+      {
+        list.SaveItem(10);
+      }
+      catch (Exception ex)
+      {
+        errorOccurred = true;
+      }
+      Assert.AreEqual(true, errorOccurred, "An error should have been thrown.");
+      Assert.AreEqual(true, list.RaiseListChangedEvents, "RaiseListChangedEvents should have been reset");
+    }
   }
 }

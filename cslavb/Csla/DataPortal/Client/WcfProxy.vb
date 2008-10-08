@@ -82,10 +82,16 @@ Namespace DataPortalClient
 
       Dim cf As ChannelFactory(Of IWcfPortal) = GetChannelFactory()
       Dim svr As IWcfPortal = GetProxy(cf)
-      Dim response As WcfResponse = svr.Create(New CreateRequest(objectType, criteria, context))
-      If cf IsNot Nothing Then
-        cf.Close()
-      End If
+      Dim response As WcfResponse = Nothing
+      Try
+        response = svr.Create(New CreateRequest(objectType, criteria, context))
+        If cf IsNot Nothing Then
+          cf.Close()
+        End If
+      Catch ex As Exception
+        cf.Abort()
+        Throw
+      End Try
 
       Dim result As Object = response.Result
       If TypeOf result Is Exception Then
@@ -108,10 +114,16 @@ Namespace DataPortalClient
 
       Dim cf As ChannelFactory(Of IWcfPortal) = GetChannelFactory()
       Dim svr As IWcfPortal = GetProxy(cf)
-      Dim response As WcfResponse = svr.Fetch(New FetchRequest(objectType, criteria, context))
-      If cf IsNot Nothing Then
-        cf.Close()
-      End If
+      Dim response As WcfResponse = Nothing
+      Try
+        response = svr.Fetch(New FetchRequest(objectType, criteria, context))
+        If cf IsNot Nothing Then
+          cf.Close()
+        End If
+      Catch ex As Exception
+        cf.Abort()
+        Throw
+      End Try
 
       Dim result As Object = response.Result
       If TypeOf result Is Exception Then
@@ -133,10 +145,17 @@ Namespace DataPortalClient
 
       Dim cf As ChannelFactory(Of IWcfPortal) = GetChannelFactory()
       Dim svr As IWcfPortal = GetProxy(cf)
-      Dim response As WcfResponse = svr.Update(New UpdateRequest(obj, context))
-      If cf IsNot Nothing Then
-        cf.Close()
-      End If
+      Dim response As WcfResponse = Nothing
+      Try
+        response = svr.Update(New UpdateRequest(obj, context))
+        If cf IsNot Nothing Then
+          cf.Close()
+        End If
+      Catch ex As Exception
+        cf.Abort()
+        Throw
+      End Try
+
 
       Dim result As Object = response.Result
       If TypeOf result Is Exception Then
@@ -159,10 +178,17 @@ Namespace DataPortalClient
 
       Dim cf As ChannelFactory(Of IWcfPortal) = GetChannelFactory()
       Dim svr As IWcfPortal = GetProxy(cf)
-      Dim response As WcfResponse = svr.Delete(New DeleteRequest(objectType, criteria, context))
-      If cf IsNot Nothing Then
-        cf.Close()
-      End If
+      Dim response As WcfResponse = Nothing
+      Try
+        response = svr.Delete(New DeleteRequest(objectType, criteria, context))
+        If cf IsNot Nothing Then
+          cf.Close()
+        End If
+      Catch ex As Exception
+        cf.Abort()
+        Throw
+      End Try
+
 
       Dim result As Object = response.Result
       If TypeOf result Is Exception Then

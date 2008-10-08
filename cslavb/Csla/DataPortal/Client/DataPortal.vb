@@ -467,7 +467,7 @@ Public Module DataPortal
       End If
 
       Dim method = Server.DataPortalMethodCache.GetMethodInfo( _
-        MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
+        objectType, "DataPortal_Delete", criteria)
 
       Dim proxy As DataPortalClient.IDataPortalProxy
       proxy = GetDataPortalProxy(method.RunLocal)

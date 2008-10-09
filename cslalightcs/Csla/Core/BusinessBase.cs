@@ -1405,6 +1405,7 @@ namespace Csla.Core
         {
           if (newValue != null && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
           {
+            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
             field = newValue;
             if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
@@ -1413,6 +1414,7 @@ namespace Csla.Core
         {
           if (newValue is string && newValue == null)
             newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
+          if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
           field = newValue;
           if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
         }
@@ -1459,6 +1461,7 @@ namespace Csla.Core
         {
           if (newValue != null && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
           {
+            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
             if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
@@ -1467,6 +1470,7 @@ namespace Csla.Core
         {
           if (newValue is string && newValue == null)
             newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
+          if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
           field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
           if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
         }
@@ -1630,6 +1634,7 @@ namespace Csla.Core
       {
         if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, true))
         {
+          if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo.Name);
           FieldManager.SetFieldData(propertyInfo, newValue);
           if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo.Name);
         }
@@ -1756,6 +1761,7 @@ namespace Csla.Core
         {
           if (markDirty)
           {
+            OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
             PropertyHasChanged(propertyInfo.Name);
           }
@@ -1777,6 +1783,7 @@ namespace Csla.Core
         {
           if (markDirty)
           {
+            OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
             PropertyHasChanged(propertyInfo.Name);
           }
@@ -1800,6 +1807,7 @@ namespace Csla.Core
         {
           if (markDirty)
           {
+            OnPropertyChanging(propertyInfo.Name);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
             PropertyHasChanged(propertyInfo.Name);
           }

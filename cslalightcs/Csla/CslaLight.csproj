@@ -264,6 +264,9 @@
     <Compile Include="Core\IBindingList.cs" />
     <Compile Include="Core\ContextDictionary.cs" />
     <Compile Include="Core\ICommandObject.cs" />
+    <Compile Include="Core\INotifyPropertyChanging.cs" />
+    <Compile Include="Core\PropertyChangingEventArgs.cs" />
+    <Compile Include="Core\PropertyChangingEventHandler.cs" />
     <Compile Include="DataPortalClient\ChildDataPortal.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\AddedNewEventArgs.cs" />

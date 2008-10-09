@@ -8,7 +8,10 @@ namespace Csla.Core
   /// This class implements INotifyPropertyChanged.
   /// </summary>
   [Serializable]
-  public abstract class BindableBase : MobileObject, INotifyPropertyChanged
+  public abstract class BindableBase : 
+    MobileObject, 
+    INotifyPropertyChanged,
+    INotifyPropertyChanging
   {
     /// <summary>
     /// Creates an instance of the object.
@@ -17,6 +20,8 @@ namespace Csla.Core
     { }
 
     public event PropertyChangedEventHandler PropertyChanged;
+
+    public event PropertyChangingEventHandler PropertyChanging;
 
     /// <summary>
     /// Call this method to raise the PropertyChanged event
@@ -48,20 +53,28 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Call this method to raise the PropertyChanged event
+    /// Call this method to raise the PropertyChanging event
     /// for a specific property.
     /// </summary>
     /// <param name="propertyName">Name of the property that
-    /// has changed.</param>
+    /// is being changed.</param>
     /// <remarks>
     /// This method may be called by properties in the business
-    /// class to indicate the change in a specific property.
+    /// class to indicate the change that is about to occur 
+    /// in a specific property.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnPropertyChanged(string propertyName)
     {
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanging(string propertyName)
+    {
+      if (PropertyChanging != null)
+        PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
     }
   }
 }

@@ -343,7 +343,7 @@ namespace Csla.Silverlight
     {
       if (_target != null && !string.IsNullOrEmpty(Property))
       {
-        BusinessBase b = Source as BusinessBase;
+        var b = Source as Csla.Security.IAuthorizeReadWrite;
         if (b != null)
         {
           bool canRead = b.CanReadProperty(Property);

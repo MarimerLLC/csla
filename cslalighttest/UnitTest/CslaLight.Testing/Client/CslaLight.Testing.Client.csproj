@@ -66,6 +66,9 @@
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Authorization\TestPrincipal.cs">
       <Link>Security\TestPrincipal.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\LogicalExecutionLocation\LocationBusinessBase.cs">
+      <Link>LogicalExecutionLocation\LocationBusinessBase.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\ApplicationContext\ContextBOVerifier.cs">
       <Link>ApplicationContext\ContextBOVerifier.cs</Link>
     </Compile>

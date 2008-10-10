@@ -22,12 +22,12 @@ namespace Csla
 
     public Csla.Core.ContextDictionary GlobalContext
     {
-      get 
+      get
       {
         if (_proxy == null)
           return Csla.ApplicationContext.GlobalContext;
         else
-          return _proxy.GlobalContext; 
+          return _proxy.GlobalContext;
       }
     }
 
@@ -92,7 +92,15 @@ namespace Csla
     /// </summary>
     public void BeginCreate()
     {
-      _proxy.BeginCreate();
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginCreate();
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     /// <summary>
@@ -104,12 +112,29 @@ namespace Csla
     /// </param>
     public void BeginCreate(object criteria)
     {
-      _proxy.BeginCreate(criteria);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginCreate(criteria);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     public void BeginCreate(object criteria, object userState)
     {
-      _proxy.BeginCreate(criteria, userState);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginCreate(criteria, userState);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
+
     }
 
     private void proxy_CreateCompleted(object sender, DataPortalResult<T> e)
@@ -144,7 +169,15 @@ namespace Csla
     /// </summary>
     public void BeginFetch()
     {
-      _proxy.BeginFetch();
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginFetch();
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     /// <summary>
@@ -156,12 +189,28 @@ namespace Csla
     /// </param>
     public void BeginFetch(object criteria)
     {
-      _proxy.BeginFetch(criteria);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginFetch(criteria);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     public void BeginFetch(object criteria, object userState)
     {
-      _proxy.BeginFetch(criteria, userState);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginFetch(criteria, userState);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     private void proxy_FetchCompleted(object sender, DataPortalResult<T> e)
@@ -199,12 +248,28 @@ namespace Csla
     /// </param>
     public void BeginUpdate(object obj)
     {
-      _proxy.BeginUpdate(obj);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginUpdate(obj);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     public void BeginUpdate(object obj, object userState)
     {
-      _proxy.BeginUpdate(obj, userState);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginUpdate(obj, userState);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     private void proxy_UpdateCompleted(object sender, DataPortalResult<T> e)
@@ -243,12 +308,28 @@ namespace Csla
     /// </param>
     public void BeginDelete(object criteria)
     {
-      _proxy.BeginDelete(criteria);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginDelete(criteria);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     public void BeginDelete(object criteria, object userState)
     {
-      _proxy.BeginDelete(criteria, userState);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginDelete(criteria, userState);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     private void proxy_DeleteCompleted(object sender, DataPortalResult<T> e)
@@ -264,12 +345,28 @@ namespace Csla
 
     public void BeginExecute(T command)
     {
-      _proxy.BeginExecute(command);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginExecute(command);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     public void BeginExecute(T command, object userState)
     {
-      _proxy.BeginExecute(command, userState);
+      try
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+        _proxy.BeginExecute(command, userState);
+      }
+      finally
+      {
+        ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      }
     }
 
     private void proxy_ExecuteCompleted(object sender, DataPortalResult<T> e)

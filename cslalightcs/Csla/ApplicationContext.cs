@@ -354,5 +354,45 @@ namespace Csla
 
     #endregion
 
+    #region Logical Execution Location
+    /// <summary>
+    /// Enum representing the logical execution location
+    /// The setting is set to server when server is execting
+    /// a CRUD opertion, otherwise the setting is always client
+    /// </summary>
+    public enum LogicalExecutionLocations
+    {
+      /// <summary>
+      /// The code is executing on the client.
+      /// </summary>
+      Client,
+      /// <summary>
+      /// The code is executing on the server.  This inlcudes
+      /// Local mode execution
+      /// </summary>
+      Server
+    }
+    private static LogicalExecutionLocations _logicalExecutionLocation =
+     LogicalExecutionLocations.Client;
+
+    /// <summary>
+    /// Return Logical Execution Location - Client or Server
+    /// This is applicable to Local mode as well
+    /// </summary>
+    public static LogicalExecutionLocations LogicalExecutionLocation
+    {
+      get { return _logicalExecutionLocation; }
+    }
+
+    /// <summary>
+    /// Set logical execution location
+    /// </summary>
+    /// <param name="location">Location to set context to</param>
+    internal static void SetLogicalExecutionLocation(LogicalExecutionLocations location)
+    {
+      _logicalExecutionLocation = location;
+    }
+    #endregion
+
   }
 }

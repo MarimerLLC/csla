@@ -9,7 +9,6 @@ namespace Csla.Silverlight
   /// </summary>
   public class NavigationBookmarkProcessedEventArgs : EventArgs
   {
-    int _bookmarkId;
     bool _success;
 
     /// <summary>
@@ -21,16 +20,10 @@ namespace Csla.Silverlight
     /// <param name="success">
     /// True if bookamrk was processed successfully.
     /// </param>
-    public NavigationBookmarkProcessedEventArgs(int bookmarkId, bool success)
+    public NavigationBookmarkProcessedEventArgs(bool success)
     {
-      _bookmarkId = bookmarkId;
       _success = success;
     }
-
-    /// <summary>
-    /// Bookrmark Id
-    /// </summary>
-    public int BookmarkId { get { return _bookmarkId; } }
 
     /// <summary>
     /// Indicates if bookmakr was processed successfully

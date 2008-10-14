@@ -55,26 +55,5 @@ namespace Csla.Silverlight
     {
       get { return _title; }
     }
-
-    /// <summary>
-    /// Determines if two bookmark information objects are equal
-    /// based on the inforamtion they contain
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <returns></returns>
-    public override bool Equals(object obj)
-    {
-      if (obj is BoomarkInformation)
-      {
-        BoomarkInformation compareTo = obj as BoomarkInformation;
-        if (compareTo.ControlTypeName == this.ControlTypeName &&
-            compareTo.Parameters == this.Parameters)
-          return true;
-        else
-          return false;
-      }
-      else
-        return false;
-    }
   }
 }

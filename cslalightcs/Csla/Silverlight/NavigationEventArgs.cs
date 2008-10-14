@@ -9,8 +9,10 @@ namespace Csla.Silverlight
   public class NavigationEventArgs : EventArgs
   {
     private string _controlTypeName;
-    private int _bookmarkId;
     private string _parameters;
+    private bool _cancel = false;
+    private bool _isInitiatedByBrowserButton = false;
+    private BoomarkInformation _redirectToOnCancel;
 
     /// <summary>
     /// New instance of NavigationEventArgs.
@@ -18,18 +20,15 @@ namespace Csla.Silverlight
     /// <param name="controlTypeName">
     /// Assembly qualified name of the control class to display.
     /// </param>
-    /// <param name="bookmarkId">
-    /// Id of the bookmark that will be added to browser history.
-    /// </param>
     /// <param name="parameters">
     /// Parameters that will be passed to control.  Single string is passed
     /// in, and controls assumes responcibility for parsing it.
     /// </param>
-    public NavigationEventArgs(string controlTypeName, int bookmarkId, string parameters)
+    public NavigationEventArgs(string controlTypeName, string parameters, bool isInitiatedByBrowserButton)
     {
       _controlTypeName = controlTypeName;
-      _bookmarkId = bookmarkId;
       _parameters = parameters;
+      _isInitiatedByBrowserButton = isInitiatedByBrowserButton;
     }
 
     /// <summary>
@@ -38,14 +37,6 @@ namespace Csla.Silverlight
     public string ControlTypeName
     {
       get { return _controlTypeName; }
-    }
-
-    /// <summary>
-    /// Id of the bookmark that will be added to browser history.
-    /// </summary>
-    public int BookmarkId
-    {
-      get { return _bookmarkId; }
     }
 
     /// <summary>
@@ -59,5 +50,33 @@ namespace Csla.Silverlight
       set { _parameters = value; }
     }
 
+    /// <summary>
+    /// Set to True if you want to cancel from BeforeNavigation event
+    /// </summary>
+    public bool Cancel
+    {
+      get { return _cancel; }
+      set { _cancel = value; }
+    }
+
+    /// <summary>
+    /// If navigation is cancelled, optionaly redirect to the
+    /// control specified in this property.
+    /// </summary>
+    public BoomarkInformation RedirectToOnCancel
+    {
+      get { return _redirectToOnCancel; }
+      set { _redirectToOnCancel = value; }
+    }
+
+    /// <summary>
+    /// If true, the action was intiated by the user clicking on 
+    /// a broser's back or forward button.  Otherwise, it was manual
+    /// navigatio via direct invoke of Navigate method of Navigator
+    /// </summary>
+    public bool IsInitiatedByBrowserButton
+    {
+      get { return _isInitiatedByBrowserButton; }
+    }
   }
 }

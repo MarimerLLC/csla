@@ -15,20 +15,58 @@ namespace Csla.Silverlight
   public class Navigator
   {
     #region Private Variables
-    private Dictionary<int, BoomarkInformation> _bookmarks;
-    private int _nextBookmarkId = 1;
     private static Navigator _current = new Navigator();
     private bool _processBrowserEvents = false;
     private string _orignalTitle = string.Empty;
+    private IControlNameFactory _controlNameFactory;
+    private string _bookmarkPartsSeparator = ";";
+    private string _bookmarkKey = "bookmark";
 
-    private const string BookmarkKey = "bookmark";
+    /// <summary>
+    /// Default bookmark key
+    /// </summary>
+    public string BookmarkKey
+    {
+      get { return _bookmarkKey; }
+      set { _bookmarkKey = value; }
+    }
+
+    /// <summary>
+    /// Default bookmakr parts (control name, title, parameters) separator
+    /// </summary>
+    public string BookmarkPartsSeparator
+    {
+      get { return _bookmarkPartsSeparator; }
+      set { _bookmarkPartsSeparator = value; }
+    }
     #endregion
 
     #region Constructor
     private Navigator()
     {
-      _bookmarks = new Dictionary<int, BoomarkInformation>();
+      //_bookmarks = new Dictionary<int, BoomarkInformation>();
     }
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Control name factory object
+    /// </summary>
+    public IControlNameFactory ControlNameFactory
+    {
+      get
+      {
+        if (_controlNameFactory == null)
+          _controlNameFactory = new ControlNameFactory();
+        return _controlNameFactory;
+      }
+      set
+      {
+        _controlNameFactory = value;
+      }
+    }
+
     #endregion
 
     #region Events
@@ -67,9 +105,6 @@ namespace Csla.Silverlight
     /// <summary>
     /// Method that raises AfterNavigation event.
     /// </summary>
-    /// <param name="args">
-    /// Event argeuments for the event.
-    /// </param>
     protected void OnAfterNavigation()
     {
       if (AfterNavigation != null)
@@ -82,14 +117,14 @@ namespace Csla.Silverlight
     /// <summary>
     /// Method that raises AfterBookmarkProcessing event.
     /// </summary>
-    /// <param name="args">
-    /// Event argeuments for the event.
+    /// <param name="success">
+    /// Indicates if bookmakr was successfully processed
     /// </param>
-    protected void OnAfterBookmarkProcessing(int bookmarkId, bool success)
+    protected void OnAfterBookmarkProcessing(bool success)
     {
       if (AfterBookmarkProcessing != null)
       {
-        AfterBookmarkProcessing(this, new NavigationBookmarkProcessedEventArgs(bookmarkId, success));
+        AfterBookmarkProcessing(this, new NavigationBookmarkProcessedEventArgs(success));
       }
     }
 
@@ -117,6 +152,24 @@ namespace Csla.Silverlight
     public void RegisterNavigator()
     {
       RegisterNavigator("Xaml1");
+    }
+
+
+    /// <summary>
+    /// Register navigatgor with the browser in order to subscribe
+    /// to history events.
+    /// </summary>
+    /// <param name="silverlightControlNameInWebPage">
+    /// Name of the Silverlight control that is embedded in the web page.
+    /// Default value is Xaml1
+    /// </param>
+    /// <param name="controlNameFactory">
+    /// Control name factory to be used with Navigator
+    /// </param>
+    public void RegisterNavigator(string silverlightControlNameInWebPage, IControlNameFactory controlNameFactory)
+    {
+      _controlNameFactory = controlNameFactory;
+      RegisterNavigator(silverlightControlNameInWebPage);
     }
 
     /// <summary>
@@ -176,44 +229,60 @@ namespace Csla.Silverlight
     /// </param>
     public void Navigate(string controlTypeName)
     {
-      int bookMarkId = GetBookmarkId();
-      NavigationEventArgs args = new NavigationEventArgs(controlTypeName, bookMarkId, string.Empty);
+      NavigationEventArgs args = new NavigationEventArgs(controlTypeName, string.Empty, false);
       OnBeforeNavigation(args);
-      // get user modifed value
-      string title = string.Empty;
-      CreateAndShowControl(bookMarkId, controlTypeName, args.Parameters, title, true);
-      OnAfterNavigation();
-    }
-
-    private int GetBookmarkId()
-    {
-      int returnValue = _nextBookmarkId;
-      _nextBookmarkId += 1;
-      return returnValue;
-    }
-
-    private void CreateAndShowControl(int bookMarkId, string controlTypeName, string parameters, string title, bool addBookmark)
-    {
-      Control newControl = null;
-      if (!string.IsNullOrEmpty(controlTypeName))
+      if (!args.Cancel)
       {
-        newControl = (Control)Activator.CreateInstance(Type.GetType(controlTypeName));
+        string title = string.Empty;
+        CreateAndShowControl((Control)Activator.CreateInstance(Type.GetType(controlTypeName)), args.Parameters, title, true, false);
+
+        OnAfterNavigation();
+      }
+      else
+      {
+        if (args.RedirectToOnCancel != null)
+        {
+          CreateAndShowControl((Control)Activator.CreateInstance(Type.GetType(args.RedirectToOnCancel.ControlTypeName)), args.RedirectToOnCancel.Parameters, args.RedirectToOnCancel.Title, true, true);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Call this after setting up content placeholder in order to 
+    /// handle cold navigation to a bookrmak via Favorites features
+    /// for example.
+    /// </summary>
+    public void ProcessInitialNavigation()
+    {
+      string currentAddress = System.Windows.Browser.HtmlPage.Document.DocumentUri.AbsoluteUri.ToString();
+      if (currentAddress.Contains(_bookmarkKey))
+      {
+        string bookmark = HttpUtility.UrlDecode(currentAddress).Substring(currentAddress.IndexOf(_bookmarkKey) + _bookmarkKey.Length + 1);
+        ParseAndProcessBookmark(bookmark);
+      }
+    }
+
+    private void CreateAndShowControl(Control newControl, string parameters, string title, bool addBookmark, bool isRedirected)
+    {
+      if (!(newControl == null))
+      {
         ISupportNavigation navigatable = newControl as ISupportNavigation;
         if (navigatable != null)
         {
           navigatable.SetParameters(parameters);
-          if (addBookmark)
+          if (addBookmark && !isRedirected)
             title = navigatable.Title;
         }
-      }
-      SetTitle(title);
-      if (addBookmark)
-      {
-        _bookmarks.Add(bookMarkId, new BoomarkInformation(controlTypeName, parameters, title));
-        AddBookmark(bookMarkId, title);
+
+        SetTitle(title);
+        if (addBookmark)
+        {
+          AddBookmark(title, ControlNameFactory.ControlToControlName(newControl), parameters);
+        }
+
+        ContentPlaceholder.Content = newControl;
       }
 
-      ContentPlaceholder.Content = newControl;
     }
 
     private void SetTitle(string title)
@@ -223,19 +292,15 @@ namespace Csla.Silverlight
     }
 
 
-    private void AddBookmark(int bookmarkId, string title)
+    private void AddBookmark(string title, string controlName, string parameters)
     {
       try
       {
         _processBrowserEvents = false;
         System.Windows.Browser.BrowserInformation info = System.Windows.Browser.HtmlPage.BrowserInformation;
-        if (info.Name.ToUpper().Contains("IE"))
-          System.Windows.Browser.HtmlPage.Window.CurrentBookmark = bookmarkId.ToString();
-        string script = "Sys.Application.addHistoryPoint({" + Navigator.BookmarkKey + ": ";
-        script = script + "\"" + bookmarkId + "\"";
-        script = script + "} , \"";
-        script = script + title;
-        script = script + "\");";
+        string addHistoryScript =
+          "Sys.Application.addHistoryPoint({{ {0}:'{1}' }}, '{2}');";
+        string script = string.Format(addHistoryScript, _bookmarkKey, controlName + _bookmarkPartsSeparator + title + _bookmarkPartsSeparator + parameters + _bookmarkPartsSeparator, title);
         System.Windows.Browser.HtmlPage.Window.Eval(script);
       }
       finally
@@ -246,27 +311,57 @@ namespace Csla.Silverlight
 
     private void Navigate()
     {
-      int bookmarkId = -1;
+      bool success = false;
       if (!string.IsNullOrEmpty(System.Windows.Browser.HtmlPage.Window.CurrentBookmark))
       {
-        string bookmark = HttpUtility.UrlDecode(System.Windows.Browser.HtmlPage.Window.CurrentBookmark).Substring(System.Windows.Browser.HtmlPage.Window.CurrentBookmark.LastIndexOf("=") + 1);
-
-        if (int.TryParse(bookmark, out bookmarkId))
-        {
-          if (_bookmarks.ContainsKey(bookmarkId))
-          {
-            BoomarkInformation info = _bookmarks[bookmarkId];
-            CreateAndShowControl(bookmarkId, info.ControlTypeName, info.Parameters, info.Title, false);
-            OnAfterBookmarkProcessing(bookmarkId, true);
-          }
-        }
+        string bookmark = HttpUtility.UrlDecode(System.Windows.Browser.HtmlPage.Window.CurrentBookmark);
+        bookmark = bookmark.Substring(bookmark.IndexOf(_bookmarkKey) + _bookmarkKey.Length + 1);
+        success = ParseAndProcessBookmark(bookmark);
       }
-      if (bookmarkId == -1)
+      if (success == false)
       {
         ContentPlaceholder.Content = null;
         SetTitle(_orignalTitle);
-        OnAfterBookmarkProcessing(bookmarkId, false);
+        OnAfterBookmarkProcessing(false);
       }
+    }
+
+    private bool ParseAndProcessBookmark(string bookmark)
+    {
+      bool success = false;
+      if (bookmark.Length > 0 && bookmark.Contains(_bookmarkPartsSeparator))
+      {
+        string[] bookmarkParts = bookmark.Split((new string[] { _bookmarkPartsSeparator }), StringSplitOptions.None);
+        if (bookmarkParts.Length >= 3)
+        {
+          string controlName = bookmarkParts[0];
+          string title = bookmarkParts[1];
+          string parameters = bookmarkParts[2];
+          Control newControl = ControlNameFactory.ControlNameToControl(controlName);
+        
+          if (newControl != null)
+          {
+            NavigationEventArgs args = new NavigationEventArgs(newControl.GetType().AssemblyQualifiedName, parameters, true);
+            OnBeforeNavigation(args);
+            if (!args.Cancel)
+            {
+              CreateAndShowControl(newControl, args.Parameters, title, false, false);
+              OnAfterBookmarkProcessing(true);
+              success = true;
+            }
+            else
+            {
+              if (args.RedirectToOnCancel != null)
+              {
+                CreateAndShowControl((Control)Activator.CreateInstance(Type.GetType(args.RedirectToOnCancel.ControlTypeName)), args.RedirectToOnCancel.Parameters, args.RedirectToOnCancel.Title, true, true);
+                OnAfterBookmarkProcessing(true);
+                success = true;
+              }
+            }
+          }
+        }
+      }
+      return success;
     }
 
     #endregion

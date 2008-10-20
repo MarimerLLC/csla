@@ -75,10 +75,19 @@ namespace Csla.Silverlight
     private object _dataObject;
 
     /// <summary>
-    /// Gets or sets a reference to the
-    /// object containing the data for binding.
+    /// Gets or sets a reference to the data
+    /// object.
     /// </summary>
-    public object Data
+    public static readonly DependencyProperty ObjectInstanceProperty =
+   DependencyProperty.Register("ObjectInstance", typeof(object),
+   typeof(CslaDataProvider),new PropertyMetadata(null));
+
+
+    /// <summary>
+    /// Gets or sets a reference to the data
+    /// object.
+    /// </summary>
+    public object ObjectInstance
     {
       get
       {
@@ -112,6 +121,7 @@ namespace Csla.Silverlight
 
         try
         {
+          OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
           OnPropertyChanged(new PropertyChangedEventArgs("Data"));
           OnDataChanged();
         }
@@ -122,6 +132,14 @@ namespace Csla.Silverlight
           var o = ex;
         }
       }
+    }
+
+    /// <summary>
+    /// Gets a reference to the data object.
+    /// </summary>
+    public object Data
+    {
+      get { return _dataObject; }
     }
 
     private bool _manageObjectLifetime = true;
@@ -243,9 +261,9 @@ namespace Csla.Silverlight
           if (undoable != null)
           {
             IsBusy = true;
-            Data = null;
+            ObjectInstance = null;
             undoable.CancelEdit();
-            Data = undoable;
+            ObjectInstance = undoable;
             var trackable = _dataObject as ITrackStatus;
             if (trackable != null)
               IsBusy = trackable.IsBusy;
@@ -294,7 +312,7 @@ namespace Csla.Silverlight
       if (e.Error != null)
         Error = e.Error;
       else
-        Data = e.NewObject;
+        ObjectInstance = e.NewObject;
     }
 
     /// <summary>
@@ -328,7 +346,7 @@ namespace Csla.Silverlight
       IDataPortalResult eventArgs = e as IDataPortalResult;
       if (_manageObjectLifetime && eventArgs.Object != null && eventArgs.Error == null)
       {
-        this.Data = eventArgs.Object;
+        this.ObjectInstance = eventArgs.Object;
         this.Error = eventArgs.Error;
         _isInitialLoadCompleted = true;
       }
@@ -446,9 +464,9 @@ namespace Csla.Silverlight
 
     public void Rebind()
     {
-      object tmp = Data;
-      Data = null;
-      Data = tmp;
+      object tmp = ObjectInstance;
+      ObjectInstance = null;
+      ObjectInstance = tmp;
     }
 
     #endregion

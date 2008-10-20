@@ -111,7 +111,7 @@ namespace cslalighttest.CslaDataProvider
         var cust = e1.Object;
         int custID = cust.Id;
         string custName = cust.Name;
-        provider.Data = cust;
+        provider.ObjectInstance = cust;
         cust.Name = "new test name";
         provider.Cancel();
         context.Assert.AreEqual(custID, ((Customer)provider.Data).Id);
@@ -133,7 +133,7 @@ namespace cslalighttest.CslaDataProvider
         var cust = e1.Object;
         int custID = cust.Id;
         string custName = cust.Name;
-        provider.Data = cust;
+        provider.ObjectInstance = cust;
         cust.Name = "new test name";
         provider.PropertyChanged += (o2, e2) =>
         {
@@ -160,7 +160,7 @@ namespace cslalighttest.CslaDataProvider
         Csla.ApplicationContext.GlobalContext.Clear();
         var custs = e1.Object;
         int count = custs.Count;
-        provider.Data = custs;
+        provider.ObjectInstance = custs;
         provider.RemoveItem(custs[0]);
         provider.AddNewItem();
         provider.AddNewItem();
@@ -301,7 +301,7 @@ namespace cslalighttest.CslaDataProvider
                               list.Contains("CanDeleteObject");
             context.Assert.IsTrue(success);
           };
-        provider.Data = cust;
+        provider.ObjectInstance = cust;
 
         context.Assert.AreEqual(provider.CanEditObject, Csla.Security.AuthorizationRules.CanEditObject(typeof(Customer)));
         context.Assert.AreEqual(provider.CanGetObject, Csla.Security.AuthorizationRules.CanGetObject(typeof(Customer)));
@@ -325,7 +325,7 @@ namespace cslalighttest.CslaDataProvider
         var cust = e1.Object;
         int custID = cust.Id;
         string custName = cust.Name;
-        provider.Data = cust;
+        provider.ObjectInstance = cust;
         bool changedToNull = false;
         bool changedToData = false;
 
@@ -366,7 +366,7 @@ namespace cslalighttest.CslaDataProvider
           context.Assert.IsTrue(wasBusy);
           context.Assert.IsTrue(wasNotBusy);
         };
-        provider.Data = cust;
+        provider.ObjectInstance = cust;
         cust.Name = "blah";
         provider.PropertyChanged += (o3, e3) =>
         {
@@ -375,7 +375,7 @@ namespace cslalighttest.CslaDataProvider
           if (e3.PropertyName == "IsNotBusy" && provider.IsNotBusy && wasBusy)
             wasNotBusy = true;
         };
-        provider.Data = cust;
+        provider.ObjectInstance = cust;
         provider.Cancel();
         context.Assert.Success();
 

@@ -1,0 +1,24 @@
+<VSTemplate Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
+  <TemplateData>
+    <DefaultName>DynamicRoot.cs</DefaultName>
+    <Name>DynamicRoot</Name>
+    <Description>CSLA.NET DynamicRoot Class Template</Description>
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>csla.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>Csla</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>System</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>mscorlib</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem SubType="Code" TargetFileName="$fileinputname$.cs" ReplaceParameters="true">DynamicRoot.cs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

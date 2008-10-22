@@ -1,0 +1,27 @@
+<VSTemplate Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
+  <TemplateData>
+    <DefaultName>EditableRoot.vb</DefaultName>
+    <Name>EditableRoot</Name>
+    <Description>CSLA.NET EditableRoot Class Template</Description>
+    <ProjectType>VisualBasic</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>csla.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>Csla</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>System</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>System.Core</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>mscorlib</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem SubType="Code" TargetFileName="$fileinputname$.vb" ReplaceParameters="true">EditableRoot.vb</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

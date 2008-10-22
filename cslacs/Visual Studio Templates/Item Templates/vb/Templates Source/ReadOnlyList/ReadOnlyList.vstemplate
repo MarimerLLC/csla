@@ -1,0 +1,28 @@
+<VSTemplate Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
+  <TemplateData>
+    <DefaultName>ReadOnlyList.vb</DefaultName>
+    <Name>ReadOnlyList</Name>
+    <Description>CSLA.NET ReadOnlyList Class Template</Description>
+    <ProjectType>VisualBasic</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>csla.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>Csla</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>System</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>mscorlib</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem SubType="Code" TargetFileName="$fileinputname$.vb" ReplaceParameters="true">ReadOnlyList.vb</ProjectItem>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>CslaItemTemplateWizards, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=93be5fdc093e4c30</Assembly>
+    <FullClassName>CslaItemTemplateWizards.ListWizard</FullClassName>
+  </WizardExtension>  
+</VSTemplate>

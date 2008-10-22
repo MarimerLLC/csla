@@ -1,0 +1,170 @@
+<VSContent xmlns="http://schemas.microsoft.com/developer/vscontent/2005">
+  <Content>
+    <FileName>CommandObject.zip</FileName>
+    <DisplayName>CommandObject (C#)</DisplayName>
+    <Description>Item template for CommandObject.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>SwitchableObject.zip</FileName>
+    <DisplayName>SwitchableObject (C#)</DisplayName>
+    <Description>Item template for SwitchableObject.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>DynamicRoot.zip</FileName>
+    <DisplayName>DynamicRoot (C#)</DisplayName>
+    <Description>Item template for DynamicRoot.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>DynamicRootList.zip</FileName>
+    <DisplayName>DynamicRootList (C#)</DisplayName>
+    <Description>Item template for DynamicRootList.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>ReadOnlyRoot.zip</FileName>
+    <DisplayName>ReadOnlyRoot (C#)</DisplayName>
+    <Description>Item template for ReadOnlyRoot.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>ReadOnlyList.zip</FileName>
+    <DisplayName>ReadOnlyList (C#)</DisplayName>
+    <Description>Item template for ReadOnlyList.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>ReadOnlyChildList.zip</FileName>
+    <DisplayName>ReadOnlyChildList (C#)</DisplayName>
+    <Description>Item template for ReadOnlyChildList.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>ReadOnlyChild.zip</FileName>
+    <DisplayName>ReadOnlyChild (C#)</DisplayName>
+    <Description>Item template for ReadOnlyChild.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>NameValueList.zip</FileName>
+    <DisplayName>NameValueList (C#)</DisplayName>
+    <Description>Item template for NameValueList.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>EditableRootParent.zip</FileName>
+    <DisplayName>EditableRootParent (C#)</DisplayName>
+    <Description>Item template for EditableRootParent.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>EditableRootList.zip</FileName>
+    <DisplayName>EditableRootList (C#)</DisplayName>
+    <Description>Item template for EditableRootList.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>EditableRoot.zip</FileName>
+    <DisplayName>EditableRoot (C#)</DisplayName>
+    <Description>Item template for EditableRoot.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>EditableChildList.zip</FileName>
+    <DisplayName>EditableChildList (C#)</DisplayName>
+    <Description>Item template for EditableChildList.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>EditableChild.zip</FileName>
+    <DisplayName>EditableChild (C#)</DisplayName>
+    <Description>Item template for EditableChild.</Description>
+    <FileContentType>VSTemplate</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="ProjectType" value="Visual C#"/>
+      <Attribute name="ProjectSubType" value="CSLA.NET"/>
+      <Attribute name="TemplateType" value="Item"/>
+    </Attributes>
+  </Content>
+</VSContent>

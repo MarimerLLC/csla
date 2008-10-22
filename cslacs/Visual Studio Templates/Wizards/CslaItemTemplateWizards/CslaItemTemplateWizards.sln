@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaItemTemplateWizards", "CslaItemTemplateWizards\CslaItemTemplateWizards.csproj", "{18665068-9A70-4BB5-A6AC-CE2B9E8183E5}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Csla-Templates", "Csla-Templates\Csla-Templates.vdproj", "{39800DAC-4058-4632-88E3-B4C4E3E66F8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18665068-9A70-4BB5-A6AC-CE2B9E8183E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18665068-9A70-4BB5-A6AC-CE2B9E8183E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18665068-9A70-4BB5-A6AC-CE2B9E8183E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18665068-9A70-4BB5-A6AC-CE2B9E8183E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39800DAC-4058-4632-88E3-B4C4E3E66F8A}.Debug|Any CPU.ActiveCfg = Debug
+		{39800DAC-4058-4632-88E3-B4C4E3E66F8A}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

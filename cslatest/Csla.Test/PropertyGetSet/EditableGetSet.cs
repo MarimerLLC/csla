@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 using Csla;
+using Csla.Serialization;
+using Csla.DataPortalClient;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Test.PropertyGetSet
 {
   [Serializable]
   public class EditableGetSet : EditableGetSetBase<EditableGetSet>
   {
-    private static Csla.PropertyInfo<string> F01Property = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("F01"));
-    private string _f01 = F01Property.DefaultValue;
-    public string F01
+    private static Csla.PropertyInfo<string> FieldBackedStringProperty = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("FieldBackedString"));
+    private string _fieldBackedString = FieldBackedStringProperty.DefaultValue;
+    public string FieldBackedString
     {
-      get { return GetProperty<string>(F01Property, _f01); }
-      set { SetProperty<string>(F01Property, ref _f01, value); }
+      get { return GetProperty<string>(FieldBackedStringProperty, _fieldBackedString); }
+      set { SetProperty<string>(FieldBackedStringProperty, ref _fieldBackedString, value); }
     }
 
     private static Csla.PropertyInfo<int> F02Property = RegisterProperty<int>(typeof(EditableGetSet), new Csla.PropertyInfo<int>("F02"));
@@ -36,8 +39,8 @@ namespace Csla.Test.PropertyGetSet
     private Csla.SmartDate _F04 = F04Property.DefaultValue;
     public string F04
     {
-      get { return GetProperty<Csla.SmartDate, string>(F04Property, _F04); }
-      set { SetProperty<Csla.SmartDate, string>(F04Property, ref _F04, value); }
+      get { return GetPropertyConvert<Csla.SmartDate, string>(F04Property, _F04); }
+      set { SetPropertyConvert(F04Property, ref _F04, value); }
     }
 
     private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("F05", "field 5"));
@@ -48,73 +51,72 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<bool>(F05Property, ref _f05, value); }
     }
 
-    private static Csla.PropertyInfo<string> M01Property = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("M01"));
-    public string M01
+    private static Csla.PropertyInfo<string> ManagedStringFieldProperty = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("ManagedStringField"));
+    public string ManagedStringField
     {
-      get { return GetProperty<string>(M01Property); }
-      set { SetProperty<string>(M01Property, value); }
+      get { return GetProperty<string>(ManagedStringFieldProperty); }
+      set { SetProperty<string>(ManagedStringFieldProperty, value); }
     }
 
-    public bool M01Dirty
+    public bool ManagedStringFieldDirty
     {
-      get { return FieldManager.IsFieldDirty(M01Property); }
+      get { return FieldManager.IsFieldDirty(ManagedStringFieldProperty); }
     }
 
-    private static Csla.PropertyInfo<int> M02Property = RegisterProperty<int>(typeof(EditableGetSet), new Csla.PropertyInfo<int>("M02"));
+    private static Csla.PropertyInfo<int> M02Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<int>("M02"));
     public int M02
     {
       get { return GetProperty<int>(M02Property); }
       set { SetProperty<int>(M02Property, value); }
     }
 
-    private static Csla.PropertyInfo<string> M03Property = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("M03", "field 3", "n/a"));
+    private static Csla.PropertyInfo<string> M03Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<string>("M03", "field 3", "n/a"));
     public string M03
     {
       get { return GetProperty<string>(M03Property); }
       set { SetProperty<string>(M03Property, value); }
     }
 
-    private static Csla.PropertyInfo<Csla.SmartDate> M04Property = RegisterProperty<Csla.SmartDate>(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("M04"));
+    private static Csla.PropertyInfo<Csla.SmartDate> M04Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("M04"));
     public string M04
     {
-      get { return GetProperty<Csla.SmartDate, string>(M04Property); }
-      set { SetProperty<Csla.SmartDate, string>(M04Property, value); }
+      get { return GetPropertyConvert<Csla.SmartDate, string>(M04Property); }
+      set { SetPropertyConvert(M04Property, value); }
     }
 
-    private static Csla.PropertyInfo<bool> M05Property = RegisterProperty<bool>(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("M05", "field 5"));
+    private static Csla.PropertyInfo<bool> M05Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("M05", "field 5"));
     public bool M05
     {
-      get { return GetProperty<bool>(M05Property); }
-      set { SetProperty<bool>(M05Property, value); }
+      get { return GetProperty(M05Property); }
+      set { SetProperty(M05Property, value); }
     }
 
-    private static Csla.PropertyInfo<Guid> M06Property = RegisterProperty<Guid>(typeof(EditableGetSet), new Csla.PropertyInfo<Guid>("M06", "field 6"));
+    private static Csla.PropertyInfo<Guid> M06Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<Guid>("M06", "field 6"));
     public Guid M06
     {
-      get { return GetProperty<Guid>(M06Property); }
-      set { SetProperty<Guid>(M06Property, value); }
+      get { return GetProperty(M06Property); }
+      set { SetProperty(M06Property, value); }
     }
 
-    private static Csla.PropertyInfo<EditableGetSet> C01Property = 
-      RegisterProperty(new Csla.PropertyInfo<EditableGetSet>("C01"));
-    public EditableGetSet C01
+    private static Csla.PropertyInfo<EditableGetSet> ManagedChildProperty = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("ManagedChild"));
+    public EditableGetSet ManagedChild
     {
       get 
       { 
-        if (!FieldManager.FieldExists(C01Property))
-          SetProperty<EditableGetSet>(C01Property, new EditableGetSet(true));
-        return GetProperty<EditableGetSet>(C01Property); 
+        if (!FieldManager.FieldExists(ManagedChildProperty))
+          SetProperty(ManagedChildProperty, new EditableGetSet(true));
+        return GetProperty(ManagedChildProperty); 
       }
     }
 
-    private static Csla.PropertyInfo<ChildList> L01Property = RegisterProperty<ChildList>(typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("L01"));
-    public ChildList L01
+    private static Csla.PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty<ChildList>(typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("ManagedChildList"));
+    public ChildList ManagedChildList
     {
       get
       {
-        if (!FieldManager.FieldExists(L01Property))
-          LoadProperty<ChildList>(L01Property, new ChildList(true));
-        return GetProperty<ChildList>(L01Property);
+        if (!FieldManager.FieldExists(ManagedChildListProperty))
+          LoadProperty<ChildList>(ManagedChildListProperty, new ChildList(true));
+        return GetProperty<ChildList>(ManagedChildListProperty);
       }
     }
 
@@ -145,11 +147,19 @@ namespace Csla.Test.PropertyGetSet
 
     #region Factory Methods
 
+#if SILVERLIGHT
+    public static void GetObject(EventHandler<DataPortalResult<EditableGetSet>> completed)
+    {
+      DataPortal<EditableGetSet> dp = new DataPortal<EditableGetSet>();
+      dp.FetchCompleted += completed;
+      dp.BeginFetch();
+    }
+#else
     public static EditableGetSet GetObject()
     {
       return Csla.DataPortal.Fetch<EditableGetSet>();
     }
-
+#endif
     #endregion
 
     #region Data Access
@@ -159,23 +169,42 @@ namespace Csla.Test.PropertyGetSet
       LoadProperty(M06Property, null);
     }
 
+#if SILVERLIGHT
+    public override void DataPortal_Insert(LocalProxy<EditableGetSet>.CompletedHandler handler)
+    {
+      if (FieldManager.FieldExists(ManagedChildProperty))
+        ManagedChild.Insert();
+      if (FieldManager.FieldExists(ManagedChildListProperty))
+        ManagedChildList.Update();
+
+      handler.Invoke(this, null);
+    }
+
+    public override void DataPortal_Update(LocalProxy<EditableGetSet>.CompletedHandler handler)
+    {
+      if (FieldManager.FieldExists(ManagedChildProperty))
+        ManagedChild.Update();
+      if (FieldManager.FieldExists(ManagedChildListProperty))
+        ManagedChildList.Update();
+
+      handler.Invoke(this, null);
+    }
+#else
     protected override void DataPortal_Insert()
     {
       //FieldManager.UpdateChildren();
-      if (FieldManager.FieldExists(C01Property))
-        C01.Insert();
-      if (FieldManager.FieldExists(L01Property))
-        L01.Update();
+      if (FieldManager.FieldExists(ManagedChildProperty))
+        ManagedChild.Insert();
+      if (FieldManager.FieldExists(ManagedChildListProperty))
+        ManagedChildList.Update();
     }
 
     protected override void DataPortal_Update()
     {
       //FieldManager.UpdateChildren();
-      if (FieldManager.FieldExists(C01Property))
-        C01.Update();
-      if (FieldManager.FieldExists(L01Property))
-        L01.Update();
     }
+#endif
+
 
     internal void Insert()
     {
@@ -185,6 +214,42 @@ namespace Csla.Test.PropertyGetSet
     internal void Update()
     {
       MarkOld();
+    }
+
+    #endregion
+
+    #region MobileObject
+
+    protected override void OnGetState(SerializationInfo info, Csla.Core.StateMode mode)
+    {
+      if(_fieldBackedString!=null)
+        info.AddValue("_fieldBackedString", _fieldBackedString);
+      if (_f02 != 0)
+        info.AddValue("_f02", _f02);
+      if (_f03 != null)
+        info.AddValue("_f03", _f03);
+      if (_F04 != default(Csla.SmartDate))
+        info.AddValue("_f04", _F04);
+      if (_f05 == true)
+        info.AddValue("_f05", _f05);
+
+      base.OnGetState(info, mode);
+    }
+
+    protected override void OnSetState(SerializationInfo info, Csla.Core.StateMode mode)
+    {
+      if (info.Values.ContainsKey("_fieldBackedString"))
+        _fieldBackedString = info.GetValue<string>("_fieldBackedString");
+      if (info.Values.ContainsKey("_f02"))
+        _f02 = info.GetValue<int>("_f02");
+      if(info.Values.ContainsKey("_f03"))
+        _f03 = info.GetValue<string>("_f03");
+      if(info.Values.ContainsKey("_f04"))
+        _F04 = info.GetValue<Csla.SmartDate>("_f04");
+      if (info.Values.ContainsKey("_f05"))
+        _f05 = info.GetValue<bool>("_f05");
+
+      base.OnSetState(info, mode);
     }
 
     #endregion

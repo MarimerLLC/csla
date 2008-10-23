@@ -2,21 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla.Test.Security;
+using UnitDriven;
+using System.Diagnostics;
 
-#if !NUNIT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-#else
+#if NUNIT
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
+#elif MSTEST
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
 namespace Csla.Test.Authorization
 {
-    [TestClass()]
+#if TESTING
+    [DebuggerNonUserCode]
+    [DebuggerStepThrough]
+#endif
+  [TestClass()]
     public class AuthTests
     {
         private DataPortal.DpRoot root = DataPortal.DpRoot.NewRoot();
@@ -28,7 +33,11 @@ namespace Csla.Test.Authorization
 
             Security.TestPrincipal.SimulateLogin();
 
+#if SILVERLIGHT
+          Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+#else
             Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+#endif
 
             #region "Pre Cloning Tests" 
 
@@ -107,7 +116,11 @@ namespace Csla.Test.Authorization
 
             Security.TestPrincipal.SimulateLogin();
 
+#if SILVERLIGHT
+          Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+#else
             Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+#endif
 
             root.Data = "Something new";
 
@@ -269,11 +282,19 @@ namespace Csla.Test.Authorization
             pr.FirstName = "something";
             string something = pr.FirstName;
 
+#if SILVERLIGHT
+          Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+#else
             Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+#endif
             //set to null so the other testmethods continue to throw exceptions
             Csla.Test.Security.TestPrincipal.SimulateLogout();
 
+#if SILVERLIGHT
+          Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
+#else
             Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+#endif
         }
 
         [TestMethod]
@@ -286,11 +307,19 @@ namespace Csla.Test.Authorization
           //should work, because we are now logged in as an admin
           pr.DoWork();
 
+#if SILVERLIGHT
+          Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
+#else
           Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+#endif
           //set to null so the other testmethods continue to throw exceptions
           Csla.Test.Security.TestPrincipal.SimulateLogout();
 
+#if SILVERLIGHT
+          Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
+#else
           Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+#endif
         }
 
         [TestMethod]
@@ -299,7 +328,11 @@ namespace Csla.Test.Authorization
         {
           Csla.ApplicationContext.GlobalContext.Clear();
 
+#if SILVERLIGHT
+          Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
+#else
           Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+#endif
 
           PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
           //should fail, because we're not an admin

@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortalTest
             {
                 test = Single.NewObject();
                 test = test.Save();
-                test.id = 5;
+                test.Id = 5;
             }
             catch { Assert.Ignore(); }
             test.Save();

@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla;
+using Csla.Serialization;
 
 namespace Csla.Test.PropertyGetSet
 {
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   [Serializable]
   public class BadGetSet : BusinessBase<BadGetSet>
   {

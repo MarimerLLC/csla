@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="DataPortalTestDatabase" Class="TestLinqToSqlContextDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=|DataDirectory|\DataPortalTestDatabase.mdf;Integrated Security=True;User Instance=True" SettingsObjectName="Csla.Test.Properties.Settings" SettingsPropertyName="DataPortalTestDatabaseConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Table1" Member="Table1s">
+    <Type Name="Table1">
+      <Column Name="Name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Age" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

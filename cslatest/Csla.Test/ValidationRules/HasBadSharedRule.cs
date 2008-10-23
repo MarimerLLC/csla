@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla;
+using Csla.Serialization;
 
 namespace Csla.Test.ValidationRules
 {
+#if TESTING
+  [System.Diagnostics.DebuggerStepThrough]
+#endif
   [Serializable]
   public class HasBadSharedRule : BusinessBase<HasBadSharedRule>
   {

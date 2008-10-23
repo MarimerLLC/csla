@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.DataPortalClient;
+using Csla.Serialization;
 
 namespace Csla.Test.DataPortal
 {
     [Serializable()]
     public class DpRoot : BusinessBase<DpRoot>
     {
+#if SILVERLIGHT
+      public DpRoot() { }
+#endif
         private string _data;
         private string _auth = "No value";
 
@@ -85,7 +90,21 @@ namespace Csla.Test.DataPortal
         #endregion
 
         #region "New root + constructor"
-
+#if SILVERLIGHT
+        public static DpRoot NewRoot()
+        {
+          DpRoot returnValue = new DpRoot();
+          returnValue._data = new Criteria()._data;
+          return returnValue;
+        }
+        public static DpRoot GetRoot(string data)
+        {
+          DpRoot returnValue = new DpRoot();
+          returnValue._data = new Criteria()._data;
+          returnValue.MarkOld();
+          return returnValue;
+        }
+#else
         public static DpRoot NewRoot()
         {
             Criteria crit = new Criteria();
@@ -96,14 +115,15 @@ namespace Csla.Test.DataPortal
         {
             return (Csla.DataPortal.Fetch<DpRoot>(new Criteria(data)));
         }
-
-        private DpRoot()
+              private DpRoot()
         {
             //prevent direct creation
             //AddAuthRules();
         }
+#endif
 
-        #endregion 
+
+        #endregion
 
         public DpRoot CloneThis()
         {
@@ -112,6 +132,8 @@ namespace Csla.Test.DataPortal
 
 
         #region "DataPortal"
+
+      #if !SILVERLIGHT
 
         private void DataPortal_Create(object criteria)
         {
@@ -155,6 +177,8 @@ namespace Csla.Test.DataPortal
         {
             Csla.ApplicationContext.GlobalContext["serverinvokecomplete"] = true;
         }
+
+#endif
 
         #endregion
 

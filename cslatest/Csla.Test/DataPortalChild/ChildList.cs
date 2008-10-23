@@ -18,6 +18,11 @@ namespace Csla.Test.DataPortalChild
       MarkAsChild();
     }
 
+    public object MyParent
+    {
+      get { return this.Parent; }
+    }
+
     private string _status;
     public string Status
     {

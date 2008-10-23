@@ -30,14 +30,14 @@ namespace Csla.Test.EditableRootList
     public void RemoveNewItem()
     {
       ApplicationContext.GlobalContext.Clear();
-
+      _isListSaved = false;
       ERlist list = new ERlist();
       ERitem item = list.AddNew();
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       Assert.IsTrue(list[0].IsNew, "Object should be new");
-
+      list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
       list.RemoveAt(0);
-      
+      Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual(0, list.Count, "Incorrect count after remove");
       Assert.IsNull(ApplicationContext.GlobalContext["DP"], "Object should not have done a delete");
       Assert.IsTrue(item.IsNew, "Object should be new after delete");
@@ -47,32 +47,44 @@ namespace Csla.Test.EditableRootList
     public void RemoveOldItem()
     {
       ApplicationContext.GlobalContext.Clear();
+      _isListSaved = false;
 
       ERlist list = new ERlist();
+      
       list.Add(ERitem.GetItem("test"));
       ERitem item = list[0];
       item.Saved += new EventHandler<Csla.Core.SavedEventArgs>(item_Saved);
+      list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
 
       list.RemoveAt(0);
-
+      Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual(0, list.Count, "Incorrect count after remove");
       Assert.AreEqual("DeleteSelf", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have deleted itself");
       Assert.IsTrue(_itemIsNew, "Object should be new after delete");
     }
 
     private bool _itemIsNew;
+    private bool _isListSaved;
 
     void item_Saved(object sender, Csla.Core.SavedEventArgs e)
     {
       _itemIsNew = ((ERitem)e.NewObject).IsNew;
     }
 
+    void List_Saved(object sender, Csla.Core.SavedEventArgs e)
+    {
+      _isListSaved = (e.Error==null && e.NewObject != null);
+    }
+
     [TestMethod]
     public void InsertItem()
     {
+      _isListSaved = false;
+
       ERlist list = new ERlist();
+      list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
       ERitem item = list.AddNew();
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       
@@ -81,7 +93,7 @@ namespace Csla.Test.EditableRootList
       obj.BeginEdit();
       list[0].Data = "test";
       obj.EndEdit();
-
+      Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual("Insert", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been inserted");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
     }
@@ -89,7 +101,10 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void UpdateItem()
     {
+      _isListSaved = false;
+
       ERlist list = new ERlist();
+      list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
       list.Add(ERitem.GetItem("test"));
       ERitem item = list[0];
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
@@ -103,9 +118,16 @@ namespace Csla.Test.EditableRootList
       Assert.IsFalse(list[0].IsDeleted, "Object should not be deleted");
       Assert.IsTrue(list[0].IsDirty, "Object should be dirty");
       obj.EndEdit();
-
+      Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual("Update", ApplicationContext.GlobalContext["DP"].ToString(), "Object should have been updated");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
+    }
+
+    [TestMethod]
+    public void BusyImplemented()
+    {
+      ERlist list = new ERlist();
+      Assert.IsFalse(list.IsBusy);
     }
 
     [TestMethod]

@@ -30,6 +30,13 @@ namespace Csla.Test.DataPortalChild
       set { SetProperty<string>(DataProperty, value); }
     }
 
+    private static PropertyInfo<string> RootDataProperty = RegisterProperty<string>(typeof(Child), new PropertyInfo<string>("RootData","RootData",string.Empty));
+    public string RootData
+    {
+      get { return GetProperty<string>(RootDataProperty); }
+      set { SetProperty<string>(RootDataProperty, value); }
+    }
+
     private string _status;
     public string Status
     {
@@ -54,11 +61,27 @@ namespace Csla.Test.DataPortalChild
     protected void Child_Insert()
     {
       _status = "Inserted";
+      if (this.Parent is ChildList)
+      {
+        LoadProperty(RootDataProperty, ((Root)((ChildList)this.Parent).MyParent).Data);
+      }
+      else
+      {
+        LoadProperty(RootDataProperty, ((Root)this.Parent).Data);
+      }
     }
 
     protected void Child_Update()
     {
       _status = "Updated";
+      if (this.Parent is ChildList)
+      {
+        LoadProperty(RootDataProperty, ((Root)((ChildList)this.Parent).MyParent).Data);
+      }
+      else
+      {
+        LoadProperty(RootDataProperty, ((Root)this.Parent).Data);
+      }
     }
 
     protected void Child_DeleteSelf()

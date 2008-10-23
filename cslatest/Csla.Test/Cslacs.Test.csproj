@@ -30,6 +30,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkSubset>Full</TargetFrameworkSubset>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,19 +45,31 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\cs\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NUNIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Testing\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;csla20cs;NUNIT</DefineConstants>
+    <WarningLevel>1</WarningLevel>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=2.1.4.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+    <Reference Include="Csla, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\cslacs\Csla\bin\Debug\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="nunit.framework, Version=2.4.4.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files\NUnit 2.4.4\bin\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\NUnit 2.4.8\bin\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86" />
     <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -66,10 +79,23 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Data.Entity">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnitDrivenNET, Version=0.0.1.20413, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\UnitDriven\UnitDrivenNET.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +107,8 @@
     <Compile Include="Authorization\AuthTests.cs" />
     <Compile Include="Authorization\PerTypeAuthClasses.cs" />
     <Compile Include="Authorization\PerTypeAuthorization.cs" />
+    <Compile Include="Authorization\ReadonlyAuthorizationTests.cs" />
+    <Compile Include="Authorization\ReadOnlyPerson.cs" />
     <Compile Include="Basic\BasicTests.cs" />
     <Compile Include="Basic\Child.cs" />
     <Compile Include="Basic\Children.cs" />
@@ -93,6 +121,11 @@
     <Compile Include="Basic\ReadOnlyList.cs" />
     <Compile Include="Basic\Root.cs" />
     <Compile Include="Basic\RootList.cs" />
+    <Compile Include="BusyStatus\BusyStatusTests.cs" />
+    <Compile Include="BypassPropertyChecks\BypassBusinessBase.cs" />
+    <Compile Include="BypassPropertyChecks\BypassPropertyChecksTests.cs" />
+    <Compile Include="BypassPropertyChecks\BypassBusinessBaseUsingFactory.cs" />
+    <Compile Include="BypassPropertyChecks\TestObjectFactory.cs" />
     <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
     <Compile Include="Basic\CollectionTests.cs" />
     <Compile Include="CslaQueryProvider\CslaQueryProviderTests.cs" />
@@ -101,6 +134,7 @@
     <Compile Include="DataPortalChild\ChildList.cs" />
     <Compile Include="DataPortalChild\DataPortalChildTests.cs" />
     <Compile Include="DataPortalChild\Root.cs" />
+    <Compile Include="DataPortal\AsynchDataPortalTest.cs" />
     <Compile Include="DataPortal\ChildEntity.cs" />
     <Compile Include="DataPortal\ChildEntityList.cs" />
     <Compile Include="DataPortal\Legacy.cs" />
@@ -110,7 +144,6 @@
     <Compile Include="DataPortal\LegacyTest.cs" />
     <Compile Include="DataPortal\ParentEntity.cs" />
     <Compile Include="DataPortal\ESTransactionalRoot.cs" />
-    <Compile Include="DataPortal\Single.cs" />
     <Compile Include="DataPortal\SingleOverload.cs" />
     <Compile Include="DataPortal\SingleOverloadTest.cs" />
     <Compile Include="DataPortal\SingleTest.cs" />
@@ -133,10 +166,33 @@
     </Compile>
     <Compile Include="DataPortal\DataPortalTests.cs" />
     <Compile Include="DataPortal\DpRoot.cs" />
+    <Compile Include="Data\ContextTests.cs" />
+    <Compile Include="Data\TestEFContext.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestEFContext.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Data\TestLinqToSqlContext.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestLinqToSqlContext.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="Data\TransactionContextUser.cs" />
+    <Compile Include="Data\TransactionContextUserList.cs" />
     <Compile Include="DPException\DataPortalExceptionTests.cs" />
     <Compile Include="EditableRootList\EditableRootListTests.cs" />
     <Compile Include="EditableRootList\ERitem.cs" />
     <Compile Include="EditableRootList\ERlist.cs" />
+    <Compile Include="LogicalExecutionLocation\LocationBusinessBase.cs" />
+    <Compile Include="LogicalExecutionLocation\LogicalExecutionLocationTests.cs" />
+    <Compile Include="MethodCaller\Caller1.cs" />
+    <Compile Include="MethodCaller\Caller2.cs" />
+    <Compile Include="MethodCaller\Caller3.cs" />
+    <Compile Include="ObjectFactory\MissingRoot.cs" />
+    <Compile Include="ObjectFactory\ObjectFactoryLoader.cs" />
+    <Compile Include="ObjectFactory\ObjectFactoryTests.cs" />
+    <Compile Include="ObjectFactory\Root.cs" />
+    <Compile Include="ObjectFactory\RootFactory.cs" />
     <Compile Include="IdentityConverter\IdentityConverterTests.cs" />
     <Compile Include="IO\DPMethodOverloadTests.cs" />
     <Compile Include="IO\IOTests.cs" />
@@ -170,17 +226,59 @@
     <Compile Include="Serialization\SerializationRoot.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />
     <Compile Include="Serialization\TestEventSink.cs" />
+    <Compile Include="Silverlight\ApplicationContext\ClientContextTests.cs" />
+    <Compile Include="Silverlight\ApplicationContext\GlobalContextTests.cs" />
+    <Compile Include="Silverlight\ApplicationContext\ClientContextTests.server.cs" />
+    <Compile Include="Silverlight\ApplicationContext\GlobalCOntextTests.server.cs" />
+    <Compile Include="Silverlight\CommandBase\CommandBaseTests.cs" />
+    <Compile Include="DataPortal\AuthorizeDataPortalTests.cs" />
+    <Compile Include="Silverlight\DataPortal\AuthorizeDataPortalTests.cs" />
+    <Compile Include="Silverlight\NameValueList\NameValueListTests.cs" />
+    <Compile Include="Silverlight\PropertyGetSet\AbstractGetSet.cs" />
+    <Compile Include="Silverlight\PropertyGetSet\InheritedLoadPropertySet.cs" />
+    <Compile Include="Silverlight\PropertyGetSet\PropertGetSetTests.cs" />
+    <Compile Include="Silverlight\ReadOnly\MockReadOnly.cs" />
+    <Compile Include="Silverlight\ReadOnly\MockReadOnlyList.cs" />
+    <Compile Include="Silverlight\ReadOnly\ReadOnlyTests.cs" />
+    <Compile Include="Silverlight\Rollback\RollbackRoot.cs" />
+    <Compile Include="Silverlight\Rollback\RollbackTests.cs" />
+    <Compile Include="Silverlight\Security\SecurityTests.server.cs" />
+    <Compile Include="Silverlight\Security\SecurityTests.cs" />
+    <Compile Include="Silverlight\Serialization\Address.cs" />
+    <Compile Include="Silverlight\Serialization\AddressBase.cs" />
+    <Compile Include="Silverlight\Serialization\AddressList.cs" />
+    <Compile Include="Silverlight\Serialization\BindingListTests.cs" />
+    <Compile Include="Silverlight\Serialization\CustomMobileList.cs" />
+    <Compile Include="Silverlight\Serialization\MockNonBusinessObject.cs" />
+    <Compile Include="Silverlight\Serialization\MockReadOnly.cs" />
+    <Compile Include="Silverlight\Serialization\MockReadOnlyList.cs" />
+    <Compile Include="Silverlight\Serialization\Person.cs" />
+    <Compile Include="Silverlight\Serialization\PersonWIthSmartDateField.cs" />
+    <Compile Include="Silverlight\Serialization\ReadOnlyPerson.cs" />
+    <Compile Include="Silverlight\Serialization\ReadOnlyPersonList.cs" />
+    <Compile Include="Silverlight\Serialization\SerializationTests.cs" />
+    <Compile Include="Silverlight\Serialization\UndoTests.cs" />
+    <Compile Include="Silverlight\Stereotypes\EditableChildTestsLocal.cs" />
+    <Compile Include="Silverlight\Stereotypes\EditableChildTestsRemote.cs" />
+    <Compile Include="Silverlight\Stereotypes\EditableRootTests.cs" />
+    <Compile Include="Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
+    <Compile Include="Threading\BusyLockTests.cs" />
     <Compile Include="Utilities\CorerseValueTests.cs" />
     <Compile Include="Utilities\UtilitiesTestHelper.cs" />
+    <Compile Include="ValidationRules\AsyncRuleTests.cs" />
     <Compile Include="ValidationRules\BrokenRulesMergeRoot.cs" />
+    <Compile Include="ValidationRules\HasAsyncRule.cs" />
     <Compile Include="ValidationRules\HasBadSharedRule.cs" />
+    <Compile Include="ValidationRules\HasInvalidAsyncRule.cs" />
     <Compile Include="ValidationRules\HasPerTypeClasses.cs" />
     <Compile Include="ValidationRules\HasPerTypeRules.cs" />
     <Compile Include="ValidationRules\HasRegEx.cs" />
     <Compile Include="ValidationRules\HasRulesManager.cs" />
+    <Compile Include="ValidationRules\HasRulesManager.partial.cs" />
     <Compile Include="ValidationRules\HasRulesManager2.cs" />
+    <Compile Include="ValidationRules\HasRulesManager2.partial.cs" />
     <Compile Include="ValidationRules\MaxLengthArgs.cs" />
     <Compile Include="ValidationRules\SeverityClasses.cs" />
     <Compile Include="ValidationRules\SeverityTests.cs" />
@@ -202,6 +300,11 @@
     <None Include="DataPortalTestDatabaseDataSet.xss">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
     </None>
+    <None Include="Data\TestLinqToSqlContext.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>TestLinqToSqlContext.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -209,11 +312,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataPortalTestDatabase.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="DataPortalTestDatabase_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>DataPortalTestDatabase.mdf</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -242,6 +345,24 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="Data\TestEFContext.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>TestEFContext.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Data\TestLinqToSqlContext.dbml.layout">
+      <DependentUpon>TestLinqToSqlContext.dbml</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Silverlight\Server\CslaLight.Testing.Server.csproj">
+      <Project>{3374389D-59D8-44B1-B6D0-015819DB482C}</Project>
+      <Name>CslaLight.Testing.Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

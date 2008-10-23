@@ -1,38 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#region using
 
-#if !NUNIT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.ComponentModel;
+using UnitDriven;
+using Csla.Serialization.Mobile;
+using Csla.Core;
 
-#else
+#if NUNIT
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
+#elif MSTEST
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
+
+#endregion
 
 namespace Csla.Test.PropertyGetSet
 {
-  [TestClass()]
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
+  [TestClass]
   public class PropertyGetSetTests
   {
+#if SILVERLIGHT
+    [TestInitialize]
+    public void Setup()
+    {
+      Csla.DataPortal.ProxyTypeName = "Local"; // "Csla.DataPortalClient.WcfProxy, Csla";
+    }
+#endif
+
     [TestMethod]
     public void ExplicitFieldProperties()
     {
       EditableGetSet root = new EditableGetSet();
-      root.PropertyChanging += new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging); 
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
       Assert.AreEqual("n/a", root.F03, "Default value should have been set");
-      Assert.AreEqual("", root.F01, "String should default to string.Empty");
+      Assert.AreEqual("", root.FieldBackedString, "String should default to string.Empty");
       Assert.AreEqual(0, root.F02, "Numeric should default to 0");
       Assert.AreEqual(false, root.F05, "bool should default to false");
 
-      root.F01 = "hi there";
-      Assert.AreEqual("hi there", root.F01, "String should have been set");
-      Assert.AreEqual("F01", _changingName, "F01 should have been changing");
-      Assert.AreEqual("F01", _changedName, "F01 should have changed");
+      root.FieldBackedString = "hi there";
+      Assert.AreEqual("hi there", root.FieldBackedString, "String should have been set");
+
+      Assert.AreEqual("FieldBackedString", _changingName, "FieldBackedString should have been changing");
+
+      Assert.AreEqual("FieldBackedString", _changedName, "FieldBackedString should have changed");
 
       root.F02 = 123;
       Assert.AreEqual(123, root.F02, "Numeric should have been set");
@@ -42,7 +60,7 @@ namespace Csla.Test.PropertyGetSet
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
-      root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
       root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
     }
 
@@ -52,12 +70,12 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet root = new EditableGetSet();
       root = root.Clone();
       Assert.AreEqual("n/a", root.F03, "Default value should have been set");
-      Assert.AreEqual("", root.F01, "String should default to string.Empty");
+      Assert.AreEqual("", root.FieldBackedString, "String should default to string.Empty");
       Assert.AreEqual(0, root.F02, "Numeric should default to 0");
 
-      root.F01 = "hi there";
+      root.FieldBackedString = "hi there";
       root = root.Clone();
-      Assert.AreEqual("hi there", root.F01, "String should have been set");
+      Assert.AreEqual("hi there", root.FieldBackedString, "String should have been set");
 
       root.F02 = 123;
       Assert.AreEqual(123, root.F02, "Numeric should have been set");
@@ -69,31 +87,34 @@ namespace Csla.Test.PropertyGetSet
     public void ManagedFieldProperties()
     {
       EditableGetSet root = new EditableGetSet();
-      root.PropertyChanging += new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
       Assert.AreEqual("n/a", root.M03, "Default value should have been set");
-      Assert.AreEqual("", root.M01, "String should default to string.Empty");
+      Assert.AreEqual("", root.ManagedStringField, "String should default to string.Empty");
       Assert.AreEqual(0, root.M02, "Numeric should default to 0");
       Assert.AreEqual(false, root.M05, "bool should default to false");
 
-      root.M01 = "hi there";
-      Assert.AreEqual("hi there", root.M01, "String should have been set");
-      Assert.AreEqual("M01", _changingName, "M01 should have been changing");
-      Assert.AreEqual("M01", _changedName, "M01 should have changed");
+      root.ManagedStringField = "hi there";
+      Assert.AreEqual("hi there", root.ManagedStringField, "String should have been set");
+      Assert.AreEqual("ManagedStringField", _changingName, "ManagedStringField should have been changing");
+      Assert.AreEqual("ManagedStringField", _changedName, "ManagedStringField should have changed");
 
       _changedName = string.Empty;
       _changingName = string.Empty;
-      root.M01 = "hi there";
-      Assert.AreEqual("hi there", root.M01, "String should be the same");
-      Assert.AreEqual(string.Empty, _changingName, "M01 should not have been changing");
-      Assert.AreEqual(string.Empty, _changedName, "M01 should not have changed");
+
+      root.ManagedStringField = "hi there";
+      Assert.AreEqual("hi there", root.ManagedStringField, "String should be the same");
+      Assert.AreEqual(string.Empty, _changingName, "ManagedStringField should not have been changing");
+
+      Assert.AreEqual(string.Empty, _changedName, "ManagedStringField should not have changed");
 
       root.M02 = 123;
       Assert.AreEqual(123, root.M02, "Numeric should have been set");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
-      root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+
       root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
     }
 
@@ -101,25 +122,33 @@ namespace Csla.Test.PropertyGetSet
     public void ManagedFieldBaseProperties()
     {
       EditableGetSet root = new EditableGetSet();
-      root.PropertyChanging += new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+
+      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+
       root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
       Assert.AreEqual("", root.Base, "String should default to string.Empty");
       Assert.AreEqual("", root.TopBase, "TopBase should default to string.Empty");
 
       root.Base = "hi there";
       Assert.AreEqual("hi there", root.Base, "String should have been set");
+
       Assert.AreEqual("Base", _changingName, "Base should have been changing");
+
       Assert.AreEqual("Base", _changedName, "Base should have changed");
 
       root.TopBase = "hi there";
       Assert.AreEqual("hi there", root.TopBase, "TopBase should have been set");
+
       Assert.AreEqual("TopBase", _changingName, "TopBase should have been changing");
+
       Assert.AreEqual("TopBase", _changedName, "TopBase should have changed");
 
       root.M05 = true;
       Assert.AreEqual(true, root.M05, "bool should have been set");
 
-      root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+
+      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+
       root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
     }
 
@@ -129,12 +158,12 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet root = new EditableGetSet();
       root = root.Clone();
       Assert.AreEqual("n/a", root.M03, "Default value should have been set");
-      Assert.AreEqual("", root.M01, "String should default to string.Empty");
+      Assert.AreEqual("", root.ManagedStringField, "String should default to string.Empty");
       Assert.AreEqual(0, root.M02, "Numeric should default to 0");
 
-      root.M01 = "hi there";
+      root.ManagedStringField = "hi there";
       root = root.Clone();
-      Assert.AreEqual("hi there", root.M01, "String should have been set");
+      Assert.AreEqual("hi there", root.ManagedStringField, "String should have been set");
 
       root.M02 = 123;
       root = root.Clone();
@@ -148,8 +177,8 @@ namespace Csla.Test.PropertyGetSet
     {
       EditableGetSet root = new EditableGetSet();
 
-      root.M01 = "hi there";
-      root.F01 = "hi there";
+      root.ManagedStringField = "hi there";
+      root.FieldBackedString = "hi there";
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.MarkClean();
@@ -177,48 +206,79 @@ namespace Csla.Test.PropertyGetSet
     public void SimpleChildProperties()
     {
       EditableGetSet root = new EditableGetSet();
-      root.PropertyChanged += root_PropertyChanged;
-      root.ChildChanged += root_ChildChanged;
+
+      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+
+      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
       
-      EditableGetSet child = root.C01;
+      EditableGetSet child = root.ManagedChild;
       Assert.IsNotNull(child, "Child should not be null");
-      Assert.AreEqual("C01", _changedName, "C01 should have changed");
+
+      Assert.AreEqual("ManagedChild", _changingName, "ManagedChild should have been changing");
+
+      Assert.AreEqual("ManagedChild", _changedName, "ManagedChild should have changed");
+
+      _changingName = "";
+
       _changedName = "";
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
       Assert.IsTrue(child.IsDirty, "Child should be dirty");
 
-      child.F01 = "hi there";
-      Assert.AreEqual("F01", _childChangedName, "C01.F01 should have changed");
 
-      root.ChildChanged -= root_ChildChanged;
+      child.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+
+      child.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      child.FieldBackedString = "hi there";
+
+      Assert.AreEqual("FieldBackedString", _changingName, "ManagedChild should NOT have been changing");
+      Assert.AreEqual(false, ("ManagedChild" == _changedName), "ManagedChild should have changed");
+
+
+      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+      child.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+
+      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      child.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
     }
 
     [TestMethod]
     public void SerializedSimpleChildProperties()
     {
       EditableGetSet root = new EditableGetSet();
-      EditableGetSet child = root.C01;
-      child.F01 = "hi there";
+      EditableGetSet child = root.ManagedChild;
+      child.FieldBackedString = "hi there";
 
       root = root.Clone();
-      root.PropertyChanging += new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
-      root.ChildChanged += root_ChildChanged;
 
-      child = root.C01;
+      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+
+      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+
+      child = root.ManagedChild;
       Assert.IsNotNull(child, "Child should not be null");
-      Assert.AreEqual("hi there", child.F01, "Child value should be intact");
+      Assert.AreEqual("hi there", child.FieldBackedString, "Child value should be intact");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
       Assert.IsTrue(child.IsDirty, "Child should be dirty");
 
-      _changingName = "";
-      _changedName = "";
-      child.F01 = "I've been cloned!";
-      Assert.AreEqual("F01", _childChangedName, "C01.FO1 should have changed");
 
-      root.PropertyChanging -= new System.ComponentModel.PropertyChangingEventHandler(root_PropertyChanging);
+      _changingName = "";
+      child.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+
+      _changedName = "";
+      child.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      child.FieldBackedString = "I've been cloned!";
+
+      Assert.AreEqual("FieldBackedString", _changingName, "ManagedChild should NOT have been changing");
+      Assert.AreEqual(false, ("ManagedChild" == _changedName), "ManagedChild should have changed");
+
+
+
+      child.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+
+      child.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
       root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
     }
 
@@ -229,22 +289,22 @@ namespace Csla.Test.PropertyGetSet
 
       Assert.IsFalse(root.IsDirty, "Root should not start dirty");
 
-      Assert.AreEqual("", root.F01, "Explicit String should default to string.Empty");
-      Assert.AreEqual("", root.M01, "Managed String should default to string.Empty");
+      Assert.AreEqual("", root.FieldBackedString, "Explicit String should default to string.Empty");
+      Assert.AreEqual("", root.ManagedStringField, "Managed String should default to string.Empty");
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after defaults load");
 
       root.BeginEdit();
-      root.F01 = "f01";
-      root.M01 = "m01";
-      Assert.AreEqual("f01", root.F01, "String should be f01");
-      Assert.AreEqual("m01", root.M01, "String should be m01");
+      root.FieldBackedString = "fieldBackedString";
+      root.ManagedStringField = "ManagedStringField";
+      Assert.AreEqual("fieldBackedString", root.FieldBackedString, "String should be fieldBackedString");
+      Assert.AreEqual("ManagedStringField", root.ManagedStringField, "String should be ManagedStringField");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.CancelEdit();
-      Assert.AreEqual("", root.F01, "Explicit String should revert to string.Empty");
-      Assert.AreEqual("", root.M01, "Managed String should revert to string.Empty");
+      Assert.AreEqual("", root.FieldBackedString, "Explicit String should revert to string.Empty");
+      Assert.AreEqual("", root.ManagedStringField, "Managed String should revert to string.Empty");
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty");
     }
@@ -256,27 +316,31 @@ namespace Csla.Test.PropertyGetSet
 
       Assert.IsFalse(root.IsDirty, "Root should not start dirty");
 
-      Assert.AreEqual("", root.F01, "Explicit String should default to string.Empty");
-      Assert.AreEqual("", root.M01, "Managed String should default to string.Empty");
+      Assert.AreEqual("", root.FieldBackedString, "Explicit String should default to string.Empty");
+      Assert.AreEqual("", root.ManagedStringField, "Managed String should default to string.Empty");
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after defaults load");
 
       root.BeginEdit();
-      root.F01 = "f01";
-      root.M01 = "m01";
-      Assert.AreEqual("f01", root.F01, "String should be f01");
-      Assert.AreEqual("m01", root.M01, "String should be m01");
+      root.FieldBackedString = "fieldBackedString";
+      root.ManagedStringField = "ManagedStringField";
+      Assert.AreEqual("fieldBackedString", root.FieldBackedString, "String should be fieldBackedString");
+      Assert.AreEqual("ManagedStringField", root.ManagedStringField, "String should be ManagedStringField");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.ApplyEdit();
-      Assert.AreEqual("f01", root.F01, "String should be f01 after apply");
-      Assert.AreEqual("m01", root.M01, "String should be m01 after apply");
+      Assert.AreEqual("fieldBackedString", root.FieldBackedString, "String should be fieldBackedString after apply");
+      Assert.AreEqual("ManagedStringField", root.ManagedStringField, "String should be ManagedStringField after apply");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty after ApplyEdit");
       Assert.IsTrue(root.IsValid, "Root should be valid (no validation rules exist)");
 
+#if SILVERLIGHT
+      root.BeginSave((o, e) => { root = (EditableGetSet)e.NewObject; });
+#else
       root = root.Save();
+#endif
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after Save");
     }
@@ -289,16 +353,18 @@ namespace Csla.Test.PropertyGetSet
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
 
-      EditableGetSet initialChild = root.C01;
+      EditableGetSet initialChild = root.ManagedChild;
       Assert.AreEqual(1, initialChild.EditLevel, "Child edit level after being created");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.CancelEdit();
       Assert.AreEqual(0, root.EditLevel, "Root edit level after CancelEdit");
-      EditableGetSet secondChild = root.C01;
+      EditableGetSet secondChild = root.ManagedChild;
       Assert.AreEqual(0, secondChild.EditLevel, "Second child edit level after being created");
+#if !SILVERLIGHT
       Assert.IsFalse(ReferenceEquals(initialChild, secondChild), "Child objects should be different");
+#endif
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty after second child created");
     }
@@ -310,16 +376,16 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
-      Assert.AreEqual(1, root.C01.EditLevel, "Child edit level after BeginEdit");
-      Assert.AreEqual(1, root.L01.EditLevel, "List edit level after BeginEdit");
-      root.L01.Add(new EditableGetSet(true));
-      Assert.AreEqual(1, root.L01[0].EditLevel, "List child edit level after BeginEdit");
+      Assert.AreEqual(1, root.ManagedChild.EditLevel, "Child edit level after BeginEdit");
+      Assert.AreEqual(1, root.ManagedChildList.EditLevel, "List edit level after BeginEdit");
+      root.ManagedChildList.Add(new EditableGetSet(true));
+      Assert.AreEqual(1, root.ManagedChildList[0].EditLevel, "List child edit level after BeginEdit");
 
       root = root.Clone();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after Clone");
-      Assert.AreEqual(1, root.C01.EditLevel, "Child edit level after Clone");
-      Assert.AreEqual(1, root.L01.EditLevel, "List edit level after Clone");
-      Assert.AreEqual(1, root.L01[0].EditLevel, "List child edit level after Clone");
+      Assert.AreEqual(1, root.ManagedChild.EditLevel, "Child edit level after Clone");
+      Assert.AreEqual(1, root.ManagedChildList.EditLevel, "List edit level after Clone");
+      Assert.AreEqual(1, root.ManagedChildList[0].EditLevel, "List child edit level after Clone");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
     }
@@ -330,14 +396,18 @@ namespace Csla.Test.PropertyGetSet
       EditableGetSet root = new EditableGetSet();
       root.BeginEdit();
 
-      EditableGetSet initialChild = root.C01;
+      EditableGetSet initialChild = root.ManagedChild;
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
       Assert.IsTrue(initialChild.IsDirty, "Child should be dirty");
 
       root.CancelEdit();
 
+      // root.ManagedChild should be reset to null thus IsDirty should be false again.
       Assert.IsFalse(root.IsDirty, "Root should not be dirty");
+
+      Assert.IsTrue(root.ManagedChild.IsDirty, "Child should be dirty after lazy loading");
+      Assert.IsTrue(root.IsDirty, "Root should now be dirty since it lazy loaded ManagedChild");
     }
 
     [TestMethod]
@@ -348,20 +418,24 @@ namespace Csla.Test.PropertyGetSet
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
 
-      EditableGetSet initialChild = root.C01;
+      EditableGetSet initialChild = root.ManagedChild;
       Assert.AreEqual(1, initialChild.EditLevel, "Child edit level after being created");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
       root.ApplyEdit();
       Assert.AreEqual(0, root.EditLevel, "Root edit level after ApplyEdit");
-      EditableGetSet secondChild = root.C01;
+      EditableGetSet secondChild = root.ManagedChild;
       Assert.AreEqual(0, secondChild.EditLevel, "Second child edit level after ApplyEdit");
       Assert.IsTrue(ReferenceEquals(initialChild, secondChild), "Child objects should be the same");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty after ApplyEdit");
 
+#if SILVERLIGHT
+      root.BeginSave((o, e) => { root = (EditableGetSet)e.NewObject; });
+#else
       root = root.Save();
+#endif
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after Save");
     }
@@ -374,7 +448,7 @@ namespace Csla.Test.PropertyGetSet
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
 
-      ChildList list = root.L01;
+      ChildList list = root.ManagedChildList;
       Assert.AreEqual(1, list.EditLevel, "List edit level after being created");
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty");
@@ -385,7 +459,7 @@ namespace Csla.Test.PropertyGetSet
 
       root.CancelEdit();
       Assert.AreEqual(0, root.EditLevel, "Root edit level after CancelEdit");
-      ChildList secondList = root.L01;
+      ChildList secondList = root.ManagedChildList;
       Assert.AreEqual(0, secondList.EditLevel, "Second list edit level after CancelEdit");
       Assert.IsFalse(ReferenceEquals(list, secondList), "List objects should not be the same");
 
@@ -396,39 +470,43 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildListUndoApply()
     {
-      EditableGetSet root = new EditableGetSet();
+      var root = new EditableGetSet();
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
       root.BeginEdit();
       Assert.AreEqual(1, root.EditLevel, "Root edit level after BeginEdit");
 
-      ChildList list = root.L01;
-      Assert.AreEqual(1, list.EditLevel, "List edit level after being created");
+      var childList = root.ManagedChildList;
+      Assert.AreEqual(1, childList.EditLevel, "List edit level after being created");
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty");
-      Assert.IsFalse(list.IsDirty, "List should not be dirty");
+      Assert.IsFalse(childList.IsDirty, "List should not be dirty");
 
-      list.Add(new EditableGetSet(true));
-      Assert.AreEqual(1, list.Count, "List count should be 1");
+      childList.Add(new EditableGetSet(true));
+      Assert.AreEqual(1, childList.Count, "List count should be 1");
 
       root.ApplyEdit();
       Assert.AreEqual(0, root.EditLevel, "Root edit level after ApplyEdit");
-      ChildList secondList = root.L01;
-      Assert.AreEqual(0, secondList.EditLevel, "Second list edit level after ApplyEdit");
-      Assert.IsTrue(ReferenceEquals(list, secondList), "List objects should be the same");
+      var secondChildList = root.ManagedChildList;
+      Assert.AreEqual(0, secondChildList.EditLevel, "Second list edit level after ApplyEdit");
+      Assert.IsTrue(ReferenceEquals(childList, secondChildList), "List objects should be the same");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty after ApplyEdit");
-      Assert.IsTrue(secondList.IsDirty, "Second list should be dirty");
+      Assert.IsTrue(secondChildList.IsDirty, "Second list should be dirty");
 
+#if SILVERLIGHT
+      root.BeginSave((o, e) => { root = (EditableGetSet)e.NewObject; });
+#else
       root = root.Save();
+#endif
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty after Save");
-      Assert.IsFalse(root.L01.IsDirty, "List should not be dirty after Save");
+      Assert.IsFalse(root.ManagedChildList.IsDirty, "List should not be dirty after Save");
     }
 
     [TestMethod]
     public void LoadNullProperty()
     {
-      var root = EditableGetSet.GetObject();
+      var root = new EditableGetSet();
       Assert.AreEqual(Guid.Empty, root.M06, "Guid should be null");
     }
 
@@ -440,32 +518,140 @@ namespace Csla.Test.PropertyGetSet
       var tmp = root.Id;
     }
 
+    #region Event Bubbling
+
     private string _changingName;
-    private string _changedName;
-    private string _childChangedName;
-    void root_PropertyChanging(object sender, System.ComponentModel.PropertyChangingEventArgs e)
+    void root_PropertyChanging(object sender, PropertyChangingEventArgs e)
     {
       _changingName = e.PropertyName;
     }
 
-    void root_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private string _changedName;
+    void root_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       _changedName = e.PropertyName;
-    }
-
-    void root_ChildChanged(object sender, Csla.Core.ChildChangedEventArgs e)
-    {
-      _childChangedName = e.PropertyChangedArgs.PropertyName;
     }
 
     [TestMethod]
     public void FieldDirty()
     {
       EditableGetSet root = new EditableGetSet();
-      Assert.IsFalse(root.M01Dirty, "M01 should not be dirty");
-      root.M01 = "hi there";
-      Assert.IsTrue(root.M01Dirty, "M01 should be dirty");
+      Assert.IsFalse(root.ManagedStringFieldDirty, "ManagedStringField should not be dirty");
+      root.ManagedStringField = "hi there";
+      Assert.IsTrue(root.ManagedStringFieldDirty, "ManagedStringField should be dirty");
     }
 
+    [TestMethod]
+    public void If_ManagedStringField_Property_Changes_ChildChanged_Event_Should_Not_Fire()
+    {
+      var root = new EditableGetSet();
+      root.ChildChanged += (o, e) => { throw new InvalidOperationException(); };
+      root.ManagedStringField = "test";
+    }
+
+    [TestMethod]
+    public void If_FieldBackedString_Property_Changes_On_ManagedChild_Then_ChildChanged_Should_Fire_On_Root_ButNot_On_ManagedChild()
+    {
+      int changed = 0;
+      var root = new EditableGetSet();
+      root.ChildChanged += (o, e) => { changed++; };
+      root.ManagedChild.ChildChanged += (o, e) => { throw new InvalidOperationException();};
+      root.ManagedChild.FieldBackedString = "changed";
+
+      Assert.AreEqual(1, changed);
+    }
+
+    [TestMethod]
+    public void If_FieldBackedString_Property_Changes_On_Item_In_ManagedChildList_Then_ChildChanged_Fires_On_Root_And_On_ManagedChildList()
+    {
+      int rootChanged = 0;
+      int listChanged = 0;
+
+      var root = new EditableGetSet();
+      root.ChildChanged += (o, e) => { rootChanged++; };
+
+      var list = root.ManagedChildList;
+      list.ChildChanged += (o, e) => { listChanged++; };
+
+      list.Add(new EditableGetSet(true));
+      list[0].FieldBackedString = "child change";
+
+      Assert.AreEqual(2, rootChanged);//this event fires twice once for lazy load of the child list and second for the property change on item in the list
+      Assert.AreEqual(1, listChanged);
+    }
+
+    [TestMethod]
+    public void If_FieldBackedString_Changes_On_GrandChild_Then_ChildChanged_Fires_On_GrandChild_Child_and_Root()
+    {
+      int rootChanged = 0;
+      int childListChanged = 0;
+      int grandChildListChanged = 0;
+      int childChanged = 0;
+      int grandChildPropertyChanged = 0;
+
+      var root = new EditableGetSet();
+      root.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
+      root.ChildChanged += (o, e) => { rootChanged++; };
+      root.ManagedChildList.ChildChanged += (o, e) => { childListChanged++; };
+
+      var child = new EditableGetSet(true);
+      child.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
+      child.ChildChanged += (o, e) => { childChanged++; };
+      child.ManagedChildList.ChildChanged += (o, e) => { grandChildListChanged++; };
+
+      var grandChild = new EditableGetSet(true);
+      grandChild.ChildChanged += (o, e) => { throw new InvalidOperationException(); }; // ChildChange only fires when child of self changes
+      grandChild.PropertyChanged += (o, e) => { grandChildPropertyChanged++; };
+
+      root.ManagedChildList.Add(child);
+      child.ManagedChildList.Add(grandChild);
+      root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "child change"; // or c2.FieldBackedString = "child change";
+
+      Assert.AreEqual(3, rootChanged);              //Child, and GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(2, childChanged);             //GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(2, childListChanged);         //GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(1, grandChildListChanged);    //Property changed on GrandChildList Item
+      Assert.AreEqual(1, grandChildPropertyChanged);//Property changed on GrandChildList Item
+    }
+
+    [TestMethod]
+    public void If_FieldBackedString_Property_Is_Changed_On_Child_After_CancelEdit_Then_ChildChanged_Fires_On_Root()
+    {
+      var root = new EditableGetSet();
+      var child = new EditableGetSet(true);
+      var grandChild = new EditableGetSet(true);
+      root.ManagedChildList.Add(child);
+      child.ManagedChildList.Add(grandChild);
+
+      root.BeginEdit();
+      root.CancelEdit();
+
+      int changed = 0;
+      root.ChildChanged += (o, e) => { changed++;};
+      child.FieldBackedString = "changed";
+
+      Assert.AreEqual(1, changed);
+    }
+
+    [TestMethod]
+    public void If_FieldBackedString_Is_Changed_On_GrandChild_List_Item_After_Root_Is_Deserialized_Then_Root_ChildChanged_Event_Fires()
+    {
+      var root = new EditableGetSet();
+      var child = new EditableGetSet(true);
+      var grandChild = new EditableGetSet(true);
+      root.ManagedChildList.Add(child);
+      child.ManagedChildList.Add(grandChild);
+
+      byte[] buffer = MobileFormatter.Serialize(root);
+      root = (EditableGetSet)MobileFormatter.Deserialize(buffer);
+
+      int changed = 0;
+      root.ChildChanged += (o, e) => { changed++; };
+      root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed";
+
+      Assert.AreEqual(1, changed);
+    }
+
+    #endregion
   }
 }

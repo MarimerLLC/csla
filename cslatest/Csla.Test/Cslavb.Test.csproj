@@ -70,6 +70,10 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnitDrivenNET, Version=0.0.1.32215, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\UnitDriven\UnitDrivenNET.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +247,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Silverlight\Server\CslaLight.Testing.Server.csproj">
+      <Project>{3374389D-59D8-44B1-B6D0-015819DB482C}</Project>
+      <Name>CslaLight.Testing.Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -33,16 +33,8 @@ namespace Csla.Test.RollBack
 
             Csla.ApplicationContext.GlobalContext.Clear();
             RollbackRoot tmp = (RollbackRoot)(root.Clone());
-            try
-            {
-                root.ApplyEdit();
-                root = root.Save();
-            }
-            catch (Exception ex)
-            {
-                root = tmp;
-                Assert.Fail("exception occurred " + ex.Message);
-            }
+            root.ApplyEdit();
+            root = root.Save();
 
             Assert.IsNotNull(root, "obj is not null");
             Assert.AreEqual("Inserted", Csla.ApplicationContext.GlobalContext["Root"], "obj was inserted");

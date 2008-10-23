@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace Csla.Test.DataPortal
 {
@@ -16,8 +17,7 @@ namespace Csla.Test.DataPortal
         private string _lastName;
         private string _smallColumn;
         //get the configurationmanager to work right
-        public const string CONNECTION_STRING =
-            "Data Source=.\\SQLEXPRESS;AttachDbFilename=|DataDirectory|DataPortalTestDatabase.mdf;Integrated Security=True;User Instance=True";
+        public static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString"].ConnectionString;
 
         public int ID
         {

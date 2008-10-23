@@ -13,6 +13,7 @@ using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
+using System.Configuration;
 #endif
 
 namespace Csla.Test.SafeDataReader
@@ -21,8 +22,7 @@ namespace Csla.Test.SafeDataReader
     public class SafeDataReaderTests
     {
         //pull from ConfigurationManager
-        private const string CONNECTION_STRING =
-            "Data Source=.\\SQLEXPRESS;AttachDbFilename=|DataDirectory|DataPortalTestDatabase.mdf;Integrated Security=True;User Instance=True";
+      private static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString"].ConnectionString;
 
         public void ClearDataBase()
         {

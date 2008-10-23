@@ -1,9 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Serialization;
+using Csla.DataPortalClient;
+using System.Diagnostics;
 
 namespace Csla.Test.Security
 {
+#if TESTING
+    [DebuggerNonUserCode]
+#endif
     [Serializable()]
     public class PermissionsRoot : BusinessBase<PermissionsRoot>
     {
@@ -61,21 +67,30 @@ namespace Csla.Test.Security
           #endregion
 
           #region "Constructors"
+#if SILVERLIGHT
+      public PermissionsRoot() { }
+#else
 
           private PermissionsRoot()
           {
               //require use of factory methods
           }
-
+#endif
         #endregion
 
         #region "factory methods"
 
+#if SILVERLIGHT
         public static PermissionsRoot NewPermissionsRoot()
+        {
+            return new PermissionsRoot();
+        }
+#else
+          public static PermissionsRoot NewPermissionsRoot()
         {
             return Csla.DataPortal.Create<PermissionsRoot>();
         }
-
+#endif
         #endregion
 
         #region "Criteria"
@@ -88,10 +103,14 @@ namespace Csla.Test.Security
 
         #endregion
 
+#if !SILVERLIGHT
+
         [RunLocal()]
         protected override void DataPortal_Create()
         {
             _firstName = "default value"; //for now...
         }
+
+#endif
     }
 }

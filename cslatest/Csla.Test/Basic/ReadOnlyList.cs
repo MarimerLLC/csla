@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Csla.Test.Basic
 {
-    [Serializable()]
 #if csla20vb
+    [Serializable()]
     public class ReadOnlyList : ReadOnlyListBase<ReadOnlyList, object>
     {
     #region "Criteria"

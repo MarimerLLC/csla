@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Csla.Test.ValidationRules
 {
-  class HasRegEx : BusinessBase<HasRegEx>
+  public class HasRegEx : BusinessBase<HasRegEx>
   {
     private string _ssn;
 

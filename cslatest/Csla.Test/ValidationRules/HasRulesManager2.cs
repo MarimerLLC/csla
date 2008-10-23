@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
+using Csla.Core;
 
 namespace Csla.Test.ValidationRules
 {
     [Serializable()]
-    public class HasRulesManager2 : BusinessBase<HasRulesManager2>
+    public partial class HasRulesManager2 : BusinessBase<HasRulesManager2>
     {
         private string _name = string.Empty;
 
@@ -60,89 +63,52 @@ namespace Csla.Test.ValidationRules
         }
 
         [Serializable()]
-        private class Criteria
+        private class Criteria : CriteriaBase
         {
-            public string _name;
+          public string _name;
 
-            public Criteria()
-            {
-                _name = "<new>";
-            }
+          public Criteria()
+          {
+            _name = "<new>";
+          }
 
-            public Criteria(string name)
-            {
-                this._name = name;
-            }
+          public Criteria(string name)
+          {
+            this._name = name;
+          }
+
+          protected override void OnGetState(SerializationInfo info, StateMode mode)
+          {
+            info.AddValue("_name", _name);
+            base.OnGetState(info, mode);
+          }
+
+          protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)
+          {
+            _name = info.GetValue<string>("_name");
+            base.OnSetState(info, mode);
+          }
         }
 
-        public static HasRulesManager2 NewHasRulesManager2()
+        public static void NewHasRulesManager2(EventHandler<DataPortalResult<HasRulesManager2>> completed)
         {
-            return Csla.DataPortal.Create(new Criteria()) as HasRulesManager2;
+          Csla.DataPortal.BeginCreate<HasRulesManager2>(
+            new Criteria(),
+            completed);
         }
 
-        public static HasRulesManager2 GetHasRulesManager2(string name)
+        public static void GetHasRulesManager2(string name, EventHandler<DataPortalResult<HasRulesManager2>> completed)
         {
-            return Csla.DataPortal.Fetch(new Criteria(name)) as HasRulesManager2;
+          Csla.DataPortal.BeginFetch<HasRulesManager2>(
+            new Criteria(name),
+            completed);
         }
 
         public static void DeleteHasRulesManager2(string name)
         {
-            Csla.DataPortal.Delete(new Criteria(name));
+          Csla.DataPortal.BeginDelete<HasRulesManager2>(
+            new Criteria(name),
+            (o, e) => { });
         }
-
-        private HasRulesManager2()
-        {
-            //prevent direct creation
-            AddBusinessRules();
-        }
-
-        private void DataPortal_Create(object criteria)
-        {
-            Criteria crit = (Criteria)(criteria);
-            //_name = crit._name;
-            Name = crit._name;
-            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Created");
-            this.ValidationRules.CheckRules();
-        }
-
-        protected override void DataPortal_Fetch(object criteria)
-        {
-            Criteria crit = (Criteria)(criteria);
-            _name = crit._name;
-            MarkOld();
-            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Fetched");
-        }
-
-        protected override void DataPortal_Update()
-        {
-            if (IsDeleted)
-            {
-                //we would delete here
-                Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Deleted");
-                MarkNew();
-            }
-            else
-            {
-                if (this.IsNew)
-                {
-                    //we would insert here
-                    Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Inserted");
-                }
-                else
-                {
-                    //we would update here
-                    Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Updated");
-                }
-                MarkOld();
-            }
-        }
-
-        protected override void DataPortal_Delete(object criteria)
-        {
-            //we would delete here
-            Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Deleted");
-        }
-
-
     }
 }

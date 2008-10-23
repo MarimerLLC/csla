@@ -5,15 +5,16 @@ using Csla.Test.DataBinding;
 using System.Data;
 using System.Data.SqlClient;
 
-#if !NUNIT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
+#if NUNIT
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
+using TestSetup = NUnit.Framework.SetUpAttribute;
+#elif MSTEST
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace Csla.Test.DataPortal
 {
@@ -245,7 +246,7 @@ namespace Csla.Test.DataPortal
             }
         }
 
-        [Test]
+        [TestMethod]
         public void CallDataPortalOverrides()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

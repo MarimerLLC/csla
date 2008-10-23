@@ -1,74 +1,102 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnitDriven;
 
-#if !NUNIT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
+#if NUNIT
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
+#elif MSTEST
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+
 
 namespace Csla.Test.ValidationRules
 {
-  [TestClass()]
-  public class PerTypeTests
+#if TESTING
+  [System.Diagnostics.DebuggerStepThrough]
+#endif
+  [TestClass]
+  public class PerTypeTests : TestBase
   {
     [TestMethod]
     public void OnlySharedRules()
     {
+      UnitTestContext context = GetContext();
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext["Shared"] = 0;
 
       HasOnlyPerTypeRules root = new HasOnlyPerTypeRules();
-      Assert.AreEqual(string.Empty, root.Test, "Test string should be empty");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 first");
+      context.Assert.AreEqual(string.Empty, root.Test, "Test string should be empty");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 first");
       root.Test = "test";
-      Assert.AreEqual("test", root.Test, "Test string should be 'test'");
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count, "Broken rule count should be 0");
+      context.Assert.AreEqual("test", root.Test, "Test string should be 'test'");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count, "Broken rule count should be 0");
       root.Test = "big test";
-      Assert.AreEqual("big test", root.Test, "Test string should be 'big test'");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 last");
+      context.Assert.AreEqual("big test", root.Test, "Test string should be 'big test'");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 last");
+      context.Assert.Success();
+      context.Complete();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void StringRequired()
     {
+      UnitTestContext context = GetContext();
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext["Shared"] = 0;
 
       HasPerTypeRules root = new HasPerTypeRules();
-      Assert.AreEqual(string.Empty, root.Test, "Test string should be empty");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 first");
+      context.Assert.AreEqual(string.Empty, root.Test, "Test string should be empty");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 first");
       root.Test = "test";
-      Assert.AreEqual("test", root.Test, "Test string should be 'test'");
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count, "Broken rule count should be 0");
+      context.Assert.AreEqual("test", root.Test, "Test string should be 'test'");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count, "Broken rule count should be 0");
       root.Test = "big test";
-      Assert.AreEqual("big test", root.Test, "Test string should be 'big test'");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 last");
+      context.Assert.AreEqual("big test", root.Test, "Test string should be 'big test'");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 last");
+      context.Assert.Success();
+
+      context.Complete();
     }
 
-    [TestMethod()]
+    /// <summary>
+    /// This is needed because in Silverlight the tests cannot be run in separate AppDomains
+    /// therefore the expected value is different for subsequent runs of this test.
+    /// </summary>
+    private static bool _initialized = false;
+
+    [TestMethod]
     public void NoDoubleInit()
     {
+      UnitTestContext context = GetContext();
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext["Shared"] = 0;
 
       HasPerTypeRules2 root = new HasPerTypeRules2();
       root = new HasPerTypeRules2();
-      Assert.AreEqual(1, (int)ApplicationContext.GlobalContext["Shared"], "Rules should init just once");
+
+      int expected = (_initialized ? 0 : 1);
+      int actual = (int)ApplicationContext.GlobalContext["Shared"];
+      context.Assert.AreEqual(expected, actual, "Rules should init just once");
+
+      _initialized = true;
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void BadNonStaticRuleMethod()
     {
+      UnitTestContext context = GetContext();
       // creating the object should trigger AddBusinessRules()
       // which should fail due to the bad exception
-      HasBadSharedRule bad = new HasBadSharedRule();
+      context.Assert.Try(() => new HasBadSharedRule());
+      context.Complete();
     }
   }
 }

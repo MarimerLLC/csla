@@ -103,9 +103,55 @@ namespace Csla.Test.Basic
     }
 
     [TestMethod]
+    public void TestRangedWhereGreaterThan()
+    {
+      var blbCollection = new TestBusinessListBaseCollection(50,1,true);
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = 499, IndexedString = "499", NonIndexedString = "499" });
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = 500, IndexedString = "500", NonIndexedString = "500" });
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = 600, IndexedString = "600", NonIndexedString = "600" });
+      var partsOver500 = from i in blbCollection where i.IndexedInt > 499 select i;
+      var forcedIter = partsOver500.ToArray();
+      Assert.IsTrue(forcedIter.Length == 2);
+    }
+
+    [TestMethod]
+    public void TestRangedWhereGreaterThanOrEqualTo()
+    {
+      var blbCollection = new TestBusinessListBaseCollection(50, 1, true);
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = 500, IndexedString = "500", NonIndexedString = "500" });
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = 600, IndexedString = "600", NonIndexedString = "600" });
+      var partsOver500 = from i in blbCollection where i.IndexedInt >= 500  select i;
+      var forcedIter = partsOver500.ToArray();
+      Assert.IsTrue(forcedIter.Length == 2);
+    }
+
+    [TestMethod]
+    public void TestRangedWhereLessThan()
+    {
+      var blbCollection = new TestBusinessListBaseCollection(50, 1, true);
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = -1, IndexedString = "-1", NonIndexedString = "-1" });
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = -2, IndexedString = "-2", NonIndexedString = "-2" });
+      var partsUnderZero = from i in blbCollection where i.IndexedInt < 0 select i;
+      var forcedIter = partsUnderZero.ToArray();
+      Assert.IsTrue(forcedIter.Length == 2);
+    }
+
+    [TestMethod]
+    public void TestRangedWhereLessThanOrEqualTo()
+    {
+      var blbCollection = new TestBusinessListBaseCollection(50, 1, true);
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = -1, IndexedString = "-1", NonIndexedString = "-1" });
+      blbCollection.Add(new TestIndexableItem() { IndexedInt = -2, IndexedString = "-2", NonIndexedString = "-2" });
+      var partsUnderZero = from i in blbCollection where i.IndexedInt <= -1 select i;
+      var forcedIter = partsUnderZero.ToArray();
+      Assert.IsTrue(forcedIter.Length == 2);
+    }
+
+    [TestMethod]
     public void IndexOnBusinessListBaseWorks()
     {
       var sampleSize = 100000;
+      //var sampleSize = 375;
       Console.WriteLine("Creating " + sampleSize + " element collection...");
       var blbCollection = new TestBusinessListBaseCollection(sampleSize);
       Console.WriteLine("Collection established.");

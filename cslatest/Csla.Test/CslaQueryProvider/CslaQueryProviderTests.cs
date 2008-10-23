@@ -21,6 +21,17 @@ namespace Csla.Test.CslaQueryProvider
     [Indexable(IndexModeEnum.IndexModeAlways)]
     public int SomeVal { get; set; }
     public Guid Id { get; set; }
+
+    public Nullable<int> ANullableVal
+    {
+      get { return new Nullable<int>(SomeVal); }
+    }
+
+    public DateTime SomeDateTime
+    {
+      get { return new DateTime((long)SomeVal); }
+    }
+
     public RandomThing(int x)
     {
       MarkAsChild();
@@ -226,6 +237,34 @@ namespace Csla.Test.CslaQueryProvider
     }
 
     [TestMethod]
+    public void TestMaxWithDateParameter()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+
+      random.Add(new RandomThing(0));
+      random.Add(new RandomThing(1));
+      //somedatetime is the int represented as date time ticks
+      var z = random.Max(x => x.SomeDateTime);
+
+
+      Assert.IsTrue(z.Ticks == 1);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderAnyOnEmpty()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+
+      var filteredResult = from r in random
+                           where r.SomeVal < 100
+                           select r;
+
+      bool hasNot = filteredResult.Any<RandomThing>();
+
+      Assert.IsFalse(hasNot);
+    }
+
+    [TestMethod]
     public void TestQueryProviderCast()
     {
       CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
@@ -378,7 +417,7 @@ namespace Csla.Test.CslaQueryProvider
       random.Add(new RandomThing(69));
       random.Add(new RandomThing(3));
 
-      var source = from r in random where r.SomeVal < 1000 select r;
+      var source = from r in random where r.SomeVal < 1000 && r.SomeVal > 0 select r;
       var elementAtTest = source.ElementAt<RandomThing>(3);
 
       Assert.IsTrue(elementAtTest.SomeVal == 69);
@@ -394,7 +433,7 @@ namespace Csla.Test.CslaQueryProvider
       random.Add(new RandomThing(69));
       random.Add(new RandomThing(3));
 
-      var source = from r in random where r.SomeVal < 1000 select r;
+      var source = from r in random where r.SomeVal < 1000 && r.SomeVal > 0 select r;
       var elementAtTest = source.ElementAtOrDefault<RandomThing>(3);
       var defaultValue = default(RandomThing);
       var defaultTest = source.ElementAtOrDefault<RandomThing>(403);

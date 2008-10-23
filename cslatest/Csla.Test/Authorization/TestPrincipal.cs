@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel;
+using Csla.Serialization;
 
 namespace Csla.Test.Security
 {
     [Serializable()]
     public class TestPrincipal : Csla.Security.BusinessPrincipalBase
     {
+      public TestPrincipal() { }
         public override bool IsInRole(string role)
         {
             TestIdentity identity = (TestIdentity)(this.Identity);

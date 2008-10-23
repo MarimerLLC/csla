@@ -1,19 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnitDriven;
+using System.Diagnostics;
 
-#if !NUNIT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
+#if NUNIT
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
+#elif MSTEST
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+
 
 namespace Csla.Test.Authorization
 {
+#if TESTING
+  [DebuggerNonUserCode]
+  [DebuggerStepThrough]
+#endif
   [TestClass()]
   public class PerTypeAuthorizationTests
   {
@@ -21,6 +28,7 @@ namespace Csla.Test.Authorization
     [ExpectedException(typeof(System.Security.SecurityException))]
     public void DenyWritePerType()
     {
+      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
       PerTypeAuthorization root = new PerTypeAuthorization();
       root.Test = "test";
     }
@@ -29,6 +37,7 @@ namespace Csla.Test.Authorization
     [ExpectedException(typeof(System.Security.SecurityException))]
     public void DenyWritePerInstance()
     {
+      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
       PerTypeAuthorization root = new PerTypeAuthorization();
       root.Name = "test";
     }

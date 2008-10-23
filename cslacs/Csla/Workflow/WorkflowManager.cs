@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !CLIENTONLY
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Workflow.Runtime;
@@ -461,3 +462,4 @@ namespace Csla.Workflow
     }
   }
 }
+#endif

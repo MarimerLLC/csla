@@ -6,6 +6,8 @@ using System.IO;
 using Csla.Serialization;
 using System.ComponentModel;
 using Csla.Properties;
+using Csla.Reflection;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -14,7 +16,8 @@ namespace Csla.Core
   /// described in Chapters 2 and 3.
   /// </summary>
   [Serializable()]
-  public abstract class UndoableBase : Csla.Core.BindableBase, Csla.Core.IUndoableObject
+  public abstract class UndoableBase : Csla.Core.BindableBase,
+    Csla.Core.IUndoableObject
   {
     // keep a stack of object state values.
     [NotUndoable()]
@@ -109,7 +112,6 @@ namespace Csla.Core
 
       Type currentType = this.GetType();
       HybridDictionary state = new HybridDictionary();
-      FieldInfo[] fields;
 
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
@@ -117,44 +119,33 @@ namespace Csla.Core
       do
       {
         // get the list of fields in this type
-        fields = currentType.GetFields(
-            BindingFlags.NonPublic |
-            BindingFlags.Instance |
-            BindingFlags.Public);
-
-        foreach (FieldInfo field in fields)
+        List<DynamicMemberHandle> handlers = UndoableHandler.GetCachedFieldHandlers(currentType);
+        foreach (var h in handlers)
         {
-          // make sure we process only our variables
-          if (field.DeclaringType == currentType)
+          var value = h.DynamicMemberGet(this);
+          if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(h.MemberType))
           {
-            // see if this field is marked as not undoable
-            if (!NotUndoableField(field))
+            // make sure the variable has a value
+            if (value == null)
             {
-              // the field is undoable, so it needs to be processed.
-              object value = field.GetValue(this);
-
-              if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
-              {
-                // make sure the variable has a value
-                if (value == null)
-                {
-                  // variable has no value - store that fact
-                  state.Add(GetFieldName(field), null);
-                }
-                else
-                {
-                  // this is a child object, cascade the call
-                  ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1, BindingEdit);
-                }
-              }
-              else
-              {
-                // this is a normal field, simply trap the value
-                state.Add(GetFieldName(field), value);
-              }
+              // variable has no value - store that fact
+              //state.Add(h.MemberFullName, null);
+              state.Add(h.MemberName, null);
+            }
+            else
+            {
+              // this is a child object, cascade the call
+              ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1, BindingEdit);
             }
           }
+          else
+          {
+            // this is a normal field, simply trap the value
+            //state.Add(h.MemberFullName, value);
+            state.Add(h.MemberName, value);
+          }
         }
+
         currentType = currentType.BaseType;
       } while (currentType != typeof(UndoableBase));
 
@@ -207,7 +198,7 @@ namespace Csla.Core
       // so just do nothing in that case
       if (EditLevel > 0)
       {
-        if (this.EditLevel - 1 < parentEditLevel)
+        if (this.EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
 
         HybridDictionary state;
@@ -220,53 +211,45 @@ namespace Csla.Core
         }
 
         Type currentType = this.GetType();
-        FieldInfo[] fields;
 
         do
         {
           // get the list of fields in this type
-          fields = currentType.GetFields(
-              BindingFlags.NonPublic |
-              BindingFlags.Instance |
-              BindingFlags.Public);
-          foreach (FieldInfo field in fields)
+          List<DynamicMemberHandle> handlers = UndoableHandler.GetCachedFieldHandlers(currentType);
+          foreach (var h in handlers)
           {
-            // make sure we process only our variables
-            if (field.DeclaringType == currentType)
-            {
-              // see if the field is undoable or not
-              if (!NotUndoableField(field))
-              {
-                // the field is undoable, so restore its value
-                object value = field.GetValue(this);
+            // the field is undoable, so restore its value
+            var value = h.DynamicMemberGet(this);
 
-                if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
+            if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(h.MemberType))
+            {
+              // this is a child object
+              // see if the previous value was empty
+              //if (state.Contains(h.MemberFullName))
+              if (state.Contains(h.MemberName))
+              {
+                // previous value was empty - restore to empty
+                h.DynamicMemberSet(this, null);
+              }
+              else
+              {
+                // make sure the variable has a value
+                if (value != null)
                 {
-                  // this is a child object
-                  // see if the previous value was empty
-                  if (state.Contains(GetFieldName(field)))
-                  {
-                    // previous value was empty - restore to empty
-                    field.SetValue(this, null);
-                  }
-                  else
-                  {
-                    // make sure the variable has a value
-                    if (value != null)
-                    {
-                      // this is a child object, cascade the call.
-                      ((Core.IUndoableObject)value).UndoChanges(this.EditLevel, BindingEdit);
-                    }
-                  }
-                }
-                else
-                {
-                  // this is a regular field, restore its value
-                  field.SetValue(this, state[GetFieldName(field)]);
+                  // this is a child object, cascade the call.
+                  ((Core.IUndoableObject)value).UndoChanges(this.EditLevel,
+                                                             BindingEdit);
                 }
               }
             }
+            else
+            {
+              // this is a regular field, restore its value
+              //h.DynamicMemberSet(this, state[h.MemberFullName]);
+              h.DynamicMemberSet(this, state[h.MemberName]);
+            }
           }
+
           currentType = currentType.BaseType;
         } while (currentType != typeof(UndoableBase));
       }
@@ -305,44 +288,33 @@ namespace Csla.Core
     {
       AcceptingChanges();
 
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
 
       if (EditLevel > 0)
       {
         _stateStack.Pop();
         Type currentType = this.GetType();
-        FieldInfo[] fields;
 
         do
         {
           // get the list of fields in this type
-          fields = currentType.GetFields(
-              BindingFlags.NonPublic |
-              BindingFlags.Instance |
-              BindingFlags.Public);
-          foreach (FieldInfo field in fields)
+          List<DynamicMemberHandle> handlers = UndoableHandler.GetCachedFieldHandlers(currentType);
+          foreach (var h in handlers)
           {
-            // make sure we process only our variables
-            if (field.DeclaringType == currentType)
+            // the field is undoable so see if it is a child object
+            if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(h.MemberType))
             {
-              // see if the field is undoable or not
-              if (!NotUndoableField(field))
+              object value = h.DynamicMemberGet(this);
+              // make sure the variable has a value
+              if (value != null)
               {
-                // the field is undoable so see if it is a child object
-                if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(field.FieldType))
-                {
-                  object value = field.GetValue(this);
-                  // make sure the variable has a value
-                  if (value != null)
-                  {
-                    // it is a child object so cascade the call
-                    ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel, BindingEdit);
-                  }
-                }
+                // it is a child object so cascade the call
+                ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel, BindingEdit);
               }
             }
           }
+
           currentType = currentType.BaseType;
         } while (currentType != typeof(UndoableBase));
       }
@@ -378,6 +350,44 @@ namespace Csla.Core
       // increase it to match list
       while (child.EditLevel < targetLevel)
         child.CopyState(targetLevel, false);
+    }
+
+    #endregion
+
+    #region MobileObject overrides
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    {
+      info.AddValue("_bindingEdit", _bindingEdit);
+      base.OnGetState(info, mode);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      _stateStack.Clear();
+
+      _bindingEdit = info.GetValue<bool>("_bindingEdit");
+      base.OnSetState(info, mode);
     }
 
     #endregion

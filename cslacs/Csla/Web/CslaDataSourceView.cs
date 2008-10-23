@@ -1,3 +1,5 @@
+#if !CLIENTONLY
+
 using System;
 using System.Collections;
 using System.Web.UI;
@@ -288,3 +290,4 @@ namespace Csla.Web
 
   }
 }
+#endif

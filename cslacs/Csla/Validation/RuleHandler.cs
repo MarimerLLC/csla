@@ -2,7 +2,6 @@ using System;
 
 namespace Csla.Validation
 {
-
   /// <summary>
   /// Delegate that defines the method signature for all rule handler methods.
   /// </summary>

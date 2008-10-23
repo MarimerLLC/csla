@@ -1,6 +1,8 @@
-﻿using System;
+﻿#if !CLIENTONLY
+using System;
 using System.Configuration;
 using System.Data.Linq;
+
 using Csla.Properties;
 
 namespace Csla.Data
@@ -59,6 +61,9 @@ namespace Csla.Data
     {
       if (isDatabaseName)
       {
+        var connection = ConfigurationManager.ConnectionStrings[database];
+        if (connection == null)
+          throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         var conn = ConfigurationManager.ConnectionStrings[database].ConnectionString;
         if (string.IsNullOrEmpty(conn))
           throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
@@ -145,3 +150,4 @@ namespace Csla.Data
 
   }
 }
+#endif

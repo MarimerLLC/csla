@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Csla.Properties;
 
 namespace Csla.Linq
 {
@@ -58,8 +59,9 @@ namespace Csla.Linq
       }         
     }
 
-    IEnumerable<T> IIndex<T>.WhereEqual(int hashCode, Func<T, bool> expr)
+    IEnumerable<T> IIndex<T>.WhereEqual(object pivotVal, Func<T, bool> expr)
     {
+      var hashCode = pivotVal.GetHashCode();
       LoadOnDemandIndex();
       if (_index.ContainsKey(hashCode))
         foreach (T item in _index[hashCode])
@@ -113,7 +115,7 @@ namespace Csla.Linq
       if (object.ReferenceEquals(array, null))
       {
         throw new ArgumentNullException(
-            "Null array reference",
+            Resources.NullArrayReference,
             "array"
             );
       }
@@ -121,7 +123,7 @@ namespace Csla.Linq
       if (arrayIndex < 0)
       {
         throw new ArgumentOutOfRangeException(
-            "Index is out of range",
+            Resources.IndexIsOutOfRange,
             "index"
             );
       }
@@ -129,7 +131,7 @@ namespace Csla.Linq
       if (array.Rank > 1)
       {
         throw new ArgumentException(
-            "Array is multi-dimensional",
+            Resources.ArrayIsMultiDimensional,
             "array"
             );
       }

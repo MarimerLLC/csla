@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Define a nested Criteria class</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Defines a Csla-style Criteria class.</Description>
+      <Shortcut>cslacrit</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>Criteria</Default>
+        </Literal>
+        <Literal>
+          <ID>IdField</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with Id variable name.</ToolTip>
+          <Default>_id</Default>
+        </Literal>
+        <Literal>
+          <ID>IdType</ID>
+          <ToolTip>Replace with the Id variable type.</ToolTip>
+          <Default>Integer</Default>
+        </Literal>
+        <Literal>
+          <ID>IdParam</ID>
+          <Type>String</Type>
+          <ToolTip>Id parameter name</ToolTip>
+          <Default>id</Default>
+        </Literal>
+        <Literal>
+          <ID>IdProperty</ID>
+          <Type>String</Type>
+          <ToolTip>Id property name</ToolTip>
+          <Default>Id</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="VB" Kind="type decl"><![CDATA[<Serializable()> _
+Private Class $ClassName$
+
+  Private $IdField$ As $IdType$
+  Public ReadOnly Property $IdProperty$() As $IdType$
+    Get
+      Return $IdField$
+    End Get
+  End Property
+
+  Public Sub New(ByVal $IdParam$ As $IdType$)
+    $IdField$ = $IdParam$
+  End Sub
+
+End Class
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

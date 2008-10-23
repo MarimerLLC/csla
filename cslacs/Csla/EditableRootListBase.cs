@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using Csla.Core;
 
 namespace Csla
 {
@@ -31,7 +32,10 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Core.IParent, Server.IDataPortalTarget
+  public abstract class EditableRootListBase<T> : 
+    Core.ExtendedBindingList<T>, 
+    Core.IParent, 
+    Server.IDataPortalTarget
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable
   {
 
@@ -74,9 +78,9 @@ namespace Csla
       this.RaiseListChangedEvents = false;
 
       _activelySaving = true;
+
       T item = default(T);
-      int editLevel = 0;
-     
+      int editLevel=0;
       try
       {
 
@@ -105,6 +109,7 @@ namespace Csla
           if (original != null)
             original.SaveComplete(this[index]);
         }
+        OnSaved(this[index], null);
       }
       finally
       {
@@ -119,6 +124,56 @@ namespace Csla
       }
       this.OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
       return this[index];
+    }
+
+    #endregion
+
+    #region Saved Event
+    [NonSerialized]
+    [NotUndoable]
+    private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
+    [NotUndoable]
+    private EventHandler<Csla.Core.SavedEventArgs> _serializableSavedHandlers;
+
+    /// <summary>
+    /// Event raised when an object has been saved.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+      "CA1062:ValidateArgumentsOfPublicMethods")]
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved
+    {
+      add
+      {
+        if (value.Method.IsPublic &&
+           (value.Method.DeclaringType.IsSerializable ||
+            value.Method.IsStatic))
+          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Combine(_serializableSavedHandlers, value);
+        else
+          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Combine(_nonSerializableSavedHandlers, value);
+      }
+      remove
+      {
+        if (value.Method.IsPublic &&
+           (value.Method.DeclaringType.IsSerializable ||
+            value.Method.IsStatic))
+          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Remove(_serializableSavedHandlers, value);
+        else
+          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
+            System.Delegate.Remove(_nonSerializableSavedHandlers, value);
+      }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void OnSaved(T newObject, Exception e)
+    {
+      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, null);
+      if (_nonSerializableSavedHandlers != null)
+        _nonSerializableSavedHandlers.Invoke(this, args);
+      if (_serializableSavedHandlers != null)
+        _serializableSavedHandlers.Invoke(this, args);
     }
 
     #endregion
@@ -148,20 +203,20 @@ namespace Csla
       T item = this[index];
 
       // only delete/save the item if it is not new
+      bool raiseEventForNewItem = false;
       if (!item.IsNew)
       {
         item.Delete();
         SaveItem(index);
       }
-
-      // disconnect event handler if necessary
-      System.ComponentModel.INotifyPropertyChanged c = item as System.ComponentModel.INotifyPropertyChanged;
-      if (c != null)
+      else
       {
-        c.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(Child_PropertyChanged);
+        raiseEventForNewItem = true;
       }
-
+      
       base.RemoveItem(index);
+      if (raiseEventForNewItem)
+        OnSaved(item, null);
     }
 
     /// <summary>
@@ -215,6 +270,11 @@ namespace Csla
       OnChildPropertyChanged(sender, e);
     }
 
+    void Child_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      OnBusyChanged(e);
+    }
+
     /// <summary>
     /// Override this method to be notified when a child object
     /// has been changed.
@@ -249,35 +309,16 @@ namespace Csla
 
     #region  Serialization Notification
 
-    [OnDeserialized()]
-    private void OnDeserializedHandler(StreamingContext context)
+    protected internal override void OnDeserializedInternal()
     {
-
-      OnDeserialized(context);
-      foreach (Core.IEditableBusinessObject child in this)
+      foreach (IEditableBusinessObject child in this)
       {
         child.SetParent(this);
-        System.ComponentModel.INotifyPropertyChanged c = child as System.ComponentModel.INotifyPropertyChanged;
+        INotifyPropertyChanged c = child as INotifyPropertyChanged;
         if (c != null)
-        {
-          c.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Child_PropertyChanged);
-        }
+          c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
       }
-
-    }
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    /// <param name="context">Serialization context object.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(StreamingContext context)
-    {
-
-      // do nothing - this is here so a subclass
-      // could override if needed
-
+      base.OnDeserializedInternal();
     }
 
     #endregion
@@ -398,6 +439,23 @@ namespace Csla
     void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
 
+    #endregion
+
+    #region IsBusy
+    public override bool IsBusy
+    {
+      get
+      {
+        // run through all the child objects
+        // and if any are dirty then then
+        // collection is dirty
+        foreach (T child in this)
+          if (child.IsBusy)
+            return true;
+
+        return false;
+      }
+    }
     #endregion
   }
 }

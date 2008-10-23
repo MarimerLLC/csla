@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using Csla.Serialization;
 using Csla.Properties;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core.FieldManager
 {
@@ -12,17 +13,21 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <remarks></remarks>
   [Serializable()]
-  public class FieldDataManager : IUndoableObject
+  public class FieldDataManager : IUndoableObject, IMobileObject
   {
+    private string _businessObjectType;
     [NonSerialized]
     BusinessBase _parent;
     [NonSerialized()]
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
+    private FieldDataManager()
+    { /* exists to support MobileFormatter */ }
+
     internal FieldDataManager(Type businessObjectType)
     {
-      _propertyList = GetConsolidatedList(businessObjectType);
+      SetPropertyList(businessObjectType);
       _fieldData = new IFieldData[_propertyList.Count];
     }
 
@@ -32,6 +37,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     internal void SetPropertyList(Type businessObjectType)
     {
+      _businessObjectType = businessObjectType.AssemblyQualifiedName;
       _propertyList = GetConsolidatedList(businessObjectType);
     }
 
@@ -332,7 +338,7 @@ namespace Csla.Core.FieldManager
 
     #endregion
 
-    #region  IsValid/IsDirty
+    #region  IsValid/IsDirty/IsBusy
 
     /// <summary>
     /// Returns a value indicating whether all
@@ -367,6 +373,14 @@ namespace Csla.Core.FieldManager
       foreach (var item in _fieldData)
         if (item != null && item.IsDirty)
           item.MarkClean();
+    }
+
+    internal bool IsBusy()
+    {
+      foreach (var item in _fieldData)
+        if (item != null && item.IsBusy)
+          return true;
+      return false;
     }
 
     #endregion
@@ -424,7 +438,7 @@ namespace Csla.Core.FieldManager
     {
       if (EditLevel > 0)
       {
-        if (this.EditLevel - 1 < parentEditLevel)
+        if (this.EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
 
         IFieldData[] state = null;
@@ -460,7 +474,7 @@ namespace Csla.Core.FieldManager
 
     void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
 
       if (EditLevel > 0)
@@ -486,8 +500,7 @@ namespace Csla.Core.FieldManager
     #endregion
 
     #region  Child Objects 
-
-    
+        
     /// <summary>
     /// Returns a list of all child objects
     /// contained in the list of fields.
@@ -523,6 +536,129 @@ namespace Csla.Core.FieldManager
         }
       }
     }
+
+    #endregion
+
+    #region IMobileObject Members
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      info.AddValue("_businessObjectType", _businessObjectType);
+
+      foreach (IFieldData data in _fieldData)
+      {
+        if (data != null)
+        {
+          IMobileObject mobile = data.Value as IMobileObject;
+          if (mobile == null)
+            info.AddValue(data.Name, data.Value, data.IsDirty);
+        }
+      }
+
+      OnGetState(info);
+    }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (IFieldData data in _fieldData)
+      {
+        if (data != null)
+        {
+          IMobileObject mobile = data.Value as IMobileObject;
+          if (mobile != null)
+          {
+            SerializationInfo childInfo = formatter.SerializeObject(mobile);
+            info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
+          }
+        }
+      }
+
+      OnGetChildren(info, formatter);
+    }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      string type = (string)info.Values["_businessObjectType"].Value;
+      Type businessObjecType = Type.GetType(type);
+      SetPropertyList(businessObjecType);
+      _fieldData = new IFieldData[_propertyList.Count];
+
+      foreach (IPropertyInfo property in _propertyList)
+      {
+        if (info.Values.ContainsKey(property.Name))
+        {
+          SerializationInfo.FieldData value = info.Values[property.Name];
+
+          IFieldData data = GetOrCreateFieldData(property);
+          data.Value = value.Value;
+          if (!value.IsDirty)
+            data.MarkClean();
+        }
+      }
+
+      OnSetState(info);
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (IPropertyInfo property in _propertyList)
+      {
+        if (info.Children.ContainsKey(property.Name))
+        {
+          SerializationInfo.ChildData childData = info.Children[property.Name];
+
+          IFieldData data = GetOrCreateFieldData(property);
+          data.Value = formatter.GetObject(childData.ReferenceId);
+          if (!childData.IsDirty)
+            data.MarkClean();
+        }
+      }
+      OnSetChildren(info, formatter);
+    }
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected virtual void OnGetState(SerializationInfo info) { }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected virtual void OnSetState(SerializationInfo info) { }
+
+    /// <summary>
+    /// Override this method to insert your child object
+    /// references into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter) { }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter) { }
 
     #endregion
 

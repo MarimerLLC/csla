@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.ComponentModel;
 using Csla.Properties;
+using Csla.Reflection;
 
 namespace Csla.Data
 {
@@ -126,16 +126,13 @@ namespace Csla.Data
       params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
-      PropertyInfo[] sourceProperties =
-        GetSourceProperties(source.GetType());
-      foreach (PropertyInfo prop in sourceProperties)
+      foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
-        string propertyName = prop.Name;
         if (!ignore.Contains(propertyName))
         {
           try
           {
-            target.Add(propertyName, prop.GetValue(source, null));
+            target.Add(propertyName, MethodCaller.CallPropertyGetter(source, propertyName));
           }
           catch (Exception ex)
           {
@@ -212,27 +209,23 @@ namespace Csla.Data
       params string[] ignoreList)
     {
       List<string> ignore = new List<string>(ignoreList);
-      PropertyInfo[] sourceProperties =
-        GetSourceProperties(source.GetType());
-      foreach (PropertyInfo sourceProperty in sourceProperties)
+      foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
-        string propertyName = sourceProperty.Name;
-        if (!ignore.Contains(propertyName))
-        {
-          try
+          if (!ignore.Contains(propertyName))
           {
-            SetPropertyValue(
-              target, propertyName,
-              sourceProperty.GetValue(source, null));
+              try
+              {
+                  object value = MethodCaller.CallPropertyGetter(source, propertyName);
+                  SetPropertyValue(target, propertyName, value);
+              }
+              catch (Exception ex)
+              {
+                  if (!suppressExceptions)
+                      throw new ArgumentException(
+                          String.Format("{0} ({1})",
+                                        Resources.PropertyCopyFailed, propertyName), ex);
+              }
           }
-          catch (Exception ex)
-          {
-            if (!suppressExceptions)
-              throw new ArgumentException(
-                String.Format("{0} ({1})",
-                Resources.PropertyCopyFailed, propertyName), ex);
-          }
-        }
       }
     }
 
@@ -272,31 +265,28 @@ namespace Csla.Data
       {
         try
         {
-          object value = GetValue(mapping.FromMember, source);
-          SetValue(
-            target, mapping.ToMember, value);
+          object value = mapping.FromMemberHandle.DynamicMemberGet(source);
+          SetValueWithCoercion(target, mapping.ToMemberHandle, value);
         }
         catch (Exception ex)
         {
           if (!suppressExceptions)
             throw new ArgumentException(
               String.Format("{0} ({1})",
-              Resources.PropertyCopyFailed, mapping.FromMember.Name), ex);
+              Resources.PropertyCopyFailed, mapping.FromMemberHandle.MemberName), ex);
         }
       }
     }
 
-    private static PropertyInfo[] GetSourceProperties(Type sourceType)
-    {
-      List<PropertyInfo> result = new List<PropertyInfo>();
-      PropertyDescriptorCollection props =
-        TypeDescriptor.GetProperties(sourceType);
-      foreach (PropertyDescriptor item in props)
-        if (item.IsBrowsable)
-          result.Add(sourceType.GetProperty(item.Name));
-      return result.ToArray();
-    }
-
+      private static IList<string> GetPropertyNames(Type sourceType)
+      {
+          List<string> result = new List<string>();
+          PropertyDescriptorCollection props = TypeDescriptor.GetProperties(sourceType);
+          foreach (PropertyDescriptor item in props)
+              if (item.IsBrowsable)
+                  result.Add(item.Name);
+          return result;          
+      }
     #endregion
 
     #region  Load from IDictionary
@@ -359,18 +349,6 @@ namespace Csla.Data
 
     #endregion
 
-    #region GetValue
-
-    private static object GetValue(MemberInfo member, object source)
-    {
-      if (member.MemberType == MemberTypes.Property)
-        return ((PropertyInfo)member).GetValue(source, null);
-      else
-        return ((FieldInfo)member).GetValue(source);
-    }
-
-    #endregion
-
     #region SetValue
 
     /// <summary>
@@ -383,10 +361,32 @@ namespace Csla.Data
     public static void SetPropertyValue(
       object target, string propertyName, object value)
     {
-      PropertyInfo propertyInfo =
-        target.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-      SetValue(target, propertyInfo, value);
+        DynamicMemberHandle handle = MethodCaller.GetCachedProperty(target.GetType(), propertyName);
+        SetValueWithCoercion(target, handle, value);   
     }
+
+      private static void SetValueWithCoercion(object target, DynamicMemberHandle handle, object value)
+      {
+          var oldValue = handle.DynamicMemberGet(target);
+
+          Type pType = handle.MemberType;
+
+          if (!pType.IsGenericType 
+              || (pType.IsGenericType && pType.GetGenericTypeDefinition() != typeof(Nullable<>)))
+          {
+              if (pType.IsValueType && (pType.IsPrimitive || pType == typeof(decimal)) && value == null)
+              {
+                  value = 0;
+              }
+          }
+
+          if(value != null)
+          {
+              Type vType = Utilities.GetPropertyType(value.GetType());
+              value = Utilities.CoerceValue(pType, vType, oldValue, value);
+          }
+          handle.DynamicMemberSet(target, value);
+      }
 
     /// <summary>
     /// Sets an object's field with the specified value,
@@ -398,46 +398,10 @@ namespace Csla.Data
     public static void SetFieldValue(
       object target, string fieldName, object value)
     {
-      FieldInfo fieldInfo =
-        target.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-      SetValue(target, fieldInfo, value);
+        DynamicMemberHandle handle = MethodCaller.GetCachedField(target.GetType(), fieldName);
+        SetValueWithCoercion(target, handle, value);
     }
 
-    /// <summary>
-    /// Sets an object's property or field with the specified value,
-    /// coercing that value to the appropriate type if possible.
-    /// </summary>
-    /// <param name="target">Object containing the member to set.</param>
-    /// <param name="memberInfo">MemberInfo object for the member to set.</param>
-    /// <param name="value">Value to set into the member.</param>
-    public static void SetValue(
-      object target, MemberInfo memberInfo, object value)
-    {
-      if (value != null)
-      {
-        object oldValue;
-        Type pType;
-        if (memberInfo.MemberType == MemberTypes.Property)
-        {
-          PropertyInfo pInfo = (PropertyInfo)memberInfo;
-          pType = pInfo.PropertyType;
-          oldValue = pInfo.GetValue(target, null);
-        }
-        else
-        {
-          FieldInfo fInfo = (FieldInfo)memberInfo;
-          pType = fInfo.FieldType;
-          oldValue = fInfo.GetValue(target);
-        }
-        Type vType =
-          Utilities.GetPropertyType(value.GetType());
-        value = Utilities.CoerceValue(pType, vType, oldValue, value);
-      }
-      if (memberInfo.MemberType == MemberTypes.Property)
-        ((PropertyInfo)memberInfo).SetValue(target, value, null);
-      else
-        ((FieldInfo)memberInfo).SetValue(target, value);
-    }
 
     #endregion
   }

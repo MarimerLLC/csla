@@ -1,4 +1,5 @@
 ﻿using System;
+using Csla.Properties;
 
 namespace Csla.Core
 {
@@ -15,7 +16,7 @@ namespace Csla.Core
     {
       get
       {
-        return "The client query is invalid: " + message;
+        return Resources.ClientQueryIsInvalid + message;
       }
     }
   }

@@ -20,7 +20,88 @@ namespace Csla.Wpf
   /// </remarks>
   public class ObjectStatus : DataDecoratorBase
   {
-    #region Dependency Properties
+    #region Per-Type Dependency Properties
+
+    private static readonly DependencyProperty CanCreateProperty =
+      DependencyProperty.Register("CanCreateObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+    private static readonly DependencyProperty CanGetProperty =
+      DependencyProperty.Register("CanGetObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+    private static readonly DependencyProperty CanEditProperty =
+      DependencyProperty.Register("CanEditObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+    private static readonly DependencyProperty CanDeleteProperty =
+      DependencyProperty.Register("CanDeleteObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+
+    /// <summary>
+    /// Exposes the CanCreateObject property of the
+    /// DataContext business object.
+    /// </summary>
+    public bool CanCreateObject
+    {
+      get { return (bool)base.GetValue(CanCreateProperty); }
+      protected set
+      {
+        bool old = CanCreateObject;
+        base.SetValue(CanCreateProperty, value);
+        if (old != value)
+          OnPropertyChanged(
+            new DependencyPropertyChangedEventArgs(CanCreateProperty, old, value));
+      }
+    }
+
+    /// <summary>
+    /// Exposes the CanGetObject property of the
+    /// DataContext business object.
+    /// </summary>
+    public bool CanGetObject
+    {
+      get { return (bool)base.GetValue(CanGetProperty); }
+      protected set
+      {
+        bool old = CanGetObject;
+        base.SetValue(CanGetProperty, value);
+        if (old != value)
+          OnPropertyChanged(
+            new DependencyPropertyChangedEventArgs(CanGetProperty, old, value));
+      }
+    }
+
+    /// <summary>
+    /// Exposes the CanEditObject property of the
+    /// DataContext business object.
+    /// </summary>
+    public bool CanEditObject
+    {
+      get { return (bool)base.GetValue(CanEditProperty); }
+      protected set
+      {
+        bool old = CanEditObject;
+        base.SetValue(CanEditProperty, value);
+        if (old != value)
+          OnPropertyChanged(
+            new DependencyPropertyChangedEventArgs(CanEditProperty, old, value));
+      }
+    }
+
+    /// <summary>
+    /// Exposes the CanDeleteObject property of the
+    /// DataContext business object.
+    /// </summary>
+    public bool CanDeleteObject
+    {
+      get { return (bool)base.GetValue(CanDeleteProperty); }
+      protected set
+      {
+        bool old = CanDeleteObject;
+        base.SetValue(CanDeleteProperty, value);
+        if (old != value)
+          OnPropertyChanged(
+            new DependencyPropertyChangedEventArgs(CanDeleteProperty, old, value));
+      }
+    }
+
+    #endregion
+
+    #region Per-Instance Dependency Properties
 
     private static readonly DependencyProperty IsDeletedProperty =
       DependencyProperty.Register("IsDeleted", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
@@ -40,7 +121,7 @@ namespace Csla.Wpf
     public bool IsDeleted
     {
       get { return (bool)base.GetValue(IsDeletedProperty); }
-      set 
+      protected set 
       {
         bool old = IsDeleted;
         base.SetValue(IsDeletedProperty, value);
@@ -56,7 +137,7 @@ namespace Csla.Wpf
     public bool IsDirty
     {
       get { return (bool)base.GetValue(IsDirtyProperty); }
-      set
+      protected set
       {
         bool old = IsDirty;
         base.SetValue(IsDirtyProperty, value);
@@ -73,7 +154,7 @@ namespace Csla.Wpf
     public bool IsNew
     {
       get { return (bool)base.GetValue(IsNewProperty); }
-      set
+      protected set
       {
         bool old = IsNew;
         base.SetValue(IsNewProperty, value);
@@ -90,7 +171,7 @@ namespace Csla.Wpf
     public bool IsSavable
     {
       get { return (bool)base.GetValue(IsSavableProperty); }
-      set
+      protected set
       {
         bool old = IsSavable;
         base.SetValue(IsSavableProperty, value);
@@ -107,7 +188,7 @@ namespace Csla.Wpf
     public bool IsValid
     {
       get { return (bool)base.GetValue(IsValidProperty); }
-      set
+      protected set
       {
         bool old = IsValid;
         base.SetValue(IsValidProperty, value);
@@ -118,6 +199,8 @@ namespace Csla.Wpf
     }
 
     #endregion
+
+    #region Base Overrides 
 
     /// <summary>
     /// This method is called when the data
@@ -168,6 +251,27 @@ namespace Csla.Wpf
     /// </summary>
     public void Refresh()
     {
+      // per-type rules
+      if (DataObject != null)
+      {
+        Type sourceType = DataObject.GetType();
+        if (CanCreateObject != Csla.Security.AuthorizationRules.CanCreateObject(sourceType))
+          CanCreateObject = Csla.Security.AuthorizationRules.CanCreateObject(sourceType);
+        if (CanGetObject != Csla.Security.AuthorizationRules.CanGetObject(sourceType))
+          CanGetObject = Csla.Security.AuthorizationRules.CanGetObject(sourceType);
+        if (CanEditObject != Csla.Security.AuthorizationRules.CanEditObject(sourceType))
+          CanEditObject = Csla.Security.AuthorizationRules.CanEditObject(sourceType);
+        if (CanDeleteObject != Csla.Security.AuthorizationRules.CanDeleteObject(sourceType))
+          CanDeleteObject = Csla.Security.AuthorizationRules.CanDeleteObject(sourceType);
+      }
+      else
+      {
+        CanCreateObject = false;
+        CanGetObject = false;
+        CanEditObject = false;
+        CanDeleteObject = false;
+      }
+
       IEditableBusinessObject source = DataObject as IEditableBusinessObject;
       if (source != null)
       {
@@ -198,5 +302,7 @@ namespace Csla.Wpf
         }
       }
     }
+
+    #endregion
   }
 }

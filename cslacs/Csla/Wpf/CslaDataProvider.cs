@@ -42,6 +42,7 @@ namespace Csla.Wpf
     private ObservableCollection<object> _factoryParameters;
     private bool _isAsynchronous;
     private CslaDataProviderCommandManager _commandManager;
+    private bool _isBusy;
 
     /// <summary>
     /// Gets an object that can be used to execute
@@ -134,6 +135,41 @@ namespace Csla.Wpf
       set { _isAsynchronous = value; }
     }
 
+    /// <summary>
+    /// Gets or sets a reference to the data
+    /// object.
+    /// </summary>
+    public object ObjectInstance
+    {
+      get { return Data; }
+      set 
+      {
+        base.OnQueryFinished(value, null, null, null);
+        OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
+      }
+    }
+
+    public bool IsBusy
+    {
+      get { return _isBusy; }
+      protected set
+      {
+        _isBusy = value;
+        OnPropertyChanged(new PropertyChangedEventArgs("IsBusy"));
+      }
+    }
+
+    /// <summary>
+    /// Triggers WPF data binding to rebind to the
+    /// data object.
+    /// </summary>
+    public void Rebind()
+    {
+      object tmp = ObjectInstance;
+      ObjectInstance = null;
+      ObjectInstance = tmp;
+    }
+
     #endregion
 
     #region Query
@@ -163,10 +199,15 @@ namespace Csla.Wpf
       request.FactoryParameters = _factoryParameters;
       request.ManageObjectLifetime = _manageLifetime;
 
+      IsBusy = true;
+
       if (IsAsynchronous)
         System.Threading.ThreadPool.QueueUserWorkItem(DoQuery, request);
       else
+      {
         DoQuery(request);
+        IsBusy = false;
+      }
     }
 
     private void DoQuery(object state)
@@ -233,6 +274,11 @@ namespace Csla.Wpf
           undo.BeginEdit();
       }
 
+      if (!System.Windows.Application.Current.Dispatcher.CheckAccess())
+        System.Windows.Application.Current.Dispatcher.Invoke(
+          new Action(() => { IsBusy = false; }), 
+          new object[] { });
+
       // return result to base class
       base.OnQueryFinished(result, exceptionResult, null, null);
     }
@@ -294,8 +340,10 @@ namespace Csla.Wpf
       Csla.Core.ISupportUndo undo = this.Data as Csla.Core.ISupportUndo;
       if (undo != null && _manageLifetime)
       {
+        IsBusy = true;
         undo.CancelEdit();
         undo.BeginEdit();
+        IsBusy = false;
       }
     }
 
@@ -330,6 +378,7 @@ namespace Csla.Wpf
         Exception exceptionResult = null;
         try
         {
+          IsBusy = true;
           // apply edits in memory
           Csla.Core.ISupportUndo undo = savable as Csla.Core.ISupportUndo;
           if (undo != null && _manageLifetime)
@@ -367,6 +416,7 @@ namespace Csla.Wpf
         base.OnQueryFinished(null, exceptionResult, null, null);
         // return result to base class
         base.OnQueryFinished(result, null, null, null);
+        IsBusy = false;
       }
     }
 
@@ -394,7 +444,12 @@ namespace Csla.Wpf
     {
       // only do something if the object implements
       // IBindingList
-      IBindingList list = this.Data as IBindingList;
+      IBindingList list;
+      Csla.Core.BusinessBase bb = item as Csla.Core.BusinessBase;
+      if (bb != null)
+        list = bb.Parent as IBindingList;
+      else
+        list = this.Data as IBindingList;
       if (list != null && list.AllowRemove)
         list.Remove(item);
     }

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using Csla.Properties;
+using Csla.Core;
 
 namespace Csla
 {
@@ -115,11 +116,13 @@ namespace Csla
         throw new Validation.ValidationException(Resources.NoSaveEditingException);
       if (!IsValid && !IsDeleted)
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
+      if (IsBusy)
+        throw new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
       if (IsDirty)
         result = (T)DataPortal.Update(this);
       else
         result = (T)this;
-      OnSaved(result);
+      OnSaved(result, null, null);
       return result;
     }
 
@@ -150,6 +153,156 @@ namespace Csla
       return this.Save();
     }
 
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    public void BeginSave()
+    {
+      BeginSave(null);
+    }
+
+    public void BeginSave(object userState)
+    {
+      BeginSave(false, null, userState);
+    }
+
+    public void BeginSave(EventHandler<SavedEventArgs> handler)
+    {
+      BeginSave(false, handler, null);
+    }
+
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    /// <param name="handler">
+    /// Delegate reference to a callback handler that will
+    /// be invoked when the async operation is complete.
+    /// </param>
+    public virtual void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
+    {
+      if (forceUpdate && IsNew)
+      {
+        // mark the object as old - which makes it
+        // not dirty
+        MarkOld();
+        // now mark the object as dirty so it can save
+        MarkDirty(true);
+      }
+
+      if (this.IsChild)
+      {
+        NotSupportedException error = new NotSupportedException(Resources.NoSaveChildException);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else if (EditLevel > 0)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else if (!IsValid && !IsDeleted)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else if (IsBusy)
+      {
+        // TODO: Review this resource text
+        Validation.ValidationException error = new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else
+      {
+        if (IsDirty)
+        {
+          MarkBusy();
+          if (userState == null)
+          {
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error, e.UserState);
+              if (handler != null)
+                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
+              MarkIdle();
+            });
+          }
+          else
+          {
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error, e.UserState);
+              if (handler != null)
+                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
+              MarkIdle();
+            }, userState);
+          }
+        }
+        else
+        {
+          OnSaved((T)this, null, userState);
+          if (handler != null)
+            handler(this, new SavedEventArgs(this, null, userState));
+        }
+      }
+    }
+
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+    /// If <see langword="false"/> then it is the same as calling Save().
+    /// </param>
+    /// <remarks>
+    /// This overload is designed for use in web applications
+    /// when implementing the Update method in your 
+    /// data wrapper object.
+    /// </remarks>
+    public void BeginSave(bool forceUpdate)
+    {
+      this.BeginSave(false, null);
+    }
+
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+    /// If <see langword="false"/> then it is the same as calling Save().
+    /// </param>
+    /// <param name="handler">
+    /// Delegate reference to a callback handler that will
+    /// be invoked when the async operation is complete.
+    /// </param>
+    /// <remarks>
+    /// This overload is designed for use in web applications
+    /// when implementing the Update method in your 
+    /// data wrapper object.
+    /// </remarks>
+    public void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler)
+    {
+      this.BeginSave(forceUpdate, handler, null);
+    }
+
+    public void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
+    {
+      this.BeginSave(false, handler, userState);
+    }
+
+
     #endregion
 
     #region ISavable Members
@@ -161,7 +314,7 @@ namespace Csla
 
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
-      OnSaved((T)newObject);
+      OnSaved((T)newObject, null, null);
     }
 
     [NonSerialized]
@@ -169,7 +322,7 @@ namespace Csla
     private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
     [NotUndoable]
     private EventHandler<Csla.Core.SavedEventArgs> _serializableSavedHandlers;
-    
+
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
@@ -208,9 +361,10 @@ namespace Csla
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject)
+    protected void OnSaved(T newObject, Exception e, object userState)
     {
-      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject);
+      MarkIdle();
+      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
       if (_nonSerializableSavedHandlers != null)
         _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)

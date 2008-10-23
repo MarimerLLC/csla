@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Csla.Properties;
 
 namespace Csla.Core
 {
@@ -15,7 +16,7 @@ namespace Csla.Core
       // Assert.
       if (ExpressionTreeHelpers.IsSpecificMemberExpression(be.Left, declaringType, memberName) &&
           ExpressionTreeHelpers.IsSpecificMemberExpression(be.Right, declaringType, memberName))
-        throw new Exception("Cannot have 'member' == 'member' in an expression!");
+        throw new InvalidOperationException(Resources.CannotHaveMemberEqualsMemberInAnExpression);
 
       return (ExpressionTreeHelpers.IsSpecificMemberExpression(be.Left, declaringType, memberName) ||
           ExpressionTreeHelpers.IsSpecificMemberExpression(be.Right, declaringType, memberName));
@@ -31,7 +32,7 @@ namespace Csla.Core
     internal static string GetValueFromEqualsExpression(BinaryExpression be, Type memberDeclaringType, string memberName)
     {
       if (be.NodeType != ExpressionType.Equal)
-        throw new Exception("There is a bug in this program.");
+        throw new InvalidProgramException();
 
       if (be.Left.NodeType == ExpressionType.MemberAccess)
       {
@@ -53,7 +54,7 @@ namespace Csla.Core
       }
 
       // We should have returned by now.
-      throw new Exception("There is a bug in this program.");
+      throw new InvalidProgramException();
     }
 
     internal static string GetValueFromExpression(Expression expression)
@@ -62,7 +63,7 @@ namespace Csla.Core
         return (string)(((ConstantExpression)expression).Value);
       else
         throw new InvalidQueryException(
-            String.Format("The expression type {0} is not supported to obtain a value.", expression.NodeType));
+            String.Format(Resources.ExpressionTypeNotSupportedToObtainValue, expression.NodeType));
     }
   }
 }

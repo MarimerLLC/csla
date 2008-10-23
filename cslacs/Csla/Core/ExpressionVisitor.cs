@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Csla.Properties;
 
 namespace Csla.Core
 {
@@ -76,7 +77,7 @@ namespace Csla.Core
         case ExpressionType.ListInit:
           return this.VisitListInit((ListInitExpression)exp);
         default:
-          throw new Exception(string.Format("Unhandled expression type: '{0}'", exp.NodeType));
+          throw new Exception(string.Format(Resources.UnhandledExpressionType, exp.NodeType));
       }
     }
 
@@ -91,7 +92,7 @@ namespace Csla.Core
         case MemberBindingType.ListBinding:
           return this.VisitMemberListBinding((MemberListBinding)binding);
         default:
-          throw new Exception(string.Format("Unhandled binding type '{0}'", binding.BindingType));
+          throw new Exception(string.Format(Resources.UnhandledBindingType, binding.BindingType));
       }
     }
 

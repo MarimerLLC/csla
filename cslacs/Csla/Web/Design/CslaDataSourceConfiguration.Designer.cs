@@ -1,3 +1,4 @@
+#if !CLIENTONLY
 namespace Csla.Web.Design
 {
   partial class CslaDataSourceConfiguration
@@ -89,3 +90,4 @@ namespace Csla.Web.Design
     private System.Windows.Forms.ComboBox TypeComboBox;
   }
 }
+#endif

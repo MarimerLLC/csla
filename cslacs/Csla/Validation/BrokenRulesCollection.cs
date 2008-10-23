@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Csla.Properties;
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Validation
 {
@@ -14,7 +16,7 @@ namespace Csla.Validation
   /// to the user.
   /// </remarks>
   [Serializable()]
-  public class BrokenRulesCollection : Core.ReadOnlyBindingList<BrokenRule>
+  public partial class BrokenRulesCollection : Core.ReadOnlyBindingList<BrokenRule>
   {
 
     private int _errorCount;
@@ -115,9 +117,14 @@ namespace Csla.Validation
       return null;
     }
 
-    internal BrokenRulesCollection()
+    internal void Add(IAsyncRuleMethod rule, AsyncRuleResult result)
     {
-      // limit creation to this assembly
+      Remove(rule);
+      IsReadOnly = false;
+      BrokenRule item = new BrokenRule(rule, result);
+      IncrementCount(item);
+      Add(item);
+      IsReadOnly = true;
     }
 
     internal void Add(IRuleMethod rule)
@@ -358,6 +365,44 @@ namespace Csla.Validation
     public int Revision
     {
       get { return _revision; }
+    }
+
+    #endregion
+
+    #region MobileObject overrides
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info)
+    {
+      info.AddValue("_errorCount", _errorCount);
+      info.AddValue("_warningCount", _warningCount);
+      info.AddValue("_infoCount", _infoCount);
+      info.AddValue("_customList", _customList);
+
+      base.OnGetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info)
+    {
+      _errorCount = info.GetValue<int>("_errorCount");
+      _warningCount = info.GetValue<int>("_warningCount");
+      _infoCount = info.GetValue<int>("_infoCount");
+      _customList = info.GetValue<bool>("_customList");
+
+      base.OnSetState(info);
     }
 
     #endregion

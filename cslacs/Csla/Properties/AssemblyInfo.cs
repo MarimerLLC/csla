@@ -1,16 +1,17 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET")]
+[assembly: AssemblyTitle("CSLA .NET for Windows")]
 [assembly: AssemblyDescription("CSLA .NET Framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rockford Lhotka")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2007 Rockford Lhotka")]
+[assembly: AssemblyCopyright("Copyright © 2008 Rockford Lhotka")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,5 +35,7 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("3.5.2.0")]
-[assembly: AssemblyFileVersion("3.5.2.0")]
+[assembly: AssemblyVersion("3.6.0.0")]
+[assembly: AssemblyFileVersion("3.6.0.0")]
+
+[assembly: ThemeInfo(ResourceDictionaryLocation.SourceAssembly, ResourceDictionaryLocation.SourceAssembly)]

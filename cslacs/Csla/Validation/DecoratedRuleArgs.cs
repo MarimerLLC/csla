@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+#if SILVERLIGHT
+using Uri = Csla.Utilities;
+#endif
+
 namespace Csla.Validation
 {
   /// <summary>
@@ -467,12 +471,12 @@ namespace Csla.Validation
             sb.Append("&");
           if (item.Key != null)
           {
-            var itemString = System.Uri.EscapeDataString(item.Key);
+            var itemString = Uri.EscapeDataString(item.Key);
             string valueString;
             if (item.Value == null)
-              valueString = string.Empty;
+              valueString=string.Empty;
             else
-              valueString = System.Uri.EscapeDataString(item.Value.ToString());
+              valueString = Uri.EscapeDataString(item.Value.ToString());
             sb.AppendFormat("{0}={1}", itemString, valueString);
           }
         }

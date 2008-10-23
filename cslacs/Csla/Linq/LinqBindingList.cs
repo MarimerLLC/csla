@@ -6,6 +6,7 @@ using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
 using Csla.Core;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -146,7 +147,7 @@ namespace Csla
       if (SupportsSorting)
         _bindingList.ApplySort(property, direction);
       else
-        throw new NotSupportedException("Sorting not supported.");
+        throw new NotSupportedException(Resources.SortingNotSupported);
     }
 
     /// <summary>
@@ -243,7 +244,7 @@ namespace Csla
       if (SupportsSorting)
         _bindingList.RemoveSort();
       else
-        throw new NotSupportedException("Sorting not supported");
+        throw new NotSupportedException(Resources.SortingNotSupported);
     }
 
     /// <summary>

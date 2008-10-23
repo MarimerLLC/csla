@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Define a Csla Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Defines a Csla-style Property with a SmartDate backing field.</Description>
+      <HelpUrl />
+      <SnippetTypes />
+      <Keywords />
+      <Shortcut>cslapropc</Shortcut>
+    </Header>
+    <Snippet>
+      <References />
+      <Imports />
+      <Declarations>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>ClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>BusinessClass</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>FriendlyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with friendly property name.</ToolTip>
+          <Default>Name</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>PropertyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>PropertyType</ID>
+          <Type />
+          <ToolTip>Replace with the property type.</ToolTip>
+          <Default>SmartDate</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>FieldType</ID>
+          <Type />
+          <ToolTip>Replace with the internal field type.</ToolTip>
+          <Default>string</Default>
+          <Function />
+        </Literal>
+      </Declarations>
+      <Code Language="VB" Kind="method decl" Delimiter="$"><![CDATA[Private Shared $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(New PropertyInfo(Of $PropertyType$)("$PropertyName$", "$FriendlyName$"))
+''' <Summary>
+''' Gets and sets the $FriendlyName$ value.
+''' </Summary>
+Public Property $PropertyName$() As String
+    Get
+        Return GetPropertyConvert(Of $PropertyType$, $FieldType$)($PropertyName$Property)
+    End Get
+    Set(ByVal value As String)
+        SetPropertyConvert(Of $PropertyType$, $FieldType$)($PropertyName$Property, value)
+    End Set
+End Property]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

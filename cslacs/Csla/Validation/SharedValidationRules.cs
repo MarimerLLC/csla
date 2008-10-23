@@ -52,5 +52,11 @@ namespace Csla.Validation
     {
       return _managers.ContainsKey(objectType);
     }
+
+    internal static void RemoveManager(Type type)
+    {
+      if (_managers.ContainsKey(type))
+        _managers.Remove(type);
+    }
   }
 }

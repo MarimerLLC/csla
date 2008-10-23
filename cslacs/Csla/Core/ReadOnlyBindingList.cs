@@ -134,6 +134,28 @@ namespace Csla.Core
         throw new NotSupportedException(Resources.ChangeInvalidException);
     }
 
+    #region ITrackStatus
+
+    public override bool IsBusy
+    {
+      get
+      {
+        // run through all the child objects
+        // and if any are dirty then then
+        // collection is dirty
+        foreach (C child in this)
+        {
+          INotifyBusy busy = child as INotifyBusy;
+          if (busy != null && busy.IsBusy)
+            return true;
+        }
+
+        return false;
+      }
+    }
+
+    #endregion
+
     #region Indexing
     [NonSerialized]
     private Linq.IIndexSet<C> _indexSet;
@@ -272,6 +294,55 @@ namespace Csla.Core
         foreach (C item in result)
           yield return item;
       }
+    }
+
+    #endregion
+
+    #region MobileFormatter
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      base.OnGetState(info);
+      info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", _isReadOnly);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      base.OnSetState(info);
+      _isReadOnly = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList._isReadOnly");
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      var old = IsReadOnly;
+      IsReadOnly = false;
+      base.OnSetChildren(info, formatter);
+      IsReadOnly = old;
     }
 
     #endregion

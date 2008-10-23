@@ -1,5 +1,7 @@
 using System;
 using System.Security.Principal;
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Security
 {
@@ -9,9 +11,10 @@ namespace Csla.Security
   /// properly with the data portal.
   /// </summary>
   [Serializable()]
-  public class BusinessPrincipalBase : IPrincipal
+  public class BusinessPrincipalBase : Csla.Core.MobileObject, IPrincipal
   {
     private IIdentity _identity;
+    protected BusinessPrincipalBase() { _identity = new UnauthenticatedIdentity(); }
 
     /// <summary>
     /// Returns the user's identity object.
@@ -28,7 +31,11 @@ namespace Csla.Security
     /// <param name="role">Name of the role.</param>
     public virtual bool IsInRole(string role)
     {
-      return false;
+      var check = _identity as ICheckRoles;
+      if (check != null)
+        return check.IsInRole(role);
+      else
+        return false;
     }
 
     /// <summary>
@@ -38,6 +45,17 @@ namespace Csla.Security
     protected BusinessPrincipalBase(IIdentity identity)
     {
       _identity = identity;
+    }
+
+    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)
+    {
+      info.AddValue("BusinessPrincipalBase.Identity", MobileFormatter.Serialize(_identity));
+      base.OnGetState(info, mode);
+    }
+    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)
+    {
+      base.OnSetState(info, mode);
+      _identity = (IIdentity)MobileFormatter.Deserialize(info.GetValue<byte[]>("BusinessPrincipalBase.Identity"));
     }
   }
 }

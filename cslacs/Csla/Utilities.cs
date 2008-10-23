@@ -1,6 +1,10 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Xml;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Text;
 
 namespace Csla
 {
@@ -231,6 +235,33 @@ namespace Csla
       return (D)(CoerceValue(typeof(D), valueType, oldValue, value));
     }
 
+    #endregion
+
+    #region Serialization
+
+    internal static string XmlSerialize(object graph)
+    {
+      using (var buffer = new MemoryStream())
+      {
+        XmlWriter writer = XmlWriter.Create(buffer);
+        DataContractSerializer dcs = new DataContractSerializer(graph.GetType());
+        dcs.WriteObject(writer, graph);
+        writer.Flush();
+        byte[] data = buffer.ToArray();
+        return Encoding.UTF8.GetString(data, 0, data.Length);
+      }
+
+    }
+
+    internal static T XmlDeserialize<T>(string xml)
+    {
+      using (var buffer = new MemoryStream(Encoding.UTF8.GetBytes(xml)))
+      {
+        XmlReader reader = XmlReader.Create(buffer);
+        DataContractSerializer dcs = new DataContractSerializer(typeof(T));
+        return (T)dcs.ReadObject(reader);
+      }
+    }
     #endregion
   }
 

@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BrokenRulesMergeException" xml:space="preserve">
+    <value>Spajanje samo dozvoljeno na posebnim kolekcijama</value>
+  </data>
   <data name="BusinessPrincipalException" xml:space="preserve">
     <value>Principal objekt mora biti tipa BusinessPrincipal, a ne</value>
+  </data>
+  <data name="CanReadAuthorizationRuleDescription" xml:space="preserve">
+    <value>Niste autorizovani da čitate ovo polje</value>
+  </data>
+  <data name="CanWriteAuthorizationRuleDescription" xml:space="preserve">
+    <value>Niste autoriyovani da pišete u ovo polje</value>
   </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Izmjena nije dozvoljena</value>
@@ -131,6 +140,9 @@
   </data>
   <data name="CreateNotSupportedException" xml:space="preserve">
     <value>Nedozvoljena operacija - kreiranje</value>
+  </data>
+  <data name="DatabaseNameNotFound" xml:space="preserve">
+    <value>Ime Baze podataka nije nađeno u kofiguracijskoj datoteci</value>
   </data>
   <data name="DeleteNotSupportedException" xml:space="preserve">
     <value>Nedozvoljena operacija - brisanje</value>

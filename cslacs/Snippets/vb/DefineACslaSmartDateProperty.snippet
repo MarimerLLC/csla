@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Define a Csla Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Defines a Csla-style Property with a SmartDate backing field.</Description>
+      <HelpUrl />
+      <SnippetTypes />
+      <Keywords />
+      <Shortcut>csladtprop</Shortcut>
+    </Header>
+    <Snippet>
+      <References />
+      <Imports />
+      <Declarations>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>PropertyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>NewProperty</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>FriendlyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with friendly display name.</ToolTip>
+          <Default>NewProperty</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>DeclaringType</ID>
+          <Type>Type</Type>
+          <ToolTip>Replace with the type that is declaring this property.</ToolTip>
+          <Default>BusinessObject</Default>
+          <Function />
+        </Literal>
+      </Declarations>
+      <Code Language="VB" Kind="method decl" Delimiter="$"><![CDATA[Private Shared $PropertyName$Property As PropertyInfo(Of SmartDate) = RegisterProperty(New PropertyInfo(Of SmartDate)("$PropertyName$", "$FriendlyName$"))
+''' <Summary>
+''' Gets and sets the $FriendlyName$ value.
+''' </Summary>
+Public Property $PropertyName$() As String
+    Get
+        Return GetPropertyConvert(Of SmartDate, String)($PropertyName$Property)
+    End Get
+    Set(ByVal value As String)
+        SetPropertyConvert(Of SmartDate, String)($PropertyName$Property, value)
+    End Set
+End Property]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

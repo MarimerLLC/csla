@@ -5,6 +5,7 @@ namespace Csla.Core.FieldManager
 {
   internal static class PropertyInfoManager
   {
+    private static object _cacheLock = new object();
     private static Dictionary<Type, List<IPropertyInfo>> _propertyInfoCache;
 
     private static Dictionary<Type, List<IPropertyInfo>> PropertyInfoCache
@@ -13,7 +14,7 @@ namespace Csla.Core.FieldManager
       {
         if (_propertyInfoCache == null)
         {
-          lock (typeof(BusinessBase))
+          lock (_cacheLock)
           {
             if (_propertyInfoCache == null)
               _propertyInfoCache = new Dictionary<Type, List<IPropertyInfo>>();
@@ -81,7 +82,9 @@ namespace Csla.Core.FieldManager
     {
       // return a copy of the list to avoid
       // possible locking issues
-      return new List<IPropertyInfo>(GetPropertyListCache(objectType));
+      var list = GetPropertyListCache(objectType);
+      lock (list)
+        return new List<IPropertyInfo>(list);
     }
   }
 }

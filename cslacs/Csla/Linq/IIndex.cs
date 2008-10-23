@@ -18,9 +18,9 @@ namespace Csla.Linq
     /// </summary>
     IEnumerable<T> WhereEqual(T item);
     /// <summary>
-    /// Iterator that returns objects based on the expression and the item hashcode passed in
+    /// Iterator that returns objects based on the expression and the value passed in
     /// </summary>
-    IEnumerable<T> WhereEqual(int hashCode, Func<T, bool> expr);
+    IEnumerable<T> WhereEqual(object pivotVal, Func<T, bool> expr);
     /// <summary>
     /// Reindex an item in this index
     /// </summary>

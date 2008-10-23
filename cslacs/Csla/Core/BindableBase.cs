@@ -9,7 +9,9 @@ namespace Csla.Core
   /// serialization-safe manner.
   /// </summary>
   [Serializable()]
-  public abstract class BindableBase : System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging
+  public abstract class BindableBase : MobileObject, 
+    System.ComponentModel.INotifyPropertyChanged, 
+    System.ComponentModel.INotifyPropertyChanging
   {
     /// <summary>
     /// Creates an instance of the object.
@@ -93,7 +95,7 @@ namespace Csla.Core
     /// has changed.</param>
     /// <remarks>
     /// This method may be called by properties in the business
-    /// class to indicate the change in a specific property.
+  /// class to indicate the change in a specific property.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnPropertyChanged(string propertyName)

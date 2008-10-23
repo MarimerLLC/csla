@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using Csla.Properties;
 using System.Linq;
 using System.Linq.Expressions;
+using Csla.Core;
 
 
 namespace Csla
@@ -22,7 +23,8 @@ namespace Csla
       Core.ExtendedBindingList<C>,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable,
       Core.ISavable, Core.IParent, Server.IDataPortalTarget,
-      IQueryable<C>, Linq.IIndexSearchable<C>, Core.IPositionMappable<C>
+      IQueryable<C>, Linq.IIndexSearchable<C>, Core.IPositionMappable<C>,
+      INotifyBusy
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
@@ -127,7 +129,7 @@ namespace Csla
       get 
       {
         bool auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
-        return (IsDirty && IsValid && auth);
+        return (IsDirty && IsValid && auth && !IsBusy);
       }
     }
 
@@ -268,7 +270,7 @@ namespace Csla
     {
       C child;
 
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
 
       // we are coming up one edit level
@@ -341,7 +343,7 @@ namespace Csla
 
     private void AcceptChanges(int parentEditLevel)
     {
-      if (this.EditLevel - 1 < parentEditLevel)
+      if (this.EditLevel - 1 != parentEditLevel)
         throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
 
       // we are coming up one edit level
@@ -371,7 +373,7 @@ namespace Csla
 
     #region Delete and Undelete child
 
-    private List<C> _deletedList;
+    private MobileList<C> _deletedList;
 
     /// <summary>
     /// A collection containing all child objects marked
@@ -380,12 +382,12 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
       "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected List<C> DeletedList
+    protected MobileList<C> DeletedList
     {
       get 
       { 
         if (_deletedList == null)
-          _deletedList = new List<C>();
+          _deletedList = new MobileList<C>();
         return _deletedList; 
       }
     }
@@ -504,18 +506,10 @@ namespace Csla
       {
         // the child shouldn't be completely removed,
         // so copy it to the deleted list
-        CopyToDeletedList(child);
+        DeleteChild(child);
       }
       if (RaiseListChangedEvents)
         OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
-    }
-
-    private void CopyToDeletedList(C child)
-    {
-      DeleteChild(child);
-      INotifyPropertyChanged c = child as INotifyPropertyChanged;
-      if (c != null)
-        c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
     }
 
     /// <summary>
@@ -572,7 +566,7 @@ namespace Csla
         this.RaiseListChangedEvents = oldRaiseListChangedEvents;
       }
       if (child != null)
-        CopyToDeletedList(child);
+        DeleteChild(child);
       if (RaiseListChangedEvents)
         OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
     }
@@ -853,22 +847,28 @@ namespace Csla
 
     #region Cascade Child events
 
-    private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    /// <summary>
+    /// Raises ListChanged event if an immediate child of
+    /// the collection was changed.
+    /// </summary>
+    /// <param name="sender">Calling object</param>
+    /// <param name="e">Args containing parameter values.</param>
+    protected internal override void OnChildChangedInternal(object sender, ChildChangedEventArgs e)
     {
-      if (RaiseListChangedEvents)
+      if (RaiseListChangedEvents && e.PropertyChangedArgs!=null)
       {
         DeferredLoadIndexIfNotLoaded();
-        if (_indexSet.HasIndexFor(e.PropertyName))
-           ReIndexItem((C) sender, e.PropertyName);
+        if (_indexSet.HasIndexFor(e.PropertyChangedArgs.PropertyName))
+           ReIndexItem((C) sender, e.PropertyChangedArgs.PropertyName);
 
         for (int index = 0; index < Count; index++)
         {
           if (ReferenceEquals(this[index], sender))
           {
-            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName);
             if (descriptor != null)
               OnListChanged(new ListChangedEventArgs(
-                ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)));
+                ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)));
             else
               OnListChanged(new ListChangedEventArgs(
                 ListChangedType.ItemChanged, index));
@@ -876,6 +876,8 @@ namespace Csla
           }
         }
       }
+
+      base.OnChildChangedInternal(sender, e);
     }
 
     private static PropertyDescriptorCollection _propertyDescriptors;
@@ -898,30 +900,18 @@ namespace Csla
 
     #region Serialization Notification
 
-    [OnDeserialized()]
-    private void OnDeserializedHandler(StreamingContext context)
+    protected internal override void OnDeserializedInternal()
     {
-      OnDeserialized(context);
       foreach (Core.IEditableBusinessObject child in this)
       {
         child.SetParent(this);
-        INotifyPropertyChanged c = child as INotifyPropertyChanged;
-        if (c != null)
-          c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+        //OnAddEventHooksInternal((C)child);
       }
+      
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
-    }
 
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(StreamingContext context)
-    {
-      // do nothing - this is here so a subclass
-      // could override if needed
+      base.OnDeserializedInternal();
     }
 
     #endregion
@@ -1008,12 +998,96 @@ namespace Csla
       if (!IsValid)
         throw new Validation.ValidationException(Resources.NoSaveInvalidException);
 
+      if (IsBusy)
+        // TODO: Review this resource text
+        throw new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+
       if (IsDirty)
         result = (T)DataPortal.Update(this);
       else
         result = (T)this;
-      OnSaved(result);
+      OnSaved(result, null, null);
       return result;
+    }
+
+    public void BeginSave()
+    {
+      BeginSave(null, null);
+    }
+
+    public void BeginSave(object userState)
+    {
+      BeginSave(null, userState);
+    }
+
+    public void BeginSave(EventHandler<SavedEventArgs> handler)
+    {
+      BeginSave(handler, null);
+    }
+
+    public virtual void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
+    {
+      if (this.IsChild)
+      {
+        NotSupportedException error = new NotSupportedException(Resources.NoSaveChildException);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else if (EditLevel > 0)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else if (!IsValid)
+      {
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else if (IsBusy)
+      {
+        // TODO: Review this resource text
+        Validation.ValidationException error = new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        OnSaved(null, error, userState);
+        if (handler != null)
+          handler(this, new SavedEventArgs(null, error, userState));
+      }
+      else
+      {
+        if (IsDirty)
+        {
+          if (userState == null)
+          {
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error, e.UserState);
+              if (handler != null)
+                handler(result, new SavedEventArgs(result, e.Error, null));
+            });
+          }
+          else
+          {
+            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            {
+              T result = e.Object;
+              OnSaved(result, e.Error, e.UserState);
+              if (handler != null)
+                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
+            }, userState);
+          }
+        }
+        else
+        {
+          OnSaved((T)this, null, userState);
+          if (handler != null)
+            handler(this, new SavedEventArgs(this, null, userState));
+        }
+      }
     }
 
     /// <summary>
@@ -1139,7 +1213,7 @@ namespace Csla
 
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
-      OnSaved((T)newObject);
+      OnSaved((T)newObject, null, null);
     }
 
     [NonSerialized()]
@@ -1186,9 +1260,9 @@ namespace Csla
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
     [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject)
+    protected void OnSaved(T newObject, Exception e, object userState)
     {
-      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject);
+      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
       if (_nonSerializableSavedHandlers != null)
         _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)
@@ -1259,6 +1333,26 @@ namespace Csla
     {
       get
       {
+        return false;
+      }
+    }
+
+    public override bool IsBusy
+    {
+      get
+      {
+        // any non-new deletions make us dirty
+        foreach (C item in DeletedList)
+          if (item.IsBusy)
+            return true;
+
+        // run through all the child objects
+        // and if any are dirty then then
+        // collection is dirty
+        foreach (C child in this)
+          if (child.IsBusy)
+            return true;
+
         return false;
       }
     }
@@ -1369,6 +1463,57 @@ namespace Csla
     }
 
     #endregion
-  }
 
+    #region Mobile object overrides
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
+      _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
+      base.OnSetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      info.AddValue("Csla.BusinessListBase._isChild", _isChild);
+      info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
+      base.OnGetState(info);
+    }
+
+    protected override void OnGetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      base.OnGetChildren(info, formatter);
+      if (_deletedList != null)
+      {
+        var fieldManagerInfo = formatter.SerializeObject(_deletedList);
+        info.AddChild("_deletedList", fieldManagerInfo.ReferenceId);
+      }
+    }
+
+    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      if (info.Children.ContainsKey("_deletedList"))
+      {
+        var childData = info.Children["_deletedList"];
+        _deletedList = (MobileList<C>)formatter.GetObject(childData.ReferenceId);
+      }
+      base.OnSetChildren(info, formatter);
+    }
+
+    #endregion
+  }
 }

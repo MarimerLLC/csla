@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using Csla.Properties;
+using Csla.Core;
+using Csla.Serialization.Mobile;
 
 namespace Csla
 {
@@ -150,7 +152,7 @@ namespace Csla
     /// Contains a key and value pair.
     /// </summary>
     [Serializable()]
-    public class NameValuePair
+    public class NameValuePair : MobileObject
     {
       private K _key;
       private V _value;
@@ -190,6 +192,21 @@ namespace Csla
       {
         return _value.ToString();
       }
+
+      protected override void OnGetState(SerializationInfo info, StateMode mode)
+      {
+        base.OnGetState(info, mode);
+        info.AddValue("NameValuePair._key", _key);
+        info.AddValue("NameValuePair._value", _value);
+      }
+
+      protected override void OnSetState(SerializationInfo info, StateMode mode)
+      {
+        base.OnSetState(info, mode);
+        _key = info.GetValue<K>("NameValuePair._key");
+        _value = info.GetValue<V>("NameValuePair._value");
+      }
+
     }
 
     #endregion
@@ -246,6 +263,8 @@ namespace Csla
       public Criteria(Type collectionType)
         : base(collectionType)
       { }
+
+      public Criteria() { }
     }
 
     #endregion

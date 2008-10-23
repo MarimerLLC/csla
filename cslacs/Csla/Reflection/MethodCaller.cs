@@ -62,7 +62,7 @@ namespace Csla.Reflection
 
     #endregion
 
-    #region Dynamic Constructor Cache 
+    #region Dynamic Constructor Cache
 
     private static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
 
@@ -75,7 +75,7 @@ namespace Csla.Reflection
         {
           if (!_ctorCache.TryGetValue(objectType, out result))
           {
-            ConstructorInfo info = 
+            ConstructorInfo info =
               objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
             result = DynamicMethodHandlerFactory.CreateConstructor(info);
             _ctorCache.Add(objectType, result);
@@ -98,11 +98,67 @@ namespace Csla.Reflection
     {
       var ctor = GetCachedConstructor(objectType);
       if (ctor == null)
-        throw new NotImplementedException("Default constructor " + Resources.MethodNotImplemented);
+        throw new NotImplementedException(Resources.DefaultConstructor + Resources.MethodNotImplemented);
       return ctor.Invoke();
     }
 
     #endregion
+
+    private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+    private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+    private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
+
+    internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
+    {
+      var key = new MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(null));
+      DynamicMemberHandle mh = null;
+      if (!_memberCache.TryGetValue(key, out mh))
+      {
+        lock (_memberCache)
+        {
+          if (!_memberCache.TryGetValue(key, out mh))
+          {
+            PropertyInfo info = objectType.GetProperty(propertyName, propertyFlags);
+            mh = new DynamicMemberHandle(info);
+            _memberCache.Add(key, mh);
+          }
+        }
+      }
+      return mh;
+    }
+
+    internal static DynamicMemberHandle GetCachedField(Type objectType, string fieldName)
+    {
+      var key = new MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(null));
+      DynamicMemberHandle mh = null;
+      if (!_memberCache.TryGetValue(key, out mh))
+      {
+        lock (_memberCache)
+        {
+          if (!_memberCache.TryGetValue(key, out mh))
+          {
+            FieldInfo info = objectType.GetField(fieldName, fieldFlags);
+            mh = new DynamicMemberHandle(info);
+            _memberCache.Add(key, mh);
+          }
+        }
+      }
+      return mh;
+    }
+
+    public static object CallPropertyGetter(object obj, string property)
+    {
+      var mh = GetCachedProperty(obj.GetType(), property);
+      return mh.DynamicMemberGet(obj);
+    }
+
+    public static void CallPropertySetter(object obj, string property, object value)
+    {
+      var mh = GetCachedProperty(obj.GetType(), property);
+      mh.DynamicMemberSet(obj, value);
+    }
+
 
     #region Call Method
 
@@ -270,32 +326,72 @@ namespace Csla.Reflection
       {
         // no match found - so look for any method
         // with the right number of parameters
-        result = FindMethod(objectType, method, inParams.Length);
-      }
-
-      // no strongly typed match found, get default
-      if (result == null)
-      {
         try
         {
-          result = objectType.GetMethod(method, allLevelFlags);
+          result = FindMethod(objectType, method, inParams.Length);
         }
         catch (AmbiguousMatchException)
         {
-          MethodInfo[] methods = objectType.GetMethods();
+          // we have multiple methods matching by name and parameter count
+          result = FindMethodUsingFuzzyMatching(objectType, method, inParams);
+        }
+      }
+
+      // no strongly typed match found, get default based on name only
+      if (result == null)
+      {
+        result = objectType.GetMethod(method, allLevelFlags);
+      }
+      return result;
+    }
+
+    private static MethodInfo FindMethodUsingFuzzyMatching(Type objectType, string method, object[] parameters)
+    {
+      MethodInfo result = null;
+      Type currentType = objectType;
+      do
+      {
+        MethodInfo[] methods = currentType.GetMethods(oneLevelFlags);
+        int parameterCount = parameters.Length;
+        // Match based on name and parameter types and parameter arrays
+        foreach (MethodInfo m in methods)
+        {
+          if (m.Name == method)
+          {
+            var infoParams = m.GetParameters();
+            var pCount = infoParams.Length;
+            if (pCount > 0 &&
+               ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
+               (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
+            {
+              // last param is a param array or only param is an array
+              if (parameterCount >= pCount - 1)
+              {
+                // got a match so use it
+                result = m;
+                break;
+              }
+            }
+          }
+        }
+        if (result == null)
+        {
+          // match based on parameter name and number of parameters
           foreach (MethodInfo m in methods)
           {
-            if (m.Name == method && m.GetParameters().Length == inParams.Length)
+            if (m.Name == method && m.GetParameters().Length == parameterCount)
             {
               result = m;
               break;
             }
           }
-          if (result == null)
-            throw;
         }
-      }
+        if (result != null)
+          break;
+        currentType = currentType.BaseType;
+      } while (currentType != null);
 
+      
       return result;
     }
 

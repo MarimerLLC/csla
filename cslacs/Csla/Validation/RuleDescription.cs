@@ -10,6 +10,7 @@ namespace Csla.Validation
   public class RuleDescription
   {
     private string _scheme;
+    private string _typeName;
     private string _methodName;
     private string _propertyName;
     private Dictionary<string, string> _arguments;
@@ -23,9 +24,10 @@ namespace Csla.Validation
     {
       Uri uri = new Uri(ruleString);
 
-      _scheme = uri.GetLeftPart(UriPartial.Scheme);
-      _methodName = uri.Host;
-      _propertyName = uri.LocalPath.Substring(1);
+      _scheme = uri.Scheme + Uri.SchemeDelimiter;
+      _typeName = Uri.UnescapeDataString(uri.Host);
+      _methodName = uri.LocalPath.Substring(1);
+      _propertyName = uri.LocalPath.Substring(2);
 
       string args = uri.Query;
       if (!(string.IsNullOrEmpty(args)))
@@ -64,6 +66,15 @@ namespace Csla.Validation
     public string Scheme
     {
       get { return _scheme; }
+    }
+
+    /// <summary>
+    /// Gets the name of the type containing
+    /// the rule method.
+    /// </summary>
+    public string MethodTypeName
+    {
+      get { return _typeName; }
     }
 
     /// <summary>

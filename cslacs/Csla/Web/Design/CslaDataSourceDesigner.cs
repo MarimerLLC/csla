@@ -1,3 +1,4 @@
+#if !CLIENTONLY
 using System;
 using System.Web.UI;
 using System.Web.UI.Design;
@@ -162,3 +163,4 @@ namespace Csla.Web.Design
     }
   }
 }
+#endif

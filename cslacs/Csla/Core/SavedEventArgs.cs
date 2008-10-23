@@ -19,6 +19,21 @@ namespace Csla.Core
       get { return _newObject; }
     }
 
+    private Exception _error;
+    public Exception Error
+    {
+      get
+      {
+        return _error;
+      }
+    }
+
+    private object _userState;
+    public object UserState
+    {
+      get { return _userState; }
+    }
+
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -29,6 +44,15 @@ namespace Csla.Core
     public SavedEventArgs(object newObject)
     {
       _newObject = newObject;
+      _error = null;
+      _userState = null;
+    }
+
+    public SavedEventArgs(object newObject, Exception error, object userState)
+    {
+      _newObject = newObject;
+      _error = error;
+      _userState = userState;
     }
   }
 }

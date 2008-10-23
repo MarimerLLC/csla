@@ -4,6 +4,7 @@ using System.Security.Principal;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Web;
+using Csla.Core;
 
 namespace Csla
 {
@@ -14,6 +15,8 @@ namespace Csla
   public static class ApplicationContext
   {
     #region User
+
+    private static IPrincipal _principal;
 
     /// <summary>
     /// Get or set the current <see cref="IPrincipal" />
@@ -29,16 +32,53 @@ namespace Csla
     {
       get
       {
-        if (HttpContext.Current == null)
-          return Thread.CurrentPrincipal;
+        IPrincipal current;
+#if !CLIENTONLY
+        if (HttpContext.Current != null)
+          current = HttpContext.Current.User;
+        else if (System.Windows.Application.Current != null)
+        {
+          if (_principal == null)
+          {
+            if (ApplicationContext.AuthenticationType != "Windows")
+              _principal = new Csla.Security.UnauthenticatedPrincipal();
+            else
+              _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+          }
+          current = _principal;
+        }
         else
-          return HttpContext.Current.User;
+          current = Thread.CurrentPrincipal;
+#else
+        if (System.Windows.Application.Current != null)
+        {
+          if (_principal == null)
+          {
+            if (ApplicationContext.AuthenticationType != "Windows")
+              _principal = new Csla.Security.UnauthenticatedPrincipal();
+            else
+              _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+          }
+          current = _principal;
+        }
+        else
+          current = Thread.CurrentPrincipal;
+#endif
+        return current;
       }
       set
       {
+#if !CLIENTONLY
         if (HttpContext.Current != null)
           HttpContext.Current.User = value;
+        else if (System.Windows.Application.Current != null)
+          _principal = value;
         Thread.CurrentPrincipal = value;
+#else
+        if (System.Windows.Application.Current != null)
+          _principal = value;
+        Thread.CurrentPrincipal = value;
+#endif
       }
     }
 
@@ -61,40 +101,48 @@ namespace Csla
     /// the client and server.
     /// </para>
     /// </remarks>
-    public static HybridDictionary LocalContext
+    public static ContextDictionary LocalContext
     {
       get
       {
-        HybridDictionary ctx = GetLocalContext();
+        ContextDictionary ctx = GetLocalContext();
         if (ctx == null)
         {
-          ctx = new HybridDictionary();
+          ctx = new ContextDictionary();
           SetLocalContext(ctx);
         }
         return ctx;
       }
     }
 
-    private static HybridDictionary GetLocalContext()
+    private static ContextDictionary GetLocalContext()
     {
+#if !CLIENTONLY
       if (HttpContext.Current == null)
       {
+#endif
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
-        return (HybridDictionary)Thread.GetData(slot);
+        return (ContextDictionary)Thread.GetData(slot);
+#if !CLIENTONLY
       }
       else
-        return (HybridDictionary)HttpContext.Current.Items[_localContextName];
+        return (ContextDictionary)HttpContext.Current.Items[_localContextName];
+#endif
     }
 
-    private static void SetLocalContext(HybridDictionary localContext)
+    private static void SetLocalContext(ContextDictionary localContext)
     {
+#if !CLIENTONLY
       if (HttpContext.Current == null)
       {
+#endif
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
         Thread.SetData(slot, localContext);
+#if !CLIENTONLY
       }
       else
         HttpContext.Current.Items[_localContextName] = localContext;
+#endif
     }
 
     #endregion
@@ -124,16 +172,16 @@ namespace Csla
     /// client setting (i.e. in your ASP.NET UI).
     /// </para>
     /// </remarks>
-    public static HybridDictionary ClientContext
+    public static ContextDictionary ClientContext
     {
       get
       {
         lock (_syncClientContext)
         {
-          HybridDictionary ctx = GetClientContext();
+          ContextDictionary ctx = GetClientContext();
           if (ctx == null)
           {
-            ctx = new HybridDictionary();
+            ctx = new ContextDictionary();
             SetClientContext(ctx);
           }
           return ctx;
@@ -155,54 +203,64 @@ namespace Csla
     /// will be transferred bi-directionally across the network.
     /// </para>
     /// </remarks>
-    public static HybridDictionary GlobalContext
+    public static ContextDictionary GlobalContext
     {
       get
       {
-        HybridDictionary ctx = GetGlobalContext();
+        ContextDictionary ctx = GetGlobalContext();
         if (ctx == null)
         {
-          ctx = new HybridDictionary();
+          ctx = new ContextDictionary();
           SetGlobalContext(ctx);
         }
         return ctx;
       }
     }
 
-    internal static HybridDictionary GetClientContext()
+    internal static ContextDictionary GetClientContext()
     {
+#if !CLIENTONLY
       if (HttpContext.Current == null)
       {
+#endif
         if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
           lock (_syncClientContext)
-            return (HybridDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
+            return (ContextDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
         else
         {
           LocalDataStoreSlot slot =
             Thread.GetNamedDataSlot(_clientContextName);
-          return (HybridDictionary)Thread.GetData(slot);
+          return (ContextDictionary)Thread.GetData(slot);
         }
-      }
+#if !CLIENTONLY
+    }
       else
-        return (HybridDictionary)
+        return (ContextDictionary)
           HttpContext.Current.Items[_clientContextName];
+#endif
     }
 
-    internal static HybridDictionary GetGlobalContext()
+    internal static ContextDictionary GetGlobalContext()
     {
+#if !CLIENTONLY
       if (HttpContext.Current == null)
       {
+#endif
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
-        return (HybridDictionary)Thread.GetData(slot);
-      }
+        return (ContextDictionary)Thread.GetData(slot);
+#if !CLIENTONLY
+}
       else
-        return (HybridDictionary)HttpContext.Current.Items[_globalContextName];
+        return (ContextDictionary)HttpContext.Current.Items[_globalContextName];
+#endif
     }
 
-    private static void SetClientContext(HybridDictionary clientContext)
+    private static void SetClientContext(ContextDictionary clientContext)
     {
+#if !CLIENTONLY
       if (HttpContext.Current == null)
       {
+#endif
         if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
           lock (_syncClientContext)
             AppDomain.CurrentDomain.SetData(_clientContextName, clientContext);
@@ -211,25 +269,31 @@ namespace Csla
           LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
           Thread.SetData(slot, clientContext);
         }
-      }
+#if !CLIENTONLY
+    }
       else
         HttpContext.Current.Items[_clientContextName] = clientContext;
+#endif
     }
 
-    internal static void SetGlobalContext(HybridDictionary globalContext)
+    internal static void SetGlobalContext(ContextDictionary globalContext)
     {
+#if !CLIENTONLY
       if (HttpContext.Current == null)
       {
+#endif
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         Thread.SetData(slot, globalContext);
+#if !CLIENTONLY
       }
       else
         HttpContext.Current.Items[_globalContextName] = globalContext;
+#endif
     }
 
     internal static void SetContext(
-      HybridDictionary clientContext, 
-      HybridDictionary globalContext)
+      ContextDictionary clientContext,
+      ContextDictionary globalContext)
     {
       SetClientContext(clientContext);
       SetGlobalContext(globalContext);
@@ -248,6 +312,8 @@ namespace Csla
 
     #region Config Settings
 
+    private static string _authenticationType;
+
     /// <summary>
     /// Returns the authentication type being used by the
     /// CSLA .NET framework.
@@ -263,7 +329,15 @@ namespace Csla
     /// </remarks>
     public static string AuthenticationType
     {
-      get { return ConfigurationManager.AppSettings["CslaAuthentication"]; }
+      get 
+      {
+        if (_authenticationType == null)
+        {
+          _authenticationType = ConfigurationManager.AppSettings["CslaAuthentication"];
+          _authenticationType = _authenticationType ?? "Csla";
+        }
+        return _authenticationType;
+      }
     }
 
     /// <summary>
@@ -475,7 +549,11 @@ namespace Csla
       /// <summary>
       /// The code is executing on the application server.
       /// </summary>
-      Server
+      Server,
+      /// <summary>
+      /// The code is executing on the Silverlight client.
+      /// </summary>
+      Silverlight
     }
 
     /// <summary>
@@ -517,6 +595,36 @@ namespace Csla
       _executionLocation = location;
     }
 
+    #endregion
+
+    #region Logical Execution Location
+    /// <summary>
+    /// Enum representing the logical execution location
+    /// The setting is set to server when server is execting
+    /// a CRUD opertion, otherwise the setting is always client
+    /// </summary>
+    public enum LogicalExecutionLocations
+    {
+      /// <summary>
+      /// The code is executing on the client.
+      /// </summary>
+      Client,
+      /// <summary>
+      /// The code is executing on the server.  This inlcudes
+      /// Local mode execution
+      /// </summary>
+      Server
+    }
+    private static LogicalExecutionLocations _logicalExecutionLocation =
+     LogicalExecutionLocations.Client;
+    public static LogicalExecutionLocations LogicalExecutionLocation
+    {
+      get { return _logicalExecutionLocation; }
+    }
+    internal static void SetLogicalExecutionLocation(LogicalExecutionLocations location)
+    {
+      _logicalExecutionLocation = location;
+    }
     #endregion
 
   }

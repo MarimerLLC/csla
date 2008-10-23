@@ -1,8 +1,16 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Csla.Properties;
+using System.Collections.Specialized;
+using Csla.Validation;
+using System.Collections.ObjectModel;
+using Csla.Core.LoadManager;
+using Csla.Server;
+using Csla.Security;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -14,12 +22,19 @@ namespace Csla.Core
   /// <remarks>
   /// See Chapter 3 for details.
   /// </remarks>
-  [Serializable()]
-  public abstract class BusinessBase : 
-    Csla.Core.UndoableBase, IEditableBusinessObject,
-    System.ComponentModel.IEditableObject, System.ComponentModel.IDataErrorInfo, 
-    ICloneable, Csla.Security.IAuthorizeReadWrite, IParent, Server.IDataPortalTarget,
-    IManageProperties
+  [Serializable]
+  public abstract class BusinessBase :  UndoableBase,
+    IEditableBusinessObject,
+    IEditableObject, 
+    IDataErrorInfo, 
+    ICloneable, 
+    IAuthorizeReadWrite, 
+    IParent, 
+    IDataPortalTarget,
+    IManageProperties,
+    INotifyBusy,
+    INotifyChildChanged,
+    ISerializationNotification
   {
 
     #region Constructors
@@ -329,7 +344,7 @@ namespace Csla.Core
           auth = Csla.Security.AuthorizationRules.CanCreateObject(this.GetType());
         else
           auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
-        return (IsDirty && IsValid && auth); 
+        return (auth && IsDirty && IsValid && !IsBusy); 
       }
     }
 
@@ -525,8 +540,9 @@ namespace Csla.Core
             result = false;
         }
         // store value in cache
-        _readResultCache[propertyName] = result;
+        _readResultCache.Add(propertyName, result);
       }
+      
       return result;
     }
 
@@ -789,7 +805,7 @@ namespace Csla.Core
     /// This value will be Nothing for root objects.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected Core.IParent Parent
+    protected internal Core.IParent Parent
     {
       get { return _parent; }
     }
@@ -1110,6 +1126,14 @@ namespace Csla.Core
 
     private Validation.ValidationRules _validationRules;
 
+    public event EventHandler ValidationComplete;
+
+    protected virtual void OnValidationComplete()
+    {
+      if (ValidationComplete != null)
+        ValidationComplete(this, EventArgs.Empty);
+    }
+
     private void InitializeBusinessRules()
     {
       AddInstanceBusinessRules();
@@ -1139,8 +1163,43 @@ namespace Csla.Core
       get
       {
         if (_validationRules == null)
+        {
           _validationRules = new Csla.Validation.ValidationRules(this);
+          _validationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
+        }
         return _validationRules;
+      }
+    }
+
+    void ValidatingRules_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      if (e.Action == NotifyCollectionChangedAction.Remove)
+      {
+        foreach (IAsyncRuleMethod rule in e.OldItems)
+        {
+          lock (_validationRules.ValidatingRules)
+          {
+            // This rule could be validating multiple times simultaneously, we only want to call
+            // OnPropertyIdle if the rule is completely removed from the list.
+            if (!_validationRules.ValidatingRules.Contains(rule))
+            {
+              foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
+              {
+                OnPropertyChanged(property.Name);
+                OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
+              }
+            }
+          }
+        }
+
+        if (!ValidationRules.IsValidating)
+          OnValidationComplete();
+      }
+      else if (e.Action == NotifyCollectionChangedAction.Add)
+      {
+        foreach (IAsyncRuleMethod rule in e.NewItems)
+          foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
+            OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
       }
     }
 
@@ -1401,7 +1460,7 @@ namespace Csla.Core
     {
       get
       {
-        if (!IsValid)
+        if (!IsSelfValid)
           return ValidationRules.GetBrokenRules().ToString(
             Csla.Validation.RuleSeverity.Error);
         else
@@ -1414,7 +1473,7 @@ namespace Csla.Core
       get
       {
         string result = string.Empty;
-        if (!IsValid)
+        if (!IsSelfValid)
         {
           Validation.BrokenRule rule = 
             ValidationRules.GetBrokenRules().GetFirstBrokenRule(columnName);
@@ -1429,10 +1488,20 @@ namespace Csla.Core
 
     #region Serialization Notification
 
+    void ISerializationNotification.Deserialized()
+    {
+      OnDeserializedInternal();
+    }
+
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
       OnDeserialized(context);
+      OnDeserializedInternal();
+    }
+
+    protected virtual void OnDeserializedInternal()
+    {
       ValidationRules.SetTarget(this);
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
@@ -1451,6 +1520,89 @@ namespace Csla.Core
     {
       // do nothing - this is here so a subclass
       // could override if needed
+    }
+
+    #endregion
+
+    #region Bubbling event Hooks
+
+    protected void AddEventHooks(IBusinessObject child)
+    {
+      OnAddEventHooksInternal(child);
+      OnAddEventHooks(child);
+    }
+    protected internal virtual void OnAddEventHooksInternal(IBusinessObject child)
+    {
+      INotifyBusy busy = child as INotifyBusy;
+      if (busy != null)
+        busy.BusyChanged += new BusyChangedEventHandler(busy_BusyChanged);
+
+      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
+      if (unhandled != null)
+        unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+
+      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
+      if (pc != null)
+        pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+
+      IBindingList bl = child as IBindingList;
+      if (bl != null)
+        bl.ListChanged += new ListChangedEventHandler(Child_ListChanged);
+
+      INotifyChildChanged cc = child as INotifyChildChanged;
+      if (cc != null)
+        cc.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
+    }
+
+    protected virtual void OnAddEventHooks(IBusinessObject child)
+    {
+    }
+
+    protected void RemoveEventHooks(IBusinessObject child)
+    {
+      OnRemoveEventHooksInternal(child);
+      OnRemoveEventHooks(child);
+    }
+
+    protected internal virtual void OnRemoveEventHooksInternal(IBusinessObject child)
+    {
+      INotifyBusy busy = child as INotifyBusy;
+      if (busy != null)
+        busy.BusyChanged -= new BusyChangedEventHandler(busy_BusyChanged);
+
+      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
+      if (unhandled != null)
+        unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+
+      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
+      if (pc != null)
+        pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+
+      IBindingList bl = child as IBindingList;
+      if (bl != null)
+        bl.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
+
+      INotifyChildChanged cc = child as INotifyChildChanged;
+      if(cc != null)
+        cc.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
+    }
+
+    protected virtual void OnRemoveEventHooks(IBusinessObject child)
+    {
+    }
+
+    #endregion
+
+    #region Busy / Unhandled exception bubbling
+
+    void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    {
+      OnUnhandledAsyncException(e);
+    }
+
+    void busy_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      OnBusyChanged(e);
     }
 
     #endregion
@@ -1549,7 +1701,7 @@ namespace Csla.Core
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks ||CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         return field;
       else
         return defaultValue;
@@ -1615,7 +1767,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException));
     }
@@ -1642,7 +1794,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field, Security.NoAccessBehavior noAccess)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field, Security.NoAccessBehavior noAccess)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess));
     }
@@ -1684,7 +1836,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, Security.NoAccessBehavior.SuppressException));
     }
@@ -1710,7 +1862,7 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, Security.NoAccessBehavior noAccess)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, Security.NoAccessBehavior noAccess)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, noAccess));
     }
@@ -1735,7 +1887,7 @@ namespace Csla.Core
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, Security.NoAccessBehavior noAccess)
     {
       P result = default(P);
-      if (CanReadProperty(propertyInfo.Name, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanReadProperty(propertyInfo.Name, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         result = ReadProperty<P>(propertyInfo);
       else
         result = propertyInfo.DefaultValue;
@@ -1755,7 +1907,7 @@ namespace Csla.Core
     protected object GetProperty(IPropertyInfo propertyInfo)
     {
       object result = null;
-      if (CanReadProperty(propertyInfo.Name, false))
+      if (_bypassPropertyChecks || CanReadProperty(propertyInfo.Name, false))
       {
         var info = FieldManager.GetFieldData(propertyInfo);
         if (info != null)
@@ -1785,7 +1937,7 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadProperty<F, P>(PropertyInfo<F> propertyInfo)
+    protected P ReadPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, ReadProperty<F>(propertyInfo));
     }
@@ -1897,9 +2049,9 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
+    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
     {
-      SetProperty<P, V>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
+      SetPropertyConvert<P, V>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -1926,9 +2078,9 @@ namespace Csla.Core
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetProperty<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      SetProperty<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
+      SetPropertyConvert<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
     }
 
     /// <summary>
@@ -1947,7 +2099,7 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(string propertyName, ref P field, P newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {
@@ -1955,18 +2107,18 @@ namespace Csla.Core
           {
             if (newValue != null)
             {
-              OnPropertyChanging(propertyName);
+              if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
               field = newValue;
-              PropertyHasChanged(propertyName);
+              if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
             }
           }
           else if (!(field.Equals(newValue)))
           {
             if (newValue is string && newValue == null)
               newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
-            OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
             field = newValue;
-            PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
         }
         catch (Exception ex)
@@ -2000,9 +2152,9 @@ namespace Csla.Core
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetProperty<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {
@@ -2010,18 +2162,18 @@ namespace Csla.Core
           {
             if (newValue != null)
             {
-              OnPropertyChanging(propertyName);
+              if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
               field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-              PropertyHasChanged(propertyName);
+              if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
             }
           }
           else if (!(field.Equals(newValue)))
           {
             if (newValue is string && newValue == null)
               newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
-            OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-            PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
         }
         catch (Exception ex)
@@ -2062,9 +2214,9 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
     {
-      SetProperty<P, F>(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException);
+      SetPropertyConvert<P, F>(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -2079,9 +2231,9 @@ namespace Csla.Core
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {
@@ -2100,7 +2252,7 @@ namespace Csla.Core
             else
               oldValue = (P)fieldData.Value;
           }
-          LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), true);
+          LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), !_bypassPropertyChecks);
         }
         catch (Exception ex)
         {
@@ -2126,7 +2278,7 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {
@@ -2145,7 +2297,7 @@ namespace Csla.Core
             else
               oldValue = (P)fieldData.Value;
           }
-          LoadPropertyValue<P>(propertyInfo, oldValue, newValue, true);
+          LoadPropertyValue<P>(propertyInfo, oldValue, newValue, !_bypassPropertyChecks);
         }
         catch (Exception ex)
         {
@@ -2191,7 +2343,7 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
     {
       try
       {
@@ -2273,14 +2425,23 @@ namespace Csla.Core
 
       if (valuesDiffer)
       {
+
+        IBusinessObject old = oldValue as IBusinessObject;
+        if (old != null)
+          RemoveEventHooks(old);
+        IBusinessObject @new = newValue as IBusinessObject;
+        if (@new != null)
+          AddEventHooks(@new);
+
+
         if (typeof(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type))
         {
           // remove old event hook
-          if (oldValue != null)
-          {
-            INotifyPropertyChanged pc = (INotifyPropertyChanged)oldValue;
-            pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
-          }
+          //if (oldValue != null)
+          //{
+          //  INotifyPropertyChanged pc = (INotifyPropertyChanged)oldValue;
+          //  pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+          //}
           if (markDirty)
           {
             OnPropertyChanging(propertyInfo.Name);
@@ -2300,18 +2461,18 @@ namespace Csla.Core
             // reset EditLevelAdded 
             child.EditLevelAdded = this.EditLevel;
             // hook child event
-            INotifyPropertyChanged pc = (INotifyPropertyChanged)newValue;
-            pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+            //INotifyPropertyChanged pc = (INotifyPropertyChanged)newValue;
+            //pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
           }
         }
         else if (typeof(IEditableCollection).IsAssignableFrom(propertyInfo.Type))
         {
           // remove old event hooks
-          if (oldValue != null)
-          {
-            IBindingList pc = (IBindingList)oldValue;
-            pc.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
-          }
+          //if (oldValue != null)
+          //{
+          //  IBindingList pc = (IBindingList)oldValue;
+          //  pc.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
+          //}
           if (markDirty)
           {
             OnPropertyChanging(propertyInfo.Name);
@@ -2332,8 +2493,8 @@ namespace Csla.Core
               // set child edit level
               UndoableBase.ResetChildEditLevel(undoChild, this.EditLevel, this.BindingEdit);
             }
-            IBindingList pc = (IBindingList)newValue;
-            pc.ListChanged += new ListChangedEventHandler(Child_ListChanged);
+            //IBindingList pc = (IBindingList)newValue;
+            //pc.ListChanged += new ListChangedEventHandler(Child_ListChanged);
           }
         }
         else
@@ -2370,6 +2531,161 @@ namespace Csla.Core
     protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       FieldManager.LoadFieldData(propertyInfo, newValue);
+    }
+
+    //private AsyncLoadManager
+    [NonSerialized]
+    [NotUndoable]
+    private AsyncLoadManager _loadManager;
+    internal AsyncLoadManager LoadManager
+    {
+      get
+      {
+        if (_loadManager == null)
+        {
+          _loadManager = new AsyncLoadManager();
+          _loadManager.BusyChanged += new BusyChangedEventHandler(loadManager_BusyChanged);
+        }
+        return _loadManager;
+      }
+    }
+
+    void Child_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    {
+      OnUnhandledAsyncException(e);
+    }
+
+    void loadManager_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      OnBusyChanged(e);
+    }
+
+    protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, parameter);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    protected void LoadPropertyAsync<R, P1, P2>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2> factory, P1 p1, P2 p2)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    protected void LoadPropertyAsync<R, P1, P2, P3>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3> factory, P1 p1, P2 p2, P3 p3)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    protected void LoadPropertyAsync<R, P1, P2, P3, P4>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4> factory, P1 p1, P2 p2, P3 p3, P4 p4)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    protected void LoadPropertyAsync<R, P1, P2, P3, P4, P5>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4, P5> factory, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    #endregion
+    
+    #region IsBusy / IsIdle
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _isBusy;
+
+    protected void MarkBusy()
+    {
+      // TODO: Review resource string
+      if (_isBusy)
+        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
+
+      _isBusy = true;
+      OnBusyChanged(new BusyChangedEventArgs("", true));
+    }
+
+    protected void MarkIdle()
+    {
+      _isBusy = false;
+      OnBusyChanged(new BusyChangedEventArgs("", false));
+    }
+
+    [Browsable(false)]
+    public bool IsBusy
+    {
+      get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
+    }
+
+    [Browsable(false)]
+    public bool IsSelfBusy
+    {
+      get { return _isBusy || ValidationRules.IsValidating || LoadManager.IsLoading; }
+    }
+
+    void Child_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      OnBusyChanged(e);
+    }
+
+    [NotUndoable]
+    [NonSerialized]
+    private BusyChangedEventHandler _busyChanged;
+
+    public event BusyChangedEventHandler BusyChanged
+    {
+      add { _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value); }
+      remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
+    }
+
+    protected void OnBusyChanged(BusyChangedEventArgs args)
+    {
+      if (_busyChanged != null)
+        _busyChanged(this, args);
+    }
+
+    public bool IsPropertyBusy(string propertyName)
+    {
+      bool isbusy = false;
+      if (_validationRules != null)
+      {
+        lock (_validationRules.ValidatingRules)
+        {
+          isbusy = (from rules in _validationRules.ValidatingRules
+                    from property in rules.AsyncRuleArgs.Properties
+                    where property.Name == propertyName
+                    select rules).Count() > 0;
+        }
+      }
+      return isbusy;
+    }
+
+    #endregion
+    
+    #region INotifyUnhandledAsyncException Members
+
+    [NotUndoable]
+    [NonSerialized]
+    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+
+    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    {
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+    }
+
+    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    {
+      if (_unhandledAsyncException != null)
+        _unhandledAsyncException(this, error);
+    }
+
+    protected void OnUnhandledAsyncException(object originalSender, Exception error)
+    {
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
     }
 
     #endregion
@@ -2413,11 +2729,22 @@ namespace Csla.Core
     /// PropertyChangedEventArgs object or null.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnChildChanged(object source, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+    protected void OnChildChanged(object source, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
     {
-      Csla.Core.ChildChangedEventArgs args = new Csla.Core.ChildChangedEventArgs(source, propertyArgs, listArgs);
+      ChildChangedEventArgs args = new ChildChangedEventArgs(source, propertyArgs, listArgs);
+      OnChildChangedInternal(this, args);
+    }
+
+    protected internal virtual void OnChildChangedInternal(object sender, ChildChangedEventArgs e)
+    {
+      OnChildChanged(sender, e);
+
       if (_childChangedHandlers != null)
-        _childChangedHandlers.Invoke(this, args);
+        _childChangedHandlers.Invoke(this, e);
+    }
+
+    protected virtual void OnChildChanged(object sender, ChildChangedEventArgs e)
+    {
     }
 
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -2427,7 +2754,13 @@ namespace Csla.Core
 
     private void Child_ListChanged(object sender, ListChangedEventArgs e)
     {
-      OnChildChanged(sender, null, e);
+      if(e.ListChangedType != ListChangedType.ItemChanged)
+        OnChildChanged(sender, null, e);
+    }
+
+    void Child_Changed(object sender, ChildChangedEventArgs e)
+    {
+      OnChildChangedInternal(this, e);
     }
 
     #endregion
@@ -2457,22 +2790,19 @@ namespace Csla.Core
     {
       foreach (object item in FieldManager.GetChildren())
       {
-        IEditableBusinessObject eo = item as IEditableBusinessObject;
-        if (eo != null)
+        IBusinessObject business = item as IBusinessObject;
+        if (business != null)
+          OnAddEventHooksInternal(business);
+
+        IEditableBusinessObject child = item as IEditableBusinessObject;
+        if (child != null)
         {
-          eo.SetParent(this);
-          INotifyPropertyChanged pc = (INotifyPropertyChanged)item;
-          pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+          child.SetParent(this);
         }
-        else
+        IEditableCollection childCollection = item as IEditableCollection;
+        if (childCollection != null)
         {
-          IEditableCollection el = item as IEditableCollection;
-          if (el != null)
-          {
-            el.SetParent(this);
-            IBindingList bl = (IBindingList)item;
-            bl.ListChanged += new ListChangedEventHandler(Child_ListChanged);
-          }
+          childCollection.SetParent(this);
         }
       }
     }
@@ -2586,6 +2916,163 @@ namespace Csla.Core
     void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       LoadProperty(propertyInfo, newValue);
+    }
+
+    #endregion
+
+    #region MobileFormatter
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
+    {
+      base.OnGetState(info, mode);
+      info.AddValue("Csla.Core.BusinessBase._isNew", _isNew);
+      info.AddValue("Csla.Core.BusinessBase._isDeleted", _isDeleted);
+      info.AddValue("Csla.Core.BusinessBase._isDirty", _isDirty);
+      info.AddValue("Csla.Core.BusinessBase._neverCommitted", _neverCommitted);
+      info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", _disableIEditableObject);
+      info.AddValue("Csla.Core.BusinessBase._isChild", _isChild);
+      info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
+    {
+      base.OnSetState(info, mode);
+      _isNew = info.GetValue<bool>("Csla.Core.BusinessBase._isNew");
+      _isDeleted = info.GetValue<bool>("Csla.Core.BusinessBase._isDeleted");
+      _isDirty = info.GetValue<bool>("Csla.Core.BusinessBase._isDirty");
+      _neverCommitted = info.GetValue<bool>("Csla.Core.BusinessBase._neverCommitted");
+      _disableIEditableObject = info.GetValue<bool>("Csla.Core.BusinessBase._disableIEditableObject");
+      _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
+      _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
+    }
+
+    /// <summary>
+    /// Override this method to insert your child object
+    /// references into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnGetChildren(
+      Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      base.OnGetChildren(info, formatter);
+
+      if (_fieldManager != null)
+      {
+        var fieldManagerInfo = formatter.SerializeObject(_fieldManager);
+        info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
+      }
+
+      if (_validationRules != null)
+      {
+        var vrInfo = formatter.SerializeObject(_validationRules);
+        info.AddChild("_validationRules", vrInfo.ReferenceId);
+      }
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      if (info.Children.ContainsKey("_fieldManager"))
+      {
+        var childData = info.Children["_fieldManager"];
+        _fieldManager = (Csla.Core.FieldManager.FieldDataManager)formatter.GetObject(childData.ReferenceId);
+      }
+
+      if (info.Children.ContainsKey("_validationRules"))
+      {
+        int refId = info.Children["_validationRules"].ReferenceId;
+        _validationRules = (ValidationRules)formatter.GetObject(refId);
+      }
+
+      base.OnSetChildren(info, formatter);
+    }
+
+    #endregion
+
+    #region Property Checks ByPass
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _bypassPropertyChecks = false;
+
+    /// <summary>
+    /// By wrapping this property inside Using block
+    /// you can set property values on current business object
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    protected internal BypassPropertyChecksObject BypassPropertyChecks
+    {
+      get { return new BypassPropertyChecksObject(this); }
+    }
+
+    /// <summary>
+    /// Class that allows setting of property values on 
+    /// current business object
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    protected internal class BypassPropertyChecksObject : IDisposable
+    {
+      private BusinessBase _businessObject;
+      private BypassPropertyChecksObject() { }
+      internal BypassPropertyChecksObject(BusinessBase businessObject)
+      {
+        _businessObject = businessObject;
+        _businessObject._bypassPropertyChecks = true;
+      }
+      #region IDisposable Members
+
+      public void Dispose()
+      {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+      }
+
+      protected void Dispose(bool dispose)
+      {
+        _businessObject._bypassPropertyChecks = false;
+        _businessObject = null;
+      }
+
+
+      #endregion
     }
 
     #endregion

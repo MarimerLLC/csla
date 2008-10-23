@@ -2,6 +2,7 @@ using System;
 using Csla.Properties;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using Csla.Core;
 
 namespace Csla.Validation
 {
@@ -1301,5 +1302,48 @@ namespace Csla.Validation
 
     #endregion
 
+    #region CanRead
+
+    public static bool CanRead(object target, RuleArgs e)
+    {
+      bool isAuthorized = true;
+
+      BusinessBase business = target as BusinessBase;
+      if (business != null && !string.IsNullOrEmpty(e.PropertyName))
+        isAuthorized = business.CanReadProperty(e.PropertyName);
+
+      if (!isAuthorized)
+      {
+        e.Severity = RuleSeverity.Information;
+        // TODO: Evaluate this resource
+        e.Description = string.Format(Resources.CanReadAuthorizationRuleDescription, RuleArgs.GetPropertyName(e));
+      }
+
+      return isAuthorized;
+    }
+
+    #endregion
+
+    #region CanWrite
+
+    public static bool CanWrite(object target, RuleArgs e)
+    {
+      bool isAuthorized = true;
+
+      BusinessBase business = target as BusinessBase;
+      if (business != null && !string.IsNullOrEmpty(e.PropertyName))
+        isAuthorized = business.CanWriteProperty(e.PropertyName);
+
+      if (!isAuthorized)
+      {
+        e.Severity = RuleSeverity.Information;
+        // TODO: Evaluate this resource
+        e.Description = string.Format(Resources.CanWriteAuthorizationRuleDescription, RuleArgs.GetPropertyName(e));
+      }
+
+      return isAuthorized;
+    }
+
+    #endregion
   }
 }

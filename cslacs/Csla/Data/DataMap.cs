@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using Csla.Reflection;
 
 namespace Csla.Data
 {
@@ -15,23 +15,14 @@ namespace Csla.Data
 
     internal class MemberMapping
     {
-      private MemberInfo _from;
-      public MemberInfo FromMember
-      {
-        get { return _from; }
-      }
+        public DynamicMemberHandle FromMemberHandle { get; private set; }
+        public DynamicMemberHandle ToMemberHandle { get; private set; }
 
-      private MemberInfo _to;
-      public MemberInfo ToMember
-      {
-        get { return _to; }
-      }
-
-      public MemberMapping(MemberInfo fromMember, MemberInfo toMember)
-      {
-        _from = fromMember;
-        _to = toMember;
-      }
+        public MemberMapping(DynamicMemberHandle fromMemberHandle, DynamicMemberHandle toMemberHandle)
+        {
+            FromMemberHandle = fromMemberHandle;
+            ToMemberHandle = toMemberHandle;
+        }
     }
 
     #endregion
@@ -39,12 +30,6 @@ namespace Csla.Data
     private Type _sourceType;
     private Type _targetType;
     private List<MemberMapping> _map = new List<MemberMapping>();
-    private BindingFlags _fieldFlags = BindingFlags.Public | 
-                                       BindingFlags.NonPublic | 
-                                       BindingFlags.Instance;
-    private BindingFlags _propertyFlags = BindingFlags.Public |
-                                          BindingFlags.Instance |
-                                          BindingFlags.FlattenHierarchy;
 
     /// <summary>
     /// Initializes an instance of the type.
@@ -78,7 +63,10 @@ namespace Csla.Data
     /// </param>
     public void AddPropertyMapping(string sourceProperty, string targetProperty)
     {
-      _map.Add(new MemberMapping(_sourceType.GetProperty(sourceProperty, _propertyFlags), _targetType.GetProperty(targetProperty, _propertyFlags)));
+      _map.Add(new MemberMapping(
+         MethodCaller.GetCachedProperty(_sourceType, sourceProperty),
+         MethodCaller.GetCachedProperty(_targetType, targetProperty)
+      ));
     }
 
     /// <summary>
@@ -92,7 +80,10 @@ namespace Csla.Data
     /// </param>
     public void AddFieldMapping(string sourceField, string targetField)
     {
-      _map.Add(new MemberMapping(_sourceType.GetField(sourceField, _fieldFlags), _targetType.GetField(targetField, _fieldFlags)));
+      _map.Add(new MemberMapping(
+         MethodCaller.GetCachedField(_sourceType, sourceField),
+         MethodCaller.GetCachedField(_targetType, targetField)
+      ));
     }
 
     /// <summary>
@@ -106,7 +97,10 @@ namespace Csla.Data
     /// </param>
     public void AddFieldToPropertyMapping(string sourceField, string targetProperty)
     {
-      _map.Add(new MemberMapping(_sourceType.GetField(sourceField, _fieldFlags), _targetType.GetProperty(targetProperty, _propertyFlags)));
+      _map.Add(new MemberMapping(
+         MethodCaller.GetCachedField(_sourceType, sourceField),
+         MethodCaller.GetCachedProperty(_targetType, targetProperty)
+      ));
     }
 
     /// <summary>
@@ -120,7 +114,10 @@ namespace Csla.Data
     /// </param>
     public void AddPropertyToFieldMapping(string sourceProperty, string targetField)
     {
-      _map.Add(new MemberMapping(_sourceType.GetProperty(sourceProperty, _propertyFlags), _targetType.GetField(targetField, _fieldFlags)));
+      _map.Add(new MemberMapping(
+         MethodCaller.GetCachedProperty(_sourceType, sourceProperty),
+         MethodCaller.GetCachedField(_targetType, targetField)
+      ));
     }
   }
 }

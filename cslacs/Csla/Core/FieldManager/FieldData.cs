@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.ComponentModel;
 
 namespace Csla.Core.FieldManager
 {
@@ -83,6 +84,11 @@ namespace Csla.Core.FieldManager
       }
     }
 
+    bool ITrackStatus.IsSavable
+    {
+      get { return true; }
+    }
+
     /// <summary>
     /// Gets a value indicating whether the field
     /// has been changed.
@@ -150,8 +156,8 @@ namespace Csla.Core.FieldManager
     }
 
     /// <summary>
-    /// Gets a value indicating whether the
-    /// field contains a valid value.
+    /// Gets a value indicating whether this field
+    /// is considered valid.
     /// </summary>
     protected virtual bool IsValid
     {
@@ -169,5 +175,59 @@ namespace Csla.Core.FieldManager
         }
       }
     }
+
+    #region INotifyBusy Members
+
+    event BusyChangedEventHandler INotifyBusy.BusyChanged
+    {
+      add { throw new NotImplementedException(); }
+      remove { throw new NotImplementedException(); }
+    }
+
+    [Browsable(false)]
+    public bool IsBusy
+    {
+      get
+      {
+        bool isBusy = false;
+        ITrackStatus status = _data as ITrackStatus;
+        if (status != null)
+          isBusy = status.IsBusy;
+
+        return isBusy;
+      }
+    }
+
+    bool INotifyBusy.IsSelfBusy
+    {
+      get { return IsBusy; }
+    }
+
+    #endregion
+
+    #region INotifyUnhandledAsyncException Members
+
+    [NotUndoable]
+    [NonSerialized]
+    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+
+    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    {
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+    }
+
+    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    {
+      if (_unhandledAsyncException != null)
+        _unhandledAsyncException(this, error);
+    }
+
+    protected void OnUnhandledAsyncException(object originalSender, Exception error)
+    {
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
+    }
+
+    #endregion
   }
 }

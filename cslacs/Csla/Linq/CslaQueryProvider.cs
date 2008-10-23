@@ -273,8 +273,8 @@ namespace Csla.Linq
         if (MethodsEquivalent(mex, method))
         {
           //the Enumerable call is a generic method call, so deal with that
-          Type[] genericArguments = { mex.Method.GetGenericArguments().First() };
-          MethodInfo genericMethodInfo = method.MakeGenericMethod(genericArguments);
+          var someGenericArgs = mex.Method.GetGenericArguments().Take(method.GetGenericArguments().Length);
+          MethodInfo genericMethodInfo = method.MakeGenericMethod(someGenericArgs.ToArray());
           try
           {
             //pray.  If something is going to break, it will do so here

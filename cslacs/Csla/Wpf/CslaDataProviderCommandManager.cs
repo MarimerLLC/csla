@@ -76,14 +76,17 @@ namespace Csla.Wpf
       CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
       if (ctl != null && ctl.Provider != null)
       {
-        Csla.Core.IEditableBusinessObject ibiz = ctl.Provider.Data as Csla.Core.IEditableBusinessObject;
-        if (ibiz != null)
-          result = ibiz.IsDirty;
-        else
+        if (ctl.Provider.Data != null)
         {
-          Csla.Core.IEditableCollection icol = ctl.Provider.Data as Csla.Core.IEditableCollection;
-          if (icol != null)
-            result = icol.IsDirty;
+          Csla.Core.IEditableBusinessObject ibiz = ctl.Provider.Data as Csla.Core.IEditableBusinessObject;
+          if (ibiz != null)
+            result = ibiz.IsDirty;
+          else
+          {
+            Csla.Core.IEditableCollection icol = ctl.Provider.Data as Csla.Core.IEditableCollection;
+            if (icol != null)
+              result = icol.IsDirty;
+          }
         }
       }
       e.CanExecute = result;
@@ -102,12 +105,15 @@ namespace Csla.Wpf
       CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
       if (ctl != null && ctl.Provider != null)
       {
-        IBindingList list = ctl.Provider.Data as IBindingList;
-        if (list != null)
+        if (ctl.Provider.Data != null)
         {
-          result = list.AllowNew;
-          if (result && !Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType()))
-            result = false;
+          IBindingList list = ctl.Provider.Data as IBindingList;
+          if (list != null)
+          {
+            result = list.AllowNew;
+            if (result && !Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType()))
+              result = false;
+          }
         }
       }
       e.CanExecute = result;
@@ -126,12 +132,20 @@ namespace Csla.Wpf
       CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
       if (ctl != null && ctl.Provider != null)
       {
-        IBindingList list = ctl.Provider.Data as IBindingList;
-        if (list != null)
+        if (ctl.Provider.Data != null)
         {
-          result = list.AllowRemove;
-          if (result && !Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType()))
-            result = false;
+          Csla.Core.BusinessBase bb = e.Parameter as Csla.Core.BusinessBase;
+          IBindingList list;
+          if (bb != null)
+            list = bb.Parent as IBindingList;
+          else
+            list = ctl.Provider.Data as IBindingList;
+          if (list != null)
+          {
+            result = list.AllowRemove;
+            if (result && !Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType()))
+              result = false;
+          }
         }
       }
       e.CanExecute = result;

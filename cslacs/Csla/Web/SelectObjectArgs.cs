@@ -1,3 +1,4 @@
+#if !CLIENTONLY
 using System;
 using System.ComponentModel;
 
@@ -153,3 +154,4 @@ namespace Csla.Web
     }
   }
 }
+#endif

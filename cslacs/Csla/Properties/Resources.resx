@@ -297,4 +297,91 @@
   <data name="PropertyNotRegistered" xml:space="preserve">
     <value>One or more properties are not registered for this type</value>
   </data>
+  <data name="FactoryTypeNotFoundException" xml:space="preserve">
+    <value>Factory type or assembly could not be loaded ({0})</value>
+  </data>
+  <data name="CannotSerializeCollectionsNotOfIMobileObject" xml:space="preserve">
+    <value>Cannot serialize collections not of type IMobileObject</value>
+  </data>
+  <data name="CanReadAuthorizationRuleDescription" xml:space="preserve">
+    <value>You are not authorized to read this field</value>
+  </data>
+  <data name="CanWriteAuthorizationRuleDescription" xml:space="preserve">
+    <value>You are not authorized to write to this field</value>
+  </data>
+  <data name="BusyObjectsMayNotBeMarkedBusy" xml:space="preserve">
+    <value>Objects that are marked busy may not be marked busy again</value>
+  </data>
+  <data name="BusyObjectsMayNotBeSaved" xml:space="preserve">
+    <value>Objects that are marked busy may not be saved</value>
+  </data>
+  <data name="MobileFormatterUnableToDeserialize" xml:space="preserve">
+    <value>The Type '{0}' was unable to be deserialized, double check that the assembly containing this class has the same name on the Client and Server and that it is referenced by your server application</value>
+  </data>
+  <data name="MustImplementIMobileObject" xml:space="preserve">
+    <value>Type {0} must implement IMobileObject</value>
+  </data>
+  <data name="ObjectNotSerializableFormatted" xml:space="preserve">
+    <value>Object not serializable ({0})</value>
+  </data>
+  <data name="ArrayIsMultiDimensional" xml:space="preserve">
+    <value>Array is multi-dimensional</value>
+  </data>
+  <data name="AuthenticationProviderDoesNotImplementIAuthorizeDataPortal" xml:space="preserve">
+    <value>Csla Authentication Provider specified does not implement IAuthorizeDataPortal</value>
+  </data>
+  <data name="AuthorizationProviderNameNotSpecified" xml:space="preserve">
+    <value>Csla Authorization Provider App Setting name not specified</value>
+  </data>
+  <data name="CannotHaveMemberEqualsMemberInAnExpression" xml:space="preserve">
+    <value>Cannot have 'member' == 'member' in an expression</value>
+  </data>
+  <data name="ClientQueryIsInvalid" xml:space="preserve">
+    <value>The client query is invalid:</value>
+  </data>
+  <data name="ConstructorsWithParametersNotSupported" xml:space="preserve">
+    <value>Constructor with parameters are not supported</value>
+  </data>
+  <data name="CreateMethodNameNotSpecified" xml:space="preserve">
+    <value>Create method name not specified in MobileFactory attribute</value>
+  </data>
+  <data name="CslaAuthenticationProviderNotSet" xml:space="preserve">
+    <value>Csla Authentication Provider not set!</value>
+  </data>
+  <data name="DefaultConstructor" xml:space="preserve">
+    <value>Default Constructor</value>
+  </data>
+  <data name="DeleteMethodNameNotSpecified" xml:space="preserve">
+    <value>Delete method name not specified in MobileFactory attribute</value>
+  </data>
+  <data name="ExceptionOccurredDuringSaveOperation" xml:space="preserve">
+    <value>An exception ocurred during the save operation</value>
+  </data>
+  <data name="ExpressionTypeNotSupportedToObtainValue" xml:space="preserve">
+    <value>The expression type {0} is not supported to obtain a value</value>
+  </data>
+  <data name="FetchMethodNameNotSpecified" xml:space="preserve">
+    <value>Fetch method name not specified in MobileFactory attribute</value>
+  </data>
+  <data name="IndexIsOutOfRange" xml:space="preserve">
+    <value>Index is out of range</value>
+  </data>
+  <data name="NullArrayReference" xml:space="preserve">
+    <value>Null array reference</value>
+  </data>
+  <data name="ObjectTypeCouldNotBeLoaded" xml:space="preserve">
+    <value>Object type or assembly could not be loaded ({0})</value>
+  </data>
+  <data name="SortingNotSupported" xml:space="preserve">
+    <value>Sorting not supported</value>
+  </data>
+  <data name="UnhandledBindingType" xml:space="preserve">
+    <value>Unhandled binding type '{0}'</value>
+  </data>
+  <data name="UnhandledExpressionType" xml:space="preserve">
+    <value>Unhandled expression type: '{0}'</value>
+  </data>
+  <data name="UpdateMethodNameNotSpecified" xml:space="preserve">
+    <value>Update method name not specified in MobileFactory attribute</value>
+  </data>
 </root>

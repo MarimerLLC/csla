@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !CLIENTONLY
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -61,3 +62,4 @@ namespace Csla.Windows
 
   }
 }
+#endif

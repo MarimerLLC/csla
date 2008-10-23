@@ -1,5 +1,6 @@
 using System;
 using Csla.Properties;
+using Csla.Serialization.Mobile;
 
 namespace Csla
 {
@@ -14,7 +15,8 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   [System.ComponentModel.TypeConverter(typeof(Csla.Core.TypeConverters.SmartDateConverter))]
-  public struct SmartDate : Csla.Core.ISmartField, IComparable, IConvertible, IFormattable
+  public struct SmartDate : Csla.Core.ISmartField,
+    IComparable, IConvertible, IFormattable, Csla.Serialization.Mobile.IMobileObject
   {
     private DateTime _date;
     private bool _initialized;
@@ -1318,12 +1320,43 @@ namespace Csla
 
     #endregion
 
-
     #region IFormattable Members
 
     string IFormattable.ToString(string format, IFormatProvider formatProvider)
     {
       return this.ToString(format);
+    }
+
+    #endregion
+
+    #region IMobileObject Members
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      info.AddValue("SmartDate._date", _date);
+      info.AddValue("SmartDate._defaultFormat", _defaultFormat);
+      info.AddValue("SmartDate._emptyValue", _emptyValue.ToString());
+      info.AddValue("SmartDate._initialized", _initialized);
+      info.AddValue("SmartDate._format", _format);
+    }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      _date = info.GetValue<DateTime>("SmartDate._date");
+      _defaultFormat = info.GetValue<string>("SmartDate._defaultFormat");
+      _emptyValue = (EmptyValue)System.Enum.Parse(typeof(EmptyValue), info.GetValue<string>("SmartDate._emptyValue"), true);
+      _format = info.GetValue<string>("SmartDate._format");
+      _initialized = info.GetValue<bool>("SmartDate._initialized");
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      //
+    }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      //
     }
 
     #endregion

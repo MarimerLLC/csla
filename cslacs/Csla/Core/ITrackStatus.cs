@@ -6,7 +6,7 @@ namespace Csla.Core
   /// Defines the common properties required objects
   /// that track their own status.
   /// </summary>
-  public interface ITrackStatus
+  public interface ITrackStatus : INotifyBusy
   {
     /// <summary>
     /// Returns <see langword="true" /> if the object 
@@ -111,5 +111,17 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if this object is new.</returns>
     bool IsNew { get; }
+    /// <summary>
+    /// Returns <see langword="true" /> if this object is both dirty and valid.
+    /// </summary>
+    /// <remarks>
+    /// An object is considered dirty (changed) if 
+    /// <see cref="P:Csla.BusinessBase.IsDirty" /> returns <see langword="true" />. It is
+    /// considered valid if IsValid
+    /// returns <see langword="true" />. The IsSavable property is
+    /// a combination of these two properties. 
+    /// </remarks>
+    /// <returns>A value indicating if this object is both dirty and valid.</returns>
+    bool IsSavable { get; }
   }
 }

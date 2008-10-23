@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Csla.Core;
 
 namespace Csla.Validation
 {
@@ -40,12 +41,21 @@ namespace Csla.Validation
 
     #region Adding Rules
 
+    public void AddRule(AsyncRuleHandler handler, RuleSeverity severity, AsyncRuleArgs args)
+    {
+      // get the list of rules for the primary property
+      List<IRuleMethod> list = GetRulesForProperty(args.Properties[0].Name, true).GetList(false);
+
+      // we have the list, add our new rule
+      list.Add(new AsyncRuleMethod(handler, args, severity));
+    }
+
     public void AddRule(RuleHandler handler, RuleArgs args, int priority)
     {
       // get the list of rules for the property
       List<IRuleMethod> list = GetRulesForProperty(args.PropertyName, true).GetList(false);
 
-      // we have the list, add out new rule
+      // we have the list, add our new rule
       list.Add(new RuleMethod(handler, args, priority));
     }
 
@@ -54,7 +64,7 @@ namespace Csla.Validation
       // get the list of rules for the property
       List<IRuleMethod> list = GetRulesForProperty(args.PropertyName, true).GetList(false);
 
-      // we have the list, add out new rule
+      // we have the list, add our new rule
       list.Add(new RuleMethod<T, R>(handler, args, priority));
     }
 

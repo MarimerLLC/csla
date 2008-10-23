@@ -1,5 +1,10 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using Csla.Serialization;
+using Csla.Core;
+using Csla.Serialization.Mobile;
+using System.Collections.ObjectModel;
 
 namespace Csla.Validation
 {
@@ -7,8 +12,11 @@ namespace Csla.Validation
   /// <summary>
   /// Tracks the business rules broken within a business object.
   /// </summary>
+#if TESTING
+  [System.Diagnostics.DebuggerStepThrough]
+#endif
   [Serializable()]
-  public class ValidationRules
+  public partial class ValidationRules : MobileObject
   {
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
@@ -27,6 +35,12 @@ namespace Csla.Validation
     [NonSerialized()]
     private ValidationRulesManager _rulesToCheck;
 
+    [NonSerialized]
+    private ObservableCollection<IAsyncRuleMethod> _validatingRules;
+
+    //used to synchronize various async operations
+    private object SyncRoot = new object();
+
     internal ValidationRules(object businessObject)
     {
       SetTarget(businessObject);
@@ -44,6 +58,17 @@ namespace Csla.Validation
         if (_brokenRules == null)
           _brokenRules = new BrokenRulesCollection();
         return _brokenRules;
+      }
+    }
+
+    internal ObservableCollection<IAsyncRuleMethod> ValidatingRules
+    {
+      get
+      {
+        if (_validatingRules == null)
+          _validatingRules = new ObservableCollection<IAsyncRuleMethod>();
+        
+        return _validatingRules;
       }
     }
 
@@ -344,6 +369,17 @@ namespace Csla.Validation
     #endregion
 
     #region  Adding Shared Rules
+
+    public void AddRule(AsyncRuleHandler handler, IPropertyInfo primaryProperty, params IPropertyInfo[] additionalProperties)
+    {
+      AddRule(handler, new AsyncRuleArgs(primaryProperty, additionalProperties));
+    }
+
+    public void AddRule(AsyncRuleHandler handler, AsyncRuleArgs args)
+    {
+      ValidateHandler(handler);
+      GetTypeRules(true).AddRule(handler, RuleSeverity.Error, args);
+    }
 
     /// <summary>
     /// Adds a rule to the list of rules to be enforced.
@@ -687,6 +723,11 @@ namespace Csla.Validation
       GetTypeRules(true).AddRule(handler, args, priority);
     }
 
+    private bool ValidateHandler(AsyncRuleHandler handler)
+    {
+      return ValidateHandler(handler.Method);
+    }
+
     private bool ValidateHandler(RuleHandler handler)
     {
       return ValidateHandler(handler.Method);
@@ -703,6 +744,7 @@ namespace Csla.Validation
         throw new InvalidOperationException(string.Format("{0}: {1}", Properties.Resources.InvalidRuleMethodException, method.Name));
       return true;
     }
+
     #endregion
 
     #region  Adding per-type dependencies
@@ -979,6 +1021,9 @@ namespace Csla.Validation
       bool previousRuleBroken = false;
       bool shortCircuited = false;
 
+      // Lock the rules here to ensure that all rules are run before allowing
+      // async rules to notify that they have completed.
+
       for (int index = 0; index < list.Count; index++)
       {
         IRuleMethod rule = list[index];
@@ -990,48 +1035,104 @@ namespace Csla.Validation
         {
           // we're short-circuited, so just remove
           // all remaining broken rule entries
-          BrokenRulesList.Remove(rule);
+          lock (SyncRoot)
+            BrokenRulesList.Remove(rule);
         }
         else
         {
           // we're not short-circuited, so check rule
           bool ruleResult;
-          try
-          {
-            ruleResult = rule.Invoke(_target);
-          }
-          catch (Exception ex)
-          {
-            //// force a broken rule
-            //ruleResult = false;
-            //rule.RuleArgs.Severity = RuleSeverity.Error;
-            //rule.RuleArgs.Description = 
-            //  string.Format(Properties.Resources.ValidationRuleException & "{{2}}", rule.RuleArgs.PropertyName, rule.RuleName, ex.Message);
-            // throw a more detailed exception
-            throw new ValidationException(
-              string.Format(Properties.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex);
-          }
 
-          if (ruleResult)
+          IAsyncRuleMethod asyncRule = rule as IAsyncRuleMethod;
+          if (asyncRule != null)
           {
-            // the rule is not broken
-            BrokenRulesList.Remove(rule);
+            lock (SyncRoot)
+              ValidatingRules.Add(asyncRule);
+
+            lock (SyncRoot)
+              BrokenRulesList.Remove(rule);
           }
           else
           {
-            // the rule is broken
-            BrokenRulesList.Add(rule);
-            if (rule.RuleArgs.Severity == RuleSeverity.Error)
-              previousRuleBroken = true;
-          }
-          if (rule.RuleArgs.StopProcessing)
-          {
-            shortCircuited = true;
-            // reset the value for next time
-            rule.RuleArgs.StopProcessing = false;
+            try
+            {
+              ruleResult = rule.Invoke(_target);
+            }
+            catch (Exception ex)
+            {
+              //// force a broken rule
+              //ruleResult = false;
+              //rule.RuleArgs.Severity = RuleSeverity.Error;
+              //rule.RuleArgs.Description = 
+              //  string.Format(Properties.Resources.ValidationRuleException & "{{2}}", rule.RuleArgs.PropertyName, rule.RuleName, ex.Message);
+              // throw a more detailed exception
+              throw new ValidationException(
+                string.Format(Properties.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex);
+            }
+
+            lock (SyncRoot)
+            {
+              if (ruleResult)
+              {
+                // the rule is not broken
+                BrokenRulesList.Remove(rule);
+              }
+              else
+              {
+                // the rule is broken
+                BrokenRulesList.Add(rule);
+                if (rule.RuleArgs.Severity == RuleSeverity.Error)
+                  previousRuleBroken = true;
+              }
+            }
+            if (rule.RuleArgs.StopProcessing)
+            {
+              shortCircuited = true;
+              // reset the value for next time
+              rule.RuleArgs.StopProcessing = false;
+            }
           }
         }
       }
+
+      IAsyncRuleMethod[] asyncRules = null;
+      lock (SyncRoot)
+        asyncRules = ValidatingRules.ToArray();
+      
+      // They must all be added to the ValidatingRules list before you can invoke them.
+      // Otherwise you have a race condition, where if a rule completes before the next one is invoked
+      // then you may have the ValidationComplete event fire multiple times invalidly.
+      foreach (IAsyncRuleMethod rule in asyncRules)
+      {
+        try
+        {
+          rule.Invoke(_target, asyncRule_Complete);
+        }
+        catch (Exception ex)
+        {
+          // throw a more detailed exception
+          throw new ValidationException(
+            string.Format(Properties.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex);
+        }
+      }      
+    }
+
+    void asyncRule_Complete(object target, AsyncRuleResult e)
+    {
+      IAsyncRuleMethod rule = (IAsyncRuleMethod)target;
+
+      lock (SyncRoot)
+      {
+        if (e.Result)
+          BrokenRulesList.Remove(rule);
+        else
+          BrokenRulesList.Add(rule, e);
+      }
+
+      // remove from rules list after broken rules so that IsValid is 
+      // correct in any async handlers.
+      lock (SyncRoot)
+        ValidatingRules.Remove(rule);
     }
 
     #endregion
@@ -1045,7 +1146,11 @@ namespace Csla.Validation
     /// <returns>A value indicating whether any rules are broken.</returns>
     internal bool IsValid
     {
-      get { return BrokenRulesList.ErrorCount == 0; }
+      get 
+      {
+        lock (SyncRoot)
+          return BrokenRulesList.ErrorCount == 0; 
+      }
     }
 
     /// <summary>
@@ -1062,10 +1167,107 @@ namespace Csla.Validation
     /// <returns>A reference to the collection of broken rules.</returns>
     public BrokenRulesCollection GetBrokenRules()
     {
+      // TODO: I'm not sure this is actually thread safe... We might have to change
+      // this to a BrokenRule[]. Otherwise we could remove locking from this class
+      // and lock inside of the BrokenRuleCollection itself.
       return BrokenRulesList;
+    }
+
+    // TODO: Should this be internal?
+    public bool IsValidating
+    {
+      get
+      {
+        lock (SyncRoot)
+          return ValidatingRules.Count > 0;
+      }
     }
 
     #endregion
 
+    #region MobileObject overrides
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    {
+      info.AddValue("_processThroughPriority", _processThroughPriority);
+#if SILVERLIGHT
+      OnGetStatePartial(info, mode);
+#endif
+      base.OnGetState(info, mode);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      _processThroughPriority = info.GetValue<int>("_processThroughPriority");
+#if SILVERLIGHT
+      OnSetStatePartial(info, mode);
+#endif
+      base.OnSetState(info, mode);
+    }
+
+    /// <summary>
+    /// Override this method to insert your child object
+    /// references into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (_brokenRules != null && _brokenRules.Count > 0)
+      {
+        SerializationInfo brInfo = formatter.SerializeObject(_brokenRules);
+        info.AddChild("_brokenRules", brInfo.ReferenceId);
+      }
+
+      base.OnGetChildren(info, formatter);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (info.Children.ContainsKey("_brokenRules"))
+      {
+        int referenceId = info.Children["_brokenRules"].ReferenceId;
+        _brokenRules = (BrokenRulesCollection)formatter.GetObject(referenceId);
+      }
+
+      base.OnSetChildren(info, formatter);
+    }
+    #endregion
   }
 }

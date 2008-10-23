@@ -17,7 +17,9 @@ namespace Csla.Windows
   /// data refresh issue with data bound detail controls
   /// as discussed in Chapter 5.</remarks>
   [DesignerCategory("")]
+#if !CLIENTONLY
   [Designer(typeof(HostComponentDesigner))]
+#endif
   [HostProperty("Host")]
   [ProvideProperty("ReadValuesOnChange", typeof(BindingSource))]
   public class BindingSourceRefresh : Component, IExtenderProvider, ISupportInitialize
@@ -97,8 +99,7 @@ namespace Csla.Windows
     }
 
     #endregion
-
-
+    
     #region Designer Functionality
 
     /// <summary>
@@ -152,6 +153,7 @@ namespace Csla.Windows
     /// property added to extended controls.
     /// </summary>
     /// <param name="source">Control being extended.</param>
+    [Category("Csla")]
     public bool GetReadValuesOnChange(BindingSource source)
     {
       bool result;
@@ -168,6 +170,7 @@ namespace Csla.Windows
     /// <param name="source">Control being extended.</param>
     /// <param name="value">New value of property.</param>
     /// <remarks></remarks>
+    [Category("Csla")]
     public void SetReadValuesOnChange(
       BindingSource source, bool value)
     {

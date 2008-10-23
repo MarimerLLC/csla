@@ -1,4 +1,7 @@
 using System;
+using Csla.Serialization;
+using Csla.Core;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Validation
 {
@@ -6,12 +9,20 @@ namespace Csla.Validation
   /// Stores details about a specific broken business rule.
   /// </summary>
   [Serializable()]
-  public class BrokenRule
+  public partial class BrokenRule : MobileObject
   {
     private string _ruleName;
     private string _description;
     private string _property;
     private RuleSeverity _severity;
+
+    internal BrokenRule(IAsyncRuleMethod asyncRule, AsyncRuleResult result)
+    {
+      _ruleName = asyncRule.RuleName;
+      _description = result.Description;
+      _severity = result.Severity;
+      _property = asyncRule.AsyncRuleArgs.Properties[0].Name;
+    }
 
     internal BrokenRule(IRuleMethod rule)
     {
@@ -66,5 +77,49 @@ namespace Csla.Validation
     {
       get { return _severity; }
     }
+
+    #region MobileObject overrides
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    {
+      info.AddValue("_ruleName", _ruleName);
+      info.AddValue("_description", _description);
+      info.AddValue("_property", _property);
+      info.AddValue("_severity", (int)_severity);
+      
+      base.OnGetState(info, mode);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      _ruleName = info.GetValue<string>("_ruleName");
+      _description = info.GetValue<string>("_description");
+      _property = info.GetValue<string>("_property");
+      _severity = info.GetValue<RuleSeverity>("_severity");
+
+      base.OnSetState(info, mode);
+    }
+
+    #endregion
   }
 }

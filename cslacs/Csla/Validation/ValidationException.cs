@@ -1,4 +1,5 @@
 using System;
+using Csla.Serialization;
 
 namespace Csla.Validation
 {
@@ -40,6 +41,7 @@ namespace Csla.Validation
 
     }
 
+#if !SILVERLIGHT
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>
@@ -51,5 +53,6 @@ namespace Csla.Validation
     {
 
     }
+#endif
   }
 }

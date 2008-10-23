@@ -5,6 +5,9 @@ using System.Runtime.Serialization;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Core.FieldManager;
+using Csla.Core.LoadManager;
+using Csla.Server;
+using Csla.Security;
 
 namespace Csla
 {
@@ -20,9 +23,13 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object.</typeparam>
   [Serializable()]
-  public abstract class ReadOnlyBase<T> : ICloneable, 
-    Core.IReadOnlyObject, Csla.Security.IAuthorizeReadWrite, Server.IDataPortalTarget,
-    Core.IManageProperties
+  public abstract class ReadOnlyBase<T> : BindableBase, 
+    ICloneable, 
+    IReadOnlyObject, 
+    IAuthorizeReadWrite, 
+    IDataPortalTarget,
+    IManageProperties,
+    INotifyBusy
     where T : ReadOnlyBase<T>
   {
     #region Object ID Value
@@ -718,7 +725,7 @@ namespace Csla
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException));
     }
@@ -745,7 +752,7 @@ namespace Csla
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, F field, Security.NoAccessBehavior noAccess)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field, Security.NoAccessBehavior noAccess)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess));
     }
@@ -787,7 +794,7 @@ namespace Csla
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, Security.NoAccessBehavior.SuppressException));
     }
@@ -813,7 +820,7 @@ namespace Csla
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<F, P>(PropertyInfo<F> propertyInfo, Security.NoAccessBehavior noAccess)
+    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, Security.NoAccessBehavior noAccess)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, noAccess));
     }
@@ -888,7 +895,7 @@ namespace Csla
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadProperty<F, P>(PropertyInfo<F> propertyInfo)
+    protected P ReadPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, ReadProperty<F>(propertyInfo));
     }
@@ -954,7 +961,7 @@ namespace Csla
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
     {
       try
       {
@@ -1056,6 +1063,63 @@ namespace Csla
       FieldManager.LoadFieldData(propertyInfo, newValue);
     }
 
+    //private AsyncLoadManager
+    [NonSerialized]
+    private AsyncLoadManager _loadManager;
+    internal AsyncLoadManager LoadManager
+    {
+      get
+      {
+        if (_loadManager == null)
+        {
+          _loadManager = new AsyncLoadManager();
+          _loadManager.BusyChanged += new BusyChangedEventHandler(loadManager_BusyChanged);
+          _loadManager.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(loadManager_UnhandledAsyncException);
+        }
+        return _loadManager;
+      }
+    }
+
+    void loadManager_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    {
+      OnUnhandledAsyncException(e);
+    }
+
+    void loadManager_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      OnBusyChanged(e);
+    }
+
+    protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, parameter);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    protected void LoadPropertyAsync<R, P1, P2>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2> factory, P1 p1, P2 p2)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    protected void LoadPropertyAsync<R, P1, P2, P3>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3> factory, P1 p1, P2 p2, P3 p3)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    protected void LoadPropertyAsync<R, P1, P2, P3, P4>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4> factory, P1 p1, P2 p2, P3 p3, P4 p4)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
+    protected void LoadPropertyAsync<R, P1, P2, P3, P4, P5>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4, P5> factory, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
+    {
+      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
+      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+    }
+
     #endregion
 
     #region  Field Manager
@@ -1080,6 +1144,69 @@ namespace Csla
     }
 
     #endregion
+
+    #region IsBusy / IsIdle
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _isBusy;
+
+    protected void MarkBusy()
+    {
+      // TODO: Review resource string
+      if (_isBusy)
+        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
+
+      _isBusy = true;
+      OnBusyChanged(new BusyChangedEventArgs("", true));
+    }
+
+    protected void MarkIdle()
+    {
+      _isBusy = false;
+      OnBusyChanged(new BusyChangedEventArgs("", true));
+    }
+
+    [Browsable(false)]
+    public bool IsBusy
+    {
+      get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
+    }
+
+    [Browsable(false)]
+    public bool IsSelfBusy
+    {
+      get { return _isBusy || LoadManager.IsLoading; }
+    }
+
+    void Child_PropertyBusy(object sender, BusyChangedEventArgs e)
+    {
+      OnBusyChanged(e);
+    }
+
+    [NotUndoable]
+    [NonSerialized]
+    private BusyChangedEventHandler _propertyBusy;
+
+    public event BusyChangedEventHandler BusyChanged
+    {
+      add { _propertyBusy = (BusyChangedEventHandler)Delegate.Combine(_propertyBusy, value); }
+      remove { _propertyBusy = (BusyChangedEventHandler)Delegate.Remove(_propertyBusy, value); }
+    }
+
+    protected void OnBusyChanged(string propertyName, bool busy)
+    {
+      OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
+    }
+
+    protected virtual void OnBusyChanged(BusyChangedEventArgs args)
+    {
+      if (_propertyBusy != null)
+        _propertyBusy(this, args);
+    }
+
+    #endregion
+
 
     #region IDataPortalTarget Members
 
@@ -1154,6 +1281,78 @@ namespace Csla
     void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       LoadProperty(propertyInfo, newValue);
+    }
+
+    #endregion
+
+    #region MobileFormatter
+
+    /// <summary>
+    /// Override this method to insert your child object
+    /// references into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnGetChildren(
+      Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      base.OnGetChildren(info, formatter);
+      if (_fieldManager != null)
+      {
+        var fieldManagerInfo = formatter.SerializeObject(_fieldManager);
+        info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
+      }
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    {
+      if (info.Children.ContainsKey("_fieldManager"))
+      {
+        var childData = info.Children["_fieldManager"];
+        _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
+      }
+      base.OnSetChildren(info, formatter);
+    }
+
+    #endregion
+
+    #region INotifyUnhandledAsyncException Members
+
+    [NotUndoable]
+    [NonSerialized]
+    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+
+    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    {
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
+    }
+
+    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
+    {
+      if (_unhandledAsyncException != null)
+        _unhandledAsyncException(this, error);
+    }
+
+    protected void OnUnhandledAsyncException(object originalSender, Exception error)
+    {
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
     }
 
     #endregion

@@ -1,12 +1,13 @@
 using System;
 using System.Security.Principal;
+using Csla.Security;
 
 namespace ProjectTracker.Library
 {
   namespace Security
   {
     [Serializable()]
-    public class PTPrincipal : Csla.Security.BusinessPrincipalBase
+    public class PTPrincipal : BusinessPrincipalBase
     {
       private PTPrincipal(IIdentity identity)
         : base(identity)
@@ -34,15 +35,7 @@ namespace ProjectTracker.Library
 
       public static void Logout()
       {
-        PTIdentity identity = PTIdentity.UnauthenticatedIdentity();
-        PTPrincipal principal = new PTPrincipal(identity);
-        Csla.ApplicationContext.User = principal;
-      }
-
-      public override bool IsInRole(string role)
-      {
-        PTIdentity identity = (PTIdentity)this.Identity;
-        return identity.IsInRole(role);
+        Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
       }
     }
   }

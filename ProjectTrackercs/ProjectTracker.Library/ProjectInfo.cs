@@ -1,10 +1,11 @@
-using Csla;
 using System;
+using Csla;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectInfo : ReadOnlyBase<ProjectInfo>
+  public partial class ProjectInfo : ReadOnlyBase<ProjectInfo>
   {
     private Guid _id;
     private string _name;

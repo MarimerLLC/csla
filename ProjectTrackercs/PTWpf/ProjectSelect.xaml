@@ -25,17 +25,6 @@
         </LinearGradientBrush>
       </Grid.Background>
       <StackPanel FlowDirection="LeftToRight">
-        <StackPanel.Resources>
-          <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="Margin" Value="3,5"/>
-          </Style>
-          <Style TargetType="{x:Type ListBox}">
-            <Setter Property="Margin" Value="3,5"/>
-          </Style>
-          <Style TargetType="{x:Type Button}">
-            <Setter Property="Margin" Value="3,5"/>
-          </Style>
-        </StackPanel.Resources>
         <TextBlock>Projects:</TextBlock>
         <DockPanel>
           <TextBlock>Name:</TextBlock>

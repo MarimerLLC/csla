@@ -18,17 +18,13 @@
       </csla:CslaDataProvider>
     </UserControl.Resources>
     <Grid DataContext="{Binding Source={StaticResource ProjectList}}"> 
-      <StackPanel FlowDirection="LeftToRight">
-        <StackPanel.Resources>
-          <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="Margin" Value="3,5"/>
-          </Style>
-          <Style TargetType="{x:Type ListBox}">
-            <Setter Property="Margin" Value="3,5"/>
-          </Style>
-        </StackPanel.Resources>
-        <TextBlock>Projects:</TextBlock>
-        <DockPanel>
+      <StackPanel FlowDirection="LeftToRight" Margin="0">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Style="{StaticResource HeaderTextBlock}">Projects:</TextBlock>
+        <csla:BusyAnimation Name="Busy" Height="20" Width="20" Margin="5"
+          IsRunning="{Binding Source={StaticResource ProjectList}, Path=IsBusy, BindsDirectlyToSource=True}" />
+      </StackPanel>
+      <DockPanel>
           <TextBlock>Name:</TextBlock>
           <TextBox Name="NameTextBox" AutoWordSelection="True">
             <TextBox.Text>

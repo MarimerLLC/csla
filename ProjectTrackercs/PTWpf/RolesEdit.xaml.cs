@@ -10,7 +10,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ProjectTracker.Library.Admin;
 
 namespace PTWpf
 {
@@ -22,21 +21,14 @@ namespace PTWpf
     public RolesEdit()
     {
       InitializeComponent();
-      Csla.Wpf.CslaDataProvider dp = this.FindResource("RoleList") as Csla.Wpf.CslaDataProvider;
-      dp.DataChanged += new EventHandler(base.DataChanged);
     }
 
     protected override void ApplyAuthorization()
     {
-      if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Roles)))
-      {
-        this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
-      }
-      else
-      {
-        this.RolesListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
-        ((Csla.Wpf.CslaDataProvider)this.FindResource("RoleList")).Cancel();
-      }
+      var dp = (Csla.Wpf.CslaDataProvider)this.FindResource("RoleList");
+      dp.Rebind();
+      if (!Csla.Security.AuthorizationRules.CanEditObject(dp.ObjectType))
+        dp.Cancel();
     }
   }
 }

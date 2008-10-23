@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -44,6 +44,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -56,7 +59,9 @@
     <Compile Include="Project.cs" />
     <Compile Include="ProjectCloser.cs" />
     <Compile Include="ProjectInfo.cs" />
+    <Compile Include="ProjectInfo.Server.cs" />
     <Compile Include="ProjectList.cs" />
+    <Compile Include="ProjectList.Server.cs" />
     <Compile Include="ProjectResource.cs" />
     <Compile Include="ProjectResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,6 +81,10 @@
     <None Include="Diagrams\Security.cd" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ProjectTracker.DalEf\ProjectTracker.DalEf.csproj">
+      <Project>{90EA85E8-B0F9-453E-A4C8-837939211C44}</Project>
+      <Name>ProjectTracker.DalEf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectTracker.DalLinq\ProjectTracker.DalLinq.csproj">
       <Project>{472C9544-67A7-4C3A-9F5D-704889289AE9}</Project>
       <Name>ProjectTracker.DalLinq</Name>

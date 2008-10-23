@@ -10,47 +10,47 @@ namespace ProjectTracker.Library
 
     private byte[] _timestamp = new byte[8];
 
-    private static PropertyInfo<Guid> ProjectIdProperty = RegisterProperty(new PropertyInfo<Guid>("ProjectId", "Project id", Guid.Empty));
+    private static PropertyInfo<Guid> ProjectIdProperty = RegisterProperty(typeof(ResourceAssignment), new PropertyInfo<Guid>("ProjectId", "Project id", Guid.Empty));
     private Guid _projectId = ProjectIdProperty.DefaultValue;
     public Guid ProjectId
     {
       get
       {
-        return GetProperty<Guid>(ProjectIdProperty, _projectId);
+        return GetProperty(ProjectIdProperty, _projectId);
       }
     }
 
-    private static PropertyInfo<string> ProjectNameProperty = RegisterProperty(new PropertyInfo<string>("ProjectName"));
+    private static PropertyInfo<string> ProjectNameProperty = RegisterProperty(typeof(ResourceAssignment), new PropertyInfo<string>("ProjectName"));
     private string _projectName = ProjectNameProperty.DefaultValue;
     public string ProjectName
     {
       get
       {
-        return GetProperty<string>(ProjectNameProperty, _projectName);
+        return GetProperty(ProjectNameProperty, _projectName);
       }
     }
 
-    private static PropertyInfo<SmartDate> AssignedProperty = RegisterProperty(new PropertyInfo<SmartDate>("Assigned"));
+    private static PropertyInfo<SmartDate> AssignedProperty = RegisterProperty(typeof(ResourceAssignment), new PropertyInfo<SmartDate>("Assigned"));
     private SmartDate _assigned = new SmartDate(System.DateTime.Today);
     public string Assigned
     {
       get
       {
-        return GetProperty<SmartDate, string>(AssignedProperty, _assigned);
+        return GetPropertyConvert<SmartDate, string>(AssignedProperty, _assigned);
       }
     }
 
-    private static PropertyInfo<int> RoleProperty = RegisterProperty(new PropertyInfo<int>("Role"));
+    private static PropertyInfo<int> RoleProperty = RegisterProperty(typeof(ResourceAssignment), new PropertyInfo<int>("Role"));
     private int _role = RoleProperty.DefaultValue;
     public int Role
     {
       get
       {
-        return GetProperty<int>(RoleProperty, _role);
+        return GetProperty(RoleProperty, _role);
       }
       set
       {
-        SetProperty<int>(RoleProperty, ref _role, value);
+        SetProperty(RoleProperty, ref _role, value);
       }
     }
 
@@ -71,7 +71,7 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Assignment.ValidRole, RoleProperty);
+      ValidationRules.AddRule<ResourceAssignment>(Assignment.ValidRole, RoleProperty);
     }
 
     #endregion

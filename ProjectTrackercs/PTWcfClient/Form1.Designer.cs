@@ -61,6 +61,7 @@
       this.projectDataDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
       this.projectDataDataGridView.Size = new System.Drawing.Size(773, 435);
       this.projectDataDataGridView.TabIndex = 1;
+      this.projectDataDataGridView.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.projectDataDataGridView_RowHeaderMouseDoubleClick);
       // 
       // dataGridViewTextBoxColumn1
       // 

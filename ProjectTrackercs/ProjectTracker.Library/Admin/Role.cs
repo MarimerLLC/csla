@@ -10,10 +10,10 @@ namespace ProjectTracker.Library
     [Serializable()]
     public class Role : BusinessBase<Role>
     {
-
       #region  Business Methods
 
-      private static PropertyInfo<int> IdProperty = RegisterProperty<int>(typeof(Role), new PropertyInfo<int>("Id"));
+      private static PropertyInfo<int> IdProperty = 
+        RegisterProperty(new PropertyInfo<int>("Id"));
       private bool _idSet;
       public int Id
       {
@@ -21,22 +21,21 @@ namespace ProjectTracker.Library
         {
           if (!_idSet)
           {
-            SetProperty<int>(IdProperty, GetMax() + 1);
+            _idSet = true;
+            SetProperty(IdProperty, GetMax() + 1);
           }
-          return GetProperty<int>(IdProperty);
+          return GetProperty(IdProperty);
         }
         set
         {
           _idSet = true;
-          SetProperty<int>(IdProperty, value);
+          SetProperty(IdProperty, value);
         }
       }
 
       private int GetMax()
       {
-
         // generate a default id value
-        _idSet = true;
         Roles parent = (Roles)this.Parent;
         int max = 0;
         foreach (Role item in parent)
@@ -50,7 +49,7 @@ namespace ProjectTracker.Library
 
       }
 
-      private static PropertyInfo<string> NameProperty = RegisterProperty<string>(typeof(Role), new PropertyInfo<string>("Name"));
+      private static PropertyInfo<string> NameProperty = RegisterProperty(typeof(Role), new PropertyInfo<string>("Name"));
       public string Name
       {
         get
@@ -59,7 +58,7 @@ namespace ProjectTracker.Library
         }
         set
         {
-          SetProperty<string>(NameProperty, value);
+          SetProperty(NameProperty, value);
         }
       }
 
@@ -76,14 +75,16 @@ namespace ProjectTracker.Library
           Csla.Validation.CommonRules.StringRequired, NameProperty);
       }
 
-      private static bool NoDuplicates<T>(T target, Csla.Validation.RuleArgs e) where T : Role
+      private static bool NoDuplicates<T>(
+        T target, Csla.Validation.RuleArgs e) where T : Role
       {
         Roles parent = (Roles)target.Parent;
         if (parent != null)
         {
           foreach (Role item in parent)
           {
-            if (item.Id == target.GetProperty<int>(IdProperty) && !(ReferenceEquals(item, target)))
+            if (item.Id == target.ReadProperty(IdProperty) && 
+              !(ReferenceEquals(item, target)))
             {
               e.Description = "Role Id must be unique";
               return false;
@@ -126,9 +127,9 @@ namespace ProjectTracker.Library
 
       private void Child_Fetch(ProjectTracker.DalLinq.getRolesResult data)
       {
-        LoadProperty<int>(IdProperty, data.Id);
+        LoadProperty(IdProperty, data.Id);
         _idSet = true;
-        LoadProperty<string>(NameProperty, data.Name);
+        LoadProperty(NameProperty, data.Name);
         _timestamp = data.LastChanged.ToArray();
       }
 
@@ -137,7 +138,7 @@ namespace ProjectTracker.Library
         using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
         {
           System.Data.Linq.Binary lastChanged = _timestamp;
-          mgr.DataContext.addRole(ReadProperty<int>(IdProperty), ReadProperty<string>(NameProperty), ref lastChanged);
+          mgr.DataContext.addRole(ReadProperty(IdProperty), ReadProperty(NameProperty), ref lastChanged);
           _timestamp = lastChanged.ToArray();
         }
       }
@@ -147,7 +148,7 @@ namespace ProjectTracker.Library
         using (var mgr = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
         {
           System.Data.Linq.Binary lastChanged = null;
-          mgr.DataContext.updateRole(ReadProperty<int>(IdProperty), ReadProperty<string>(NameProperty), _timestamp, ref lastChanged);
+          mgr.DataContext.updateRole(ReadProperty(IdProperty), ReadProperty(NameProperty), _timestamp, ref lastChanged);
           _timestamp = lastChanged.ToArray();
         }
       }

@@ -66,7 +66,8 @@ namespace ProjectTracker.Library
       return DataPortal.CreateChild<ProjectResources>();
     }
 
-    internal static ProjectResources GetProjectResources(ProjectTracker.DalLinq.Assignment[] data)
+    internal static ProjectResources GetProjectResources(
+      ProjectTracker.DalLinq.Assignment[] data)
     {
       return DataPortal.FetchChild<ProjectResources>(data);
     }
@@ -78,7 +79,8 @@ namespace ProjectTracker.Library
 
     #region  Data Access
 
-    private void Child_Fetch(ProjectTracker.DalLinq.Assignment[] data)
+    private void Child_Fetch(
+      ProjectTracker.DalLinq.Assignment[] data)
     {
       this.RaiseListChangedEvents = false;
       foreach (var value in data)

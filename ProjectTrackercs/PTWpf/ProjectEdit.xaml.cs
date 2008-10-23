@@ -20,13 +20,14 @@ namespace PTWpf
   public partial class ProjectEdit : EditForm
   {
     private Guid _projectId;
+    private Csla.Wpf.CslaDataProvider _dp;
 
     public ProjectEdit()
     {
       InitializeComponent();
       this.Loaded += new RoutedEventHandler(ProjectEdit_Loaded);
-      Csla.Wpf.CslaDataProvider dp = this.FindResource("Project") as Csla.Wpf.CslaDataProvider;
-      dp.DataChanged += new EventHandler(DataChanged);
+      _dp = this.FindResource("Project") as Csla.Wpf.CslaDataProvider;
+      _dp.DataChanged += new EventHandler(DataChanged);
     }
 
     public ProjectEdit(Guid id)
@@ -37,22 +38,21 @@ namespace PTWpf
 
     void ProjectEdit_Loaded(object sender, RoutedEventArgs e)
     {
-      Csla.Wpf.CslaDataProvider dp = this.FindResource("Project") as Csla.Wpf.CslaDataProvider;
-      using (dp.DeferRefresh())
+      using (_dp.DeferRefresh())
       {
-        dp.FactoryParameters.Clear();
+        _dp.FactoryParameters.Clear();
         if (_projectId.Equals(Guid.Empty))
         {
-          dp.FactoryMethod = "NewProject";
+          _dp.FactoryMethod = "NewProject";
         }
         else
         {
-          dp.FactoryMethod = "GetProject";
-          dp.FactoryParameters.Add(_projectId);
+          _dp.FactoryMethod = "GetProject";
+          _dp.FactoryParameters.Add(_projectId);
         }
       }
-      if (dp.Data != null)
-        SetTitle((Project)dp.Data);
+      if (_dp.Data != null)
+        SetTitle((Project)_dp.Data);
       else
         MainForm.ShowControl(null);
     }
@@ -65,33 +65,24 @@ namespace PTWpf
         this.Title = string.Format("Project: {0}", project.Name);
     }
 
-    void ShowResource(object sender, EventArgs e)
+    protected override void ApplyAuthorization()
     {
-      ProjectTracker.Library.ProjectResource item =
-        (ProjectTracker.Library.ProjectResource)ResourceListBox.SelectedItem;
+      if (!Csla.Security.AuthorizationRules.CanEditObject(typeof(Project)))
+        _dp.Cancel();
+      _dp.Rebind();
+    }
 
-      if (item != null)
+    private void OpenCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      if (e.Parameter != null)
       {
-        ResourceEdit frm = new ResourceEdit(item.ResourceId);
+        ResourceEdit frm = new ResourceEdit(Convert.ToInt32(e.Parameter));
         MainForm.ShowControl(frm);
       }
     }
 
-    protected override void ApplyAuthorization()
-    {
-      this.AuthPanel.Refresh();
-      if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Project)))
-      {
-        this.ResourceListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
-        this.AssignButton.IsEnabled = true;
-      }
-      else
-      {
-        this.ResourceListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
-        ((Csla.Wpf.CslaDataProvider)this.FindResource("Project")).Cancel();
-        this.AssignButton.IsEnabled = false;
-      }
-    }
+    private void OpenCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    { e.CanExecute = true; }
 
     void Assign(object sender, EventArgs e)
     {
@@ -99,7 +90,7 @@ namespace PTWpf
       if ((bool)dlg.ShowDialog())
       {
         int id = dlg.ResourceId;
-        Project project = (Project)((Csla.Wpf.CslaDataProvider)this.FindResource("Project")).Data;
+        Project project = (Project)_dp.Data;
         try
         {
           project.Resources.Assign(id);
@@ -113,14 +104,6 @@ namespace PTWpf
             MessageBoxImage.Information);
         }
       }
-    }
-
-    void Unassign(object sender, EventArgs e)
-    {
-      Button btn = (Button)sender;
-      int id = (int)btn.Tag;
-      Project project = (Project)((Csla.Wpf.CslaDataProvider)this.FindResource("Project")).Data;
-      project.Resources.Remove(id);
     }
   }
 }

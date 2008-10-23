@@ -30,7 +30,9 @@ namespace ProjectTracker.Library
     private void DataPortal_Fetch()
     {
       RaiseListChangedEvents = false;
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
+      using (var ctx = 
+        ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.
+        GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         var data = from r in ctx.DataContext.Resources
                    select new ResourceInfo(r.Id, r.LastName, r.FirstName);

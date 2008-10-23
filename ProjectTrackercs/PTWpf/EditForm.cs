@@ -66,7 +66,7 @@ namespace PTWpf
 
     protected virtual void DataChanged(object sender, EventArgs e)
     {
-      Csla.Wpf.CslaDataProvider dp = sender as Csla.Wpf.CslaDataProvider;
+      var dp = sender as System.Windows.Data.DataSourceProvider;
       if (dp.Error != null)
         MessageBox.Show(dp.Error.ToString(), "Data error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
     }

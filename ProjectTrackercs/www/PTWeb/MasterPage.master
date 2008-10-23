@@ -7,8 +7,16 @@
   <title>Untitled Page</title>
   <meta http-equiv="Content-Type" content="text/html; 
     charset=iso-8859-1" />
-</head>
-<body>
+    <style type="text/css">
+    #UpdateProgress1 { 
+      border-right: gray 1px solid; border-top: gray 1px solid; 
+      border-left: gray 1px solid; border-bottom: gray 1px solid;
+      width: 400px; background-color: #FFC080; 
+      bottom: 0%; left: 0px; position: absolute;
+     }
+    </style>
+  </head>
+  <body>
   <form id="form1" runat="server">
   <div id="mainTable">
     <div id="header">

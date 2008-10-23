@@ -27,7 +27,9 @@ public partial class ProjectEdit : System.Web.UI.Page
       ApplyAuthorizationRules();
     }
     else
-      this.ErrorLabel.Text = string.Empty;
+    {
+      ShowError(string.Empty);
+    }
   }
 
   private void ApplyAuthorizationRules()
@@ -118,7 +120,7 @@ public partial class ProjectEdit : System.Web.UI.Page
     }
     catch (InvalidOperationException ex)
     {
-      ErrorLabel.Text = ex.Message;
+      ShowError(ex.Message);
     }
   }
 
@@ -144,12 +146,12 @@ public partial class ProjectEdit : System.Web.UI.Page
     }
     catch (Csla.DataPortalException ex)
     {
-      this.ErrorLabel.Text = ex.BusinessException.Message;
+      ShowError(ex.BusinessException.Message);
       e.RowsAffected = 0;
     }
     catch (Exception ex)
     {
-      this.ErrorLabel.Text = ex.Message;
+      ShowError(ex.Message);
       e.RowsAffected = 0;
     }
   }
@@ -266,29 +268,34 @@ public partial class ProjectEdit : System.Web.UI.Page
     catch (Csla.Validation.ValidationException ex)
     {
       System.Text.StringBuilder message = new System.Text.StringBuilder();
-      message.AppendFormat("{0}<br/>", ex.Message);
-      if (project.BrokenRulesCollection.Count == 1)
-        message.AppendFormat("* {0}: {1}",
-          project.BrokenRulesCollection[0].Property, 
-          project.BrokenRulesCollection[0].Description);
-      else
+      message.AppendFormat("{0}", ex.Message);
+      if (project.BrokenRulesCollection.Count > 0)
+      {
+        message.Append("<ul>");
         foreach (Csla.Validation.BrokenRule rule in project.BrokenRulesCollection)
-          message.AppendFormat("* {0}: {1}<br/>", rule.Property, rule.Description);
-      this.ErrorLabel.Text = message.ToString();
+          message.AppendFormat("<li>{0}: {1}</li>", rule.Property, rule.Description);
+        message.Append("</ul>");
+      }
+      ShowError(message.ToString());
       rowsAffected = 0;
     }
     catch (Csla.DataPortalException ex)
     {
-      this.ErrorLabel.Text = ex.BusinessException.Message;
+      ShowError(ex.BusinessException.Message);
       rowsAffected = 0;
     }
     catch (Exception ex)
     {
-      this.ErrorLabel.Text = ex.Message;
+      ShowError(ex.Message);
       rowsAffected = 0;
     }
     return rowsAffected;
   }
 
+  private void ShowError(string error)
+  {
+    this.ErrorLabel.Text = error;
+    //this.ErrorLabel2.Text = error;
+  }
 }
 

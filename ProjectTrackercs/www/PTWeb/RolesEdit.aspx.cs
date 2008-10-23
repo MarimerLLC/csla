@@ -31,11 +31,12 @@ public partial class RolesEdit : System.Web.UI.Page
 
   private void ApplyAuthorizationRules()
   {
+    bool canEdit = 
+      Csla.Security.AuthorizationRules.CanEditObject(
+      typeof(ProjectTracker.Library.Admin.Roles));
     this.GridView1.Columns[
-      this.GridView1.Columns.Count - 1].Visible =
-      Csla.Security.AuthorizationRules.CanEditObject(typeof(Roles));
-    this.AddRoleButton.Visible =
-      Csla.Security.AuthorizationRules.CanCreateObject(typeof(Roles));
+      this.GridView1.Columns.Count - 1].Visible = canEdit;
+    this.AddRoleButton.Visible = canEdit;
   }
 
   protected void AddRoleButton_Click(object sender, EventArgs e)

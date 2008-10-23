@@ -43,30 +43,41 @@
   protected void Application_AcquireRequestState(
     object sender, EventArgs e)
   {
-    if (Csla.ApplicationContext.AuthenticationType == "Windows") 
-      return;
+    if (HttpContext.Current.Handler is IRequiresSessionState)
+    {
+      if (Csla.ApplicationContext.AuthenticationType == "Windows")
+        return;
 
-    System.Security.Principal.IPrincipal principal;
-    try
-    {
-      principal = (System.Security.Principal.IPrincipal)
-        HttpContext.Current.Session["CslaPrincipal"];
-    }
-    catch
-    {
-      principal = null;
-    }
+      System.Security.Principal.IPrincipal principal;
+      try
+      {
+        principal = (System.Security.Principal.IPrincipal)
+          HttpContext.Current.Session["CslaPrincipal"];
+      }
+      catch
+      {
+        principal = null;
+      }
 
-    if (principal == null)
-    {
-      // didn't get a principal from Session, so
-      // set it to an unauthenticted PTPrincipal
-      ProjectTracker.Library.Security.PTPrincipal.Logout();
-    }
-    else
-    {
-      // use the principal from Session
-      Csla.ApplicationContext.User = principal;
+      if (principal == null)
+      {
+        if (User.Identity.IsAuthenticated && 
+          User.Identity is FormsIdentity)
+        {
+          // no principal in session, but ASP.NET token
+          // still valid - so sign out ASP.NET
+          FormsAuthentication.SignOut();
+          Response.Redirect(Request.Url.PathAndQuery);
+        }
+        // didn't get a principal from Session, so
+        // set it to an unauthenticted PTPrincipal
+        ProjectTracker.Library.Security.PTPrincipal.Logout();
+      }
+      else
+      {
+        // use the principal from Session
+        Csla.ApplicationContext.User = principal;
+      }
     }
   }
 

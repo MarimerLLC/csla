@@ -31,6 +31,7 @@ namespace PTWpf
 
       if (item != null)
       {
+        Busy.IsRunning = true;
         ResourceEdit frm = new ResourceEdit(item.Id);
         MainForm.ShowControl(frm);
       }

@@ -21,7 +21,6 @@ namespace PTWpf
   {
     #region Navigation and Plumbing
 
-    private static ProjectTracker.Library.Security.PTPrincipal _principal;
     private static MainForm _mainForm;
 
     private UserControl _currentControl;
@@ -33,32 +32,13 @@ namespace PTWpf
       _mainForm = this;
 
       this.Loaded += new RoutedEventHandler(MainForm_Loaded);
-      Csla.DataPortal.DataPortalInitInvoke += new Action<object>(DataPortal_DataPortalInitInvoke);
     }
 
-    void MainForm_Loaded(object sender, RoutedEventArgs e)
+    private void MainForm_Loaded(object sender, RoutedEventArgs e)
     {
-      ProjectTracker.Library.Security.PTPrincipal.Logout();
-      _principal = (ProjectTracker.Library.Security.PTPrincipal)
-        Csla.ApplicationContext.User;
-
+      ApplyAuthorization();
       this.Title = "Project Tracker";
     }
-
-    /// <summary>
-    /// This method ensures that the thread about to do
-    /// data access has a valid PTPrincipal object, and is
-    /// needed because of the way WPF doesn't move the 
-    /// main thread's principal object to other threads
-    /// automatically.
-    /// </summary>
-    /// <param name="obj"></param>
-    void DataPortal_DataPortalInitInvoke(object obj)
-    {
-      if (!ReferenceEquals(Csla.ApplicationContext.User, _principal))
-        Csla.ApplicationContext.User = _principal;
-    }
-
 
     public static void ShowControl(UserControl control)
     {
@@ -67,7 +47,7 @@ namespace PTWpf
 
     private void ShowUserControl(UserControl control)
     {
-      UnHookTitleEvent(_currentControl);
+      UnhookTitleEvent(_currentControl);
 
       contentArea.Children.Clear();
       if (control != null)
@@ -77,7 +57,7 @@ namespace PTWpf
       HookTitleEvent(_currentControl);
     }
 
-    private void UnHookTitleEvent(UserControl control)
+    private void UnhookTitleEvent(UserControl control)
     {
       EditForm form = control as EditForm;
       if (form != null)
@@ -92,7 +72,7 @@ namespace PTWpf
         form.TitleChanged += new EventHandler(SetTitle);
     }
 
-    void SetTitle(object sender, EventArgs e)
+    private void SetTitle(object sender, EventArgs e)
     {
       EditForm form = sender as EditForm;
       if (form != null && !string.IsNullOrEmpty(form.Title))
@@ -103,9 +83,23 @@ namespace PTWpf
 
     #endregion
 
+    #region Authorization
+
+    private void ApplyAuthorization()
+    {
+      this.NewProjectButton.IsEnabled =
+        Csla.Security.AuthorizationRules.CanCreateObject(typeof(Project));
+      this.CloseProjectButton.IsEnabled =
+        Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));
+      this.NewResourceButton.IsEnabled =
+        Csla.Security.AuthorizationRules.CanCreateObject(typeof(Resource));
+    }
+
+    #endregion
+
     #region Menu items
 
-    void NewProject(object sender, EventArgs e)
+    private void NewProject(object sender, EventArgs e)
     {
       try
       {
@@ -118,28 +112,41 @@ namespace PTWpf
       }
     }
 
-    void ShowProjectList(object sender, EventArgs e)
+    private void ShowProjectList(object sender, EventArgs e)
     {
       ProjectList frm = new ProjectList();
       ShowControl(frm);
     }
 
-    void ShowResourceList(object sender, EventArgs e)
+    private void ShowResourceList(object sender, EventArgs e)
     {
       ResourceList frm = new ResourceList();
       ShowControl(frm);
     }
 
-    void NewResource(object sender, EventArgs e)
+    private void NewResource(object sender, EventArgs e)
     {
       ResourceEdit frm = new ResourceEdit(0);
       ShowControl(frm);
     }
 
-    void ShowRolesEdit(object sender, EventArgs e)
+    private void ShowRolesEdit(object sender, EventArgs e)
     {
       RolesEdit frm = new RolesEdit();
       ShowControl(frm);
+    }
+
+    private void CloseProject(object sender, RoutedEventArgs e)
+    {
+      ProjectSelect frm = new ProjectSelect();
+      bool result = (bool)frm.ShowDialog();
+      if (result)
+      {
+        Guid id = frm.ProjectId;
+        ProjectCloser.CloseProject(id);
+        MessageBox.Show("Project closed",
+          "Close project", MessageBoxButton.OK, MessageBoxImage.Information);
+      }
     }
 
     #endregion
@@ -162,7 +169,8 @@ namespace PTWpf
         {
           string username = frm.UsernameTextBox.Text;
           string password = frm.PasswordTextBox.Password;
-          ProjectTracker.Library.Security.PTPrincipal.Login(username, password);
+          ProjectTracker.Library.Security.PTPrincipal.Login(
+            username, password);
         }
         if (!Csla.ApplicationContext.User.Identity.IsAuthenticated)
         {
@@ -173,31 +181,18 @@ namespace PTWpf
         else
         {
           CurrentUser.Text =
-            string.Format("Logged in as {0}", Csla.ApplicationContext.User.Identity.Name);
+            string.Format("Logged in as {0}", 
+            Csla.ApplicationContext.User.Identity.Name);
           LoginButtonText.Text = "Log out";
         }
       }
-      _principal = (ProjectTracker.Library.Security.PTPrincipal)
-        Csla.ApplicationContext.User;
 
+      ApplyAuthorization();
       IRefresh p = _currentControl as IRefresh;
       if (p != null)
         p.Refresh();
     }
 
     #endregion
-
-    private void CloseProject(object sender, RoutedEventArgs e)
-    {
-      ProjectSelect frm = new ProjectSelect();
-      bool result = (bool)frm.ShowDialog();
-      if (result)
-      {
-        Guid id = frm.ProjectId;
-        ProjectCloser.CloseProject(id);
-        MessageBox.Show("Project closed", 
-          "Close project", MessageBoxButton.OK, MessageBoxImage.Information);
-      }
-    }
   }
 }

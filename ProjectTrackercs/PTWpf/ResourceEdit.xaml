@@ -15,15 +15,25 @@
                            FactoryMethod="GetResource"
                            IsAsynchronous="False"
                            IsInitialLoadEnabled="False"
+                           DataChanged="DataChanged"
                            ManageObjectLifetime="True">
     </csla:CslaDataProvider>
   </UserControl.Resources>
+  <UserControl.CommandBindings>
+    <CommandBinding Command="ApplicationCommands.Open"
+                    Executed="OpenCmdExecuted"
+                    CanExecute="OpenCmdCanExecute" />
+  </UserControl.CommandBindings>
   <Grid Name="MainGrid" DataContext="{Binding Source={StaticResource Resource}}" >
     <Grid.Resources>
       <DataTemplate x:Key="lbTemplate">
         <Grid>
           <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Path=ProjectName}" Width="200" />
+            <Button Style="{StaticResource LinkButton}" 
+                    Margin="0" Width="200"
+                    Command="ApplicationCommands.Open"
+                    CommandParameter="{Binding Path=ProjectId}"
+                    Content="{Binding Path=ProjectName}" Foreground="Blue" />
             <TextBlock Text="{Binding Path=Assigned}" Width="100" />
             <ComboBox 
               ItemsSource="{Binding Source={StaticResource RoleList}}" 
@@ -31,14 +41,22 @@
               SelectedValuePath="Key"
               SelectedValue="{Binding Path=Role}" 
               Width="150" />
-              <Button Click="Unassign" HorizontalAlignment="Left" Tag="{Binding Path=ProjectId}">Unassign</Button>
+            <Button HorizontalAlignment="Left" 
+                    Command="ApplicationCommands.Delete" 
+                    CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
+                    CommandParameter="{Binding}" 
+                    Content="Unassign"/>
           </StackPanel>
         </Grid>
       </DataTemplate>
       <DataTemplate x:Key="lbroTemplate">
         <Grid>
           <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Path=ProjectName}" Width="200" />
+            <Button Style="{StaticResource LinkButton}" 
+                    Margin="0" Width="200"
+                    Command="ApplicationCommands.Open"
+                    CommandParameter="{Binding Path=ProjectId}"
+                    Content="{Binding Path=ProjectName}" Foreground="Blue" />
             <TextBlock Text="{Binding Path=Assigned}" Width="100" />
             <ComboBox 
               ItemsSource="{Binding Source={StaticResource RoleList}}" 
@@ -55,14 +73,11 @@
     <csla:ObjectStatus>
       <csla:Authorizer Name="AuthPanel">
         <StackPanel FlowDirection="LeftToRight" Margin="0 0 20 0">
-          <StackPanel.Resources>
-            <Style TargetType="{x:Type TextBlock}">
-              <Setter Property="Margin" Value="3,5"/>
-            </Style>
-            <Style TargetType="{x:Type Button}">
-              <Setter Property="Margin" Value="3,5"/>
-            </Style>
-          </StackPanel.Resources>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Style="{StaticResource HeaderTextBlock}">Resource</TextBlock>
+            <csla:BusyAnimation Name="Busy" Height="20" Width="20" Margin="5"
+                IsRunning="{Binding Source={StaticResource Resource}, Path=IsBusy, BindsDirectlyToSource=True}" />
+          </StackPanel>
           <TextBlock>Id:</TextBlock>
           <TextBlock Text="{Binding Id, Mode=OneWay}"></TextBlock>
           <TextBlock>First name:</TextBlock>
@@ -70,8 +85,9 @@
           <TextBlock>Last name:</TextBlock>
           <TextBox Text="{Binding LastName, Converter={StaticResource IdentityConverter}, ValidatesOnDataErrors=True}"></TextBox>
           <TextBlock>Assigned to:</TextBlock>
-          <ListBox Name="ProjectListBox" ItemsSource="{Binding Assignments}" ItemTemplate="{StaticResource lbTemplate}" MouseDoubleClick="ShowProject">
-          </ListBox>
+          <ListBox Name="ProjectListBox" 
+                   ItemsSource="{Binding Assignments}" 
+                   ItemTemplate="{StaticResource lbTemplate}" />
           <StackPanel Orientation="Horizontal">
             <Button 
                 Command="ApplicationCommands.Save" 
@@ -81,8 +97,10 @@
                 Command="ApplicationCommands.Undo" 
                 CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
                 HorizontalAlignment="Left" IsCancel="True">Cancel</Button>
-            <Button Name="AssignButton" Click="Assign" 
-                      HorizontalAlignment="Left">Assign to project</Button>
+            <Button IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=CanEditObject}" 
+                    Click="Assign"
+                    HorizontalAlignment="Left">Assign to project</Button>
+            <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=CanEditObject}">CanEditObject</CheckBox>
             <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>
             <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsValid}">IsValid</CheckBox>
             <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatus, AncestorLevel=1}, Path=IsDirty}">IsDirty</CheckBox>

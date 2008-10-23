@@ -2,28 +2,43 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Login" Height="300" Width="300">
+  <Grid Margin="0.0769999995827675,5,-7.54699993133545,5" x:Name="BackgroundGrid">
+    <Rectangle HorizontalAlignment="Stretch" 
+               VerticalAlignment="Stretch"
+               Margin="4.9229998588562,0,12.5469999313354,0" 
+               x:Name="background" 
+               Stroke="#FFFFFFFF" RadiusX="10" RadiusY="10" StrokeThickness="3">
+      <Rectangle.Fill>
+        <LinearGradientBrush EndPoint="0.763999998569489,0.852999985218048" StartPoint="0.236000001430511,0.146999999880791">
+          <GradientStop Color="#B0FF0F0F" Offset="0"/>
+          <GradientStop Color="#B0FFAFFF" Offset="0.283291"/>
+          <GradientStop Color="#FAFF50A0" Offset="0.43379"/>
+          <GradientStop Color="#B2DD5050" Offset="0.582387"/>
+          <GradientStop Color="#FAFFAFFF" Offset="0.739726"/>
+          <GradientStop Color="#B0FF0F0F" Offset="1"/>
+        </LinearGradientBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+
     <Grid>
       <Grid.Resources>
         <Style TargetType="{x:Type StackPanel}">
-          <Setter Property="Margin" Value="5"/>
+          <Setter Property="Margin" Value="15"/>
         </Style>
       </Grid.Resources>
-      <Grid.Background>
-        <LinearGradientBrush EndPoint="0.987,0.985" StartPoint="-0.001,0">
-  			  <GradientStop Color="#FFFFB2F0" Offset="0"/>
-  			  <GradientStop Color="#FFFFFFFF" Offset="1"/>
-        </LinearGradientBrush>
-      </Grid.Background>
       <StackPanel>
         <TextBlock>Username:</TextBlock>
         <TextBox Name="UsernameTextBox"></TextBox>
         <TextBlock>Password:</TextBlock>
         <PasswordBox Name="PasswordTextBox"></PasswordBox>
         <TextBlock></TextBlock>
-        <DockPanel Width="100">
-          <Button Click="LoginButton" IsDefault="True" Margin="5">Login</Button>
-          <Button Click="CancelButton" IsCancel="True" Margin="5">Cancel</Button>
+        <DockPanel Width="Auto" HorizontalAlignment="Center">
+          <Button Click="LoginButton" IsDefault="True" 
+                  Margin="5">Login</Button>
+          <Button Click="CancelButton" IsCancel="True" 
+                  Margin="5">Cancel</Button>
         </DockPanel>
       </StackPanel>
     </Grid>
+  </Grid>
 </Window>

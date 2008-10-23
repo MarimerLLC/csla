@@ -13,45 +13,39 @@ namespace ProjectTracker.Library
 
     private byte[] _timestamp = new byte[8];
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id"));
+    private static PropertyInfo<int> IdProperty = 
+      RegisterProperty(new PropertyInfo<int>("Id"));
     private int _id = IdProperty.DefaultValue;
+    [System.ComponentModel.DataObjectField(true, true)]
     public int Id
     {
-      get
-      {
-        return GetProperty<int>(IdProperty, _id);
-      }
+      get { return GetProperty(IdProperty, _id); }
     }
 
-    private static PropertyInfo<string> LastNameProperty = RegisterProperty(new PropertyInfo<string>("LastName", "Last name"));
+    private static PropertyInfo<string> LastNameProperty = RegisterProperty(typeof(Resource), new PropertyInfo<string>("LastName", "Last name"));
     private string _lastName = LastNameProperty.DefaultValue;
     public string LastName
     {
       get
       {
-        return GetProperty<string>(LastNameProperty, _lastName);
+        return GetProperty(LastNameProperty, _lastName);
       }
       set
       {
-        SetProperty<string>(LastNameProperty, ref _lastName, value);
+        SetProperty(LastNameProperty, ref _lastName, value);
       }
     }
 
-    private static PropertyInfo<string> FirstNameProperty = RegisterProperty(new PropertyInfo<string>("FirstName", "First name"));
+    private static PropertyInfo<string> FirstNameProperty = 
+      RegisterProperty(new PropertyInfo<string>("FirstName", "First name"));
     private string _firstName = FirstNameProperty.DefaultValue;
     public string FirstName
     {
-      get
-      {
-        return GetProperty<string>(FirstNameProperty, _firstName);
-      }
-      set
-      {
-        SetProperty<string>(FirstNameProperty, ref _firstName, value);
-      }
+      get { return GetProperty(FirstNameProperty, _firstName); }
+      set { SetProperty(FirstNameProperty, ref _firstName, value); }
     }
 
-    private static PropertyInfo<string> FullNameProperty = RegisterProperty(new PropertyInfo<string>("FullName", "Full name"));
+    private static PropertyInfo<string> FullNameProperty = RegisterProperty(typeof(Resource), new PropertyInfo<string>("FullName", "Full name"));
     public string FullName
     {
       get
@@ -60,16 +54,14 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<ResourceAssignments> AssignmentsProperty = RegisterProperty(new PropertyInfo<ResourceAssignments>("Assignments"));
+    private static PropertyInfo<ResourceAssignments> AssignmentsProperty = RegisterProperty(typeof(Resource), new PropertyInfo<ResourceAssignments>("Assignments"));
     public ResourceAssignments Assignments
     {
       get
       {
         if (!(FieldManager.FieldExists(AssignmentsProperty)))
-        {
-          LoadProperty<ResourceAssignments>(AssignmentsProperty, ResourceAssignments.NewResourceAssignments());
-        }
-        return GetProperty<ResourceAssignments>(AssignmentsProperty);
+          LoadProperty(AssignmentsProperty, ResourceAssignments.NewResourceAssignments());
+        return GetProperty(AssignmentsProperty);
       }
     }
 
@@ -153,7 +145,7 @@ namespace ProjectTracker.Library
         _firstName = data.FirstName;
         _timestamp = data.LastChanged.ToArray();
 
-        LoadProperty<ResourceAssignments>(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(data.Assignments.ToArray()));
+        LoadProperty(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(data.Assignments.ToArray()));
       }
     }
 
@@ -164,7 +156,8 @@ namespace ProjectTracker.Library
       {
         int? newId = null;
         System.Data.Linq.Binary newLastChanged = null;
-        ctx.DataContext.addResource(_lastName, _firstName, ref newId, ref newLastChanged);
+        ctx.DataContext.addResource(
+          _lastName, _firstName, ref newId, ref newLastChanged);
         _id = System.Convert.ToInt32(newId);
         _timestamp = newLastChanged.ToArray();
         FieldManager.UpdateChildren(this);
@@ -176,12 +169,9 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
-        if (IsSelfDirty)
-        {
-          System.Data.Linq.Binary newLastChanged = null;
-          ctx.DataContext.updateResource(_id, _lastName, _firstName, _timestamp, ref newLastChanged);
-          _timestamp = newLastChanged.ToArray();
-        }
+        System.Data.Linq.Binary newLastChanged = null;
+        ctx.DataContext.updateResource(_id, _lastName, _firstName, _timestamp, ref newLastChanged);
+        _timestamp = newLastChanged.ToArray();
         FieldManager.UpdateChildren(this);
       }
     }

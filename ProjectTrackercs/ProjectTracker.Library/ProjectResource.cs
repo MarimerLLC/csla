@@ -6,35 +6,37 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectResource : BusinessBase<ProjectResource>, IHoldRoles
   {
-
     #region  Business Methods
 
     private byte[] _timestamp = new byte[8];
 
-    private static PropertyInfo<int> ResourceIdProperty = RegisterProperty(new PropertyInfo<int>("ResourceId", "Resource id"));
+    private static PropertyInfo<int> ResourceIdProperty = 
+      RegisterProperty(new PropertyInfo<int>("ResourceId", "Resource id"));
     public int ResourceId
     {
       get
       {
-        return GetProperty<int>(ResourceIdProperty);
+        return GetProperty(ResourceIdProperty);
       }
     }
 
-    private static PropertyInfo<string> FirstNameProperty = RegisterProperty(new PropertyInfo<string>("FirstName", "First name"));
+    private static PropertyInfo<string> FirstNameProperty = 
+      RegisterProperty(new PropertyInfo<string>("FirstName", "First name"));
     public string FirstName
     {
       get
       {
-        return GetProperty<string>(FirstNameProperty);
+        return GetProperty(FirstNameProperty);
       }
     }
 
-    private static PropertyInfo<string> LastNameProperty = RegisterProperty(new PropertyInfo<string>("LastName", "Last name"));
+    private static PropertyInfo<string> LastNameProperty = 
+      RegisterProperty(new PropertyInfo<string>("LastName", "Last name"));
     public string LastName
     {
       get
       {
-        return GetProperty<string>(LastNameProperty);
+        return GetProperty(LastNameProperty);
       }
     }
 
@@ -46,32 +48,34 @@ namespace ProjectTracker.Library
       }
     }
 
-    private static PropertyInfo<SmartDate> AssignedProperty = RegisterProperty(new PropertyInfo<SmartDate>("Assigned", "Date assigned"));
+    private static PropertyInfo<SmartDate> AssignedProperty = 
+      RegisterProperty(new PropertyInfo<SmartDate>("Assigned", "Date assigned"));
     public string Assigned
     {
       get
       {
-        return GetProperty<SmartDate, string>(AssignedProperty);
+        return GetPropertyConvert<SmartDate, string>(AssignedProperty);
       }
     }
 
-    private static PropertyInfo<int> RoleProperty = RegisterProperty(new PropertyInfo<int>("Role", "Role assigned"));
+    private static PropertyInfo<int> RoleProperty = 
+      RegisterProperty(new PropertyInfo<int>("Role", "Role assigned"));
     public int Role
     {
       get
       {
-        return GetProperty<int>(RoleProperty);
+        return GetProperty(RoleProperty);
       }
       set
       {
-        SetProperty<int>(RoleProperty, value);
+        SetProperty(RoleProperty, value);
       }
     }
 
     public Resource GetResource()
     {
       CanExecuteMethod("GetResource", true);
-      return Resource.GetResource(GetProperty<int>(ResourceIdProperty));
+      return Resource.GetResource(GetProperty(ResourceIdProperty));
     }
 
     public override string ToString()
@@ -85,7 +89,8 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Assignment.ValidRole, RoleProperty);
+      ValidationRules.AddRule<ProjectResource>(
+        Assignment.ValidRole, RoleProperty);
     }
 
     #endregion
@@ -95,6 +100,7 @@ namespace ProjectTracker.Library
     protected override void AddAuthorizationRules()
     {
       AuthorizationRules.AllowWrite(RoleProperty, "ProjectManager");
+      AuthorizationRules.DenyExecute("GetResource", "Guest");
     }
 
     #endregion
@@ -103,10 +109,12 @@ namespace ProjectTracker.Library
 
     internal static ProjectResource NewProjectResource(int resourceId)
     {
-      return DataPortal.CreateChild<ProjectResource>(resourceId, RoleList.DefaultRole());
+      return DataPortal.CreateChild<ProjectResource>(
+        resourceId, RoleList.DefaultRole());
     }
 
-    internal static ProjectResource GetResource(ProjectTracker.DalLinq.Assignment data)
+    internal static ProjectResource GetResource(
+      ProjectTracker.DalLinq.Assignment data)
     {
       return DataPortal.FetchChild<ProjectResource>(data);
     }
@@ -120,26 +128,26 @@ namespace ProjectTracker.Library
 
     protected override void Child_Create()
     {
-      LoadProperty<SmartDate>(AssignedProperty, new SmartDate(System.DateTime.Today));
+      LoadProperty(AssignedProperty, new SmartDate(System.DateTime.Today));
     }
 
     private void Child_Create(int resourceId, int role)
     {
       var res = Resource.GetResource(resourceId);
-      LoadProperty<int>(ResourceIdProperty, res.Id);
-      LoadProperty<string>(LastNameProperty, res.LastName);
-      LoadProperty<string>(FirstNameProperty, res.FirstName);
-      LoadProperty<SmartDate>(AssignedProperty, Assignment.GetDefaultAssignedDate());
-      LoadProperty<int>(RoleProperty, role);
+      LoadProperty(ResourceIdProperty, res.Id);
+      LoadProperty(LastNameProperty, res.LastName);
+      LoadProperty(FirstNameProperty, res.FirstName);
+      LoadProperty(AssignedProperty, Assignment.GetDefaultAssignedDate());
+      LoadProperty(RoleProperty, role);
     }
 
     private void Child_Fetch(ProjectTracker.DalLinq.Assignment data)
     {
-      LoadProperty<int>(ResourceIdProperty, data.ResourceId);
-      LoadProperty<string>(LastNameProperty, data.Resource.LastName);
-      LoadProperty<string>(FirstNameProperty, data.Resource.FirstName);
-      LoadProperty<SmartDate>(AssignedProperty, data.Assigned);
-      LoadProperty<int>(RoleProperty, data.Role);
+      LoadProperty(ResourceIdProperty, data.ResourceId);
+      LoadProperty(LastNameProperty, data.Resource.LastName);
+      LoadProperty(FirstNameProperty, data.Resource.FirstName);
+      LoadProperty(AssignedProperty, data.Assigned);
+      LoadProperty(RoleProperty, data.Role);
       _timestamp = data.LastChanged.ToArray();
     }
 
@@ -147,18 +155,18 @@ namespace ProjectTracker.Library
     {
       _timestamp = Assignment.AddAssignment(
         project.Id, 
-        ReadProperty<int>(ResourceIdProperty), 
-        ReadProperty<SmartDate>(AssignedProperty), 
-        ReadProperty<int>(RoleProperty));
+        ReadProperty(ResourceIdProperty), 
+        ReadProperty(AssignedProperty), 
+        ReadProperty(RoleProperty));
     }
 
     private void Child_Update(Project project)
     {
       _timestamp = Assignment.UpdateAssignment(
         project.Id, 
-        ReadProperty<int>(ResourceIdProperty), 
-        ReadProperty<SmartDate>(AssignedProperty), 
-        ReadProperty<int>(RoleProperty), 
+        ReadProperty(ResourceIdProperty), 
+        ReadProperty(AssignedProperty), 
+        ReadProperty(RoleProperty), 
         _timestamp);
     }
 
@@ -166,7 +174,7 @@ namespace ProjectTracker.Library
     {
       Assignment.RemoveAssignment(
         project.Id, 
-        ReadProperty<int>(ResourceIdProperty));
+        ReadProperty(ResourceIdProperty));
     }
 
     #endregion

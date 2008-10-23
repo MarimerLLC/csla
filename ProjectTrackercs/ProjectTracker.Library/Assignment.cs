@@ -27,9 +27,10 @@ namespace ProjectTracker.Library
     /// Ensure the Role property value exists
     /// in RoleList
     /// </summary>
-    public static bool ValidRole(object target, RuleArgs e)
+    public static bool ValidRole<T>(T target, RuleArgs e)
+      where T : IHoldRoles
     {
-      int role = ((IHoldRoles)target).Role;
+      int role = target.Role;
 
       if (RoleList.GetList().ContainsKey(role))
       {
@@ -46,12 +47,23 @@ namespace ProjectTracker.Library
 
     #region  Data Access
 
-    public static byte[] AddAssignment(Guid projectId, int resourceId, SmartDate assigned, int role)
+    public static byte[] AddAssignment(
+      Guid projectId, 
+      int resourceId, 
+      SmartDate assigned, 
+      int role)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
+      using (var ctx = 
+        ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.
+        GetManager(ProjectTracker.DalLinq.Database.PTracker))
       {
         System.Data.Linq.Binary lastChanged = null;
-        ctx.DataContext.addAssignment(projectId, resourceId, assigned, role, ref lastChanged);
+        ctx.DataContext.addAssignment(
+          projectId, 
+          resourceId, 
+          assigned, 
+          role, 
+          ref lastChanged);
         return lastChanged.ToArray();
       }
     }

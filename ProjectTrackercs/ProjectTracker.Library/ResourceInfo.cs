@@ -7,27 +7,15 @@ namespace ProjectTracker.Library
   public class ResourceInfo : ReadOnlyBase<ResourceInfo>
   {
     private int _id;
-    private string _name;
-
     public int Id
     {
-      get
-      {
-        return _id;
-      }
+      get { return _id; }
     }
 
+    private string _name;
     public string Name
     {
-      get
-      {
-        return _name;
-      }
-    }
-
-    protected override object GetIdValue()
-    {
-      return _id;
+      get { return _name; }
     }
 
     public override string ToString()

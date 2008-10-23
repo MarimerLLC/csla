@@ -221,14 +221,14 @@ public partial class ResourceEdit : System.Web.UI.Page
     catch (Csla.Validation.ValidationException ex)
     {
       System.Text.StringBuilder message = new System.Text.StringBuilder();
-      message.AppendFormat("{0}<br/>", ex.Message);
-      if (resource.BrokenRulesCollection.Count == 1)
-        message.AppendFormat("* {0}: {1}",
-          resource.BrokenRulesCollection[0].Property,
-          resource.BrokenRulesCollection[0].Description);
-      else
+      message.AppendFormat("{0}", ex.Message);
+      if (resource.BrokenRulesCollection.Count > 0)
+      {
+        message.Append("<ul>");
         foreach (Csla.Validation.BrokenRule rule in resource.BrokenRulesCollection)
-          message.AppendFormat("* {0}: {1}<br/>", rule.Property, rule.Description);
+          message.AppendFormat("<li>{0}: {1}</li>", rule.Property, rule.Description);
+        message.Append("</ul>");
+      }
       this.ErrorLabel.Text = message.ToString();
       rowsAffected = 0;
     }

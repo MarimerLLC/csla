@@ -4,25 +4,22 @@
     xmlns:local="clr-namespace:PTWpf"  
     xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
     xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library">
-    <UserControl.Resources>
-      <csla:CslaDataProvider x:Key="ResourceList"
+  <UserControl.Resources>
+    <csla:CslaDataProvider x:Key="ResourceList"
                              ObjectType="{x:Type PTracker:ResourceList}"
                              FactoryMethod="GetResourceList"
-                             IsAsynchronous="False">
-      </csla:CslaDataProvider>
-    </UserControl.Resources>
-    <Grid DataContext="{Binding Source={StaticResource ResourceList}}">
-      <StackPanel FlowDirection="LeftToRight">
-        <StackPanel.Resources>
-          <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="Margin" Value="3,5"/>
-          </Style>
-          <Style TargetType="{x:Type ListBox}">
-            <Setter Property="Margin" Value="3,5"/>
-          </Style>
-        </StackPanel.Resources>
-        <TextBlock>Resources:</TextBlock>
-        <ListBox Name="listBox1" ItemsSource="{Binding}" MouseDoubleClick="ShowResource"/>
+                             IsAsynchronous="True"/>
+  </UserControl.Resources>
+  <Grid DataContext="{Binding Source={StaticResource ResourceList}}">
+    <StackPanel FlowDirection="LeftToRight" Margin="0">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Style="{StaticResource HeaderTextBlock}">Resources:</TextBlock>
+        <csla:BusyAnimation Name="Busy" Height="20" Width="20" Margin="5"
+          IsRunning="{Binding Source={StaticResource ResourceList}, Path=IsBusy, BindsDirectlyToSource=True}" />
       </StackPanel>
-    </Grid>
+      <ListBox Name="listBox1" 
+                 ItemsSource="{Binding}" 
+                 MouseDoubleClick="ShowResource"/>
+    </StackPanel>
+  </Grid>
 </local:EditForm>

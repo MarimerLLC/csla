@@ -17,38 +17,52 @@ namespace PTWcfClient
 
     private void Form1_Load(object sender, EventArgs e)
     {
+      LoadData();
+    }
+
+    private void LoadData()
+    {
       PTWcfService.ProjectData[] list;
 
-      System.ServiceModel.ChannelFactory<PTWcfService.IPTService> factory =
-        new System.ServiceModel.ChannelFactory<PTWcfService.IPTService>("WSHttpBinding_IPTService");
-      try
-      {
-        factory.Credentials.UserName.UserName = "pm";
-        factory.Credentials.UserName.Password = "pm";
-        PTWcfService.IPTService proxy = factory.CreateChannel();
-        using (proxy as IDisposable)
-        {
-          list = proxy.GetProjectList();
-        }
-      }
-      finally
-      {
-        factory.Close();
-      }
-
-      //PTWcfService.PTServiceClient svc = new PTWcfClient.PTWcfService.PTServiceClient();
+      //System.ServiceModel.ChannelFactory<PTWcfService.IPTService> factory =
+      //  new System.ServiceModel.ChannelFactory<PTWcfService.IPTService>("WSHttpBinding_IPTService");
       //try
       //{
-      //  svc.ClientCredentials.UserName.UserName = "anonymous";
-      //  //svc.ClientCredentials.UserName.Password = "pm";
-      //  PTWcfService.ProjectData[] list = svc.GetProjectList();
+      //  factory.Credentials.UserName.UserName = "pm";
+      //  factory.Credentials.UserName.Password = "pm";
+      //  PTWcfService.IPTService proxy = factory.CreateChannel();
+      //  using (proxy as IDisposable)
+      //  {
+      //    list = proxy.GetProjectList(new PTWcfService.ProjectListRequest());
+      //  }
       //}
       //finally
       //{
-      //  svc.Close();
+      //  factory.Close();
       //}
 
+      var svc =
+        new PTWcfClient.PTWcfService.PTServiceClient("WSHttpBinding_IPTService");
+      try
+      {
+        svc.ClientCredentials.UserName.UserName = "anonymous";
+        //svc.ClientCredentials.UserName.Password = "pm";
+        list =
+          svc.GetProjectList(new PTWcfClient.PTWcfService.ProjectListRequest());
+      }
+      finally
+      {
+        svc.Close();
+      }
+
       this.projectDataBindingSource.DataSource = list;
+    }
+
+    private void projectDataDataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+    {
+      Guid projectId = (Guid)projectDataDataGridView.Rows[e.RowIndex].Cells[0].Value;
+      new Form3(projectId).ShowDialog(this);
+      LoadData();
     }
   }
 }

@@ -87,6 +87,7 @@
   <ItemGroup>
     <Compile Include="EditForm.cs" />
     <Compile Include="IRefresh.cs" />
+    <Compile Include="ListTemplateConverter.cs" />
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -127,6 +128,7 @@
     <Compile Include="RolesEdit.xaml.cs">
       <DependentUpon>RolesEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VisibilityConverter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -21,13 +21,14 @@ namespace PTWpf
   public partial class ResourceEdit : EditForm
   {
     private int _resourceId;
+    private Csla.Wpf.CslaDataProvider _dp;
 
     public ResourceEdit()
     {
       InitializeComponent();
       this.Loaded += new RoutedEventHandler(ResourceEdit_Loaded);
-      Csla.Wpf.CslaDataProvider dp = this.FindResource("Resource") as Csla.Wpf.CslaDataProvider;
-      dp.DataChanged += new EventHandler(DataChanged);
+      _dp = this.FindResource("Resource") as Csla.Wpf.CslaDataProvider;
+      //_dp.DataChanged += new EventHandler(DataChanged);
     }
 
     public ResourceEdit(int resourceId)
@@ -38,22 +39,21 @@ namespace PTWpf
 
     void ResourceEdit_Loaded(object sender, RoutedEventArgs e)
     {
-      Csla.Wpf.CslaDataProvider dp = this.FindResource("Resource") as Csla.Wpf.CslaDataProvider;
-      using (dp.DeferRefresh())
+      using (_dp.DeferRefresh())
       {
-        dp.FactoryParameters.Clear();
+        _dp.FactoryParameters.Clear();
         if (_resourceId == 0)
         {
-          dp.FactoryMethod = "NewResource";
+          _dp.FactoryMethod = "NewResource";
         }
         else
         {
-          dp.FactoryMethod = "GetResource";
-          dp.FactoryParameters.Add(_resourceId);
+          _dp.FactoryMethod = "GetResource";
+          _dp.FactoryParameters.Add(_resourceId);
         }
       }
-      if (dp.Data != null)
-        SetTitle((Resource)dp.Data);
+      if (_dp.Data != null)
+        SetTitle((Resource)_dp.Data);
       else
         MainForm.ShowControl(null);
     }
@@ -66,31 +66,30 @@ namespace PTWpf
         this.Title = string.Format("Resource: {0}", resource.FullName);
     }
 
-    void ShowProject(object sender, EventArgs e)
+    private void OpenCmdExecuted(object sender, ExecutedRoutedEventArgs e)
     {
-      ProjectTracker.Library.ResourceAssignment item =
-        (ProjectTracker.Library.ResourceAssignment)ProjectListBox.SelectedItem;
-
-      if (item != null)
+      if (e.Parameter != null)
       {
-        ProjectEdit frm = new ProjectEdit(item.ProjectId);
+        ProjectEdit frm = new ProjectEdit(new Guid(e.Parameter.ToString()));
         MainForm.ShowControl(frm);
       }
     }
 
+    private void OpenCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    { e.CanExecute = true; }
+
     protected override void ApplyAuthorization()
     {
-      this.AuthPanel.Refresh();
+      _dp.Rebind();
+      //this.AuthPanel.Refresh();
       if (AuthorizationRules.CanEditObject(typeof(Resource)))
       {
         this.ProjectListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbTemplate"];
-        this.AssignButton.IsEnabled = true;
       }
       else
       {
         this.ProjectListBox.ItemTemplate = (DataTemplate)this.MainGrid.Resources["lbroTemplate"];
-        ((Csla.Wpf.CslaDataProvider)this.FindResource("Resource")).Cancel();
-        this.AssignButton.IsEnabled = false;
+        _dp.Cancel();
       }
     }
 
@@ -100,7 +99,7 @@ namespace PTWpf
       if ((bool)dlg.ShowDialog())
       {
         Guid id = dlg.ProjectId;
-        Resource resource = (Resource)((Csla.Wpf.CslaDataProvider)this.FindResource("Resource")).Data;
+        Resource resource = (Resource)_dp.Data;
         try
         {
           resource.Assignments.AssignTo(id);
@@ -114,14 +113,6 @@ namespace PTWpf
             MessageBoxImage.Information);
         }
       }
-    }
-
-    void Unassign(object sender, EventArgs e)
-    {
-      Button btn = (Button)sender;
-      Guid id = (Guid)btn.Tag;
-      Resource resource = (Resource)((Csla.Wpf.CslaDataProvider)this.FindResource("Resource")).Data;
-      resource.Assignments.Remove(id);
     }
   }
 }

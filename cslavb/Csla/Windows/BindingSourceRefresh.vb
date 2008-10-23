@@ -208,6 +208,7 @@ Namespace Windows
     ''' property added to extended controls.
     ''' </summary>
     ''' <param name="source">Control being extended.</param>
+    <Category("Csla")> _
     Public Function GetReadValuesOnChange(ByVal source As BindingSource) As Boolean
       Dim result As Boolean
       If _sources.TryGetValue(source, result) Then
@@ -224,6 +225,7 @@ Namespace Windows
     ''' <param name="source">Control being extended.</param>
     ''' <param name="value">New value of property.</param>
     ''' <remarks></remarks>
+    <Category("Csla")> _
     Public Sub SetReadValuesOnChange(ByVal source As BindingSource, ByVal value As Boolean)
       _sources(source) = value
     End Sub

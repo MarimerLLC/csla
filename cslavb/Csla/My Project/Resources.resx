@@ -300,4 +300,19 @@
   <data name="PropertyNotRegistered" xml:space="preserve">
     <value>One or more properties are not registered for this type</value>
   </data>
+  <data name="MobileFormatterUnableToDeserialize" xml:space="preserve">
+    <value>The Type '{0}' was unable to be deserialized, double check that the assembly containing this class has the same name on the Client and Server and that it is referenced by your server application</value>
+  </data>
+  <data name="MustImplementIMobileObject" xml:space="preserve">
+    <value>Type {0} must implement IMobileObject</value>
+  </data>
+  <data name="ObjectNotSerializableFormatted" xml:space="preserve">
+    <value>Object not serializable ({0})</value>
+  </data>
+  <data name="CannotSerializeCollectionsNotOfIMobileObject" xml:space="preserve">
+    <value>Cannot serialize collections not of type IMobileObject</value>
+  </data>
+  <data name="ConstructorsWithParametersNotSupported" xml:space="preserve">
+    <value>Constructor with parameters are not supported</value>
+  </data>
 </root>

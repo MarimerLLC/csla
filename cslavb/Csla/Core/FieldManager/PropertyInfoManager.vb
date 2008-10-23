@@ -2,12 +2,13 @@
 
   Friend Module PropertyInfoManager
 
+    Private _cacheLock As New Object
     Private _propertyInfoCache As Dictionary(Of Type, List(Of IPropertyInfo))
 
     Private ReadOnly Property PropertyInfoCache() As Dictionary(Of Type, List(Of IPropertyInfo))
       Get
         If _propertyInfoCache Is Nothing Then
-          SyncLock GetType(BusinessBase)
+          SyncLock _cacheLock
             If _propertyInfoCache Is Nothing Then
               _propertyInfoCache = New Dictionary(Of Type, List(Of IPropertyInfo))()
             End If
@@ -68,7 +69,10 @@
     Public Function GetRegisteredProperties(ByVal objectType As Type) As List(Of IPropertyInfo)
       ' return a copy of the list to avoid
       ' possible locking issues
-      Return New List(Of IPropertyInfo)(GetPropertyListCache(objectType))
+      Dim list = GetPropertyListCache(objectType)
+      SyncLock list
+        Return New List(Of IPropertyInfo)(list)
+      End SyncLock
     End Function
 
   End Module

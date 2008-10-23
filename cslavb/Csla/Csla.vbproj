@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{AD7860FD-83E2-4E2C-A859-6FF077980884}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -65,7 +65,13 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.Services.Client">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Design" />
@@ -83,6 +89,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Workflow.Runtime, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +109,12 @@
     <Compile Include="ApplicationContext.vb" />
     <Compile Include="BusinessBase.vb" />
     <Compile Include="BusinessListBase.vb" />
+    <Compile Include="Core\AsyncFactoryDelegates.vb" />
+    <Compile Include="Core\BusyChangedEventArgs.vb" />
     <Compile Include="Core\ChildChangedEventArgs.vb" />
+    <Compile Include="Core\ContextDictionary.vb" />
+    <Compile Include="Core\ErrorEventArgs.vb" />
+    <Compile Include="Core\ExpressionTreeHelpers.vb" />
     <Compile Include="Core\ExpressionVisitor.vb" />
     <Compile Include="Core\ExtendedBindingList.vb" />
     <Compile Include="Core\FieldManager\FieldDataList.vb" />
@@ -110,6 +124,9 @@
     <Compile Include="Core\IExtendedBindingList.vb" />
     <Compile Include="Core\IManageProperties.vb" />
     <Compile Include="Core\InnermostWhereFinder.vb" />
+    <Compile Include="Core\INotifyBusy.vb" />
+    <Compile Include="Core\INotifyChildChanged.vb" />
+    <Compile Include="Core\INotifyUnhandledAsyncException.vb" />
     <Compile Include="Core\InvalidQueryExpression.vb" />
     <Compile Include="Core\IParent.vb" />
     <Compile Include="Core\IPositionMappable.vb" />
@@ -124,6 +141,10 @@
     <Compile Include="Core\ICommandObject.vb" />
     <Compile Include="Core\IReadOnlyCollection.vb" />
     <Compile Include="Core\IReadOnlyObject.vb" />
+    <Compile Include="Core\LoadManager\AsyncLoader.vb" />
+    <Compile Include="Core\LoadManager\AsyncLoadManager.vb" />
+    <Compile Include="Core\ManagedObjectBase.vb" />
+    <Compile Include="Core\MobileBindingList.vb" />
     <Compile Include="Core\ObjectCloner.vb" />
     <Compile Include="Core\FieldManager\FieldData.vb" />
     <Compile Include="Core\FieldManager\FieldDataManager.vb" />
@@ -131,42 +152,53 @@
     <Compile Include="Core\PositionMap.vb" />
     <Compile Include="Core\RemovingItemEventArgs.vb" />
     <Compile Include="Core\SavedEventArgs.vb" />
+    <Compile Include="Core\StateMode.vb" />
     <Compile Include="Core\TypeConverters\SmartDateConverter.vb" />
     <Compile Include="Core\TypeSystem.vb" />
+    <Compile Include="Core\UndoableHandler.vb" />
     <Compile Include="Core\UndoException.vb" />
-    <Compile Include="DataPortal\Client\EnterpriseServicesProxy.vb" />
-    <Compile Include="DataPortal\Client\IDataPortalProxy.vb" />
-    <Compile Include="DataPortal\Client\LocalProxy.vb" />
-    <Compile Include="DataPortal\Client\RemotingProxy.vb" />
-    <Compile Include="DataPortal\Client\WcfProxy.vb" />
-    <Compile Include="DataPortal\Client\WebServicesProxy.vb" />
-    <Compile Include="DataPortal\DataPortalMethodCache.vb" />
-    <Compile Include="DataPortal\DataPortalMethodInfo.vb" />
-    <Compile Include="DataPortal\DataPortalOperations.vb" />
-    <Compile Include="DataPortal\Hosts\EnterpriseServicesPortal.vb" />
-    <Compile Include="DataPortal\Hosts\IWcfPortal.vb" />
-    <Compile Include="DataPortal\Hosts\RemotingPortal.vb" />
-    <Compile Include="DataPortal\Hosts\WcfChannel\CreateRequest.vb" />
-    <Compile Include="DataPortal\Hosts\WcfChannel\DeleteRequest.vb" />
-    <Compile Include="DataPortal\Hosts\WcfChannel\FetchRequest.vb" />
-    <Compile Include="DataPortal\Hosts\WcfChannel\NetDataContractOperation.vb" />
-    <Compile Include="DataPortal\Hosts\WcfChannel\UpdateRequest.vb" />
-    <Compile Include="DataPortal\Hosts\WcfChannel\UseNetDataContractAttribute.vb" />
-    <Compile Include="DataPortal\Hosts\WcfChannel\WcfResponse.vb" />
-    <Compile Include="DataPortal\Hosts\WcfPortal.vb" />
-    <Compile Include="DataPortal\Hosts\WebServicePortal.vb">
+    <Compile Include="DataPortalClient\EnterpriseServicesProxy.vb" />
+    <Compile Include="DataPortalClient\IDataPortalProxy.vb" />
+    <Compile Include="DataPortalClient\LocalProxy.vb" />
+    <Compile Include="DataPortalClient\RemotingProxy.vb" />
+    <Compile Include="DataPortalClient\WcfProxy.vb" />
+    <Compile Include="DataPortalClient\WebServicesProxy.vb" />
+    <Compile Include="DataPortalResult.vb" />
+    <Compile Include="DataPortalT.vb" />
+    <Compile Include="Core\MobileList.vb" />
+    <Compile Include="Core\MobileObject.vb" />
+    <Compile Include="Reflection\DynamicMemberHandle.vb" />
+    <Compile Include="Serialization\Mobile\IMobileObject.vb" />
+    <Compile Include="Serialization\Mobile\ISerializationNotification.vb" />
+    <Compile Include="Serialization\Mobile\MobileFormatter.vb" />
+    <Compile Include="Serialization\Mobile\SerializationInfo.vb" />
+    <Compile Include="Server\DataPortalMethodCache.vb" />
+    <Compile Include="Server\DataPortalMethodInfo.vb" />
+    <Compile Include="DataPortalOperations.vb" />
+    <Compile Include="Server\Hosts\EnterpriseServicesPortal.vb" />
+    <Compile Include="Server\Hosts\IWcfPortal.vb" />
+    <Compile Include="Server\Hosts\RemotingPortal.vb" />
+    <Compile Include="Server\Hosts\WcfChannel\CreateRequest.vb" />
+    <Compile Include="Server\Hosts\WcfChannel\DeleteRequest.vb" />
+    <Compile Include="Server\Hosts\WcfChannel\FetchRequest.vb" />
+    <Compile Include="Server\Hosts\WcfChannel\NetDataContractOperation.vb" />
+    <Compile Include="Server\Hosts\WcfChannel\UpdateRequest.vb" />
+    <Compile Include="Server\Hosts\WcfChannel\UseNetDataContractAttribute.vb" />
+    <Compile Include="Server\Hosts\WcfChannel\WcfResponse.vb" />
+    <Compile Include="Server\Hosts\WcfPortal.vb" />
+    <Compile Include="Server\Hosts\WebServicePortal.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DataPortal\ICriteria.vb" />
-    <Compile Include="DataPortal\Server\ChildDataPortal.vb" />
-    <Compile Include="DataPortal\Server\DataPortalContext.vb" />
-    <Compile Include="DataPortal\Server\IDataPortalServer.vb" />
-    <Compile Include="DataPortal\Server\IDataPortalTarget.vb" />
-    <Compile Include="DataPortal\Server\ServicedDataPortal.vb" />
-    <Compile Include="DataPortal\Server\SimpleDataPortal.vb" />
-    <Compile Include="DataPortal\Server\TransactionalDataPortal.vb" />
-    <Compile Include="DataPortal\SingleCriteria.vb" />
-    <Compile Include="DataPortal\TransactionalTypes.vb" />
+    <Compile Include="ICriteria.vb" />
+    <Compile Include="Server\ChildDataPortal.vb" />
+    <Compile Include="Server\DataPortalContext.vb" />
+    <Compile Include="Server\IDataPortalServer.vb" />
+    <Compile Include="Server\IDataPortalTarget.vb" />
+    <Compile Include="Server\ServicedDataPortal.vb" />
+    <Compile Include="Server\SimpleDataPortal.vb" />
+    <Compile Include="Server\TransactionalDataPortal.vb" />
+    <Compile Include="SingleCriteria.vb" />
+    <Compile Include="TransactionalTypes.vb" />
     <Compile Include="Data\ConnectionManager.vb" />
     <Compile Include="Data\ContextManager.vb" />
     <Compile Include="Data\DataMap.vb" />
@@ -174,7 +206,6 @@
     <Compile Include="DefaultFilter.vb" />
     <Compile Include="EditableRootListBase.vb" />
     <Compile Include="EnterpriseServicesSettings.vb" />
-    <Compile Include="ExpressionTreeHelpers.vb" />
     <Compile Include="FilteredBindingList.vb" />
     <Compile Include="FilterProvider.vb" />
     <Compile Include="GlobalSuppressions.vb" />
@@ -227,11 +258,11 @@
     <Compile Include="Core\ReadOnlyBindingList.vb" />
     <Compile Include="Reflection\CallMethodException.vb" />
     <Compile Include="CommandBase.vb" />
-    <Compile Include="DataPortal\CriteriaBase.vb" />
-    <Compile Include="DataPortal\Client\DataPortal.vb" />
-    <Compile Include="DataPortal\DataPortalEventArgs.vb" />
-    <Compile Include="DataPortal\DataPortalException.vb" />
-    <Compile Include="DataPortal\Server\DataPortalResult.vb" />
+    <Compile Include="CriteriaBase.vb" />
+    <Compile Include="DataPortal.vb" />
+    <Compile Include="DataPortalEventArgs.vb" />
+    <Compile Include="DataPortalException.vb" />
+    <Compile Include="Server\DataPortalResult.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -251,15 +282,15 @@
     <Compile Include="NotUndoableAttribute.vb" />
     <Compile Include="Data\ObjectAdapter.vb" />
     <Compile Include="ReadOnlyBase.vb" />
-    <Compile Include="DataPortal\RunLocalAttribute.vb" />
+    <Compile Include="RunLocalAttribute.vb" />
     <Compile Include="Data\SafeDataReader.vb" />
-    <Compile Include="DataPortal\Server\DataPortal.vb" />
-    <Compile Include="DataPortal\Server\DataPortalException.vb" />
+    <Compile Include="Server\DataPortal.vb" />
+    <Compile Include="Server\DataPortalException.vb" />
     <Compile Include="ReadOnlyListBase.vb" />
     <Compile Include="Security\AuthorizationRules.vb" />
     <Compile Include="Security\BusinessPrincipalBase.vb" />
     <Compile Include="SmartDate.vb" />
-    <Compile Include="DataPortal\TransactionalAttribute.vb" />
+    <Compile Include="TransactionalAttribute.vb" />
     <Compile Include="Core\UndoableBase.vb" />
     <Compile Include="SortedBindingList.vb" />
     <Compile Include="Validation\ValidationException.vb" />
@@ -290,6 +321,34 @@
     <Compile Include="Web\UpdateObjectArgs.vb" />
     <Compile Include="Windows\BindingSourceRefresh.vb">
     </Compile>
+    <Compile Include="Windows\BindingSourceHelper.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\BindingSourceNode.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\CslaActionCancelEventArgs.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\CslaActionEventArgs.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\CslaActionExtender.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Windows\CslaActionExtenderProperties.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\Enums.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\ErrorEncounteredEventArgs.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\HasBrokenRulesEventArgs.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\ObjectSaveException.vb" />
     <Compile Include="Windows\HostComponentDesigner.vb" />
     <Compile Include="Windows\HostPropertyAttribute.vb" />
     <Compile Include="Windows\ReadWriteAuthorization.vb">
@@ -297,11 +356,14 @@
     <Compile Include="Workflow\WorkflowManager.vb" />
     <Compile Include="Workflow\WorkflowStatus.vb" />
     <Compile Include="Wpf\Authorizer.vb" />
+    <Compile Include="Wpf\BrokenRulesSeverityConverter.vb" />
+    <Compile Include="Wpf\BusyAnimation.vb" />
     <Compile Include="Wpf\CslaDataProvider.vb" />
     <Compile Include="Wpf\CslaDataProviderCommandManager.vb" />
     <Compile Include="Wpf\DataDecoratorBase.vb" />
     <Compile Include="Wpf\IdentityConverter.vb" />
     <Compile Include="Wpf\ObjectStatus.vb" />
+    <Compile Include="Wpf\PropertyStatus.vb" />
     <Compile Include="Wpf\VisibilityMode.vb" />
   </ItemGroup>
   <ItemGroup>
@@ -450,6 +512,22 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Error.png" />
+    <Content Include="Resources\Information.png" />
+    <Content Include="Resources\Warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="C5\Arrays\" />
+    <Folder Include="C5\Hashing\" />
+    <Folder Include="C5\heaps\" />
+    <Folder Include="C5\linkedlists\" />
+    <Folder Include="C5\Trees\" />
+    <Folder Include="Server\Hosts\Silverlight\" />
+    <Folder Include="Silverlight\Security\" />
+    <Folder Include="Themes\" />
+    <Folder Include="Threading\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
 </Project>

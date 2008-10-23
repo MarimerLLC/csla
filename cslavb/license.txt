@@ -17,7 +17,7 @@ This Software License Agreement ("Agreement") is effective
 upon your use of CSLA .NET ("Software").
 
 1. Ownership.
-The CSLA .NET framework is Copyright 2007 by Rockford Lhotka, 
+The CSLA .NET framework is Copyright 2008 by Rockford Lhotka, 
 Eden Prairie, MN, USA. 
 
 2. Copyright Notice.

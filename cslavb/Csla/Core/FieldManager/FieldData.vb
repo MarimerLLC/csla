@@ -95,6 +95,12 @@
       End Get
     End Property
 
+    Private ReadOnly Property IsSavable() As Boolean Implements ITrackStatus.IsSavable
+      Get
+        Return True
+      End Get
+    End Property
+
     ''' <summary>
     ''' Marks the field as unchanged.
     ''' </summary>

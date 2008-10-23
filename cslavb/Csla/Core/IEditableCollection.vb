@@ -24,11 +24,6 @@ Namespace Core
     ''' <param name="child">Child object to be removed.</param>
     Sub RemoveChild(ByVal child As Core.IEditableBusinessObject)
     ''' <summary>
-    ''' Returns <see langword="true" /> if this object is both dirty and valid.
-    ''' </summary>
-    ''' <returns>A value indicating if this object is both dirty and valid.</returns>
-    ReadOnly Property IsSavable() As Boolean
-    ''' <summary>
     ''' Used by BusinessListBase as a child object is 
     ''' created to tell the child object about its
     ''' parent.

@@ -290,14 +290,8 @@ Namespace Core
     Protected Overridable Sub PropertyHasChanged(ByVal propertyName As String)
 
       MarkDirty(True)
-      Dim propertyNames = ValidationRules.CheckRules(propertyName)
-      If ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows Then
-        OnPropertyChanged(propertyName)
-      Else
-        For Each name In propertyNames
-          OnPropertyChanged(name)
-        Next name
-      End If
+      ValidationRules.CheckRules(propertyName)
+      OnPropertyChanged(propertyName)
 
     End Sub
 
@@ -2352,6 +2346,15 @@ Namespace Core
     Protected Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
       FieldManager.LoadFieldData(propertyInfo, newValue)
     End Sub
+
+#End Region
+
+#Region "IsBusy / IsIdle"
+
+    ' stub while working on core.wpf.PropertyStatus (rickw 9/25/2008)
+    Public Function IsPropertyBusy(ByVal propertyName As String) As Boolean
+      Throw New NotImplementedException()
+    End Function
 
 #End Region
 

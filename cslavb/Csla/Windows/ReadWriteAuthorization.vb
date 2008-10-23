@@ -58,6 +58,7 @@ Namespace Windows
     ''' property added to extended controls.
     ''' </summary>
     ''' <param name="source">Control being extended.</param>
+    <Category("Csla")> _
     Public Function GetApplyAuthorization( _
       ByVal source As Control) As Boolean
 
@@ -77,6 +78,7 @@ Namespace Windows
     ''' </summary>
     ''' <param name="source">Control being extended.</param>
     ''' <param name="value">New value of property.</param>
+    <Category("Csla")> _
     Public Sub SetApplyAuthorization( _
       ByVal source As Control, ByVal value As Boolean)
 

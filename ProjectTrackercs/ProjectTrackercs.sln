@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWin", "PTWin\PTWin.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Library", "ProjectTracker.Library\ProjectTracker.Library.csproj", "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWeb", "www\PTWeb\", "{D8F59D26-50C8-4DFD-B8B9-C529530297F1}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWeb", "www\PTWeb", "{D8F59D26-50C8-4DFD-B8B9-C529530297F1}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;{B390C88E-66FD-4E84-8149-29852AFA8723}|EnterpriseServicesHostcs.dll;{472C9544-67A7-4C3A-9F5D-704889289AE9}|ProjectTracker.DalLinq.dll;{90EA85E8-B0F9-453E-A4C8-837939211C44}|ProjectTracker.DalEf.dll;"
@@ -29,13 +29,12 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWeb", "www\PTWeb\", "{D8F
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "8256"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
 Project("{4F174C21-8C12-11D0-8340-0000F80270F8}") = "PTData", "PTData\PTData.dbp", "{09B6FE9B-E21E-4454-8E64-928422F60E08}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RemotingHost", "www\RemotingHost\", "{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RemotingHost", "www\RemotingHost", "{5A15CF97-BBA1-4C15-990D-AF08907C8A0C}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;{472C9544-67A7-4C3A-9F5D-704889289AE9}|ProjectTracker.DalLinq.dll;{90EA85E8-B0F9-453E-A4C8-837939211C44}|ProjectTracker.DalEf.dll;"
@@ -57,7 +56,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RemotingHost", "www\Remotin
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWebService", "www\PTWebService\", "{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWebService", "www\PTWebService", "{86BA904A-AC1A-4CC1-AA54-98F3A090AD83}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;{B390C88E-66FD-4E84-8149-29852AFA8723}|EnterpriseServicesHostcs.dll;{472C9544-67A7-4C3A-9F5D-704889289AE9}|ProjectTracker.DalLinq.dll;{90EA85E8-B0F9-453E-A4C8-837939211C44}|ProjectTracker.DalEf.dll;"
@@ -83,7 +82,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTServiceClient", "PTServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnterpriseServicesHostcs", "EnterpriseServicesHostcs\EnterpriseServicesHostcs.csproj", "{B390C88E-66FD-4E84-8149-29852AFA8723}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebServicesHost", "www\WebServicesHost\", "{68865A7C-0792-4757-89D1-874F5A2FF551}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebServicesHost", "www\WebServicesHost", "{68865A7C-0792-4757-89D1-874F5A2FF551}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;{472C9544-67A7-4C3A-9F5D-704889289AE9}|ProjectTracker.DalLinq.dll;{90EA85E8-B0F9-453E-A4C8-837939211C44}|ProjectTracker.DalEf.dll;"
@@ -105,7 +104,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebServicesHost", "www\WebS
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WcfHost", "www\WcfHost\", "{CBF01FEC-D7D9-41E6-B897-C510D39B56F4}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WcfHost", "www\WcfHost", "{CBF01FEC-D7D9-41E6-B897-C510D39B56F4}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;{472C9544-67A7-4C3A-9F5D-704889289AE9}|ProjectTracker.DalLinq.dll;{90EA85E8-B0F9-453E-A4C8-837939211C44}|ProjectTracker.DalEf.dll;{6807F032-F26B-483F-A5FE-B88962B6BC48}|PTWfActivities.dll;{49339DA1-A39F-4A1E-AA9D-1D3626E6047A}|PTWorkflow.dll;"
@@ -140,7 +139,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWfActivities", "PTWfActiv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWorkflow", "PTWorkflow\PTWorkflow.csproj", "{49339DA1-A39F-4A1E-AA9D-1D3626E6047A}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWcfService", "www\PTWcfService\", "{8DC26A54-333A-4FE9-AC46-D3D257DDDD50}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PTWcfService", "www\PTWcfService", "{8DC26A54-333A-4FE9-AC46-D3D257DDDD50}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFramework = "3.5"
 		ProjectReferences = "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}|ProjectTracker.Library.dll;{472C9544-67A7-4C3A-9F5D-704889289AE9}|ProjectTracker.DalLinq.dll;{90EA85E8-B0F9-453E-A4C8-837939211C44}|ProjectTracker.DalEf.dll;{56790FEE-D8EA-4073-9C2A-10E82B7E7D57}|PTWcfServiceAuth.dll;"

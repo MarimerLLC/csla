@@ -14,10 +14,14 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter()
     {
+#if SILVERLIGHT
+      return new Csla.Serialization.Mobile.MobileFormatter();
+#else
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)
         return new BinaryFormatterWrapper();
       else
         return new NetDataContractSerializerWrapper();
+#endif
     }
   }
 }

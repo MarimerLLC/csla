@@ -1,0 +1,102 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Csla.Serialization.Mobile;
+using Csla.Serialization;
+using serialization = System.Runtime.Serialization;
+using System.IO;
+
+namespace Csla.Core
+{
+  [Serializable]
+  public class MobileList<T> : List<T>, IMobileObject
+  {
+    public MobileList() : base() { }
+    public MobileList(int capacity) : base(capacity) { }
+    public MobileList(IEnumerable<T> collection) : base(collection) { }
+
+    #region IMobileObject Members
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      OnGetChildren(info, formatter);
+    }
+
+    void IMobileObject.GetState(SerializationInfo info)
+    {
+      OnGetState(info);
+    }
+
+    protected virtual void OnGetState(SerializationInfo info)
+    {
+    }
+
+    protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));
+      if (mobileChildren)
+      {
+        List<int> references = new List<int>();
+        foreach (IMobileObject child in this)
+        {
+          SerializationInfo childInfo = formatter.SerializeObject(child);
+          references.Add(childInfo.ReferenceId);
+        }
+        if (references.Count > 0)
+          info.AddValue("$list", references);
+      }
+      else
+      {
+        using (MemoryStream stream = new MemoryStream())
+        {
+          serialization.DataContractSerializer serializer = new serialization.DataContractSerializer(GetType());
+          serializer.WriteObject(stream, this);
+          stream.Flush();
+          info.AddValue("$list", stream.ToArray());
+        }
+      }
+    }
+
+    void IMobileObject.SetState(SerializationInfo info)
+    {
+      OnSetState(info);
+    }
+
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      OnSetChildren(info, formatter);
+    }
+
+    protected virtual void OnSetState(SerializationInfo info) { }
+
+    protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (info.Values.ContainsKey("$list"))
+      {
+        bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));
+        if (mobileChildren)
+        {
+          List<int> references = (List<int>)info.Values["$list"].Value;
+          foreach (int reference in references)
+          {
+            T child = (T)formatter.GetObject(reference);
+            this.Add(child);
+          }
+        }
+        else
+        {
+          byte[] buffer = (byte[])info.Values["$list"].Value;
+          using (MemoryStream stream = new MemoryStream(buffer))
+          {
+            serialization.DataContractSerializer dcs = new serialization.DataContractSerializer(GetType());
+            MobileList<T> list = (MobileList<T>)dcs.ReadObject(stream);
+            AddRange(list);
+          }
+        }
+      }
+    }
+
+    #endregion
+  }
+}

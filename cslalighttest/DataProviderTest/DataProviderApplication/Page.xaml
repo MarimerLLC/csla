@@ -50,15 +50,15 @@
       <TextBox Width="150" Text="{Binding DateCreated, Mode=TwoWay}" />
       <csla:PropertyStatus Property="DateCreated" Source="{Binding}" />
     </StackPanel>
-    <gridControl:DataGrid x:Name="ContactsGrid" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" Margin="7,7,7,7" AutoGenerateColumns="False"  BeginningEdit="ContactsGrid_BeginningEdit" CancelingEdit="ContactsGrid_CancelingEdit" CommittingEdit="ContactsGrid_CommittingEdit" KeyDown="ContactsGrid_KeyDown" ItemsSource="{Binding Source={StaticResource CustomerData}, Path=Data.Contacts}">
+    <gridControl:DataGrid x:Name="ContactsGrid" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" Margin="7,7,7,7" AutoGenerateColumns="False"  BeginningEdit="ContactsGrid_BeginningEdit"  KeyDown="ContactsGrid_KeyDown" ItemsSource="{Binding Source={StaticResource CustomerData}, Path=Data.Contacts}">
       <gridControl:DataGrid.Columns>
-        <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding Id}" Header="Internal ID" Width="150" MinWidth="150"  MaxWidth="300">
+        <csla:ValidatedDataGridTextColumn Binding="{Binding Id}" Header="Internal ID" Width="150" MinWidth="150"  MaxWidth="300">
         </csla:ValidatedDataGridTextColumn>
-        <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding CustomerId}" Header="Customer ID" Width="150" MinWidth="150"  MaxWidth="300" IsReadOnly="True">
+        <csla:ValidatedDataGridTextColumn Binding="{Binding CustomerId}" Header="Customer ID" Width="150" MinWidth="150"  MaxWidth="300" IsReadOnly="True">
         </csla:ValidatedDataGridTextColumn>
-        <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding FirstName}" Header="First Name" Width="250" MinWidth="250"  MaxWidth="500" IsReadOnly="False"/>
-        <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding LastName}" Header="Last Name" Width="250" MinWidth="250"  MaxWidth="500" IsReadOnly="False"/>
-        <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding Birthday}" Header="Birthday" Width="150" MinWidth="150"  MaxWidth="300" IsReadOnly="False"/>
+        <csla:ValidatedDataGridTextColumn Binding="{Binding FirstName}" Header="First Name" Width="250" MinWidth="250"  MaxWidth="500" IsReadOnly="False"/>
+        <csla:ValidatedDataGridTextColumn Binding="{Binding LastName}" Header="Last Name" Width="250" MinWidth="250"  MaxWidth="500" IsReadOnly="False"/>
+        <csla:ValidatedDataGridTextColumn Binding="{Binding Birthday}" Header="Birthday" Width="150" MinWidth="150"  MaxWidth="300" IsReadOnly="False"/>
       </gridControl:DataGrid.Columns>
     </gridControl:DataGrid>
     <StackPanel Orientation="Horizontal" Margin="5,5,5,5" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" >
@@ -66,41 +66,35 @@
                 csla:InvokeMethod.MethodName="Save"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Save" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Cancel"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Cancel" />
-      <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
-                csla:InvokeMethod.MethodName="Delete"
-                csla:InvokeMethod.Resource="{StaticResource CustomerData}"
-                csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
-                Content="Delete" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Fetch"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Fetch" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Create"
                 csla:InvokeMethod.Resource="{StaticResource CustomerData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Create" />
     </StackPanel>
     
-    <gridControl:DataGrid x:Name="ContactsDetailsGrid" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0" Margin="7,7,7,7" AutoGenerateColumns="False"  BeginningEdit="ContactsGrid_BeginningEdit" CancelingEdit="ContactsGrid_CancelingEdit" CommittingEdit="ContactsGrid_CommittingEdit" KeyDown="ContactsDetailsGrid_KeyDown" ItemsSource="{Binding Source={StaticResource CustomerListData}, Path=Data}">
+    <gridControl:DataGrid x:Name="ContactsDetailsGrid" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0" Margin="7,7,7,7" AutoGenerateColumns="False"  BeginningEdit="ContactsGrid_BeginningEdit"  KeyDown="ContactsDetailsGrid_KeyDown" ItemsSource="{Binding Source={StaticResource CustomerListData}, Path=Data}">
       <gridControl:DataGrid.Columns>
-        <gridControl:DataGridTextColumn DisplayMemberBinding="{Binding Id}" Header="Internal ID" Width="150" MinWidth="150"  MaxWidth="300">
+        <gridControl:DataGridTextColumn Binding="{Binding Id}" Header="Internal ID" Width="150" MinWidth="150"  MaxWidth="300">
         </gridControl:DataGridTextColumn>
-        <gridControl:DataGridTextColumn DisplayMemberBinding="{Binding Name}" Header="Customer Name" Width="150" MinWidth="150"  MaxWidth="300" IsReadOnly="False">
+        <gridControl:DataGridTextColumn Binding="{Binding Name}" Header="Customer Name" Width="150" MinWidth="150"  MaxWidth="300" IsReadOnly="False">
         </gridControl:DataGridTextColumn>
-        <gridControl:DataGridTextColumn DisplayMemberBinding="{Binding DateCreated}" Header="Date Created" Width="150" MinWidth="150"  MaxWidth="300" IsReadOnly="False"/>
+        <gridControl:DataGridTextColumn Binding="{Binding DateCreated}" Header="Date Created" Width="150" MinWidth="150"  MaxWidth="300" IsReadOnly="False"/>
         <gridControl:DataGridTemplateColumn>
           <gridControl:DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
@@ -109,7 +103,7 @@
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
                 csla:InvokeMethod.MethodParameter="{Binding}"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Delete" />
             </DataTemplate>
           </gridControl:DataGridTemplateColumn.CellTemplate>
@@ -121,25 +115,25 @@
                 csla:InvokeMethod.MethodName="Save"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Save" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Cancel"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Cancel" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="Fetch"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Fetch" />
       <Button Width="50" HorizontalAlignment="Left" Margin="5,5,5,5"
                 csla:InvokeMethod.MethodName="AddNewItem"
                 csla:InvokeMethod.Resource="{StaticResource CustomerListData}"
                 csla:InvokeMethod.TriggerEvent="Click"
-                csla:InvokeMethod.ManageEnabledStateForControl="True"
+                csla:InvokeMethod.ManualEnableControl="False"
                 Content="Add" />                
     </StackPanel>
   </Grid>

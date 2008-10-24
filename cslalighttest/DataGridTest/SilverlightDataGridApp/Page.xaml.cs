@@ -24,7 +24,7 @@ namespace SilverlightDataGridApp
     RootSingleItemsList _currentList;
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-      Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy<>).AssemblyQualifiedName;
       Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:1431/WcfPortal.svc";
     }
 

@@ -22,12 +22,12 @@
       <TextBlock x:Name="LoginStatus" Text="Not Logged In"/> 
     </StackPanel>
 
-    <gridControl:DataGrid x:Name="ItemsGrid" Visibility="Collapsed"  HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="1" Margin="7,7,7,7" AutoGenerateColumns="False"  BeginningEdit="ItemsGrid_BeginningEdit" CancelingEdit="ItemsGrid_CancelingEdit" CommittingEdit="ItemsGrid_CommittingEdit" KeyDown="ItemsGrid_KeyDown">
+    <gridControl:DataGrid x:Name="ItemsGrid" Visibility="Collapsed"  HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="1" Margin="7,7,7,7" AutoGenerateColumns="False"  BeginningEdit="ItemsGrid_BeginningEdit" KeyDown="ItemsGrid_KeyDown">
       <gridControl:DataGrid.Columns>
-        <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding Id}" Header="Internal ID" Width="150" MinWidth="150"  MaxWidth="300">
+        <csla:ValidatedDataGridTextColumn Binding="{Binding Id}" Header="Internal ID" Width="150" MinWidth="150"  MaxWidth="300">
         </csla:ValidatedDataGridTextColumn>
-        <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding Name}" Header="Item Name" Width="250" MinWidth="250"  MaxWidth="500"/>
-        <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding DateCreated}" Header="Created On" Width="150" MinWidth="150"  MaxWidth="300"/>
+        <csla:ValidatedDataGridTextColumn Binding="{Binding Name}" Header="Item Name" Width="250" MinWidth="250"  MaxWidth="500"/>
+        <csla:ValidatedDataGridTextColumn Binding="{Binding DateCreated}" Header="Created On" Width="150" MinWidth="150"  MaxWidth="300"/>
       </gridControl:DataGrid.Columns>
     </gridControl:DataGrid>
     <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Stretch">

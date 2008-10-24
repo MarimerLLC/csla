@@ -912,8 +912,8 @@ namespace Csla
                     return false;
                 });
                 _isInDesignMode = (bool)Application.Current.Dispatcher.Invoke(func, null);
+                _isInDesignModeHasBeenSet = true;
               }
-              _isInDesignModeHasBeenSet = true;
             }
           }
         }

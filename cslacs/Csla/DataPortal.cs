@@ -897,21 +897,21 @@ namespace Csla
       {
         if (!_isInDesignModeHasBeenSet)
         {
-          lock (_designModeLock)
+          if (Application.Current != null && Application.Current.Dispatcher != null)
           {
-            if (!_isInDesignModeHasBeenSet)
+            Func<bool> func = new Func<bool>(() =>
             {
-              _isInDesignMode = false;
-              if (Application.Current != null && Application.Current.Dispatcher != null)
+              if (Application.Current.MainWindow != null)
+                return DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow);
+              else
+                return false;
+            });
+            bool tmp = (bool)Application.Current.Dispatcher.Invoke(func, null);
+            lock (_designModeLock)
+            {
+              if (!_isInDesignModeHasBeenSet)
               {
-                Func<bool> func = new Func<bool>(() =>
-                {
-                  if (Application.Current.MainWindow != null)
-                    return DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow);
-                  else
-                    return false;
-                });
-                _isInDesignMode = (bool)Application.Current.Dispatcher.Invoke(func, null);
+                _isInDesignMode = tmp;
                 _isInDesignModeHasBeenSet = true;
               }
             }

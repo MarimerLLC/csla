@@ -887,31 +887,37 @@ namespace Csla
     private static bool _isInDesignModeHasBeenSet = false;
     private static object _designModeLock = new object();
 
+    /// <summary>
+    /// Gets a value indicating whether the code is running
+    /// in WPF design mode.
+    /// </summary>
     public static bool IsInDesignMode
     {
       get
       {
-
-        lock (_designModeLock)
+        if (!_isInDesignModeHasBeenSet)
         {
-          if (!_isInDesignModeHasBeenSet)
+          lock (_designModeLock)
           {
-            _isInDesignMode = false;
-            if (Application.Current != null && Application.Current.Dispatcher != null)
+            if (!_isInDesignModeHasBeenSet)
             {
-              Func<bool> func = new Func<bool>(() =>
+              _isInDesignMode = false;
+              if (Application.Current != null && Application.Current.Dispatcher != null)
               {
-                if (Application.Current.MainWindow != null)
-                  return DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow);
-                else
-                  return false;
-              });
-              _isInDesignMode = (bool)Application.Current.Dispatcher.Invoke(func, null);
+                Func<bool> func = new Func<bool>(() =>
+                {
+                  if (Application.Current.MainWindow != null)
+                    return DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow);
+                  else
+                    return false;
+                });
+                _isInDesignMode = (bool)Application.Current.Dispatcher.Invoke(func, null);
+              }
+              _isInDesignModeHasBeenSet = true;
             }
-            _isInDesignModeHasBeenSet = true;
           }
-          return _isInDesignMode;
         }
+        return _isInDesignMode;
       }
     }
 

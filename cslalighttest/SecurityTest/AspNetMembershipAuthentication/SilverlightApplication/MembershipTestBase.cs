@@ -6,7 +6,7 @@ namespace SilverlightApplication
 {
   public abstract class MembershipTestBase : TestBase
   {
-    [TestSetup]
+    //[TestSetup]
     public void Setup()
     {
       DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";

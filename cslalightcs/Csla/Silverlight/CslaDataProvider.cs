@@ -438,7 +438,7 @@ namespace Csla.Silverlight
     private Delegate CreateHandler(Type objectType)
     {
       var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
-      MethodInfo method = this.GetType().GetMethod("QueryCompleted", BindingFlags.Instance | BindingFlags.NonPublic);
+      MethodInfo method = MethodCaller.GetNonPublicMethod(this.GetType(), "QueryCompleted");
       Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
       return handler;
     }

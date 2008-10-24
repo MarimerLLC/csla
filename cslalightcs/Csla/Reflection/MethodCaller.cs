@@ -27,13 +27,19 @@ namespace Csla.Reflection
       BindingFlags.Public;
 
     private const BindingFlags factoryFlags =
-      BindingFlags.Static | 
-      BindingFlags.Public | 
+      BindingFlags.Static |
+      BindingFlags.Public |
       BindingFlags.FlattenHierarchy;
 
-    private const BindingFlags propertyFlags = 
-      BindingFlags.Public | 
-      BindingFlags.Instance | 
+    private const BindingFlags propertyFlags =
+      BindingFlags.Public |
+      BindingFlags.Instance |
+      BindingFlags.FlattenHierarchy;
+
+    private const BindingFlags privateMethodFlags =
+      BindingFlags.Public |
+      BindingFlags.NonPublic |
+      BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
 
     #region Dynamic Constructor Cache
@@ -160,7 +166,7 @@ namespace Csla.Reflection
       return result;
     }
 
-    
+
     public static object GetPropertyValue(object obj, PropertyInfo info)
     {
       object result = null;
@@ -297,6 +303,16 @@ namespace Csla.Reflection
       return result;
     }
 
+    public static MethodInfo GetNonPublicMethod(Type objectType, string method)
+    {
+
+      MethodInfo result = null;
+
+      result = FindMethod(objectType, method, privateMethodFlags);
+
+      return result;
+    }
+
     private static MethodInfo FindMethodUsingFuzzyMatching(Type objectType, string method, object[] parameters)
     {
       MethodInfo result = null;
@@ -405,6 +421,21 @@ namespace Csla.Reflection
       {
         // find for a strongly typed match
         info = objType.GetMethod(method, oneLevelFlags, null, types, null);
+        if (info != null)
+          break; // match found
+        objType = objType.BaseType;
+      } while (objType != null);
+
+      return info;
+    }
+
+    public static MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
+    {
+      MethodInfo info = null;
+      do
+      {
+        // find for a strongly typed match
+        info = objType.GetMethod(method, flags);
         if (info != null)
           break; // match found
         objType = objType.BaseType;

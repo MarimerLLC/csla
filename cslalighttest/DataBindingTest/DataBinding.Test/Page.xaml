@@ -132,8 +132,8 @@
                                 VerticalAlignment="Stretch" 
                                 HorizontalAlignment="Stretch">
                         <c:DataGrid.Columns>
-                            <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding City}" />
-                            <csla:ValidatedDataGridTextColumn DisplayMemberBinding="{Binding State}" />
+                            <csla:ValidatedDataGridTextColumn Binding="{Binding City}" />
+                            <csla:ValidatedDataGridTextColumn Binding="{Binding State}" />
                         </c:DataGrid.Columns>
                     </c:DataGrid>
                     
@@ -160,7 +160,6 @@
                      SelectionChanged="ListBox_SelectionChanged" 
                      ItemTemplate="{StaticResource customer}" 
                      ItemsSource="{Binding}" 
-                     DisplayMemberPath=""
                      HorizontalContentAlignment="Stretch" />
             <csla:BusyAnimation x:Name="busy"
                                 Foreground="#7743a71f"

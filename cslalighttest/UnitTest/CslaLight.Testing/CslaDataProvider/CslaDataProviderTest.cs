@@ -383,6 +383,55 @@ namespace cslalighttest.CslaDataProvider
       context.Complete();
     }
 
+    [TestMethod]
+    public void InhertiedProviderFetch()
+    {
+      var context = GetContext();
+
+      var provider = new InheritedProvider();
+      provider.PropertyChanged += (o1, e1) =>
+      {
+        if (e1.PropertyName == "Data")
+        {
+          var customer = (Customer)provider.Data;
+          context.Assert.AreEqual(true, customer.Id > 0 && customer.Id < 11);
+          context.Assert.Success();
+        }
+      };
+      provider.IsInitialLoadEnabled = true;
+      provider.ManageObjectLifetime = true;
+      provider.FactoryMethod = "CreateCustomer";
+      provider.ObjectType = typeof(Customer).AssemblyQualifiedName;
+
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void InhertiedProviderSave()
+    {
+      var context = GetContext();
+
+      var provider = new InheritedProvider();
+      Customer.GetCustomer((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var cust = e1.Object;
+        int custID = cust.Id;
+        string custName = cust.Name;
+        provider.ObjectInstance = cust;
+        cust.Name = "new test name";
+        provider.PropertyChanged += (o2, e2) =>
+        {
+          if (e2.PropertyName == "Data")
+          {
+            context.Assert.AreEqual("Updating Customer new test name", ((Customer)provider.Data).Method);
+            context.Assert.Success();
+          }
+        };
+        provider.Save();
+      });
+      context.Complete();
+    }
   }
 
 }

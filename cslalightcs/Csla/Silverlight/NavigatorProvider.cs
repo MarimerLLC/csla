@@ -82,8 +82,42 @@ namespace Csla.Silverlight
     }
 
     /// <summary>
-    /// Name of the event that triggers NavigatorProvider action.
+    /// Paramters that need to be passed to navigator
     /// </summary>
+    public static readonly DependencyProperty ParametersProperty =
+      DependencyProperty.RegisterAttached("Parameters",
+      typeof(string),
+      typeof(NavigatorProvider),
+      null);
+
+    /// <summary>
+    /// Retreive parameters value with UI element specified.
+    /// </summary>
+    /// <param name="element">
+    /// UI element to get parameters property value for.
+    /// </param>
+    /// <returns>
+    /// Control name
+    /// </returns>
+    public static string GetParameters(UIElement element)
+    {
+      return (string)element.GetValue(ParametersProperty);
+    }
+
+    /// <summary>
+    /// Set parameters value for UI element
+    /// </summary>
+    /// <param name="element">
+    /// UI element to set parameters property value for.
+    /// </param>
+    /// <param name="value">
+    /// Control name
+    /// </param>
+    public static void SetParameters(UIElement element, string value)
+    {
+      element.SetValue(ParametersProperty, value);
+    }
+
     public static readonly DependencyProperty TriggerEventProperty =
       DependencyProperty.RegisterAttached("TriggerEvent",
       typeof(string),
@@ -158,8 +192,11 @@ namespace Csla.Silverlight
         string controlTypeName = (string)source.GetValue(ControlTypeNameProperty);
         if (!string.IsNullOrEmpty(controlTypeName))
         {
+          string parameters = (string)source.GetValue(ParametersProperty);
+          if (parameters == null)
+            parameters = string.Empty;
           // Invoke Navigator to show specified control
-          Navigator.Current.Navigate(controlTypeName);
+          Navigator.Current.Navigate(controlTypeName, parameters);
         }
       }
     }

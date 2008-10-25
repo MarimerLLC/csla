@@ -229,7 +229,22 @@ namespace Csla.Silverlight
     /// </param>
     public void Navigate(string controlTypeName)
     {
-      NavigationEventArgs args = new NavigationEventArgs(controlTypeName, string.Empty, false);
+      Navigate(controlTypeName, string.Empty);
+    }
+
+    /// <summary>
+    /// Show specified control in ContentControl
+    /// specified by ContentPlaceholder property.
+    /// </summary>
+    /// <param name="controlTypeName">
+    /// Assembly qualified control name to show.
+    /// </param>
+    /// <param name="paramerers">
+    /// String that incorporates parameters needed for new control
+    /// </param>
+    public void Navigate(string controlTypeName, string paramerers)
+    {
+      NavigationEventArgs args = new NavigationEventArgs(controlTypeName, paramerers, false);
       OnBeforeNavigation(args);
       if (!args.Cancel)
       {
@@ -264,6 +279,7 @@ namespace Csla.Silverlight
 
     private void CreateAndShowControl(Control newControl, string parameters, string title, bool addBookmark, bool isRedirected)
     {
+      bool hasBookmarkBeenAdded = false;
       if (!(newControl == null))
       {
         ISupportNavigation navigatable = newControl as ISupportNavigation;
@@ -272,13 +288,30 @@ namespace Csla.Silverlight
           navigatable.SetParameters(parameters);
           if (addBookmark && !isRedirected)
             title = navigatable.Title;
+
+          if (navigatable.CreateBookmarkAfterLoadCompleted)
+          {
+            hasBookmarkBeenAdded = true;
+            navigatable.LoadCompleted += (o, e) =>
+              {
+                title = navigatable.Title;
+                SetTitle(title);
+                if (addBookmark)
+                {
+                  AddBookmark(title, ControlNameFactory.ControlToControlName(newControl), parameters);
+                }
+              };
+          }
+        }
+        if (!hasBookmarkBeenAdded)
+        {
+          SetTitle(title);
+          if (addBookmark)
+          {
+            AddBookmark(title, ControlNameFactory.ControlToControlName(newControl), parameters);
+          }
         }
 
-        SetTitle(title);
-        if (addBookmark)
-        {
-          AddBookmark(title, ControlNameFactory.ControlToControlName(newControl), parameters);
-        }
 
         ContentPlaceholder.Content = newControl;
       }
@@ -297,7 +330,6 @@ namespace Csla.Silverlight
       try
       {
         _processBrowserEvents = false;
-        System.Windows.Browser.BrowserInformation info = System.Windows.Browser.HtmlPage.BrowserInformation;
         string addHistoryScript =
           "Sys.Application.addHistoryPoint({{ {0}:'{1}' }}, '{2}');";
         string script = string.Format(addHistoryScript, _bookmarkKey, controlName + _bookmarkPartsSeparator + title + _bookmarkPartsSeparator + parameters + _bookmarkPartsSeparator, title);
@@ -338,7 +370,7 @@ namespace Csla.Silverlight
           string title = bookmarkParts[1];
           string parameters = bookmarkParts[2];
           Control newControl = ControlNameFactory.ControlNameToControl(controlName);
-        
+
           if (newControl != null)
           {
             NavigationEventArgs args = new NavigationEventArgs(newControl.GetType().AssemblyQualifiedName, parameters, true);

@@ -20,6 +20,22 @@ namespace Csla.Silverlight
     /// to parse them
     /// </param>
     void SetParameters(string parameters);
+
+    /// <summary>
+    /// Get the title of the control
+    /// </summary>
     string Title { get; }
+
+    /// <summary>
+    /// This event should be raised after the control is populated with data
+    /// </summary>
+    event EventHandler LoadCompleted;
+
+    /// <summary>
+    /// If set to false, bookamrk will be created as part of navigation.
+    /// If set to true, bokmakr will be created when LoadCompleted
+    /// event is raised by the control
+    /// </summary>
+    bool CreateBookmarkAfterLoadCompleted { get; }
   }
 }

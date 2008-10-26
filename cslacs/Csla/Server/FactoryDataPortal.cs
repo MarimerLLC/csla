@@ -7,6 +7,11 @@ using Csla.Properties;
 
 namespace Csla.Server
 {
+  /// <summary>
+  /// Server-side data portal implementation that
+  /// invokes an object factory rather than directly
+  /// interacting with the business object.
+  /// </summary>
   public class FactoryDataPortal : IDataPortalServer
   {
     #region Factory Loader

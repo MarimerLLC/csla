@@ -384,4 +384,7 @@
   <data name="UpdateMethodNameNotSpecified" xml:space="preserve">
     <value>Update method name not specified in MobileFactory attribute</value>
   </data>
+  <data name="BindingSourceNotProvided" xml:space="preserve">
+    <value>A root binding source has not been provided.</value>
+  </data>
 </root>

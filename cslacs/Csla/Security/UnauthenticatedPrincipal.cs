@@ -3,8 +3,12 @@ using System.Security.Principal;
 using Csla.Serialization;
 namespace Csla.Security
 {
-
-  [Serializable()]
+  /// <summary>
+  /// Implementation of a .NET principal object that represents
+  /// an unauthenticated user. Contains an UnauthenticatedIdentity
+  /// object.
+  /// </summary>
+  [Serializable]
   public sealed class UnauthenticatedPrincipal : BusinessPrincipalBase
   {
     public UnauthenticatedPrincipal() : base(new UnauthenticatedIdentity()) { }

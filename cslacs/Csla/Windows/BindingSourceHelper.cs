@@ -3,20 +3,35 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Text;
+using Csla.Properties;
 
 namespace Csla.Windows
 {
+  /// <summary>
+  /// Helper methods for dealing with BindingSource
+  /// objects and data binding.
+  /// </summary>
   public static class BindingSourceHelper
   {
-    private const string STR_BindingSourceNotProvided = "A root binding source has not been provided.";
-    
     private static BindingSourceNode _rootSourceNode;
 
+    /// <summary>
+    /// Sets up BindingSourceNode objects for all
+    /// BindingSource objects related to the provided
+    /// root source.
+    /// </summary>
+    /// <param name="container">
+    /// Container for the components.
+    /// </param>
+    /// <param name="rootSource">
+    /// Root BindingSource object.
+    /// </param>
+    /// <returns></returns>
     public static BindingSourceNode InitializeBindingSourceTree(
       IContainer container, BindingSource rootSource)
     {
       if (rootSource == null)
-        throw new ApplicationException(STR_BindingSourceNotProvided);
+        throw new ApplicationException(Resources.BindingSourceNotProvided);
 
       _rootSourceNode = new BindingSourceNode(rootSource);
       _rootSourceNode.Children.AddRange(GetChildBindingSources(container, rootSource, _rootSourceNode));

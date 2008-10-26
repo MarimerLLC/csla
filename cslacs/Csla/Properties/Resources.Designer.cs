@@ -88,6 +88,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A root binding source has not been provided..
+        /// </summary>
+        internal static string BindingSourceNotProvided {
+            get {
+                return ResourceManager.GetString("BindingSourceNotProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge only allowed on custom collection objects.
         /// </summary>
         internal static string BrokenRulesMergeException {

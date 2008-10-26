@@ -189,7 +189,6 @@
     <Compile Include="Linq\BalancedTreeIndex.cs" />
     <Compile Include="Linq\IBalancedSearch.cs" />
     <Compile Include="Linq\IRangeTestableIndex.cs" />
-    <Compile Include="Linq\RedBlackTree.cs" />
     <Compile Include="Linq\RedBlackTreeWrapper.cs" />
     <Compile Include="Reflection\DynamicMemberHandle.cs" />
     <Compile Include="Security\CslaIdentity.cs" />

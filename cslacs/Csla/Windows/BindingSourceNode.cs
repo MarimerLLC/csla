@@ -6,8 +6,18 @@ using System.Text;
 
 namespace Csla.Windows
 {
+  /// <summary>
+  /// Maintains a reference to a BindingSource object
+  /// on the form.
+  /// </summary>
   public class BindingSourceNode
   {
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="source">
+    /// BindingSource object to be mananaged.
+    /// </param>
     public BindingSourceNode(BindingSource source)
     {
       _Source = source;
@@ -109,6 +119,12 @@ namespace Csla.Windows
       _Source.ResetBindings(refreshMetadata);
     }
 
+    /// <summary>
+    /// Binds a business object to the BindingSource.
+    /// </summary>
+    /// <param name="objectToBind">
+    /// Business object.
+    /// </param>
     public void Bind(object objectToBind)
     {
       Csla.Core.ISupportUndo root = objectToBind as Csla.Core.ISupportUndo;
@@ -121,6 +137,9 @@ namespace Csla.Windows
       ResetBindings(false);
     }
 
+    /// <summary>
+    /// Applies changes to the business object.
+    /// </summary>
     public void Apply()
     {
       SetEvents(false);
@@ -134,6 +153,10 @@ namespace Csla.Windows
         root.ApplyEdit();
     }
 
+    /// <summary>
+    /// Cancels changes to the business object.
+    /// </summary>
+    /// <param name="businessObject"></param>
     public void Cancel(object businessObject)
     {
       SetEvents(false);
@@ -148,6 +171,9 @@ namespace Csla.Windows
       Bind(businessObject);
     }
 
+    /// <summary>
+    /// Disconnects from the BindingSource object.
+    /// </summary>
     public void Close()
     {
       SetEvents(false);

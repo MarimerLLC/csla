@@ -5,12 +5,21 @@ using System.Text;
 
 namespace Csla.Validation
 {
+  /// <summary>
+  /// Object containing the results from 
+  /// an asynchronous validation rule method.
+  /// </summary>
   public class AsyncRuleResult
   {
     private bool _result = true;
     private string _description;
     private RuleSeverity _severity = RuleSeverity.Error;
     
+    /// <summary>
+    /// Result value for the validation
+    /// rule method, where true indicates
+    /// the rule was not violated.
+    /// </summary>
     public bool Result
     {
       get { return _result; }

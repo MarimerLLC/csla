@@ -9,6 +9,13 @@ using System.IO;
 
 namespace Csla.Core
 {
+  /// <summary>
+  /// Implements a list that is serializable using
+  /// the MobileFormatter.
+  /// </summary>
+  /// <typeparam name="T">
+  /// Type of object contained in the list.
+  /// </typeparam>
   [Serializable]
   public class MobileList<T> : List<T>, IMobileObject
   {
@@ -28,10 +35,21 @@ namespace Csla.Core
       OnGetState(info);
     }
 
+    /// <summary>
+    /// Override this method to add extra field values to
+    /// the serialization stream.
+    /// </summary>
+    /// <param name="info">Object containing field values.</param>
     protected virtual void OnGetState(SerializationInfo info)
     {
     }
 
+    /// <summary>
+    /// Override this method to manually serialize child objects
+    /// contained within the current object.
+    /// </summary>
+    /// <param name="info">Object containing serialized values.</param>
+    /// <param name="formatter">Reference to the current MobileFormatter.</param>
     protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));
@@ -68,8 +86,19 @@ namespace Csla.Core
       OnSetChildren(info, formatter);
     }
 
+    /// <summary>
+    /// Override this method to retrieve extra field values to
+    /// the serialization stream.
+    /// </summary>
+    /// <param name="info">Object containing field values.</param>
     protected virtual void OnSetState(SerializationInfo info) { }
 
+    /// <summary>
+    /// Override this method to manually deserialize child objects
+    /// from data in the serialization stream.
+    /// </summary>
+    /// <param name="info">Object containing serialized values.</param>
+    /// <param name="formatter">Reference to the current MobileFormatter.</param>
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (info.Values.ContainsKey("$list"))

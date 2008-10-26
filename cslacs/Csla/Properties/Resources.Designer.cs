@@ -348,6 +348,13 @@ namespace Csla.Properties {
             }
         }
         
+        internal static System.Drawing.Icon favicon {
+            get {
+                object obj = ResourceManager.GetObject("favicon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Fetch method name not specified in MobileFactory attribute.
         /// </summary>

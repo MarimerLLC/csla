@@ -8,17 +8,33 @@ using System.Threading;
 
 namespace Csla.Threading
 {
-  // NOTE: It is not advisable to call this from a UI thread in silverlight!
-  // Most likely it will result in blocking the entire browser.
-
+  /// <summary>
+  /// Implementation of a lock that waits while
+  /// a target object is busy.
+  /// </summary>
+  /// <remarks>
+  /// Do not call this from a Silverlight UI thread, as it will block
+  /// the entire browser.
+  /// </remarks>
   public static class BusyLock
   {
+    /// <summary>
+    /// Wait until the specified object is not busy 
+    /// (IsBusy is false).
+    /// </summary>
+    /// <param name="obj">Target object.</param>
     public static void WaitOne(INotifyBusy obj)
     {
       BusyLocker locker = new BusyLocker(obj, TimeSpan.FromMilliseconds(Timeout.Infinite));
       locker.WaitOne();
     }
 
+    /// <summary>
+    /// Wait until the specified object is not busy 
+    /// (IsBusy is false).
+    /// </summary>
+    /// <param name="obj">Target object.</param>
+    /// <param name="timeout">Timeout value.</param>
     public static void WaitOne(INotifyBusy obj, TimeSpan timeout)
     {
       BusyLocker locker = new BusyLocker(obj, timeout);
@@ -26,12 +42,21 @@ namespace Csla.Threading
     }
   }
 
+  /// <summary>
+  /// Implementation of a lock that waits while
+  /// a target object is busy.
+  /// </summary>
   public class BusyLocker : IDisposable
   {
     private ManualResetEvent _event = new ManualResetEvent(false);
     private INotifyBusy _target;
     private TimeSpan _timeout;
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="obj">Target object.</param>
+    /// <param name="timeout">Timeout value.</param>
     public BusyLocker(INotifyBusy target, TimeSpan timeout)
     {
       _event.Reset(); // set the event to non-signaled by default.
@@ -39,6 +64,9 @@ namespace Csla.Threading
       _timeout = timeout;
     }
 
+    /// <summary>
+    /// Waits for the target object to become not busy.
+    /// </summary>
     public void WaitOne()
     {
       try
@@ -71,6 +99,9 @@ namespace Csla.Threading
         _event.Set();
     }
 
+    /// <summary>
+    /// Disposes the object.
+    /// </summary>
     public void Dispose()
     {
       WaitOne();

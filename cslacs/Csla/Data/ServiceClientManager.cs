@@ -11,6 +11,17 @@ using System.Windows.Shapes;
 
 namespace Csla.Data
 {
+  /// <summary>
+  /// Provides an automated way to reuse 
+  /// ADO.NET Data Services client proxy objects within 
+  /// the context of a single data portal operation.
+  /// </summary>
+  /// <typeparam name="C">
+  /// Type of ClientBase object to use.
+  /// </typeparam>
+  /// <typeparam name="T">
+  /// Channel type for the ClientBase object.
+  /// </typeparam>
   public class ServiceClientManager<C, T>
     where C : System.ServiceModel.ClientBase<T>
     where T : class
@@ -19,6 +30,12 @@ namespace Csla.Data
     private C _client;
     private string _name = string.Empty;
 
+    /// <summary>
+    /// Gets the client proxy object for the
+    /// specified name.
+    /// </summary>
+    /// <param name="name">Unique name for the proxy object.</param>
+    /// <returns></returns>
     public static ServiceClientManager<C,T > GetManager(string name)
     {
 
@@ -44,6 +61,9 @@ namespace Csla.Data
       _client = (C)(Activator.CreateInstance(typeof(C)));
     }
 
+    /// <summary>
+    /// Gets a reference to the current client proxy object.
+    /// </summary>
     public C Client
     {
       get

@@ -10,10 +10,23 @@ using System.Windows.Data;
 
 namespace Csla.Wpf
 {
+  /// <summary>
+  /// Converts validation severity values into corresponding
+  /// images.
+  /// </summary>
   public class BrokenRuleSeverityConverter : IValueConverter
   {
     #region IValueConverter Members
 
+    /// <summary>
+    /// Converts validation severity values into corresponding
+    /// images.
+    /// </summary>
+    /// <param name="value">Original value.</param>
+    /// <param name="targetType">Desired output type (ignored).</param>
+    /// <param name="parameter">Extra parameter (ignored).</param>
+    /// <param name="culture">Desired culture (ignored).</param>
+    /// <returns></returns>
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       RuleSeverity severity = (RuleSeverity)value;
@@ -27,6 +40,13 @@ namespace Csla.Wpf
       return bmp;
     }
 
+    /// <summary>
+    /// Returns the original value.
+    /// </summary>
+    /// <param name="value">Original value.</param>
+    /// <param name="targetType">Desired output type (ignored).</param>
+    /// <param name="parameter">Extra parameter (ignored).</param>
+    /// <param name="culture">Desired culture (ignored).</param>
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       return RuleSeverity.Error;

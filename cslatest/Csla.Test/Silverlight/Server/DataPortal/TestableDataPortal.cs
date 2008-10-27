@@ -21,17 +21,17 @@ namespace  Csla.Testing.Business.DataPortal
 
     public static void Setup()
     {
-      _authorizer = null;
+      Authorizer = null;
     }
 
     public Type AuthProviderType
     {
-      get { return _authorizer.GetType(); }
+      get { return Authorizer.GetType(); }
     }
 
     public IAuthorizeDataPortal AuthProvider
     {
-      get { return _authorizer; }
+      get { return Authorizer; }
     }
 
     public bool NullAuthorizerUsed

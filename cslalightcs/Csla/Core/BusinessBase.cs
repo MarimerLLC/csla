@@ -2842,6 +2842,7 @@ namespace Csla.Core
     /// without raising PropertyChanged events
     /// and checking user rights.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal class BypassPropertyChecksObject : IDisposable
     {
       private BusinessBase _businessObject;

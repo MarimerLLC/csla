@@ -362,18 +362,8 @@ namespace Csla.Silverlight
     {
       if (_isInitialLoadEnabled && !_isInitialLoadCompleted)
       {
-        Fetch();
+        Refresh();
       }
-    }
-
-    public void Fetch()
-    {
-      Refresh();
-    }
-
-    public void Create()
-    {
-      Refresh();
     }
 
     /// <summary>

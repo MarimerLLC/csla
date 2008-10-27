@@ -13,13 +13,27 @@ using System.Reflection;
 
 namespace Csla.Data
 {
-
+  /// <summary>
+  /// Provides an automated way to reuse 
+  /// an ADO.NET Data Services context object within 
+  /// the context of a single data portal operation.
+  /// </summary>
+  /// <typeparam name="C">
+  /// Type of context object to use.
+  /// </typeparam>
   public class DataServiceContextManager<C> where C : System.Data.Services.Client.DataServiceContext
   {
 
     private static object _lock = new object();
     private C _context;
 
+    /// <summary>
+    /// Gets the DataServiceContext object for the 
+    /// specified URI.
+    /// </summary>
+    /// <param name="path">
+    /// URI to the server-side services.
+    /// </param>
     public static DataServiceContextManager<C> GetManager(Uri path)
     {
 
@@ -44,6 +58,9 @@ namespace Csla.Data
       _context = (C)(Activator.CreateInstance(typeof(C), path));
     }
 
+    /// <summary>
+    /// Gets the DataServiceContext object.
+    /// </summary>
     public C DataServiceContext
     {
       get
@@ -52,6 +69,14 @@ namespace Csla.Data
       }
     }
 
+    /// <summary>
+    /// Gets a list of the entities of the
+    /// specified type from the context.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of entity.
+    /// </typeparam>
+    /// <returns></returns>
     public List<T> GetEntities<T>()
     {
       List<T> returnValue = new List<T>();
@@ -65,6 +90,18 @@ namespace Csla.Data
       return returnValue;
     }
 
+    /// <summary>
+    /// Gets a list of the entities by key.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of entity.
+    /// </typeparam>
+    /// <param name="keyPropertyName">
+    /// Name of the key property.
+    /// </param>
+    /// <param name="keyPropertyValue">
+    /// Key value to match.
+    /// </param>
     public T GetEntity<T>(string keyPropertyName, object keyPropertyValue)
     {
       T returnValue = default(T);

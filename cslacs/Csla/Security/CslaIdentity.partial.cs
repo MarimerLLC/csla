@@ -23,7 +23,7 @@ namespace Csla.Security
     /// </summary>
     protected CslaIdentity()
     {
-      _forceInit = 0;
+      _forceInit = _forceInit + 0;
     }
 
     #endregion

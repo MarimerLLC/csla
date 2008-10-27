@@ -24,6 +24,9 @@ namespace Csla
     /// </summary>
     public Exception Error { get; private set; }
 
+    /// <summary>
+    /// Gets the user state value.
+    /// </summary>
     public object UserState { get; private set; }
 
     /// <summary>
@@ -36,6 +39,7 @@ namespace Csla
     /// <param name="ex">
     /// The Exception (if any) to return.
     /// </param>
+    /// <param name="userState">User state object.</param>
     internal DataPortalResult(T obj, Exception ex, object userState)
     {
       this.Object = obj;

@@ -46,13 +46,13 @@ namespace Csla
       _value = value;
     }
 
-#if SILVERLIGHT
     /// <summary>
     /// Creates an instance of the type.
     /// This is for use by the MobileFormatter,
     /// you must provide a criteria value
     /// parameter.
     /// </summary>
+#if SILVERLIGHT
     public SingleCriteria()
     { }
 #else

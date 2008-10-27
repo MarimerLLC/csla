@@ -147,12 +147,26 @@ namespace Csla.Reflection
       return mh;
     }
 
+    /// <summary>
+    /// Invokes a property getter using dynamic
+    /// method invocation.
+    /// </summary>
+    /// <param name="obj">Target object.</param>
+    /// <param name="property">Property to invoke.</param>
+    /// <returns></returns>
     public static object CallPropertyGetter(object obj, string property)
     {
       var mh = GetCachedProperty(obj.GetType(), property);
       return mh.DynamicMemberGet(obj);
     }
 
+    /// <summary>
+    /// Invokes a property setter using dynamic
+    /// method invocation.
+    /// </summary>
+    /// <param name="obj">Target object.</param>
+    /// <param name="property">Property to invoke.</param>
+    /// <param name="value">New value for property.</param>
     public static void CallPropertySetter(object obj, string property, object value)
     {
       var mh = GetCachedProperty(obj.GetType(), property);

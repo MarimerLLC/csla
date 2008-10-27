@@ -85,6 +85,11 @@ namespace Csla.Serialization.Mobile
       dc.WriteObject(writer, serialized);
     }
 
+    /// <summary>
+    /// Serializes an object into a SerializationInfo object.
+    /// </summary>
+    /// <param name="obj">Object to be serialized.</param>
+    /// <returns></returns>
     public SerializationInfo SerializeObject(object obj)
     {
       SerializationInfo info;
@@ -216,6 +221,12 @@ namespace Csla.Serialization.Mobile
       return (_deserializationReferences.Count > 0 ? _deserializationReferences[1] : null);
     }
 
+    /// <summary>
+    /// Gets a deserialized object based on the object's
+    /// reference id within the serialization stream.
+    /// </summary>
+    /// <param name="referenceId">Id of object in stream.</param>
+    /// <returns></returns>
     public IMobileObject GetObject(int referenceId)
     {
       return _deserializationReferences[referenceId];

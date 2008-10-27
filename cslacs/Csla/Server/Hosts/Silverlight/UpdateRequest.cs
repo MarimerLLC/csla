@@ -17,12 +17,21 @@ namespace Csla.Server.Hosts.Silverlight
     [DataMember]
     public byte[] ObjectData { get; set; }
 
+    /// <summary>
+    /// Serialized principal object.
+    /// </summary>
     [DataMember]
     public byte[] Principal { get; set; }
 
+    /// <summary>
+    /// Serialized global context object.
+    /// </summary>
     [DataMember]
     public byte[] GlobalContext { get; set; }
 
+    /// <summary>
+    /// Serialized client context object.
+    /// </summary>
     [DataMember]
     public byte[] ClientContext { get; set; }
   }

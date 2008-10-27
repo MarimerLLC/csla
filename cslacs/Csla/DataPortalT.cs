@@ -66,6 +66,10 @@ namespace Csla
 
     private Csla.Core.ContextDictionary _globalContext;
 
+    /// <summary>
+    /// Gets a reference to the global context returned from
+    /// the background thread and/or server.
+    /// </summary>
     public Csla.Core.ContextDictionary GlobalContext
     {
       get { return _globalContext; }
@@ -143,6 +147,13 @@ namespace Csla
       BeginCreate(criteria, null);
     }
 
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to create a new object, which is loaded 
+    /// with default values from the database.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    /// <param name="userState">User state data.</param>
     public void BeginCreate(object criteria, object userState)
     {
       var bw = new System.ComponentModel.BackgroundWorker();
@@ -252,6 +263,13 @@ namespace Csla
       BeginFetch(criteria, null);
     }
 
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to retrieve an existing object, which is loaded 
+    /// with values from the database.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    /// <param name="userState">User state data.</param>
     public void BeginFetch(object criteria, object userState)
     {
       var bw = new System.ComponentModel.BackgroundWorker();
@@ -350,6 +368,12 @@ namespace Csla
       BeginUpdate(obj, null);
     }
 
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to update an object.
+    /// </summary>
+    /// <param name="obj">Object to update.</param>
+    /// <param name="userState">User state data.</param>
     public void BeginUpdate(object obj, object userState)
     {
       var bw = new System.ComponentModel.BackgroundWorker();
@@ -445,6 +469,12 @@ namespace Csla
       BeginDelete(criteria, null);
     }
 
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to delete an object.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    /// <param name="userState">User state data.</param>
     public void BeginDelete(object criteria, object userState)
     {
       var bw = new System.ComponentModel.BackgroundWorker();
@@ -475,13 +505,27 @@ namespace Csla
 
     #region Execute
 
+    /// <summary>
+    /// Event indicating an execute operation is complete.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
 
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to execute a command object.
+    /// </summary>
+    /// <param name="command">Command object to execute.</param>
     public void BeginExecute(T command)
     {
       BeginExecute(command, null);
     }
 
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to execute a command object.
+    /// </summary>
+    /// <param name="command">Command object to execute.</param>
+    /// <param name="userState">User state data.</param>
     public void BeginExecute(T command, object userState)
     {
       var bw = new System.ComponentModel.BackgroundWorker();
@@ -516,6 +560,10 @@ namespace Csla
       e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, request.UserState);
     }
 
+    /// <summary>
+    /// Raises the ExecuteCompleted event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
     {
       if (ExecuteCompleted != null)

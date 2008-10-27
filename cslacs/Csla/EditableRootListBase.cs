@@ -166,6 +166,16 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Raises the Saved event.
+    /// </summary>
+    /// <param name="newObject">
+    /// Reference to object returned from the save.
+    /// </param>
+    /// <param name="e">
+    /// Reference to any exception that occurred during
+    /// the save.
+    /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnSaved(T newObject, Exception e)
     {
@@ -309,6 +319,10 @@ namespace Csla
 
     #region  Serialization Notification
 
+    /// <summary>
+    /// Method invoked when list is deserialized so
+    /// child object processing can occur.
+    /// </summary>
     protected internal override void OnDeserializedInternal()
     {
       foreach (IEditableBusinessObject child in this)

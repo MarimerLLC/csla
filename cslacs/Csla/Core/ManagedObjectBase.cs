@@ -10,6 +10,10 @@ using Csla.Serialization;
 
 namespace Csla.Core
 {
+  /// <summary>
+  /// Base class for an object that is serializable
+  /// using MobileFormatter.
+  /// </summary>
   [Serializable]
   public abstract class ManagedObjectBase : MobileObject,
     INotifyPropertyChanged
@@ -17,6 +21,10 @@ namespace Csla.Core
     #region Field Manager
 
     private FieldDataManager _fieldManager;
+    /// <summary>
+    /// Gets a reference to the field mananger
+    /// for this object.
+    /// </summary>
     protected FieldDataManager FieldManager
     {
       get
@@ -253,6 +261,10 @@ namespace Csla.Core
       remove { _propertyChanged = (PropertyChangedEventHandler)Delegate.Remove(_propertyChanged, value); }
     }
 
+    /// <summary>
+    /// Raises the PropertyChanged event.
+    /// </summary>
+    /// <param name="propertyName">Name of the changed property.</param>
     protected void OnPropertyChanged(string propertyName)
     {
       if (_propertyChanged != null)
@@ -263,6 +275,12 @@ namespace Csla.Core
 
     #region MobileObject
 
+    /// <summary>
+    /// Override this method to manually retrieve child
+    /// object data from the serializations stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="formatter">Reference to the MobileFormatter.</param>
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (_fieldManager != null)
@@ -274,6 +292,12 @@ namespace Csla.Core
       base.OnGetChildren(info, formatter);
     }
 
+    /// <summary>
+    /// Override this method to manually serialize child
+    /// objects into the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="formatter">Reference to the MobileFormatter.</param>
     protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (info.Children.ContainsKey("_fieldManager"))

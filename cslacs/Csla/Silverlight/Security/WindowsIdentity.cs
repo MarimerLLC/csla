@@ -30,7 +30,7 @@ namespace Csla.Silverlight.Security
     /// </summary>
     public WindowsIdentity() 
     {
-      _forceInit = 0;
+      _forceInit = _forceInit + 0;
     }
 
     /// <summary>

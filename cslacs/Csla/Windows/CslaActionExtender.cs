@@ -16,6 +16,10 @@ using Csla.Validation;
 
 namespace Csla.Windows
 {
+  /// <summary>
+  /// Extender control providing automation around
+  /// data binding to CSLA .NET business objects.
+  /// </summary>
   [ToolboxItem(true)]
   [ProvideProperty("ActionType", typeof(Control))]
   [ProvideProperty("PostSaveAction", typeof(Control))]
@@ -61,8 +65,6 @@ namespace Csla.Windows
 
     private static object DataSourceDefault = null;
     private static bool AutoShowBrokenRulesDefault = true;
-    private static bool InvalidateOnWarningsDefault = false;
-    private static bool InvalidateOnInformationDefault = false;
     private static bool WarnIfCloseOnDirtyDefault = true;
     private static string DirtyWarningMessageDefault = STR_DirtyWarningMessagePropertyDefault;
     private static bool WarnOnCancelDefault = false;
@@ -72,6 +74,10 @@ namespace Csla.Windows
 
     #region Constructors
 
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="container">Container for the component.</param>
     public CslaActionExtender(IContainer container)
       : base()
     {
@@ -86,15 +92,15 @@ namespace Csla.Windows
     private Dictionary<Control, CslaActionExtenderProperties> _Sources = 
       new Dictionary<Control, CslaActionExtenderProperties>();
 
-    protected object _dataSource = DataSourceDefault;
-    protected bool _autoShowBrokenRules = AutoShowBrokenRulesDefault;
-    protected bool _warnIfCloseOnDirty = WarnIfCloseOnDirtyDefault;
-    protected string _dirtyWarningMessage = DirtyWarningMessageDefault;
-    protected bool _warnOnCancel = WarnOnCancelDefault;
-    protected string _warnOnCancelMessage = WarnOnCancelMessageDefault;
-    protected IContainer _container = null;
-    protected BindingSourceNode _bindingSourceTree = null;
-    protected bool _CloseForm = false;
+    private object _dataSource = DataSourceDefault;
+    private bool _autoShowBrokenRules = AutoShowBrokenRulesDefault;
+    private bool _warnIfCloseOnDirty = WarnIfCloseOnDirtyDefault;
+    private string _dirtyWarningMessage = DirtyWarningMessageDefault;
+    private bool _warnOnCancel = WarnOnCancelDefault;
+    private string _warnOnCancelMessage = WarnOnCancelMessageDefault;
+    private IContainer _container = null;
+    private BindingSourceNode _bindingSourceTree = null;
+    private bool _closeForm = false;
 
     #endregion
 
@@ -112,6 +118,9 @@ namespace Csla.Windows
 
     #region Public properties
 
+    /// <summary>
+    /// Gets or sets a reference to the data source object.
+    /// </summary>
     [Category("Data")]
     [Description(STR_DataSourcePropertyDescription)]
     [AttributeProvider(typeof(IListSource))]
@@ -130,6 +139,10 @@ namespace Csla.Windows
       }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to automatically
+    /// show broken rules.
+    /// </summary>
     [Category("Behavior")]
     [Description(STR_AutoShowBrokenRulesPropertyDescription)]
     [Bindable(true)]
@@ -140,6 +153,10 @@ namespace Csla.Windows
       set { _autoShowBrokenRules = value; }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to warn the
+    /// user on close when the object is dirty.
+    /// </summary>
     [Category("Behavior")]
     [Description(STR_WarnIfCloseOnDirtyPropertyDescription)]
     [Bindable(true)]
@@ -150,6 +167,10 @@ namespace Csla.Windows
       set { _warnIfCloseOnDirty = value; }
     }
 
+    /// <summary>
+    /// Gets or sets the message shown to the user
+    /// in a close on dirty warning.
+    /// </summary>
     [Category("Behavior")]
     [Description(STR_DirtyWarningMessagePropertyDescription)]
     [Bindable(true)]
@@ -160,6 +181,10 @@ namespace Csla.Windows
       set { _dirtyWarningMessage = value; }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to warn
+    /// the user on cancel.
+    /// </summary>
     [Category("Behavior")]
     [Description(STR_WarnOnCancelPropertyDescription)]
     [Bindable(true)]
@@ -170,6 +195,10 @@ namespace Csla.Windows
       set { _warnOnCancel = value; }
     }
 
+    /// <summary>
+    /// Gets or sets the message shown to the user
+    /// in a warn on cancel.
+    /// </summary>
     [Category("Behavior")]
     [Description(STR_WarnOnCancelMessagePropertyDescription)]
     [Bindable(true)]
@@ -186,6 +215,11 @@ namespace Csla.Windows
 
     #region ActionType
 
+    /// <summary>
+    /// Gets the action type.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
+    /// <returns></returns>
     [Category("Csla")]
     [Description(STR_ActionTypePropertyDescription)]
     [Bindable(true)]
@@ -198,6 +232,11 @@ namespace Csla.Windows
         return CslaActionExtenderProperties.ActionTypeDefault;
     }
 
+    /// <summary>
+    /// Sets the action type.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
+    /// <param name="value">Value for property.</param>
     [Category("Csla")]
     [Description(STR_ActionTypePropertyDescription)]
     [Bindable(true)]
@@ -218,6 +257,11 @@ namespace Csla.Windows
 
     #region PostSaveAction
 
+    /// <summary>
+    /// Gets the post save action.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
+    /// <returns></returns>
     [Category("Csla")]
     [Description(STR_PostSaveActionTypePropertyDescription)]
     [Bindable(true)]
@@ -230,6 +274,11 @@ namespace Csla.Windows
         return CslaActionExtenderProperties.PostSaveActionDefault;
     }
 
+    /// <summary>
+    /// Sets the post save action.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
+    /// <param name="value">Value for property.</param>
     [Category("Csla")]
     [Description(STR_PostSaveActionTypePropertyDescription)]
     [Bindable(true)]
@@ -250,6 +299,10 @@ namespace Csla.Windows
 
     #region RebindAfterSave
 
+    /// <summary>
+    /// Gets the rebind after save value.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
     [Category("Csla")]
     [Description(STR_RebindAfterSavePropertyDescription)]
     [Bindable(true)]
@@ -262,6 +315,11 @@ namespace Csla.Windows
         return CslaActionExtenderProperties.RebindAfterSaveDefault;
     }
 
+    /// <summary>
+    /// Sets the rebind after save value.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
+    /// <param name="value">Value for property.</param>
     [Category("Csla")]
     [Description(STR_RebindAfterSavePropertyDescription)]
     [Bindable(true)]
@@ -282,6 +340,10 @@ namespace Csla.Windows
 
     #region DisableWhenClean
 
+    /// <summary>
+    /// Gets the disable when clean value.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
     [Category("Csla")]
     [Description(STR_DisableWhenCleanPropertyDescription)]
     [Bindable(true)]
@@ -294,6 +356,11 @@ namespace Csla.Windows
         return CslaActionExtenderProperties.DisableWhenCleanDefault;
     }
 
+    /// <summary>
+    /// Sets the disable when clean value.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
+    /// <param name="value">Value for property.</param>
     [Category("Csla")]
     [Description(STR_DisableWhenCleanPropertyDescription)]
     [Bindable(true)]
@@ -314,6 +381,10 @@ namespace Csla.Windows
 
     #region CommandName
 
+    /// <summary>
+    /// Gets the command name value.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
     [Category("Csla")]
     [Description(STR_CommandNamePropertyDescription)]
     [Bindable(true)]
@@ -326,6 +397,11 @@ namespace Csla.Windows
         return CslaActionExtenderProperties.CommandNameDefault;
     }
 
+    /// <summary>
+    /// Sets the command name value.
+    /// </summary>
+    /// <param name="ctl">Reference to control.</param>
+    /// <param name="value">Value for property.</param>
     [Category("Csla")]
     [Description(STR_CommandNamePropertyDescription)]
     [Bindable(true)]
@@ -348,34 +424,58 @@ namespace Csla.Windows
 
     #region Event declarations
 
+    /// <summary>
+    /// Event indicating the user is clicking on the control.
+    /// </summary>
     [Category("Csla")]
     [Description(STR_ClickingEventDescription)]
     public event EventHandler<CslaActionCancelEventArgs> Clicking;
 
+    /// <summary>
+    /// Event indicating the user clicked on the control.
+    /// </summary>
     [Category("Csla")]
     [Description(STR_ClickedEventDescription)]
     public event EventHandler<CslaActionEventArgs> Clicked;
 
+    /// <summary>
+    /// Event indicating an error was encountered.
+    /// </summary>
     [Category("Csla")]
     [Description(STR_ErrorEncounteredDescription)]
     public event EventHandler<ErrorEncounteredEventArgs> ErrorEncountered;
 
+    /// <summary>
+    /// Event indicating the object is set for new.
+    /// </summary>
     [Category("Csla")]
     [Description(STR_SetForNewEventDescription)]
     public event EventHandler<CslaActionEventArgs> SetForNew;
 
+    /// <summary>
+    /// Event indicating the business object is in an invalid state.
+    /// </summary>
     [Category("Csla")]
     [Description(STR_BusinessObjectInvalidEventDescription)]
     public event EventHandler<CslaActionEventArgs> BusinessObjectInvalid;
 
+    /// <summary>
+    /// Event indicating the business object has broken rules.
+    /// </summary>
     [Category("Csla")]
     [Description(STR_HasBrokenRulesEventDescription)]
     public event EventHandler<HasBrokenRulesEventArgs> HasBrokenRules;
 
+    /// <summary>
+    /// Event indicating that the object is saving.
+    /// </summary>
     [Category("Csla")]
     [Description(STR_ObjectSavingEventDescription)]
     public event EventHandler<CslaActionCancelEventArgs> ObjectSaving;
 
+    /// <summary>
+    /// Event indicating that the object has been saved.
+    /// </summary>
     [Category("Csla")]
     [Description(STR_ObjectSavedEventDescription)]
     public event EventHandler<CslaActionEventArgs> ObjectSaved;
@@ -384,48 +484,80 @@ namespace Csla.Windows
 
     #region OnEvent methods
 
+    /// <summary>
+    /// Raises the Clicking event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnClicking(CslaActionCancelEventArgs e)
     {
       if (Clicking != null)
         Clicking(this, e);
     }
 
+    /// <summary>
+    /// Raises the Clicked event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnClicked(CslaActionEventArgs e)
     {
       if (Clicked != null)
         Clicked(this, e);
     }
 
+    /// <summary>
+    /// Raises the ErrorEncountered event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnErrorEncountered(ErrorEncounteredEventArgs e)
     {
       if (ErrorEncountered != null)
         ErrorEncountered(this, e);
     }
 
+    /// <summary>
+    /// Raises the SetForNew event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnSetForNew(CslaActionEventArgs e)
     {
       if (SetForNew != null)
         SetForNew(this, e);
     }
 
+    /// <summary>
+    /// Raises the BusinessObjectInvalid event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnBusinessObjectInvalid(CslaActionEventArgs e)
     {
       if (BusinessObjectInvalid != null)
         BusinessObjectInvalid(this, e);
     }
 
+    /// <summary>
+    /// Raises the HasBrokenRules event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnHasBrokenRules(HasBrokenRulesEventArgs e)
     {
       if (HasBrokenRules != null)
         HasBrokenRules(this, e);
     }
 
+    /// <summary>
+    /// Raises the ObjectSaving event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnObjectSaving(CslaActionCancelEventArgs e)
     {
       if (ObjectSaving != null)
         ObjectSaving(this, e);
     }
 
+    /// <summary>
+    /// Raises the ObjectSaved event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
     protected virtual void OnObjectSaved(CslaActionEventArgs e)
     {
       if (ObjectSaved != null)
@@ -436,6 +568,10 @@ namespace Csla.Windows
 
     #region Public methods
 
+    /// <summary>
+    /// Resets all action behaviors.
+    /// </summary>
+    /// <param name="objectToBind">Target object.</param>
     public void ResetActionBehaviors(ISavable objectToBind)
     {
       InitializeControls(true);
@@ -457,6 +593,11 @@ namespace Csla.Windows
 
     #region Protected methods
 
+    /// <summary>
+    /// Method invoked when the target control is clicked.
+    /// </summary>
+    /// <param name="sender">Object originating action.</param>
+    /// <param name="e">Arguments.</param>
     protected void OnClick(object sender, System.EventArgs e)
     {
       Control ctl = (Control)sender;
@@ -634,7 +775,7 @@ namespace Csla.Windows
                 if (diagResult == System.Windows.Forms.DialogResult.Yes)
                 {
                   _bindingSourceTree.Close();
-                  _CloseForm = true;
+                  _closeForm = true;
                 }
 
                 break;
@@ -654,7 +795,7 @@ namespace Csla.Windows
             }
           }
 
-          if (_CloseForm)
+          if (_closeForm)
             CloseForm();
           
         }

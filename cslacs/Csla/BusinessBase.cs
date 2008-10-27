@@ -162,11 +162,21 @@ namespace Csla
       BeginSave(null);
     }
 
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    /// <param name="userState">User state data.</param>
     public void BeginSave(object userState)
     {
       BeginSave(false, null, userState);
     }
 
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    /// <param name="handler">Callback handler.</param>
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(false, handler, null);
@@ -176,10 +186,16 @@ namespace Csla
     /// Saves the object to the database, forcing
     /// IsNew to <see langword="false"/> and IsDirty to True.
     /// </summary>
+    /// <param name="forceUpdate">
+    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+    /// If <see langword="false"/> then it is the same as calling Save().
+    /// </param>
     /// <param name="handler">
     /// Delegate reference to a callback handler that will
     /// be invoked when the async operation is complete.
     /// </param>
+    /// <param name="handler">Callback handler.</param>
+    /// <param name="userState">User state data.</param>
     public virtual void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
     {
       if (forceUpdate && IsNew)
@@ -297,6 +313,20 @@ namespace Csla
       this.BeginSave(forceUpdate, handler, null);
     }
 
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    /// <param name="handler">
+    /// Delegate reference to a callback handler that will
+    /// be invoked when the async operation is complete.
+    /// </param>
+    /// <param name="userState">User state data.</param>
+    /// <remarks>
+    /// This overload is designed for use in web applications
+    /// when implementing the Update method in your 
+    /// data wrapper object.
+    /// </remarks>
     public void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
       this.BeginSave(false, handler, userState);

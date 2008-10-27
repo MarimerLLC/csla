@@ -429,17 +429,34 @@ namespace Csla.Server
     #region Authorize
 
     private static object _syncRoot = new object();
-    protected static IAuthorizeDataPortal _authorizer = null;
+    private static IAuthorizeDataPortal _authorizer = null;
 
+    /// <summary>
+    /// Gets or sets a reference to the current authorizer.
+    /// </summary>
+    protected static IAuthorizeDataPortal Authorizer
+    {
+      get { return _authorizer; }
+      set { _authorizer = value; }
+    }
 
     private static void Authorize(AuthorizeRequest clientRequest)
     {
       _authorizer.Authorize(clientRequest);
     }
 
- 
+    /// <summary>
+    /// Default implementation of the authorizer that
+    /// allows all data portal calls to pass.
+    /// </summary>
     protected class NullAuthorizer : IAuthorizeDataPortal
     {
+      /// <summary>
+      /// Creates an instance of the type.
+      /// </summary>
+      /// <param name="clientRequest">
+      /// Client request information.
+      /// </param>
       public void Authorize(AuthorizeRequest clientRequest)
       { /* default is to allow all requests */ }
     }

@@ -15,6 +15,9 @@ using System.Globalization;
 
 namespace Csla.Wpf
 {
+  /// <summary>
+  /// Control that displays a busy animation.
+  /// </summary>
   [TemplatePart(Name = "part1", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "part2", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "part3", Type = typeof(FrameworkElement))]
@@ -43,6 +46,10 @@ namespace Csla.Wpf
 
     #region Dependency properties
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the busy
+    /// animation is running.
+    /// </summary>
     public static readonly DependencyProperty IsRunningProperty = DependencyProperty.Register(
       "IsRunning",
       typeof(object),
@@ -52,6 +59,9 @@ namespace Csla.Wpf
         FrameworkPropertyMetadataOptions.AffectsRender,
         (o, e) => ((BusyAnimation)o).SetState((bool)e.NewValue)));
 
+    /// <summary>
+    /// Gets or sets the state duration for the animation.
+    /// </summary>
     public static readonly DependencyProperty StateDurationProperty = DependencyProperty.Register(
       "StateDuration",
       typeof(TimeSpan),
@@ -73,6 +83,9 @@ namespace Csla.Wpf
     private Storyboard _normalStoryboard;
     private Storyboard[] _isRunningStoryboard;
 
+    /// <summary>
+    /// Gets or sets the state duration for the animation.
+    /// </summary>
     public TimeSpan StateDuration
     {
       get { return (TimeSpan)GetValue(StateDurationProperty); }
@@ -83,6 +96,10 @@ namespace Csla.Wpf
       }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the busy
+    /// animation is running.
+    /// </summary>
     public bool IsRunning
     {
       get { return (bool)GetValue(IsRunningProperty); }
@@ -120,6 +137,9 @@ namespace Csla.Wpf
 
     #region Constructor
 
+    /// <summary>
+    /// Creates an instance of the control.
+    /// </summary>
     public BusyAnimation()
     {
       _timer = new DispatcherTimer();

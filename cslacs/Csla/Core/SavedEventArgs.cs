@@ -20,6 +20,9 @@ namespace Csla.Core
     }
 
     private Exception _error;
+    /// <summary>
+    /// Gets any exception that occurred during the save.
+    /// </summary>
     public Exception Error
     {
       get
@@ -29,6 +32,9 @@ namespace Csla.Core
     }
 
     private object _userState;
+    /// <summary>
+    /// Gets the user state object.
+    /// </summary>
     public object UserState
     {
       get { return _userState; }
@@ -48,6 +54,15 @@ namespace Csla.Core
       _userState = null;
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="newObject">
+    /// The object that was returned as a
+    /// result of the Save() operation.
+    /// </param>
+    /// <param name="error">Exception object.</param>
+    /// <param name="userState">User state object.</param>
     public SavedEventArgs(object newObject, Exception error, object userState)
     {
       _newObject = newObject;

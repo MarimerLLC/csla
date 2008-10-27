@@ -18,6 +18,13 @@ namespace Csla.Core
     /// the new object when the save operation completes.
     /// </summary>
     void BeginSave();
+    /// <summary>
+    /// Saves the object to the database asynchronously. The saved event will contain
+    /// the new object when the save operation completes.
+    /// </summary>
+    /// <param name="userState">
+    /// User state object.
+    /// </param>
     void BeginSave(object userState);
     /// <summary>
     /// INTERNAL CSLA .NET USE ONLY.

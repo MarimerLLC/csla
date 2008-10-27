@@ -16,7 +16,7 @@ namespace Csla.Validation
     private AsyncRuleArgs _args;
     private string _ruleName = String.Empty;
     private RuleSeverity _severity;
-    private int _priority;
+    private const int _priority = 0;
 
     /// <summary>
     /// Returns the name of the method implementing the rule
@@ -66,6 +66,7 @@ namespace Csla.Validation
     /// </summary>
     /// <param name="handler">The address of the method implementing the rule.</param>
     /// <param name="args">A RuleArgs object.</param>
+    /// <param name="severity">Severity of the rule.</param>
     public AsyncRuleMethod(AsyncRuleHandler handler, AsyncRuleArgs args, RuleSeverity severity)
     {
       _handler = handler;

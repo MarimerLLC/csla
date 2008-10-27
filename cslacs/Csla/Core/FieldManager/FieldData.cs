@@ -184,6 +184,10 @@ namespace Csla.Core.FieldManager
       remove { throw new NotImplementedException(); }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this object or
+    /// any of its child objects are busy.
+    /// </summary>
     [Browsable(false)]
     public bool IsBusy
     {
@@ -211,18 +215,31 @@ namespace Csla.Core.FieldManager
     [NonSerialized]
     private EventHandler<ErrorEventArgs> _unhandledAsyncException;
 
+    /// <summary>
+    /// Event indicating that an exception occurred on
+    /// a background thread.
+    /// </summary>
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
       add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="error">Exception that occurred on the background thread.</param>
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="originalSender">Original source of the event.</param>
+    /// <param name="error">Exception that occurred on the background thread.</param>
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
       OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));

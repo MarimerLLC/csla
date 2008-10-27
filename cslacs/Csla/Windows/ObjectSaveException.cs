@@ -39,7 +39,6 @@ namespace Csla.Windows
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// </param>
     /// <param name="innerException">
     /// Reference to an inner exception.
     /// </param>

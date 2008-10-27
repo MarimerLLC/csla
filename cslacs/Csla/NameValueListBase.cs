@@ -193,6 +193,12 @@ namespace Csla
         return _value.ToString();
       }
 
+      /// <summary>
+      /// Override this method to manually get custom field
+      /// values from the serialization stream.
+      /// </summary>
+      /// <param name="info">Serialization info.</param>
+      /// <param name="mode">Serialization mode.</param>
       protected override void OnGetState(SerializationInfo info, StateMode mode)
       {
         base.OnGetState(info, mode);
@@ -200,6 +206,12 @@ namespace Csla
         info.AddValue("NameValuePair._value", _value);
       }
 
+      /// <summary>
+      /// Override this method to manually set custom field
+      /// values into the serialization stream.
+      /// </summary>
+      /// <param name="info">Serialization info.</param>
+      /// <param name="mode">Serialization mode.</param>
       protected override void OnSetState(SerializationInfo info, StateMode mode)
       {
         base.OnSetState(info, mode);
@@ -264,6 +276,9 @@ namespace Csla
         : base(collectionType)
       { }
 
+      /// <summary>
+      /// Creates an instance of the type.
+      /// </summary>
       public Criteria() { }
     }
 

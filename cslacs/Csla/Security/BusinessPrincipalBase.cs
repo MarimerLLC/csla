@@ -14,6 +14,10 @@ namespace Csla.Security
   public class BusinessPrincipalBase : Csla.Core.MobileObject, IPrincipal
   {
     private IIdentity _identity;
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     protected BusinessPrincipalBase() { _identity = new UnauthenticatedIdentity(); }
 
     /// <summary>
@@ -47,11 +51,24 @@ namespace Csla.Security
       _identity = identity;
     }
 
+    /// <summary>
+    /// Override this method to get custom field values
+    /// from the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="mode">Serialization mode.</param>
     protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)
     {
       info.AddValue("BusinessPrincipalBase.Identity", MobileFormatter.Serialize(_identity));
       base.OnGetState(info, mode);
     }
+
+    /// <summary>
+    /// Override this method to set custom field values
+    /// ito the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="mode">Serialization mode.</param>
     protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)
     {
       base.OnSetState(info, mode);

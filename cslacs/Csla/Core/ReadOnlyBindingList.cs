@@ -136,6 +136,10 @@ namespace Csla.Core
 
     #region ITrackStatus
 
+    /// <summary>
+    /// Gets a value indicating whether this object or its
+    /// child objects are busy.
+    /// </summary>
     public override bool IsBusy
     {
       get

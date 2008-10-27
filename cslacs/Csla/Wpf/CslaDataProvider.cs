@@ -149,6 +149,9 @@ namespace Csla.Wpf
       }
     }
 
+    /// <summary>
+    /// Gets a value indicating if this object is busy.
+    /// </summary>
     public bool IsBusy
     {
       get { return _isBusy; }

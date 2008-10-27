@@ -8,11 +8,19 @@ using Csla.Core;
 
 namespace Csla.Security
 {
+  /// <summary>
+  /// Provides a base class to simplify creation of
+  /// a .NET identity object for use with BusinessPrincipalBase.
+  /// </summary>
   [Serializable()]
   public abstract partial class CslaIdentity : ReadOnlyBase<CslaIdentity>, IIdentity, ICheckRoles
   {
     #region UnauthenticatedIdentity
 
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <returns></returns>
     public static CslaIdentity UnauthenticatedIdentity()
     {
       return new Csla.Security.UnauthenticatedIdentity();
@@ -22,6 +30,9 @@ namespace Csla.Security
     #region  IsInRole
 
     private static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty(new PropertyInfo<MobileList<string>>("Roles"));
+    /// <summary>
+    /// Gets or sets the list of roles for this user.
+    /// </summary>
     protected MobileList<string> Roles
     {
       get { return GetProperty(RolesProperty); }
@@ -43,6 +54,9 @@ namespace Csla.Security
 
     private static readonly PropertyInfo<string> AuthenticationTypeProperty = 
       RegisterProperty<string>(new PropertyInfo<string>("AuthenticationType", "Authentication type", "Csla"));
+    /// <summary>
+    /// Gets the authentication type for this identity.
+    /// </summary>
     public string AuthenticationType
     {
       get { return GetProperty<string>(AuthenticationTypeProperty); }
@@ -50,6 +64,10 @@ namespace Csla.Security
     }
 
     private static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(new PropertyInfo<bool>("IsAuthenticated"));
+    /// <summary>
+    /// Gets a value indicating whether this identity represents
+    /// an authenticated user.
+    /// </summary>
     public bool IsAuthenticated
     {
       get { return GetProperty<bool>(IsAuthenticatedProperty); }
@@ -57,6 +75,9 @@ namespace Csla.Security
     }
 
     private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name"));
+    /// <summary>
+    /// Gets the username value.
+    /// </summary>
     public string Name
     {
       get { return GetProperty<string>(NameProperty); }

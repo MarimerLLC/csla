@@ -19,11 +19,20 @@ namespace Csla.Reflection
   /// Parameters passed to method.
   /// </param>
   public delegate object DynamicMethodDelegate(object target, object[] args);
-
+  /// <summary>
+  /// Delegate for getting a value.
+  /// </summary>
+  /// <param name="target">Target object.</param>
+  /// <returns></returns>
   public delegate object DynamicMemberGetDelegate(object target);
+  /// <summary>
+  /// Delegate for setting a value.
+  /// </summary>
+  /// <param name="target">Target object.</param>
+  /// <param name="arg">Argument value.</param>
   public delegate void DynamicMemberSetDelegate(object target, object arg);
 
-    internal static class DynamicMethodHandlerFactory
+  internal static class DynamicMethodHandlerFactory
   {
     public static DynamicCtorDelegate CreateConstructor(ConstructorInfo constructor)
     {

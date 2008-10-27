@@ -20,7 +20,9 @@ namespace Csla.Server.Hosts.Silverlight
     /// </summary>
     [DataMember]
     public WcfErrorInfo ErrorData { get; set; }
-
+    /// <summary>
+    /// Serialized global context data.
+    /// </summary>
     [DataMember]
     public byte[] GlobalContext { get; set; }
   }

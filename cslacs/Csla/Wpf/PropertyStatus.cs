@@ -16,6 +16,10 @@ using System.Windows.Media.Animation;
 
 namespace Csla.Wpf
 { 
+  /// <summary>
+  /// Control providing services around business object
+  /// validation, authorization and async busy status.
+  /// </summary>
   [TemplatePart(Name = "root", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "popup", Type = typeof(Popup))]
   [TemplatePart(Name = "errorImage", Type = typeof(FrameworkElement))]
@@ -30,6 +34,9 @@ namespace Csla.Wpf
   {
     #region Constructors
 
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
     public PropertyStatus()
     {
       DefaultStyleKey = typeof(PropertyStatus);
@@ -42,6 +49,9 @@ namespace Csla.Wpf
 
     #region Dependency properties
 
+    /// <summary>
+    /// Reference to the data source object.
+    /// </summary>
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
       "Source",
       typeof(object),
@@ -51,26 +61,45 @@ namespace Csla.Wpf
         FrameworkPropertyMetadataOptions.AffectsRender,
         (o, e) => ((PropertyStatus)o).SetSource(e.OldValue, e.NewValue)));
 
+    /// <summary>
+    /// Defines the business object property to watch for
+    /// validation, authorization and busy status.
+    /// </summary>
     public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
       "Property",
       typeof(string),
       typeof(PropertyStatus));
 
+    /// <summary>
+    /// Gets a reference to the business object's
+    /// broken rules collection.
+    /// </summary>
     public static readonly DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
       "BrokenRules",
       typeof(ObservableCollection<BrokenRule>),
       typeof(PropertyStatus));
 
+    /// <summary>
+    /// Reference to the target UI control to be managed
+    /// for authorization rules.
+    /// </summary>
     public static readonly DependencyProperty TargetProperty = DependencyProperty.Register(
       "Target",
       typeof(DependencyObject),
       typeof(PropertyStatus));
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the PropertyStatus
+    /// control should be in busy mode.
+    /// </summary>
     public static readonly DependencyProperty IsBusyProperty = DependencyProperty.Register(
       "IsBusy",
       typeof(bool),
       typeof(PropertyStatus));
 
+    /// <summary>
+    /// Reference to the template for the validation rule popup.
+    /// </summary>
     public static readonly DependencyProperty PopupTemplateProperty = DependencyProperty.Register(
       "PopupTemplate",
       typeof(ControlTemplate),
@@ -85,6 +114,9 @@ namespace Csla.Wpf
     private RuleSeverity _worst;
     private FrameworkElement _lastImage;
 
+    /// <summary>
+    /// Gets or sets a reference to the data source object.
+    /// </summary>
     public object Source
     {
       get { return GetValue(SourceProperty); }
@@ -97,30 +129,50 @@ namespace Csla.Wpf
       }
     }
 
+    /// <summary>
+    /// Gets or sets the name of the business object
+    /// property to be monitored.
+    /// </summary>
     public string Property
     {
       get { return (string)GetValue(PropertyProperty); }
       set { SetValue(PropertyProperty, value); }
     }
 
+    /// <summary>
+    /// Gets a reference to the business object's
+    /// broken rules collection.
+    /// </summary>
     public ObservableCollection<BrokenRule> BrokenRules
     {
       get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
       private set { SetValue(BrokenRulesProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets a reference to the UI control to
+    /// be managed based on authorization rules.
+    /// </summary>
     public DependencyObject Target
     {
       get { return (DependencyObject)GetValue(TargetProperty); }
       set { SetValue(TargetProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the PropertyStatus
+    /// control should be in busy mode.
+    /// </summary>
     public bool IsBusy
     {
       get { return (bool)GetValue(IsBusyProperty); }
       set { SetValue(IsBusyProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets the template for the validation rules
+    /// popup.
+    /// </summary>
     public ControlTemplate PopupTemplate
     {
       get { return (ControlTemplate)GetValue(PopupTemplateProperty); }

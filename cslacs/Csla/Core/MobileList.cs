@@ -19,8 +19,19 @@ namespace Csla.Core
   [Serializable]
   public class MobileList<T> : List<T>, IMobileObject
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
     public MobileList() : base() { }
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="capacity">Capacity of the list.</param>
     public MobileList(int capacity) : base(capacity) { }
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="collection">Data to add to list.</param>
     public MobileList(IEnumerable<T> collection) : base(collection) { }
 
     #region IMobileObject Members

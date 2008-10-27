@@ -36,6 +36,11 @@ namespace Csla.Core
       OnGetState(info);
     }
 
+    /// <summary>
+    /// Override this method to get custom field values
+    /// from the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
     protected virtual void OnGetState(SerializationInfo info)
     {
       info.AddValue("Csla.Core.MobileList.AllowEdit", AllowEdit);
@@ -44,6 +49,12 @@ namespace Csla.Core
       info.AddValue("Csla.Core.MobileList.RaiseListChangedEvents", RaiseListChangedEvents);
     }
 
+    /// <summary>
+    /// Override this method to get custom child object
+    /// values from the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="formatter">Reference to the MobileFormatter.</param>
     protected virtual void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (!typeof(IMobileObject).IsAssignableFrom(typeof(T)))
@@ -73,6 +84,11 @@ namespace Csla.Core
       OnSetChildren(info, formatter);
     }
 
+    /// <summary>
+    /// Override this method to set custom field values
+    /// into the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
     protected virtual void OnSetState(SerializationInfo info)
     {
       AllowEdit = info.GetValue<bool>("Csla.Core.MobileList.AllowEdit");
@@ -81,6 +97,12 @@ namespace Csla.Core
       RaiseListChangedEvents = info.GetValue<bool>("Csla.Core.MobileList.RaiseListChangedEvents");
     }
 
+    /// <summary>
+    /// Override this method to set custom child object
+    /// values into the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="formatter">Reference to the MobileFormatter.</param>
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (!typeof(IMobileObject).IsAssignableFrom(typeof(T)))

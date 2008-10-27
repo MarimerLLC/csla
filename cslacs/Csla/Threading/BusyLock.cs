@@ -55,7 +55,7 @@ namespace Csla.Threading
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// <param name="obj">Target object.</param>
+    /// <param name="target">Target object.</param>
     /// <param name="timeout">Timeout value.</param>
     public BusyLocker(INotifyBusy target, TimeSpan timeout)
     {

@@ -13,7 +13,7 @@ namespace Csla.Data
 {
   /// <summary>
   /// Provides an automated way to reuse 
-  /// ADO.NET Data Services client proxy objects within 
+  /// a service client proxy objects within 
   /// the context of a single data portal operation.
   /// </summary>
   /// <typeparam name="C">

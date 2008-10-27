@@ -317,16 +317,31 @@ namespace Csla.Server.Hosts.Silverlight
 
     #region Extention Method for Requests
 
+    /// <summary>
+    /// Override to convert the request data before it
+    /// is transferred over the network.
+    /// </summary>
+    /// <param name="request">Request object.</param>
     protected virtual UpdateRequest ConvertRequest(UpdateRequest request)
     {
       return request;
     }
 
+    /// <summary>
+    /// Override to convert the request data before it
+    /// is transferred over the network.
+    /// </summary>
+    /// <param name="request">Request object.</param>
     protected virtual CriteriaRequest ConvertRequest(CriteriaRequest request)
     {
       return request;
     }
 
+    /// <summary>
+    /// Override to convert the response data after it
+    /// comes back from the network.
+    /// </summary>
+    /// <param name="response">Response object.</param>
     protected virtual WcfResponse ConvertResponse(WcfResponse response)
     {
       return response;

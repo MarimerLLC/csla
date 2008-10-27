@@ -112,12 +112,20 @@ namespace Csla.Core
     [NonSerialized]
     private BusyChangedEventHandler _busyChanged = null;
 
+    /// <summary>
+    /// Event indicating that the busy status of the
+    /// object has changed.
+    /// </summary>
     public event BusyChangedEventHandler BusyChanged
     {
       add { _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value); }
       remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
+    /// <summary>
+    /// Raises the BusyChanged event.
+    /// </summary>
+    /// <param name="args">Event arguments.</param>
     protected internal virtual void OnBusyChangedInternal(BusyChangedEventArgs args)
     {
       OnBusyChanged(args);
@@ -126,22 +134,37 @@ namespace Csla.Core
         _busyChanged(this, args);
     }
 
+    /// <summary>
+    /// Override this method to be notified when the
+    /// IsBusy property has changed.
+    /// </summary>
+    /// <param name="args">Event arguments.</param>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
     }
 
+    /// <summary>
+    /// Raises the BusyChanged event for a specific property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="busy">New busy value.</param>
     protected void OnBusyChanged(string propertyName, bool busy)
     {
       OnBusyChangedInternal(new BusyChangedEventArgs(propertyName, busy));
     }
 
-
+    /// <summary>
+    /// Gets the busy status for this object and its child objects.
+    /// </summary>
     [Browsable(false)]
     public virtual bool IsBusy
     {
       get { throw new NotImplementedException(); }
     }
 
+    /// <summary>
+    /// Gets the busy status for this object.
+    /// </summary>
     [Browsable(false)]
     public virtual bool IsSelfBusy
     {
@@ -161,12 +184,20 @@ namespace Csla.Core
     [NonSerialized]
     private EventHandler<ErrorEventArgs> _unhandledAsyncException;
 
+    /// <summary>
+    /// Event indicating that an exception occurred during
+    /// an async operation.
+    /// </summary>
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
       add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="error">Event arguments.</param>
     protected internal virtual void OnUnhandledAsyncExceptionInternal(ErrorEventArgs error)
     {
       OnUnhandledAsyncException(error);
@@ -175,10 +206,20 @@ namespace Csla.Core
         _unhandledAsyncException(this, error);
     }
 
+    /// <summary>
+    /// Method invoked when an unhandled async exception has
+    /// occurred.
+    /// </summary>
+    /// <param name="error">Event arguments.</param>
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="originalSender">Original sender of event.</param>
+    /// <param name="error">Exception that occurred.</param>
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
       OnUnhandledAsyncExceptionInternal(new ErrorEventArgs(originalSender, error));
@@ -193,12 +234,21 @@ namespace Csla.Core
 
     #region AddChildHooks
 
+    /// <summary>
+    /// Invoked when an item is inserted into the list.
+    /// </summary>
+    /// <param name="index">Index of new item.</param>
+    /// <param name="item">Reference to new item.</param>
     protected override void InsertItem(int index, T item)
     {
       base.InsertItem(index, item);
       OnAddEventHooksInternal(item);
     }
 
+    /// <summary>
+    /// Adds event hooks to child object in list.
+    /// </summary>
+    /// <param name="item">Reference to child object.</param>
     protected virtual void OnAddEventHooksInternal(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
@@ -224,10 +274,19 @@ namespace Csla.Core
       OnAddEventHooks(item);
     }
 
+    /// <summary>
+    /// Method invoked when events are hooked for a child
+    /// object.
+    /// </summary>
+    /// <param name="item">Reference to child object.</param>
     protected virtual void OnAddEventHooks(T item)
     {
     }
 
+    /// <summary>
+    /// Removes event hooks to child object in list.
+    /// </summary>
+    /// <param name="item">Reference to child object.</param>
     protected internal virtual void OnRemoveEventHooksInternal(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
@@ -253,6 +312,11 @@ namespace Csla.Core
       OnRemoveEventHooks(item);
     }
 
+    /// <summary>
+    /// Method invoked when events are unhooked for a child
+    /// object.
+    /// </summary>
+    /// <param name="item">Reference to child object.</param>
     protected virtual void OnRemoveEventHooks(T item)
     {
     }

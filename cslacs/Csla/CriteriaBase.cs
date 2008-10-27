@@ -17,6 +17,10 @@ namespace Csla
     ICriteria
   {
     private static bool _forceInit = false;
+    /// <summary>
+    /// Defines the TypeName property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static readonly PropertyInfo<string> TypeNameProperty = RegisterProperty(
       typeof(CriteriaBase),
       new PropertyInfo<string>("TypeName"));
@@ -86,7 +90,7 @@ namespace Csla
     /// </summary>
     protected virtual void OnDeserializedInternal()
     {
-      _forceInit = true;
+      _forceInit = _forceInit && false;
       if (FieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
     }

@@ -501,7 +501,7 @@ namespace Csla.Core
           auth = Csla.Security.AuthorizationRules.CanCreateObject(this.GetType());
         else
           auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
-        return (IsDirty && IsValid && !IsBusy && auth);
+        return (auth && IsDirty && IsValid && !IsBusy);
       }
     }
 

@@ -26,8 +26,10 @@ namespace Csla.Validation
 
       _scheme = uri.Scheme + Uri.SchemeDelimiter;
       _typeName = Uri.UnescapeDataString(uri.Host);
-      _methodName = uri.LocalPath.Substring(1);
-      _propertyName = uri.LocalPath.Substring(2);
+
+      var parts = uri.LocalPath.Split('/');
+      _methodName = parts[1];
+      _propertyName = parts[2];
 
       string args = uri.Query;
       if (!(string.IsNullOrEmpty(args)))

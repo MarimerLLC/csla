@@ -568,6 +568,8 @@ namespace Csla
       InnermostWhereFinder whereFinder = new InnermostWhereFinder();
       MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(expression);
       if (whereExpression == null) return;
+      if (whereExpression.Arguments.Count < 2) return;
+      if (whereExpression.Arguments[1] == null) return;
       Expression<Func<T, bool>> whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
       if (whereBody.Body is BinaryExpression)
       {
@@ -582,6 +584,9 @@ namespace Csla
     {
       InnermostWhereFinder whereFinder = new InnermostWhereFinder();
       MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
+      if (whereExpression == null) return false;
+      if (whereExpression.Arguments.Count < 2) return false;
+      if (whereExpression.Arguments[1] == null) return false;
       Expression<Func<T, bool>> whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
 
       var searchable = _list as Linq.IIndexSearchable<T>;

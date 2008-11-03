@@ -740,6 +740,10 @@ namespace Csla
       // Find the call to Where() and get the lambda expression predicate.
       InnermostWhereFinder whereFinder = new InnermostWhereFinder();
       MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
+      if (whereExpression == null) return;
+      if (whereExpression.Arguments.Count < 2) return;
+      if (whereExpression.Arguments[1] == null) return;
+      
       Expression<Func<T, bool>> whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
 
       _filterIndex.Clear();

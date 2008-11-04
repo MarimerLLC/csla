@@ -15,7 +15,13 @@ namespace Csla
   [DebuggerNonUserCode]
 #endif
   [Serializable]
-  public class ReadOnlyBase<T> : Csla.Core.MobileObject, ICloneable, Csla.Security.IAuthorizeReadWrite, Csla.DataPortalClient.IDataPortalTarget, Csla.Serialization.Mobile.IMobileObject, ISerializationNotification
+  public class ReadOnlyBase<T> : 
+    Csla.Core.MobileObject, 
+    ICloneable, 
+    Csla.Security.IAuthorizeReadWrite, 
+    Csla.DataPortalClient.IDataPortalTarget, 
+    Csla.Serialization.Mobile.IMobileObject, 
+    ISerializationNotification
     where T : ReadOnlyBase<T>
   {
 

@@ -25,6 +25,7 @@ namespace Csla.Core
     ICloneable,
     IParent,
     IDataPortalTarget,
+    Csla.Security.IAuthorizeReadWrite,
     IEditableBusinessObject,
     ISerializationNotification,
     IEditableObject,

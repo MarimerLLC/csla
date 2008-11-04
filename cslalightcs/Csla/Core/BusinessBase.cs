@@ -1426,7 +1426,8 @@ namespace Csla.Core
       }
       catch (Exception ex)
       {
-        throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message));
+        throw new PropertyLoadException(
+          string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message), ex);
       }
     }
 
@@ -1482,7 +1483,8 @@ namespace Csla.Core
       }
       catch (Exception ex)
       {
-        throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyName, ex.Message));
+        throw new PropertyLoadException(
+          string.Format(Resources.PropertyLoadException, propertyName, ex.Message), ex);
       }
     }
 
@@ -1563,7 +1565,8 @@ namespace Csla.Core
       }
       catch (Exception ex)
       {
-        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+        throw new PropertyLoadException(
+          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 
@@ -1612,7 +1615,8 @@ namespace Csla.Core
       }
       catch (Exception ex)
       {
-        throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+        throw new PropertyLoadException(
+          string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 
@@ -1646,7 +1650,8 @@ namespace Csla.Core
       }
       catch (Exception ex)
       {
-        throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+        throw new PropertyLoadException(
+          string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 
@@ -1692,7 +1697,8 @@ namespace Csla.Core
       }
       catch (Exception ex)
       {
-        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+        throw new PropertyLoadException(
+          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 
@@ -1737,7 +1743,8 @@ namespace Csla.Core
       }
       catch (Exception ex)
       {
-        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+        throw new PropertyLoadException(
+          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 

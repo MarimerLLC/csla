@@ -170,7 +170,10 @@ namespace Csla
         if (value == null)
           value = string.Empty;
         var tmp = (SmartDate)oldValue;
-        tmp.Text = value.ToString();
+        if (valueType.Equals(typeof(DateTime)))
+          tmp.Date = (DateTime)value;
+        else
+          tmp.Text = value.ToString();
         return tmp;
       }
 

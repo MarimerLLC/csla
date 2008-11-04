@@ -48,5 +48,15 @@ namespace Csla.Test.Utilities
       context.Assert.Success();
       context.Complete();
     }
+
+    [TestMethod]
+    public void SmartDateCoerseValue()
+    {
+      UnitTestContext context = GetContext();
+
+      var date = DateTime.Now;
+      var smart = Csla.Utilities.CoerceValue<Csla.SmartDate>(typeof(DateTime), new Csla.SmartDate(), date);
+      context.Assert.AreEqual(date, smart.Date, "Dates should be equal");
+    }
   }
 }

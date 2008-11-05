@@ -181,6 +181,7 @@
     <Compile Include="DataPortalClient\DesignTimeProxy.cs" />
     <Compile Include="DataPortalResult.cs" />
     <Compile Include="DataPortalT.cs" />
+    <Compile Include="Data\ConnectionManagerT.cs" />
     <Compile Include="Data\DataServiceContextManager.cs" />
     <Compile Include="Data\ObjectContextManager.cs">
       <SubType>Code</SubType>

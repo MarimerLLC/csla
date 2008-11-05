@@ -119,7 +119,8 @@ namespace Csla.Core
       do
       {
         // get the list of fields in this type
-        List<DynamicMemberHandle> handlers = UndoableHandler.GetCachedFieldHandlers(currentType);
+        List<DynamicMemberHandle> handlers = 
+          UndoableHandler.GetCachedFieldHandlers(currentType);
         foreach (var h in handlers)
         {
           var value = h.DynamicMemberGet(this);

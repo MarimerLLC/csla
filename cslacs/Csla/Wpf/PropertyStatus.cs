@@ -317,7 +317,7 @@ namespace Csla.Wpf
 
     private void GoToState(bool useTransitions)
     {
-      if (IsLoaded)
+      if (IsLoaded && !DataPortal.IsInDesignMode)
       {
         DisablePopup(_lastImage);
         HandleTarget();

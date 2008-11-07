@@ -42,7 +42,18 @@ namespace Csla.Wpf
       DefaultStyleKey = typeof(PropertyStatus);
       BrokenRules = new ObservableCollection<BrokenRule>();
 
-      Loaded += (o, e) => { GoToState(true); };
+      Loaded += (o, e) => { UpdateState(); };
+    }
+
+    /// <summary>
+    /// Invoked whenever application code
+    /// or internal processes call System.Windows.FrameworkElement.ApplyTemplate()
+    /// Once template is applied to the control,force state update.
+    /// </summary>
+    public override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+        UpdateState();
     }
 
     #endregion

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{AD7860FD-83E2-4E2C-A859-6FF077980884}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -155,7 +155,7 @@
     <Compile Include="Core\StateMode.vb" />
     <Compile Include="Core\TypeConverters\SmartDateConverter.vb" />
     <Compile Include="Core\TypeSystem.vb" />
-    <Compile Include="Core\UndoableHandler.vb" />
+    <Compile Include="Reflection\UndoableHandler.vb" />
     <Compile Include="Core\UndoException.vb" />
     <Compile Include="DataPortalClient\EnterpriseServicesProxy.vb" />
     <Compile Include="DataPortalClient\IDataPortalProxy.vb" />

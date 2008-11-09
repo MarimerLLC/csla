@@ -87,6 +87,59 @@ Namespace Reflection
 
 #End Region
 
+        Private Const propertyFlags As BindingFlags = System.Reflection.BindingFlags.Public Or System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.FlattenHierarchy
+        Private Const fieldFlags As BindingFlags = System.Reflection.BindingFlags.Public Or System.Reflection.BindingFlags.NonPublic Or System.Reflection.BindingFlags.Instance
+
+        Private ReadOnly _memberCache As New Dictionary(Of MethodCacheKey, dynamicmemberhandle)()
+
+        Friend Function GetCachedProperty(ByVal objectType As Type, ByVal propertyName As String) As dynamicmemberhandle
+            Dim key = New MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(Nothing))
+            Dim mh As dynamicmemberhandle = Nothing
+            If Not _memberCache.TryGetValue(key, mh) Then
+                SyncLock _memberCache
+                    If Not _memberCache.trygetvalue(key, mh) Then
+                        Dim info As PropertyInfo = objectType.GetProperty(propertyName, propertyFlags)
+                        mh = New dynamicmemberhandle(info)
+                        _memberCache.add(key, mh)
+                    End If
+                End SyncLock
+            End If
+            Return mh
+        End Function
+
+        Friend Function GetCachedField(ByVal objectType As Type, ByVal fieldName As String) As dynamicmemberhandle
+            Dim key = New MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(Nothing))
+            Dim mh As dynamicmemberhandle = Nothing
+            If Not _memberCache.TryGetValue(key, mh) Then
+                SyncLock _memberCache
+                    If Not _memberCache.trygetvalue(key, mh) Then
+                        Dim info As PropertyInfo = objectType.GetProperty(fieldName, fieldFlags)
+                        mh = New dynamicmemberhandle(info)
+                        _memberCache.add(key, mh)
+                    End If
+                End SyncLock
+            End If
+            Return mh
+        End Function
+
+        Public Function CallPropertyGetter(ByVal obj As Object, ByVal [property] As String) As Object
+            Dim mh = GetCachedProperty(obj.GetType(), [property])
+            Return mh.DynamicMemberGet(obj)
+        End Function
+
+    public static object CallPropertyGetter(object obj, string property)
+    {
+        var mh = GetCachedProperty(obj.GetType(), property);
+        return mh.DynamicMemberGet(obj);
+    }
+
+    public static void CallPropertySetter(object obj, string property, object value)
+    {
+        var mh = GetCachedProperty(obj.GetType(), property);
+        mh.DynamicMemberSet(obj, value);
+    }
+      
+
 #Region "Call Method"
 
     ''' <summary>

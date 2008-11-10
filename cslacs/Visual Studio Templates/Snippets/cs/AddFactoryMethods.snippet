@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Define common Csla Factory Methods</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Defines common Csla-style factory methods.</Description>
+      <Shortcut>cslafact</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>BusinessClass</Default>
+        </Literal>
+        <Literal>
+          <ID>CriteriaClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with the Criteria class name.</ToolTip>
+          <Default>Criteria</Default>
+        </Literal>
+        <Literal>
+          <ID>IdName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with Id (primary key) variable name.</ToolTip>
+          <Default>id</Default>
+        </Literal>
+        <Literal>
+          <ID>IdType</ID>
+          <ToolTip>Replace with the Id (primary key) variable type.</ToolTip>
+          <Default>int</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+  <![CDATA[#region Factory Methods
+
+public static $ClassName$ New$ClassName$()
+{
+  return DataPortal.Create<$ClassName$>();
+}
+
+public static $ClassName$ Get$ClassName$($IdType$ $IdName$)
+{
+  return DataPortal.Fetch<$ClassName$>(new SingleCriteria<$ClassName$, $IdType$>($IdName$));
+}
+
+public static void Delete$ClassName$($IdType$ $IdName$)
+{
+  DataPortal.Delete(new SingleCriteria<$ClassName$, $IdType$>($IdName$));
+}
+
+private $ClassName$()
+{  /* Require use of factory methods */ }
+
+#endregion]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

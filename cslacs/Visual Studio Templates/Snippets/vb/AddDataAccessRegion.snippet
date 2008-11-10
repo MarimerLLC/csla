@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Insert data access region</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Insert CSLA .NET data access region.</Description>
+      <HelpUrl />
+      <SnippetTypes />
+      <Keywords />
+      <Shortcut>csladata</Shortcut>
+    </Header>
+    <Snippet>
+      <References />
+      <Imports />
+      <Declarations>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>IdName</ID>
+          <Type />
+          <ToolTip>Replace with the id property info object.</ToolTip>
+          <Default>IdProperty</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>IdType</ID>
+          <Type />
+          <ToolTip>Replace with the id property's type.</ToolTip>
+          <Default>Integer</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>ObjectType</ID>
+          <Type />
+          <ToolTip>Replace with the business object type.</ToolTip>
+          <Default>BusinessObject</Default>
+          <Function />
+        </Literal>
+        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+          <ID>IdProperty</ID>
+          <Type />
+          <ToolTip>Replace with the id property info name.</ToolTip>
+          <Default>IdProperty</Default>
+          <Function />
+        </Literal>
+      </Declarations>
+      <Code Language="VB" Delimiter="$"><![CDATA[#Region " Data Access "
+
+Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of $ObjectType$, $IdType$))
+  ' TODO: load values into object
+End Sub
+
+Protected Overrides Sub DataPortal_Insert()
+  ' TODO: insert object's data
+End Sub
+
+Protected Overrides Sub DataPortal_Update()
+  ' TODO: update object's data
+End Sub
+
+Protected Overrides Sub DataPortal_DeleteSelf()
+  DataPortal_Delete(New SingleCriteria(Of $ObjectType$, $IdType$)(ReadProperty(Of $IdType$)($IdProperty$)))
+End Sub
+
+Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of $ObjectType$, $IdType$))
+  ' TODO: delete object's data
+End Sub
+
+#End Region]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Define a Csla Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Defines a Csla-style Property with a SmartDate backing field.</Description>
+      <Shortcut>cslapropc</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>BusinessClass</Default>
+        </Literal>
+        <Literal>
+          <ID>FriendlyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with friendly property name.</ToolTip>
+          <Default>Name</Default>
+        </Literal>
+        <Literal>
+          <ID>PropertyName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+        </Literal>
+        <Literal>
+          <ID>PropertyType</ID>
+          <ToolTip>Replace with the property type.</ToolTip>
+          <Default>SmartDate</Default>
+        </Literal>
+        <Literal>
+          <ID>FieldType</ID>
+          <ToolTip>Replace with the internal field type.</ToolTip>
+          <Default>string</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp" Kind="method decl">
+        <![CDATA[private static PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty(new PropertyInfo<$PropertyType$>("$PropertyName$", "$FriendlyName$", new SmartDate()));
+public string $PropertyName$
+{
+  get { return GetPropertyConvert<$PropertyType$, $FieldType$>($PropertyName$Property); }
+  set { SetPropertyConvert<$PropertyType$, $FieldType$>($PropertyName$Property, value); }
+}]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Add a criteria class</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Add a nested criteria class to a CSLA .NET business class.</Description>
+      <Shortcut>cslacrit</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <Default>Criteria</Default>
+        </Literal>
+        <Literal>
+          <ID>IdField</ID>
+          <Type>String</Type>
+          <Default>_id</Default>
+        </Literal>
+        <Literal>
+          <ID>IdType</ID>
+          <Type>String</Type>
+          <ToolTip>Type of the id field</ToolTip>
+          <Default>int</Default>
+        </Literal>
+        <Literal>
+          <ID>IdProperty</ID>
+          <Type>String</Type>
+          <ToolTip>Name of the id property</ToolTip>
+          <Default>Id</Default>
+        </Literal>
+        <Literal>
+          <ID>IdParam</ID>
+          <Type>String</Type>
+          <ToolTip>Parameter name for id value</ToolTip>
+          <Default>id</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp" Kind="type decl"><![CDATA[[Serializable()]
+private class $ClassName$
+{
+  private $IdType$ $IdField$;
+  public $IdType$ $IdProperty$
+  {
+    get { return $IdField$; }
+  }
+
+  public $ClassName$($IdType$ $IdParam$)
+  {
+    $IdField$ = $IdParam$;
+  }
+}
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

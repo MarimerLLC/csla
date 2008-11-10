@@ -167,4 +167,89 @@
       <Attribute name="TemplateType" value="Item"/>
     </Attributes>
   </Content>
+
+  
+  
+  
+  <Content>
+    <FileName>AddACriteriaClass.snippet</FileName>
+    <DisplayName>Add Criteria Class</DisplayName>
+    <Description>Creates Csla.Net Criteria Class</Description>
+    <FileContentType>Code Snippet</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="lang" value="csharp"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>AddBusinessRegions.snippet</FileName>
+    <DisplayName>Add Business Region</DisplayName>
+    <Description>Creates Csla.Net Business Region for Csla.Net Class</Description>
+    <FileContentType>Code Snippet</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="lang" value="csharp"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>AddDataAccessRegion.snippet</FileName>
+    <DisplayName>Add Data Access Region</DisplayName>
+    <Description>Creates Csla.Net Data Access Region</Description>
+    <FileContentType>Code Snippet</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="lang" value="csharp"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>AddFactoryMethods.snippet</FileName>
+    <DisplayName>Add Factory Methods</DisplayName>
+    <Description>Creates Csla.Net Factory Methods</Description>
+    <FileContentType>Code Snippet</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="lang" value="csharp"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>DefineACslaConvertProperty.snippet</FileName>
+    <DisplayName>Define a Csla Convert Property</DisplayName>
+    <Description>Creates Csla.Net Convert Property</Description>
+    <FileContentType>Code Snippet</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="lang" value="csharp"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>DefineACslaProperty.snippet</FileName>
+    <DisplayName>Define a Csla.Net Property</DisplayName>
+    <Description>Creates Csla.Net Property</Description>
+    <FileContentType>Code Snippet</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="lang" value="csharp"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>DefineACslaReadonlyProperty.snippet</FileName>
+    <DisplayName>Add Csla.Net Read Only Property</DisplayName>
+    <Description>Creates Csla.Net Read Only Property</Description>
+    <FileContentType>Code Snippet</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="lang" value="csharp"/>
+    </Attributes>
+  </Content>
+  <Content>
+    <FileName>DefineACslaSmartDateProperty.snippet</FileName>
+    <DisplayName>Add Csla.Net SmartDate</DisplayName>
+    <Description>Creates Csla.Net SmartDate Property</Description>
+    <FileContentType>Code Snippet</FileContentType>
+    <ContentVersion>1.0</ContentVersion>
+    <Attributes>
+      <Attribute name="lang" value="csharp"/>
+    </Attributes>
+  </Content>
+
 </VSContent>

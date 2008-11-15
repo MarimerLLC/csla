@@ -109,7 +109,7 @@ Namespace Validation
         End Function
 #End Region
 
-        Private Shared Function GetPropertyValues(ByVal target As Object, ByVal properties() As IPropertyInfo) As Dictionary(Of String, Object)
+        Private Shared Function GetPropertyValues(ByVal target As Object, ByVal ParamArray properties() As IPropertyInfo) As Dictionary(Of String, Object)
             Dim propertyValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
 
             For Each p In properties

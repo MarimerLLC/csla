@@ -32,7 +32,7 @@ Namespace Validation
         ''' provided to the validationr rule.
         ''' </param>
         ''' <remarks></remarks>
-        Protected Sub New(ByVal primaryProperty As IPropertyInfo, ByVal additionalProperties() As IPropertyInfo)
+        Protected Sub New(ByVal primaryProperty As IPropertyInfo, ByVal ParamArray additionalProperties() As IPropertyInfo)
 
             If primaryProperty Is Nothing Then
                 Throw New ArgumentNullException("primaryProperty")

@@ -92,7 +92,7 @@ Namespace Serialization.Mobile
                 Dim thisType = obj.GetType()
 
                 If IsSerializable(thisType) = False Then
-                    throw new InvalidOperationException(string.Format(Resources.ObjectNotSerializableFormatted, thisType.FullName));
+                    Throw New InvalidOperationException(String.Format(Resources.ObjectNotSerializableFormatted, thisType.FullName))
                 End If
 
                 Dim mobile = CType(obj, IMobileObject)

@@ -176,6 +176,15 @@
     <Compile Include="Core\MobileList.vb" />
     <Compile Include="Core\MobileObject.vb" />
     <Compile Include="Reflection\DynamicMemberHandle.vb" />
+    <Compile Include="Security\CslaIdentity.partial.vb" />
+    <Compile Include="Security\CslaIdentity.vb" />
+    <Compile Include="Security\ICheckRoles.vb" />
+    <Compile Include="Security\IdentityFactory.vb" />
+    <Compile Include="Security\MembershipIdentity.partial.vb" />
+    <Compile Include="Security\MembershipIdentity.vb" />
+    <Compile Include="Security\UnauthenticatedIdentity.vb" />
+    <Compile Include="Security\UnauthenticatedPrincipal.vb" />
+    <Compile Include="Security\UsernameCriteria.vb" />
     <Compile Include="Serialization\Mobile\IMobileObject.vb" />
     <Compile Include="Serialization\Mobile\ISerializationNotification.vb" />
     <Compile Include="Serialization\Mobile\MobileFormatter.vb" />

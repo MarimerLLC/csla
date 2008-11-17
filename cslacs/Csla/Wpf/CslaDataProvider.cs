@@ -427,13 +427,16 @@ namespace Csla.Wpf
     /// Adds a new item to the object if the object
     /// implements IBindingList and AllowNew is true.
     /// </summary>
-    public void AddNew()
+    public object AddNew()
     {
       // only do something if the object implements
       // IBindingList
       IBindingList list = this.Data as IBindingList;
       if (list != null && list.AllowNew)
-        list.AddNew();
+        return list.AddNew();
+      else
+        return null;
+
     }
 
     /// <summary>

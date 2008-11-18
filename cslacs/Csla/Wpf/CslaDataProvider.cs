@@ -382,18 +382,17 @@ namespace Csla.Wpf
         try
         {
           IsBusy = true;
+
+          // clone the object if possible
+          ICloneable clonable = savable as ICloneable;
+          if (clonable != null)
+            savable = (Csla.Core.ISavable)clonable.Clone();
+
           // apply edits in memory
           Csla.Core.ISupportUndo undo = savable as Csla.Core.ISupportUndo;
           if (undo != null && _manageLifetime)
             undo.ApplyEdit();
 
-          if (!Csla.ApplicationContext.AutoCloneOnUpdate)
-          {
-            // clone the object if possible
-            ICloneable clonable = savable as ICloneable;
-            if (clonable != null)
-              savable = (Csla.Core.ISavable)clonable.Clone();
-          }
 
           // save the clone
           result = savable.Save();
@@ -422,6 +421,7 @@ namespace Csla.Wpf
         IsBusy = false;
       }
     }
+
 
     /// <summary>
     /// Adds a new item to the object if the object

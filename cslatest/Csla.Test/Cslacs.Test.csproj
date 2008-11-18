@@ -130,6 +130,7 @@
     <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
     <Compile Include="Basic\CollectionTests.cs" />
     <Compile Include="CslaDataProvider\CslaDataProviderTests.cs" />
+    <Compile Include="CslaDataProvider\ProviderList.cs" />
     <Compile Include="CslaQueryProvider\CslaQueryProviderTests.cs" />
     <Compile Include="DataMapper\DataMapperTests.cs" />
     <Compile Include="DataPortalChild\Child.cs" />

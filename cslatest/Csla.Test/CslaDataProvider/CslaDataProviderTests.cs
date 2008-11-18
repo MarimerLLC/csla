@@ -41,5 +41,23 @@ namespace Csla.Test.CslaDataProvider
       object child = dp.AddNew();
       Assert.IsNull(child);
     }
+
+    [TestMethod]
+    public void TestCancelError()
+    {
+      ProviderList list = ProviderList.GetList(); 
+      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      list.BeginEdit();
+      dp.ManageObjectLifetime = true;
+      dp.ObjectInstance = list;
+      dp.RemoveItem(list[0]);
+      dp.Save();
+
+      Assert.AreEqual(1, list.Count);
+
+      dp.Cancel();
+      Assert.AreEqual(2, list.Count);
+
+    }
   }
 }

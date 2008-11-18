@@ -196,22 +196,23 @@ namespace Csla.Silverlight
       {
         if ((bool)_element.GetValue(ManualEnableControlProperty) == false)
         {
-          if (_target is CslaDataProvider)
+          CslaDataProvider targetProvider = _target as CslaDataProvider;
+          if (targetProvider != null)
           {
-            CslaDataProvider targetProvider = _target as CslaDataProvider;
-            if (_element.GetValue(MethodNameProperty).ToString() == "Save")
+            string methodName = _element.GetValue(MethodNameProperty).ToString();
+            if (methodName == "Save")
               _contentControl.IsEnabled = targetProvider.CanSave;
-            if (_element.GetValue(MethodNameProperty).ToString() == "Cancel")
+            if (methodName == "Cancel")
               _contentControl.IsEnabled = targetProvider.CanCancel;
-            if (_element.GetValue(MethodNameProperty).ToString() == "Create")
+            if (methodName == "Create")
               _contentControl.IsEnabled = targetProvider.CanCreate;
-            if (_element.GetValue(MethodNameProperty).ToString() == "Fetch")
+            if (methodName == "Fetch")
               _contentControl.IsEnabled = targetProvider.CanFetch;
-            if (_element.GetValue(MethodNameProperty).ToString() == "Delete")
+            if (methodName == "Delete")
               _contentControl.IsEnabled = targetProvider.CanDelete;
-            if (_element.GetValue(MethodNameProperty).ToString() == "RemoveItem")
+            if (methodName == "RemoveItem")
               _contentControl.IsEnabled = targetProvider.CanRemoveItem;
-            if (_element.GetValue(MethodNameProperty).ToString() == "AddNewItem")
+            if (methodName == "AddNewItem")
               _contentControl.IsEnabled = targetProvider.CanAddNewItem;
           }
           else
@@ -219,10 +220,14 @@ namespace Csla.Silverlight
             if (_element.GetValue(MethodNameProperty) != null)
             {
               string targetMethodName = (string)_element.GetValue(MethodNameProperty);
-              string canMethodName = "Can" + targetMethodName;
-              object returnValue = Csla.Reflection.MethodCaller.CallMethodIfImplemented(_target, canMethodName, null);
-              if (returnValue != null && returnValue is bool && (bool)returnValue == true)
-                _contentControl.IsEnabled = true;
+              string canPropertyName = "Can" + targetMethodName;
+              var propertyInfo = Csla.Reflection.MethodCaller.GetProperty(_target.GetType(), canPropertyName);
+              if (propertyInfo != null)
+              {
+                object returnValue = Csla.Reflection.MethodCaller.GetPropertyValue(_target, propertyInfo);
+                if (returnValue != null && returnValue is bool)
+                  _contentControl.IsEnabled = (bool)returnValue;
+              }
               else
                 _contentControl.IsEnabled = false;
             }

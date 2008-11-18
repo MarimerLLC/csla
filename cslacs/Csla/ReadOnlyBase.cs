@@ -1073,8 +1073,8 @@ namespace Csla
         if (_loadManager == null)
         {
           _loadManager = new AsyncLoadManager();
-          _loadManager.BusyChanged += new BusyChangedEventHandler(loadManager_BusyChanged);
-          _loadManager.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(loadManager_UnhandledAsyncException);
+          _loadManager.BusyChanged += loadManager_BusyChanged;
+          _loadManager.UnhandledAsyncException += loadManager_UnhandledAsyncException;
         }
         return _loadManager;
       }

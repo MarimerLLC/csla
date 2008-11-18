@@ -1857,13 +1857,19 @@ namespace Csla.Core
         if (_loadManager == null)
         {
           _loadManager = new AsyncLoadManager();
-          _loadManager.BusyChanged += new BusyChangedEventHandler(loadManager_BusyChanged);
+          _loadManager.BusyChanged += loadManager_BusyChanged;
+          _loadManager.UnhandledAsyncException += loadManager_UnhandledAsyncException;
         }
         return _loadManager;
       }
     }
 
-    void loadManager_BusyChanged(object sender, BusyChangedEventArgs e)
+    private void loadManager_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    {
+      OnUnhandledAsyncException(e);
+    }
+
+    private void loadManager_BusyChanged(object sender, BusyChangedEventArgs e)
     {
       OnBusyChanged(e);
     }
@@ -2031,11 +2037,11 @@ namespace Csla.Core
     {
       INotifyBusy busy = child as INotifyBusy;
       if (busy != null)
-        busy.BusyChanged += new BusyChangedEventHandler(busy_BusyChanged);
+        busy.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
 
       INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
       if (unhandled != null)
-        unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+        unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
 
       INotifyPropertyChanged pc = child as INotifyPropertyChanged;
       if (pc != null)
@@ -2060,11 +2066,11 @@ namespace Csla.Core
     {
       INotifyBusy busy = child as INotifyBusy;
       if (busy != null)
-        busy.BusyChanged -= new BusyChangedEventHandler(busy_BusyChanged);
+        busy.BusyChanged -= new BusyChangedEventHandler(Child_BusyChanged);
 
       INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
       if (unhandled != null)
-        unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+        unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
 
       INotifyPropertyChanged pc = child as INotifyPropertyChanged;
       if (pc != null)
@@ -2089,12 +2095,12 @@ namespace Csla.Core
 
     #region Busy / Unhandled exception bubbling
 
-    void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    void Child_UnhandledAsyncException(object sender, ErrorEventArgs e)
     {
       OnUnhandledAsyncException(e);
     }
 
-    void busy_BusyChanged(object sender, BusyChangedEventArgs e)
+    void Child_BusyChanged(object sender, BusyChangedEventArgs e)
     {
       OnBusyChanged(e);
     }
@@ -2419,16 +2425,6 @@ namespace Csla.Core
     public bool IsSelfBusy
     {
       get { return _isBusy || ValidationRules.IsValidating || LoadManager.IsLoading; }
-    }
-
-    void Child_BusyChanged(object sender, BusyChangedEventArgs e)
-    {
-      OnBusyChanged(e);
-    }
-
-    void Child_UnhandledAsyncException(object sender, ErrorEventArgs e)
-    {
-      OnUnhandledAsyncException(e);
     }
 
     [NotUndoable]

@@ -195,6 +195,14 @@
     <Compile Include="Server\Hosts\EnterpriseServicesPortal.vb" />
     <Compile Include="Server\Hosts\IWcfPortal.vb" />
     <Compile Include="Server\Hosts\RemotingPortal.vb" />
+    <Compile Include="Server\Hosts\Silverlight\CriteriaRequest.vb" />
+    <Compile Include="Server\Hosts\Silverlight\IMobileFactoryLoader.vb" />
+    <Compile Include="Server\Hosts\Silverlight\IWcfPortal.vb" />
+    <Compile Include="Server\Hosts\Silverlight\MobileFactoryLoader.vb" />
+    <Compile Include="Server\Hosts\Silverlight\UpdateRequest.vb" />
+    <Compile Include="Server\Hosts\Silverlight\WcfErrorInfo.vb" />
+    <Compile Include="Server\Hosts\Silverlight\WcfPortal.vb" />
+    <Compile Include="Server\Hosts\Silverlight\WcfResponse.vb" />
     <Compile Include="Server\Hosts\WcfChannel\CreateRequest.vb" />
     <Compile Include="Server\Hosts\WcfChannel\DeleteRequest.vb" />
     <Compile Include="Server\Hosts\WcfChannel\FetchRequest.vb" />
@@ -557,7 +565,6 @@
     <Folder Include="C5\heaps\" />
     <Folder Include="C5\linkedlists\" />
     <Folder Include="C5\Trees\" />
-    <Folder Include="Server\Hosts\Silverlight\" />
     <Folder Include="Silverlight\Security\" />
     <Folder Include="Threading\" />
   </ItemGroup>

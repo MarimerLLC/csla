@@ -287,15 +287,24 @@ namespace Csla.Silverlight
       _error = null;
       try
       {
-        if (_manageObjectLifetime)
-        {
-          var undoable = _dataObject as Csla.Core.ISupportUndo;
-          if (undoable != null)
-            undoable.ApplyEdit();
-        }
+        
         var obj = _dataObject as Csla.Core.ISavable;
         if (obj != null)
         {
+          if (_manageObjectLifetime)
+          {
+            // clone the object if possible
+
+            ICloneable clonable = _dataObject as ICloneable;
+            if (clonable != null)
+              obj = (Csla.Core.ISavable)clonable.Clone();
+
+            var undoable = obj as Csla.Core.ISupportUndo;
+            if (undoable != null)
+              undoable.ApplyEdit();
+          }
+
+
           obj.Saved -= new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
           obj.Saved += new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
           obj.BeginSave();

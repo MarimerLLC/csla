@@ -79,6 +79,8 @@
     <Compile Include="BusyStatus\ItemWithAsynchRule.cs" />
     <Compile Include="BusyStatus\ItemWithAsynchRuleList.cs" />
     <Compile Include="CommandBase\TestCommandBase.cs" />
+    <Compile Include="CslaDataProvider\CustomerWithErrorList.cs" />
+    <Compile Include="CslaDataProvider\CustomerWithError.cs" />
     <Compile Include="CslaDataProvider\Customer.cs" />
     <Compile Include="CslaDataProvider\CustomerContact.cs" />
     <Compile Include="CslaDataProvider\CustomerContactList.cs" />

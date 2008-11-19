@@ -84,6 +84,20 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
+
+    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(new PropertyInfo<bool>("ThrowException", "ThrowException", false));
+    public bool ThrowException
+    {
+      get
+      {
+        return GetProperty<bool>(ThrowExceptionProperty);
+      }
+      set
+      {
+        LoadProperty<bool>(ThrowExceptionProperty, value);
+      }
+    }
+
     private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(new PropertyInfo<CustomerContactList>("Contacts", "Contacts List"));
     public CustomerContactList Contacts
     {
@@ -179,8 +193,8 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(NameProperty, "Customer Name for Id: " + criteria.Value.ToString());
       LoadProperty(DateCreatedProperty, new SmartDate(new DateTime(2000 + criteria.Value, 1, 1)));
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(criteria.Value));
-      
-      if(criteria.Value==customerIDThrowsException)
+
+      if (criteria.Value == customerIDThrowsException)
         throw new ApplicationException("Test for Silverlight DataSource Error!");
     }
 
@@ -197,7 +211,7 @@ namespace cslalighttest.CslaDataProvider
       Method = "Deleted Customer " + GetProperty<string>(NameProperty);
     }
 
-    protected void DataPortal_Delete(SingleCriteria<Customer,int> criteria)
+    protected void DataPortal_Delete(SingleCriteria<Customer, int> criteria)
     {
       Method = "Deleted Customer ID " + criteria.Value.ToString();
     }
@@ -220,7 +234,7 @@ namespace cslalighttest.CslaDataProvider
   [Serializable]
   public class CustomerWO_DP_XYZ : BusinessBase<CustomerWO_DP_XYZ>
   {
-//#if SILVERLIGHT
+    //#if SILVERLIGHT
 
     public static void GetCustomer(EventHandler<DataPortalResult<CustomerWO_DP_XYZ>> handler)
     {
@@ -237,7 +251,7 @@ namespace cslalighttest.CslaDataProvider
       dp.CreateCompleted += handler;
       dp.BeginCreate(new SingleCriteria<CustomerWO_DP_XYZ, int>(customerID));
     }
-//#endif
+    //#endif
 
   }
 

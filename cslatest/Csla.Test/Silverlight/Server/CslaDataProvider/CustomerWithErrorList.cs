@@ -10,19 +10,19 @@ using Csla.Serialization;
 namespace cslalighttest.CslaDataProvider
 {
   [Serializable]
-  public class CustomerList : BusinessListBase<CustomerList, Customer>
+  public class CustomerWithErrorList : BusinessListBase<CustomerWithErrorList, CustomerWithError>
   {
 #if SILVERLIGHT
-    public CustomerList() { }
+    public CustomerWithErrorList() { }
 
     protected override void AddNewCore()
     {
-      Customer newItem = Customer.NewCustomer();
+      CustomerWithError newItem = CustomerWithError.NewCustomerWithError();
       this.Add(newItem);
     }
 
 #else
-    private CustomerList() { }
+    private CustomerWithErrorList() { }
 #endif
 
 
@@ -30,10 +30,10 @@ namespace cslalighttest.CslaDataProvider
 
     protected void DataPortal_Fetch()
     {
-      int maxCustomer = (new Random()).Next(3, 10);
-      for (int i = 1; i < maxCustomer; i++)
+      int maxCustomerWithError = (new Random()).Next(3, 10);
+      for (int i = 1; i < maxCustomerWithError; i++)
       {
-        Add(Customer.GetCustomer(i));
+        Add(CustomerWithError.GetCustomerWithError(i));
       }
     }
 
@@ -46,13 +46,13 @@ namespace cslalighttest.CslaDataProvider
     {
       if (this.Items[0].ThrowException)
         throw new Exception();
-      Csla.ApplicationContext.GlobalContext["CustomerUpdate"] = "Updating Customer List";
+      Csla.ApplicationContext.GlobalContext["CustomerWithErrorUpdate"] = "Updating CustomerWithError List";
     }
 
 #else
-    public static void GetCustomerList(EventHandler<DataPortalResult<CustomerList>> handler)
+    public static void GetCustomerWithErrorList(EventHandler<DataPortalResult<CustomerWithErrorList>> handler)
     {
-      DataPortal<CustomerList> dp = new DataPortal<CustomerList>();
+      DataPortal<CustomerWithErrorList> dp = new DataPortal<CustomerWithErrorList>();
       dp.FetchCompleted += handler;
       dp.BeginFetch();
     }

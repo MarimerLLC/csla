@@ -86,16 +86,25 @@ namespace Csla
       T item = this[index];
       if (item.IsDeleted || (item.IsValid && item.IsDirty))
       {
-        int editLevel = item.EditLevel;
-        // commit all changes
-        for (int tmp = 1; tmp <= editLevel; tmp++)
-          item.AcceptChanges(editLevel - tmp, false);
         T savable = item;
+
+        // attempt to clone object
+        ICloneable cloneable = savable as ICloneable;
+        if (cloneable != null)
+          savable = (T)cloneable.Clone();
+
+        // commit all changes
+        int editLevel = savable.EditLevel;
+        for (int tmp = 1; tmp <= editLevel; tmp++)
+          savable.AcceptChanges(editLevel - tmp, false);
+
+        // save object
         DataPortal<T> dp = new DataPortal<T>();
         dp.UpdateCompleted += (o, e) =>
           {
             if (e.Error == null)
             {
+              T result = e.Object;
               if (item.IsDeleted)
               {
                 //SafeRemoveItem  will raise INotifyCollectionChanged event
@@ -103,19 +112,18 @@ namespace Csla
               }
               else
               {
-                
                 for (int tmp = 1; tmp <= editLevel; tmp++)
-                  e.Object.CopyState(tmp, false);
+                  result.CopyState(tmp, false);
 
-                SafeSetItem(index, e.Object);
+                SafeSetItem(index, result);
                 //Because SL Data Grid does not support replace action.
                 // we have to artificially raise remove/insert events
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
 
               }
-              item.SaveComplete(e.Object, null, null);
-              OnSaved(e.Object, null);
+              item.SaveComplete(result, null, null);
+              OnSaved(result, null);
             }
             else
             {

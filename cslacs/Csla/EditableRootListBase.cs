@@ -76,54 +76,56 @@ namespace Csla
     {
       bool raisingEvents = this.RaiseListChangedEvents;
       this.RaiseListChangedEvents = false;
-
       _activelySaving = true;
 
       T item = default(T);
-      int editLevel=0;
+      T result = default(T);
       try
       {
-
         item = this[index];
-        editLevel = item.EditLevel;
-        // commit all changes
-        for (int tmp = 1; tmp <= editLevel; tmp++)
-          item.AcceptChanges(editLevel - tmp, false);
-
+        result = item;
         T savable = item;
-        if (!Csla.ApplicationContext.AutoCloneOnUpdate)
-        {
-          // clone the object if possible
-          ICloneable clonable = savable as ICloneable;
-          if (clonable != null)
-            savable = (T)clonable.Clone();
-        }
+
+        // clone the object if possible
+        ICloneable clonable = savable as ICloneable;
+        if (clonable != null)
+          savable = (T)clonable.Clone();
+
+        // commit all changes
+        int editLevel = savable.EditLevel;
+        for (int tmp = 1; tmp <= editLevel; tmp++)
+          savable.AcceptChanges(editLevel - tmp, false);
 
         // do the save
-        this[index] = (T)savable.Save();
+        result = (T)savable.Save();
 
-        if (!ReferenceEquals(savable, item) && !Csla.ApplicationContext.AutoCloneOnUpdate)
+        if (!ReferenceEquals(result, item))
+        {
+          // restore edit level to previous level
+          for (int tmp = 1; tmp <= editLevel; tmp++)
+            result.CopyState(tmp, false);
+
+          // put result into collection
+          this[index] = result;
+        }
+
+        if (!ReferenceEquals(savable, item))
         {
           // raise Saved event from original object
           Core.ISavable original = item as Core.ISavable;
           if (original != null)
-            original.SaveComplete(this[index]);
+            original.SaveComplete(result);
         }
-        OnSaved(this[index], null);
+
+        OnSaved(result, null);
       }
       finally
       {
-        // restore edit level to previous level
-        if (item != null)
-        {
-          for (int tmp = 1; tmp <= editLevel; tmp++)
-            item.CopyState(tmp, false);
-        }
         _activelySaving = false;
         this.RaiseListChangedEvents = raisingEvents;
       }
       this.OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
-      return this[index];
+      return result;
     }
 
     #endregion

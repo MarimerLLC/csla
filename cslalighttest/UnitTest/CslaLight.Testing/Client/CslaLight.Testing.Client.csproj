@@ -93,6 +93,12 @@
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\CslaDataProvider\CustomerList.cs">
       <Link>CslaDataProvider\CustomerList.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\CslaDataProvider\CustomerWithError.cs">
+      <Link>CslaDataProvider\CustomerWithError.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\CslaDataProvider\CustomerWithErrorList.cs">
+      <Link>CslaDataProvider\CustomerWithErrorList.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\cslatest\Csla.Test\Silverlight\Server\CslaDataProvider\IDCriteria.cs">
       <Link>CslaDataProvider\IDCriteria.cs</Link>
     </Compile>

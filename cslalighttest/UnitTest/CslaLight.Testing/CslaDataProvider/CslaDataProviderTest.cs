@@ -432,6 +432,82 @@ namespace cslalighttest.CslaDataProvider
       });
       context.Complete();
     }
+
+
+    [TestMethod]
+    public void ProviderCancelAfterExceptionInSave()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      provider.ManageObjectLifetime = true;
+      CustomerWithErrorList.GetCustomerWithErrorList((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var custs = e1.Object;
+        int count = custs.Count;
+        provider.ObjectInstance = custs;
+        provider.RemoveItem(custs[0]);
+
+
+        provider.DataChanged += (o4, e4) =>
+        {
+          if (provider.Data != null)
+          {
+            CustomerWithErrorList savedList = provider.Data as CustomerWithErrorList;
+            context.Assert.AreEqual(count, savedList.Count);
+            context.Assert.Success();
+          }
+        };
+
+        provider.PropertyChanged += (o3, e3) =>
+          {
+            if (e3.PropertyName == "Error")
+            {
+              provider.Cancel();
+            }
+
+          };
+        provider.Save();
+
+
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void ProviderCancelAfterSuccessfulSave()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      provider.ManageObjectLifetime = true;
+      CustomerList.GetCustomerList((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var custs = e1.Object;
+        int count = custs.Count;
+        provider.ManageObjectLifetime = true;
+        provider.ObjectInstance = custs;
+        provider.RemoveItem(custs[0]);
+        bool continueTest = true;
+        provider.DataChanged += (o3, e3) =>
+        {
+          if (continueTest)
+          {
+            continueTest = false;
+            CustomerList savedList = provider.Data as CustomerList;
+            context.Assert.AreEqual(count - 1, savedList.Count);
+            context.Assert.Success();
+          }
+
+        };
+        provider.Save();
+
+
+      });
+      context.Complete();
+    }
   }
 
 }

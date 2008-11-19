@@ -272,8 +272,11 @@
     <Compile Include="Utilities\UtilitiesTestHelper.cs" />
     <Compile Include="ValidationRules\AsyncRuleTests.cs" />
     <Compile Include="ValidationRules\BrokenRulesMergeRoot.cs" />
+    <Compile Include="ValidationRules\Child.cs" />
+    <Compile Include="ValidationRules\ChildList.cs" />
     <Compile Include="ValidationRules\HasAsyncRule.cs" />
     <Compile Include="ValidationRules\HasBadSharedRule.cs" />
+    <Compile Include="ValidationRules\HasChildren.cs" />
     <Compile Include="ValidationRules\HasInvalidAsyncRule.cs" />
     <Compile Include="ValidationRules\HasPerTypeClasses.cs" />
     <Compile Include="ValidationRules\HasPerTypeRules.cs" />

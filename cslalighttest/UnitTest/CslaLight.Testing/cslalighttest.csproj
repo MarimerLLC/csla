@@ -247,11 +247,20 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\BrokenRulesMergeRoot.cs">
       <Link>Validation\BrokenRulesMergeRoot.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\Child.cs">
+      <Link>Validation\Child.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\ChildList.cs">
+      <Link>Validation\ChildList.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\HasAsyncRule.cs">
       <Link>Validation\HasAsyncRule.cs</Link>
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\HasBadSharedRule.cs">
       <Link>Validation\HasBadSharedRule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\HasChildren.cs">
+      <Link>Validation\HasChildren.cs</Link>
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\ValidationRules\HasInvalidAsyncRule.cs">
       <Link>Validation\HasInvalidAsyncRule.cs</Link>

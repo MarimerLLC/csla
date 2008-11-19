@@ -2272,6 +2272,9 @@ namespace Csla.Core
           _validationRules = new Csla.Validation.ValidationRules(this);
           _validationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
         }
+        else
+          if (_validationRules.Target == null)
+            _validationRules.SetTarget(this);
         return _validationRules;
       }
     }

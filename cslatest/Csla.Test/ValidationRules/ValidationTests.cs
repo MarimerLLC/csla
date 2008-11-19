@@ -332,5 +332,32 @@ namespace Csla.Test.ValidationRules
         });
       }
     }
+
+    [TestMethod()]
+    public void ListChangedEventTrigger()
+    {
+      Csla.ApplicationContext.GlobalContext.Clear();
+      UnitTestContext context = GetContext();
+      HasChildren.NewObject((o, e) =>
+      {
+        try
+        {
+          HasChildren root = e.Object;
+          context.Assert.AreEqual(false, root.IsValid);
+          root.BeginEdit();
+          root.ChildList.Add(new Child());
+          context.Assert.AreEqual(true, root.IsValid);
+
+          root.CancelEdit();
+          context.Assert.AreEqual(false, root.IsValid);
+
+          context.Assert.Success();
+        }
+        finally
+        {
+          context.Complete();
+        }
+      });
+    }
   }
 }

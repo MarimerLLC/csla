@@ -51,6 +51,11 @@ namespace Csla.Validation
       _target = businessObject;
     }
 
+    internal object Target
+    {
+      get { return _target; }
+    }
+
     private BrokenRulesCollection BrokenRulesList
     {
       get

@@ -16,8 +16,15 @@ Namespace Server
     Private _remotePortal As Boolean
     Private _clientCulture As String
     Private _clientUICulture As String
-        Private _clientContext As ContextDictionary
-        Private _globalContext As ContextDictionary
+    Private _clientContext As ContextDictionary
+    Private _globalContext As ContextDictionary
+
+    <NonSerialized()> _
+    Private _transactionalType As TransactionalTypes
+
+    <NonSerialized()> _
+    Private _factoryInfo As ObjectFactoryAttribute
+
 
     ''' <summary>
     ''' The current principal object
@@ -60,17 +67,46 @@ Namespace Server
       End Get
     End Property
 
-        Friend ReadOnly Property ClientContext() As ContextDictionary
-            Get
-                Return _clientContext
-            End Get
-        End Property
+    Friend ReadOnly Property ClientContext() As ContextDictionary
+      Get
+        Return _clientContext
+      End Get
+    End Property
 
-        Friend ReadOnly Property GlobalContext() As ContextDictionary
-            Get
-                Return _globalContext
-            End Get
-        End Property
+    Friend ReadOnly Property GlobalContext() As ContextDictionary
+      Get
+        Return _globalContext
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Gets the current transactional type. Only valid
+    ''' in the server-side data portal methods after
+    ''' the transactional type has been determined.
+    ''' </summary>
+    Public Property TransactionalType() As TransactionalTypes
+      Get
+        Return _transactionalType
+      End Get
+      Friend Set(ByVal value As TransactionalTypes)
+        _transactionalType = value
+      End Set
+    End Property
+
+    ''' <summary>
+    ''' Gets the current ObjectFactory attribute
+    ''' value (if any). Only valid in the server-side
+    ''' data portal methods after the attribute
+    ''' value has been determined.
+    ''' </summary>
+    Public Property FactoryInfo() As ObjectFactoryAttribute
+      Get
+        Return _factoryInfo
+      End Get
+      Set(ByVal value As ObjectFactoryAttribute)
+        _factoryInfo = value
+      End Set
+    End Property
 
     ''' <summary>
     ''' Creates a new DataPortalContext object.

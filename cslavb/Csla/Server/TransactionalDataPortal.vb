@@ -36,7 +36,7 @@ Namespace Server
 
       Dim result As DataPortalResult
       Using tr As New TransactionScope
-        Dim portal As New SimpleDataPortal
+        Dim portal As New DataPortalSelector()
         result = portal.Create(objectType, criteria, context)
         tr.Complete()
       End Using
@@ -68,7 +68,7 @@ Namespace Server
 
       Dim result As DataPortalResult
       Using tr As New TransactionScope
-        Dim portal As New SimpleDataPortal
+        Dim portal As New DataPortalSelector()
         result = portal.Fetch(objectType, criteria, context)
         tr.Complete()
       End Using
@@ -97,7 +97,7 @@ Namespace Server
 
       Dim result As DataPortalResult
       Using tr As New TransactionScope
-        Dim portal As New SimpleDataPortal
+        Dim portal As New DataPortalSelector()
         result = portal.Update(obj, context)
         tr.Complete()
       End Using
@@ -127,7 +127,7 @@ Namespace Server
 
       Dim result As DataPortalResult
       Using tr As New TransactionScope
-        Dim portal As New SimpleDataPortal
+        Dim portal As New DataPortalSelector()
         result = portal.Delete(objectType, criteria, context)
         tr.Complete()
       End Using

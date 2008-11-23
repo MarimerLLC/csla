@@ -38,7 +38,7 @@ Namespace Server
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Create
 
-      Dim portal As New SimpleDataPortal
+      Dim portal As New DataPortalSelector()
       Return portal.Create(objectType, criteria, context)
 
     End Function
@@ -63,7 +63,7 @@ Namespace Server
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Fetch
 
-      Dim portal As New SimpleDataPortal
+      Dim portal As New DataPortalSelector()
       Return portal.Fetch(objectType, criteria, context)
 
     End Function
@@ -86,7 +86,7 @@ Namespace Server
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Update
 
-      Dim portal As New SimpleDataPortal
+      Dim portal As New DataPortalSelector()
       Return portal.Update(obj, context)
 
     End Function
@@ -112,7 +112,7 @@ Namespace Server
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Delete
 
-      Dim portal As New SimpleDataPortal
+      Dim portal As New DataPortalSelector()
       Return portal.Delete(objectType, criteria, context)
 
     End Function

@@ -24,9 +24,18 @@ Namespace Server
       End Set
     End Property
 
+    Public Sub New()
+      Me.RunLocal = False
+      Me.TransactionalType = TransactionalTypes.Manual
+    End Sub
+
     Public Sub New(ByVal info As MethodInfo)
-      Me.RunLocal = IsRunLocal(info)
-      Me.TransactionalType = GetTransactionalType(info)
+      MyBase.New()
+
+      If info IsNot Nothing Then
+        Me.RunLocal = IsRunLocal(info)
+        Me.TransactionalType = GetTransactionalType(info)
+      End If
     End Sub
 
     Private Shared Function IsRunLocal(ByVal method As MethodInfo) As Boolean

@@ -14,6 +14,71 @@ Namespace Server
 
     Implements IDataPortalServer
 
+#Region "Constructors"
+
+    ''' <summary>
+    ''' Default constructor
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Sub New()
+      Me.New("CslaAuthorizationProvider")
+    End Sub
+
+    ''' <summary>
+    ''' This construcor accepts the App Setting name for the Csla Authorization Provider,
+    ''' therefore getting the provider type from configuration file
+    ''' </summary>
+    ''' <param name="cslaAuthorizationProviderAppSettingName"></param>
+    ''' <remarks></remarks>
+    Protected Sub New(ByVal cslaAuthorizationProviderAppSettingName As String)
+      Me.New(GetAuthProviderType(cslaAuthorizationProviderAppSettingName))
+    End Sub
+
+    ''' <summary>
+    ''' This constructor accepts the Authorization Provider Type as a parameter.
+    ''' </summary>
+    ''' <param name="authProviderType"></param>
+    ''' <remarks></remarks>
+    Protected Sub New(ByVal authProviderType As Type)
+
+      If authProviderType Is Nothing Then
+        Throw New ArgumentNullException("authProviderType", Resources.CslaAuthenticationProviderNotSet)
+      End If
+
+      If Not GetType(IAuthorizeDataPortal).IsAssignableFrom(authProviderType) Then
+        Throw New ArgumentException(Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, "authProviderType")
+      End If
+
+      'only construct the type if it was not constructed already
+      If _authorizer Is Nothing Then
+        SyncLock _syncRoot
+          If _authorizer Is Nothing Then
+            _authorizer = DirectCast(Activator.CreateInstance(authProviderType), IAuthorizeDataPortal)
+          End If
+        End SyncLock
+
+      End If
+
+    End Sub
+
+    Private Shared Function GetAuthProviderType(ByVal cslaAuthorizationProviderAppSettingName As String) As Type
+      If cslaAuthorizationProviderAppSettingName Is Nothing Then
+        Throw New ArgumentNullException("cslaAuthorizationProviderAppSettingName", Resources.AuthorizationProviderNameNotSpecified)
+      End If
+
+      'not yet instantiated
+      If _authorizer Is Nothing Then
+        Dim authProvider = ConfigurationManager.AppSettings(cslaAuthorizationProviderAppSettingName)
+
+        Return IIf(String.IsNullOrEmpty(authProvider), GetType(NullAuthorizer), Type.GetType(authProvider, True))
+      Else
+        Return _authorizer.GetType()
+      End If
+
+    End Function
+
+#End Region
+
 #Region " Data Access "
 
     ''' <summary>
@@ -32,6 +97,8 @@ Namespace Server
 
       Try
         SetContext(context)
+
+        Authorize(New AuthorizeRequest(objectType, criteria, DataPortalOperations.Create))
 
         Dim result As DataPortalResult
 
@@ -52,7 +119,7 @@ Namespace Server
             result = portal.Create(objectType, criteria, context)
 
           Case Else
-            Dim portal As New SimpleDataPortal
+            Dim portal As New DataPortalSelector()
             result = portal.Create(objectType, criteria, context)
         End Select
 
@@ -89,6 +156,8 @@ Namespace Server
       Try
         SetContext(context)
 
+        Authorize(New AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch))
+
         Dim result As DataPortalResult
 
         Dim method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria)
@@ -116,6 +185,7 @@ Namespace Server
         Return result
 
       Catch ex As Csla.Server.DataPortalException
+        Dim tmp As Exception = ex
         Throw
 
       Catch ex As Exception
@@ -144,30 +214,46 @@ Namespace Server
       Try
         SetContext(context)
 
+        Authorize(New AuthorizeRequest(obj.GetType(), obj, DataPortalOperations.Update))
+
         Dim result As DataPortalResult
+        Dim method As DataPortalMethodInfo
 
-        Dim methodName As String
-        If TypeOf obj Is CommandBase Then
-          methodName = "DataPortal_Execute"
+        Dim factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(obj.GetType())
+        If factoryInfo IsNot Nothing Then
+          Dim factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName)
+          Dim bbase = DirectCast(obj, Core.BusinessBase)
 
-        ElseIf TypeOf obj Is Core.BusinessBase Then
-          Dim tmp As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
-          If tmp.IsDeleted Then
-            methodName = "DataPortal_DeleteSelf"
+          If bbase IsNot Nothing AndAlso bbase.IsDeleted Then
+            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, New Object() {obj})
           Else
-            If tmp.IsNew Then
-              methodName = "DataPortal_Insert"
-
-            Else
-              methodName = "DataPortal_Update"
-            End If
+            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, New Object() {obj})
           End If
         Else
-          methodName = "DataPortal_Update"
+          Dim methodName As String
+          Dim bbase = DirectCast(obj, Core.BusinessBase)
+
+          If bbase IsNot Nothing Then
+            If bbase.IsDeleted Then
+              methodName = "DataPortal_DeleteSelf"
+            Else
+              If bbase.IsNew Then
+                methodName = "DataPortal_Insert"
+              Else
+                methodName = "DataPortal_Update"
+              End If
+            End If
+          ElseIf TypeOf obj Is CommandBase Then
+            methodName = "DataPortal_Execute"
+          Else
+            methodName = "DataPortal_Update"
+          End If
+
+          method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName)
+          
         End If
 
-        Dim method = Server.DataPortalMethodCache.GetMethodInfo(obj.GetType, methodName)
-
+        context.TransactionalType = method.TransactionalType
         Select Case method.TransactionalType
           Case TransactionalTypes.EnterpriseServices
             Dim portal As New ServicedDataPortal
@@ -183,14 +269,14 @@ Namespace Server
             result = portal.Update(obj, context)
 
           Case Else
-            Dim portal As New SimpleDataPortal
+            Dim portal As New DataPortalSelector()
             result = portal.Update(obj, context)
         End Select
 
-        ClearContext(context)
         Return result
 
       Catch ex As Csla.Server.DataPortalException
+        Dim tmp As Exception = ex
         Throw
 
       Catch ex As Exception
@@ -220,6 +306,8 @@ Namespace Server
       Try
         SetContext(context)
 
+        Authorize(New AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete))
+
         Dim result As DataPortalResult
 
         Dim method = Server.DataPortalMethodCache.GetMethodInfo( _
@@ -240,14 +328,14 @@ Namespace Server
             result = portal.Delete(objectType, criteria, context)
 
           Case Else
-            Dim portal As New SimpleDataPortal
+            Dim portal As New DataPortalSelector
             result = portal.Delete(objectType, criteria, context)
         End Select
 
-        ClearContext(context)
         Return result
 
       Catch ex As Csla.Server.DataPortalException
+        Dim tmp As Exception = ex
         Throw
 
       Catch ex As Exception
@@ -266,14 +354,15 @@ Namespace Server
 
     Private Shared Sub SetContext(ByVal context As DataPortalContext)
 
+      ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server)
+
       ' if the dataportal is not remote then
       ' do nothing
       If Not context.IsRemotePortal Then Exit Sub
 
       ' set the context value so everyone knows the
       ' code is running on the server
-      ApplicationContext.SetExecutionLocation( _
-        ApplicationContext.ExecutionLocations.Server)
+      ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server)
 
       ' set the app context to the value we got from the
       ' client
@@ -287,44 +376,45 @@ Namespace Server
         New System.Globalization.CultureInfo(context.ClientUICulture)
 
       If ApplicationContext.AuthenticationType = "Windows" Then
+
         ' When using integrated security, Principal must be Nothing 
-        If context.Principal Is Nothing Then
-          ' Set .NET to use integrated security 
-          AppDomain.CurrentDomain.SetPrincipalPolicy( _
-            PrincipalPolicy.WindowsPrincipal)
-          Exit Sub
+        If context.Principal IsNot Nothing Then
 
-        Else
-          Dim ex As New System.Security.SecurityException( _
-            My.Resources.NoPrincipalAllowedException)
+          Dim ex As System.Security.SecurityException = New System.Security.SecurityException(Resources.NoPrincipalAllowedException)
           ex.Action = System.Security.Permissions.SecurityAction.Deny
           Throw ex
-        End If
-      End If
-
-      ' We expect the Principal to be of the type BusinessPrincipal
-      If context.Principal IsNot Nothing Then
-        If TypeOf context.Principal Is Security.BusinessPrincipalBase Then
-          ApplicationContext.User = context.Principal
 
         Else
-          Dim ex As New System.Security.SecurityException( _
-            My.Resources.BusinessPrincipalException & " " & _
-            CType(context.Principal, Object).ToString())
-          ex.Action = System.Security.Permissions.SecurityAction.Deny
-          Throw ex
+          'Set .NET to use integrated security
+          AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal)
         End If
-
       Else
-        Dim ex As New System.Security.SecurityException( _
-          My.Resources.BusinessPrincipalException & " Nothing")
-        ex.Action = System.Security.Permissions.SecurityAction.Deny
-        Throw ex
+        ' We expect the Principal to be of the type BusinessPrincipal
+        If context.Principal IsNot Nothing Then
+          If TypeOf context.Principal Is Security.BusinessPrincipalBase Then
+            ApplicationContext.User = context.Principal
+
+          Else
+            Dim ex As New System.Security.SecurityException( _
+              My.Resources.BusinessPrincipalException & " " & _
+              CType(context.Principal, Object).ToString())
+            ex.Action = System.Security.Permissions.SecurityAction.Deny
+            Throw ex
+          End If
+
+        Else
+          Dim ex As New System.Security.SecurityException( _
+            My.Resources.BusinessPrincipalException & " Nothing")
+          ex.Action = System.Security.Permissions.SecurityAction.Deny
+          Throw ex
+        End If
       End If
 
     End Sub
 
     Private Shared Sub ClearContext(ByVal context As DataPortalContext)
+
+      ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client)
 
       ' if the dataportal is not remote then
       ' do nothing
@@ -336,6 +426,50 @@ Namespace Server
       End If
 
     End Sub
+
+#End Region
+
+#Region "Authorize"
+
+    Private Shared _syncRoot As Object = New Object()
+    Private Shared _authorizer As IAuthorizeDataPortal = Nothing
+
+    ''' <summary>
+    ''' Gets or sets a reference to the current authorizer.
+    ''' </summary>
+    Protected Shared Property Authorizer() As IAuthorizeDataPortal
+      Get
+        Return _authorizer
+      End Get
+      Set(ByVal value As IAuthorizeDataPortal)
+        _authorizer = value
+      End Set
+    End Property
+
+    Private Shared Sub Authorize(ByVal clientRequest As AuthorizeRequest)
+      _authorizer.Authorize(clientRequest)
+    End Sub
+
+    ''' <summary>
+    ''' Default implementation of the authorizer that
+    ''' allows all data portal calls to pass.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Protected Class NullAuthorizer
+      Implements IAuthorizeDataPortal
+
+      ''' <summary>
+      ''' Creates an instance of the type.
+      ''' </summary>
+      ''' <param name="clientRequest">
+      ''' Client request information.
+      ''' </param>
+      Public Sub Authorize(ByVal clientRequest As AuthorizeRequest) Implements IAuthorizeDataPortal.Authorize
+        'default is to allow all requests
+      End Sub
+
+    End Class
+
 
 #End Region
 
@@ -354,7 +488,7 @@ Namespace Server
       If IsTransactionalMethod(method) Then
         Dim attrib As TransactionalAttribute = _
           DirectCast(Attribute.GetCustomAttribute( _
-            method, GetType(TransactionalAttribute)), _
+            method, GetType(TransactionalAttribute)),  _
             TransactionalAttribute)
         result = attrib.TransactionType
 

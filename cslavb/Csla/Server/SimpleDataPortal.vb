@@ -242,7 +242,7 @@ Namespace Server
       Dim target As IDataPortalTarget = Nothing
       Dim eventArgs = New DataPortalEventArgs(context, objectType, DataPortalOperations.Delete)
       Try
-        ' create an instance of the business objet
+        ' create an instance of the business object
         obj = New LateBoundObject(objectType)
 
         target = TryCast(obj.Instance, IDataPortalTarget)

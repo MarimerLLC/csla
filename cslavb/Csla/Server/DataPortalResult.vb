@@ -12,7 +12,7 @@ Namespace Server
   Public Class DataPortalResult
 
     Private _returnObject As Object
-        Private _globalContext As ContextDictionary
+    Private _globalContext As ContextDictionary
 
     ''' <summary>
     ''' The business object being returned from

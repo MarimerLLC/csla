@@ -37,15 +37,30 @@ Namespace Server
     ''' </remarks>
     Friend Function GetCreateMethod(ByVal objectType As Type, ByVal criteria As Object) As DataPortalMethodInfo
 
+      ' an "Integer" criteria is a special flag indicating
+      ' that criteria is empty and should not be used
       Dim method As DataPortalMethodInfo = Nothing
-      If TypeOf criteria Is Integer Then
-        ' an "Integer" criteria is a special flag indicating
-        ' that criteria is empty and should not be used
-        method = GetMethodInfo(objectType, "DataPortal_Create")
+      Dim factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType)
 
+      If factoryInfo Is Nothing Then
+        If TypeOf criteria Is Integer Then
+          method = GetMethodInfo(objectType, "DataPortal_Create")
+        Else
+          method = GetMethodInfo(objectType, "DataPortal_Create", criteria)
+        End If
       Else
-        method = GetMethodInfo(objectType, "DataPortal_Create", criteria)
+        Dim factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName)
+        If factoryInfo IsNot Nothing Then
+          If TypeOf criteria Is Integer Then
+            method = GetMethodInfo(factoryType, factoryInfo.CreateMethodName)
+          Else
+            method = GetMethodInfo(FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName), factoryInfo.CreateMethodName, criteria)
+          End If
+        Else
+          method = New DataPortalMethodInfo()
+        End If
       End If
+
       Return method
 
     End Function
@@ -62,16 +77,29 @@ Namespace Server
     ''' (not Nothing/null - just not there).
     ''' </remarks>
     Friend Function GetFetchMethod(ByVal objectType As Type, ByVal criteria As Object) As DataPortalMethodInfo
-
+      ' an "Integer" criteria is a special flag indicating
+      ' that criteria is empty and should not be used
       Dim method As DataPortalMethodInfo = Nothing
-      If TypeOf criteria Is Integer Then
-        ' an "Integer" criteria is a special flag indicating
-        ' that criteria is empty and should not be used
-        method = GetMethodInfo(objectType, "DataPortal_Fetch")
-
+      Dim factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType)
+      If factoryInfo Is Nothing Then
+        If TypeOf criteria Is Integer Then
+          method = GetMethodInfo(objectType, "DataPortal_Fetch")
+        Else
+          method = GetMethodInfo(objectType, "DataPortal_Fetch", criteria)
+        End If
       Else
-        method = GetMethodInfo(objectType, "DataPortal_Fetch", criteria)
+        Dim factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName)
+        If factoryInfo IsNot Nothing Then
+          If TypeOf criteria Is Integer Then
+            method = GetMethodInfo(factoryType, factoryInfo.FetchMethodName)
+          Else
+            method = GetMethodInfo(FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName), factoryInfo.FetchMethodName, criteria)
+          End If
+        Else
+          method = New DataPortalMethodInfo()
+        End If
       End If
+
       Return method
 
     End Function

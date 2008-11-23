@@ -189,9 +189,12 @@
     <Compile Include="Serialization\Mobile\ISerializationNotification.vb" />
     <Compile Include="Serialization\Mobile\MobileFormatter.vb" />
     <Compile Include="Serialization\Mobile\SerializationInfo.vb" />
+    <Compile Include="Server\AuthorizeRequest.vb" />
     <Compile Include="Server\DataPortalMethodCache.vb" />
     <Compile Include="Server\DataPortalMethodInfo.vb" />
     <Compile Include="DataPortalOperations.vb" />
+    <Compile Include="Server\DataPortalSelector.vb" />
+    <Compile Include="Server\FactoryDataPortal.vb" />
     <Compile Include="Server\Hosts\EnterpriseServicesPortal.vb" />
     <Compile Include="Server\Hosts\IWcfPortal.vb" />
     <Compile Include="Server\Hosts\RemotingPortal.vb" />
@@ -217,8 +220,13 @@
     <Compile Include="ICriteria.vb" />
     <Compile Include="Server\ChildDataPortal.vb" />
     <Compile Include="Server\DataPortalContext.vb" />
+    <Compile Include="Server\IAuthorizeDataPortal.vb" />
     <Compile Include="Server\IDataPortalServer.vb" />
     <Compile Include="Server\IDataPortalTarget.vb" />
+    <Compile Include="Server\IObjectFactoryLoader.vb" />
+    <Compile Include="Server\ObjectFactory.vb" />
+    <Compile Include="Server\ObjectFactoryAttribute.vb" />
+    <Compile Include="Server\ObjectFactoryLoader.vb" />
     <Compile Include="Server\ServicedDataPortal.vb" />
     <Compile Include="Server\SimpleDataPortal.vb" />
     <Compile Include="Server\TransactionalDataPortal.vb" />

@@ -32,15 +32,11 @@ Namespace Server.Hosts
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    Public Function Create( _
-      ByVal objectType As System.Type, _
-      ByVal criteria As Object, _
-      ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
-      Implements Server.IDataPortalServer.Create
-
+    Public Overridable Function Create(ByVal objectType As System.Type, _
+                                       ByVal criteria As Object, _
+                                       ByVal context As Server.DataPortalContext) As Server.DataPortalResult Implements Server.IDataPortalServer.Create
       Dim portal As New Server.DataPortal
       Return portal.Create(objectType, criteria, context)
-
     End Function
 
     ''' <summary>
@@ -69,7 +65,7 @@ Namespace Server.Hosts
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    Public Function Update( _
+    Public Overridable Function Update( _
       ByVal obj As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _
       Implements Server.IDataPortalServer.Update
@@ -87,7 +83,7 @@ Namespace Server.Hosts
     ''' <param name="context">
     ''' <see cref="Server.DataPortalContext" /> object passed to the server.
     ''' </param>
-    Public Function Delete( _
+    Public Overridable Function Delete( _
       ByVal objectType As Type, _
       ByVal criteria As Object, _
       ByVal context As Server.DataPortalContext) As Server.DataPortalResult _

@@ -163,6 +163,10 @@
     <Compile Include="Core\StateMode.vb" />
     <Compile Include="Core\TypeConverters\SmartDateConverter.vb" />
     <Compile Include="Core\TypeSystem.vb" />
+    <Compile Include="Linq\BalancedTreeIndex.vb" />
+    <Compile Include="Linq\IBalancedSearch.vb" />
+    <Compile Include="Linq\IRangeTestableIndex.vb" />
+    <Compile Include="Linq\RedBlackTreeWrapper.vb" />
     <Compile Include="Reflection\UndoableHandler.vb" />
     <Compile Include="Core\UndoException.vb" />
     <Compile Include="DataPortalClient\EnterpriseServicesProxy.vb" />

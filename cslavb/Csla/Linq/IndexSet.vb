@@ -13,7 +13,12 @@ Namespace Linq
         Dim attributes() As Object = [property].GetCustomAttributes(True)
         For Each attribute As Object In attributes
           If TypeOf attribute Is IndexableAttribute Then
-            _internalIndexSet.Add([property].Name, New Index(Of T)([property].Name, TryCast(attribute, IndexableAttribute)))
+            Dim isComparable = [property].PropertyType.FindInterfaces(Function(t, o) (t.ToString() = o.ToString()), "System.IComparable").Length > 0
+            If isComparable Then
+              _internalIndexSet.Add([property].Name, New BalancedTreeIndex(Of T)([property].Name, TryCast(attribute, IndexableAttribute)))
+            Else
+              _internalIndexSet.Add([property].Name, New Index(Of T)([property].Name, TryCast(attribute, IndexableAttribute)))
+            End If
           End If
         Next attribute
       Next [property]
@@ -121,19 +126,90 @@ Namespace Linq
       End Select
     End Function
 
-    Private Function Search(ByVal expr As Expression(Of Func(Of T, Boolean)), ByVal [property] As String) As IEnumerable(Of T) Implements IIndexSet(Of T).Search
-      If expr.Body.NodeType = ExpressionType.Equal AndAlso TypeOf expr.Body Is BinaryExpression Then
-        Dim exprCompiled As Func(Of T, Boolean) = expr.Compile()
-        Dim binExp As BinaryExpression = CType(expr.Body, BinaryExpression)
-        Dim leftSide As Expression = binExp.Left
-        Dim rightSide As Expression = binExp.Right
-        Dim rightHash As Nullable(Of Integer) = GetHashRight(rightSide)
-        Return _internalIndexSet([property]).WhereEqual(rightHash.Value, exprCompiled)
-      Else
-        Return _internalIndexSet([property]).Where(expr.Compile())
-      End If
+    Private Function GetRightValue(ByVal rightSide As Expression) As Object
+      'rightside is where we get our hash...
+      Select Case rightSide.NodeType
+        Case ExpressionType.Constant
+          'shortcut constants, dont eval, will be faster
+          Dim constExp As ConstantExpression = CType(rightSide, ConstantExpression)
+          Return constExp.Value
+
+          'if not constant (which is provably terminal in a tree), convert back to Lambda and eval to get the hash.
+        Case Else
+          'Lambdas can be created from expressions... yay
+          Dim evalRight As LambdaExpression = Ex.Lambda(rightSide, Nothing)
+          'Compile that mutherf-ker, invoke it, and get the resulting hash
+          Return (evalRight.Compile().DynamicInvoke(Nothing))
+
+      End Select
     End Function
 
+    Private Function Search(ByVal expr As Expression(Of Func(Of T, Boolean)), ByVal [property] As String) As IEnumerable(Of T) Implements IIndexSet(Of T).Search
+      If TypeOf expr.Body Is BinaryExpression AndAlso HasIndexablePropertyOnLeft(CType(expr.Body, BinaryExpression).Left) Then
+        Dim exprCompiled As Func(Of T, Boolean) = expr.Compile()
+        Dim binExp As BinaryExpression = CType(expr.Body, BinaryExpression)
+        Dim val As Object = GetRightValue(binExp.Right)
+        Dim rangedIndex As IRangeTestableIndex(Of T)
+        If TypeOf _internalIndexSet([property]) Is IRangeTestableIndex(Of T) Then
+          rangedIndex = CType(_internalIndexSet([property]), IRangeTestableIndex(Of T))
+
+          Select Case binExp.NodeType
+            Case ExpressionType.Equal
+
+              For Each item In _internalIndexSet([property]).WhereEqual(val, exprCompiled)
+                Return item
+              Next
+
+            Case ExpressionType.LessThan
+
+              For Each item In rangedIndex.WhereLessThan(val)
+                Return item
+              Next
+
+            Case ExpressionType.LessThanOrEqual
+
+              For Each item In rangedIndex.WhereLessThanOrEqualTo(val)
+                Return item
+              Next
+
+            Case ExpressionType.GreaterThan
+
+              For Each item In rangedIndex.WhereGreaterThan(val)
+                Return item
+              Next
+
+            Case ExpressionType.GreaterThanOrEqual
+
+              For Each item In rangedIndex.WhereGreaterThanOrEqualTo(val)
+                Return item
+              Next
+
+            Case Else
+
+              For Each item In rangedIndex.Where(expr.Compile())
+                Return item
+              Next
+
+          End Select
+        Else
+
+          Select Case binExp.NodeType
+            Case ExpressionType.Equal
+
+              Dim rightHash As Nullable(Of Integer) = GetHashRight(binExp.Right)
+              For Each item In _internalIndexSet([property]).WhereEqual(val, exprCompiled)
+                Return item
+              Next
+
+            Case Else
+
+              For Each item In rangedIndex.Where(expr.Compile())
+                Return item
+              Next
+
+          End Select
+        End If
+      End If
 
 #End Region
 

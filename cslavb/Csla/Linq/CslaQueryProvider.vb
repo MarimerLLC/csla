@@ -114,9 +114,9 @@ Namespace Linq
               Dim selectorLambda As Expression(Of Func(Of C, TElement)) = expression.Lambda(Of Func(Of C, TElement))(theSelect.Body, theSelect.Parameters)
               Dim selector As Func(Of C, TElement) = selectorLambda.Compile()
               If _filter Is Nothing Then
-                Return _parent.Select(selector).AsQueryable()
+                Return _parent.Select(Of C, TElement)(selector).AsQueryable(Of TElement)()
               Else
-                Return _filter.Select(selector).AsQueryable()
+                Return _filter.Select(Of C, TElement)(selector).AsQueryable(Of TElement)()
               End If
             Case "Concat"
 
@@ -124,13 +124,14 @@ Namespace Linq
               'have to eval on the method to make it not a ParameterExpression, but the actual Enumerable inside
               Return (Queryable.Concat(Of TElement)((TryCast(_filter, IQueryable(Of TElement))).ToList().AsQueryable(), TryCast(Eval(mex.Arguments(1)), IEnumerable(Of TElement))))
 
+            Case "Where"
 
             Case Else
               Dim listFrom As List(Of C)
               If _filter Is Nothing Then
-                listFrom = _parent.ToList()
+                listFrom = _parent.ToList(Of C)()
               Else
-                listFrom = _filter.ToList()
+                listFrom = _filter.ToList(Of C)()
               End If
               Dim listType As Type = GetType(Enumerable)
               Dim listMethods() As MethodInfo = listType.GetMethods()
@@ -157,7 +158,7 @@ Namespace Linq
                   Dim genericArguments() As Type = mex.Method.GetGenericArguments()
                   Dim genericMethodInfo As MethodInfo = method.MakeGenericMethod(genericArguments)
                   Dim testObject = genericMethodInfo.Invoke(Nothing, paramList.ToArray())
-                  Dim testObjectQ As IQueryable(Of TElement) = (CType(testObject, IEnumerable(Of TElement))).AsQueryable()
+                  Dim testObjectQ As IQueryable(Of TElement) = (CType(testObject, IEnumerable(Of TElement))).AsQueryable(Of TElement)()
                   Return testObjectQ
                 End If
               Next method
@@ -177,7 +178,7 @@ Namespace Linq
         Dim mex As MethodCallExpression = TryCast(expression, MethodCallExpression)
         If mex.Method.Name = "OfType" Or mex.Method.Name = "Cast" Then
           Dim listType As Type = GetType(Enumerable)
-          Dim listFrom As List(Of C) = _parent.ToList()
+          Dim listFrom As List(Of C) = _parent.ToList(Of C)()
           Dim paramList As List(Of Object) = New List(Of Object)()
           paramList.Add(listFrom)
           For Each method As MethodInfo In listType.GetMethods()
@@ -224,9 +225,9 @@ Namespace Linq
 
       Dim listFrom As List(Of C)
       If _filter IsNot Nothing Then
-        listFrom = _filter.ToList()
+        listFrom = _filter.ToList(Of C)()
       Else
-        listFrom = _parent.ToList()
+        listFrom = _parent.ToList(Of C)()
       End If
       'we are going to call the Enumerable equivalent so we can use it's provider rather than
       '  re-doing all that work on our own

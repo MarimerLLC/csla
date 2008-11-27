@@ -18,7 +18,7 @@ Namespace Linq
     ''' <summary>
     ''' Iterator that returns objects based on the expression and the item hashcode passed in
     ''' </summary>
-    Function WhereEqual(ByVal hashCode As Integer, ByVal expr As Func(Of T, Boolean)) As IEnumerable(Of T)
+    Function WhereEqual(ByVal pivotVal As Object, ByVal expr As Func(Of T, Boolean)) As IEnumerable(Of T)
     ''' <summary>
     ''' Reindex an item in this index
     ''' </summary>

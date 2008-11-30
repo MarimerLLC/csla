@@ -234,6 +234,8 @@
     <Compile Include="Server\ServicedDataPortal.vb" />
     <Compile Include="Server\SimpleDataPortal.vb" />
     <Compile Include="Server\TransactionalDataPortal.vb" />
+    <Compile Include="Silverlight\MobileFactoryAttribute.vb" />
+    <Compile Include="Silverlight\Security\WindowsIdentity.vb" />
     <Compile Include="SingleCriteria.vb" />
     <Compile Include="TransactionalTypes.vb" />
     <Compile Include="Data\ConnectionManager.vb" />
@@ -577,7 +579,6 @@
     <Folder Include="C5\heaps\" />
     <Folder Include="C5\linkedlists\" />
     <Folder Include="C5\Trees\" />
-    <Folder Include="Silverlight\Security\" />
     <Folder Include="Threading\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />

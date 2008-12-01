@@ -139,7 +139,7 @@ namespace Csla.Linq
         default:
           //Lambdas can be created from expressions... yay
           LambdaExpression evalRight = Ex.Lambda(rightSide, null);
-          //Compile that mutherf-ker, invoke it, and get the resulting hash
+          //Compile the expression, invoke it, and get the resulting hash
           return (evalRight.Compile().DynamicInvoke(null).GetHashCode());
       }
     }
@@ -159,7 +159,7 @@ namespace Csla.Linq
         default:
           //Lambdas can be created from expressions... yay
           LambdaExpression evalRight = Ex.Lambda(rightSide, null);
-          //Compile that mutherf-ker, invoke it, and get the resulting hash
+          //Compile the expression, invoke it, and get the resulting hash
           return (evalRight.Compile().DynamicInvoke(null));
       }
     }

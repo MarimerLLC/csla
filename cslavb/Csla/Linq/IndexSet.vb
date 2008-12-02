@@ -121,7 +121,7 @@ Namespace Linq
         Case Else
           'Lambdas can be created from expressions... yay
           Dim evalRight As LambdaExpression = Ex.Lambda(rightSide, Nothing)
-          'Compile that mutherf-ker, invoke it, and get the resulting hash
+          'Compile, invoke it, and get the resulting hash
           Return (evalRight.Compile().DynamicInvoke(Nothing).GetHashCode())
       End Select
     End Function
@@ -138,7 +138,7 @@ Namespace Linq
         Case Else
           'Lambdas can be created from expressions... yay
           Dim evalRight As LambdaExpression = Ex.Lambda(rightSide, Nothing)
-          'Compile that mutherf-ker, invoke it, and get the resulting hash
+          'Compile, invoke it, and get the resulting hash
           Return (evalRight.Compile().DynamicInvoke(Nothing))
 
       End Select

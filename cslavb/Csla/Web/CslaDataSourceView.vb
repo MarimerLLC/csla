@@ -1,3 +1,4 @@
+#If Not CLIENTONLY Then
 Imports System.Web.UI
 
 Namespace Web
@@ -265,7 +266,7 @@ Namespace Web
 
     ''' <summary>
     ''' Gets a value indicating whether the data source supports
-    ''' paging of the data. Always returns <see langword="false"/>.
+    ''' paging of the data.
     ''' </summary>
     Public Overrides ReadOnly Property CanPage() As Boolean
       Get
@@ -299,3 +300,4 @@ Namespace Web
   End Class
 
 End Namespace
+#End If

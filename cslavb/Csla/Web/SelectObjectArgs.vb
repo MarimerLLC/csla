@@ -1,3 +1,4 @@
+#If Not CLIENTONLY Then
 Imports System.ComponentModel
 
 Namespace Web
@@ -140,3 +141,4 @@ Namespace Web
   End Class
 
 End Namespace
+#End If

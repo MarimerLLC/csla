@@ -1,3 +1,4 @@
+#If Not CLIENTONLY Then
 Imports System.Web.UI
 Imports System.Web.UI.Design
 Imports System.ComponentModel
@@ -108,7 +109,7 @@ Namespace Web.Design
       If uiService.ShowDialog(cfg) = System.Windows.Forms.DialogResult.OK Then
         SuppressDataSourceEvents()
         Try
-          CType(DataSourceControl, CslaDataSource).TypeAssemblyName = ""
+          CType(DataSourceControl, CslaDataSource).TypeAssemblyName = String.Empty
           CType(DataSourceControl, CslaDataSource).TypeName = cfg.TypeName
           OnDataSourceChanged(EventArgs.Empty)
           result = True
@@ -155,3 +156,4 @@ Namespace Web.Design
   End Class
 
 End Namespace
+#End If

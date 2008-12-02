@@ -1,3 +1,4 @@
+#If Not CLIENTONLY Then
 Imports System.Web.UI
 Imports System.Web.UI.Design
 Imports System.ComponentModel
@@ -44,7 +45,7 @@ Namespace Web.Design
       _dataType = Utilities.GetPropertyType(field.PropertyType)
       _isReadOnly = field.IsReadOnly
       _name = field.Name
-
+      'nullable
       Dim t As Type = field.PropertyType
       If Not t.IsValueType OrElse _isNullable Then
         _nullable = True
@@ -190,3 +191,4 @@ Namespace Web.Design
   End Class
 
 End Namespace
+#End If

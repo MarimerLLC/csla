@@ -1,3 +1,4 @@
+#If Not CLIENTONLY Then
 Imports System.Web.UI
 Imports System.Web.UI.Design
 Imports System.ComponentModel
@@ -50,3 +51,4 @@ Namespace Web.Design
   End Class
 
 End Namespace
+#End If

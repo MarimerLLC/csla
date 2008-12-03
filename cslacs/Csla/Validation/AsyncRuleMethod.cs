@@ -42,11 +42,15 @@ namespace Csla.Validation
     }
 
     /// <summary>
-    /// Not implemented.
+    /// Create a temporary args object that
+    /// just contains the property name. This
+    /// should only occur if the async rule
+    /// method throws an unhandled exception,
+    /// which shouldn't really ever happen.
     /// </summary>
     RuleArgs IRuleMethod.RuleArgs
     {
-      get { throw new NotSupportedException() ; }
+      get { return new RuleArgs(_args.Properties[0].Name); }
     }
 
     public AsyncRuleArgs AsyncRuleArgs

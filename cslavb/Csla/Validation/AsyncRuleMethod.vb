@@ -83,21 +83,22 @@ Namespace Validation
             _args.Properties(0).Name)
         End Sub
 
-        ''' <summary>
-        ''' You must call the IAsyncRuleMethod overload of Invoke.
-        ''' </summary>
-        Public Function Invoke(ByVal target As Object) As Boolean Implements IRuleMethod.Invoke
-            Throw New NotSupportedException()
-        End Function
+    ''' <summary>
+    ''' You must call the IAsyncRuleMethod overload of Invoke.
+    ''' </summary>
+    Public Function Invoke(ByVal target As Object) As Boolean Implements IRuleMethod.Invoke
+      Throw New NotSupportedException()
+    End Function
 
-        ''' <summary>
-        ''' Invokes the asynchronous rule to validate the data.
-        ''' </summary>
-        ''' <see langword="true"/>if the data is valid, 
-        ''' <see langword="false"/>if the data is invalid.
-        Public Sub Invoke(ByVal target As Object, ByVal result As AsyncRuleCompleteHandler) Implements IAsyncRuleMethod.Invoke
-            Dim propertyValues As Dictionary(Of String, Object) = GetPropertyValues(target, _args.Properties)
-        End Sub
+    ''' <summary>
+    ''' Invokes the asynchronous rule to validate the data.
+    ''' </summary>
+    ''' <see langword="true"/>if the data is valid, 
+    ''' <see langword="false"/>if the data is invalid.
+    Public Sub Invoke(ByVal target As Object, ByVal result As AsyncRuleCompleteHandler) Implements IAsyncRuleMethod.Invoke
+      Dim propertyValues As Dictionary(Of String, Object) = GetPropertyValues(target, _args.Properties)
+      _handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), Function(r) result(Me, r)))
+    End Sub
         
 #Region "IComparable"
         Public Function CompareTo(ByVal obj As Object) As Integer Implements System.IComparable.CompareTo
@@ -109,16 +110,16 @@ Namespace Validation
         End Function
 #End Region
 
-        Private Shared Function GetPropertyValues(ByVal target As Object, ByVal ParamArray properties() As IPropertyInfo) As Dictionary(Of String, Object)
-            Dim propertyValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
+    Private Shared Function GetPropertyValues(ByVal target As Object, ByVal ParamArray properties() As IPropertyInfo) As Dictionary(Of String, Object)
+      Dim propertyValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
 
-            For Each p In properties
-                propertyValues.Add(p.Name, Utilities.CallByName(target, p.Name, CallType.Get))
-            Next
+      For Each p As IPropertyInfo In properties
+        propertyValues.Add(p.Name, Utilities.CallByName(target, p.Name, CallType.Get))
+      Next
 
-            Return propertyValues
+      Return propertyValues
 
-        End Function
+    End Function
 
     End Class
 End Namespace

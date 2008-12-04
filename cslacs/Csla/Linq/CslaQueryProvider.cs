@@ -111,8 +111,6 @@ namespace Csla.Linq
           //handle non identity projections here
           switch (mex.Method.Name)
           {
-            //select is a royal pain in the ass where the parameter passed to CreateQuery isn't actually the one that goes in the call
-            //requiring this workaround.  Not sure how straight Linq to Objects does it.
             case "Select":
 
               UnaryExpression selectHolder = (UnaryExpression) mex.Arguments[1];
@@ -153,9 +151,6 @@ namespace Csla.Linq
 
                 if (i > 0)
                   if (arg is Expression)
-                    //expressions have to be compiled in order to work with the method call on straight Enumerable
-                    //somehow, LINQ to objects itself magically does this.  Reflector shows a mess, so I (Aaron) invented my
-                    //own way.  God love unit tests!
                     paramList.Add(Compile((Expression) arg));
                   else
                     paramList.Add(arg);
@@ -216,29 +211,10 @@ namespace Csla.Linq
 
     public object Execute(Expression expression)
     {
-      //ok, this is a hairy, dirty, and nasty piece of code
-      //the alternatives are substantially worse than this though
-      //i.e. when you do your own provider, LINQ assumes that
-      //you are going to implement your own expression tree visitor and
-      //do it all yourself.  Frankly, I still have xmas shopping to do
-      //and I really don't want us to be foobared when we get
-      //even more extension methods added to LINQ
-      //therefore, we are pulling execute based on taking the calling the standard execute on
-      //enumerable, but using our own class
-      //
-      //optimization can occur from here on an as needed basis, that is
-      //check for the value of mex.Method.Name, and write a handler for
-      //that method
-      //
-      //also, it may not be a bad idea to rather than do this reflection each and every time
-      //somehow cache the reflected methodinfos and do lookups that way
-      //that said, we need a complete red/green/refactor cycle here before I am touching that one
-
+     
       MethodCallExpression mex = (MethodCallExpression) expression;
-      
-      
-      //convert the enumerated collection to a list
 
+      //convert the enumerated collection to a list
       List<C> listFrom;
       if (_filter != null)
         listFrom = _filter.ToList<C>();

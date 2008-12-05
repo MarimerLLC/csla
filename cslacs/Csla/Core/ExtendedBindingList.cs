@@ -86,7 +86,7 @@ namespace Csla.Core
     protected override void RemoveItem(int index)
     {
       OnRemovingItem(this[index]);
-      OnRemoveEventHooksInternal(this[index]);
+      OnRemoveEventHooks(this[index]);
       base.RemoveItem(index);
     }
 
@@ -123,24 +123,14 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Raises the BusyChanged event.
-    /// </summary>
-    /// <param name="args">Event arguments.</param>
-    protected internal virtual void OnBusyChangedInternal(BusyChangedEventArgs args)
-    {
-      OnBusyChanged(args);
-
-      if (_busyChanged != null)
-        _busyChanged(this, args);
-    }
-
-    /// <summary>
     /// Override this method to be notified when the
     /// IsBusy property has changed.
     /// </summary>
     /// <param name="args">Event arguments.</param>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
+      if (_busyChanged != null)
+        _busyChanged(this, args);
     }
 
     /// <summary>
@@ -150,7 +140,7 @@ namespace Csla.Core
     /// <param name="busy">New busy value.</param>
     protected void OnBusyChanged(string propertyName, bool busy)
     {
-      OnBusyChangedInternal(new BusyChangedEventArgs(propertyName, busy));
+      OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
     }
 
     /// <summary>
@@ -173,7 +163,7 @@ namespace Csla.Core
 
     void busy_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      OnBusyChangedInternal(e);
+      OnBusyChanged(e);
     }
 
     #endregion
@@ -195,24 +185,14 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Raises the UnhandledAsyncException event.
-    /// </summary>
-    /// <param name="error">Event arguments.</param>
-    protected internal virtual void OnUnhandledAsyncExceptionInternal(ErrorEventArgs error)
-    {
-      OnUnhandledAsyncException(error);
-
-      if (_unhandledAsyncException != null)
-        _unhandledAsyncException(this, error);
-    }
-
-    /// <summary>
     /// Method invoked when an unhandled async exception has
     /// occurred.
     /// </summary>
     /// <param name="error">Event arguments.</param>
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
+      if (_unhandledAsyncException != null)
+        _unhandledAsyncException(this, error);
     }
 
     /// <summary>
@@ -222,12 +202,12 @@ namespace Csla.Core
     /// <param name="error">Exception that occurred.</param>
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
-      OnUnhandledAsyncExceptionInternal(new ErrorEventArgs(originalSender, error));
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
     }
 
     void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
     {
-      OnUnhandledAsyncExceptionInternal(e);
+      OnUnhandledAsyncException(e);
     }
 
     #endregion
@@ -242,14 +222,16 @@ namespace Csla.Core
     protected override void InsertItem(int index, T item)
     {
       base.InsertItem(index, item);
-      OnAddEventHooksInternal(item);
+      OnAddEventHooks(item);
     }
 
     /// <summary>
-    /// Adds event hooks to child object in list.
+    /// Method invoked when events are hooked for a child
+    /// object.
     /// </summary>
     /// <param name="item">Reference to child object.</param>
-    protected virtual void OnAddEventHooksInternal(T item)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnAddEventHooks(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
       if (busy != null)
@@ -268,26 +250,17 @@ namespace Csla.Core
       //  list.ListChanged += new ListChangedEventHandler(Child_ListChanged);
 
       INotifyChildChanged child = item as INotifyChildChanged;
-      if(child != null)
+      if (child != null)
         child.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
-
-      OnAddEventHooks(item);
     }
 
     /// <summary>
-    /// Method invoked when events are hooked for a child
+    /// Method invoked when events are unhooked for a child
     /// object.
     /// </summary>
     /// <param name="item">Reference to child object.</param>
-    protected virtual void OnAddEventHooks(T item)
-    {
-    }
-
-    /// <summary>
-    /// Removes event hooks to child object in list.
-    /// </summary>
-    /// <param name="item">Reference to child object.</param>
-    protected internal virtual void OnRemoveEventHooksInternal(T item)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnRemoveEventHooks(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
       if (busy != null)
@@ -308,17 +281,6 @@ namespace Csla.Core
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
         child.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
-
-      OnRemoveEventHooks(item);
-    }
-
-    /// <summary>
-    /// Method invoked when events are unhooked for a child
-    /// object.
-    /// </summary>
-    /// <param name="item">Reference to child object.</param>
-    protected virtual void OnRemoveEventHooks(T item)
-    {
     }
 
     /// <summary>
@@ -340,7 +302,7 @@ namespace Csla.Core
     private void OnDeserializedHandler(StreamingContext context)
     {
       foreach (T item in this)
-        OnAddEventHooksInternal(item);
+        OnAddEventHooks(item);
 
       ((ISerializationNotification)this).Deserialized();
     }
@@ -415,13 +377,6 @@ namespace Csla.Core
     {
       RaiseChildChanged(sender, e, null);
     }
-
-
-    //private void Child_ListChanged(object sender, ListChangedEventArgs e)
-    //{
-    //  if (e.ListChangedType != ListChangedType.ItemChanged)
-    //    OnChildChangedInternal(this, new ChildChangedEventArgs(sender, null, e));
-    //}
 
     /// <summary>
     /// Handles any ChildChanged event from

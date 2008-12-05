@@ -81,18 +81,6 @@ namespace Csla
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       OnDeserialized(context);
-      OnDeserializedInternal();
-    }
-
-    /// <summary>
-    /// Override this method to perform custom opertaions
-    /// after the object has been deserialized on the server or client
-    /// </summary>
-    protected virtual void OnDeserializedInternal()
-    {
-      _forceInit = _forceInit && false;
-      if (FieldManager != null)
-        FieldManager.SetPropertyList(this.GetType());
     }
 
     /// <summary>
@@ -103,9 +91,11 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
-      // do nothing - this is here so a subclass
-      // could override if needed
+      _forceInit = _forceInit && false;
+      if (FieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
     }
+
 #endif
 
     /// <summary>

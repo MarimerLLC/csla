@@ -908,7 +908,6 @@ namespace Csla
       foreach (Core.IEditableBusinessObject child in this)
       {
         child.SetParent(this);
-        //OnAddEventHooksInternal((C)child);
       }
       
       foreach (Core.IEditableBusinessObject child in DeletedList)

@@ -285,6 +285,7 @@
     <Compile Include="Validation\AsyncRuleResultHandler.vb" />
     <Compile Include="Validation\AsyncValidationRuleContext.vb" />
     <Compile Include="Validation\BrokenRule.partial.vb" />
+    <Compile Include="Validation\BrokenRulesCollection.partial.vb" />
     <Compile Include="Validation\CommonRules.vb" />
     <Compile Include="Core\BindableBase.vb" />
     <Compile Include="Security\RolesForProperty.vb" />

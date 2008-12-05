@@ -14,12 +14,16 @@ using Csla.Serialization;
 
 namespace Csla.Core
 {
+  /// <summary>
+  /// Defines a counterpart to the .NET HybridDictionary
+  /// that can be serialized by the MobileFormatter.
+  /// </summary>
   [Serializable()]
   public class ContextDictionary : Dictionary<string, object>, IMobileObject
   {
     #region IMobileObject Members
 
-    public void GetState(SerializationInfo info)
+    void IMobileObject.GetState(SerializationInfo info)
     {
       foreach (string key in this.Keys)
       {
@@ -29,7 +33,7 @@ namespace Csla.Core
       }
     }
 
-    public void GetChildren(SerializationInfo info, MobileFormatter formatter)
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       foreach (string key in this.Keys)
       {
@@ -43,7 +47,7 @@ namespace Csla.Core
       }
     }
 
-    public void SetState(SerializationInfo info)
+    void IMobileObject.SetState(SerializationInfo info)
     {
       foreach (string key in info.Values.Keys)
       {
@@ -51,7 +55,7 @@ namespace Csla.Core
       }
     }
 
-    public void SetChildren(SerializationInfo info, MobileFormatter formatter)
+    void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       foreach (string key in info.Children.Keys)
       {

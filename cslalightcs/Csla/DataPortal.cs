@@ -293,18 +293,48 @@ namespace Csla
 
     #region Child
 
+    /// <summary>
+    /// Creates and loads an existing
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to retrieve.
+    /// </typeparam>
+    /// <param name="parameters">
+    /// Parameters passed to child fetch method.
+    /// </param>
     public static T FetchChild<T>(params object[] parameters)
     {
       ChildDataPortal<T> dp = new ChildDataPortal<T>();
       return (T)dp.Fetch(parameters);
     }
 
+    /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
+    /// <param name="parameters">
+    /// Parameters passed to child create method.
+    /// </param>
     public static T CreateChild<T>(params object[] parameters)
     {
       ChildDataPortal<T> dp = new ChildDataPortal<T>();
       return (T)dp.Create(parameters);
     }
 
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters passed to child update method.
+    /// </param>
     public static void UpdateChild<T>(T child, params object[] parameters)
     {
       ChildDataPortal<T> dp = new ChildDataPortal<T>();

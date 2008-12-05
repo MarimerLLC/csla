@@ -7,7 +7,13 @@ namespace Csla
   /// </summary>
   public interface IDataPortalResult 
   {
+    /// <summary>
+    /// Gets the resulting object.
+    /// </summary>
     object Object { get; }
+    /// <summary>
+    /// Gets any resulting error information.
+    /// </summary>
     Exception Error { get; }
   }
 

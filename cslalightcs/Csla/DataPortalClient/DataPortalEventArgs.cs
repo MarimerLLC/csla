@@ -15,15 +15,6 @@ namespace Csla.DataPortalClient
     private Type _objectType;
 
     /// <summary>
-    /// The DataPortalContext object passed to the
-    /// server-side DataPortal.
-    /// </summary>
-    //public Server.DataPortalContext DataPortalContext
-    //{
-    //  get { return _dataPortalContext; }
-    //}
-
-    /// <summary>
     /// Gets the requested data portal operation.
     /// </summary>
     public DataPortalOperations Operation
@@ -57,16 +48,13 @@ namespace Csla.DataPortalClient
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// <param name="dataPortalContext">
-    /// Data portal context object.
-    /// </param>
     /// <param name="objectType">
     /// Business object type.
     /// </param>
     /// <param name="operation">
     /// Data portal operation being performed.
     /// </param>
-    public DataPortalEventArgs(/*Server.DataPortalContext dataPortalContext,*/ Type objectType, DataPortalOperations operation)
+    public DataPortalEventArgs(Type objectType, DataPortalOperations operation)
     {
       //_dataPortalContext = dataPortalContext;
       _operation = operation;
@@ -76,9 +64,6 @@ namespace Csla.DataPortalClient
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// <param name="dataPortalContext">
-    /// Data portal context object.
-    /// </param>
     /// <param name="objectType">
     /// Business object type.
     /// </param>
@@ -88,7 +73,7 @@ namespace Csla.DataPortalClient
     /// <param name="exception">
     /// Exception encountered during processing.
     /// </param>
-    public DataPortalEventArgs(/*Server.DataPortalContext dataPortalContext,*/ Type objectType, DataPortalOperations operation, Exception exception)
+    public DataPortalEventArgs(Type objectType, DataPortalOperations operation, Exception exception)
       : this(/*dataPortalContext,*/ objectType, operation)
     {
       _exception = exception;

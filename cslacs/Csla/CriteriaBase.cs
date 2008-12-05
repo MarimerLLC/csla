@@ -66,8 +66,26 @@ namespace Csla
     /// MobileFormatter only - you must provide a 
     /// Type parameter in your code.
     /// </summary>
-    public CriteriaBase() 
-    { }
+    [Obsolete("For use by MobileFormatter only")]
+    public CriteriaBase()
+    {
+      _forceInit = _forceInit && false;
+    }
+
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should be deserialized. The data should be
+    /// deserialized from the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
+    /// <param name="mode">Serialization mode.</param>
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      _forceInit = _forceInit && false;
+      base.OnSetState(info, mode);
+    }
 #else
     /// <summary>
     /// Initializes empty CriteriaBase. The type of

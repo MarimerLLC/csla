@@ -4,6 +4,10 @@ using System.Windows.Controls;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Defines a factory object that maps
+  /// controls to names and names to controls.
+  /// </summary>
   public interface IControlNameFactory
   {
     /// <summary>

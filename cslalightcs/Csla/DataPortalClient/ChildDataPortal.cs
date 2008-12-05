@@ -14,7 +14,6 @@ namespace Csla.DataPortalClient
     /// <summary>
     /// Create a new business object.
     /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
@@ -82,7 +81,6 @@ namespace Csla.DataPortalClient
     /// <summary>
     /// Get an existing business object.
     /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>

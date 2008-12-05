@@ -24,7 +24,7 @@ namespace cslalighttest.NameValueList
       return DataPortal.Fetch<BasicNameValueList>(new BasicNameValueList.Criteria(typeof(BasicNameValueList)));
     }
 
-    protected void DataPortal_Fetch(object criteria)
+    protected override void DataPortal_Fetch(object criteria)
     {
       this.IsReadOnly = false;
       for (int i = 0; i < 10; i++)

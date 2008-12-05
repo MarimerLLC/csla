@@ -15,6 +15,9 @@ using System.Globalization;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Displays a busy animation.
+  /// </summary>
   [TemplatePart(Name = "part1", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "part2", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "part3", Type = typeof(FrameworkElement))]
@@ -42,12 +45,19 @@ namespace Csla.Silverlight
 
     #region Dependency properties
 
+    /// <summary>
+    /// StepInterval property to control speed of animation.
+    /// </summary>
     public static readonly DependencyProperty StepIntervalProperty = DependencyProperty.Register(
       "StepInterval",
       typeof(int),
       typeof(BusyAnimation),
       new PropertyMetadata((o, e) => ((BusyAnimation)o).StepInterval = (int)e.NewValue));
 
+    /// <summary>
+    /// IsRunning property to control whether the 
+    /// animation is running.
+    /// </summary>
     public static readonly DependencyProperty IsRunningProperty = DependencyProperty.Register(
       "IsRunning",
       typeof(object),
@@ -61,6 +71,10 @@ namespace Csla.Silverlight
     private DispatcherTimer _timer;
     private int _state = -1;
 
+    /// <summary>
+    /// Gets or sets a property controlling
+    /// the speed of the animation.
+    /// </summary>
     public int StepInterval
     {
       get { return (int)GetValue(StepIntervalProperty); }
@@ -71,6 +85,10 @@ namespace Csla.Silverlight
       }
     }
 
+    /// <summary>
+    /// Gets or sets a property controlling
+    /// whether the animation is running.
+    /// </summary>
     public object IsRunning
     {
       get 
@@ -97,6 +115,9 @@ namespace Csla.Silverlight
 
     #region Constructor
 
+    /// <summary>
+    /// Creates an instance of the control.
+    /// </summary>
     public BusyAnimation()
     {
       DefaultStyleKey = typeof(BusyAnimation);

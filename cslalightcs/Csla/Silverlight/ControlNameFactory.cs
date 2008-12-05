@@ -4,10 +4,11 @@ using System.Windows.Controls;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Maps controls to names and names to controls.
+  /// </summary>
   public class ControlNameFactory : IControlNameFactory
   {
-
-
     #region IControlNameFactory Members
 
     /// <summary>

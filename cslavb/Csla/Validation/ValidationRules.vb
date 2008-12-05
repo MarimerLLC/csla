@@ -1,10 +1,22 @@
+Imports System
+Imports System.Linq
+Imports System.Collections.Generic
+Imports Csla.Serialization
+Imports Csla.Core
+Imports Csla.Serialization.Mobile
+Imports System.Collections.ObjectModel
+
 Namespace Validation
 
   ''' <summary>
   ''' Tracks the business rules broken within a business object.
   ''' </summary>
+#If TESTING Then
+  [System.Diagnostics.DebuggerStepThrough]
+#End If
   <Serializable()> _
-  Public Class ValidationRules
+  Partial Public Class ValidationRules
+    Inherits MobileObject
 
     ' list of broken rules for this business object
     Private _brokenRules As BrokenRulesCollection
@@ -23,6 +35,12 @@ Namespace Validation
     <NonSerialized()> _
     Private _rulesToCheck As ValidationRulesManager
 
+    <NonSerialized()> _
+    Private _validatingRules As ObservableCollection(Of IAsyncRuleMethod)
+
+    'used to synchronize various async operations
+    Private SyncRoot As Object = New Object
+
     Friend Sub New(ByVal businessObject As Object)
 
       SetTarget(businessObject)
@@ -35,12 +53,28 @@ Namespace Validation
 
     End Sub
 
+    Friend ReadOnly Property Target() As Object
+      Get
+        Return _target
+      End Get
+    End Property
+
     Private ReadOnly Property BrokenRulesList() As BrokenRulesCollection
       Get
         If _brokenRules Is Nothing Then
           _brokenRules = New BrokenRulesCollection
         End If
         Return _brokenRules
+      End Get
+    End Property
+
+    Friend ReadOnly Property ValidatingRules() As ObservableCollection(Of IAsyncRuleMethod)
+      Get
+        If _validatingRules Is Nothing Then
+          _validatingRules = New ObservableCollection(Of IAsyncRuleMethod)()
+        End If
+
+        Return _validatingRules
       End Get
     End Property
 
@@ -365,6 +399,15 @@ Namespace Validation
 
 #Region " Adding Shared Rules "
 
+    Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal primaryProperty As IPropertyInfo, ByVal ParamArray additionalProperties() As IPropertyInfo)
+      AddRule(handler, New AsyncRuleArgs(primaryProperty, additionalProperties))
+    End Sub
+
+    Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal args As AsyncRuleArgs)
+      ValidateHandler(handler)
+      GetTypeRules(True).AddRule(handler, RuleSeverity.Error, args)
+    End Sub
+
     ''' <summary>
     ''' Adds a rule to the list of rules to be enforced.
     ''' </summary>
@@ -386,12 +429,9 @@ Namespace Validation
     ''' <param name="propertyInfo">
     ''' The PropertyInfo object describing the property.
     ''' </param>
-    Public Sub AddRule( _
-      ByVal handler As RuleHandler, ByVal propertyInfo As Core.IPropertyInfo)
-
+    Public Sub AddRule(ByVal handler As RuleHandler, ByVal propertyInfo As Core.IPropertyInfo)
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, New RuleArgs(propertyInfo), 0)
-
     End Sub
 
     ''' <summary>
@@ -416,12 +456,9 @@ Namespace Validation
     ''' The property name on the target object where the rule implementation can retrieve
     ''' the value to be validated.
     ''' </param>
-    Public Sub AddRule( _
-      ByVal handler As RuleHandler, ByVal propertyName As String)
-
+    Public Sub AddRule(ByVal handler As RuleHandler, ByVal propertyName As String)
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, New RuleArgs(propertyName), 0)
-
     End Sub
 
     ''' <summary>
@@ -448,11 +485,10 @@ Namespace Validation
     ''' <param name="priority">
     ''' The priority of the rule, where lower numbers are processed first.
     ''' </param>
-    Public Sub AddRule( _
-      ByVal handler As RuleHandler, ByVal propertyInfo As Core.IPropertyInfo, ByVal priority As Integer)
+    Public Sub AddRule(ByVal handler As RuleHandler, ByVal propertyInfo As Core.IPropertyInfo, ByVal priority As Integer)
 
       ValidateHandler(handler)
-      GetTypeRules(True).AddRule(handler, New RuleArgs(propertyInfo), priority)
+      GetTypeRules(True).AddRule(handler, New RuleArgs(PropertyInfo), priority)
 
     End Sub
 
@@ -481,8 +517,7 @@ Namespace Validation
     ''' <param name="priority">
     ''' The priority of the rule, where lower numbers are processed first.
     ''' </param>
-    Public Sub AddRule( _
-      ByVal handler As RuleHandler, ByVal propertyName As String, ByVal priority As Integer)
+    Public Sub AddRule(ByVal handler As RuleHandler, ByVal propertyName As String, ByVal priority As Integer)
 
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, New RuleArgs(propertyName), priority)
@@ -510,8 +545,7 @@ Namespace Validation
     ''' <param name="propertyInfo">
     ''' The PropertyInfo object describing the property.
     ''' </param>
-    Public Sub AddRule(Of T)( _
-      ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyInfo As Core.IPropertyInfo)
+    Public Sub AddRule(Of T)(ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyInfo As Core.IPropertyInfo)
 
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, New RuleArgs(propertyInfo), 0)
@@ -540,8 +574,7 @@ Namespace Validation
     ''' The property name on the target object where the rule implementation can retrieve
     ''' the value to be validated.
     ''' </param>
-    Public Sub AddRule(Of T)( _
-      ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyName As String)
+    Public Sub AddRule(Of T)(ByVal handler As RuleHandler(Of T, RuleArgs), ByVal propertyName As String)
 
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, New RuleArgs(propertyName), 0)
@@ -570,8 +603,7 @@ Namespace Validation
     ''' A RuleArgs object specifying the property name and other arguments
     ''' passed to the rule method
     ''' </param>
-    Public Sub AddRule(Of T)( _
-      ByVal handler As RuleHandler(Of T, RuleArgs), ByVal args As RuleArgs)
+    Public Sub AddRule(Of T)(ByVal handler As RuleHandler(Of T, RuleArgs), ByVal args As RuleArgs)
 
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(Of T, RuleArgs)(handler, args, 0)
@@ -730,6 +762,12 @@ Namespace Validation
       GetTypeRules(True).AddRule(handler, args, priority)
 
     End Sub
+
+    Private Function ValidateHandler(ByVal handler As AsyncRuleHandler) As Boolean
+
+      Return ValidateHandler(handler.Method)
+
+    End Function
 
     Private Function ValidateHandler(ByVal handler As RuleHandler) As Boolean
 
@@ -956,12 +994,9 @@ Namespace Validation
     ''' <param name="propertyInfo">
     ''' Property to validate.
     ''' </param>
-    Public Function CheckRules(ByVal propertyInfo As Csla.Core.IPropertyInfo) As String()
-
+    Public Sub CheckRules(ByVal propertyInfo As Csla.Core.IPropertyInfo)
       CheckRules(propertyInfo.Name)
-      Return New String() {propertyInfo.Name}
-
-    End Function
+    End Sub
 
     ''' <summary>
     ''' Invokes all rule methods associated with
@@ -971,12 +1006,12 @@ Namespace Validation
     ''' <param name="propertyName">The name of the property to validate.</param>
     Public Function CheckRules(ByVal propertyName As String) As String()
 
+      If _suppressRuleChecking Then
+        Return New String() {}
+      End If
+
       Dim result As New List(Of String)
       result.Add(propertyName)
-
-      If _suppressRuleChecking Then
-        Return result.ToArray
-      End If
 
       ' get the rules dictionary
       Dim rules As ValidationRulesManager = RulesToCheck
@@ -1046,6 +1081,9 @@ Namespace Validation
       Dim previousRuleBroken As Boolean
       Dim shortCircuited As Boolean
 
+      'Lock the rules here to ensure that all rules are run before allowing
+      'async rules to notify that they have completed.
+
       For index As Integer = 0 To list.Count - 1
         Dim rule As IRuleMethod = list(index)
         ' see if short-circuiting should kick in
@@ -1056,46 +1094,98 @@ Namespace Validation
         If shortCircuited Then
           ' we're short-circuited, so just remove
           ' all remaining broken rule entries
-          BrokenRulesList.Remove(rule)
+          SyncLock (SyncRoot)
+            BrokenRulesList.Remove(rule)
+          End SyncLock
+
 
         Else
           ' we're not short-circuited, so check rule
           Dim ruleResult As Boolean
-          Try
-            ruleResult = rule.Invoke(_target)
 
-          Catch ex As Exception
-            '' force a broken rule
-            'ruleResult = False
-            'rule.RuleArgs.Severity = RuleSeverity.Error
-            'rule.RuleArgs.Description = _
-            '  String.Format(My.Resources.ValidationRuleException & "{{2}}", rule.RuleArgs.PropertyName, rule.RuleName, ex.Message)
-            ' throw a more detailed exception
-            Throw New ValidationException( _
-              String.Format(My.Resources.ValidationRuleException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
-          End Try
+          Dim asyncRule As IAsyncRuleMethod = CType(rule, IAsyncRuleMethod)
 
-          If ruleResult Then
-            ' the rule is not broken
-            BrokenRulesList.Remove(rule)
-
+          If asyncRule IsNot Nothing Then
+            SyncLock (SyncRoot)
+              ValidatingRules.Add(asyncRule)
+            End SyncLock
+            SyncLock (SyncRoot)
+              BrokenRulesList.Remove(rule)
+            End SyncLock
           Else
-            ' the rule is broken
-            BrokenRulesList.Add(rule)
-            If rule.RuleArgs.Severity = RuleSeverity.Error Then
-              previousRuleBroken = True
+            Try
+              ruleResult = rule.Invoke(_target)
+            Catch ex As Exception
+              '' force a broken rule
+              'ruleResult = False
+              'rule.RuleArgs.Severity = RuleSeverity.Error
+              'rule.RuleArgs.Description = _
+              '  String.Format(My.Resources.ValidationRuleException & "{{2}}", rule.RuleArgs.PropertyName, rule.RuleName, ex.Message)
+              ' throw a more detailed exception
+              Throw New ValidationException( _
+                String.Format(My.Resources.ValidationRuleException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
+            End Try
+
+            SyncLock (SyncRoot)
+              If ruleResult Then
+                ' the rule is not broken
+                BrokenRulesList.Remove(rule)
+
+              Else
+                ' the rule is broken
+                BrokenRulesList.Add(rule)
+                If rule.RuleArgs.Severity = RuleSeverity.Error Then
+                  previousRuleBroken = True
+                End If
+              End If
+            End SyncLock
+
+            If rule.RuleArgs.StopProcessing Then
+              shortCircuited = True
+              ' reset the value for next time
+              rule.RuleArgs.StopProcessing = False
             End If
-          End If
-          If rule.RuleArgs.StopProcessing Then
-            shortCircuited = True
-            ' reset the value for next time
-            rule.RuleArgs.StopProcessing = False
           End If
         End If
       Next
 
+      Dim asyncRules() As IAsyncRuleMethod = Nothing
+
+      SyncLock (SyncRoot)
+        asyncRules = ValidatingRules.ToArray()
+      End SyncLock
+
+      ' They must all be added to the ValidatingRules list before you can invoke them.
+      ' Otherwise you have a race condition, where if a rule completes before the next one is invoked
+      ' then you may have the ValidationComplete event fire multiple times invalidly.
+      For Each rule As IAsyncRuleMethod In asyncRules
+        Try
+          rule.Invoke(_target, asyncRule_Complete)
+        Catch ex As Exception
+          'throw a more detailed exception
+          Throw New ValidationException( _
+            String.Format(Properties.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
+        End Try
+
+      Next
     End Sub
 
+    Sub asyncRule_Complete(ByVal target As Object, ByVal e As AsyncRuleResult)
+      Dim rule As IAsyncRuleMethod = CType(target, IAsyncRuleMethod)
+      SyncLock (SyncRoot)
+        If e.Result Then
+          BrokenRulesList.Remove(rule)
+        Else
+          BrokenRulesList.Add(rule, e)
+        End If
+      End SyncLock
+
+      'remove from rules list after broken rules so that IsValid is 
+      'correct in any async handlers.
+      SyncLock (SyncRoot)
+        ValidatingRules.Remove(rule)
+      End SyncLock
+    End Sub
 #End Region
 
 #Region " Status retrieval "
@@ -1107,7 +1197,9 @@ Namespace Validation
     ''' <returns>A value indicating whether any rules are broken.</returns>
     Friend ReadOnly Property IsValid() As Boolean
       Get
-        Return BrokenRulesList.ErrorCount = 0
+        SyncLock (SyncRoot)
+          Return BrokenRulesList.ErrorCount = 0
+        End SyncLock
       End Get
     End Property
 
@@ -1126,6 +1218,92 @@ Namespace Validation
     Public Function GetBrokenRules() As BrokenRulesCollection
       Return BrokenRulesList
     End Function
+
+    Public ReadOnly Property IsValidating() As Boolean
+      Get
+        SyncLock (SyncRoot)
+          Return ValidatingRules.Count > 0
+        End SyncLock
+      End Get
+    End Property
+
+#End Region
+
+#Region "MobileObject overrides"
+
+    ''' <summary>
+    ''' Override this method to insert your field values
+    ''' into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="mode">
+    ''' The StateMode indicating why this method was invoked.
+    ''' </param>
+    Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As Core.StateMode)
+      info.AddValue("_processThroughPriority", _processThroughPriority)
+#If SILVERLIGHT Then
+      OnGetStatePartial(info, mode)
+#End If
+      MyBase.OnGetState(info, mode)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your field values
+    ''' from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="mode">
+    ''' The StateMode indicating why this method was invoked.
+    ''' </param>
+    Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As Core.StateMode)
+      _processThroughPriority = info.GetValue(Of Integer)("_processThroughPriority")
+#If SILVERLIGHT Then
+      OnSetStatePartial(info, mode)
+#End If
+      MyBase.OnSetState(info, mode)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to insert your child object
+    ''' references into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="formatter">
+    ''' Reference to MobileFormatter instance. Use this to
+    ''' convert child references to/from reference id values.
+    ''' </param>
+    Protected Overrides Sub OnGetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+      If _brokenRules IsNot Nothing AndAlso _brokenRules.Count > 0 Then
+        Dim brInfo As SerializationInfo = formatter.SerializeObject(_brokenRules)
+        info.AddChild("_brokenRules", brInfo.ReferenceId)
+      End If
+      MyBase.OnGetChildren(info, formatter)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your child object
+    ''' references from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="formatter">
+    ''' Reference to MobileFormatter instance. Use this to
+    ''' convert child references to/from reference id values.
+    ''' </param>
+    Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+      If info.Children.ContainsKey("_brokenRules") Then
+        Dim referenceId As Integer = info.Children["_brokenRules"].ReferenceId
+        _brokenRules = (BrokenRulesCollection)formatter.GetObject(referenceId)
+      End If
+      MyBase.OnSetChildren(info, formatter)
+    End Sub
 
 #End Region
 

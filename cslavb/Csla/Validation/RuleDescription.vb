@@ -7,6 +7,7 @@ Namespace Validation
   Public Class RuleDescription
 
     Private _scheme As String
+    Private _typeName As String
     Private _methodName As String
     Private _propertyName As String
     Private _arguments As Dictionary(Of String, String)
@@ -20,9 +21,12 @@ Namespace Validation
 
       Dim uri As Uri = New Uri(ruleString)
 
-      _scheme = uri.GetLeftPart(UriPartial.Scheme)
-      _methodName = uri.Host
-      _propertyName = uri.LocalPath.Substring(1)
+      _scheme = uri.Scheme + uri.SchemeDelimiter
+      _typeName = uri.UnescapeDataString(uri.Host)
+
+      Dim parts = uri.LocalPath.Split("/"c)
+      _methodName = parts(1)
+      _propertyName = parts(2)
 
       Dim args As String = uri.Query
       If (Not String.IsNullOrEmpty(args)) Then
@@ -61,6 +65,16 @@ Namespace Validation
     Public ReadOnly Property Scheme() As String
       Get
         Return _scheme
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Gets the name of the type containing
+    ''' the rule method.
+    ''' </summary>
+    Public ReadOnly Property MethodTypeName() As String
+      Get
+        Return _methodName
       End Get
     End Property
 

@@ -1,5 +1,8 @@
+Imports System
+Imports Csla.Properties
 Imports System.Text.RegularExpressions
 Imports System.Reflection
+Imports Csla.Core
 
 Namespace Validation
 
@@ -28,11 +31,9 @@ Namespace Validation
 
       Dim value As String = _
         CStr(CallByName(target, e.PropertyName, CallType.Get))
-      If Len(value) = 0 Then
-        e.Description = _
-          String.Format(My.Resources.StringRequiredRule, RuleArgs.GetPropertyName(e))
+      If String.IsNullOrEmpty(value) Then
+        e.Description = String.Format(My.Resources.StringRequiredRule, RuleArgs.GetPropertyName(e))
         Return False
-
       Else
         Return True
       End If
@@ -63,7 +64,7 @@ Namespace Validation
       Dim max As Integer = CInt(args("MaxLength"))
       Dim value As String = _
         CStr(CallByName(target, e.PropertyName, CallType.Get))
-      If Len(value) > max Then
+      If Not String.IsNullOrEmpty(value) AndAlso Len(value) > max Then
         Dim format As String = CStr(args("Format"))
         Dim outValue As String
         If String.IsNullOrEmpty(format) Then
@@ -201,7 +202,7 @@ Namespace Validation
       Dim min As Integer = CInt(args("MinLength"))
       Dim value As String = _
         CStr(CallByName(target, e.PropertyName, CallType.Get))
-      If Len(value) < min Then
+      If String.IsNullOrEmpty(value) OrElse Len(value) < min Then
         Dim format As String = CStr(args("Format"))
         Dim outValue As String
         If String.IsNullOrEmpty(format) Then
@@ -243,7 +244,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal minLength As Integer)
         MyBase.New(propertyName)
         Me("MinLength") = minLength
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -254,7 +255,7 @@ Namespace Validation
       Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minLength As Integer)
         MyBase.New(propertyInfo)
         Me("MinLength") = minLength
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -268,7 +269,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal minLength As Integer)
         MyBase.New(propertyName, friendlyName)
         Me("MinLength") = minLength
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -371,7 +372,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal maxValue As Integer)
         MyBase.New(propertyName)
         Me("MaxValue") = maxValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -382,7 +383,7 @@ Namespace Validation
       Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal maxValue As Integer)
         MyBase.New(propertyInfo)
         Me("MaxValue") = maxValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -396,7 +397,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal maxValue As Integer)
         MyBase.New(propertyName, friendlyName)
         Me("MaxValue") = maxValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -499,7 +500,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal minValue As Integer)
         MyBase.New(propertyName)
         Me("MinValue") = minValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -510,7 +511,7 @@ Namespace Validation
       Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minValue As Integer)
         MyBase.New(propertyInfo)
         Me("MinValue") = minValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -524,7 +525,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal minValue As Integer)
         MyBase.New(propertyName, friendlyName)
         Me("MinValue") = minValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
       End Sub
 
       ''' <summary>
@@ -632,7 +633,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal maxValue As T)
         MyBase.New(propertyName)
         Me("MaxValue") = maxValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
         Me("ValueType") = GetType(T).FullName
       End Sub
 
@@ -644,7 +645,7 @@ Namespace Validation
       Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal maxValue As T)
         MyBase.New(propertyInfo)
         Me("MaxValue") = maxValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
         Me("ValueType") = GetType(T).FullName
       End Sub
 
@@ -659,7 +660,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal maxValue As T)
         MyBase.New(propertyName, friendlyName)
         Me("MaxValue") = maxValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
         Me("ValueType") = GetType(T).FullName
       End Sub
 
@@ -770,7 +771,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal minValue As T)
         MyBase.New(propertyName)
         Me("MinValue") = minValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
         Me("ValueType") = GetType(T).FullName
       End Sub
 
@@ -782,7 +783,7 @@ Namespace Validation
       Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal minValue As T)
         MyBase.New(propertyInfo)
         Me("MinValue") = minValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
         Me("ValueType") = GetType(T).FullName
       End Sub
 
@@ -797,7 +798,7 @@ Namespace Validation
       Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal minValue As T)
         MyBase.New(propertyName, friendlyName)
         Me("MinValue") = minValue
-        Me("Format") = ""
+        Me("Format") = String.Empty
         Me("ValueType") = GetType(T).FullName
       End Sub
 
@@ -1235,12 +1236,51 @@ Namespace Validation
             Return "^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$"
 
           Case Else
-            Return ""
+            Return String.Empty
         End Select
       End Function
 
     End Class
 
+#End Region
+
+#Region "CanRead"
+
+    Public Function CanRead(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+      Dim isAuthorized As Boolean = True
+
+      Dim business As BusinessBase = CType(target, BusinessBase)
+      If business IsNot Nothing AndAlso Not String.IsNullOrEmpty(e.PropertyName) Then
+        isAuthorized = business.CanReadProperty(e.PropertyName)
+      End If
+
+      If Not isAuthorized Then
+        e.Severity = RuleSeverity.Information
+        'TODO: Evaluate this resource
+        e.Description = String.Format(Resources.CanReadAuthorizationRuleDescription, RuleArgs.GetPropertyName(e))
+      End If
+
+      Return isAuthorized
+    End Function
+#End Region
+
+#Region "CanWrite"
+    Public Function CanWrite(ByVal target As Object, ByVal e As RuleArgs) As Boolean
+      Dim isAuthorized As Boolean = True
+
+      Dim business As BusinessBase = CType(target, BusinessBase)
+      If business IsNot Nothing AndAlso Not String.IsNullOrEmpty(e.PropertyName) Then
+        isAuthorized = business.CanWriteProperty(e.PropertyName)
+      End If
+
+      If Not isAuthorized Then
+        e.Severity = RuleSeverity.Information
+        'TODO: Evaluate this resource
+        e.Description = String.Format(Resources.CanWriteAuthorizationRuleDescription, RuleArgs.GetPropertyName(e))
+      End If
+
+      Return isAuthorized
+    End Function
 #End Region
 
   End Module

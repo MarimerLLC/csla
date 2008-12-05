@@ -1,4 +1,10 @@
+Imports System
+Imports System.Collections.Generic
 Imports System.Text
+
+#If SILVERLIGHT Then
+Imports Uri = Csla.Utilities
+#End If
 
 Namespace Validation
 

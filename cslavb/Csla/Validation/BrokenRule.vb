@@ -1,3 +1,8 @@
+Imports System
+Imports Csla.Serialization
+Imports Csla.Core
+Imports Csla.Serialization.Mobile
+
 Namespace Validation
 
   ''' <summary>
@@ -5,10 +10,19 @@ Namespace Validation
   ''' </summary>
   <Serializable()> _
   Public Class BrokenRule
+    Inherits MobileObject
+
     Private _ruleName As String
     Private _description As String
     Private _property As String
     Private _severity As RuleSeverity
+
+    Friend Sub New(ByVal asyncRule As IAsyncRuleMethod, ByVal result As AsyncRuleResult)
+      _ruleName = asyncRule.RuleName
+      _description = result.Description
+      _severity = result.Severity
+      _property = asyncRule.AsyncRuleArgs.Properties(0).Name
+    End Sub
 
     Friend Sub New(ByVal rule As IRuleMethod)
       _ruleName = rule.RuleName
@@ -65,6 +79,42 @@ Namespace Validation
         Return _severity
       End Get
     End Property
+
+    ''' <summary>
+    ''' Override this method to insert your field values
+    ''' into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="mode">
+    ''' The StateMode indicating why this method was invoked.
+    ''' </param>
+    Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As Core.StateMode)
+      info.AddValue("_ruleName", _ruleName)
+      info.AddValue("_description", _description)
+      info.AddValue("_property", _property)
+      info.AddValue("_severity", CType(_severity, Integer))
+      MyBase.OnGetState(info, mode)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your field values
+    ''' from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="mode">
+    ''' The StateMode indicating why this method was invoked.
+    ''' </param>
+    Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As Core.StateMode)
+      _ruleName = info.GetValue(Of String)("_ruleName")
+      _description = info.GetValue(Of String)("_description")
+      _property = info.GetValue(Of String)("_property")
+      _severity = info.GetValue(Of RuleSeverity)("_severity")
+      MyBase.OnSetState(info, mode)
+    End Sub
 
   End Class
 

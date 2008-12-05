@@ -36,6 +36,7 @@ Namespace Validation
 
     End Sub
 
+#If SILVERLIGHT Then
     ''' <summary>
     ''' Creates an instance of the object for serialization.
     ''' </summary>
@@ -47,6 +48,8 @@ Namespace Validation
       MyBase.New(info, context)
 
     End Sub
+#End If
+    
 
   End Class
 

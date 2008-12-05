@@ -1,3 +1,9 @@
+Imports System
+Imports System.Collections.Generic
+Imports Csla.Properties
+Imports Csla.Serialization
+Imports Csla.Serialization.Mobile
+
 Namespace Validation
 
   ''' <summary>
@@ -10,7 +16,7 @@ Namespace Validation
   ''' to the user.
   ''' </remarks>
   <Serializable()> _
-  Public Class BrokenRulesCollection
+  Partial Public Class BrokenRulesCollection
     Inherits Core.ReadOnlyBindingList(Of BrokenRule)
 
     Private _errorCount As Integer
@@ -126,8 +132,13 @@ Namespace Validation
 
     End Function
 
-    Friend Sub New()
-      ' limit creation to this assembly
+    Friend Overloads Sub Add(ByVal rule As IAsyncRuleMethod, ByVal result As AsyncRuleResult)
+      Remove(rule)
+      IsReadOnly = False
+      Dim Item As BrokenRule = New BrokenRule(rule, result)
+      IncrementCount(Item)
+      Add(Item)
+      IsReadOnly = True
     End Sub
 
     Friend Overloads Sub Add(ByVal rule As IRuleMethod)
@@ -384,6 +395,45 @@ Namespace Validation
     End Property
 
 #End Region
+
+#Region "MobileObject overrides"
+
+    ''' <summary>
+    ''' Override this method to insert your field values
+    ''' into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    Protected Overrides Sub OnGetState(ByVal info As SerializationInfo)
+      info.AddValue("_errorCount", _errorCount)
+      info.AddValue("_warningCount", _warningCount)
+      info.AddValue("_infoCount", _infoCount)
+      info.AddValue("_customList", _customList)
+
+      MyBase.OnGetState(info)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your field values
+    ''' from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    Protected Overrides Sub OnSetState(ByVal info As SerializationInfo)
+      _errorCount = info.GetValue(Of Integer)("_errorCount")
+      _warningCount = info.GetValue(Of Integer)("_warningCount")
+      _infoCount = info.GetValue(Of Integer)("_infoCount")
+      _customList = info.GetValue(Of Boolean)("_customList")
+
+      MyBase.OnSetState(info);
+    End Sub
+
+
+
+#End Region
+
 
   End Class
 

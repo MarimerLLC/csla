@@ -1,8 +1,8 @@
 ﻿Namespace Validation
-    Partial Public Class BrokenRule
-        Public Sub New()
+  Partial Public Class BrokenRule
+    Private Sub New()
 
-        End Sub
-    End Class
+    End Sub
+  End Class
 End Namespace
 

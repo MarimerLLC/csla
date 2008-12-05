@@ -48,6 +48,12 @@ Namespace Validation
 
     End Function
 
+    Friend Sub RemoveManager(ByVal type As Type)
+      If _managers.ContainsKey(type) Then
+        _managers.Remove(type)
+      End If
+    End Sub
+
   End Module
 
 End Namespace

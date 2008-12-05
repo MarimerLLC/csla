@@ -1,3 +1,7 @@
+#If SILVERLIGHT Then
+Imports Uri = Csla.Utilities
+#End If
+
 Namespace Validation
 
   ''' <summary>
@@ -10,7 +14,7 @@ Namespace Validation
     Implements IComparable(Of IRuleMethod)
 
     Private _handler As RuleHandler
-    Private _ruleName As String = ""
+    Private _ruleName As String = String.Empty
     Private _args As RuleArgs
     Private _priority As Integer
 
@@ -73,7 +77,8 @@ Namespace Validation
       _handler = handler
       _args = args
       _ruleName = _
-        String.Format("rule://{0}/{1}", _handler.Method.Name, _args.ToString)
+        String.Format("rule://{0}/{1}/{2}", Uri.EscapeDataString(_handler.Method.DeclaringType.FullName), _
+                      _handler.Method.Name, _args.ToString())
 
     End Sub
 
@@ -112,7 +117,7 @@ Namespace Validation
 
     End Function
 
-    Private Function CompareTo1(ByVal other As IRuleMethod) As Integer Implements System.IComparable(Of IRuleMethod).CompareTo
+    Private Function IComparable_CompareTo(ByVal other As IRuleMethod) As Integer Implements System.IComparable(Of IRuleMethod).CompareTo
 
       Return Priority.CompareTo(other.Priority)
 
@@ -137,7 +142,7 @@ Namespace Validation
     Implements IComparable(Of IRuleMethod)
 
     Private _handler As RuleHandler(Of T, R)
-    Private _ruleName As String = ""
+    Private _ruleName As String = String.Empty
     Private _args As R
     Private _priority As Integer
 
@@ -210,7 +215,8 @@ Namespace Validation
       _handler = handler
       _args = args
       _ruleName = _
-        String.Format("rule://{0}/{1}", _handler.Method.Name, _args.ToString)
+        String.Format("rule://{0}/{1}/{2}", Uri.EscapeDataString(_handler.Method.DeclaringType.FullName), _
+                      _handler.Method.Name, _args.ToString())
 
     End Sub
 
@@ -257,7 +263,7 @@ Namespace Validation
 
     End Function
 
-    Private Function CompareTo1(ByVal other As IRuleMethod) As Integer Implements System.IComparable(Of IRuleMethod).CompareTo
+    Private Function _IComparable_CompareTo(ByVal other As IRuleMethod) As Integer Implements System.IComparable(Of IRuleMethod).CompareTo
 
       Return Priority.CompareTo(other.Priority)
 

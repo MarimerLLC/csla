@@ -1,3 +1,7 @@
+Imports System
+Imports System.Collections.Generic
+Imports Csla.Core
+
 Namespace Validation
 
   ''' <summary>
@@ -40,6 +44,14 @@ Namespace Validation
     End Function
 
 #Region " Adding Rules "
+
+    Public Sub AddRule(ByRef handler As AsyncRuleHandler, ByVal severity As RuleSeverity, ByRef args As AsyncRuleArgs)
+      'get the list of rules for the primary property
+      Dim list As List(Of IRuleMethod) = GetRulesForProperty(args.Properties(0).Name, True).GetList(False)
+
+      'we have the list, add our new rule
+      list.Add(New AsyncRuleMethod(handler, args, severity))
+    End Sub
 
     ''' <summary>
     ''' Adds a rule to the list of rules to be enforced.

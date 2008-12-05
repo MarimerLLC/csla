@@ -2727,48 +2727,55 @@ namespace Csla.Core
     /// Raises the ChildChanged event, indicating that a child
     /// object has been changed.
     /// </summary>
-    /// <param name="source">
-    /// Reference to the object that was changed.
-    /// </param>
-    /// <param name="listArgs">
-    /// ListChangedEventArgs object or null.
-    /// </param>
-    /// <param name="propertyArgs">
-    /// PropertyChangedEventArgs object or null.
+    /// <param name="e">
+    /// ChildChangedEventArgs object.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnChildChanged(object source, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+    protected virtual void OnChildChanged(ChildChangedEventArgs e)
     {
-      ChildChangedEventArgs args = new ChildChangedEventArgs(source, propertyArgs, listArgs);
-      OnChildChangedInternal(this, args);
-    }
-
-    protected internal virtual void OnChildChangedInternal(object sender, ChildChangedEventArgs e)
-    {
-      OnChildChanged(sender, e);
-
       if (_childChangedHandlers != null)
         _childChangedHandlers.Invoke(this, e);
     }
 
-    protected virtual void OnChildChanged(object sender, ChildChangedEventArgs e)
+    /// <summary>
+    /// Creates a ChildChangedEventArgs and raises the event.
+    /// </summary>
+    private void RaiseChildChanged(
+      object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
     {
+      ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
+      OnChildChanged(args);
     }
 
+    /// <summary>
+    /// Handles any PropertyChanged event from 
+    /// a child object and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      OnChildChanged(sender, e, null);
+      RaiseChildChanged(sender, e, null);
     }
 
+    /// <summary>
+    /// Handles any ListChanged event from 
+    /// a child list and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
     private void Child_ListChanged(object sender, ListChangedEventArgs e)
     {
       if(e.ListChangedType != ListChangedType.ItemChanged)
-        OnChildChanged(sender, null, e);
+        RaiseChildChanged(sender, null, e);
     }
 
-    void Child_Changed(object sender, ChildChangedEventArgs e)
+    /// <summary>
+    /// Handles any ChildChanged event from
+    /// a child object and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
+    private void Child_Changed(object sender, ChildChangedEventArgs e)
     {
-      OnChildChangedInternal(this, e);
+      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs);
     }
 
     #endregion

@@ -31,8 +31,8 @@ namespace Csla.Core
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// <param name="source">
-    /// Reference to the object that was changed.
+    /// <param name="childObject">
+    /// Reference to the child object that was changed.
     /// </param>
     /// <param name="listArgs">
     /// ListChangedEventArgs object or null.
@@ -40,9 +40,9 @@ namespace Csla.Core
     /// <param name="propertyArgs">
     /// PropertyChangedEventArgs object or null.
     /// </param>
-    public ChildChangedEventArgs(object source, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
     {
-      this.ChildObject = source;
+      this.ChildObject = childObject;
       this.PropertyChangedArgs = propertyArgs;
       this.ListChangedArgs = listArgs;
     }

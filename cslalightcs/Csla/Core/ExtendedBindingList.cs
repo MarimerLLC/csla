@@ -129,9 +129,9 @@ namespace Csla.Core
       if (c != null)
         c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
 
-      INotifyCollectionChanged col = item as INotifyCollectionChanged;
-      if(col!=null)
-        col.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+      //INotifyCollectionChanged col = item as INotifyCollectionChanged;
+      //if(col!=null)
+      //  col.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_ListChanged);
 
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
@@ -158,9 +158,9 @@ namespace Csla.Core
       if (c != null)
         c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
 
-      INotifyCollectionChanged col = item as INotifyCollectionChanged;
-      if (col != null)
-        col.CollectionChanged -= new NotifyCollectionChangedEventHandler(Child_CollectionChanged);
+      //INotifyCollectionChanged col = item as INotifyCollectionChanged;
+      //if (col != null)
+      //  col.CollectionChanged -= new NotifyCollectionChangedEventHandler(Child_ListChanged);
 
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
@@ -298,8 +298,6 @@ namespace Csla.Core
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
-      "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<Csla.Core.ChildChangedEventArgs> ChildChanged
     {
       add
@@ -314,52 +312,56 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Raises the ChildChanged event, indicating that a child
+    /// object has been changed.
+    /// </summary>
+    /// <param name="e">
+    /// ChildChangedEventArgs object.
+    /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected internal virtual void OnChildChangedInternal(object source, ChildChangedEventArgs e)
+    protected virtual void OnChildChanged(ChildChangedEventArgs e)
     {
-      OnChildChanged(source, e);
-
       if (_childChangedHandlers != null)
         _childChangedHandlers.Invoke(this, e);
     }
 
     /// <summary>
-    /// Raises the ChildChanged event, indicating that a child
-    /// object has been changed.
+    /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
-    /// <param name="source">
-    /// Reference to the object that was changed.
-    /// </param>
-    /// <param name="listArgs">
-    /// ListChangedEventArgs object or null.
-    /// </param>
-    /// <param name="propertyArgs">
-    /// PropertyChangedEventArgs object or null.
-    /// </param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnChildChanged(object source, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs collectionArgs)
+    private void RaiseChildChanged(
+      object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
     {
-      OnChildChangedInternal(this, new ChildChangedEventArgs(source, propertyArgs, collectionArgs));
+      ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
+      OnChildChanged(args);
     }
 
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnChildChanged(object sender, ChildChangedEventArgs e)
+    /// <summary>
+    /// Handles any PropertyChanged event from 
+    /// a child object and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
+      RaiseChildChanged(sender, e, null);
     }
 
-    private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      OnChildChangedInternal(this, new ChildChangedEventArgs(sender, e, null));
-    }
 
-    private void Child_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-      OnChildChangedInternal(this, new ChildChangedEventArgs(sender, null, e));
-    }
+    //private void Child_ListChanged(object sender, NotifyCollectionChangedEventArgs e)
+    //{
+    //  if (e.ListChangedType != ListChangedType.ItemChanged)
+    //    OnChildChangedInternal(this, new ChildChangedEventArgs(sender, null, e));
+    //}
 
+    /// <summary>
+    /// Handles any ChildChanged event from
+    /// a child object and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
     private void Child_Changed(object sender, ChildChangedEventArgs e)
     {
-      OnChildChangedInternal(this, e);
+      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs);
     }
 
     #endregion

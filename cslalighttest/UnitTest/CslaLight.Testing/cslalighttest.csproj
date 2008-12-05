@@ -109,6 +109,27 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\BypassPropertyChecks\TestObjectFactory.cs">
       <Link>BypassPropertyChecks\TestObjectFactory.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ChildChanged\ChildChangedTests.cs">
+      <Link>ChildChanged\ChildChangedTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ChildChanged\ContainsList.cs">
+      <Link>ChildChanged\ContainsList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ChildChanged\GrandChild.cs">
+      <Link>ChildChanged\GrandChild.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ChildChanged\ListContainerList.cs">
+      <Link>ChildChanged\ListContainerList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ChildChanged\SingleChild.cs">
+      <Link>ChildChanged\SingleChild.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ChildChanged\SingleList.cs">
+      <Link>ChildChanged\SingleList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\ChildChanged\SingleRoot.cs">
+      <Link>ChildChanged\SingleRoot.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\AsynchDataPortalTest.cs">
       <Link>DataPortal\AsynchDataPortalTest.cs</Link>
     </Compile>

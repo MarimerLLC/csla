@@ -127,6 +127,13 @@
     <Compile Include="BypassPropertyChecks\BypassPropertyChecksTests.cs" />
     <Compile Include="BypassPropertyChecks\BypassBusinessBaseUsingFactory.cs" />
     <Compile Include="BypassPropertyChecks\TestObjectFactory.cs" />
+    <Compile Include="ChildChanged\ChildChangedTests.cs" />
+    <Compile Include="ChildChanged\ContainsList.cs" />
+    <Compile Include="ChildChanged\GrandChild.cs" />
+    <Compile Include="ChildChanged\ListContainerList.cs" />
+    <Compile Include="ChildChanged\SingleChild.cs" />
+    <Compile Include="ChildChanged\SingleList.cs" />
+    <Compile Include="ChildChanged\SingleRoot.cs" />
     <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
     <Compile Include="Basic\CollectionTests.cs" />
     <Compile Include="CslaDataProvider\CslaDataProviderTests.cs" />

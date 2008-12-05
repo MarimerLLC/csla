@@ -573,6 +573,57 @@ namespace Csla
 
     #endregion
 
+    #region Cascade child events
+
+    /// <summary>
+    /// Handles any PropertyChanged event from 
+    /// a child object and echoes it up as
+    /// a ListChanged event.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      if (RaiseListChangedEvents && e != null)
+      {
+        DeferredLoadIndexIfNotLoaded();
+        if (_indexSet.HasIndexFor(e.PropertyName))
+          ReIndexItem((C)sender, e.PropertyName);
+
+        for (int index = 0; index < Count; index++)
+        {
+          if (ReferenceEquals(this[index], sender))
+          {
+            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+            if (descriptor != null)
+              OnListChanged(new ListChangedEventArgs(
+                ListChangedType.ItemChanged, index, descriptor));
+            else
+              OnListChanged(new ListChangedEventArgs(
+                ListChangedType.ItemChanged, index));
+          }
+        }
+      }
+      base.Child_PropertyChanged(sender, e);
+    }
+
+    private static PropertyDescriptorCollection _propertyDescriptors;
+
+    private PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    {
+      if (_propertyDescriptors == null)
+        _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));
+      PropertyDescriptor result = null;
+      foreach (PropertyDescriptor desc in _propertyDescriptors)
+        if (desc.Name == propertyName)
+        {
+          result = desc;
+          break;
+        }
+      return result;
+    }
+
+    #endregion
+
     #region Indexing
 
     [NonSerialized]
@@ -845,62 +896,14 @@ namespace Csla
 
     #endregion
 
-    #region Cascade Child events
-
-    /// <summary>
-    /// Raises ListChanged event if an immediate child of
-    /// the collection was changed.
-    /// </summary>
-    /// <param name="sender">Calling object</param>
-    /// <param name="e">Args containing parameter values.</param>
-    protected internal override void OnChildChangedInternal(object sender, ChildChangedEventArgs e)
-    {
-      if (RaiseListChangedEvents && e.PropertyChangedArgs!=null)
-      {
-        DeferredLoadIndexIfNotLoaded();
-        if (_indexSet.HasIndexFor(e.PropertyChangedArgs.PropertyName))
-           ReIndexItem((C) sender, e.PropertyChangedArgs.PropertyName);
-
-        for (int index = 0; index < Count; index++)
-        {
-          if (ReferenceEquals(this[index], sender))
-          {
-            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName);
-            if (descriptor != null)
-              OnListChanged(new ListChangedEventArgs(
-                ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)));
-            else
-              OnListChanged(new ListChangedEventArgs(
-                ListChangedType.ItemChanged, index));
-            return;
-          }
-        }
-      }
-
-      base.OnChildChangedInternal(sender, e);
-    }
-
-    private static PropertyDescriptorCollection _propertyDescriptors;
-
-    private PropertyDescriptor GetPropertyDescriptor(string propertyName)
-    {
-      if (_propertyDescriptors == null)
-        _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));
-      PropertyDescriptor result = null;
-      foreach (PropertyDescriptor desc in _propertyDescriptors)
-        if (desc.Name == propertyName)
-        {
-          result = desc;
-          break;
-        }
-      return result;
-    }
-
-    #endregion
-
     #region Serialization Notification
 
-    protected internal override void OnDeserializedInternal()
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void OnDeserialized()
     {
       foreach (Core.IEditableBusinessObject child in this)
       {
@@ -911,7 +914,7 @@ namespace Csla
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
 
-      base.OnDeserializedInternal();
+      base.OnDeserialized();
     }
 
     #endregion

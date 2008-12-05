@@ -322,10 +322,11 @@ namespace Csla
     #region  Serialization Notification
 
     /// <summary>
-    /// Method invoked when list is deserialized so
-    /// child object processing can occur.
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
     /// </summary>
-    protected internal override void OnDeserializedInternal()
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void OnDeserialized()
     {
       foreach (IEditableBusinessObject child in this)
       {
@@ -334,7 +335,7 @@ namespace Csla
         if (c != null)
           c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
       }
-      base.OnDeserializedInternal();
+      base.OnDeserialized();
     }
 
     #endregion

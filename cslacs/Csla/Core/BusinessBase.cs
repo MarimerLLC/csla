@@ -1126,12 +1126,34 @@ namespace Csla.Core
 
     private Validation.ValidationRules _validationRules;
 
-    public event EventHandler ValidationComplete;
+    [NonSerialized()]
+    private EventHandler _validationCompleteHandlers;
 
+    /// <summary>
+    /// Event raised when validation is complete.
+    /// </summary>
+    public event EventHandler ValidationComplete
+    {
+      add
+      {
+        _validationCompleteHandlers = (EventHandler)
+          System.Delegate.Combine(_validationCompleteHandlers, value);
+      }
+      remove
+      {
+        _validationCompleteHandlers = (EventHandler)
+          System.Delegate.Remove(_validationCompleteHandlers, value);
+      }
+    }
+
+    /// <summary>
+    /// Raises the ValidationComplete event
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnValidationComplete()
     {
-      if (ValidationComplete != null)
-        ValidationComplete(this, EventArgs.Empty);
+      if (_validationCompleteHandlers != null)
+        _validationCompleteHandlers(this, EventArgs.Empty);
     }
 
     private void InitializeBusinessRules()
@@ -1492,24 +1514,13 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedInternal();
+      OnDeserialized(new StreamingContext());
     }
 
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
       OnDeserialized(context);
-      OnDeserializedInternal();
-    }
-
-    protected virtual void OnDeserializedInternal()
-    {
-      ValidationRules.SetTarget(this);
-      if (_fieldManager != null)
-        FieldManager.SetPropertyList(this.GetType());
-      InitializeBusinessRules();
-      InitializeAuthorizationRules();
-      FieldDataDeserialized();
     }
 
     /// <summary>
@@ -1520,20 +1531,34 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(StreamingContext context)
     {
-      // do nothing - this is here so a subclass
-      // could override if needed
+      ValidationRules.SetTarget(this);
+      if (_fieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
+      InitializeBusinessRules();
+      InitializeAuthorizationRules();
+      FieldDataDeserialized();
     }
 
     #endregion
 
     #region Bubbling event Hooks
 
+    /// <summary>
+    /// For internal use.
+    /// </summary>
+    /// <param name="child">Child object.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void AddEventHooks(IBusinessObject child)
     {
-      OnAddEventHooksInternal(child);
       OnAddEventHooks(child);
     }
-    protected internal virtual void OnAddEventHooksInternal(IBusinessObject child)
+
+    /// <summary>
+    /// Hook child object events.
+    /// </summary>
+    /// <param name="child">Child object.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnAddEventHooks(IBusinessObject child)
     {
       INotifyBusy busy = child as INotifyBusy;
       if (busy != null)
@@ -1556,17 +1581,22 @@ namespace Csla.Core
         cc.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
     }
 
-    protected virtual void OnAddEventHooks(IBusinessObject child)
-    {
-    }
-
+    /// <summary>
+    /// For internal use only.
+    /// </summary>
+    /// <param name="child">Child object.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void RemoveEventHooks(IBusinessObject child)
     {
-      OnRemoveEventHooksInternal(child);
       OnRemoveEventHooks(child);
     }
 
-    protected internal virtual void OnRemoveEventHooksInternal(IBusinessObject child)
+    /// <summary>
+    /// Unhook child object events.
+    /// </summary>
+    /// <param name="child">Child object.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnRemoveEventHooks(IBusinessObject child)
     {
       INotifyBusy busy = child as INotifyBusy;
       if (busy != null)
@@ -1585,12 +1615,8 @@ namespace Csla.Core
         bl.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
 
       INotifyChildChanged cc = child as INotifyChildChanged;
-      if(cc != null)
+      if (cc != null)
         cc.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
-    }
-
-    protected virtual void OnRemoveEventHooks(IBusinessObject child)
-    {
     }
 
     #endregion
@@ -2807,7 +2833,7 @@ namespace Csla.Core
       {
         IBusinessObject business = item as IBusinessObject;
         if (business != null)
-          OnAddEventHooksInternal(business);
+          OnAddEventHooks(business);
 
         IEditableBusinessObject child = item as IEditableBusinessObject;
         if (child != null)

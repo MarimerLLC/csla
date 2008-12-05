@@ -1538,39 +1538,34 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
     {
-      try
+      if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
       {
-        P oldValue = default(P);
-        var fieldData = FieldManager.GetFieldData(propertyInfo);
-        if (fieldData == null)
+        try
         {
-          oldValue = propertyInfo.DefaultValue;
-          fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
-        }
-        else
-        {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
-            oldValue = fd.Value;
+          P oldValue = default(P);
+          var fieldData = FieldManager.GetFieldData(propertyInfo);
+          if (fieldData == null)
+          {
+            oldValue = propertyInfo.DefaultValue;
+            fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+          }
           else
-            oldValue = (P)fieldData.Value;
-        }
-        if ((oldValue != null && !oldValue.Equals(newValue)) &&
-          (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException)))
-        {
+          {
+            var fd = fieldData as FieldManager.IFieldData<P>;
+            if (fd != null)
+              oldValue = fd.Value;
+            else
+              oldValue = (P)fieldData.Value;
+          }
           if (typeof(F) == typeof(string) && newValue == null)
             newValue = Utilities.CoerceValue<F>(typeof(string), null, string.Empty);
           LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), !_bypassPropertyChecks);
         }
-      }
-      catch (SecurityException)
-      {
-        throw;
-      }
-      catch (Exception ex)
-      {
-        throw new PropertyLoadException(
-          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
+        catch (Exception ex)
+        {
+          throw new PropertyLoadException(
+            string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
+        }
       }
     }
 

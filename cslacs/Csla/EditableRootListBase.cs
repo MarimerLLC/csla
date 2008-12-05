@@ -263,7 +263,7 @@ namespace Csla
 
     #region  Cascade Child events
 
-    private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    protected override void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
       for (int index = 0; index < this.Count; index++)
       {
@@ -280,6 +280,7 @@ namespace Csla
         }
       }
       OnChildPropertyChanged(sender, e);
+      base.Child_PropertyChanged(sender, e);
     }
 
     void Child_BusyChanged(object sender, BusyChangedEventArgs e)

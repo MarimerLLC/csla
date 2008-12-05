@@ -87,7 +87,7 @@ namespace Csla.Core
     protected override void RemoveItem(int index)
     {
       OnRemovingItem(this[index]);
-      OnRemoveEventHooksInternal(this[index]);
+      OnRemoveEventHooks(this[index]);
       base.RemoveItem(index);
     }
 
@@ -112,17 +112,17 @@ namespace Csla.Core
     protected override void InsertItem(int index, T item)
     {
       base.InsertItem(index, item);
-      OnAddEventHooksInternal(item);
+      OnAddEventHooks(item);
     }
 
-    protected internal virtual void OnAddEventHooksInternal(T item)
+    protected virtual void OnAddEventHooks(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
-      if(busy!=null)
+      if (busy != null)
         busy.BusyChanged += new BusyChangedEventHandler(busy_BusyChanged);
 
       INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
-      if(unhandled!=null)
+      if (unhandled != null)
         unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
 
       INotifyPropertyChanged c = item as INotifyPropertyChanged;
@@ -136,15 +136,9 @@ namespace Csla.Core
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
         child.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
-
-      OnAddEventHooks(item);
     }
 
-    protected virtual void OnAddEventHooks(T item)
-    {
-    }
-
-    protected internal virtual void OnRemoveEventHooksInternal(T item)
+    protected virtual void OnRemoveEventHooks(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
       if (busy != null)
@@ -165,12 +159,6 @@ namespace Csla.Core
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
         child.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
-
-      OnRemoveEventHooks(item);
-    }
-
-    protected virtual void OnRemoveEventHooks(T item)
-    {
     }
 
     #endregion
@@ -179,18 +167,7 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedInternal();
       OnDeserialized();
-    }
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete, it is only implemented
-    /// by internal classes to guarantee that they are executed.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected internal virtual void OnDeserializedInternal()
-    {
     }
 
     /// <summary>
@@ -218,21 +195,15 @@ namespace Csla.Core
       remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
-    protected internal virtual void OnBusyChangedInternal(BusyChangedEventArgs args)
+    protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
-      OnBusyChanged(args);
-
       if (_busyChanged != null)
         _busyChanged(this, args);
     }
 
-    protected virtual void OnBusyChanged(BusyChangedEventArgs args)
-    {
-    }
-
     protected void OnBusyChanged(string propertyName, bool busy)
     {
-      OnBusyChangedInternal(new BusyChangedEventArgs(propertyName, busy));
+      OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
     }
 
 
@@ -248,7 +219,7 @@ namespace Csla.Core
 
     void busy_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      OnBusyChangedInternal(e);
+      OnBusyChanged(e);
     }
 
     #endregion
@@ -265,26 +236,20 @@ namespace Csla.Core
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
     }
 
-    protected internal virtual void OnUnhandledAsyncExceptionInternal(ErrorEventArgs error)
+    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
-      OnUnhandledAsyncException(error);
-
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
     }
 
-    protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
-    {
-    }
-
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
-      OnUnhandledAsyncExceptionInternal(new ErrorEventArgs(originalSender, error));
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
     }
 
     void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
     {
-      OnUnhandledAsyncExceptionInternal(e);
+      OnUnhandledAsyncException(e);
     }
 
     #endregion
@@ -346,13 +311,6 @@ namespace Csla.Core
     {
       RaiseChildChanged(sender, e, null);
     }
-
-
-    //private void Child_ListChanged(object sender, NotifyCollectionChangedEventArgs e)
-    //{
-    //  if (e.ListChangedType != ListChangedType.ItemChanged)
-    //    OnChildChangedInternal(this, new ChildChangedEventArgs(sender, null, e));
-    //}
 
     /// <summary>
     /// Handles any ChildChanged event from

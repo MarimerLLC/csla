@@ -728,13 +728,18 @@ namespace Csla
 
     #region Serialization Notification
 
-    protected internal override void OnDeserializedInternal()
+    /// <summary>
+    /// Reset parent references on deserialization.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void OnDeserialized()
     {
       foreach (Core.IEditableBusinessObject child in this)
         child.SetParent(this);
 
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
+      base.OnDeserialized();
     }
 
     #endregion

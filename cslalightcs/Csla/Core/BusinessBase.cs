@@ -1763,10 +1763,10 @@ namespace Csla.Core
       {
         IBusinessObject old = oldValue as IBusinessObject;
         if (old != null)
-          OnRemoveEventHooksInternal(old);
+          OnRemoveEventHooks(old);
         IBusinessObject @new = newValue as IBusinessObject;
         if (@new != null)
-          OnAddEventHooksInternal(@new);
+          OnAddEventHooks(@new);
 
         if (typeof(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type))
         {
@@ -2013,7 +2013,7 @@ namespace Csla.Core
       {
         IBusinessObject business = item as IBusinessObject;
         if (business != null)
-          OnAddEventHooksInternal(business);
+          OnAddEventHooks(business);
 
         IEditableBusinessObject child = item as IEditableBusinessObject;
         if (child != null)
@@ -2043,7 +2043,7 @@ namespace Csla.Core
 
     #region Bubbling event Hooks
 
-    protected internal virtual void OnAddEventHooksInternal(IBusinessObject child)
+    protected virtual void OnAddEventHooks(IBusinessObject child)
     {
       INotifyBusy busy = child as INotifyBusy;
       if (busy != null)
@@ -2064,15 +2064,9 @@ namespace Csla.Core
       INotifyChildChanged childChanged = child as INotifyChildChanged;
       if (childChanged != null)
         childChanged.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
-
-      OnAddEventHooks(child);
     }
 
-    protected virtual void OnAddEventHooks(IBusinessObject child)
-    {
-    }
-
-    protected internal virtual void OnRemoveEventHooksInternal(IBusinessObject child)
+    protected virtual void OnRemoveEventHooks(IBusinessObject child)
     {
       INotifyBusy busy = child as INotifyBusy;
       if (busy != null)
@@ -2093,12 +2087,6 @@ namespace Csla.Core
       INotifyChildChanged childChanged = child as INotifyChildChanged;
       if (childChanged != null)
         childChanged.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
-
-      OnRemoveEventHooks(child);
-    }
-
-    protected virtual void OnRemoveEventHooks(IBusinessObject child)
-    {
     }
 
     #endregion
@@ -2747,7 +2735,6 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedInternal();
       OnDeserialized();
       ValidationRules.SetTarget(this);
       ValidationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
@@ -2756,16 +2743,6 @@ namespace Csla.Core
       InitializeBusinessRules();
       InitializeAuthorizationRules();
       FieldDataDeserialized();
-    }
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete, it is only implemented
-    /// by internal classes to guarantee that they are executed.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected internal virtual void OnDeserializedInternal()
-    {
     }
 
     /// <summary>

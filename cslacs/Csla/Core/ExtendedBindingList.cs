@@ -408,6 +408,8 @@ namespace Csla.Core
     /// a child object and echoes it up as
     /// a ChildChanged event.
     /// </summary>
+    /// <param name="sender">Object that raised the event.</param>
+    /// <param name="e">Property changed args.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {

@@ -375,11 +375,34 @@ namespace Csla.Validation
 
     #region  Adding Shared Rules
 
+    /// <summary>
+    /// Adds an async rule to the list of rules to be enforced.
+    /// </summary>
+    /// <param name="handler">
+    /// The method that implements the rule.
+    /// </param>
+    /// <param name="primaryProperty">
+    /// The primary property checked by this rule.
+    /// </param>
+    /// <param name="additionalProperties">
+    /// A list of other property values required by
+    /// this rule method.
+    /// </param>
     public void AddRule(AsyncRuleHandler handler, IPropertyInfo primaryProperty, params IPropertyInfo[] additionalProperties)
     {
       AddRule(handler, new AsyncRuleArgs(primaryProperty, additionalProperties));
     }
 
+    /// <summary>
+    /// Adds an async rule to the list of rules to be enforced.
+    /// </summary>
+    /// <param name="handler">
+    /// The method that implements the rule.
+    /// </param>
+    /// <param name="args">
+    /// An AsyncRuleArgs object specifying the property name and other arguments
+    /// passed to the rule method
+    /// </param>
     public void AddRule(AsyncRuleHandler handler, AsyncRuleArgs args)
     {
       ValidateHandler(handler);
@@ -1178,8 +1201,7 @@ namespace Csla.Validation
       return BrokenRulesList;
     }
 
-    // TODO: Should this be internal?
-    public bool IsValidating
+    internal bool IsValidating
     {
       get
       {

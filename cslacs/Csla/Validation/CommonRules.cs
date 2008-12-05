@@ -1304,6 +1304,17 @@ namespace Csla.Validation
 
     #region CanRead
 
+    /// <summary>
+    /// Rule indicating whether the user is authorized
+    /// to read the property value.
+    /// </summary>
+    /// <param name="target">Target object.</param>
+    /// <param name="e">Rule arguments.</param>
+    /// <remarks>
+    /// Combine this property with short-circuiting to
+    /// prevent evaluation of other rules in the case
+    /// that the user isn't allowed to read the value.
+    /// </remarks>
     public static bool CanRead(object target, RuleArgs e)
     {
       bool isAuthorized = true;
@@ -1315,7 +1326,6 @@ namespace Csla.Validation
       if (!isAuthorized)
       {
         e.Severity = RuleSeverity.Information;
-        // TODO: Evaluate this resource
         e.Description = string.Format(Resources.CanReadAuthorizationRuleDescription, RuleArgs.GetPropertyName(e));
       }
 
@@ -1326,6 +1336,17 @@ namespace Csla.Validation
 
     #region CanWrite
 
+    /// <summary>
+    /// Rule indicating whether the user is authorized
+    /// to change the property value.
+    /// </summary>
+    /// <param name="target">Target object.</param>
+    /// <param name="e">Rule arguments.</param>
+    /// <remarks>
+    /// Combine this property with short-circuiting to
+    /// prevent evaluation of other rules in the case
+    /// that the user isn't allowed to change the value.
+    /// </remarks>
     public static bool CanWrite(object target, RuleArgs e)
     {
       bool isAuthorized = true;
@@ -1337,7 +1358,6 @@ namespace Csla.Validation
       if (!isAuthorized)
       {
         e.Severity = RuleSeverity.Information;
-        // TODO: Evaluate this resource
         e.Description = string.Format(Resources.CanWriteAuthorizationRuleDescription, RuleArgs.GetPropertyName(e));
       }
 

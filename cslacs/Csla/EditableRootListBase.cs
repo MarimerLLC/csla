@@ -263,6 +263,14 @@ namespace Csla
 
     #region  Cascade Child events
 
+    /// <summary>
+    /// Handles any PropertyChanged event from 
+    /// a child object and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
+    /// <param name="sender">Object that raised the event.</param>
+    /// <param name="e">Property changed args.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected override void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
       for (int index = 0; index < this.Count; index++)
@@ -460,6 +468,11 @@ namespace Csla
     #endregion
 
     #region IsBusy
+
+    /// <summary>
+    /// Gets a value indicating whether this object
+    /// is currently running an async operation.
+    /// </summary>
     public override bool IsBusy
     {
       get
@@ -474,6 +487,7 @@ namespace Csla
         return false;
       }
     }
+
     #endregion
   }
 }

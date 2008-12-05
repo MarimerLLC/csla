@@ -154,8 +154,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// Starts an async operation to save the object to the database.
     /// </summary>
     public void BeginSave()
     {
@@ -163,8 +162,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="userState">User state data.</param>
     public void BeginSave(object userState)
@@ -173,28 +171,26 @@ namespace Csla
     }
 
     /// <summary>
-    /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// Starts an async operation to save the object to the database.
     /// </summary>
-    /// <param name="handler">Callback handler.</param>
+    /// <param name="handler">
+    /// Method called when the operation is complete.
+    /// </param>
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(false, handler, null);
     }
 
     /// <summary>
-    /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
     /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
     /// If <see langword="false"/> then it is the same as calling Save().
     /// </param>
     /// <param name="handler">
-    /// Delegate reference to a callback handler that will
-    /// be invoked when the async operation is complete.
+    /// Method called when the operation is complete.
     /// </param>
-    /// <param name="handler">Callback handler.</param>
     /// <param name="userState">User state data.</param>
     public virtual void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
     {
@@ -274,8 +270,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
     /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
@@ -292,8 +287,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
     /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
@@ -390,6 +384,8 @@ namespace Csla
     /// to the new object instance.
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
+    /// <param name="e">Exception that occurred during operation.</param>
+    /// <param name="userState">User state object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnSaved(T newObject, Exception e, object userState)
     {

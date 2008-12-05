@@ -598,6 +598,7 @@ namespace Csla
     #endregion
 
     #region Logical Execution Location
+
     /// <summary>
     /// Enum representing the logical execution location
     /// The setting is set to server when server is execting
@@ -615,16 +616,24 @@ namespace Csla
       /// </summary>
       Server
     }
+    
     private static LogicalExecutionLocations _logicalExecutionLocation =
      LogicalExecutionLocations.Client;
+
+    /// <summary>
+    /// Gets a value indicating the logical execution location
+    /// of the currently executing code.
+    /// </summary>
     public static LogicalExecutionLocations LogicalExecutionLocation
     {
       get { return _logicalExecutionLocation; }
     }
+    
     internal static void SetLogicalExecutionLocation(LogicalExecutionLocations location)
     {
       _logicalExecutionLocation = location;
     }
+
     #endregion
 
   }

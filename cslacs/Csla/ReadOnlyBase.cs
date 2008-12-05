@@ -1090,30 +1090,90 @@ namespace Csla
       OnBusyChanged(e);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="parameter">Parameter value.</param>
     protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, parameter);
       LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P1">Type of the parameter.</typeparam>
+    /// <typeparam name="P2">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="p1">Parameter value.</param>
+    /// <param name="p2">Parameter value.</param>
     protected void LoadPropertyAsync<R, P1, P2>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2> factory, P1 p1, P2 p2)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2);
       LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P1">Type of the parameter.</typeparam>
+    /// <typeparam name="P2">Type of the parameter.</typeparam>
+    /// <typeparam name="P3">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="p1">Parameter value.</param>
+    /// <param name="p2">Parameter value.</param>
+    /// <param name="p3">Parameter value.</param>
     protected void LoadPropertyAsync<R, P1, P2, P3>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3> factory, P1 p1, P2 p2, P3 p3)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
       LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P1">Type of the parameter.</typeparam>
+    /// <typeparam name="P2">Type of the parameter.</typeparam>
+    /// <typeparam name="P3">Type of the parameter.</typeparam>
+    /// <typeparam name="P4">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="p1">Parameter value.</param>
+    /// <param name="p2">Parameter value.</param>
+    /// <param name="p3">Parameter value.</param>
+    /// <param name="p4">Parameter value.</param>
     protected void LoadPropertyAsync<R, P1, P2, P3, P4>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4> factory, P1 p1, P2 p2, P3 p3, P4 p4)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4);
       LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P1">Type of the parameter.</typeparam>
+    /// <typeparam name="P2">Type of the parameter.</typeparam>
+    /// <typeparam name="P3">Type of the parameter.</typeparam>
+    /// <typeparam name="P4">Type of the parameter.</typeparam>
+    /// <typeparam name="P5">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="p1">Parameter value.</param>
+    /// <param name="p2">Parameter value.</param>
+    /// <param name="p3">Parameter value.</param>
+    /// <param name="p4">Parameter value.</param>
+    /// <param name="p5">Parameter value.</param>
     protected void LoadPropertyAsync<R, P1, P2, P3, P4, P5>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4, P5> factory, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
@@ -1151,6 +1211,11 @@ namespace Csla
     [NotUndoable]
     private bool _isBusy;
 
+    /// <summary>
+    /// Marks the object as being busy (it is
+    /// running an async operation).
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
       // TODO: Review resource string
@@ -1161,18 +1226,33 @@ namespace Csla
       OnBusyChanged(new BusyChangedEventArgs("", true));
     }
 
+    /// <summary>
+    /// Marks the object as being not busy
+    /// (it is not running an async operation).
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkIdle()
     {
       _isBusy = false;
       OnBusyChanged(new BusyChangedEventArgs("", true));
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this
+    /// object or any of its child objects are
+    /// running an async operation.
+    /// </summary>
     [Browsable(false)]
     public bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this
+    /// object is
+    /// running an async operation.
+    /// </summary>
     [Browsable(false)]
     public bool IsSelfBusy
     {
@@ -1188,17 +1268,33 @@ namespace Csla
     [NonSerialized]
     private BusyChangedEventHandler _propertyBusy;
 
+    /// <summary>
+    /// Event raised when the IsBusy property value
+    /// has changed.
+    /// </summary>
     public event BusyChangedEventHandler BusyChanged
     {
       add { _propertyBusy = (BusyChangedEventHandler)Delegate.Combine(_propertyBusy, value); }
       remove { _propertyBusy = (BusyChangedEventHandler)Delegate.Remove(_propertyBusy, value); }
     }
 
+    /// <summary>
+    /// Raises the BusyChanged event.
+    /// </summary>
+    /// <param name="propertyName">Name of the property
+    /// that has changed.</param>
+    /// <param name="busy">New busy value.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnBusyChanged(string propertyName, bool busy)
     {
       OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
     }
 
+    /// <summary>
+    /// Raises the BusyChanged event.
+    /// </summary>
+    /// <param name="args">Event arguments.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
       if (_propertyBusy != null)
@@ -1338,18 +1434,34 @@ namespace Csla
     [NonSerialized]
     private EventHandler<ErrorEventArgs> _unhandledAsyncException;
 
+    /// <summary>
+    /// Event raised when an exception occurs on a background
+    /// thread during an asynchronous operation.
+    /// </summary>
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
       add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="error">Error arguments.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="originalSender">Original sender of the
+    /// event.</param>
+    /// <param name="error">Execption that occurred.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
       OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));

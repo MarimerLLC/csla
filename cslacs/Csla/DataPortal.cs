@@ -581,6 +581,19 @@ namespace Csla
       BeginCreate<T>(DataPortal<T>.EmptyCriteria, callback, null);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
+    /// <param name="callback">
+    /// Reference to method that will handle the 
+    /// asynchronous callback when the operation
+    /// is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -608,6 +621,22 @@ namespace Csla
       BeginCreate<T>(criteria, callback, null);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria describing the object to create.
+    /// </param>
+    /// <param name="callback">
+    /// Reference to method that will handle the 
+    /// asynchronous callback when the operation
+    /// is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -638,6 +667,19 @@ namespace Csla
       BeginFetch<T>(DataPortal<T>.EmptyCriteria, callback, null);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// fetch a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to fetch.
+    /// </typeparam>
+    /// <param name="callback">
+    /// Reference to method that will handle the 
+    /// asynchronous callback when the operation
+    /// is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -665,6 +707,22 @@ namespace Csla
       BeginFetch<T>(criteria, callback, null);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// fetch a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to fetch.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria describing the object to fetch.
+    /// </param>
+    /// <param name="callback">
+    /// Reference to method that will handle the 
+    /// asynchronous callback when the operation
+    /// is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -698,6 +756,22 @@ namespace Csla
       BeginUpdate<T>(obj, callback, null);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// update a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to update.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Business object to update.
+    /// </param>
+    /// <param name="callback">
+    /// Reference to method that will handle the 
+    /// asynchronous callback when the operation
+    /// is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginUpdate<T>(object obj, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -731,6 +805,22 @@ namespace Csla
       BeginDelete<T>(criteria, callback, null);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// delete a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to delete.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria describing the object to delete.
+    /// </param>
+    /// <param name="callback">
+    /// Reference to method that will handle the 
+    /// asynchronous callback when the operation
+    /// is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -743,11 +833,42 @@ namespace Csla
 
     #region Begin Execute
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// execute a command object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of object to execute.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Reference to the object to execute.
+    /// </param>
+    /// <param name="callback">
+    /// Reference to method that will handle the 
+    /// asynchronous callback when the operation
+    /// is complete.
+    /// </param>
     public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback) where T : IMobileObject
     {
       BeginExecute<T>(obj, callback, null);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// execute a command object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of object to execute.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Reference to the object to execute.
+    /// </param>
+    /// <param name="callback">
+    /// Reference to method that will handle the 
+    /// asynchronous callback when the operation
+    /// is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback, object userState) where T : IMobileObject
     {
       var dp = new DataPortal<T>();

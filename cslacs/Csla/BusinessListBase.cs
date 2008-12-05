@@ -1013,21 +1013,41 @@ namespace Csla
       return result;
     }
 
+    /// <summary>
+    /// Starts an async operation to save the object to the database.
+    /// </summary>
     public void BeginSave()
     {
       BeginSave(null, null);
     }
 
+    /// <summary>
+    /// Starts an async operation to save the object to the database.
+    /// </summary>
+    /// <param name="userState">User state object.</param>
     public void BeginSave(object userState)
     {
       BeginSave(null, userState);
     }
 
+    /// <summary>
+    /// Starts an async operation to save the object to the database.
+    /// </summary>
+    /// <param name="handler">
+    /// Method called when the operation is complete.
+    /// </param>
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(handler, null);
     }
 
+    /// <summary>
+    /// Starts an async operation to save the object to the database.
+    /// </summary>
+    /// <param name="handler">
+    /// Method called when the operation is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public virtual void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
       if (this.IsChild)
@@ -1262,6 +1282,8 @@ namespace Csla
     /// to the new object instance.
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
+    /// <param name="e">Execption that occurred during the operation.</param>
+    /// <param name="userState">User state object.</param>
     [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnSaved(T newObject, Exception e, object userState)
     {
@@ -1340,6 +1362,10 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Gets the busy status for this object and its child objects.
+    /// </summary>
+    [Browsable(false)]
     public override bool IsBusy
     {
       get
@@ -1476,6 +1502,7 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
     {
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
@@ -1490,6 +1517,7 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
     {
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
@@ -1497,6 +1525,17 @@ namespace Csla
       base.OnGetState(info);
     }
 
+    /// <summary>
+    /// Override this method to insert child objects
+    /// into the MobileFormatter serialization stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to the current MobileFormatter.
+    /// </param>
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
       base.OnGetChildren(info, formatter);
@@ -1507,6 +1546,17 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Override this method to get child objects
+    /// from the MobileFormatter serialization stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to the current MobileFormatter.
+    /// </param>
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
       if (info.Children.ContainsKey("_deletedList"))

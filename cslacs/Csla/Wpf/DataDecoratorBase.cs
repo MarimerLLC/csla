@@ -40,6 +40,191 @@ namespace Csla.Wpf
     }
 
     /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    public DataDecoratorBase()
+    {
+      this.DataContextChanged += new DependencyPropertyChangedEventHandler(Panel_DataContextChanged);
+      this.Loaded += new RoutedEventHandler(Panel_Loaded);
+    }
+
+    private void Panel_Loaded(object sender, RoutedEventArgs e)
+    {
+      _loaded = true;
+      UpdateDataObject(null, _dataObject);
+    }
+
+    /// <summary>
+    /// Handle case where the DataContext for the
+    /// control has changed.
+    /// </summary>
+    private void Panel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+      UpdateDataObject(e.OldValue, e.NewValue);
+    }
+
+    private object GetDataObject(object dataContext)
+    {
+      DataSourceProvider provider = dataContext as DataSourceProvider;
+      if (provider != null)
+        return provider.Data;
+      else
+        return dataContext;
+    }
+
+    /// <summary>
+    /// Handle case where the Data property of the
+    /// DataContext (a DataSourceProvider) has changed.
+    /// </summary>
+    private void DataProvider_DataChanged(object sender, EventArgs e)
+    {
+      UpdateDataObject(_dataObject, ((DataSourceProvider)sender).Data);
+    }
+
+    private void UpdateDataObject(object oldObject, object newObject)
+    {
+      if (!ReferenceEquals(oldObject, newObject))
+      {
+        if (oldObject != null)
+          UnHookDataContextEvents(oldObject);
+
+        // store a ref to the data object
+        _dataObject = GetDataObject(newObject);
+
+        if (newObject != null)
+          HookDataContextEvents(newObject);
+
+        DataObjectChanged();
+      }
+    }
+
+    #region Hook/unhook events
+
+    private void UnHookDataContextEvents(object oldValue)
+    {
+      // unhook any old event handling
+      object oldContext = null;
+
+      DataSourceProvider provider = oldValue as DataSourceProvider;
+      if (provider == null)
+      {
+        oldContext = oldValue;
+      }
+      else
+      {
+        provider.DataChanged -= new EventHandler(DataProvider_DataChanged);
+        oldContext = provider.Data;
+      }
+      UnHookChildChanged(oldContext as Csla.Core.INotifyChildChanged);
+      UnHookPropertyChanged(oldContext as INotifyPropertyChanged);
+      INotifyCollectionChanged observable = oldContext as INotifyCollectionChanged;
+      if (observable != null)
+        UnHookObservableListChanged(observable);
+      else
+        UnHookBindingListChanged(oldContext as IBindingList);
+    }
+
+    private void HookDataContextEvents(object newValue)
+    {
+      // hook any new event
+      object newContext = null;
+
+      DataSourceProvider provider = newValue as DataSourceProvider;
+      if (provider == null)
+      {
+        newContext = newValue;
+      }
+      else
+      {
+        provider.DataChanged += DataProvider_DataChanged;
+        newContext = provider.Data;
+      }
+      HookChildChanged(newContext as Csla.Core.INotifyChildChanged);
+      HookPropertyChanged(newContext as INotifyPropertyChanged);
+      INotifyCollectionChanged observable = newContext as INotifyCollectionChanged;
+      if (observable != null)
+        HookObservableListChanged(observable);
+      else
+        HookBindingListChanged(newContext as IBindingList);
+    }
+
+    private void UnHookPropertyChanged(INotifyPropertyChanged oldContext)
+    {
+      if (oldContext != null)
+        oldContext.PropertyChanged -= DataObject_PropertyChanged;
+    }
+
+    private void HookPropertyChanged(INotifyPropertyChanged newContext)
+    {
+      if (newContext != null)
+        newContext.PropertyChanged += DataObject_PropertyChanged;
+    }
+
+    private void UnHookChildChanged(Csla.Core.INotifyChildChanged oldContext)
+    {
+      if (oldContext != null)
+        oldContext.ChildChanged -= DataObject_ChildChanged;
+    }
+
+    private void HookChildChanged(Csla.Core.INotifyChildChanged newContext)
+    {
+      if (newContext != null)
+        newContext.ChildChanged += DataObject_ChildChanged;
+    }
+
+    private void UnHookBindingListChanged(IBindingList oldContext)
+    {
+      if (oldContext != null)
+        oldContext.ListChanged -= DataObject_ListChanged;
+    }
+
+    private void HookBindingListChanged(IBindingList newContext)
+    {
+      if (newContext != null)
+        newContext.ListChanged += DataObject_ListChanged;
+    }
+
+    private void UnHookObservableListChanged(INotifyCollectionChanged oldContext)
+    {
+      if (oldContext != null)
+        oldContext.CollectionChanged -= DataObject_CollectionChanged;
+    }
+
+    private void HookObservableListChanged(INotifyCollectionChanged newContext)
+    {
+      if (newContext != null)
+        newContext.CollectionChanged += DataObject_CollectionChanged;
+    }
+
+    #endregion
+
+    #region Handle events
+
+    private void DataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      DataPropertyChanged(e);
+    }
+
+    private void DataObject_ChildChanged(object sender, Csla.Core.ChildChangedEventArgs e)
+    {
+      DataPropertyChanged(e.PropertyChangedArgs);
+    }
+
+    private void DataObject_ListChanged(object sender, ListChangedEventArgs e)
+    {
+      DataBindingListChanged(e);
+    }
+
+    private void DataObject_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      DataObservableCollectionChanged(e);
+    }
+
+    #endregion
+
+    #region Virtual methods
+
+    /// <summary>
     /// This method is called when a property
     /// of the data object to which the 
     /// control is bound has changed.
@@ -80,160 +265,9 @@ namespace Csla.Wpf
       // may be overridden by subclass
     }
 
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    public DataDecoratorBase()
-    {
-      this.DataContextChanged += new DependencyPropertyChangedEventHandler(Panel_DataContextChanged);
-      this.Loaded += new RoutedEventHandler(Panel_Loaded);
-    }
+    #endregion
 
-    /// <summary>
-    /// Handle case where the DataContext for the
-    /// control has changed.
-    /// </summary>
-    private void Panel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      UpdateDataObject(e.OldValue, e.NewValue);
-      if (_loaded)
-        DataObjectChanged();
-    }
-
-    private object GetDataObject(object dataContext)
-    {
-      DataSourceProvider provider = dataContext as DataSourceProvider;
-      if (provider != null)
-        return provider.Data;
-      else
-        return dataContext;
-    }
-
-    /// <summary>
-    /// Handle case where the Data property of the
-    /// DataContext (a DataSourceProvider) has changed.
-    /// </summary>
-    private void DataProvider_DataChanged(object sender, EventArgs e)
-    {
-      UpdateDataObject(_dataObject, ((DataSourceProvider)sender).Data);
-      DataObjectChanged();
-    }
-
-    private void UpdateDataObject(object oldObject, object newObject)
-    {
-      UnHookDataContextEvents(oldObject);
-
-      // store a ref to the data object
-      _dataObject = GetDataObject(newObject);
-
-      HookDataContextEvents(newObject);
-    }
-
-    private void UnHookDataContextEvents(object oldValue)
-    {
-      // unhook any old event handling
-      object oldContext = null;
-
-      DataSourceProvider provider = oldValue as DataSourceProvider;
-      if (provider == null)
-      {
-        oldContext = oldValue;
-      }
-      else
-      {
-        provider.DataChanged -= new EventHandler(DataProvider_DataChanged);
-        oldContext = provider.Data;
-      }
-      UnHookPropertyChanged(oldContext as INotifyPropertyChanged);
-      INotifyCollectionChanged observable = oldContext as INotifyCollectionChanged;
-      if (observable != null)
-        UnHookObservableListChanged(observable);
-      else
-        UnHookBindingListChanged(oldContext as IBindingList);
-    }
-
-    private void HookDataContextEvents(object newValue)
-    {
-      // hook any new event
-      object newContext = null;
-
-      DataSourceProvider provider = newValue as DataSourceProvider;
-      if (provider == null)
-      {
-        newContext = newValue;
-      }
-      else
-      {
-        provider.DataChanged += new EventHandler(DataProvider_DataChanged);
-        newContext = provider.Data;
-      }
-      HookPropertyChanged(newContext as INotifyPropertyChanged);
-      INotifyCollectionChanged observable = newContext as INotifyCollectionChanged;
-      if (observable != null)
-        HookObservableListChanged(observable);
-      else
-        HookBindingListChanged(newContext as IBindingList);
-    }
-
-    private void UnHookPropertyChanged(INotifyPropertyChanged oldContext)
-    {
-      if (oldContext != null)
-        oldContext.PropertyChanged -= new PropertyChangedEventHandler(DataObject_PropertyChanged);
-    }
-
-    private void HookPropertyChanged(INotifyPropertyChanged newContext)
-    {
-      if (newContext != null)
-        newContext.PropertyChanged += new PropertyChangedEventHandler(DataObject_PropertyChanged);
-    }
-
-    private void UnHookBindingListChanged(IBindingList oldContext)
-    {
-      if (oldContext != null)
-        oldContext.ListChanged -= new ListChangedEventHandler(DataObject_ListChanged);
-    }
-
-    private void HookBindingListChanged(IBindingList newContext)
-    {
-      if (newContext != null)
-        newContext.ListChanged += new ListChangedEventHandler(DataObject_ListChanged);
-    }
-
-    private void UnHookObservableListChanged(INotifyCollectionChanged oldContext)
-    {
-      if (oldContext != null)
-        oldContext.CollectionChanged -=
-          new NotifyCollectionChangedEventHandler(DataObject_CollectionChanged);
-    }
-
-    private void HookObservableListChanged(INotifyCollectionChanged newContext)
-    {
-      if (newContext != null)
-        newContext.CollectionChanged +=
-          new NotifyCollectionChangedEventHandler(DataObject_CollectionChanged);
-    }
-
-    private void Panel_Loaded(object sender, RoutedEventArgs e)
-    {
-      _loaded = true;
-      if (_dataObject != null)
-        DataObjectChanged();
-    }
-
-    private void DataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      DataPropertyChanged(e);
-    }
-
-    private void DataObject_ListChanged(object sender, ListChangedEventArgs e)
-    {
-      DataBindingListChanged(e);
-    }
-
-    private void DataObject_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-      DataObservableCollectionChanged(e);
-    }
+    #region FindingBindings
 
     /// <summary>
     /// Scans all child controls of this panel
@@ -283,5 +317,7 @@ namespace Csla.Wpf
     protected virtual void FoundBinding(Binding bnd, FrameworkElement control, DependencyProperty prop)
     {
     }
+
+    #endregion
   }
 }

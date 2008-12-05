@@ -17,7 +17,6 @@ namespace Csla.Wpf
   /// </summary>
   public class DataDecoratorBase : Decorator
   {
-    private bool _loaded;
     private object _dataObject;
 
     /// <summary>
@@ -50,7 +49,6 @@ namespace Csla.Wpf
 
     private void Panel_Loaded(object sender, RoutedEventArgs e)
     {
-      _loaded = true;
       UpdateDataObject(null, _dataObject);
     }
 

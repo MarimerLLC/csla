@@ -1098,6 +1098,7 @@ namespace Csla
     /// <param name="property">Property to load.</param>
     /// <param name="factory">AsyncFactory delegate.</param>
     /// <param name="parameter">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, parameter);
@@ -1114,6 +1115,7 @@ namespace Csla
     /// <param name="factory">AsyncFactory delegate.</param>
     /// <param name="p1">Parameter value.</param>
     /// <param name="p2">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P1, P2>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2> factory, P1 p1, P2 p2)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2);
@@ -1132,6 +1134,7 @@ namespace Csla
     /// <param name="p1">Parameter value.</param>
     /// <param name="p2">Parameter value.</param>
     /// <param name="p3">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P1, P2, P3>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3> factory, P1 p1, P2 p2, P3 p3)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
@@ -1152,6 +1155,7 @@ namespace Csla
     /// <param name="p2">Parameter value.</param>
     /// <param name="p3">Parameter value.</param>
     /// <param name="p4">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P1, P2, P3, P4>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4> factory, P1 p1, P2 p2, P3 p3, P4 p4)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4);
@@ -1174,6 +1178,7 @@ namespace Csla
     /// <param name="p3">Parameter value.</param>
     /// <param name="p4">Parameter value.</param>
     /// <param name="p5">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P1, P2, P3, P4, P5>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4, P5> factory, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);

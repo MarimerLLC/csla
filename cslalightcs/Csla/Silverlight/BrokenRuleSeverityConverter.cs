@@ -16,10 +16,22 @@ using System.Windows.Resources;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Converts broken rule severities into an
+  /// appropriate image for display.
+  /// </summary>
   public class BrokenRuleSeverityConverter : IValueConverter
   {
     #region IValueConverter Members
 
+    /// <summary>
+    /// Converts broken rule severities into an
+    /// appropriate image for display.
+    /// </summary>
+    /// <param name="value">Severity value</param>
+    /// <param name="targetType">Target type</param>
+    /// <param name="parameter">Parameter</param>
+    /// <param name="culture">Culture</param>
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       RuleSeverity severity = (RuleSeverity)value;
@@ -31,6 +43,14 @@ namespace Csla.Silverlight
       return bmp;
     }
 
+    /// <summary>
+    /// Returns RuleSeverity.Errro
+    /// </summary>
+    /// <param name="value">Ignored</param>
+    /// <param name="targetType">Ignored</param>
+    /// <param name="parameter">Ignored</param>
+    /// <param name="culture">Ignored</param>
+    /// <returns></returns>
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       return RuleSeverity.Error;

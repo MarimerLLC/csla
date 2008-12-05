@@ -7,6 +7,10 @@ using System.Diagnostics;
 
 namespace Csla
 {
+  /// <summary>
+  /// Base class for editable objects.
+  /// </summary>
+  /// <typeparam name="T">Type of the business object.</typeparam>
 #if TESTING
   [System.Diagnostics.DebuggerStepThrough]
 #endif
@@ -110,6 +114,8 @@ namespace Csla
     /// to the new object instance.
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
+    /// <param name="error">Exception object.</param>
+    /// <param name="userState">User state object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnSaved(T newObject, Exception error, object userState)
     {
@@ -156,21 +162,41 @@ namespace Csla
       BeginSave(false, null, null);
     }
 
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="userState">User state object.</param>
     public void BeginSave(object userState)
     {
       BeginSave(false, null, userState);
     }
 
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="handler">Method called when the save is complete.</param>
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(false, handler, null);
     }
 
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="handler">Method called when the save is complete.</param>
+    /// <param name="userState">User state object.</param>
     public void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
       BeginSave(false, handler, userState);
     }
 
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="handler">Method called when the save is complete.</param>
+    /// <param name="userState">User state object.</param>
+    /// <param name="forceUpdate">If true, forces the object to
+    /// be updated (not inserted) even if IsNew is true.</param>
     public virtual void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
     {
       if (forceUpdate && IsNew)
@@ -264,11 +290,29 @@ namespace Csla
       BeginSave(forceUpdate, null, null);
     }
 
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+    /// If <see langword="false"/> then it is the same as calling Save().
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public void BeginSave(bool forceUpdate, object userState)
     {
       BeginSave(forceUpdate, null, userState);
     }
 
+    /// <summary>
+    /// Saves the object to the database, forcing
+    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+    /// If <see langword="false"/> then it is the same as calling Save().
+    /// </param>
+    /// <param name="handler">Method called when the operation is complete.</param>
     public void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler)
     {
       this.BeginSave(forceUpdate, handler, null);

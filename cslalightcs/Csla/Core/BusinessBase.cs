@@ -17,6 +17,9 @@ using Csla.Core.LoadManager;
 
 namespace Csla.Core
 {
+  /// <summary>
+  /// Base class for editable objects.
+  /// </summary>
 #if TESTING
   [System.Diagnostics.DebuggerStepThrough]
 #endif
@@ -1877,30 +1880,95 @@ namespace Csla.Core
       OnBusyChanged(e);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="parameter">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, parameter);
       LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P1">Type of the parameter.</typeparam>
+    /// <typeparam name="P2">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="p1">Parameter value.</param>
+    /// <param name="p2">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P1, P2>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2> factory, P1 p1, P2 p2)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2);
       LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P1">Type of the parameter.</typeparam>
+    /// <typeparam name="P2">Type of the parameter.</typeparam>
+    /// <typeparam name="P3">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="p1">Parameter value.</param>
+    /// <param name="p2">Parameter value.</param>
+    /// <param name="p3">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P1, P2, P3>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3> factory, P1 p1, P2 p2, P3 p3)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
       LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P1">Type of the parameter.</typeparam>
+    /// <typeparam name="P2">Type of the parameter.</typeparam>
+    /// <typeparam name="P3">Type of the parameter.</typeparam>
+    /// <typeparam name="P4">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="p1">Parameter value.</param>
+    /// <param name="p2">Parameter value.</param>
+    /// <param name="p3">Parameter value.</param>
+    /// <param name="p4">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P1, P2, P3, P4>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4> factory, P1 p1, P2 p2, P3 p3, P4 p4)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4);
       LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
     }
 
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P1">Type of the parameter.</typeparam>
+    /// <typeparam name="P2">Type of the parameter.</typeparam>
+    /// <typeparam name="P3">Type of the parameter.</typeparam>
+    /// <typeparam name="P4">Type of the parameter.</typeparam>
+    /// <typeparam name="P5">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    /// <param name="p1">Parameter value.</param>
+    /// <param name="p2">Parameter value.</param>
+    /// <param name="p3">Parameter value.</param>
+    /// <param name="p4">Parameter value.</param>
+    /// <param name="p5">Parameter value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void LoadPropertyAsync<R, P1, P2, P3, P4, P5>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4, P5> factory, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
     {
       AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
@@ -1995,6 +2063,10 @@ namespace Csla.Core
 
     private FieldManager.FieldDataManager _fieldManager;
 
+    /// <summary>
+    /// Gets the PropertyManager object for this
+    /// business object.
+    /// </summary>
     protected FieldDataManager FieldManager
     {
       get
@@ -2028,21 +2100,54 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Gets a property's managed field value, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
     protected T GetProperty<T>(IPropertyInfo propertyInfo)
     {
       IFieldData data = FieldManager.GetFieldData(propertyInfo);
       return (T)(data != null ? data.Value : null);
     }
 
-    protected void SetProperty<T>(IPropertyInfo propertyInfo, T value)
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, first checking authorization, and then
+    /// calling PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="T">Property type.</typeparam>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the property, this
+    /// overload throws a SecurityException.
+    /// </remarks>
+    protected void SetProperty<T>(IPropertyInfo propertyInfo, T newValue)
     {
-      FieldManager.SetFieldData<T>(propertyInfo, value);
+      FieldManager.SetFieldData<T>(propertyInfo, newValue);
     }
 
     #endregion
 
     #region Bubbling event Hooks
 
+    /// <summary>
+    /// Add event hooks.
+    /// </summary>
+    /// <param name="child">Child object.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnAddEventHooks(IBusinessObject child)
     {
       INotifyBusy busy = child as INotifyBusy;
@@ -2066,6 +2171,11 @@ namespace Csla.Core
         childChanged.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
     }
 
+    /// <summary>
+    /// Remove event hooks.
+    /// </summary>
+    /// <param name="child">Child object.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnRemoveEventHooks(IBusinessObject child)
     {
       INotifyBusy busy = child as INotifyBusy;
@@ -2107,6 +2217,11 @@ namespace Csla.Core
 
     #region UndoableBase overrides
 
+    /// <summary>
+    /// Copy object state.
+    /// </summary>
+    /// <param name="state">Serialization state.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected override void OnCopyState(SerializationInfo state)
     {
       OnGetState(state, StateMode.Undo);
@@ -2116,6 +2231,11 @@ namespace Csla.Core
       base.OnCopyState(state);
     }
 
+    /// <summary>
+    /// Undo object state.
+    /// </summary>
+    /// <param name="state">Serialization state.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected override void OnUndoChanges(SerializationInfo state)
     {
       OnSetState(state, StateMode.Undo);
@@ -2125,6 +2245,10 @@ namespace Csla.Core
       base.OnUndoChanges(state);
     }
 
+    /// <summary>
+    /// Accept object state.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected override void AcceptingChanges()
     {
       ((IUndoableObject)FieldManager).AcceptChanges(this.EditLevel - 1, false);
@@ -2132,10 +2256,22 @@ namespace Csla.Core
 
       base.AcceptingChanges();
     }
+
     #endregion
 
     #region MobileFormatter
 
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
       base.OnGetState(info, mode);
@@ -2148,6 +2284,17 @@ namespace Csla.Core
       info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded);
     }
 
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       base.OnSetState(info, mode);
@@ -2161,6 +2308,18 @@ namespace Csla.Core
         _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
     }
 
+    /// <summary>
+    /// Override this method to insert your child object
+    /// references into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       base.OnGetChildren(info, formatter);
@@ -2178,6 +2337,18 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (info.Children.ContainsKey("_fieldManager"))
@@ -2220,8 +2391,15 @@ namespace Csla.Core
 
     private Validation.ValidationRules _validationRules;
 
+    /// <summary>
+    /// Event indicating validation is complete.
+    /// </summary>
     public event EventHandler ValidationComplete;
 
+    /// <summary>
+    /// Raises the ValidationComplete event.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnValidationComplete()
     {
       if (ValidationComplete != null)
@@ -2402,6 +2580,11 @@ namespace Csla.Core
     [NotUndoable]
     private bool _isBusy;
 
+    /// <summary>
+    /// Mark the object as busy (it is
+    /// running an async operation).
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
       // TODO: Review resource string
@@ -2412,17 +2595,31 @@ namespace Csla.Core
       OnBusyChanged(new BusyChangedEventArgs("", true));
     }
 
+    /// <summary>
+    /// Mark the object as not busy (it is
+    /// not running an async operation).
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkIdle()
     {
       _isBusy = false;
       OnBusyChanged(new BusyChangedEventArgs("", false));
     }
 
+    /// <summary>
+    /// Gets a value indicating if this
+    /// object or its child objects are
+    /// busy.
+    /// </summary>
     public bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
     }
 
+    /// <summary>
+    /// Gets a value indicating if this
+    /// object is busy.
+    /// </summary>
     public bool IsSelfBusy
     {
       get { return _isBusy || ValidationRules.IsValidating || LoadManager.IsLoading; }
@@ -2432,23 +2629,43 @@ namespace Csla.Core
     [NonSerialized]
     private BusyChangedEventHandler _busyChanged;
 
+    /// <summary>
+    /// Event indicating that the IsBusy property has changed.
+    /// </summary>
     public event BusyChangedEventHandler BusyChanged
     {
       add { _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value); }
       remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
+    /// <summary>
+    /// Raise the BusyChanged event.
+    /// </summary>
+    /// <param name="propertyName">Name of property.</param>
+    /// <param name="busy">Flag indicating status.</param>
     protected void OnBusyChanged(string propertyName, bool busy)
     {
       OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
     }
 
+    /// <summary>
+    /// Raise the BusyChanged event.
+    /// </summary>
+    /// <param name="args">Event args.</param>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
       if (_busyChanged != null)
         _busyChanged(this, args);
     }
 
+    /// <summary>
+    /// Gets a value indicating whether a
+    /// specific property is busy (has a
+    /// currently executing async rule).
+    /// </summary>
+    /// <param name="propertyName">
+    /// Name of the property.
+    /// </param>
     public bool IsPropertyBusy(string propertyName)
     {
       bool isbusy = false;
@@ -2473,18 +2690,34 @@ namespace Csla.Core
     [NonSerialized]
     private EventHandler<ErrorEventArgs> _unhandledAsyncException;
 
+    /// <summary>
+    /// Event indicating that an exception occurred during
+    /// the processing of an async operation.
+    /// </summary>
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
       add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="error">Args parameter.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="originalSender">Original sender of
+    /// the event.</param>
+    /// <param name="error">Exception object.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
       OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
@@ -2749,7 +2982,6 @@ namespace Csla.Core
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
     /// </summary>
-    /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized()
     {
@@ -2764,6 +2996,22 @@ namespace Csla.Core
     [NotUndoable]
     private bool _disableIEditableObject;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// IEditableObject interface methods should
+    /// be disabled for this object.
+    /// </summary>
+    /// <value>Defaults to False, indicating that
+    /// the IEditableObject methods will behave
+    /// normally.</value>
+    /// <remarks>
+    /// If you disable the IEditableObject methods
+    /// then Windows Forms data binding will no longer
+    /// automatically call BeginEdit, CancelEdit or
+    /// ApplyEdit on your object, and you will have
+    /// to call these methods manually to get proper
+    /// n-level undo behavior.
+    /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected bool DisableIEditableObject
     {
@@ -2848,12 +3096,19 @@ namespace Csla.Core
       }
       #region IDisposable Members
 
+      /// <summary>
+      /// Dispose object.
+      /// </summary>
       public void Dispose()
       {
         Dispose(true);
         GC.SuppressFinalize(this);
       }
 
+      /// <summary>
+      /// Dispose object.
+      /// </summary>
+      /// <param name="dispose">Dispose flag.</param>
       protected void Dispose(bool dispose)
       {
         _businessObject._bypassPropertyChecks = false;

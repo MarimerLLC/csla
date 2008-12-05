@@ -2218,6 +2218,7 @@ namespace Csla.Core
     /// supplied value, first checking authorization, and then
     /// calling PropertyHasChanged if the value does change.
     /// </summary>
+    /// <typeparam name="P">Property type.</typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
@@ -2709,7 +2710,6 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
-      // TODO: Review resource string
       if (_isBusy)
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
 

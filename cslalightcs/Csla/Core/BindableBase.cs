@@ -19,8 +19,14 @@ namespace Csla.Core
     protected BindableBase()
     { }
 
+    /// <summary>
+    /// Event raised when a property is changed.
+    /// </summary>
     public event PropertyChangedEventHandler PropertyChanged;
 
+    /// <summary>
+    /// Event raised when a property is changing.
+    /// </summary>
     public event PropertyChangingEventHandler PropertyChanging;
 
     /// <summary>
@@ -53,8 +59,20 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Call this method to raise the PropertyChanging event
+    /// Call this method to raise the PropertyChanged event
     /// for a specific property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// is being changed.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Raises the PropertyChanging event.
     /// </summary>
     /// <param name="propertyName">Name of the property that
     /// is being changed.</param>
@@ -63,13 +81,6 @@ namespace Csla.Core
     /// class to indicate the change that is about to occur 
     /// in a specific property.
     /// </remarks>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-    }
-
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnPropertyChanging(string propertyName)
     {

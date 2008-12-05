@@ -42,6 +42,11 @@ namespace Csla
     #region LocalContext
 
     private static object _syncLocalContext = new object();
+
+    /// <summary>
+    /// Gets a reference to the sync root used
+    /// when manipulating the LocalContext object.
+    /// </summary>
     public static object LocalContextSync
     {
       get { return _syncLocalContext; }
@@ -56,7 +61,7 @@ namespace Csla
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The return value is a Dictionary<string, object>. If one does
+    /// The return value is a Dictionary of string, object. If one does
     /// not already exist, and empty one is created and returned.
     /// </para><para>
     /// Note that data in this context is NOT transferred to and from
@@ -81,12 +86,22 @@ namespace Csla
     #region Client/Global Context
     
     private static object _syncClientContext = new object();
+
+    /// <summary>
+    /// Gets the sync root object used to
+    /// synchronize access to the ClientContext object.
+    /// </summary>
     public static object ClientContextSync
     {
       get { return _syncClientContext; }
     }
 
     private static object _syncGlobalContext = new object();
+
+    /// <summary>
+    /// Gets the sync root object used to
+    /// synchronize access to the GlobalContext object.
+    /// </summary>
     public static object GlobalContextSync
     {
       get { return _syncGlobalContext; }
@@ -102,7 +117,7 @@ namespace Csla
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The return value is a Dictionary<string, object>. If one does
+    /// The return value is a Dictionary. If one does
     /// not already exist, and empty one is created and returned.
     /// </para><para>
     /// Note that data in this context is transferred from
@@ -135,7 +150,7 @@ namespace Csla
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The return value is a Dictionary<string, object>. If one does
+    /// The return value is a Dictionary. If one does
     /// not already exist, and empty one is created and returned.
     /// </para><para>
     /// Note that data in this context is transferred to and from

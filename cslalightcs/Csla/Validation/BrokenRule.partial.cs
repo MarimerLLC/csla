@@ -14,8 +14,15 @@ using Csla.Serialization.Mobile;
 
 namespace Csla.Validation
 {
+  /// <summary>
+  /// Stores details about a specific broken business rule.
+  /// </summary>
   public partial class BrokenRule
   {
+    /// <summary>
+    /// Creates an instance of this object.
+    /// </summary>
+    [Obsolete("For use by MobileFormatter only")]
     public BrokenRule() { }
   }
 }

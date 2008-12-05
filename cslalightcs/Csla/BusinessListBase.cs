@@ -12,6 +12,12 @@ using Csla.Serialization.Mobile;
 
 namespace Csla
 {
+  /// <summary>
+  /// This is the base class from which most business collections
+  /// or lists will be derived.
+  /// </summary>
+  /// <typeparam name="T">Type of the business object being defined.</typeparam>
+  /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
 #if TESTING
   [System.Diagnostics.DebuggerStepThrough]
 #endif
@@ -533,6 +539,14 @@ namespace Csla
 
     #region Mobile Object overrides
 
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should serialize its data. The data should be
+    /// serialized into the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object to contain the serialized data.
+    /// </param>
     protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
@@ -540,6 +554,14 @@ namespace Csla
       base.OnGetState(info);
     }
 
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should be deserialized. The data should be
+    /// deserialized from the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
     protected override void OnSetState(SerializationInfo info)
     {
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
@@ -547,6 +569,17 @@ namespace Csla
       base.OnSetState(info);
     }
 
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should serialize its child references. The data should be
+    /// serialized into the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object to contain the serialized data.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to the formatter performing the serialization.
+    /// </param>
     protected override void OnGetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
       base.OnGetChildren(info, formatter);
@@ -557,6 +590,17 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should deserialize its child references. The data should be
+    /// deserialized from the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to the formatter performing the deserialization.
+    /// </param>
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
       if (info.Children.ContainsKey("_deletedList"))
@@ -684,6 +728,9 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Gets the busy status for this object and its child objects.
+    /// </summary>
     public override bool IsBusy
     {
       get
@@ -821,16 +868,33 @@ namespace Csla
       BeginSave(null, null);
     }
 
+    /// <summary>
+    /// Starts an async operation to save the object to the database.
+    /// </summary>
+    /// <param name="userState">User state object.</param>
     public void BeginSave(object userState)
     {
       BeginSave(null, userState);
     }
 
+    /// <summary>
+    /// Starts an async operation to save the object to the database.
+    /// </summary>
+    /// <param name="handler">
+    /// Method called when the operation is complete.
+    /// </param>
     public void BeginSave(EventHandler<SavedEventArgs> handler)
     {
       BeginSave(handler, null);
     }
 
+    /// <summary>
+    /// Starts an async operation to save the object to the database.
+    /// </summary>
+    /// <param name="handler">
+    /// Method called when the operation is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public virtual void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
       if (this.IsChild)
@@ -1001,6 +1065,8 @@ namespace Csla
     /// to the new object instance.
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
+    /// <param name="error">Exception object.</param>
+    /// <param name="userState">User state object.</param>
     protected void OnSaved(T newObject, Exception error, object userState)
     {
       if (Saved != null)

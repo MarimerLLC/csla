@@ -4,6 +4,9 @@ using Csla.Properties;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Navigator provider object.
+  /// </summary>
   public class NavigatorProvider
   {
     /// <summary>

@@ -1,3 +1,4 @@
+Imports System
 Imports System.ServiceModel
 Imports Csla.Server.Hosts.WcfChannel
 

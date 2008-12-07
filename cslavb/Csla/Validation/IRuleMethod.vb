@@ -9,13 +9,13 @@ Namespace Validation
     ''' <summary>
     ''' Gets the priority of the rule method.
     ''' </summary>
-    ''' <value>The priority value</value>
+    ''' <value>The priority value.</value>
     ''' <remarks>
     ''' Priorities are processed in descending
     ''' order, so priority 0 is processed
-    ''' before priority 1, etc.
-    ''' </remarks>
+    ''' before priority 1, etc.</remarks>
     ReadOnly Property Priority() As Integer
+
     ''' <summary>
     ''' Gets the name of the rule.
     ''' </summary>
@@ -25,11 +25,13 @@ Namespace Validation
     ''' collection.
     ''' </remarks>
     ReadOnly Property RuleName() As String
+
     ''' <summary>
     ''' Returns the name of the field, property or column
     ''' to which the rule applies.
     ''' </summary>
     ReadOnly Property RuleArgs() As RuleArgs
+
     ''' <summary>
     ''' Invokes the rule to validate the data.
     ''' </summary>

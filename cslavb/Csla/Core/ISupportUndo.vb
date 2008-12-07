@@ -1,4 +1,6 @@
-﻿Namespace Core
+﻿Imports System
+
+Namespace Core
 
   ''' <summary>
   ''' Define the common methods used by the UI to 

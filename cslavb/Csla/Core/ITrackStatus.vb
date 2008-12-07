@@ -1,10 +1,13 @@
-﻿Namespace Core
+﻿Imports System
+
+Namespace Core
 
   ''' <summary>
   ''' Defines the common properties required objects
   ''' that track their own status.
   ''' </summary>
   Public Interface ITrackStatus
+    Inherits INotifyBusy
     ''' <summary>
     ''' Returns <see langword="true" /> if the object 
     ''' and its child objects are currently valid, 
@@ -111,6 +114,13 @@
     ''' <summary>
     ''' Returns <see langword="true" /> if this object is both dirty and valid.
     ''' </summary>
+    ''' <remarks>
+    ''' An object is considered dirty (changed) if 
+    ''' <see cref="P:Csla.BusinessBase.IsDirty" /> returns <see langword="true" />. It is
+    ''' considered valid if IsValid
+    ''' returns <see langword="true" />. The IsSavable property is
+    ''' a combination of these two properties. 
+    ''' </remarks>
     ''' <returns>A value indicating if this object is both dirty and valid.</returns>
     ReadOnly Property IsSavable() As Boolean
   End Interface

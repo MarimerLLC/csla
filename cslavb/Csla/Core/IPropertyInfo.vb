@@ -1,4 +1,6 @@
-﻿Namespace Core
+﻿Imports System
+
+Namespace Core
 
   ''' <summary>
   ''' Maintains metadata about a property.

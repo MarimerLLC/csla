@@ -1,4 +1,7 @@
-﻿Namespace Core
+﻿Imports System
+Imports System.Collections.Generic
+
+Namespace Core
 
   Friend Interface IManageProperties
     ReadOnly Property HasManagedProperties() As Boolean

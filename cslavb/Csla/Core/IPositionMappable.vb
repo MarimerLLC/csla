@@ -1,4 +1,6 @@
-﻿Namespace Core
+﻿Imports System
+
+Namespace Core
 
   Friend Interface IPositionMappable(Of T)
     Function PositionOf(ByVal item As T) As Integer

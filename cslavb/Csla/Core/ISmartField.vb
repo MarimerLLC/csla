@@ -1,4 +1,6 @@
-﻿Namespace Core
+﻿Imports System
+
+Namespace Core
 
   ''' <summary>
   ''' Defines members required for smart

@@ -1,35 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Font Name="Tahoma" Size="8.25" />
   <Class Name="Csla.Core.BindableBase" Collapsed="true">
     <Position X="0.5" Y="1.25" Width="1.75" />
     <TypeIdentifier>
+      <HashCode>AAAABAAAAAAIAAACIAAAAAARgIAAACAAAAAAAAAAEAk=</HashCode>
       <FileName>Core\BindableBase.vb</FileName>
-      <HashCode>AAAABAAAAAAACCAAIAAAAAAAgIAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Core.BusinessBase" Collapsed="true">
     <Position X="0.5" Y="4" Width="1.75" />
     <TypeIdentifier>
+      <HashCode>FEgpAI0KCiAQv6XBEUhISEuUBBPIAEFAIFCDAcIgKVA=</HashCode>
       <FileName>Core\BusinessBase.vb</FileName>
-      <HashCode>NCgAAg0ECEAQlSRAFUgISEiEBBHgAAEAIFABAQIgKFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Core.UndoableBase" Collapsed="true">
     <Position X="0.5" Y="2.5" Width="1.75" />
     <TypeIdentifier>
+      <HashCode>AgEIAAIAAAAAAIwAAAKBEAAAAAABAAAAAABCEAAAAAA=</HashCode>
       <FileName>Core\UndoableBase.vb</FileName>
-      <HashCode>AgAIAAAAAAAAAAQAAAIBEAAAQAAAAAAAAABAEAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Core.ReadOnlyBindingList(Of C)" Collapsed="true">
-    <Position X="5" Y="2.5" Width="2" />
+    <Position X="5.75" Y="2.5" Width="2" />
     <TypeIdentifier>
+      <HashCode>AAIAAABAAAAABKARAAAABxEAQCAAAAAEKAAAAEEAAAA=</HashCode>
       <FileName>Core\ReadOnlyBindingList.vb</FileName>
-      <HashCode>AAAAAABAAAAABAAQAAAAAAAgQCAAAAAEAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -41,412 +40,480 @@
   <Class Name="Csla.SortedBindingList(Of T)" Collapsed="true">
     <Position X="5.75" Y="1.25" Width="2" />
     <TypeIdentifier>
+      <HashCode>gEoAAFAAiMSACBCUCAAYNAQkIAAoRAAIeAEQADBQIhQ=</HashCode>
       <FileName>SortedBindingList.vb</FileName>
-      <HashCode>gGoAAEABgMSACFAQCAAANAQkIAAoQAAIKAEQADBQMBQ=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.BusinessListBase(Of T, C)" Collapsed="true">
     <Position X="2.5" Y="2.5" Width="2" />
     <TypeIdentifier>
+      <HashCode>kgoghI1ACAAUP6JBEQgJ31sQQQKhEAFUqEBB0UFwLNI=</HashCode>
       <FileName>BusinessListBase.vb</FileName>
-      <HashCode>AkAAAolACAAQFAJAEAgBGAgAAAKAAAEEIAABUIAgCFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.NotUndoableAttribute" Collapsed="true">
     <Position X="2.5" Y="4" Width="2" />
     <TypeIdentifier>
-      <FileName>NotUndoableAttribute.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NotUndoableAttribute.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.BusinessBase(Of T)" Collapsed="true">
     <Position X="0.5" Y="5.25" Width="1.75" />
     <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAEAAAIAAMAAAABEAAAAAAAAAAQgBA=</HashCode>
       <FileName>BusinessBase.vb</FileName>
-      <HashCode>AAAAAIAAAAAAAAAEgAAAAAAAAAAAAIAAAAAAAAAAgBA=</HashCode>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.CommandBase" Collapsed="true">
     <Position X="2.5" Y="5.25" Width="2" />
     <TypeIdentifier>
+      <HashCode>AAAgAAwAAAAABwBAEAAAAEAAAACAAAFAAAAAAAAACEI=</HashCode>
       <FileName>CommandBase.vb</FileName>
-      <HashCode>AAAAAAgAAAAABABAEAAAAAAAAAAAAAEAAAAAAAAACEI=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.ReadOnlyBase(Of T)" Collapsed="true">
     <Position X="4.75" Y="5.25" Width="2" />
     <TypeIdentifier>
+      <HashCode>EEAgAA0CACAQF4VFEAAJAEKEAAHAAAFAAEACAEAAiVA=</HashCode>
       <FileName>ReadOnlyBase.vb</FileName>
-      <HashCode>AAAAAAgAAAAQBABEkAAJAAAEAABgAIEAAAAAAAAAiFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.NameValueListBase(Of K, V)" Collapsed="true">
     <Position X="4.75" Y="4" Width="2.25" />
     <TypeIdentifier>
+      <HashCode>AAAwAAwAAAAUBwRAEgABAEAAAACAAAFAAAAgAAAACFA=</HashCode>
       <FileName>NameValueListBase.vb</FileName>
-      <HashCode>AAAAAAgAAAAUBARAEAABAAAAAAAAAAEAAAAgAAAACFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.ReadOnlyListBase(Of T, C)" Collapsed="true">
     <Position X="7.25" Y="4" Width="2" />
     <TypeIdentifier>
+      <HashCode>AAAgAAwAAAAQBwBAEAABAEAAAACAAAFAAAAAAABACFA=</HashCode>
       <FileName>ReadOnlyListBase.vb</FileName>
-      <HashCode>AAAAAAgAAAAQBABAEAABAAAAAAAAAAEAAAAAAAAACFA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Validation.BrokenRulesCollection" Collapsed="true">
     <Position X="9.5" Y="4" Width="2" />
     <TypeIdentifier>
-      <FileName>Validation\BrokenRulesCollection.vb</FileName>
-      <HashCode>AAIAAAAAAAAAAAAEIAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AEIAIAAAABABQAAEIAAAFAAIgEAIAQAGAACAAABAMAA=</HashCode>
+      <FileName>Validation\BrokenRulesCollection.partial.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Data.SafeDataReader" Collapsed="true">
     <Position X="9.5" Y="5.25" Width="2" />
     <TypeIdentifier>
+      <HashCode>BCCQIAAgMCgAAAABAAIIBCYkAAJEAEQwIBQAAACAJEA=</HashCode>
       <FileName>Data\SafeDataReader.vb</FileName>
-      <HashCode>BACQIAAgMCgAAAABAAAIBCYkAAJEAEQwIBQACgCAJEA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Validation.ValidationRules" Collapsed="true">
-    <Position X="11.75" Y="4" Width="1.5" />
+    <Position X="11.75" Y="4" Width="1.75" />
     <TypeIdentifier>
-      <FileName>Validation\ValidationRules.vb</FileName>
-      <HashCode>AAAAAAAAAAAAACAAAAgAAAIIAgAAABAgAAgAABAAgAI=</HashCode>
+      <HashCode>AAAAQIABBABACCAggAiAECBMQgBEAQCABAAACCACkJI=</HashCode>
+      <FileName>Validation\ValidationRules.partial.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Security.AuthorizationRules" Collapsed="true">
-    <Position X="13.5" Y="4" Width="1.75" />
+    <Position X="13.75" Y="4" Width="1.75" />
     <TypeIdentifier>
+      <HashCode>6IiCQgAAQkAhgIIYABAAMgAAgAABgAAAACoBYaICg5Q=</HashCode>
       <FileName>Security\AuthorizationRules.vb</FileName>
-      <HashCode>AoiCAgAAAAAhAAAQAAAIAAAAAAAAAAAAAAAAQCIAgAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Security.RolesForProperty" Collapsed="true">
     <Position X="13.5" Y="5.25" Width="1.75" />
     <TypeIdentifier>
+      <HashCode>AIgACAAAABCAAAAABAQQBAAAgAgAAQBAAAAAECIAgAI=</HashCode>
       <FileName>Security\RolesForProperty.vb</FileName>
-      <HashCode>AAgAABAAQBAAAAAABAAQBAAAAAAAAAAAAAAAACIQgAQ=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Security.BusinessPrincipalBase" Collapsed="true">
     <Position X="9.5" Y="7" Width="2" />
     <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAEBA=</HashCode>
       <FileName>Security\BusinessPrincipalBase.vb</FileName>
-      <HashCode>AAAAAAAACAAAAAAAAAAAAABAAAAAAAAAAEAAAAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Data.ObjectAdapter" Collapsed="true">
     <Position X="9.5" Y="6" Width="2" />
     <TypeIdentifier>
-      <FileName>Data\ObjectAdapter.vb</FileName>
       <HashCode>AAABAAAAgGAAAAAAAAAAAAAAQAAACAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Data\ObjectAdapter.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Validation.BrokenRule" Collapsed="true">
     <Position X="11.75" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <FileName>Validation\BrokenRule.vb</FileName>
-      <HashCode>AQQABAAQAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <HashCode>EAAABAAAAAAgAAAEAAAAAAAABAAAAAAAAAAAAQQAEAE=</HashCode>
+      <FileName>Validation\BrokenRule.partial.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Validation.RuleArgs" Collapsed="true">
     <Position X="13" Y="7.25" Width="1.5" />
     <TypeIdentifier>
+      <HashCode>EAAAAEAAAAAkAAAEAAAAAAAAAABAAAAAAAACAARAAAE=</HashCode>
       <FileName>Validation\RuleArgs.vb</FileName>
-      <HashCode>AAAAAAAQAAAgAAAEAAAEAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Validation.ValidationException" Collapsed="true">
     <Position X="11.75" Y="8" Width="1.75" />
     <TypeIdentifier>
-      <FileName>Validation\ValidationException.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validation\ValidationException.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.RunLocalAttribute" Collapsed="true">
     <Position X="0.5" Y="6.5" Width="1.75" />
     <TypeIdentifier>
-      <FileName>DataPortal\RunLocalAttribute.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RunLocalAttribute.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.CriteriaBase" Collapsed="true">
-    <Position X="4.75" Y="10" Width="2" />
+    <Position X="4.75" Y="10.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\CriteriaBase.vb</FileName>
-      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>CriteriaBase.vb</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.DataPortalEventArgs" Collapsed="true">
     <Position X="2.5" Y="7.25" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\DataPortalEventArgs.vb</FileName>
-      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAgAAAAAAAAEAAAAAABAAAAAAAAIAAAMFAAAAAAAA=</HashCode>
+      <FileName>DataPortalEventArgs.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.DataPortalException" Collapsed="true">
     <Position X="2.5" Y="6.5" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\DataPortalException.vb</FileName>
-      <HashCode>AAAACAAAAAAAAgAAABAAAAAgAAAAAAAAAQAAAAAAAEA=</HashCode>
+      <HashCode>AAAADAAAAAAAAgAAAAAAAABgAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>DataPortalException.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.TransactionalAttribute" Collapsed="true">
     <Position X="9.5" Y="12" Width="1.75" />
     <TypeIdentifier>
-      <FileName>DataPortal\TransactionalAttribute.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>TransactionalAttribute.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.DataPortalClient.EnterpriseServicesProxy" Collapsed="true">
-    <Position X="2.5" Y="9" Width="2" />
+    <Position X="2.5" Y="9.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Client\EnterpriseServicesProxy.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEIAAAAAAEAAEQAAAAAAAAAAAA=</HashCode>
+      <FileName>DataPortalClient\EnterpriseServicesProxy.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.DataPortalClient.LocalProxy" Collapsed="true">
-    <Position X="2.5" Y="10" Width="2" />
+    <Position X="2.5" Y="10.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Client\LocalProxy.vb</FileName>
-      <HashCode>AAQAAAAAAAAAAAAAAAEIAAAAAAEgAEAAAAAAAAABAAA=</HashCode>
+      <HashCode>AAQAAAAAAAAAAAAAAAGIAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataPortalClient\LocalProxy.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.DataPortalClient.RemotingProxy" Collapsed="true">
-    <Position X="2.5" Y="11" Width="2" />
+    <Position X="2.5" Y="11.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Client\RemotingProxy.vb</FileName>
-      <HashCode>AAQAAAAAAAAAAAAAAAEIAAAAAAEgAEAAAAAAAAABAIA=</HashCode>
+      <HashCode>AAQAAAAAAAAAAAAAAAGIAAAAAAEAAEAAAAAABAABAIA=</HashCode>
+      <FileName>DataPortalClient\RemotingProxy.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.DataPortalClient.WebServicesProxy" Collapsed="true">
-    <Position X="2.5" Y="12" Width="2" />
+    <Position X="2.5" Y="12.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Client\WebServicesProxy.vb</FileName>
       <HashCode>AAQAAAAAAAAAABAAAAEIAAAAACFAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataPortalClient\WebServicesProxy.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.DataPortalContext" Collapsed="true">
-    <Position X="4.75" Y="9" Width="2" />
+    <Position X="4.75" Y="9.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\DataPortalContext.vb</FileName>
-      <HashCode>AAgQAAAAAAAAABAAADAAAAAECAAAAAAsAQAAAAIAAAA=</HashCode>
+      <HashCode>ACASQAAAAAAAAFAAQCAAAABACAAAAIAEACAAAAIAACE=</HashCode>
+      <FileName>Server\DataPortalContext.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Server.DataPortal" Collapsed="true">
-    <Position X="9.5" Y="10" Width="1.75" />
+    <Position X="9.5" Y="9.75" Width="1.75" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\DataPortal.vb</FileName>
-      <HashCode>AEQAAAAAAAIAAAAAQAEAAAAAAAEAAEAAAAQAAAAAAAA=</HashCode>
+      <HashCode>AEQAAAAAAEIAABEAQAEAAAAAAAEIAEAAAAQAAAAAABA=</HashCode>
+      <FileName>Server\DataPortal.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.DataPortalResult" Collapsed="true">
-    <Position X="4.75" Y="11" Width="2" />
+    <Position X="4.75" Y="11.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\DataPortalResult.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAADAAAAAAAAAAEAAAAAAAAAAAAAI=</HashCode>
+      <HashCode>AAAAQAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Server\DataPortalResult.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Server.DataPortalException" Collapsed="true">
-    <Position X="4.75" Y="12" Width="2" />
+    <Position X="4.75" Y="12.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\DataPortalException.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAgAAABAAAAQgAACAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAABAAAAAAAAgACAAAAAAQgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\DataPortalException.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Server.Hosts.EnterpriseServicesPortal" Collapsed="true">
-    <Position X="7.25" Y="9" Width="2" />
+    <Position X="7.25" Y="9.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Hosts\EnterpriseServicesPortal.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAIAAEAAAAAAAEAAEABAAAAAAAAAAA=</HashCode>
+      <FileName>Server\Hosts\EnterpriseServicesPortal.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.Hosts.RemotingPortal" Collapsed="true">
-    <Position X="7.25" Y="11" Width="2" />
+    <Position X="7.25" Y="11.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Hosts\RemotingPortal.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\Hosts\RemotingPortal.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.Hosts.WebServicePortal" Collapsed="true">
-    <Position X="7.25" Y="12" Width="2" />
+    <Position X="7.25" Y="12.75" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Hosts\WebServicePortal.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAACFAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\Hosts\WebServicePortal.vb</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Csla.Server.SimpleDataPortal" Collapsed="true">
-    <Position X="14.25" Y="10" Width="1.75" />
+    <Position X="11.75" Y="11" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\SimpleDataPortal.vb</FileName>
-      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAIAAAAA=</HashCode>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\SimpleDataPortal.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.TransactionalDataPortal" Collapsed="true">
-    <Position X="11.75" Y="10.75" Width="2" />
+    <Position X="9.75" Y="11" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\TransactionalDataPortal.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\TransactionalDataPortal.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.ServicedDataPortal" Collapsed="true">
     <Position X="11.75" Y="9.25" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\ServicedDataPortal.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\ServicedDataPortal.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Csla.Server.CallMethodException" Collapsed="true">
-    <Position X="14.75" Y="12.25" Width="1.75" />
+    <Position X="14.25" Y="12" Width="1.75" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\CallMethodException.vb</FileName>
       <HashCode>AAAAAAAAAAAAAgAAABAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataPortal\Server\CallMethodException.vb</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Server.Hosts.WcfPortal" Collapsed="true">
+    <Position X="7.25" Y="8.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\Hosts\WcfPortal.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Server.ChildDataPortal" Collapsed="true">
+    <Position X="11.75" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\ChildDataPortal.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Reflection.LateBoundObject" Collapsed="true">
+    <Position X="14.25" Y="10.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAgAAAAAAAAAAAAAAAAAAAQAAAAAAAAIA=</HashCode>
+      <FileName>Reflection\LateBoundObject.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Reflection.DynamicMethodHandle" Collapsed="true">
+    <Position X="14.25" Y="13" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAABAAAAAAAAAAAAAAIkEAAAAAKQAAAAgA=</HashCode>
+      <FileName>Reflection\DynamicMethodHandle.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Reflection.DynamicMethodHandlerFactory" Collapsed="true">
+    <Position X="14.25" Y="13.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAABAAAAAAAAAAAABQAAAAIAAA=</HashCode>
+      <FileName>Reflection\DynamicMethodHandlerFactory.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.DataPortalClient.WcfProxy" Collapsed="true">
+    <Position X="2.5" Y="9" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAQAAAAAEIAAAAAAEAIEAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataPortalClient\WcfProxy.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Struct Name="Csla.SmartDate" Collapsed="true">
     <Position X="7.25" Y="6.25" Width="2" />
     <TypeIdentifier>
+      <HashCode>QIPgA1oAACAACAUEhBQiUACkAQAgAIAjANgAqgYQAEI=</HashCode>
       <FileName>SmartDate.vb</FileName>
-      <HashCode>QAPAAwgAAQAAGAUEhAACEAAAAQAAAKABAAAACAAAAgA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Struct>
   <Interface Name="Csla.Core.IBusinessObject" Collapsed="true">
     <Position X="11.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <FileName>Core\IBusinessObject.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\IBusinessObject.vb</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.Core.IEditableCollection" Collapsed="true">
     <Position X="8.25" Y="2.5" Width="1.75" />
     <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAEAAAAAAAAA=</HashCode>
       <FileName>Core\IEditableCollection.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.Core.IUndoableObject" Collapsed="true">
     <Position X="8.25" Y="1.5" Width="1.75" />
     <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAABAEAAAAAA=</HashCode>
       <FileName>Core\IUndoableObject.vb</FileName>
-      <HashCode>AgAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.Core.ICommandObject" Collapsed="true">
-    <Position X="14.25" Y="1.5" Width="1.75" />
+    <Position X="14.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <FileName>Core\ICommandObject.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\ICommandObject.vb</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.Core.IReadOnlyCollection" Collapsed="true">
     <Position X="12.25" Y="1.5" Width="1.75" />
     <TypeIdentifier>
-      <FileName>Core\IReadOnlyCollection.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\IReadOnlyCollection.vb</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.Core.IReadOnlyObject" Collapsed="true">
-    <Position X="10.25" Y="1.5" Width="1.75" />
+    <Position X="10.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <FileName>Core\IReadOnlyObject.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\IReadOnlyObject.vb</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.DataPortalClient.IDataPortalProxy" Collapsed="true">
     <Position X="2.5" Y="8" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\Client\IDataPortalProxy.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataPortalClient\IDataPortalProxy.vb</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Csla.Server.IDataPortalServer" Collapsed="true">
     <Position X="0.5" Y="8" Width="1.75" />
     <TypeIdentifier>
-      <FileName>DataPortal\Server\IDataPortalServer.vb</FileName>
       <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\IDataPortalServer.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Server.Hosts.IWcfPortal" Collapsed="true">
+    <Position X="4.75" Y="9" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Server\Hosts\IWcfPortal.vb</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="Csla.Security.AccessType" Collapsed="true">
     <Position X="15" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <FileName>Security\AccessType.vb</FileName>
       <HashCode>AAAAAAAAABAAAAAABAAQBAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\AccessType.vb</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Csla.TransactionalTypes" Collapsed="true">
     <Position X="11" Y="12.5" Width="1.75" />
     <TypeIdentifier>
-      <FileName>DataPortal\TransactionalTypes.vb</FileName>
       <HashCode>AAAAAAAgQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>TransactionalTypes.vb</FileName>
     </TypeIdentifier>
   </Enum>
   <Delegate Name="Csla.Validation.RuleHandler" Collapsed="true">
     <Position X="11.75" Y="7" Width="1.5" />
     <TypeIdentifier>
-      <FileName>Validation\RuleHandler.vb</FileName>
       <HashCode>AAAAAAAQAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validation\RuleHandler.vb</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Csla.Reflection.DynamicCtorDelegate" Collapsed="true">
+    <Position X="14.25" Y="14.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reflection\DynamicMethodHandlerFactory.vb</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Csla.Reflection.DynamicMemberGetDelegate" Collapsed="true">
+    <Position X="16" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Reflection\DynamicMethodHandlerFactory.vb</FileName>
     </TypeIdentifier>
   </Delegate>
   <Module Name="Csla.Data.DataMapper" Collapsed="true">
     <Position X="7.25" Y="5.25" Width="2" />
     <TypeIdentifier>
+      <HashCode>AAAAgAAAIBAAAgAAAAAAQAgAAAAAAAEAAAAAAAAAAAA=</HashCode>
       <FileName>Data\DataMapper.vb</FileName>
-      <HashCode>AAAAAAAAABAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Module>
   <Module Name="Csla.Validation.CommonRules" Collapsed="true">
     <Position X="11.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAgAEAAAAAAAAAAAAAAAgAAgEAAIgSA=</HashCode>
       <FileName>Validation\CommonRules.vb</FileName>
-      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAgEAAAAQA=</HashCode>
     </TypeIdentifier>
   </Module>
-  <Module Name="Csla.ObjectCloner" Collapsed="true">
+  <Module Name="Csla.Core.ObjectCloner" Collapsed="true">
     <Position X="7.25" Y="7" Width="2" />
     <TypeIdentifier>
-      <FileName>Core\ObjectCloner.vb</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Core\ObjectCloner.vb</FileName>
     </TypeIdentifier>
   </Module>
   <Module Name="Csla.ApplicationContext" Collapsed="true">
     <Position X="4.75" Y="8" Width="2" />
     <TypeIdentifier>
-      <FileName>DataPortal\ApplicationContext.vb</FileName>
-      <HashCode>IAABAACAAAIAAABAiCAAAgBAAAAgAAAIAAAAAAJACAA=</HashCode>
+      <HashCode>IAAFAICAAAIAAIJAiGIEAgBAAAQAAAAIABUAAAJACAA=</HashCode>
+      <FileName>ApplicationContext.vb</FileName>
     </TypeIdentifier>
   </Module>
   <Module Name="Csla.MethodCaller" Collapsed="true">
-    <Position X="13.25" Y="12" Width="1.75" />
+    <Position X="14.25" Y="11" Width="1.75" />
     <TypeIdentifier>
-      <FileName>DataPortal\MethodCaller.vb</FileName>
       <HashCode>AAACAAAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>DataPortal\MethodCaller.vb</FileName>
     </TypeIdentifier>
   </Module>
   <Module Name="Csla.DataPortal" Collapsed="true">
-    <Position X="0.5" Y="10" Width="1.5" />
+    <Position X="0.5" Y="10.75" Width="1.5" />
     <TypeIdentifier>
-      <FileName>DataPortal\Client\DataPortal.vb</FileName>
-      <HashCode>AAQAAAAAABAAAAQAAAFAAgAAIAEgIEAAAAAIAAADAAA=</HashCode>
+      <HashCode>AAQAAAAAABAAIAYAAAHAAgIQIAkAAEAIAAEIQAADAAA=</HashCode>
+      <FileName>DataPortal.vb</FileName>
     </TypeIdentifier>
   </Module>
+  <Font Name="Tahoma" Size="8.25" />
 </ClassDiagram>

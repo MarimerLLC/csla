@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Csla.Security.AuthorizationRules" Collapsed="true">
+    <Position X="3" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>6IiCQgAAQkAhgIIYABAAMgAAgAABgAAAACoBYaICg5Q=</HashCode>
+      <FileName>Security\AuthorizationRules.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Security.RolesForProperty" Collapsed="true">
+    <Position X="5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIgACAAAABCAAAAABAQQBAAAgAgAAQBAAAAAECIAgAI=</HashCode>
+      <FileName>Security\RolesForProperty.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Csla.Security.AccessType" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAABAAQBAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\AccessType.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

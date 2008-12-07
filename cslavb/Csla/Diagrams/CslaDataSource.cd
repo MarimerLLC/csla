@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Csla.Web.DeleteObjectArgs" Collapsed="true">
+    <Position X="4.75" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAQQAAAAAAAAAAgACEAAAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Web\DeleteObjectArgs.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Web.InsertObjectArgs" Collapsed="true">
+    <Position X="7.25" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAQAAAAAAAAgAAAAACA=</HashCode>
+      <FileName>Web\InsertObjectArgs.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Web.SelectObjectArgs" Collapsed="true">
+    <Position X="4.75" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAACABAAAACAEAAAgAAAABAICAAAACAAAgQEAAAIEA=</HashCode>
+      <FileName>Web\SelectObjectArgs.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Web.UpdateObjectArgs" Collapsed="true">
+    <Position X="7.25" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAQQAAAAAAAAAAgACEAAAAAAAAQAAAAAAAAgAAAAACA=</HashCode>
+      <FileName>Web\UpdateObjectArgs.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Web.CslaDataSource" Collapsed="true">
+    <Position X="0.75" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAgABIAIAIADCCAAAQBEACAABhAAAAAA=</HashCode>
+      <FileName>Web\CslaDataSource.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Web.Design.CslaDataSourceDesigner" Collapsed="true">
+    <Position X="3.75" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAAACAAAQAgQABAABAAAAAAAAABAACCCABAAIAAAA=</HashCode>
+      <FileName>Web\Design\CslaDataSourceDesigner.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Web.CslaDataSourceView" Collapsed="true">
+    <Position X="0.75" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AEACgAQAAABAIgQBABAAIAACCAAAABAQAAgBAQAAAAA=</HashCode>
+      <FileName>Web\CslaDataSourceView.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Web.Design.CslaDesignerDataSourceView" Collapsed="true">
+    <Position X="3.75" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AEACgAQAAAAAAAAAABABAAAEAAAAAAAAAAABAQAAAAA=</HashCode>
+      <FileName>Web\Design\CslaDesignerDataSourceView.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Web.Design.ObjectSchema" Collapsed="true">
+    <Position X="6.25" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Web\Design\ObjectSchema.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Web.Design.ObjectViewSchema" Collapsed="true">
+    <Position X="6.25" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAABAAAAAQQAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Web\Design\ObjectViewSchema.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Web.Design.ObjectFieldInfo" Collapsed="true">
+    <Position X="6.25" Y="7" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIIAAAAIEAAAQgIIAAARAAAAwAAAAJEAAAAAAsAA=</HashCode>
+      <FileName>Web\Design\ObjectFieldInfo.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

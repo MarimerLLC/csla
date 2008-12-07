@@ -1,4 +1,6 @@
-﻿''' <summary>
+﻿Imports System
+
+''' <summary>
 ''' Defines the base requirements for a criteria
 ''' object supported by the data portal.
 ''' </summary>

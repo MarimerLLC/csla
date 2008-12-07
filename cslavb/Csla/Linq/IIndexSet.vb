@@ -1,4 +1,5 @@
-Imports System.Collections.ObjectModel
+Imports System
+Imports System.Collections.Generic
 Imports System.Linq.Expressions
 
 Namespace Linq

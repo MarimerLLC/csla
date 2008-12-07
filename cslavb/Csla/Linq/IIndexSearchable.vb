@@ -1,4 +1,6 @@
-﻿Imports System.Linq.Expressions
+﻿Imports System
+Imports System.Collections.Generic
+Imports System.Linq.Expressions
 
 Namespace Linq
   Friend Interface IIndexSearchable(Of T)

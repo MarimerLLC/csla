@@ -1,3 +1,5 @@
+Imports System
+
 Namespace DataPortalClient
 
   ''' <summary>

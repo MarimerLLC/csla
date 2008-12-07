@@ -523,10 +523,13 @@
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Diagrams\AuthorizationRules.cd" />
+    <None Include="Diagrams\BindableBaseClasses.cd" />
+    <None Include="Diagrams\CslaDataSource.cd" />
     <None Include="Diagrams\DataBinding.cd" />
     <None Include="Diagrams\FullCsla.cd" />
     <None Include="Diagrams\Interfaces.cd" />
-    <None Include="Diagrams\Undoable.cd" />
+    <None Include="Diagrams\UndoableBase.cd" />
     <None Include="Diagrams\Validation.cd" />
     <None Include="Web References\WebServiceHost\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>

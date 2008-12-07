@@ -1,4 +1,6 @@
-﻿Namespace Server
+﻿Imports System
+
+Namespace Server
 
   Friend Interface IDataPortalTarget
 

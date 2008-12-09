@@ -307,17 +307,20 @@ namespace Csla.Silverlight
 
           obj.Saved -= new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
           obj.Saved += new EventHandler<Csla.Core.SavedEventArgs>(obj_Saved);
+          IsBusy = true;
           obj.BeginSave();
         }
       }
       catch (Exception ex)
       {
+        IsBusy = false;
         this.Error = ex;
       }
     }
 
     void obj_Saved(object sender, Csla.Core.SavedEventArgs e)
     {
+      IsBusy = false;
       if (e.Error != null)
         Error = e.Error;
       else

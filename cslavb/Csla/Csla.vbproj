@@ -578,6 +578,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\C5\C5.csproj">
+      <Project>{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}</Project>
+      <Name>C5</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="C5\Arrays\" />
     <Folder Include="C5\Hashing\" />
     <Folder Include="C5\heaps\" />

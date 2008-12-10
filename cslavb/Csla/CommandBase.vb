@@ -1,4 +1,13 @@
+Imports System
 Imports System.ComponentModel
+#If Not SILVERLIGHT Then
+Imports Csla.Server
+#End If
+Imports Csla.Properties
+Imports Csla.Core
+Imports Csla.Serialization.Mobile
+Imports Csla.Serialization
+Imports Csla.DataPortalClient
 
 ''' <summary>
 ''' This is the base class from which command 
@@ -24,6 +33,7 @@ Imports System.ComponentModel
 ''' </remarks>
 <Serializable()> _
 Public MustInherit Class CommandBase
+  Inherits ManagedObjectBase
 
   Implements Core.ICommandObject
   Implements Server.IDataPortalTarget

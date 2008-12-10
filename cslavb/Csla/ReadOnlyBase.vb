@@ -1,6 +1,13 @@
-Imports System.Reflection
+Imports System
+Imports System.Collections.Generic
 Imports System.ComponentModel
+Imports System.Runtime.Serialization
 Imports Csla.Core
+Imports Csla.Properties
+Imports Csla.Core.FieldManager
+Imports Csla.Core.LoadManager
+Imports Csla.Server
+Imports Csla.Security
 
 ''' <summary>
 ''' This is a base class from which readonly business classes
@@ -14,6 +21,7 @@ Imports Csla.Core
 ''' <typeparam name="T">Type of the business object.</typeparam>
 <Serializable()> _
 Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
+  Inherits BindableBase
 
   Implements ICloneable
   Implements Core.IReadOnlyObject

@@ -17,14 +17,22 @@ Namespace Reflection
   ''' Parameters passed to method. 
   ''' </param> 
   Public Delegate Function DynamicMethodDelegate(ByVal target As Object, ByVal args As Object()) As Object
-
+  ''' <summary>
+  ''' Delegate for getting a value.
+  ''' </summary>
+  ''' <param name="target">Target object.</param>
+  ''' <returns></returns>
   Public Delegate Function DynamicMemberGetDelegate(ByVal target As Object) As Object
+  ''' <summary>
+  ''' Delegate for setting a value.
+  ''' </summary>
+  ''' <param name="target">Target object.</param>
+  ''' <param name="arg">Argument value.</param>
   Public Delegate Sub DynamicMemberSetDelegate(ByVal target As Object, ByVal arg As Object)
 
-  Friend NotInheritable Class DynamicMethodHandlerFactory
-    Private Sub New()
-    End Sub
-    Public Shared Function CreateConstructor(ByVal constructor As ConstructorInfo) As DynamicCtorDelegate
+  Friend Module DynamicMethodHandlerFactory
+
+    Public Function CreateConstructor(ByVal constructor As ConstructorInfo) As DynamicCtorDelegate
       If constructor Is Nothing Then
         Throw New ArgumentNullException("constructor")
       End If
@@ -42,7 +50,7 @@ Namespace Reflection
       Return DirectCast(dm.CreateDelegate(GetType(DynamicCtorDelegate)), DynamicCtorDelegate)
     End Function
 
-    Public Shared Function CreateMethod(ByVal method As MethodInfo) As DynamicMethodDelegate
+    Public Function CreateMethod(ByVal method As MethodInfo) As DynamicMethodDelegate
       Dim pi As ParameterInfo() = method.GetParameters()
 
       Dim dm As New DynamicMethod("dm", GetType(Object), New Type() {GetType(Object), GetType(Object())}, GetType(DynamicMethodHandlerFactory), True)
@@ -90,7 +98,7 @@ Namespace Reflection
       Return DirectCast(dm.CreateDelegate(GetType(DynamicMethodDelegate)), DynamicMethodDelegate)
     End Function
 
-    Public Shared Function CreatePropertyGetter(ByVal [property] As PropertyInfo) As DynamicMemberGetDelegate
+    Public Function CreatePropertyGetter(ByVal [property] As PropertyInfo) As DynamicMemberGetDelegate
       If [property] Is Nothing Then
         Throw New ArgumentNullException("property")
       End If
@@ -125,7 +133,7 @@ Namespace Reflection
       Return DirectCast(dm.CreateDelegate(GetType(DynamicMemberGetDelegate)), DynamicMemberGetDelegate)
     End Function
 
-    Public Shared Function CreatePropertySetter(ByVal [property] As PropertyInfo) As DynamicMemberSetDelegate
+    Public Function CreatePropertySetter(ByVal [property] As PropertyInfo) As DynamicMemberSetDelegate
       If [property] Is Nothing Then
         Throw New ArgumentNullException("property")
       End If
@@ -161,7 +169,7 @@ Namespace Reflection
       Return DirectCast(dm.CreateDelegate(GetType(DynamicMemberSetDelegate)), DynamicMemberSetDelegate)
     End Function
 
-    Public Shared Function CreateFieldGetter(ByVal field As FieldInfo) As DynamicMemberGetDelegate
+    Public Function CreateFieldGetter(ByVal field As FieldInfo) As DynamicMemberGetDelegate
       If field Is Nothing Then
         Throw New ArgumentNullException("field")
       End If
@@ -189,7 +197,7 @@ Namespace Reflection
       Return DirectCast(dm.CreateDelegate(GetType(DynamicMemberGetDelegate)), DynamicMemberGetDelegate)
     End Function
 
-    Public Shared Function CreateFieldSetter(ByVal field As FieldInfo) As DynamicMemberSetDelegate
+    Public Function CreateFieldSetter(ByVal field As FieldInfo) As DynamicMemberSetDelegate
       If field Is Nothing Then
         Throw New ArgumentNullException("field")
       End If
@@ -215,7 +223,7 @@ Namespace Reflection
       Return DirectCast(dm.CreateDelegate(GetType(DynamicMemberSetDelegate)), DynamicMemberSetDelegate)
     End Function
 
-    Private Shared Sub EmitCastToReference(ByVal il As ILGenerator, ByVal type As Type)
+    Private Sub EmitCastToReference(ByVal il As ILGenerator, ByVal type As Type)
       If type.IsValueType Then
         il.Emit(OpCodes.Unbox_Any, type)
       Else
@@ -223,5 +231,5 @@ Namespace Reflection
       End If
     End Sub
 
-  End Class
+  End Module
 End Namespace

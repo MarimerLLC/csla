@@ -16,12 +16,15 @@ Namespace Core
 
     Implements IEditableBusinessObject
     Implements System.ComponentModel.IEditableObject
-    Implements ICloneable
     Implements IDataErrorInfo
+    Implements ICloneable
     Implements Csla.Security.IAuthorizeReadWrite
     Implements IParent
     Implements Server.IDataPortalTarget
     Implements IManageProperties
+    Implements INotifyBusy
+    Implements INotifyChildChanged
+    Implements Csla.Serialization.Mobile.ISerializationNotification
 
 #Region " Constructors "
 

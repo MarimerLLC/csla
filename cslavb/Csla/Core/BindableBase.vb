@@ -9,6 +9,7 @@ Namespace Core
   ''' </summary>
   <Serializable()> _
   Public MustInherit Class BindableBase
+    Inherits MobileObject
 
     Implements System.ComponentModel.INotifyPropertyChanged
     Implements System.ComponentModel.INotifyPropertyChanging

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Csla.Core.BindableBase" Collapsed="true">
-    <Position X="2" Y="1.25" Width="1.75" />
+    <Position X="2" Y="0.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAIAAACIAAAAAARgIAAACAAAAAAAAAAEAk=</HashCode>
       <FileName>Core\BindableBase.vb</FileName>
@@ -43,7 +43,7 @@
   <Class Name="Csla.BusinessListBase(Of T, C)" Collapsed="true">
     <Position X="6.75" Y="5.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>kgoghI1ACAAUP6JBEQgJ31sQQQKhEAFUqEBB0UFwLNI=</HashCode>
+      <HashCode>kgoghIxICgAUL6JDERgJ31tQQQKhEAHUqEBB0UFxHNI=</HashCode>
       <FileName>BusinessListBase.vb</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

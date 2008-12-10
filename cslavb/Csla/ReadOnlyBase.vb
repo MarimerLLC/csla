@@ -20,6 +20,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Implements Csla.Security.IAuthorizeReadWrite
   Implements Server.IDataPortalTarget
   Implements Core.IManageProperties
+  Implements INotifyBusy
 
 #Region " Object ID Value "
 

@@ -1,4 +1,7 @@
+Imports System
 Imports System.ComponentModel
+Imports Csla.Serialization.Mobile
+Imports System.Runtime.Serialization
 
 Namespace Core
 
@@ -12,6 +15,10 @@ Namespace Core
     Inherits BindingList(Of T)
 
     Implements IExtendedBindingList
+    Implements IMobileObject
+    Implements INotifyBusy
+    Implements INotifyChildChanged
+    Implements ISerializationNotification
 
 #Region " RemovingItem event "
 

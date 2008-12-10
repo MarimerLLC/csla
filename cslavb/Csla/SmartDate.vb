@@ -1,3 +1,7 @@
+Imports System
+Imports Csla.Properties
+Imports Csla.Serialization.Mobile
+
 ''' <summary>
 ''' Provides a date data type that understands the concept
 ''' of an empty date value.
@@ -14,6 +18,7 @@ Public Structure SmartDate
   Implements IComparable
   Implements IConvertible
   Implements IFormattable
+  Implements IMobileObject
 
   Private _date As Date
   Private _emptyValue As EmptyValue

@@ -139,7 +139,15 @@ namespace Csla.Silverlight
     /// </summary>
     public object Data
     {
-      get { return _dataObject; }
+      get 
+      {
+        if (_isInitialLoadEnabled && !_isInitialLoadCompleted)
+        {
+          _isInitialLoadCompleted = true;
+          Refresh();
+        }
+        return _dataObject; 
+      }
     }
 
     private bool _manageObjectLifetime = true;
@@ -171,7 +179,6 @@ namespace Csla.Silverlight
         if (_dataObject != null)
           throw new NotSupportedException(Resources.ObjectNotNull);
         _isInitialLoadEnabled = value;
-        InitialFetch();
       }
     }
 
@@ -186,7 +193,6 @@ namespace Csla.Silverlight
       {
         _objectType = value;
         OnPropertyChanged(new PropertyChangedEventArgs("ObjectType"));
-        InitialFetch();
       }
     }
 
@@ -201,7 +207,6 @@ namespace Csla.Silverlight
       {
         _factoryMethod = value;
         OnPropertyChanged(new PropertyChangedEventArgs("FactoryMethod"));
-        InitialFetch();
       }
     }
 
@@ -360,7 +365,6 @@ namespace Csla.Silverlight
       {
         this.ObjectInstance = eventArgs.Object;
         this.Error = eventArgs.Error;
-        _isInitialLoadCompleted = true;
       }
       else if (eventArgs.Error != null)
       {
@@ -368,14 +372,6 @@ namespace Csla.Silverlight
       }
       RefreshCanOperaionsValues();
       this.IsBusy = false;
-    }
-
-    private void InitialFetch()
-    {
-      if (_isInitialLoadEnabled && !_isInitialLoadCompleted)
-      {
-        Refresh();
-      }
     }
 
     /// <summary>

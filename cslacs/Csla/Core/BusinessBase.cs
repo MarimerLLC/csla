@@ -2345,8 +2345,8 @@ namespace Csla.Core
 
     /// <summary>
     /// Sets a property's managed field with the 
-    /// supplied value, first checking authorization, and then
-    /// calling PropertyHasChanged if the value does change.
+    /// supplied value, and then
+    /// calls PropertyHasChanged if the value does change.
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
@@ -2358,7 +2358,24 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      FieldManager.SetFieldData(propertyInfo, newValue);
+      try
+      {
+        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, true))
+        {
+          if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo.Name);
+          FieldManager.SetFieldData(propertyInfo, newValue);
+          if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo.Name);
+        }
+      }
+      catch (System.Security.SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(
+          string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
+      }
     }
 
     #endregion

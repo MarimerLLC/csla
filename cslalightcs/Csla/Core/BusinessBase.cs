@@ -1628,8 +1628,8 @@ namespace Csla.Core
 
     /// <summary>
     /// Sets a property's managed field with the 
-    /// supplied value, first checking authorization, and then
-    /// calling PropertyHasChanged if the value does change.
+    /// supplied value, and then
+    /// calls PropertyHasChanged if the value does change.
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>

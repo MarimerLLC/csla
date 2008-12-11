@@ -15,7 +15,7 @@ namespace Csla
   /// This class is the core of the CSLA .NET framework. To create
   /// a business object, inherit from this class.
   /// </para><para>
-  /// Please refer to 'Expert C# 2005 Business Objects' for
+  /// Please refer to 'Expert C# 2008 Business Objects' for
   /// full details on the use of this base class to create business
   /// objects.
   /// </para>

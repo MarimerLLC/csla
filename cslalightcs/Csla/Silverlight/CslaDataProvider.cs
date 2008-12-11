@@ -17,12 +17,11 @@ namespace Csla.Silverlight
   /// </summary>
   public class CslaDataProvider : INotifyPropertyChanged
   {
-
     #region Events
     public event EventHandler DataChanged;
     protected void OnDataChanged()
     {
-      RefreshCanOperaionsValues();
+      RefreshCanOperationsValues();
       RefreshCanOpertaionsOnObjectLevel();
       if (DataChanged != null)
         DataChanged(this, EventArgs.Empty);
@@ -30,12 +29,12 @@ namespace Csla.Silverlight
 
     private void dataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      RefreshCanOperaionsValues();
+      RefreshCanOperationsValues();
     }
 
     private void dataObject_ChildChanged(object sender, ChildChangedEventArgs e)
     {
-      RefreshCanOperaionsValues();
+      RefreshCanOperationsValues();
     }
 
     #endregion
@@ -51,7 +50,7 @@ namespace Csla.Silverlight
         _isBusy = value;
         OnPropertyChanged(new PropertyChangedEventArgs("IsBusy"));
         OnPropertyChanged(new PropertyChangedEventArgs("IsNotBusy"));
-        RefreshCanOperaionsValues();
+        RefreshCanOperationsValues();
       }
     }
 
@@ -68,7 +67,7 @@ namespace Csla.Silverlight
       if (e.PropertyName == string.Empty)
         IsBusy = e.Busy;
       else
-        RefreshCanOperaionsValues();
+        RefreshCanOperationsValues();
     }
 
 
@@ -122,13 +121,37 @@ namespace Csla.Silverlight
         try
         {
           OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
-          OnPropertyChanged(new PropertyChangedEventArgs("Data"));
-          OnDataChanged();
         }
-        catch (NullReferenceException ex)
+        catch (Exception ex)
         {
           // Silverlight seems to throw a meaningless null ref exception
-          // and this is a workaround to ignore it
+          // and during page load there are possible timing issues
+          // where these events may cause non-useful exceptions
+          // and this is a workaround to ignore the issues
+          var o = ex;
+        }
+        try
+        {
+          OnPropertyChanged(new PropertyChangedEventArgs("Data"));
+        }
+        catch (Exception ex)
+        {
+          // Silverlight seems to throw a meaningless null ref exception
+          // and during page load there are possible timing issues
+          // where these events may cause non-useful exceptions
+          // and this is a workaround to ignore the issues
+          var o = ex;
+        }
+        try
+        {
+          OnDataChanged();
+        }
+        catch (Exception ex)
+        {
+          // Silverlight seems to throw a meaningless null ref exception
+          // and during page load there are possible timing issues
+          // where these events may cause non-useful exceptions
+          // and this is a workaround to ignore the issues
           var o = ex;
         }
       }
@@ -370,7 +393,7 @@ namespace Csla.Silverlight
       {
         this.Error = eventArgs.Error;
       }
-      RefreshCanOperaionsValues();
+      RefreshCanOperationsValues();
       this.IsBusy = false;
     }
 
@@ -394,7 +417,7 @@ namespace Csla.Silverlight
           else
             IsBusy = false;
         }
-        RefreshCanOperaionsValues();
+        RefreshCanOperationsValues();
       }
       catch (Exception ex)
       {
@@ -425,7 +448,7 @@ namespace Csla.Silverlight
           else
             IsBusy = false;
         }
-        RefreshCanOperaionsValues();
+        RefreshCanOperationsValues();
       }
       catch (Exception ex)
       {
@@ -590,7 +613,7 @@ namespace Csla.Silverlight
       }
     }
 
-    private void RefreshCanOperaionsValues()
+    private void RefreshCanOperationsValues()
     {
       ITrackStatus targetObject = this.Data as ITrackStatus;
       ICollection list = this.Data as ICollection;

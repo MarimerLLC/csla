@@ -391,4 +391,7 @@
   <data name="favicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\favicon.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="MemberNotFoundException" xml:space="preserve">
+    <value>Member not found on object ({0})</value>
+  </data>
 </root>

@@ -437,6 +437,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member not found on object ({0}).
+        /// </summary>
+        internal static string MemberNotFoundException {
+            get {
+                return ResourceManager.GetString("MemberNotFoundException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to method call failed.
         /// </summary>
         internal static string MethodCallFailed {

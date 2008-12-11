@@ -120,6 +120,9 @@ namespace Csla.Reflection
           if (!_memberCache.TryGetValue(key, out mh))
           {
             PropertyInfo info = objectType.GetProperty(propertyName, propertyFlags);
+            if (info == null)
+              throw new InvalidOperationException(
+                string.Format(Resources.MemberNotFoundException, propertyName));
             mh = new DynamicMemberHandle(info);
             _memberCache.Add(key, mh);
           }
@@ -139,6 +142,9 @@ namespace Csla.Reflection
           if (!_memberCache.TryGetValue(key, out mh))
           {
             FieldInfo info = objectType.GetField(fieldName, fieldFlags);
+            if (info == null)
+              throw new InvalidOperationException(
+                string.Format(Resources.MemberNotFoundException, fieldName));
             mh = new DynamicMemberHandle(info);
             _memberCache.Add(key, mh);
           }

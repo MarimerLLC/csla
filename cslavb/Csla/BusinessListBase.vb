@@ -1004,18 +1004,38 @@ Public MustInherit Class BusinessListBase( _
 
   End Function
 
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
   Public Sub BeginSave()
     BeginSave(Nothing, Nothing)
   End Sub
 
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  ''' <param name="userState">User state object.</param>
   Public Sub BeginSave(ByVal userState As Object)
     BeginSave(Nothing, userState)
   End Sub
 
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  ''' <param name="handler">
+  ''' Method called when the operation is complete.
+  ''' </param>
   Public Sub BeginSave(ByVal handler As EventHandler(Of SavedEventArgs))
     BeginSave(handler, Nothing)
   End Sub
 
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  ''' <param name="handler">
+  ''' Method called when the operation is complete.
+  ''' </param>
+  ''' <param name="userState">User state object.</param>
   Public Overridable Sub BeginSave(ByVal handler As EventHandler(Of SavedEventArgs), ByVal userState As Object)
     If Me.IsChild Then
       Dim [error] As NotSupportedException = New NotSupportedException(My.Resources.NoSaveChildException)
@@ -1044,7 +1064,9 @@ Public MustInherit Class BusinessListBase( _
     Else
       If IsDirty Then
         If userState Is Nothing Then
-          'TODO Waiting on help for this section
+          'TODO Waiting for help on this
+        Else
+          'TODO Waiting for help on this
         End If
       Else
         OnSaved(CType(Me, T), Nothing, userState)

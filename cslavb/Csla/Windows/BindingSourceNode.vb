@@ -6,8 +6,19 @@ Imports System.Text
 
 Namespace Windows
 
+  ''' <summary>
+  ''' Maintains a reference to a BindingSource object
+  ''' on the form.
+  ''' </summary>
+  ''' <remarks></remarks>
   Public Class BindingSourceNode
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="source">
+    ''' BindingSource object to be mananaged.
+    ''' </param>
     Public Sub New(ByVal source As BindingSource)
       _Source = source
       AddHandler _Source.CurrentChanged, AddressOf BindingSource_CurrentChanged
@@ -129,9 +140,13 @@ Namespace Windows
 
     End Sub
 
+    ''' <summary>
+    ''' Binds a business object to the BindingSource.
+    ''' </summary>
+    ''' <param name="objectToBind">
+    ''' Business object.
+    ''' </param>
     Public Sub Bind(ByVal objectToBind As Object)
-
-      'Dim root As Csla.Core.BusinessBase = TryCast(objectToBind, Csla.Core.BusinessBase)
       Dim root As Csla.Core.ISupportUndo = TryCast(objectToBind, Csla.Core.ISupportUndo)
       If root IsNot Nothing Then
         root.BeginEdit()
@@ -142,11 +157,13 @@ Namespace Windows
       ResetBindings(False)
     End Sub
 
+    ''' <summary>
+    ''' Applies changes to the business object.
+    ''' </summary>
     Public Sub Apply()
 
       SetEvents(False)
 
-      'Dim root As Csla.Core.BusinessBase = TryCast(_Source.Current, Csla.Core.BusinessBase)
       Dim root As Csla.Core.ISupportUndo = TryCast(_Source.DataSource, Csla.Core.ISupportUndo)
 
       Unbind(False)
@@ -158,11 +175,14 @@ Namespace Windows
 
     End Sub
 
+    ''' <summary>
+    ''' Cancels changes to the business object.
+    ''' </summary>
+    ''' <param name="businessObject"></param>
     Public Sub Cancel(ByVal businessObject As Object)
 
       SetEvents(False)
 
-      'Dim root As Csla.Core.BusinessBase = TryCast(_Source.Current, Csla.Core.BusinessBase)
       Dim root As Csla.Core.ISupportUndo = TryCast(_Source.DataSource, Csla.Core.ISupportUndo)
 
       Unbind(True)
@@ -175,6 +195,9 @@ Namespace Windows
 
     End Sub
 
+    ''' <summary>
+    ''' Disconnects from the BindingSource object.
+    ''' </summary>
     Public Sub Close()
 
       SetEvents(False)

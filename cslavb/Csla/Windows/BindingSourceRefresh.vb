@@ -1,3 +1,4 @@
+Imports System
 Imports System.ComponentModel
 Imports System.Collections.Generic
 Imports System.Windows.Forms
@@ -8,72 +9,6 @@ Imports System.Windows.Forms
 
 Namespace Windows
 
-#Region "Delegates"
-
-  ''' <summary>
-  ''' BindingErrorEventHandler delegates is the event handling definition for handling data binding errors that occurred due to exceptions.
-  ''' </summary>
-  ''' <param name="sender">The object that triggered the event.</param>
-  ''' <param name="e">The event arguments.</param>
-  Public Delegate Sub BindingErrorEventHandler(ByVal sender As Object, ByVal e As BindingErrorEventArgs)
-
-#End Region
-
-#Region "BindingErrorEventArgs Class"
-
-  ''' <summary>
-  ''' BindingErrorEventArgs defines the event arguments for reporting a data binding error due to a exception.
-  ''' </summary>
-  Public Class BindingErrorEventArgs
-    Inherits EventArgs
-
-#Region "Property Fields"
-
-    Private _exception As Exception = Nothing
-    Private _binding As Binding = Nothing
-
-#End Region
-
-#Region "Properties"
-
-    ''' <summary>
-    ''' Exception gets the exception that caused the binding error.
-    ''' </summary>
-    Public ReadOnly Property Exception() As Exception
-      Get
-        Return (_exception)
-      End Get
-    End Property
-
-    ''' <summary>
-    ''' Binding gets the binding that caused the exception.
-    ''' </summary>
-    Public ReadOnly Property Binding() As Binding
-      Get
-        Return (_binding)
-      End Get
-    End Property
-
-#End Region
-
-#Region "Constructors"
-
-    ''' <summary>
-    ''' Constructor creates a new BindingErrorEventArgs object instance using the information specified.
-    ''' </summary>
-    ''' <param name="binding">The binding that caused th exception.</param>
-    ''' <param name="exception">The exception that caused the error.</param>
-    Public Sub New(ByVal binding As Binding, ByVal exception As Exception)
-      _binding = binding
-      _exception = exception
-    End Sub
-
-#End Region
-
-  End Class
-
-#End Region
-
   ''' <summary>
   ''' BindingSourceRefresh contains functionality for refreshing the data bound to controls on Host as well as a mechinism for catching data
   ''' binding errors that occur in Host.
@@ -81,7 +16,10 @@ Namespace Windows
   ''' <remarks>Windows Forms extender control that resolves the
   ''' data refresh issue with data bound detail controls
   ''' as discussed in Chapter 5.</remarks>
-  <DesignerCategory(""), Designer(GetType(HostComponentDesigner)), HostProperty("Host"), ProvideProperty("ReadValuesOnChange", GetType(BindingSource))> _
+#If Not CLIENTONLY Then
+  <Designer(typeof(HostComponentDesigner))> _
+#End If
+  <DesignerCategory(""), HostProperty("Host"), ProvideProperty("ReadValuesOnChange", GetType(BindingSource))> _
   Public Class BindingSourceRefresh
     Inherits Component
 
@@ -363,6 +301,72 @@ Namespace Windows
         RegisterControlEvents(Host, True)
       End If
     End Sub
+
+#End Region
+
+#Region "Delegates"
+
+    ''' <summary>
+    ''' BindingErrorEventHandler delegates is the event handling definition for handling data binding errors that occurred due to exceptions.
+    ''' </summary>
+    ''' <param name="sender">The object that triggered the event.</param>
+    ''' <param name="e">The event arguments.</param>
+    Public Delegate Sub BindingErrorEventHandler(ByVal sender As Object, ByVal e As BindingErrorEventArgs)
+
+#End Region
+
+#Region "BindingErrorEventArgs Class"
+
+    ''' <summary>
+    ''' BindingErrorEventArgs defines the event arguments for reporting a data binding error due to a exception.
+    ''' </summary>
+    Public Class BindingErrorEventArgs
+      Inherits EventArgs
+
+#Region "Property Fields"
+
+      Private _exception As Exception = Nothing
+      Private _binding As Binding = Nothing
+
+#End Region
+
+#Region "Properties"
+
+      ''' <summary>
+      ''' Exception gets the exception that caused the binding error.
+      ''' </summary>
+      Public ReadOnly Property Exception() As Exception
+        Get
+          Return (_exception)
+        End Get
+      End Property
+
+      ''' <summary>
+      ''' Binding gets the binding that caused the exception.
+      ''' </summary>
+      Public ReadOnly Property Binding() As Binding
+        Get
+          Return (_binding)
+        End Get
+      End Property
+
+#End Region
+
+#Region "Constructors"
+
+      ''' <summary>
+      ''' Constructor creates a new BindingErrorEventArgs object instance using the information specified.
+      ''' </summary>
+      ''' <param name="binding">The binding that caused th exception.</param>
+      ''' <param name="exception">The exception that caused the error.</param>
+      Public Sub New(ByVal binding As Binding, ByVal exception As Exception)
+        _binding = binding
+        _exception = exception
+      End Sub
+
+#End Region
+
+    End Class
 
 #End Region
 

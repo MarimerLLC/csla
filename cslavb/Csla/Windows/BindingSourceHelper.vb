@@ -3,18 +3,35 @@ Imports System.Collections.Generic
 Imports System.ComponentModel
 Imports System.Windows.Forms
 Imports System.Text
+Imports Csla.Properties
 
 Namespace Windows
 
+  ''' <summary>
+  ''' Helper methods for dealing with BindingSource
+  ''' objects and data binding.
+  ''' </summary>
   Public Module BindingSourceHelper
 
     Private _RootSourceNode As BindingSourceNode
 
+    ''' <summary>
+    ''' Sets up BindingSourceNode objects for all
+    ''' BindingSource objects related to the provided
+    ''' root source.
+    ''' </summary>
+    ''' <param name="container">
+    ''' Container for the components.
+    ''' </param>
+    ''' <param name="rootSource">
+    ''' Root BindingSource object.
+    ''' </param>
+    ''' <returns></returns>
     Public Function InitializeBindingSourceTree(ByVal container As IContainer, ByVal rootSource As BindingSource) _
         As BindingSourceNode
 
       If rootSource Is Nothing Then
-        Throw New ApplicationException("A root binding source has not been provided.")
+        Throw New ApplicationException(My.Resources.BindingSourceNotProvided)
       End If
 
       _RootSourceNode = New BindingSourceNode(rootSource)

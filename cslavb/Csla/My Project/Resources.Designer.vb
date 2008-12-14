@@ -61,6 +61,42 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Array is multi-dimensional.
+        '''</summary>
+        Friend ReadOnly Property ArrayIsMultiDimensional() As String
+            Get
+                Return ResourceManager.GetString("ArrayIsMultiDimensional", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Csla Authentication Provider specified does not implement IAuthorizeDataPortal.
+        '''</summary>
+        Friend ReadOnly Property AuthenticationProviderDoesNotImplementIAuthorizeDataPortal() As String
+            Get
+                Return ResourceManager.GetString("AuthenticationProviderDoesNotImplementIAuthorizeDataPortal", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Csla Authorization Provider App Setting name not specified.
+        '''</summary>
+        Friend ReadOnly Property AuthorizationProviderNameNotSpecified() As String
+            Get
+                Return ResourceManager.GetString("AuthorizationProviderNameNotSpecified", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to A root binding source has not been provided..
+        '''</summary>
+        Friend ReadOnly Property BindingSourceNotProvided() As String
+            Get
+                Return ResourceManager.GetString("BindingSourceNotProvided", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Merge only allowed on custom collection objects.
         '''</summary>
         Friend ReadOnly Property BrokenRulesMergeException() As String
@@ -79,11 +115,56 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Objects that are marked busy may not be marked busy again.
+        '''</summary>
+        Friend ReadOnly Property BusyObjectsMayNotBeMarkedBusy() As String
+            Get
+                Return ResourceManager.GetString("BusyObjectsMayNotBeMarkedBusy", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Objects that are marked busy may not be saved.
+        '''</summary>
+        Friend ReadOnly Property BusyObjectsMayNotBeSaved() As String
+            Get
+                Return ResourceManager.GetString("BusyObjectsMayNotBeSaved", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Cannot have &apos;member&apos; == &apos;member&apos; in an expression.
+        '''</summary>
+        Friend ReadOnly Property CannotHaveMemberEqualsMemberInAnExpression() As String
+            Get
+                Return ResourceManager.GetString("CannotHaveMemberEqualsMemberInAnExpression", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Cannot serialize collections not of type IMobileObject.
         '''</summary>
         Friend ReadOnly Property CannotSerializeCollectionsNotOfIMobileObject() As String
             Get
                 Return ResourceManager.GetString("CannotSerializeCollectionsNotOfIMobileObject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to You are not authorized to read this field.
+        '''</summary>
+        Friend ReadOnly Property CanReadAuthorizationRuleDescription() As String
+            Get
+                Return ResourceManager.GetString("CanReadAuthorizationRuleDescription", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to You are not authorized to write to this field.
+        '''</summary>
+        Friend ReadOnly Property CanWriteAuthorizationRuleDescription() As String
+            Get
+                Return ResourceManager.GetString("CanWriteAuthorizationRuleDescription", resourceCulture)
             End Get
         End Property
         
@@ -115,11 +196,29 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to The client query is invalid:.
+        '''</summary>
+        Friend ReadOnly Property ClientQueryIsInvalid() As String
+            Get
+                Return ResourceManager.GetString("ClientQueryIsInvalid", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Constructor with parameters are not supported.
         '''</summary>
         Friend ReadOnly Property ConstructorsWithParametersNotSupported() As String
             Get
                 Return ResourceManager.GetString("ConstructorsWithParametersNotSupported", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Create method name not specified in MobileFactory attribute.
+        '''</summary>
+        Friend ReadOnly Property CreateMethodNameNotSpecified() As String
+            Get
+                Return ResourceManager.GetString("CreateMethodNameNotSpecified", resourceCulture)
             End Get
         End Property
         
@@ -133,11 +232,38 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Csla Authentication Provider not set!.
+        '''</summary>
+        Friend ReadOnly Property CslaAuthenticationProviderNotSet() As String
+            Get
+                Return ResourceManager.GetString("CslaAuthenticationProviderNotSet", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Database name not found in config file ({0}).
         '''</summary>
         Friend ReadOnly Property DatabaseNameNotFound() As String
             Get
                 Return ResourceManager.GetString("DatabaseNameNotFound", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Default Constructor.
+        '''</summary>
+        Friend ReadOnly Property DefaultConstructor() As String
+            Get
+                Return ResourceManager.GetString("DefaultConstructor", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Delete method name not specified in MobileFactory attribute.
+        '''</summary>
+        Friend ReadOnly Property DeleteMethodNameNotSpecified() As String
+            Get
+                Return ResourceManager.GetString("DeleteMethodNameNotSpecified", resourceCulture)
             End Get
         End Property
         
@@ -169,11 +295,38 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to An exception ocurred during the save operation.
+        '''</summary>
+        Friend ReadOnly Property ExceptionOccurredDuringSaveOperation() As String
+            Get
+                Return ResourceManager.GetString("ExceptionOccurredDuringSaveOperation", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Invalid operation - execute not allowed.
         '''</summary>
         Friend ReadOnly Property ExecuteNotSupportedException() As String
             Get
                 Return ResourceManager.GetString("ExecuteNotSupportedException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to The expression type {0} is not supported to obtain a value.
+        '''</summary>
+        Friend ReadOnly Property ExpressionTypeNotSupportedToObtainValue() As String
+            Get
+                Return ResourceManager.GetString("ExpressionTypeNotSupportedToObtainValue", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Factory type or assembly could not be loaded ({0}).
+        '''</summary>
+        Friend ReadOnly Property FactoryTypeNotFoundException() As String
+            Get
+                Return ResourceManager.GetString("FactoryTypeNotFoundException", resourceCulture)
             End Get
         End Property
         
@@ -196,6 +349,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Fetch method name not specified in MobileFactory attribute.
+        '''</summary>
+        Friend ReadOnly Property FetchMethodNameNotSpecified() As String
+            Get
+                Return ResourceManager.GetString("FetchMethodNameNotSpecified", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Invalid operation - fetch not allowed.
         '''</summary>
         Friend ReadOnly Property FetchNotSupportedException() As String
@@ -214,11 +376,20 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Business object must supply a non-null ID value in GetIdValue.
+        '''  Looks up a localized string similar to GetIdValue must not return Nothing.
         '''</summary>
         Friend ReadOnly Property GetIdValueCantBeNull() As String
             Get
                 Return ResourceManager.GetString("GetIdValueCantBeNull", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Index is out of range.
+        '''</summary>
+        Friend ReadOnly Property IndexIsOutOfRange() As String
+            Get
+                Return ResourceManager.GetString("IndexIsOutOfRange", resourceCulture)
             End Get
         End Property
         
@@ -237,15 +408,6 @@ Namespace My.Resources
         Friend ReadOnly Property InsertNotSupportedException() As String
             Get
                 Return ResourceManager.GetString("InsertNotSupportedException", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Child object must implement IEditableBusinessObject or IEditableCollection.
-        '''</summary>
-        Friend ReadOnly Property InvalidChildTypeException() As String
-            Get
-                Return ResourceManager.GetString("InvalidChildTypeException", resourceCulture)
             End Get
         End Property
         
@@ -421,11 +583,29 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Nothing array reference.
+        '''</summary>
+        Friend ReadOnly Property NullArrayReference() As String
+            Get
+                Return ResourceManager.GetString("NullArrayReference", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Object not serializable ({0}).
         '''</summary>
         Friend ReadOnly Property ObjectNotSerializableFormatted() As String
             Get
                 Return ResourceManager.GetString("ObjectNotSerializableFormatted", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Object type or assembly could not be loaded ({0}).
+        '''</summary>
+        Friend ReadOnly Property ObjectTypeCouldNotBeLoaded() As String
+            Get
+                Return ResourceManager.GetString("ObjectTypeCouldNotBeLoaded", resourceCulture)
             End Get
         End Property
         
@@ -565,6 +745,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Sorting not supported.
+        '''</summary>
+        Friend ReadOnly Property SortingNotSupported() As String
+            Get
+                Return ResourceManager.GetString("SortingNotSupported", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to {0} can not exceed {1} characters.
         '''</summary>
         Friend ReadOnly Property StringMaxLengthRule() As String
@@ -610,11 +799,38 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Unhandled binding type &apos;{0}&apos;.
+        '''</summary>
+        Friend ReadOnly Property UnhandledBindingType() As String
+            Get
+                Return ResourceManager.GetString("UnhandledBindingType", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Unhandled expression type: &apos;{0}&apos;.
+        '''</summary>
+        Friend ReadOnly Property UnhandledExpressionType() As String
+            Get
+                Return ResourceManager.GetString("UnhandledExpressionType", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Can not use unregistered property. Call RegisterProperty() for property {0}.
         '''</summary>
         Friend ReadOnly Property UnRegisteredPropertyException() As String
             Get
                 Return ResourceManager.GetString("UnRegisteredPropertyException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
+        '''</summary>
+        Friend ReadOnly Property UpdateMethodNameNotSpecified() As String
+            Get
+                Return ResourceManager.GetString("UpdateMethodNameNotSpecified", resourceCulture)
             End Get
         End Property
         

@@ -378,6 +378,9 @@
     <Compile Include="Windows\BindingSourceNode.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windows\BusyAnimation.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Windows\CslaActionCancelEventArgs.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -548,6 +551,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Web\CslaDataSource.bmp" />
     <EmbeddedResource Include="Windows\BindingSourceRefresh.bmp" />
+    <EmbeddedResource Include="Windows\BusyAnimation.resx">
+      <DependentUpon>BusyAnimation.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\ReadWriteAuthorization.bmp" />
   </ItemGroup>
   <ItemGroup>
@@ -583,6 +589,9 @@
       <Project>{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}</Project>
       <Name>C5</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="C5\Arrays\" />

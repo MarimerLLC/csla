@@ -1,3 +1,4 @@
+Imports System
 Imports System.Drawing
 Imports System.ComponentModel
 Imports System.Collections.Generic
@@ -81,9 +82,11 @@ Namespace Windows
     <Category("Csla")> _
     Public Sub SetApplyAuthorization( _
       ByVal source As Control, ByVal value As Boolean)
-
-      _sources.Item(source) = value
-
+      If _sources.ContainsKey(source) Then
+        _sources.Item(source) = value
+      Else
+        _sources.Add(value)
+      End If
     End Sub
 
     ''' <summary>

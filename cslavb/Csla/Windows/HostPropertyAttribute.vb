@@ -1,4 +1,6 @@
-﻿Namespace Windows
+﻿Imports System
+
+Namespace Windows
 
   ''' <summary>
   ''' HostPropertyAttribute is used on components to 

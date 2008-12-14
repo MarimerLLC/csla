@@ -16,6 +16,10 @@ Imports Csla.Validation
 
 Namespace Windows
 
+  ''' <summary>
+  ''' Extender control providing automation around
+  ''' data binding to CSLA .NET business objects.
+  ''' </summary>
   <ToolboxItem(True)> _
   <ProvideProperty("ActionType", GetType(Control))> _
   <ProvideProperty("PostSaveAction", GetType(Control))> _
@@ -64,8 +68,6 @@ Namespace Windows
 
     Private Shared DataSourceDefault As Object = Nothing
     Private Shared AutoShowBrokenRulesDefault As Boolean = True
-    Private Shared InvalidateOnWarningsDefault As Boolean = False
-    Private Shared InvalidateOnInformationDefault As Boolean = False
     Private Shared WarnIfCloseOnDirtyDefault As Boolean = True
     Private Shared DirtyWarningMessageDefault As String = STR_DirtyWarningMessagePropertyDefault
     Private Shared WarnOnCancelDefault As Boolean = False
@@ -75,6 +77,10 @@ Namespace Windows
 
 #Region "Constructors"
 
+    ''' <summary>
+    ''' Creates an instance of the type.
+    ''' </summary>
+    ''' <param name="container">Container for the component.</param>
     Public Sub New(ByVal container As IContainer)
       MyBase.New()
       _Container = container
@@ -87,15 +93,15 @@ Namespace Windows
 
     Private _Sources As New Dictionary(Of Control, CslaActionExtenderProperties)()
 
-    Protected _DataSource As Object = DataSourceDefault
-    Protected _AutoShowBrokenRules As Boolean = AutoShowBrokenRulesDefault
-    Protected _WarnIfCloseOnDirty As Boolean = WarnIfCloseOnDirtyDefault
-    Protected _DirtyWarningMessage As String = DirtyWarningMessageDefault
-    Protected _WarnOnCancel As Boolean = WarnOnCancelDefault
-    Protected _WarnOnCancelMessage As String = WarnOnCancelMessageDefault
-    Protected _Container As IContainer = Nothing
-    Protected _BindingSourceTree As BindingSourceNode = Nothing
-    Protected _CloseForm As Boolean = False
+    Private _DataSource As Object = DataSourceDefault
+    Private _AutoShowBrokenRules As Boolean = AutoShowBrokenRulesDefault
+    Private _WarnIfCloseOnDirty As Boolean = WarnIfCloseOnDirtyDefault
+    Private _DirtyWarningMessage As String = DirtyWarningMessageDefault
+    Private _WarnOnCancel As Boolean = WarnOnCancelDefault
+    Private _WarnOnCancelMessage As String = WarnOnCancelMessageDefault
+    Private _Container As IContainer = Nothing
+    Private _BindingSourceTree As BindingSourceNode = Nothing
+    Private _CloseForm As Boolean = False
 
 #End Region
 
@@ -113,6 +119,9 @@ Namespace Windows
 
 #Region "Public properties"
 
+    ''' <summary>
+    ''' Gets or sets a reference to the data source object.
+    ''' </summary>
     <Category("Data")> _
     <Description(STR_DataSourcePropertyDescription)> _
     <AttributeProvider(GetType(IListSource))> _
@@ -131,6 +140,10 @@ Namespace Windows
       End Set
     End Property
 
+    ''' <summary>
+    ''' Gets or sets a value indicating whether to automatically
+    ''' show broken rules.
+    ''' </summary>
     <Category("Behavior")> _
     <Description(STR_AutoShowBrokenRulesPropertyDescription)> _
     <Bindable(True)> _
@@ -144,6 +157,10 @@ Namespace Windows
       End Set
     End Property
 
+    ''' <summary>
+    ''' Gets or sets a value indicating whether to warn the
+    ''' user on close when the object is dirty.
+    ''' </summary>
     <Category("Behavior")> _
     <Description(STR_WarnIfCloseOnDirtyPropertyDescription)> _
     <Bindable(True)> _
@@ -157,6 +174,10 @@ Namespace Windows
       End Set
     End Property
 
+    ''' <summary>
+    ''' Gets or sets the message shown to the user
+    ''' in a close on dirty warning.
+    ''' </summary>
     <Category("Behavior")> _
     <Description(STR_DirtyWarningMessagePropertyDescription)> _
     <Bindable(True)> _
@@ -170,6 +191,10 @@ Namespace Windows
       End Set
     End Property
 
+    ''' <summary>
+    ''' Gets or sets a value indicating whether to warn
+    ''' the user on cancel.
+    ''' </summary>
     <Category("Behavior")> _
     <Description(STR_WarnOnCancelPropertyDescription)> _
     <Bindable(True)> _
@@ -183,6 +208,10 @@ Namespace Windows
       End Set
     End Property
 
+    ''' <summary>
+    ''' Gets or sets the message shown to the user
+    ''' in a warn on cancel.
+    ''' </summary>
     <Category("Behavior")> _
     <Description(STR_WarnOnCancelMessagePropertyDescription)> _
     <Bindable(True)> _
@@ -202,6 +231,11 @@ Namespace Windows
 
 #Region "ActionType"
 
+    ''' <summary>
+    ''' Gets the action type.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
+    ''' <returns></returns>
     <Category("Csla")> _
     <Description(STR_ActionTypePropertyDescription)> _
     <Bindable(True)> _
@@ -214,6 +248,11 @@ Namespace Windows
       End If
     End Function
 
+    ''' <summary>
+    ''' Sets the action type.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
+    ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
     <Description(STR_ActionTypePropertyDescription)> _
     <Bindable(True)> _
@@ -232,6 +271,11 @@ Namespace Windows
 
 #Region "PostSaveAction"
 
+    ''' <summary>
+    ''' Gets the post save action.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
+    ''' <returns></returns>
     <Category("Csla")> _
     <Description(STR_PostSaveActionTypePropertyDescription)> _
     <Bindable(True)> _
@@ -244,6 +288,11 @@ Namespace Windows
       End If
     End Function
 
+    ''' <summary>
+    ''' Sets the post save action.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
+    ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
     <Description(STR_PostSaveActionTypePropertyDescription)> _
     <Bindable(True)> _
@@ -262,6 +311,10 @@ Namespace Windows
 
 #Region "RebindAfterSave"
 
+    ''' <summary>
+    ''' Gets the rebind after save value.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
     <Category("Csla")> _
     <Description(STR_RebindAfterSavePropertyDescription)> _
     <Bindable(True)> _
@@ -274,6 +327,11 @@ Namespace Windows
       End If
     End Function
 
+    ''' <summary>
+    ''' Sets the rebind after save value.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
+    ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
     <Description(STR_RebindAfterSavePropertyDescription)> _
     <Bindable(True)> _
@@ -292,6 +350,10 @@ Namespace Windows
 
 #Region "DisableWhenClean"
 
+    ''' <summary>
+    ''' Gets the disable when clean value.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
     <Category("Csla")> _
     <Description(STR_DisableWhenCleanPropertyDescription)> _
     <Bindable(True)> _
@@ -304,6 +366,11 @@ Namespace Windows
       End If
     End Function
 
+    ''' <summary>
+    ''' Sets the disable when clean value.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
+    ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
     <Description(STR_DisableWhenCleanPropertyDescription)> _
     <Bindable(True)> _
@@ -322,6 +389,10 @@ Namespace Windows
 
 #Region "CommandName"
 
+    ''' <summary>
+    ''' Gets the command name value.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
     <Category("Csla")> _
     <Description(STR_CommandNamePropertyDescription)> _
     <Bindable(True)> _
@@ -334,6 +405,11 @@ Namespace Windows
       End If
     End Function
 
+    ''' <summary>
+    ''' Sets the command name value.
+    ''' </summary>
+    ''' <param name="ctl">Reference to control.</param>
+    ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
     <Description(STR_CommandNamePropertyDescription)> _
     <Bindable(True)> _
@@ -353,34 +429,58 @@ Namespace Windows
 
 #Region "Event declarations"
 
+    ''' <summary>
+    ''' Event indicating the user is clicking on the control.
+    ''' </summary>
     <Category("Csla")> _
     <Description(STR_ClickingEventDescription)> _
     Public Event Clicking As EventHandler(Of CslaActionCancelEventArgs)
 
+    ''' <summary>
+    ''' Event indicating the user clicked on the control.
+    ''' </summary>
     <Category("Csla")> _
     <Description(STR_ClickedEventDescription)> _
     Public Event Clicked As EventHandler(Of CslaActionEventArgs)
 
+    ''' <summary>
+    ''' Event indicating an error was encountered.
+    ''' </summary>
     <Category("Csla")> _
     <Description(STR_ErrorEncounteredDescription)> _
     Public Event ErrorEncountered As EventHandler(Of ErrorEncounteredEventArgs)
 
+    ''' <summary>
+    ''' Event indicating the object is set for new.
+    ''' </summary>
     <Category("Csla")> _
     <Description(STR_SetForNewEventDescription)> _
     Public Event SetForNew As EventHandler(Of CslaActionEventArgs)
 
+    ''' <summary>
+    ''' Event indicating the business object is in an invalid state.
+    ''' </summary>
     <Category("Csla")> _
     <Description(STR_BusinessObjectInvalidEventDescription)> _
     Public Event BusinessObjectInvalid As EventHandler(Of CslaActionEventArgs)
 
+    ''' <summary>
+    ''' Event indicating the business object has broken rules.
+    ''' </summary>
     <Category("Csla")> _
     <Description(STR_HasBrokenRulesEventDescription)> _
     Public Event HasBrokenRules As EventHandler(Of HasBrokenRulesEventArgs)
 
+    ''' <summary>
+    ''' Event indicating that the object is saving.
+    ''' </summary>
     <Category("Csla")> _
     <Description(STR_ObjectSavingEventDescription)> _
     Public Event ObjectSaving As EventHandler(Of CslaActionCancelEventArgs)
 
+    ''' <summary>
+    ''' Event indicating that the object has been saved.
+    ''' </summary>
     <Category("Csla")> _
     <Description(STR_ObjectSavedEventDescription)> _
     Public Event ObjectSaved As EventHandler(Of CslaActionEventArgs)
@@ -389,34 +489,66 @@ Namespace Windows
 
 #Region "OnEvent methods"
 
+    ''' <summary>
+    ''' Raises the Clicking event.
+    ''' </summary>
+    ''' <param name="e">Event arguments.</param>
     Protected Overridable Sub OnClicking(ByVal e As CslaActionCancelEventArgs)
       RaiseEvent Clicking(Me, e)
     End Sub
 
+    ''' <summary>
+    ''' Raises the Clicked event.
+    ''' </summary>
+    ''' <param name="e">Event arguments.</param>
     Protected Overridable Sub OnClicked(ByVal e As CslaActionEventArgs)
       RaiseEvent Clicked(Me, e)
     End Sub
 
+    ''' <summary>
+    ''' Raises the ErrorEncountered event.
+    ''' </summary>
+    ''' <param name="e">Event arguments.</param>
     Protected Overridable Sub OnErrorEncountered(ByVal e As ErrorEncounteredEventArgs)
       RaiseEvent ErrorEncountered(Me, e)
     End Sub
 
+    ''' <summary>
+    ''' Raises the SetForNew event.
+    ''' </summary>
+    ''' <param name="e">Event arguments.</param>
     Protected Overridable Sub OnSetForNew(ByVal e As CslaActionEventArgs)
       RaiseEvent SetForNew(Me, e)
     End Sub
 
+    ''' <summary>
+    ''' Raises the BusinessObjectInvalid event.
+    ''' </summary>
+    ''' <param name="e">Event arguments.</param>
     Protected Overridable Sub OnBusinessObjectInvalid(ByVal e As CslaActionEventArgs)
       RaiseEvent BusinessObjectInvalid(Me, e)
     End Sub
 
+    ''' <summary>
+    ''' Raises the HasBrokenRules event.
+    ''' </summary>
+    ''' <param name="e">Event arguments.</param>
     Protected Overridable Sub OnHasBrokenRules(ByVal e As HasBrokenRulesEventArgs)
       RaiseEvent HasBrokenRules(Me, e)
     End Sub
 
+    ''' <summary>
+    ''' Raises the ObjectSaving event.
+    ''' </summary>
+    ''' <param name="e">Event arguments.</param>
     Protected Overridable Sub OnObjectSaving(ByVal e As CslaActionCancelEventArgs)
       RaiseEvent ObjectSaving(Me, e)
     End Sub
 
+    ''' <summary>
+    ''' Raises the ObjectSaved event.
+    ''' </summary>
+    ''' <param name="e">Event arguments.</param>
     Protected Overridable Sub OnObjectSaved(ByVal e As CslaActionEventArgs)
       RaiseEvent ObjectSaved(Me, e)
     End Sub
@@ -425,6 +557,10 @@ Namespace Windows
 
 #Region "Public methods"
 
+    ''' <summary>
+    ''' Resets all action behaviors.
+    ''' </summary>
+    ''' <param name="objectToBind">Target object.</param>
     Public Sub ResetActionBehaviors(ByVal objectToBind As ISavable)
 
       InitializeControls(True)
@@ -445,6 +581,11 @@ Namespace Windows
 
 #Region "Protected methods"
 
+    ''' <summary>
+    ''' Method invoked when the target control is clicked.
+    ''' </summary>
+    ''' <param name="sender">Object originating action.</param>
+    ''' <param name="e">Arguments.</param>
     Protected Sub OnClick(ByVal sender As Object, ByVal e As System.EventArgs)
 
       Dim ctl As Control = DirectCast(sender, Control)
@@ -512,9 +653,9 @@ Namespace Windows
                 If okToContinue Then
 
                   If TypeOf (savableObject) Is Csla.Core.BusinessBase Then
-                    Dim businessObj As Csla.Core.BusinessBase = DirectCast(savableObject, Csla.Core.BusinessBase)
-                    If _AutoShowBrokenRules AndAlso businessObj.BrokenRulesCollection.Count > 0 Then
-                      MessageBox.Show(businessObj.BrokenRulesCollection.ToString())
+                    Dim businessObject As Csla.Core.BusinessBase = DirectCast(savableObject, Csla.Core.BusinessBase)
+                    If _AutoShowBrokenRules AndAlso businessObject.BrokenRulesCollection.Count > 0 Then
+                      MessageBox.Show(businessObject.BrokenRulesCollection.ToString())
                     End If
                   End If
 
@@ -531,7 +672,7 @@ Namespace Windows
 
                       'save
                       Dim objectToSave As Csla.Core.ISavable = savableObject
-                      If Csla.ApplicationContext.AutoCloneOnUpdate = False Then
+                      If Csla.ApplicationContext.AutoCloneOnUpdate Then
                         objectToSave = TryCast((DirectCast(savableObject, ICloneable)).Clone(), Csla.Core.ISavable)
                       End If
 
@@ -561,7 +702,7 @@ Namespace Windows
 
                           End Select
                         Catch ex As Exception
-                          OnErrorEncountered(New ErrorEncounteredEventArgs(props.CommandName, ex))
+                          OnErrorEncountered(New ErrorEncounteredEventArgs(props.CommandName, New ObjectSaveException(ex)))
                           raiseClicked = False
                         End Try
                       Else
@@ -610,7 +751,7 @@ Namespace Windows
 
             End Select
 
-            If raiseClicked AndAlso Not _CloseForm Then
+            If raiseClicked Then
               If props.ActionType = CslaFormAction.Save AndAlso source IsNot Nothing AndAlso props.RebindAfterSave Then
                 ' For some strange reason, this has to be done down here.
                 ' Putting it in the Select Case AfterSave... does not work.

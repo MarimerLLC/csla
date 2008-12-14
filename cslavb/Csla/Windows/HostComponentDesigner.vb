@@ -1,4 +1,6 @@
-﻿Imports System.ComponentModel
+﻿#If Not CLIENTONLY Then
+Imports System
+Imports System.ComponentModel
 Imports System.Windows.Forms
 
 Namespace Windows
@@ -60,3 +62,4 @@ Namespace Windows
   End Class
 
 End Namespace
+#End If

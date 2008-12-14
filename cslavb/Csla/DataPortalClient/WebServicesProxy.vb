@@ -1,3 +1,4 @@
+Imports System
 Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 
@@ -15,7 +16,7 @@ Namespace DataPortalClient
     Private Function GetPortal() As WebServiceHost.WebServicePortal
 
       Dim wsvc As New WebServiceHost.WebServicePortal
-      wsvc.Url = ApplicationContext.DataPortalUrl.ToString
+      wsvc.Url = ApplicationContext.DataPortalUrl.ToString()
       Return wsvc
 
     End Function
@@ -35,7 +36,7 @@ Namespace DataPortalClient
       Implements Server.IDataPortalServer.Create
 
       Dim result As Object
-      Dim request As New Server.Hosts.WebServicePortal.CreateRequest
+      Dim request As New Server.Hosts.WebServicePortal.CreateRequest()
       request.ObjectType = objectType
       request.Criteria = criteria
       request.Context = context
@@ -130,7 +131,7 @@ Namespace DataPortalClient
       Implements Server.IDataPortalServer.Delete
 
       Dim result As Object
-      Dim request As New Server.Hosts.WebServicePortal.DeleteRequest
+      Dim request As New Server.Hosts.WebServicePortal.DeleteRequest()
       request.ObjectType = objectType
       request.Criteria = criteria
       request.Context = context

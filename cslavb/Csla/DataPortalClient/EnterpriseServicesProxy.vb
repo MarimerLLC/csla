@@ -1,3 +1,5 @@
+Imports System
+
 Namespace DataPortalClient
 
   ''' <summary>
@@ -13,7 +15,7 @@ Namespace DataPortalClient
     ''' the server-side COM+ (ServicedComponent) object
     ''' implementing the data portal server functionality.
     ''' </summary>
-    Protected MustOverride Function GetServerObject() As _
+    Protected MustOverride Function GetServerObject() As  _
       Server.Hosts.EnterpriseServicesPortal
 
     ''' <summary>

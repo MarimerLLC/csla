@@ -1,3 +1,6 @@
+Imports System
+Imports Csla.Server
+
 Namespace DataPortalClient
 
   ''' <summary>

@@ -594,11 +594,6 @@
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="C5\Arrays\" />
-    <Folder Include="C5\Hashing\" />
-    <Folder Include="C5\heaps\" />
-    <Folder Include="C5\linkedlists\" />
-    <Folder Include="C5\Trees\" />
     <Folder Include="Threading\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />

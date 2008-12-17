@@ -1,4 +1,6 @@
-﻿Namespace Reflection
+﻿Imports System
+
+Namespace Reflection
 
   Friend Class MethodCacheKey
 

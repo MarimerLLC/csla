@@ -1,6 +1,7 @@
 ﻿Imports System
 Imports System.Reflection
 Imports System.Reflection.Emit
+Imports Csla.Properties
 
 Namespace Reflection
   ''' <summary> 
@@ -85,7 +86,7 @@ Namespace Reflection
       If (method.IsAbstract OrElse method.IsVirtual) AndAlso Not method.IsFinal AndAlso Not method.DeclaringType.IsSealed Then
         il.Emit(OpCodes.Callvirt, method)
       Else
-        il.Emit(OpCodes.[Call], method)
+        il.Emit(OpCodes.Callvirt, method)
       End If
 
       If method.ReturnType Is GetType(Void) Then

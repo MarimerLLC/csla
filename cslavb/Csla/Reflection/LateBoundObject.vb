@@ -1,4 +1,6 @@
-﻿Namespace Reflection
+﻿Imports System
+
+Namespace Reflection
 
   ''' <summary>
   ''' Enables simple invocation of methods
@@ -15,7 +17,7 @@
       Get
         Return _instance
       End Get
-      Set(ByVal value As Object)
+      Private Set(ByVal value As Object)
         _instance = value
       End Set
     End Property

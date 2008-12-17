@@ -1,4 +1,7 @@
+Imports System
+Imports System.Collections.Generic
 Imports System.Reflection
+Imports Csla.Properties
 Imports Csla.Server
 Imports Csla
 
@@ -80,65 +83,72 @@ Namespace Reflection
     Public Function CreateInstance(ByVal objectType As Type) As Object
       Dim ctor = GetCachedConstructor(objectType)
       If ctor Is Nothing Then
-        Throw New NotImplementedException("Default constructor " & My.Resources.MethodNotImplemented)
+        Throw New NotImplementedException(My.Resources.DefaultConstructor & My.Resources.MethodNotImplemented)
       End If
       Return ctor.Invoke()
     End Function
 
 #End Region
 
-        Private Const propertyFlags As BindingFlags = System.Reflection.BindingFlags.Public Or System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.FlattenHierarchy
-        Private Const fieldFlags As BindingFlags = System.Reflection.BindingFlags.Public Or System.Reflection.BindingFlags.NonPublic Or System.Reflection.BindingFlags.Instance
+    Private Const propertyFlags As BindingFlags = System.Reflection.BindingFlags.Public Or System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.FlattenHierarchy
+    Private Const fieldFlags As BindingFlags = System.Reflection.BindingFlags.Public Or System.Reflection.BindingFlags.NonPublic Or System.Reflection.BindingFlags.Instance
 
-        Private ReadOnly _memberCache As New Dictionary(Of MethodCacheKey, dynamicmemberhandle)()
+    Private ReadOnly _memberCache As New Dictionary(Of MethodCacheKey, DynamicMemberHandle)()
 
-        Friend Function GetCachedProperty(ByVal objectType As Type, ByVal propertyName As String) As dynamicmemberhandle
-            Dim key = New MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(Nothing))
-            Dim mh As dynamicmemberhandle = Nothing
-            If Not _memberCache.TryGetValue(key, mh) Then
-                SyncLock _memberCache
-                    If Not _memberCache.trygetvalue(key, mh) Then
-                        Dim info As PropertyInfo = objectType.GetProperty(propertyName, propertyFlags)
-                        mh = New dynamicmemberhandle(info)
-                        _memberCache.add(key, mh)
-                    End If
-                End SyncLock
-            End If
-            Return mh
-        End Function
+    Friend Function GetCachedProperty(ByVal objectType As Type, ByVal propertyName As String) As DynamicMemberHandle
+      Dim key = New MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(Nothing))
+      Dim mh As DynamicMemberHandle = Nothing
+      If Not _memberCache.TryGetValue(key, mh) Then
+        SyncLock _memberCache
+          If Not _memberCache.TryGetValue(key, mh) Then
+            Dim info As PropertyInfo = objectType.GetProperty(propertyName, propertyFlags)
+            mh = New DynamicMemberHandle(info)
+            _memberCache.Add(key, mh)
+          End If
+        End SyncLock
+      End If
+      Return mh
+    End Function
 
-        Friend Function GetCachedField(ByVal objectType As Type, ByVal fieldName As String) As dynamicmemberhandle
-            Dim key = New MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(Nothing))
-            Dim mh As dynamicmemberhandle = Nothing
-            If Not _memberCache.TryGetValue(key, mh) Then
-                SyncLock _memberCache
-                    If Not _memberCache.trygetvalue(key, mh) Then
-                        Dim info As PropertyInfo = objectType.GetProperty(fieldName, fieldFlags)
-                        mh = New dynamicmemberhandle(info)
-                        _memberCache.add(key, mh)
-                    End If
-                End SyncLock
-            End If
-            Return mh
-        End Function
+    Friend Function GetCachedField(ByVal objectType As Type, ByVal fieldName As String) As DynamicMemberHandle
+      Dim key = New MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(Nothing))
+      Dim mh As DynamicMemberHandle = Nothing
+      If Not _memberCache.TryGetValue(key, mh) Then
+        SyncLock _memberCache
+          If Not _memberCache.TryGetValue(key, mh) Then
+            Dim info As PropertyInfo = objectType.GetProperty(fieldName, fieldFlags)
+            mh = New DynamicMemberHandle(info)
+            _memberCache.Add(key, mh)
+          End If
+        End SyncLock
+      End If
+      Return mh
+    End Function
 
-        Public Function CallPropertyGetter(ByVal obj As Object, ByVal [property] As String) As Object
-            Dim mh = GetCachedProperty(obj.GetType(), [property])
-            Return mh.DynamicMemberGet(obj)
-        End Function
+    ''' <summary>
+    ''' Invokes a property getter using dynamic
+    ''' method invocation.
+    ''' </summary>
+    ''' <param name="obj">Target object.</param>
+    ''' <param name="property">Property to invoke.</param>
+    ''' <returns></returns>
+    Public Function CallPropertyGetter(ByVal obj As Object, ByVal [property] As String) As Object
+      Dim mh = GetCachedProperty(obj.GetType(), [property])
+      Return mh.DynamicMemberGet(obj)
+    End Function
 
-    public static object CallPropertyGetter(object obj, string property)
-    {
-        var mh = GetCachedProperty(obj.GetType(), property);
-        return mh.DynamicMemberGet(obj);
-    }
+    ''' <summary>
+    ''' Invokes a property setter using dynamic
+    ''' method invocation.
+    ''' </summary>
+    ''' <param name="obj">Target object.</param>
+    ''' <param name="property">Property to invoke.</param>
+    ''' <param name="value">New value for property.</param>
+    Public Sub CallPropertySetter(ByVal obj As Object, ByVal [property] As String, ByVal value As Object)
+      Dim mh = GetCachedProperty(obj.GetType(), [property])
+      mh.DynamicMemberSet(obj, value)
+    End Sub
 
-    public static void CallPropertySetter(object obj, string property, object value)
-    {
-        var mh = GetCachedProperty(obj.GetType(), property);
-        mh.DynamicMemberSet(obj, value);
-    }
-      
 
 #Region "Call Method"
 
@@ -301,26 +311,64 @@ Namespace Reflection
       If result Is Nothing Then
         ' no match found - so look for any method
         ' with the right number of parameters
-        result = FindMethod(objectType, method, inParams.Length)
+        Try
+          result = FindMethod(objectType, method, inParams.Length)
+        Catch ex As AmbiguousMatchException
+          'we have multiple methods matching by name and parameter count
+          result = FindMethodUsingFuzzyMatching(objectType, method, inParams);
+        End Try
+
       End If
 
       ' no strongly typed match found, get default
       If result Is Nothing Then
-        Try
-          result = objectType.GetMethod(method, allLevelFlags)
-        Catch e1 As AmbiguousMatchException
-          Dim methods() As MethodInfo = objectType.GetMethods()
+        result = objectType.GetMethod(method, allLevelFlags)
+      End If
+
+      Return result
+    End Function
+
+    Private Function FindMethodUsingFuzzyMatching(ByVal objectType As Type, ByVal method As String, ByVal ParamArray parameters() As Object) As MethodInfo
+      Dim result As MethodInfo = Nothing
+      Dim currentType As Type = objectType
+      Dim methods() As MethodInfo = currentType.GetMethods(oneLevelFlags)
+      Dim parameterCount As Integer = parameters.Length
+
+      Do
+        'Match based on name and parameter types and parameter arrays
+        For Each m As MethodInfo In methods
+          If m.Name = method Then
+            Dim infoParams() As ParameterInfo = m.GetParameters()
+            Dim pCount As Integer = infoParams.Length
+
+            If pCount > 0 AndAlso ((pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) OrElse (infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0)) Then
+              'last param is a param array or only param is an array
+              If parameterCount >= pCount - 1 Then
+                'got a match so use it
+                result = m
+                Exit For
+              End If
+            End If
+          End If
+        Next
+
+        If result Is Nothing Then
+          'match based on parameter name and number of parameters
           For Each m As MethodInfo In methods
-            If m.Name = method AndAlso m.GetParameters().Length = inParams.Length Then
+            If m.Name = method AndAlso m.GetParameters().Length = parameterCount Then
               result = m
               Exit For
             End If
-          Next m
-          If result Is Nothing Then
-            Throw
-          End If
-        End Try
-      End If
+          Next
+        End If
+
+        If result IsNot Nothing Then
+          Exit Do
+        End If
+
+        currentType = currentType.BaseType
+
+      Loop While currentType IsNot Nothing
 
       Return result
     End Function

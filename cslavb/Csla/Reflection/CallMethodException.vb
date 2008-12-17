@@ -1,3 +1,4 @@
+Imports System
 Imports System.Security.Permissions
 
 Namespace Reflection
@@ -67,14 +68,10 @@ Namespace Reflection
     ''' </summary>
     ''' <param name="info">Serialization info.</param>
     ''' <param name="context">Serialization context.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", _
-      "CA1062:ValidateArgumentsOfPublicMethods")> _
-    <SecurityPermission(SecurityAction.LinkDemand, _
-      Flags:=SecurityPermissionFlag.SerializationFormatter)> _
-    <SecurityPermission(SecurityAction.Demand, _
-      Flags:=SecurityPermissionFlag.SerializationFormatter)> _
-    Public Overrides Sub GetObjectData( _
-      ByVal info As System.Runtime.Serialization.SerializationInfo, _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+    <SecurityPermission(SecurityAction.LinkDemand, Flags:=SecurityPermissionFlag.SerializationFormatter)> _
+    <SecurityPermission(SecurityAction.Demand, Flags:=SecurityPermissionFlag.SerializationFormatter)> _
+    Public Overrides Sub GetObjectData(ByVal info As System.Runtime.Serialization.SerializationInfo, _
       ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.GetObjectData(info, context)

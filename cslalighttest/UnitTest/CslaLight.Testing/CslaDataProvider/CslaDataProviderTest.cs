@@ -49,6 +49,7 @@ namespace cslalighttest.CslaDataProvider
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "CreateCustomer";
       provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      var tmp = provider.Data;
 
       context.Complete();
     }
@@ -72,6 +73,7 @@ namespace cslalighttest.CslaDataProvider
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomer";
       provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      var tmp = provider.Data;
 
       context.Complete();
     }
@@ -96,6 +98,7 @@ namespace cslalighttest.CslaDataProvider
       provider.FactoryParameters.Add(custId);
       provider.FactoryMethod = "GetCustomer";
       provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      var tmp = provider.Data;
 
       context.Complete();
     }
@@ -118,6 +121,7 @@ namespace cslalighttest.CslaDataProvider
         context.Assert.AreEqual(custName, ((Customer)provider.Data).Name);
         context.Assert.Success();
       });
+      var tmp = provider.Data;
       context.Complete();
     }
 
@@ -145,6 +149,7 @@ namespace cslalighttest.CslaDataProvider
         };
         provider.Save();
       });
+      var tmp = provider.Data;
       context.Complete();
     }
 
@@ -168,6 +173,7 @@ namespace cslalighttest.CslaDataProvider
         context.Assert.Success();
 
       });
+      var tmp = provider.Data;
       context.Complete();
     }
 
@@ -189,6 +195,7 @@ namespace cslalighttest.CslaDataProvider
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomerWithException";
       provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      var tmp = provider.Data;
 
       context.Complete();
 
@@ -211,6 +218,7 @@ namespace cslalighttest.CslaDataProvider
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomer";
       provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      var tmp = provider.Data;
 
       //Second call
       provider.Refresh();
@@ -236,6 +244,7 @@ namespace cslalighttest.CslaDataProvider
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "GetCustomer";
       provider.ObjectType = typeof(CustomerWO_DP_XYZ).AssemblyQualifiedName;// "cslalighttest.CslaDataProvider.CustomerWO_DP_XYZ, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      var tmp = provider.Data;
 
       context.Complete();
 
@@ -263,6 +272,7 @@ namespace cslalighttest.CslaDataProvider
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "CreateCustomer";
       provider.ObjectType = typeof(CustomerWO_DP_XYZ).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.CustomerWO_DP_XYZ, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      var tmp = provider.Data;
 
       context.Complete();
 
@@ -310,6 +320,7 @@ namespace cslalighttest.CslaDataProvider
         context.Assert.Success();
 
       });
+      var tmp = provider.Data;
       context.Complete();
     }
 
@@ -346,6 +357,7 @@ namespace cslalighttest.CslaDataProvider
         provider.Rebind();
 
       });
+      var tmp = provider.Data;
       context.Complete();
     }
 
@@ -380,11 +392,12 @@ namespace cslalighttest.CslaDataProvider
         context.Assert.Success();
 
       });
+      var tmp = provider.Data;
       context.Complete();
     }
 
     [TestMethod]
-    public void InhertiedProviderFetch()
+    public void InheritedProviderFetch()
     {
       var context = GetContext();
 
@@ -402,12 +415,13 @@ namespace cslalighttest.CslaDataProvider
       provider.ManageObjectLifetime = true;
       provider.FactoryMethod = "CreateCustomer";
       provider.ObjectType = typeof(Customer).AssemblyQualifiedName;
+      var tmp = provider.Data;
 
       context.Complete();
     }
 
     [TestMethod]
-    public void InhertiedProviderSave()
+    public void InheritedProviderSave()
     {
       var context = GetContext();
 
@@ -430,6 +444,7 @@ namespace cslalighttest.CslaDataProvider
         };
         provider.Save();
       });
+      var tmp = provider.Data;
       context.Complete();
     }
 
@@ -472,6 +487,7 @@ namespace cslalighttest.CslaDataProvider
 
 
       });
+      var tmp = provider.Data;
       context.Complete();
     }
 
@@ -506,6 +522,7 @@ namespace cslalighttest.CslaDataProvider
 
 
       });
+      var tmp = provider.Data;
       context.Complete();
     }
   }

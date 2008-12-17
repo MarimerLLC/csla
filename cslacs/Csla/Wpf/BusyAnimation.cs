@@ -52,7 +52,7 @@ namespace Csla.Wpf
     /// </summary>
     public static readonly DependencyProperty IsRunningProperty = DependencyProperty.Register(
       "IsRunning",
-      typeof(object),
+      typeof(bool),
       typeof(BusyAnimation),
       new FrameworkPropertyMetadata(
         false,
@@ -121,7 +121,10 @@ namespace Csla.Wpf
           else
           {
             _timer.Stop();
-            _normalStoryboard.Begin(_root);
+            if (_root == null)
+              _root = (Canvas)Template.FindName("root", this);
+            if (_root != null)
+              _normalStoryboard.Begin(_root);
           }
         }
     }
@@ -129,8 +132,11 @@ namespace Csla.Wpf
     private int _frame = 0;
     void timer_Tick(object sender, EventArgs e)
     {
-      _isRunningStoryboard[_frame].Begin(_root);
-      _frame = (_frame + 1) % NUM_STATES;
+      if (_root != null)
+      {
+        _isRunningStoryboard[_frame].Begin(_root);
+        _frame = (_frame + 1) % NUM_STATES;
+      }
     }
 
     #endregion
@@ -178,6 +184,9 @@ namespace Csla.Wpf
       double height = ActualHeight;
       double scale = Math.Min(ActualWidth, ActualHeight);
       double theta = (2.0 * Math.PI) / NUM_STATES;
+
+      if (_root == null)
+        _root = (Canvas)Template.FindName("root", this);
 
       for (int n = 0; n < NUM_STATES; n++)
       {

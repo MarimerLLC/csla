@@ -335,17 +335,20 @@ namespace Csla.Wpf
 
         FrameworkElement root = (FrameworkElement)Template.FindName("root", this);
 
-        if (_isValid)
+        if (root != null)
         {
-          Storyboard validStoryboard = (Storyboard)Template.Resources["Valid"];
-          validStoryboard.Begin(root);
-        }
-        else
-        {
-          Storyboard errorStoryboard = (Storyboard)Template.Resources[_worst.ToString()];
-          errorStoryboard.Begin(root);
-          _lastImage = (FrameworkElement)Template.FindName(string.Format("{0}Image", _worst.ToString().ToLower()), this);
-          EnablePopup(_lastImage);
+          if (_isValid)
+          {
+            Storyboard validStoryboard = (Storyboard)Template.Resources["Valid"];
+            validStoryboard.Begin(root);
+          }
+          else
+          {
+            Storyboard errorStoryboard = (Storyboard)Template.Resources[_worst.ToString()];
+            errorStoryboard.Begin(root);
+            _lastImage = (FrameworkElement)Template.FindName(string.Format("{0}Image", _worst.ToString().ToLower()), this);
+            EnablePopup(_lastImage);
+          }
         }
       }
     }

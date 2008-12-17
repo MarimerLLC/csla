@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Csla.Reflection;
 
-namespace Csla.Reflection
+namespace Csla.Core
 {
     static class UndoableHandler
     {

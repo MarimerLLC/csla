@@ -163,12 +163,16 @@
     <Compile Include="Core\StateMode.vb" />
     <Compile Include="Core\TypeConverters\SmartDateConverter.vb" />
     <Compile Include="Core\TypeSystem.vb" />
+    <Compile Include="Core\UndoableHandler.vb" />
     <Compile Include="DataPortalClient\DesignTimeProxy.vb" />
+    <Compile Include="Data\ConnectionManagerT.vb" />
+    <Compile Include="Data\DataServiceContextManager.vb" />
+    <Compile Include="Data\ObjectContextManager.vb" />
+    <Compile Include="Data\ServiceClientManager.vb" />
     <Compile Include="Linq\BalancedTreeIndex.vb" />
     <Compile Include="Linq\IBalancedSearch.vb" />
     <Compile Include="Linq\IRangeTestableIndex.vb" />
     <Compile Include="Linq\RedBlackTreeWrapper.vb" />
-    <Compile Include="Reflection\UndoableHandler.vb" />
     <Compile Include="Core\UndoException.vb" />
     <Compile Include="DataPortalClient\EnterpriseServicesProxy.vb" />
     <Compile Include="DataPortalClient\IDataPortalProxy.vb" />

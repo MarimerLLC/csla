@@ -1,5 +1,8 @@
-﻿Imports System.Configuration
-Imports System.Data.SqlClient
+﻿Imports System
+Imports System.Configuration
+Imports System.Data
+Imports System.Data.Common
+Imports Csla.Properties
 
 Namespace Data
 
@@ -8,9 +11,6 @@ Namespace Data
   ''' database connections within the context
   ''' of a single data portal operation.
   ''' </summary>
-  ''' <typeparam name="C">
-  ''' Type of database connection object to use.
-  ''' </typeparam>
   ''' <remarks>
   ''' This type stores the open database connection
   ''' in <see cref="Csla.ApplicationContext.LocalContext" />
@@ -20,12 +20,12 @@ Namespace Data
   ''' dispose the connection when the last consumer
   ''' has called Dispose."
   ''' </remarks>
-  Public Class ConnectionManager(Of C As {IDbConnection, New})
+  Public Class ConnectionManager
 
     Implements IDisposable
 
     Private Shared _lock As New Object
-    Private _connection As C
+    Private _connection As IDbConnection
     Private _connectionString As String
 
     ''' <summary>
@@ -35,7 +35,7 @@ Namespace Data
     ''' <param name="database">
     ''' Database name as shown in the config file.
     ''' </param>
-    Public Shared Function GetManager(ByVal database As String) As ConnectionManager(Of C)
+    Public Shared Function GetManager(ByVal database As String) As ConnectionManager
 
       Return GetManager(database, True)
 
@@ -55,7 +55,7 @@ Namespace Data
     ''' used as a connection string.
     ''' </param>
     ''' <returns>ConnectionManager object for the name.</returns>
-    Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ConnectionManager(Of C)
+    Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ConnectionManager
 
       If isDatabaseName Then
         Dim conn = ConfigurationManager.ConnectionStrings(database).ConnectionString
@@ -66,12 +66,12 @@ Namespace Data
       End If
 
       SyncLock _lock
-        Dim mgr As ConnectionManager(Of C) = Nothing
+        Dim mgr As ConnectionManager = Nothing
         If ApplicationContext.LocalContext.Contains("__db:" & database) Then
-          mgr = CType(ApplicationContext.LocalContext("__db:" & database), ConnectionManager(Of C))
+          mgr = CType(ApplicationContext.LocalContext("__db:" & database), ConnectionManager)
 
         Else
-          mgr = New ConnectionManager(Of C)(database)
+          mgr = New ConnectionManager(database)
           ApplicationContext.LocalContext("__db:" & database) = mgr
         End If
         mgr.AddRef()
@@ -84,17 +84,26 @@ Namespace Data
 
       _connectionString = connectionString
 
+      Dim provider As String = ConfigurationManager.AppSettings("dbProvider")
+      If (String.IsNullOrEmpty(provider)) Then
+        provider = "System.Data.SqlClient"
+      End If
+
+      Dim factory As DbProviderFactory = DbProviderFactories.GetFactory(provider)
+
       ' open connection
-      _connection = New C
+      _connection = factory.CreateConnection()
       _connection.ConnectionString = connectionString
       _connection.Open()
 
     End Sub
 
     ''' <summary>
-    ''' Gets the open database connection object.
+    ''' Dispose object, dereferencing or
+    ''' disposing the connection it is
+    ''' managing.
     ''' </summary>
-    Public ReadOnly Property Connection() As C
+    Public ReadOnly Property Connection() As IDbConnection
       Get
         Return _connection
       End Get

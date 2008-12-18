@@ -1,4 +1,6 @@
-﻿Imports System.Configuration
+﻿#If Not CLIENTONLY Then
+Imports System
+Imports System.Configuration
 Imports System.Data.Linq
 
 Namespace Data
@@ -136,3 +138,4 @@ Namespace Data
   End Class
 
 End Namespace
+#End If

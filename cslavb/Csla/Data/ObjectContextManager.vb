@@ -64,11 +64,8 @@ Namespace Data
 
       If isDatabaseName Then
 
-        Dim connection = ConfigurationManager.ConnectionStrings(database)
-        If connection Is Nothing Then Throw New ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database))
-
         Dim conn = ConfigurationManager.ConnectionStrings(database).ConnectionString
-        If String.IsNullOrEmpty(conn) Then Throw New ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database))
+        If String.IsNullOrEmpty(conn) Then Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
 
         database = conn
       End If
@@ -92,12 +89,8 @@ Namespace Data
 
 
     Private Sub New(ByVal connectionString As String)
-
-
       _connectionString = connectionString
-
-      _context = DirectCast(Activator.CreateInstance(GetType(C), connectionString)), c)
-
+      _context = DirectCast(Activator.CreateInstance(GetType(C), connectionString), C)
     End Sub
 
     ''' <summary>

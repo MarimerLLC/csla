@@ -10,6 +10,7 @@ Imports System.Windows.Media.Animation
 Imports System.Windows.Shapes
 Imports System.Collections.Generic
 Imports System.Reflection
+Imports Csla.Reflection
 
 Namespace Data
 
@@ -96,7 +97,7 @@ Namespace Data
       Dim returnValue As T = Nothing
 
       For Each oneEntity As T In GetEntities(Of T)()
-        If keyPropertyValue.Equals(Csla.Reflection.MethodCaller.callpropertygetter(oneEntity, keyPropertyName)) Then
+        If keyPropertyValue.Equals(MethodCaller.CallPropertyGetter(oneEntity, keyPropertyName)) Then
           returnValue = oneEntity
           Exit For
         End If

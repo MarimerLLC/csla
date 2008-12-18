@@ -1,5 +1,10 @@
+Imports System
+Imports System.Collections
+Imports System.Collections.Generic
+Imports System.Data
 Imports System.ComponentModel
 Imports System.Reflection
+Imports Csla.Properties
 
 Namespace Data
 
@@ -70,6 +75,7 @@ Namespace Data
         Throw New ArgumentException(My.Resources.NothingNotValid)
       End If
 
+      'get the list of columns from the source
       Dim columns As List(Of String) = GetColumns(source)
       If columns.Count < 1 Then Exit Sub
 
@@ -147,21 +153,20 @@ Namespace Data
 
       Dim dataView As DataView = TryCast(innerSource, DataView)
       If dataView IsNot Nothing Then
-        result = ScanDataView(CType(innerSource, DataView))
-      End If
-
-      ' now handle lists/arrays/collections
-      Dim iEnumerable As IEnumerable = _
-        TryCast(innerSource, IEnumerable)
-      If iEnumerable IsNot Nothing Then
-        Dim childType As Type = _
-          Utilities.GetChildItemType(innerSource.GetType)
-        result = ScanObject(childType)
-
+        result = ScanDataView(dataView)
       Else
-        ' the source is a regular object
-        result = ScanObject(innerSource.GetType)
+        ' now handle lists/arrays/collections
+        Dim iEnumerable As IEnumerable = TryCast(innerSource, IEnumerable)
+        If iEnumerable IsNot Nothing Then
+          Dim childType As Type = Utilities.GetChildItemType(innerSource.GetType)
+          result = ScanObject(childType)
+
+        Else
+          ' the source is a regular object
+          result = ScanObject(innerSource.GetType)
+        End If
       End If
+
       Return result
 
     End Function
@@ -183,22 +188,25 @@ Namespace Data
 
       Dim result As New List(Of String)
 
-      ' retrieve a list of all public properties
-      Dim props As PropertyInfo() = sourceType.GetProperties()
-      If UBound(props) >= 0 Then
-        For column As Integer = 0 To UBound(props)
-          If props(column).CanRead Then
-            result.Add(props(column).Name)
-          End If
-        Next
-      End If
+      If sourceType IsNot Nothing Then
 
-      ' retrieve a list of all public fields
-      Dim fields As FieldInfo() = sourceType.GetFields()
-      If UBound(fields) >= 0 Then
-        For column As Integer = 0 To UBound(fields)
-          result.Add(fields(column).Name)
-        Next
+        ' retrieve a list of all public properties
+        Dim props As PropertyInfo() = sourceType.GetProperties()
+        If UBound(props) >= 0 Then
+          For column As Integer = 0 To UBound(props)
+            If props(column).CanRead Then
+              result.Add(props(column).Name)
+            End If
+          Next
+        End If
+
+        ' retrieve a list of all public fields
+        Dim fields As FieldInfo() = sourceType.GetFields()
+        If UBound(fields) >= 0 Then
+          For column As Integer = 0 To UBound(fields)
+            result.Add(fields(column).Name)
+          Next
+        End If
       End If
 
       Return result

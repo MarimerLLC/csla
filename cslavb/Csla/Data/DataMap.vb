@@ -1,4 +1,7 @@
-﻿Imports System.Reflection
+﻿Imports System
+Imports System.Collections.Generic
+Imports Csla.Reflection
+
 
 Namespace Data
 
@@ -12,23 +15,29 @@ Namespace Data
 #Region "MapElement"
 
     Friend Class MemberMapping
-      Private _from As MemberInfo
-      Public ReadOnly Property FromMember() As MemberInfo
+      Private _from As DynamicMemberHandle
+      Public Property FromMember() As DynamicMemberHandle
         Get
           Return _from
         End Get
+        Private Set(ByVal value As DynamicMemberHandle)
+          _from = value
+        End Set
       End Property
 
-      Private _to As MemberInfo
-      Public ReadOnly Property ToMember() As MemberInfo
+      Private _to As DynamicMemberHandle
+      Public Property ToMember() As DynamicMemberHandle
         Get
           Return _to
         End Get
+        Private Set(ByVal value As DynamicMemberHandle)
+          _to = value
+        End Set
       End Property
 
-      Public Sub New(ByVal fromMember As MemberInfo, ByVal toMember As MemberInfo)
-        _from = fromMember
-        _to = toMember
+      Public Sub New(ByVal fromMember As DynamicMemberHandle, ByVal toMember As DynamicMemberHandle)
+        Me.FromMember = fromMember
+        Me.ToMember = toMember
       End Sub
     End Class
 
@@ -37,8 +46,6 @@ Namespace Data
     Private _sourceType As Type
     Private _targetType As Type
     Private _map As List(Of MemberMapping) = New List(Of MemberMapping)()
-    Private _fieldFlags As BindingFlags = BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance
-    Private _propertyFlags As BindingFlags = BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.FlattenHierarchy
 
     ''' <summary>
     ''' Initializes an instance of the type.
@@ -69,7 +76,9 @@ Namespace Data
     ''' Name of target property.
     ''' </param>
     Public Sub AddPropertyMapping(ByVal sourceProperty As String, ByVal targetProperty As String)
-      _map.Add(New MemberMapping(_sourceType.GetProperty(sourceProperty, _propertyFlags), _targetType.GetProperty(targetProperty, _propertyFlags)))
+      _map.Add(New MemberMapping( _
+               MethodCaller.GetCachedProperty(_sourceType, sourceProperty), _
+               MethodCaller.GetCachedProperty(_targetType, targetProperty)))
     End Sub
 
     ''' <summary>
@@ -82,7 +91,9 @@ Namespace Data
     ''' Name of target field.
     ''' </param>
     Public Sub AddFieldMapping(ByVal sourceField As String, ByVal targetField As String)
-      _map.Add(New MemberMapping(_sourceType.GetField(sourceField, _fieldFlags), _targetType.GetField(targetField, _fieldFlags)))
+      _map.Add(New MemberMapping( _
+               MethodCaller.GetCachedField(_sourceType, sourceField), _
+               MethodCaller.GetCachedField(_targetType, targetField)))
     End Sub
 
     ''' <summary>
@@ -95,7 +106,9 @@ Namespace Data
     ''' Name of target property.
     ''' </param>
     Public Sub AddFieldToPropertyMapping(ByVal sourceField As String, ByVal targetProperty As String)
-      _map.Add(New MemberMapping(_sourceType.GetField(sourceField, _fieldFlags), _targetType.GetProperty(targetProperty, _propertyFlags)))
+      _map.Add(New MemberMapping( _
+               MethodCaller.GetCachedField(_sourceType, sourceField), _
+               MethodCaller.GetCachedProperty(_targetType, targetProperty)))
     End Sub
 
     ''' <summary>
@@ -108,7 +121,9 @@ Namespace Data
     ''' Name of target field.
     ''' </param>
     Public Sub AddPropertyToFieldMapping(ByVal sourceProperty As String, ByVal targetField As String)
-      _map.Add(New MemberMapping(_sourceType.GetProperty(sourceProperty, _propertyFlags), _targetType.GetField(targetField, _fieldFlags)))
+      _map.Add(New MemberMapping( _
+               MethodCaller.GetCachedProperty(_sourceType, sourceProperty), _
+               MethodCaller.GetCachedField(_targetType, targetField)))
     End Sub
 
   End Class

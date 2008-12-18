@@ -59,11 +59,11 @@ Namespace Csla.Data
 
         Dim connection = ConfigurationManager.ConnectionStrings(database)
 
-        If connection Is Nothing Then Throw New ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database))
+        If connection Is Nothing Then Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
 
         Dim conn = ConfigurationManager.ConnectionStrings(database).ConnectionString
 
-        If String.IsNullOrEmpty(conn) Then Throw New ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database))
+        If String.IsNullOrEmpty(conn) Then Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
 
         database = conn
       End If

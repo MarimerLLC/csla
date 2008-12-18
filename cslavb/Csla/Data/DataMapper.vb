@@ -1,5 +1,9 @@
-Imports System.Reflection
+Imports System
+Imports System.Collections.Generic
 Imports System.ComponentModel
+Imports Csla.Reflection
+Imports Csla.Properties
+
 
 Namespace Data
   ''' <summary>
@@ -108,7 +112,7 @@ Namespace Data
         Dim propertyName As String = prop.Name
         If (Not ignore.Contains(propertyName)) Then
           Try
-            target.Add(propertyName, prop.GetValue(source, Nothing))
+            target.Add(propertyName, MethodCaller.CallPropertyGetter(source, propertyName))
           Catch ex As Exception
             If (Not suppressExceptions) Then
               Throw New ArgumentException(String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, propertyName), ex)
@@ -181,7 +185,8 @@ Namespace Data
         Dim propertyName As String = sourceProperty.Name
         If (Not ignore.Contains(propertyName)) Then
           Try
-            SetPropertyValue(target, propertyName, sourceProperty.GetValue(source, Nothing))
+            Dim value As Object = MethodCaller.CallPropertyGetter(source, propertyName)
+            SetPropertyValue(target, propertyName, value)
           Catch ex As Exception
             If (Not suppressExceptions) Then
               Throw New ArgumentException(String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, propertyName), ex)
@@ -223,15 +228,27 @@ Namespace Data
     Public Sub Map(ByVal source As Object, ByVal target As Object, ByVal map As DataMap, ByVal suppressExceptions As Boolean)
       For Each mapping As DataMap.MemberMapping In map.GetMap()
         Try
-          Dim value As Object = GetValue(mapping.FromMember, source)
-          SetValue(target, mapping.ToMember, value)
+          Dim value As Object = mapping.FromMemberHandle.DynamicMemberGet(source)
+          SetValue(target, mapping.ToMemberHandle, value)
         Catch ex As Exception
           If (Not suppressExceptions) Then
-            Throw New ArgumentException(String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, mapping.FromMember.Name), ex)
+            Throw New ArgumentException(String.Format("{0} ({1})", My.Resources.PropertyCopyFailed, mapping.FromMemberHandle.MemberName), ex)
           End If
         End Try
       Next mapping
     End Sub
+
+    Private Function GetPropertyNames(ByVal sourceType As Type) As IList(Of String)
+      Dim result As List(Of String) = New List(Of String)
+      Dim props As PropertyDescriptorCollection = TypeDescriptor.GetProperties(sourceType)
+      For Each item As PropertyDescriptor In props
+        If item.IsBrowsable Then
+          result.Add(item.Name)
+        End If
+      Next
+
+      Return result
+    End Function
 
     Private Function GetSourceProperties(ByVal sourceType As Type) As PropertyInfo()
       Dim result As List(Of PropertyInfo) = New List(Of PropertyInfo)()
@@ -305,18 +322,6 @@ Namespace Data
         target(nameMapper(p.Name)) = validSource.ReadProperty(p)
       Next p
     End Sub
-
-#End Region
-
-#Region " GetValue "
-
-    Private Function GetValue(ByVal member As MemberInfo, ByVal source As Object) As Object
-      If member.MemberType = MemberTypes.Property Then
-        Return (CType(member, PropertyInfo)).GetValue(source, Nothing)
-      Else
-        Return (CType(member, FieldInfo)).GetValue(source)
-      End If
-    End Function
 
 #End Region
 

@@ -15,6 +15,11 @@ Imports System.Windows.Input
 Imports System.Windows.Media.Animation
 
 Namespace Wpf
+
+  ''' <summary>
+  ''' Control providing services around business object
+  ''' validation, authorization and async busy status.
+  ''' </summary>
   <TemplatePart(Name:="root", Type:=GetType(FrameworkElement))> _
   <TemplatePart(Name:="popup", Type:=GetType(Popup))> _
   <TemplatePart(Name:="errorImage", Type:=GetType(FrameworkElement))> _
@@ -29,9 +34,22 @@ Namespace Wpf
     Inherits ContentControl
 #Region "Constructors"
 
+    ''' <summary>
+    ''' Creates an instance of the type.
+    ''' </summary>
     Public Sub New()
       DefaultStyleKey = GetType(PropertyStatus)
       BrokenRules = New ObservableCollection(Of BrokenRule)()
+    End Sub
+
+    ''' <summary>
+    ''' Invoked whenever application code
+    ''' or internal processes call System.Windows.FrameworkElement.ApplyTemplate()
+    ''' Once template is applied to the control,force state update.
+    ''' </summary>
+    Public Overrides Sub OnApplyTemplate()
+      MyBase.ApplyTemplate()
+      UpdateState()
     End Sub
 
 #End Region

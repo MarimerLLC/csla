@@ -14,6 +14,9 @@ Imports System.Globalization
 
 Namespace Wpf
 
+  ''' <summary>
+  ''' Control that displays a busy animation.
+  ''' </summary>
   <TemplatePart(Name:="part1", Type:=GetType(FrameworkElement))> _
   <TemplatePart(Name:="part2", Type:=GetType(FrameworkElement))> _
   <TemplatePart(Name:="part3", Type:=GetType(FrameworkElement))> _
@@ -43,7 +46,10 @@ Namespace Wpf
 
 #Region "Dependency properties"
 
-
+    ''' <summary>
+    ''' Gets or sets a value indicating whether the busy
+    ''' animation is running.
+    ''' </summary>
     Public Shared ReadOnly IsRunningProperty As DependencyProperty = DependencyProperty.Register( _
                                                                       "IsRunning", _
                                                                       GetType(Object), _
@@ -57,7 +63,9 @@ Namespace Wpf
       CType(o, BusyAnimation).SetState(CType(e.NewValue, Boolean))
     End Sub
 
-
+    ''' <summary>
+    ''' Gets or sets the state duration for the animation.
+    ''' </summary>
     Public Shared ReadOnly StateDurationProperty As DependencyProperty = DependencyProperty.Register( _
                                                                       "StateDuration", _
                                                                       GetType(TimeSpan), _
@@ -82,6 +90,9 @@ Namespace Wpf
 
 #Region "Member fields and properties"
 
+    ''' <summary>
+    ''' Gets or sets the state duration for the animation.
+    ''' </summary>
     Public Property StateDuration() As TimeSpan
       Get
         Return DirectCast(GetValue(StateDurationProperty), TimeSpan)
@@ -92,6 +103,10 @@ Namespace Wpf
       End Set
     End Property
 
+    ''' <summary>
+    ''' Gets or sets a value indicating whether the busy
+    ''' animation is running.
+    ''' </summary>
     Public Property IsRunning() As Boolean
       Get
         Return CBool(GetValue(IsRunningProperty))
@@ -123,6 +138,10 @@ Namespace Wpf
 #End Region
 
 #Region "Constructors"
+
+    ''' <summary>
+    ''' Creates an instance of the control.
+    ''' </summary>
     Public Sub New()
 
       _timer = New DispatcherTimer()

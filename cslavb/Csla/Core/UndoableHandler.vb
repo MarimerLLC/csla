@@ -1,8 +1,10 @@
 ﻿Imports System
 Imports System.Collections.Generic
 Imports System.Reflection
+Imports Csla.Reflection
 
-Namespace Reflection
+Namespace Core
+
   NotInheritable Class UndoableHandler
     Private Sub New()
     End Sub

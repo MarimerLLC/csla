@@ -169,6 +169,7 @@
     <Compile Include="Data\DataServiceContextManager.vb" />
     <Compile Include="Data\ObjectContextManager.vb" />
     <Compile Include="Data\ServiceClientManager.vb" />
+    <Compile Include="Data\TransactionManager.vb" />
     <Compile Include="Linq\BalancedTreeIndex.vb" />
     <Compile Include="Linq\IBalancedSearch.vb" />
     <Compile Include="Linq\IRangeTestableIndex.vb" />

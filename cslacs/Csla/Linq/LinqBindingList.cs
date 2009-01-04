@@ -17,7 +17,7 @@ namespace Csla
   /// in the original list.</typeparam>
   public class LinqBindingList<T> :
     IList<T>, IBindingList, IEnumerable<T>,
-    ICancelAddNew, IQueryable<T>
+    ICancelAddNew, IQueryable<T>,IOrderedQueryable<T>
   {
 
     #region ListItem class
@@ -532,6 +532,7 @@ namespace Csla
     private bool _supportsBinding;
     private IBindingList _bindingList;
     private PropertyDescriptor _filterBy;
+    private Expression _sortExpression;
     private List<ListItem> _filterIndex = 
       new List<ListItem>();
 
@@ -577,7 +578,6 @@ namespace Csla
         if (binExp.Left.NodeType == ExpressionType.MemberAccess && (binExp.Left as MemberExpression).Member.MemberType == MemberTypes.Property)
           _filterBy = TypeDescriptor.GetProperties(typeof(T))[(binExp.Left as MemberExpression).Member.Name];
       }
-      
     }
 
     private bool ItemShouldBeInList(T item)
@@ -735,6 +735,11 @@ namespace Csla
 
     #endregion
 
+    internal void SortByExpression(Expression expression)
+    {
+      _sortExpression = expression;
+    }
+    
     internal void BuildFilterIndex()
     {
       // Find the call to Where() and get the lambda expression predicate.
@@ -762,11 +767,6 @@ namespace Csla
           }
 
         }
-      //else
-      //  foreach (T item in _list.Where((Func<T, bool>) (whereBody as LambdaExpression).Compile()))
-      //    object tmp = _filterBy.GetValue(item);
-      //    _filterIndex.Add(new ListItem(tmp, ((IPositionMappable<T>)_list).PositionOf(item)));
-      //  }
     }
 
     #region IEnumerable<T> Members
@@ -783,7 +783,10 @@ namespace Csla
         InnermostWhereFinder whereFinder = new InnermostWhereFinder();
         MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
         Expression<Func<T, bool>> whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
-        foreach (T item in (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody))
+        var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
+        if (_sortExpression != null && _sortExpression is MethodCallExpression)
+          subset = BuildSortedSubset(subset, (MethodCallExpression) _sortExpression);
+        foreach (T item in subset)
           yield return item;
       }
       else
@@ -791,6 +794,25 @@ namespace Csla
         foreach (T item in _list)
           yield return item;
       }
+    }
+
+    private static IEnumerable<T> BuildSortedSubset(IEnumerable<T> subset, MethodCallExpression sortExpression)
+    {
+      //get the lambda buried in the second argument
+      var lambda = (LambdaExpression)((UnaryExpression)sortExpression.Arguments[1]).Operand;
+      //get the generic arguments of the lambda
+      var genArgs = lambda.Type.GetGenericArguments();
+      //get the sort method out via reflection
+      var sortMethod = typeof(Queryable).GetMethods().Where(
+        m =>
+          m.Name == sortExpression.Method.Name &&
+          m.GetParameters().Count() == 2
+          ).First();
+      //make a generic method using the generic arguments
+      var genericSortMethod = sortMethod.MakeGenericMethod(genArgs);
+      //replace the subset with the sorted subset
+      subset = (IEnumerable<T>)genericSortMethod.Invoke(null, new object[] { subset.AsQueryable<T>(), lambda });
+      return subset;
     }
 
     #endregion
@@ -813,5 +835,6 @@ namespace Csla
     }
 
     #endregion
+
   }
 }

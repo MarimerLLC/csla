@@ -106,6 +106,20 @@ namespace Csla.Linq
            _filter.BuildFilterIndex();
            return (IQueryable<TElement>)_filter;
         }
+        else if (typeof(TElement) == typeof(C) && mex.Method.Name.StartsWith("OrderBy") && _filter == null)
+        {
+          //raw sort without previous where
+          _filter = new LinqBindingList<C>(_parent, this, null);
+          _filter.BuildFilterIndex();
+          _filter.SortByExpression(expression);
+          return (IQueryable<TElement>)_filter;
+        }
+        else if (typeof(TElement) == typeof(C) && mex.Method.Name.StartsWith("OrderBy"))
+        {
+          //sort of previous where
+          _filter.SortByExpression(expression);
+          return (IQueryable<TElement>)_filter;
+        }
         else
         {
           //handle non identity projections here
@@ -179,19 +193,21 @@ namespace Csla.Linq
 
     public IQueryable CreateQuery(Expression expression)
     {
+      string methodName = "";
       //handles OfType call
       Type elementType = TypeSystem.GetElementType(expression.Type);
       if (expression is MethodCallExpression)
       {
         MethodCallExpression mex = (MethodCallExpression) expression;
-        if (mex.Method.Name == "OfType" || mex.Method.Name == "Cast")
+        methodName = mex.Method.Name;
+        if (methodName == "OfType" || methodName == "Cast")
         {
           Type listType = typeof(Enumerable);
           List<C> listFrom = _parent.ToList<C>();
           List<object> paramList = new List<object>();
           paramList.Add(listFrom);
           foreach(MethodInfo method in listType.GetMethods())
-            if (method.Name == mex.Method.Name)
+            if (method.Name == methodName)
             {
               Type[] genericArguments = { mex.Method.GetGenericArguments().First() };
               MethodInfo genericMethodInfo = method.MakeGenericMethod(genericArguments);
@@ -236,8 +252,6 @@ namespace Csla.Linq
         if (i > 0)
           if (arg is Expression)
             //expressions have to be compiled in order to work with the method call on straight Enumerable
-            //somehow, LINQ to objects itself magically does this.  Reflector shows a mess, so I (Aaron) invented my
-            //own way.  God love unit tests!
             paramList.Add(Compile((Expression) arg));
           else 
             paramList.Add(arg);

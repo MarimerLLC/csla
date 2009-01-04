@@ -760,6 +760,56 @@ namespace Csla.Test.CslaQueryProvider
     }
 
     [TestMethod]
+    public void LinqBindingList_is_generated_by_orderby()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+
+      random.Add(new RandomThing(5));
+      random.Add(new RandomThing(4));
+      random.Add(new RandomThing(3));
+      random.Add(new RandomThing(2));
+      random.Add(new RandomThing(1));
+
+      var result = random.OrderBy(x => x.SomeVal);
+      Assert.AreEqual(result.GetType(),typeof(LinqBindingList<RandomThing>));
+    }
+
+    [TestMethod]
+    public void LinqBindingList_generated_by_orderby_removal_by_item_reflects_to_source()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+      var random2 = new RandomThing(2);
+      random.Add(new RandomThing(5));
+      random.Add(new RandomThing(4));
+      random.Add(new RandomThing(3));
+      random.Add(random2);
+      random.Add(new RandomThing(1));
+
+      var result = (LinqBindingList<RandomThing>) random.OrderBy(x => x.SomeVal);
+      result.Remove(random2);
+      Assert.IsTrue((from r in random where r.SomeVal == 2 select r).Count() == 0);
+    }
+
+    [TestMethod]
+    public void LinqBindingList_generated_by_orderby_added_items_still_in_proper_order()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+      random.Add(new RandomThing(5));
+      random.Add(new RandomThing(4));
+      random.Add(new RandomThing(3));
+      random.Add(new RandomThing(2));
+      random.Add(new RandomThing(1));
+
+      var result = (LinqBindingList<RandomThing>)random.OrderBy(x => x.SomeVal);
+      //because result is sorted by number, adding this item should result in it being the
+      //first item in result, and the last in random
+      random.Add(new RandomThing(0));
+
+      Assert.IsTrue(result.First().SomeVal == 0);
+      Assert.IsTrue(random.Last().SomeVal == 0);
+    }
+
+    [TestMethod]
     public void TestQueryProviderOrderBy()
     {
       CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
@@ -770,11 +820,11 @@ namespace Csla.Test.CslaQueryProvider
       random.Add(new RandomThing(2));
       random.Add(new RandomThing(1));
 
-      var reverseOrder = from r in random
+      var inOrder = from r in random
                          orderby r.SomeVal
                          select r;
 
-      Assert.IsTrue(reverseOrder.First().SomeVal == 1);
+      Assert.IsTrue(inOrder.First().SomeVal == 1);
     }
 
     [TestMethod]

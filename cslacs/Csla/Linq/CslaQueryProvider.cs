@@ -232,6 +232,7 @@ namespace Csla.Linq
 
       //convert the enumerated collection to a list
       List<C> listFrom;
+      
       if (_filter != null)
         listFrom = _filter.ToList<C>();
       else

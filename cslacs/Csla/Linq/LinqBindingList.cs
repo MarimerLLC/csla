@@ -561,7 +561,15 @@ namespace Csla
     {
       SetFilterByExpression(expression);
       _queryProvider = queryProvider;
-      _expression = expression;
+      if (expression == null)
+        _expression = Expression.Constant(this);
+      else
+        _expression = expression;
+    }
+
+    private static Expression<Func<T, bool>> SelectAll()
+    {
+      return (T) => true;
     }
 
     private void SetFilterByExpression(Expression expression)
@@ -745,11 +753,7 @@ namespace Csla
       // Find the call to Where() and get the lambda expression predicate.
       InnermostWhereFinder whereFinder = new InnermostWhereFinder();
       MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
-      if (whereExpression == null) return;
-      if (whereExpression.Arguments.Count < 2) return;
-      if (whereExpression.Arguments[1] == null) return;
-      
-      Expression<Func<T, bool>> whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
+      Expression<Func<T, bool>> whereBody = GetWhereBodyFromExpression(whereExpression);
 
       _filterIndex.Clear();
       if (_list is Linq.IIndexSearchable<T>)
@@ -769,6 +773,24 @@ namespace Csla
         }
     }
 
+    private static Expression<Func<T, bool>> GetWhereBodyFromExpression(MethodCallExpression whereExpression)
+    {
+      Expression<Func<T, bool>> whereBody;
+      if (whereExpression == null) whereBody = SelectAll();
+      else if (whereExpression.Arguments.Count < 2) whereBody = SelectAll();
+      else if (whereExpression.Arguments[1] == null) whereBody = SelectAll();
+      else whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
+      return whereBody;
+    }
+
+    internal List<T> ToList<TResult>()
+    {
+      var newList = new List<T>(this.Count);
+      foreach (T item in this)
+        newList.Add(item);
+      return newList;
+    }
+
     #region IEnumerable<T> Members
 
     /// <summary>
@@ -782,7 +804,8 @@ namespace Csla
         // Find the call to Where() and get the lambda expression predicate.
         InnermostWhereFinder whereFinder = new InnermostWhereFinder();
         MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
-        Expression<Func<T, bool>> whereBody = (Expression<Func<T, bool>>)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
+        Expression<Func<T, bool>> whereBody = GetWhereBodyFromExpression(whereExpression);
+
         var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
         if (_sortExpression != null && _sortExpression is MethodCallExpression)
           subset = BuildSortedSubset(subset, (MethodCallExpression) _sortExpression);

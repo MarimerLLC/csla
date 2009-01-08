@@ -488,7 +488,7 @@ Namespace Validation
     Public Sub AddRule(ByVal handler As RuleHandler, ByVal propertyInfo As Core.IPropertyInfo, ByVal priority As Integer)
 
       ValidateHandler(handler)
-      GetTypeRules(True).AddRule(handler, New RuleArgs(PropertyInfo), priority)
+      GetTypeRules(True).AddRule(handler, New RuleArgs(propertyInfo), priority)
 
     End Sub
 

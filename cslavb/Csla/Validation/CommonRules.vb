@@ -561,8 +561,8 @@ Namespace Validation
       ''' creating the broken rule description string.</param>
       ''' <param name="minValue">Minimum allowed value for the property.</param>
       ''' <param name="format">Format string for the min value.</param>
-      Public Sub New(ByVal propertyName As String, friendlyName as string, ByVal minValue As Integer, ByVal format As String)
-        MyBase.New(propertyName,friendlyname)
+      Public Sub New(ByVal propertyName As String, ByVal friendlyName As String, ByVal minValue As Integer, ByVal format As String)
+        MyBase.New(propertyName, friendlyName)
         Me("MinValue") = minValue
         Me("Format") = format
       End Sub

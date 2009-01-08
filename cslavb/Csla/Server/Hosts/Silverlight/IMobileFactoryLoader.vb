@@ -5,24 +5,24 @@ Imports System.Text
 
 Namespace Server.Hosts.Silverlight
 
+  ''' <summary>
+  ''' Defines an interface to be implemented by
+  ''' a factory object that returns MobileFactory
+  ''' objects based on the MobileFactory attributes
+  ''' used to decorate CSLA Light business objects.
+  ''' </summary>
+  Public Interface IMobileFactoryLoader
+
     ''' <summary>
-    ''' Defines an interface to be implemented by
-    ''' a factory object that returns MobileFactory
-    ''' objects based on the MobileFactory attributes
-    ''' used to decorate CSLA Light business objects.
+    ''' Returns a MobileFactory object.
     ''' </summary>
-    Public Interface IMobileFactoryLoader
+    ''' <param name="factoryName">
+    ''' Name of the factory to create, typically
+    ''' an assembly qualified type name.
+    ''' </param>
+    Function GetFactory(ByVal factoryName As String) As Object
 
-        ''' <summary>
-        ''' Returns a MobileFactory object.
-        ''' </summary>
-        ''' <param name="factoryName">
-        ''' Name of the factory to create, typically
-        ''' an assembly qualified type name.
-        ''' </param>
-        Function GetFactory(ByVal factoryName As String) As Object
-
-    End Interface
+  End Interface
 
 End Namespace
 

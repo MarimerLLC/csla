@@ -3,10 +3,10 @@ Imports System.ServiceModel
 
 Namespace Server.Hosts.Silverlight
 
-    ''' <summary>
-    ''' Defines the service contract for the WCF data
-    ''' portal.
-    ''' </summary>
+  ''' <summary>
+  ''' Defines the service contract for the WCF data
+  ''' portal.
+  ''' </summary>
   <ServiceContract(Namespace:="http://ws.lhotka.net/WcfDataPortal")> _
   Public Interface IWcfPortal
 

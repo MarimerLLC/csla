@@ -142,7 +142,7 @@ Namespace Data
 #Region "IDisposable"
 
     Public Sub Dispose() Implements IDisposable.Dispose
-      DeRef
+      DeRef()
     End Sub
 
 #End Region

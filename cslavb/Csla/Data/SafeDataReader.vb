@@ -68,7 +68,7 @@ Namespace Data
     Public Function GetValue(ByVal name As String) As Object
       Return GetValue(_dataReader.GetOrdinal(name))
     End Function
- 
+
     ''' <summary>
     ''' Gets a value of type <see cref="System.Object" /> from the datareader.
     ''' </summary>

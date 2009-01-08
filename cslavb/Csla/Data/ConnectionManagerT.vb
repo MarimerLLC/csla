@@ -120,7 +120,7 @@ Namespace Csla.Data
           _connection.Dispose()
           ApplicationContext.LocalContext.Remove("__db:" + _connectionString)
         End If
-      end SyncLock
+      End SyncLock
     End Sub
 
 #End Region

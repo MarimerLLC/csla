@@ -166,7 +166,7 @@ Namespace Linq
       Return list.GetEnumerator
     End Function
 #End Region
-    
+
   End Class
 End Namespace
 

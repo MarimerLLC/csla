@@ -8,25 +8,25 @@ Imports Csla.Core
 
 Namespace Security
 
+  ''' <summary>
+  ''' Implementation of a .NET identity object representing
+  ''' an unauthenticated user. Used by the
+  ''' UnauthenticatedPrincipal class.
+  ''' </summary>
+  <Serializable()> _
+  Public NotInheritable Class UnauthenticatedIdentity
+    Inherits CslaIdentity
+
     ''' <summary>
-    ''' Implementation of a .NET identity object representing
-    ''' an unauthenticated user. Used by the
-    ''' UnauthenticatedPrincipal class.
+    ''' Creates an instance of the object.
     ''' </summary>
-    <Serializable()> _
-    Public NotInheritable Class UnauthenticatedIdentity
-        Inherits CslaIdentity
+    Public Sub New()
+      IsAuthenticated = False
+      Name = String.Empty
+      AuthenticationType = String.Empty
+      Roles = New MobileList(Of String)()
+    End Sub
 
-        ''' <summary>
-        ''' Creates an instance of the object.
-        ''' </summary>
-        Public Sub New()
-            IsAuthenticated = False
-            Name = String.Empty
-            AuthenticationType = String.Empty
-            Roles = New MobileList(Of String)()
-        End Sub
-
-    End Class
+  End Class
 End Namespace
 

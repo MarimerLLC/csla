@@ -12,45 +12,45 @@ Imports Csla.Core
 
 Namespace Security
 
+  ''' <summary>
+  ''' Implements a .NET identity object that automatically
+  ''' authenticates against the ASP.NET membership provider.
+  ''' </summary>
+  ''' <remarks></remarks>
+  Partial Public Class MembershipIdentity
+    Inherits ReadOnlyBase(Of MembershipIdentity)
+    Implements IIdentity
+
     ''' <summary>
-    ''' Implements a .NET identity object that automatically
-    ''' authenticates against the ASP.NET membership provider.
+    ''' Authenticates the user's credentials against the ASP.NET
+    ''' membership provider.
     ''' </summary>
-    ''' <remarks></remarks>
-    Partial Public Class MembershipIdentity
-        Inherits ReadOnlyBase(Of MembershipIdentity)
-        Implements IIdentity
+    ''' <typeparam name="T">
+    ''' Type of object (subclass of MembershipIdentity) to retrieve.
+    ''' </typeparam>
+    ''' <param name="userName">Username to authenticate.</param>
+    ''' <param name="password">Password to authenticate.</param>
+    ''' <param name="isRunOnWebServer">
+    ''' Specifies whether to access the membership provider locally (true),
+    ''' or through the data portal (false) presumably to reach an application
+    ''' server.
+    ''' </param>
+    ''' <returns></returns>
+    Public Shared Function GetMembershipIdentity(Of T As MembershipIdentity)(ByVal userName As String, ByVal password As String, ByVal isRunOnWebServer As Boolean) As T
+      Dim factory As New IdentityFactory
+      Return CType(factory.FetchMembershipIdentity(New Criteria(userName, password, GetType(T), isRunOnWebServer)), T)
+    End Function
 
-        ''' <summary>
-        ''' Authenticates the user's credentials against the ASP.NET
-        ''' membership provider.
-        ''' </summary>
-        ''' <typeparam name="T">
-        ''' Type of object (subclass of MembershipIdentity) to retrieve.
-        ''' </typeparam>
-        ''' <param name="userName">Username to authenticate.</param>
-        ''' <param name="password">Password to authenticate.</param>
-        ''' <param name="isRunOnWebServer">
-        ''' Specifies whether to access the membership provider locally (true),
-        ''' or through the data portal (false) presumably to reach an application
-        ''' server.
-        ''' </param>
-        ''' <returns></returns>
-        Public Shared Function GetMembershipIdentity(Of T As MembershipIdentity)(ByVal userName As String, ByVal password As String, ByVal isRunOnWebServer As Boolean) As T
-            Dim factory As New IdentityFactory
-            Return CType(factory.FetchMembershipIdentity(New Criteria(userName, password, GetType(T), isRunOnWebServer)), T)
-        End Function
+    ''' <summary>
+    ''' Method invoked when the object is deserialized.
+    ''' </summary>
+    ''' <param name="context">Serialization context.</param>
+    Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)
+      _forceInit = 0
+      MyBase.OnDeserialized(context)
+    End Sub
 
-        ''' <summary>
-        ''' Method invoked when the object is deserialized.
-        ''' </summary>
-        ''' <param name="context">Serialization context.</param>
-        Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)
-            _forceInit = 0
-            MyBase.OnDeserialized(context)
-        End Sub
-
-    End Class
+  End Class
 End Namespace
 #End If
 

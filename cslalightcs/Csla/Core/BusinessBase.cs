@@ -1384,7 +1384,7 @@ namespace Csla.Core
     /// </remarks>
     protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      SetProperty<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
+      SetPropertyConvert<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
     }
 
     /// <summary>
@@ -1405,22 +1405,27 @@ namespace Csla.Core
     {
       try
       {
-        if (field == null)
+        if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         {
-          if (newValue != null && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
+          bool doChange= false;
+          if (field == null)
+          {
+            if (newValue != null)
+              doChange = true;
+          }
+          else
+          {
+            if (typeof(P) == typeof(string) && newValue == null)
+              newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
+            if (!field.Equals(newValue))
+              doChange = true;
+          }
+          if (doChange)
           {
             if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
             field = newValue;
             if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
-        }
-        else if (!(field.Equals(newValue)) && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
-        {
-          if (typeof(P) == typeof(string) && newValue == null)
-            newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
-          if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
-          field = newValue;
-          if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
         }
       }
       catch (SecurityException)
@@ -1458,26 +1463,31 @@ namespace Csla.Core
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetProperty<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
       try
       {
-        if (field == null)
+        if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         {
-          if (newValue != null && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
+          bool doChange = false;
+          if (field == null)
+          {
+            if (newValue != null)
+              doChange = true;
+          }
+          else
+          {
+            if (typeof(V) == typeof(string) && newValue == null)
+              newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
+            if (!field.Equals(newValue))
+              doChange = true;
+          }
+          if (doChange)
           {
             if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
             if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
-        }
-        else if (!(field.Equals(newValue)) && (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException)))
-        {
-          if (typeof(V) == typeof(string) && newValue == null)
-            newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
-          if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
-          field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-          if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
         }
       }
       catch (SecurityException)
@@ -1541,9 +1551,9 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
     {
-      if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      try
       {
-        try
+        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
         {
           P oldValue = default(P);
           var fieldData = FieldManager.GetFieldData(propertyInfo);
@@ -1564,11 +1574,15 @@ namespace Csla.Core
             newValue = Utilities.CoerceValue<F>(typeof(string), null, string.Empty);
           LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), !_bypassPropertyChecks);
         }
-        catch (Exception ex)
-        {
-          throw new PropertyLoadException(
-            string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
-        }
+      }
+      catch (SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(
+          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 

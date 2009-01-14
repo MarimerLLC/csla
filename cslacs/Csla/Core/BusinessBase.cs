@@ -2127,33 +2127,39 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(string propertyName, ref P field, P newValue, Security.NoAccessBehavior noAccess)
     {
-      if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      try
       {
-        try
+        if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         {
+          bool doChange = false;
           if (field == null)
           {
             if (newValue != null)
-            {
-              if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
-              field = newValue;
-              if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
-            }
+              doChange = true;
           }
-          else if (!(field.Equals(newValue)))
+          else
           {
             if (typeof(P) == typeof(string) && newValue == null)
               newValue = Utilities.CoerceValue<P>(typeof(string), field, string.Empty);
+            if (!field.Equals(newValue))
+              doChange = true;
+          }
+          if (doChange)
+          {
             if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
             field = newValue;
             if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
         }
-        catch (Exception ex)
-        {
-          throw new PropertyLoadException(
-            string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message), ex);
-        }
+      }
+      catch (System.Security.SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(
+          string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message), ex);
       }
     }
 
@@ -2183,33 +2189,39 @@ namespace Csla.Core
     /// </remarks>
     protected void SetPropertyConvert<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      try
       {
-        try
+        if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         {
+          bool doChange = false;
           if (field == null)
           {
             if (newValue != null)
-            {
-              if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
-              field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-              if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
-            }
+              doChange = true;
           }
-          else if (!(field.Equals(newValue)))
+          else
           {
             if (typeof(V) == typeof(string) && newValue == null)
               newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
+            if (!field.Equals(newValue))
+              doChange = true;
+          }
+          if (doChange)
+          {
             if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
             if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
           }
         }
-        catch (Exception ex)
-        {
-          throw new PropertyLoadException(
-            string.Format(Properties.Resources.PropertyLoadException, propertyName, ex.Message), ex);
-        }
+      }
+      catch (System.Security.SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(
+          string.Format(Properties.Resources.PropertyLoadException, propertyName, ex.Message), ex);
       }
     }
 
@@ -2264,9 +2276,9 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue, Security.NoAccessBehavior noAccess)
     {
-      if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      try
       {
-        try
+        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
         {
           P oldValue = default(P);
           var fieldData = FieldManager.GetFieldData(propertyInfo);
@@ -2287,11 +2299,15 @@ namespace Csla.Core
             newValue = Utilities.CoerceValue<F>(typeof(string), null, string.Empty);
           LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), !_bypassPropertyChecks);
         }
-        catch (Exception ex)
-        {
-          throw new PropertyLoadException(
-            string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
-        }
+      }
+      catch (System.Security.SecurityException)
+      {
+        throw;
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(
+          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 

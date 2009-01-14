@@ -956,20 +956,27 @@ namespace Csla
         }
         else
         {
-          Csla.DataPortalClient.IDataPortalProxy portal;
-          string proxyTypeName = ApplicationContext.DataPortalProxy;
-          if (proxyTypeName == "Local")
-            portal = new DataPortalClient.LocalProxy();
-          else
+          if (_proxyType == null)
           {
-            if (_proxyType == null)
+            string proxyTypeName = ApplicationContext.DataPortalProxy;
+            if (proxyTypeName == "Local")
+              _proxyType = typeof(DataPortalClient.LocalProxy);
+            else
               _proxyType = Type.GetType(proxyTypeName, true, true);
-            portal = (DataPortalClient.IDataPortalProxy)
-              Activator.CreateInstance(_proxyType);
           }
-          return portal;
+          return (DataPortalClient.IDataPortalProxy)Activator.CreateInstance(_proxyType);
         }
       }
+    }
+
+    /// <summary>
+    /// Resets the data portal proxy type, so the
+    /// next data portal call will reload the proxy
+    /// type based on current configuration values.
+    /// </summary>
+    public static void ResetProxyType()
+    {
+      _proxyType = null;
     }
 
     /// <summary>

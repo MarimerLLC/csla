@@ -340,16 +340,21 @@ namespace Csla
       }
     }
 
+    private static string _dataPortalProxy;
+
     /// <summary>
-    /// Returns the channel or network protocol
-    /// for the DataPortal server.
+    /// Gets or sets the full type name (or 'Local') of
+    /// the data portal proxy object to be used when
+    /// communicating with the data portal server.
     /// </summary>
-    /// <value>Fully qualified assembly/type name of the proxy class.</value>
+    /// <value>Fully qualified assembly/type name of the proxy class
+    /// or 'Local'.</value>
     /// <returns></returns>
     /// <remarks>
     /// <para>
-    /// This value is read from the application configuration
-    /// file with the key value "CslaDataPortalProxy". 
+    /// If this value is empty or null, a new value is read from the 
+    /// application configuration file with the key value 
+    /// "CslaDataPortalProxy".
     /// </para><para>
     /// The proxy class must implement Csla.Server.IDataPortalServer.
     /// </para><para>
@@ -380,10 +385,18 @@ namespace Csla
     {
       get
       {
-        string result = ConfigurationManager.AppSettings["CslaDataPortalProxy"];
-        if (string.IsNullOrEmpty(result))
-          result = "Local";
-        return result;
+        if (string.IsNullOrEmpty(_dataPortalProxy))
+        {
+          _dataPortalProxy = ConfigurationManager.AppSettings["CslaDataPortalProxy"];
+          if (string.IsNullOrEmpty(_dataPortalProxy))
+            _dataPortalProxy = "Local";
+        }
+        return _dataPortalProxy;
+      }
+      set
+      {
+        _dataPortalProxy = value;
+        DataPortal.ResetProxyType();
       }
     }
 

@@ -130,7 +130,8 @@ namespace Csla.Core.FieldManager
     /// <param name="prop">
     /// The property corresponding to the field.
     /// </param>
-    internal IFieldData GetFieldData(IPropertyInfo prop)
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
+    public IFieldData GetFieldData(IPropertyInfo prop)
     {
       try
       {

@@ -78,11 +78,16 @@ namespace Csla.Serialization.Mobile
 
       List<SerializationInfo> serialized = _serializationReferences.Values.ToList();
 
-      DataContractSerializer dc = new DataContractSerializer(
-        typeof(List<SerializationInfo>),
-        new Type[] { typeof(List<int>), typeof(byte[]) });
+      DataContractSerializer dc = GetDataContractSerializer();
 
       dc.WriteObject(writer, serialized);
+    }
+
+    private DataContractSerializer GetDataContractSerializer()
+    {
+      return new DataContractSerializer(
+        typeof(List<SerializationInfo>),
+        new Type[] { typeof(List<int>), typeof(byte[]), typeof(DateTimeOffset) });
     }
 
     /// <summary>
@@ -180,9 +185,7 @@ namespace Csla.Serialization.Mobile
     /// <returns></returns>
     public object Deserialize(XmlReader reader)
     {
-      DataContractSerializer dc = new DataContractSerializer(
-        typeof(List<SerializationInfo>),
-        new Type[] { typeof(List<int>), typeof(byte[]) });
+      DataContractSerializer dc = GetDataContractSerializer();
 
       List<SerializationInfo> deserialized = dc.ReadObject(reader) as List<SerializationInfo>;
 

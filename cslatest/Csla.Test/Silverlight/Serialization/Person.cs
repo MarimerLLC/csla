@@ -65,6 +65,13 @@ namespace cslalighttest.Serialization
       return GetProperty<DateTime>(BirthdateProperty);
     }
 
+    private static PropertyInfo<DateTimeOffset> DtoDateProperty = RegisterProperty(new PropertyInfo<DateTimeOffset>("DtoDate", "DateTimeOffset date"));
+    public DateTimeOffset DtoDate
+    {
+      get { return GetProperty(DtoDateProperty); }
+      set { SetProperty(DtoDateProperty, value); }
+    }
+
     public Address PrimaryAddress
     {
       get { return GetProperty<Address>(PrimaryAddressProperty); }

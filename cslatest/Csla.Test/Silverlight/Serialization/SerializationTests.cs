@@ -103,12 +103,14 @@ namespace cslalighttest.Serialization
       expected.Name = "test";
       expected.Unserialized = "should be null";
       expected.Birthdate = birthdate;
+      expected.DtoDate = DateTimeOffset.Parse("1/1/2000");
 
       var buffer = MobileFormatter.Serialize(expected);
       var actual = (Person)MobileFormatter.Deserialize(buffer);
 
       context.Assert.AreEqual(expected.Name, actual.Name);
       context.Assert.AreEqual(expected.Birthdate, actual.Birthdate);
+      context.Assert.AreEqual(expected.DtoDate, actual.DtoDate);
       context.Assert.AreEqual(expected.Age, actual.Age);
 
       context.Assert.AreEqual(actual.Unserialized, string.Empty);

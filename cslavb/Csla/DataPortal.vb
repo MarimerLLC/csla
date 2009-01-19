@@ -504,6 +504,55 @@ Public Module DataPortal
 
 #End Region
 
+#Region " Begin Update "
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' update a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to update.
+  ''' </typeparam>
+  ''' <param name="obj">
+  ''' Business object to update.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  Public Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
+
+    BeginUpdate(Of T)(obj, callback, Nothing)
+
+  End Sub
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' update a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to update.
+  ''' </typeparam>
+  ''' <param name="obj">
+  ''' Business object to update.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  ''' <param name="userState">User state object.</param>
+  Public Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+
+    Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
+    AddHandler dp.UpdateCompleted, callback
+    dp.BeginUpdate(obj, userState)
+
+  End Sub
+
+#End Region
+
 #Region " Child Data Access methods "
 
   ''' <summary>

@@ -127,7 +127,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       result = DirectCast(Me, T)
     End If
 
-    OnSaved(result)
+    OnSaved(result, Nothing, Nothing)
     Return result
 
   End Function
@@ -137,7 +137,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   End Function
 
   Private Sub ISavable_SaveComplete(ByVal newObject As Object) Implements Core.ISavable.SaveComplete
-    OnSaved(DirectCast(newObject, T))
+    OnSaved(DirectCast(newObject, T), Nothing, Nothing)
   End Sub
 
   ''' <summary>
@@ -177,7 +177,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' Event raised when an object has been saved.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-  Public Custom Event Saved As EventHandler(Of Csla.Core.SavedEventArgs) Implements Core.ISavable.Saved
+  Public Custom Event Saved As EventHandler(Of ) Implements Core.ISavable.Saved
     AddHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
       If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
         _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
@@ -208,11 +208,196 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' to the new object instance.
   ''' </summary>
   ''' <param name="newObject">The new object instance.</param>
+  ''' <param name="e">Exception that occurred during operation.</param>
+  ''' <param name="userState">User state object.</param>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Sub OnSaved(ByVal newObject As T)
+  Protected Sub OnSaved(ByVal newObject As T, ByVal e As Exception, ByVal userState As Object)
+    MarkIdle()
+    Dim args As New Csla.Core.SavedEventArgs(newObject, e, userState)
+    If _nonSerializableSavedHandlers IsNot Nothing Then
+      _nonSerializableSavedHandlers.Invoke(Me, args)
+    End If
+    If _serializableSavedHandlers IsNot Nothing Then
+      _serializableSavedHandlers.Invoke(Me, args)
+    End If
+  End Sub
 
-    RaiseEvent Saved(Me, New Csla.Core.SavedEventArgs(newObject))
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  Public Sub BeginSave()
+    BeginSave(False, Nothing, Nothing)
+  End Sub
 
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  ''' <param name="userState">User state data.</param>
+  Public Sub BeginSave(ByVal userState As Object)
+    BeginSave(False, Nothing, userState)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  ''' <param name="handler">
+  ''' Method called when the operation is complete.
+  ''' </param>
+  Public Sub BeginSave(ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs))
+    BeginSave(False, handler, Nothing)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  ''' <param name="forceUpdate">
+  ''' If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+  ''' If <see langword="false"/> then it is the same as calling Save().
+  ''' </param>
+  ''' <param name="handler">
+  ''' Method called when the operation is complete.
+  ''' </param>
+  ''' <param name="userState">User state data.</param>
+  Public Overridable Sub BeginSave(ByVal forceUpdate As Boolean, ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs), ByVal userState As Object)
+    If forceUpdate AndAlso IsNew Then
+      ' mark the object as old - which makes it
+      ' not dirty
+      MarkOld()
+      ' now mark the object as dirty so it can save
+      MarkDirty(True)
+    End If
+
+    If Me.IsChild Then
+      Dim [error] As New NotSupportedException(My.Resources.NoSaveChildException)
+      OnSaved(Nothing, [error], userState)
+      If handler IsNot Nothing Then
+        handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
+      End If
+    ElseIf EditLevel > 0 Then
+      Dim [error] As New Validation.ValidationException(My.Resources.NoSaveEditingException)
+      OnSaved(Nothing, [error], userState)
+      If handler IsNot Nothing Then
+        handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
+      End If
+    ElseIf (Not IsValid) AndAlso (Not IsDeleted) Then
+      Dim [error] As New Validation.ValidationException(My.Resources.NoSaveEditingException)
+      OnSaved(Nothing, [error], userState)
+      If handler IsNot Nothing Then
+        handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
+      End If
+    ElseIf IsBusy Then
+      Dim [error] As New Validation.ValidationException(My.Resources.BusyObjectsMayNotBeSaved)
+      OnSaved(Nothing, [error], userState)
+      If handler IsNot Nothing Then
+        handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
+      End If
+    Else
+      If IsDirty Then
+        MarkBusy()
+        DataPortal.BeginUpdate(Of T)(Me, AddressOf BeginUpdateComplete, New SaveState(userState, handler))
+      Else
+        OnSaved(CType(Me, T), Nothing, userState)
+        If handler IsNot Nothing Then
+          handler(Me, New Csla.Core.SavedEventArgs(Me, Nothing, userState))
+        End If
+      End If
+    End If
+  End Sub
+
+  Private Sub BeginUpdateComplete(ByVal sender As Object, ByVal e As DataPortalResult(Of T))
+
+    Dim args = CType(e.UserState, SaveState)
+    Dim handler = args.Handler
+    Dim result As T = e.Object
+    OnSaved(result, e.Error, args.UserState)
+    If handler IsNot Nothing Then
+      handler(result, New Csla.Core.SavedEventArgs(result, e.Error, e.UserState))
+    End If
+    MarkIdle()
+
+  End Sub
+
+  Private Class SaveState
+
+    Public Sub New(ByVal userState As Object, ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs))
+      _userstate = userState
+      _handler = handler
+    End Sub
+
+    Private _userstate As Object
+    Public Property UserState() As Object
+      Get
+        Return _userstate
+      End Get
+      Set(ByVal value As Object)
+        _userstate = value
+      End Set
+    End Property
+
+    Private _handler As EventHandler(Of Csla.Core.SavedEventArgs)
+    Public Property Handler() As EventHandler(Of Csla.Core.SavedEventArgs)
+      Get
+        Return _handler
+      End Get
+      Set(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
+        _handler = value
+      End Set
+    End Property
+
+  End Class
+
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  ''' <param name="forceUpdate">
+  ''' If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+  ''' If <see langword="false"/> then it is the same as calling Save().
+  ''' </param>
+  ''' <remarks>
+  ''' This overload is designed for use in web applications
+  ''' when implementing the Update method in your 
+  ''' data wrapper object.
+  ''' </remarks>
+  Public Sub BeginSave(ByVal forceUpdate As Boolean)
+    Me.BeginSave(False, Nothing)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an async operation to save the object to the database.
+  ''' </summary>
+  ''' <param name="forceUpdate">
+  ''' If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+  ''' If <see langword="false"/> then it is the same as calling Save().
+  ''' </param>
+  ''' <param name="handler">
+  ''' Delegate reference to a callback handler that will
+  ''' be invoked when the async operation is complete.
+  ''' </param>
+  ''' <remarks>
+  ''' This overload is designed for use in web applications
+  ''' when implementing the Update method in your 
+  ''' data wrapper object.
+  ''' </remarks>
+  Public Sub BeginSave(ByVal forceUpdate As Boolean, ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs))
+    Me.BeginSave(forceUpdate, handler, Nothing)
+  End Sub
+
+  ''' <summary>
+  ''' Saves the object to the database, forcing
+  ''' IsNew to <see langword="false"/> and IsDirty to True.
+  ''' </summary>
+  ''' <param name="handler">
+  ''' Delegate reference to a callback handler that will
+  ''' be invoked when the async operation is complete.
+  ''' </param>
+  ''' <param name="userState">User state data.</param>
+  ''' <remarks>
+  ''' This overload is designed for use in web applications
+  ''' when implementing the Update method in your 
+  ''' data wrapper object.
+  ''' </remarks>
+  Public Sub BeginSave(ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs), ByVal userState As Object)
+    Me.BeginSave(False, handler, userState)
   End Sub
 
 #End Region

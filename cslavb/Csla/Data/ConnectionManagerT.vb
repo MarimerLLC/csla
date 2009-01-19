@@ -3,7 +3,7 @@ Imports System.Configuration
 Imports System.Data
 Imports Csla.Properties
 
-Namespace Csla.Data
+Namespace Data
 {
   ''' <summary>
   ''' Provides an automated way to reuse open

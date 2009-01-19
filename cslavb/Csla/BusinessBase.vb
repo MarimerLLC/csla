@@ -258,7 +258,11 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' Method called when the operation is complete.
   ''' </param>
   ''' <param name="userState">User state data.</param>
-  Public Overridable Sub BeginSave(ByVal forceUpdate As Boolean, ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs), ByVal userState As Object)
+  Public Overridable Sub BeginSave( _
+    ByVal forceUpdate As Boolean, _
+    ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs), _
+    ByVal userState As Object)
+
     If forceUpdate AndAlso IsNew Then
       ' mark the object as old - which makes it
       ' not dirty
@@ -273,28 +277,34 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       If handler IsNot Nothing Then
         handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
       End If
+
     ElseIf EditLevel > 0 Then
       Dim [error] As New Validation.ValidationException(My.Resources.NoSaveEditingException)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
         handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
       End If
+
     ElseIf (Not IsValid) AndAlso (Not IsDeleted) Then
       Dim [error] As New Validation.ValidationException(My.Resources.NoSaveEditingException)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
         handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
       End If
+
     ElseIf IsBusy Then
       Dim [error] As New Validation.ValidationException(My.Resources.BusyObjectsMayNotBeSaved)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
         handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
       End If
+
     Else
       If IsDirty Then
         MarkBusy()
-        DataPortal.BeginUpdate(Of T)(Me, AddressOf BeginUpdateComplete, New SaveState(userState, handler))
+        DataPortal.BeginUpdate(Of T)( _
+          Me, AddressOf BeginUpdateComplete, New SaveState(userState, handler))
+
       Else
         OnSaved(CType(Me, T), Nothing, userState)
         If handler IsNot Nothing Then
@@ -302,16 +312,19 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
         End If
       End If
     End If
+
   End Sub
 
-  Private Sub BeginUpdateComplete(ByVal sender As Object, ByVal e As DataPortalResult(Of T))
+  Private Sub BeginUpdateComplete( _
+    ByVal sender As Object, ByVal e As DataPortalResult(Of T))
 
     Dim args = CType(e.UserState, SaveState)
     Dim handler = args.Handler
     Dim result As T = e.Object
     OnSaved(result, e.Error, args.UserState)
     If handler IsNot Nothing Then
-      handler(result, New Csla.Core.SavedEventArgs(result, e.Error, e.UserState))
+      handler( _
+        result, New Csla.Core.SavedEventArgs(result, e.Error, e.UserState))
     End If
     MarkIdle()
 

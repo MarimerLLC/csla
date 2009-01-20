@@ -76,7 +76,7 @@ namespace Csla.Server.Hosts.Silverlight
         {
           if (criteria != null)
           {
-            o = Csla.DataPortal.Create(criteria);
+            o = Csla.DataPortal.Create(t, criteria);
           }
           else
           {

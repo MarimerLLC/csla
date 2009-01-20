@@ -107,7 +107,7 @@ namespace Csla
       return Create(MethodCaller.GetObjectType(criteria), criteria);
     }
 
-    private static object Create(Type objectType, object criteria)
+    internal static object Create(Type objectType, object criteria)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;

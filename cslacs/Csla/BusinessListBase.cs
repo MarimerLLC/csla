@@ -583,7 +583,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (RaiseListChangedEvents && e != null)
+      if (_deserialized && RaiseListChangedEvents && e != null)
       {
         DeferredLoadIndexIfNotLoaded();
         if (_indexSet.HasIndexFor(e.PropertyName))
@@ -898,6 +898,10 @@ namespace Csla
 
     #region Serialization Notification
 
+    [NonSerialized]
+    [NotUndoable]
+    private bool _deserialized = false;
+
     /// <summary>
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
@@ -905,6 +909,8 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnDeserialized()
     {
+      _deserialized = true;
+
       foreach (Core.IEditableBusinessObject child in this)
       {
         child.SetParent(this);

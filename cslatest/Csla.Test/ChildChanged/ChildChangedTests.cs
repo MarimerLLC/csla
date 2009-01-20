@@ -97,9 +97,9 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void SingleList()
     {
-      bool lc = false;
+      int lc = 0;
       System.ComponentModel.PropertyDescriptor lcp = null;
-      bool cc = false;
+      int cc = 0;
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = new SingleList();
@@ -107,37 +107,76 @@ namespace Csla.Test.ChildChanged
 #if !SILVERLIGHT
       root.ListChanged += (o, e) =>
       {
-        lc = true;
+        lc++;
         lcp = e.PropertyDescriptor;
       };
 #else
       root.CollectionChanged += (o, e) =>
       {
-        lc = true;
+        lc++;
       };
 #endif
       root.ChildChanged += (o, e) =>
       {
-        cc = true;
+        cc++;
         cca = e;
       };
       root[0].Name = "abc";
 #if !SILVERLIGHT
-      Assert.IsTrue(lc, "ListChanged should have fired");
+      Assert.AreEqual(1, lc, "ListChanged should have fired");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
 #endif
-      Assert.IsTrue(cc, "ChildChanged should have fired");
+      Assert.AreEqual(1, cc, "ChildChanged should have fired");
+      Assert.IsTrue(ReferenceEquals(root[0], cca.ChildObject), "Ref should be equal");
+    }
+
+    [TestMethod]
+    public void SingleList_Serialized()
+    {
+      int lc = 0;
+      System.ComponentModel.PropertyDescriptor lcp = null;
+      int cc = 0;
+      Csla.Core.ChildChangedEventArgs cca = null;
+
+      var root = new SingleList();
+      root.Add(new SingleRoot(true));
+      root = root.Clone();
+
+#if !SILVERLIGHT
+      root.ListChanged += (o, e) =>
+      {
+        lc++;
+        lcp = e.PropertyDescriptor;
+      };
+#else
+      root.CollectionChanged += (o, e) =>
+      {
+        lc++;
+      };
+#endif
+      root.ChildChanged += (o, e) =>
+      {
+        cc++;
+        cca = e;
+      };
+      root[0].Name = "abc";
+#if !SILVERLIGHT
+      Assert.AreEqual(1, lc, "ListChanged should have fired");
+      Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
+      Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
+#endif
+      Assert.AreEqual(1, cc, "ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root[0], cca.ChildObject), "Ref should be equal");
     }
 
     [TestMethod]
     public void ContainedList()
     {
-      bool lc = false;
+      int lc = 0;
+      int rcc = 0;
+      int cc = 0;
       System.ComponentModel.PropertyDescriptor lcp = null;
-      bool rcc = false;
-      bool cc = false;
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = new ContainsList();
@@ -148,33 +187,82 @@ namespace Csla.Test.ChildChanged
       };
       root.ChildChanged += (o, e) =>
       {
-        rcc = true;
+        rcc++;
       };
 #if !SILVERLIGHT
       root.List.ListChanged += (o, e) =>
       {
-        lc = true;
+        lc++;
         lcp = e.PropertyDescriptor;
       };
 #else
       root.List.CollectionChanged += (o, e) =>
       {
-        lc = true;
+        lc++;
       };
 #endif
       root.List.ChildChanged += (o, e) =>
       {
-        cc = true;
+        cc++;
         cca = e;
       };
       root.List[0].Name = "abc";
 #if !SILVERLIGHT
-      Assert.IsTrue(lc, "ListChanged should have fired");
+      Assert.AreEqual(1, lc, "ListChanged should have fired");
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
 #endif
-      Assert.IsTrue(rcc, "root.ChildChanged should have fired");
-      Assert.IsTrue(cc, "list.ChildChanged should have fired");
+      Assert.AreEqual(1, rcc, "root.ChildChanged should have fired");
+      Assert.AreEqual(1, cc, "list.ChildChanged should have fired");
+      Assert.IsTrue(ReferenceEquals(root.List[0], cca.ChildObject), "Ref should be equal");
+    }
+
+    [TestMethod]
+    public void ContainedList_Serialized()
+    {
+      int lc = 0;
+      int rcc = 0;
+      int cc = 0;
+      System.ComponentModel.PropertyDescriptor lcp = null;
+      Csla.Core.ChildChangedEventArgs cca = null;
+
+      var root = new ContainsList();
+      root.List.Add(new SingleRoot(true));
+      root = root.Clone();
+
+      root.PropertyChanged += (o, e) =>
+      {
+        Assert.IsTrue(false, "root.PropertyChanged should not fire");
+      };
+      root.ChildChanged += (o, e) =>
+      {
+        rcc++;
+      };
+#if !SILVERLIGHT
+      root.List.ListChanged += (o, e) =>
+      {
+        lc++;
+        lcp = e.PropertyDescriptor;
+      };
+#else
+      root.List.CollectionChanged += (o, e) =>
+      {
+        lc++;
+      };
+#endif
+      root.List.ChildChanged += (o, e) =>
+      {
+        cc++;
+        cca = e;
+      };
+      root.List[0].Name = "abc";
+#if !SILVERLIGHT
+      Assert.AreEqual(1, lc, "ListChanged should have fired");
+      Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
+      Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
+#endif
+      Assert.AreEqual(1, rcc, "root.ChildChanged should have fired");
+      Assert.AreEqual(1, cc, "list.ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(root.List[0], cca.ChildObject), "Ref should be equal");
     }
 

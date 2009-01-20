@@ -251,7 +251,7 @@ namespace Csla.Core
 
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
-        child.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
+        child.ChildChanged += Child_Changed;
     }
 
     /// <summary>

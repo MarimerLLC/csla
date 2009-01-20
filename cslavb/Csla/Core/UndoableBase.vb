@@ -12,7 +12,7 @@ Namespace Core
   ''' </summary>
   <Serializable()> _
   Public MustInherit Class UndoableBase
-    Inherits Csla.Core.BindableBase
+    Inherits Core.BindableBase
 
     Implements IUndoableObject
 
@@ -104,7 +104,7 @@ Namespace Core
 
       CopyingState()
 
-      Dim currentType As Type = Me.GetType
+      Dim currentType As Type = Me.GetType()
       Dim state As New HybridDictionary()
       Dim fields() As FieldInfo
 
@@ -128,7 +128,7 @@ Namespace Core
               ' the field is undoable, so it needs to be processed
               Dim value As Object = field.GetValue(Me)
 
-              If GetType(Csla.Core.IUndoableObject). _
+              If GetType(Core.IUndoableObject). _
                   IsAssignableFrom(field.FieldType) Then
                 ' make sure the variable has a value
                 If value Is Nothing Then
@@ -236,7 +236,7 @@ Namespace Core
                 ' the field is undoable, so restore its value
                 Dim value As Object = field.GetValue(Me)
 
-                If GetType(Csla.Core.IUndoableObject). _
+                If GetType(Core.IUndoableObject). _
                   IsAssignableFrom(field.FieldType) Then
                   ' this is a child object
                   ' see if the previous value was empty
@@ -325,7 +325,7 @@ Namespace Core
               ' see if the field is undoable or not
               If Not NotUndoableField(field) Then
                 ' the field is undoable so see if it is editable
-                If GetType(Csla.Core.IUndoableObject). _
+                If GetType(Core.IUndoableObject). _
                   IsAssignableFrom(field.FieldType) Then
                   Dim value As Object = field.GetValue(Me)
                   ' make sure the variable has a value

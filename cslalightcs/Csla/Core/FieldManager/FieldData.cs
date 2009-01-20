@@ -39,7 +39,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Gets or sets the value of the field.
     /// </summary>
-    public T Value
+    public virtual T Value
     {
       get
       {

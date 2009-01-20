@@ -93,6 +93,21 @@ namespace Csla.Test.DataPortal
       context.Complete();
     }
 
+    [TestMethod]
+    public void BeginCreate_with_exception()
+    {
+      var context = GetContext();
+      object userState = "state";
+      Csla.DataPortal.BeginCreate<Single>(
+        new Single.Criteria(9999),
+        (o, e) =>
+        {
+          context.Assert.IsNotNull(e.Error);
+          context.Assert.Success();
+        }, userState);
+      context.Complete();
+    }
+
     #endregion
 
     #region Fetch
@@ -128,6 +143,21 @@ namespace Csla.Test.DataPortal
           context.Assert.IsNull(e.Error);
           context.Assert.IsNull(e.UserState);
           context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginFetch_with_exception()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<Single>(
+        new Single.Criteria(9999),
+        (o, e) =>
+        {
+          context.Assert.IsNotNull(e.Error);
+          context.Assert.AreEqual("DataPortal.Fetch failed (Bad data)", e.Error.Message);
           context.Assert.Success();
         });
       context.Complete();

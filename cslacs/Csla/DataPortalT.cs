@@ -164,17 +164,20 @@ namespace Csla
 
     void Create_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
     {
-      var result = e.Result as DataPortalAsyncResult;
-      if (result != null)
+      if (e.Error == null)
       {
-        _globalContext = result.GlobalContext;
-        if (result.Result != null)
-          OnCreateCompleted(new DataPortalResult<T>((T)result.Result, e.Error, result.UserState));
-        else
-          OnCreateCompleted(new DataPortalResult<T>(default(T), e.Error, result.UserState));
+        var result = e.Result as DataPortalAsyncResult;
+        if (result != null)
+        {
+          _globalContext = result.GlobalContext;
+          if (result.Result != null)
+            OnCreateCompleted(new DataPortalResult<T>((T)result.Result, null, result.UserState));
+          else
+            OnCreateCompleted(new DataPortalResult<T>(default(T), null, result.UserState));
+          return;
+        }
       }
-      else
-        OnCreateCompleted(new DataPortalResult<T>(default(T), e.Error, null));
+      OnCreateCompleted(new DataPortalResult<T>(default(T), e.Error, null));
     }
 
     void Create_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -280,17 +283,20 @@ namespace Csla
 
     private void Fetch_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
     {
-      var result = e.Result as DataPortalAsyncResult;
-      if (result != null)
+      if (e.Error == null)
       {
-        _globalContext = result.GlobalContext;
-        if (result.Result != null)
-          OnFetchCompleted(new DataPortalResult<T>((T)result.Result, e.Error, result.UserState));
-        else
-          OnFetchCompleted(new DataPortalResult<T>(default(T), e.Error, result.UserState));
+        var result = e.Result as DataPortalAsyncResult;
+        if (result != null)
+        {
+          _globalContext = result.GlobalContext;
+          if (result.Result != null)
+            OnFetchCompleted(new DataPortalResult<T>((T)result.Result, null, result.UserState));
+          else
+            OnFetchCompleted(new DataPortalResult<T>(default(T), null, result.UserState));
+          return;
+        }
       }
-      else
-        OnFetchCompleted(new DataPortalResult<T>(default(T), e.Error, null));
+      OnFetchCompleted(new DataPortalResult<T>(default(T), e.Error, null));
     }
 
     private void Fetch_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -384,17 +390,20 @@ namespace Csla
 
     void Update_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
     {
-      var result = e.Result as DataPortalAsyncResult;
-      if (result != null)
+      if (e.Error == null)
       {
-        _globalContext = result.GlobalContext;
-        if (result.Result != null)
-          OnUpdateCompleted(new DataPortalResult<T>((T)result.Result, e.Error, result.UserState));
-        else
-          OnUpdateCompleted(new DataPortalResult<T>(default(T), e.Error, result.UserState));
+        var result = e.Result as DataPortalAsyncResult;
+        if (result != null)
+        {
+          _globalContext = result.GlobalContext;
+          if (result.Result != null)
+            OnUpdateCompleted(new DataPortalResult<T>((T)result.Result, null, result.UserState));
+          else
+            OnUpdateCompleted(new DataPortalResult<T>(default(T), null, result.UserState));
+          return;
+        }
       }
-      else
-        OnUpdateCompleted(new DataPortalResult<T>(default(T), e.Error, null));
+      OnUpdateCompleted(new DataPortalResult<T>(default(T), e.Error, null));
     }
 
     void Update_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -485,10 +494,17 @@ namespace Csla
 
     private void Delete_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
     {
-      var result = e.Result as DataPortalAsyncResult;
-      if (result != null)
-        _globalContext = result.GlobalContext;
-      OnDeleteCompleted(new DataPortalResult<T>(default(T), e.Error, result.UserState));
+      if (e.Error == null)
+      {
+        var result = e.Result as DataPortalAsyncResult;
+        if (result != null)
+        {
+          _globalContext = result.GlobalContext;
+          OnDeleteCompleted(new DataPortalResult<T>(default(T), null, result.UserState));
+          return;
+        }
+      }
+      OnDeleteCompleted(new DataPortalResult<T>(default(T), e.Error, null));
     }
 
     private void Delete_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -536,17 +552,20 @@ namespace Csla
 
     void Execute_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
     {
-      var result = e.Result as DataPortalAsyncResult;
-      if (result != null)
+      if (e.Error == null)
       {
-        _globalContext = result.GlobalContext;
-        if (result.Result != null)
-          OnExecuteCompleted(new DataPortalResult<T>((T)result.Result, e.Error, result.UserState));
-        else
-          OnExecuteCompleted(new DataPortalResult<T>(default(T), e.Error, result.UserState));
+        var result = e.Result as DataPortalAsyncResult;
+        if (result != null)
+        {
+          _globalContext = result.GlobalContext;
+          if (result.Result != null)
+            OnExecuteCompleted(new DataPortalResult<T>((T)result.Result, e.Error, result.UserState));
+          else
+            OnExecuteCompleted(new DataPortalResult<T>(default(T), e.Error, result.UserState));
+          return;
+        }
       }
-      else
-        OnExecuteCompleted(new DataPortalResult<T>(default(T), e.Error, null));
+      OnExecuteCompleted(new DataPortalResult<T>(default(T), e.Error, null));
     }
 
     void Execute_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) 

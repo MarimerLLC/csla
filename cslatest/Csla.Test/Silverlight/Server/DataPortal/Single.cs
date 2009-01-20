@@ -121,6 +121,8 @@ namespace Csla.Test.DataPortalTest
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Single", "Created");
       MethodCalled = "Created";
+      if (id == 9999)
+        throw new Exception("Bad data");
     }
 
     #endregion
@@ -142,6 +144,8 @@ namespace Csla.Test.DataPortalTest
       ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Single", "Fetched");
       MethodCalled = "Fetched";
+      if (id == 9999)
+        throw new Exception("Bad data");
     }
 
     #endregion

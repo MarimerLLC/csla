@@ -42,11 +42,11 @@ Namespace Server
     Protected Sub New(ByVal authProviderType As Type)
 
       If authProviderType Is Nothing Then
-        Throw New ArgumentNullException("authProviderType", Resources.CslaAuthenticationProviderNotSet)
+        Throw New ArgumentNullException("authProviderType", My.Resources.CslaAuthenticationProviderNotSet)
       End If
 
       If Not GetType(IAuthorizeDataPortal).IsAssignableFrom(authProviderType) Then
-        Throw New ArgumentException(Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, "authProviderType")
+        Throw New ArgumentException(My.Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, "authProviderType")
       End If
 
       'only construct the type if it was not constructed already
@@ -63,14 +63,18 @@ Namespace Server
 
     Private Shared Function GetAuthProviderType(ByVal cslaAuthorizationProviderAppSettingName As String) As Type
       If cslaAuthorizationProviderAppSettingName Is Nothing Then
-        Throw New ArgumentNullException("cslaAuthorizationProviderAppSettingName", Resources.AuthorizationProviderNameNotSpecified)
+        Throw New ArgumentNullException("cslaAuthorizationProviderAppSettingName", My.Resources.AuthorizationProviderNameNotSpecified)
       End If
 
       'not yet instantiated
       If _authorizer Is Nothing Then
         Dim authProvider = ConfigurationManager.AppSettings(cslaAuthorizationProviderAppSettingName)
 
-        Return IIf(String.IsNullOrEmpty(authProvider), GetType(NullAuthorizer), Type.GetType(authProvider, True))
+        If String.IsNullOrEmpty(authProvider) Then
+          Return GetType(NullAuthorizer)
+        Else
+          Return Type.GetType(authProvider, True)
+        End If
       Else
         Return _authorizer.GetType()
       End If
@@ -126,7 +130,7 @@ Namespace Server
         ClearContext(context)
         Return result
 
-      Catch ex As Csla.Server.DataPortalException
+      Catch ex As Server.DataPortalException
         Throw
 
       Catch ex As Exception
@@ -184,7 +188,7 @@ Namespace Server
         ClearContext(context)
         Return result
 
-      Catch ex As Csla.Server.DataPortalException
+      Catch ex As Server.DataPortalException
         Dim tmp As Exception = ex
         Throw
 
@@ -275,7 +279,7 @@ Namespace Server
 
         Return result
 
-      Catch ex As Csla.Server.DataPortalException
+      Catch ex As Server.DataPortalException
         Dim tmp As Exception = ex
         Throw
 
@@ -334,7 +338,7 @@ Namespace Server
 
         Return result
 
-      Catch ex As Csla.Server.DataPortalException
+      Catch ex As Server.DataPortalException
         Dim tmp As Exception = ex
         Throw
 
@@ -380,7 +384,7 @@ Namespace Server
         ' When using integrated security, Principal must be Nothing 
         If context.Principal IsNot Nothing Then
 
-          Dim ex As System.Security.SecurityException = New System.Security.SecurityException(Resources.NoPrincipalAllowedException)
+          Dim ex As System.Security.SecurityException = New System.Security.SecurityException(My.Resources.NoPrincipalAllowedException)
           ex.Action = System.Security.Permissions.SecurityAction.Deny
           Throw ex
 

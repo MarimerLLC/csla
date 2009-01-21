@@ -134,7 +134,7 @@ Namespace Web.Design
     Public Overrides ReadOnly Property CanDelete() As Boolean
       Get
         Dim objectType As Type = GetObjectType()
-        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objectType) Then
+        If GetType(Core.IUndoableObject).IsAssignableFrom(objectType) Then
           Return True
         ElseIf Not objectType.GetMethod("Remove") Is Nothing Then
           Return True
@@ -156,7 +156,7 @@ Namespace Web.Design
     Public Overrides ReadOnly Property CanInsert() As Boolean
       Get
         Dim objectType As Type = GetObjectType()
-        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objectType) Then
+        If GetType(Core.IUndoableObject).IsAssignableFrom(objectType) Then
           Return True
         Else
           Return False
@@ -176,7 +176,7 @@ Namespace Web.Design
     Public Overrides ReadOnly Property CanUpdate() As Boolean
       Get
         Dim objectType As Type = GetObjectType()
-        If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(objectType) Then
+        If GetType(Core.IUndoableObject).IsAssignableFrom(objectType) Then
           Return True
         Else
           Return False

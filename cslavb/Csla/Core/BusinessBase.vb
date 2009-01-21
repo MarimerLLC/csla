@@ -18,13 +18,13 @@ Namespace Core
     Implements System.ComponentModel.IEditableObject
     Implements IDataErrorInfo
     Implements ICloneable
-    Implements Csla.Security.IAuthorizeReadWrite
+    Implements Security.IAuthorizeReadWrite
     Implements IParent
     Implements Server.IDataPortalTarget
     Implements IManageProperties
     Implements INotifyBusy
     Implements INotifyChildChanged
-    Implements Csla.Serialization.Mobile.ISerializationNotification
+    Implements Serialization.Mobile.ISerializationNotification
 
 #Region " Constructors "
 
@@ -56,7 +56,7 @@ Namespace Core
 
 #End Region
 
-#Region " IsNew, IsDeleted, IsDirty "
+#Region " IsNew, IsDeleted, IsDirty, IsSavable "
 
     ' keep track of whether we are new, deleted or dirty
     Private _isNew As Boolean = True
@@ -265,7 +265,7 @@ Namespace Core
     ''' directly from the property to be checked.
     ''' </para>
     ''' </remarks>
-    <Obsolete("Use overload the requires property name")> _
+    <Obsolete("Use overload requiring explicit property name")> _
     <System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)> _
     <System.Runtime.CompilerServices.MethodImpl( _
       System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
@@ -293,9 +293,15 @@ Namespace Core
     Protected Overridable Sub PropertyHasChanged(ByVal propertyName As String)
 
       MarkDirty(True)
-      ValidationRules.CheckRules(propertyName)
-      OnPropertyChanged(propertyName)
+      Dim propertyNames As String() = ValidationRules.CheckRules(propertyName)
 
+      If ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows Then
+        OnPropertyChanged(propertyName)
+      Else
+        For Each name As String In propertyNames
+          OnPropertyChanged(name)
+        Next
+      End If
     End Sub
 
     ''' <summary>
@@ -332,13 +338,13 @@ Namespace Core
       Get
         Dim auth As Boolean
         If IsDeleted Then
-          auth = Csla.Security.AuthorizationRules.CanDeleteObject(Me.GetType())
+          auth = Security.AuthorizationRules.CanDeleteObject(Me.GetType())
         ElseIf IsNew Then
-          auth = Csla.Security.AuthorizationRules.CanCreateObject(Me.GetType())
+          auth = Security.AuthorizationRules.CanCreateObject(Me.GetType())
         Else
-          auth = Csla.Security.AuthorizationRules.CanEditObject(Me.GetType())
+          auth = Security.AuthorizationRules.CanEditObject(Me.GetType())
         End If
-        Return IsDirty AndAlso IsValid AndAlso auth
+        Return IsDirty AndAlso IsValid AndAlso auth AndAlso Not IsBusy
       End Get
     End Property
 
@@ -366,10 +372,10 @@ Namespace Core
     Private Sub InitializeAuthorizationRules()
 
       AddInstanceAuthorizationRules()
-      If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+      If Not Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
         SyncLock Me.GetType
-          If Not Csla.Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
-            Csla.Security.SharedAuthorizationRules.GetManager(Me.GetType, True)
+          If Not Security.SharedAuthorizationRules.RulesExistFor(Me.GetType) Then
+            Security.SharedAuthorizationRules.GetManager(Me.GetType, True)
             AddAuthorizationRules()
           End If
         End SyncLock
@@ -382,7 +388,7 @@ Namespace Core
     ''' rules for your object's properties.
     ''' </summary>
     ''' <remarks>
-    ''' AddAuthorizationRules is automatically called by CSLA .NET
+    ''' AddInstanceAuthorizationRules is automatically called by CSLA .NET
     ''' when your object should associate per-instance authorization roles
     ''' with its properties.
     ''' </remarks>
@@ -395,7 +401,7 @@ Namespace Core
     ''' authorization rules for your type's properties.
     ''' </summary>
     ''' <remarks>
-    ''' AddSharedAuthorizationRules is automatically called by CSLA .NET
+    ''' AddAuthorizationRules is automatically called by CSLA .NET
     ''' when your object should associate per-type authorization roles
     ''' with its properties.
     ''' </remarks>
@@ -509,7 +515,7 @@ Namespace Core
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Public Overridable Function CanReadProperty( _
-      ByVal propertyName As String) As Boolean Implements Csla.Security.IAuthorizeReadWrite.CanReadProperty
+      ByVal propertyName As String) As Boolean Implements Security.IAuthorizeReadWrite.CanReadProperty
 
       Dim result As Boolean = True
 
@@ -620,7 +626,7 @@ Namespace Core
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Public Overridable Function CanWriteProperty( _
-      ByVal propertyName As String) As Boolean Implements Csla.Security.IAuthorizeReadWrite.CanWriteProperty
+      ByVal propertyName As String) As Boolean Implements Security.IAuthorizeReadWrite.CanWriteProperty
 
       Dim result As Boolean = True
 
@@ -756,7 +762,7 @@ Namespace Core
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Public Overridable Function CanExecuteMethod( _
-      ByVal methodName As String) As Boolean Implements Csla.Security.IAuthorizeReadWrite.CanExecuteMethod
+      ByVal methodName As String) As Boolean Implements Security.IAuthorizeReadWrite.CanExecuteMethod
 
       Dim result As Boolean = True
 
@@ -2364,20 +2370,20 @@ Namespace Core
 #Region " Child Change Notification "
 
     <NonSerialized(), NotUndoable()> _
-    Private _childChangedHandlers As EventHandler(Of Csla.Core.ChildChangedEventArgs)
+    Private _childChangedHandlers As EventHandler(Of Core.ChildChangedEventArgs)
 
     ''' <summary>
     ''' Event raised when a child object has been changed.
     ''' </summary>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-    Public Custom Event ChildChanged As EventHandler(Of Csla.Core.ChildChangedEventArgs)
-      AddHandler(ByVal value As EventHandler(Of Csla.Core.ChildChangedEventArgs))
+    Public Custom Event ChildChanged As EventHandler(Of Core.ChildChangedEventArgs)
+      AddHandler(ByVal value As EventHandler(Of Core.ChildChangedEventArgs))
         _childChangedHandlers = CType(System.Delegate.Combine(_childChangedHandlers, value), EventHandler(Of Csla.Core.ChildChangedEventArgs))
       End AddHandler
-      RemoveHandler(ByVal value As EventHandler(Of Csla.Core.ChildChangedEventArgs))
+      RemoveHandler(ByVal value As EventHandler(Of Core.ChildChangedEventArgs))
         _childChangedHandlers = CType(System.Delegate.Remove(_childChangedHandlers, value), EventHandler(Of Csla.Core.ChildChangedEventArgs))
       End RemoveHandler
-      RaiseEvent(ByVal sender As System.Object, ByVal e As Csla.Core.ChildChangedEventArgs)
+      RaiseEvent(ByVal sender As System.Object, ByVal e As Core.ChildChangedEventArgs)
         If _childChangedHandlers IsNot Nothing Then
           _childChangedHandlers.Invoke(sender, e)
         End If
@@ -2494,7 +2500,5 @@ Namespace Core
     End Property
 
 #End Region
-
-  End Class
 
 End Namespace

@@ -321,7 +321,7 @@ Public Module ApplicationContext
     Get
       If String.IsNullOrEmpty(_authenticationType) Then
         _authenticationType = ConfigurationManager.AppSettings("CslaAuthentication")
-        _authenticationType = IIf(Not String.IsNullOrEmpty(_authenticationType), _authenticationType, "Csla")
+        _authenticationType = CStr(IIf(Not String.IsNullOrEmpty(_authenticationType), _authenticationType, "Csla"))
       End If
 
       Return _authenticationType
@@ -527,12 +527,12 @@ Public Module ApplicationContext
     ''' <summary>
     ''' The code is executing on the client.
     ''' </summary>
-    Client,
+    Client
 
     ''' <summary>
     ''' The code is executing on the application server.
     ''' </summary>
-    Server,
+    Server
 
     ''' <summary>
     ''' The code is executing on the Silverlight client.

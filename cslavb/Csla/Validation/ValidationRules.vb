@@ -1299,8 +1299,8 @@ Namespace Validation
     ''' </param>
     Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
       If info.Children.ContainsKey("_brokenRules") Then
-        Dim referenceId As Integer = info.Children["_brokenRules"].ReferenceId
-        _brokenRules = (BrokenRulesCollection)formatter.GetObject(referenceId)
+        Dim referenceId As Integer = info.Children("_brokenRules").ReferenceId
+        _brokenRules = CType(formatter.GetObject(referenceId), BrokenRulesCollection)
       End If
       MyBase.OnSetChildren(info, formatter)
     End Sub

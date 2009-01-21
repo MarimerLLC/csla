@@ -134,15 +134,15 @@ Namespace Linq
 
     Public Sub CopyTo(ByVal array() As T, ByVal arrayIndex As Integer) Implements System.Collections.Generic.ICollection(Of T).CopyTo
       If Object.ReferenceEquals(array, Nothing) Then
-        Throw New ArgumentNullException(Resources.NullArrayReference, "array")
+        Throw New ArgumentNullException(My.Resources.NullArrayReference, "array")
       End If
 
       If arrayIndex < 0 Then
-        Throw New ArgumentOutOfRangeException(Resources.IndexIsOutOfRange, "index")
+        Throw New ArgumentOutOfRangeException(My.Resources.IndexIsOutOfRange, "index")
       End If
 
       If array.Rank > 1 Then
-        Throw New ArgumentException(Resources.ArrayIsMultiDimensional, "array")
+        Throw New ArgumentException(My.Resources.ArrayIsMultiDimensional, "array")
       End If
 
       For Each o As Object In Me

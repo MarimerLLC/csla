@@ -12,6 +12,8 @@ Public Module ApplicationContext
 
 #Region " User "
 
+  Private _principal As IPrincipal
+
   ''' <summary>
   ''' Get or set the current <see cref="IPrincipal" />
   ''' object representing the user's identity.
@@ -24,18 +26,54 @@ Public Module ApplicationContext
   ''' </remarks>
   Public Property User() As IPrincipal
     Get
-      If HttpContext.Current Is Nothing Then
-        Return Thread.CurrentPrincipal
+      Dim current As IPrincipal
 
+#If Not CLIENTONLY Then
+      If HttpContext.Current Is Nothing Then
+        current = HttpContext.Current.User
+      ElseIf System.Windows.Application.Current IsNot Nothing Then
+        If _principal Is Nothing Then
+          If ApplicationContext.AuthenticationType <> "Windows" Then
+            _principal = New Csla.Security.UnauthenticatedPrincipal()
+          Else
+            _principal = New WindowsPrincipal(WindowsIdentity.GetCurrent())
+          End If
+        End If
+        current = _principal
       Else
-        Return HttpContext.Current.User
+        current = Thread.CurrentPrincipal
       End If
+#Else
+      If System.Windows.Application.Current IsNot Nothing Then
+       If _principal Is Nothing Then
+          If ApplicationContext.AuthenticationType <> "Windows" Then
+            _principal = New Csla.Security.UnauthenticatedPrincipal()
+          Else
+            _principal = New WindowsPrincipal(WindowsIdentity.GetCurrent())
+          End If
+        End If
+        current = _principal
+      Else
+        current = Thread.CurrentPrincipal
+      End If
+#End If
+      Return current
     End Get
     Set(ByVal value As IPrincipal)
+
+#If Not CLIENTONLY Then
       If HttpContext.Current IsNot Nothing Then
         HttpContext.Current.User = value
+      ElseIf System.Windows.Application.Current IsNot Nothing Then
+        _principal = value
+        Thread.CurrentPrincipal = value
       End If
-      Thread.CurrentPrincipal = value
+#Else
+      If System.Windows.Application.Current IsNot Nothing Then
+        _principal = value
+        Thread.CurrentPrincipal = value
+      End If
+#End If
     End Set
   End Property
 
@@ -70,29 +108,32 @@ Public Module ApplicationContext
     End Property
 
     Private Function GetLocalContext() As ContextDictionary
+#If Not CLIENTONLY Then
+    If HttpContext.Current Is Nothing Then
+#End If
 
-        If HttpContext.Current Is Nothing Then
-            Dim slot As System.LocalDataStoreSlot = _
-              Thread.GetNamedDataSlot(mLocalContextName)
-            Return CType(Thread.GetData(slot), ContextDictionary)
-
-        Else
-            Return CType(HttpContext.Current.Items(mLocalContextName), ContextDictionary)
-        End If
-
+      Dim slot As System.LocalDataStoreSlot = Thread.GetNamedDataSlot(mLocalContextName)
+      Return CType(Thread.GetData(slot), ContextDictionary)
+#If Not CLIENTONLY Then
+    Else
+      Return CType(HttpContext.Current.Items(mLocalContextName), ContextDictionary)
+    End If
+#End If
     End Function
 
     Private Sub SetLocalContext(ByVal localContext As ContextDictionary)
+#If Not CLIENTONLY Then
+    If HttpContext.Current Is Nothing Then
+#End If
 
-        If HttpContext.Current Is Nothing Then
-            Dim slot As System.LocalDataStoreSlot = _
-              Thread.GetNamedDataSlot(mLocalContextName)
-            Threading.Thread.SetData(slot, localContext)
+      Dim slot As System.LocalDataStoreSlot = Thread.GetNamedDataSlot(mLocalContextName)
+      Threading.Thread.SetData(slot, localContext)
 
-        Else
-            HttpContext.Current.Items(mLocalContextName) = localContext
-        End If
-
+#If Not CLIENTONLY Then
+    Else
+      HttpContext.Current.Items(mLocalContextName) = localContext
+    End If
+#End If
     End Sub
 
 #End Region
@@ -162,68 +203,78 @@ Public Module ApplicationContext
 
     Friend Function GetClientContext() As ContextDictionary
 
-        If HttpContext.Current Is Nothing Then
-            If ExecutionLocation = ExecutionLocations.Client Then
-                SyncLock _syncClientContext
-                    Return CType(AppDomain.CurrentDomain.GetData(_clientContextName), ContextDictionary)
-                End SyncLock
+#If Not CLIENTONLY Then
+    If HttpContext.Current Is Nothing Then
+#End If
 
-            Else
-                Dim slot As System.LocalDataStoreSlot = _
-                  Thread.GetNamedDataSlot(_clientContextName)
-                Return CType(Thread.GetData(slot), ContextDictionary)
-            End If
+      If ExecutionLocation = ExecutionLocations.Client Then
+        SyncLock _syncClientContext
+          Return CType(AppDomain.CurrentDomain.GetData(_clientContextName), ContextDictionary)
+        End SyncLock
 
-        Else
-            Return CType(HttpContext.Current.Items(_clientContextName),  _
-              ContextDictionary)
-        End If
-
+      Else
+        Dim slot As System.LocalDataStoreSlot = _
+          Thread.GetNamedDataSlot(_clientContextName)
+        Return CType(Thread.GetData(slot), ContextDictionary)
+      End If
+#If Not CLIENTONLY Then
+    Else
+      Return CType(HttpContext.Current.Items(_clientContextName), ContextDictionary)
+    End If
+#End If
     End Function
 
     Friend Function GetGlobalContext() As ContextDictionary
+#If Not CLIENTONLY Then
+    If HttpContext.Current Is Nothing Then
+#End If
 
-        If HttpContext.Current Is Nothing Then
-            Dim slot As System.LocalDataStoreSlot = _
-              Thread.GetNamedDataSlot(_globalContextName)
-            Return CType(Thread.GetData(slot), ContextDictionary)
+      Dim slot As System.LocalDataStoreSlot = Thread.GetNamedDataSlot(_globalContextName)
+      Return CType(Thread.GetData(slot), ContextDictionary)
 
-        Else
-            Return CType(HttpContext.Current.Items(_globalContextName), ContextDictionary)
-        End If
+#If Not CLIENTONLY Then
+    Else
+      Return CType(HttpContext.Current.Items(_globalContextName), ContextDictionary)
+    End If
+#End If
 
     End Function
 
     Private Sub SetClientContext(ByVal clientContext As ContextDictionary)
+#If Not CLIENTONLY Then
+    If HttpContext.Current Is Nothing Then
+#End If
 
-        If HttpContext.Current Is Nothing Then
-            If ExecutionLocation = ExecutionLocations.Client Then
-                SyncLock _syncClientContext
-                    AppDomain.CurrentDomain.SetData(_clientContextName, clientContext)
-                End SyncLock
-
-            Else
-                Dim slot As System.LocalDataStoreSlot = _
-                  Thread.GetNamedDataSlot(_clientContextName)
-                Threading.Thread.SetData(slot, clientContext)
-            End If
-
-        Else
-            HttpContext.Current.Items(_clientContextName) = clientContext
-        End If
+      If ExecutionLocation = ExecutionLocations.Client Then
+        SyncLock _syncClientContext
+          AppDomain.CurrentDomain.SetData(_clientContextName, clientContext)
+        End SyncLock
+      Else
+        Dim slot As System.LocalDataStoreSlot = _
+          Thread.GetNamedDataSlot(_clientContextName)
+        Threading.Thread.SetData(slot, clientContext)
+      End If
+#If Not CLIENTONLY Then
+    Else
+      HttpContext.Current.Items(_clientContextName) = clientContext
+    End If
+#End If
 
     End Sub
 
     Friend Sub SetGlobalContext(ByVal globalContext As ContextDictionary)
+#If Not CLIENTONLY Then
+    If HttpContext.Current Is Nothing Then
+#End If
 
-        If HttpContext.Current Is Nothing Then
-            Dim slot As System.LocalDataStoreSlot = _
-              Thread.GetNamedDataSlot(_globalContextName)
-            Threading.Thread.SetData(slot, globalContext)
+      Dim slot As System.LocalDataStoreSlot = Thread.GetNamedDataSlot(_globalContextName)
+      Threading.Thread.SetData(slot, globalContext)
 
-        Else
-            HttpContext.Current.Items(_globalContextName) = globalContext
-        End If
+#If Not CLIENTONLY Then
+    Else
+      HttpContext.Current.Items(_globalContextName) = globalContext
+    End If
+#End If
 
     End Sub
 
@@ -251,6 +302,8 @@ Public Module ApplicationContext
 
 #Region " Config File Settings "
 
+  Private _authenticationType As String
+
   ''' <summary>
   ''' Returns the authentication type being used by the
   ''' CSLA .NET framework.
@@ -266,7 +319,13 @@ Public Module ApplicationContext
   ''' </remarks>
   Public ReadOnly Property AuthenticationType() As String
     Get
-      Return ConfigurationManager.AppSettings("CslaAuthentication")
+      If String.IsNullOrEmpty(_authenticationType) Then
+        _authenticationType = ConfigurationManager.AppSettings("CslaAuthentication")
+        _authenticationType = IIf(Not String.IsNullOrEmpty(_authenticationType), _authenticationType, "Csla")
+      End If
+
+      Return _authenticationType
+
     End Get
   End Property
 
@@ -310,7 +369,7 @@ Public Module ApplicationContext
     Get
       Dim result As String = _
         ConfigurationManager.AppSettings("CslaDataPortalProxy")
-      If Len(result) = 0 Then
+      If String.IsNullOrEmpty(result) Then
         result = "Local"
       End If
       Return result
@@ -349,8 +408,8 @@ Public Module ApplicationContext
     Get
       Dim result As String = _
         ConfigurationManager.AppSettings("CslaIsInRoleProvider")
-      If Len(result) = 0 Then
-        result = ""
+      If String.IsNullOrEmpty(result) Then
+        result = String.Empty
       End If
       Return result
     End Get
@@ -366,7 +425,7 @@ Public Module ApplicationContext
       Dim result As Boolean = True
       Dim setting As String = _
         ConfigurationManager.AppSettings("CslaAutoCloneOnUpdate")
-      If Len(setting) > 0 Then
+      If Not String.IsNullOrEmpty(setting) Then
         result = Boolean.Parse(setting)
       End If
       Return result
@@ -462,6 +521,26 @@ Public Module ApplicationContext
   End Enum
 
   ''' <summary>
+  ''' Enum representing the locations code can execute.
+  ''' </summary>
+  Public Enum ExecutionLocations
+    ''' <summary>
+    ''' The code is executing on the client.
+    ''' </summary>
+    Client,
+
+    ''' <summary>
+    ''' The code is executing on the application server.
+    ''' </summary>
+    Server,
+
+    ''' <summary>
+    ''' The code is executing on the Silverlight client.
+    ''' </summary>
+    Silverlight
+  End Enum
+
+  ''' <summary>
   ''' Enum representing the way in which CSLA .NET
   ''' should raise PropertyChanged events.
   ''' </summary>
@@ -480,22 +559,7 @@ Public Module ApplicationContext
 
 #End Region
 
-#Region " ExecutionLocation Property "
-
-  ''' <summary>
-  ''' Enum representing the locations code can execute.
-  ''' </summary>
-  Public Enum ExecutionLocations
-    ''' <summary>
-    ''' The code is executing on the client.
-    ''' </summary>
-    Client
-    ''' <summary>
-    ''' The code is executing on the application server.
-    ''' </summary>
-    Server
-  End Enum
-
+#Region "In-Memory Settings"
   Private _executionLocation As ExecutionLocations = ExecutionLocations.Client
 
   ''' <summary>
@@ -509,8 +573,45 @@ Public Module ApplicationContext
   End Property
 
   Friend Sub SetExecutionLocation(ByVal location As ExecutionLocations)
-
     _executionLocation = location
+  End Sub
+
+#End Region
+
+#Region " Logical Execution Location "
+
+  ''' <summary>
+  ''' Enum representing the logical execution location
+  ''' The setting is set to server when server is execting
+  ''' a CRUD opertion, otherwise the setting is always client
+  ''' </summary>
+  Public Enum LogicalExecutionLocations
+    ''' <summary>
+    ''' The code is executing on the client.
+    ''' </summary>
+    Client
+    ''' <summary>
+    ''' The code is executing on the server.  This inlcudes
+    ''' Local mode execution
+    ''' </summary>
+    Server
+  End Enum
+
+  Private _logicalExecutionLocation As LogicalExecutionLocations = LogicalExecutionLocations.Client
+
+  ''' <summary>
+  ''' Gets a value indicating the logical execution location
+  ''' of the currently executing code.
+  ''' </summary>
+  Public ReadOnly Property LogicalExecutionLocation() As LogicalExecutionLocations
+    Get
+      Return _logicalExecutionLocation
+    End Get
+  End Property
+
+  Friend Sub SetLogicalExecutionLocation(ByVal location As LogicalExecutionLocations)
+
+    _logicalExecutionLocation = location
 
   End Sub
 

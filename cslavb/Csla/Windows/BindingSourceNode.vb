@@ -147,7 +147,7 @@ Namespace Windows
     ''' Business object.
     ''' </param>
     Public Sub Bind(ByVal objectToBind As Object)
-      Dim root As Csla.Core.ISupportUndo = TryCast(objectToBind, Csla.Core.ISupportUndo)
+      Dim root As Core.ISupportUndo = TryCast(objectToBind, Core.ISupportUndo)
       If root IsNot Nothing Then
         root.BeginEdit()
       End If
@@ -164,7 +164,7 @@ Namespace Windows
 
       SetEvents(False)
 
-      Dim root As Csla.Core.ISupportUndo = TryCast(_Source.DataSource, Csla.Core.ISupportUndo)
+      Dim root As Core.ISupportUndo = TryCast(_Source.DataSource, Core.ISupportUndo)
 
       Unbind(False)
       EndEdit()
@@ -183,7 +183,7 @@ Namespace Windows
 
       SetEvents(False)
 
-      Dim root As Csla.Core.ISupportUndo = TryCast(_Source.DataSource, Csla.Core.ISupportUndo)
+      Dim root As Core.ISupportUndo = TryCast(_Source.DataSource, Core.ISupportUndo)
 
       Unbind(True)
 

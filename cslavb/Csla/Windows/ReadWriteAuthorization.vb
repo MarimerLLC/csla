@@ -85,7 +85,7 @@ Namespace Windows
       If _sources.ContainsKey(source) Then
         _sources.Item(source) = value
       Else
-        _sources.Add(value)
+        _sources.Add(source, value)
       End If
     End Sub
 

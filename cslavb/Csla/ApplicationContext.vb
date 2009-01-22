@@ -3,6 +3,7 @@ Imports System.Threading
 Imports System.Security.Principal
 Imports System.Collections.Specialized
 Imports System.Web
+Imports Csla
 
 ''' <summary>
 ''' Provides consistent context information between the client
@@ -34,7 +35,7 @@ Public Module ApplicationContext
       ElseIf System.Windows.Application.Current IsNot Nothing Then
         If _principal Is Nothing Then
           If ApplicationContext.AuthenticationType <> "Windows" Then
-            _principal = New Csla.Security.UnauthenticatedPrincipal()
+            _principal = New Security.UnauthenticatedPrincipal()
           Else
             _principal = New WindowsPrincipal(WindowsIdentity.GetCurrent())
           End If

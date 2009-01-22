@@ -42,11 +42,11 @@ Namespace Server
     Protected Sub New(ByVal authProviderType As Type)
 
       If authProviderType Is Nothing Then
-        Throw New ArgumentNullException("authProviderType", My.Resources.CslaAuthenticationProviderNotSet)
+        Throw New ArgumentNullException("authProviderType", Csla.Resources.CslaAuthenticationProviderNotSet)
       End If
 
       If Not GetType(IAuthorizeDataPortal).IsAssignableFrom(authProviderType) Then
-        Throw New ArgumentException(My.Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, "authProviderType")
+        Throw New ArgumentException(Csla.Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal, "authProviderType")
       End If
 
       'only construct the type if it was not constructed already
@@ -63,7 +63,7 @@ Namespace Server
 
     Private Shared Function GetAuthProviderType(ByVal cslaAuthorizationProviderAppSettingName As String) As Type
       If cslaAuthorizationProviderAppSettingName Is Nothing Then
-        Throw New ArgumentNullException("cslaAuthorizationProviderAppSettingName", My.Resources.AuthorizationProviderNameNotSpecified)
+        Throw New ArgumentNullException("cslaAuthorizationProviderAppSettingName", Csla.Resources.AuthorizationProviderNameNotSpecified)
       End If
 
       'not yet instantiated
@@ -135,7 +135,7 @@ Namespace Server
 
       Catch ex As Exception
         Throw New DataPortalException("DataPortal.Create " & _
-          My.Resources.FailedOnServer, ex, New DataPortalResult)
+          Csla.Resources.FailedOnServer, ex, New DataPortalResult)
 
       Finally
         ClearContext(context)
@@ -194,7 +194,7 @@ Namespace Server
 
       Catch ex As Exception
         Throw New DataPortalException("DataPortal.Fetch " & _
-          My.Resources.FailedOnServer, ex, New DataPortalResult)
+          Csla.Resources.FailedOnServer, ex, New DataPortalResult)
 
       Finally
         ClearContext(context)
@@ -285,7 +285,7 @@ Namespace Server
 
       Catch ex As Exception
         Throw New DataPortalException("DataPortal.Update " & _
-          My.Resources.FailedOnServer, ex, New DataPortalResult)
+          Csla.Resources.FailedOnServer, ex, New DataPortalResult)
 
       Finally
         ClearContext(context)
@@ -344,7 +344,7 @@ Namespace Server
 
       Catch ex As Exception
         Throw New DataPortalException("DataPortal.Delete " & _
-          My.Resources.FailedOnServer, ex, New DataPortalResult)
+          Csla.Resources.FailedOnServer, ex, New DataPortalResult)
 
       Finally
         ClearContext(context)
@@ -384,7 +384,7 @@ Namespace Server
         ' When using integrated security, Principal must be Nothing 
         If context.Principal IsNot Nothing Then
 
-          Dim ex As System.Security.SecurityException = New System.Security.SecurityException(My.Resources.NoPrincipalAllowedException)
+          Dim ex As System.Security.SecurityException = New System.Security.SecurityException(Csla.Resources.NoPrincipalAllowedException)
           ex.Action = System.Security.Permissions.SecurityAction.Deny
           Throw ex
 
@@ -400,7 +400,7 @@ Namespace Server
 
           Else
             Dim ex As New System.Security.SecurityException( _
-              My.Resources.BusinessPrincipalException & " " & _
+              Csla.Resources.BusinessPrincipalException & " " & _
               CType(context.Principal, Object).ToString())
             ex.Action = System.Security.Permissions.SecurityAction.Deny
             Throw ex
@@ -408,7 +408,7 @@ Namespace Server
 
         Else
           Dim ex As New System.Security.SecurityException( _
-            My.Resources.BusinessPrincipalException & " Nothing")
+            Csla.Resources.BusinessPrincipalException & " Nothing")
           ex.Action = System.Security.Permissions.SecurityAction.Deny
           Throw ex
         End If

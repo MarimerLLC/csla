@@ -1,5 +1,7 @@
 Imports System.Reflection
 Imports Csla.Reflection
+Imports System.Windows
+Imports System.ComponentModel
 
 ''' <summary>
 ''' This is the client-side DataPortal as described in
@@ -685,4 +687,40 @@ Public Module DataPortal
 
 #End Region
 
+#Region "Design Time Support"
+
+  Private Shared _isInDesignMode As Boolean = False
+  Private Shared _isInDesignModeHasBeenSet As Boolean = False
+  Private Shared _designModeLock As Object = New Object()
+
+  ''' <summary>
+  ''' Gets a value indicating whether the code is running
+  ''' in WPF design mode.
+  ''' </summary>
+  ''' <remarks></remarks>
+  Public Shared ReadOnly Property IsInDesignMode() As Boolean
+    Get      
+      If Not _isInDesignModeHasBeenSet Then
+        If Application.Current IsNot Nothing AndAlso Application.Current.Dispatcher IsNot Nothing Then
+          Dim func As New Func(Of Boolean) _
+            (Function() _
+              IIf(Not Application.Current.MainWindow Is Nothing, _
+              DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow), _
+              False))
+          Dim tmp As Boolean = CType(Application.Current.Dispatcher.Invoke(func, Nothing), Boolean)
+
+          SyncLock _designModeLock
+            If Not _isInDesignModeHasBeenSet Then
+              _isInDesignMode = tmp
+              _isInDesignModeHasBeenSet = True
+            End If
+          End SyncLock
+        End If
+      End If
+
+      return _isInDesignMode;
+    End Get
+  End Property
+
+#End Region
 End Module

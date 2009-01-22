@@ -1,5 +1,6 @@
 Imports System.Reflection
 Imports System.ComponentModel
+Imports System.Collections.Specialized
 
 Namespace Core
 
@@ -1130,6 +1131,38 @@ Namespace Core
 
     Private _validationRules As Validation.ValidationRules
 
+    <NonSerialized()> _
+    Private _validationCompleteHandlers As EventHandler
+
+    ''' <summary>
+    ''' Event raised when validation is complete.
+    ''' </summary>
+    Public Custom Event ValidationComplete As EventHandler
+      AddHandler(ByVal value As EventHandler)
+        _validationCompleteHandlers = CType(System.Delegate.Combine(_validationCompleteHandlers, value), EventHandler)
+
+      End AddHandler
+
+      RemoveHandler(ByVal value As EventHandler)
+        _validationCompleteHandlers = CType(System.Delegate.Remove(_validationCompleteHandlers, value), EventHandler)
+      End RemoveHandler
+
+      'TODO : Does this need to be here? The c# version doesn't implement this but not sure if you have to in VB
+      'RaiseEvent(ByVal sender As Object, ByVal e As System.EventArgs)
+
+      'End RaiseEvent
+    End Event
+
+    ''' <summary>
+    ''' Raises the ValidationComplete event
+    ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Overridable Sub OnValidationComplete()
+      If _validationCompleteHandlers IsNot Nothing Then
+        _validationCompleteHandlers(Me, EventArgs.Empty)
+      End If
+    End Sub
+
     Private Sub InitializeBusinessRules()
 
       AddInstanceBusinessRules()
@@ -1157,10 +1190,42 @@ Namespace Core
       Get
         If _validationRules Is Nothing Then
           _validationRules = New Validation.ValidationRules(Me)
+          AddHandler _validationRules.ValidatingRules.CollectionChanged, AddressOf NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged)
+        ElseIf _validationRules.Target Is Nothing Then
+          _validationRules.SetTarget(Me)
         End If
         Return _validationRules
       End Get
     End Property
+
+    Sub ValidatingRules_CollectionChanged(ByVal sender As Object, ByVal e As NotifyCollectionChangedEventArgs)
+      If e.Action = NotifyCollectionChangedAction.Remove Then
+        For Each rule As IAsyncRuleMethod In e.OldItems
+          SyncLock _validationRules.ValidatingRules
+            'This rule could be validating multiple times simultaneously, we only want to call
+            'OnPropertyIdle if the rule is completely removed from the list.
+            If Not _validationRules.ValidatingRules.Contains(rule) Then
+              For Each [property] As IPropertyInfo In rule.AsyncRuleArgs.Properties
+                OnPropertyChanged([property].Name)
+                OnBusyChanged(New BusyChangedEventArgs([property].Name, False))
+              Next
+            End If
+          End SyncLock
+        Next
+
+        If Not ValidationRules.IsValidating Then
+          OnValidationComplete()
+        ElseIf e.Action = NotifyCollectionChangedAction.Add Then
+          For Each rule As IAsyncRuleMethod In e.NewItems
+            For Each [property] As IPropertyInfo In rule.AsyncRuleArgs.Properties
+              OnBusyChanged(New BusyChangedEventArgs([property].Name, False))
+            Next
+          Next
+
+        End If
+
+      End If
+    End Sub
 
     ''' <summary>
     ''' Override this method in your business class to
@@ -1260,6 +1325,11 @@ Namespace Core
     ''' Override this method to load a new business object with default
     ''' values from the database.
     ''' </summary>
+    ''' <remarks>
+    ''' Normally you will overload this method to accept a strongly-typed
+    ''' criteria parameter, rather than overriding the method with a
+    ''' loosely-typed criteria parameter.
+    ''' </remarks>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <RunLocal()> _
     Protected Overridable Sub DataPortal_Create()
@@ -1322,17 +1392,6 @@ Namespace Core
     End Sub
 
     ''' <summary>
-    ''' Called by the server-side DataPortal prior to calling the 
-    ''' requested DataPortal_XYZ method.
-    ''' </summary>
-    ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
-    <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
-
-    End Sub
-
-    ''' <summary>
     ''' Called by the server-side DataPortal after calling the 
     ''' requested DataPortal_XYZ method.
     ''' </summary>
@@ -1340,6 +1399,17 @@ Namespace Core
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+
+    End Sub
+
+    ''' <summary>
+    ''' Called by the server-side DataPortal prior to calling the 
+    ''' requested DataPortal_XYZ method.
+    ''' </summary>
+    ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
 
     End Sub
 
@@ -1359,6 +1429,11 @@ Namespace Core
     ''' Override this method to load a new business object with default
     ''' values from the database.
     ''' </summary>
+    ''' <remarks>
+    ''' Normally you will overload this method to accept a strongly-typed
+    ''' criteria parameter, rather than overriding the method with a
+    ''' loosely-typed criteria parameter.
+    ''' </remarks>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     Protected Overridable Sub Child_Create()
       ValidationRules.CheckRules()
@@ -1369,7 +1444,8 @@ Namespace Core
     ''' requested DataPortal_XYZ method.
     ''' </summary>
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
 
     End Sub
@@ -1379,7 +1455,8 @@ Namespace Core
     ''' requested DataPortal_XYZ method.
     ''' </summary>
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
 
     End Sub
@@ -1390,7 +1467,8 @@ Namespace Core
     ''' </summary>
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     ''' <param name="ex">The Exception thrown during data access.</param>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
 
     End Sub
@@ -1402,11 +1480,11 @@ Namespace Core
     Private ReadOnly Property [Error]() As String _
       Implements System.ComponentModel.IDataErrorInfo.Error
       Get
-        If Not IsValid Then
+        If Not IsValid Then 'TODO : c# version uses a different property to test this
           Return ValidationRules.GetBrokenRules.ToString(Validation.RuleSeverity.Error)
 
         Else
-          Return ""
+          Return "" 'TODO: Should this be String.Empty?
         End If
       End Get
     End Property
@@ -1415,7 +1493,7 @@ Namespace Core
       Implements System.ComponentModel.IDataErrorInfo.Item
       Get
         Dim result As String = ""
-        If Not IsValid Then
+        If Not IsValid Then 'c# version uses a different property for this test
           Dim rule As Validation.BrokenRule = _
             ValidationRules.GetBrokenRules.GetFirstBrokenRule(columnName)
           If rule IsNot Nothing Then
@@ -1430,18 +1508,13 @@ Namespace Core
 
 #Region " Serialization Notification "
 
+    Sub ISerializationNotification_Deserialized() Implements ISerializationNotification.Deserialized
+      OnDeserialized(New StreamingContext())
+    End Sub
+
     <OnDeserialized()> _
     Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
-
       OnDeserialized(context)
-      ValidationRules.SetTarget(Me)
-      If _fieldManager IsNot Nothing Then
-        FieldManager.SetPropertyList(Me.GetType)
-      End If
-      InitializeBusinessRules()
-      InitializeAuthorizationRules()
-      FieldDataDeserialized()
-
     End Sub
 
     ''' <summary>
@@ -1450,12 +1523,107 @@ Namespace Core
     ''' </summary>
     ''' <param name="context">Serialization context object.</param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub OnDeserialized( _
-      ByVal context As StreamingContext)
+    Protected Overridable Sub OnDeserialized(ByVal context As StreamingContext)
 
-      ' do nothing - this is here so a subclass
-      ' could override if needed
+      ValidationRules.SetTarget(Me)
+      If _fieldManager IsNot Nothing Then
+        FieldManager.SetPropertyList(Me.GetType)
+      End If
+      InitializeBusinessRules()
+      InitializeAuthorizationRules()
+      FieldDataDeserialized()
+    End Sub
 
+#End Region
+
+#Region "Bubbling event Hooks"
+
+    ''' <summary>
+    ''' For internal use.
+    ''' </summary>
+    ''' <param name="child">Child object.</param>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Sub AddEventHooks(ByVal child As IBusinessObject)
+      OnAddEventHooks(child)
+    End Sub
+
+    ''' <summary>
+    ''' Hook child object events.
+    ''' </summary>
+    ''' <param name="child">Child object.</param>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Sub OnAddEventHooks(ByVal child As IBusinessObject)
+      Dim busy As INotifyBusy = DirectCast(busy, INotifyBusy)
+      If busy IsNot Nothing Then
+        AddHandler busy.BusyChanged, AddressOf Child_BusyChanged
+      End If
+
+      Dim unhandled As INotifyUnhandledAsyncException = DirectCast(child, INotifyUnhandledAsyncException)
+      If unhandled IsNot Nothing Then
+        AddHandler unhandled.UnhandledAsyncException, AddressOf Child_UnhandledAsyncException
+      End If
+
+      Dim pc As INotifyPropertyChanged = DirectCast(child, INotifyPropertyChanged)
+      If pc IsNot Nothing Then
+        AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
+      End If
+
+      Dim cc As INotifyChildChanged = DirectCast(child, INotifyChildChanged)
+      If cc IsNot Nothing Then
+        AddHandler cc.ChildChanged, AddressOf Child_Changed
+      End If
+
+    End Sub
+
+    ''' <summary>
+    ''' For internal use only.
+    ''' </summary>
+    ''' <param name="child">Child object.</param>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Sub RemoveEventHooks(ByVal child As IBusinessObject)
+      OnRemoveEventHooks(child)
+    End Sub
+
+    ''' <summary>
+    ''' Unhook child object events.
+    ''' </summary>
+    ''' <param name="child">Child object.</param>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Overridable Sub OnRemoveEventHooks(ByVal child As IBusinessObject)
+
+    End Sub
+
+#End Region
+
+#Region "Busy / Unhandled exception bubbling"
+
+    Private Sub Child_UnhandledAsyncException(ByVal sender As Object, ByVal e As ErrorEventArgs)
+      OnUnhandledAsyncException(e)
+    End Sub
+
+    Private Sub Child_BusyChanged(ByVal sender As Object, ByVal e As BusyChangedEventArgs)
+      OnBusyChanged(e)
+    End Sub
+
+#End Region
+
+#Region "IEditableBusinessObject Members"
+
+    Property IEditableBusinessObject_EditLevelAdded() As Integer Implements IEditableBusinessObject.EditLevelAdded
+      Get
+        Return Me.EditLevelAdded
+      End Get
+      Set(ByVal value As Integer)
+        Me.EditLevelAdded = value
+      End Set
+    End Property
+
+    Sub IEditableBusinessObject_DeleteChild() Implements IEditableBusinessObject.DeleteChild
+      Me.DeleteChild()
+    End Sub
+
+    Sub IEditableBusinessObject_SetParent(ByVal parent As IParent) Implements IEditableBusinessObject.SetParent
+      Me.SetParent(parent)
     End Sub
 
 #End Region

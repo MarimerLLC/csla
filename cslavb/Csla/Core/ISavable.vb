@@ -16,7 +16,7 @@ Namespace Core
     ''' Saves the object to the database asynchronously. The saved event will contain
     ''' the new object when the save operation completes.
     ''' </summary>
-    sub BeginSave();
+    Sub BeginSave()
     ''' <summary>
     ''' Saves the object to the database asynchronously. The saved event will contain
     ''' the new object when the save operation completes.
@@ -24,7 +24,7 @@ Namespace Core
     ''' <param name="userState">
     ''' User state object.
     ''' </param>
-    sub BeginSave(ByVal userState As Object );
+    Sub BeginSave(ByVal userState As Object)
     ''' <summary>
     ''' INTERNAL CSLA .NET USE ONLY.
     ''' </summary>

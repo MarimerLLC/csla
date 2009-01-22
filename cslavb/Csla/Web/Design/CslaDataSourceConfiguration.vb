@@ -1,7 +1,7 @@
 Imports System.ComponentModel.Design
 Imports System.Windows.Forms
 Imports System.Web.UI
-
+Imports Csla.Core
 Namespace Web.Design
 
   ''' <summary>
@@ -64,8 +64,9 @@ Namespace Web.Design
           TypeComboBox.Items.Clear()
           ' adds the types to the list
           For Each type As Type In types
+
             If type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(",")) <> "Csla" AndAlso _
-                  GetType(Csla.Core.IBusinessObject).IsAssignableFrom(type) Then
+                  GetType(IBusinessObject).IsAssignableFrom(type) Then
               Dim name As String = type.AssemblyQualifiedName
               If name.Substring(name.Length - 19, 19) = "PublicKeyToken=null" Then
                 name = name.Substring(0, name.IndexOf(",", name.IndexOf(",") + 1))

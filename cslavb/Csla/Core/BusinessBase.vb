@@ -1,6 +1,7 @@
 Imports System.Reflection
 Imports System.ComponentModel
 Imports System.Collections.Specialized
+Imports Csla.Core.LoadManager
 
 Namespace Core
 
@@ -665,12 +666,12 @@ Namespace Core
       If _executeResultCache Is Nothing Then
         _executeResultCache = New Dictionary(Of String, Boolean)
       End If
-      If Not ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal) Then
+      If Not ReferenceEquals(ApplicationContext.User, _lastPrincipal) Then
         ' the principal has changed - reset the cache
         _readResultCache.Clear()
         _writeResultCache.Clear()
         _executeResultCache.Clear()
-        _lastPrincipal = Csla.ApplicationContext.User
+        _lastPrincipal = ApplicationContext.User
       End If
 
     End Sub
@@ -1140,17 +1141,17 @@ Namespace Core
     Public Custom Event ValidationComplete As EventHandler
       AddHandler(ByVal value As EventHandler)
         _validationCompleteHandlers = CType(System.Delegate.Combine(_validationCompleteHandlers, value), EventHandler)
-
       End AddHandler
 
       RemoveHandler(ByVal value As EventHandler)
         _validationCompleteHandlers = CType(System.Delegate.Remove(_validationCompleteHandlers, value), EventHandler)
       End RemoveHandler
 
-      'TODO : Does this need to be here? The c# version doesn't implement this but not sure if you have to in VB
-      'RaiseEvent(ByVal sender As Object, ByVal e As System.EventArgs)
-
-      'End RaiseEvent
+      RaiseEvent(ByVal sender As Object, ByVal e As System.EventArgs)
+        If _validationCompleteHandlers IsNot Nothing Then
+          _validationCompleteHandlers.Invoke(Me, e)
+        End If
+      End RaiseEvent
     End Event
 
     ''' <summary>
@@ -1698,7 +1699,7 @@ Namespace Core
     ''' user is not authorized to read this property.</param>
     Protected Function GetProperty(Of P)(ByVal propertyName As String, ByVal field As P, ByVal defaultValue As P, ByVal noAccess As Security.NoAccessBehavior) As P
 
-      If CanReadProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
+      If _bypassPropertyChecks OrElse CanReadProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
         Return field
 
       Else
@@ -1818,8 +1819,7 @@ Namespace Core
     ''' value, the defaultValue value is returned as a
     ''' result.
     ''' </remarks>
-    Protected Function GetProperty(Of P)( _
-      ByVal propertyInfo As PropertyInfo(Of P)) As P
+    Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P)) As P
 
       Return GetProperty(Of P)(propertyInfo, Security.NoAccessBehavior.SuppressException)
 
@@ -1843,8 +1843,7 @@ Namespace Core
     ''' value, the defaultValue value is returned as a
     ''' result.
     ''' </remarks>
-    Protected Function GetProperty(Of F, P)( _
-      ByVal propertyInfo As PropertyInfo(Of F)) As P
+    Protected Function GetProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F)) As P
 
       Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, Security.NoAccessBehavior.SuppressException))
 
@@ -1871,8 +1870,7 @@ Namespace Core
     ''' value, the defaultValue value is returned as a
     ''' result.
     ''' </remarks>
-    Protected Function GetProperty(Of F, P)( _
-      ByVal propertyInfo As PropertyInfo(Of F), ByVal noAccess As Security.NoAccessBehavior) As P
+    Protected Function GetProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal noAccess As Security.NoAccessBehavior) As P
 
       Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, noAccess))
 
@@ -1895,11 +1893,10 @@ Namespace Core
     ''' value, the defaultValue value is returned as a
     ''' result.
     ''' </remarks>
-    Protected Function GetProperty(Of P)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal noAccess As Security.NoAccessBehavior) As P
+    Protected Function GetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal noAccess As Security.NoAccessBehavior) As P
 
       Dim result As P = Nothing
-      If CanReadProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
+      If _bypassPropertyChecks OrElse CanReadProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
         result = ReadProperty(Of P)(propertyInfo)
 
       Else
@@ -1921,7 +1918,7 @@ Namespace Core
     ''' </remarks>
     Protected Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
       Dim result As Object = Nothing
-      If CanReadProperty(propertyInfo.Name, False) Then
+      If _bypassPropertyChecks OrElse CanReadProperty(propertyInfo.Name, False) Then
         Dim info = FieldManager.GetFieldData(propertyInfo)
         If info IsNot Nothing Then
           result = info.Value
@@ -1949,7 +1946,7 @@ Namespace Core
     ''' </typeparam>
     ''' <param name="propertyInfo">
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-    Protected Function ReadProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F)) As P
+    Protected Function ReadPropertyConvert(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F)) As P
 
       Return Utilities.CoerceValue(Of P)(GetType(F), Nothing, ReadProperty(Of F)(propertyInfo))
 
@@ -2116,29 +2113,42 @@ Namespace Core
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
     Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P, ByVal noAccess As Security.NoAccessBehavior)
+      Try
+        If _bypassPropertyChecks OrElse CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
 
-      If CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
-        Try
+          Dim doChange As Boolean = False
+
           If field Is Nothing Then
             If newValue IsNot Nothing Then
-              OnPropertyChanging(propertyName)
-              field = newValue
-              PropertyHasChanged(propertyName)
+              doChange = True
             End If
 
-          ElseIf Not field.Equals(newValue) Then
-            If TypeOf newValue Is String AndAlso newValue Is Nothing Then
-              newValue = CoerceValue(Of P)(GetType(String), field, String.Empty)
+          ElseIf TypeOf P Is String AndAlso newValue Is Nothing Then
+            newValue = CoerceValue(Of P)(GetType(String), field, String.Empty)
+
+            If Not field.Equals(newValue) Then
+              doChange = True
             End If
-            OnPropertyChanging(propertyName)
-            field = newValue
-            PropertyHasChanged(propertyName)
+          End If
           End If
 
-        Catch ex As Exception
-          Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyName, ex.Message, ex.Message))
-        End Try
-      End If
+          If doChange = True Then
+            If Not _bypassPropertyChecks Then
+              OnPropertyChanging(propertyName)
+            End If
+
+            field = newValue
+
+            If Not _bypassPropertyChecks Then
+              PropertyHasChanged(propertyName)
+            End If
+          End If
+        End If
+      Catch sec As System.Security.SecurityException
+        Throw
+      Catch ex As Exception
+        Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyName, ex.Message, ex.Message))
+      End Try
 
     End Sub
 
@@ -2167,29 +2177,40 @@ Namespace Core
     ''' null values are converted to string.Empty.
     ''' </remarks>
     Protected Sub SetProperty(Of P, V)(ByVal propertyName As String, ByRef field As P, ByVal newValue As V, ByVal noAccess As Security.NoAccessBehavior)
+      Try
+        If _bypassPropertyChecks OrElse CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
+          Dim doChange As Boolean = False
 
-      If CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
-        Try
           If field Is Nothing Then
             If newValue IsNot Nothing Then
-              OnPropertyChanging(propertyName)
-              field = CoerceValue(Of P)(GetType(V), field, newValue)
-              PropertyHasChanged(propertyName)
+              doChange = True
             End If
+          ElseIf TypeOf V Is String AndAlso newValue Is Nothing Then
+            newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty)
 
-          ElseIf Not field.Equals(newValue) Then
-            If TypeOf newValue Is String AndAlso newValue Is Nothing Then
-              newValue = CoerceValue(Of V)(GetType(String), Nothing, String.Empty)
+            If Not field.Equals(newValue) Then
+              doChange = True
             End If
+          End If
+        End If
+
+        If doChange = True Then
+          If Not _bypassPropertyChecks Then
             OnPropertyChanging(propertyName)
-            field = CoerceValue(Of P)(GetType(V), field, newValue)
+          End If
+
+          field = CoerceValue(Of P)(GetType(V), field, newValue)
+
+          If Not _bypassPropertyChecks Then
             PropertyHasChanged(propertyName)
           End If
 
-        Catch ex As Exception
-          Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyName, ex.Message))
-        End Try
-      End If
+        End If
+      Catch sec As System.Security.SecurityException
+        Throw
+      Catch ex As Exception
+        Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyName, ex.Message))
+      End Try
 
     End Sub
 
@@ -2206,8 +2227,7 @@ Namespace Core
     ''' If the user is not authorized to change the property, this
     ''' overload throws a SecurityException.
     ''' </remarks>
-    Protected Sub SetProperty(Of P)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
+    Protected Sub SetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
 
       SetProperty(Of P)(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException)
 
@@ -2226,8 +2246,7 @@ Namespace Core
     ''' If the user is not authorized to change the property, this
     ''' overload throws a SecurityException.
     ''' </remarks>
-    Protected Sub SetProperty(Of P, F)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
+    Protected Sub SetProperty(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
       SetProperty(Of P, F)(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException)
 
@@ -2245,11 +2264,9 @@ Namespace Core
     ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
-    Protected Sub SetProperty(Of P, F)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F, ByVal noAccess As Security.NoAccessBehavior)
-
-      If CanWriteProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
-        Try
+    Protected Sub SetPropertyConvert(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F, ByVal noAccess As Security.NoAccessBehavior)
+      Try
+        If _bypassPropertyChecks OrElse CanWriteProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
           Dim oldValue As P = Nothing
           Dim fieldData = FieldManager.GetFieldData(propertyInfo)
           If fieldData Is Nothing Then
@@ -2265,12 +2282,18 @@ Namespace Core
               oldValue = DirectCast(fieldData.Value, P)
             End If
           End If
-          LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue), True)
 
-        Catch ex As Exception
-          Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
-        End Try
-      End If
+          If TypeOf F Is String AndAlso newValue IsNot Nothing Then
+            newValue = CoerceValue(Of F)(GetType(F), Nothing, String.Empty)
+          End If
+          LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue), Not _bypassPropertyChecks)
+
+        End If
+      Catch sec As System.Security.SecurityException
+        Throw
+      Catch ex As Exception
+        Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
+      End Try
 
     End Sub
 
@@ -2292,8 +2315,9 @@ Namespace Core
     Protected Sub SetProperty(Of P)( _
       ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P, ByVal noAccess As Security.NoAccessBehavior)
 
-      If CanWriteProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
-        Try
+
+      Try
+        If _bypassPropertyChecks OrElse CanWriteProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then
           Dim oldValue As P = Nothing
           Dim fieldData = FieldManager.GetFieldData(propertyInfo)
           If fieldData Is Nothing Then
@@ -2309,13 +2333,16 @@ Namespace Core
               oldValue = DirectCast(fieldData.Value, P)
             End If
           End If
-          LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue, True)
 
-        Catch ex As Exception
-          Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
-        End Try
-      End If
+          If TypeOf P Is String AndAlso newValue IsNot Nothing Then
+            newValue = CoerceValue(Of P)(GetType(P), Nothing, String.Empty)
+          End If
 
+          LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue, Not _bypassPropertyChecks)
+        End If
+      Catch ex As Exception
+        Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))
+      End Try
     End Sub
 
     ''' <summary>
@@ -2332,7 +2359,24 @@ Namespace Core
     ''' property a SecurityException is thrown.
     ''' </remarks>
     Protected Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.SetProperty
-      FieldManager.SetFieldData(propertyInfo, newValue)
+
+      Try
+        If _bypassPropertyChecks OrElse CanWriteProperty(propertyInfo.Name, True) Then
+          If Not _bypassPropertyChecks Then
+            OnPropertyChanging(propertyInfo.Name)
+          End If
+          FieldManager.SetFieldData(propertyInfo, newValue)
+          If Not _bypassPropertyChecks Then
+            PropertyHasChanged(propertyInfo.Name)
+          End If
+        End If
+      Catch sec As System.Security.SecurityException
+        Throw
+      Catch ex As Exception
+        Throw New PropertyLoadException(String.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex)
+      End Try
+      
+
     End Sub
 
 #End Region
@@ -2354,8 +2398,7 @@ Namespace Core
     ''' Loading values does not cause validation rules to be
     ''' invoked.
     ''' </remarks>
-    Protected Sub LoadProperty(Of P, F)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
+    Protected Sub LoadProperty(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
       Try
         Dim oldValue As P = Nothing
@@ -2399,8 +2442,7 @@ Namespace Core
     ''' Loading values does not cause validation rules to be
     ''' invoked.
     ''' </remarks>
-    Protected Sub LoadProperty(Of P)( _
-      ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
+    Protected Sub LoadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
 
       Try
         Dim oldValue As P = Nothing
@@ -2433,7 +2475,7 @@ Namespace Core
       ByVal newValue As P, _
       ByVal markDirty As Boolean)
 
-      Dim valuesDiffer = False
+      Dim valuesDiffer As Boolean = False
       If oldValue Is Nothing Then
         valuesDiffer = newValue IsNot Nothing
 
@@ -2442,12 +2484,23 @@ Namespace Core
       End If
 
       If valuesDiffer Then
+        Dim old As IBusinessObject = DirectCast(oldValue, IBusinessObject)
+        If old IsNot Nothing Then
+          RemoveEventHooks(old)
+        End If
+
+        Dim @new as IBusinessObject = DirectCast(newValue, IBusinessObject)
+        If @new IsNot Nothing Then
+          AddEventHooks(@new)
+        End If
+
         If GetType(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type) Then
-          ' remove old event hook
-          If oldValue IsNot Nothing Then
-            Dim pc As INotifyPropertyChanged = DirectCast(oldValue, INotifyPropertyChanged)
-            RemoveHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
-          End If
+          '' remove old event hook
+          'If oldValue IsNot Nothing Then
+          '  Dim pc As INotifyPropertyChanged = DirectCast(oldValue, INotifyPropertyChanged)
+          '  RemoveHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
+          'End If
+
           If markDirty Then
             OnPropertyChanging(propertyInfo.Name)
             FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
@@ -2462,17 +2515,17 @@ Namespace Core
             UndoableBase.ResetChildEditLevel(child, Me.EditLevel, Me.BindingEdit)
             ' reset EditLevelAdded 
             child.EditLevelAdded = Me.EditLevel
-            ' hook child event
-            Dim pc As INotifyPropertyChanged = DirectCast(newValue, INotifyPropertyChanged)
-            AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
+            '' hook child event
+            'Dim pc As INotifyPropertyChanged = DirectCast(newValue, INotifyPropertyChanged)
+            'AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
           End If
 
         ElseIf GetType(IEditableCollection).IsAssignableFrom(propertyInfo.Type) Then
-          ' remove old event hooks
-          If oldValue IsNot Nothing Then
-            Dim pc As IBindingList = DirectCast(oldValue, IBindingList)
-            RemoveHandler pc.ListChanged, AddressOf Child_ListChanged
-          End If
+          '' remove old event hooks
+          'If oldValue IsNot Nothing Then
+          '  Dim pc As IBindingList = DirectCast(oldValue, IBindingList)
+          '  RemoveHandler pc.ListChanged, AddressOf Child_ListChanged
+          'End If
           If markDirty Then
             OnPropertyChanging(propertyInfo.Name)
             FieldManager.SetFieldData(Of P)(propertyInfo, newValue)
@@ -2488,8 +2541,8 @@ Namespace Core
               ' set child edit level
               UndoableBase.ResetChildEditLevel(undoChild, Me.EditLevel, Me.BindingEdit)
             End If
-            Dim pc As IBindingList = DirectCast(newValue, IBindingList)
-            AddHandler pc.ListChanged, AddressOf Child_ListChanged
+            'Dim pc As IBindingList = DirectCast(newValue, IBindingList)
+            'AddHandler pc.ListChanged, AddressOf Child_ListChanged
           End If
 
         Else
@@ -2524,14 +2577,276 @@ Namespace Core
       FieldManager.LoadFieldData(propertyInfo, newValue)
     End Sub
 
+    <NonSerialized()> _
+    <NotUndoable()> _
+    Private _loadManager As AsyncLoadManager
+
+    Friend ReadOnly Property LoadManager() As AsyncLoadManager
+      Get
+        If _loadManager Is Nothing Then
+          _loadManager = New AsyncLoadManager()
+          AddHandler _loadManager.BusyChanged, AddressOf loadManager_BusyChanged
+          AddHandler _loadManager.UnhandledAsyncException, AddressOf loadManager_UnhandledAsyncException
+        End If
+        Return _loadManager
+      End Get
+    End Property
+
+    Private Sub loadManager_UnhandledAsyncException(ByRef sender As Object, ByVal e As EventArgs)
+      OnUnhandledAsyncException(e)
+    End Sub
+
+    Private Sub loadManager_BusyChanged(ByRef sender As Object, ByVal e As EventArgs)
+      OnBusyChanged(e)
+    End Sub
+
+    ''' <summary>
+    ''' Loads a property value asynchronously.
+    ''' </summary>
+    ''' <typeparam name="R">Type of the property</typeparam>
+    ''' <typeparam name="P">Type of the parameter.</typeparam>
+    ''' <param name="property">Property to load.</param>
+    ''' <param name="factory">AsyncFactory delegate.</param>
+    ''' <param name="parameter">Parameter value.</param>
+    ''' <remarks></remarks>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Sub LoadPropertyAsync(Of R, P)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P), ByVal parameter As P)
+      Dim loader As AsyncLoader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, parameter)
+      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    End Sub
+
+    ''' <summary>
+    ''' Loads a property value asynchronously.
+    ''' </summary>
+    ''' <typeparam name="R">Type of the property</typeparam>
+    ''' <typeparam name="P1">Type of the parameter.</typeparam>
+    ''' <typeparam name="P2">Type of the parameter.</typeparam>
+    ''' <param name="property">Property to load.</param>
+    ''' <param name="factory">AsyncFactory delegate.</param>
+    ''' <param name="p1">Parameter value.</param>
+    ''' <param name="p2">Parameter value.</param>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Sub LoadPropertyAsync(Of R, P1, P2)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2), ByVal p1 As P1, ByVal p2 As P2)
+      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, p1, p2))
+      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    End Sub
+
+    ''' <summary>
+    ''' Loads a property value asynchronously.
+    ''' </summary>
+    ''' <typeparam name="R">Type of the property</typeparam>
+    ''' <typeparam name="P1">Type of the parameter.</typeparam>
+    ''' <typeparam name="P2">Type of the parameter.</typeparam>
+    ''' <typeparam name="P3">Type of the parameter.</typeparam>
+    ''' <param name="property">Property to load.</param>
+    ''' <param name="factory">AsyncFactory delegate.</param>
+    ''' <param name="p1">Parameter value.</param>
+    ''' <param name="p2">Parameter value.</param>
+    ''' <param name="p3">Parameter value.</param>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3), ByVal p1 As P1, ByVal p2 As P2, ByVal p3 As P3)
+      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, p1, p2, p3))
+      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    End Sub
+
+    ''' <summary>
+    ''' Loads a property value asynchronously.
+    ''' </summary>
+    ''' <typeparam name="R">Type of the property</typeparam>
+    ''' <typeparam name="P1">Type of the parameter.</typeparam>
+    ''' <typeparam name="P2">Type of the parameter.</typeparam>
+    ''' <typeparam name="P3">Type of the parameter.</typeparam>
+    ''' <typeparam name="P4">Type of the parameter.</typeparam>
+    ''' <param name="property">Property to load.</param>
+    ''' <param name="factory">AsyncFactory delegate.</param>
+    ''' <param name="p1">Parameter value.</param>
+    ''' <param name="p2">Parameter value.</param>
+    ''' <param name="p3">Parameter value.</param>
+    ''' <param name="p4">Parameter value.</param>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4), ByVal p1 As P1, ByVal p2 As P2, ByVal p3 As P3, ByVal p4 As P4)
+      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4))
+      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    End Sub
+
+    ''' <summary>
+    ''' Loads a property value asynchronously.
+    ''' </summary>
+    ''' <typeparam name="R">Type of the property</typeparam>
+    ''' <typeparam name="P1">Type of the parameter.</typeparam>
+    ''' <typeparam name="P2">Type of the parameter.</typeparam>
+    ''' <typeparam name="P3">Type of the parameter.</typeparam>
+    ''' <typeparam name="P4">Type of the parameter.</typeparam>
+    ''' <typeparam name="P5">Type of the parameter.</typeparam>
+    ''' <param name="property">Property to load.</param>
+    ''' <param name="factory">AsyncFactory delegate.</param>
+    ''' <param name="p1">Parameter value.</param>
+    ''' <param name="p2">Parameter value.</param>
+    ''' <param name="p3">Parameter value.</param>
+    ''' <param name="p4">Parameter value.</param>
+    ''' <param name="p5">Parameter value.</param>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal p1 As P1, ByVal p2 As P2, ByVal p3 As P3, ByVal p4 As P4, ByVal p5 As P5)
+      'TODO : Waiting on clarification about AsyncLoader using P4,P5 which was not in c# version
+      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4, p5))
+      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    End Sub
+
 #End Region
 
 #Region "IsBusy / IsIdle"
 
-    ' stub while working on core.wpf.PropertyStatus (rickw 9/25/2008)
+    <NonSerialized()> _
+    <NotUndoable()> _
+    Private _isBusy As Boolean
+
+    ''' <summary>
+    ''' Mark the object as busy (it is
+    ''' running an async operation).
+    ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Sub MarkBusy()
+      If _isBusy Then
+        Throw New InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy)
+      End If
+
+      _isBusy = True
+      OnBusyChanged(New BusyChangedEventArgs("", True))
+    End Sub
+
+    ''' <summary>
+    ''' Mark the object as not busy (it is
+    ''' not running an async operation).
+    ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Sub MarkIdle()
+      _isBusy = False
+      OnBusyChanged(New BusyChangedEventArgs("", False))
+    End Sub
+
+    ''' <summary>
+    ''' Gets a value indicating if this
+    ''' object or its child objects are
+    ''' busy.
+    ''' </summary>
+    <Browsable(False)> _
+    Public ReadOnly Property IsBusy() As Boolean
+      Get
+        Return (IsSelfBusy orelse (_fieldManager isnot Nothing && FieldManager.IsBusy()))
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Gets a value indicating if this
+    ''' object is busy.
+    ''' </summary>
+    <Browsable(False)> _
+    Public ReadOnly Property IsSelfBusy() As Boolean
+      Get
+        Return (_isBusy OrElse ValidationRules.IsValidating OrElse LoadManager.IsLoading)
+      End Get
+    End Property
+
+    <NonSerialized()> _
+    <NotUndoable()> _
+    Private _busyChanged As BusyChangedEventHandler
+
+    ''' <summary>
+    ''' Event indicating that the IsBusy property has changed.
+    ''' </summary>
+    Public Custom Event BusyChanged As BusyChangedEventHandler
+      AddHandler(ByVal value As BusyChangedEventHandler)
+        _busyChanged = CType(System.Delegate.Combine(_busyChanged, value), BusyChangedEventHandler)
+      End AddHandler
+
+      RemoveHandler(ByVal value As BusyChangedEventHandler)
+        _busyChanged = CType(System.Delegate.Remove(_busyChanged, value), BusyChangedEventHandler)
+      End RemoveHandler
+
+      RaiseEvent(ByVal sender As Object, ByVal e As BusyChangedEventArgs)
+        If _busyChanged IsNot Nothing Then
+          _busyChanged.Invoke(Me, e)
+        End If
+      End RaiseEvent
+
+    End Event
+
+    ''' <summary>
+    ''' Raise the BusyChanged event.
+    ''' </summary>
+    ''' <param name="args">Event args.</param>
+    Protected Sub OnBusyChanged(ByVal args As BusyChangedEventArgs)
+      If ValidationRules IsNot Nothing Then
+        _busyChanged(Me, args)
+      End If
+    End Sub
+
+    ''' <summary>
+    ''' Gets a value indicating whether a
+    ''' specific property is busy (has a
+    ''' currently executing async rule).
+    ''' </summary>
+    ''' <param name="propertyName">
+    ''' Name of the property.
+    ''' </param>
     Public Function IsPropertyBusy(ByVal propertyName As String) As Boolean
-      Throw New NotImplementedException()
+      Dim isbusy As Boolean = False
+      If _validationRules IsNot Nothing Then
+        SyncLock _validationRules.ValidatingRules
+           isbusy = (from rules in _validationRules.ValidatingRules
+                    from property in rules.AsyncRuleArgs.Properties
+                    where property.Name == propertyName
+                    select rules).Count() > 0
+        End SyncLock
+      End If
+
+      Return isbusy
     End Function
+
+#End Region
+
+#Region " INotifyUnhandledAsyncException Members "
+
+    <NonSerialized()> _
+    <NotUndoable()> _
+    Private _unhandledAsyncException As EventHandler(Of ErrorEventArgs)
+
+    Public Custom Event UnhandledAsyncException As EventHandler(Of ErrorEventArgs)
+      AddHandler(ByVal value As EventHandler(Of ErrorEventArgs))
+        _unhandledAsyncException = CType(System.Delegate.Combine(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+      End AddHandler
+
+      RemoveHandler(ByVal value As EventHandler(Of ErrorEventArgs))
+        _unhandledAsyncException = CType(System.Delegate.Remove(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+      End RemoveHandler
+
+      ' TODO: Does this need to be here
+      'RaiseEvent(ByVal sender As Object, ByVal e As ErrorEventArgs)
+
+      'End RaiseEvent
+    End Event
+
+    ''' <summary>
+    ''' Raises the UnhandledAsyncException event.
+    ''' </summary>
+    ''' <param name="error">Args parameter.</param>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub OnUnhandledAsyncException(ByVal [error] As ErrorEventArgs)
+      If _unhandledAsyncException IsNot Nothing Then
+        _unhandledAsyncException(Me, [error])
+      End If
+    End Sub
+
+    ''' <summary>
+    ''' Raises the UnhandledAsyncException event.
+    ''' </summary>
+    ''' <param name="originalSender">Original sender of
+    ''' the event.</param>
+    ''' <param name="error">Exception object.</param>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Sub OnUnhandledAsyncException(ByVal originalSender As Object, ByVal [error] As Exception)
+      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error))
+    End Sub
 
 #End Region
 
@@ -2551,6 +2866,8 @@ Namespace Core
       RemoveHandler(ByVal value As EventHandler(Of Core.ChildChangedEventArgs))
         _childChangedHandlers = CType(System.Delegate.Remove(_childChangedHandlers, value), EventHandler(Of Csla.Core.ChildChangedEventArgs))
       End RemoveHandler
+
+      'TODO: Does this need to be here?
       RaiseEvent(ByVal sender As System.Object, ByVal e As Core.ChildChangedEventArgs)
         If _childChangedHandlers IsNot Nothing Then
           _childChangedHandlers.Invoke(sender, e)
@@ -2559,30 +2876,40 @@ Namespace Core
     End Event
 
     ''' <summary>
-    ''' Raises the ChildChanged event, indicating that a child
-    ''' object has been changed.
+    ''' Creates a ChildChangedEventArgs and raises the event.
     ''' </summary>
-    ''' <param name="source">
-    ''' Reference to the object that was changed.
-    ''' </param>
-    ''' <param name="listArgs">
-    ''' ListChangedEventArgs object or null.
-    ''' </param>
-    ''' <param name="propertyArgs">
-    ''' PropertyChangedEventArgs object or null.
-    ''' </param>
-    <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub OnChildChanged(ByVal source As Object, ByVal propertyArgs As PropertyChangedEventArgs, ByVal listArgs As ListChangedEventArgs)
-      Dim args As New Csla.Core.ChildChangedEventArgs(source, propertyArgs, listArgs)
-      RaiseEvent ChildChanged(Me, args)
+    Private Sub RaiseChildChanged(ByVal childObject As Object, ByVal propertyArgs As PropertyChangedEventArgs, ByVal listArgs As ListChangedEventArgs)
+      Dim args As ChildChangedEventArgs = New ChildChangedEventArgs(childObject, propertyArgs, listArgs)
+      OnChildChanged(args)
     End Sub
 
+    ''' <summary>
+    ''' Handles any PropertyChanged event from 
+    ''' a child object and echoes it up as
+    ''' a ChildChanged event.
+    ''' </summary>
     Private Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-      OnChildChanged(sender, e, Nothing)
+      RaiseChildChanged(sender, e, Nothing)
     End Sub
 
+    ''' <summary>
+    ''' Handles any ListChanged event from 
+    ''' a child list and echoes it up as
+    ''' a ChildChanged event.
+    ''' </summary>
     Private Sub Child_ListChanged(ByVal sender As Object, ByVal e As ListChangedEventArgs)
-      OnChildChanged(sender, Nothing, e)
+      If e.ListChangedType <> ListChangedType.ItemChanged Then
+        RaiseChildChanged(sender, Nothing, e)
+      End If
+    End Sub
+
+    ''' <summary>
+    ''' Handles any ChildChanged event from
+    ''' a child object and echoes it up as
+    ''' a ChildChanged event.
+    ''' </summary>
+    Private Sub Child_Changed(ByVal sender As Object, ByVal e As ChildChangedEventArgs)
+      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs)
     End Sub
 
 #End Region
@@ -2607,20 +2934,20 @@ Namespace Core
 
     Private Sub FieldDataDeserialized()
 
-      For Each item As Object In FieldManager.GetChildren
-        Dim eo As IEditableBusinessObject = TryCast(item, IEditableBusinessObject)
-        If eo IsNot Nothing Then
-          eo.SetParent(Me)
-          Dim pc As INotifyPropertyChanged = DirectCast(item, INotifyPropertyChanged)
-          AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
+      For Each item As Object In FieldManager.GetChildren()
+        Dim business As IBusinessObject = TryCast(business, IBusinessObject)
+        If business IsNot Nothing Then
+          OnAddEventHooks(business)
+        End If
 
-        Else
-          Dim el As IEditableCollection = TryCast(item, IEditableCollection)
-          If el IsNot Nothing Then
-            el.SetParent(Me)
-            Dim bl As IBindingList = DirectCast(item, IBindingList)
-            AddHandler bl.ListChanged, AddressOf Child_ListChanged
-          End If
+        Dim child As IEditableBusinessObject = TryCast(item, IEditableBusinessObject)
+        If child IsNot Nothing Then
+          child.SetParent(Me)
+        End If
+
+        Dim childCollection As IEditableCollection = TryCast(item, IEditableCollection)
+        If childCollection IsNot Nothing Then
+          childCollection.SetParent(Me)
         End If
       Next
 
@@ -2637,36 +2964,254 @@ Namespace Core
     ''' </summary>
     ''' <param name="child">The child object that was edited.</param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub EditChildComplete( _
-      ByVal child As Core.IEditableBusinessObject) _
-      Implements Core.IParent.ApplyEditChild
+    Protected Overridable Sub EditChildComplete(ByVal child As Core.IEditableBusinessObject) Implements Core.IParent.ApplyEditChild
 
       ' do nothing, we don't really care
       ' when a child has its edits applied
     End Sub
 
-    Private Sub RemoveChild(ByVal child As IEditableBusinessObject) _
-      Implements IParent.RemoveChild
+    Private Sub ApplyEditChild(ByVal child As IEditableBusinessObject) Implements IParent.ApplyEditChild
+      Me.EditChildComplete(child)
+    End Sub
 
+    Private Sub RemoveChild(ByVal child As IEditableBusinessObject) Implements IParent.RemoveChild
       Dim info = FieldManager.FindProperty(child)
       FieldManager.RemoveField(info)
-
     End Sub
 
 #End Region
 
-#Region " IManageProperties "
+#Region " IDataPortalTarget Members "
 
-    Private Function GetManagedProperties() As System.Collections.Generic.List(Of IPropertyInfo) Implements IManageProperties.GetManagedProperties
-      Return FieldManager.GetRegisteredProperties
-    End Function
+    Private Sub IDataPortalTarget_MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
+      Me.MarkAsChild()
+    End Sub
+
+    Private Sub IDataPortalTarget_MarkNew() Implements Server.IDataPortalTarget.MarkNew
+      Me.MarkNew()
+    End Sub
+
+    Private Sub IDataPortalTarget_MarkOld() Implements Server.IDataPortalTarget.MarkOld
+      Me.MarkOld()
+    End Sub
+
+    Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+      Me.DataPortal_OnDataPortalInvoke(e)
+    End Sub
+
+    Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+      Me.DataPortal_OnDataPortalInvokeComplete(e)
+    End Sub
+
+    Private Sub IDataPortalTarget_DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+      Me.DataPortal_OnDataPortalException(e, ex)
+    End Sub
+
+    Private Sub IDataPortalTarget_Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+      Me.Child_OnDataPortalInvoke(e)
+    End Sub
+
+    Private Sub IDataPortalTarget_Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+      Me.Child_OnDataPortalInvokeComplete(e)
+    End Sub
+
+    Private Sub IDataPortalTarget_Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
+      Me.Child_OnDataPortalException(e, ex)
+    End Sub
+
+#End Region
+
+#Region " IManageProperties Members "
 
     Private ReadOnly Property HasManagedProperties() As Boolean Implements IManageProperties.HasManagedProperties
       Get
-        Return _fieldManager IsNot Nothing AndAlso _fieldManager.HasFields
+        Return (_fieldManager IsNot Nothing AndAlso _fieldManager.HasFields)
       End Get
     End Property
 
+    Private Function GetManagedProperties() As System.Collections.Generic.List(Of IPropertyInfo) Implements IManageProperties.GetManagedProperties
+      Return FieldManager.GetRegisteredProperties()
+    End Function
+
+    Private Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
+      Return GetProperty(propertyInfo)
+    End Function
+
+    Private Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
+      Return ReadProperty(propertyInfo)
+    End Function
+
+    Private Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.SetProperty
+      SetProperty(propertyInfo, newValue)
+    End Sub
+
+    Private Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
+      LoadProperty(propertyInfo, newValue)
+    End Sub
+
 #End Region
+
+#Region " MobileFormatter "
+
+    ''' <summary>
+    ''' Override this method to insert your field values
+    ''' into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="mode">
+    ''' The StateMode indicating why this method was invoked.
+    ''' </param>
+    Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As StateMode)
+      MyBase.OnGetState(info, mode)
+      info.AddValue("Csla.Core.BusinessBase._isNew", _isNew)
+      info.AddValue("Csla.Core.BusinessBase._isDeleted", _isDeleted)
+      info.AddValue("Csla.Core.BusinessBase._isDirty", _isDirty)
+      info.AddValue("Csla.Core.BusinessBase._neverCommitted", _neverCommitted)
+      info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", _disableIEditableObject)
+      info.AddValue("Csla.Core.BusinessBase._isChild", _isChild)
+      info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your field values
+    ''' from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="mode">
+    ''' The StateMode indicating why this method was invoked.
+    ''' </param>
+    Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As StateMode)
+      MyBase.OnSetState(info, mode)
+      _isNew = info.GetValue < bool > ("Csla.Core.BusinessBase._isNew")
+      _isDeleted = info.GetValue < bool > ("Csla.Core.BusinessBase._isDeleted")
+      _isDirty = info.GetValue < bool > ("Csla.Core.BusinessBase._isDirty")
+      _neverCommitted = info.GetValue < bool > ("Csla.Core.BusinessBase._neverCommitted")
+      _disableIEditableObject = info.GetValue < bool > ("Csla.Core.BusinessBase._disableIEditableObject")
+      _isChild = info.GetValue < bool > ("Csla.Core.BusinessBase._isChild")
+      _editLevelAdded = info.GetValue < Int() > ("Csla.Core.BusinessBase._editLevelAdded")
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to insert your child object
+    ''' references into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="formatter">
+    ''' Reference to MobileFormatter instance. Use this to
+    ''' convert child references to/from reference id values.
+    ''' </param>
+    Protected Overrides Sub OnGetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+      MyBase.OnGetChildren(info, formatter)
+
+      If _fieldManager IsNot Nothing Then
+        Dim fieldManagerInfo = formatter.SerializeObject(_fieldManager)
+        info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId)
+      End If
+
+      If _validationRules IsNot Nothing Then
+        Dim vrInfo = formatter.SerializeObject(_validationRules)
+        info.AddChild("_validationRules", vrInfo.ReferenceId)
+      End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your child object
+    ''' references from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="formatter">
+    ''' Reference to MobileFormatter instance. Use this to
+    ''' convert child references to/from reference id values.
+    ''' </param>
+    Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+
+      If info.Children.ContainsKey("_fieldManager") Then
+        Dim childData = info.Children("_fieldManager")
+        _fieldManager = (Core.FieldManager.FieldDataManager)formatter.GetObject(childData.ReferenceId)
+      End If
+
+      If info.Children.ContainsKey("_validationRules") Then
+        Dim refId As Integer = info.Children("_validationRules").ReferenceId
+        _validationRules = CType(formatter.GetObject(refId), ValidationRules)
+      End If
+
+      MyBase.OnSetChildren(info, formatter)
+    End Sub
+
+#End Region
+
+#Region " Property Checks ByPass "
+
+    <NonSerialized()> _
+    <NotUndoable()> _
+    Private _bypassPropertyChecks As Boolean = False
+
+    ''' <summary>
+    ''' By wrapping this property inside Using block
+    ''' you can set property values on current business object
+    ''' without raising PropertyChanged events
+    ''' and checking user rights.
+    ''' </summary>
+    Protected Friend ReadOnly Property BypassPropertyChecks() As BypassPropertyChecksObject
+      Get
+        Return Me.BypassPropertyChecksObject(Me)
+      End Get
+    End Property
+
+    ''' <summary>
+    ''' Class that allows setting of property values on 
+    ''' current business object
+    ''' without raising PropertyChanged events
+    ''' and checking user rights.
+    ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
+    Protected Friend Class BypassPropertyChecksObject
+      Implements IDisposable
+
+      Private _businessObject As BusinessBase
+
+      Private Sub New()
+
+      End Sub
+
+      Friend Sub New(ByVal businessObject As BusinessBase)
+        _businessObject = businessObject
+        _businessObject._bypassPropertyChecks = True
+      End Sub
+
+#Region " IDisposable Members "
+
+      ''' <summary>
+      ''' Disposes the object.
+      ''' </summary>
+      Public Sub Dispose() Implements IDisposable.Dispose
+        Dispose(True)
+        GC.SuppressFinalize(Me)
+      End Sub
+
+      ''' <summary>
+      ''' Disposes the object.
+      ''' </summary>
+      ''' <param name="dispose">Dispose flag.</param>
+      Public Sub Dispose(ByVal dispose As Boolean)
+        _businessObject._bypassPropertyChecks = False
+        _businessObject = Nothing
+      End Sub
+
+#End Region
+
+    End Class
+#End Region
+
+  End Class
 
 End Namespace

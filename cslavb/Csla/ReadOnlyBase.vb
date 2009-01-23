@@ -3,7 +3,6 @@ Imports System.Collections.Generic
 Imports System.ComponentModel
 Imports System.Runtime.Serialization
 Imports Csla.Core
-Imports Csla.Properties
 Imports Csla.Core.FieldManager
 Imports Csla.Core.LoadManager
 Imports Csla.Server
@@ -29,6 +28,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Implements Server.IDataPortalTarget
   Implements Core.IManageProperties
   Implements INotifyBusy
+
 
 #Region " Object ID Value "
 
@@ -1075,6 +1075,28 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     FieldManager.LoadFieldData(propertyInfo, newValue)
   End Sub
 
+  'private AsyncLoadManager
+  <NonSerialized()> _
+  Private _loadManager As AsyncLoadManager
+  Friend ReadOnly Property LoadManager() As AsyncLoadManager
+    Get
+      If _loadManager Is Nothing Then        
+        _loadManager = New AsyncLoadManager()
+        AddHandler _loadManager.BusyChanged, AddressOf loadManager_BusyChanged
+        AddHandler _loadManager.UnhandledAsyncException, AddressOf loadManager_UnhandledAsyncException            
+      End If
+      Return _loadManager
+    End Get
+  End Property
+
+  Private Sub loadManager_UnhandledAsyncException(ByVal sender As Object, ByVal e As ErrorEventArgs)
+    OnUnhandledAsyncException(e)
+  End Sub
+
+  Private Sub loadManager_BusyChanged(ByVal sender As Object, ByVal e As BusyChangedEventArgs)
+    OnBusyChanged(e)
+  End Sub
+
 #End Region
 
 #Region " Field Manager "
@@ -1128,6 +1150,130 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Private Sub SetProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements Core.IManageProperties.SetProperty
     Throw New NotImplementedException("IManageProperties.SetProperty")
   End Sub
+
+#End Region
+
+#Region "INotifyBusy Members"
+
+  <NotUndoable()> _
+  <NonSerialized()> _
+  Private _unhandledAsyncException As EventHandler(Of ErrorEventArgs)
+
+  ''' <summary>
+  ''' Event raised when an exception occurs on a background
+  ''' thread during an asynchronous operation.
+  ''' </summary>
+  Public Custom Event UnhandledAsyncException As EventHandler(Of ErrorEventArgs) Implements Core.INotifyUnhandledAsyncException.UnhandledAsyncException
+    AddHandler(ByVal value As EventHandler(Of ErrorEventArgs))
+      _unhandledAsyncException = CType(System.Delegate.Combine(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+    End AddHandler
+
+    RemoveHandler(ByVal value As EventHandler(Of ErrorEventArgs))
+      _unhandledAsyncException = CType(System.Delegate.Remove(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+    End RemoveHandler
+
+    RaiseEvent(ByVal sender As Object, ByVal e As Core.ErrorEventArgs)
+      If _unhandledAsyncException IsNot Nothing Then
+        _unhandledAsyncException.Invoke(sender, e)
+      End If
+    End RaiseEvent
+  End Event
+
+  ''' <summary>
+  ''' Raises the UnhandledAsyncException event.
+  ''' </summary>
+  ''' <param name="e">Error arguments.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub OnUnhandledAsyncException(ByVal e As ErrorEventArgs)    
+    If _unhandledAsyncException IsNot Nothing Then
+      _unhandledAsyncException(Me, e)
+    End If
+  End Sub
+
+  ''' <summary>
+  ''' Raises the UnhandledAsyncException event.
+  ''' </summary>
+  ''' <param name="originalSender">Original sender of the
+  ''' event.</param>
+  ''' <param name="e">Execption that occurred.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub OnUnhandledAsyncException(ByVal originalSender As Object, ByVal e As Exception)    
+    OnUnhandledAsyncException(New ErrorEventArgs(originalSender, e))
+  End Sub
+
+  <NotUndoable()> _
+  <NonSerialized()> _
+  Private _propertyBusy As BusyChangedEventHandler
+
+  ''' <summary>
+  ''' Event raised when the IsBusy property value
+  ''' has changed.
+  ''' </summary>
+  Public Custom Event BusyChanged As BusyChangedEventHandler Implements Core.INotifyBusy.BusyChanged
+    AddHandler(ByVal value As BusyChangedEventHandler)
+      _propertyBusy = CType(System.Delegate.Combine(_propertyBusy, value), BusyChangedEventHandler)
+    End AddHandler
+
+    RemoveHandler(ByVal value As BusyChangedEventHandler)
+      _propertyBusy = CType(System.Delegate.Remove(_propertyBusy, value), BusyChangedEventHandler)
+    End RemoveHandler
+
+    RaiseEvent(ByVal sender As Object, ByVal e As Core.BusyChangedEventArgs)
+      If _propertyBusy IsNot Nothing Then
+        _propertyBusy.Invoke(sender, e)
+      End If
+    End RaiseEvent
+  End Event
+
+  ''' <summary>
+  ''' Raises the BusyChanged event.
+  ''' </summary>
+  ''' <param name="propertyName">Name of the property
+  ''' that has changed.</param>
+  ''' <param name="busy">New busy value.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub OnBusyChanged(ByVal propertyName As String, ByVal busy As Boolean)
+    OnBusyChanged(New BusyChangedEventArgs(propertyName, busy))
+  End Sub
+
+  ''' <summary>
+  ''' Raises the BusyChanged event.
+  ''' </summary>
+  ''' <param name="args">Event arguments.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub OnBusyChanged(ByVal args As BusyChangedEventArgs)
+    If _propertyBusy IsNot Nothing Then
+      _propertyBusy(Me, args)
+    End If
+  End Sub
+
+  <NonSerialized()> _
+  <NotUndoable()> _
+  Private _isBusy As Boolean
+
+  ''' <summary>
+  ''' Gets a value indicating whether this
+  ''' object or any of its child objects are
+  ''' running an async operation.
+  ''' </summary>
+  <Browsable(False)> _
+  Public ReadOnly Property IsBusy() As Boolean Implements Core.INotifyBusy.IsBusy
+    Get
+      Return IsSelfBusy Or (_fieldManager IsNot Nothing And FieldManager.IsBusy())
+    End Get
+  End Property
+
+  ''' <summary>
+  ''' Gets a value indicating whether this
+  ''' object is
+  ''' running an async operation.
+  ''' </summary>
+  <Browsable(False)> _
+  Public ReadOnly Property IsSelfBusy() As Boolean Implements Core.INotifyBusy.IsSelfBusy
+    Get
+      Return _isBusy Or LoadManager.IsLoading
+    End Get
+  End Property
 
 #End Region
 

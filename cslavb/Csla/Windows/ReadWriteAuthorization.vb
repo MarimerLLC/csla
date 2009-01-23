@@ -4,6 +4,7 @@ Imports System.ComponentModel
 Imports System.Collections.Generic
 Imports System.Windows.Forms
 Imports System.Reflection
+Imports Csla.Security
 
 Namespace Windows
 
@@ -120,8 +121,8 @@ Namespace Windows
         If TypeOf binding.DataSource Is BindingSource Then
           Dim bs As BindingSource = CType(binding.DataSource, BindingSource)
           ' get the BusinessObject if appropriate
-          Dim ds As Csla.Security.IAuthorizeReadWrite = _
-            TryCast(bs.Current, Csla.Security.IAuthorizeReadWrite)
+          Dim ds As IAuthorizeReadWrite = _
+            TryCast(bs.Current, IAuthorizeReadWrite)
           If ds IsNot Nothing Then
             ' get the object property name
             Dim propertyName As String = _

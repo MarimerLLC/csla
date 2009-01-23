@@ -980,7 +980,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' Loading values does not cause validation rules to be
   ''' invoked.
   ''' </remarks>
-  Protected Sub LoadProperty(Of P, F)( _
+  Protected Sub LoadPropertyConvert(Of P, F)( _
     ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
     Try

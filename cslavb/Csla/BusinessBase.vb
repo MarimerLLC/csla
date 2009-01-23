@@ -170,30 +170,30 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   <NonSerialized()> _
   <NotUndoable()> _
-  Private _nonSerializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  Private _nonSerializableSavedHandlers As EventHandler(Of Core.SavedEventArgs)
   <NotUndoable()> _
-  Private _serializableSavedHandlers As EventHandler(Of Csla.Core.SavedEventArgs)
+  Private _serializableSavedHandlers As EventHandler(Of Core.SavedEventArgs)
 
   ''' <summary>
   ''' Event raised when an object has been saved.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-  Public Custom Event Saved As EventHandler(Of ) Implements Core.ISavable.Saved
-    AddHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
+  Public Custom Event Saved As EventHandler(Of Core.SavedEventArgs) Implements Core.ISavable.Saved
+    AddHandler(ByVal value As EventHandler(Of Core.SavedEventArgs))
       If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
       Else
-        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
       End If
     End AddHandler
-    RemoveHandler(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
+    RemoveHandler(ByVal value As EventHandler(Of Core.SavedEventArgs))
       If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
       Else
-        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value), EventHandler(Of Csla.Core.SavedEventArgs))
+        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
       End If
     End RemoveHandler
-    RaiseEvent(ByVal sender As System.Object, ByVal e As Csla.Core.SavedEventArgs)
+    RaiseEvent(ByVal sender As System.Object, ByVal e As Core.SavedEventArgs)
       If Not _nonSerializableSavedHandlers Is Nothing Then
         _nonSerializableSavedHandlers.Invoke(Me, e)
       End If
@@ -214,7 +214,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Sub OnSaved(ByVal newObject As T, ByVal e As Exception, ByVal userState As Object)
     MarkIdle()
-    Dim args As New Csla.Core.SavedEventArgs(newObject, e, userState)
+    Dim args As New Core.SavedEventArgs(newObject, e, userState)
     If _nonSerializableSavedHandlers IsNot Nothing Then
       _nonSerializableSavedHandlers.Invoke(Me, args)
     End If
@@ -244,7 +244,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <param name="handler">
   ''' Method called when the operation is complete.
   ''' </param>
-  Public Sub BeginSave(ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs))
+  Public Sub BeginSave(ByVal handler As EventHandler(Of Core.SavedEventArgs))
     BeginSave(False, handler, Nothing)
   End Sub
 
@@ -261,7 +261,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <param name="userState">User state data.</param>
   Public Overridable Sub BeginSave( _
     ByVal forceUpdate As Boolean, _
-    ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs), _
+    ByVal handler As EventHandler(Of Core.SavedEventArgs), _
     ByVal userState As Object)
 
     If forceUpdate AndAlso IsNew Then
@@ -276,28 +276,28 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       Dim [error] As New NotSupportedException(My.Resources.NoSaveChildException)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
-        handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
+        handler(Me, New Core.SavedEventArgs(Nothing, [error], userState))
       End If
 
     ElseIf EditLevel > 0 Then
       Dim [error] As New Validation.ValidationException(My.Resources.NoSaveEditingException)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
-        handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
+        handler(Me, New Core.SavedEventArgs(Nothing, [error], userState))
       End If
 
     ElseIf (Not IsValid) AndAlso (Not IsDeleted) Then
       Dim [error] As New Validation.ValidationException(My.Resources.NoSaveEditingException)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
-        handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
+        handler(Me, New Core.SavedEventArgs(Nothing, [error], userState))
       End If
 
     ElseIf IsBusy Then
-      Dim [error] As New Validation.ValidationException(Csla.Resources.BusyObjectsMayNotBeSaved)
+      Dim [error] As New Validation.ValidationException(My.Resources.BusyObjectsMayNotBeSaved)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
-        handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
+        handler(Me, New Core.SavedEventArgs(Nothing, [error], userState))
       End If
 
     Else
@@ -309,7 +309,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       Else
         OnSaved(CType(Me, T), Nothing, userState)
         If handler IsNot Nothing Then
-          handler(Me, New Csla.Core.SavedEventArgs(Me, Nothing, userState))
+          handler(Me, New Core.SavedEventArgs(Me, Nothing, userState))
         End If
       End If
     End If
@@ -325,7 +325,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
     OnSaved(result, e.Error, args.UserState)
     If handler IsNot Nothing Then
       handler( _
-        result, New Csla.Core.SavedEventArgs(result, e.Error, e.UserState))
+        result, New Core.SavedEventArgs(result, e.Error, e.UserState))
     End If
     MarkIdle()
 
@@ -333,7 +333,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   Private Class SaveState
 
-    Public Sub New(ByVal userState As Object, ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs))
+    Public Sub New(ByVal userState As Object, ByVal handler As EventHandler(Of Core.SavedEventArgs))
       _userstate = userState
       _handler = handler
     End Sub
@@ -348,12 +348,12 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       End Set
     End Property
 
-    Private _handler As EventHandler(Of Csla.Core.SavedEventArgs)
-    Public Property Handler() As EventHandler(Of Csla.Core.SavedEventArgs)
+    Private _handler As EventHandler(Of Core.SavedEventArgs)
+    Public Property Handler() As EventHandler(Of Core.SavedEventArgs)
       Get
         Return _handler
       End Get
-      Set(ByVal value As EventHandler(Of Csla.Core.SavedEventArgs))
+      Set(ByVal value As EventHandler(Of Core.SavedEventArgs))
         _handler = value
       End Set
     End Property
@@ -392,7 +392,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' when implementing the Update method in your 
   ''' data wrapper object.
   ''' </remarks>
-  Public Sub BeginSave(ByVal forceUpdate As Boolean, ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs))
+  Public Sub BeginSave(ByVal forceUpdate As Boolean, ByVal handler As EventHandler(Of Core.SavedEventArgs))
     Me.BeginSave(forceUpdate, handler, Nothing)
   End Sub
 
@@ -410,7 +410,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' when implementing the Update method in your 
   ''' data wrapper object.
   ''' </remarks>
-  Public Sub BeginSave(ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs), ByVal userState As Object)
+  Public Sub BeginSave(ByVal handler As EventHandler(Of Core.SavedEventArgs), ByVal userState As Object)
     Me.BeginSave(False, handler, userState)
 
   End Sub

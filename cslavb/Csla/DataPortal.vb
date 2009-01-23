@@ -8,7 +8,7 @@ Imports Csla.Serialization.Mobile
 ''' This is the client-side DataPortal as described in
 ''' Chapter 4.
 ''' </summary>
-Public Class DataPortal
+Public Module DataPortal
 
 #Region " DataPortal events "
 
@@ -17,33 +17,33 @@ Public Class DataPortal
   ''' setting up to call a server-side
   ''' DataPortal method.
   ''' </summary>
-  Public Shared Event DataPortalInitInvoke As Action(Of System.Object)
+  Public Event DataPortalInitInvoke As Action(Of System.Object)
   ''' <summary>
   ''' Raised by DataPortal prior to calling the 
   ''' requested server-side DataPortal method.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event DataPortalInvoke As Action(Of DataPortalEventArgs)
+  Public Event DataPortalInvoke As Action(Of DataPortalEventArgs)
   ''' <summary>
   ''' Raised by DataPortal after the requested 
   ''' server-side DataPortal method call is complete.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Shared Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
+  Public Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
 
-  Private Shared Sub OnDataPortalInitInvoke(ByVal e As Object)
+  Private Sub OnDataPortalInitInvoke(ByVal e As Object)
 
     RaiseEvent DataPortalInitInvoke(e)
 
   End Sub
 
-  Private Shared Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Private Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
     RaiseEvent DataPortalInvoke(e)
 
   End Sub
 
-  Private Shared Sub OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Private Sub OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
     RaiseEvent DataPortalInvokeComplete(e)
 
@@ -63,7 +63,7 @@ Public Class DataPortal
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <param name="criteria">Object-specific criteria.</param>
   ''' <returns>A new object, populated with default values.</returns>
-  Public Shared Function Create(Of T)(ByVal criteria As Object) As T
+  Public Function Create(Of T)(ByVal criteria As Object) As T
     Return DirectCast(Create(GetType(T), criteria), T)
   End Function
 
@@ -74,11 +74,11 @@ Public Class DataPortal
   ''' </summary>
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <returns>A new object, populated with default values.</returns>
-  Public Shared Function Create(Of T)() As T
+  Public Function Create(Of T)() As T
     Return DirectCast(Create(GetType(T), EmptyCriteria), T)
   End Function
 
-  Friend Shared Function Create(ByVal objectType As Type) As Object
+  Friend Function Create(ByVal objectType As Type) As Object
     Return Create(objectType, EmptyCriteria)
   End Function
 
@@ -91,13 +91,13 @@ Public Class DataPortal
   ''' <returns>A new object, populated with default values.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
-  Public Shared Function Create(ByVal criteria As Object) As Object
+  Public Function Create(ByVal criteria As Object) As Object
 
     Return Create(MethodCaller.GetObjectType(criteria), criteria)
 
   End Function
 
-  Private Shared Function Create( _
+  Public Function Create( _
     ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
@@ -154,28 +154,12 @@ Public Class DataPortal
   ''' an object, which is loaded with values from the database.
   ''' </summary>
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
-  ''' <returns>An object populated with values from the database.</returns>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Fetch(Of T)() As T
-
-    Return DirectCast(Fetch(GetType(T), EmptyCriteria), T)
-
-  End Function
-
-
-  ''' <summary>
-  ''' Called by a factory method in a business class to retrieve
-  ''' an object, which is loaded with values from the database.
-  ''' </summary>
-  ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <param name="criteria">Object-specific criteria.</param>
   ''' <returns>An object populated with values from the database.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Fetch(Of T)(ByVal criteria As Object) As T
+  Public Function Fetch(Of T)(ByVal criteria As Object) As T
 
     Return DirectCast(Fetch(GetType(T), criteria), T)
 
@@ -202,13 +186,17 @@ Public Class DataPortal
   ''' </summary>
   ''' <param name="criteria">Object-specific criteria.</param>
   ''' <returns>An object populated with values from the database.</returns>
-  Public Shared Function Fetch(ByVal criteria As Object) As Object
+  Public Function Fetch(ByVal criteria As Object) As Object
 
     Return Fetch(MethodCaller.GetObjectType(criteria), criteria)
 
   End Function
 
-  Private Shared Function Fetch( _
+  Friend Function Fetch(ByVal objectType As Type) As Object
+    Return Fetch(objectType, EmptyCriteria)
+  End Function
+
+  Private Function Fetch( _
     ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
@@ -283,7 +271,7 @@ Public Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Execute(Of T)(ByVal obj As T) As T
+  Public Function Execute(Of T)(ByVal obj As T) As T
 
     Return DirectCast(Update(obj), T)
 
@@ -307,7 +295,7 @@ Public Class DataPortal
   ''' <returns>A reference to the updated Command object.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Execute(ByVal obj As CommandBase) As CommandBase
+  Public Function Execute(ByVal obj As CommandBase) As CommandBase
 
     Return DirectCast(Update(obj), CommandBase)
 
@@ -328,7 +316,7 @@ Public Class DataPortal
   ''' <returns>A reference to the updated business object.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Function Update(Of T)(ByVal obj As T) As T
+  Public Function Update(Of T)(ByVal obj As T) As T
 
     Return DirectCast(Update(CObj(obj)), T)
 
@@ -346,7 +334,7 @@ Public Class DataPortal
   ''' </remarks>
   ''' <param name="obj">A reference to the business object to be updated.</param>
   ''' <returns>A reference to the updated business object.</returns>
-  Public Shared Function Update(ByVal obj As Object) As Object
+  Public Function Update(ByVal obj As Object) As Object
 
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
@@ -454,7 +442,7 @@ Public Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage( _
     "Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Sub Delete(Of T)(ByVal criteria As Object)
+  Public Sub Delete(Of T)(ByVal criteria As Object)
 
     Delete(GetType(T), criteria)
 
@@ -468,7 +456,7 @@ Public Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage( _
     "Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Shared Sub Delete(ByVal criteria As Object)
+  Public Sub Delete(ByVal criteria As Object)
 
     Dim objectType = MethodCaller.GetObjectType(criteria)
     Delete(objectType, criteria)
@@ -476,7 +464,7 @@ Public Class DataPortal
   End Sub
 
 
-  Private Shared Sub Delete(ByVal objectType As Type, ByVal criteria As Object)
+  Private Sub Delete(ByVal objectType As Type, ByVal criteria As Object)
 
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
@@ -543,7 +531,7 @@ Public Class DataPortal
   '''  asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public Shared Sub BeginCreate(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T))
+  Public  Sub BeginCreate(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T))
     BeginCreate(Of T)(DataPortal(Of T).EmptyCriteria, callback, Nothing)
   End Sub
 
@@ -560,7 +548,7 @@ Public Class DataPortal
   ''' is complete.
   ''' </param>
   ''' <param name="userState">User state object.</param>    
-  Public Shared Sub BeginCreate(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T),  byval userState as object)    
+  Public Sub BeginCreate(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
     BeginCreate(Of T)(DataPortal(Of T).EmptyCriteria, callback, userState)
   End Sub
 
@@ -579,7 +567,7 @@ Public Class DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>
-  Public Shared Sub BeginCreate(Of T As IMobileObject)( byval criteria as object ,ByVal callback As EventHandler(Of DataPortalResult(Of T))    
+  Public  Sub BeginCreate(Of T As IMobileObject)( byval criteria as object ,ByVal callback As EventHandler(Of DataPortalResult(Of T))    
     BeginCreate(Of T)(criteria, callback, Nothing)
   End Sub
 
@@ -599,7 +587,7 @@ Public Class DataPortal
   ''' is complete.
   ''' </param>
   ''' <param name="userState">User state object.</param>   
-  Public Shared Sub BeginCreate(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+  Public Sub BeginCreate(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
     Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
     AddHandler dp.CreateCompleted, callback
     dp.BeginCreate(criteria, userState)
@@ -621,7 +609,7 @@ Public Class DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public Shared Sub BeginFetch(Of T As IMobileObject )(ByVal callback As EventHandler(Of DataPortal(Of T))    
+  Public  Sub BeginFetch(Of T As IMobileObject )(ByVal callback As EventHandler(Of DataPortalResult(Of  T))    
     BeginFetch(Of T)(DataPortal(Of T).EmptyCriteria, callback, Nothing)
   End Sub
 
@@ -638,7 +626,7 @@ Public Class DataPortal
   ''' is complete.
   ''' </param>
   ''' <param name="userState">User state object.</param>  
-  Public Shared Sub BeginFetch(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortal(Of T)), ByVal userState As Object)
+  Public Sub BeginFetch(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
     BeginFetch(Of T)(DataPortal(Of T).EmptyCriteria, callback, userState)
   End Sub
 
@@ -657,7 +645,7 @@ Public Class DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public Shared Sub BeginFetch(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortal(Of T)))
+  Public Sub BeginFetch(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
     BeginFetch(Of T)(criteria, callback, Nothing)
   End Sub
 
@@ -678,7 +666,7 @@ Public Class DataPortal
   ''' is complete.
   ''' </param>
   ''' <param name="userState">User state object.</param>  
-  Public Shared Sub BeginFetch(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortal(Of T)), ByVal userState As Object)
+  Public Sub BeginFetch(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
     Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
     AddHandler dp.FetchCompleted, callback
     dp.BeginFetch(criteria, userState)
@@ -703,7 +691,7 @@ Public Class DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>
-  Public Shared Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
+  Public Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
 
     BeginUpdate(Of T)(obj, callback, Nothing)
 
@@ -725,7 +713,7 @@ Public Class DataPortal
   ''' is complete.
   ''' </param>
   ''' <param name="userState">User state object.</param>
-  Public Shared Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+  Public Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
 
     Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
     AddHandler dp.UpdateCompleted, callback
@@ -752,8 +740,8 @@ Public Class DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public Shared sub BeginDelete(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T))
-    '  BeginDelete<T>(criteria, callback, null);
+  Public  Sub BeginDelete(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T))    
+    BeginDelete(Of T)(criteria, callback, Nothing)
   End Sub
 
   ''' <summary>
@@ -772,7 +760,7 @@ Public Class DataPortal
   ''' is complete.
   ''' </param>
   ''' <param name="userState">User state object.</param>  
-  Public Shared Sub BeginDelete(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+  Public Sub BeginDelete(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
     Dim dp As DataPortal(Of T) = New DataPortal(Of T)
     AddHandler dp.DeleteCompleted, callback
     dp.BeginDelete(criteria, userState)
@@ -797,7 +785,7 @@ Public Class DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public Shared Sub BeginExecute(Of T As IMobileObject)(ByVal obj As T, ByVal callback As EventHandler(Of DataPortalResult(Of T))    
+  Public  Sub BeginExecute(Of T As IMobileObject)(ByVal obj As T, ByVal callback As EventHandler(Of DataPortalResult(Of T))    
     BeginExecute(Of T)(obj, callback, Nothing)
   End Sub
 
@@ -817,7 +805,7 @@ Public Class DataPortal
   ''' is complete.
   ''' </param>
   ''' <param name="userState">User state object.</param>  
-  Public Shared Sub BeginExecute(Of T As IMobileObject)(ByVal obj As T, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+  Public Sub BeginExecute(Of T As IMobileObject)(ByVal obj As T, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
     Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
     AddHandler dp.ExecuteCompleted, callback
     dp.BeginExecute(obj, userState)
@@ -839,7 +827,7 @@ Public Class DataPortal
   ''' <param name="parameters">
   ''' Parameters passed to child create method.
   ''' </param>
-  Public Shared Function CreateChild(Of T)(ByVal ParamArray parameters() As Object) As T
+  Public Function CreateChild(Of T)(ByVal ParamArray parameters() As Object) As T
 
     Dim portal As New Server.ChildDataPortal
     Return DirectCast(portal.Create(GetType(T), parameters), T)
@@ -856,7 +844,7 @@ Public Class DataPortal
   ''' <param name="parameters">
   ''' Parameters passed to child fetch method.
   ''' </param>
-  Public Shared Function FetchChild(Of T)(ByVal ParamArray parameters() As Object) As T
+  Public Function FetchChild(Of T)(ByVal ParamArray parameters() As Object) As T
 
     Dim portal As New Server.ChildDataPortal
     Return DirectCast(portal.Fetch(GetType(T), parameters), T)
@@ -873,7 +861,7 @@ Public Class DataPortal
   ''' <param name="parameters">
   ''' Parameters passed to child update method.
   ''' </param>
-  Public Shared Sub UpdateChild(ByVal child As Object, ByVal ParamArray parameters() As Object)
+  Public Sub UpdateChild(ByVal child As Object, ByVal ParamArray parameters() As Object)
 
     Dim portal As New Server.ChildDataPortal
     portal.Update(child, parameters)
@@ -887,7 +875,7 @@ Public Class DataPortal
   Private _localPortal As DataPortalClient.IDataPortalProxy
   Private _portal As DataPortalClient.IDataPortalProxy
 
-  Private Shared Function GetDataPortalProxy( _
+  Private Function GetDataPortalProxy( _
     ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
 
     If forceLocal Then
@@ -923,7 +911,7 @@ Public Class DataPortal
   ''' proxy instance.
   ''' </summary>
   <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
-  Public Shared Sub ReleaseProxy()
+  Public Sub ReleaseProxy()
 
     Dim disp = TryCast(_portal, IDisposable)
     If disp IsNot Nothing Then
@@ -936,7 +924,7 @@ Public Class DataPortal
 
 #Region " Security "
 
-  Private Shared Function GetPrincipal() As System.Security.Principal.IPrincipal
+  Private Function GetPrincipal() As System.Security.Principal.IPrincipal
     If ApplicationContext.AuthenticationType = "Windows" Then
       ' Windows integrated security 
       Return Nothing
@@ -961,16 +949,16 @@ Public Class DataPortal
 
 #Region "Design Time Support"
 
-  Private Shared _isInDesignMode As Boolean = False
-  Private Shared _isInDesignModeHasBeenSet As Boolean = False
-  Private Shared _designModeLock As Object = New Object()
+  Private _isInDesignMode As Boolean = False
+  Private _isInDesignModeHasBeenSet As Boolean = False
+  Private _designModeLock As Object = New Object()
 
   ''' <summary>
   ''' Gets a value indicating whether the code is running
   ''' in WPF design mode.
   ''' </summary>
   ''' <remarks></remarks>
-  Public Shared ReadOnly Property IsInDesignMode() As Boolean
+  Public ReadOnly Property IsInDesignMode() As Boolean
     Get
       If Not _isInDesignModeHasBeenSet Then
         If Application.Current IsNot Nothing AndAlso Application.Current.Dispatcher IsNot Nothing Then
@@ -995,4 +983,4 @@ Public Class DataPortal
   End Property
 
 #End Region
-End Class
+End Module

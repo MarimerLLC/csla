@@ -17,33 +17,33 @@ Public Class DataPortal
   ''' setting up to call a server-side
   ''' DataPortal method.
   ''' </summary>
-  Public Event DataPortalInitInvoke As Action(Of System.Object)
+  Public Shared Event DataPortalInitInvoke As Action(Of System.Object)
   ''' <summary>
   ''' Raised by DataPortal prior to calling the 
   ''' requested server-side DataPortal method.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Event DataPortalInvoke As Action(Of DataPortalEventArgs)
+  Public Shared Event DataPortalInvoke As Action(Of DataPortalEventArgs)
   ''' <summary>
   ''' Raised by DataPortal after the requested 
   ''' server-side DataPortal method call is complete.
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
-  Public Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
+  Public Shared Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
 
-  Private Sub OnDataPortalInitInvoke(ByVal e As Object)
+  Private Shared Sub OnDataPortalInitInvoke(ByVal e As Object)
 
     RaiseEvent DataPortalInitInvoke(e)
 
   End Sub
 
-  Private Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Private Shared Sub OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
     RaiseEvent DataPortalInvoke(e)
 
   End Sub
 
-  Private Sub OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Private Shared Sub OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
     RaiseEvent DataPortalInvokeComplete(e)
 
@@ -63,7 +63,7 @@ Public Class DataPortal
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <param name="criteria">Object-specific criteria.</param>
   ''' <returns>A new object, populated with default values.</returns>
-  Public Function Create(Of T)(ByVal criteria As Object) As T
+  Public Shared Function Create(Of T)(ByVal criteria As Object) As T
     Return DirectCast(Create(GetType(T), criteria), T)
   End Function
 
@@ -74,7 +74,7 @@ Public Class DataPortal
   ''' </summary>
   ''' <typeparam name="T">Specific type of the business object.</typeparam>
   ''' <returns>A new object, populated with default values.</returns>
-  Public Function Create(Of T)() As T
+  Public Shared Function Create(Of T)() As T
     Return DirectCast(Create(GetType(T), EmptyCriteria), T)
   End Function
 
@@ -202,13 +202,13 @@ Public Class DataPortal
   ''' </summary>
   ''' <param name="criteria">Object-specific criteria.</param>
   ''' <returns>An object populated with values from the database.</returns>
-  Public Function Fetch(ByVal criteria As Object) As Object
+  Public Shared Function Fetch(ByVal criteria As Object) As Object
 
     Return Fetch(MethodCaller.GetObjectType(criteria), criteria)
 
   End Function
 
-  Private Function Fetch( _
+  Private Shared Function Fetch( _
     ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
@@ -283,7 +283,7 @@ Public Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Function Execute(Of T)(ByVal obj As T) As T
+  Public Shared Function Execute(Of T)(ByVal obj As T) As T
 
     Return DirectCast(Update(obj), T)
 
@@ -307,7 +307,7 @@ Public Class DataPortal
   ''' <returns>A reference to the updated Command object.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Function Execute(ByVal obj As CommandBase) As CommandBase
+  Public Shared Function Execute(ByVal obj As CommandBase) As CommandBase
 
     Return DirectCast(Update(obj), CommandBase)
 
@@ -454,7 +454,7 @@ Public Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage( _
     "Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Sub Delete(Of T)(ByVal criteria As Object)
+  Public Shared Sub Delete(Of T)(ByVal criteria As Object)
 
     Delete(GetType(T), criteria)
 
@@ -839,7 +839,7 @@ Public Class DataPortal
   ''' <param name="parameters">
   ''' Parameters passed to child create method.
   ''' </param>
-  Public Function CreateChild(Of T)(ByVal ParamArray parameters() As Object) As T
+  Public Shared Function CreateChild(Of T)(ByVal ParamArray parameters() As Object) As T
 
     Dim portal As New Server.ChildDataPortal
     Return DirectCast(portal.Create(GetType(T), parameters), T)
@@ -856,7 +856,7 @@ Public Class DataPortal
   ''' <param name="parameters">
   ''' Parameters passed to child fetch method.
   ''' </param>
-  Public Function FetchChild(Of T)(ByVal ParamArray parameters() As Object) As T
+  Public Shared Function FetchChild(Of T)(ByVal ParamArray parameters() As Object) As T
 
     Dim portal As New Server.ChildDataPortal
     Return DirectCast(portal.Fetch(GetType(T), parameters), T)
@@ -873,7 +873,7 @@ Public Class DataPortal
   ''' <param name="parameters">
   ''' Parameters passed to child update method.
   ''' </param>
-  Public Sub UpdateChild(ByVal child As Object, ByVal ParamArray parameters() As Object)
+  Public Shared Sub UpdateChild(ByVal child As Object, ByVal ParamArray parameters() As Object)
 
     Dim portal As New Server.ChildDataPortal
     portal.Update(child, parameters)
@@ -887,7 +887,7 @@ Public Class DataPortal
   Private _localPortal As DataPortalClient.IDataPortalProxy
   Private _portal As DataPortalClient.IDataPortalProxy
 
-  Private Function GetDataPortalProxy( _
+  Private Shared Function GetDataPortalProxy( _
     ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
 
     If forceLocal Then
@@ -923,7 +923,7 @@ Public Class DataPortal
   ''' proxy instance.
   ''' </summary>
   <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
-  Public Sub ReleaseProxy()
+  Public Shared Sub ReleaseProxy()
 
     Dim disp = TryCast(_portal, IDisposable)
     If disp IsNot Nothing Then
@@ -936,7 +936,7 @@ Public Class DataPortal
 
 #Region " Security "
 
-  Private Function GetPrincipal() As System.Security.Principal.IPrincipal
+  Private Shared Function GetPrincipal() As System.Security.Principal.IPrincipal
     If ApplicationContext.AuthenticationType = "Windows" Then
       ' Windows integrated security 
       Return Nothing

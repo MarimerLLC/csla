@@ -114,9 +114,8 @@ Namespace Validation
       Dim propertyValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
 
       For Each p As IPropertyInfo In properties
-        propertyValues.Add(p.Name, Utilities.CallByName(target, p.Name, CallType.Get))
-      Next
-
+        propertyValues.Add(p.Name, Microsoft.VisualBasic.Interaction.CallByName(target, p.Name, CallType.Get))
+      Next      
       Return propertyValues
 
     End Function

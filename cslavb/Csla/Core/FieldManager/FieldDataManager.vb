@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Collections.Specialized
 Imports Csla.Serialization
+Imports Csla.Serialization.Mobile
 
 Namespace Core.FieldManager
 
@@ -12,13 +13,24 @@ Namespace Core.FieldManager
   <Serializable()> _
   Public Class FieldDataManager
     Implements IUndoableObject
+    Implements IMobileObject
+
+    Private _businessObjectType As String
+
+    <NonSerialized()> _
+    Private _parent As BusinessBase
 
     <NonSerialized()> _
     Private _propertyList As List(Of IPropertyInfo)
+
     Private _fieldData() As IFieldData
 
+    Private Sub New()
+      'exists to support MobileFormatter
+    End Sub
+
     Friend Sub New(ByVal businessObjectType As Type)
-      _propertyList = GetConsolidatedList(businessObjectType)
+      SetPropertyList(businessObjectType)
       _fieldData = New IFieldData(_propertyList.Count - 1) {}
     End Sub
 
@@ -27,7 +39,15 @@ Namespace Core.FieldManager
     ''' restore property list.
     ''' </summary>
     Friend Sub SetPropertyList(ByVal businessObjectType As Type)
+      _businessObjectType = businessObjectType.AssemblyQualifiedName
       _propertyList = GetConsolidatedList(businessObjectType)
+    End Sub
+
+    ''' <summary>
+    ''' Called by parent to set the back-reference.
+    ''' </summary>
+    Friend Sub SetParent(ByVal parent As BusinessBase)
+      _parent = parent
     End Sub
 
     ''' <summary>
@@ -197,7 +217,7 @@ Namespace Core.FieldManager
     Friend Function LoadFieldData(ByVal prop As IPropertyInfo, ByVal value As Object) As IFieldData
       Dim valueType As Type
       If value IsNot Nothing Then
-        valueType = value.GetType
+        valueType = value.GetType()
       Else
         valueType = prop.Type
       End If
@@ -339,6 +359,14 @@ Namespace Core.FieldManager
       Next item
     End Sub
 
+    Friend Function IsBusy() As Boolean
+      For Each item In _fieldData
+        If item IsNot Nothing AndAlso item.IsBusy Then
+          Return True
+        End If
+      Next item
+    End Function
+
 #End Region
 
 #Region " IUndoableObject"
@@ -446,7 +474,6 @@ Namespace Core.FieldManager
 
 #Region " Child Objects "
 
-
     ''' <summary>
     ''' Returns a list of all child objects
     ''' contained in the list of fields.
@@ -484,6 +511,122 @@ Namespace Core.FieldManager
 
 #End Region
 
+#Region "IMobileObject Members"
+
+    Public Sub GetState(ByVal info As Serialization.Mobile.SerializationInfo) Implements Serialization.Mobile.IMobileObject.GetState
+      info.AddValue("_businessObjectType", _businessObjectType)
+      For Each data As IFieldData In _fieldData
+        If data IsNot Nothing Then
+          Dim mobile As IMobileObject = DirectCast(data, IMobileObject)
+          If mobile Is Nothing Then
+            info.AddValue(data.Name, data.Value, data.IsDirty)
+          End If
+        End If
+      Next
+      OnGetState(info)
+    End Sub
+
+    Public Sub IMobileObject_GetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.GetChildren
+      For Each data As IFieldData In _fieldData
+        If data IsNot Nothing Then
+          Dim mobile As IMobileObject = DirectCast(data, IMobileObject)
+          If mobile IsNot Nothing Then
+            Dim childInfo As SerializationInfo = formatter.SerializeObject(mobile)
+            info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty)
+          End If
+        End If
+      Next
+      OnGetChildren(info, formatter)
+    End Sub
+
+    Public Sub SetState(ByVal info As Serialization.Mobile.SerializationInfo) Implements Serialization.Mobile.IMobileObject.SetState
+      Dim type As String = CType(info.Values("_businessObjectType").Value, String)
+      Dim businessObjecType As Type = System.Type.GetType(type)
+      SetPropertyList(businessObjecType)
+      _fieldData = New IFieldData(_propertyList.Count)
+
+      For Each [property] As IPropertyInfo In _propertyList
+        If info.Values.ContainsKey([property].Name) Then
+          Dim value As SerializationInfo.FieldData = info.Values([property].Name)
+          Dim data As IFieldData = GetOrCreateFieldData([property])
+          data.Value = value.Value
+
+          If Not value.IsDirty Then
+            data.MarkClean()
+          End If
+        End If
+      Next
+      OnSetState(info)
+    End Sub
+
+    Public Sub SetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.SetChildren
+      For Each [property] As IPropertyInfo In _propertyList
+        If info.Children.ContainsKey([property].Name) Then
+          Dim childData As SerializationInfo.FieldData = info.Children([property].Name)
+          Dim data As IFieldData = GetOrCreateFieldData([property])
+          data.Value = formatter.GetObject(childData.ReferenceId)
+          If Not childData.IsDirty Then
+            data.MarkClean()
+          End If
+        End If
+      Next
+      OnSetChildren(info, formatter)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to insert your field values
+    ''' into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    Protected Overridable Sub OnGetState(ByVal info As SerializationInfo)
+
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your field values
+    ''' from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    Protected Overridable Sub OnSetState(ByVal info As SerializationInfo)
+
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to insert your child object
+    ''' references into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="formatter">
+    ''' Reference to MobileFormatter instance. Use this to
+    ''' convert child references to/from reference id values.
+    ''' </param>
+    Protected Overridable Sub OnGetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
+
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your child object
+    ''' references from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="formatter">
+    ''' Reference to MobileFormatter instance. Use this to
+    ''' convert child references to/from reference id values.
+    ''' </param>
+    Protected Overridable Sub OnSetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
+
+    End Sub
+
+#End Region
+    
   End Class
 
 End Namespace

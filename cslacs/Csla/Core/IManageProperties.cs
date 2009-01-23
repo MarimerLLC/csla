@@ -11,5 +11,6 @@ namespace Csla.Core
     object ReadProperty(IPropertyInfo propertyInfo);
     void SetProperty(IPropertyInfo propertyInfo, object newValue);
     void LoadProperty(IPropertyInfo propertyInfo, object newValue);
+    void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue);
   }
 }

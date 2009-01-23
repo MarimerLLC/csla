@@ -993,6 +993,11 @@ namespace Csla
       }
     }
 
+    void Core.IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      LoadProperty<P>(propertyInfo, newValue);
+    }
+
     /// <summary>
     /// Loads a property's managed field with the 
     /// supplied value calling PropertyHasChanged 

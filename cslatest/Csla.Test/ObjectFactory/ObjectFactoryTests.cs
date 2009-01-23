@@ -161,5 +161,16 @@ namespace Csla.Test.ObjectFactory
 
       Assert.AreEqual("Delete", Csla.ApplicationContext.GlobalContext["ObjectFactory"].ToString(), "Data should match");
     }
+
+    [TestMethod]
+    public void FetchLoadProperty()
+    {
+      Csla.Server.FactoryDataPortal.FactoryLoader =
+        new ObjectFactoryLoader(3);
+      var root = Csla.DataPortal.Fetch<Root>();
+      Assert.AreEqual("Fetch", root.Data, "Data should match");
+      Assert.IsFalse(root.IsNew, "Should not be new");
+      Assert.IsFalse(root.IsDirty, "Should not be dirty");
+    }
   }
 }

@@ -29,6 +29,8 @@ namespace Csla.Test.ObjectFactory
             return typeof(RootFactory1);
           case 2:
             return typeof(RootFactory2);
+          case 3:
+            return typeof(RootFactory3);
           default:
             return typeof(RootFactory);
         }
@@ -47,6 +49,8 @@ namespace Csla.Test.ObjectFactory
             return new RootFactory1();
           case 2:
             return new RootFactory2();
+          case 3:
+            return new RootFactory3();
           default:
             return new RootFactory();
         }

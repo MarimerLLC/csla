@@ -394,4 +394,7 @@
   <data name="MemberNotFoundException" xml:space="preserve">
     <value>Member not found on object ({0})</value>
   </data>
+  <data name="IManagePropertiesRequiredException" xml:space="preserve">
+    <value>Target object must implement IManageProperties</value>
+  </data>
 </root>

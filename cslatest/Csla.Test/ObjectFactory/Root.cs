@@ -10,7 +10,7 @@ namespace Csla.Test.ObjectFactory
   [Serializable]
   public class Root : BusinessBase<Root>
   {
-    private static PropertyInfo<string> DataProperty = RegisterProperty(new PropertyInfo<string>("Data"));
+    internal static PropertyInfo<string> DataProperty = RegisterProperty(new PropertyInfo<string>("Data"));
     public string Data
     {
       get { return GetProperty(DataProperty); }

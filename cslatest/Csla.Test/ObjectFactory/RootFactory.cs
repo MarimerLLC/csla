@@ -118,4 +118,15 @@ namespace Csla.Test.ObjectFactory
       _transactionalType = context.TransactionalType;
     }
   }
+
+  public class RootFactory3 : Csla.Server.ObjectFactory
+  {
+    public object Fetch()
+    {
+      var obj = new Root();
+      LoadProperty(obj, Root.DataProperty, "Fetch");
+      this.MarkOld(obj);
+      return obj;
+    }
+  }
 }

@@ -392,6 +392,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Target object must implement IManageProperties.
+        /// </summary>
+        internal static string IManagePropertiesRequiredException {
+            get {
+                return ResourceManager.GetString("IManagePropertiesRequiredException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Index is out of range.
         /// </summary>
         internal static string IndexIsOutOfRange {

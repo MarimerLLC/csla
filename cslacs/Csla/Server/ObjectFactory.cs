@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Properties;
 using Csla.Reflection;
 
 namespace Csla.Server
@@ -58,6 +59,36 @@ namespace Csla.Server
         target.MarkAsChild();
       else
         MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild", null);
+    }
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value calling PropertyHasChanged 
+    /// if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Object on which to call the method. 
+    /// </param>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
+    {
+      var target = obj as Core.IManageProperties;
+      if (target != null)
+        target.LoadProperty<P>(propertyInfo, newValue);
+      else
+        throw new ArgumentException(Resources.IManagePropertiesRequiredException);
     }
 
     /// <summary>

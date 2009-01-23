@@ -1123,7 +1123,7 @@ Namespace Validation
               '  String.Format(My.Resources.ValidationRuleException & "{{2}}", rule.RuleArgs.PropertyName, rule.RuleName, ex.Message)
               ' throw a more detailed exception
               Throw New ValidationException( _
-                String.Format(My.Resources.ValidationRuleException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
+                String.Format(My.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
             End Try
 
             SyncLock (SyncRoot)
@@ -1160,17 +1160,16 @@ Namespace Validation
       ' then you may have the ValidationComplete event fire multiple times invalidly.
       For Each rule As IAsyncRuleMethod In asyncRules
         Try
-          rule.Invoke(_target, asyncRule_Complete)
+          rule.Invoke(_target, AddressOf asyncRule_Complete)
         Catch ex As Exception
           'throw a more detailed exception
           Throw New ValidationException( _
-            String.Format(Properties.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
-        End Try
-
+            String.Format(My.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
+        End Try        
       Next
     End Sub
 
-    Sub asyncRule_Complete(ByVal target As Object, ByVal e As AsyncRuleResult)
+    Private Sub asyncRule_Complete(ByVal target As Object, ByVal e As AsyncRuleResult)
       Dim rule As IAsyncRuleMethod = CType(target, IAsyncRuleMethod)
       SyncLock (SyncRoot)
         If e.Result Then

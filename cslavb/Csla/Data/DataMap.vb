@@ -16,7 +16,7 @@ Namespace Data
 
     Friend Class MemberMapping
       Private _from As DynamicMemberHandle
-      Public Property FromMember() As DynamicMemberHandle
+      Public Property FromMemberHandle() As DynamicMemberHandle
         Get
           Return _from
         End Get
@@ -26,7 +26,7 @@ Namespace Data
       End Property
 
       Private _to As DynamicMemberHandle
-      Public Property ToMember() As DynamicMemberHandle
+      Public Property ToMemberHandle() As DynamicMemberHandle
         Get
           Return _to
         End Get
@@ -36,8 +36,8 @@ Namespace Data
       End Property
 
       Public Sub New(ByVal fromMember As DynamicMemberHandle, ByVal toMember As DynamicMemberHandle)
-        Me.FromMember = fromMember
-        Me.ToMember = toMember
+        Me.FromMemberHandle = fromMember
+        Me.ToMemberHandle = toMember
       End Sub
     End Class
 

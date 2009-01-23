@@ -24,5 +24,21 @@ namespace Csla.Test.PropertyGetSet
       get { return GetProperty<string>(BaseProperty); }
       set { SetProperty<string>(BaseProperty, value); }
     }
-  } 
+  }
+
+  [Serializable]
+  public class EditableGetSetNFIBase<T> : EditableGetSetTopNFIBase<T>
+    where T : EditableGetSetNFIBase<T>
+  {
+    public EditableGetSetNFIBase()
+    {
+    }
+
+    public static PropertyInfo<string> BaseProperty = RegisterProperty<string>(new PropertyInfo<string>("Base", "Base"));
+    public string Base
+    {
+      get { return GetProperty<string>(BaseProperty); }
+      set { SetProperty<string>(BaseProperty, value); }
+    }
+  }
 }

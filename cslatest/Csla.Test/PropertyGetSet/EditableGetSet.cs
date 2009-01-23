@@ -269,4 +269,98 @@ namespace Csla.Test.PropertyGetSet
 
     #endregion
   }
+
+  [Serializable]
+  public class EditableGetSetNFI : EditableGetSetNFIBase<EditableGetSetNFI>
+  {
+    public static PropertyInfo<string> DataProperty = RegisterProperty(new PropertyInfo<string>("Data", "Data"));
+    public string Data
+    {
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
+    }
+
+    public int EditLevel
+    {
+      get { return base.EditLevel; }
+    }
+
+    public void MarkClean()
+    {
+      base.MarkClean();
+    }
+
+    public EditableGetSetNFI()
+    {
+      MarkNew();
+      MarkClean();
+    }
+
+    public EditableGetSetNFI(bool isChild)
+    {
+      if (isChild)
+      {
+        MarkAsChild();
+        MarkNew();
+      }
+    }
+
+    #region Factory Methods
+
+#if SILVERLIGHT
+    public static void GetObject(EventHandler<DataPortalResult<EditableGetSet>> completed)
+    {
+      DataPortal<EditableGetSet> dp = new DataPortal<EditableGetSet>();
+      dp.FetchCompleted += completed;
+      dp.BeginFetch();
+    }
+#else
+    public static EditableGetSet GetObject()
+    {
+      return Csla.DataPortal.Fetch<EditableGetSet>();
+    }
+#endif
+    #endregion
+
+    #region Data Access
+
+    private void DataPortal_Fetch()
+    {
+      LoadProperty(DataProperty, "Hi");
+    }
+
+#if SILVERLIGHT
+    public override void DataPortal_Insert(LocalProxy<EditableGetSetNFI>.CompletedHandler handler)
+    {
+      handler.Invoke(this, null);
+    }
+
+    public override void DataPortal_Update(LocalProxy<EditableGetSetNFI>.CompletedHandler handler)
+    {
+      handler.Invoke(this, null);
+    }
+#else
+    protected override void DataPortal_Insert()
+    {
+    }
+
+    protected override void DataPortal_Update()
+    {
+      //FieldManager.UpdateChildren();
+    }
+#endif
+
+
+    internal void Insert()
+    {
+      MarkOld();
+    }
+
+    internal void Update()
+    {
+      MarkOld();
+    }
+
+    #endregion
+  }
 }

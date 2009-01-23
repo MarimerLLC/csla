@@ -18,7 +18,23 @@ namespace Csla.Test.PropertyGetSet
       _dummy = 0;
     }
 
-    private static PropertyInfo<string> TopBaseProperty = RegisterProperty<string>(typeof(EditableGetSetTopBase<T>), new PropertyInfo<string>("TopBase", "TopBase"));
+    private static PropertyInfo<string> TopBaseProperty = RegisterProperty<string>(new PropertyInfo<string>("TopBase", "TopBase"));
+    public string TopBase
+    {
+      get { return GetProperty<string>(TopBaseProperty); }
+      set { SetProperty<string>(TopBaseProperty, value); }
+    }
+  }
+
+  [Serializable]
+  public class EditableGetSetTopNFIBase<T> : BusinessBase<T>
+    where T : EditableGetSetTopNFIBase<T>
+  {
+    public EditableGetSetTopNFIBase()
+    {
+    }
+
+    public static PropertyInfo<string> TopBaseProperty = RegisterProperty<string>(new PropertyInfo<string>("TopBase", "TopBase"));
     public string TopBase
     {
       get { return GetProperty<string>(TopBaseProperty); }

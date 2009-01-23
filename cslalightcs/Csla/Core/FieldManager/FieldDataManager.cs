@@ -89,6 +89,7 @@ namespace Csla.Core.FieldManager
 
     private static List<IPropertyInfo> CreateConsolidatedList(Type type)
     {
+      ForceStaticFieldInit(type);
       List<IPropertyInfo> result = new List<IPropertyInfo>();
       // get inheritance hierarchy
       Type current = type;
@@ -621,6 +622,31 @@ namespace Csla.Core.FieldManager
       }
 
       base.OnSetChildren(info, formatter);
+    }
+
+    #endregion
+
+    #region Force Static Field Init
+
+    /// <summary>
+    /// Forces initialization of the static fields declared
+    /// by a type, and any of its base class types.
+    /// </summary>
+    /// <param name="obj">Object to initialize.</param>
+    public static void ForceStaticFieldInit(Type type)
+    {
+      var attr =
+        System.Reflection.BindingFlags.Static |
+        System.Reflection.BindingFlags.Public |
+        System.Reflection.BindingFlags.DeclaredOnly;
+      var t = type;
+      while (t != null)
+      {
+        var fields = t.GetFields(attr);
+        if (fields.Length > 0)
+          fields[0].GetValue(null);
+        t = t.BaseType;
+      }
     }
 
     #endregion

@@ -35,6 +35,18 @@ namespace Csla.Test.PropertyGetSet
 #endif
 
     [TestMethod]
+    public void ForceStaticInit()
+    {
+      EditableGetSetNFI root = new EditableGetSetNFI();
+      root.Data = "a";
+      root.Base = "b";
+      root.TopBase = "c";
+      Assert.AreEqual("a", root.Data);
+      Assert.AreEqual("b", root.Base);
+      Assert.AreEqual("c", root.TopBase);
+    }
+
+    [TestMethod]
     public void NullString()
     {
       EditableGetSet root = new EditableGetSet();

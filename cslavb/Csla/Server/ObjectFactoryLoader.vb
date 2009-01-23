@@ -2,7 +2,6 @@
 Imports System.Collections.Generic
 Imports System.Linq
 Imports System.Text
-Imports Csla.Properties
 
 Namespace Server
 
@@ -44,7 +43,7 @@ Namespace Server
     Public Function GetFactory(ByVal factoryName As String) As Object Implements IObjectFactoryLoader.GetFactory
       Dim ft = Type.GetType(factoryName)
       If ft Is Nothing Then
-        Throw New InvalidOperationException(String.Format(Resources.FactoryTypeNotFoundException, factoryName))
+        Throw New InvalidOperationException(String.Format(My.Resources.FactoryTypeNotFoundException, factoryName))
       End If
       Return Activator.CreateInstance(ft)
     End Function

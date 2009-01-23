@@ -15,7 +15,6 @@ Namespace Core
   <Serializable()> _
   Public MustInherit Class BusinessBase
     Inherits UndoableBase
-
     Implements IEditableBusinessObject
     Implements System.ComponentModel.IEditableObject
     Implements IDataErrorInfo
@@ -1509,7 +1508,7 @@ Namespace Core
 
 #Region " Serialization Notification "
 
-    Sub ISerializationNotification_Deserialized() Implements ISerializationNotification.Deserialized
+    Sub ISerializationNotification_Deserialized() Implements Serialization.Mobile.ISerializationNotification.Deserialized
       OnDeserialized(New StreamingContext())
     End Sub
 
@@ -2626,8 +2625,8 @@ Namespace Core
     ''' <param name="p1">Parameter value.</param>
     ''' <param name="p2">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P1, P2)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2), ByVal p1 As P1, ByVal p2 As P2)
-      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, p1, p2))
+    Protected Sub LoadPropertyAsync(Of R, P1, P2)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2), ByVal px As P1, ByVal py As P2)
+      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, px, py))
       LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
     End Sub
 
@@ -2644,8 +2643,8 @@ Namespace Core
     ''' <param name="p2">Parameter value.</param>
     ''' <param name="p3">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3), ByVal p1 As P1, ByVal p2 As P2, ByVal p3 As P3)
-      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, p1, p2, p3))
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3), ByVal px As P1, ByVal py As P2, ByVal pz As P3)
+      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, px, py, pz))
       LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
     End Sub
 
@@ -2664,8 +2663,8 @@ Namespace Core
     ''' <param name="p3">Parameter value.</param>
     ''' <param name="p4">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4), ByVal p1 As P1, ByVal p2 As P2, ByVal p3 As P3, ByVal p4 As P4)
-      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4))
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4), ByVal pw As P1, ByVal px As P2, ByVal py As P3, ByVal p As P4)
+      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, pw, px, py, pz))
       LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
     End Sub
 
@@ -2686,9 +2685,9 @@ Namespace Core
     ''' <param name="p4">Parameter value.</param>
     ''' <param name="p5">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal p1 As P1, ByVal p2 As P2, ByVal p3 As P3, ByVal p4 As P4, ByVal p5 As P5)
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal pv As P1, ByVal pw As P2, ByVal px As P3, ByVal py As P4, ByVal pz As P5)
       'TODO : Waiting on clarification about AsyncLoader using P4,P5 which was not in c# version
-      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4, p5))
+      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, pv, pw, px, py, pz))
       LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
     End Sub
 

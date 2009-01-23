@@ -27,13 +27,13 @@ Namespace Security
     ''' </summary>
     ''' <param name="role">Role name.</param>
     ''' <returns></returns>
-    Public Overrides Function IsInRole(ByVal role As String) As Boolean
-
-      If Csla.DataPortal.IsInDesignMode Then
+    Public Overrides Function IsInRole(ByVal role As String) As Boolean      
+      If DataPortal.IsInDesignMode Then
         Return True
       Else
         Return MyBase.IsInRole(role)
       End If
+
     End Function
 
   End Class

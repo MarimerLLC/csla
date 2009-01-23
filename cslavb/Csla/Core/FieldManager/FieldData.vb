@@ -1,4 +1,6 @@
-﻿Namespace Core.FieldManager
+﻿Imports System.ComponentModel
+
+Namespace Core.FieldManager
 
   ''' <summary>
   ''' Contains a field value and related metadata.
@@ -133,6 +135,93 @@
         End If
       End Get
     End Property
+
+#Region "INotifyBusy Members"""
+
+    Private Custom Event INotifyBusy_BusyChanged As BusyChangedEventHandler Implements INotifyBusy.BusyChanged
+      AddHandler(ByVal value As BusyChangedEventHandler)
+        Throw New NotImplementedException
+      End AddHandler
+
+      RemoveHandler(ByVal value As BusyChangedEventHandler)
+        Throw New NotImplementedException
+      End RemoveHandler
+
+      RaiseEvent(ByVal sender As Object, ByVal e As BusyChangedEventArgs)
+        Throw New NotImplementedException
+      End RaiseEvent
+    End Event
+
+    ''' <summary>
+    ''' Gets a value indicating whether this object or
+    ''' any of its child objects are busy.
+    ''' </summary>
+    <Browsable(False)> _
+    Public ReadOnly Property IsBusy() As Boolean Implements INotifyBusy.IsBusy
+      Get
+        Dim tmpIsBusy As Boolean = False
+        Dim status As ITrackStatus = CType(_data, ITrackStatus)
+        If status IsNot Nothing Then tmpIsBusy = status.IsBusy
+
+        Return tmpIsBusy
+      End Get
+    End Property
+
+    Public ReadOnly Property IsSelfBusy() As Boolean Implements INotifyBusy.IsSelfBusy
+      Get
+        Return IsBusy
+      End Get
+    End Property
+#End Region
+
+#Region "INotifyUnhandledAsyncException Members"
+
+    <NotUndoable()> _
+    <NonSerialized()> _
+    Private _unhandledAsyncException As EventHandler(Of ErrorEventArgs)
+
+    ''' <summary>
+    ''' Event indicating that an exception occurred on
+    ''' a background thread.
+    ''' </summary>    
+    Public Custom Event UnhandledAsyncException As EventHandler(Of ErrorEventArgs) Implements INotifyUnhandledAsyncException.UnhandledAsyncException
+      AddHandler(ByVal value As EventHandler(Of ErrorEventArgs))
+        _unhandledAsyncException = CType(System.Delegate.Combine(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+      End AddHandler
+
+      RemoveHandler(ByVal value As EventHandler(Of ErrorEventArgs))
+        _unhandledAsyncException = CType(System.Delegate.Remove(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+      End RemoveHandler
+
+      RaiseEvent(ByVal sender As Object, ByVal e As ErrorEventArgs)
+        If _unhandledAsyncException IsNot Nothing Then
+          _unhandledAsyncException.Invoke(sender, e)
+        End If
+      End RaiseEvent
+    End Event
+
+    ''' <summary>
+    ''' Raises the UnhandledAsyncException event.
+    ''' </summary>
+    ''' <param name="ex">Exception that occurred on the background thread.</param>    
+    Protected Overridable Sub OnUnhandledAsyncException(ByVal ex As ErrorEventArgs)
+
+      If _unhandledAsyncException IsNot Nothing Then _unhandledAsyncException(Me, ex)
+
+    End Sub
+
+    ''' <summary>
+    ''' Raises the UnhandledAsyncException event.
+    ''' </summary>
+    ''' <param name="originalSender">Original source of the event.</param>
+    ''' <param name="ex">Exception that occurred on the background thread.</param>    
+    Protected Sub OnUnhandledAsyncException(ByVal originalSender As Object, ByVal ex As Exception)
+
+      OnUnhandledAsyncException(New ErrorEventArgs(originalSender, ex))
+
+    End Sub
+
+#End Region
 
   End Class
 

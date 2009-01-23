@@ -2,7 +2,7 @@ Imports System.Reflection
 Imports Csla.Reflection
 Imports System.Windows
 Imports System.ComponentModel
-
+Imports Csla.Serialization.Mobile
 
 ''' <summary>
 ''' This is the client-side DataPortal as described in
@@ -78,6 +78,10 @@ Public Class DataPortal
     Return DirectCast(Create(GetType(T), EmptyCriteria), T)
   End Function
 
+  Friend Shared Function Create(ByVal objectType As Type) As Object
+    Return Create(objectType, EmptyCriteria)
+  End Function
+
   ''' <summary>
   ''' Called by a factory method in a business class to create 
   ''' a new object, which is loaded with default
@@ -144,6 +148,22 @@ Public Class DataPortal
     Return result.ReturnObject
 
   End Function
+
+  ''' <summary>
+  ''' Called by a factory method in a business class to retrieve
+  ''' an object, which is loaded with values from the database.
+  ''' </summary>
+  ''' <typeparam name="T">Specific type of the business object.</typeparam>
+  ''' <returns>An object populated with values from the database.</returns>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
+  Public Shared Function Fetch(Of T)() As T
+
+    Return DirectCast(Fetch(GetType(T), EmptyCriteria), T)
+
+  End Function
+
 
   ''' <summary>
   ''' Called by a factory method in a business class to retrieve
@@ -308,7 +328,7 @@ Public Class DataPortal
   ''' <returns>A reference to the updated business object.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Function Update(Of T)(ByVal obj As T) As T
+  Public Shared Function Update(Of T)(ByVal obj As T) As T
 
     Return DirectCast(Update(CObj(obj)), T)
 
@@ -326,7 +346,7 @@ Public Class DataPortal
   ''' </remarks>
   ''' <param name="obj">A reference to the business object to be updated.</param>
   ''' <returns>A reference to the updated business object.</returns>
-  Public Function Update(ByVal obj As Object) As Object
+  Public Shared Function Update(ByVal obj As Object) As Object
 
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
@@ -448,7 +468,7 @@ Public Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage( _
     "Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
     MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Sub Delete(ByVal criteria As Object)
+  Public Shared Sub Delete(ByVal criteria As Object)
 
     Dim objectType = MethodCaller.GetObjectType(criteria)
     Delete(objectType, criteria)
@@ -456,7 +476,7 @@ Public Class DataPortal
   End Sub
 
 
-  Private Sub Delete(ByVal objectType As Type, ByVal criteria As Object)
+  Private Shared Sub Delete(ByVal objectType As Type, ByVal criteria As Object)
 
     Dim result As Server.DataPortalResult
     Dim dpContext As Server.DataPortalContext = Nothing
@@ -507,6 +527,165 @@ Public Class DataPortal
 
 #End Region
 
+#Region "Async Data Access Methods"
+
+#Region "Begin Create"
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' create a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to create.
+  ''' </typeparam>
+  ''' <param name="callback">
+  '''  Reference to method that will handle the 
+  '''  asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>  
+  Public Shared Sub BeginCreate(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T))
+    BeginCreate(Of T)(DataPortal(Of T).EmptyCriteria, callback, Nothing)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' create a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to create.
+  ''' </typeparam>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  ''' <param name="userState">User state object.</param>    
+  Public Shared Sub BeginCreate(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T),  byval userState as object)    
+    BeginCreate(Of T)(DataPortal(Of T).EmptyCriteria, callback, userState)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' create a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to create.
+  ''' </typeparam>
+  ''' <param name="criteria">
+  ''' Criteria describing the object to create.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  Public Shared Sub BeginCreate(Of T As IMobileObject)( byval criteria as object ,ByVal callback As EventHandler(Of DataPortalResult(Of T))    
+    BeginCreate(Of T)(criteria, callback, Nothing)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' create a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to create.
+  ''' </typeparam>
+  ''' <param name="criteria">
+  ''' Criteria describing the object to create.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  ''' <param name="userState">User state object.</param>   
+  Public Shared Sub BeginCreate(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+    Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
+    AddHandler dp.CreateCompleted, callback
+    dp.BeginCreate(criteria, userState)
+  End Sub
+
+#End Region
+
+#Region "Begin Fetch"
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' fetch a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to fetch.
+  ''' </typeparam>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>  
+  Public Shared Sub BeginFetch(Of T As IMobileObject )(ByVal callback As EventHandler(Of DataPortal(Of T))    
+    BeginFetch(Of T)(DataPortal(Of T).EmptyCriteria, callback, Nothing)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' fetch a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to fetch.
+  ''' </typeparam>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  ''' <param name="userState">User state object.</param>  
+  Public Shared Sub BeginFetch(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortal(Of T)), ByVal userState As Object)
+    BeginFetch(Of T)(DataPortal(Of T).EmptyCriteria, callback, userState)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' fetch a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to fetch.
+  ''' </typeparam>
+  ''' <param name="criteria">
+  ''' Criteria describing the object to fetch.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>  
+  Public Shared Sub BeginFetch(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortal(Of T)))
+    BeginFetch(Of T)(criteria, callback, Nothing)
+  End Sub
+
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' fetch a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to fetch.
+  ''' </typeparam>
+  ''' <param name="criteria">
+  ''' Criteria describing the object to fetch.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  ''' <param name="userState">User state object.</param>  
+  Public Shared Sub BeginFetch(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortal(Of T)), ByVal userState As Object)
+    Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
+    AddHandler dp.FetchCompleted, callback
+    dp.BeginFetch(criteria, userState)
+  End Sub
+
+#End Region
+
 #Region " Begin Update "
 
   ''' <summary>
@@ -524,7 +703,7 @@ Public Class DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>
-  Public Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
+  Public Shared Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
 
     BeginUpdate(Of T)(obj, callback, Nothing)
 
@@ -546,13 +725,105 @@ Public Class DataPortal
   ''' is complete.
   ''' </param>
   ''' <param name="userState">User state object.</param>
-  Public Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+  Public Shared Sub BeginUpdate(Of T As IMobileObject)(ByVal obj As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
 
     Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
     AddHandler dp.UpdateCompleted, callback
     dp.BeginUpdate(obj, userState)
 
   End Sub
+
+#End Region
+
+#Region "Begin Delete"
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' delete a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to delete.
+  ''' </typeparam>
+  ''' <param name="criteria">
+  ''' Criteria describing the object to delete.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>  
+  Public Shared sub BeginDelete(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T))
+    '  BeginDelete<T>(criteria, callback, null);
+  End Sub
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' delete a business object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of business object to delete.
+  ''' </typeparam>
+  ''' <param name="criteria">
+  ''' Criteria describing the object to delete.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  ''' <param name="userState">User state object.</param>  
+  Public Shared Sub BeginDelete(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+    Dim dp As DataPortal(Of T) = New DataPortal(Of T)
+    AddHandler dp.DeleteCompleted, callback
+    dp.BeginDelete(criteria, userState)
+  End Sub
+
+#End Region
+
+#Region "Begin Execute"
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' execute a command object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of object to execute.
+  ''' </typeparam>
+  ''' <param name="obj">
+  ''' Reference to the object to execute.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>  
+  Public Shared Sub BeginExecute(Of T As IMobileObject)(ByVal obj As T, ByVal callback As EventHandler(Of DataPortalResult(Of T))    
+    BeginExecute(Of T)(obj, callback, Nothing)
+  End Sub
+
+  ''' <summary>
+  ''' Starts an asynchronous data portal operation to
+  ''' execute a command object.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of object to execute.
+  ''' </typeparam>
+  ''' <param name="obj">
+  ''' Reference to the object to execute.
+  ''' </param>
+  ''' <param name="callback">
+  ''' Reference to method that will handle the 
+  ''' asynchronous callback when the operation
+  ''' is complete.
+  ''' </param>
+  ''' <param name="userState">User state object.</param>  
+  Public Shared Sub BeginExecute(Of T As IMobileObject)(ByVal obj As T, ByVal callback As EventHandler(Of DataPortalResult(Of T)), ByVal userState As Object)
+    Dim dp As DataPortal(Of T) = New DataPortal(Of T)()
+    AddHandler dp.ExecuteCompleted, callback
+    dp.BeginExecute(obj, userState)
+  End Sub
+
+#End Region
 
 #End Region
 

@@ -3,11 +3,12 @@ Imports Csla.Reflection
 Imports System.Windows
 Imports System.ComponentModel
 
+
 ''' <summary>
 ''' This is the client-side DataPortal as described in
 ''' Chapter 4.
 ''' </summary>
-Public Module DataPortal
+Public Class DataPortal
 
 #Region " DataPortal events "
 
@@ -259,14 +260,14 @@ Public Module DataPortal
   ''' <typeparam name="T">Specific type of the Command object.</typeparam>
   ''' <param name="obj">A reference to the Command object to be executed.</param>
   ''' <returns>A reference to the updated Command object.</returns>
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
-      MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-    Public Function Execute(Of T)(ByVal obj As T) As T
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", _
+    MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
+  Public Function Execute(Of T)(ByVal obj As T) As T
 
-        Return DirectCast(Update(obj), T)
+    Return DirectCast(Update(obj), T)
 
-    End Function
+  End Function
 
   ''' <summary>
   ''' Called to execute a Command object on the server.
@@ -699,14 +700,14 @@ Public Module DataPortal
   ''' </summary>
   ''' <remarks></remarks>
   Public Shared ReadOnly Property IsInDesignMode() As Boolean
-    Get      
+    Get
       If Not _isInDesignModeHasBeenSet Then
         If Application.Current IsNot Nothing AndAlso Application.Current.Dispatcher IsNot Nothing Then
           Dim func As New Func(Of Boolean) _
             (Function() _
-              IIf(Not Application.Current.MainWindow Is Nothing, _
+              CBool(IIf(Not Application.Current.MainWindow Is Nothing, _
               DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow), _
-              False))
+              False)))
           Dim tmp As Boolean = CType(Application.Current.Dispatcher.Invoke(func, Nothing), Boolean)
 
           SyncLock _designModeLock
@@ -718,9 +719,9 @@ Public Module DataPortal
         End If
       End If
 
-      return _isInDesignMode;
+      Return _isInDesignMode
     End Get
   End Property
 
 #End Region
-End Module
+End Class

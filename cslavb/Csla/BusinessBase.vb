@@ -21,6 +21,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   Implements Core.ISavable
 
+
 #Region " Object ID Value "
 
   ''' <summary>
@@ -293,7 +294,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       End If
 
     ElseIf IsBusy Then
-      Dim [error] As New Validation.ValidationException(My.Resources.BusyObjectsMayNotBeSaved)
+      Dim [error] As New Validation.ValidationException(Csla.Resources.BusyObjectsMayNotBeSaved)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
         handler(Me, New Csla.Core.SavedEventArgs(Nothing, [error], userState))
@@ -411,6 +412,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' </remarks>
   Public Sub BeginSave(ByVal handler As EventHandler(Of Csla.Core.SavedEventArgs), ByVal userState As Object)
     Me.BeginSave(False, handler, userState)
+
   End Sub
 
 #End Region

@@ -2820,10 +2820,11 @@ Namespace Core
         _unhandledAsyncException = CType(System.Delegate.Remove(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
       End RemoveHandler
 
-      ' TODO: Does this need to be here
-      'RaiseEvent(ByVal sender As Object, ByVal e As ErrorEventArgs)
-
-      'End RaiseEvent
+      RaiseEvent(ByVal sender As Object, ByVal e As ErrorEventArgs)
+        If _unhandledAsyncException IsNot Nothing Then
+          _unhandledAsyncException.Invoke(Me, e)
+        End If
+      End RaiseEvent
     End Event
 
     ''' <summary>

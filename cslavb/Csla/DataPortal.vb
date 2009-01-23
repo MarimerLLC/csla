@@ -91,13 +91,13 @@ Public Class DataPortal
   ''' <returns>A new object, populated with default values.</returns>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
-  Public Function Create(ByVal criteria As Object) As Object
+  Public Shared Function Create(ByVal criteria As Object) As Object
 
     Return Create(MethodCaller.GetObjectType(criteria), criteria)
 
   End Function
 
-  Private Function Create( _
+  Private Shared Function Create( _
     ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
@@ -175,7 +175,7 @@ Public Class DataPortal
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
-  Public Function Fetch(Of T)(ByVal criteria As Object) As T
+  Public Shared Function Fetch(Of T)(ByVal criteria As Object) As T
 
     Return DirectCast(Fetch(GetType(T), criteria), T)
 

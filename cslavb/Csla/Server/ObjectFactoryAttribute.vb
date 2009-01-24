@@ -11,7 +11,7 @@ Namespace Server
   ''' the business object.
   ''' </summary>
   ''' <remarks></remarks>
-  <AttributeUsage(AttributeTargets.Class, False)> _
+  <AttributeUsage(AttributeTargets.Class, AllowMultiple:=False)> _
   Public Class ObjectFactoryAttribute
     Inherits Attribute
 

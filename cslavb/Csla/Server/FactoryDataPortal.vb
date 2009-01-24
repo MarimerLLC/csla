@@ -107,7 +107,7 @@ Namespace Server
         End If
         Return result
       Catch ex As Exception
-        Throw New DataPortalException(context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer, ex, New DataPortalResult())
+        Throw New DataPortalException(context.FactoryInfo.CreateMethodName + " " + My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
     End Function
 
@@ -130,7 +130,7 @@ Namespace Server
         End If
         Return result
       Catch ex As Exception
-        Throw New DataPortalException(context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer, ex, New DataPortalResult())
+        Throw New DataPortalException(context.FactoryInfo.FetchMethodName + " " + My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
     End Function
 
@@ -147,7 +147,7 @@ Namespace Server
         result = InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.UpdateMethodName, obj, context)
         Return result
       Catch ex As Exception
-        Throw New DataPortalException(context.FactoryInfo.UpdateMethodName + " " + Resources.FailedOnServer, ex, New DataPortalResult())
+        Throw New DataPortalException(context.FactoryInfo.UpdateMethodName + " " + My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
     End Function
 
@@ -170,7 +170,7 @@ Namespace Server
         End If
         Return result
       Catch ex As Exception
-        Throw New DataPortalException(context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer, ex, New DataPortalResult())
+        Throw New DataPortalException(context.FactoryInfo.DeleteMethodName + " " + My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
     End Function
 

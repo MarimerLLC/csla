@@ -85,7 +85,7 @@ Namespace DataPortalClient
       Try
         response = svr.Create(New CreateRequest(objectType, criteria, context))
 
-        If cf <> Nothing Then
+        If cf IsNot Nothing Then
           cf.Close()
         End If
       Catch ex As Exception
@@ -117,7 +117,7 @@ Namespace DataPortalClient
       Try
         response = svr.Fetch(New FetchRequest(objectType, criteria, context))
 
-        If cf <> Nothing Then
+        If cf IsNot Nothing Then
           cf.Close()
         End If
       Catch ex As Exception
@@ -147,7 +147,7 @@ Namespace DataPortalClient
 
       Try
         response = svr.Update(New UpdateRequest(obj, context))
-        If cf <> Nothing Then
+        If cf IsNot Nothing Then
           cf.Close()
         End If
       Catch ex As Exception
@@ -182,7 +182,7 @@ Namespace DataPortalClient
 
       Try
         response = svr.Delete(New DeleteRequest(objectType, criteria, context))
-        If cf <> Nothing Then
+        If cf IsNot Nothing Then
           cf.Close()
         End If
       Catch ex As Exception

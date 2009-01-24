@@ -96,7 +96,7 @@ Namespace Silverlight.Security
     ''' </summary>
     ''' <param name="role">Role to check.</param>
     ''' <returns></returns>
-    Public Function IsInRole(ByVal role As String) As Boolean Implements Security.ICheckRoles.IsInRole
+    Public Function IsInRole(ByVal role As String) As Boolean Implements Csla.Security.ICheckRoles.IsInRole
       Return GetProperty(Of MobileList(Of String))(RolesProperty).Contains(role)
     End Function
 

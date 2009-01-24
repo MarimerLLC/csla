@@ -97,7 +97,7 @@ Namespace Validation
     ''' <see langword="false"/>if the data is invalid.
     Public Sub Invoke(ByVal target As Object, ByVal result As AsyncRuleCompleteHandler) Implements IAsyncRuleMethod.Invoke
       Dim propertyValues As Dictionary(Of String, Object) = GetPropertyValues(target, _args.Properties)
-      _handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), Function(r) result(Me, r)))
+      'TODO: _handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), Function(r) result(Me, r)))
     End Sub
 
 #Region "IComparable"

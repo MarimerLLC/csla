@@ -9,13 +9,25 @@ Imports Csla.Serialization.Mobile
 Imports Csla.Serialization
 
 Namespace Core
+
+  ''' <summary>
+  ''' Base class for an object that is serializable
+  ''' using MobileFormatter.
+  ''' </summary>
+  ''' <remarks></remarks>
   <Serializable()> _
   Public MustInherit Class ManagedObjectBase
     Inherits MobileObject
     Implements INotifyPropertyChanged
+
 #Region "Field Manager"
 
     Private _fieldManager As FieldDataManager
+
+    ''' <summary>
+    '''  Gets a reference to the field mananger
+    ''' for this object.
+    ''' </summary>
     Protected ReadOnly Property FieldManager() As FieldDataManager
       Get
         If _fieldManager Is Nothing Then
@@ -240,14 +252,26 @@ Namespace Core
       End RaiseEvent
     End Event
 
+    ''' <summary>
+    ''' Raises the PropertyChanged event.
+    ''' </summary>
+    ''' <param name="propertyName">Name of the changed property.</param>
     Protected Sub OnPropertyChanged(ByVal propertyName As String)
-      RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+      If _propertyChanged IsNot Nothing Then
+        _propertyChanged.Invoke(Me, New PropertyChangedEventArgs(propertyName))
+      End If
     End Sub
 
 #End Region
 
 #Region "MobileObject"
 
+    ''' <summary>
+    ''' Override this method to manually retrieve child
+    ''' object data from the serializations stream.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
+    ''' <param name="formatter">Reference to the MobileFormatter.</param>
     Protected Overloads Overrides Sub OnGetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
       If _fieldManager IsNot Nothing Then
         Dim child As SerializationInfo = formatter.SerializeObject(_fieldManager)
@@ -257,6 +281,12 @@ Namespace Core
       MyBase.OnGetChildren(info, formatter)
     End Sub
 
+    ''' <summary>
+    ''' Override this method to manually serialize child
+    ''' objects into the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
+    ''' <param name="formatter">Reference to the MobileFormatter.</param>
     Protected Overloads Overrides Sub OnSetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
       If info.Children.ContainsKey("_fieldManager") Then
         Dim referenceId As Integer = info.Children("_fieldManager").ReferenceId

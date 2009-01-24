@@ -41,7 +41,7 @@ Namespace Security
     ''' </param>
     ''' <returns></returns>
     Public Shared Shadows Function GetCslaIdentity(Of T As CslaIdentity)(ByVal criteria As Object) As T      
-      Return CType(DataPortal.Fetch(Of T)(criteria), T)
+      Return DataPortal.Fetch(Of T)(criteria)
     End Function
 
     Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)

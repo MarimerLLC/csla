@@ -19,7 +19,7 @@ Namespace Security
   <MobileFactory("Csla.Security.IdentityFactory,Csla", "FetchMembershipIdentity")> _
   Public Class MembershipIdentity
     Inherits ReadOnlyBase(Of MembershipIdentity)
-    Implements IIdentity, ICheckRoles
+    Implements ICheckRoles, IIdentity
 
 #Region "Constructor, Helper Setter"
 
@@ -51,10 +51,10 @@ Namespace Security
     End Property
 
     Public Function IsInRole(ByVal role As String) As Boolean Implements ICheckRoles.IsInRole
-      Dim roles = GetProperty(MobileList(Of String))(RolesProperty)
+      Dim roles = GetProperty(Of MobileList(Of String))(RolesProperty)
 
       If roles IsNot Nothing Then
-        Return roles.contains(role)
+        Return roles.Contains(role)
       Else
         Return False
       End If

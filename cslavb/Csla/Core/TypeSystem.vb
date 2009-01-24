@@ -1,11 +1,8 @@
 ﻿Namespace Core
 
-  Friend NotInheritable Class TypeSystem
+  Friend Module TypeSystem
 
-    Private Sub New()
-    End Sub
-
-    Friend Shared Function GetElementType(ByVal seqType As Type) As Type
+    Friend Function GetElementType(ByVal seqType As Type) As Type
       Dim ienum As Type = FindIEnumerable(seqType)
       If ienum Is Nothing Then
         Return seqType
@@ -13,7 +10,7 @@
       Return ienum.GetGenericArguments()(0)
     End Function
 
-    Private Shared Function FindIEnumerable(ByVal seqType As Type) As Type
+    Private Function FindIEnumerable(ByVal seqType As Type) As Type
       If seqType Is Nothing OrElse seqType Is GetType(String) Then
         Return Nothing
       End If

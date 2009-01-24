@@ -40,8 +40,8 @@ Namespace Security
     ''' Object containing the user's credentials.
     ''' </param>
     ''' <returns></returns>
-    Public Shadows Function GetCslaIdentity(Of T As CslaIdentity)(ByVal criteria As Object) As T
-      Return DataPortal.Fetch(Of T)(criteria)
+    Public Shared Shadows Function GetCslaIdentity(Of T As CslaIdentity)(ByVal criteria As Object) As T      
+      Return CType(DataPortal.Fetch(Of T)(criteria), T)
     End Function
 
     Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)

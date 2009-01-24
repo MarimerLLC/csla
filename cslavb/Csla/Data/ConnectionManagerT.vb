@@ -4,7 +4,6 @@ Imports System.Data
 Imports Csla.Properties
 
 Namespace Data
-{
   ''' <summary>
   ''' Provides an automated way to reuse open
   ''' database connections within the context

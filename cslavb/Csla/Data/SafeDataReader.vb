@@ -391,7 +391,7 @@ Namespace Data
     ''' <param name="fieldOffset">Offset position within the field.</param>
     ''' <param name="length">Length of data to read.</param>
     Public Function GetChars(ByVal name As String, ByVal fieldOffset As Long, ByVal buffer() As Char, ByVal bufferOffset As Integer, ByVal length As Integer) As Long
-      Return GetChars(_dataReader.GetOrdinal(name), fieldOffset, buffer, bufferOffset, length);
+      Return GetChars(_dataReader.GetOrdinal(name), fieldOffset, buffer, bufferOffset, length)
     End Function
 
     ''' <summary>

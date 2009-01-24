@@ -17,22 +17,27 @@ Namespace Core
   ''' Type of the items contained in the list. 
   ''' </typeparam> 
 #If TESTING Then
-#End If
   <System.Diagnostics.DebuggerStepThrough()> _
+#End If
   <Serializable()> _
   Public Class MobileBindingList(Of T)
     Inherits BindingList(Of T)
     Implements IMobileObject
 #Region "IMobileObject Members"
 
-    Private Sub GetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.GetChildren
+    Sub GetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.GetChildren
       OnGetChildren(info, formatter)
     End Sub
 
-    Private Sub GetState(ByVal info As SerializationInfo) Implements IMobileObject.GetState
+    Sub GetState(ByVal info As SerializationInfo) Implements IMobileObject.GetState
       OnGetState(info)
     End Sub
 
+    ''' <summary>
+    ''' Override this method to get custom field values
+    ''' from the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
     Protected Overridable Sub OnGetState(ByVal info As SerializationInfo)
       info.AddValue("Csla.Core.MobileList.AllowEdit", AllowEdit)
       info.AddValue("Csla.Core.MobileList.AllowNew", AllowNew)
@@ -40,6 +45,12 @@ Namespace Core
       info.AddValue("Csla.Core.MobileList.RaiseListChangedEvents", RaiseListChangedEvents)
     End Sub
 
+    ''' <summary>
+    ''' Override this method to get custom child object
+    ''' values from the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
+    ''' <param name="formatter">Reference to the MobileFormatter.</param>
     Protected Overridable Sub OnGetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
       If Not GetType(IMobileObject).IsAssignableFrom(GetType(T)) Then
         Throw New InvalidOperationException(My.Resources.CannotSerializeCollectionsNotOfIMobileObject)
@@ -58,14 +69,19 @@ Namespace Core
       End If
     End Sub
 
-    Private Sub SetState(ByVal info As SerializationInfo) Implements IMobileObject.SetState
+    Sub SetState(ByVal info As SerializationInfo) Implements IMobileObject.SetState
       OnSetState(info)
     End Sub
 
-    Private Sub SetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.SetChildren
+    Sub SetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.SetChildren
       OnSetChildren(info, formatter)
     End Sub
 
+    ''' <summary>
+    ''' Override this method to set custom field values
+    ''' into the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
     Protected Overridable Sub OnSetState(ByVal info As SerializationInfo)
       AllowEdit = info.GetValue(Of Boolean)("Csla.Core.MobileList.AllowEdit")
       AllowNew = info.GetValue(Of Boolean)("Csla.Core.MobileList.AllowNew")
@@ -73,6 +89,12 @@ Namespace Core
       RaiseListChangedEvents = info.GetValue(Of Boolean)("Csla.Core.MobileList.RaiseListChangedEvents")
     End Sub
 
+    ''' <summary>
+    ''' Override this method to set custom child object
+    ''' values into the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
+    ''' <param name="formatter">Reference to the MobileFormatter.</param>
     Protected Overridable Sub OnSetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
       If Not GetType(IMobileObject).IsAssignableFrom(GetType(T)) Then
         Throw New InvalidOperationException(My.Resources.CannotSerializeCollectionsNotOfIMobileObject)

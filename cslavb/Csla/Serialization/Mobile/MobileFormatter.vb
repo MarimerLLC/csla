@@ -92,13 +92,13 @@ Namespace Serialization.Mobile
         Dim thisType = obj.GetType()
 
         If IsSerializable(thisType) = False Then
-          Throw New InvalidOperationException(String.Format(Resources.ObjectNotSerializableFormatted, thisType.FullName))
+          Throw New InvalidOperationException(String.Format(My.Resources.ObjectNotSerializableFormatted, thisType.FullName))
         End If
 
         Dim mobile = CType(obj, IMobileObject)
 
         If mobile Is Nothing Then
-          Throw New InvalidOperationException(String.Format(Resources.MustImplementIMobileObject, thisType.Name))
+          Throw New InvalidOperationException(String.Format(My.Resources.MustImplementIMobileObject, thisType.Name))
         End If
 
         If _serializationReferences.TryGetValue(mobile, info) Then
@@ -174,7 +174,7 @@ Namespace Serialization.Mobile
         Dim type As Type = System.Type.GetType(info.TypeName)
 
         If type Is Nothing Then
-          Throw New SerializationException(String.Format(Resources.MobileFormatterUnableToDeserialize, info.TypeName))
+          Throw New SerializationException(String.Format(My.Resources.MobileFormatterUnableToDeserialize, info.TypeName))
         End If
 
 #If SILVERLIGHT Then

@@ -16,6 +16,7 @@ Imports Csla.Serialization
 Namespace Core.LoadManager
   Friend Class AsyncLoadManager
     Implements INotifyBusy
+
     Private _loading As New ObservableCollection(Of AsyncLoader)()
 
     Public Sub New()
@@ -70,7 +71,7 @@ Namespace Core.LoadManager
 
 #Region "INotifyPropertyBusy Members"
 
-    Public Event BusyChanged As BusyChangedEventHandler Implements INotifyBusy.BusyChanged
+    Public Event BusyChanged As BusyChangedEventHandler
 
     Protected Sub OnPropertyBusy(ByVal propertyName As String, ByVal busy As Boolean)
       RaiseEvent BusyChanged(Me, New BusyChangedEventArgs(propertyName, busy))
@@ -79,6 +80,8 @@ Namespace Core.LoadManager
 #End Region
 
 #Region "INotifyBusy Members"
+
+    Public Event INotifyBusy_BusyChanged(ByVal sender As Object, ByVal e As BusyChangedEventArgs) Implements INotifyBusy.BusyChanged
 
     Private ReadOnly Property IsBusy() As Boolean Implements INotifyBusy.IsBusy
       Get
@@ -123,5 +126,6 @@ Namespace Core.LoadManager
     End Sub
 
 #End Region
+
   End Class
 End Namespace

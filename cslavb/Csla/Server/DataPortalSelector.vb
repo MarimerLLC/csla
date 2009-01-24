@@ -39,7 +39,7 @@ Namespace Server
       Catch ex As DataPortalException
         Throw
       Catch ex As Exception
-        Throw New DataPortalException("DataPortal.Create " + Resources.FailedOnServer, ex, New DataPortalResult())
+        Throw New DataPortalException("DataPortal.Create " + My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
     End Function
 
@@ -65,7 +65,7 @@ Namespace Server
       Catch ex As DataPortalException
         Throw
       Catch ex As Exception
-        Throw New DataPortalException("DataPortal.Fetch " + Resources.FailedOnServer, ex, New DataPortalResult())
+        Throw New DataPortalException("DataPortal.Fetch " + My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
     End Function
 
@@ -90,7 +90,7 @@ Namespace Server
       Catch ex As DataPortalException
         Throw
       Catch ex As Exception
-        Throw New DataPortalException("DataPortal.Update " + Resources.FailedOnServer, ex, New DataPortalResult())
+        Throw New DataPortalException("DataPortal.Update " + My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
     End Function
 
@@ -116,7 +116,7 @@ Namespace Server
       Catch ex As DataPortalException
         Throw
       Catch ex As Exception
-        Throw New DataPortalException("DataPortal.Delete " + Resources.FailedOnServer, ex, New DataPortalResult())
+        Throw New DataPortalException("DataPortal.Delete " + My.Resources.FailedOnServer, ex, New DataPortalResult())
       End Try
     End Function
 

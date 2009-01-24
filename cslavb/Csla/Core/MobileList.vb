@@ -7,33 +7,66 @@ Imports Csla.Serialization
 Imports System.IO
 
 Namespace Core
+
+  ''' <summary>
+  ''' Implements a list that is serializable using
+  ''' the MobileFormatter.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of object contained in the list.
+  ''' </typeparam>
   <Serializable()> _
   Public Class MobileList(Of T)
     Inherits List(Of T)
     Implements IMobileObject
+
+    ''' <summary>
+    ''' Creates an instance of the type.
+    ''' </summary>
     Public Sub New()
       MyBase.New()
     End Sub
+
+    ''' <summary>
+    ''' Creates an instance of the type.
+    ''' </summary>
+    ''' <param name="capacity">Capacity of the list.</param>
     Public Sub New(ByVal capacity As Integer)
       MyBase.New(capacity)
     End Sub
+
+    ''' <summary>
+    ''' Creates an instance of the type.
+    ''' </summary>
+    ''' <param name="collection">Data to add to list.</param>
     Public Sub New(ByVal collection As IEnumerable(Of T))
       MyBase.New(collection)
     End Sub
 
 #Region "IMobileObject Members"
 
-    Private Sub GetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.GetChildren
+    Sub GetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.GetChildren
       OnGetChildren(info, formatter)
     End Sub
 
-    Private Sub GetState(ByVal info As SerializationInfo) Implements IMobileObject.GetState
+    Sub GetState(ByVal info As SerializationInfo) Implements IMobileObject.GetState
       OnGetState(info)
     End Sub
 
+    ''' <summary>
+    ''' Override this method to add extra field values to
+    ''' the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Object containing field values.</param>
     Protected Overridable Sub OnGetState(ByVal info As SerializationInfo)
     End Sub
 
+    ''' <summary>
+    ''' Override this method to manually serialize child objects
+    ''' contained within the current object.
+    ''' </summary>
+    ''' <param name="info">Object containing serialized values.</param>
+    ''' <param name="formatter">Reference to the current MobileFormatter.</param>
     Protected Overridable Sub OnGetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
       Dim mobileChildren As Boolean = GetType(IMobileObject).IsAssignableFrom(GetType(T))
       If mobileChildren Then
@@ -55,17 +88,28 @@ Namespace Core
       End If
     End Sub
 
-    Private Sub SetState(ByVal info As SerializationInfo) Implements IMobileObject.SetState
+    Sub SetState(ByVal info As SerializationInfo) Implements IMobileObject.SetState
       OnSetState(info)
     End Sub
 
-    Private Sub SetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.SetChildren
+    Sub SetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.SetChildren
       OnSetChildren(info, formatter)
     End Sub
 
+    ''' <summary>
+    ''' Override this method to retrieve extra field values to
+    ''' the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Object containing field values.</param>
     Protected Overridable Sub OnSetState(ByVal info As SerializationInfo)
     End Sub
 
+    ''' <summary>
+    ''' Override this method to manually deserialize child objects
+    ''' from data in the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Object containing serialized values.</param>
+    ''' <param name="formatter">Reference to the current MobileFormatter.</param>
     Protected Overridable Sub OnSetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
       If info.Values.ContainsKey("$list") Then
         Dim mobileChildren As Boolean = GetType(IMobileObject).IsAssignableFrom(GetType(T))

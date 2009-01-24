@@ -1257,7 +1257,7 @@ Namespace Validation
       If Not isAuthorized Then
         e.Severity = RuleSeverity.Information
         'TODO: Evaluate this resource
-        e.Description = String.Format(Resources.CanReadAuthorizationRuleDescription, RuleArgs.GetPropertyName(e))
+        e.Description = String.Format(My.Resources.CanReadAuthorizationRuleDescription, RuleArgs.GetPropertyName(e))
       End If
 
       Return isAuthorized
@@ -1276,7 +1276,7 @@ Namespace Validation
       If Not isAuthorized Then
         e.Severity = RuleSeverity.Information
         'TODO: Evaluate this resource
-        e.Description = String.Format(Resources.CanWriteAuthorizationRuleDescription, RuleArgs.GetPropertyName(e))
+        e.Description = String.Format(My.Resources.CanWriteAuthorizationRuleDescription, RuleArgs.GetPropertyName(e))
       End If
 
       Return isAuthorized

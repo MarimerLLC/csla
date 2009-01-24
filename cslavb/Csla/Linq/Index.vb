@@ -5,6 +5,7 @@ Imports System.Linq.Expressions
 Namespace Linq
   Friend Class Index(Of T)
     Implements IIndex(Of T)
+
     'implements a hashtable with chaining for cases
     '   where we have a collision on hash code
 
@@ -59,7 +60,7 @@ Namespace Linq
       Return returnEnumerable
     End Function
 
-    Private Function WhereEqual(ByVal hashCode As Integer, ByVal expr As Func(Of T, Boolean)) As IEnumerable(Of T) Implements IIndex(Of T).WhereEqual
+    Private Function WhereEqual(ByVal hashCode As Integer, ByVal expr As Func(Of T, Boolean)) As IEnumerable(Of T) 'TODO: Implements IIndex(Of T).WhereEqual
       LoadOnDemandIndex()
       Dim returnEnumerable As List(Of T) = New List(Of T)()
       If _index.ContainsKey(hashCode) Then
@@ -197,8 +198,6 @@ Namespace Linq
 
 #End Region
 
-
-
     Private Sub RemoveByReference(ByVal item As T)
       For Each itemToCheck As T In Me
         If ReferenceEquals(itemToCheck, item) Then
@@ -240,5 +239,10 @@ Namespace Linq
     End Property
 
 #End Region
+
+    Public Function WhereEqual1(ByVal pivotVal As Object, ByVal expr As System.Func(Of T, Boolean)) As System.Collections.Generic.IEnumerable(Of T) Implements IIndex(Of T).WhereEqual
+      'TODO: Evaluate this method
+      Return Nothing
+    End Function
   End Class
 End Namespace

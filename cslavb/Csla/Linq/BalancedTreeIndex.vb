@@ -180,7 +180,8 @@ Namespace Linq
 
     Public Function GetEnumerator() As System.Collections.Generic.IEnumerator(Of T) Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
       For Each item In CType(_index, ICollection(Of T))
-        Return item
+        'TODO: 'should not return NOTHING 'Return item
+        Return Nothing
       Next
     End Function
 

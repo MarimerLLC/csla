@@ -157,37 +157,43 @@ Namespace Linq
             Case ExpressionType.Equal
 
               For Each item In _internalIndexSet([property]).WhereEqual(val, exprCompiled)
-                Return item
+                'TODO: 'should not return NOTHING ''Return item
+                Return Nothing
               Next
 
             Case ExpressionType.LessThan
 
               For Each item In rangedIndex.WhereLessThan(val)
-                Return item
+                'TODO: 'should not return NOTHING ''Return item
+                Return Nothing
               Next
 
             Case ExpressionType.LessThanOrEqual
 
               For Each item In rangedIndex.WhereLessThanOrEqualTo(val)
-                Return item
+                'TODO: 'should not return NOTHING ''Return item
+                Return Nothing
               Next
 
             Case ExpressionType.GreaterThan
 
               For Each item In rangedIndex.WhereGreaterThan(val)
-                Return item
+                'TODO: 'should not return NOTHING ''Return item
+                Return Nothing
               Next
 
             Case ExpressionType.GreaterThanOrEqual
 
               For Each item In rangedIndex.WhereGreaterThanOrEqualTo(val)
-                Return item
+                'TODO: 'should not return NOTHING ''Return item
+                Return Nothing
               Next
 
             Case Else
 
               For Each item In rangedIndex.Where(expr.Compile())
-                Return item
+                'TODO: 'should not return NOTHING ''Return item
+                Return Nothing
               Next
 
           End Select
@@ -198,19 +204,21 @@ Namespace Linq
 
               Dim rightHash As Nullable(Of Integer) = GetHashRight(binExp.Right)
               For Each item In _internalIndexSet([property]).WhereEqual(val, exprCompiled)
-                Return item
+                'TODO: 'should not return NOTHING ''Return item
+                Return Nothing
               Next
 
             Case Else
 
               For Each item In rangedIndex.Where(expr.Compile())
-                Return item
+                'TODO: 'should not return NOTHING ''Return item
+                Return Nothing
               Next
 
           End Select
         End If
       End If
-
+    End Function
 #End Region
 
     Public Sub LoadIndex(ByVal [property] As String) Implements IIndexSet(Of T).LoadIndex

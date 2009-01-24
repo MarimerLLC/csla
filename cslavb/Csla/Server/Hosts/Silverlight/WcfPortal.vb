@@ -5,7 +5,6 @@ Imports System.ServiceModel
 Imports System.ServiceModel.Activation
 Imports Csla.Core
 Imports System.Security.Principal
-Imports Csla.Properties
 
 Namespace Server.Hosts.Silverlight
 
@@ -14,7 +13,7 @@ Namespace Server.Hosts.Silverlight
   ''' through WCF.
   ''' </summary>
   ''' <remarks></remarks>
-  <AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)> _
+  <AspNetCompatibilityRequirements(RequirementsMode:=AspNetCompatibilityRequirementsMode.Allowed)> _
   Public Class WcfPortal
     Implements IWcfPortal
 
@@ -60,7 +59,7 @@ Namespace Server.Hosts.Silverlight
         'load type for business object
         Dim t = Type.GetType(request.TypeName)
         If t Is Nothing Then
-          Throw New InvalidOperationException(String.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName))
+          Throw New InvalidOperationException(String.Format(My.Resources.ObjectTypeCouldNotBeLoaded, request.TypeName))
         End If
 
         SetContext(request)
@@ -75,7 +74,7 @@ Namespace Server.Hosts.Silverlight
         Else
 
           If String.IsNullOrEmpty(factoryInfo.CreateMethodName) Then
-            Throw New InvalidOperationException(Resources.CreateMethodNameNotSpecified)
+            Throw New InvalidOperationException(My.Resources.CreateMethodNameNotSpecified)
           End If
 
           Dim f As Object = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName)
@@ -117,7 +116,7 @@ Namespace Server.Hosts.Silverlight
         Dim t = Type.GetType(request.TypeName)
         If t Is Nothing Then
           Throw New InvalidOperationException( _
-              String.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName))
+              String.Format(My.Resources.ObjectTypeCouldNotBeLoaded, request.TypeName))
         End If
 
         SetContext(request)
@@ -132,7 +131,7 @@ Namespace Server.Hosts.Silverlight
         Else
 
           If String.IsNullOrEmpty(factoryInfo.FetchMethodName) Then
-            Throw New InvalidOperationException(Resources.FetchMethodNameNotSpecified)
+            Throw New InvalidOperationException(My.Resources.FetchMethodNameNotSpecified)
           End If
 
           Dim f As Object = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName)
@@ -178,8 +177,8 @@ Namespace Server.Hosts.Silverlight
           SetContext(request)
           o = Csla.DataPortal.Update(obj)
         Else
-          If String.IsNullOrEmpty(String.IsNullOrEmpty(factoryInfo.UpdateMethodName)) Then
-            Throw New InvalidOperationException(Resources.UpdateMethodNameNotSpecified)
+          If String.IsNullOrEmpty(factoryInfo.UpdateMethodName) Then
+            Throw New InvalidOperationException(My.Resources.UpdateMethodNameNotSpecified)
           End If
 
           SetContext(request)
@@ -189,7 +188,7 @@ Namespace Server.Hosts.Silverlight
         End If
 
         result.ObjectData = MobileFormatter.Serialize(o)
-                result.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext
+        result.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext)
 
       Catch ex As Exception
         result.ErrorData = New WcfErrorInfo(ex)
@@ -216,7 +215,7 @@ Namespace Server.Hosts.Silverlight
         Dim t = Type.GetType(request.TypeName)
         If t Is Nothing Then
           Throw New InvalidOperationException( _
-              String.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName))
+              String.Format(My.Resources.ObjectTypeCouldNotBeLoaded, request.TypeName))
         End If
 
         SetContext(request)
@@ -225,7 +224,7 @@ Namespace Server.Hosts.Silverlight
           Csla.DataPortal.Delete(criteria)
         Else
           If String.IsNullOrEmpty(factoryInfo.DeleteMethodName) Then
-            Throw New InvalidOperationException(Resources.DeleteMethodNameNotSpecified)
+            Throw New InvalidOperationException(My.Resources.DeleteMethodNameNotSpecified)
           End If
 
           Dim f As Object = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName)
@@ -247,6 +246,7 @@ Namespace Server.Hosts.Silverlight
         ClearContext()
       End Try
 
+      Return ConvertResponse(result)
     End Function
 
 #End Region
@@ -263,7 +263,7 @@ Namespace Server.Hosts.Silverlight
       ApplicationContext.User = CType(MobileFormatter.Deserialize(request.Principal), IPrincipal)
     End Sub
 
-    Private Shared Sub ClearContext(ByVal request As UpdateRequest)
+    Private Shared Sub ClearContext()
       ApplicationContext.Clear()
       If ApplicationContext.AuthenticationType <> "Windows" Then
         ApplicationContext.User = New System.Security.Principal.GenericPrincipal(New System.Security.Principal.GenericIdentity(String.Empty), New String() {})

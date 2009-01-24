@@ -22,7 +22,7 @@ Namespace Windows
     Public Sub New()
       InitializeComponent()
       Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
-      Me.BusyProgressBar.GetType().GetMethod("SetStyle", System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase).Invoke(Me.BusyProgressBar, new object() { ControlStyles.SupportsTransparentBackColor, true })
+      Me.BusyProgressBar.GetType().GetMethod("SetStyle", System.Reflection.BindingFlags.FlattenHierarchy Or System.Reflection.BindingFlags.NonPublic Or System.Reflection.BindingFlags.Public Or System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.IgnoreCase).Invoke(Me.BusyProgressBar, New Object() {ControlStyles.SupportsTransparentBackColor, True})
 
       If Not IsInDesignMode Then
         Me.BusyProgressBar.BackColor = _progressBarBackColor
@@ -53,9 +53,9 @@ Namespace Windows
     ''' Set or get background color for busy animation's progress bar 
     ''' </summary>
     <Category("Csla"), Description("Background color for busy animation's progress bar."), DefaultValue(GetType(System.Drawing.Color), "White"), Browsable(True)> _
-    Public Property ProgressBarForeColor() As Color
+    Public Property ProgressBarBackColor() As Color
       Get
-        Return ProgressBarBackColor
+        Return _progressBarBackColor
       End Get
       Set(ByVal value As Color)
         _progressBarBackColor = value
@@ -92,7 +92,7 @@ Namespace Windows
     Private Sub ProgressTimer_Tick(ByVal sender As Object, ByVal e As EventArgs)
       If _isRunning Then
         Dim newValue As Integer = Me.BusyProgressBar.Value + Me.BusyProgressBar.Step
-        If newValue > this.BusyProgressBar.Maximum Then
+        If newValue > Me.BusyProgressBar.Maximum Then
           Me.BusyProgressBar.Value = 0
         Else
           Me.BusyProgressBar.Value = newValue
@@ -102,7 +102,7 @@ Namespace Windows
 
     Private ReadOnly Property IsInDesignMode() As Boolean
       Get
-        If GetService(GetType(System.ComponentModel.Design.IDesignerHost)) <> Nothing Then
+        If GetService(GetType(System.ComponentModel.Design.IDesignerHost)) IsNot Nothing Then
           Return True
         Else
           Return False

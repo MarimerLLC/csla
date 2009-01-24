@@ -146,7 +146,7 @@ Namespace Reflection
     ''' <param name="value">New value for property.</param>
     Public Sub CallPropertySetter(ByVal obj As Object, ByVal [property] As String, ByVal value As Object)
       Dim mh = GetCachedProperty(obj.GetType(), [property])
-      mh.DynamicMemberSet(obj, value)
+      'TODO: mh.DynamicMemberSet(obj, value)
     End Sub
 
 
@@ -315,7 +315,7 @@ Namespace Reflection
           result = FindMethod(objectType, method, inParams.Length)
         Catch ex As AmbiguousMatchException
           'we have multiple methods matching by name and parameter count
-          result = FindMethodUsingFuzzyMatching(objectType, method, inParams);
+          result = FindMethodUsingFuzzyMatching(objectType, method, inParams)
         End Try
 
       End If

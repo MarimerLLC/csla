@@ -2,6 +2,7 @@ Imports System.Reflection
 Imports System.ComponentModel
 Imports System.Collections.Specialized
 Imports Csla.Core.LoadManager
+Imports Csla.Validation
 
 Namespace Core
 
@@ -171,7 +172,7 @@ Namespace Core
     ''' implementation after executing your new code.
     ''' </para>
     ''' </remarks>
-    Protected Overridable Sub MarkNew() Implements Server.IDataPortalTarget.MarkNew
+    Protected Overridable Sub MarkNew()
       _isNew = True
       _isDeleted = False
       MarkDirty()
@@ -195,7 +196,7 @@ Namespace Core
     ''' implementation after executing your new code.
     ''' </para>
     ''' </remarks>
-    Protected Overridable Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
+    Protected Overridable Sub MarkOld()
       _isNew = False
       MarkClean()
     End Sub
@@ -819,7 +820,7 @@ Namespace Core
     ''' parent.
     ''' </summary>
     ''' <param name="parent">A reference to the parent collection object.</param>
-    Friend Sub SetParent(ByVal parent As Core.IParent) Implements IEditableBusinessObject.SetParent
+    Friend Sub SetParent(ByVal parent As Core.IParent)
 
       _parent = parent
 
@@ -1029,7 +1030,7 @@ Namespace Core
     ''' <summary>
     ''' Marks the object as being a child object.
     ''' </summary>
-    Protected Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
+    Protected Sub MarkAsChild()
       _isChild = True
     End Sub
 
@@ -1065,7 +1066,7 @@ Namespace Core
     ''' Called by a parent object to mark the child
     ''' for deferred deletion.
     ''' </summary>
-    Friend Sub DeleteChild() Implements IEditableBusinessObject.DeleteChild
+    Friend Sub DeleteChild()
       If Not Me.IsChild Then
         Throw New NotSupportedException(My.Resources.NoDeleteRootException)
       End If
@@ -1093,7 +1094,7 @@ Namespace Core
     ''' Allow the collection object to use the
     ''' edit level as needed.
     ''' </remarks>
-    Friend Property EditLevelAdded() As Integer Implements IEditableBusinessObject.EditLevelAdded
+    Friend Property EditLevelAdded() As Integer
       Get
         Return _editLevelAdded
       End Get
@@ -1190,7 +1191,7 @@ Namespace Core
       Get
         If _validationRules Is Nothing Then
           _validationRules = New Validation.ValidationRules(Me)
-          AddHandler _validationRules.ValidatingRules.CollectionChanged, AddressOf NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged)
+          AddHandler _validationRules.ValidatingRules.CollectionChanged, AddressOf ValidatingRules_CollectionChanged
         ElseIf _validationRules.Target Is Nothing Then
           _validationRules.SetTarget(Me)
         End If
@@ -1198,7 +1199,7 @@ Namespace Core
       End Get
     End Property
 
-    Sub ValidatingRules_CollectionChanged(ByVal sender As Object, ByVal e As NotifyCollectionChangedEventArgs)
+    Private Sub ValidatingRules_CollectionChanged(ByVal sender As Object, ByVal e As NotifyCollectionChangedEventArgs)
       If e.Action = NotifyCollectionChangedAction.Remove Then
         For Each rule As IAsyncRuleMethod In e.OldItems
           SyncLock _validationRules.ValidatingRules
@@ -1398,7 +1399,7 @@ Namespace Core
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+    Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
     End Sub
 
@@ -1409,7 +1410,7 @@ Namespace Core
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+    Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
     End Sub
 
@@ -1421,7 +1422,7 @@ Namespace Core
     ''' <param name="ex">The Exception thrown during data access.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+    Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
     End Sub
 
@@ -1446,7 +1447,7 @@ Namespace Core
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+    Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
     End Sub
 
@@ -1457,7 +1458,7 @@ Namespace Core
     ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+    Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
     End Sub
 
@@ -1469,7 +1470,7 @@ Namespace Core
     ''' <param name="ex">The Exception thrown during data access.</param>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
+    Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
     End Sub
 
@@ -1618,11 +1619,11 @@ Namespace Core
       End Set
     End Property
 
-    Sub IEditableBusinessObject_DeleteChild() Implements IEditableBusinessObject.DeleteChild
+    Private Sub IEditableBusinessObject_DeleteChild() Implements IEditableBusinessObject.DeleteChild
       Me.DeleteChild()
     End Sub
 
-    Sub IEditableBusinessObject_SetParent(ByVal parent As IParent) Implements IEditableBusinessObject.SetParent
+    Private Sub IEditableBusinessObject_SetParent(ByVal parent As IParent) Implements IEditableBusinessObject.SetParent
       Me.SetParent(parent)
     End Sub
 
@@ -1915,7 +1916,7 @@ Namespace Core
     ''' value, the defaultValue value is returned as a
     ''' result.
     ''' </remarks>
-    Protected Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
+    Protected Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object
       Dim result As Object = Nothing
       If _bypassPropertyChecks OrElse CanReadProperty(propertyInfo.Name, False) Then
         Dim info = FieldManager.GetFieldData(propertyInfo)
@@ -1985,7 +1986,7 @@ Namespace Core
     ''' </summary>
     ''' <param name="propertyInfo">
     ''' PropertyInfo object containing property metadata.</param>
-    Protected Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
+    Protected Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object '' Implements IManageProperties.ReadProperty
       Dim info = FieldManager.GetFieldData(propertyInfo)
       If info IsNot Nothing Then
         Return info.Value
@@ -2114,7 +2115,6 @@ Namespace Core
     Protected Sub SetProperty(Of P)(ByVal propertyName As String, ByRef field As P, ByVal newValue As P, ByVal noAccess As Security.NoAccessBehavior)
       Try
         If _bypassPropertyChecks OrElse CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
-
           Dim doChange As Boolean = False
 
           If field Is Nothing Then
@@ -2122,25 +2122,18 @@ Namespace Core
               doChange = True
             End If
 
-          ElseIf TypeOf P Is String AndAlso newValue Is Nothing Then
-            newValue = CoerceValue(Of P)(GetType(String), field, String.Empty)
+          Else
+            If GetType(P) Is GetType(String) AndAlso newValue Is Nothing Then _
+              newValue = CoerceValue(Of P)(GetType(String), field, String.Empty)
 
-            If Not field.Equals(newValue) Then
+            If Not field.Equals(newValue) Then _
               doChange = True
-            End If
-          End If
           End If
 
-          If doChange = True Then
-            If Not _bypassPropertyChecks Then
-              OnPropertyChanging(propertyName)
-            End If
-
+          If doChange Then
+            If Not _bypassPropertyChecks Then OnPropertyChanging(propertyName)
             field = newValue
-
-            If Not _bypassPropertyChecks Then
-              PropertyHasChanged(propertyName)
-            End If
+            If Not _bypassPropertyChecks Then PropertyHasChanged(propertyName)
           End If
         End If
       Catch sec As System.Security.SecurityException
@@ -2157,53 +2150,43 @@ Namespace Core
     ''' calling PropertyHasChanged if the value does change.
     ''' </summary>
     ''' <typeparam name="P">
-    ''' Type of the field being set.
-    ''' </typeparam>
+    ''' Type of the field being set.</typeparam>
     ''' <typeparam name="V">
-    ''' Type of the value provided to the field.
-    ''' </typeparam>
+    ''' Type of the value provided to the field.</typeparam>
+    ''' <param name="propertyName">
+    ''' The name of the property.</param>
     ''' <param name="field">
     ''' A reference to the backing field for the property.</param>
     ''' <param name="newValue">
     ''' The new value for the property.</param>
-    ''' <param name="propertyName">
-    ''' The name of the property.</param>
     ''' <param name="noAccess">
     ''' True if an exception should be thrown when the
     ''' user is not authorized to change this property.</param>
     ''' <remarks>
     ''' If the field value is of type string, any incoming
-    ''' null values are converted to string.Empty.
-    ''' </remarks>
+    ''' null values are converted to string.Empty.</remarks>
     Protected Sub SetProperty(Of P, V)(ByVal propertyName As String, ByRef field As P, ByVal newValue As V, ByVal noAccess As Security.NoAccessBehavior)
       Try
-        If _bypassPropertyChecks OrElse CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
+        If _bypassPropertyChecks AndAlso CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
           Dim doChange As Boolean = False
 
           If field Is Nothing Then
-            If newValue IsNot Nothing Then
-              doChange = True
-            End If
-          ElseIf TypeOf V Is String AndAlso newValue Is Nothing Then
-            newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty)
+            If newValue IsNot Nothing Then doChange = True
 
+          Else
+            If GetType(V) Is GetType(String) AndAlso newValue Is Nothing Then
+              newValue = Utilities.CoerceValue(Of V)(GetType(String), Nothing, String.Empty)
+            End If
             If Not field.Equals(newValue) Then
               doChange = True
             End If
           End If
-        End If
 
-        If doChange = True Then
-          If Not _bypassPropertyChecks Then
-            OnPropertyChanging(propertyName)
+          If doChange Then
+            If Not _bypassPropertyChecks Then OnPropertyChanging(propertyName)
+            field = Utilities.CoerceValue(Of P)(GetType(V), field, newValue)
+            If Not _bypassPropertyChecks Then PropertyHasChanged(propertyName)
           End If
-
-          field = CoerceValue(Of P)(GetType(V), field, newValue)
-
-          If Not _bypassPropertyChecks Then
-            PropertyHasChanged(propertyName)
-          End If
-
         End If
       Catch sec As System.Security.SecurityException
         Throw
@@ -2245,9 +2228,9 @@ Namespace Core
     ''' If the user is not authorized to change the property, this
     ''' overload throws a SecurityException.
     ''' </remarks>
-    Protected Sub SetProperty(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
+    Protected Sub SetPropertyConvert(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
-      SetProperty(Of P, F)(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException)
+      SetPropertyConvert(Of P, F)(propertyInfo, newValue, Security.NoAccessBehavior.ThrowException)
 
     End Sub
 
@@ -2282,7 +2265,7 @@ Namespace Core
             End If
           End If
 
-          If TypeOf F Is String AndAlso newValue IsNot Nothing Then
+          If GetType(F) Is GetType(String) AndAlso newValue IsNot Nothing Then
             newValue = CoerceValue(Of F)(GetType(F), Nothing, String.Empty)
           End If
           LoadPropertyValue(Of P)(propertyInfo, oldValue, CoerceValue(Of P)(GetType(F), oldValue, newValue), Not _bypassPropertyChecks)
@@ -2333,7 +2316,7 @@ Namespace Core
             End If
           End If
 
-          If TypeOf P Is String AndAlso newValue IsNot Nothing Then
+          If GetType(P) Is GetType(String) AndAlso newValue IsNot Nothing Then
             newValue = CoerceValue(Of P)(GetType(P), Nothing, String.Empty)
           End If
 
@@ -2357,7 +2340,7 @@ Namespace Core
     ''' If the user is not authorized to change the 
     ''' property a SecurityException is thrown.
     ''' </remarks>
-    Protected Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.SetProperty
+    Protected Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
 
       Try
         If _bypassPropertyChecks OrElse CanWriteProperty(propertyInfo.Name, True) Then
@@ -2372,9 +2355,9 @@ Namespace Core
       Catch sec As System.Security.SecurityException
         Throw
       Catch ex As Exception
-        Throw New PropertyLoadException(String.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex)
+        Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex)
       End Try
-      
+
 
     End Sub
 
@@ -2397,7 +2380,7 @@ Namespace Core
     ''' Loading values does not cause validation rules to be
     ''' invoked.
     ''' </remarks>
-    Protected Sub LoadProperty(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
+    Protected Sub LoadPropertyConvert(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
       Try
         Dim oldValue As P = Nothing
@@ -2488,9 +2471,9 @@ Namespace Core
           RemoveEventHooks(old)
         End If
 
-        Dim @new as IBusinessObject = DirectCast(newValue, IBusinessObject)
-        If @new IsNot Nothing Then
-          AddEventHooks(@new)
+        Dim [new] As IBusinessObject = DirectCast(newValue, IBusinessObject)
+        If [new] IsNot Nothing Then
+          AddEventHooks([new])
         End If
 
         If GetType(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type) Then
@@ -2572,7 +2555,7 @@ Namespace Core
     ''' Loading values does not cause validation rules to be
     ''' invoked.
     ''' </remarks>
-    Protected Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
+    Protected Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
       FieldManager.LoadFieldData(propertyInfo, newValue)
     End Sub
 
@@ -2584,18 +2567,18 @@ Namespace Core
       Get
         If _loadManager Is Nothing Then
           _loadManager = New AsyncLoadManager()
-          AddHandler _loadManager.BusyChanged, AddressOf loadManager_BusyChanged
-          AddHandler _loadManager.UnhandledAsyncException, AddressOf loadManager_UnhandledAsyncException
+          'TODO: AddHandler _loadManager.BusyChanged, AddressOf loadManager_BusyChanged
+          'TODO:AddHandler _loadManager.UnhandledAsyncException, AddressOf loadManager_UnhandledAsyncException
         End If
         Return _loadManager
       End Get
     End Property
 
-    Private Sub loadManager_UnhandledAsyncException(ByRef sender As Object, ByVal e As EventArgs)
+    Private Sub loadManager_UnhandledAsyncException(ByRef sender As Object, ByVal e As ErrorEventArgs)
       OnUnhandledAsyncException(e)
     End Sub
 
-    Private Sub loadManager_BusyChanged(ByRef sender As Object, ByVal e As EventArgs)
+    Private Sub loadManager_BusyChanged(ByRef sender As Object, ByVal e As BusyChangedEventArgs)
       OnBusyChanged(e)
     End Sub
 
@@ -2607,11 +2590,10 @@ Namespace Core
     ''' <param name="property">Property to load.</param>
     ''' <param name="factory">AsyncFactory delegate.</param>
     ''' <param name="parameter">Parameter value.</param>
-    ''' <remarks></remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P), ByVal parameter As P)
-      Dim loader As AsyncLoader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, parameter)
-      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    Protected Sub LoadPropertyAsync(Of R, P)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P), ByVal [parameter] As P)
+      'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, parameter)
+      ''TODO: LoadManager.BeginLoad(loader, (EventHandler(of DataPortalResult(Of R)))loader.LoadComplete)
     End Sub
 
     ''' <summary>
@@ -2625,9 +2607,9 @@ Namespace Core
     ''' <param name="p1">Parameter value.</param>
     ''' <param name="p2">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P1, P2)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2), ByVal px As P1, ByVal py As P2)
-      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, px, py))
-      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    Protected Sub LoadPropertyAsync(Of R, P1, P2)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2), ByVal pp1 As P1, ByVal pp2 As P2)
+      'TODO:   AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2);
+      'TODO: LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult(Of R)>)loader.LoadComplete);
     End Sub
 
     ''' <summary>
@@ -2639,13 +2621,13 @@ Namespace Core
     ''' <typeparam name="P3">Type of the parameter.</typeparam>
     ''' <param name="property">Property to load.</param>
     ''' <param name="factory">AsyncFactory delegate.</param>
-    ''' <param name="p1">Parameter value.</param>
-    ''' <param name="p2">Parameter value.</param>
-    ''' <param name="p3">Parameter value.</param>
+    ''' <param name="pp1">Parameter value.</param>
+    ''' <param name="pp2">Parameter value.</param>
+    ''' <param name="pp3">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3), ByVal px As P1, ByVal py As P2, ByVal pz As P3)
-      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, px, py, pz))
-      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3)
+      'TODO:   AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
+      'TODO: LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult(Of R)>)loader.LoadComplete);
     End Sub
 
     ''' <summary>
@@ -2658,14 +2640,14 @@ Namespace Core
     ''' <typeparam name="P4">Type of the parameter.</typeparam>
     ''' <param name="property">Property to load.</param>
     ''' <param name="factory">AsyncFactory delegate.</param>
-    ''' <param name="p1">Parameter value.</param>
-    ''' <param name="p2">Parameter value.</param>
-    ''' <param name="p3">Parameter value.</param>
-    ''' <param name="p4">Parameter value.</param>
+    ''' <param name="pp1">Parameter value.</param>
+    ''' <param name="pp2">Parameter value.</param>
+    ''' <param name="pp3">Parameter value.</param>
+    ''' <param name="pp4">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4), ByVal pw As P1, ByVal px As P2, ByVal py As P3, ByVal p As P4)
-      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, pw, px, py, pz))
-      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4)
+      'TODO:  AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4);
+      'TODO:  LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult(Of R)>)loader.LoadComplete);
     End Sub
 
     ''' <summary>
@@ -2679,16 +2661,15 @@ Namespace Core
     ''' <typeparam name="P5">Type of the parameter.</typeparam>
     ''' <param name="property">Property to load.</param>
     ''' <param name="factory">AsyncFactory delegate.</param>
-    ''' <param name="p1">Parameter value.</param>
-    ''' <param name="p2">Parameter value.</param>
-    ''' <param name="p3">Parameter value.</param>
-    ''' <param name="p4">Parameter value.</param>
-    ''' <param name="p5">Parameter value.</param>
+    ''' <param name="pp1">Parameter value.</param>
+    ''' <param name="pp2">Parameter value.</param>
+    ''' <param name="pp3">Parameter value.</param>
+    ''' <param name="pp4">Parameter value.</param>
+    ''' <param name="pp5">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
-    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal pv As P1, ByVal pw As P2, ByVal px As P3, ByVal py As P4, ByVal pz As P5)
-      'TODO : Waiting on clarification about AsyncLoader using P4,P5 which was not in c# version
-      AsyncLoader(loader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, pv, pw, px, py, pz))
-      LoadManager.BeginLoad(loader, (EventHandler(Of DataPortalResult(Of R)))loader.LoadComplete)
+    Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4, ByVal pp5 As P5)
+      'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, pp1, pp2, pp3)
+      'TODO: LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult(Of R)>)loader.LoadComplete)
     End Sub
 
 #End Region
@@ -2706,7 +2687,7 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Sub MarkBusy()
       If _isBusy Then
-        Throw New InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy)
+        Throw New InvalidOperationException(My.Resources.BusyObjectsMayNotBeMarkedBusy)
       End If
 
       _isBusy = True
@@ -2729,9 +2710,9 @@ Namespace Core
     ''' busy.
     ''' </summary>
     <Browsable(False)> _
-    Public ReadOnly Property IsBusy() As Boolean
+    Public ReadOnly Property IsBusy() As Boolean Implements INotifyBusy.IsBusy
       Get
-        Return (IsSelfBusy orelse (_fieldManager isnot Nothing && FieldManager.IsBusy()))
+        Return (IsSelfBusy OrElse (_fieldManager IsNot Nothing And FieldManager.IsBusy()))
       End Get
     End Property
 
@@ -2740,7 +2721,7 @@ Namespace Core
     ''' object is busy.
     ''' </summary>
     <Browsable(False)> _
-    Public ReadOnly Property IsSelfBusy() As Boolean
+    Public ReadOnly Property IsSelfBusy() As Boolean Implements INotifyBusy.IsSelfBusy
       Get
         Return (_isBusy OrElse ValidationRules.IsValidating OrElse LoadManager.IsLoading)
       End Get
@@ -2753,7 +2734,7 @@ Namespace Core
     ''' <summary>
     ''' Event indicating that the IsBusy property has changed.
     ''' </summary>
-    Public Custom Event BusyChanged As BusyChangedEventHandler
+    Public Custom Event BusyChanged As BusyChangedEventHandler Implements INotifyBusy.BusyChanged
       AddHandler(ByVal value As BusyChangedEventHandler)
         _busyChanged = CType(System.Delegate.Combine(_busyChanged, value), BusyChangedEventHandler)
       End AddHandler
@@ -2792,10 +2773,11 @@ Namespace Core
       Dim isbusy As Boolean = False
       If _validationRules IsNot Nothing Then
         SyncLock _validationRules.ValidatingRules
-           isbusy = (from rules in _validationRules.ValidatingRules
-                    from property in rules.AsyncRuleArgs.Properties
-                    where property.Name == propertyName
-                    select rules).Count() > 0
+          'TODO
+          'isbusy = (from rules in _validationRules.ValidatingRules
+          '         from property in rules.AsyncRuleArgs.Properties
+          '         where property.Name == propertyName
+          '         select rules).Count() > 0          
         End SyncLock
       End If
 
@@ -2810,7 +2792,7 @@ Namespace Core
     <NotUndoable()> _
     Private _unhandledAsyncException As EventHandler(Of ErrorEventArgs)
 
-    Public Custom Event UnhandledAsyncException As EventHandler(Of ErrorEventArgs)
+    Public Custom Event UnhandledAsyncException As EventHandler(Of ErrorEventArgs) Implements INotifyUnhandledAsyncException.UnhandledAsyncException
       AddHandler(ByVal value As EventHandler(Of ErrorEventArgs))
         _unhandledAsyncException = CType(System.Delegate.Combine(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
       End AddHandler
@@ -2842,10 +2824,10 @@ Namespace Core
     ''' </summary>
     ''' <param name="originalSender">Original sender of
     ''' the event.</param>
-    ''' <param name="error">Exception object.</param>
+    ''' <param name="ex">Exception object.</param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Sub OnUnhandledAsyncException(ByVal originalSender As Object, ByVal [error] As Exception)
-      OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error))
+    Protected Sub OnUnhandledAsyncException(ByVal originalSender As Object, ByVal ex As Exception)
+      OnUnhandledAsyncException(New ErrorEventArgs(originalSender, ex))
     End Sub
 
 #End Region
@@ -2859,21 +2841,35 @@ Namespace Core
     ''' Event raised when a child object has been changed.
     ''' </summary>
     <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-    Public Custom Event ChildChanged As EventHandler(Of Core.ChildChangedEventArgs)
+    Public Custom Event ChildChanged As EventHandler(Of Core.ChildChangedEventArgs) Implements INotifyChildChanged.ChildChanged
       AddHandler(ByVal value As EventHandler(Of Core.ChildChangedEventArgs))
         _childChangedHandlers = CType(System.Delegate.Combine(_childChangedHandlers, value), EventHandler(Of Csla.Core.ChildChangedEventArgs))
       End AddHandler
+
       RemoveHandler(ByVal value As EventHandler(Of Core.ChildChangedEventArgs))
         _childChangedHandlers = CType(System.Delegate.Remove(_childChangedHandlers, value), EventHandler(Of Csla.Core.ChildChangedEventArgs))
       End RemoveHandler
 
-      'TODO: Does this need to be here?
       RaiseEvent(ByVal sender As System.Object, ByVal e As Core.ChildChangedEventArgs)
         If _childChangedHandlers IsNot Nothing Then
           _childChangedHandlers.Invoke(sender, e)
         End If
       End RaiseEvent
     End Event
+
+    ''' <summary>
+    ''' Raises the ChildChanged event, indicating that a child
+    ''' object has been changed.
+    ''' </summary>
+    ''' <param name="e">
+    ''' ChildChangedEventArgs object.
+    ''' </param>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
+    Protected Overridable Sub OnChildChanged(ByVal e As ChildChangedEventArgs)
+      If _childChangedHandlers IsNot Nothing Then
+        _childChangedHandlers.Invoke(Me, e)
+      End If
+    End Sub
 
     ''' <summary>
     ''' Creates a ChildChangedEventArgs and raises the event.
@@ -2935,7 +2931,7 @@ Namespace Core
     Private Sub FieldDataDeserialized()
 
       For Each item As Object In FieldManager.GetChildren()
-        Dim business As IBusinessObject = TryCast(business, IBusinessObject)
+        Dim business As IBusinessObject = TryCast(item, IBusinessObject)
         If business IsNot Nothing Then
           OnAddEventHooks(business)
         End If
@@ -2964,8 +2960,7 @@ Namespace Core
     ''' </summary>
     ''' <param name="child">The child object that was edited.</param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub EditChildComplete(ByVal child As Core.IEditableBusinessObject) Implements Core.IParent.ApplyEditChild
-
+    Protected Overridable Sub EditChildComplete(ByVal child As Core.IEditableBusinessObject)
       ' do nothing, we don't really care
       ' when a child has its edits applied
     End Sub
@@ -3033,19 +3028,19 @@ Namespace Core
       Return FieldManager.GetRegisteredProperties()
     End Function
 
-    Private Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
+    Private Function IManageProperties_GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
       Return GetProperty(propertyInfo)
     End Function
 
-    Private Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
+    Private Function IManageProperties_ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
       Return ReadProperty(propertyInfo)
     End Function
 
-    Private Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.SetProperty
+    Private Sub IManageProperties_SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.SetProperty
       SetProperty(propertyInfo, newValue)
     End Sub
 
-    Private Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
+    Private Sub IManageProperties_LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
       LoadProperty(propertyInfo, newValue)
     End Sub
 
@@ -3086,13 +3081,13 @@ Namespace Core
     ''' </param>
     Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As StateMode)
       MyBase.OnSetState(info, mode)
-      _isNew = info.GetValue < bool > ("Csla.Core.BusinessBase._isNew")
-      _isDeleted = info.GetValue < bool > ("Csla.Core.BusinessBase._isDeleted")
-      _isDirty = info.GetValue < bool > ("Csla.Core.BusinessBase._isDirty")
-      _neverCommitted = info.GetValue < bool > ("Csla.Core.BusinessBase._neverCommitted")
-      _disableIEditableObject = info.GetValue < bool > ("Csla.Core.BusinessBase._disableIEditableObject")
-      _isChild = info.GetValue < bool > ("Csla.Core.BusinessBase._isChild")
-      _editLevelAdded = info.GetValue < Int() > ("Csla.Core.BusinessBase._editLevelAdded")
+      _isNew = info.GetValue(Of Boolean)("Csla.Core.BusinessBase._isNew")
+      _isDeleted = info.GetValue(Of Boolean)("Csla.Core.BusinessBase._isDeleted")
+      _isDirty = info.GetValue(Of Boolean)("Csla.Core.BusinessBase._isDirty")
+      _neverCommitted = info.GetValue(Of Boolean)("Csla.Core.BusinessBase._neverCommitted")
+      _disableIEditableObject = info.GetValue(Of Boolean)("Csla.Core.BusinessBase._disableIEditableObject")
+      _isChild = info.GetValue(Of Boolean)("Csla.Core.BusinessBase._isChild")
+      _editLevelAdded = info.GetValue(Of Integer)("Csla.Core.BusinessBase._editLevelAdded")
     End Sub
 
     ''' <summary>
@@ -3136,12 +3131,12 @@ Namespace Core
 
       If info.Children.ContainsKey("_fieldManager") Then
         Dim childData = info.Children("_fieldManager")
-        _fieldManager = (Core.FieldManager.FieldDataManager)formatter.GetObject(childData.ReferenceId)
+        _fieldManager = CType(formatter.GetObject(childData.ReferenceId), Core.FieldManager.FieldDataManager)
       End If
 
       If info.Children.ContainsKey("_validationRules") Then
         Dim refId As Integer = info.Children("_validationRules").ReferenceId
-        _validationRules = CType(formatter.GetObject(refId), ValidationRules)
+        _validationRules = CType(formatter.GetObject(refId), Csla.Validation.ValidationRules)
       End If
 
       MyBase.OnSetChildren(info, formatter)
@@ -3163,7 +3158,7 @@ Namespace Core
     ''' </summary>
     Protected Friend ReadOnly Property BypassPropertyChecks() As BypassPropertyChecksObject
       Get
-        Return Me.BypassPropertyChecksObject(Me)
+        Return New BypassPropertyChecksObject(Me)
       End Get
     End Property
 

@@ -55,6 +55,15 @@ Namespace Core
       _userState = Nothing
     End Sub
 
+    ''' <summary>
+    ''' Creates an instance of the object.
+    ''' </summary>
+    ''' <param name="newObject">
+    ''' The object that was returned as a
+    ''' result of the Save() operation.
+    ''' </param>
+    ''' <param name="error">Exception object.</param>
+    ''' <param name="userState">User state object.</param>
     Public Sub New(ByVal newObject As Object, ByVal [error] As Exception, ByVal userState As Object)
       _newObject = newObject
       _error = [error]

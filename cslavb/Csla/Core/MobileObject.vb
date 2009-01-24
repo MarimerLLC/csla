@@ -13,11 +13,11 @@ Namespace Core
     Implements IMobileObject
 #Region "Serialize"
 
-    Private Sub GetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.GetChildren
+    Sub GetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.GetChildren
       OnGetChildren(info, formatter)
     End Sub
 
-    Private Sub GetState(ByVal info As SerializationInfo) Implements IMobileObject.GetState
+    Sub GetState(ByVal info As SerializationInfo) Implements IMobileObject.GetState
       OnGetState(info, StateMode.Serialization)
     End Sub
 
@@ -54,11 +54,11 @@ Namespace Core
 
 #Region "Deserialize"
 
-    Private Sub SetState(ByVal info As SerializationInfo) Implements IMobileObject.SetState
+    Sub SetState(ByVal info As SerializationInfo) Implements IMobileObject.SetState
       OnSetState(info, StateMode.Serialization)
     End Sub
 
-    Private Sub SetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.SetChildren
+    Sub SetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter) Implements IMobileObject.SetChildren
       OnSetChildren(info, formatter)
     End Sub
 

@@ -41,10 +41,10 @@ Namespace Security
     End Property
 
     Public Function IsInRole(ByVal role As String) As Boolean Implements ICheckRoles.IsInRole
-      Dim roles = GetProperty(MobileList(Of String))(RolesProperty)
+      Dim roles = GetProperty(Of MobileList(Of String))(RolesProperty)
 
       If roles IsNot Nothing Then
-        Return roles.contains(role)
+        Return roles.Contains(role)
       Else
         Return False
       End If
@@ -60,13 +60,14 @@ Namespace Security
     ''' <summary>
     ''' Gets the authentication type for this identity.
     ''' </summary>
-    Public Property AuthenticationType() As String
+    Public ReadOnly Property AuthenticationType() As String Implements IIdentity.AuthenticationType
       Get
         Return GetProperty(Of String)(AuthenticationTypeProperty)
       End Get
-      Protected Set(ByVal value As String)
-        LoadProperty(Of String)(AuthenticationTypeProperty, value)
-      End Set
+      'TODO
+      'Protected Set(ByVal value As String)
+      '  LoadProperty(Of String)(AuthenticationTypeProperty, value)
+      'End Set
     End Property
 
     Private Shared ReadOnly IsAuthenticatedProperty As PropertyInfo(Of Boolean) = RegisterProperty(Of Boolean)(New PropertyInfo(Of Boolean)("IsAuthenticated"))
@@ -75,24 +76,26 @@ Namespace Security
     ''' Gets a value indicating whether this identity represents
     ''' an authenticated user.
     ''' </summary>
-    Public Property IsAuthenticated() As Boolean
+    Public ReadOnly Property IsAuthenticated() As Boolean Implements IIdentity.IsAuthenticated
       Get
         Return GetProperty(Of Boolean)(IsAuthenticatedProperty)
       End Get
-      Protected Set(ByVal value As Boolean)
-        LoadProperty(Of Boolean)(IsAuthenticatedProperty, value)
-      End Set
+      'TODO:
+      'Protected Set(ByVal value As Boolean)
+      '  LoadProperty(Of Boolean)(IsAuthenticatedProperty, value)
+      'End Set
     End Property
 
     Private Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(New PropertyInfo(Of String)("Name"))
 
-    Public Property Name() As String
+    Public ReadOnly Property Name() As String Implements IIdentity.Name
       Get
         Return GetProperty(Of String)(NameProperty)
       End Get
-      Protected Set(ByVal value As String)
-        LoadProperty(Of String)(NameProperty, value)
-      End Set
+      'TODO:
+      'Protected Set(ByVal value As String)
+      '  LoadProperty(Of String)(NameProperty, value)
+      'End Set
     End Property
 
 #End Region

@@ -543,7 +543,7 @@ Namespace Core.FieldManager
       Dim type As String = CType(info.Values("_businessObjectType").Value, String)
       Dim businessObjecType As Type = System.Type.GetType(type)
       SetPropertyList(businessObjecType)
-      _fieldData = New IFieldData(_propertyList.Count)
+      'TODO: _fieldData = New IFieldData(_propertyList.Count)
 
       For Each [property] As IPropertyInfo In _propertyList
         If info.Values.ContainsKey([property].Name) Then
@@ -562,12 +562,13 @@ Namespace Core.FieldManager
     Public Sub SetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.SetChildren
       For Each [property] As IPropertyInfo In _propertyList
         If info.Children.ContainsKey([property].Name) Then
-          Dim childData As SerializationInfo.FieldData = info.Children([property].Name)
-          Dim data As IFieldData = GetOrCreateFieldData([property])
-          data.Value = formatter.GetObject(childData.ReferenceId)
-          If Not childData.IsDirty Then
-            data.MarkClean()
-          End If
+          'TODO:
+          'Dim childData As SerializationInfo.FieldData = info.Children([property].Name)
+          'Dim data As IFieldData = GetOrCreateFieldData([property])
+          'data.Value = formatter.GetObject(childData.ReferenceId)
+          'If Not childData.IsDirty Then
+          '  data.MarkClean()
+          'End If
         End If
       Next
       OnSetChildren(info, formatter)

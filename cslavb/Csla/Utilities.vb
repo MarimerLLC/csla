@@ -16,8 +16,8 @@ Public Module Utilities
   Public Function GetPropertyType(ByVal propertyType As Type) As Type
 
     Dim type As Type = propertyType
-    If (type.IsGenericType AndAlso _
-      (type.GetGenericTypeDefinition Is GetType(Nullable(Of )))) Then
+    If type.IsGenericType AndAlso _
+      type.GetGenericTypeDefinition Is GetType(Nullable(Of )) Then
 
       Return Nullable.GetUnderlyingType(type)
     End If

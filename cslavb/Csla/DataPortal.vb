@@ -196,7 +196,7 @@ Public Module DataPortal
     Return Fetch(objectType, EmptyCriteria)
   End Function
 
-  Private Function Fetch( _
+  Friend Function Fetch( _
     ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
@@ -531,7 +531,7 @@ Public Module DataPortal
   '''  asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public  Sub BeginCreate(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T))
+  Public Sub BeginCreate(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T)))
     BeginCreate(Of T)(DataPortal(Of T).EmptyCriteria, callback, Nothing)
   End Sub
 
@@ -567,7 +567,7 @@ Public Module DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>
-  Public  Sub BeginCreate(Of T As IMobileObject)( byval criteria as object ,ByVal callback As EventHandler(Of DataPortalResult(Of T))    
+  Public Sub BeginCreate(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
     BeginCreate(Of T)(criteria, callback, Nothing)
   End Sub
 
@@ -609,7 +609,7 @@ Public Module DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public  Sub BeginFetch(Of T As IMobileObject )(ByVal callback As EventHandler(Of DataPortalResult(Of  T))    
+  Public Sub BeginFetch(Of T As IMobileObject)(ByVal callback As EventHandler(Of DataPortalResult(Of T)))
     BeginFetch(Of T)(DataPortal(Of T).EmptyCriteria, callback, Nothing)
   End Sub
 
@@ -740,7 +740,7 @@ Public Module DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public  Sub BeginDelete(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T))    
+  Public Sub BeginDelete(Of T As IMobileObject)(ByVal criteria As Object, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
     BeginDelete(Of T)(criteria, callback, Nothing)
   End Sub
 
@@ -785,7 +785,7 @@ Public Module DataPortal
   ''' asynchronous callback when the operation
   ''' is complete.
   ''' </param>  
-  Public  Sub BeginExecute(Of T As IMobileObject)(ByVal obj As T, ByVal callback As EventHandler(Of DataPortalResult(Of T))    
+  Public Sub BeginExecute(Of T As IMobileObject)(ByVal obj As T, ByVal callback As EventHandler(Of DataPortalResult(Of T)))
     BeginExecute(Of T)(obj, callback, Nothing)
   End Sub
 
@@ -967,7 +967,7 @@ Public Module DataPortal
               CBool(IIf(Not Application.Current.MainWindow Is Nothing, _
               DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow), _
               False)))
-          Dim tmp As Boolean = CType(Application.Current.Dispatcher.Invoke(func, Nothing), Boolean)
+          Dim tmp As Boolean 'TODO: = CType(Application.Current.Dispatcher.Invoke(func, Nothing), Boolean)
 
           SyncLock _designModeLock
             If Not _isInDesignModeHasBeenSet Then

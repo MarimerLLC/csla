@@ -70,27 +70,27 @@ Public MustInherit Class CommandBase
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")> _
   Private Sub DataPortal_Create(ByVal criteria As Object)
-    Throw New NotSupportedException(Csla.Resources.CreateNotSupportedException)
+    Throw New NotSupportedException(My.Resources.CreateNotSupportedException)
   End Sub
 
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId:="criteria")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")> _
   Private Sub DataPortal_Fetch(ByVal criteria As Object)
-    Throw New NotSupportedException(Csla.Resources.FetchNotSupportedException)
+    Throw New NotSupportedException(My.Resources.FetchNotSupportedException)
   End Sub
 
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")> _
   Private Sub DataPortal_Update()
-    Throw New NotSupportedException(Csla.Resources.UpdateNotSupportedException)
+    Throw New NotSupportedException(My.Resources.UpdateNotSupportedException)
   End Sub
 
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId:="criteria")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")> _
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")> _
   Private Sub DataPortal_Delete(ByVal criteria As Object)
-    Throw New NotSupportedException(Csla.Resources.DeleteNotSupportedException)
+    Throw New NotSupportedException(My.Resources.DeleteNotSupportedException)
   End Sub
 
   ''' <summary>
@@ -99,7 +99,7 @@ Public MustInherit Class CommandBase
   ''' </summary>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   Protected Overridable Sub DataPortal_Execute()
-    Throw New NotSupportedException(Csla.Resources.ExecuteNotSupportedException)
+    Throw New NotSupportedException(My.Resources.ExecuteNotSupportedException)
   End Sub
 
   ''' <summary>

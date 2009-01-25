@@ -18,7 +18,6 @@ Imports Csla.Core
 Public MustInherit Class BusinessListBase( _
   Of T As BusinessListBase(Of T, C), C As {Core.IEditableBusinessObject})
   Inherits Core.ExtendedBindingList(Of C)
-
   Implements Core.IEditableCollection
   Implements Core.IUndoableObject
   Implements ICloneable
@@ -792,7 +791,7 @@ Public MustInherit Class BusinessListBase( _
   ''' MarkAsChild method.
   ''' </para>
   ''' </remarks>
-  Protected Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
+  Protected Sub MarkAsChild()
     _isChild = True
   End Sub
 
@@ -832,37 +831,38 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " Cascade Child events "
 
-  ''' <summary>
-  ''' Raises ListChanged event if an immediate child of
-  ''' the collection was changed.
-  ''' </summary>
-  ''' <param name="sender">Calling object</param>
-  ''' <param name="e">Args containing parameter values.</param>
-  Protected Friend Overrides Sub OnChildChangedInternal(ByVal sender As Object, ByVal e As ChildChangedEventArgs)
-    If RaiseListChangedEvents AndAlso e.PropertyChangedArgs IsNot Nothing Then
-      DeferredLoadIndexIfNotLoaded()
-      If _indexSet.HasIndexFor(e.PropertyChangedArgs.PropertyName) Then
-        ReIndexItem(CType(sender, C), e.PropertyChangedArgs.PropertyName)
-      End If
-      'for (int index = 0; index < Count; index++)
+  ''This does not exist in the C# version
+  ''''' <summary>
+  ''''' Raises ListChanged event if an immediate child of
+  ''''' the collection was changed.
+  ''''' </summary>
+  ''''' <param name="sender">Calling object</param>
+  ''''' <param name="e">Args containing parameter values.</param>
+  ''Protected Friend Overrides Sub OnChildChangedInternal(ByVal sender As Object, ByVal e As ChildChangedEventArgs)
+  ''  If RaiseListChangedEvents AndAlso e.PropertyChangedArgs IsNot Nothing Then
+  ''    DeferredLoadIndexIfNotLoaded()
+  ''    If _indexSet.HasIndexFor(e.PropertyChangedArgs.PropertyName) Then
+  ''      ReIndexItem(CType(sender, C), e.PropertyChangedArgs.PropertyName)
+  ''    End If
+  ''    'for (int index = 0; index < Count; index++)
 
-      For index As Integer = 0 To Count - 1
-        If ReferenceEquals(Me(index), sender) Then
-          Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)
-          If descriptor IsNot Nothing Then
-            OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)))
-          Else
-            OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
-          End If
+  ''    For index As Integer = 0 To Count - 1
+  ''      If ReferenceEquals(Me(index), sender) Then
+  ''        Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)
+  ''        If descriptor IsNot Nothing Then
+  ''          OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)))
+  ''        Else
+  ''          OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+  ''        End If
 
-          Return
-        End If
-      Next
-    End If
+  ''        Return
+  ''      End If
+  ''    Next
+  ''  End If
 
-    MyBase.OnChildChangedInternal(sender, e)
+  ''  MyBase.OnChildChangedInternal(sender, e)
 
-  End Sub
+  ''End Sub
 
   Private Shared _propertyDescriptors As PropertyDescriptorCollection
 
@@ -886,7 +886,7 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " Serialization Notification "
 
-  Protected Friend Overrides Sub OnDeserializedInternal()
+  Protected Overrides Sub OnDeserialized()
     For Each child As Core.IEditableBusinessObject In Me
       child.SetParent(Me)
     Next
@@ -894,7 +894,7 @@ Public MustInherit Class BusinessListBase( _
     For Each child As Core.IEditableBusinessObject In DeletedList
       child.SetParent(Me)
     Next
-    MyBase.OnDeserializedInternal()
+    MyBase.OnDeserialized()
   End Sub
 
 #End Region
@@ -1007,7 +1007,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <summary>
   ''' Starts an async operation to save the object to the database.
   ''' </summary>
-  Public Sub BeginSave()
+  Public Sub BeginSave() Implements Core.ISavable.BeginSave
     BeginSave(Nothing, Nothing)
   End Sub
 
@@ -1015,7 +1015,7 @@ Public MustInherit Class BusinessListBase( _
   ''' Starts an async operation to save the object to the database.
   ''' </summary>
   ''' <param name="userState">User state object.</param>
-  Public Sub BeginSave(ByVal userState As Object)
+  Public Sub BeginSave(ByVal userState As Object) Implements Core.ISavable.BeginSave
     BeginSave(Nothing, userState)
   End Sub
 
@@ -1121,7 +1121,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -1132,7 +1132,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -1144,7 +1144,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
   End Sub
 
@@ -1154,7 +1154,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+  Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -1164,7 +1164,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+  Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -1175,7 +1175,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
+  Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
   End Sub
 
@@ -1394,89 +1394,42 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " IDataPortalTarget Members "
 
-  Private Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
+  Private Sub IDataPortalTarget_MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
     Me.MarkAsChild()
   End Sub
 
-  Private Sub MarkNew() Implements Server.IDataPortalTarget.MarkNew
+  Private Sub IDataPortalTarget_MarkNew() Implements Server.IDataPortalTarget.MarkNew
 
   End Sub
 
-  Private Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
+  Private Sub IDataPortalTarget_MarkOld() Implements Server.IDataPortalTarget.MarkOld
 
   End Sub
 
-  Private Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
     Me.DataPortal_OnDataPortalInvoke(e)
   End Sub
 
-  Private Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
     Me.DataPortal_OnDataPortalInvokeComplete(e)
   End Sub
 
-  Private Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke
+  Private Sub IDataPortalTarget_Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke
     Me.Child_OnDataPortalInvoke(e)
   End Sub
 
-  Private Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException
     Me.DataPortal_OnDataPortalException(e, ex)
   End Sub
 
-  Private Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+  Private Sub IDataPortalTarget_Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
     Me.Child_OnDataPortalInvokeComplete(e)
   End Sub
 
-  Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalException
+  Private Sub IDataPortalTarget_Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalException
     Me.Child_OnDataPortalException(e, ex)
   End Sub
 
-#End Region
-
-#Region "Mobile object overrides"
-
-  ''' <summary>
-  ''' Override this method to retrieve your field values
-  ''' from the MobileFormatter serialzation stream.
-  ''' </summary>
-  ''' <param name="info">
-  ''' Object containing the data to serialize.
-  ''' </param>
-  Protected Overrides Sub OnSetState(ByVal info As Csla.Serialization.Mobile.SerializationInfo)
-    _isChild = info.GetValue(Of Boolean)("Csla.BusinessListBase._isChild")
-    _editLevel = info.GetValue(Of Integer)("Csla.BusinessListBase._editLevel")
-    MyBase.OnSetState(info)
-  End Sub
-
-  ''' <summary>
-  ''' Override this method to insert your field values
-  ''' into the MobileFormatter serialzation stream.
-  ''' </summary>
-  ''' <param name="info">
-  ''' Object containing the data to serialize.
-  ''' </param>
-  Protected Overrides Sub OnGetState(ByVal info As Csla.Serialization.Mobile.SerializationInfo)
-    info.AddValue("Csla.BusinessListBase._isChild", _isChild)
-    info.AddValue("Csla.BusinessListBase._editLevel", _editLevel)
-    MyBase.OnGetState(info)
-  End Sub
-
-  Protected Overrides Sub OnGetChildren(ByVal info As Csla.Serialization.Mobile.SerializationInfo, ByVal formatter As Csla.Serialization.Mobile.MobileFormatter)
-    MyBase.OnGetChildren(info, formatter)
-    If _deletedList IsNot Nothing Then
-      Dim fieldManagerInfo = formatter.SerializeObject(_deletedList)
-      info.AddChild("_deletedList", fieldManagerInfo.ReferenceId)
-    End If
-  End Sub
-
-  Protected Overrides Sub OnSetChildren(ByVal info As Csla.Serialization.Mobile.SerializationInfo, ByVal formatter As Csla.Serialization.Mobile.MobileFormatter)
-    If info.Children.ContainsKey("_deletedList") Then
-      Dim childData = info.Children("_deletedList")
-      _deletedList = CType(formatter.GetObject(childData.ReferenceId), MobileList(Of C))
-
-    End If
-    MyBase.OnSetChildren(info, formatter)
-  End Sub
-
-#End Region
+#End Region   
 
 End Class

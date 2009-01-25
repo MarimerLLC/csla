@@ -55,6 +55,31 @@ Namespace Security
 
 #Region "IIdentity"
 
+    ''' <remarks>These methods implements IIdentity's methods. 
+    ''' VB does not allow us to implement a method and change its signature, 
+    ''' i.e. from ReadOnly to ReadOnly with Protected Set Accessor.</remarks>
+#Region "IIdentity Helper"
+
+    Private ReadOnly Property IIdentity_AuthenticationType() As String Implements IIdentity.AuthenticationType
+      Get
+        Return AuthenticationType
+      End Get
+    End Property
+
+    Private ReadOnly Property IIdentity_IsAuthenticated() As Boolean Implements IIdentity.IsAuthenticated
+      Get
+        Return IsAuthenticated
+      End Get
+    End Property
+
+    Private ReadOnly Property IIdentity_Name() As String Implements IIdentity.Name
+      Get
+        Return Name
+      End Get
+    End Property
+
+#End Region
+
     Private Shared ReadOnly AuthenticationTypeProperty As PropertyInfo(Of String) = _
       RegisterProperty(Of String)(New PropertyInfo(Of String)("AuthenticationType", "Authentication type", "Csla"))
 
@@ -79,7 +104,7 @@ Namespace Security
     Public Property IsAuthenticated() As Boolean
       Get
         Return GetProperty(Of Boolean)(IsAuthenticatedProperty)
-      End Get      
+      End Get
       Protected Set(ByVal value As Boolean)
         LoadProperty(Of Boolean)(IsAuthenticatedProperty, value)
       End Set
@@ -90,7 +115,7 @@ Namespace Security
     Public Property Name() As String
       Get
         Return GetProperty(Of String)(NameProperty)
-      End Get      
+      End Get
       Protected Set(ByVal value As String)
         LoadProperty(Of String)(NameProperty, value)
       End Set

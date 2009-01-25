@@ -16,8 +16,8 @@ Namespace Windows
   ''' <remarks>Windows Forms extender control that resolves the
   ''' data refresh issue with data bound detail controls
   ''' as discussed in Chapter 5.</remarks>
-#If Not CLIENTONLY Then
-  <Designer(typeof(HostComponentDesigner))> _
+#If Not CLIENTONLY Then  
+  <Designer(GetType(HostComponentDesigner))> _
 #End If
   <DesignerCategory(""), HostProperty("Host"), ProvideProperty("ReadValuesOnChange", GetType(BindingSource))> _
   Public Class BindingSourceRefresh

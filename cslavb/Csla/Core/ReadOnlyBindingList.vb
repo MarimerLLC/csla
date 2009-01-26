@@ -63,7 +63,7 @@ Namespace Core
         _indexSet.ClearIndexes()
         AllowRemove = oldValue
       Else
-        Throw New NotSupportedException("")
+        Throw New NotSupportedException(My.Resources.ClearInvalidException)
       End If
     End Sub
 
@@ -74,7 +74,7 @@ Namespace Core
       If (Not IsReadOnly) Then
         Return MyBase.AddNewCore()
       Else
-        Throw New NotSupportedException("")
+        Throw New NotSupportedException(My.Resources.InsertInvalidException)
       End If
     End Function
 
@@ -88,7 +88,7 @@ Namespace Core
         InsertIndexItem(item)
         MyBase.InsertItem(index, item)
       Else
-        Throw New NotSupportedException("")
+        Throw New NotSupportedException(My.Resources.InsertInvalidException)
       End If
     End Sub
 
@@ -105,7 +105,7 @@ Namespace Core
         MyBase.RemoveItem(index)
         AllowRemove = oldValue
       Else
-        Throw New NotSupportedException("")
+        Throw New NotSupportedException(My.Resources.RemoveInvalidException)
       End If
     End Sub
 
@@ -122,16 +122,42 @@ Namespace Core
         MyBase.SetItem(index, item)
         InsertIndexItem(item)
       Else
-        Throw New NotSupportedException("")
+        Throw New NotSupportedException(My.Resources.ChangeInvalidException)
       End If
     End Sub
+
+#Region " ITrackStatus "
+
+    ''' <summary>
+    ''' Gets a value indicating whether this object or its
+    ''' child objects are busy.
+    ''' </summary>
+    Public Overrides ReadOnly Property IsBusy() As Boolean
+      Get
+        ''' run through all the child objects
+        ''' and if any are dirty then then
+        ''' collection is dirty
+        For Each child As C In Me
+          Dim busy As INotifyBusy = TryCast(child, INotifyBusy)
+          If busy IsNot Nothing AndAlso busy.IsBusy Then
+            Return True
+          End If
+        Next
+
+        Return False
+      End Get
+    End Property
+
+#End Region
+
+#Region " Indexing "
 
     <NonSerialized()> _
     Private _indexSet As Linq.IIndexSet(Of C)
 
     Private Sub DeferredLoadIndexIfNotLoaded()
       If _indexSet Is Nothing Then
-        _indexSet = New Csla.Linq.IndexSet(Of C)()
+        _indexSet = New Linq.IndexSet(Of C)()
       End If
     End Sub
 
@@ -152,7 +178,6 @@ Namespace Core
       End Set
     End Property
 
-
     Private Function IndexModeFor(ByVal [property] As String) As IndexModeEnum
       DeferredLoadIndexIfNotLoaded()
       If _indexSet.HasIndexFor([property]) Then
@@ -170,6 +195,7 @@ Namespace Core
         Return False
       End If
     End Function
+
     Private Sub LoadIndexIfNotLoaded(ByVal [property] As String)
       If IndexModeFor([property]) <> IndexModeEnum.IndexModeNever Then
         If (Not IndexLoadedFor([property])) Then
@@ -226,16 +252,76 @@ Namespace Core
       _indexSet([property]).LoadComplete()
     End Sub
 
+#End Region
+
+#Region " Where Implementation "
+
+    ''' <summary>
+    ''' Iterates through a set of items according to the expression passed to it.
+    ''' </summary>
     Public Function SearchByExpression(ByVal expr As Expression(Of Func(Of C, Boolean))) As IEnumerable(Of C)
       DeferredLoadIndexIfNotLoaded()
       Dim [property] As String = _indexSet.HasIndexFor(expr)
       If [property] IsNot Nothing AndAlso IndexModeFor([property]) <> IndexModeEnum.IndexModeNever Then
         LoadIndexIfNotLoaded([property])
+        ' TODO : Need to implement our version of yield
         Return _indexSet.Search(expr, [property])
       Else
-        Return Me.AsEnumerable().Where(expr.Compile())
+        'Dim sourceEnum As IEnumerable(Of C) = Me.AsEnumerable(Of C)() 'TODO: 
+        'Dim result = sourceEnum.Where(Of C)(expr.Compile()) 'TODO:
+
+        ' TODO : Need to implement our version of yield
+        'Return Me.AsEnumerable().Where(expr.Compile())
       End If
     End Function
+
+#End Region
+
+#Region " MobileFormatter "
+    'TODO Finish implementation once ExtendedBindingList is complete
+    '''' <summary>
+    '''' Override this method to insert your field values
+    '''' into the MobileFormatter serialzation stream.
+    '''' </summary>
+    '''' <param name="info">
+    '''' Object containing the data to serialize.
+    '''' </param>
+    'Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo)
+    '  MyBase.OnGetState(info)
+    '  info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", _isReadOnly)
+    'End Sub
+
+    '''' <summary>
+    '''' Override this method to retrieve your field values
+    '''' from the MobileFormatter serialzation stream.
+    '''' </summary>
+    '''' <param name="info">
+    '''' Object containing the data to serialize.
+    '''' </param>
+    'Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo)
+    '  MyBase.OnSetState(info)
+    '  _isReadOnly = info.GetValue(Of Boolean)("Csla.Core.ReadOnlyBindingList._isReadOnly")
+    'End Sub
+
+    '''' <summary>
+    '''' Override this method to retrieve your child object
+    '''' references from the MobileFormatter serialzation stream.
+    '''' </summary>
+    '''' <param name="info">
+    '''' Object containing the data to serialize.
+    '''' </param>
+    '''' <param name="formatter">
+    '''' Reference to MobileFormatter instance. Use this to
+    '''' convert child references to/from reference id values.
+    '''' </param>
+    'Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+    '  Dim old As Boolean = IsReadOnly
+    '  IsReadOnly = False
+    '  MyBase.OnSetChildren(info, formatter)
+    '  IsReadOnly = old
+    'End Sub
+
+#End Region
 
   End Class
 
@@ -247,8 +333,8 @@ Namespace Core
     ''' <summary>
     ''' Custom implementation of Where for BusinessListBase - used in LINQ
     ''' </summary>
-    <System.Runtime.CompilerServices.Extension()> _
     Public Function Where(Of C As Core.IEditableBusinessObject)(ByVal source As ReadOnlyBindingList(Of C), ByVal expr As Expression(Of Func(Of C, Boolean))) As IEnumerable(Of C)
+      ' TODO: Need to implement our version of yield
       Return source.SearchByExpression(expr)
     End Function
 

@@ -35,9 +35,6 @@ Namespace Core
     ''' was invoked through IEditableObject. FOR INTERNAL
     ''' CSLA .NET USE ONLY!
     ''' </summary>
-    ''' <value></value>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Property BindingEdit() As Boolean
       Get
@@ -51,12 +48,30 @@ Namespace Core
     ''' <summary>
     ''' Returns the current edit level of the object.
     ''' </summary>
-    <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected ReadOnly Property EditLevel() As Integer Implements IUndoableObject.EditLevel
       Get
         Return _stateStack.Count
       End Get
     End Property
+
+    Sub CopyState(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements IUndoableObject.CopyState
+      If Not parentBindingEdit Then
+        CopyState(parentEditLevel)
+      End If
+    End Sub
+
+    Sub UndoChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements IUndoableObject.UndoChanges
+      If Not parentBindingEdit Then
+        UndoChanges(parentEditLevel)
+      End If
+    End Sub
+
+    Sub AcceptChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) _
+      Implements IUndoableObject.AcceptChanges
+      If Not parentBindingEdit Then
+        AcceptChanges(parentEditLevel)
+      End If
+    End Sub
 
     ''' <summary>
     ''' This method is invoked before the CopyState
@@ -74,25 +89,6 @@ Namespace Core
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub CopyStateComplete()
 
-    End Sub
-
-    Private Sub CopyState(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements IUndoableObject.CopyState
-      If Not parentBindingEdit Then
-        CopyState(parentEditLevel)
-      End If
-    End Sub
-
-    Private Sub UndoChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements IUndoableObject.UndoChanges
-      If Not parentBindingEdit Then
-        UndoChanges(parentEditLevel)
-      End If
-    End Sub
-
-    Protected Friend Sub AcceptChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) _
-      Implements IUndoableObject.AcceptChanges
-      If Not parentBindingEdit Then
-        AcceptChanges(parentEditLevel)
-      End If
     End Sub
 
     ''' <summary>

@@ -22,6 +22,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   Implements Core.ISavable
 
 
+
 #Region " Object ID Value "
 
   ''' <summary>
@@ -226,7 +227,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <summary>
   ''' Starts an async operation to save the object to the database.
   ''' </summary>
-  Public Sub BeginSave()
+  Public Sub BeginSave() Implements Core.ISavable.BeginSave
     BeginSave(False, Nothing, Nothing)
   End Sub
 
@@ -234,7 +235,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' Starts an async operation to save the object to the database.
   ''' </summary>
   ''' <param name="userState">User state data.</param>
-  Public Sub BeginSave(ByVal userState As Object)
+  Public Sub BeginSave(ByVal userState As Object) Implements Core.ISavable.BeginSave
     BeginSave(False, Nothing, userState)
   End Sub
 

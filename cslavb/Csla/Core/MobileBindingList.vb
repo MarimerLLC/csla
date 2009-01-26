@@ -9,13 +9,14 @@ Imports Csla.Core.FieldManager
 Imports Csla.Core
 
 Namespace Core
-  ''' <summary> 
-  ''' Inherit from this base class to easily 
-  ''' create a serializable list class. 
-  ''' </summary> 
-  ''' <typeparam name="T"> 
-  ''' Type of the items contained in the list. 
-  ''' </typeparam> 
+
+  ''' <summary>
+  ''' Inherit from this base class to easily
+  ''' create a serializable list class.
+  ''' </summary>
+  ''' <typeparam name="T">
+  ''' Type of the items contained in the list.
+  ''' </typeparam>
 #If TESTING Then
   <System.Diagnostics.DebuggerStepThrough()> _
 #End If

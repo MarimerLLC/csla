@@ -45,6 +45,6 @@
       Return Nothing
     End Function
 
-  End Class
+  End Module
 
 End Namespace

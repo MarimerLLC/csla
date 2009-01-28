@@ -18,9 +18,15 @@ namespace Csla.Windows
   [ToolboxItem(true), ToolboxBitmap(typeof(ReadWriteAuthorization), "Csla.Windows.ReadWriteAuthorization")]
   public class ReadWriteAuthorization : Component, IExtenderProvider
   {
+    // this class keeps track of the control status 
+    private class ControlStatus
+    {
+      public bool ApplyAuthorization { get; set; }
+      public bool CanRead { get; set; }
+    }
 
-    private Dictionary<Control, bool> _sources = 
-      new Dictionary<Control, bool>();
+    private readonly Dictionary<Control, ControlStatus> _sources =
+      new Dictionary<Control, ControlStatus>();
 
     /// <summary>
     /// Creates an instance of the object.
@@ -40,7 +46,7 @@ namespace Csla.Windows
     /// </remarks>
     public bool CanExtend(object extendee)
     {
-      if (IsPropertyImplemented(extendee, "ReadOnly") 
+      if (IsPropertyImplemented(extendee, "ReadOnly")
         || IsPropertyImplemented(extendee, "Enabled"))
         return true;
       else
@@ -55,9 +61,9 @@ namespace Csla.Windows
     [Category("Csla")]
     public bool GetApplyAuthorization(Control source)
     {
-      bool result;
+      ControlStatus result;
       if (_sources.TryGetValue(source, out result))
-        return result;
+        return result.ApplyAuthorization;
       else
         return false;
     }
@@ -71,10 +77,13 @@ namespace Csla.Windows
     [Category("Csla")]
     public void SetApplyAuthorization(Control source, bool value)
     {
-      if (_sources.ContainsKey(source))
-        _sources[source] = value;
+      ControlStatus status;
+      if (_sources.TryGetValue(source, out status))
+        status.ApplyAuthorization = value;
       else
-        _sources.Add(source, value);
+        _sources.Add(
+          source, 
+          new ControlStatus { ApplyAuthorization = value, CanRead = true });
     }
 
     /// <summary>
@@ -92,14 +101,9 @@ namespace Csla.Windows
     /// </remarks>
     public void ResetControlAuthorization()
     {
-      foreach (KeyValuePair<Control, bool> item in _sources)
-      {
-        if (item.Value)
-        {
-          // apply authorization rules
+      foreach (var item in _sources)
+        if (item.Value.ApplyAuthorization)
           ApplyAuthorizationRules(item.Key);
-        }
-      }
     }
 
     private void ApplyAuthorizationRules(Control control)
@@ -112,7 +116,7 @@ namespace Csla.Windows
           BindingSource bs =
             (BindingSource)binding.DataSource;
           // get the BusinessObject if appropriate
-          Csla.Security.IAuthorizeReadWrite ds = 
+          Csla.Security.IAuthorizeReadWrite ds =
             bs.Current as Csla.Security.IAuthorizeReadWrite;
           if (ds != null)
           {
@@ -132,43 +136,51 @@ namespace Csla.Windows
     }
 
     private void ApplyReadRules(
-      Control ctl, Binding binding, 
+      Control ctl, Binding binding,
       bool canRead)
     {
+      var status = GetControlStatus(ctl);
+
       // enable/disable reading of the value
       if (canRead)
       {
-        bool couldRead = ctl.Enabled;
         ctl.Enabled = true;
-        binding.Format -= 
-          new ConvertEventHandler(ReturnEmpty);
-        if (!couldRead) binding.ReadValue();
+        // if !CanRead remove format event and refresh value 
+        if (!status.CanRead)
+        {
+          binding.Format -= ReturnEmpty;
+          binding.ReadValue();
+        }
       }
       else
       {
         ctl.Enabled = false;
-        binding.Format += 
-          new ConvertEventHandler(ReturnEmpty);
+        if (status.CanRead)
+        {
+          binding.Format += ReturnEmpty;
+        }
 
         // clear the value displayed by the control
-        PropertyInfo propertyInfo = 
-          ctl.GetType().GetProperty(binding.PropertyName,
+        var propertyInfo = ctl.GetType().GetProperty(binding.PropertyName,
           BindingFlags.FlattenHierarchy |
           BindingFlags.Instance |
           BindingFlags.Public);
         if (propertyInfo != null)
         {
-          propertyInfo.SetValue(ctl, 
+          propertyInfo.SetValue(ctl,
             GetEmptyValue(
-              Utilities.GetPropertyType(
-                propertyInfo.PropertyType)), 
-              new object[] { });
+            Utilities.GetPropertyType(
+              propertyInfo.PropertyType)),
+            new object[] { });
         }
       }
+
+      // store new status
+      status.CanRead = canRead;
     }
 
     private void ApplyWriteRules(
-      Control ctl, Binding binding, 
+      Control ctl, Binding binding,
       bool canWrite)
     {
       if (ctl is Label) return;
@@ -181,7 +193,7 @@ namespace Csla.Windows
         BindingFlags.Public);
       if (propertyInfo != null)
       {
-        bool couldWrite = 
+        bool couldWrite =
           (!(bool)propertyInfo.GetValue(
           ctl, new object[] { }));
         propertyInfo.SetValue(
@@ -222,6 +234,11 @@ namespace Csla.Windows
         return true;
       else
         return false;
+    }
+
+    private ControlStatus GetControlStatus(Control control)
+    {
+      return _sources[control];
     }
   }
 }

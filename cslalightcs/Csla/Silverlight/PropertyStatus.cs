@@ -409,7 +409,17 @@ namespace Csla.Silverlight
       {
         var info = Source.GetType().GetProperty(Property);
         if (info != null)
+        {
           _isReadOnly = !info.CanWrite;
+          if (!_isReadOnly)
+          {
+            var setter = Source.GetType().GetMethod("set_" + Property);
+            if (setter == null)
+              _isReadOnly = true;
+            else
+              _isReadOnly = !setter.IsPublic;
+          }
+        }
       }
       else
       {

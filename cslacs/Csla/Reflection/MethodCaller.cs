@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using Csla.Properties;
 using Csla.Server;
@@ -558,6 +559,24 @@ namespace Csla.Reflection
         // based on the nested class scheme in the book
         return criteria.GetType().DeclaringType;
       }
+    }
+
+    /// <summary>
+    /// Gets a property type descriptor by name.
+    /// </summary>
+    /// <param name="t">Type of object containing the property.</param>
+    /// <param name="propertyName">Name of the property.</param>
+    public static PropertyDescriptor GetPropertyDescriptor(Type t, string propertyName)
+    {
+      var propertyDescriptors = TypeDescriptor.GetProperties(t);
+      PropertyDescriptor result = null;
+      foreach (PropertyDescriptor desc in propertyDescriptors)
+        if (desc.Name == propertyName)
+        {
+          result = desc;
+          break;
+        }
+      return result;
     }
   }
 }

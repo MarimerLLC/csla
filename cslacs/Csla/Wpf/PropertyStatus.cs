@@ -120,7 +120,7 @@ namespace Csla.Wpf
 
     #region Member fields and properties
 
-
+    private bool _isReadOnly = false;
     private bool _isValid = true;
     private RuleSeverity _worst;
     private FrameworkElement _lastImage;
@@ -147,7 +147,11 @@ namespace Csla.Wpf
     public string Property
     {
       get { return (string)GetValue(PropertyProperty); }
-      set { SetValue(PropertyProperty, value); }
+      set 
+      { 
+        SetValue(PropertyProperty, value);
+        CheckProperty();
+      }
     }
 
     /// <summary>
@@ -203,6 +207,7 @@ namespace Csla.Wpf
       if (bb != null && !string.IsNullOrEmpty(Property))
         IsBusy = bb.IsPropertyBusy(Property);
 
+      CheckProperty();
       UpdateState();
     }
 
@@ -358,6 +363,15 @@ namespace Csla.Wpf
 
     #region RelativeTarget
 
+    private void CheckProperty()
+    {
+      var desc = Csla.Reflection.MethodCaller.GetPropertyDescriptor(Source.GetType(), Property);
+      if (desc != null)
+        _isReadOnly = desc.IsReadOnly;
+      else
+        _isReadOnly = false;
+    }
+
     private void HandleTarget()
     {
       if (Target != null && !string.IsNullOrEmpty(Property))
@@ -368,7 +382,7 @@ namespace Csla.Wpf
           bool canRead = b.CanReadProperty(Property);
           bool canWrite = b.CanWriteProperty(Property);
 
-          if (canWrite)
+          if (canWrite && !_isReadOnly)
           {
             MethodCaller.CallMethodIfImplemented(Target, "set_IsReadOnly", false);
             MethodCaller.CallMethodIfImplemented(Target, "set_IsEnabled", true);

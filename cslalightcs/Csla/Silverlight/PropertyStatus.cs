@@ -17,6 +17,12 @@ using System.Windows.Media.Animation;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Displays validation information for a business
+  /// object property, and manipulates an associated
+  /// UI control based on the business object's
+  /// authorization rules.
+  /// </summary>
   [TemplatePart(Name = "image", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "popup", Type = typeof(Popup))]
   [TemplatePart(Name = "busy", Type = typeof(BusyAnimation))]
@@ -28,6 +34,9 @@ namespace Csla.Silverlight
   {
     #region Constructors
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public PropertyStatus()
       : base()
     {
@@ -39,6 +48,9 @@ namespace Csla.Silverlight
       Loaded += (o, e) => { GoToState(true); };
     }
 
+    /// <summary>
+    /// Applies the visual template.
+    /// </summary>
     public override void OnApplyTemplate()
     {
       base.OnApplyTemplate();
@@ -49,30 +61,51 @@ namespace Csla.Silverlight
 
     #region Dependency properties
 
+    /// <summary>
+    /// Gets or sets the source business
+    /// object to which this control is bound.
+    /// </summary>
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
       "Source",
       typeof(object),
       typeof(PropertyStatus),
       new PropertyMetadata((o, e) => ((PropertyStatus)o).SetSource(e.OldValue, e.NewValue)));
 
+    /// <summary>
+    /// Gets or sets the name of the business object
+    /// property to use for authorization and validation
+    /// rule processing.
+    /// </summary>
     public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
       "Property",
       typeof(string),
       typeof(PropertyStatus),
       null);
 
+    /// <summary>
+    /// Gets the broken rules collection from the
+    /// business object.
+    /// </summary>
     public static readonly DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
       "BrokenRules",
       typeof(ObservableCollection<BrokenRule>),
       typeof(PropertyStatus),
       null);
 
+    /// <summary>
+    /// Gets or sets the path to the UI control
+    /// to manipulate based on authorization processing.
+    /// </summary>
     public static readonly DependencyProperty RelativeTargetPathProperty = DependencyProperty.Register(
       "RelativeTargetPath",
       typeof(string),
       typeof(PropertyStatus),
       new PropertyMetadata((o, e) => ((PropertyStatus)o).Target = null));
 
+    /// <summary>
+    /// Gets or sets the name of the UI control
+    /// to manipulate based on authorization processing.
+    /// </summary>
     public static readonly DependencyProperty RelativeTargetNameProperty = DependencyProperty.Register(
       "RelativeTargetName",
       typeof(string),
@@ -84,11 +117,16 @@ namespace Csla.Silverlight
     #region Member fields and properties
 
     private DependencyObject _target;
+    private bool _isReadOnly = false;
     private bool _isValid = true;
     private RuleSeverity _worst;
     private FrameworkElement _lastImage;
     private bool _isBusy;
 
+    /// <summary>
+    /// Gets or sets the source business
+    /// object to which this control is bound.
+    /// </summary>
     public object Source
     {
       get { return GetValue(SourceProperty); }
@@ -109,21 +147,39 @@ namespace Csla.Silverlight
       if (bb != null && !string.IsNullOrEmpty(Property))
         _isBusy = bb.IsPropertyBusy(Property);
 
+      CheckProperty();
       UpdateState();
     }
 
+    /// <summary>
+    /// Gets or sets the name of the business object
+    /// property to use for authorization and validation
+    /// rule processing.
+    /// </summary>
     public string Property
     {
       get { return (string)GetValue(PropertyProperty); }
-      set { SetValue(PropertyProperty, value); }
+      set 
+      { 
+        SetValue(PropertyProperty, value);
+        CheckProperty();
+      }
     }
 
+    /// <summary>
+    /// Gets the broken rules collection from the
+    /// business object.
+    /// </summary>
     public ObservableCollection<BrokenRule> BrokenRules
     {
       get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
       private set { SetValue(BrokenRulesProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets the path to the UI control
+    /// to manipulate based on authorization processing.
+    /// </summary>
     public string RelativeTargetPath
     {
       get { return (string)GetValue(RelativeTargetPathProperty); }
@@ -134,6 +190,10 @@ namespace Csla.Silverlight
       }
     }
 
+    /// <summary>
+    /// Gets or sets the name of the UI control
+    /// to manipulate based on authorization processing.
+    /// </summary>
     public string RelativeTargetName
     {
       get { return (string)GetValue(RelativeTargetNameProperty); }
@@ -144,6 +204,10 @@ namespace Csla.Silverlight
       }
     }
 
+    /// <summary>
+    /// Gets or sets the UI control to manipulate
+    /// based on authorization processing.
+    /// </summary>
     public DependencyObject Target
     {
       get { return _target; }
@@ -339,6 +403,20 @@ namespace Csla.Silverlight
       }
     }
 
+    private void CheckProperty()
+    {
+      if (Source != null && !string.IsNullOrEmpty(Property))
+      {
+        var info = Source.GetType().GetProperty(Property);
+        if (info != null)
+          _isReadOnly = !info.CanWrite;
+      }
+      else
+      {
+        _isReadOnly = false;
+      }
+    }
+
     private void HandleTarget()
     {
       if (_target != null && !string.IsNullOrEmpty(Property))
@@ -346,10 +424,8 @@ namespace Csla.Silverlight
         var b = Source as Csla.Security.IAuthorizeReadWrite;
         if (b != null)
         {
-          bool canRead = b.CanReadProperty(Property);
           bool canWrite = b.CanWriteProperty(Property);
-
-          if (canWrite)
+          if (canWrite && !_isReadOnly)
           {
             MethodCaller.CallMethodIfImplemented(_target, "set_IsReadOnly", false);
             MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", true);
@@ -360,6 +436,7 @@ namespace Csla.Silverlight
             MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", false);
           }
 
+          bool canRead = b.CanReadProperty(Property);
           if (!canRead)
           {
             MethodCaller.CallMethodIfImplemented(_target, "set_Content", null);

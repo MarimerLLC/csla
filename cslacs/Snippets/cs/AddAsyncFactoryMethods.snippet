@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Define common async CSLA Factory Methods</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Defines common async Csla-style factory methods.</Description>
+      <Shortcut>cslafacta</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>BusinessClass</Default>
+        </Literal>
+        <Literal>
+          <ID>CriteriaClassName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with the Criteria class name.</ToolTip>
+          <Default>Criteria</Default>
+        </Literal>
+        <Literal>
+          <ID>IdName</ID>
+          <Type>String</Type>
+          <ToolTip>Replace with Id (primary key) variable name.</ToolTip>
+          <Default>id</Default>
+        </Literal>
+        <Literal>
+          <ID>IdType</ID>
+          <ToolTip>Replace with the Id (primary key) variable type.</ToolTip>
+          <Default>int</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+  <![CDATA[#region Factory Methods
+
+public static void New$ClassName$(EventHandler<DataPortalResult<$ClassName$>> callback)
+{
+  var dp = new DataPortal<$ClassName$>();
+  dp.CreateCompleted += callback;
+  dp.BeginCreate();
+}
+
+public static void Get$ClassName$($IdType$ $IdName$, EventHandler<DataPortalResult<$ClassName$>> callback)
+{
+  var dp = new DataPortal<$ClassName$>();
+  dp.FetchCompleted += callback;
+  dp.BeginFetch(new SingleCriteria<$ClassName$, $IdType$>($IdName$));
+}
+
+#endregion]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

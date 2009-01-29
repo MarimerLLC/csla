@@ -120,6 +120,12 @@
     <Compile Include="..\..\cslacs\Csla\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\IndexableAttribute.cs">
+      <Link>IndexableAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\IndexModeEnum.cs">
+      <Link>IndexModeEnum.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRules.cs">
       <Link>Security\AuthorizationRules.cs</Link>
     </Compile>

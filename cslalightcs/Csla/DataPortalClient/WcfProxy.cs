@@ -15,6 +15,8 @@ namespace Csla.DataPortalClient
   {
     private static System.ServiceModel.Channels.Binding _defaultBinding;
     private const int TimeoutInMinutes = 10;
+    private static string _defaultUrl;
+    private static string _defaultEndPoint;
 
     /// <summary>
     /// Gets or sets the default binding used to initialize
@@ -39,8 +41,6 @@ namespace Csla.DataPortalClient
       set { _defaultBinding = value; }
     }
 
-    private static string _defaultUrl;
-
     /// <summary>
     /// Gets or sets the default URL address
     /// for the data portal server.
@@ -49,6 +49,16 @@ namespace Csla.DataPortalClient
     {
       get { return _defaultUrl; }
       set { _defaultUrl = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the default WCF endpoint
+    /// name for the data portal server.
+    /// </summary>
+    public static string DefaultEndPoint
+    {
+      get { return _defaultEndPoint; }
+      set { _defaultEndPoint = value; }
     }
   }
 
@@ -71,6 +81,7 @@ namespace Csla.DataPortalClient
     {
       this.DataPortalUrl = WcfProxy.DefaultUrl;
       this.Binding = WcfProxy.DefaultBinding;
+      this.EndPoint = WcfProxy.DefaultEndPoint;
     }
 
     /// <summary>
@@ -83,6 +94,12 @@ namespace Csla.DataPortalClient
     /// used by this proxy instance.
     /// </summary>
     public string DataPortalUrl { get; protected set; }
+
+    /// <summary>
+    /// Gets the WCF endpoint name for the data portal
+    /// server used by this proxy instance.
+    /// </summary>
+    public string EndPoint { get; protected set; }
 
     /// <summary>
     /// Gets an instance of the WcfPortalClient object
@@ -103,7 +120,12 @@ namespace Csla.DataPortalClient
         return new WcfPortal.WcfPortalClient(this.Binding, address);
       }
       else
-        return new WcfPortal.WcfPortalClient();
+      {
+        if (string.IsNullOrEmpty(EndPoint))
+          return new WcfPortal.WcfPortalClient();
+        else
+          return new WcfPortal.WcfPortalClient(EndPoint);
+      }
     }
 
     #region GlobalContext

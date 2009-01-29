@@ -1481,7 +1481,7 @@ Namespace Core
     Private ReadOnly Property [Error]() As String _
       Implements System.ComponentModel.IDataErrorInfo.Error
       Get
-        If Not IsValid Then 'TODO : c# version uses a different property to test this
+        If Not IsSelfValid Then
           Return ValidationRules.GetBrokenRules.ToString(Validation.RuleSeverity.Error)
 
         Else
@@ -1494,7 +1494,7 @@ Namespace Core
       Implements System.ComponentModel.IDataErrorInfo.Item
       Get
         Dim result As String = ""
-        If Not IsValid Then 'c# version uses a different property for this test
+        If Not IsSelfValid Then
           Dim rule As Validation.BrokenRule = _
             ValidationRules.GetBrokenRules.GetFirstBrokenRule(columnName)
           If rule IsNot Nothing Then

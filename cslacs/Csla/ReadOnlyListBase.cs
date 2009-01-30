@@ -193,6 +193,9 @@ namespace Csla
 
     #region IDataPortalTarget Members
 
+    void Csla.Server.IDataPortalTarget.CheckRules()
+    { }
+
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }
 

@@ -14,6 +14,22 @@ namespace Csla.Server
   public abstract class ObjectFactory
   {
     /// <summary>
+    /// Calls the ValidationRules.CheckRules() method 
+    /// on the specified object, if possible.
+    /// </summary>
+    /// <param name="obj">
+    /// Object on which to call the method.
+    /// </param>
+    protected void CheckRules(object obj)
+    {
+      var target = obj as IDataPortalTarget;
+      if (target != null)
+        target.CheckRules();
+      else
+        MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
+    }
+
+    /// <summary>
     /// Calls the MarkOld method on the specified
     /// object, if possible.
     /// </summary>

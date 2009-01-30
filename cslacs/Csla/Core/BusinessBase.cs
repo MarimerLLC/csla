@@ -3033,6 +3033,11 @@ namespace Csla.Core
 
     #region IDataPortalTarget Members
 
+    void Csla.Server.IDataPortalTarget.CheckRules()
+    {
+      ValidationRules.CheckRules();
+    }
+
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     {
       this.MarkAsChild();

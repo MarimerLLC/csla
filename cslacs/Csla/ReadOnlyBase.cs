@@ -1313,8 +1313,10 @@ namespace Csla
 
     #endregion
 
-
     #region IDataPortalTarget Members
+
+    void Csla.Server.IDataPortalTarget.CheckRules()
+    { }
 
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }

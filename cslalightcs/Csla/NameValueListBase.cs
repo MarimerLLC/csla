@@ -5,6 +5,7 @@ using Csla.DataPortalClient;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;
+using Csla.Server;
 
 namespace Csla
 {
@@ -20,7 +21,7 @@ namespace Csla
   [Serializable()]
   public abstract class NameValueListBase<K, V> :
     Core.ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>,
-    ICloneable, Core.IBusinessObject, IDataPortalTarget
+    ICloneable, Core.IBusinessObject, Csla.Server.IDataPortalTarget
   {
 
     #region Core Implementation
@@ -341,6 +342,9 @@ namespace Csla
     #endregion
 
     #region IDataPortalTarget Members
+
+    void IDataPortalTarget.CheckRules()
+    { }
 
     void IDataPortalTarget.MarkAsChild()
     { }

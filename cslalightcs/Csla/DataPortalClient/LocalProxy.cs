@@ -3,21 +3,42 @@ using System.ServiceModel;
 using Csla.Serialization.Mobile;
 using Csla.Reflection;
 using System.Diagnostics;
+using Csla.Server;
 
 namespace Csla.DataPortalClient
 {
+  /// <summary>
+  /// Data portal proxy used to execute data
+  /// portal operations on the Silverlight client.
+  /// </summary>
+  /// <typeparam name="T"></typeparam>
 #if TESTING
   [System.Diagnostics.DebuggerNonUserCode]
 #endif
   public class LocalProxy<T> : IDataPortalProxy<T> where T : IMobileObject
   {
     #region Events and Fields
+
+    /// <summary>
+    /// Delegate defining the method
+    /// signature for the callback method
+    /// invoked when a data portal operation
+    /// is complete.
+    /// </summary>
+    /// <param name="result">Result of the operation.</param>
+    /// <param name="ex">Exception that occurred during the operation.</param>
     public delegate void CompletedHandler(T result, Exception ex);
+
     private object _userState;
+
     #endregion
 
     #region GlobalContext
 
+    /// <summary>
+    /// Gets the global context dictionary resulting
+    /// from the asynchronous data portal operation.
+    /// </summary>
     public Csla.Core.ContextDictionary GlobalContext
     {
       get { return Csla.ApplicationContext.GlobalContext; }
@@ -27,8 +48,16 @@ namespace Csla.DataPortalClient
 
     #region Create
 
+    /// <summary>
+    /// Event raised when the create
+    /// operation is complete.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> CreateCompleted;
 
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to create a business object.
+    /// </summary>
     public void BeginCreate()
     {
       _userState = null;
@@ -36,11 +65,24 @@ namespace Csla.DataPortalClient
       var handler = new CompletedHandler(OnCreateCompleted);
       MethodCaller.CallMethod(obj, "DataPortal_Create", handler);
     }
+
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to create a business object.
+    /// </summary>
+    /// <param name="criteria">Criteria object.</param>
     public void BeginCreate(object criteria)
     {
       _userState = null;
       BeginCreate(criteria, null);
     }
+
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to create a business object.
+    /// </summary>
+    /// <param name="criteria">Criteria object.</param>
+    /// <param name="userState">User state object.</param>
     public void BeginCreate(object criteria, object userState)
     {
       _userState = userState;
@@ -65,8 +107,16 @@ namespace Csla.DataPortalClient
 
     #region Fetch
 
+    /// <summary>
+    /// Event raised when the fetch
+    /// operation is complete.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> FetchCompleted;
 
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to retrieve a business object.
+    /// </summary>
     public void BeginFetch()
     {
       _userState = null;
@@ -75,11 +125,22 @@ namespace Csla.DataPortalClient
       MethodCaller.CallMethod(obj, "DataPortal_Fetch", handler);
     }
 
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to retrieve a business object.
+    /// </summary>
+    /// <param name="criteria">Criteria object.</param>
     public void BeginFetch(object criteria)
     {
       BeginFetch(criteria, null);
     }
 
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to retrieve a business object.
+    /// </summary>
+    /// <param name="criteria">Criteria object.</param>
+    /// <param name="userState">User state object.</param>
     public void BeginFetch(object criteria, object userState)
     {
       _userState = userState;
@@ -104,12 +165,28 @@ namespace Csla.DataPortalClient
 
     #region Update
 
+    /// <summary>
+    /// Event raised when the update
+    /// operation is complete.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> UpdateCompleted;
 
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to update a business object.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
     public void BeginUpdate(object obj)
     {
       BeginUpdate(obj, null);
     }
+
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to update a business object.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
+    /// <param name="userState">User state object.</param>
     public void BeginUpdate(object obj, object userState)
     {
       var handler = new CompletedHandler(OnUpdateCompleted);
@@ -171,6 +248,10 @@ namespace Csla.DataPortalClient
 
     #region Delete
 
+    /// <summary>
+    /// Event raised when the delete
+    /// operation is complete.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> DeleteCompleted;
 
     private void OnDeleteCompleted(T result, Exception ex)
@@ -185,11 +266,22 @@ namespace Csla.DataPortalClient
         DeleteCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
 
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to delete a business object.
+    /// </summary>
+    /// <param name="criteria">Criteria object.</param>
     public void BeginDelete(object criteria)
     {
       BeginDelete(criteria, null);
     }
 
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to delete a business object.
+    /// </summary>
+    /// <param name="criteria">Criteria object.</param>
+    /// <param name="userState">User state object.</param>
     public void BeginDelete(object criteria, object userState)
     {
       _userState = userState;
@@ -202,18 +294,38 @@ namespace Csla.DataPortalClient
 
     #region Execute
 
+    /// <summary>
+    /// Event raised when the execute
+    /// operation is complete.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
 
+    /// <summary>
+    /// Raises the ExecuteCompleted event.
+    /// </summary>
+    /// <param name="e">Event argument.</param>
     protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
     {
       if (ExecuteCompleted != null)
         ExecuteCompleted(this, e);
     }
 
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to execute a command object.
+    /// </summary>
+    /// <param name="command">Business object to execute.</param>
     public void BeginExecute(T command)
     {
       BeginExecute(command, null);
     }
+
+    /// <summary>
+    /// Begins an asynchronous data portal
+    /// operation to execute a command object.
+    /// </summary>
+    /// <param name="command">Business object to execute.</param>
+    /// <param name="userState">User state object.</param>
     public void BeginExecute(T command, object userState)
     {
       _userState = userState;

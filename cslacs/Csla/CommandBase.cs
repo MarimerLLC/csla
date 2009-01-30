@@ -1,8 +1,6 @@
 using System;
 using System.ComponentModel;
-#if !SILVERLIGHT
 using Csla.Server;
-#endif
 using Csla.Properties;
 using Csla.Core;
 using Csla.Serialization.Mobile;
@@ -38,7 +36,7 @@ namespace Csla
   [Serializable]
   public abstract class CommandBase : ManagedObjectBase, 
       ICommandObject,
-      IDataPortalTarget
+      Csla.Server.IDataPortalTarget
   {
     #region Constructors
 
@@ -148,7 +146,7 @@ namespace Csla
 
     #region IDataPortalTarget Members
 
-    void Csla.Server.IDataPortalTarget.CheckRules()
+    void IDataPortalTarget.CheckRules()
     { }
 
     void IDataPortalTarget.MarkAsChild()

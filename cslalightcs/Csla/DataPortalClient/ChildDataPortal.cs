@@ -1,5 +1,6 @@
 ﻿using System;
 using Csla.Reflection;
+using Csla.Server;
 
 namespace Csla.DataPortalClient
 {

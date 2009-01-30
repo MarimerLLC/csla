@@ -1,6 +1,6 @@
 using System;
 
-namespace Csla.DataPortalClient
+namespace Csla
 {
   /// <summary>
   /// Provides information about the DataPortal 

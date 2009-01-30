@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using Csla.DataPortalClient;
 using Csla.Serialization.Mobile;
+using Csla.Server;
 
 namespace Csla
 {
@@ -27,7 +28,7 @@ namespace Csla
     IUndoableObject,
     ISavable,
     ITrackStatus,
-    IDataPortalTarget,
+    Csla.Server.IDataPortalTarget,
     IParent,
     IEditableCollection
     where T : BusinessListBase<T, C>
@@ -1110,6 +1111,9 @@ namespace Csla
     #endregion
 
     #region IDataPortalTarget Members
+
+    void IDataPortalTarget.CheckRules()
+    { }
 
     void IDataPortalTarget.MarkAsChild()
     {

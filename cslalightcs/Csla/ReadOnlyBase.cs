@@ -19,7 +19,7 @@ namespace Csla
     Csla.Core.MobileObject, 
     ICloneable, 
     Csla.Security.IAuthorizeReadWrite, 
-    Csla.DataPortalClient.IDataPortalTarget, 
+    Csla.Server.IDataPortalTarget, 
     Csla.Serialization.Mobile.IMobileObject, 
     ISerializationNotification
     where T : ReadOnlyBase<T>
@@ -1060,41 +1060,44 @@ namespace Csla
 
     #region IDataPortalTarget Members
 
-    void Csla.DataPortalClient.IDataPortalTarget.MarkAsChild()
+    void Csla.Server.IDataPortalTarget.CheckRules()
     { }
 
-    void Csla.DataPortalClient.IDataPortalTarget.MarkNew()
+    void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }
 
-    void Csla.DataPortalClient.IDataPortalTarget.MarkOld()
+    void Csla.Server.IDataPortalTarget.MarkNew()
     { }
 
-    void Csla.DataPortalClient.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Csla.Server.IDataPortalTarget.MarkOld()
+    { }
+
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
       this.DataPortal_OnDataPortalInvoke(e);
     }
 
-    void Csla.DataPortalClient.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
       this.DataPortal_OnDataPortalInvokeComplete(e);
     }
 
-    void Csla.DataPortalClient.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       this.DataPortal_OnDataPortalException(e, ex);
     }
 
-    void Csla.DataPortalClient.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
     {
       this.Child_OnDataPortalInvoke(e);
     }
 
-    void Csla.DataPortalClient.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
       this.Child_OnDataPortalInvokeComplete(e);
     }
 
-    void Csla.DataPortalClient.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       this.Child_OnDataPortalException(e, ex);
     }

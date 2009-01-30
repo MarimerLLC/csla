@@ -36,7 +36,8 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, Core.IParent, IDataPortalTarget, ISerializationNotification
+  public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, 
+    Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject
   {
 
@@ -349,37 +350,40 @@ namespace Csla
 
     #region IDataPortalTarget Members
 
-    void IDataPortalTarget.MarkAsChild()
+    void Csla.Server.IDataPortalTarget.CheckRules()
     { }
 
-    void IDataPortalTarget.MarkNew()
+    void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }
 
-    void IDataPortalTarget.MarkOld()
+    void Csla.Server.IDataPortalTarget.MarkNew()
     { }
 
-    void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Csla.Server.IDataPortalTarget.MarkOld()
+    { }
+
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
       this.DataPortal_OnDataPortalInvoke(e);
     }
 
-    void IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
       this.DataPortal_OnDataPortalInvokeComplete(e);
     }
 
-    void IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       this.DataPortal_OnDataPortalException(e, ex);
     }
 
-    void IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
     { }
 
-    void IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     { }
 
-    void IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
 
     #endregion

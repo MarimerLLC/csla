@@ -84,6 +84,9 @@
     <Compile Include="..\..\cslacs\Csla\Core\ErrorEventArgs.cs">
       <Link>Core\ErrorEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IManageProperties.cs">
+      <Link>Core\IManageProperties.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\INotifyBusy.cs">
       <Link>Core\INotifyBusy.cs</Link>
     </Compile>
@@ -191,6 +194,9 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Server\IDataPortalTarget.cs">
       <Link>Server\IDataPortalTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Server\ObjectFactory.cs">
+      <Link>Server\ObjectFactory.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Server\ObjectFactoryAttribute.cs">
       <Link>Server\ObjectFactoryAttribute.cs</Link>
@@ -346,7 +352,6 @@
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Server\ObjectFactory.cs" />
     <Compile Include="Silverlight\BoomarkInformation.cs" />
     <Compile Include="Silverlight\ControlNameFactory.cs" />
     <Compile Include="Silverlight\IControlNameFactory.cs" />

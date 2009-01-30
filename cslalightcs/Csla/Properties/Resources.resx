@@ -345,4 +345,7 @@
   <data name="NavigatorProviderSetPriorToTriggerEvent" xml:space="preserve">
     <value>Please set NavigatorProvider prior to TriggerEvent property.</value>
   </data>
+  <data name="IManagePropertiesRequiredException" xml:space="preserve">
+    <value>Target object must implement IManageProperties</value>
+  </data>
 </root>

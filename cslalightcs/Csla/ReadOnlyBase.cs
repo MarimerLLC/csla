@@ -21,6 +21,7 @@ namespace Csla
     Csla.Security.IAuthorizeReadWrite, 
     Csla.Server.IDataPortalTarget, 
     Csla.Serialization.Mobile.IMobileObject, 
+    IManageProperties,
     ISerializationNotification
     where T : ReadOnlyBase<T>
   {
@@ -1129,5 +1130,43 @@ namespace Csla
 
     #endregion
 
+    #region IManageProperties Members
+
+    bool IManageProperties.HasManagedProperties
+    {
+      get { return (_fieldManager != null && _fieldManager.HasFields); }
+    }
+
+    List<IPropertyInfo> IManageProperties.GetManagedProperties()
+    {
+      return FieldManager.GetRegisteredProperties();
+    }
+
+    object IManageProperties.GetProperty(IPropertyInfo propertyInfo)
+    {
+      return GetProperty(propertyInfo);
+    }
+
+    object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
+    {
+      return ReadProperty(propertyInfo);
+    }
+
+    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      throw new NotImplementedException("IManageProperties.SetProperty");
+    }
+
+    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      LoadProperty(propertyInfo, newValue);
+    }
+
+    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      LoadProperty<P>(propertyInfo, newValue);
+    }
+
+    #endregion
   }
 }

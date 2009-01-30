@@ -33,6 +33,7 @@ namespace Csla.Core
     ISerializationNotification,
     IEditableObject,
     INotifyChildChanged,
+    IManageProperties,
     ITrackStatus
   {
     #region Constructors
@@ -3136,6 +3137,45 @@ namespace Csla.Core
 
 
       #endregion
+    }
+
+    #endregion
+
+    #region IManageProperties Members
+
+    bool IManageProperties.HasManagedProperties
+    {
+      get { return (_fieldManager != null && _fieldManager.HasFields); }
+    }
+
+    List<IPropertyInfo> IManageProperties.GetManagedProperties()
+    {
+      return FieldManager.GetRegisteredProperties();
+    }
+
+    object IManageProperties.GetProperty(IPropertyInfo propertyInfo)
+    {
+      return GetProperty(propertyInfo);
+    }
+
+    object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
+    {
+      return ReadProperty(propertyInfo);
+    }
+
+    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      SetProperty(propertyInfo, newValue);
+    }
+
+    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      LoadProperty(propertyInfo, newValue);
+    }
+
+    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      LoadProperty<P>(propertyInfo, newValue);
     }
 
     #endregion

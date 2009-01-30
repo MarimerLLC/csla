@@ -357,7 +357,7 @@ namespace Csla
       try
       {
         OnDataPortalInitInvoke(null);
-        DataPortalMethodInfo method;
+        DataPortalMethodInfo method = null;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
         {
@@ -369,7 +369,8 @@ namespace Csla
               throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "delete",
                 objectType.Name));
-            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, new object[] { obj });
+            if (factoryType != null)
+              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, new object[] { obj });
           }
           else
           {
@@ -377,8 +378,11 @@ namespace Csla
               throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "save",
                 objectType.Name));
-            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, new object[] { obj });
+            if (factoryType != null)
+              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, new object[] { obj });
           }
+          if (method == null)
+            method = new DataPortalMethodInfo();
         }
         else
         {

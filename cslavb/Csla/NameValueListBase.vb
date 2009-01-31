@@ -13,7 +13,7 @@ Imports Csla.Core
 <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")> _
 <Serializable()> _
 Public MustInherit Class NameValueListBase(Of K, V)
-  Inherits Core.ReadOnlyBindingList(Of NameValuePair)
+  Inherits Core.ReadOnlyBindingList(Of NameValueListBase(Of K, V).NameValuePair)
 
   Implements ICloneable
   Implements Core.IBusinessObject
@@ -161,6 +161,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' </summary>
   <Serializable()> _
   Public Class NameValuePair
+    Inherits MobileObject
 
     Private _key As K
     Private _value As V
@@ -177,13 +178,10 @@ Public MustInherit Class NameValueListBase(Of K, V)
     ''' <summary>
     ''' The Value corresponding to the key/name.
     ''' </summary>
-    Public Property Value() As V
+    Public ReadOnly Property Value() As V
       Get
         Return _value
       End Get
-      Set(ByVal value As V)
-        _value = value
-      End Set
     End Property
 
     ''' <summary>
@@ -203,6 +201,30 @@ Public MustInherit Class NameValueListBase(Of K, V)
     Public Overrides Function ToString() As String
       Return _value.ToString
     End Function
+
+    ''' <summary>
+    ''' Override this method to manually get custom field
+    ''' values from the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
+    ''' <param name="mode">Serialization mode.</param>
+    Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As Core.StateMode)
+      MyBase.OnGetState(info, mode)
+      info.AddValue("NameValuePair._key", _key)
+      info.AddValue("NameValuePair._value", _value)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to manually set custom field
+    ''' values into the serialization stream.
+    ''' </summary>
+    ''' <param name="info">Serialization info.</param>
+    ''' <param name="mode">Serialization mode.</param>
+    Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As Core.StateMode)
+      MyBase.OnSetState(info, mode)
+      _key = info.GetValue(Of K)("NameValuePair._key")
+      _value = info.GetValue(Of V)("NameValuePair._value")
+    End Sub
 
   End Class
 
@@ -271,6 +293,13 @@ Public MustInherit Class NameValueListBase(Of K, V)
     End Sub
   End Class
 
+  ''' <summary>
+  ''' Creates an instance of the type.
+  ''' </summary>
+  Public Sub New()
+
+  End Sub
+
 #End Region
 
 #Region " Data Access "
@@ -306,7 +335,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+  Protected Overridable Sub IDataPortalTarget_DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -317,7 +346,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -329,25 +358,13 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
   End Sub
 
 #End Region
 
 #Region " IDataPortalTarget implementation "
-
-  Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
-
-  End Sub
-
-  Private Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
-
-  End Sub
-
-  Private Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
-
-  End Sub
 
   Private Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
 
@@ -358,6 +375,30 @@ Public MustInherit Class NameValueListBase(Of K, V)
   End Sub
 
   Private Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
+
+  End Sub
+
+  Private Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+    IDataPortalTarget_DataPortal_OnDataPortalInvoke(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+    Me.DataPortal_OnDataPortalInvokeComplete(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+    Me.DataPortal_OnDataPortalException(e, ex)
+  End Sub
+
+  Private Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+
+  End Sub
+
+  Private Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+
+  End Sub
+
+  Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
 
   End Sub
 

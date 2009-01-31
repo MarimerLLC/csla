@@ -10,6 +10,7 @@ Namespace Core
     Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object
     Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
     Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
+    Sub LoadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As Object)
   End Interface
 
 End Namespace

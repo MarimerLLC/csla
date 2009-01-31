@@ -50,7 +50,7 @@ Namespace Core.LoadManager
 
     Private Sub loader_Complete(ByVal sender As Object, ByVal e As ErrorEventArgs)
       Dim loader As AsyncLoader = DirectCast(sender, AsyncLoader)
-      AddHandler loader.Complete, AddressOf loader_Complete
+      RemoveHandler loader.Complete, AddressOf loader_Complete
 
       Dim isStillBusy As Boolean = False
       SyncLock _loading

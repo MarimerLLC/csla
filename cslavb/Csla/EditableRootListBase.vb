@@ -73,27 +73,37 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
     _activelySaving = True
     Dim item As T = Nothing
-    Dim editLevel As Integer = 0
+    Dim result As T = Nothing
     Try
       item = Me.Item(index)
-      editLevel = item.EditLevel
+      result = item
+      Dim savable As T = item
+
+      ' clone the object if possible
+      Dim clonable As ICloneable = TryCast(savable, ICloneable)
+      If Not clonable Is Nothing Then
+        savable = CType(clonable.Clone(), T)
+      End If
+
       ' commit all changes
+      Dim editLevel As Integer = savable.EditLevel
       For tmp As Integer = 1 To editLevel
         item.AcceptChanges(editLevel - tmp, False)
       Next
 
-      Dim savable As T = item
-      If Not Csla.ApplicationContext.AutoCloneOnUpdate Then
-        ' clone the object if possible
-        Dim clonable As ICloneable = TryCast(savable, ICloneable)
-        If Not clonable Is Nothing Then
-          savable = CType(clonable.Clone(), T)
-        End If
-      End If
       ' do the save
       Me.Item(index) = DirectCast(savable.Save, T)
 
-      If Not ReferenceEquals(savable, item) AndAlso Not Csla.ApplicationContext.AutoCloneOnUpdate Then
+      If Not ReferenceEquals(result, item) Then
+        ' restore edit level to previous level
+        For tmp As Integer = 1 To editLevel
+          result.CopyState(tmp, False)
+        Next
+        'put result into collection
+        Me.Item(index) = result
+      End If
+
+      If Not ReferenceEquals(savable, item) Then
         ' raise Saved event from original object
         Dim original As Core.ISavable = TryCast(item, Core.ISavable)
         If original IsNot Nothing Then
@@ -101,20 +111,74 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
         End If
       End If
 
+      OnSaved(result, Nothing)
+
     Finally
-      ' restore edit level to previous level
-      If item IsNot Nothing Then
-        For tmp As Integer = 1 To editLevel
-          item.CopyState(tmp, False)
-        Next
-      End If
+
       _activelySaving = False
       Me.RaiseListChangedEvents = raiseEvents
     End Try
     Me.OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
-    Return Me.Item(index)
+    Return result
 
   End Function
+
+#End Region
+
+#Region " Saved Event "
+  <NonSerialized()> _
+  <NotUndoable()> _
+  Private _nonSerializableSavedHandlers As EventHandler(Of Core.SavedEventArgs)
+
+  <NotUndoable()> _
+  Private _serializableSavedHandlers As EventHandler(Of Core.SavedEventArgs)
+
+  ''' <summary>
+  ''' Event raised when an object has been saved.
+  ''' </summary>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+  Public Custom Event Saved As EventHandler(Of Core.SavedEventArgs)
+    AddHandler(ByVal value As EventHandler(Of Core.SavedEventArgs))
+      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
+        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
+      Else
+        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
+      End If
+    End AddHandler
+
+    RemoveHandler(ByVal value As EventHandler(Of Core.SavedEventArgs))
+      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
+        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
+      Else
+        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
+      End If
+    End RemoveHandler
+
+    RaiseEvent(ByVal sender As Object, ByVal e As Core.SavedEventArgs)
+      If _serializableSavedHandlers IsNot Nothing Then
+        _serializableSavedHandlers.Invoke(Me, e)
+      End If
+      If _nonSerializableSavedHandlers IsNot Nothing Then
+        _nonSerializableSavedHandlers.Invoke(Me, e)
+      End If
+    End RaiseEvent
+  End Event
+
+  ''' <summary>
+  ''' Raises the Saved event.
+  ''' </summary>
+  ''' <param name="newObject">
+  ''' Reference to object returned from the save.
+  ''' </param>
+  ''' <param name="e">
+  ''' Reference to any exception that occurred during
+  ''' the save.
+  ''' </param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub OnSaved(ByVal newObject As T, ByVal e As Exception)
+    Dim args As Core.SavedEventArgs = New Core.SavedEventArgs(newObject, e, Nothing)
+    RaiseEvent Saved(Me, args)
+  End Sub
 
 #End Region
 
@@ -142,18 +206,18 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
     Dim item As T = Me.Item(index)
 
     ' only delete/save the item if it is not new
+    Dim raiseEventForNewItem As Boolean = False
     If Not item.IsNew Then
       item.Delete()
       SaveItem(index)
+    Else
+      raiseEventForNewItem = True
     End If
-
-    ' disconnect event handler if necessary
-    Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(item, System.ComponentModel.INotifyPropertyChanged)
-    If c IsNot Nothing Then
-      RemoveHandler c.PropertyChanged, AddressOf Child_PropertyChanged
-    End If
-
     MyBase.RemoveItem(index)
+
+    If raiseEventForNewItem Then
+      OnSaved(item, Nothing)
+    End If
 
   End Sub
 
@@ -188,7 +252,15 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
 #Region " Cascade Child events "
 
-  Private Sub Child_PropertyChanged(ByVal sender As Object, _
+  ''' <summary>
+  ''' Handles any PropertyChanged event from 
+  ''' a child object and echoes it up as
+  ''' a ChildChanged event.
+  ''' </summary>
+  ''' <param name="sender">Object that raised the event.</param>
+  ''' <param name="e">Property changed args.</param>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected Overrides Sub Child_PropertyChanged(ByVal sender As Object, _
     ByVal e As System.ComponentModel.PropertyChangedEventArgs)
 
     For index As Integer = 0 To Count - 1
@@ -206,7 +278,12 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
       End If
     Next
     OnChildPropertyChanged(sender, e)
+    'TODO why can I noy see MyBase.Child_PropertyChanged which seems to be there?
 
+  End Sub
+
+  Private Sub Child_BusyChanged(ByVal sender As Object, ByVal e As BusyChangedEventArgs)
+    OnBusyChanged(e)
   End Sub
 
   ''' <summary>
@@ -246,30 +323,21 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
 #Region " Serialization Notification "
 
-  <OnDeserialized()> _
-  Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
-
-    OnDeserialized(context)
-    For Each child As Core.IEditableBusinessObject In Me
-      child.SetParent(Me)
-      Dim c As System.ComponentModel.INotifyPropertyChanged = TryCast(child, System.ComponentModel.INotifyPropertyChanged)
-      If c IsNot Nothing Then
-        AddHandler c.PropertyChanged, AddressOf Child_PropertyChanged
-      End If
-    Next
-
-  End Sub
-
   ''' <summary>
   ''' This method is called on a newly deserialized object
   ''' after deserialization is complete.
   ''' </summary>
-  ''' <param name="context">Serialization context object.</param>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub OnDeserialized(ByVal context As StreamingContext)
+  Protected Overrides Sub OnDeserialized()
 
-    ' do nothing - this is here so a subclass
-    ' could override if needed
+    For Each child As Core.IEditableBusinessObject In Me
+      child.SetParent(Me)
+      Dim c As INotifyPropertyChanged = DirectCast(child, INotifyPropertyChanged)
+      If c IsNot Nothing Then
+        AddHandler c.PropertyChanged, AddressOf Child_PropertyChanged
+      End If
+    Next
+    MyBase.OnDeserialized()
 
   End Sub
 
@@ -355,7 +423,8 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 #End Region
 
 #Region " IDataPortalTarget implementation "
-
+  'TODO: Since I'm not sure about the implementation of this I'm leaving this part alone. So we remove the  implements statement on the methods above and create
+  ' the methods here?
   Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
 
   End Sub
@@ -380,6 +449,28 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
   End Sub
 
+#End Region
+
+#Region " IsBusy "
+
+  ''' <summary>
+  ''' Gets a value indicating whether this object
+  ''' is currently running an async operation.
+  ''' </summary>
+  Public Overrides ReadOnly Property IsBusy() As Boolean
+    Get
+      ' run through all the child objects
+      ' and if any are dirty then then
+      ' collection is dirty
+      For Each child As T In Me
+        If child.IsBusy Then
+          Return True
+        End If
+      Next
+
+      Return False
+    End Get
+  End Property
 #End Region
 
 End Class

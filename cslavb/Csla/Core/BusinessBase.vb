@@ -3016,6 +3016,10 @@ Namespace Core
 
 #Region " IDataPortalTarget Members "
 
+    Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
+
+    End Sub
+
     Private Sub IDataPortalTarget_MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
       Me.MarkAsChild()
     End Sub

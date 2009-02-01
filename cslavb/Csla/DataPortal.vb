@@ -3,6 +3,7 @@ Imports Csla.Reflection
 Imports System.Windows
 Imports System.ComponentModel
 Imports Csla.Serialization.Mobile
+Imports Csla.Server
 
 ''' <summary>
 ''' This is the client-side DataPortal as described in
@@ -22,13 +23,11 @@ Public Module DataPortal
   ''' Raised by DataPortal prior to calling the 
   ''' requested server-side DataPortal method.
   ''' </summary>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
   Public Event DataPortalInvoke As Action(Of DataPortalEventArgs)
   ''' <summary>
   ''' Raised by DataPortal after the requested 
   ''' server-side DataPortal method call is complete.
   ''' </summary>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")> _
   Public Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
 
   Private Sub OnDataPortalInitInvoke(ByVal e As Object)
@@ -97,7 +96,7 @@ Public Module DataPortal
 
   End Function
 
-  Public Function Create( _
+  Friend Function Create( _
     ByVal objectType As Type, ByVal criteria As Object) As Object
 
     Dim result As Server.DataPortalResult
@@ -117,7 +116,7 @@ Public Module DataPortal
       proxy = GetDataPortalProxy(method.RunLocal)
 
       dpContext = New Server.DataPortalContext( _
-        GetPrincipal, proxy.IsServerRemote)
+        GetPrincipal(), proxy.IsServerRemote)
 
       OnDataPortalInvoke(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create))
 
@@ -216,7 +215,7 @@ Public Module DataPortal
       proxy = GetDataPortalProxy(method.RunLocal)
 
       dpContext = New Server.DataPortalContext( _
-        GetPrincipal, proxy.IsServerRemote)
+        GetPrincipal(), proxy.IsServerRemote)
 
       OnDataPortalInvoke(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch))
 
@@ -228,9 +227,20 @@ Public Module DataPortal
         If proxy.IsServerRemote Then
           ApplicationContext.SetGlobalContext(result.GlobalContext)
         End If
+        Dim innerMessage As String = String.Empty
+        If (TypeOf ex.InnerException Is Csla.Reflection.CallMethodException) Then
+          If ex.InnerException.InnerException IsNot Nothing Then
+            innerMessage = ex.InnerException.InnerException.Message
+          End If
+        Else
+          innerMessage = ex.InnerException.Message
+        End If
+
+
         Throw New DataPortalException( _
-          String.Format("DataPortal.Fetch {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+          String.Format("DataPortal.Fetch {0} ({1})", My.Resources.Failed, innerMessage), _
           ex.InnerException, result.ReturnObject)
+        
       End Try
 
       If proxy.IsServerRemote Then
@@ -336,60 +346,81 @@ Public Module DataPortal
   ''' <returns>A reference to the updated business object.</returns>
   Public Function Update(ByVal obj As Object) As Object
 
-    Dim result As Server.DataPortalResult
+    Dim result As Server.DataPortalResult = Nothing
     Dim dpContext As Server.DataPortalContext = Nothing
-    Dim operation = DataPortalOperations.Update
-    Dim objectType = obj.GetType
+    Dim operation As DataPortalOperations = DataPortalOperations.Update
+    Dim objectType = obj.GetType()
     Try
       OnDataPortalInitInvoke(Nothing)
 
-      Dim methodName As String
-      If TypeOf obj Is CommandBase Then
-        methodName = "DataPortal_Execute"
-        operation = DataPortalOperations.Execute
-        If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
-          Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
-            "execute", _
-            objectType.Name))
-        End If
-
-      ElseIf TypeOf obj Is Core.BusinessBase Then
-        Dim tmp As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
-        If tmp.IsDeleted Then
-          methodName = "DataPortal_DeleteSelf"
+      Dim method As DataPortalMethodInfo
+      Dim factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType)
+      If factoryInfo IsNot Nothing Then
+        Dim factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName)
+        Dim bbase As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
+        If bbase IsNot Nothing AndAlso bbase.IsDeleted Then
           If Not Csla.Security.AuthorizationRules.CanDeleteObject(objectType) Then
             Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
-              "delete", _
-              objectType.Name))
+                "delete", objectType.Name))
           End If
+          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, New Object() {obj})
         Else
-          If tmp.IsNew Then
-            methodName = "DataPortal_Insert"
-            If Not Csla.Security.AuthorizationRules.CanCreateObject(objectType) Then
-              Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
-                "create", _
-                objectType.Name))
-            End If
-
-          Else
-            methodName = "DataPortal_Update"
-            If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
-              Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
-                "save", _
-                objectType.Name))
-            End If
+          If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
+            Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+                "save", objectType.Name))
           End If
+          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, New Object() {obj})
         End If
       Else
-        methodName = "DataPortal_Update"
-        If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
-          Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
-            "save", _
-            objectType.Name))
-        End If
-      End If
+        Dim methodName As String
+        If TypeOf obj Is CommandBase Then
+          methodName = "DataPortal_Execute"
+          operation = DataPortalOperations.Execute
+          If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
+            Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+              "execute", _
+              objectType.Name))
+          End If
 
-      Dim method = Server.DataPortalMethodCache.GetMethodInfo(obj.GetType, methodName)
+        ElseIf TypeOf obj Is Core.BusinessBase Then
+          Dim tmp As Core.BusinessBase = DirectCast(obj, Core.BusinessBase)
+          If tmp.IsDeleted Then
+            methodName = "DataPortal_DeleteSelf"
+            If Not Csla.Security.AuthorizationRules.CanDeleteObject(objectType) Then
+              Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+                "delete", _
+                objectType.Name))
+            End If
+          Else
+            If tmp.IsNew Then
+              methodName = "DataPortal_Insert"
+              If Not Csla.Security.AuthorizationRules.CanCreateObject(objectType) Then
+                Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+                  "create", _
+                  objectType.Name))
+              End If
+
+            Else
+              methodName = "DataPortal_Update"
+              If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
+                Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+                  "save", _
+                  objectType.Name))
+              End If
+            End If
+          End If
+        Else
+          methodName = "DataPortal_Update"
+          If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
+            Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
+              "save", _
+              objectType.Name))
+          End If
+        End If
+
+        method = Server.DataPortalMethodCache.GetMethodInfo(obj.GetType, methodName)
+
+      End If
 
       Dim proxy As DataPortalClient.IDataPortalProxy
       proxy = GetDataPortalProxy(method.RunLocal)
@@ -463,10 +494,16 @@ Public Module DataPortal
 
   End Sub
 
-
+  ''' <summary>
+  ''' Called by a Shared (static in C#) method in the business class to cause
+  ''' immediate deletion of a specific object from the database.
+  ''' </summary>
+  ''' <param name="objectType">Type of business object to delete.</param>
+  ''' <param name="criteria">Object-specific criteria.</param>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId:="Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")> _
   Private Sub Delete(ByVal objectType As Type, ByVal criteria As Object)
 
-    Dim result As Server.DataPortalResult
+    Dim result As Server.DataPortalResult = Nothing
     Dim dpContext As Server.DataPortalContext = Nothing
     Try
       OnDataPortalInitInvoke(Nothing)
@@ -483,7 +520,7 @@ Public Module DataPortal
       Dim proxy As DataPortalClient.IDataPortalProxy
       proxy = GetDataPortalProxy(method.RunLocal)
 
-      dpContext = New Server.DataPortalContext(GetPrincipal, proxy.IsServerRemote)
+      dpContext = New Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote)
 
       OnDataPortalInvoke(New DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete))
 

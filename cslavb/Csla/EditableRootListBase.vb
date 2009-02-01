@@ -423,6 +423,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 #End Region
 
 #Region " IDataPortalTarget implementation "
+
   'TODO: Since I'm not sure about the implementation of this I'm leaving this part alone. So we remove the  implements statement on the methods above and create
   ' the methods here?
   Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
@@ -446,6 +447,10 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   End Sub
 
   Private Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
+
+  End Sub
+
+  Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
 
   End Sub
 

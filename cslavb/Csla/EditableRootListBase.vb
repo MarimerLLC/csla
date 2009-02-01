@@ -282,7 +282,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
   End Sub
 
-  Private Sub Child_BusyChanged(ByVal sender As Object, ByVal e As BusyChangedEventArgs)
+  Private Sub Child_BusyChanged(ByVal sender As Object, ByVal e As Core.BusyChangedEventArgs)
     OnBusyChanged(e)
   End Sub
 

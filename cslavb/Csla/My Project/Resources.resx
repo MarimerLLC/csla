@@ -387,4 +387,7 @@
   <data name="UpdateMethodNameNotSpecified" xml:space="preserve">
     <value>Update method name not specified in MobileFactory attribute</value>
   </data>
+  <data name="IManagePropertiesRequiredException" xml:space="preserve">
+    <value>Target object must implement IManageProperties</value>
+  </data>
 </root>

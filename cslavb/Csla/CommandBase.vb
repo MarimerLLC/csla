@@ -1,8 +1,6 @@
 Imports System
 Imports System.ComponentModel
-#If Not SILVERLIGHT Then
 Imports Csla.Server
-#End If
 Imports Csla.Core
 Imports Csla.Serialization.Mobile
 Imports Csla.Serialization
@@ -142,6 +140,10 @@ Public MustInherit Class CommandBase
 #End Region
 
 #Region " IDataPortalTarget implementation "
+
+  Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
+
+  End Sub
 
   Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
 

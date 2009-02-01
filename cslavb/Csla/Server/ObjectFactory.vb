@@ -10,8 +10,23 @@ Namespace Server
   ''' Base class to be used when creating a data portal
   ''' factory object.
   ''' </summary>
-  ''' <remarks></remarks>
   Public MustInherit Class ObjectFactory
+
+    ''' <summary>
+    ''' Calls the ValidationRules.CheckRules() method 
+    ''' on the specified object, if possible.
+    ''' </summary>
+    ''' <param name="obj">
+    ''' Object on which to call the method.
+    ''' </param>
+    Protected Sub CheckRules(ByVal obj As Object)
+      Dim target As IDataPortalTarget = DirectCast(obj, IDataPortalTarget)
+      If target IsNot Nothing Then
+        target.CheckRules()
+      Else
+        MethodCaller.CallMethodIfImplemented(obj, "CheckRules", Nothing)
+      End If
+    End Sub
 
     ''' <summary>
     ''' Calls the MarkOld method on the specified
@@ -59,6 +74,36 @@ Namespace Server
         target.MarkAsChild()
       Else
         MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild", Nothing)
+      End If
+    End Sub
+
+    ''' <summary>
+    ''' Loads a property's managed field with the 
+    ''' supplied value calling PropertyHasChanged 
+    ''' if the value does change.
+    ''' </summary>
+    ''' <typeparam name="P">
+    ''' Type of the property.
+    ''' </typeparam>
+    ''' <param name="obj">
+    ''' Object on which to call the method. 
+    ''' </param>
+    ''' <param name="propertyInfo">
+    ''' PropertyInfo object containing property metadata.</param>
+    ''' <param name="newValue">
+    ''' The new value for the property.</param>
+    ''' <remarks>
+    ''' No authorization checks occur when this method is called,
+    ''' and no PropertyChanging or PropertyChanged events are raised.
+    ''' Loading values does not cause validation rules to be
+    ''' invoked.
+    ''' </remarks>
+    Protected Sub LoadProperty(Of P)(ByVal obj As Object, ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)
+      Dim target As Core.IManageProperties = DirectCast(obj, Core.IManageProperties)
+      If target IsNot Nothing Then
+        target.LoadProperty(Of P)(propertyInfo, newValue)
+      Else
+        Throw New ArgumentException(My.Resources.IManagePropertiesRequiredException)
       End If
     End Sub
 

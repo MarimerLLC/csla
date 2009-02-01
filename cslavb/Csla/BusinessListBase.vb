@@ -831,38 +831,33 @@ Public MustInherit Class BusinessListBase( _
 
 #Region " Cascade Child events "
 
-  ''This does not exist in the C# version
-  ''''' <summary>
-  ''''' Raises ListChanged event if an immediate child of
-  ''''' the collection was changed.
-  ''''' </summary>
-  ''''' <param name="sender">Calling object</param>
-  ''''' <param name="e">Args containing parameter values.</param>
-  ''Protected Friend Overrides Sub OnChildChangedInternal(ByVal sender As Object, ByVal e As ChildChangedEventArgs)
-  ''  If RaiseListChangedEvents AndAlso e.PropertyChangedArgs IsNot Nothing Then
-  ''    DeferredLoadIndexIfNotLoaded()
-  ''    If _indexSet.HasIndexFor(e.PropertyChangedArgs.PropertyName) Then
-  ''      ReIndexItem(CType(sender, C), e.PropertyChangedArgs.PropertyName)
-  ''    End If
-  ''    'for (int index = 0; index < Count; index++)
+  ''' <summary>
+  ''' Handles any PropertyChanged event from 
+  ''' a child object and echoes it up as
+  ''' a ListChanged event.
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected Overrides Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
+    If (_deserialized AndAlso RaiseListChangedEvents AndAlso e IsNot Nothing) Then
+      DeferredLoadIndexIfNotLoaded()
+      If _indexSet.HasIndexFor(e.PropertyName) Then
+        ReIndexItem(DirectCast(sender, C), e.PropertyName)
 
-  ''    For index As Integer = 0 To Count - 1
-  ''      If ReferenceEquals(Me(index), sender) Then
-  ''        Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)
-  ''        If descriptor IsNot Nothing Then
-  ''          OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)))
-  ''        Else
-  ''          OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
-  ''        End If
+        For index As Integer = 1 To Count
+          If ReferenceEquals(Me(index), sender) Then
+            Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
+            If descriptor IsNot Nothing Then
+              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index, descriptor))
+            Else
+              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+            End If
+          End If
+        Next
 
-  ''        Return
-  ''      End If
-  ''    Next
-  ''  End If
-
-  ''  MyBase.OnChildChangedInternal(sender, e)
-
-  ''End Sub
+        MyBase.Child_PropertyChanged(sender, e)
+      End If
+    End If
+  End Sub
 
   Private Shared _propertyDescriptors As PropertyDescriptorCollection
 
@@ -885,6 +880,10 @@ Public MustInherit Class BusinessListBase( _
 #End Region
 
 #Region " Serialization Notification "
+
+  <NotUndoable()> _
+  <NonSerialized()> _
+  Private _deserialized As Boolean
 
   Protected Overrides Sub OnDeserialized()
     For Each child As Core.IEditableBusinessObject In Me
@@ -1393,6 +1392,10 @@ Public MustInherit Class BusinessListBase( _
 #End Region
 
 #Region " IDataPortalTarget Members "
+
+  Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
+
+  End Sub
 
   Private Sub IDataPortalTarget_MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
     Me.MarkAsChild()

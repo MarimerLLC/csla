@@ -365,11 +365,18 @@ namespace Csla.Wpf
 
     private void CheckProperty()
     {
-      var desc = Csla.Reflection.MethodCaller.GetPropertyDescriptor(Source.GetType(), Property);
-      if (desc != null)
-        _isReadOnly = desc.IsReadOnly;
+      if (Source != null)
+      {
+        var desc = Csla.Reflection.MethodCaller.GetPropertyDescriptor(Source.GetType(), Property);
+        if (desc != null)
+          _isReadOnly = desc.IsReadOnly;
+        else
+          _isReadOnly = false;
+      }
       else
-        _isReadOnly = false;
+      {
+        _isReadOnly = true;
+      }
     }
 
     private void HandleTarget()

@@ -22,12 +22,37 @@ Namespace Windows
 
     Implements IExtenderProvider
 
-    Private _sources As New Dictionary(Of Control, Boolean)
+    ''' <summary>
+    ''' this class keeps track of the control status 
+    ''' </summary>
+    Private Class ControlStatus
+      Private _ApplyAuthorization As Boolean
+      Public Property ApplyAuthorization() As Boolean
+        Get
+          Return _ApplyAuthorization
+        End Get
+        Set(ByVal value As Boolean)
+          _ApplyAuthorization = value
+        End Set
+      End Property
+
+      Private _CanRead As Boolean
+      Public Property CanRead() As Boolean
+        Get
+          Return _CanRead
+        End Get
+        Set(ByVal value As Boolean)
+          _CanRead = value
+        End Set
+      End Property
+    End Class
+
+    Private ReadOnly _sources As New Dictionary(Of Control, ControlStatus)
 
     ''' <summary>
     ''' Creates an instance of the object.
     ''' </summary>
-    ''' <param name="container">Container for the control.</param>
+    ''' <param name="container">The container of the control.</param>
     Public Sub New(ByVal container As System.ComponentModel.IContainer)
       container.Add(Me)
     End Sub
@@ -41,10 +66,7 @@ Namespace Windows
     ''' Any control implementing either a ReadOnly property or
     ''' Enabled property can be extended.
     ''' </remarks>
-    Public Function CanExtend( _
-      ByVal extendee As Object) As Boolean _
-      Implements IExtenderProvider.CanExtend
-
+    Public Function CanExtend(ByVal extendee As Object) As Boolean Implements IExtenderProvider.CanExtend
       If IsPropertyImplemented(extendee, "ReadOnly") OrElse _
           IsPropertyImplemented(extendee, "Enabled") Then
         Return True
@@ -61,13 +83,10 @@ Namespace Windows
     ''' </summary>
     ''' <param name="source">Control being extended.</param>
     <Category("Csla")> _
-    Public Function GetApplyAuthorization( _
-      ByVal source As Control) As Boolean
-
-      Dim result As Boolean
+    Public Function GetApplyAuthorization(ByVal source As Control) As Boolean
+      Dim result As ControlStatus = Nothing
       If _sources.TryGetValue(source, result) Then
-        Return result
-
+        Return result.ApplyAuthorization
       Else
         Return False
       End If
@@ -81,12 +100,15 @@ Namespace Windows
     ''' <param name="source">Control being extended.</param>
     ''' <param name="value">New value of property.</param>
     <Category("Csla")> _
-    Public Sub SetApplyAuthorization( _
-      ByVal source As Control, ByVal value As Boolean)
-      If _sources.ContainsKey(source) Then
-        _sources.Item(source) = value
+    Public Sub SetApplyAuthorization(ByVal source As Control, ByVal value As Boolean)
+      Dim status As ControlStatus = Nothing
+      If _sources.TryGetValue(source, status) Then
+        status.ApplyAuthorization = value
       Else
-        _sources.Add(source, value)
+        Dim ctrlSource As ControlStatus = New ControlStatus()
+        ctrlSource.ApplyAuthorization = value
+        ctrlSource.CanRead = True
+        _sources.Add(source, ctrlSource)
       End If
     End Sub
 
@@ -105,9 +127,8 @@ Namespace Windows
     ''' </remarks>
     Public Sub ResetControlAuthorization()
 
-      For Each item As KeyValuePair(Of Control, Boolean) In _sources
-        If item.Value Then
-          ' apply authorization rules
+      For Each item As KeyValuePair(Of Control, ControlStatus) In _sources
+        If item.Value.ApplyAuthorization Then
           ApplyAuthorizationRules(item.Key)
         End If
       Next
@@ -142,20 +163,24 @@ Namespace Windows
       ByVal ctl As Control, ByVal binding As Binding, _
       ByVal canRead As Boolean)
 
+      Dim status = GetControlStatus(ctl)
+
       ' enable/disable reading of the value
       If canRead Then
-        Dim couldRead As Boolean = ctl.Enabled
         ctl.Enabled = True
-        RemoveHandler binding.Format, AddressOf ReturnEmpty
-        If Not couldRead Then binding.ReadValue()
-
+        If Not status.CanRead Then
+          RemoveHandler binding.Format, AddressOf ReturnEmpty
+          binding.ReadValue()
+        End If
       Else
         ctl.Enabled = False
-        AddHandler binding.Format, AddressOf ReturnEmpty
+        If status.CanRead Then
+          AddHandler binding.Format, AddressOf ReturnEmpty
+        End If
 
         ' clear the value displayed by the control
         Dim propertyInfo As PropertyInfo = _
-          ctl.GetType.GetProperty(binding.PropertyName, _
+          ctl.GetType().GetProperty(binding.PropertyName, _
             BindingFlags.FlattenHierarchy Or _
             BindingFlags.Instance Or _
             BindingFlags.Public)
@@ -167,6 +192,8 @@ Namespace Windows
         End If
       End If
 
+      'store new status
+      status.CanRead = canRead
     End Sub
 
     Private Sub ApplyWriteRules( _
@@ -215,7 +242,7 @@ Namespace Windows
     Private Shared Function IsPropertyImplemented(ByVal obj As Object, _
       ByVal propertyName As String) As Boolean
 
-      If obj.GetType.GetProperty(propertyName, _
+      If obj.GetType().GetProperty(propertyName, _
         BindingFlags.FlattenHierarchy Or _
         BindingFlags.Instance Or _
         BindingFlags.Public) IsNot Nothing Then
@@ -226,6 +253,10 @@ Namespace Windows
         Return False
       End If
 
+    End Function
+
+    Private Function GetControlStatus(ByVal control As Control) As ControlStatus
+      Return _sources(control)
     End Function
 
   End Class

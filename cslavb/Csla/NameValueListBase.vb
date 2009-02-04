@@ -241,9 +241,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <summary>
   ''' Creates a clone of the object.
   ''' </summary>
-  ''' <returns>
-  ''' A new object containing the exact data of the original object.
-  ''' </returns>
+  ''' <returns>A new object containing the exact data of the original object.</returns>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overridable Function GetClone() As Object
 
@@ -291,14 +289,10 @@ Public MustInherit Class NameValueListBase(Of K, V)
     Public Sub New(ByVal collectionType As Type)
       MyBase.New(collectionType)
     End Sub
+
+    'TODO: Do we need to implement the default ctor?
+
   End Class
-
-  ''' <summary>
-  ''' Creates an instance of the type.
-  ''' </summary>
-  Public Sub New()
-
-  End Sub
 
 #End Region
 
@@ -365,6 +359,10 @@ Public MustInherit Class NameValueListBase(Of K, V)
 #End Region
 
 #Region " IDataPortalTarget implementation "
+
+  Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
+
+  End Sub
 
   Private Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
 

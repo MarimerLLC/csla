@@ -1,6 +1,7 @@
 Imports System
 Imports System.Collections.Generic
 Imports System.Reflection
+Imports System.ComponentModel
 Imports Csla.Properties
 Imports Csla.Server
 Imports Csla
@@ -102,6 +103,9 @@ Namespace Reflection
         SyncLock _memberCache
           If Not _memberCache.TryGetValue(key, mh) Then
             Dim info As PropertyInfo = objectType.GetProperty(propertyName, propertyFlags)
+            If info Is Nothing Then
+              Throw New InvalidOperationException(String.Format(My.Resources.MemberNotFoundException, propertyName))
+            End If
             mh = New DynamicMemberHandle(info)
             _memberCache.Add(key, mh)
           End If
@@ -116,7 +120,10 @@ Namespace Reflection
       If Not _memberCache.TryGetValue(key, mh) Then
         SyncLock _memberCache
           If Not _memberCache.TryGetValue(key, mh) Then
-            Dim info As PropertyInfo = objectType.GetProperty(fieldName, fieldFlags)
+            Dim info As FieldInfo = objectType.GetField(fieldName, fieldFlags)
+            If info Is Nothing Then
+              Throw New InvalidOperationException(String.Format(My.Resources.MemberNotFoundException, fieldName))
+            End If
             mh = New DynamicMemberHandle(info)
             _memberCache.Add(key, mh)
           End If
@@ -146,7 +153,7 @@ Namespace Reflection
     ''' <param name="value">New value for property.</param>
     Public Sub CallPropertySetter(ByVal obj As Object, ByVal [property] As String, ByVal value As Object)
       Dim mh = GetCachedProperty(obj.GetType(), [property])
-      'TODO: mh.DynamicMemberSet(obj, value)
+      mh.DynamicMemberSet.Invoke(obj, value) 'TODO: Is this call correct?
     End Sub
 
 
@@ -320,7 +327,7 @@ Namespace Reflection
 
       End If
 
-      ' no strongly typed match found, get default
+      ' no strongly typed match found, get default based on name only
       If result Is Nothing Then
         result = objectType.GetMethod(method, allLevelFlags)
       End If
@@ -331,17 +338,19 @@ Namespace Reflection
     Private Function FindMethodUsingFuzzyMatching(ByVal objectType As Type, ByVal method As String, ByVal ParamArray parameters() As Object) As MethodInfo
       Dim result As MethodInfo = Nothing
       Dim currentType As Type = objectType
-      Dim methods() As MethodInfo = currentType.GetMethods(oneLevelFlags)
-      Dim parameterCount As Integer = parameters.Length
 
       Do
+        Dim methods() As MethodInfo = currentType.GetMethods(oneLevelFlags)
+        Dim parameterCount As Integer = parameters.Length
         'Match based on name and parameter types and parameter arrays
         For Each m As MethodInfo In methods
           If m.Name = method Then
             Dim infoParams() As ParameterInfo = m.GetParameters()
             Dim pCount As Integer = infoParams.Length
 
-            If pCount > 0 AndAlso ((pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) OrElse (infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0)) Then
+            If pCount > 0 AndAlso _
+              ((pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) OrElse _
+                (infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0)) Then
               'last param is a param array or only param is an array
               If parameterCount >= pCount - 1 Then
                 'got a match so use it
@@ -428,7 +437,9 @@ Namespace Reflection
         If info IsNot Nothing Then
           Dim infoParams = info.GetParameters()
           Dim pCount = infoParams.Length
-          If pCount > 0 AndAlso ((pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) OrElse (infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0)) Then
+          If pCount > 0 AndAlso _
+            ((pCount = 1 AndAlso infoParams(0).ParameterType.IsArray) OrElse _
+             (infoParams(pCount - 1).GetCustomAttributes(GetType(ParamArrayAttribute), True).Length > 0)) Then
             ' last param is a param array or only param is an array
             If parameterCount >= pCount - 1 Then
               ' got a match so use it
@@ -492,6 +503,23 @@ Namespace Reflection
         ' based on the nested class scheme in the book
         Return criteria.GetType().DeclaringType
       End If
+    End Function
+
+    ''' <summary>
+    ''' Gets a property type descriptor by name.
+    ''' </summary>
+    ''' <param name="t">Type of object containing the property.</param>
+    ''' <param name="propertyName">Name of the property.</param>
+    Public Function GetPropertyDescriptor(ByVal t As Type, ByVal propertyName As String) As PropertyDescriptor
+      Dim propertyDescriptors = TypeDescriptor.GetProperties(t)
+      Dim result As PropertyDescriptor = Nothing
+      For Each desc As PropertyDescriptor In propertyDescriptors
+        If desc.Name = propertyName Then
+          result = desc
+          Exit For
+        End If
+      Next
+      Return result
     End Function
 
   End Module

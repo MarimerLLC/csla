@@ -348,4 +348,7 @@
   <data name="IManagePropertiesRequiredException" xml:space="preserve">
     <value>Target object must implement IManageProperties</value>
   </data>
+  <data name="PropertyRegisterNotAllowed" xml:space="preserve">
+    <value>Can not register property {0} after containing type has been instantiated</value>
+  </data>
 </root>

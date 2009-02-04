@@ -91,6 +91,7 @@ namespace Csla.Core.FieldManager
     {
       ForceStaticFieldInit(type);
       List<IPropertyInfo> result = new List<IPropertyInfo>();
+
       // get inheritance hierarchy
       Type current = type;
       List<Type> hierarchy = new List<Type>();
@@ -99,9 +100,15 @@ namespace Csla.Core.FieldManager
         hierarchy.Add(current);
         current = current.BaseType;
       } while (current != null && !current.Equals(typeof(BusinessBase)));
+
       // walk from top to bottom to build consolidated list
       for (int index = hierarchy.Count - 1; index >= 0; index--)
-        result.AddRange(PropertyInfoManager.GetPropertyListCache(hierarchy[index]));
+      {
+        var source = PropertyInfoManager.GetPropertyListCache(hierarchy[index]);
+        source.IsLocked = true;
+        result.AddRange(source);
+      }
+
       // set Index properties on all unindexed PropertyInfo objects
       int max = -1;
       foreach (var item in result)

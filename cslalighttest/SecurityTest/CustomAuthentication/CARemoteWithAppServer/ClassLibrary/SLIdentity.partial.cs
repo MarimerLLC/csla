@@ -9,22 +9,42 @@ namespace ClassLibrary
 {
   public partial class SLIdentity
   {
-    public void DataPortal_Fetch(ClassLibrary.SLIdentity.CredentialsCriteria criteria)
+    public void DataPortal_Fetch(UsernameCriteria criteria)
     {
-      BasicHttpBinding bind = new BasicHttpBinding();
-      EndpointAddress endpoint = new EndpointAddress("http://localhost:3833/Authentication.svc");
-
-      ClassLibrary.AuthenticationService.AuthenticationClient client = 
-        new ClassLibrary.AuthenticationService.AuthenticationClient(bind, endpoint);
-      bool response = client.Authenticate(criteria.Username, criteria.Password);
-
-      if (response)
+      switch (criteria.Username)
       {
-        SetCslaIdentity(new MobileList<string>(criteria.Roles.Split(';')), true, criteria.Username);
-      }
-      else
-      {
-        SetCslaIdentity(null, false, "");
+        case "TestUser":
+          if (criteria.Password == "1234")
+          {
+            base.Name = criteria.Username;
+            base.IsAuthenticated = true;
+            this.Roles = new MobileList<string> { "User", "Admin" };
+          }
+          break;
+       
+        case "TestUserA":
+          if (criteria.Password == "1234")
+          {
+            base.Name = criteria.Username;
+            base.IsAuthenticated = true;
+            this.Roles = new MobileList<string> { "ClassARole", "PropertyARole" };
+          }
+          break;
+
+        case "TestUserD":
+          if (criteria.Password == "1234")
+          {
+            base.Name = criteria.Username;
+            base.IsAuthenticated = true;
+            this.Roles = new MobileList<string>();
+            this.Extra = "Extra data";
+            this.MoreData = "Even more data";
+          }
+          break;
+
+        default:
+          this.Roles = new MobileList<string>();
+          break;
       }
     }
   }

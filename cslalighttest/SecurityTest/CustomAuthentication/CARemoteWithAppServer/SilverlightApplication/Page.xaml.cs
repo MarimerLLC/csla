@@ -19,8 +19,9 @@ namespace SilverlightApplication
     public Page()
     {
       InitializeComponent();
-      Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
-      Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:3833/WcfPortal.svc";
+
+      //Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
+      //Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:3833/WcfPortal.svc";
     }
 
     private void btnSuccessfulLogin_Click(object sender, RoutedEventArgs e)
@@ -30,11 +31,10 @@ namespace SilverlightApplication
         txtSuccessfulLogin.Text = String.Empty;
 
         SLPrincipal.Logout();
-        SLPrincipal.Login("TestUser", "1234", "", (o, e2) =>
+        SLPrincipal.Login("TestUser", "1234", (o, e2) =>
         {
           if (Csla.ApplicationContext.User.Identity.Name == "TestUser"
-            && Csla.ApplicationContext.User.Identity.IsAuthenticated
-            && ((SLPrincipal.LoginEventArgs)e2).LoginSucceded)
+            && Csla.ApplicationContext.User.Identity.IsAuthenticated)
           {
             txtSuccessfulLogin.Text = "Pass";
           }
@@ -44,9 +44,9 @@ namespace SilverlightApplication
           }
         });
       }
-      catch
+      catch (Exception ex)
       {
-        txtSuccessfulLogin.Text = "Fail";
+        txtSuccessfulLogin.Text = "Fail " + ex.Message; ;
       }
     }
 
@@ -57,10 +57,9 @@ namespace SilverlightApplication
         txtUnsuccessfulLogin.Text = String.Empty;
 
         SLPrincipal.Logout();
-        SLPrincipal.Login("invaliduser", "invalidpassword", "", (o, e2) =>
+        SLPrincipal.Login("invaliduser", "invalidpassword",(o, e2) =>
         {
-          if (Csla.ApplicationContext.User.Identity.GetType() == typeof(Csla.Security.UnauthenticatedIdentity)
-             && !((SLPrincipal.LoginEventArgs)e2).LoginSucceded)
+          if (Csla.ApplicationContext.User.Identity.GetType() == typeof(Csla.Security.UnauthenticatedIdentity))
           {
             txtUnsuccessfulLogin.Text = "Pass";
           }
@@ -83,7 +82,7 @@ namespace SilverlightApplication
         txtRoles.Text = String.Empty;
 
         SLPrincipal.Logout();
-        SLPrincipal.Login("TestUser", "1234", "User;Admin", (o, e2) =>
+        SLPrincipal.Login("TestUser", "1234", (o, e2) =>
         {
           if (Csla.ApplicationContext.User.IsInRole("User")
             && Csla.ApplicationContext.User.IsInRole("Admin")
@@ -108,7 +107,7 @@ namespace SilverlightApplication
       txtAuthorizationA.Text = String.Empty;
 
       SLPrincipal.Logout();
-      SLPrincipal.Login("TestUser", "1234", "ClassARole;PropertyARole", (o, e2) =>
+      SLPrincipal.Login("TestUserA", "1234", (o, e2) =>
       {
         bool pass = true;
 
@@ -126,7 +125,7 @@ namespace SilverlightApplication
           if (classB.A != "test" || classB.B != "test")
             pass = false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
           pass = false;
         }
@@ -147,7 +146,7 @@ namespace SilverlightApplication
       txtAuthorizationB.Text = String.Empty;
 
       SLPrincipal.Logout();
-      SLPrincipal.Login("TestUser", "1234", "ClassARole", (o, e2) =>
+      SLPrincipal.Login("TestUser", "1234", (o, e2) =>
       {
         bool pass = true;
 
@@ -159,7 +158,7 @@ namespace SilverlightApplication
             classA.A = "test";
             pass = false;
           }
-          catch (SecurityException ex)
+          catch (SecurityException)
           { }
           classA.B = "test";
           if (classA.B != "test")
@@ -171,13 +170,13 @@ namespace SilverlightApplication
             classB.A = "test";
             pass = false;
           }
-          catch (SecurityException ex)
+          catch (SecurityException)
           { }
           classB.B = "test";
           if (classB.B != "test")
             pass = false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
           pass = false;
         }
@@ -198,7 +197,7 @@ namespace SilverlightApplication
       txtAuthorizationC.Text = String.Empty;
 
       SLPrincipal.Logout();
-      SLPrincipal.Login("TestUser", "1234", "PropertyARole", (o, e2) =>
+      SLPrincipal.Login("TestUser", "1234", (o, e2) =>
       {
         bool pass = true;
 
@@ -209,7 +208,7 @@ namespace SilverlightApplication
             ClassA classA = new ClassA();
             pass = false;
           }
-          catch (SecurityException ex)
+          catch (SecurityException)
           { }
 
           ClassB classB = new ClassB();
@@ -239,36 +238,23 @@ namespace SilverlightApplication
       txtAuthorizationD.Text = String.Empty;
 
       SLPrincipal.Logout();
-      SLPrincipal.Login("TestUser", "1234", "", (o, e2) =>
+      SLPrincipal.Login("TestUserD", "1234", (o, e2) =>
       {
         bool pass = true;
 
-        try
-        {
-          try
-          {
-            ClassA classA = new ClassA();
-            pass = false;
-          }
-          catch (SecurityException ex)
-          { }
+        var identity = Csla.ApplicationContext.User.Identity as SLIdentity;
 
-          ClassB classB = new ClassB();
-          try
-          {
-            classB.A = "test";
-            pass = false;
-          }
-          catch (SecurityException ex)
-          { }
-          classB.B = "test";
-          if (classB.B != "test")
-            pass = false;
-        }
-        catch (Exception ex)
+        if (identity != null)
         {
-          pass = false;
+          if (identity.Name != "TestUserD")
+            pass = false;
+          if (identity.Extra != "Extra data")
+            pass = false;
+          if (identity.MoreData != "Even more data")
+            pass = false;
         }
+        else
+          pass = false;
 
         if (pass)
         {

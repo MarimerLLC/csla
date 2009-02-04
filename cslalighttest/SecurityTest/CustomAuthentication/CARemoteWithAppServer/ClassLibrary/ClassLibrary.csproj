@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{310E2A95-2396-4298-BBC8-7AA27B412520}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -63,12 +63,10 @@
     <Compile Include="..\SilverlightClassLibrary\SLPrincipal.cs">
       <Link>SLPrincipal.cs</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\AuthenticationService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
+    <Compile Include="..\SilverlightClassLibrary\UsernameCriteria.cs">
+      <Link>UsernameCriteria.cs</Link>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SLIdentity.partial.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -82,27 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Service References\AuthenticationService\Authentication.xsd" />
-    <None Include="Service References\AuthenticationService\Authentication1.xsd" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\AuthenticationService\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AuthenticationService\Authentication.disco" />
-    <None Include="Service References\AuthenticationService\Authentication.wsdl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AuthenticationService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AuthenticationService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\AuthenticationService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

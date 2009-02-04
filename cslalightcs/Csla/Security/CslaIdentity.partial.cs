@@ -18,6 +18,7 @@ namespace Csla.Security
     [Obsolete("For use by MobileFormatter")]
     public CslaIdentity()
     {
+      _forceInit = _forceInit && false;
     }
 
     #endregion
@@ -41,6 +42,12 @@ namespace Csla.Security
       DataPortal<T> dp = new DataPortal<T>();
       dp.FetchCompleted += completed;
       dp.BeginFetch(criteria);
+    }
+
+    protected override void OnDeserialized()
+    {
+      _forceInit = _forceInit && false;
+      base.OnDeserialized();
     }
   }
 }

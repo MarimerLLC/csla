@@ -150,6 +150,7 @@
     <Compile Include="Core\AsyncFactoryDelegates.cs" />
     <Compile Include="Core\BusyChangedEventArgs.cs" />
     <Compile Include="Core\ErrorEventArgs.cs" />
+    <Compile Include="Core\FieldManager\PropertyInfoList.cs" />
     <Compile Include="Core\INotifyChildChanged.cs" />
     <Compile Include="Core\INotifyUnhandledAsyncException.cs" />
     <Compile Include="Core\LoadManager\AsyncLoader.cs" />

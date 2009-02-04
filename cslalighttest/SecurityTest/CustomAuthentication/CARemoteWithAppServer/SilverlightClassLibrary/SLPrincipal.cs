@@ -1,80 +1,38 @@
 ﻿using System;
 using System.Net;
-//using System.Windows;
-//using System.Windows.Controls;
-//using System.Windows.Documents;
-//using System.Windows.Ink;
-//using System.Windows.Input;
-//using System.Windows.Media;
-//using System.Windows.Media.Animation;
-//using System.Windows.Shapes;
 using System.Security.Principal;
 using Csla.DataPortalClient;
 
 namespace ClassLibrary
 {
-  public class SLPrincipal:Csla.Security.BusinessPrincipalBase
+  public class SLPrincipal : Csla.Security.BusinessPrincipalBase
   {
     private SLPrincipal(IIdentity identity)
       : base(identity)
     { }
 
 #if SILVERLIGHT
-    public static void Login(string username, string password, string roles, EventHandler<EventArgs> completed)
+    public static void Login(string username, string password, EventHandler<EventArgs> completed)
       {        
-        SLIdentity.GetIdentity(username, password, roles,(o, e) =>
+        SLIdentity.GetIdentity(username, password, (o, e) =>
         {
-          bool result = SetPrincipal(e.Object);
-          completed(null, new LoginEventArgs(result));
+          SetPrincipal(e.Object);
+          completed(null, new EventArgs());
         });
       }
 #endif
 
-    private static bool SetPrincipal(Csla.Security.CslaIdentity identity)
+    private static void SetPrincipal(Csla.Security.CslaIdentity identity)
     {
-      if (identity.IsAuthenticated)
-      {
-        SLPrincipal principal = new SLPrincipal(identity);
-        Csla.ApplicationContext.User = principal;
-      }
+      if (identity != null && identity.IsAuthenticated)
+        Csla.ApplicationContext.User = new SLPrincipal(identity);
       else
-      {
-        identity = SLIdentity.UnauthenticatedIdentity();
-        SLPrincipal principal = new SLPrincipal(identity);
-        Csla.ApplicationContext.User = principal;
-      }
-      return identity.IsAuthenticated;
+        Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
     }
 
     public static void Logout()
     {
-      Csla.Security.CslaIdentity identity = SLIdentity.UnauthenticatedIdentity();
-      SLPrincipal principal = new SLPrincipal(identity);
-      Csla.ApplicationContext.User = principal;
+      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
     }
-
-    public override bool IsInRole(string role)
-    {
-      return ((SLIdentity)base.Identity).InRole(role);
-    }
-
-    public class LoginEventArgs : EventArgs
-    {
-
-      private bool _loginSucceded;
-
-      public bool LoginSucceded
-      {
-        get
-        {
-          return _loginSucceded;
-        }
-      }
-
-      public LoginEventArgs(bool loginSucceded)
-      {
-        _loginSucceded = loginSucceded;
-      }
-    } 
   }
 }

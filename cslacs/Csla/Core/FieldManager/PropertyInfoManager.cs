@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using Csla.Properties;
 
 namespace Csla.Core.FieldManager
 {
   internal static class PropertyInfoManager
   {
     private static object _cacheLock = new object();
-    private static Dictionary<Type, List<IPropertyInfo>> _propertyInfoCache;
+    private static Dictionary<Type, PropertyInfoList> _propertyInfoCache;
 
-    private static Dictionary<Type, List<IPropertyInfo>> PropertyInfoCache
+    private static Dictionary<Type, PropertyInfoList> PropertyInfoCache
     {
       get
       {
@@ -17,24 +18,24 @@ namespace Csla.Core.FieldManager
           lock (_cacheLock)
           {
             if (_propertyInfoCache == null)
-              _propertyInfoCache = new Dictionary<Type, List<IPropertyInfo>>();
+              _propertyInfoCache = new Dictionary<Type, PropertyInfoList>();
           }
         }
         return _propertyInfoCache;
       }
     }
 
-    public static List<IPropertyInfo> GetPropertyListCache(Type objectType)
+    public static PropertyInfoList GetPropertyListCache(Type objectType)
     {
       var cache = PropertyInfoCache;
-      List<IPropertyInfo> list = null;
+      PropertyInfoList list = null;
       if (!(cache.TryGetValue(objectType, out list)))
       {
         lock (cache)
         {
           if (!(cache.TryGetValue(objectType, out list)))
           {
-            list = new List<IPropertyInfo>();
+            list = new PropertyInfoList();
             cache.Add(objectType, list);
           }
         }
@@ -63,6 +64,8 @@ namespace Csla.Core.FieldManager
       var list = GetPropertyListCache(objectType);
       lock (list)
       {
+        if (list.IsLocked)
+          throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name));
         list.Add(info);
         list.Sort();
       }
@@ -78,13 +81,13 @@ namespace Csla.Core.FieldManager
     /// <param name="objectType">
     /// The business object type.
     /// </param>
-    public static List<IPropertyInfo> GetRegisteredProperties(Type objectType)
+    public static PropertyInfoList GetRegisteredProperties(Type objectType)
     {
       // return a copy of the list to avoid
       // possible locking issues
       var list = GetPropertyListCache(objectType);
       lock (list)
-        return new List<IPropertyInfo>(list);
+        return new PropertyInfoList(list);
     }
   }
 }

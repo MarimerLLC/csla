@@ -565,6 +565,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can not register property {0} after containing type has been instantiated.
+        /// </summary>
+        internal static string PropertyRegisterNotAllowed {
+            get {
+                return ResourceManager.GetString("PropertyRegisterNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This property requires {0} index arguments, {1} were provided.
         /// </summary>
         internal static string PropertyRequiresIndexArguments {

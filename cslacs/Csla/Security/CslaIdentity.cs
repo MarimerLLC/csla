@@ -15,6 +15,8 @@ namespace Csla.Security
   [Serializable()]
   public abstract partial class CslaIdentity : ReadOnlyBase<CslaIdentity>, IIdentity, ICheckRoles
   {
+    private static bool _forceInit;
+
     #region UnauthenticatedIdentity
 
     /// <summary>
@@ -85,7 +87,6 @@ namespace Csla.Security
     }
 
     #endregion
-
   }
 
 }

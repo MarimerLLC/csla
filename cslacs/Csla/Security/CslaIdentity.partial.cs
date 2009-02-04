@@ -14,8 +14,6 @@ namespace Csla.Security
   /// </summary>
   public abstract partial class CslaIdentity : ReadOnlyBase<CslaIdentity>, IIdentity
   {
-    private static int _forceInit;
-
     #region Constructor
 
     /// <summary>
@@ -23,7 +21,7 @@ namespace Csla.Security
     /// </summary>
     protected CslaIdentity()
     {
-      _forceInit = _forceInit + 0;
+      _forceInit = _forceInit && false;
     }
 
     #endregion
@@ -50,7 +48,7 @@ namespace Csla.Security
     /// <param name="context">Serialization context.</param>
     protected override void OnDeserialized(StreamingContext context)
     {
-      _forceInit = 0;
+      _forceInit = _forceInit && false;
       base.OnDeserialized(context);
     }
   }

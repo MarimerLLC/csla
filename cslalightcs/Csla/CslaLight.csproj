@@ -84,6 +84,9 @@
     <Compile Include="..\..\cslacs\Csla\Core\ErrorEventArgs.cs">
       <Link>Core\ErrorEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoList.cs">
+      <Link>Core\FieldManager\PropertyInfoList.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\IManageProperties.cs">
       <Link>Core\IManageProperties.cs</Link>
     </Compile>

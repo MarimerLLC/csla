@@ -40,6 +40,8 @@ Namespace Wpf
     Public Sub New()
       DefaultStyleKey = GetType(PropertyStatus)
       BrokenRules = New ObservableCollection(Of BrokenRule)()
+
+      'TODO: Need to implement Lambda expression
     End Sub
 
     ''' <summary>
@@ -61,6 +63,9 @@ Namespace Wpf
 
 #Region "Dependency properties"
 
+    ''' <summary>
+    ''' Reference to the data source object.
+    ''' </summary>
     Public Shared ReadOnly SourceProperty As DependencyProperty = DependencyProperty.Register( _
     "Source", _
     GetType(Object), _
@@ -68,24 +73,54 @@ Namespace Wpf
     New FrameworkPropertyMetadata( _
       Nothing, _
       FrameworkPropertyMetadataOptions.AffectsRender, _
-      New PropertyChangedCallback(AddressOf OnSourcePropertyChanged)))
+      New PropertyChangedCallback(AddressOf OnSourcePropertyChanged))) 'TODO I think this is right but not sure
 
     Private Shared Sub OnSourcePropertyChanged(ByVal o As DependencyObject, ByVal e As DependencyPropertyChangedEventArgs)
       CType(o, PropertyStatus).SetSource(e.OldValue, e.NewValue)
     End Sub
 
+    ''' <summary>
+    ''' Defines the business object property to watch for
+    ''' validation, authorization and busy status.
+    ''' </summary>
     Public Shared ReadOnly PropertyProperty As DependencyProperty = DependencyProperty.Register("Property", GetType(String), GetType(PropertyStatus))
+
+    ''' <summary>
+    ''' Gets a reference to the business object's
+    ''' broken rules collection.
+    ''' </summary>
     Public Shared ReadOnly BrokenRulesProperty As DependencyProperty = DependencyProperty.Register("BrokenRules", GetType(ObservableCollection(Of BrokenRule)), GetType(PropertyStatus))
+
+    ''' <summary>
+    ''' Reference to the target UI control to be managed
+    ''' for authorization rules.
+    ''' </summary>
     Public Shared ReadOnly TargetProperty As DependencyProperty = DependencyProperty.Register("Target", GetType(DependencyObject), GetType(PropertyStatus))
+
+    ''' <summary>
+    ''' Gets or sets a value indicating whether the PropertyStatus
+    ''' control should be in busy mode.
+    ''' </summary>
     Public Shared ReadOnly IsBusyProperty As DependencyProperty = DependencyProperty.Register("IsBusy", GetType(Boolean), GetType(PropertyStatus))
+
+    ''' <summary>
+    ''' Reference to the template for the validation rule popup.
+    ''' </summary>
     Public Shared ReadOnly PopupTemplateProperty As DependencyProperty = DependencyProperty.Register("PopupTemplate", GetType(ControlTemplate), GetType(PropertyStatus))
+
 #End Region
 
+#Region " Member fields and properties "
+
+    Private _isReadOnly As Boolean = False
     Private _isValid As Boolean = True
     Private _worst As RuleSeverity
     Private _lastImage As FrameworkElement
-    Public Property Source() As Object
 
+    ''' <summary>
+    ''' Gets or sets a reference to the data source object.
+    ''' </summary>
+    Public Property Source() As Object
       Get
         Return GetValue(SourceProperty)
       End Get
@@ -96,6 +131,11 @@ Namespace Wpf
         SetSource(oldValue, newValue)
       End Set
     End Property
+
+    ''' <summary>
+    ''' Gets or sets the name of the business object
+    ''' property to be monitored.
+    ''' </summary>
     Public Property [Property]() As String
 
       Get
@@ -105,8 +145,12 @@ Namespace Wpf
         SetValue(PropertyProperty, value)
       End Set
     End Property
-    Public Property BrokenRules() As ObservableCollection(Of BrokenRule)
 
+    ''' <summary>
+    ''' Gets a reference to the business object's
+    ''' broken rules collection.
+    ''' </summary>
+    Public Property BrokenRules() As ObservableCollection(Of BrokenRule)
       Get
         Return DirectCast(GetValue(BrokenRulesProperty), ObservableCollection(Of BrokenRule))
       End Get
@@ -114,8 +158,12 @@ Namespace Wpf
         SetValue(BrokenRulesProperty, value)
       End Set
     End Property
-    Public Property Target() As DependencyObject
 
+    ''' <summary>
+    ''' Gets or sets a reference to the UI control to
+    ''' be managed based on authorization rules.
+    ''' </summary>
+    Public Property Target() As DependencyObject
       Get
         Return DirectCast(GetValue(TargetProperty), DependencyObject)
       End Get
@@ -123,8 +171,12 @@ Namespace Wpf
         SetValue(TargetProperty, value)
       End Set
     End Property
-    Public Property IsBusy() As Boolean
 
+    ''' <summary>
+    ''' Gets or sets a value indicating whether the PropertyStatus
+    ''' control should be in busy mode.
+    ''' </summary>
+    Public Property IsBusy() As Boolean
       Get
         Return CBool(GetValue(IsBusyProperty))
       End Get
@@ -132,8 +184,12 @@ Namespace Wpf
         SetValue(IsBusyProperty, value)
       End Set
     End Property
-    Public Property PopupTemplate() As ControlTemplate
 
+    ''' <summary>
+    ''' Gets or sets the template for the validation rules
+    ''' popup.
+    ''' </summary>
+    Public Property PopupTemplate() As ControlTemplate
       Get
         Return DirectCast(GetValue(PopupTemplateProperty), ControlTemplate)
       End Get
@@ -142,7 +198,9 @@ Namespace Wpf
       End Set
     End Property
 
+#End Region
 
+#Region " Source "
 
     Private Sub SetSource(ByVal oldSource As Object, ByVal newSource As Object)
       DetachSource(oldSource)
@@ -153,9 +211,9 @@ Namespace Wpf
         IsBusy = bb.IsPropertyBusy([Property])
       End If
 
+      CheckProperty()
       UpdateState()
     End Sub
-
 
     Private Sub AttachSource(ByVal source As Object)
       Dim busy As INotifyBusy = TryCast(source, INotifyBusy)
@@ -189,37 +247,11 @@ Namespace Wpf
       UpdateState()
     End Sub
 
-
     Private Sub source_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
       If e.PropertyName = [Property] OrElse String.IsNullOrEmpty(e.PropertyName) Then
         UpdateState()
       End If
     End Sub
-
-    Private Sub EnablePopup(ByVal image As FrameworkElement)
-      If image IsNot Nothing Then
-        AddHandler image.MouseEnter, AddressOf image_MouseEnter
-        AddHandler image.MouseLeave, AddressOf image_MouseLeave
-      End If
-    End Sub
-
-    Private Sub DisablePopup(ByVal image As FrameworkElement)
-      If image IsNot Nothing Then
-        RemoveHandler image.MouseEnter, AddressOf image_MouseEnter
-        RemoveHandler image.MouseLeave, AddressOf image_MouseLeave
-      End If
-    End Sub
-
-    Private Sub image_MouseEnter(ByVal sender As Object, ByVal e As MouseEventArgs)
-      Dim popup As Popup = DirectCast(Template.FindName("popup", Me), Popup)
-      popup.IsOpen = True
-    End Sub
-
-    Private Sub image_MouseLeave(ByVal sender As Object, ByVal e As MouseEventArgs)
-      Dim popup As Popup = DirectCast(Template.FindName("popup", Me), Popup)
-      popup.IsOpen = False
-    End Sub
-
 
     Private Sub UpdateState()
       Dim popup As Popup = CType(FindName("popup"), Popup)
@@ -231,7 +263,6 @@ Namespace Wpf
       Dim businessObject As BusinessBase = TryCast(Source, BusinessBase)
       If businessObject IsNot Nothing Then
         'for some reason Linq does not work against BrokenRulesCollection...
-
         Dim allRules As List(Of BrokenRule) = New List(Of BrokenRule)
 
         For Each r In businessObject.BrokenRulesCollection
@@ -275,34 +306,84 @@ Namespace Wpf
 
     End Sub
 
+#End Region
+
+#Region " Image "
+
+    Private Sub EnablePopup(ByVal image As FrameworkElement)
+      If image IsNot Nothing Then
+        AddHandler image.MouseEnter, AddressOf image_MouseEnter
+        AddHandler image.MouseLeave, AddressOf image_MouseLeave
+      End If
+    End Sub
+
+    Private Sub DisablePopup(ByVal image As FrameworkElement)
+      If image IsNot Nothing Then
+        RemoveHandler image.MouseEnter, AddressOf image_MouseEnter
+        RemoveHandler image.MouseLeave, AddressOf image_MouseLeave
+      End If
+    End Sub
+
+    Private Sub image_MouseEnter(ByVal sender As Object, ByVal e As MouseEventArgs)
+      Dim popup As Popup = DirectCast(Template.FindName("popup", Me), Popup)
+      popup.IsOpen = True
+    End Sub
+
+    Private Sub image_MouseLeave(ByVal sender As Object, ByVal e As MouseEventArgs)
+      Dim popup As Popup = DirectCast(Template.FindName("popup", Me), Popup)
+      popup.IsOpen = False
+    End Sub
+
+#End Region
+
+#Region " State management "
 
     Private Sub GoToState(ByVal useTransitions As Boolean)
-      If IsLoaded Then
+      If IsLoaded AndAlso Not DataPortal.IsInDesignMode Then
         DisablePopup(_lastImage)
         HandleTarget()
 
         Dim root As FrameworkElement = DirectCast(Template.FindName("root", Me), FrameworkElement)
 
-        If _isValid Then
-          Dim validStoryboard As Storyboard = DirectCast(Template.Resources("Valid"), Storyboard)
-          validStoryboard.Begin(root)
-        Else
-          Dim errorStoryboard As Storyboard = DirectCast(Template.Resources(_worst.ToString()), Storyboard)
-          errorStoryboard.Begin(root)
-          _lastImage = DirectCast(Template.FindName(String.Format("{0}Image", _worst.ToString().ToLower()), Me), FrameworkElement)
-          EnablePopup(_lastImage)
+        If root IsNot Nothing Then
+          If _isValid Then
+            Dim validStoryboard As Storyboard = DirectCast(Template.Resources("Valid"), Storyboard)
+            validStoryboard.Begin(root)
+          Else
+            Dim errorStoryboard As Storyboard = DirectCast(Template.Resources(_worst.ToString()), Storyboard)
+            errorStoryboard.Begin(root)
+            _lastImage = DirectCast(Template.FindName(String.Format("{0}Image", _worst.ToString().ToLower()), Me), FrameworkElement)
+            EnablePopup(_lastImage)
+          End If
         End If
+      End If
+    End Sub
+
+#End Region
+
+#Region " RelativeTarget "
+
+    Private Sub CheckProperty()
+      If Source IsNot Nothing Then
+        Dim desc = Csla.Reflection.MethodCaller.GetPropertyDescriptor(Source.GetType(), [Property])
+        If desc IsNot Nothing Then
+          _isReadOnly = desc.IsReadOnly
+        Else
+          _isReadOnly = False
+        End If
+      Else
+        _isReadOnly = True
       End If
     End Sub
 
     Private Sub HandleTarget()
       If Target IsNot Nothing AndAlso Not String.IsNullOrEmpty([Property]) Then
-        Dim b As BusinessBase = TryCast(Source, BusinessBase)
+        Dim b As Security.IAuthorizeReadWrite = TryCast(Source, Security.IAuthorizeReadWrite)
         If b IsNot Nothing Then
           Dim canRead As Boolean = b.CanReadProperty([Property])
           Dim canWrite As Boolean = b.CanWriteProperty([Property])
 
-          If canWrite Then
+          If canWrite AndAlso Not _isReadOnly Then
             MethodCaller.CallMethodIfImplemented(Target, "set_IsReadOnly", False)
             MethodCaller.CallMethodIfImplemented(Target, "set_IsEnabled", True)
           Else
@@ -317,6 +398,8 @@ Namespace Wpf
         End If
       End If
     End Sub
+
+#End Region
 
   End Class
 End Namespace

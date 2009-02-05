@@ -1183,7 +1183,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="pp5">Parameter value.</param>
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4, ByVal pp5 As P5)
-    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2,pp3)
+    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2,pp3,pp4,pp5)
     'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
   End Sub
 

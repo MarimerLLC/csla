@@ -175,6 +175,7 @@ namespace Csla.Windows
     [Description(STR_DirtyWarningMessagePropertyDescription)]
     [Bindable(true)]
     [DefaultValue(STR_DirtyWarningMessagePropertyDefault)]
+    [Localizable(true)]
     public string DirtyWarningMessage
     {
       get { return _dirtyWarningMessage; }
@@ -203,6 +204,7 @@ namespace Csla.Windows
     [Description(STR_WarnOnCancelMessagePropertyDescription)]
     [Bindable(true)]
     [DefaultValue(STR_WarnOnCancelMessagePropertyDefault)]
+    [Localizable(true)]
     public string WarnOnCancelMessage
     {
       get { return _warnOnCancelMessage; }

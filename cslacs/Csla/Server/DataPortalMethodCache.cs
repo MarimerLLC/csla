@@ -64,7 +64,7 @@ namespace Csla.Server
               factoryInfo.CreateMethodName);
           else
             method = GetMethodInfo(
-              FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName),
+              factoryType,
               factoryInfo.CreateMethodName,
               criteria);
         }

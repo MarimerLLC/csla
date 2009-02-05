@@ -15,7 +15,6 @@ namespace Csla.Security
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    [Obsolete("For use by MobileFormatter")]
     public CslaIdentity()
     {
       _forceInit = _forceInit && false;

@@ -355,10 +355,10 @@ namespace Csla
     {
       get { return _list; }
     }
-
+    
     IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-      return GetEnumerator();
+      return (this as IEnumerable<T>).GetEnumerator();
     }
 
     /// <summary>
@@ -500,6 +500,8 @@ namespace Csla
     {
       get
       {
+        
+        
         int src = OriginalIndex(index);
         return _list[src];
       }
@@ -746,6 +748,7 @@ namespace Csla
     internal void SortByExpression(Expression expression)
     {
       _sortExpression = expression;
+      BuildFilterIndex();
     }
     
     internal void BuildFilterIndex()
@@ -755,10 +758,14 @@ namespace Csla
       MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
       Expression<Func<T, bool>> whereBody = GetWhereBodyFromExpression(whereExpression);
 
+      var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
+      if (_sortExpression != null && _sortExpression is MethodCallExpression)
+        subset = BuildSortedSubset(subset, (MethodCallExpression)_sortExpression);
+
       _filterIndex.Clear();
       if (_list is Linq.IIndexSearchable<T>)
         //before we can start, we do have to go through the whole thing once to make our filterindex.  
-        foreach (T item in (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody))
+        foreach (T item in subset)
         {
           if (_filterBy != null)
           {

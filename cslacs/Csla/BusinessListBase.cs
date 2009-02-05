@@ -795,9 +795,8 @@ namespace Csla
       }
       else
       {
+        
         IEnumerable<C> sourceEnum = this.AsEnumerable<C>();
-        //IQueryable<C> sourceQuery = this.AsQueryable<C>();
-        //var result = sourceQuery.Where<C>(expr.Compile());
         var result = sourceEnum.Where<C>(expr.Compile());
         foreach (C item in result)
           yield return item;
@@ -1400,10 +1399,10 @@ namespace Csla
     [NonSerialized]
     Expression _expression;
 
-    internal void SetCurrentExpression(Expression ex)
-    {
-      _expression = ex;
-    }
+    //internal void SetCurrentExpression(Expression ex)
+    //{
+    //  _expression = ex;
+    //}
 
     private void LoadProviderIfNotLoaded()
     {

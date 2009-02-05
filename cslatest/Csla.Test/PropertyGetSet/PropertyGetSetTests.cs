@@ -682,8 +682,15 @@ namespace Csla.Test.PropertyGetSet
       int changed = 0;
       root.ChildChanged += (o, e) => { changed++; };
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed";
+      Assert.AreEqual(1, changed, "after MobileFormatter");
 
-      Assert.AreEqual(1, changed);
+#if !SILVERLIGHT
+      changed = 0;
+      root = root.Clone();
+      root.ChildChanged += (o, e) => { changed++; };
+      root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed again";
+      Assert.AreEqual(1, changed, "after clone");
+#endif
     }
 
     #endregion

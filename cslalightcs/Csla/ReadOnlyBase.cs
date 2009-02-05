@@ -524,10 +524,10 @@ namespace Csla
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserialized();
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
       InitializeAuthorizationRules();
+      OnDeserialized();
     }
 
     /// <summary>

@@ -554,9 +554,9 @@ namespace Csla
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
-      OnDeserialized(context);
       FieldManager.SetPropertyList(this.GetType());
       InitializeAuthorizationRules();
+      OnDeserialized(context);
     }
 
     /// <summary>

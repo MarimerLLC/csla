@@ -2988,7 +2988,6 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserialized();
       ValidationRules.SetTarget(this);
       ValidationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
       if (_fieldManager != null)
@@ -2996,6 +2995,7 @@ namespace Csla.Core
       InitializeBusinessRules();
       InitializeAuthorizationRules();
       FieldDataDeserialized();
+      OnDeserialized();
     }
 
     /// <summary>

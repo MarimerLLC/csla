@@ -910,6 +910,7 @@ namespace Csla
     protected override void OnDeserialized()
     {
       _deserialized = true;
+      base.OnDeserialized();
 
       foreach (Core.IEditableBusinessObject child in this)
       {
@@ -918,8 +919,6 @@ namespace Csla
       
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
-
-      base.OnDeserialized();
     }
 
     #endregion

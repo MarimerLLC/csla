@@ -1514,12 +1514,19 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserialized(new StreamingContext());
+      OnDeserializedHandler(new StreamingContext());
     }
 
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
+      ValidationRules.SetTarget(this);
+      if (_fieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
+      InitializeBusinessRules();
+      InitializeAuthorizationRules();
+      FieldDataDeserialized();
+
       OnDeserialized(context);
     }
 
@@ -1531,12 +1538,6 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(StreamingContext context)
     {
-      ValidationRules.SetTarget(this);
-      if (_fieldManager != null)
-        FieldManager.SetPropertyList(this.GetType());
-      InitializeBusinessRules();
-      InitializeAuthorizationRules();
-      FieldDataDeserialized();
     }
 
     #endregion

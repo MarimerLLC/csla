@@ -782,12 +782,12 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnDeserialized()
     {
+      base.OnDeserialized();
       foreach (Core.IEditableBusinessObject child in this)
         child.SetParent(this);
 
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
-      base.OnDeserialized();
     }
 
     #endregion

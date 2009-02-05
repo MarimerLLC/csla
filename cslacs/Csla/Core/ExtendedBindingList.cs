@@ -283,6 +283,10 @@ namespace Csla.Core
         child.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
     }
 
+    #endregion
+
+    #region ISerializationNotification Members
+
     /// <summary>
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
@@ -294,27 +298,22 @@ namespace Csla.Core
       // could override if needed
     }
 
-    #endregion
-
-    #region ISerializationNotification Members
-
     [OnDeserialized]
     private void OnDeserializedHandler(StreamingContext context)
     {
       foreach (T item in this)
         OnAddEventHooks(item);
 
-      ((ISerializationNotification)this).Deserialized();
-    }
-
-    #region ISerializationNotification Members
-
-    void ISerializationNotification.Deserialized()
-    {
       OnDeserialized();
     }
 
-    #endregion
+    void ISerializationNotification.Deserialized()
+    {
+      // don't rehook events here, because the MobileFormatter has
+      // created new objects and so the lists will auto-subscribe
+      // the events
+      OnDeserialized();
+    }
 
     #endregion
 

@@ -102,7 +102,17 @@ namespace Csla.Test.ValidationRules
     {
       UnitTestContext context = GetContext();
 
-      context.Assert.Try(() => { new HasInvalidAsyncRule(); });
+      context.Assert.Try(() => 
+      {
+        try
+        {
+          new HasInvalidAsyncRule();
+        }
+        catch (TypeInitializationException ex)
+        {
+          throw ex.InnerException;
+        }
+      });
       context.Assert.Fail();
       context.Complete();
     }

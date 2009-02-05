@@ -603,6 +603,7 @@
     <Resource Include="Resources\Warning.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.ar.resx" />
     <EmbeddedResource Include="Properties\Resources.hu.resx" />
     <EmbeddedResource Include="Windows\BusyAnimation.bmp" />
   </ItemGroup>

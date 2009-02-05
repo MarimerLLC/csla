@@ -393,4 +393,7 @@
   <data name="MemberNotFoundException" xml:space="preserve">
     <value>Member not found on object ({0})</value>
   </data>
+  <data name="PropertyRegisterNotAllowed" xml:space="preserve">
+    <value>Can not register property {0} after containing type has been instantiated</value>
+  </data>
 </root>

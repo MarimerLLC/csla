@@ -83,6 +83,7 @@ namespace Templates
 
     private void Fetch(object rootData)
     {
+	  MarkOld();
       // TODO: load values from rootData
     }
 

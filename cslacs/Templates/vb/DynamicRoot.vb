@@ -90,6 +90,7 @@ Public Class DynamicRoot
 #Region " Data Access "
 
   Private Sub Fetch(ByVal rootData As Object)
+    MarkOld()
     'TODO: load values
   End Sub
 

@@ -483,7 +483,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -494,7 +494,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -506,7 +506,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
   End Sub
 
@@ -516,7 +516,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+  Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -526,7 +526,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+  Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -537,7 +537,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
+  Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
   End Sub
 
@@ -878,7 +878,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' value, the defaultValue value is returned as a
   ''' result.
   ''' </remarks>
-  Protected Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
+  Protected Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object
     Dim result As Object = Nothing
     If CanReadProperty(propertyInfo.Name, False) Then
       Dim info = FieldManager.GetFieldData(propertyInfo)
@@ -948,7 +948,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </summary>
   ''' <param name="propertyInfo">
   ''' PropertyInfo object containing property metadata.</param>
-  Protected Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
+  Protected Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object
     Dim info = FieldManager.GetFieldData(propertyInfo)
     If info IsNot Nothing Then
       Return info.Value
@@ -1071,7 +1071,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' Loading values does not cause validation rules to be
   ''' invoked.
   ''' </remarks>
-  Protected Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
+  Protected Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
     FieldManager.LoadFieldData(propertyInfo, newValue)
   End Sub
 
@@ -1371,19 +1371,19 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     Return FieldManager.GetRegisteredProperties
   End Function
 
-  Private Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
+  Private Function IManageProperties_GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
     Return GetProperty(propertyInfo)
   End Function
 
-  Private Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
-    Return ReadProperty(PropertyInfo)
+  Private Function IManageProperties_ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
+    Return ReadProperty(propertyInfo)
   End Function
 
   Private Sub SetProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements Core.IManageProperties.SetProperty
     Throw New NotImplementedException("IManageProperties.SetProperty")
   End Sub
 
-  Private Sub LoadProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
+  Private Sub IManageProperties_LoadProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
     LoadProperty(propertyInfo, newValue)
   End Sub
 

@@ -2,6 +2,7 @@
 Imports System.Collections.Specialized
 Imports Csla.Serialization
 Imports Csla.Serialization.Mobile
+Imports System.Reflection
 
 Namespace Core.FieldManager
 
@@ -88,6 +89,7 @@ Namespace Core.FieldManager
     End Function
 
     Private Shared Function CreateConsolidatedList(ByVal type As Type) As List(Of IPropertyInfo)
+      ForceStaticFieldInit(type)
       Dim result As List(Of IPropertyInfo) = New List(Of IPropertyInfo)()
       ' get inheritance hierarchy
       Dim current As Type = type
@@ -98,7 +100,9 @@ Namespace Core.FieldManager
       Loop While current IsNot Nothing AndAlso Not current.Equals(GetType(BusinessBase))
       ' walk from top to bottom to build consolidated list
       For index As Integer = hierarchy.Count - 1 To 0 Step -1
-        result.AddRange(PropertyInfoManager.GetPropertyListCache(hierarchy(index)))
+        Dim source = PropertyInfoManager.GetPropertyListCache(hierarchy(index))
+        source.IsLocked = True
+        result.AddRange(source)
       Next index
       ' set Index properties on all unindexed PropertyInfo objects
       Dim max As Integer = -1
@@ -125,6 +129,7 @@ Namespace Core.FieldManager
     ''' <param name="prop">
     ''' The property corresponding to the field.
     ''' </param>
+    <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
     Friend Function GetFieldData(ByVal prop As IPropertyInfo) As IFieldData
       Try
         Return _fieldData(prop.Index)
@@ -417,7 +422,7 @@ Namespace Core.FieldManager
     Private Sub UndoChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements Core.IUndoableObject.UndoChanges
 
       If EditLevel > 0 Then
-        If Me.EditLevel - 1 < parentEditLevel Then
+        If Me.EditLevel - 1 <> parentEditLevel Then
           Throw New UndoException(String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
         End If
 
@@ -450,7 +455,7 @@ Namespace Core.FieldManager
     End Sub
 
     Private Sub AcceptChanges(ByVal parentEditLevel As Integer, ByVal parentBindingEdit As Boolean) Implements Core.IUndoableObject.AcceptChanges
-      If Me.EditLevel - 1 < parentEditLevel Then
+      If Me.EditLevel - 1 <> parentEditLevel Then
         Throw New UndoException(String.Format(My.Resources.EditLevelMismatchException, "AcceptChanges"))
       End If
 
@@ -539,12 +544,11 @@ Namespace Core.FieldManager
       OnGetChildren(info, formatter)
     End Sub
 
-    Public Sub SetState(ByVal info As Serialization.Mobile.SerializationInfo) Implements Serialization.Mobile.IMobileObject.SetState
+    Private Sub SetState(ByVal info As Serialization.Mobile.SerializationInfo) Implements Serialization.Mobile.IMobileObject.SetState
       Dim type As String = CType(info.Values("_businessObjectType").Value, String)
       Dim businessObjecType As Type = System.Type.GetType(type)
       SetPropertyList(businessObjecType)
-      'TODO: _fieldData = New IFieldData(_propertyList.Count)
-
+      _fieldData = New IFieldData(_propertyList.Count) {}
       For Each [property] As IPropertyInfo In _propertyList
         If info.Values.ContainsKey([property].Name) Then
           Dim value As SerializationInfo.FieldData = info.Values([property].Name)
@@ -559,16 +563,16 @@ Namespace Core.FieldManager
       OnSetState(info)
     End Sub
 
-    Public Sub SetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.SetChildren
+    Private Sub SetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.SetChildren
       For Each [property] As IPropertyInfo In _propertyList
         If info.Children.ContainsKey([property].Name) Then
-          'TODO:
-          'Dim childData As SerializationInfo.FieldData = info.Children([property].Name)
-          'Dim data As IFieldData = GetOrCreateFieldData([property])
-          'data.Value = formatter.GetObject(childData.ReferenceId)
-          'If Not childData.IsDirty Then
-          '  data.MarkClean()
-          'End If
+          Dim childData As SerializationInfo.ChildData = info.Children([property].Name)
+
+          Dim data As IFieldData = GetOrCreateFieldData([property])
+          data.Value = formatter.GetObject(childData.ReferenceId)
+          If Not childData.IsDirty Then
+            data.MarkClean()
+          End If
         End If
       Next
       OnSetChildren(info, formatter)
@@ -623,6 +627,32 @@ Namespace Core.FieldManager
     ''' convert child references to/from reference id values.
     ''' </param>
     Protected Overridable Sub OnSetChildren(ByVal info As SerializationInfo, ByVal formatter As MobileFormatter)
+
+    End Sub
+
+#End Region
+
+#Region " Force Static Field Init "
+
+    ''' <summary>
+    ''' Forces initialization of the static fields declared
+    ''' by a type, and any of its base class types.
+    ''' </summary>
+    ''' <param name="type">Object to initialize.</param>
+    Public Shadows Sub ForceStaticFieldInit(ByVal type As Type)
+      Dim attr = System.Reflection.BindingFlags.Static Or _
+                 System.Reflection.BindingFlags.Public Or _
+                 System.Reflection.BindingFlags.DeclaredOnly Or _
+                 System.Reflection.BindingFlags.NonPublic
+
+      Dim t As Type = type
+      While t IsNot Nothing
+        Dim fields() As FieldInfo = t.GetFields(attr)
+        If fields.Length > 0 Then
+          fields(0).GetValue(Nothing)
+        End If
+        t = t.BaseType
+      End While
 
     End Sub
 

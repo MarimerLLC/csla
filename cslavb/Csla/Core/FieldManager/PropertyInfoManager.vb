@@ -1,16 +1,18 @@
-﻿Namespace Core.FieldManager
+﻿Imports System.Collections.Generic
+
+Namespace Core.FieldManager
 
   Friend Module PropertyInfoManager
 
     Private _cacheLock As New Object
-    Private _propertyInfoCache As Dictionary(Of Type, List(Of IPropertyInfo))
+    Private _propertyInfoCache As Dictionary(Of Type, PropertyInfoList)
 
-    Private ReadOnly Property PropertyInfoCache() As Dictionary(Of Type, List(Of IPropertyInfo))
+    Private ReadOnly Property PropertyInfoCache() As Dictionary(Of Type, PropertyInfoList)
       Get
         If _propertyInfoCache Is Nothing Then
           SyncLock _cacheLock
             If _propertyInfoCache Is Nothing Then
-              _propertyInfoCache = New Dictionary(Of Type, List(Of IPropertyInfo))()
+              _propertyInfoCache = New Dictionary(Of Type, PropertyInfoList)()
             End If
           End SyncLock
         End If
@@ -18,13 +20,13 @@
       End Get
     End Property
 
-    Public Function GetPropertyListCache(ByVal objectType As Type) As List(Of IPropertyInfo)
+    Public Function GetPropertyListCache(ByVal objectType As Type) As PropertyInfoList
       Dim cache = PropertyInfoCache
-      Dim list As List(Of IPropertyInfo) = Nothing
-      If Not (cache.TryGetValue(objectType, list)) Then
+      Dim list As PropertyInfoList = Nothing
+      If (Not (cache.TryGetValue(objectType, list))) Then
         SyncLock cache
-          If Not (cache.TryGetValue(objectType, list)) Then
-            list = New List(Of IPropertyInfo)()
+          If (Not (cache.TryGetValue(objectType, list))) Then
+            list = New PropertyInfoList()
             cache.Add(objectType, list)
           End If
         End SyncLock
@@ -51,6 +53,9 @@
     Public Function RegisterProperty(Of T)(ByVal objectType As Type, ByVal info As PropertyInfo(Of T)) As PropertyInfo(Of T)
       Dim list = GetPropertyListCache(objectType)
       SyncLock list
+        If list.IsLocked Then
+          Throw New InvalidOperationException(String.Format(My.Resources.PropertyRegisterNotAllowed, info.Name))
+        End If
         list.Add(info)
         list.Sort()
       End SyncLock
@@ -66,12 +71,12 @@
     ''' <param name="objectType">
     ''' The business object type.
     ''' </param>
-    Public Function GetRegisteredProperties(ByVal objectType As Type) As List(Of IPropertyInfo)
+    Public Function GetRegisteredProperties(ByVal objectType As Type) As PropertyInfoList
       ' return a copy of the list to avoid
       ' possible locking issues
       Dim list = GetPropertyListCache(objectType)
       SyncLock list
-        Return New List(Of IPropertyInfo)(list)
+        Return New PropertyInfoList(list)
       End SyncLock
     End Function
 

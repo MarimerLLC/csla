@@ -422,9 +422,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <summary>
   ''' Creates a clone of the object.
   ''' </summary>
-  ''' <returns>
-  ''' A new object containing the exact data of the original object.
-  ''' </returns>
+  ''' <returns>A new object containing the exact data of the original object.</returns>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overridable Function GetClone() As Object
 
@@ -732,7 +730,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' value, the defaultValue value is returned as a
   ''' result.
   ''' </remarks>
-  Protected Function GetProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F) As P
+  Protected Function GetPropertyConvert(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F) As P
 
     Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException))
 
@@ -760,7 +758,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' value, the defaultValue value is returned as a
   ''' result.
   ''' </remarks>
-  Protected Function GetProperty(Of F, P)( _
+  Protected Function GetPropertyConvert(Of F, P)( _
     ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F, ByVal noAccess As Security.NoAccessBehavior) As P
 
     Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess))
@@ -806,8 +804,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' value, the defaultValue value is returned as a
   ''' result.
   ''' </remarks>
-  Protected Function GetProperty(Of F, P)( _
-    ByVal propertyInfo As PropertyInfo(Of F)) As P
+  Protected Function GetPropertyConvert(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F)) As P
 
     Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, Security.NoAccessBehavior.SuppressException))
 
@@ -834,8 +831,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' value, the defaultValue value is returned as a
   ''' result.
   ''' </remarks>
-  Protected Function GetProperty(Of F, P)( _
-    ByVal propertyInfo As PropertyInfo(Of F), ByVal noAccess As Security.NoAccessBehavior) As P
+  Protected Function GetPropertyConvert(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal noAccess As Security.NoAccessBehavior) As P
 
     Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo, noAccess))
 
@@ -912,7 +908,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </typeparam>
   ''' <param name="propertyInfo">
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-  Protected Function ReadProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F)) As P
+  Protected Function ReadPropertyConvert(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F)) As P
 
     Return Utilities.CoerceValue(Of P)(GetType(F), Nothing, ReadProperty(Of F)(propertyInfo))
 
@@ -1009,6 +1005,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   End Sub
 
+  Private Sub IManageProperties_LoadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P) Implements IManageProperties.LoadProperty
+    LoadProperty(Of P)(propertyInfo, newValue)
+  End Sub
+
   ''' <summary>
   ''' Loads a property's managed field with the 
   ''' supplied value calling PropertyHasChanged 
@@ -1097,6 +1097,96 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     OnBusyChanged(e)
   End Sub
 
+  ''' <summary>
+  ''' Loads a property value asynchronously.
+  ''' </summary>
+  ''' <typeparam name="R">Type of the property</typeparam>
+  ''' <typeparam name="P">Type of the parameter.</typeparam>
+  ''' <param name="property">Property to load.</param>
+  ''' <param name="factory">AsyncFactory delegate.</param>
+  ''' <param name="parameter">Parameter value.</param>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected Sub LoadPropertyAsync(Of R, P)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P), ByVal parameter As P)
+    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, parameter)
+    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+  End Sub
+
+  ''' <summary>
+  ''' Loads a property value asynchronously.
+  ''' </summary>
+  ''' <typeparam name="R">Type of the property</typeparam>
+  ''' <typeparam name="P1">Type of the parameter.</typeparam>
+  ''' <typeparam name="P2">Type of the parameter.</typeparam>
+  ''' <param name="property">Property to load.</param>
+  ''' <param name="factory">AsyncFactory delegate.</param>
+  ''' <param name="pp1">Parameter value.</param>
+  ''' <param name="pp2">Parameter value.</param>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected Sub LoadPropertyAsync(Of R, P1, P2)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2), ByVal pp1 As P1, ByVal pp2 As P2)
+    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2)
+    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+  End Sub
+
+  ''' <summary>
+  ''' Loads a property value asynchronously.
+  ''' </summary>
+  ''' <typeparam name="R">Type of the property</typeparam>
+  ''' <typeparam name="P1">Type of the parameter.</typeparam>
+  ''' <typeparam name="P2">Type of the parameter.</typeparam>
+  ''' <typeparam name="P3">Type of the parameter.</typeparam>
+  ''' <param name="property">Property to load.</param>
+  ''' <param name="factory">AsyncFactory delegate.</param>
+  ''' <param name="pp1">Parameter value.</param>
+  ''' <param name="pp2">Parameter value.</param>
+  ''' <param name="pp3">Parameter value.</param>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected Sub LoadPropertyAsync(Of R, P1, P2, P3)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3)
+    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2,pp3)
+    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+  End Sub
+
+  ''' <summary>
+  ''' Loads a property value asynchronously.
+  ''' </summary>
+  ''' <typeparam name="R">Type of the property</typeparam>
+  ''' <typeparam name="P1">Type of the parameter.</typeparam>
+  ''' <typeparam name="P2">Type of the parameter.</typeparam>
+  ''' <typeparam name="P3">Type of the parameter.</typeparam>
+  ''' <typeparam name="P4">Type of the parameter.</typeparam>
+  ''' <param name="property">Property to load.</param>
+  ''' <param name="factory">AsyncFactory delegate.</param>
+  ''' <param name="pp1">Parameter value.</param>
+  ''' <param name="pp2">Parameter value.</param>
+  ''' <param name="pp3">Parameter value.</param>
+  ''' <param name="pp4">Parameter value.</param>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4)
+    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2,pp3,pp4)
+    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+  End Sub
+
+  ''' <summary>
+  ''' Loads a property value asynchronously.
+  ''' </summary>
+  ''' <typeparam name="R">Type of the property</typeparam>
+  ''' <typeparam name="P1">Type of the parameter.</typeparam>
+  ''' <typeparam name="P2">Type of the parameter.</typeparam>
+  ''' <typeparam name="P3">Type of the parameter.</typeparam>
+  ''' <typeparam name="P4">Type of the parameter.</typeparam>
+  ''' <typeparam name="P5">Type of the parameter.</typeparam>
+  ''' <param name="property">Property to load.</param>
+  ''' <param name="factory">AsyncFactory delegate.</param>
+  ''' <param name="pp1">Parameter value.</param>
+  ''' <param name="pp2">Parameter value.</param>
+  ''' <param name="pp3">Parameter value.</param>
+  ''' <param name="pp4">Parameter value.</param>
+  ''' <param name="pp5">Parameter value.</param>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4, ByVal pp5 As P5)
+    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2,pp3)
+    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+  End Sub
+
 #End Region
 
 #Region " Field Manager "
@@ -1119,86 +1209,62 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
 #End Region
 
-#Region " IDataPortalTarget implementation "
+#Region " IsBusy / IsIdle "
 
-  Private Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
+  <NonSerialized()> _
+  <NotUndoable()> _
+  Private _isBusy As Boolean
 
+  ''' <summary>
+  ''' Marks the object as being busy (it is
+  ''' running an async operation).
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub MarkBusy()
+    If _isBusy Then
+      Throw New InvalidOperationException(My.Resources.BusyObjectsMayNotBeMarkedBusy)
+    End If
+
+    _isBusy = True
+    OnBusyChanged(New BusyChangedEventArgs("", True))
   End Sub
 
-  Private Sub MarkNew() Implements Server.IDataPortalTarget.MarkNew
-
+  ''' <summary>
+  ''' Marks the object as being not busy
+  ''' (it is not running an async operation).
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub MarkIdle()
+    _isBusy = False
+    OnBusyChanged(New BusyChangedEventArgs("", True))
   End Sub
 
-  Private Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
-
-  End Sub
-
-#End Region
-
-#Region " IManagedProperties "
-
-  Private Function GetManagedProperties() As System.Collections.Generic.List(Of IPropertyInfo) Implements IManageProperties.GetManagedProperties
-    Return FieldManager.GetRegisteredProperties
-  End Function
-
-  Private ReadOnly Property HasManagedProperties() As Boolean Implements IManageProperties.HasManagedProperties
+  ''' <summary>
+  ''' Gets a value indicating whether this
+  ''' object or any of its child objects are
+  ''' running an async operation.
+  ''' </summary>
+  <Browsable(False)> _
+  Public ReadOnly Property IsBusy() As Boolean Implements Core.INotifyBusy.IsBusy
     Get
-      Return _fieldManager IsNot Nothing AndAlso _fieldManager.HasFields
+      Return IsSelfBusy Or (_fieldManager IsNot Nothing And FieldManager.IsBusy())
     End Get
   End Property
 
-  Private Sub SetProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements Core.IManageProperties.SetProperty
-    Throw New NotImplementedException("IManageProperties.SetProperty")
-  End Sub
-
-#End Region
-
-#Region "INotifyBusy Members"
-
-  <NotUndoable()> _
-  <NonSerialized()> _
-  Private _unhandledAsyncException As EventHandler(Of ErrorEventArgs)
-
   ''' <summary>
-  ''' Event raised when an exception occurs on a background
-  ''' thread during an asynchronous operation.
+  ''' Gets a value indicating whether this
+  ''' object is
+  ''' running an async operation.
   ''' </summary>
-  Public Custom Event UnhandledAsyncException As EventHandler(Of ErrorEventArgs) Implements Core.INotifyUnhandledAsyncException.UnhandledAsyncException
-    AddHandler(ByVal value As EventHandler(Of ErrorEventArgs))
-      _unhandledAsyncException = CType(System.Delegate.Combine(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
-    End AddHandler
+  <Browsable(False)> _
+  Public ReadOnly Property IsSelfBusy() As Boolean Implements Core.INotifyBusy.IsSelfBusy
+    Get
+      Return _isBusy Or LoadManager.IsLoading
+    End Get
+  End Property
 
-    RemoveHandler(ByVal value As EventHandler(Of ErrorEventArgs))
-      _unhandledAsyncException = CType(System.Delegate.Remove(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
-    End RemoveHandler
-
-    RaiseEvent(ByVal sender As Object, ByVal e As Core.ErrorEventArgs)
-      If _unhandledAsyncException IsNot Nothing Then
-        _unhandledAsyncException.Invoke(sender, e)
-      End If
-    End RaiseEvent
-  End Event
-
-  ''' <summary>
-  ''' Raises the UnhandledAsyncException event.
-  ''' </summary>
-  ''' <param name="e">Error arguments.</param>
-  <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub OnUnhandledAsyncException(ByVal e As ErrorEventArgs)    
-    If _unhandledAsyncException IsNot Nothing Then
-      _unhandledAsyncException(Me, e)
-    End If
-  End Sub
-
-  ''' <summary>
-  ''' Raises the UnhandledAsyncException event.
-  ''' </summary>
-  ''' <param name="originalSender">Original sender of the
-  ''' event.</param>
-  ''' <param name="e">Execption that occurred.</param>
-  <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Sub OnUnhandledAsyncException(ByVal originalSender As Object, ByVal e As Exception)    
-    OnUnhandledAsyncException(New ErrorEventArgs(originalSender, e))
+  Private Sub Child_PropertyBusy(ByVal sender As Object, ByVal e As BusyChangedEventArgs)
+    OnBusyChanged(e)
   End Sub
 
   <NotUndoable()> _
@@ -1247,33 +1313,171 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     End If
   End Sub
 
-  <NonSerialized()> _
+#End Region
+
+#Region " IDataPortalTarget Members "
+
+  Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
+
+  End Sub
+
+  Private Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
+
+  End Sub
+
+  Private Sub MarkNew() Implements Server.IDataPortalTarget.MarkNew
+
+  End Sub
+
+  Private Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
+
+  End Sub
+
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+    Me.DataPortal_OnDataPortalInvoke(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+    Me.DataPortal_OnDataPortalInvokeComplete(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+    Me.DataPortal_OnDataPortalException(e, ex)
+  End Sub
+
+  Private Sub IDataPortalTarget_Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+    Me.Child_OnDataPortalInvoke(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+    Me.Child_OnDataPortalInvokeComplete(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
+    Me.Child_OnDataPortalException(e, ex)
+  End Sub
+
+#End Region
+
+#Region " IManagedProperties "
+
+  Private ReadOnly Property HasManagedProperties() As Boolean Implements IManageProperties.HasManagedProperties
+    Get
+      Return (_fieldManager IsNot Nothing AndAlso _fieldManager.HasFields)
+    End Get
+  End Property
+
+  Private Function GetManagedProperties() As System.Collections.Generic.List(Of IPropertyInfo) Implements IManageProperties.GetManagedProperties
+    Return FieldManager.GetRegisteredProperties
+  End Function
+
+  Private Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.GetProperty
+    Return GetProperty(propertyInfo)
+  End Function
+
+  Private Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
+    Return ReadProperty(PropertyInfo)
+  End Function
+
+  Private Sub SetProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements Core.IManageProperties.SetProperty
+    Throw New NotImplementedException("IManageProperties.SetProperty")
+  End Sub
+
+  Private Sub LoadProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.LoadProperty
+    LoadProperty(propertyInfo, newValue)
+  End Sub
+
+#End Region
+
+#Region " MobileFormatter "
+
+  ''' <summary>
+  ''' Override this method to insert your child object
+  ''' references into the MobileFormatter serialzation stream.
+  ''' </summary>
+  ''' <param name="info">
+  ''' Object containing the data to serialize.
+  ''' </param>
+  ''' <param name="formatter">
+  ''' Reference to MobileFormatter instance. Use this to
+  ''' convert child references to/from reference id values.
+  ''' </param>
+  Protected Overrides Sub OnGetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+    MyBase.OnGetChildren(info, formatter)
+    If _fieldManager IsNot Nothing Then
+      Dim fieldManagerInfo = formatter.SerializeObject(_fieldManager)
+      info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId)
+    End If
+  End Sub
+
+  ''' <summary>
+  ''' Override this method to retrieve your child object
+  ''' references from the MobileFormatter serialzation stream.
+  ''' </summary>
+  ''' <param name="info">
+  ''' Object containing the data to serialize.
+  ''' </param>
+  ''' <param name="formatter">
+  ''' Reference to MobileFormatter instance. Use this to
+  ''' convert child references to/from reference id values.
+  ''' </param>
+  Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+    If info.Children.ContainsKey("_fieldManager") Then
+      Dim childData = info.Children("_fieldManager")
+      _fieldManager = CType(formatter.GetObject(childData.ReferenceId), FieldDataManager)
+    End If
+    MyBase.OnSetChildren(info, formatter)
+  End Sub
+
+#End Region
+
+#Region " INotifyUnhandledAsyncException Members "
+
   <NotUndoable()> _
-  Private _isBusy As Boolean
+  <NonSerialized()> _
+  Private _unhandledAsyncException As EventHandler(Of ErrorEventArgs)
 
   ''' <summary>
-  ''' Gets a value indicating whether this
-  ''' object or any of its child objects are
-  ''' running an async operation.
+  ''' Event raised when an exception occurs on a background
+  ''' thread during an asynchronous operation.
   ''' </summary>
-  <Browsable(False)> _
-  Public ReadOnly Property IsBusy() As Boolean Implements Core.INotifyBusy.IsBusy
-    Get
-      Return IsSelfBusy Or (_fieldManager IsNot Nothing And FieldManager.IsBusy())
-    End Get
-  End Property
+  Public Custom Event UnhandledAsyncException As EventHandler(Of ErrorEventArgs) Implements Core.INotifyUnhandledAsyncException.UnhandledAsyncException
+    AddHandler(ByVal value As EventHandler(Of ErrorEventArgs))
+      _unhandledAsyncException = CType(System.Delegate.Combine(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+    End AddHandler
+
+    RemoveHandler(ByVal value As EventHandler(Of ErrorEventArgs))
+      _unhandledAsyncException = CType(System.Delegate.Remove(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+    End RemoveHandler
+
+    RaiseEvent(ByVal sender As Object, ByVal e As Core.ErrorEventArgs)
+      If _unhandledAsyncException IsNot Nothing Then
+        _unhandledAsyncException.Invoke(sender, e)
+      End If
+    End RaiseEvent
+  End Event
 
   ''' <summary>
-  ''' Gets a value indicating whether this
-  ''' object is
-  ''' running an async operation.
+  ''' Raises the UnhandledAsyncException event.
   ''' </summary>
-  <Browsable(False)> _
-  Public ReadOnly Property IsSelfBusy() As Boolean Implements Core.INotifyBusy.IsSelfBusy
-    Get
-      Return _isBusy Or LoadManager.IsLoading
-    End Get
-  End Property
+  ''' <param name="e">Error arguments.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overridable Sub OnUnhandledAsyncException(ByVal e As ErrorEventArgs)
+    If _unhandledAsyncException IsNot Nothing Then
+      _unhandledAsyncException(Me, e)
+    End If
+  End Sub
+
+  ''' <summary>
+  ''' Raises the UnhandledAsyncException event.
+  ''' </summary>
+  ''' <param name="originalSender">Original sender of the
+  ''' event.</param>
+  ''' <param name="e">Execption that occurred.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub OnUnhandledAsyncException(ByVal originalSender As Object, ByVal e As Exception)
+    OnUnhandledAsyncException(New ErrorEventArgs(originalSender, e))
+  End Sub
 
 #End Region
 

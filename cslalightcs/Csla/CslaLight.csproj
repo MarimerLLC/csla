@@ -177,6 +177,9 @@
     <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedPrincipal.cs">
       <Link>Security\UnauthenticatedPrincipal.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\UsernameCriteria.cs">
+      <Link>Security\UsernameCriteria.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
       <Link>Serialization\ISerializationFormatter.cs</Link>
     </Compile>

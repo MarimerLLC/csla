@@ -540,8 +540,16 @@ namespace Csla.Test.PropertyGetSet
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
     {
-      var root = new BadGetSet();
-      var tmp = root.Id;
+      var first = new EditableGetSet();
+      try
+      {
+        var root = new BadGetSet();
+        var tmp = root.Id;
+      }
+      catch (TypeInitializationException ex)
+      {
+        throw ex.InnerException;
+      }
     }
 
     #region Event Bubbling

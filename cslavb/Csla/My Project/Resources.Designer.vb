@@ -385,6 +385,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Target object must implement IManageProperties.
+        '''</summary>
+        Friend ReadOnly Property IManagePropertiesRequiredException() As String
+            Get
+                Return ResourceManager.GetString("IManagePropertiesRequiredException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Index is out of range.
         '''</summary>
         Friend ReadOnly Property IndexIsOutOfRange() As String
@@ -426,6 +435,15 @@ Namespace My.Resources
         Friend ReadOnly Property MaxValueRule() As String
             Get
                 Return ResourceManager.GetString("MaxValueRule", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Member not found on object ({0}).
+        '''</summary>
+        Friend ReadOnly Property MemberNotFoundException() As String
+            Get
+                Return ResourceManager.GetString("MemberNotFoundException", resourceCulture)
             End Get
         End Property
         
@@ -660,6 +678,15 @@ Namespace My.Resources
         Friend ReadOnly Property PropertyNotRegistered() As String
             Get
                 Return ResourceManager.GetString("PropertyNotRegistered", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Can not register property {0} after containing type has been instantiated.
+        '''</summary>
+        Friend ReadOnly Property PropertyRegisterNotAllowed() As String
+            Get
+                Return ResourceManager.GetString("PropertyRegisterNotAllowed", resourceCulture)
             End Get
         End Property
         

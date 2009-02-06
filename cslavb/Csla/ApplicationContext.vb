@@ -3,7 +3,6 @@ Imports System.Threading
 Imports System.Security.Principal
 Imports System.Collections.Specialized
 Imports System.Web
-Imports Csla
 
 ''' <summary>
 ''' Provides consistent context information between the client
@@ -128,7 +127,7 @@ Public Module ApplicationContext
 #End If
 
       Dim slot As System.LocalDataStoreSlot = Thread.GetNamedDataSlot(mLocalContextName)
-      Threading.Thread.SetData(slot, localContext)
+      Thread.SetData(slot, localContext)
 
 #If Not CLIENTONLY Then
     Else
@@ -253,7 +252,7 @@ Public Module ApplicationContext
       Else
         Dim slot As System.LocalDataStoreSlot = _
           Thread.GetNamedDataSlot(_clientContextName)
-        Threading.Thread.SetData(slot, clientContext)
+        Thread.SetData(slot, clientContext)
       End If
 #If Not CLIENTONLY Then
     Else
@@ -269,7 +268,7 @@ Public Module ApplicationContext
 #End If
 
       Dim slot As System.LocalDataStoreSlot = Thread.GetNamedDataSlot(_globalContextName)
-      Threading.Thread.SetData(slot, globalContext)
+      Thread.SetData(slot, globalContext)
 
 #If Not CLIENTONLY Then
     Else

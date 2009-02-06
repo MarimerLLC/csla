@@ -1003,39 +1003,6 @@ Public MustInherit Class BusinessListBase( _
 
   End Function
 
-  Public Custom Event Saved As EventHandler(Of SavedEventArgs) Implements Core.ISavable.Saved
-    AddHandler(ByVal value As EventHandler(Of SavedEventArgs)) 
-      If value.Method.IsPublic AndAlso _
-        (value.Method.DeclaringType.IsSerializable Or value.Method.IsStatic) Then
-        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value),  _
-           EventHandler(Of SavedEventArgs))
-      Else
-        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value),  _
-           EventHandler(Of SavedEventArgs))
-      End If
-    End AddHandler
-
-    RemoveHandler(ByVal value As EventHandler(Of SavedEventArgs))
-      If value.Method.IsPublic AndAlso _
-        (value.Method.DeclaringType.IsSerializable Or value.Method.IsStatic) Then
-        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value),  _
-           EventHandler(Of SavedEventArgs))
-      Else
-        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value),  _
-           EventHandler(Of SavedEventArgs))
-      End If
-    End RemoveHandler
-
-    RaiseEvent(ByVal sender As Object, ByVal e As Core.SavedEventArgs)
-      If Not _nonSerializableSavedHandlers Is Nothing Then
-        _nonSerializableSavedHandlers.Invoke(Me, e)
-      End If
-      If Not _serializableSavedHandlers Is Nothing Then
-        _serializableSavedHandlers.Invoke(Me, e)
-      End If
-    End RaiseEvent
-  End Event
-
   ''' <summary>
   ''' Starts an async operation to save the object to the database.
   ''' </summary>
@@ -1442,27 +1409,27 @@ Public MustInherit Class BusinessListBase( _
 
   End Sub
 
-  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
     Me.DataPortal_OnDataPortalInvoke(e)
   End Sub
 
-  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
     Me.DataPortal_OnDataPortalInvokeComplete(e)
   End Sub
 
-  Private Sub IDataPortalTarget_Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke
+  Private Sub IDataPortalTarget_Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
     Me.Child_OnDataPortalInvoke(e)
   End Sub
 
-  Private Sub IDataPortalTarget_DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
     Me.DataPortal_OnDataPortalException(e, ex)
   End Sub
 
-  Private Sub IDataPortalTarget_Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+  Private Sub IDataPortalTarget_Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
     Me.Child_OnDataPortalInvokeComplete(e)
   End Sub
 
-  Private Sub IDataPortalTarget_Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Csla.Server.IDataPortalTarget.Child_OnDataPortalException
+  Private Sub IDataPortalTarget_Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
     Me.Child_OnDataPortalException(e, ex)
   End Sub
 

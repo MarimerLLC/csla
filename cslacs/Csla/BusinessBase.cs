@@ -1,7 +1,10 @@
 using System;
 using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Reflection;
 using Csla.Properties;
 using Csla.Core;
+using Csla.Reflection;
 
 namespace Csla
 {
@@ -419,6 +422,34 @@ namespace Csla
       return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
     }
 
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, P>> propertyLambdaExpression)
+    {
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterProperty(new PropertyInfo<P>(reflectedPropertyInfo.Name));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, P>> propertyLambdaExpression, string friendlyName)
+    {
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterProperty(new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName));
+    }
     #endregion
   }
 }

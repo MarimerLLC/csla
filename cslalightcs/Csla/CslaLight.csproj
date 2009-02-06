@@ -141,6 +141,9 @@
     <Compile Include="..\..\cslacs\Csla\IndexModeEnum.cs">
       <Link>IndexModeEnum.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Reflection\Reflect.cs">
+      <Link>Reflection\Reflect.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRules.cs">
       <Link>Security\AuthorizationRules.cs</Link>
     </Compile>

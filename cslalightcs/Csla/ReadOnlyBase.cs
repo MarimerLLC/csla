@@ -1137,6 +1137,11 @@ namespace Csla
       get { return (_fieldManager != null && _fieldManager.HasFields); }
     }
 
+    bool Core.IManageProperties.FieldExists(Core.IPropertyInfo property)
+    {
+      return FieldManager.FieldExists(property);
+    }
+
     List<IPropertyInfo> IManageProperties.GetManagedProperties()
     {
       return FieldManager.GetRegisteredProperties();

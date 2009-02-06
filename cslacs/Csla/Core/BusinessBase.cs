@@ -2447,6 +2447,11 @@ namespace Csla.Core
       LoadProperty<P>(propertyInfo, newValue);
     }
 
+    bool Core.IManageProperties.FieldExists(Core.IPropertyInfo property)
+    {
+      return FieldManager.FieldExists(property);
+    }
+
     /// <summary>
     /// Loads a property's managed field with the 
     /// supplied value calling PropertyHasChanged 

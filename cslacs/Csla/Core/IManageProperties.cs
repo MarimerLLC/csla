@@ -6,6 +6,7 @@ namespace Csla.Core
   internal interface IManageProperties
   {
     bool HasManagedProperties { get; }
+    bool FieldExists(Csla.Core.IPropertyInfo property);
     List<IPropertyInfo> GetManagedProperties();
     object GetProperty(IPropertyInfo propertyInfo);
     object ReadProperty(IPropertyInfo propertyInfo);

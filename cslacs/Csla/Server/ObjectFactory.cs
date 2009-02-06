@@ -126,5 +126,14 @@ namespace Csla.Server
     {
       return businessObject.BypassPropertyChecks;
     }
+
+    protected bool FieldExists(object obj, Csla.Core.IPropertyInfo property)
+    {
+      var target = obj as Core.IManageProperties;
+      if (target != null)
+        return target.FieldExists(property);
+      else
+        throw new ArgumentException(Resources.IManagePropertiesRequiredException);
+    }
   }
 }

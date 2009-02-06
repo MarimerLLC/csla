@@ -1,4 +1,4 @@
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -78,6 +78,9 @@
     <Compile Include="..\..\cslacs\Csla\Core\AsyncFactoryDelegates.cs">
       <Link>Core\AsyncFactoryDelegates.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IPropertyInfo.cs">
+      <Link>Core\IPropertyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\BusyChangedEventArgs.cs">
       <Link>Core\BusyChangedEventArgs.cs</Link>
     </Compile>
@@ -140,6 +143,9 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\IndexModeEnum.cs">
       <Link>IndexModeEnum.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\RelationshipTypes.cs">
+      <Link>RelationshipTypes.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Reflection\Reflect.cs">
       <Link>Reflection\Reflect.cs</Link>
@@ -267,6 +273,9 @@
     <Compile Include="..\..\cslacs\Csla\Validation\RuleDescription.cs">
       <Link>Validation\RuleDescription.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\PropertyInfo.cs">
+      <Link>PropertyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\RuleHandler.cs">
       <Link>Validation\RuleHandler.cs</Link>
     </Compile>
@@ -316,7 +325,6 @@
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
     <Compile Include="Core\IParent.cs" />
-    <Compile Include="Core\IPropertyInfo.cs" />
     <Compile Include="Core\IReadOnlyCollection.cs" />
     <Compile Include="Core\ISavable.cs" />
     <Compile Include="Core\ISmartField.cs" />
@@ -353,7 +361,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="PropertyInfo.cs" />
     <Compile Include="PropertyLoaderException.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="ReadOnlyBase.cs" />

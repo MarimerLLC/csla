@@ -1,4 +1,5 @@
 ﻿using System;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -42,6 +43,26 @@ namespace Csla
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
+    /// <param name="relationship">Relationship with
+    /// referenced object.</param>
+    public PropertyInfo(string name, string friendlyName, RelationshipTypes relationship)
+    {
+      _name = name;
+      _friendlyName = friendlyName;
+      if (typeof(T).Equals(typeof(string)))
+        _defaultValue = (T)((object)string.Empty);
+      else
+        _defaultValue = default(T);
+      _relationshipType = relationship;
+    }
+
+    /// <summary>
+    /// Creates a new instance of this class.
+    /// </summary>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
@@ -50,6 +71,26 @@ namespace Csla
       _name = name;
       _defaultValue = defaultValue;
       _friendlyName = friendlyName;
+    }
+
+    /// <summary>
+    /// Creates a new instance of this class.
+    /// </summary>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="defaultValue">
+    /// Default value for the property.
+    /// </param>
+    /// <param name="relationship">Relationship with
+    /// referenced object.</param>
+    public PropertyInfo(string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
+    {
+      _name = name;
+      _defaultValue = defaultValue;
+      _friendlyName = friendlyName;
+      _relationshipType = relationship;
     }
 
     private string _name;
@@ -145,6 +186,17 @@ namespace Csla
       return new Core.FieldManager.FieldData<T>(name);
     }
 
+    private RelationshipTypes _relationshipType = RelationshipTypes.Child;
+
+    /// <summary>
+    /// Gets the relationship between the declaring object
+    /// and the object reference in the property.
+    /// </summary>
+    public RelationshipTypes RelationshipType
+    { 
+      get { return _relationshipType; } 
+    }
+
     private int _index = -1;
 
     /// <summary>
@@ -156,8 +208,6 @@ namespace Csla
     {
       get
       {
-        //if (_index == -1)
-        //  throw new InvalidOperationException(string.Format(Resources.UnRegisteredPropertyException, _name));
         return _index;
       }
       set

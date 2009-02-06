@@ -693,6 +693,23 @@ namespace Csla.Test.PropertyGetSet
 #endif
     }
 
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void LazyLoadChild_GetBeforeSet()
+    {
+      var root = new EditableGetSet();
+      var child = root.LazyChild;
+    }
+
+    [TestMethod]
+    public void LazyLoadChild_GetAfterSet()
+    {
+      var root = new EditableGetSet();
+      root.LazyChild = new ChildList();
+      var child = root.LazyChild;
+      Assert.IsNotNull(child);
+    }
+
     #endregion
   }
 }

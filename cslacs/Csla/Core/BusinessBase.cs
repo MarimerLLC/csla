@@ -1981,6 +1981,9 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
+      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
+        throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
+
       P result = default(P);
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
@@ -2006,6 +2009,9 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected object ReadProperty(IPropertyInfo propertyInfo)
     {
+      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
+        throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
+
       var info = FieldManager.GetFieldData(propertyInfo);
       if (info != null)
         return info.Value;

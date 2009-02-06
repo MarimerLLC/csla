@@ -135,6 +135,14 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
+    private static PropertyInfo<ChildList> LazyChildProperty = 
+      RegisterProperty(new PropertyInfo<ChildList>("LazyChild", "Child list", null, RelationshipTypes.LazyLoad));
+    public ChildList LazyChild
+    {
+      get { return GetProperty(LazyChildProperty); }
+      set { SetProperty(LazyChildProperty, value); }
+    }
+
     public int EditLevel
     {
       get { return base.EditLevel; }

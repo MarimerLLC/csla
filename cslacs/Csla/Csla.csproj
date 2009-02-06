@@ -195,6 +195,7 @@
     <Compile Include="Linq\IRangeTestableIndex.cs" />
     <Compile Include="Linq\RedBlackTreeWrapper.cs" />
     <Compile Include="Reflection\DynamicMemberHandle.cs" />
+    <Compile Include="RelationshipTypes.cs" />
     <Compile Include="Reflection\Reflect.cs" />
     <Compile Include="Security\CslaIdentity.cs" />
     <Compile Include="Security\CslaIdentity.partial.cs" />

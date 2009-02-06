@@ -34,6 +34,11 @@ namespace Csla.Core
     /// Gets a new field data container for the property.
     /// </summary>
     Core.FieldManager.IFieldData NewFieldData(string name);
+    /// <summary>
+    /// Gets the relationship between the declaring object
+    /// and the object reference in the property.
+    /// </summary>
+    RelationshipTypes RelationshipType { get; }
 	  /// <summary>
 	  /// Gets or sets the index position for the managed
 	  /// field storage behind the property. FOR

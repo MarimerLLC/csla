@@ -127,6 +127,12 @@ namespace Csla.Server
       return businessObject.BypassPropertyChecks;
     }
 
+    /// <summary>
+    /// Gets a value indicating whether a managed field
+    /// exists for the specified property.
+    /// </summary>
+    /// <param name="obj">Business object.</param>
+    /// <param name="property">Property info object.</param>
     protected bool FieldExists(object obj, Csla.Core.IPropertyInfo property)
     {
       var target = obj as Core.IManageProperties;
@@ -134,6 +140,21 @@ namespace Csla.Server
         return target.FieldExists(property);
       else
         throw new ArgumentException(Resources.IManagePropertiesRequiredException);
+    }
+
+    /// <summary>
+    /// Gets the list of deleted items from 
+    /// an editable collection.
+    /// </summary>
+    /// <typeparam name="C">Type of child objects in the colletion.</typeparam>
+    /// <param name="obj">Editable collection object.</param>
+    protected Csla.Core.MobileList<C> GetDeletedList<C>(object obj)
+    {
+      var target = obj as Core.IEditableCollection;
+      if (target != null)
+        return (Csla.Core.MobileList<C>)target.GetDeletedList();
+      else
+        throw new ArgumentException(Resources.IEditableCollectionRequiredException);
     }
   }
 }

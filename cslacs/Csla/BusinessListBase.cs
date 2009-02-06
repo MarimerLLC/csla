@@ -448,6 +448,11 @@ namespace Csla
       RemoveIndexItem((C)child);
     }
 
+    object IEditableCollection.GetDeletedList()
+    {
+      return DeletedList;
+    }
+
     /// <summary>
     /// This method is called by a child object when it
     /// wants to be removed from the collection.

@@ -268,6 +268,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Target must implement IEditableCollection.
+        /// </summary>
+        internal static string IEditableCollectionRequiredException {
+            get {
+                return ResourceManager.GetString("IEditableCollectionRequiredException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target object must implement IManageProperties.
         /// </summary>
         internal static string IManagePropertiesRequiredException {

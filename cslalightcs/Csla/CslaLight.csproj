@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -86,6 +86,9 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoList.cs">
       <Link>Core\FieldManager\PropertyInfoList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IEditableCollection.cs">
+      <Link>Core\IEditableCollection.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\IManageProperties.cs">
       <Link>Core\IManageProperties.cs</Link>
@@ -308,7 +311,6 @@
     <Compile Include="Core\FieldManager\PropertyInfoManager.cs" />
     <Compile Include="Core\IBusinessObject.cs" />
     <Compile Include="Core\IEditableBusinessObject.cs" />
-    <Compile Include="Core\IEditableCollection.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />
     <Compile Include="Core\IParent.cs" />
     <Compile Include="Core\IPropertyInfo.cs" />

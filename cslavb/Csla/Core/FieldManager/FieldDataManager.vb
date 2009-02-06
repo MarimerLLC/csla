@@ -639,7 +639,7 @@ Namespace Core.FieldManager
     ''' by a type, and any of its base class types.
     ''' </summary>
     ''' <param name="type">Object to initialize.</param>
-    Public Shadows Sub ForceStaticFieldInit(ByVal type As Type)
+    Public Shared Sub ForceStaticFieldInit(ByVal type As Type)
       Dim attr = System.Reflection.BindingFlags.Static Or _
                  System.Reflection.BindingFlags.Public Or _
                  System.Reflection.BindingFlags.DeclaredOnly Or _

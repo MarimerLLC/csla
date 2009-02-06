@@ -1003,6 +1003,39 @@ Public MustInherit Class BusinessListBase( _
 
   End Function
 
+  Public Custom Event Saved As EventHandler(Of SavedEventArgs) Implements Core.ISavable.Saved
+    AddHandler(ByVal value As EventHandler(Of SavedEventArgs)) 
+      If value.Method.IsPublic AndAlso _
+        (value.Method.DeclaringType.IsSerializable Or value.Method.IsStatic) Then
+        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value),  _
+           EventHandler(Of SavedEventArgs))
+      Else
+        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value),  _
+           EventHandler(Of SavedEventArgs))
+      End If
+    End AddHandler
+
+    RemoveHandler(ByVal value As EventHandler(Of SavedEventArgs))
+      If value.Method.IsPublic AndAlso _
+        (value.Method.DeclaringType.IsSerializable Or value.Method.IsStatic) Then
+        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value),  _
+           EventHandler(Of SavedEventArgs))
+      Else
+        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value),  _
+           EventHandler(Of SavedEventArgs))
+      End If
+    End RemoveHandler
+
+    RaiseEvent(ByVal sender As Object, ByVal e As Core.SavedEventArgs)
+      If Not _nonSerializableSavedHandlers Is Nothing Then
+        _nonSerializableSavedHandlers.Invoke(Me, e)
+      End If
+      If Not _serializableSavedHandlers Is Nothing Then
+        _serializableSavedHandlers.Invoke(Me, e)
+      End If
+    End RaiseEvent
+  End Event
+
   ''' <summary>
   ''' Starts an async operation to save the object to the database.
   ''' </summary>
@@ -1120,7 +1153,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
 
   End Sub
 
@@ -1131,7 +1164,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
 
   End Sub
 
@@ -1143,7 +1176,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
 
   End Sub
 
@@ -1153,7 +1186,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
 
   End Sub
 
@@ -1163,7 +1196,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
 
   End Sub
 
@@ -1174,7 +1207,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+  Protected Overridable Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
 
   End Sub
 
@@ -1433,6 +1466,6 @@ Public MustInherit Class BusinessListBase( _
     Me.Child_OnDataPortalException(e, ex)
   End Sub
 
-#End Region   
+#End Region
 
 End Class

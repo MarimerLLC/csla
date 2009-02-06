@@ -176,6 +176,7 @@
     <Compile Include="Core\ITrackStatus.cs" />
     <Compile Include="Core\ManagedObjectBase.cs" />
     <Compile Include="Core\MobileBindingList.cs" />
+    <Compile Include="Core\MobileDictionary.cs" />
     <Compile Include="Core\MobileList.cs" />
     <Compile Include="Core\MobileObject.cs" />
     <Compile Include="Core\UndoableHandler.cs" />

@@ -318,5 +318,103 @@ namespace cslalighttest.Serialization
       context.Assert.Success();
       context.Complete();
     }
+
+    [TestMethod]
+    public void MobileDictionary_PrimitiveKey_PrimitiveValue()
+    {
+      UnitTestContext context = GetContext();
+      var d = new MobileDictionary<string, int>();
+      d.Add("a", 12343);
+      d.Add("z", 943204);
+      d.Add("b", 77878);
+      d.Add("x", 42343);
+      d.Add("r", 45345);
+
+      byte[] buffer = MobileFormatter.Serialize(d);
+      var r = (MobileDictionary<string, int>)MobileFormatter.Deserialize(buffer);
+
+      context.Assert.IsTrue(r.ContainsKey("a"));
+      context.Assert.IsTrue(r.ContainsKey("z"));
+      context.Assert.IsTrue(r.ContainsKey("b"));
+      context.Assert.IsTrue(r.ContainsKey("x"));
+      context.Assert.IsTrue(r.ContainsKey("r"));
+
+      context.Assert.AreEqual(d["a"], r["a"]);
+      context.Assert.AreEqual(d["z"], r["z"]);
+      context.Assert.AreEqual(d["b"], r["b"]);
+      context.Assert.AreEqual(d["x"], r["x"]);
+      context.Assert.AreEqual(d["r"], r["r"]);
+      context.Assert.Success();
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void MobileDictionary_PrimitiveKey_MobileValue()
+    {
+      UnitTestContext context = GetContext();
+      var d = new MobileDictionary<string, MockReadOnly>();
+      d.Add("a", new MockReadOnly(1));
+      d.Add("z", new MockReadOnly(2));
+      d.Add("b", new MockReadOnly(3));
+      d.Add("x", new MockReadOnly(4));
+      d.Add("r", new MockReadOnly(5));
+
+      byte[] buffer = MobileFormatter.Serialize(d);
+      var r = (MobileDictionary<string, MockReadOnly>)MobileFormatter.Deserialize(buffer);
+
+      context.Assert.IsTrue(r.ContainsKey("a"));
+      context.Assert.IsTrue(r.ContainsKey("z"));
+      context.Assert.IsTrue(r.ContainsKey("b"));
+      context.Assert.IsTrue(r.ContainsKey("x"));
+      context.Assert.IsTrue(r.ContainsKey("r"));
+
+      context.Assert.AreEqual(d["a"].Id, r["a"].Id);
+      context.Assert.AreEqual(d["z"].Id, r["z"].Id);
+      context.Assert.AreEqual(d["b"].Id, r["b"].Id);
+      context.Assert.AreEqual(d["x"].Id, r["x"].Id);
+      context.Assert.AreEqual(d["r"].Id, r["r"].Id);
+      context.Assert.Success();
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void MobileDictionary_MobileKey_PrimitiveValue()
+    {
+      UnitTestContext context = GetContext();
+      var d = new MobileDictionary<MockReadOnly, string>();
+      d.Add(new MockReadOnly(1), "v1");
+      d.Add(new MockReadOnly(2), "v2");
+      d.Add(new MockReadOnly(3), "v3");
+      d.Add(new MockReadOnly(4), "v4");
+      d.Add(new MockReadOnly(5), "v5");
+
+      byte[] buffer = MobileFormatter.Serialize(d);
+      var r = (MobileDictionary<MockReadOnly, string>)MobileFormatter.Deserialize(buffer);
+
+      foreach (var key in r.Keys)
+        context.Assert.AreEqual(key.Id, Convert.ToInt32(r[key].Substring(1)));
+      context.Assert.Success();
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void MobileDictionary_MobileKey_MobileValue()
+    {
+      UnitTestContext context = GetContext();
+      var d = new MobileDictionary<MockReadOnly, MockReadOnly>();
+      d.Add(new MockReadOnly(21), new MockReadOnly(1));
+      d.Add(new MockReadOnly(22), new MockReadOnly(2));
+      d.Add(new MockReadOnly(23), new MockReadOnly(3));
+      d.Add(new MockReadOnly(24), new MockReadOnly(4));
+      d.Add(new MockReadOnly(25), new MockReadOnly(5));
+
+      byte[] buffer = MobileFormatter.Serialize(d);
+      var r = (MobileDictionary<MockReadOnly, MockReadOnly>)MobileFormatter.Deserialize(buffer);
+
+      foreach (var key in r.Keys)
+        context.Assert.AreEqual(key.Id, r[key].Id + 20);
+      context.Assert.Success();
+      context.Complete();
+    }
   }
 }

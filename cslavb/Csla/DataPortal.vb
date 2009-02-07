@@ -1,7 +1,8 @@
+Imports System
+Imports System.ComponentModel
 Imports System.Reflection
 Imports Csla.Reflection
 Imports System.Windows
-Imports System.ComponentModel
 Imports Csla.Serialization.Mobile
 Imports Csla.Server
 
@@ -31,7 +32,7 @@ Public Module DataPortal
   Public Event DataPortalInvokeComplete As Action(Of DataPortalEventArgs)
 
   Private Sub OnDataPortalInitInvoke(ByVal e As Object)
-
+    'TODO: Do these need to be sync'd?
     RaiseEvent DataPortalInitInvoke(e)
 
   End Sub
@@ -353,7 +354,7 @@ Public Module DataPortal
     Try
       OnDataPortalInitInvoke(Nothing)
 
-      Dim method As DataPortalMethodInfo
+      Dim method As DataPortalMethodInfo = Nothing
       Dim factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType)
       If factoryInfo IsNot Nothing Then
         Dim factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName)
@@ -363,13 +364,21 @@ Public Module DataPortal
             Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
                 "delete", objectType.Name))
           End If
-          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, New Object() {obj})
+          If factoryType IsNot Nothing Then
+            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, New Object() {obj})
+          End If
         Else
           If Not Csla.Security.AuthorizationRules.CanEditObject(objectType) Then
             Throw New System.Security.SecurityException(String.Format(My.Resources.UserNotAuthorizedException, _
                 "save", objectType.Name))
           End If
-          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, New Object() {obj})
+          If factoryType IsNot Nothing Then
+            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, New Object() {obj})
+          End If
+        End If
+
+        If method Is Nothing Then
+          method = New DataPortalMethodInfo()
         End If
       Else
         Dim methodName As String
@@ -514,8 +523,7 @@ Public Module DataPortal
           objectType.Name))
       End If
 
-      Dim method = Server.DataPortalMethodCache.GetMethodInfo( _
-        MethodCaller.GetObjectType(criteria), "DataPortal_Delete", criteria)
+      Dim method = Server.DataPortalMethodCache.GetMethodInfo(objectType, "DataPortal_Delete", criteria)
 
       Dim proxy As DataPortalClient.IDataPortalProxy
       proxy = GetDataPortalProxy(method.RunLocal)
@@ -907,56 +915,54 @@ Public Module DataPortal
 
 #End Region
 
-#Region " Get DataPortal Proxy "
+#Region " DataPortal Proxy "
 
-  Private _localPortal As DataPortalClient.IDataPortalProxy
-  Private _portal As DataPortalClient.IDataPortalProxy
+  Private _proxyType As Type
 
   Private Function GetDataPortalProxy( _
     ByVal forceLocal As Boolean) As DataPortalClient.IDataPortalProxy
 
-    If forceLocal Then
-      If _localPortal Is Nothing Then
-        _localPortal = New DataPortalClient.LocalProxy
-      End If
-      Return _localPortal
-
+    If DataPortal.IsInDesignMode Then
+      Return New DataPortalClient.DesignTimeProxy()
     Else
-      If _portal Is Nothing Then
+      If forceLocal Then
+        Return New DataPortalClient.LocalProxy()
+      Else
+        If _proxyType Is Nothing Then
 
-        Dim proxyTypeName As String = ApplicationContext.DataPortalProxy
-        If proxyTypeName = "Local" Then
-          _portal = New DataPortalClient.LocalProxy
+          Dim proxyTypeName As String = ApplicationContext.DataPortalProxy
 
-        Else
-          Dim typeName As String = _
-            proxyTypeName.Substring(0, proxyTypeName.IndexOf(",")).Trim
-          Dim assemblyName As String = _
-            proxyTypeName.Substring(proxyTypeName.IndexOf(",") + 1).Trim
-          _portal = DirectCast(Activator.CreateInstance(assemblyName, _
-            typeName).Unwrap, DataPortalClient.IDataPortalProxy)
+          If proxyTypeName = "Local" Then
+            _proxyType = GetType(DataPortalClient.LocalProxy)
+          Else
+           _proxyType = Type.GetType(proxyTypeName, true, true)
+          End If
         End If
+        Return CType(Activator.CreateInstance(_proxyType), DataPortalClient.IDataPortalProxy)
       End If
-      Return _portal
     End If
-
   End Function
+
+  ''' <summary>
+  ''' Resets the data portal proxy type, so the
+  ''' next data portal call will reload the proxy
+  ''' type based on current configuration values.
+  ''' </summary>
+  Public Sub ResetProxyType()
+    _proxyType = Nothing
+  End Sub
 
   ''' <summary>
   ''' Releases any remote data portal proxy object, so
   ''' the next data portal call will create a new
   ''' proxy instance.
   ''' </summary>
-  <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  <Obsolete("Proxies no longer cached")> _
   Public Sub ReleaseProxy()
 
-    Dim disp = TryCast(_portal, IDisposable)
-    If disp IsNot Nothing Then
-      disp.Dispose()
-    End If
-    _portal = Nothing
-
   End Sub
+
 #End Region
 
 #Region " Security "
@@ -1004,7 +1010,9 @@ Public Module DataPortal
               CBool(IIf(Not Application.Current.MainWindow Is Nothing, _
               DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow), _
               False)))
-          Dim tmp As Boolean 'TODO: = CType(Application.Current.Dispatcher.Invoke(func, Nothing), Boolean)
+
+          'TODO:
+          Dim tmp As Boolean '= CType(Application.Current.Dispatcher.Invoke(func, Nothing), Boolean)
 
           SyncLock _designModeLock
             If Not _isInDesignModeHasBeenSet Then

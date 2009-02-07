@@ -130,10 +130,10 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   ''' <returns>A value indicating if this object is both dirty and valid.</returns>
   <Browsable(False)> _
-  Public Overridable ReadOnly Property IsSavable() As Boolean Implements IEditableCollection.IsSavable
+  Public Overridable ReadOnly Property IsSavable() As Boolean Implements IEditableCollection.IsSavable, Core.ITrackStatus.IsSavable
     Get
       Dim auth = Csla.Security.AuthorizationRules.CanEditObject(Me.GetType())
-      Return (IsDirty AndAlso IsValid AndAlso auth)
+      Return (IsDirty AndAlso IsValid AndAlso auth AndAlso Not IsBusy)
     End Get
   End Property
 
@@ -282,8 +282,7 @@ Public MustInherit Class BusinessListBase( _
     Dim index As Integer
 
     If Me.EditLevel - 1 <> parentEditLevel Then
-      Throw New UndoException( _
-        String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
+      Throw New UndoException(String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
     End If
 
     ' we are coming up one edit level
@@ -446,12 +445,26 @@ Public MustInherit Class BusinessListBase( _
   ''' wants to be removed from the collection.
   ''' </summary>
   ''' <param name="child">The child object to remove.</param>
-  Private Sub RemoveChild(ByVal child As Core.IEditableBusinessObject) _
-    Implements Core.IEditableCollection.RemoveChild, IParent.RemoveChild
+  Private Sub RemoveChild(ByVal child As Core.IEditableBusinessObject) Implements Core.IEditableCollection.RemoveChild, IParent.RemoveChild
     RemoveFromMap(DirectCast(child, C))
     Remove(DirectCast(child, C))
     RemoveIndexItem(DirectCast(child, C))
   End Sub
+
+  Private Function GetDeletedList() As Object Implements IEditableCollection.GetDeletedList
+    Return DeletedList
+  End Function
+
+  '''' <summary>
+  '''' This method is called by a child object when it
+  '''' wants to be removed from the collection.
+  '''' </summary>
+  '''' <param name="child">The child object to remove.</param>
+  'Private Sub RemoveChild(ByVal child As Core.IEditableBusinessObject) Implements Core.IParent.RemoveChild
+  '  RemoveFromMap(DirectCast(child, C))
+  '  Remove(DirectCast(child, C))
+  '  RemoveIndexItem(DirectCast(child, C))
+  'End Sub
 
   ''' <summary>
   ''' Sets the edit level of the child object as it is added.
@@ -539,8 +552,6 @@ Public MustInherit Class BusinessListBase( _
   ''' </param>
   ''' <remarks></remarks>
   Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As C)
-    ' copy the original object to the deleted list,
-    ' marking as deleted, etc.
     Dim child As C = Nothing
     If Not ReferenceEquals(DirectCast(Me(index), C), item) Then
       child = Me(index)
@@ -573,6 +584,56 @@ Public MustInherit Class BusinessListBase( _
       OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
     End If
   End Sub
+
+#End Region
+
+#Region " Cascade Child events "
+
+  ''' <summary>
+  ''' Handles any PropertyChanged event from 
+  ''' a child object and echoes it up as
+  ''' a ListChanged event.
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Never)> _
+  Protected Overrides Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
+    If (_deserialized AndAlso RaiseListChangedEvents AndAlso e IsNot Nothing) Then
+      DeferredLoadIndexIfNotLoaded()
+      If _indexSet.HasIndexFor(e.PropertyName) Then
+        ReIndexItem(DirectCast(sender, C), e.PropertyName)
+
+        For index As Integer = 1 To Count
+          If ReferenceEquals(Me(index), sender) Then
+            Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
+            If descriptor IsNot Nothing Then
+              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index, descriptor))
+            Else
+              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+            End If
+          End If
+        Next
+
+        MyBase.Child_PropertyChanged(sender, e)
+      End If
+    End If
+  End Sub
+
+  Private Shared _propertyDescriptors As PropertyDescriptorCollection
+
+  Private Function GetPropertyDescriptor(ByVal propertyName As String) As PropertyDescriptor
+
+    If _propertyDescriptors Is Nothing Then
+      _propertyDescriptors = TypeDescriptor.GetProperties(GetType(C))
+    End If
+    Dim result As PropertyDescriptor = Nothing
+    For Each desc As PropertyDescriptor In _propertyDescriptors
+      If desc.Name = propertyName Then
+        result = desc
+        Exit For
+      End If
+    Next
+    Return result
+
+  End Function
 
 #End Region
 
@@ -727,10 +788,10 @@ Public MustInherit Class BusinessListBase( _
     Dim [property] As String = _indexSet.HasIndexFor(expr)
     If [property] IsNot Nothing AndAlso IndexModeFor([property]) <> IndexModeEnum.IndexModeNever Then
       LoadIndexIfNotLoaded([property])
-      Return _indexSet.Search(expr, [property])
+      Return _indexSet.Search(expr, [property]) 'TODO: Do we need a yield eqiv here?
     Else
       Dim sourceEnum As IEnumerable(Of C) = Me.AsEnumerable()
-      Return sourceEnum.Where(expr.Compile())
+      Return sourceEnum.Where(expr.Compile()) 'TODO: Do we need a yield eqiv here?
     End If
   End Function
 
@@ -808,8 +869,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <summary>
   ''' Creates a clone of the object.
   ''' </summary>
-  ''' <returns>
-  ''' A new object containing the exact data of the original object.</returns>
+  ''' <returns>A new object containing the exact data of the original object.</returns>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overridable Function GetClone() As Object
 
@@ -829,63 +889,21 @@ Public MustInherit Class BusinessListBase( _
 
 #End Region
 
-#Region " Cascade Child events "
-
-  ''' <summary>
-  ''' Handles any PropertyChanged event from 
-  ''' a child object and echoes it up as
-  ''' a ListChanged event.
-  ''' </summary>
-  <EditorBrowsable(EditorBrowsableState.Never)> _
-  Protected Overrides Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-    If (_deserialized AndAlso RaiseListChangedEvents AndAlso e IsNot Nothing) Then
-      DeferredLoadIndexIfNotLoaded()
-      If _indexSet.HasIndexFor(e.PropertyName) Then
-        ReIndexItem(DirectCast(sender, C), e.PropertyName)
-
-        For index As Integer = 1 To Count
-          If ReferenceEquals(Me(index), sender) Then
-            Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
-            If descriptor IsNot Nothing Then
-              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index, descriptor))
-            Else
-              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
-            End If
-          End If
-        Next
-
-        MyBase.Child_PropertyChanged(sender, e)
-      End If
-    End If
-  End Sub
-
-  Private Shared _propertyDescriptors As PropertyDescriptorCollection
-
-  Private Function GetPropertyDescriptor(ByVal propertyName As String) As PropertyDescriptor
-
-    If _propertyDescriptors Is Nothing Then
-      _propertyDescriptors = TypeDescriptor.GetProperties(GetType(C))
-    End If
-    Dim result As PropertyDescriptor = Nothing
-    For Each desc As PropertyDescriptor In _propertyDescriptors
-      If desc.Name = propertyName Then
-        result = desc
-        Exit For
-      End If
-    Next
-    Return result
-
-  End Function
-
-#End Region
-
 #Region " Serialization Notification "
 
   <NotUndoable()> _
   <NonSerialized()> _
   Private _deserialized As Boolean
 
+  ''' <summary>
+  ''' This method is called on a newly deserialized object
+  ''' after deserialization is complete.
+  ''' </summary>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overrides Sub OnDeserialized()
+    _deserialized = True
+    MyBase.OnDeserialized()
+
     For Each child As Core.IEditableBusinessObject In Me
       child.SetParent(Me)
     Next
@@ -893,7 +911,7 @@ Public MustInherit Class BusinessListBase( _
     For Each child As Core.IEditableBusinessObject In DeletedList
       child.SetParent(Me)
     Next
-    MyBase.OnDeserialized()
+
   End Sub
 
 #End Region
@@ -993,7 +1011,6 @@ Public MustInherit Class BusinessListBase( _
     Dim result As T
     If IsDirty Then
       result = DirectCast(DataPortal.Update(Me), T)
-
     Else
       result = DirectCast(Me, T)
     End If
@@ -1054,7 +1071,7 @@ Public MustInherit Class BusinessListBase( _
       If handler IsNot Nothing Then
         handler(Me, New SavedEventArgs(Nothing, [error], userState))
       End If
-    ElseIf Not IsBusy Then
+    ElseIf IsBusy Then
       Dim [error] As Validation.ValidationException = New Validation.ValidationException(My.Resources.BusyObjectsMayNotBeSaved)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
@@ -1063,9 +1080,13 @@ Public MustInherit Class BusinessListBase( _
     Else
       If IsDirty Then
         If userState Is Nothing Then
-          'TODO Waiting for help on this
+          DataPortal.BeginUpdate(Of T)( _
+          Me, AddressOf BeginUpdateComplete, New SaveState(userState, handler))
         Else
-          'TODO Waiting for help on this
+          OnSaved(CType(Me, T), Nothing, userState)
+          If handler IsNot Nothing Then
+            handler(Me, New Core.SavedEventArgs(Me, Nothing, userState))
+          End If
         End If
       Else
         OnSaved(CType(Me, T), Nothing, userState)
@@ -1075,6 +1096,49 @@ Public MustInherit Class BusinessListBase( _
       End If
     End If
   End Sub
+
+  Private Sub BeginUpdateComplete( _
+    ByVal sender As Object, ByVal e As DataPortalResult(Of T))
+
+    Dim args = CType(e.UserState, SaveState)
+    Dim handler = args.Handler
+    Dim result As T = e.Object
+    OnSaved(result, e.Error, args.UserState)
+    If handler IsNot Nothing Then
+      handler( _
+        result, New Core.SavedEventArgs(result, e.Error, e.UserState))
+    End If
+
+  End Sub
+
+  Private Class SaveState
+
+    Public Sub New(ByVal userState As Object, ByVal handler As EventHandler(Of Core.SavedEventArgs))
+      _userstate = userState
+      _handler = handler
+    End Sub
+
+    Private _userstate As Object
+    Public Property UserState() As Object
+      Get
+        Return _userstate
+      End Get
+      Set(ByVal value As Object)
+        _userstate = value
+      End Set
+    End Property
+
+    Private _handler As EventHandler(Of Core.SavedEventArgs)
+    Public Property Handler() As EventHandler(Of Core.SavedEventArgs)
+      Get
+        Return _handler
+      End Get
+      Set(ByVal value As EventHandler(Of Core.SavedEventArgs))
+        _handler = value
+      End Set
+    End Property
+
+  End Class
 
   ''' <summary>
   ''' Override this method to load a new business object with default
@@ -1234,12 +1298,7 @@ Public MustInherit Class BusinessListBase( _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Sub OnSaved(ByVal newObject As T, ByVal e As Exception, ByVal userState As Object)
     Dim args As Core.SavedEventArgs = New Core.SavedEventArgs(newObject, e, userState)
-    If _nonSerializableSavedHandlers IsNot Nothing Then
-      _nonSerializableSavedHandlers.Invoke(Me, args)
-    End If
-    If _serializableSavedHandlers IsNot Nothing Then
-      _serializableSavedHandlers.Invoke(Me, args)
-    End If
+    RaiseEvent Saved(Me, args)
   End Sub
 
 #End Region
@@ -1309,6 +1368,10 @@ Public MustInherit Class BusinessListBase( _
     End Get
   End Property
 
+  ''' <summary>
+  ''' Gets the busy status for this object and its child objects.
+  ''' </summary>
+  <Browsable(False)> _
   Public Overrides ReadOnly Property IsBusy() As Boolean
     Get
       'any non-new deletions make us dirty
@@ -1341,9 +1404,9 @@ Public MustInherit Class BusinessListBase( _
   <NonSerialized()> _
   Private _expression As Expression
 
-  Friend Sub SetCurrentExpression(ByVal ex As Expression)
-    _expression = ex
-  End Sub
+  'Friend Sub SetCurrentExpression(ByVal ex As Expression)
+  '  _expression = ex
+  'End Sub
 
   Private Sub LoadProviderIfNotLoaded()
     _queryProvider = New Csla.Linq.CslaQueryProvider(Of T, C)(Me)
@@ -1431,6 +1494,64 @@ Public MustInherit Class BusinessListBase( _
 
   Private Sub IDataPortalTarget_Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
     Me.Child_OnDataPortalException(e, ex)
+  End Sub
+
+#End Region
+
+#Region " Mobile object overrides "
+
+  ''' <summary>
+  ''' Override this method to retrieve your field values
+  ''' from the MobileFormatter serialzation stream.
+  ''' </summary>
+  ''' <param name="info">
+  ''' Object containing the data to serialize.
+  ''' </param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo)
+    _isChild = info.GetValue(Of Boolean)("Csla.BusinessListBase._isChild")
+    _editLevel = info.GetValue(Of Integer)("Csla.BusinessListBase._editLevel")
+    MyBase.OnGetState(info)
+  End Sub
+
+  'TODO: Implement OnGetState - for some odd reason I can not because if inheritance issue that alludes me today
+
+  ''' <summary>
+  ''' Override this method to insert child objects
+  ''' into the MobileFormatter serialization stream.
+  ''' </summary>
+  ''' <param name="info">
+  ''' Object containing the data to serialize.
+  ''' </param>
+  ''' <param name="formatter">
+  ''' Reference to the current MobileFormatter.
+  ''' </param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overrides Sub OnGetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+    MyBase.OnGetChildren(info, formatter)
+    If _deletedList IsNot Nothing Then
+      Dim fieldManagerInfo = formatter.SerializeObject(_deletedList)
+      info.AddChild("_deletedList", fieldManagerInfo.ReferenceId)
+    End If
+  End Sub
+
+  ''' <summary>
+  ''' Override this method to get child objects
+  ''' from the MobileFormatter serialization stream.
+  ''' </summary>
+  ''' <param name="info">
+  ''' Object containing the serialized data.
+  ''' </param>
+  ''' <param name="formatter">
+  ''' Reference to the current MobileFormatter.
+  ''' </param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+    If info.Children.ContainsKey("_deletedList") Then
+      Dim childData = info.Children("_deletedList")
+      _deletedList = DirectCast(formatter.GetObject(childData.ReferenceId), MobileList(Of C))
+    End If
+    MyBase.OnSetChildren(info, formatter)
   End Sub
 
 #End Region

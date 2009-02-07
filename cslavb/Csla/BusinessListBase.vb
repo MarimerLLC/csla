@@ -1509,12 +1509,30 @@ Public MustInherit Class BusinessListBase( _
   ''' </param>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo)
-    _isChild = info.GetValue(Of Boolean)("Csla.BusinessListBase._isChild")
-    _editLevel = info.GetValue(Of Integer)("Csla.BusinessListBase._editLevel")
+    '_isChild = info.GetValue(Of Boolean)("Csla.BusinessListBase._isChild")
+    '_editLevel = info.GetValue(Of Integer)("Csla.BusinessListBase._editLevel")
+    'MyBase.OnGetState(info)
+
+    info.AddValue("Csla.BusinessListBase._isChild", _isChild)
+    info.AddValue("Csla.BusinessListBase._editLevel", _editLevel)
     MyBase.OnGetState(info)
   End Sub
 
   'TODO: Implement OnGetState - for some odd reason I can not because if inheritance issue that alludes me today
+
+  ''' <summary>
+  ''' Override this method to retrieve your field values
+  ''' from the MobileFormatter serialzation stream.
+  ''' </summary>
+  ''' <param name="info">
+  ''' Object containing the data to serialize.
+  ''' </param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo)
+    _isChild = info.GetValue(Of Boolean)("Csla.BusinessListBase._isChild")
+    _editLevel = info.GetValue(Of Integer)("Csla.BusinessListBase._editLevel")
+    MyBase.OnSetState(info)
+  End Sub
 
   ''' <summary>
   ''' Override this method to insert child objects

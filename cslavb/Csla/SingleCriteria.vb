@@ -37,4 +37,19 @@ Public Class SingleCriteria(Of B, C)
     _value = value
   End Sub
 
+  ''' <summary>
+  ''' Creates an instance of the type.
+  ''' This is for use by the MobileFormatter,
+  ''' you must provide a criteria value
+  ''' parameter.
+  ''' </summary>
+#If SILVERLIGHT Then
+  Public Sub New()
+  End Sub
+#Else
+  Protected Sub New()
+
+  End Sub
+
+#End If
 End Class

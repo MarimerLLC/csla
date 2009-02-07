@@ -1,3 +1,5 @@
+Imports System
+
 ''' <summary>
 ''' Provides information about the DataPortal 
 ''' call.

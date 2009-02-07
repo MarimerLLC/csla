@@ -145,18 +145,6 @@ Public MustInherit Class CommandBase
 
   End Sub
 
-  Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
-
-  End Sub
-
-  Private Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
-
-  End Sub
-
-  Private Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
-
-  End Sub
-
   Private Sub MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild
 
   End Sub
@@ -166,6 +154,30 @@ Public MustInherit Class CommandBase
   End Sub
 
   Private Sub MarkOld() Implements Server.IDataPortalTarget.MarkOld
+
+  End Sub
+
+  Private Sub IDataPortalTarget_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+    Me.DataPortal_OnDataPortalInvoke(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+    Me.DataPortal_OnDataPortalInvokeComplete(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+    Me.DataPortal_OnDataPortalException(e, ex)
+  End Sub
+
+  Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
+
+  End Sub
+
+  Private Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+
+  End Sub
+
+  Private Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
 
   End Sub
 

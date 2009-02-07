@@ -3,7 +3,6 @@ Imports System.Collections.Generic
 Imports System.ComponentModel
 Imports System.Windows.Forms
 Imports System.Text
-Imports Csla.Properties
 
 Namespace Windows
 

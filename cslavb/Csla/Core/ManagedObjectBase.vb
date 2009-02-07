@@ -1,10 +1,13 @@
 ﻿Imports System
 Imports System.Collections.Generic
 Imports System.Linq
+Imports System.Linq.Expressions
+Imports System.Reflection
 Imports System.Text
 Imports Csla.Core.FieldManager
 Imports Csla.Core.LoadManager
 Imports System.ComponentModel
+Imports Csla.Reflection
 Imports Csla.Serialization.Mobile
 Imports Csla.Serialization
 
@@ -59,6 +62,33 @@ Namespace Core
     ''' </returns> 
     Protected Shared Function RegisterProperty(Of P)(ByVal objectType As Type, ByVal info As PropertyInfo(Of P)) As PropertyInfo(Of P)
       Return Core.FieldManager.PropertyInfoManager.RegisterProperty(Of P)(objectType, info)
+    End Function
+
+    ''' <summary>
+    ''' Indicates that the specified property belongs
+    ''' to the business object type.
+    ''' </summary>
+    ''' <typeparam name="T">Type of object to which the property belongs.</typeparam>
+    ''' <typeparam name="P">Type of property</typeparam>
+    ''' <param name="propertyLambdaExpression">Property Expression</param>
+    ''' <returns>The provided IPropertyInfo object.</returns>
+    Protected Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P))) As PropertyInfo(Of P)
+      Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+      Return RegisterProperty(GetType(T), New PropertyInfo(Of P)(reflectedPropertyInfo.Name))
+    End Function
+
+    ''' <summary>
+    ''' Indicates that the specified property belongs
+    ''' to the business object type.
+    ''' </summary>
+    ''' <typeparam name="T"></typeparam>
+    ''' <typeparam name="P">Type of property</typeparam>
+    ''' <param name="propertyLambdaExpression">Property Expression</param>
+    ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    ''' <returns>The provided IPropertyInfo object.</returns>
+    Protected Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String) As PropertyInfo(Of P)
+      Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+      Return RegisterProperty(GetType(T), New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName))
     End Function
 
 #End Region
@@ -248,7 +278,10 @@ Namespace Core
         _propertyChanged = DirectCast([Delegate].Remove(_propertyChanged, value), PropertyChangedEventHandler)
       End RemoveHandler
       RaiseEvent(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-        Throw New NotImplementedException
+        'TODO: This was a throw exception but I think this is correct
+        If _propertyChanged IsNot Nothing Then
+          _propertyChanged.Invoke(sender, e)
+        End If
       End RaiseEvent
     End Event
 
@@ -257,9 +290,8 @@ Namespace Core
     ''' </summary>
     ''' <param name="propertyName">Name of the changed property.</param>
     Protected Sub OnPropertyChanged(ByVal propertyName As String)
-      If _propertyChanged IsNot Nothing Then
-        _propertyChanged.Invoke(Me, New PropertyChangedEventArgs(propertyName))
-      End If
+      'TODO: I also changed this from the code that is now in the RaiseEvent to this
+      RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
 
 #End Region

@@ -6,7 +6,7 @@ Imports Csla.Core
 Imports System.ComponentModel
 Imports System.Threading
 
-Namespace Csla.Threading
+Namespace Threading
   ''' <summary>
   ''' Implementation of a lock that waits while
   ''' a target object is busy.

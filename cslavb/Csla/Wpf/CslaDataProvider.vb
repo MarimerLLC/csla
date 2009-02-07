@@ -34,6 +34,7 @@ Namespace Wpf
     Private _factoryParameters As ObservableCollection(Of Object)
     Private _isAsynchronous As Boolean
     Private _commandManager As CslaDataProviderCommandManager
+    Private _isBusy As Boolean
 
     ''' <summary>
     ''' Gets an object that can be used to execute
@@ -116,6 +117,43 @@ Namespace Wpf
       End Set
     End Property
 
+
+    ''' <summary>
+    ''' Gets or sets a reference to the data
+    ''' object.
+    ''' </summary>
+    Public Property ObjectInstance() As Object
+      Get
+        Return Data
+      End Get
+      Set(ByVal value As Object)
+        MyBase.OnQueryFinished(value, Nothing, Nothing, Nothing)
+        OnPropertyChanged(New PropertyChangedEventArgs("ObjectInstance"))
+      End Set
+    End Property
+
+    ''' <summary>
+    ''' Gets a value indicating if this object is busy.
+    ''' </summary>
+    Public Property IsBusy() As Boolean
+      Get
+        Return _isBusy
+      End Get
+      Protected Set(ByVal value As Boolean)
+        _isBusy = value
+        OnPropertyChanged(New PropertyChangedEventArgs("IsBusy"))
+      End Set
+    End Property
+
+    ''' <summary>
+    ''' Triggers WPF data binding to rebind to the
+    ''' data object.
+    ''' </summary>
+    Public Sub Rebind()
+      Dim tmp As Object = ObjectInstance
+      ObjectInstance = Nothing
+      ObjectInstance = tmp
+    End Sub
 #End Region
 
 #Region " Query "

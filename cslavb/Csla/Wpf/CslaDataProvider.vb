@@ -395,16 +395,18 @@ Namespace Wpf
     ''' Adds a new item to the object if the object
     ''' implements IBindingList and AllowNew is true.
     ''' </summary>
-    Public Sub AddNew()
+    Public Function AddNew() As Object
 
       ' only do something if the object implements
       ' IBindingList
       Dim list As IBindingList = TryCast(Me.Data, IBindingList)
       If list IsNot Nothing AndAlso list.AllowNew Then
-        list.AddNew()
+        Return list.AddNew()
+      Else
+        Return Nothing
       End If
 
-    End Sub
+    End Function
 
     ''' <summary>
     ''' Removes an item from the list if the object

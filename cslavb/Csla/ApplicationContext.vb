@@ -89,25 +89,25 @@ Public Module ApplicationContext
   ''' </summary>
   ''' <remarks>
   ''' <para>
-    ''' The return value is a ContextDictionary. If one does
+  ''' The return value is a ContextDictionary. If one does
   ''' not already exist, and empty one is created and returned.
   ''' </para><para>
   ''' Note that data in this context is NOT transferred to and from
   ''' the client and server.
   ''' </para>
   ''' </remarks>
-    Public ReadOnly Property LocalContext() As ContextDictionary
-        Get
-            Dim ctx As ContextDictionary = GetLocalContext()
-            If ctx Is Nothing Then
-                ctx = New ContextDictionary
-                SetLocalContext(ctx)
-            End If
-            Return ctx
-        End Get
-    End Property
+  Public ReadOnly Property LocalContext() As ContextDictionary
+    Get
+      Dim ctx As ContextDictionary = GetLocalContext()
+      If ctx Is Nothing Then
+        ctx = New ContextDictionary
+        SetLocalContext(ctx)
+      End If
+      Return ctx
+    End Get
+  End Property
 
-    Private Function GetLocalContext() As ContextDictionary
+  Private Function GetLocalContext() As ContextDictionary
 #If Not CLIENTONLY Then
     If HttpContext.Current Is Nothing Then
 #End If
@@ -119,9 +119,9 @@ Public Module ApplicationContext
       Return CType(HttpContext.Current.Items(mLocalContextName), ContextDictionary)
     End If
 #End If
-    End Function
+  End Function
 
-    Private Sub SetLocalContext(ByVal localContext As ContextDictionary)
+  Private Sub SetLocalContext(ByVal localContext As ContextDictionary)
 #If Not CLIENTONLY Then
     If HttpContext.Current Is Nothing Then
 #End If
@@ -134,7 +134,7 @@ Public Module ApplicationContext
       HttpContext.Current.Items(mLocalContextName) = localContext
     End If
 #End If
-    End Sub
+  End Sub
 
 #End Region
 
@@ -150,7 +150,7 @@ Public Module ApplicationContext
   ''' </summary>
   ''' <remarks>
   ''' <para>
-    ''' The return value is a ContextDictionary. If one does
+  ''' The return value is a ContextDictionary. If one does
   ''' not already exist, and empty one is created and returned.
   ''' </para><para>
   ''' Note that data in this context is transferred from
@@ -163,18 +163,18 @@ Public Module ApplicationContext
   ''' client setting (i.e. in your ASP.NET UI).
   ''' </para>
   ''' </remarks>
-    Public ReadOnly Property ClientContext() As ContextDictionary
-        Get
-            SyncLock _syncClientContext
-                Dim ctx As ContextDictionary = GetClientContext()
-                If ctx Is Nothing Then
-                    ctx = New ContextDictionary
-                    SetClientContext(ctx)
-                End If
-                Return ctx
-            End SyncLock
-        End Get
-    End Property
+  Public ReadOnly Property ClientContext() As ContextDictionary
+    Get
+      SyncLock _syncClientContext
+        Dim ctx As ContextDictionary = GetClientContext()
+        If ctx Is Nothing Then
+          ctx = New ContextDictionary
+          SetClientContext(ctx)
+        End If
+        Return ctx
+      End SyncLock
+    End Get
+  End Property
 
   ''' <summary>
   ''' Returns the application-specific context data shared
@@ -182,7 +182,7 @@ Public Module ApplicationContext
   ''' </summary>
   ''' <remarks>
   ''' <para>
-    ''' The return value is a ContextDictionary. If one does
+  ''' The return value is a ContextDictionary. If one does
   ''' not already exist, and empty one is created and returned.
   ''' </para><para>
   ''' Note that data in this context is transferred to and from
@@ -190,18 +190,18 @@ Public Module ApplicationContext
   ''' will be transferred bi-directionally across the network.
   ''' </para>
   ''' </remarks>
-    Public ReadOnly Property GlobalContext() As ContextDictionary
-        Get
-            Dim ctx As ContextDictionary = GetGlobalContext()
-            If ctx Is Nothing Then
-                ctx = New ContextDictionary
-                SetGlobalContext(ctx)
-            End If
-            Return ctx
-        End Get
-    End Property
+  Public ReadOnly Property GlobalContext() As ContextDictionary
+    Get
+      Dim ctx As ContextDictionary = GetGlobalContext()
+      If ctx Is Nothing Then
+        ctx = New ContextDictionary
+        SetGlobalContext(ctx)
+      End If
+      Return ctx
+    End Get
+  End Property
 
-    Friend Function GetClientContext() As ContextDictionary
+  Friend Function GetClientContext() As ContextDictionary
 
 #If Not CLIENTONLY Then
     If HttpContext.Current Is Nothing Then
@@ -222,9 +222,9 @@ Public Module ApplicationContext
       Return CType(HttpContext.Current.Items(_clientContextName), ContextDictionary)
     End If
 #End If
-    End Function
+  End Function
 
-    Friend Function GetGlobalContext() As ContextDictionary
+  Friend Function GetGlobalContext() As ContextDictionary
 #If Not CLIENTONLY Then
     If HttpContext.Current Is Nothing Then
 #End If
@@ -238,9 +238,9 @@ Public Module ApplicationContext
     End If
 #End If
 
-    End Function
+  End Function
 
-    Private Sub SetClientContext(ByVal clientContext As ContextDictionary)
+  Private Sub SetClientContext(ByVal clientContext As ContextDictionary)
 #If Not CLIENTONLY Then
     If HttpContext.Current Is Nothing Then
 #End If
@@ -260,9 +260,9 @@ Public Module ApplicationContext
     End If
 #End If
 
-    End Sub
+  End Sub
 
-    Friend Sub SetGlobalContext(ByVal globalContext As ContextDictionary)
+  Friend Sub SetGlobalContext(ByVal globalContext As ContextDictionary)
 #If Not CLIENTONLY Then
     If HttpContext.Current Is Nothing Then
 #End If
@@ -276,16 +276,16 @@ Public Module ApplicationContext
     End If
 #End If
 
-    End Sub
+  End Sub
 
-    Friend Sub SetContext( _
-      ByVal clientContext As ContextDictionary, _
-      ByVal globalContext As ContextDictionary)
+  Friend Sub SetContext( _
+    ByVal clientContext As ContextDictionary, _
+    ByVal globalContext As ContextDictionary)
 
-        SetClientContext(clientContext)
-        SetGlobalContext(globalContext)
+    SetClientContext(clientContext)
+    SetGlobalContext(globalContext)
 
-    End Sub
+  End Sub
 
   ''' <summary>
   ''' Clears all context values.
@@ -329,16 +329,21 @@ Public Module ApplicationContext
     End Get
   End Property
 
+  Private _dataPortalProxy As String
+
   ''' <summary>
-  ''' Returns the channel or network protocol
-  ''' for the DataPortal server.
+  ''' Gets or sets the full type name (or 'Local') of
+  ''' the data portal proxy object to be used when
+  ''' communicating with the data portal server.
   ''' </summary>
-  ''' <value>Fully qualified assembly/type name of the proxy class.</value>
+  ''' <value>Fully qualified assembly/type name of the proxy class
+  ''' or 'Local'.</value>
   ''' <returns></returns>
   ''' <remarks>
   ''' <para>
-  ''' This value is read from the application configuration
-  ''' file with the key value "CslaDataPortalProxy". 
+  ''' If this value is empty or null, a new value is read from the 
+  ''' application configuration file with the key value 
+  ''' "CslaDataPortalProxy".
   ''' </para><para>
   ''' The proxy class must implement Csla.Server.IDataPortalServer.
   ''' </para><para>
@@ -365,15 +370,21 @@ Public Module ApplicationContext
   ''' Enterprise Services must be hosted in COM+.
   ''' </para>
   ''' </remarks>
-  Public ReadOnly Property DataPortalProxy() As String
+  Public Property DataPortalProxy() As String
     Get
-      Dim result As String = _
-        ConfigurationManager.AppSettings("CslaDataPortalProxy")
-      If String.IsNullOrEmpty(result) Then
-        result = "Local"
+      If (String.IsNullOrEmpty(_dataPortalProxy)) Then
+        _dataPortalProxy = ConfigurationManager.AppSettings("CslaDataPortalProxy")
+        If String.IsNullOrEmpty(_dataPortalProxy) Then
+          _dataPortalProxy = "Local"
+        End If
       End If
-      Return result
+
+      Return _dataPortalProxy
     End Get
+    Set(ByVal value As String)
+      _dataPortalProxy = value
+      DataPortal.ResetProxyType()
+    End Set
   End Property
 
   ''' <summary>

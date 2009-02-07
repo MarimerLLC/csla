@@ -7,6 +7,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Csla", "..\cslavb\Csla\Csla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C5", "..\cslavb\C5\C5.csproj", "{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaLight.Testing.ServerVB", "Csla.Test\Silverlight\Server\CslaLight.Testing.ServerVB.csproj", "{3374389D-59D8-44B1-B6D0-015819DB482C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -101,6 +103,31 @@ Global
 		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.Testing|Any CPU.Build.0 = ReleaseSnk|Any CPU
 		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.Testing|Mixed Platforms.ActiveCfg = ReleaseSnk|Any CPU
 		{D70489CD-ABDA-48FF-BD1E-BE3F7495BE71}.Testing|Mixed Platforms.Build.0 = ReleaseSnk|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.DebugSnk|.NET.ActiveCfg = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.DebugSnk|Any CPU.ActiveCfg = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.DebugSnk|Any CPU.Build.0 = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.DebugSnk|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.DebugSnk|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Release|.NET.ActiveCfg = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.ReleaseSnk|.NET.ActiveCfg = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.ReleaseSnk|Any CPU.ActiveCfg = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.ReleaseSnk|Any CPU.Build.0 = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.ReleaseSnk|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.ReleaseSnk|Mixed Platforms.Build.0 = Release|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Testing|.NET.ActiveCfg = Testing|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Testing|Any CPU.Build.0 = Testing|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Testing|Mixed Platforms.ActiveCfg = Testing|Any CPU
+		{3374389D-59D8-44B1-B6D0-015819DB482C}.Testing|Mixed Platforms.Build.0 = Testing|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

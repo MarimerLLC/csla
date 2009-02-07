@@ -12,8 +12,9 @@ Namespace Core
   ''' <typeparam name="T">Type of item contained in list.</typeparam>
   <Serializable()> _
   Public Class ExtendedBindingList(Of T)
-    Inherits BindingList(Of T)
+    Inherits MobileBindingList(Of T)
     Implements IExtendedBindingList
+    Implements IMobileObject
     Implements INotifyBusy
     Implements INotifyChildChanged
     Implements ISerializationNotification
@@ -27,8 +28,7 @@ Namespace Core
     ''' <summary>
     ''' Implements a serialization-safe RemovingItem event.
     ''' </summary>
-    Public Custom Event RemovingItem As EventHandler(Of RemovingItemEventArgs) _
-          Implements IExtendedBindingList.RemovingItem
+    Public Custom Event RemovingItem As EventHandler(Of RemovingItemEventArgs) Implements IExtendedBindingList.RemovingItem
       AddHandler(ByVal value As EventHandler(Of RemovingItemEventArgs))
         If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
           _serializableHandlers = CType(System.Delegate.Combine(_serializableHandlers, value), EventHandler(Of RemovingItemEventArgs))
@@ -83,6 +83,7 @@ Namespace Core
     ''' </param>
     Protected Overrides Sub RemoveItem(ByVal index As Integer)
       OnRemovingItem(Me(index))
+      OnRemoveEventHooks(Me(index))
       MyBase.RemoveItem(index)
     End Sub
 
@@ -136,9 +137,7 @@ Namespace Core
     ''' </summary>
     ''' <param name="args">Event arguments.</param>    
     Protected Overridable Sub OnBusyChanged(ByVal args As BusyChangedEventArgs)
-      If _busyChanged IsNot Nothing Then
-        _busyChanged(Me, args)
-      End If
+      RaiseEvent BusyChanged(Me, args)
     End Sub
 
     ''' <summary>
@@ -208,9 +207,7 @@ Namespace Core
     ''' </summary>
     ''' <param name="e">Event arguments.</param>    
     Protected Overridable Sub OnUnhandledAsyncException(ByVal e As ErrorEventArgs)
-      If _unhandledAsyncException IsNot Nothing Then
-        _unhandledAsyncException(Me, e)
-      End If
+      RaiseEvent UnhandledAsyncException(Me, e)
     End Sub
 
     ''' <summary>
@@ -283,20 +280,24 @@ Namespace Core
 
       Dim unhandled As INotifyUnhandledAsyncException = CType(item, INotifyUnhandledAsyncException)
       If unhandled IsNot Nothing Then
-        AddHandler unhandled.UnhandledAsyncException, AddressOf unhandled_UnhandledAsyncException
+        RemoveHandler unhandled.UnhandledAsyncException, AddressOf unhandled_UnhandledAsyncException
       End If
 
       Dim c As INotifyPropertyChanged = CType(item, INotifyPropertyChanged)
       If c IsNot Nothing Then
-        AddHandler c.PropertyChanged, AddressOf Child_PropertyChanged
+        RemoveHandler c.PropertyChanged, AddressOf Child_PropertyChanged
       End If
 
       Dim child As INotifyChildChanged = CType(item, INotifyChildChanged)
       If child IsNot Nothing Then
-        AddHandler child.ChildChanged, AddressOf Child_Changed
+        RemoveHandler child.ChildChanged, AddressOf Child_Changed
       End If
 
     End Sub
+
+#End Region
+
+#Region "ISerializationNotification Members"
 
     ''' <summary>
     ''' This method is called on a newly deserialized object
@@ -308,10 +309,6 @@ Namespace Core
       '  could override if needed
     End Sub
 
-#End Region
-
-#Region "ISerializationNotification Members"
-
     <OnDeserialized()> _
     Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
 
@@ -319,16 +316,15 @@ Namespace Core
         OnAddEventHooks(item)
       Next
 
-      CType(Me, ISerializationNotification).Deserialized()
-    End Sub
-
-#Region "ISerializationNotification Members"
-
-    Private Sub deserialized_Deserialized() Implements ISerializationNotification.Deserialized
       OnDeserialized()
     End Sub
 
-#End Region
+    Private Sub deserialized_Deserialized() Implements ISerializationNotification.Deserialized
+      'don't rehook events here, because the MobileFormatter has
+      'created new objects and so the lists will auto-subscribe
+      'the events
+      OnDeserialized()
+    End Sub
 
 #End Region
 
@@ -357,7 +353,6 @@ Namespace Core
       End RaiseEvent
     End Event
 
-
     ''' <summary>
     ''' Raises the ChildChanged event, indicating that a child
     ''' object has been changed.
@@ -367,9 +362,7 @@ Namespace Core
     ''' </param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnChildChanged(ByVal e As ChildChangedEventArgs)
-      If _childChangedHandlers IsNot Nothing Then
-        _childChangedHandlers.Invoke(Me, e)
-      End If
+      RaiseEvent ChildChanged(Me, e)
     End Sub
 
     ''' <summary>

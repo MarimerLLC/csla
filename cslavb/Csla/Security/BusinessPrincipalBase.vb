@@ -17,8 +17,8 @@ Namespace Security
 
     Private _identity As IIdentity
 
-    Protected Sub New(ByVal _identity As UnauthenticatedIdentity())
-
+    Protected Sub New()
+      _identity = New UnauthenticatedIdentity()      
     End Sub
 
     ''' <summary>

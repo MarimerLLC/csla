@@ -187,6 +187,7 @@
     <Compile Include="Core\MobileList.vb" />
     <Compile Include="Core\MobileObject.vb" />
     <Compile Include="Reflection\DynamicMemberHandle.vb" />
+    <Compile Include="Reflection\Reflect.vb" />
     <Compile Include="Security\CslaIdentity.partial.vb" />
     <Compile Include="Security\CslaIdentity.vb" />
     <Compile Include="Security\ICheckRoles.vb" />

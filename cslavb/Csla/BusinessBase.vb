@@ -1,4 +1,9 @@
+Imports System
 Imports System.ComponentModel
+Imports System.Linq.Expressions
+Imports System.Reflection
+Imports Csla.Core
+Imports Csla.Reflection
 
 ''' <summary>
 ''' This is the base class from which most business objects
@@ -9,7 +14,7 @@ Imports System.ComponentModel
 ''' This class is the core of the CSLA .NET framework. To create
 ''' a business object, inherit from this class.
 ''' </para><para>
-''' Please refer to 'Expert VB 2005 Business Objects' for
+''' Please refer to 'Expert VB 2008 Business Objects' for
 ''' full details on the use of this base class to create business
 ''' objects.
 ''' </para>
@@ -122,6 +127,10 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
         My.Resources.NoSaveInvalidException)
     End If
 
+    If IsBusy Then
+      Throw New Validation.ValidationException(My.Resources.BusyObjectsMayNotBeSaved)
+    End If
+
     Dim result As T
     If IsDirty Then
       result = DirectCast(DataPortal.Update(Me), T)
@@ -133,14 +142,6 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
     Return result
 
   End Function
-
-  Private Function ISavable_Save() As Object Implements Core.ISavable.Save
-    Return Save()
-  End Function
-
-  Private Sub ISavable_SaveComplete(ByVal newObject As Object) Implements Core.ISavable.SaveComplete
-    OnSaved(DirectCast(newObject, T), Nothing, Nothing)
-  End Sub
 
   ''' <summary>
   ''' Saves the object to the database, forcing
@@ -169,66 +170,12 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
   End Function
 
-  <NonSerialized()> _
-  <NotUndoable()> _
-  Private _nonSerializableSavedHandlers As EventHandler(Of Core.SavedEventArgs)
-  <NotUndoable()> _
-  Private _serializableSavedHandlers As EventHandler(Of Core.SavedEventArgs)
-
-  ''' <summary>
-  ''' Event raised when an object has been saved.
-  ''' </summary>
-  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-  Public Custom Event Saved As EventHandler(Of Core.SavedEventArgs) Implements Core.ISavable.Saved
-    AddHandler(ByVal value As EventHandler(Of Core.SavedEventArgs))
-      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
-      Else
-        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
-      End If
-    End AddHandler
-    RemoveHandler(ByVal value As EventHandler(Of Core.SavedEventArgs))
-      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
-        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
-      Else
-        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
-      End If
-    End RemoveHandler
-    RaiseEvent(ByVal sender As System.Object, ByVal e As Core.SavedEventArgs)
-      If Not _nonSerializableSavedHandlers Is Nothing Then
-        _nonSerializableSavedHandlers.Invoke(Me, e)
-      End If
-      If Not _serializableSavedHandlers Is Nothing Then
-        _serializableSavedHandlers.Invoke(Me, e)
-      End If
-    End RaiseEvent
-  End Event
-
-  ''' <summary>
-  ''' Raises the Saved event, indicating that the
-  ''' object has been saved, and providing a reference
-  ''' to the new object instance.
-  ''' </summary>
-  ''' <param name="newObject">The new object instance.</param>
-  ''' <param name="e">Exception that occurred during operation.</param>
-  ''' <param name="userState">User state object.</param>
-  <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Sub OnSaved(ByVal newObject As T, ByVal e As Exception, ByVal userState As Object)
-    MarkIdle()
-    Dim args As New Core.SavedEventArgs(newObject, e, userState)
-    If _nonSerializableSavedHandlers IsNot Nothing Then
-      _nonSerializableSavedHandlers.Invoke(Me, args)
-    End If
-    If _serializableSavedHandlers IsNot Nothing Then
-      _serializableSavedHandlers.Invoke(Me, args)
-    End If
-  End Sub
-
   ''' <summary>
   ''' Starts an async operation to save the object to the database.
   ''' </summary>
   Public Sub BeginSave() Implements Core.ISavable.BeginSave
-    BeginSave(False, Nothing, Nothing)
+    Dim saved As SavedEventArgs = Nothing
+    BeginSave(saved)
   End Sub
 
   ''' <summary>
@@ -300,13 +247,11 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       If handler IsNot Nothing Then
         handler(Me, New Core.SavedEventArgs(Nothing, [error], userState))
       End If
-
     Else
       If IsDirty Then
         MarkBusy()
         DataPortal.BeginUpdate(Of T)( _
-          Me, AddressOf BeginUpdateComplete, New SaveState(userState, handler))
-
+        Me, AddressOf BeginUpdateComplete, New SaveState(userState, handler))
       Else
         OnSaved(CType(Me, T), Nothing, userState)
         If handler IsNot Nothing Then
@@ -413,9 +358,74 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' </remarks>
   Public Sub BeginSave(ByVal handler As EventHandler(Of Core.SavedEventArgs), ByVal userState As Object)
     Me.BeginSave(False, handler, userState)
-
   End Sub
 
+#End Region
+
+#Region " ISavable Members "
+
+  Private Function ISavable_Save() As Object Implements Core.ISavable.Save
+    Return Save()
+  End Function
+
+  Private Sub ISavable_SaveComplete(ByVal newObject As Object) Implements Core.ISavable.SaveComplete
+    OnSaved(DirectCast(newObject, T), Nothing, Nothing)
+  End Sub
+
+  <NonSerialized()> _
+  <NotUndoable()> _
+  Private _nonSerializableSavedHandlers As EventHandler(Of Core.SavedEventArgs)
+  <NotUndoable()> _
+  Private _serializableSavedHandlers As EventHandler(Of Core.SavedEventArgs)
+
+  ''' <summary>
+  ''' Event raised when an object has been saved.
+  ''' </summary>
+  <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
+  Public Custom Event Saved As EventHandler(Of Core.SavedEventArgs) Implements Core.ISavable.Saved
+    AddHandler(ByVal value As EventHandler(Of Core.SavedEventArgs))
+      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
+        _serializableSavedHandlers = CType(System.Delegate.Combine(_serializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
+      Else
+        _nonSerializableSavedHandlers = CType(System.Delegate.Combine(_nonSerializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
+      End If
+    End AddHandler
+    RemoveHandler(ByVal value As EventHandler(Of Core.SavedEventArgs))
+      If value.Method.IsPublic AndAlso (value.Method.DeclaringType.IsSerializable OrElse value.Method.IsStatic) Then
+        _serializableSavedHandlers = CType(System.Delegate.Remove(_serializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
+      Else
+        _nonSerializableSavedHandlers = CType(System.Delegate.Remove(_nonSerializableSavedHandlers, value), EventHandler(Of Core.SavedEventArgs))
+      End If
+    End RemoveHandler
+    RaiseEvent(ByVal sender As System.Object, ByVal e As Core.SavedEventArgs)
+      If Not _nonSerializableSavedHandlers Is Nothing Then
+        _nonSerializableSavedHandlers.Invoke(Me, e)
+      End If
+      If Not _serializableSavedHandlers Is Nothing Then
+        _serializableSavedHandlers.Invoke(Me, e)
+      End If
+    End RaiseEvent
+  End Event
+
+  ''' <summary>
+  ''' Raises the Saved event, indicating that the
+  ''' object has been saved, and providing a reference
+  ''' to the new object instance.
+  ''' </summary>
+  ''' <param name="newObject">The new object instance.</param>
+  ''' <param name="e">Exception that occurred during operation.</param>
+  ''' <param name="userState">User state object.</param>
+  <EditorBrowsable(EditorBrowsableState.Advanced)> _
+  Protected Sub OnSaved(ByVal newObject As T, ByVal e As Exception, ByVal userState As Object)
+    MarkIdle()
+    Dim args As New Core.SavedEventArgs(newObject, e, userState)
+    If _nonSerializableSavedHandlers IsNot Nothing Then
+      _nonSerializableSavedHandlers.Invoke(Me, args)
+    End If
+    If _serializableSavedHandlers IsNot Nothing Then
+      _serializableSavedHandlers.Invoke(Me, args)
+    End If
+  End Sub
 #End Region
 
 #Region " Register Properties "
@@ -437,6 +447,31 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
     Return Core.FieldManager.PropertyInfoManager.RegisterProperty(Of P)(GetType(T), info)
 
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <returns></returns>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P))) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name))
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+  ''' <returns></returns>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName))
   End Function
 
 #End Region

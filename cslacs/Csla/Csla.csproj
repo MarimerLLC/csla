@@ -190,6 +190,7 @@
     </Compile>
     <Compile Include="Data\ServiceClientManager.cs" />
     <Compile Include="Data\TransactionManager.cs" />
+    <Compile Include="LinqBindingList.cs" />
     <Compile Include="Linq\BalancedTreeIndex.cs" />
     <Compile Include="Linq\IBalancedSearch.cs" />
     <Compile Include="Linq\IRangeTestableIndex.cs" />
@@ -313,7 +314,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IndexableAttribute.cs" />
     <Compile Include="IndexModeEnum.cs" />
-    <Compile Include="Linq\LinqBindingList.cs" />
     <Compile Include="NameValueListBase.cs" />
     <Compile Include="NotUndoableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

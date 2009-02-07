@@ -61,6 +61,60 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to close?.
+        /// </summary>
+        internal static string ActionExtenderCloseConfirmation {
+            get {
+                return ResourceManager.GetString("ActionExtenderCloseConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object is currently in a dirty changed..
+        /// </summary>
+        internal static string ActionExtenderDirtyWarningMessagePropertyDefault {
+            get {
+                return ResourceManager.GetString("ActionExtenderDirtyWarningMessagePropertyDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DataSource does not cast to a BindingSource.
+        /// </summary>
+        internal static string ActionExtenderInvalidBindingSourceCast {
+            get {
+                return ResourceManager.GetString("ActionExtenderInvalidBindingSourceCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The underlying data source does not cast to a CSLA BusinessBase object.
+        /// </summary>
+        internal static string ActionExtenderInvalidBusinessObjectBaseCast {
+            get {
+                return ResourceManager.GetString("ActionExtenderInvalidBusinessObjectBaseCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DataSource must be a BindingSource control instance.
+        /// </summary>
+        internal static string ActionExtenderSourceMustBeBindingSource {
+            get {
+                return ResourceManager.GetString("ActionExtenderSourceMustBeBindingSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to revert to the previous values?.
+        /// </summary>
+        internal static string ActionExtenderWarnOnCancelMessagePropertyDefault {
+            get {
+                return ResourceManager.GetString("ActionExtenderWarnOnCancelMessagePropertyDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Array is multi-dimensional.
         /// </summary>
         internal static string ArrayIsMultiDimensional {
@@ -910,6 +964,15 @@ namespace Csla.Properties {
         internal static string ValueNotSmartDateException {
             get {
                 return ResourceManager.GetString("ValueNotSmartDateException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        internal static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
     }

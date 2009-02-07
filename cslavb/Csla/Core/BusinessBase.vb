@@ -1797,7 +1797,7 @@ Namespace Core
     ''' value, the defaultValue value is returned as a
     ''' result.
     ''' </remarks>
-    Protected Function GetProperty(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F) As P
+    Protected Function GetPropertyConvert(Of F, P)(ByVal propertyInfo As PropertyInfo(Of F), ByVal field As F) As P
 
       Return CoerceValue(Of P)(GetType(F), Nothing, GetProperty(Of F)(propertyInfo.Name, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException))
 

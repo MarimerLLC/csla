@@ -1,12 +1,9 @@
-﻿Imports System
-
-Namespace Core
+﻿Namespace Core
 
   ''' <summary>
   ''' Maintains metadata about a property.
   ''' </summary>
   Public Interface IPropertyInfo
-
     ''' <summary>
     ''' Gets the property name value.
     ''' </summary>
@@ -35,12 +32,16 @@ Namespace Core
     ''' </summary>
     Function NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData
     ''' <summary>
+    ''' Gets the relationship between the declaring object
+    ''' and the object reference in the property.
+    ''' </summary>
+    ReadOnly Property RelationshipType() As RelationshipTypes
+    ''' <summary>
     ''' Gets or sets the index position for the managed
     ''' field storage behind the property. FOR
     ''' INTERNAL CSLA .NET USE ONLY.
     ''' </summary>
     Property Index() As Integer
-
   End Interface
 
 End Namespace

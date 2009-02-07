@@ -5,7 +5,6 @@
 ''' Data type of the property.
 ''' </typeparam>
 Public Class PropertyInfo(Of T)
-
   Implements Core.IPropertyInfo
   Implements IComparable
 
@@ -14,9 +13,7 @@ Public Class PropertyInfo(Of T)
   ''' </summary>
   ''' <param name="name">Name of the property.</param>
   Public Sub New(ByVal name As String)
-
     Me.New(name, "")
-
   End Sub
 
   ''' <summary>
@@ -27,16 +24,33 @@ Public Class PropertyInfo(Of T)
   ''' Friendly display name for the property.
   ''' </param>
   Public Sub New(ByVal name As String, ByVal friendlyName As String)
-
     _name = name
     _friendlyName = friendlyName
     If GetType(T).Equals(GetType(String)) Then
-      _defaultValue = DirectCast(DirectCast(String.Empty, Object), T)
-
+      _defaultValue = CType(CObj(String.Empty), T)
     Else
       _defaultValue = Nothing
     End If
+  End Sub
 
+  ''' <summary>
+  ''' Creates a new instance of this class.
+  ''' </summary>
+  ''' <param name="name">Name of the property.</param>
+  ''' <param name="friendlyName">
+  ''' Friendly display name for the property.
+  ''' </param>
+  ''' <param name="relationship">Relationship with
+  ''' referenced object.</param>
+  Public Sub New(ByVal name As String, ByVal friendlyName As String, ByVal relationship As RelationshipTypes)
+    _name = name
+    _friendlyName = friendlyName
+    If GetType(T).Equals(GetType(String)) Then
+      _defaultValue = CType(CObj(String.Empty), T)
+    Else
+      _defaultValue = Nothing
+    End If
+    _relationshipType = relationship
   End Sub
 
   ''' <summary>
@@ -50,11 +64,28 @@ Public Class PropertyInfo(Of T)
   ''' Default value for the property.
   ''' </param>
   Public Sub New(ByVal name As String, ByVal friendlyName As String, ByVal defaultValue As T)
-
     _name = name
     _defaultValue = defaultValue
     _friendlyName = friendlyName
+  End Sub
 
+  ''' <summary>
+  ''' Creates a new instance of this class.
+  ''' </summary>
+  ''' <param name="name">Name of the property.</param>
+  ''' <param name="friendlyName">
+  ''' Friendly display name for the property.
+  ''' </param>
+  ''' <param name="defaultValue">
+  ''' Default value for the property.
+  ''' </param>
+  ''' <param name="relationship">Relationship with
+  ''' referenced object.</param>
+  Public Sub New(ByVal name As String, ByVal friendlyName As String, ByVal defaultValue As T, ByVal relationship As RelationshipTypes)
+    _name = name
+    _defaultValue = defaultValue
+    _friendlyName = friendlyName
+    _relationshipType = relationship
   End Sub
 
   Private _name As String
@@ -88,7 +119,7 @@ Public Class PropertyInfo(Of T)
   ''' </remarks>
   Public Overridable ReadOnly Property FriendlyName() As String Implements Core.IPropertyInfo.FriendlyName
     Get
-      If Not String.IsNullOrEmpty(_friendlyName) Then
+      If Not (String.IsNullOrEmpty(_friendlyName)) Then
         Return _friendlyName
 
       Else
@@ -115,9 +146,13 @@ Public Class PropertyInfo(Of T)
 
   Private ReadOnly Property IPropertyInfo_DefaultValue() As Object Implements Core.IPropertyInfo.DefaultValue
     Get
-      Return _defaultValue
+      Return DefaultValue
     End Get
   End Property
+
+  Private Function IPropertyInfo_NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData Implements Core.IPropertyInfo.NewFieldData
+    Return NewFieldData(name)
+  End Function
 
   ''' <summary>
   ''' Create and return a new IFieldData object
@@ -127,9 +162,21 @@ Public Class PropertyInfo(Of T)
   ''' <param name="name">
   ''' Property name.
   ''' </param>
-  Protected Overridable Function NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData Implements Core.IPropertyInfo.NewFieldData
+  Protected Overridable Function NewFieldData(ByVal name As String) As Core.FieldManager.IFieldData
     Return New Core.FieldManager.FieldData(Of T)(name)
   End Function
+
+  Private _relationshipType As RelationshipTypes = RelationshipTypes.Child
+
+  ''' <summary>
+  ''' Gets the relationship between the declaring object
+  ''' and the object reference in the property.
+  ''' </summary>
+  Public ReadOnly Property RelationshipType() As RelationshipTypes Implements Core.IPropertyInfo.RelationshipType
+    Get
+      Return _relationshipType
+    End Get
+  End Property
 
   Private _index As Integer = -1
 
@@ -147,10 +194,12 @@ Public Class PropertyInfo(Of T)
     End Set
   End Property
 
-  Private Function CompareTo(ByVal obj As Object) As Integer Implements System.IComparable.CompareTo
+#Region "IComparable Members"
 
-    Return _name.CompareTo(DirectCast(obj, Core.IPropertyInfo).Name)
-
+  Private Function CompareTo(ByVal obj As Object) As Integer Implements IComparable.CompareTo
+    Return _name.CompareTo((CType(obj, Core.IPropertyInfo)).Name)
   End Function
+
+#End Region
 
 End Class

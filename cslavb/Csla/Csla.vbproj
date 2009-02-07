@@ -154,6 +154,7 @@
     <Compile Include="Core\LoadManager\AsyncLoadManager.vb" />
     <Compile Include="Core\ManagedObjectBase.vb" />
     <Compile Include="Core\MobileBindingList.vb" />
+    <Compile Include="Core\MobileDictionary.vb" />
     <Compile Include="Core\ObjectCloner.vb" />
     <Compile Include="Core\FieldManager\FieldData.vb" />
     <Compile Include="Core\FieldManager\FieldDataManager.vb" />
@@ -171,6 +172,7 @@
     <Compile Include="Data\ObjectContextManager.vb" />
     <Compile Include="Data\ServiceClientManager.vb" />
     <Compile Include="Data\TransactionManager.vb" />
+    <Compile Include="LinqBindingList.vb" />
     <Compile Include="Linq\BalancedTreeIndex.vb" />
     <Compile Include="Linq\IBalancedSearch.vb" />
     <Compile Include="Linq\IRangeTestableIndex.vb" />
@@ -188,6 +190,7 @@
     <Compile Include="Core\MobileObject.vb" />
     <Compile Include="Reflection\DynamicMemberHandle.vb" />
     <Compile Include="Reflection\Reflect.vb" />
+    <Compile Include="RelationshipTypes.vb" />
     <Compile Include="Security\CslaIdentity.partial.vb" />
     <Compile Include="Security\CslaIdentity.vb" />
     <Compile Include="Security\ICheckRoles.vb" />
@@ -265,7 +268,6 @@
     <Compile Include="Linq\IIndexSet.vb" />
     <Compile Include="Linq\Index.vb" />
     <Compile Include="Linq\IndexSet.vb" />
-    <Compile Include="Linq\LinqBindingList.vb" />
     <Compile Include="PropertyInfo.vb" />
     <Compile Include="PropertyLoadException.vb" />
     <Compile Include="Reflection\DynamicMethodHandle.vb" />

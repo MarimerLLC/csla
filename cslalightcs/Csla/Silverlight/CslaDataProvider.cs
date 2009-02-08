@@ -27,6 +27,13 @@ namespace Csla.Silverlight
         DataChanged(this, EventArgs.Empty);
     }
 
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+    protected void OnSaved(object newObject, Exception error, object userState)
+    {
+      if (Saved != null)
+        Saved(this, new Csla.Core.SavedEventArgs(newObject, error, userState));
+    }
+
     private void dataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       RefreshCanOperationsValues();
@@ -79,7 +86,7 @@ namespace Csla.Silverlight
     /// </summary>
     public static readonly DependencyProperty ObjectInstanceProperty =
    DependencyProperty.Register("ObjectInstance", typeof(object),
-   typeof(CslaDataProvider),new PropertyMetadata(null));
+   typeof(CslaDataProvider), new PropertyMetadata(null));
 
 
     /// <summary>
@@ -162,14 +169,14 @@ namespace Csla.Silverlight
     /// </summary>
     public object Data
     {
-      get 
+      get
       {
         if (_isInitialLoadEnabled && !_isInitialLoadCompleted)
         {
           _isInitialLoadCompleted = true;
           Refresh();
         }
-        return _dataObject; 
+        return _dataObject;
       }
     }
 
@@ -315,7 +322,7 @@ namespace Csla.Silverlight
       _error = null;
       try
       {
-        
+
         var obj = _dataObject as Csla.Core.ISavable;
         if (obj != null)
         {
@@ -343,6 +350,7 @@ namespace Csla.Silverlight
       {
         IsBusy = false;
         this.Error = ex;
+        OnSaved(_dataObject, ex, null);
       }
     }
 
@@ -353,6 +361,8 @@ namespace Csla.Silverlight
         Error = e.Error;
       else
         ObjectInstance = e.NewObject;
+
+      OnSaved(e.NewObject, e.Error, e.UserState);
     }
 
     /// <summary>

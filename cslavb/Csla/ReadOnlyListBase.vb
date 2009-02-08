@@ -1,8 +1,8 @@
+Imports System
+Imports System.Collections.Generic
 Imports System.ComponentModel
-Imports Csla.Core
-Imports System.Runtime.CompilerServices
-Imports System.Linq
 Imports System.Linq.Expressions
+Imports Csla.Core
 
 ''' <summary>
 ''' This is the base class from which readonly collections
@@ -113,7 +113,7 @@ Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) 'Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -124,7 +124,7 @@ Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) 'Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -136,7 +136,7 @@ Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) 'Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
   End Sub
 
@@ -146,7 +146,7 @@ Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) 'Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+  Protected Overridable Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -156,7 +156,7 @@ Public MustInherit Class ReadOnlyListBase(Of T As ReadOnlyListBase(Of T, C), C)
   ''' </summary>
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member"), EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) 'Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+  Protected Overridable Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
   End Sub
 

@@ -2,7 +2,6 @@
 Imports System.Collections.Generic
 Imports System.Linq
 Imports System.Text
-Imports Csla
 
 ''' <summary>
 ''' Client side data portal used for making asynchronous
@@ -13,6 +12,7 @@ Public Class DataPortal(Of T)
   Friend Const EmptyCriteria As Integer = 1
 
 #Region " Data Portal Async Request "
+
   Private Class DataPortalAsyncRequest
     Private _argument As Object
     Private _principal As System.Security.Principal.IPrincipal
@@ -125,16 +125,24 @@ Public Class DataPortal(Of T)
 #End Region
 
 #Region " GlobalContext "
+
   Private _globalContext As Core.ContextDictionary
 
+
+  ''' <summary>
+  ''' Gets a reference to the global context returned from
+  ''' the background thread and/or server.
+  ''' </summary>
   Public ReadOnly Property GlobalContext() As Core.ContextDictionary
     Get
       Return _globalContext
     End Get
   End Property
+
 #End Region
 
 #Region " Create "
+
   ''' <summary>
   ''' Event raised when the operation has completed.
   ''' </summary>
@@ -193,6 +201,13 @@ Public Class DataPortal(Of T)
     BeginCreate(criteria, Nothing)
   End Sub
 
+  ''' <summary>
+  ''' Called by a factory method in a business class or
+  ''' by the UI to create a new object, which is loaded 
+  ''' with default values from the database.
+  ''' </summary>
+  ''' <param name="criteria">Object-specific criteria.</param>
+  ''' <param name="userState">User state data.</param>
   Public Sub BeginCreate(ByVal criteria As Object, ByVal userState As Object)
     Dim bw As New System.ComponentModel.BackgroundWorker()
     AddHandler bw.RunWorkerCompleted, AddressOf Create_RunWorkerCompleted
@@ -201,17 +216,20 @@ Public Class DataPortal(Of T)
   End Sub
 
   Private Sub Create_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs)
-    Dim result = TryCast(e.Result, DataPortalAsyncResult)
-    If result IsNot Nothing Then
-      _globalContext = result.GlobalContext
-      If result.Result IsNot Nothing Then
-        OnCreateCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), e.Error, result.UserState))
-      Else
-        OnCreateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, result.UserState))
+    If e.Error Is Nothing Then
+
+      Dim result = TryCast(e.Result, DataPortalAsyncResult)
+      If result IsNot Nothing Then
+        _globalContext = result.GlobalContext
+        If result.Result IsNot Nothing Then
+          OnCreateCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), Nothing, result.UserState))
+        Else
+          OnCreateCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
+        End If
       End If
-    Else
-      OnCreateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
     End If
+    
+    OnCreateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
   End Sub
 
   Private Sub Create_DoWork(ByVal sender As Object, ByVal e As System.ComponentModel.DoWorkEventArgs)
@@ -295,6 +313,13 @@ Public Class DataPortal(Of T)
     BeginFetch(criteria, Nothing)
   End Sub
 
+  ''' <summary>
+  ''' Called by a factory method in a business class or
+  ''' by the UI to retrieve an existing object, which is loaded 
+  ''' with values from the database.
+  ''' </summary>
+  ''' <param name="criteria">Object-specific criteria.</param>
+  ''' <param name="userState">User state data.</param>
   Public Sub BeginFetch(ByVal criteria As Object, ByVal userState As Object)
     Dim bw As New System.ComponentModel.BackgroundWorker()
     AddHandler bw.RunWorkerCompleted, AddressOf Fetch_RunWorkerCompleted
@@ -303,17 +328,20 @@ Public Class DataPortal(Of T)
   End Sub
 
   Private Sub Fetch_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs)
-    Dim result = TryCast(e.Result, DataPortalAsyncResult)
-    If result IsNot Nothing Then
-      _globalContext = result.GlobalContext
-      If result.Result IsNot Nothing Then
-        OnFetchCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), e.Error, result.UserState))
-      Else
-        OnFetchCompleted(New DataPortalResult(Of T)(Nothing, e.Error, result.UserState))
+
+    If e.Error Is Nothing Then
+      Dim result = TryCast(e.Result, DataPortalAsyncResult)
+      If result IsNot Nothing Then
+        _globalContext = result.GlobalContext
+        If result.Result IsNot Nothing Then
+          OnFetchCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), Nothing, result.UserState))
+        Else
+          OnFetchCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
+        End If
       End If
-    Else
-      OnFetchCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
     End If
+    
+    OnFetchCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
   End Sub
 
   Private Sub Fetch_DoWork(ByVal sender As Object, ByVal e As System.ComponentModel.DoWorkEventArgs)
@@ -333,6 +361,7 @@ Public Class DataPortal(Of T)
 #End Region
 
 #Region " Update "
+
   ''' <summary>
   ''' Event raised when the operation has completed.
   ''' </summary>
@@ -387,6 +416,12 @@ Public Class DataPortal(Of T)
     BeginUpdate(obj, Nothing)
   End Sub
 
+  ''' <summary>
+  ''' Called by a factory method in a business class or
+  ''' by the UI to update an object.
+  ''' </summary>
+  ''' <param name="obj">Object to update.</param>
+  ''' <param name="userState">User state data.</param>
   Public Sub BeginUpdate(ByVal obj As Object, ByVal userState As Object)
     Dim bw As New System.ComponentModel.BackgroundWorker()
     AddHandler bw.RunWorkerCompleted, AddressOf Update_RunWorkerCompleted
@@ -395,17 +430,20 @@ Public Class DataPortal(Of T)
   End Sub
 
   Private Sub Update_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs)
-    Dim result = TryCast(e.Result, DataPortalAsyncResult)
-    If result IsNot Nothing Then
-      _globalContext = result.GlobalContext
-      If result.Result IsNot Nothing Then
-        OnUpdateCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), e.Error, result.UserState))
-      Else
-        OnUpdateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, result.UserState))
+
+    If e.Error Is Nothing Then
+      Dim result = TryCast(e.Result, DataPortalAsyncResult)
+      If result IsNot Nothing Then
+        _globalContext = result.GlobalContext
+        If result.Result IsNot Nothing Then
+          OnUpdateCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), Nothing, result.UserState))
+        Else
+          OnUpdateCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
+        End If
       End If
-    Else
-      OnUpdateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
     End If
+    
+    OnUpdateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
   End Sub
 
   Private Sub Update_DoWork(ByVal sender As Object, ByVal e As System.ComponentModel.DoWorkEventArgs)
@@ -476,6 +514,12 @@ Public Class DataPortal(Of T)
     BeginDelete(criteria, Nothing)
   End Sub
 
+  ''' <summary>
+  ''' Called by a factory method in a business class or
+  ''' by the UI to delete an object.
+  ''' </summary>
+  ''' <param name="criteria">Object-specific criteria.</param>
+  ''' <param name="userState">User state data.</param>
   Public Sub BeginDelete(ByVal criteria As Object, ByVal userState As Object)
     Dim bw As New System.ComponentModel.BackgroundWorker()
     AddHandler bw.RunWorkerCompleted, AddressOf Delete_RunWorkerCompleted
@@ -484,11 +528,16 @@ Public Class DataPortal(Of T)
   End Sub
 
   Private Sub Delete_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs)
-    Dim result = TryCast(e.Result, DataPortalAsyncResult)
-    If result IsNot Nothing Then
-      _globalContext = result.GlobalContext
+
+    If e.Error Is Nothing Then
+      Dim result = TryCast(e.Result, DataPortalAsyncResult)
+      If result IsNot Nothing Then
+        _globalContext = result.GlobalContext
+        OnDeleteCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
+      End If
     End If
-    OnDeleteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, result.UserState))
+    
+    OnDeleteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
   End Sub
 
   Private Sub Delete_DoWork(ByVal sender As Object, ByVal e As System.ComponentModel.DoWorkEventArgs)
@@ -504,12 +553,26 @@ Public Class DataPortal(Of T)
 
 #Region " Execute "
 
+  ''' <summary>
+  ''' Event indicating an execute operation is complete.
+  ''' </summary>
   Public Event ExecuteCompleted As EventHandler(Of DataPortalResult(Of T))
 
+  ''' <summary>
+  ''' Called by a factory method in a business class or
+  ''' by the UI to execute a command object.
+  ''' </summary>
+  ''' <param name="command">Command object to execute.</param>
   Public Sub BeginExecute(ByVal command As T)
     BeginExecute(command, Nothing)
   End Sub
 
+  ''' <summary>
+  ''' Called by a factory method in a business class or
+  ''' by the UI to execute a command object.
+  ''' </summary>
+  ''' <param name="command">Command object to execute.</param>
+  ''' <param name="userState">User state data.</param>
   Public Sub BeginExecute(ByVal command As T, ByVal userState As Object)
     Dim bw As New System.ComponentModel.BackgroundWorker()
     AddHandler bw.RunWorkerCompleted, AddressOf Execute_RunWorkerCompleted
@@ -518,17 +581,20 @@ Public Class DataPortal(Of T)
   End Sub
 
   Private Sub Execute_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs)
-    Dim result = TryCast(e.Result, DataPortalAsyncResult)
-    If result IsNot Nothing Then
-      _globalContext = result.GlobalContext
-      If result.Result IsNot Nothing Then
-        OnExecuteCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), e.Error, result.UserState))
-      Else
-        OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, result.UserState))
+
+    If e.Error Is Nothing Then
+      Dim result = TryCast(e.Result, DataPortalAsyncResult)
+      If result IsNot Nothing Then
+        _globalContext = result.GlobalContext
+        If result.Result IsNot Nothing Then
+          OnExecuteCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), Nothing, result.UserState)) 'TODO: Should Nothing be e.error?
+        Else
+          OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState)) 'TODO: Should Nothing be e.error?
+        End If
       End If
-    Else
-      OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
     End If
+    
+    OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
   End Sub
 
   Private Sub Execute_DoWork(ByVal sender As Object, ByVal e As System.ComponentModel.DoWorkEventArgs)
@@ -541,9 +607,15 @@ Public Class DataPortal(Of T)
     e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, request.UserState)
   End Sub
 
+  ''' <summary>
+  ''' Raises the ExecuteCompleted event.
+  ''' </summary>
+  ''' <param name="e">Event arguments.</param>
   Protected Overridable Sub OnExecuteCompleted(ByVal e As DataPortalResult(Of T))
     RaiseEvent ExecuteCompleted(Me, e)
   End Sub
+
 #End Region
+
 End Class
 

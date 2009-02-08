@@ -1,11 +1,56 @@
-Imports System.Reflection
+Imports System
 Imports System.ComponentModel
+Imports System.Reflection
+Imports System.Xml
+Imports System.IO
+Imports System.Runtime.Serialization
+Imports System.Text
 
 ''' <summary>
 ''' Contains utility methods used by the
 ''' CSLA .NET framework.
 ''' </summary>
 Public Module Utilities
+
+#Region " Replacements for VB runtime functionality "
+
+  ''' <summary>
+  ''' Determines whether the specified
+  ''' value can be converted to a valid number.
+  ''' </summary>
+  Public Function IsNumeric(ByVal value As Object) As Boolean
+    Dim dbl As Double
+    Return Double.TryParse(value.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, dbl)
+  End Function
+
+  ''' <summary>
+  ''' Allows late bound invocation of
+  ''' properties and methods.
+  ''' </summary>
+  ''' <param name="target">Object implementing the property or method.</param>
+  ''' <param name="methodName">Name of the property or method.</param>
+  ''' <param name="callType">Specifies how to invoke the property or method.</param>
+  ''' <param name="args">List of arguments to pass to the method.</param>
+  ''' <returns>The result of the property or method invocation.</returns>
+  Public Function CallByName(ByVal target As Object, ByVal methodName As String, ByVal callType As CallType, ByVal ParamArray args() As Object) As Object
+    Select Case callType
+      Case callType.Get
+        Dim p As PropertyInfo = target.GetType().GetProperty(methodName)
+        Return p.GetValue(target, args)
+      Case callType.Let
+      Case callType.Set
+        Dim p As PropertyInfo = target.GetType().GetProperty(methodName)
+        p.SetValue(target, args(0), Nothing)
+        Return Nothing
+      Case callType.Method
+        Dim m As MethodInfo = target.GetType().GetMethod(methodName)
+        Return m.Invoke(target, args)
+    End Select
+
+    Return Nothing
+  End Function
+
+#End Region
 
   ''' <summary>
   ''' Returns a property's type, dealing with
@@ -182,6 +227,31 @@ Public Module Utilities
   Public Function CoerceValue(Of D)(ByVal valueType As Type, ByVal oldValue As D, ByVal value As Object) As D
 
     Return DirectCast(CoerceValue(GetType(D), valueType, oldValue, value), D)
+
+  End Function
+
+#End Region
+
+#Region " Serialization "
+
+  Friend Function XmlSerialize(ByVal graph As Object) As String
+    Using buffer As New MemoryStream()
+      Dim writer As XmlWriter = XmlWriter.Create(buffer)
+      Dim dcs As DataContractSerializer = New DataContractSerializer(graph.GetType())
+      dcs.WriteObject(writer, graph)
+      writer.Flush()
+      Dim data As Byte() = buffer.ToArray()
+      Return Encoding.UTF8.GetString(data, 0, data.Length)
+    End Using
+  End Function
+
+  Friend Function XmlDeserialize(Of T)(ByVal xml As String) As T
+
+    Using Buffer As New MemoryStream(Encoding.UTF8.GetBytes(xml))
+      Dim reader As XmlReader = XmlReader.Create(Buffer)
+      Dim dcs As DataContractSerializer = New DataContractSerializer(GetType(T))
+      Return DirectCast(dcs.ReadObject(reader), T)
+    End Using
 
   End Function
 

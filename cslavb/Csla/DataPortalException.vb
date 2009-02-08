@@ -1,3 +1,4 @@
+Imports System
 Imports System.Security.Permissions
 
 ''' <summary>
@@ -69,7 +70,7 @@ Public Class DataPortalException
   Public Sub New(ByVal message As String, ByVal businessObject As Object)
 
     MyBase.New(message)
-    _innerStackTrace = ""
+    _innerStackTrace = String.Empty
     _businessObject = businessObject
 
   End Sub
@@ -108,12 +109,9 @@ Public Class DataPortalException
   ''' <param name="info">Serialiation info object.</param>
   ''' <param name="context">Serialization context object.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")> _
-  <SecurityPermission(SecurityAction.LinkDemand, _
-    Flags:=SecurityPermissionFlag.SerializationFormatter)> _
-  <SecurityPermission(SecurityAction.Demand, _
-    Flags:=SecurityPermissionFlag.SerializationFormatter)> _
-  Public Overrides Sub GetObjectData( _
-    ByVal info As System.Runtime.Serialization.SerializationInfo, _
+  <SecurityPermission(SecurityAction.LinkDemand, Flags:=SecurityPermissionFlag.SerializationFormatter)> _
+  <SecurityPermission(SecurityAction.Demand, Flags:=SecurityPermissionFlag.SerializationFormatter)> _
+  Public Overrides Sub GetObjectData(ByVal info As System.Runtime.Serialization.SerializationInfo, _
     ByVal context As System.Runtime.Serialization.StreamingContext)
 
     MyBase.GetObjectData(info, context)

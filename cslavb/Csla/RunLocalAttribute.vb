@@ -1,3 +1,5 @@
+Imports System
+
 ''' <summary>
 ''' Marks a DataPortal_XYZ method to
 ''' be run on the client even if the server-side

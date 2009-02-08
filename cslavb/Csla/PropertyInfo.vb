@@ -1,4 +1,6 @@
-﻿''' <summary>
+﻿Imports System
+
+''' <summary>
 ''' Maintains metadata about a property.
 ''' </summary>
 ''' <typeparam name="T">

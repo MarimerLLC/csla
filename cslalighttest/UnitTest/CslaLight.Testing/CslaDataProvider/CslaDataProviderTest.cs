@@ -154,6 +154,83 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [TestMethod]
+    public void TestCslaDataProviderSavedEventTestWithChanges()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      Customer.GetCustomer((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var cust = e1.Object;
+        int custID = cust.Id;
+        string custName = cust.Name;
+        provider.ObjectInstance = cust;
+        cust.Name = "new test name";
+        provider.Saved += (o2, e2) =>
+        {
+          context.Assert.AreEqual("Updating Customer new test name", ((Customer)provider.Data).Method);
+          context.Assert.Success();
+
+        };
+        provider.Save();
+      });
+      var tmp = provider.Data;
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void TestCslaDataProviderSavedEventTestWithoutChanges()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      Customer.GetCustomer((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var cust = e1.Object;
+        int custID = cust.Id;
+        string custName = cust.Name;
+        provider.ObjectInstance = cust;
+        provider.Saved += (o2, e2) =>
+        {
+          context.Assert.AreEqual(custName, ((Customer)provider.Data).Name);
+          context.Assert.Success();
+
+        };
+        provider.Save();
+      });
+      var tmp = provider.Data;
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void TestCslaDataProviderSavedEventTestWithInvalidException()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      Customer.GetCustomer((o1, e1) =>
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        var cust = e1.Object;
+        cust.Id = 0;
+        int custID = cust.Id;
+        string custName = cust.Name;
+        provider.ObjectInstance = cust;
+        provider.Saved += (o2, e2) =>
+        {
+          context.Assert.IsNotNull(e2.Error);
+          context.Assert.Success();
+
+        };
+        provider.Save();
+      });
+      var tmp = provider.Data;
+      context.Complete();
+    }
+
+    [TestMethod]
     public void If_Fetch_returns_X_items_and_then_DataSource_removes_one_and_adds_two_Count_should_be_X_plus_1()
     {
       var context = GetContext();

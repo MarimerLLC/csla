@@ -28,6 +28,13 @@ namespace Csla.Wpf
         new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
     }
 
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+    protected void OnSaved(object newObject, Exception error, object userState)
+    {
+      if (Saved != null)
+        Saved(this, new Csla.Core.SavedEventArgs(newObject, error, userState));
+    }
+
     void _factoryParameters_CollectionChanged(
       object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
@@ -419,6 +426,7 @@ namespace Csla.Wpf
         // return result to base class
         base.OnQueryFinished(result, null, null, null);
         IsBusy = false;
+        OnSaved(result, exceptionResult, null);
       }
     }
 

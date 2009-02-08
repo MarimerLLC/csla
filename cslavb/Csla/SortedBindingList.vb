@@ -1,5 +1,7 @@
+Imports System
 Imports System.ComponentModel
-Imports System.Reflection
+Imports System.Collections.Generic
+Imports System.Collections
 
 ''' <summary>
 ''' Provides a sorted view into an existing IList(Of T).
@@ -332,10 +334,9 @@ Public Class SortedBindingList(Of T)
 
     _sortBy = Nothing
 
-    If Len(propertyName) > 0 Then
+    If Not String.IsNullOrEmpty(propertyName) Then
       Dim itemType As Type = GetType(T)
-      For Each prop As PropertyDescriptor In _
-              TypeDescriptor.GetProperties(itemType)
+      For Each prop As PropertyDescriptor In TypeDescriptor.GetProperties(itemType)
         If prop.Name = propertyName Then
           _sortBy = prop
           Exit For
@@ -371,7 +372,7 @@ Public Class SortedBindingList(Of T)
 
     Dim findProperty As PropertyDescriptor = Nothing
 
-    If Len(propertyName) > 0 Then
+    If Not String.IsNullOrEmpty(propertyName) Then
       Dim itemType As Type = GetType(T)
       For Each prop As PropertyDescriptor In TypeDescriptor.GetProperties(itemType)
         If prop.Name = propertyName Then
@@ -815,11 +816,16 @@ Public Class SortedBindingList(Of T)
   End Sub
 
   Private Function OriginalIndex(ByVal sortedIndex As Integer) As Integer
-    If _sortOrder = ListSortDirection.Ascending Then
-      Return _sortIndex.Item(sortedIndex).BaseIndex
+    If _sorted Then
+      If _sortOrder = ListSortDirection.Ascending Then
+        Return _sortIndex.Item(sortedIndex).BaseIndex
+      Else
+        Return _sortIndex.Item(_sortIndex.Count - 1 - sortedIndex).BaseIndex
+      End If
     Else
-      Return _sortIndex.Item(_sortIndex.Count - 1 - sortedIndex).BaseIndex
+      Return sortedIndex
     End If
+    
   End Function
 
   Private Function SortedIndex(ByVal originalIndex As Integer) As Integer

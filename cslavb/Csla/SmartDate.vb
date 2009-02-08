@@ -21,10 +21,11 @@ Public Structure SmartDate
   Implements IMobileObject
 
   Private _date As Date
+  Private _initialized As Boolean
   Private _emptyValue As EmptyValue
   Private _format As String
   Private Shared _defaultFormat As String
-  Private _initialized As Boolean
+
 
 #Region " EmptyValue enum "
 
@@ -59,6 +60,10 @@ Public Structure SmartDate
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal emptyIsMin As Boolean)
     _emptyValue = GetEmptyValue(emptyIsMin)
+    _format = Nothing
+    _initialized = False
+    'provide a dummy value to allow real initialization
+    _date = DateTime.MinValue
     SetEmptyDate(_emptyValue)
   End Sub
 
@@ -68,6 +73,10 @@ Public Structure SmartDate
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal emptyValue As EmptyValue)
     _emptyValue = emptyValue
+    _format = Nothing
+    _initialized = False
+    'provide a dummy value to allow real initialization
+    _date = DateTime.MinValue
     SetEmptyDate(_emptyValue)
   End Sub
 
@@ -80,7 +89,10 @@ Public Structure SmartDate
   ''' </remarks>
   ''' <param name="value">The initial value of the object.</param>
   Public Sub New(ByVal value As Date)
-    _emptyValue = EmptyValue.MinDate
+    _emptyValue = Csla.SmartDate.EmptyValue.MinDate
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Date = value
   End Sub
 
@@ -91,6 +103,9 @@ Public Structure SmartDate
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As Date, ByVal emptyIsMin As Boolean)
     _emptyValue = GetEmptyValue(emptyIsMin)
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Date = value
   End Sub
 
@@ -101,6 +116,9 @@ Public Structure SmartDate
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As Date, ByVal emptyValue As EmptyValue)
     _emptyValue = emptyValue
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Date = value
   End Sub
 
@@ -112,6 +130,9 @@ Public Structure SmartDate
   ''' <param name="kind">One of the DateTimeKind values.</param>
   Public Sub New(ByVal value As Date, ByVal emptyValue As EmptyValue, ByVal kind As DateTimeKind)
     _emptyValue = emptyValue
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Date = DateTime.SpecifyKind(value, kind)
   End Sub
 
@@ -124,7 +145,10 @@ Public Structure SmartDate
   ''' </remarks>
   ''' <param name="value">The initial value of the object.</param>
   Public Sub New(ByVal value As Date?)
-    _emptyValue = EmptyValue.MinDate
+    _emptyValue = Csla.SmartDate.EmptyValue.MinDate
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     If value.HasValue Then
       Me.Date = value.Value
     End If
@@ -137,6 +161,9 @@ Public Structure SmartDate
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As Date?, ByVal emptyIsMin As Boolean)
     _emptyValue = GetEmptyValue(emptyIsMin)
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     If value.HasValue Then
       Me.Date = value.Value
     End If
@@ -149,6 +176,9 @@ Public Structure SmartDate
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As Date?, ByVal emptyValue As EmptyValue)
     _emptyValue = emptyValue
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     If value.HasValue Then
       Me.Date = value.Value
     End If
@@ -158,12 +188,23 @@ Public Structure SmartDate
   ''' Creates a new SmartDate object.
   ''' </summary>
   ''' <remarks>
+  ''' <para>
   ''' The SmartDate created will use the min possible
   ''' date to represent an empty date.
+  ''' </para><para>
+  ''' SmartDate maintains the date value as a DateTime,
+  ''' so the provided DateTimeOffset is converted to a
+  ''' DateTime in this constructor. You should be aware
+  ''' that this can lead to a loss of precision in
+  ''' some cases.
+  ''' </para>
   ''' </remarks>
   ''' <param name="value">The initial value of the object.</param>
   Public Sub New(ByVal value As DateTimeOffset)
-    _emptyValue = EmptyValue.MinDate
+    _emptyValue = Csla.SmartDate.EmptyValue.MinDate
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Date = value.DateTime
   End Sub
 
@@ -172,8 +213,18 @@ Public Structure SmartDate
   ''' </summary>
   ''' <param name="value">The initial value of the object.</param>
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
+  ''' <remarks>
+  ''' SmartDate maintains the date value as a DateTime,
+  ''' so the provided DateTimeOffset is converted to a
+  ''' DateTime in this constructor. You should be aware
+  ''' that this can lead to a loss of precision in
+  ''' some cases.
+  ''' </remarks>
   Public Sub New(ByVal value As DateTimeOffset, ByVal emptyIsMin As Boolean)
     _emptyValue = GetEmptyValue(emptyIsMin)
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Date = value.DateTime
   End Sub
 
@@ -182,8 +233,18 @@ Public Structure SmartDate
   ''' </summary>
   ''' <param name="value">The initial value of the object.</param>
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
+  ''' <remarks>
+  ''' SmartDate maintains the date value as a DateTime,
+  ''' so the provided DateTimeOffset is converted to a
+  ''' DateTime in this constructor. You should be aware
+  ''' that this can lead to a loss of precision in
+  ''' some cases.
+  ''' </remarks>
   Public Sub New(ByVal value As DateTimeOffset, ByVal emptyValue As EmptyValue)
     _emptyValue = emptyValue
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Date = value.DateTime
   End Sub
 
@@ -197,8 +258,10 @@ Public Structure SmartDate
   ''' <param name="value">The initial value of the object (as text).</param>
   Public Sub New(ByVal value As String)
     _emptyValue = EmptyValue.MinDate
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Text = value
-    _initialized = True
   End Sub
 
   ''' <summary>
@@ -208,8 +271,10 @@ Public Structure SmartDate
   ''' <param name="emptyIsMin">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As String, ByVal emptyIsMin As Boolean)
     _emptyValue = GetEmptyValue(emptyIsMin)
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Text = value
-    _initialized = True
   End Sub
 
   ''' <summary>
@@ -219,8 +284,10 @@ Public Structure SmartDate
   ''' <param name="emptyValue">Indicates whether an empty date is the min or max date value.</param>
   Public Sub New(ByVal value As String, ByVal emptyValue As EmptyValue)
     _emptyValue = emptyValue
+    _format = Nothing
+    _initialized = False
+    _date = DateTime.MinValue
     Me.Text = value
-    _initialized = True
   End Sub
 
   Private Shared Function GetEmptyValue(ByVal emptyIsMin As Boolean) As EmptyValue
@@ -351,33 +418,34 @@ Public Structure SmartDate
 
   End Function
 
-  Public Sub SetDate(ByVal newDate As Date)
+  ' TODO: These methods do not exist in c# version, should they be deleted?
+  'Public Sub SetDate(ByVal newDate As Date)
 
-    Me.Date = newDate
+  '  Me.Date = newDate
 
-  End Sub
+  'End Sub
 
-  Public Sub SetDate(ByVal newDate As Date?)
+  'Public Sub SetDate(ByVal newDate As Date?)
 
-    If newDate.HasValue Then
-      Me.Date = newDate.Value
+  '  If newDate.HasValue Then
+  '    Me.Date = newDate.Value
 
-    Else
-      If _emptyValue = EmptyValue.MinDate Then
-        Me.Date = Date.MinValue
+  '  Else
+  '    If _emptyValue = EmptyValue.MinDate Then
+  '      Me.Date = Date.MinValue
 
-      Else
-        Me.Date = Date.MaxValue
-      End If
-    End If
+  '    Else
+  '      Me.Date = Date.MaxValue
+  '    End If
+  '  End If
 
-  End Sub
+  'End Sub
 
-  Public Sub SetDate(ByVal newDate As DateTimeOffset)
+  'Public Sub SetDate(ByVal newDate As DateTimeOffset)
 
-    Me.Date = newDate.DateTime
+  '  Me.Date = newDate.DateTime
 
-  End Sub
+  'End Sub
 
 #End Region
 
@@ -419,7 +487,7 @@ Public Structure SmartDate
         Return Me.Date.Equals(tmp.Date)
       End If
 
-    ElseIf TypeOf obj Is Date Then
+    ElseIf TypeOf obj Is DateTime Then
       Return Me.Date.Equals(DirectCast(obj, Date))
 
     ElseIf TypeOf obj Is String Then
@@ -567,7 +635,7 @@ Public Structure SmartDate
   ''' <returns>A value indicating if the parse was successful.</returns>
   Public Shared Function TryParse(ByVal value As String, ByVal emptyValue As EmptyValue, ByRef result As SmartDate) As Boolean
 
-    Dim dateResult As Date
+    Dim dateResult As DateTime = DateTime.MinValue
     If TryStringToDate(value, emptyValue, dateResult) Then
       result = New SmartDate(dateResult, emptyValue)
       Return True
@@ -623,7 +691,7 @@ Public Structure SmartDate
   Public Shared Function StringToDate( _
     ByVal value As String, ByVal emptyValue As EmptyValue) As Date
 
-    Dim result As Date
+    Dim result As DateTime = DateTime.MinValue
     If TryStringToDate(value, emptyValue, result) Then
       Return result
 
@@ -633,15 +701,15 @@ Public Structure SmartDate
 
   End Function
 
-  Private Shared Function TryStringToDate(ByVal value As String, ByVal emptyValue As EmptyValue, ByRef result As Date) As Boolean
+  Private Shared Function TryStringToDate(ByVal value As String, ByVal emptyValue As EmptyValue, ByRef result As DateTime) As Boolean
 
-    If Len(value) = 0 Then
-      If emptyValue = SmartDate.EmptyValue.MinDate Then
-        result = Date.MinValue
+    If (String.IsNullOrEmpty(value)) Then
+      If emptyValue = emptyValue.MinDate Then
+        result = DateTime.MinValue
         Return True
 
       Else
-        result = Date.MaxValue
+        result = DateTime.MaxValue
         Return True
       End If
 
@@ -684,7 +752,7 @@ Public Structure SmartDate
   Public Shared Function DateToString( _
     ByVal value As Date, ByVal formatString As String) As String
 
-    Return DateToString(value, formatString, EmptyValue.MinDate)
+    Return DateToString(value, formatString, True)
   End Function
 
   ''' <summary>
@@ -725,14 +793,14 @@ Public Structure SmartDate
     ByVal value As Date, ByVal formatString As String, _
     ByVal emptyValue As EmptyValue) As String
 
-    If emptyValue = SmartDate.EmptyValue.MinDate Then
-      If value = Date.MinValue Then
-        Return ""
+    If emptyValue = emptyValue.MinDate Then
+      If value = DateTime.MinValue Then
+        Return String.Empty
       End If
 
     Else ' maxdate is empty
-      If value = Date.MaxValue Then
-        Return ""
+      If value = DateTime.MaxValue Then
+        Return String.Empty
       End If
     End If
     Return String.Format("{0:" + formatString + "}", value)
@@ -797,15 +865,6 @@ Public Structure SmartDate
   ''' </summary>
   ''' <param name="value">The date to which we are being compared.</param>
   ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
-  Public Function CompareTo(ByVal value As Date) As Integer
-    Return Me.Date.CompareTo(value)
-  End Function
-
-  ''' <summary>
-  ''' Compares a SmartDate to a date value.
-  ''' </summary>
-  ''' <param name="value">The date to which we are being compared.</param>
-  ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
   ''' <remarks>
   ''' SmartDate maintains the date value as a DateTime,
   ''' so the provided DateTimeOffset is converted to a
@@ -815,6 +874,15 @@ Public Structure SmartDate
   ''' </remarks>
   Public Function CompareTo(ByVal value As DateTimeOffset) As Integer
     Return Me.Date.CompareTo(value.DateTime)
+  End Function
+
+  ''' <summary>
+  ''' Compares a SmartDate to a date value.
+  ''' </summary>
+  ''' <param name="value">The date to which we are being compared.</param>
+  ''' <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
+  Public Function CompareTo(ByVal value As Date) As Integer
+    Return Me.Date.CompareTo(value)
   End Function
 
   ''' <summary>
@@ -842,18 +910,6 @@ Public Structure SmartDate
   End Function
 
   ''' <summary>
-  ''' Subtracts a Date from the object.
-  ''' </summary>
-  ''' <param name="value">Date to subtract from the date.</param>
-  Public Function Subtract(ByVal value As Date) As TimeSpan
-    If IsEmpty Then
-      Return TimeSpan.Zero
-    Else
-      Return Me.Date.Subtract(value)
-    End If
-  End Function
-
-  ''' <summary>
   ''' Subtracts a DateTimeOffset from the object.
   ''' </summary>
   ''' <param name="value">DateTimeOffset to subtract from the date.</param>
@@ -869,6 +925,18 @@ Public Structure SmartDate
       Return TimeSpan.Zero
     Else
       Return Me.Date.Subtract(value.DateTime)
+    End If
+  End Function
+
+  ''' <summary>
+  ''' Subtracts a Date from the object.
+  ''' </summary>
+  ''' <param name="value">Date to subtract from the date.</param>
+  Public Function Subtract(ByVal value As Date) As TimeSpan
+    If IsEmpty Then
+      Return TimeSpan.Zero
+    Else
+      Return Me.Date.Subtract(value)
     End If
   End Function
 
@@ -1244,19 +1312,32 @@ Public Structure SmartDate
 
 #End Region
 
-  Public Sub GetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.GetChildren
+#Region " IMobileObject Members "
+
+  Private Sub GetState(ByVal info As Serialization.Mobile.SerializationInfo) Implements Serialization.Mobile.IMobileObject.GetState
+    info.AddValue("SmartDate._date", _date)
+    info.AddValue("SmartDate._defaultFormat", _defaultFormat)
+    info.AddValue("SmartDate._emptyValue", _emptyValue.ToString())
+    info.AddValue("SmartDate._initialized", _initialized)
+    info.AddValue("SmartDate._format", _format)
+  End Sub
+
+  Private Sub SetState(ByVal info As Serialization.Mobile.SerializationInfo) Implements Serialization.Mobile.IMobileObject.SetState
+    _date = info.GetValue(Of DateTime)("SmartDate._date")
+    _defaultFormat = info.GetValue(Of String)("SmartDate._defaultFormat")
+    _emptyValue = CType(System.Enum.Parse(GetType(EmptyValue), info.GetValue(Of String)("SmartDate._emptyValue"), True), EmptyValue)
+    _format = info.GetValue(Of String)("SmartDate._format")
+    _initialized = info.GetValue(Of Boolean)("SmartDate._initialized")
+  End Sub
+
+  Private Sub GetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.GetChildren
 
   End Sub
 
-  Public Sub GetState(ByVal info As Serialization.Mobile.SerializationInfo) Implements Serialization.Mobile.IMobileObject.GetState
+  Private Sub SetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.SetChildren
 
   End Sub
 
-  Public Sub SetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.SetChildren
-
-  End Sub
-
-  Public Sub SetState(ByVal info As Serialization.Mobile.SerializationInfo) Implements Serialization.Mobile.IMobileObject.SetState
-
-  End Sub
+#End Region
+  
 End Structure

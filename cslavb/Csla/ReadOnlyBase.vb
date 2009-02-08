@@ -1,10 +1,13 @@
 Imports System
 Imports System.Collections.Generic
 Imports System.ComponentModel
+Imports System.Linq.Expressions
+Imports System.Reflection
 Imports System.Runtime.Serialization
 Imports Csla.Core
 Imports Csla.Core.FieldManager
 Imports Csla.Core.LoadManager
+Imports Csla.Reflection
 Imports Csla.Server
 Imports Csla.Security
 
@@ -308,14 +311,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     System.Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
   Public Function CanExecuteMethod(ByVal throwOnFalse As Boolean) As Boolean
 
-    Dim methodName As String = _
-      New System.Diagnostics.StackTrace(). _
-      GetFrame(1).GetMethod.Name
+    Dim methodName As String = New System.Diagnostics.StackTrace().GetFrame(1).GetMethod.Name
     Dim result As Boolean = CanExecuteMethod(methodName)
     If throwOnFalse AndAlso result = False Then
-      Dim ex As New System.Security.SecurityException( _
-        String.Format("{0} ({1})", _
-        My.Resources.MethodExecuteNotAllowed, methodName))
+      Dim ex As New System.Security.SecurityException(String.Format("{0} ({1})", My.Resources.MethodExecuteNotAllowed, methodName))
       ex.Action = System.Security.Permissions.SecurityAction.Deny
       Throw ex
     End If
@@ -335,9 +334,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
     Dim result As Boolean = CanExecuteMethod(methodName)
     If throwOnFalse AndAlso result = False Then
-      Dim ex As New System.Security.SecurityException( _
-        String.Format("{0} ({1})", _
-        My.Resources.MethodExecuteNotAllowed, methodName))
+      Dim ex As New System.Security.SecurityException(String.Format("{0} ({1})", My.Resources.MethodExecuteNotAllowed, methodName))
       ex.Action = System.Security.Permissions.SecurityAction.Deny
       Throw ex
     End If
@@ -548,9 +545,9 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   <OnDeserialized()> _
   Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
 
-    OnDeserialized(context)
     FieldManager.SetPropertyList(Me.GetType)
     InitializeAuthorizationRules()
+    OnDeserialized(context)
 
   End Sub
 
@@ -611,6 +608,31 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
     Return Core.FieldManager.PropertyInfoManager.RegisterProperty(Of P)(GetType(T), info)
 
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <returns></returns>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P))) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name))
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+  ''' <returns></returns>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName))
   End Function
 
 #End Region
@@ -1107,8 +1129,12 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="parameter">Parameter value.</param>
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Protected Sub LoadPropertyAsync(Of R, P)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P), ByVal parameter As P)
-    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, parameter)
-    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+    Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+    Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+    Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, parameter)
+    Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+    LoadManager.BeginLoad(loader, actionLoadComplete)
+    'TODO: No idea if this is a good fix or not but I think it works. If this is a good fix then it needs to be used in other methods like this one.
   End Sub
 
   ''' <summary>
@@ -1359,7 +1385,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
 #End Region
 
-#Region " IManagedProperties "
+#Region " IManagedProperties Members "
 
   Private ReadOnly Property HasManagedProperties() As Boolean Implements IManageProperties.HasManagedProperties
     Get

@@ -444,15 +444,15 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
   End Sub
 
-  Private Sub IDataPortalTarget_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Private Sub IDataPortalTarget_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
     Me.DataPortal_OnDataPortalInvoke(e)
   End Sub
 
-  Private Sub IDataPortalTarget_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+  Private Sub IDataPortalTarget_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
     Me.DataPortal_OnDataPortalInvokeComplete(e)
   End Sub
 
-  Private Sub IDataPortalTarget_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+  Private Sub IDataPortalTarget_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
     Me.DataPortal_OnDataPortalException(e, ex)
   End Sub
 

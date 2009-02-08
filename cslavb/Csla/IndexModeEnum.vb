@@ -1,4 +1,6 @@
-﻿''' <summary>
+﻿Imports System
+
+''' <summary>
 ''' Enum used to determine how a given property should be indexed
 ''' </summary>
 Public Enum IndexModeEnum

@@ -1,3 +1,5 @@
+Imports System
+
 ''' <summary>
 ''' Marks a field to indicate that the value should not 
 ''' be copied as part of the undo process.

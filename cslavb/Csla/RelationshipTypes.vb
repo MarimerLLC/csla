@@ -1,4 +1,6 @@
-﻿''' <summary>
+﻿Imports System
+
+''' <summary>
 ''' List of valid relationship types
 ''' between a parent object and another
 ''' object through a managed property.

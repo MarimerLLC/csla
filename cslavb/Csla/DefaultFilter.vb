@@ -1,6 +1,8 @@
-Friend Class DefaultFilter
+Imports System
 
-  Public Shared Function Filter(ByVal item As Object, ByVal filterValue As Object) As Boolean
+Friend Module DefaultFilter
+
+  Public Function Filter(ByVal item As Object, ByVal filterValue As Object) As Boolean
 
     Dim result As Boolean = False
 
@@ -12,4 +14,4 @@ Friend Class DefaultFilter
 
   End Function
 
-End Class
+End Module

@@ -59,5 +59,59 @@ namespace Csla.Test.CslaDataProvider
       Assert.AreEqual(2, list.Count);
 
     }
+
+    [TestMethod]
+    public void TestSavedWithChanges()
+    {
+      Customer item = Customer.GetCustomer(1);
+      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      dp.ObjectInstance = item;
+      item.Name = "New Name";
+      bool saved = false;
+      dp.Saved += (o, e) =>
+        {
+          Assert.IsNull(e.Error,"Error should be null");
+          Assert.IsNotNull(e.NewObject, "Object should exist");
+          Assert.AreEqual(((Customer)e.NewObject).Method, "Updating Customer New Name");
+          saved = true;
+        };
+      dp.Save();
+      Assert.IsTrue(saved);
+    }
+
+    [TestMethod]
+    public void TestSavedWithChangesInvalid()
+    {
+      Customer item = Customer.GetCustomer(1);
+      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      dp.ObjectInstance = item;
+      item.Name = "New Name";
+      item.Id = 0;
+      bool saved = false;
+      dp.Saved += (o, e) =>
+      {
+        Assert.IsNotNull(e.Error, "Error should be null");
+        saved = true;
+      };
+      dp.Save();
+      Assert.IsTrue(saved);
+    }
+
+    [TestMethod]
+    public void TestSavedWithoutChanges()
+    {
+      Customer item = Customer.GetCustomer(1);
+      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      dp.ObjectInstance = item;
+      bool saved = false;
+      dp.Saved += (o, e) =>
+      {
+        Assert.IsNull(e.Error, "Error should be null");
+        Assert.IsNotNull(e.NewObject, "Object should exist");
+        saved = true;
+      };
+      dp.Save();
+      Assert.IsTrue(saved);
+    }
   }
 }

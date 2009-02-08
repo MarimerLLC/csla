@@ -1,3 +1,5 @@
+Imports System
+
 ''' <summary>
 ''' Marks a DataPortal_XYZ method to run within
 ''' the specified transactional context.

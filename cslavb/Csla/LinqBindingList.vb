@@ -1,5 +1,9 @@
-﻿Imports System.ComponentModel
+﻿Imports System
+Imports System.ComponentModel
+Imports System.Collections.Generic
 Imports System.Reflection
+Imports System.Collections
+Imports System.Linq
 Imports System.Linq.Expressions
 Imports Csla.Core
 
@@ -9,7 +13,12 @@ Imports Csla.Core
 ''' <typeparam name="T">The type of the objects contained
 ''' in the original list.</typeparam>
 Public Class LinqBindingList(Of T)
-  Implements IList(Of T), IBindingList, IEnumerable(Of T), ICancelAddNew, IQueryable(Of T)
+  Implements IList(Of T)
+  Implements IBindingList
+  Implements IEnumerable(Of T)
+  Implements ICancelAddNew
+  Implements IQueryable(Of T)
+  Implements IOrderedQueryable(Of T)
 
 #Region "ListItem class"
 
@@ -133,7 +142,7 @@ Public Class LinqBindingList(Of T)
     If SupportsSorting Then
       _bindingList.ApplySort([property], direction)
     Else
-      Throw New NotSupportedException("Sorting not supported.")
+      Throw New NotSupportedException(My.Resources.SortingNotSupported)
     End If
   End Sub
 
@@ -223,7 +232,7 @@ Public Class LinqBindingList(Of T)
     If SupportsSorting Then
       _bindingList.RemoveSort()
     Else
-      Throw New NotSupportedException("Sorting not supported")
+      Throw New NotSupportedException(My.Resources.SortingNotSupported)
     End If
   End Sub
 
@@ -331,7 +340,7 @@ Public Class LinqBindingList(Of T)
   End Property
 
   Private Function IEnumerable_GetEnumerator() As IEnumerator Implements System.Collections.IEnumerable.GetEnumerator
-    Return GetEnumerator()
+    Return  DirectCast(Me,IEnumerable(Of T)).GetEnumerator()
   End Function
 
   ''' <summary>
@@ -488,6 +497,7 @@ Public Class LinqBindingList(Of T)
   Private _supportsBinding As Boolean
   Private _bindingList As IBindingList
   Private _filterBy As PropertyDescriptor
+  Private _sortExpression As Expression
   Private _filter As Object
   Private _provider As FilterProvider = Nothing
   Private _filterIndex As List(Of ListItem) = New List(Of ListItem)()
@@ -513,8 +523,16 @@ Public Class LinqBindingList(Of T)
     Me.New(list)
     SetFilterByExpression(expression)
     _queryProvider = queryProvider
-    _expression = expression
+    If expression Is Nothing Then
+      _expression = expression.Constant(Me)
+    Else
+      _expression = expression
+    End If
   End Sub
+
+  Private Shared Function SelectAll() As Expression(Of Func(Of T, Boolean))
+    Return Function(T) True 'TODO: Is this equivilent to c# return (T) => true;?
+  End Function
 
   Private Sub SetFilterByExpression(ByVal expression As Expression)
     Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
@@ -581,6 +599,7 @@ Public Class LinqBindingList(Of T)
           newKey = newItem
         End If
 
+        'check to see if it is in the filter
         If ItemShouldBeInList(newItem) Then
           _filterIndex.Add(New ListItem(newKey, listIndex))
         End If
@@ -688,27 +707,28 @@ Public Class LinqBindingList(Of T)
 
 #End Region
 
+  Friend Sub SortByExpression(ByVal expression As Expression)
+    _sortExpression = expression
+    BuildFilterIndex()
+  End Sub
+
   Friend Sub BuildFilterIndex()
     ' Find the call to Where() and get the lambda expression predicate.
     Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
     Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
-    If whereExpression Is Nothing Then
-      Return
-    End If
-    If whereExpression.Arguments.Count < 2 Then
-      Return
-    End If
-    If whereExpression.Arguments(1) Is Nothing Then
-      Return
-    End If
-
     Dim whereBody As Expression(Of Func(Of T, Boolean)) = CType((CType(whereExpression.Arguments(1), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
+
+    Dim subset = DirectCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
+
+    If _sortExpression IsNot Nothing AndAlso TypeOf (_sortExpression) Is MethodCallExpression Then
+      subset = BuildSortedSubset(subset, DirectCast(_sortExpression, MethodCallExpression))
+    End If
 
     _filterIndex.Clear()
     Dim searchable = TryCast(_list, Linq.IIndexSearchable(Of T))
     If searchable IsNot Nothing Then
       'before we can start, we do have to go through the whole thing once to make our filterindex.  
-      For Each item As T In searchable.SearchByExpression(whereBody)
+      For Each item As T In subset
         If Not _filterBy Is Nothing Then
           Dim tmp As Object = _filterBy.GetValue(item)
           _filterIndex.Add(New ListItem(tmp, (CType(_list, IPositionMappable(Of T))).PositionOf(item)))
@@ -720,31 +740,106 @@ Public Class LinqBindingList(Of T)
 
   End Sub
 
+  Private Shared Function GetWhereBodyFromExpression(ByVal whereExpression As MethodCallExpression) As Expression(Of Func(Of T, Boolean))
+    Dim whereBody As Expression(Of Func(Of T, Boolean))
+    If whereExpression Is Nothing Then
+      whereBody = SelectAll()
+    ElseIf whereExpression.Arguments.Count < 2 Then
+      whereBody = SelectAll()
+    ElseIf whereExpression.Arguments(1) Is Nothing Then
+      whereBody = SelectAll()
+    Else
+      'TODO: Pain cast - whereBody = (Expression(Of Func(Of T, Boolean)(CType(whereExpression.Arguments(1), UnaryExpression).Operand))
+    End If
+
+    Return whereBody
+
+  End Function
+
 #Region "IEnumerable<T> Members"
+
+  'TODO: getting dip signature and it's late.
+  '''' <summary>
+  '''' Gets an enumerator object.
+  '''' </summary>
+  '''' <returns></returns>
+  'Public Function GetEnumerator() As IEnumerator(Of T) Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
+  '  Dim returnEnumerable As List(Of T) = New List(Of T)()
+  '  If TypeOf _list Is Linq.IIndexSearchable(Of T) AndAlso TypeOf _list Is Core.IPositionMappable(Of T) Then
+  '    ' Find the call to Where() and get the lambda expression predicate.
+  '    Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
+  '    Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
+  '    Dim whereBody As Expression(Of Func(Of T, Boolean)) = CType((CType(whereExpression.Arguments(1), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
+
+  '    For Each item As T In (TryCast(_list, Linq.IIndexSearchable(Of T))).SearchByExpression(whereBody)
+  '      returnEnumerable.Add(item)
+  '    Next item
+  '  Else
+  '    For Each item As T In _list
+
+  '      returnEnumerable.Add(item)
+  '    Next item
+  '  End If
+  '  Return CType(returnEnumerable.GetEnumerator, Global.System.Collections.Generic.IEnumerator(Of T))
+  'End Function
+
+  Friend Function ToList(Of TResult)() As List(Of T)
+    Dim newList = New List(Of T)(Me.Count)
+    For Each item As T In Me
+      newList.Add(item)
+    Next
+    Return newList
+  End Function
+
+#End Region
+
+#Region " IEnumerable<T> Members "
 
   ''' <summary>
   ''' Gets an enumerator object.
   ''' </summary>
   ''' <returns></returns>
-  Public Function GetEnumerator() As IEnumerator(Of T) Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
-    Dim returnEnumerable As List(Of T) = New List(Of T)()
-    If TypeOf _list Is Linq.IIndexSearchable(Of T) AndAlso TypeOf _list Is Core.IPositionMappable(Of T) Then
-      ' Find the call to Where() and get the lambda expression predicate.
-      Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
+  Public Function GetEnumerator() As IEnumerator(Of T) Implements IEnumerable(Of T).GetEnumerator
+    Dim isList = DirectCast(_list, Linq.IIndexSearchable(Of T))
+    Dim isMappable = DirectCast(_list, Core.IPositionMappable(Of T))
+
+    If isList IsNot Nothing AndAlso isMappable IsNot Nothing Then
+      'Find the call to Where() and get the lambda expression predicate.
+      Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder
       Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
-      Dim whereBody As Expression(Of Func(Of T, Boolean)) = CType((CType(whereExpression.Arguments(1), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
+      Dim whereBody As Expression(Of Func(Of T, Boolean)) = GetWhereBodyFromExpression(whereExpression)
 
-      For Each item As T In (TryCast(_list, Linq.IIndexSearchable(Of T))).SearchByExpression(whereBody)
+      Dim subset = DirectCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
+      If _sortExpression IsNot Nothing AndAlso TypeOf (_sortExpression) Is MethodCallExpression Then
+        subset = BuildSortedSubset(subset, DirectCast(_sortExpression, MethodCallExpression))
 
-        returnEnumerable.Add(item)
-      Next item
+        'TODO: Need yield equivilent here
+      End If
     Else
-      For Each item As T In _list
-
-        returnEnumerable.Add(item)
-      Next item
+      'TODO: Need yield equivilent here
     End If
-    Return CType(returnEnumerable.GetEnumerator, Global.System.Collections.Generic.IEnumerator(Of T))
+
+  End Function
+
+  Private Shared Function BuildSortedSubset(ByVal subset As IEnumerable(Of T), ByVal sortExpression As MethodCallExpression) As IEnumerable(Of T)
+    'get the lambda buried in the second argument
+    Dim lambda As LambdaExpression = CType(CType(sortExpression.Arguments(1), UnaryExpression).Operand, LambdaExpression)
+
+    'get the generic arguments of the lambda
+    Dim genArgs = lambda.Type.GetGenericArguments()
+
+    'get the sort method out via reflection
+    'TODO: ugly lambda needed here
+
+    'make a generic method using the generic arguments
+    'Dim genericSortMethod = sortMethod.MakeGenericMethod(genArgs)  'TODO Uncomment when above todo is fixed
+
+    'replace the subset with the sorted subset
+
+    'TODO subset = (IEnumerable<T>)genericSortMethod.Invoke(null, new object[] { subset.AsQueryable<T>(), lambda });
+
+    Return subset
+
   End Function
 
 #End Region

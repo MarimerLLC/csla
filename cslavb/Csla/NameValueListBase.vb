@@ -1,7 +1,7 @@
 Imports System.IO
-Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.ComponentModel
 Imports Csla.Core
+Imports Csla.Serialization.Mobile
 
 ''' <summary>
 ''' This is the base class from which readonly name/value
@@ -329,7 +329,7 @@ Public MustInherit Class NameValueListBase(Of K, V)
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub IDataPortalTarget_DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -376,8 +376,8 @@ Public MustInherit Class NameValueListBase(Of K, V)
 
   End Sub
 
-  Private Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
-    IDataPortalTarget_DataPortal_OnDataPortalInvoke(e)
+  Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+    Me.DataPortal_OnDataPortalInvoke(e)
   End Sub
 
   Private Sub IDataPortalTarget_DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete

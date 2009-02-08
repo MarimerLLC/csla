@@ -1,4 +1,9 @@
-﻿''' <summary>
+﻿Imports System
+Imports Csla.Serialization
+Imports Csla.Serialization.Mobile
+Imports Csla.Core
+
+''' <summary>
 ''' A single-value criteria used to retrieve business
 ''' objects that only require one criteria value.
 ''' </summary>
@@ -50,6 +55,40 @@ Public Class SingleCriteria(Of B, C)
   Protected Sub New()
 
   End Sub
-
 #End If
+
+#Region " MobileFormatter "
+
+  ''' <summary>
+  ''' Override this method to insert your field values
+  ''' into the MobileFormatter serialzation stream.
+  ''' </summary>
+  ''' <param name="info">
+  ''' Object containing the data to serialize.
+  ''' </param>
+  ''' <param name="mode">
+  ''' The StateMode indicating why this method was invoked.
+  ''' </param>
+  Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As Core.StateMode)
+    MyBase.OnGetState(info, mode)
+    info.AddValue("Csla.Silverlight.SingleCriteria._value", _value)
+  End Sub
+
+  ''' <summary>
+  ''' Override this method to retrieve your field values
+  ''' from the MobileFormatter serialzation stream.
+  ''' </summary>
+  ''' <param name="info">
+  ''' Object containing the data to serialize.
+  ''' </param>
+  ''' <param name="mode">
+  ''' The StateMode indicating why this method was invoked.
+  ''' </param>
+  Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As Core.StateMode)
+    MyBase.OnSetState(info, mode)
+    _value = info.GetValue(Of C)("Csla.Silverlight.SingleCriteria._value")
+  End Sub
+
+#End Region
+
 End Class

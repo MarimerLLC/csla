@@ -1,4 +1,8 @@
+Imports System
+Imports System.Collections.Generic
+Imports System.Runtime.Serialization
 Imports System.ComponentModel
+Imports Csla.Core
 
 ''' <summary>
 ''' This is the base class from which collections
@@ -92,7 +96,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
       Next
 
       ' do the save
-      Me.Item(index) = DirectCast(savable.Save, T)
+      result = DirectCast(savable.Save, T)
 
       If Not ReferenceEquals(result, item) Then
         ' restore edit level to previous level
@@ -376,7 +380,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke
+  Protected Overridable Sub DataPortal_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -387,7 +391,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' <param name="e">The DataPortalContext object passed to the DataPortal.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete
+  Protected Overridable Sub DataPortal_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
 
   End Sub
 
@@ -399,7 +403,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
   ''' <param name="ex">The Exception thrown during data access.</param>
   <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId:="Member")> _
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception) Implements Server.IDataPortalTarget.DataPortal_OnDataPortalException
+  Protected Overridable Sub DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
 
   End Sub
 
@@ -422,19 +426,9 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
 #End Region
 
-#Region " IDataPortalTarget implementation "
+#Region " IDataPortalTarget Members "
 
-  'TODO: Since I'm not sure about the implementation of this I'm leaving this part alone. So we remove the  implements statement on the methods above and create
-  ' the methods here?
-  Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
-
-  End Sub
-
-  Private Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
-
-  End Sub
-
-  Private Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
+  Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
 
   End Sub
 
@@ -450,7 +444,27 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
 
   End Sub
 
-  Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
+  Private Sub IDataPortalTarget_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+    Me.DataPortal_OnDataPortalInvoke(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
+    Me.DataPortal_OnDataPortalInvokeComplete(e)
+  End Sub
+
+  Private Sub IDataPortalTarget_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
+    Me.DataPortal_OnDataPortalException(e, ex)
+  End Sub
+
+  Private Sub Child_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As System.Exception) Implements Server.IDataPortalTarget.Child_OnDataPortalException
+
+  End Sub
+
+  Private Sub Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvoke
+
+  End Sub
+
+  Private Sub Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs) Implements Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete
 
   End Sub
 
@@ -476,6 +490,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
       Return False
     End Get
   End Property
+
 #End Region
 
 End Class

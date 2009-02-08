@@ -1,5 +1,7 @@
+Imports System
 Imports System.ComponentModel
-Imports System.Reflection
+Imports System.Collections.Generic
+Imports System.Collections
 
 ''' <summary>
 ''' Provides a filtered view into an existing IList(Of T).
@@ -257,7 +259,7 @@ Public Class FilteredBindingList(Of T)
     If SupportsSorting Then
       _bindingList.ApplySort([property], direction)
     Else
-      Throw New NotSupportedException("Sorting not supported.")
+      Throw New NotSupportedException(My.Resources.SortingNotSupported)
     End If
   End Sub
 
@@ -349,7 +351,7 @@ Public Class FilteredBindingList(Of T)
     If SupportsSorting Then
       _bindingList.RemoveSort()
     Else
-      Throw New NotSupportedException("Sorting not supported")
+      Throw New NotSupportedException(My.Resources.SortingNotSupported)
     End If
   End Sub
 
@@ -593,8 +595,7 @@ Public Class FilteredBindingList(Of T)
 
   ''' <summary>
   ''' Gets or sets the 
-  ''' item at the specified
-  ''' index.
+  ''' item at the specified index.
   ''' </summary>
   ''' <param name="index">Index of the item.</param>
   ''' <returns>Item at the specified index.</returns>
@@ -844,7 +845,12 @@ Public Class FilteredBindingList(Of T)
   End Sub
 
   Private Function OriginalIndex(ByVal filteredIndex As Integer) As Integer
-    Return _filterIndex(filteredIndex).BaseIndex
+    If _filtered Then
+      Return _filterIndex(filteredIndex).BaseIndex
+    Else
+      Return filteredIndex
+    End If
+
   End Function
 
   Private Function FilteredIndex(ByVal originalIndex As Integer) As Integer

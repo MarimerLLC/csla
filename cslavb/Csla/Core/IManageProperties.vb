@@ -5,6 +5,7 @@ Namespace Core
 
   Friend Interface IManageProperties
     ReadOnly Property HasManagedProperties() As Boolean
+    Function FieldExists(ByVal propertyInfo As IPropertyInfo) As Boolean
     Function GetManagedProperties() As List(Of IPropertyInfo)
     Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object
     Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object

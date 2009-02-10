@@ -574,7 +574,7 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can not register property {0} after containing type has been instantiated.
+        ///   Looks up a localized string similar to Can not register property {0} after containing type ({1}) has been instantiated.
         /// </summary>
         internal static string PropertyRegisterNotAllowed {
             get {

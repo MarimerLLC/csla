@@ -65,7 +65,7 @@ namespace Csla.Core.FieldManager
       lock (list)
       {
         if (list.IsLocked)
-          throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name));
+          throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name));
         list.Add(info);
         list.Sort();
       }

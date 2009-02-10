@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Insert data access region</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Insert CSLA .NET for Silverlight data access region.</Description>
+      <Shortcut>cslasdata</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>ObjectType</ID>
+          <ToolTip>Replace with the business object type.</ToolTip>
+          <Default>BusinessType</Default>
+        </Literal>
+        <Literal>
+          <ID>IdName</ID>
+          <ToolTip>Replace with the Id property info name.</ToolTip>
+          <Default>IdProperty</Default>
+        </Literal>
+        <Literal>
+          <ID>IdType</ID>
+          <ToolTip>Replace with the Id variable type.</ToolTip>
+          <Default>int</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+  <![CDATA[#region Data Access
+
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public void DataPortal_Fetch(SingleCriteria<$ObjectType$, $IdType$> criteria,
+      Csla.DataPortalClient.LocalProxy<$ObjectType$>.CompletedHandler handler)
+    {
+      Exception error = null;
+      try
+      {
+        using (BypassPropertyChecks)
+        {
+          Id = criteria.Value;
+        }
+      }
+      catch (Exception ex)
+      {
+        error = ex;
+      }
+      handler(this, error);
+    }
+
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<$ObjectType$>.CompletedHandler handler)
+    {
+      Exception error = null;
+      try
+      {
+        // insert data here
+      }
+      catch (Exception ex)
+      {
+        error = ex;
+      }
+      handler(this, error);
+    }
+
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public void DataPortal_Update(Csla.DataPortalClient.LocalProxy<$ObjectType$>.CompletedHandler handler)
+    {
+      Exception error = null;
+      try
+      {
+        // update data here
+      }
+      catch (Exception ex)
+      {
+        error = ex;
+      }
+      handler(this, error);
+    }
+
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public void DataPortal_DeleteSelf(Csla.DataPortalClient.LocalProxy<$ObjectType$>.CompletedHandler handler)
+    {
+      DataPortal_Delete(new SingleCriteria<$ObjectType$, $IdType$>(GetProperty<$IdType$>(IdProperty)), handler);
+    }
+
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public void DataPortal_Delete(SingleCriteria<$ObjectType$, $IdType$> criteria,
+      Csla.DataPortalClient.LocalProxy<$ObjectType$>.CompletedHandler handler)
+    {
+      Exception error = null;
+      try
+      {
+        // delete data here
+      }
+      catch (Exception ex)
+      {
+        error = ex;
+      }
+      handler(this, error);
+    }
+
+#endregion]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

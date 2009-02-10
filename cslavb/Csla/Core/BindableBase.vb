@@ -1,3 +1,4 @@
+Imports System
 Imports System.ComponentModel
 
 Namespace Core
@@ -93,14 +94,14 @@ Namespace Core
     ''' for all object properties.
     ''' </summary>
     ''' <remarks>
-    ''' This method is automatically called by MarkDirty. It actually
-    ''' raises a PropertyChanged event for an empty string, which
-    ''' tells data binding to refresh all properties.
+    ''' This method is automatically called by MarkDirty. It 
+    ''' actually raises PropertyChanged for an empty string,
+    ''' which tells data binding to refresh all properties.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnUnknownPropertyChanged()
 
-      RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(""))
+      RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(String.Empty))
 
     End Sub
 
@@ -193,14 +194,14 @@ Namespace Core
     ''' for all object properties.
     ''' </summary>
     ''' <remarks>
-    ''' This method is automatically called by MarkDirty. It actually
-    ''' raises a PropertyChanging event for an empty string, which
-    ''' tells data binding to refresh all properties.
+    ''' This method is automatically called by MarkDirty. It
+    ''' actually raises PropertyChanging for an empty string,
+    ''' which tells data binding to refresh all properties.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnUnknownPropertyChanging()
 
-      RaiseEvent PropertyChanging(Me, New PropertyChangingEventArgs(""))
+      RaiseEvent PropertyChanging(Me, New PropertyChangingEventArgs(String.Empty))
 
     End Sub
 

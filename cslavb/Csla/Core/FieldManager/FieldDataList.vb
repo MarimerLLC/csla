@@ -1,4 +1,8 @@
-﻿Namespace Core.FieldManager
+﻿Imports System
+Imports System.Collections.Generic
+Imports System.Runtime.Serialization
+
+Namespace Core.FieldManager
 
   <Serializable()> _
   Friend Class FieldDataList

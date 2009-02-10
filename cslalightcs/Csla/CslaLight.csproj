@@ -375,6 +375,7 @@
     </Compile>
     <Compile Include="Silverlight\BoomarkInformation.cs" />
     <Compile Include="Silverlight\ControlNameFactory.cs" />
+    <Compile Include="Silverlight\ErrorDialog.cs" />
     <Compile Include="Silverlight\IControlNameFactory.cs" />
     <Compile Include="Silverlight\ISupportNavigation.cs" />
     <Compile Include="Silverlight\NavigationBookmarkProcessedEventArgs.cs" />

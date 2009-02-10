@@ -1,4 +1,5 @@
-﻿Imports System.ComponentModel
+﻿Imports System
+Imports System.ComponentModel
 
 Namespace Core.FieldManager
 
@@ -71,6 +72,12 @@ Namespace Core.FieldManager
       End Get
     End Property
 
+    Private ReadOnly Property IsSavable() As Boolean Implements ITrackStatus.IsSavable
+      Get
+        Return True
+      End Get
+    End Property
+
     ''' <summary>
     ''' Gets a value indicating whether the field
     ''' has been changed.
@@ -94,12 +101,6 @@ Namespace Core.FieldManager
         Else
           Return _isDirty
         End If
-      End Get
-    End Property
-
-    Private ReadOnly Property IsSavable() As Boolean Implements ITrackStatus.IsSavable
-      Get
-        Return True
       End Get
     End Property
 
@@ -136,7 +137,7 @@ Namespace Core.FieldManager
       End Get
     End Property
 
-#Region "INotifyBusy Members"""
+#Region " INotifyBusy Members "
 
     Private Custom Event INotifyBusy_BusyChanged As BusyChangedEventHandler Implements INotifyBusy.BusyChanged
       AddHandler(ByVal value As BusyChangedEventHandler)
@@ -206,7 +207,7 @@ Namespace Core.FieldManager
     ''' <param name="ex">Exception that occurred on the background thread.</param>    
     Protected Overridable Sub OnUnhandledAsyncException(ByVal ex As ErrorEventArgs)
 
-      If _unhandledAsyncException IsNot Nothing Then _unhandledAsyncException(Me, ex)
+      RaiseEvent UnhandledAsyncException(Me, ex)
 
     End Sub
 

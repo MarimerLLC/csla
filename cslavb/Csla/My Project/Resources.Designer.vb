@@ -385,6 +385,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Target object must implement IEditableCollection.
+        '''</summary>
+        Friend ReadOnly Property IEditableCollectionRequiredException() As String
+            Get
+                Return ResourceManager.GetString("IEditableCollectionRequiredException", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Target object must implement IManageProperties.
         '''</summary>
         Friend ReadOnly Property IManagePropertiesRequiredException() As String

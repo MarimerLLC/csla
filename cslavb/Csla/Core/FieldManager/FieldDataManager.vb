@@ -1,6 +1,8 @@
-﻿Imports System.IO
-Imports System.Collections.Specialized
+﻿Imports System
+Imports System.IO
+Imports System.Collections.Generic
 Imports Csla.Serialization
+Imports System.Resources
 Imports Csla.Serialization.Mobile
 Imports System.Reflection
 
@@ -104,6 +106,7 @@ Namespace Core.FieldManager
         source.IsLocked = True
         result.AddRange(source)
       Next index
+
       ' set Index properties on all unindexed PropertyInfo objects
       Dim max As Integer = -1
       For Each item In result
@@ -324,7 +327,7 @@ Namespace Core.FieldManager
 
 #End Region
 
-#Region " IsValid/IsDirty"
+#Region " IsValid/IsDirty/IsBusy"
 
     ''' <summary>
     ''' Returns a value indicating whether all

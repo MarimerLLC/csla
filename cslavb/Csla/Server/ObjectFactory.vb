@@ -126,6 +126,37 @@ Namespace Server
       Return businessObject.BypassPropertyChecks
     End Function
 
+    ''' <summary>
+    ''' Gets a value indicating whether a managed field
+    ''' exists for the specified property.
+    ''' </summary>
+    ''' <param name="obj">Business object.</param>
+    ''' <param name="property">Property info object.</param>
+    Protected Function FieldExists(ByVal obj As Object, ByVal [property] As Csla.Core.IPropertyInfo) As Boolean
+
+      Dim target As Object = CType(obj, Core.IManageProperties)
+      If target IsNot Nothing Then
+        Return CType(target, Core.IManageProperties).FieldExists([property])
+      Else
+        Throw New ArgumentException(My.Resources.IManagePropertiesRequiredException)
+      End If
+    End Function
+
+    ''' <summary>
+    ''' Gets the list of deleted items from 
+    ''' an editable collection.
+    ''' </summary>
+    ''' <typeparam name="C">Type of child objects in the colletion.</typeparam>
+    ''' <param name="obj">Editable collection object.</param>
+    Protected Function GetDeletedList(Of C)(ByVal obj As Object) As Csla.Core.MobileList(Of C)
+      Dim target As Object = CType(obj, Core.IEditableCollection)
+      If target IsNot Nothing Then
+        Return CType(CType(target, Core.IEditableCollection).GetDeletedList(),  _
+          Csla.Core.MobileList(Of C))
+      Else
+        Throw New ArgumentException(My.Resources.IEditableCollectionRequiredException)
+      End If
+    End Function
   End Class
 
 End Namespace

@@ -54,7 +54,11 @@ Namespace Server
           If TypeOf criteria Is Integer Then
             method = GetMethodInfo(factoryType, factoryInfo.CreateMethodName)
           Else
-            method = GetMethodInfo(FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName), factoryInfo.CreateMethodName, criteria)
+            'method = GetMethodInfo(FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName), factoryInfo.CreateMethodName, criteria)
+            method = GetMethodInfo( _
+              factoryType, _
+              factoryInfo.CreateMethodName, _
+              criteria)
           End If
         Else
           method = New DataPortalMethodInfo()

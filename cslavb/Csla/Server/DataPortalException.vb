@@ -58,8 +58,8 @@ Namespace Server
     Protected Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.New(info, context)
-      _result = DirectCast(info.GetValue("mResult", GetType(DataPortalResult)), DataPortalResult)
-      _innerStackTrace = info.GetString("mInnerStackTrace")
+      _result = DirectCast(info.GetValue("_result", GetType(DataPortalResult)), DataPortalResult)
+      _innerStackTrace = info.GetString("_innerStackTrace")
 
     End Sub
 
@@ -75,8 +75,8 @@ Namespace Server
     Public Overrides Sub GetObjectData(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.GetObjectData(info, context)
-      info.AddValue("mResult", _result)
-      info.AddValue("mInnerStackTrace", _innerStackTrace)
+      info.AddValue("_result", _result)
+      info.AddValue("_innerStackTrace", _innerStackTrace)
 
     End Sub
 

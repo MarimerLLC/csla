@@ -123,7 +123,6 @@ Namespace Server
             result = portal.Create(objectType, criteria, context)
         End Select
 
-        ClearContext(context)
         Return result
 
       Catch ex As Csla.Server.DataPortalException
@@ -181,7 +180,6 @@ Namespace Server
             result = portal.Fetch(objectType, criteria, context)
         End Select
 
-        ClearContext(context)
         Return result
 
       Catch ex As Csla.Server.DataPortalException

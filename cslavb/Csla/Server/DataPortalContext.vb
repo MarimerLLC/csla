@@ -103,7 +103,7 @@ Namespace Server
       Get
         Return _factoryInfo
       End Get
-      Set(ByVal value As ObjectFactoryAttribute)
+      Friend Set(ByVal value As ObjectFactoryAttribute)
         _factoryInfo = value
       End Set
     End Property

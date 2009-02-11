@@ -16,7 +16,7 @@ Namespace Security
     Inherits ReadOnlyBase(Of CslaIdentity)
     Implements IIdentity
 
-    Private Shared _forceInit As Integer
+    Private Shared _forceInit As Boolean
 
 #Region "Constructor"
 
@@ -24,7 +24,7 @@ Namespace Security
     ''' Creates an instance of the object.
     ''' </summary>
     Protected Sub New()
-      _forceInit = _forceInit + 0
+      _forceInit = _forceInit And False
     End Sub
 
 #End Region
@@ -45,7 +45,7 @@ Namespace Security
     End Function
 
     Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)
-      _forceInit = 0
+      _forceInit = _forceInit And False
       MyBase.OnDeserialized(context)
     End Sub
 

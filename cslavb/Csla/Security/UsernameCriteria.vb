@@ -1,4 +1,7 @@
-﻿Namespace Security
+﻿Imports Csla
+Imports Csla.Serialization
+
+Namespace Security
 
   ''' <summary>
   ''' Criteria class for passing a
@@ -7,31 +10,43 @@
   ''' </summary>
   <Serializable()> _
   Public Class UsernameCriteria
+    Inherits CriteriaBase
 
-    Private _userName As String
+    ''' <summary>
+    ''' Username property definition.
+    ''' </summary>
+    Public Shared UsernameProperty As PropertyInfo(Of String) = _
+      RegisterProperty(GetType(UsernameCriteria), New PropertyInfo(Of String)("Username", "Username"))
+
     ''' <summary>
     ''' Gets the username.
     ''' </summary>
     Public Property Username() As String
       Get
-        Return _userName
+        Return ReadProperty(UsernameProperty)
       End Get
       Private Set(ByVal value As String)
-        _userName = value
+        LoadProperty(UsernameProperty, value)
       End Set
     End Property
 
-    Private _passWord As String
+
+    ''' <summary>
+    ''' Password property definition.
+    ''' </summary>
+    Public Shared PasswordProperty As PropertyInfo(Of String) = _
+      RegisterProperty(GetType(UsernameCriteria), New PropertyInfo(Of String)("Password", "Password"))
+
     ''' <summary>
     ''' Gets the password.
     ''' </summary>
     Public Property Password() As String
       Get
-        Return _passWord
+        Return ReadProperty(PasswordProperty)
       End Get
       Private Set(ByVal value As String)
-        _passWord = value
-      End Set
+        LoadProperty(PasswordProperty, value)
+      End Set        
     End Property
 
     Public Sub New(ByVal username As String, ByVal password As String)

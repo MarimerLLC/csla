@@ -99,7 +99,31 @@ namespace Csla.Wpf
         OnPropertyChanged(new PropertyChangedEventArgs("ManageObjectLifetime"));
       }
     }
-	
+
+    private object _dataChangedHandler;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// data control should manage the lifetime of
+    /// the business object, including using n-level
+    /// undo.
+    /// </summary>
+    public object DataChangedHandler
+    {
+      get
+      {
+        return _dataChangedHandler;
+      }
+      set
+      {
+        _dataChangedHandler = value;
+        var dialog = value as ErrorDialog;
+        if (dialog != null)
+          dialog.DataContext = this;
+        OnPropertyChanged(new PropertyChangedEventArgs("DataChangedHandler"));
+      }
+    }
+
     /// <summary>
     /// Gets or sets the name of the static
     /// (Shared in Visual Basic) factory method
@@ -266,6 +290,18 @@ namespace Csla.Wpf
         catch (Csla.DataPortalException ex)
         {
           exceptionResult = ex.BusinessException;
+        }
+        catch (System.Reflection.TargetInvocationException ex)
+        {
+          if (ex.InnerException != null)
+          {
+            exceptionResult = ex.InnerException;
+            var dpe = exceptionResult as Csla.DataPortalException;
+            if (dpe != null && dpe.BusinessException != null)
+              exceptionResult = dpe.BusinessException;
+          }
+          else
+            exceptionResult = ex;
         }
         catch (Exception ex)
         {

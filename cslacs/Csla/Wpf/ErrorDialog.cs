@@ -8,7 +8,7 @@ namespace Csla.Wpf
   /// Displays an error dialog for any exceptions
   /// that occur in a CslaDataProvider.
   /// </summary>
-  public class ErrorDialog : Decorator
+  public class ErrorDialog : Control
   {
     /// <summary>
     /// Creates a new instance of the control.

@@ -442,6 +442,7 @@
     <Compile Include="Wpf\CslaDataProvider.cs" />
     <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
     <Compile Include="Wpf\DataDecoratorBase.cs" />
+    <Compile Include="Wpf\ErrorDialog.cs" />
     <Compile Include="Wpf\ObjectStatus.cs" />
     <Compile Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Wpf\PropertyStatus.cs" />

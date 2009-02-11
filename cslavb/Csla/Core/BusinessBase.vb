@@ -1,8 +1,15 @@
-Imports System.Reflection
+Imports System
+Imports System.Linq
+Imports System.Collections.Generic
 Imports System.ComponentModel
+Imports System.Runtime.Serialization
 Imports System.Collections.Specialized
-Imports Csla.Core.LoadManager
 Imports Csla.Validation
+Imports System.Collections.ObjectModel
+Imports Csla.Core.LoadManager
+Imports Csla.Server
+Imports Csla.Security
+Imports Csla.Serialization.Mobile
 
 Namespace Core
 
@@ -1100,12 +1107,11 @@ Namespace Core
       End Set
     End Property
 
-    'TODO: Does this need to be implemented?
-    'Public ReadOnly Property IUndoableObject_EditLevel() As Integer Implements Core.IUndoableObject.EditLevel
-    '  Get
-    '    Return Me.EditLevel
-    '  End Get
-    'End Property
+    Public ReadOnly Property IUndoableObject_EditLevel() As Integer Implements Core.IUndoableObject.EditLevel
+      Get
+        Return Me.EditLevel
+      End Get
+    End Property
 
 #End Region
 
@@ -1163,9 +1169,7 @@ Namespace Core
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Overridable Sub OnValidationComplete()
-      If _validationCompleteHandlers IsNot Nothing Then
-        _validationCompleteHandlers(Me, EventArgs.Empty)
-      End If
+      RaiseEvent ValidationComplete(Me, EventArgs.Empty)
     End Sub
 
     Private Sub InitializeBusinessRules()
@@ -1220,16 +1224,15 @@ Namespace Core
 
         If Not ValidationRules.IsValidating Then
           OnValidationComplete()
-        ElseIf e.Action = NotifyCollectionChangedAction.Add Then
-          For Each rule As IAsyncRuleMethod In e.NewItems
-            For Each [property] As IPropertyInfo In rule.AsyncRuleArgs.Properties
-              OnBusyChanged(New BusyChangedEventArgs([property].Name, False))
-            Next
-          Next
-
         End If
-
+      ElseIf e.Action = NotifyCollectionChangedAction.Add Then
+        For Each rule As IAsyncRuleMethod In e.NewItems
+          For Each [property] As IPropertyInfo In rule.AsyncRuleArgs.Properties
+            OnBusyChanged(New BusyChangedEventArgs([property].Name, False))
+          Next
+        Next
       End If
+
     End Sub
 
     ''' <summary>
@@ -1481,10 +1484,10 @@ Namespace Core
       Implements System.ComponentModel.IDataErrorInfo.Error
       Get
         If Not IsSelfValid Then
-          Return ValidationRules.GetBrokenRules.ToString(Validation.RuleSeverity.Error)
+          Return ValidationRules.GetBrokenRules().ToString(Validation.RuleSeverity.Error)
 
         Else
-          Return "" 'TODO: Should this be String.Empty?
+          Return String.Empty
         End If
       End Get
     End Property
@@ -1492,7 +1495,7 @@ Namespace Core
     Private ReadOnly Property Item(ByVal columnName As String) As String _
       Implements System.ComponentModel.IDataErrorInfo.Item
       Get
-        Dim result As String = ""
+        Dim result As String = String.Empty
         If Not IsSelfValid Then
           Dim rule As Validation.BrokenRule = _
             ValidationRules.GetBrokenRules.GetFirstBrokenRule(columnName)
@@ -1509,11 +1512,18 @@ Namespace Core
 #Region " Serialization Notification "
 
     Sub ISerializationNotification_Deserialized() Implements Serialization.Mobile.ISerializationNotification.Deserialized
-      OnDeserialized(New StreamingContext())
+      OnDeserializedHandler(New StreamingContext())
     End Sub
 
     <OnDeserialized()> _
     Private Sub OnDeserializedHandler(ByVal context As StreamingContext)
+      ValidationRules.SetTarget(Me)
+      If _fieldManager IsNot Nothing Then
+        FieldManager.SetPropertyList(Me.GetType)
+      End If
+      InitializeBusinessRules()
+      InitializeAuthorizationRules()
+      FieldDataDeserialized()
       OnDeserialized(context)
     End Sub
 
@@ -1524,14 +1534,6 @@ Namespace Core
     ''' <param name="context">Serialization context object.</param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnDeserialized(ByVal context As StreamingContext)
-
-      ValidationRules.SetTarget(Me)
-      If _fieldManager IsNot Nothing Then
-        FieldManager.SetPropertyList(Me.GetType)
-      End If
-      InitializeBusinessRules()
-      InitializeAuthorizationRules()
-      FieldDataDeserialized()
     End Sub
 
 #End Region
@@ -1597,7 +1599,7 @@ Namespace Core
     Protected Overridable Sub OnRemoveEventHooks(ByVal child As IBusinessObject)
       Dim busy As INotifyBusy = DirectCast(child, INotifyBusy)
       If busy IsNot Nothing Then
-        AddHandler busy.BusyChanged, AddressOf Child_BusyChanged
+        RemoveHandler busy.BusyChanged, AddressOf Child_BusyChanged
       End If
 
       Dim unhandled As INotifyUnhandledAsyncException = DirectCast(child, INotifyUnhandledAsyncException)
@@ -1989,6 +1991,10 @@ Namespace Core
     ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
     Protected Function ReadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P)) As P
 
+      If (((propertyInfo.RelationshipType And RelationshipTypes.LazyLoad) <> 0) AndAlso Not FieldManager.FieldExists(propertyInfo)) Then
+        Throw New InvalidOperationException(My.Resources.PropertyGetNotAllowed)
+      End If
+
       Dim result As P = Nothing
       Dim data As FieldManager.IFieldData = FieldManager.GetFieldData(propertyInfo)
       If data IsNot Nothing Then
@@ -2014,6 +2020,11 @@ Namespace Core
     ''' <param name="propertyInfo">
     ''' PropertyInfo object containing property metadata.</param>
     Protected Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object '' Implements IManageProperties.ReadProperty
+
+      If (((propertyInfo.RelationshipType And RelationshipTypes.LazyLoad) <> 0) AndAlso Not FieldManager.FieldExists(propertyInfo)) Then
+        Throw New InvalidOperationException(My.Resources.PropertyGetNotAllowed)
+      End If
+
       Dim info = FieldManager.GetFieldData(propertyInfo)
       If info IsNot Nothing Then
         Return info.Value
@@ -2197,7 +2208,7 @@ Namespace Core
     ''' </remarks>
     Protected Sub SetPropertyConvert(Of P, V)(ByVal propertyName As String, ByRef field As P, ByVal newValue As V, ByVal noAccess As Security.NoAccessBehavior)
       Try
-        If _bypassPropertyChecks AndAlso CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
+        If _bypassPropertyChecks OrElse CanWriteProperty(propertyName, noAccess = Security.NoAccessBehavior.ThrowException) Then
           Dim doChange As Boolean = False
 
           If field Is Nothing Then
@@ -2441,6 +2452,10 @@ Namespace Core
       LoadProperty(Of P)(propertyInfo, newValue)
     End Sub
 
+    Private Function FieldExists(ByVal [property] As Core.IPropertyInfo) As Boolean Implements Core.IManageProperties.FieldExists
+      Return FieldManager.FieldExists([property])
+    End Function
+
     ''' <summary>
     ''' Loads a property's managed field with the 
     ''' supplied value calling PropertyHasChanged 
@@ -2627,8 +2642,11 @@ Namespace Core
     ''' <param name="parameter">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Sub LoadPropertyAsync(Of R, P)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P), ByVal [parameter] As P)
-      'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, parameter)
-      'TODO: LoadManager.BeginLoad(loader, (EventHandler(of DataPortalResult(Of R)))loader.LoadComplete)
+      Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+      Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+      Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, parameter)
+      Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+      LoadManager.BeginLoad(loader, actionLoadComplete)
     End Sub
 
     ''' <summary>
@@ -2643,8 +2661,11 @@ Namespace Core
     ''' <param name="pp2">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Sub LoadPropertyAsync(Of R, P1, P2)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2), ByVal pp1 As P1, ByVal pp2 As P2)
-      'TODO:   AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2);
-      'TODO: LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult(Of R)>)loader.LoadComplete);
+      Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+      Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+      Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, pp1, pp2)
+      Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+      LoadManager.BeginLoad(loader, actionLoadComplete)
     End Sub
 
     ''' <summary>
@@ -2661,8 +2682,11 @@ Namespace Core
     ''' <param name="pp3">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Sub LoadPropertyAsync(Of R, P1, P2, P3)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3)
-      'TODO:   AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
-      'TODO: LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult(Of R)>)loader.LoadComplete);
+      Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+      Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+      Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, pp1, pp2, pp3)
+      Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+      LoadManager.BeginLoad(loader, actionLoadComplete)
     End Sub
 
     ''' <summary>
@@ -2681,8 +2705,11 @@ Namespace Core
     ''' <param name="pp4">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4)
-      'TODO:  AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4);
-      'TODO:  LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult(Of R)>)loader.LoadComplete);
+      Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+      Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+      Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, pp1, pp2, pp3, pp4)
+      Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+      LoadManager.BeginLoad(loader, actionLoadComplete)
     End Sub
 
     ''' <summary>
@@ -2703,8 +2730,11 @@ Namespace Core
     ''' <param name="pp5">Parameter value.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4, ByVal pp5 As P5)
-      'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, LoadProperty, OnPropertyChanged, pp1, pp2, pp3)
-      'TODO: LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult(Of R)>)loader.LoadComplete)
+      Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+      Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+      Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, pp1, pp2, pp3, pp4, pp5)
+      Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+      LoadManager.BeginLoad(loader, actionLoadComplete)
     End Sub
 
 #End Region
@@ -2791,9 +2821,7 @@ Namespace Core
     ''' </summary>
     ''' <param name="args">Event args.</param>
     Protected Sub OnBusyChanged(ByVal args As BusyChangedEventArgs)
-      If _busyChanged IsNot Nothing Then
-        _busyChanged(Me, args)
-      End If
+      RaiseEvent BusyChanged(Me, args)
     End Sub
 
     ''' <summary>
@@ -2852,9 +2880,7 @@ Namespace Core
     ''' <param name="error">Args parameter.</param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnUnhandledAsyncException(ByVal [error] As ErrorEventArgs)
-      If _unhandledAsyncException IsNot Nothing Then
-        _unhandledAsyncException(Me, [error])
-      End If
+      RaiseEvent UnhandledAsyncException(Me, [error])
     End Sub
 
     ''' <summary>
@@ -2865,7 +2891,7 @@ Namespace Core
     ''' <param name="error">Exception object.</param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Sub OnUnhandledAsyncException(ByVal originalSender As Object, ByVal [error] As Exception)
-      OnUnhandledAsyncException(New ErrorEventArgs(originalSender, [Error]))
+      OnUnhandledAsyncException(New ErrorEventArgs(originalSender, [error]))
     End Sub
 
 #End Region
@@ -2904,9 +2930,7 @@ Namespace Core
     ''' </param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnChildChanged(ByVal e As ChildChangedEventArgs)
-      If _childChangedHandlers IsNot Nothing Then
-        _childChangedHandlers.Invoke(Me, e)
-      End If
+      RaiseEvent ChildChanged(Me, e)
     End Sub
 
     ''' <summary>
@@ -3017,7 +3041,7 @@ Namespace Core
 #Region " IDataPortalTarget Members "
 
     Private Sub CheckRules() Implements Server.IDataPortalTarget.CheckRules
-
+      ValidationRules.CheckRules()
     End Sub
 
     Private Sub IDataPortalTarget_MarkAsChild() Implements Server.IDataPortalTarget.MarkAsChild

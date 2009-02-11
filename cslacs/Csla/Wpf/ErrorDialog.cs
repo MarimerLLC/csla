@@ -8,7 +8,7 @@ namespace Csla.Wpf
   /// Displays an error dialog for any exceptions
   /// that occur in a CslaDataProvider.
   /// </summary>
-  public class ErrorDialog : Control
+  public class ErrorDialog : Decorator
   {
     /// <summary>
     /// Creates a new instance of the control.
@@ -16,35 +16,13 @@ namespace Csla.Wpf
     public ErrorDialog()
     {
       this.DialogIcon = MessageBoxImage.Exclamation;
+      this.DataContextChanged += ErrorDialog_DataContextChanged;
     }
 
-    /// <summary>
-    /// Gets or sets the DataProvider
-    /// control to which the ErrorDialog control
-    /// is bound.
-    /// </summary>
-    public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
-      "Source",
-      typeof(object),
-      typeof(ErrorDialog),
-      new PropertyMetadata((o, e) => ((ErrorDialog)o).Source = e.NewValue));
-
-    private object _source;
-
-    /// <summary>
-    /// Gets or sets the DataProvider
-    /// control to which the ErrorDialog control
-    /// is bound.
-    /// </summary>
-    public object Source
+    void ErrorDialog_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-      get { return _source; }
-      set
-      {
-        DetachSource(_source);
-        _source = value;
-        AttachSource(_source);
-      }
+      DetachSource(e.OldValue);
+      AttachSource(e.NewValue);
     }
 
     /// <summary>

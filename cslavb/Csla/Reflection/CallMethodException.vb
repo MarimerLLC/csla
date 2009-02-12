@@ -59,7 +59,7 @@ Namespace Reflection
       ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.New(info, context)
-      _innerStackTrace = info.GetString("mInnerStackTrace")
+      _innerStackTrace = info.GetString("_innerStackTrace")
 
     End Sub
 
@@ -75,7 +75,7 @@ Namespace Reflection
       ByVal context As System.Runtime.Serialization.StreamingContext)
 
       MyBase.GetObjectData(info, context)
-      info.AddValue("mInnerStackTrace", _innerStackTrace)
+      info.AddValue("_innerStackTrace", _innerStackTrace)
 
     End Sub
 

@@ -83,7 +83,8 @@ Namespace Linq
     End Function
 
     Private Function HasIndexFor(ByVal expr As Expression(Of Func(Of T, Boolean))) As String Implements IIndexSet(Of T).HasIndexFor
-      If expr.Body.NodeType = ExpressionType.Equal AndAlso TypeOf expr.Body Is BinaryExpression Then
+      'If expr.Body.NodeType = ExpressionType.Equal AndAlso TypeOf expr.Body Is BinaryExpression Then
+      If expr.Body Is GetType(BinaryExpression) Then
         Dim binExp As BinaryExpression = CType(expr.Body, BinaryExpression)
         If HasIndexablePropertyOnLeft(binExp.Left) Then
           Return (CType(binExp.Left, MemberExpression)).Member.Name
@@ -145,56 +146,59 @@ Namespace Linq
     End Function
 
     Private Function Search(ByVal expr As Expression(Of Func(Of T, Boolean)), ByVal [property] As String) As IEnumerable(Of T) Implements IIndexSet(Of T).Search
+      Dim itemList As List(Of T) = New List(Of T)
+
       If TypeOf expr.Body Is BinaryExpression AndAlso HasIndexablePropertyOnLeft(CType(expr.Body, BinaryExpression).Left) Then
         Dim exprCompiled As Func(Of T, Boolean) = expr.Compile()
         Dim binExp As BinaryExpression = CType(expr.Body, BinaryExpression)
         Dim val As Object = GetRightValue(binExp.Right)
         Dim rangedIndex As IRangeTestableIndex(Of T)
+
         If TypeOf _internalIndexSet([property]) Is IRangeTestableIndex(Of T) Then
           rangedIndex = CType(_internalIndexSet([property]), IRangeTestableIndex(Of T))
 
           Select Case binExp.NodeType
             Case ExpressionType.Equal
 
-              For Each item In _internalIndexSet([property]).WhereEqual(val, exprCompiled)
-                'TODO: 'should not return NOTHING ''Return item
-                Return Nothing
+              For Each item As T In _internalIndexSet([property]).WhereEqual(val, exprCompiled)
+                itemList.Add(item)
               Next
+              Return itemList
 
             Case ExpressionType.LessThan
 
-              For Each item In rangedIndex.WhereLessThan(val)
-                'TODO: 'should not return NOTHING ''Return item
-                Return Nothing
+              For Each item As T In rangedIndex.WhereLessThan(val)
+                itemList.Add(item)
               Next
+              Return itemList
 
             Case ExpressionType.LessThanOrEqual
 
-              For Each item In rangedIndex.WhereLessThanOrEqualTo(val)
-                'TODO: 'should not return NOTHING ''Return item
-                Return Nothing
+              For Each item As T In rangedIndex.WhereLessThanOrEqualTo(val)
+                itemList.Add(item)
               Next
+              Return itemList
 
             Case ExpressionType.GreaterThan
 
-              For Each item In rangedIndex.WhereGreaterThan(val)
-                'TODO: 'should not return NOTHING ''Return item
-                Return Nothing
+              For Each item As T In rangedIndex.WhereGreaterThan(val)
+                itemList.Add(item)
               Next
+              Return itemList
 
             Case ExpressionType.GreaterThanOrEqual
 
-              For Each item In rangedIndex.WhereGreaterThanOrEqualTo(val)
-                'TODO: 'should not return NOTHING ''Return item
-                Return Nothing
+              For Each item As T In rangedIndex.WhereGreaterThanOrEqualTo(val)
+                itemList.Add(item)
               Next
+              Return itemList
 
             Case Else
 
-              For Each item In rangedIndex.Where(expr.Compile())
-                'TODO: 'should not return NOTHING ''Return item
-                Return Nothing
+              For Each item As T In rangedIndex.Where(expr.Compile())
+                itemList.Add(item)
               Next
+              Return itemList
 
           End Select
         Else
@@ -203,20 +207,27 @@ Namespace Linq
             Case ExpressionType.Equal
 
               Dim rightHash As Nullable(Of Integer) = GetHashRight(binExp.Right)
-              For Each item In _internalIndexSet([property]).WhereEqual(val, exprCompiled)
-                'TODO: 'should not return NOTHING ''Return item
-                Return Nothing
+              For Each item As T In _internalIndexSet([property]).WhereEqual(val, exprCompiled)
+                itemList.Add(item)
               Next
+              Return itemList
 
             Case Else
 
-              For Each item In rangedIndex.Where(expr.Compile())
-                'TODO: 'should not return NOTHING ''Return item
-                Return Nothing
+              For Each item As T In _internalIndexSet([property]).Where(expr.Compile())
+                itemList.Add(item)
               Next
+              Return itemList
 
           End Select
         End If
+
+      Else
+        For Each item As T In _internalIndexSet([property]).Where(expr.Compile())
+          itemList.Add(item)
+        Next
+        Return itemList
+
       End If
     End Function
 #End Region

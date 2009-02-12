@@ -60,7 +60,8 @@ Namespace Linq
       Return returnEnumerable
     End Function
 
-    Private Function WhereEqual(ByVal hashCode As Integer, ByVal expr As Func(Of T, Boolean)) As IEnumerable(Of T) 'TODO: Implements IIndex(Of T).WhereEqual
+    Private Function WhereEqual(ByVal pivotVal As Object, ByVal expr As Func(Of T, Boolean)) As IEnumerable(Of T) Implements IIndex(Of T).WhereEqual
+      Dim hashCode As Integer = pivotVal.GetHashCode()
       LoadOnDemandIndex()
       Dim returnEnumerable As List(Of T) = New List(Of T)()
       If _index.ContainsKey(hashCode) Then
@@ -111,15 +112,15 @@ Namespace Linq
 
     Private Sub CopyTo(ByVal array() As T, ByVal arrayIndex As Integer) Implements ICollection(Of T).CopyTo
       If Object.ReferenceEquals(array, Nothing) Then
-        Throw New ArgumentNullException("Null array reference", "array")
+        Throw New ArgumentNullException(My.Resources.NullArrayReference, "array")
       End If
 
       If arrayIndex < 0 Then
-        Throw New ArgumentOutOfRangeException("Index is out of range", "index")
+        Throw New ArgumentOutOfRangeException(My.Resources.IndexIsOutOfRange, "index")
       End If
 
       If array.Rank > 1 Then
-        Throw New ArgumentException("Array is multi-dimensional", "array")
+        Throw New ArgumentException(My.Resources.ArrayIsMultiDimensional, "array")
       End If
 
       For Each o As Object In Me
@@ -179,7 +180,8 @@ Namespace Linq
           vbList.Add(item)
         Next item
       Next list
-      Return CType(vbList, Global.System.Collections.Generic.IEnumerator(Of T))
+      ''Return CType(vbList, Global.System.Collections.Generic.IEnumerator(Of T))
+      Return vbList.GetEnumerator() 'I think we can just call the GetEnumerator method
     End Function
 
 #End Region
@@ -191,9 +193,10 @@ Namespace Linq
       For Each list As List(Of T) In _index.Values
         For Each item As T In list
           returnEnumerable.Add(item)
-        Next item
+        Next item        
       Next list
-      Return CType(returnEnumerable, Collections.IEnumerator)
+      ''Return CType(returnEnumerable, Collections.IEnumerator)
+      Return returnEnumerable.GetEnumerator() 'I think we can just call the GetEnumerator method
     End Function
 
 #End Region
@@ -239,10 +242,5 @@ Namespace Linq
     End Property
 
 #End Region
-
-    Public Function WhereEqual1(ByVal pivotVal As Object, ByVal expr As System.Func(Of T, Boolean)) As System.Collections.Generic.IEnumerable(Of T) Implements IIndex(Of T).WhereEqual
-      'TODO: Evaluate this method
-      Return Nothing
-    End Function
   End Class
 End Namespace

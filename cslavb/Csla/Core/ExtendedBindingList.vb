@@ -275,7 +275,7 @@ Namespace Core
     Protected Overridable Sub OnRemoveEventHooks(ByVal item As T)
       Dim busy As INotifyBusy = CType(item, INotifyBusy)
       If busy IsNot Nothing Then
-        AddHandler busy.BusyChanged, AddressOf busy_BusyChanged
+        RemoveHandler busy.BusyChanged, AddressOf busy_BusyChanged
       End If
 
       Dim unhandled As INotifyUnhandledAsyncException = CType(item, INotifyUnhandledAsyncException)

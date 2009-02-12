@@ -1,6 +1,6 @@
 ﻿Namespace Core
 
-  Friend Class InvalidQueryException
+  Class InvalidQueryException
 
     Inherits System.Exception
 
@@ -12,7 +12,7 @@
 
     Public Overrides ReadOnly Property Message() As String
       Get
-        Return "The client query is invalid: " & _messageRenamed
+        Return My.Resources.ClientQueryIsInvalid & _messageRenamed
       End Get
     End Property
 

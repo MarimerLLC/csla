@@ -77,6 +77,12 @@ Namespace Serialization.Mobile
       dc.WriteObject(writer, serialized)
     End Sub
 
+    Private Function GetDataContractSerializer() As DataContractSerializer
+      Return New DataContractSerializer( _
+        GetType(List(Of SerializationInfo)), _
+        New Type() {GetType(List(Of Integer)), GetType(Byte()), GetType(DateTimeOffset)})
+    End Function
+
     ''' <summary>
     ''' Serializes an object into a SerializationInfo object.
     ''' </summary>

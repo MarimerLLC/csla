@@ -179,10 +179,11 @@ Namespace Linq
 #Region "IEnumerable<T> Members"
 
     Public Function GetEnumerator() As System.Collections.Generic.IEnumerator(Of T) Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
-      For Each item In CType(_index, ICollection(Of T))
-        'TODO: 'should not return NOTHING 'Return item
-        Return Nothing
+      Dim itemList As New List(Of T)
+      For Each item In CType(_index, ICollection(Of T))        
+        itemList.Add(item)        
       Next
+      Return itemList.GetEnumerator()
     End Function
 
 #End Region

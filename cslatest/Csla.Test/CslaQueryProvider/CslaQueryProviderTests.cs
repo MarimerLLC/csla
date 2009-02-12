@@ -20,6 +20,8 @@ namespace Csla.Test.CslaQueryProvider
   {
     [Indexable(IndexModeEnum.IndexModeAlways)]
     public int SomeVal { get; set; }
+    public int SomeOtherVal { get; set; }
+    public int YetAnotherVal { get; set; }
     public Guid Id { get; set; }
 
     public Nullable<int> ANullableVal
@@ -480,7 +482,7 @@ namespace Csla.Test.CslaQueryProvider
       }
       catch (InvalidOperationException invalidOp)
       {
-        Assert.IsTrue(true);
+
       }
       catch
       {
@@ -648,7 +650,7 @@ namespace Csla.Test.CslaQueryProvider
       }
       catch (InvalidOperationException invalidOp)
       {
-        Assert.IsTrue(true);
+
       }
       catch
       {
@@ -775,6 +777,57 @@ namespace Csla.Test.CslaQueryProvider
     }
 
     [TestMethod]
+    public void thenby_generates_correct_result()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+      random.Add(new RandomThing(5) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(5) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(5) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+
+      var result =
+        (LinqBindingList<RandomThing>)random
+          .OrderBy(x => x.SomeVal)
+          .ThenBy(x => x.SomeOtherVal)
+          .ThenByDescending(x => x.YetAnotherVal);
+      var firstResult = result.First();
+      Assert.IsTrue(
+        firstResult.YetAnotherVal == 1001
+        && firstResult.SomeOtherVal == 100
+        && firstResult.SomeVal == 1
+        );
+      Assert.AreEqual(result.GetType(), typeof(LinqBindingList<RandomThing>));
+    }
+
+    [TestMethod]
+    public void LinqBindingList_is_generated_by_thenby()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+      random.Add(new RandomThing(5) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(5) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(5) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+
+      var result =
+        (LinqBindingList<RandomThing>)random
+          .OrderBy(x => x.SomeVal)
+          .ThenBy(x => x.SomeOtherVal)
+          .ThenBy(x => x.YetAnotherVal);
+
+      Assert.AreEqual(result.GetType(), typeof(LinqBindingList<RandomThing>));
+    }
+
+    [TestMethod]
     public void LinqBindingList_generated_by_orderby_removal_by_item_reflects_to_source()
     {
       CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
@@ -801,6 +854,33 @@ namespace Csla.Test.CslaQueryProvider
       random.Add(new RandomThing(1));
 
       var result = (LinqBindingList<RandomThing>)random.OrderBy(x => x.SomeVal);
+      //because result is sorted by number, adding this item should result in it being the
+      //first item in result, and the last in random
+      random.Add(new RandomThing(0));
+
+      Assert.IsTrue(result.First().SomeVal == 0);
+      Assert.IsTrue(random.Last().SomeVal == 0);
+    }
+
+    [TestMethod]
+    public void LinqBindingList_generated_by_orderby_and_subsequebt_thenbys_with_added_items_still_in_proper_order()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+      random.Add(new RandomThing(5) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(5) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(5) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+
+      var result = 
+        (LinqBindingList<RandomThing>)random
+          .OrderBy(x => x.SomeVal)
+          .ThenBy(x => x.SomeOtherVal)
+          .ThenBy(x => x.YetAnotherVal);
       //because result is sorted by number, adding this item should result in it being the
       //first item in result, and the last in random
       random.Add(new RandomThing(0));

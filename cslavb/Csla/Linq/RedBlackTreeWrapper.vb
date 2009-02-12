@@ -9,45 +9,42 @@ Namespace Linq
   Friend Class RedBlackTreeWrapper(Of K As IComparable(Of T), T)
     Implements IBalancedSearch(Of T), System.Collections.Generic.ICollection(Of T)
 
-    Private _internalWrapper As C5.TreeDictionary(Of K, List(Of T))
-    Private _propInfo As PropertyInfo = Nothing  
+    Private _internalWrapper As TreeDictionary(Of K, List(Of T))
+    Private _propInfo As PropertyInfo = Nothing
 
     Private Sub New()
 
     End Sub
 
     Public Sub New(ByVal propInfo As PropertyInfo)
-      _propInfo = propInfo
-      _internalWrapper = Nothing  'TODO: should not be nothing ''New TreeDictionary(Of K, List(Of T))()
+      _propInfo = propInfo      
+      _internalWrapper = New TreeDictionary(Of K, List(Of T))()
     End Sub
 
 #Region "IBalancedSearch<T> Members"
 
-    Public Function ItemsLessThan(ByVal pivot As Object) As System.Collections.Generic.IEnumerable(Of T) Implements IBalancedSearch(Of T).ItemsLessThan
-      'TODO:
-      'Dim list As List(Of T) = New List(Of T)
-      'For Each pair In _internalWrapper.RangeTo(CType(pivot, K))
-      '  For Each item In pair
-      '    list.Add(item)
-      '  Next
-      'Next
+    Public Function ItemsLessThan(ByVal pivot As Object) As System.Collections.Generic.IEnumerable(Of T) Implements IBalancedSearch(Of T).ItemsLessThan      
+      Dim list As List(Of T) = New List(Of T)
+      For Each pair In _internalWrapper.RangeTo(CType(pivot, K))
+        For Each item In pair.Value
+          list.Add(item)
+        Next
+      Next
 
-      ''Return List
-      Return Nothing
+      Return list
     End Function
 
     Public Function ItemsGreaterThan(ByVal pivot As Object) As System.Collections.Generic.IEnumerable(Of T) Implements IBalancedSearch(Of T).ItemsGreaterThan
-      'TODO:
-      'Dim comparer = System.Collections.Generic.Comparer(Of K).Default
-      'Dim list As List(Of T) = New List(Of T)
-      'For Each pair In _internalWrapper.RangeTo(CType(pivot, K))
-      '  If comparer.Compare(CType(pair, K), pair.Key) <> 0 Then
-      '    For Each item In pair
-      '      list.Add(item)
-      '    Next
-      '  End If
-      'Next
-      'Return list
+      Dim comparer = System.Collections.Generic.Comparer(Of K).Default
+      Dim list As List(Of T) = New List(Of T)
+      For Each pair In _internalWrapper.RangeFrom(CType(pivot, K))
+        If comparer.Compare(CType(pivot, K), pair.Key) <> 0 Then
+          For Each item In pair.Value
+            list.Add(item)
+          Next
+        End If
+      Next
+      Return list
 
     End Function
 
@@ -80,8 +77,8 @@ Namespace Linq
     Public Function ItemsEqualTo(ByVal pivot As Object) As System.Collections.Generic.IEnumerable(Of T) Implements IBalancedSearch(Of T).ItemsEqualTo
       Dim result As List(Of T) = Nothing
       Dim list As List(Of T) = New List(Of T)
-      'TODO: _internalWrapper.Find(CType(pivot, K), result)      
-
+      'TO-DO, this is the last To-do here: _internalWrapper.Find(CType(pivot, K), result)
+      _internalWrapper.FindMax()
       If result IsNot Nothing Then
         For Each item As T In result
           list.Add(item)

@@ -101,6 +101,19 @@ Namespace Linq
           _filter = New LinqBindingList(Of C)(_parent, Me, expression)
           _filter.BuildFilterIndex()
           Return CType(_filter, IQueryable(Of TElement))
+
+        ElseIf GetType(TElement) Is GetType(C) AndAlso mex.Method.Name.StartsWith("OrderBy") AndAlso _filter Is Nothing Then
+          'raw sort without previous where
+          _filter = New LinqBindingList(Of C)(_parent, Me, Nothing)
+          _filter.BuildFilterIndex()
+          _filter.SortByExpression(expression)
+          Return CType(_filter, IQueryable(Of TElement))
+
+        ElseIf GetType(TElement) Is GetType(C) AndAlso mex.Method.Name.StartsWith("OrderBy") Then
+          'sort of previous where
+          _filter.SortByExpression(expression)
+          Return CType(_filter, IQueryable(Of TElement))
+
         Else
           'handle non identity projections here
           Select Case mex.Method.Name
@@ -111,14 +124,14 @@ Namespace Linq
               Dim selectHolder As UnaryExpression = TryCast(mex.Arguments(1), UnaryExpression)
               Dim theSelect As LambdaExpression = TryCast(selectHolder.Operand, LambdaExpression)
 
-              Dim selectorLambda As Expression(Of Func(Of C, TElement)) = expression.Lambda(Of Func(Of C, TElement))(theSelect.Body, theSelect.Parameters)
+              Dim selectorLambda As Expression(Of Func(Of C, TElement)) = Expressions.Expression.Lambda(Of Func(Of C, TElement))(theSelect.Body, theSelect.Parameters)
               Dim selector As Func(Of C, TElement) = selectorLambda.Compile()
-              'TODO:
+
               'If _filter Is Nothing Then
               '  Return _parent.Select(Of C, TElement)(selector).AsQueryable(Of TElement)()
               'Else
               '  Return _filter.Select(Of C, TElement)(selector).AsQueryable(Of TElement)()
-              'End If
+              'End If              
             Case "Concat"
 
               'at this point, no more filtering, just move it to a concatenated list of items, which we turn to queryable so that the method considers it ok
@@ -130,7 +143,7 @@ Namespace Linq
             Case Else
               Dim listFrom As List(Of C)
               If _filter Is Nothing Then
-                'TODO: listFrom = _parent.ToList(Of C)()
+                'TODO: listFrom = _parent.ToList(Of C)()                
               Else
                 'TODO: listFrom = _filter.ToList(Of C)()
               End If

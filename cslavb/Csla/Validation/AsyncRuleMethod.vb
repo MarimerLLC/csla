@@ -40,11 +40,16 @@ Namespace Validation
     End Property
 
     ''' <summary>
-    ''' Not implemented.
+    ''' Create a temporary args object that
+    ''' just contains the property name. This
+    ''' should only occur if the async rule
+    ''' method throws an unhandled exception,
+    ''' which shouldn't really ever happen.
     ''' </summary>
-    Public ReadOnly Property RuleArgs() As RuleArgs Implements IRuleMethod.RuleArgs
+    Public ReadOnly Property RuleArgs() As RuleArgs Implements IRuleMethod.RuleArgs      
       Get
         Throw New NotSupportedException()
+        Return New RuleArgs(_args.Properties(0).Name)
       End Get
     End Property
 
@@ -98,6 +103,8 @@ Namespace Validation
     Public Sub Invoke(ByVal target As Object, ByVal result As AsyncRuleCompleteHandler) Implements IAsyncRuleMethod.Invoke
       Dim propertyValues As Dictionary(Of String, Object) = GetPropertyValues(target, _args.Properties)
       'TODO: _handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), Function(r) result(Me, r)))
+
+      '_handler.Invoke (New AsyncValidationRuleContext (propertyValues, _args, New AsyncRuleResult(Me), Function(r)  result (Me, r))      
     End Sub
 
 #Region "IComparable"

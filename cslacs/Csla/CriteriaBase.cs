@@ -44,7 +44,7 @@ namespace Csla
           string typeName = ReadProperty(TypeNameProperty);
           if (!string.IsNullOrEmpty(typeName))
           {
-            _objectType = Type.GetType(typeName, false);
+            _objectType = Csla.Reflection.MethodCaller.GetType(typeName, false);
           }
         }
         return _objectType;

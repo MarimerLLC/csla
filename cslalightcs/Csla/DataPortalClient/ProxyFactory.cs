@@ -47,7 +47,7 @@ namespace Csla.DataPortalClient
         }
         else
         {
-          Type proxyType = Type.GetType(Csla.DataPortal.ProxyTypeName);
+          Type proxyType = Csla.Reflection.MethodCaller.GetType(Csla.DataPortal.ProxyTypeName);
           Type generixProxyType = proxyType.MakeGenericType(typeof(T));
           return (IDataPortalProxy<T>)Activator.CreateInstance(generixProxyType);
         }

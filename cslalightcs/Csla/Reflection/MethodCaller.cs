@@ -68,6 +68,45 @@ namespace Csla.Reflection
 
     #endregion
 
+    #region GetType
+
+    /// <summary>
+    /// Gets a Type object based on the type name.
+    /// </summary>
+    /// <param name="typeName">Type name including assembly name.</param>
+    /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
+    /// <param name="ignoreCase">true for a case-insensitive comparison of the type name.</param>
+    public static Type GetType(string typeName, bool throwOnError, bool ignoreCase)
+    {
+      string fullTypeName;
+      if (typeName.Contains("Version="))
+        fullTypeName = typeName;
+      else
+        fullTypeName = typeName + ", Version=..., Culture=neutral, PublicKeyToken=null";
+      return Type.GetType(fullTypeName, throwOnError, ignoreCase);
+    }
+
+    /// <summary>
+    /// Gets a Type object based on the type name.
+    /// </summary>
+    /// <param name="typeName">Type name including assembly name.</param>
+    /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
+    public static Type GetType(string typeName, bool throwOnError)
+    {
+      return GetType(typeName, throwOnError, false);
+    }
+
+    /// <summary>
+    /// Gets a Type object based on the type name.
+    /// </summary>
+    /// <param name="typeName">Type name including assembly name.</param>
+    public static Type GetType(string typeName)
+    {
+      return GetType(typeName, true, false);
+    }
+    
+    #endregion
+
     #region Create Instance
 
     /// <summary>

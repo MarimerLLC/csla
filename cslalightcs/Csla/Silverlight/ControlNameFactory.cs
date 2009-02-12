@@ -33,7 +33,7 @@ namespace Csla.Silverlight
     /// <returns>User Control or Control object</returns>
     public Control ControlNameToControl(string controlName)
     {
-      Type controlType = Type.GetType(controlName);
+      Type controlType = Csla.Reflection.MethodCaller.GetType(controlName);
       if (controlType != null)
         return (Control)Activator.CreateInstance(controlType);
       else

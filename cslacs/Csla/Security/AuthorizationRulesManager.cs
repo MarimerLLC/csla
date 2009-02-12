@@ -74,7 +74,7 @@ namespace Csla.Security
         else
         {
           string[] items = provider.Split(',');
-          Type containingType = Type.GetType(items[0] + "," + items[1]);
+          Type containingType = Csla.Reflection.MethodCaller.GetType(items[0] + "," + items[1]);
           mIsInRoleProvider = (IsInRoleProvider)(Delegate.CreateDelegate(typeof(IsInRoleProvider), containingType, items[2]));
         }
       }

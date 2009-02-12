@@ -192,7 +192,7 @@ namespace Csla.Serialization.Mobile
       _deserializationReferences = new Dictionary<int, IMobileObject>();
       foreach (SerializationInfo info in deserialized)
       {
-        Type type = Type.GetType(info.TypeName);
+        Type type = Csla.Reflection.MethodCaller.GetType(info.TypeName);
         if(type == null)
           throw new SerializationException(string.Format(
             Resources.MobileFormatterUnableToDeserialize,

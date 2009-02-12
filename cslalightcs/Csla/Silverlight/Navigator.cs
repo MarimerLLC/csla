@@ -249,7 +249,7 @@ namespace Csla.Silverlight
       if (!args.Cancel)
       {
         string title = string.Empty;
-        CreateAndShowControl((Control)Activator.CreateInstance(Type.GetType(controlTypeName)), args.Parameters, title, true, false);
+        CreateAndShowControl((Control)Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(controlTypeName)), args.Parameters, title, true, false);
 
         OnAfterNavigation();
       }
@@ -257,7 +257,7 @@ namespace Csla.Silverlight
       {
         if (args.RedirectToOnCancel != null)
         {
-          CreateAndShowControl((Control)Activator.CreateInstance(Type.GetType(args.RedirectToOnCancel.ControlTypeName)), args.RedirectToOnCancel.Parameters, args.RedirectToOnCancel.Title, true, true);
+          CreateAndShowControl((Control)Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(args.RedirectToOnCancel.ControlTypeName)), args.RedirectToOnCancel.Parameters, args.RedirectToOnCancel.Title, true, true);
         }
       }
     }
@@ -385,7 +385,7 @@ namespace Csla.Silverlight
             {
               if (args.RedirectToOnCancel != null)
               {
-                CreateAndShowControl((Control)Activator.CreateInstance(Type.GetType(args.RedirectToOnCancel.ControlTypeName)), args.RedirectToOnCancel.Parameters, args.RedirectToOnCancel.Title, true, true);
+                CreateAndShowControl((Control)Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(args.RedirectToOnCancel.ControlTypeName)), args.RedirectToOnCancel.Parameters, args.RedirectToOnCancel.Title, true, true);
                 OnAfterBookmarkProcessing(true);
                 success = true;
               }

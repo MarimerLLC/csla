@@ -49,7 +49,7 @@ namespace Csla.DataPortalClient
     public void BeginCreate()
     {
       _userState = null;
-      var obj = Activator.CreateInstance(Type.GetType(_attribute.FactoryTypeName));
+      var obj = Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(_attribute.FactoryTypeName));
       var handler = new CompletedHandler(OnCreateCompleted);
       MethodCaller.CallMethod(obj, _attribute.CreateMethodName, handler);
     }
@@ -61,7 +61,7 @@ namespace Csla.DataPortalClient
     public void BeginCreate(object criteria, object userState)
     {
       _userState = userState;
-      var obj = Activator.CreateInstance(Type.GetType(_attribute.FactoryTypeName));
+      var obj = Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(_attribute.FactoryTypeName));
       var handler = new CompletedHandler(OnCreateCompleted);
       MethodCaller.CallMethod(obj, _attribute.CreateMethodName, criteria, handler);
     }
@@ -87,7 +87,7 @@ namespace Csla.DataPortalClient
     public void BeginFetch()
     {
       _userState = null;
-      var obj = Activator.CreateInstance(Type.GetType(_attribute.FactoryTypeName));
+      var obj = Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(_attribute.FactoryTypeName));
       var handler = new CompletedHandler(OnFetchCompleted);
       MethodCaller.CallMethod(obj, _attribute.FetchMethodName, handler);
     }
@@ -100,7 +100,7 @@ namespace Csla.DataPortalClient
     public void BeginFetch(object criteria, object userState)
     {
       _userState = userState;
-      var obj = Activator.CreateInstance(Type.GetType(_attribute.FactoryTypeName));
+      var obj = Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(_attribute.FactoryTypeName));
       var handler = new CompletedHandler(OnFetchCompleted);
       MethodCaller.CallMethod(obj, _attribute.FetchMethodName, criteria, handler);
     }
@@ -129,7 +129,7 @@ namespace Csla.DataPortalClient
     }
     public void BeginUpdate(object obj, object userState)
     {
-      var factory = Activator.CreateInstance(Type.GetType(_attribute.FactoryTypeName));
+      var factory = Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(_attribute.FactoryTypeName));
       var handler = new CompletedHandler(OnUpdateCompleted);
       _userState = userState;
       var cloneable = obj as ICloneable;
@@ -208,7 +208,7 @@ namespace Csla.DataPortalClient
     public void BeginDelete(object criteria, object userState)
     {
       _userState = userState;
-      var obj = Activator.CreateInstance(Type.GetType(_attribute.FactoryTypeName));
+      var obj = Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(_attribute.FactoryTypeName));
       var handler = new CompletedHandler(OnDeleteCompleted);
       MethodCaller.CallMethod(obj, _attribute.DeleteMethodName, criteria, handler);
     }

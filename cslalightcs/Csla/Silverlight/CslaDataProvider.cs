@@ -482,7 +482,7 @@ namespace Csla.Silverlight
           _error = null;
           this.IsBusy = true;
           List<object> parameters = new List<object>(FactoryParameters);
-          Type objectType = Type.GetType(_objectType);
+          Type objectType = Csla.Reflection.MethodCaller.GetType(_objectType);
           parameters.Add(CreateHandler(objectType));
 
           MethodCaller.CallFactoryMethod(objectType, _factoryMethod, parameters.ToArray());

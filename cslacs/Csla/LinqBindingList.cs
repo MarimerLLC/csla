@@ -535,6 +535,10 @@ namespace Csla
     private IBindingList _bindingList;
     private PropertyDescriptor _filterBy;
     private Expression _sortExpression;
+
+    //you can have many 
+    private List<Expression> _thenByExpressions = new List<Expression>();
+
     private List<ListItem> _filterIndex = 
       new List<ListItem>();
 
@@ -750,6 +754,12 @@ namespace Csla
       _sortExpression = expression;
       BuildFilterIndex();
     }
+
+    internal void ThenByExpression(Expression expression)
+    {
+      _thenByExpressions.Add(expression);
+      BuildFilterIndex();
+    }
     
     internal void BuildFilterIndex()
     {
@@ -761,6 +771,10 @@ namespace Csla
       var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
       if (_sortExpression != null && _sortExpression is MethodCallExpression)
         subset = BuildSortedSubset(subset, (MethodCallExpression)_sortExpression);
+
+      foreach (var expression in _thenByExpressions)
+        if (expression is MethodCallExpression)
+          subset = BuildSortedSubset(subset, (MethodCallExpression)expression);
 
       _filterIndex.Clear();
       if (_list is Linq.IIndexSearchable<T>)
@@ -816,6 +830,9 @@ namespace Csla
         var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
         if (_sortExpression != null && _sortExpression is MethodCallExpression)
           subset = BuildSortedSubset(subset, (MethodCallExpression) _sortExpression);
+        foreach (var expression in _thenByExpressions)
+          if (expression is MethodCallExpression)
+            subset = BuildSortedSubset(subset, (MethodCallExpression)expression);
         foreach (T item in subset)
           yield return item;
       }

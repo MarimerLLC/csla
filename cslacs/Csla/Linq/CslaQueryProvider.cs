@@ -96,7 +96,6 @@ namespace Csla.Linq
 
     public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
     {
-      Type elementType = TypeSystem.GetElementType(expression.Type);
       try
       {
         MethodCallExpression mex = (MethodCallExpression) expression;
@@ -110,7 +109,6 @@ namespace Csla.Linq
         {
           //raw sort without previous where
           _filter = new LinqBindingList<C>(_parent, this, null);
-          _filter.BuildFilterIndex();
           _filter.SortByExpression(expression);
           return (IQueryable<TElement>)_filter;
         }
@@ -118,6 +116,12 @@ namespace Csla.Linq
         {
           //sort of previous where
           _filter.SortByExpression(expression);
+          return (IQueryable<TElement>)_filter;
+        }
+        else if (typeof(TElement) == typeof(C) && mex.Method.Name.StartsWith("ThenBy"))
+        {
+          //sort of previous where
+          _filter.ThenByExpression(expression);
           return (IQueryable<TElement>)_filter;
         }
         else
@@ -198,7 +202,7 @@ namespace Csla.Linq
       Type elementType = TypeSystem.GetElementType(expression.Type);
       if (expression is MethodCallExpression)
       {
-        MethodCallExpression mex = (MethodCallExpression) expression;
+        MethodCallExpression mex = (MethodCallExpression)expression;
         methodName = mex.Method.Name;
         if (methodName == "OfType" || methodName == "Cast")
         {
@@ -206,19 +210,49 @@ namespace Csla.Linq
           List<C> listFrom = _parent.ToList<C>();
           List<object> paramList = new List<object>();
           paramList.Add(listFrom);
-          foreach(MethodInfo method in listType.GetMethods())
+          foreach (MethodInfo method in listType.GetMethods())
             if (method.Name == methodName)
             {
               Type[] genericArguments = { mex.Method.GetGenericArguments().First() };
               MethodInfo genericMethodInfo = method.MakeGenericMethod(genericArguments);
-              System.Collections.IEnumerable thingWeGotBack = (System.Collections.IEnumerable) genericMethodInfo.Invoke(null, paramList.ToArray());
+              System.Collections.IEnumerable thingWeGotBack = (System.Collections.IEnumerable)genericMethodInfo.Invoke(null, paramList.ToArray());
               return thingWeGotBack.AsQueryable();
             }
+        }
+
+        //JF start change
+        //2/7/09 - only gets here if mex is a MethodCallExpresion - else it does what it was originally supposed to do.
+        if (elementType == typeof(C) && mex.Method.Name == "Where" && _filter == null)
+        {
+          _filter = new LinqBindingList<C>(_parent, this, expression);
+          _filter.BuildFilterIndex();
+          return (IQueryable)_filter;
+        }
+        else if (elementType == typeof(C) && mex.Method.Name.StartsWith("OrderBy") && _filter == null)
+        {
+          //raw sort without previous where
+          _filter = new LinqBindingList<C>(_parent, this, null);
+          _filter.SortByExpression(expression);
+          return (IQueryable)_filter;
+        }
+        else if (elementType == typeof(C) && mex.Method.Name.StartsWith("OrderBy"))
+        {
+          //sort of previous where
+          _filter.SortByExpression(expression);
+          return (IQueryable)_filter;
+        }
+        //JF end change
+        else if (elementType == typeof(C) && mex.Method.Name.StartsWith("ThenBy"))
+        {
+          //sort of previous where
+          _filter.ThenByExpression(expression);
+          return (IQueryable)_filter;
         }
       }
       _filter = new LinqBindingList<C>(_parent, this, expression);
       return _filter;
     }
+
 
     public TResult Execute<TResult>(Expression expression)
     {

@@ -42,6 +42,7 @@ Namespace Wpf
       BrokenRules = New ObservableCollection(Of BrokenRule)()
 
       'TODO: Need to implement Lambda expression
+
     End Sub
 
     ''' <summary>

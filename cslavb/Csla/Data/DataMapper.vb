@@ -2,8 +2,6 @@ Imports System
 Imports System.Collections.Generic
 Imports System.ComponentModel
 Imports Csla.Reflection
-Imports Csla.Properties
-
 
 Namespace Data
   ''' <summary>
@@ -108,11 +106,6 @@ Namespace Data
     Public Sub Map(ByVal source As Object, ByVal target As Dictionary(Of String, Object), ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
       Dim ignore As List(Of String) = New List(Of String)(ignoreList)
       For Each propertyName In GetPropertyNames(source.GetType())
-        'TODO: Do we still need to make call to GetSourceProperties?
-        '      The C# code looks like the modification made here
-        'Dim sourceProperties() As PropertyInfo = GetSourceProperties(source.GetType())
-        'For Each prop As PropertyInfo In sourceProperties
-        'Dim propertyName As String = prop.Name
         If (Not ignore.Contains(propertyName)) Then
           Try
             target.Add(propertyName, MethodCaller.CallPropertyGetter(source, propertyName))
@@ -184,10 +177,6 @@ Namespace Data
     Public Sub Map(ByVal source As Object, ByVal target As Object, ByVal suppressExceptions As Boolean, ByVal ParamArray ignoreList() As String)
       Dim ignore As List(Of String) = New List(Of String)(ignoreList)
       For Each propertyName In GetPropertyNames(source.GetType())
-        'Dim ignore As List(Of String) = New List(Of String)(ignoreList)
-        'Dim sourceProperties() As PropertyInfo = GetSourceProperties(source.GetType())
-        'For Each sourceProperty As PropertyInfo In sourceProperties
-        '  Dim propertyName As String = sourceProperty.Name
         If (Not ignore.Contains(propertyName)) Then
           Try
             Dim value As Object = MethodCaller.CallPropertyGetter(source, propertyName)
@@ -235,7 +224,6 @@ Namespace Data
       For Each mapping As DataMap.MemberMapping In map.GetMap()
         Try
           Dim value As Object = mapping.FromMemberHandle.DynamicMemberGet(source)
-          'TODO: not sure if SetValue will not be use. SetValueWithCoercion is used in C# --> ''SetValue(target, mapping.ToMemberHandle, value)
           SetValueWithCoercion(target, mapping.ToMemberHandle, value)
         Catch ex As Exception
           If (Not suppressExceptions) Then
@@ -256,19 +244,6 @@ Namespace Data
 
       Return result
     End Function
-
-    'TODO: Do we still need this? No equivalent C# code, 
-    '      methods using this function was modified to run without it. 
-    'Private Function GetSourceProperties(ByVal sourceType As Type) As PropertyInfo()
-    '  Dim result As List(Of PropertyInfo) = New List(Of PropertyInfo)()
-    '  Dim props As PropertyDescriptorCollection = TypeDescriptor.GetProperties(sourceType)
-    '  For Each item As PropertyDescriptor In props
-    '    If item.IsBrowsable Then
-    '      result.Add(sourceType.GetProperty(item.Name))
-    '    End If
-    '  Next item
-    '  Return result.ToArray()
-    'End Function
 
 #End Region
 
@@ -344,10 +319,6 @@ Namespace Data
     ''' <param name="propertyName">Name of the property to set.</param>
     ''' <param name="value">Value to set into the property.</param>
     Public Sub SetPropertyValue(ByVal target As Object, ByVal propertyName As String, ByVal value As Object)
-      'TODO: the following two lines don't macth the C# code. The next two lines do.
-      ''Dim propertyInfo As PropertyInfo = target.GetType().GetProperty(propertyName, BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.FlattenHierarchy)
-      ''SetValue(target, propertyInfo, value)
-
       Dim handle As DynamicMemberHandle = MethodCaller.GetCachedProperty(target.GetType(), propertyName)
       SetValueWithCoercion(target, handle, value)
     End Sub
@@ -369,7 +340,8 @@ Namespace Data
         Dim vType As Type = Utilities.GetPropertyType(value.GetType())
         value = Utilities.CoerceValue(pType, vType, oldValue, value)
       End If
-      'TODO: handle.DynamicMemberSet(target, value)
+
+      handle.DynamicMemberSet.Invoke(target, value)
 
     End Sub
 
@@ -381,41 +353,9 @@ Namespace Data
     ''' <param name="fieldName">Name of the field (public or non-public) to set.</param>
     ''' <param name="value">Value to set into the field.</param>
     Public Sub SetFieldValue(ByVal target As Object, ByVal fieldName As String, ByVal value As Object)
-      'TODO: Revisit
-      ''Dim fieldInfo As FieldInfo = target.GetType().GetField(fieldName, BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance)
-      ''SetValue(target, fieldInfo, value)
+      Dim handle As DynamicMemberHandle = MethodCaller.GetCachedField(target.GetType(), fieldName)
+      SetValueWithCoercion(target, handle, value)
     End Sub
-
-    'TODO: There is no C# code for this block. Create the SetValueWithCoercion instead
-    '''' <summary>
-    '''' Sets an object's property or field with the specified value,
-    '''' coercing that value to the appropriate type if possible.
-    '''' </summary>
-    '''' <param name="target">Object containing the member to set.</param>
-    '''' <param name="memberInfo">MemberInfo object for the member to set.</param>
-    '''' <param name="value">Value to set into the member.</param>
-    'Public Sub SetValue(ByVal target As Object, ByVal memberInfo As MemberInfo, ByVal value As Object)
-    '  If value IsNot Nothing Then
-    '    Dim oldValue As Object
-    '    Dim pType As Type
-    '    If memberInfo.MemberType = MemberTypes.Property Then
-    '      Dim pInfo As PropertyInfo = CType(memberInfo, PropertyInfo)
-    '      pType = pInfo.PropertyType
-    '      oldValue = pInfo.GetValue(target, Nothing)
-    '    Else
-    '      Dim fInfo As FieldInfo = CType(memberInfo, FieldInfo)
-    '      pType = fInfo.FieldType
-    '      oldValue = fInfo.GetValue(target)
-    '    End If
-    '    Dim vType As Type = Utilities.GetPropertyType(value.GetType())
-    '    value = Utilities.CoerceValue(pType, vType, oldValue, value)
-    '  End If
-    '  If memberInfo.MemberType = MemberTypes.Property Then
-    '    CType(memberInfo, PropertyInfo).SetValue(target, value, Nothing)
-    '  Else
-    '    CType(memberInfo, FieldInfo).SetValue(target, value)
-    '  End If
-    'End Sub
 
 #End Region
 

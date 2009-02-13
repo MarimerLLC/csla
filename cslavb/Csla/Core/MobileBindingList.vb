@@ -17,6 +17,9 @@ Namespace Core
   ''' <typeparam name="T">
   ''' Type of the items contained in the list.
   ''' </typeparam>
+#If TESTING Then
+  [System.Diagnostics.DebuggerStepThrough]
+#End If
   <Serializable()> _
   Public Class MobileBindingList(Of T)
     Inherits BindingList(Of T)

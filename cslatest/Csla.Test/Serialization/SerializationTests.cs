@@ -420,5 +420,42 @@ namespace Csla.Test.Serialization
       int newEditLevel = (int)item.GetType().GetProperty("EditLevel", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy).GetValue(item, null);
       Assert.AreEqual(editLevel + 1, newEditLevel, "Edit level incorrect after begin edit");
     }
+
+    [TestMethod]
+    public void SerializeCommand()
+    {
+      var cmd = new TestCommand();
+      cmd.Name = "test data";
+
+      var buffer = new System.IO.MemoryStream();
+#if !SILVERLIGHT
+      var bf = (TestCommand)Csla.Core.ObjectCloner.Clone(cmd);
+      Assert.AreEqual(cmd.Name, bf.Name, "after BinaryFormatter");
+
+      var ndcs = new System.Runtime.Serialization.NetDataContractSerializer();
+      ndcs.Serialize(buffer, cmd);
+      buffer.Position = 0;
+      var n = (TestCommand)ndcs.Deserialize(buffer);
+      Assert.AreEqual(cmd.Name, n.Name, "after NDCS");
+#endif
+
+      buffer = new System.IO.MemoryStream();
+      var mf = new Csla.Serialization.Mobile.MobileFormatter();
+      mf.Serialize(buffer, cmd);
+      buffer.Position = 0;
+      var m = (TestCommand)mf.Deserialize(buffer);
+      Assert.AreEqual(cmd.Name, m.Name, "after MobileFormatter");
+    }
+  }
+
+  [Serializable]
+  public class TestCommand : CommandBase
+  {
+    private static PropertyInfo<string> NameProperty = RegisterProperty(typeof(TestCommand), new PropertyInfo<string>("Name"));
+    public string Name
+    {
+      get { return ReadProperty(NameProperty); }
+      set { LoadProperty(NameProperty, value); }
+    }
   }
 }

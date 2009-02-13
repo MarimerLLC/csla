@@ -17,6 +17,11 @@ namespace Csla.Silverlight
   /// </summary>
   public class ErrorDialog : Control
   {
+    public ErrorDialog()
+    {
+      this.DialogTitle = "Error";
+    }
+
     /// <summary>
     /// Gets or sets the CslaDataProvider
     /// control to which the ErrorDialog control

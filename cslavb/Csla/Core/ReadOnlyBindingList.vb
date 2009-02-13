@@ -134,9 +134,9 @@ Namespace Core
     ''' </summary>
     Public Overrides ReadOnly Property IsBusy() As Boolean
       Get
-        ''' run through all the child objects
-        ''' and if any are dirty then then
-        ''' collection is dirty
+        ' run through all the child objects
+        ' and if any are dirty then then
+        ' collection is dirty
         For Each child As C In Me
           Dim busy As INotifyBusy = TryCast(child, INotifyBusy)
           If busy IsNot Nothing AndAlso busy.IsBusy Then
@@ -263,63 +263,72 @@ Namespace Core
       DeferredLoadIndexIfNotLoaded()
       Dim [property] As String = _indexSet.HasIndexFor(expr)
       If [property] IsNot Nothing AndAlso IndexModeFor([property]) <> IndexModeEnum.IndexModeNever Then
-        LoadIndexIfNotLoaded([property])
-        ' TODO : Need to implement our version of yield
-        Return _indexSet.Search(expr, [property])
-      Else
-        'Dim sourceEnum As IEnumerable(Of C) = Me.AsEnumerable(Of C)() 'TODO: 
-        'Dim result = sourceEnum.Where(Of C)(expr.Compile()) 'TODO:
 
-        ' TODO : Need to implement our version of yield
-        'Return Me.AsEnumerable().Where(expr.Compile())
+        LoadIndexIfNotLoaded([property])
+
+        Dim listOf As List(Of C) = New List(Of C)
+        For Each item As C In _indexSet.Search(expr, [property])
+          listOf.Add(item)
+        Next
+
+        Return CType(listOf, IEnumerable(Of C))
+
+      Else
+        Dim sourceEnum As IEnumerable(Of C) = Me.AsEnumerable()
+        Dim result = sourceEnum.Where(expr.Compile())
+        Dim listOf As List(Of C) = New List(Of C)
+        For Each item As C In result
+          listOf.Add(item)
+        Next
+        
       End If
     End Function
 
 #End Region
 
 #Region " MobileFormatter "
-    'TODO Finish implementation once ExtendedBindingList is complete
-    '''' <summary>
-    '''' Override this method to insert your field values
-    '''' into the MobileFormatter serialzation stream.
-    '''' </summary>
-    '''' <param name="info">
-    '''' Object containing the data to serialize.
-    '''' </param>
-    'Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo)
-    '  MyBase.OnGetState(info)
-    '  info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", _isReadOnly)
-    'End Sub
 
-    '''' <summary>
-    '''' Override this method to retrieve your field values
-    '''' from the MobileFormatter serialzation stream.
-    '''' </summary>
-    '''' <param name="info">
-    '''' Object containing the data to serialize.
-    '''' </param>
-    'Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo)
-    '  MyBase.OnSetState(info)
-    '  _isReadOnly = info.GetValue(Of Boolean)("Csla.Core.ReadOnlyBindingList._isReadOnly")
-    'End Sub
+    ''' <summary>
+    ''' Override this method to insert your field values
+    ''' into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo)
+      MyBase.OnGetState(info)
+      info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", _isReadOnly)
+    End Sub
 
-    '''' <summary>
-    '''' Override this method to retrieve your child object
-    '''' references from the MobileFormatter serialzation stream.
-    '''' </summary>
-    '''' <param name="info">
-    '''' Object containing the data to serialize.
-    '''' </param>
-    '''' <param name="formatter">
-    '''' Reference to MobileFormatter instance. Use this to
-    '''' convert child references to/from reference id values.
-    '''' </param>
-    'Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
-    '  Dim old As Boolean = IsReadOnly
-    '  IsReadOnly = False
-    '  MyBase.OnSetChildren(info, formatter)
-    '  IsReadOnly = old
-    'End Sub
+    ''' <summary>
+    ''' Override this method to retrieve your field values
+    ''' from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo)
+      MyBase.OnSetState(info)
+      _isReadOnly = info.GetValue(Of Boolean)("Csla.Core.ReadOnlyBindingList._isReadOnly")
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your child object
+    ''' references from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="formatter">
+    ''' Reference to MobileFormatter instance. Use this to
+    ''' convert child references to/from reference id values.
+    ''' </param>
+    Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
+      Dim old As Boolean = IsReadOnly
+      IsReadOnly = False
+      MyBase.OnSetChildren(info, formatter)
+      IsReadOnly = old
+    End Sub
 
 #End Region
 
@@ -334,8 +343,14 @@ Namespace Core
     ''' Custom implementation of Where for BusinessListBase - used in LINQ
     ''' </summary>
     Public Function Where(Of C As Core.IEditableBusinessObject)(ByVal source As ReadOnlyBindingList(Of C), ByVal expr As Expression(Of Func(Of C, Boolean))) As IEnumerable(Of C)
-      ' TODO: Need to implement our version of yield
-      Return source.SearchByExpression(expr)
+
+      Dim listOf As List(Of C) = New List(Of C)
+      For Each item As C In source.SearchByExpression(expr)
+        listOf.Add(item)
+      Next
+
+      Return CType(listOf, IEnumerable(Of C))
+
     End Function
 
   End Module

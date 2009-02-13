@@ -11,7 +11,7 @@ Namespace Core
     Private Shared ReadOnly _undoableFieldCache As New Dictionary(Of Type, List(Of DynamicMemberHandle))()
 
     Public Shared Function GetCachedFieldHandlers(ByVal type As Type) As List(Of DynamicMemberHandle)
-      Dim handlers As List(Of DynamicMemberHandle)
+      Dim handlers As List(Of DynamicMemberHandle) = Nothing
       If Not _undoableFieldCache.TryGetValue(type, handlers) Then
         Dim newHandlers = BuildHandlers(type)
         SyncLock _undoableFieldCache

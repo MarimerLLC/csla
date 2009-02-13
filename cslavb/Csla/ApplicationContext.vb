@@ -29,7 +29,7 @@ Public Module ApplicationContext
       Dim current As IPrincipal
 
 #If Not CLIENTONLY Then
-      If HttpContext.Current Is Nothing Then
+      If HttpContext.Current IsNot Nothing Then
         current = HttpContext.Current.User
       ElseIf System.Windows.Application.Current IsNot Nothing Then
         If _principal Is Nothing Then

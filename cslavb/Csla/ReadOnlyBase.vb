@@ -998,8 +998,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' Loading values does not cause validation rules to be
   ''' invoked.
   ''' </remarks>
-  Protected Sub LoadPropertyConvert(Of P, F)( _
-    ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
+  Protected Sub LoadPropertyConvert(Of P, F)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As F)
 
     Try
       Dim oldValue As P = Nothing
@@ -1030,6 +1029,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   Private Sub IManageProperties_LoadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P) Implements IManageProperties.LoadProperty
     LoadProperty(Of P)(propertyInfo, newValue)
   End Sub
+
+  Private Function FieldExists(ByVal [property] As IPropertyInfo) As Boolean Implements IManageProperties.FieldExists
+    Return FieldManager.FieldExists([property])
+  End Function
 
   ''' <summary>
   ''' Loads a property's managed field with the 

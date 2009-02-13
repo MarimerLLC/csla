@@ -278,7 +278,6 @@ Namespace Core
         _propertyChanged = DirectCast([Delegate].Remove(_propertyChanged, value), PropertyChangedEventHandler)
       End RemoveHandler
       RaiseEvent(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-        'TODO: This was a throw exception but I think this is correct
         If _propertyChanged IsNot Nothing Then
           _propertyChanged.Invoke(sender, e)
         End If
@@ -290,7 +289,6 @@ Namespace Core
     ''' </summary>
     ''' <param name="propertyName">Name of the changed property.</param>
     Protected Sub OnPropertyChanged(ByVal propertyName As String)
-      'TODO: I also changed this from the code that is now in the RaiseEvent to this
       RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
 

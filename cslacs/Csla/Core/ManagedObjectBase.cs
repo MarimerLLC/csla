@@ -72,7 +72,7 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, P>> propertyLambdaExpression)
+    protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
@@ -88,12 +88,30 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, P>> propertyLambdaExpression, string friendlyName)
+    protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(typeof(T), new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName));
     }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="T">Type of Target</typeparam>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
+    {
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterProperty(typeof(T), new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue));
+    }
+
     #endregion
 
     #region  Read Properties

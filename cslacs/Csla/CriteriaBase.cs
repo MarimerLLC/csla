@@ -24,8 +24,6 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Never)] 
     public static readonly PropertyInfo<string> TypeNameProperty =
       RegisterProperty<CriteriaBase, string>(c => c.TypeName);
-      //typeof(CriteriaBase),
-      //new PropertyInfo<string>("TypeName"));
 
     [NonSerialized]
     [NotUndoable]

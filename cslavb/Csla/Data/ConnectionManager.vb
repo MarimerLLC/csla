@@ -2,7 +2,6 @@
 Imports System.Configuration
 Imports System.Data
 Imports System.Data.Common
-Imports Csla.Properties
 
 Namespace Data
 

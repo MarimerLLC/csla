@@ -1,7 +1,6 @@
 ﻿Imports System
 Imports System.Configuration
 Imports System.Data
-Imports Csla.Properties
 
 Namespace Data
   ''' <summary>

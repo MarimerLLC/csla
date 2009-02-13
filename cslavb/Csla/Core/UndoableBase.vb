@@ -3,6 +3,7 @@ Imports System.IO
 Imports System.Collections.Specialized
 Imports System.ComponentModel
 Imports Csla.Serialization
+Imports Csla.Reflection
 
 Namespace Core
 
@@ -102,7 +103,6 @@ Namespace Core
 
       Dim currentType As Type = Me.GetType()
       Dim state As New HybridDictionary()
-      Dim fields() As FieldInfo
 
       If Me.EditLevel + 1 > parentEditLevel Then
         Throw New UndoException( _
@@ -111,47 +111,26 @@ Namespace Core
 
       Do
         ' get the list of fields in this type
-        fields = currentType.GetFields( _
-                                BindingFlags.NonPublic Or _
-                                BindingFlags.Instance Or _
-                                BindingFlags.Public)
+        Dim handlers As List(Of DynamicMemberHandle) = UndoableHandler.GetCachedFieldHandlers(currentType)
 
-        For Each field As FieldInfo In fields
-          ' make sure we process only our variables
-          If field.DeclaringType Is currentType Then
-            ' see if this field is marked as not undoable
-            If Not NotUndoableField(field) Then
-              ' the field is undoable, so it needs to be processed
-              Dim value As Object = field.GetValue(Me)
+        For Each h As DynamicMemberHandle In handlers
+          Dim value = h.DynamicMemberGet(Me)
 
-              If GetType(Core.IUndoableObject). _
-                  IsAssignableFrom(field.FieldType) Then
-                ' make sure the variable has a value
-                If value Is Nothing Then
-                  ' variable has no value - store that fact
-                  state.Add(GetFieldName(field), Nothing)
+          If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(h.MemberType) Then
 
-                Else
-                  ' this is a child object, cascade the call
-                  If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
-                    DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1, BindingEdit)
-                  End If
-                End If
-
-              Else
-                ' this is a normal field, simply trap the value
-                state.Add(GetFieldName(field), value)
-
-              End If
-
+            'make sure the variable has a value
+            If value IsNot Nothing Then
+              'variable has no value - store that fact
+              state.Add(h.MemberName, Nothing)
+            Else
+              'this is a child object, cascade the call
+              DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1, BindingEdit)
             End If
-
           End If
         Next
 
         currentType = currentType.BaseType
-
-      Loop Until currentType Is GetType(UndoableBase)
+      Loop Until currentType IsNot GetType(UndoableBase)
 
       ' serialize the state and stack it
       Using buffer As New MemoryStream
@@ -164,20 +143,20 @@ Namespace Core
     End Sub
 
     ''' <summary>
-    ''' This method is invoked before the UndoChanges
+    ''' This method is invoked after the UndoChanges
     ''' operation begins.
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub UndoingChanges()
+    Protected Overridable Sub UndoChangesComplete()
 
     End Sub
 
     ''' <summary>
-    ''' This method is invoked after the UndoChanges
+    ''' This method is invoked before the UndoChanges
     ''' operation is complete.
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected Overridable Sub UndoChangesComplete()
+    Protected Overridable Sub UndoingChanges()
 
     End Sub
 
@@ -214,50 +193,36 @@ Namespace Core
         End Using
 
         Dim currentType As Type = Me.GetType
-        Dim fields() As FieldInfo
-        Dim field As FieldInfo
-
 
         Do
           ' get the list of fields in this type
-          fields = currentType.GetFields( _
-                                  BindingFlags.NonPublic Or _
-                                  BindingFlags.Instance Or _
-                                  BindingFlags.Public)
+          Dim handlers As List(Of DynamicMemberHandle) = UndoableHandler.GetCachedFieldHandlers(currentType)
 
-          For Each field In fields
-            If field.DeclaringType Is currentType Then
-              ' see if the field is undoable or not
-              If Not NotUndoableField(field) Then
-                ' the field is undoable, so restore its value
-                Dim value As Object = field.GetValue(Me)
+          For Each h As DynamicMemberHandle In handlers
 
-                If GetType(Core.IUndoableObject). _
-                  IsAssignableFrom(field.FieldType) Then
-                  ' this is a child object
-                  ' see if the previous value was empty
-                  If state.Contains(GetFieldName(field)) Then
-                    ' previous value was empty - restore to empty
-                    field.SetValue(Me, Nothing)
+            'the field is undoable, so restore its value
+            Dim value = h.DynamicMemberGet(Me)
 
-                  Else
-                    ' make sure the variable has a value
-                    If Not value Is Nothing Then
-                      ' this is a child object, cascade the call
-                      If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
-                        DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel, BindingEdit)
-                      End If
-                    End If
-                  End If
+            If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(h.MemberType) Then
 
-                Else
-                  ' this is a regular field, restore its value
-                  field.SetValue(Me, state.Item(GetFieldName(field)))
+              'this is a child object
+              'see if the previous value was empty
+              If state.Contains(h.MemberName) Then
+
+                'previous value was empty - restore to empty
+                h.DynamicMemberSet.Invoke(Me, Nothing) 'TODO: Is this correct
+              Else
+                'make sure the variable has a value
+                If value IsNot Nothing Then
+                  'this is a child object, cascade the call.
+                  DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1, BindingEdit)
                 End If
               End If
+            Else
+              'this is a regular field, restore its value
+              h.DynamicMemberSet.Invoke(Me, state(h.MemberName)) 'TODO: Is this correct
             End If
           Next
-
           currentType = currentType.BaseType
         Loop Until currentType Is GetType(UndoableBase)
       End If
@@ -306,32 +271,21 @@ Namespace Core
         _stateStack.Pop()
 
         Dim currentType As Type = Me.GetType
-        Dim fields() As FieldInfo
-        Dim field As FieldInfo
+        
 
         Do
           ' get the list of fields in this type
-          fields = currentType.GetFields( _
-                                  BindingFlags.NonPublic Or _
-                                  BindingFlags.Instance Or _
-                                  BindingFlags.Public)
+          Dim handlers As List(Of DynamicMemberHandle) = UndoableHandler.GetCachedFieldHandlers(currentType)
 
-          For Each field In fields
-            If field.DeclaringType Is currentType Then
-              ' see if the field is undoable or not
-              If Not NotUndoableField(field) Then
-                ' the field is undoable so see if it is editable
-                If GetType(Core.IUndoableObject). _
-                  IsAssignableFrom(field.FieldType) Then
-                  Dim value As Object = field.GetValue(Me)
-                  ' make sure the variable has a value
-                  If Not value Is Nothing Then
-                    ' this is a child object, cascade the call
-                    If Not _bindingEdit OrElse TypeOf value Is FieldManager.FieldDataManager Then
-                      DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel, BindingEdit)
-                    End If
-                  End If
-                End If
+          For Each h As DynamicMemberHandle In handlers
+
+            'the field is undoable so see if it is a child object
+            If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(h.MemberType) Then
+
+              Dim value As Object = h.DynamicMemberGet(Me)
+              If value IsNot Nothing Then
+                'it is a child object so cascade the call
+                DirectCast(value, IUndoableObject).AcceptChanges(Me.EditLevel, BindingEdit)
               End If
             End If
           Next
@@ -380,6 +334,41 @@ Namespace Core
         child.CopyState(targetLevel, False)
       End While
 
+    End Sub
+
+#End Region
+
+#Region " MobileObject overrides "
+
+    ''' <summary>
+    ''' Override this method to insert your field values
+    ''' into the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="mode">
+    ''' The StateMode indicating why this method was invoked.
+    ''' </param>
+    Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As StateMode)
+      info.AddValue("_bindingEdit", _bindingEdit)
+      MyBase.OnGetState(info, mode)
+    End Sub
+
+    ''' <summary>
+    ''' Override this method to retrieve your field values
+    ''' from the MobileFormatter serialzation stream.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the data to serialize.
+    ''' </param>
+    ''' <param name="mode">
+    ''' The StateMode indicating why this method was invoked.
+    ''' </param>
+    Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As StateMode)
+      _stateStack.Clear()
+      _bindingEdit = info.GetValue(Of Boolean)("_bindingEdit")
+      MyBase.OnSetState(info, mode)
     End Sub
 
 #End Region

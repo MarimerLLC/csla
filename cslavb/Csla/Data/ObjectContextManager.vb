@@ -1,11 +1,7 @@
 ﻿#If Not CLIENTONLY Then
 Imports System
 Imports System.Configuration
-
-
 Imports System.Data.Objects
-
-Imports Csla.Properties
 
 Namespace Data
 

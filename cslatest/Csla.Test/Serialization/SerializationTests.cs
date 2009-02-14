@@ -446,6 +446,27 @@ namespace Csla.Test.Serialization
       var m = (TestCommand)mf.Deserialize(buffer);
       Assert.AreEqual(cmd.Name, m.Name, "after MobileFormatter");
     }
+
+#if !SILVERLIGHT
+    [TestMethod]
+    public void CommandOverDataPortal()
+    {
+      System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      try
+      {
+        var cmd = new TestCommand();
+        cmd.Name = "test data";
+
+        var result = Csla.DataPortal.Execute<TestCommand>(cmd);
+
+        Assert.AreEqual(cmd.Name + " server", result.Name);
+      }
+      finally
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
+      }
+    }
+#endif
   }
 
   [Serializable]
@@ -456,6 +477,11 @@ namespace Csla.Test.Serialization
     {
       get { return ReadProperty(NameProperty); }
       set { LoadProperty(NameProperty, value); }
+    }
+
+    protected override void DataPortal_Execute()
+    {
+      Name = Name + " server";     
     }
   }
 }

@@ -16,8 +16,6 @@ namespace Csla
   public class CriteriaBase : ManagedObjectBase,
     ICriteria
   {
-    private static bool _forceInit = false;
-
     /// <summary>
     /// Defines the TypeName property.
     /// </summary>
@@ -61,12 +59,13 @@ namespace Csla
     }
 
 #if SILVERLIGHT
+    private static bool _forceInit = false;
+
     /// <summary>
     /// Creates an instance of the object. For use by
     /// MobileFormatter only - you must provide a 
     /// Type parameter in your code.
     /// </summary>
-    [Obsolete("For use by MobileFormatter only")]
     public CriteriaBase()
     {
       _forceInit = _forceInit && false;
@@ -94,26 +93,6 @@ namespace Csla
     /// </summary>
     protected CriteriaBase()
     { }
-
-    [System.Runtime.Serialization.OnDeserialized()]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
-      OnDeserialized(context);
-    }
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    /// <param name="context">Serialization context object.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      _forceInit = _forceInit && false;
-      if (FieldManager != null)
-        FieldManager.SetPropertyList(this.GetType());
-    }
-
 #endif
 
     /// <summary>

@@ -362,5 +362,44 @@ namespace Csla.Core
     }
 
     #endregion
+
+    #region OnDeserialized
+
+    #if SILVERLIGHT
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should be deserialized. The data should be
+    /// deserialized from the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
+    /// <param name="mode">Serialization mode.</param>
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      base.OnSetState(info, mode);
+    }
+#else
+    [System.Runtime.Serialization.OnDeserialized()]
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
+    {
+      OnDeserialized(context);
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    /// <param name="context">Serialization context object.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    {
+      if (FieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
+    }
+
+#endif
+
+    #endregion
   }
 }

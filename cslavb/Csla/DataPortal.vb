@@ -1011,8 +1011,8 @@ Public Module DataPortal
               DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow), _
               False)))
 
-          'TODO:
-          Dim tmp As Boolean '= CType(Application.Current.Dispatcher.Invoke(func, Nothing), Boolean)
+          Dim params() As Object = Nothing
+          Dim tmp As Boolean = CType(Application.Current.Dispatcher.Invoke(func, params), Boolean)
 
           SyncLock _designModeLock
             If Not _isInDesignModeHasBeenSet Then

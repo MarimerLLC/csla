@@ -1100,15 +1100,19 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     FieldManager.LoadFieldData(propertyInfo, newValue)
   End Sub
 
+  'Private Function IManageProperties_FieldExists(ByVal propertyInfo As Core.IPropertyInfo) As Boolean Implements Core.IManageProperties.FieldExists
+  '  Return FieldManager.FieldExists(propertyInfo)
+  'End Function
+
   'private AsyncLoadManager
   <NonSerialized()> _
   Private _loadManager As AsyncLoadManager
   Friend ReadOnly Property LoadManager() As AsyncLoadManager
     Get
-      If _loadManager Is Nothing Then        
+      If _loadManager Is Nothing Then
         _loadManager = New AsyncLoadManager()
         AddHandler _loadManager.BusyChanged, AddressOf loadManager_BusyChanged
-        AddHandler _loadManager.UnhandledAsyncException, AddressOf loadManager_UnhandledAsyncException            
+        AddHandler _loadManager.UnhandledAsyncException, AddressOf loadManager_UnhandledAsyncException
       End If
       Return _loadManager
     End Get

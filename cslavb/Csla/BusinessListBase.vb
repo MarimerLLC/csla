@@ -788,10 +788,21 @@ Public MustInherit Class BusinessListBase( _
     Dim [property] As String = _indexSet.HasIndexFor(expr)
     If [property] IsNot Nothing AndAlso IndexModeFor([property]) <> IndexModeEnum.IndexModeNever Then
       LoadIndexIfNotLoaded([property])
-      Return _indexSet.Search(expr, [property]) 'TODO: Do we need a yield eqiv here?
+
+      Dim listOf As List(Of C) = New List(Of C)
+      For Each item As C In _indexSet.Search(expr, [property])
+        listOf.Add(item)
+      Next
+
+      Return CType(listOf, IEnumerable(Of C))
     Else
       Dim sourceEnum As IEnumerable(Of C) = Me.AsEnumerable()
-      Return sourceEnum.Where(expr.Compile()) 'TODO: Do we need a yield eqiv here?
+      Dim result = sourceEnum.Where(expr.Compile())
+      Dim listOf As List(Of C) = New List(Of C)
+      For Each item As C In result
+        listOf.Add(item)
+      Next
+      Return CType(listOf, IEnumerable(Of C))
     End If
   End Function
 
@@ -1509,16 +1520,10 @@ Public MustInherit Class BusinessListBase( _
   ''' </param>
   <EditorBrowsable(EditorBrowsableState.Advanced)> _
   Protected Overrides Sub OnGetState(ByVal info As Serialization.Mobile.SerializationInfo)
-    '_isChild = info.GetValue(Of Boolean)("Csla.BusinessListBase._isChild")
-    '_editLevel = info.GetValue(Of Integer)("Csla.BusinessListBase._editLevel")
-    'MyBase.OnGetState(info)
-
     info.AddValue("Csla.BusinessListBase._isChild", _isChild)
     info.AddValue("Csla.BusinessListBase._editLevel", _editLevel)
     MyBase.OnGetState(info)
   End Sub
-
-  'TODO: Implement OnGetState - for some odd reason I can not because if inheritance issue that alludes me today
 
   ''' <summary>
   ''' Override this method to retrieve your field values

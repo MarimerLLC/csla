@@ -280,6 +280,7 @@ Namespace Core
         For Each item As C In result
           listOf.Add(item)
         Next
+        Return CType(listOf, IEnumerable(Of C))
         
       End If
     End Function

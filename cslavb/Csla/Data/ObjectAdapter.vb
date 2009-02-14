@@ -4,7 +4,6 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.ComponentModel
 Imports System.Reflection
-Imports Csla.Properties
 
 Namespace Data
 
@@ -26,9 +25,7 @@ Namespace Data
     ''' <param name="source">A reference to the object or collection acting as a data source.</param>
     Public Sub Fill(ByVal ds As DataSet, ByVal source As Object)
 
-      Dim className As String
-      className = TypeName(source)
-
+      Dim className As String = source.GetType().Name
       Fill(ds, className, source)
 
     End Sub
@@ -145,7 +142,7 @@ Namespace Data
       Dim innerSource As Object
       Dim iListSource As IListSource = TryCast(source, IListSource)
       If iListSource IsNot Nothing Then
-        innerSource = iListSource.GetList
+        innerSource = iListSource.GetList()
 
       Else
         innerSource = source

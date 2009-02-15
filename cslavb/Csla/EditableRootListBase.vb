@@ -282,7 +282,8 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
       End If
     Next
     OnChildPropertyChanged(sender, e)
-    'TODO why can I noy see MyBase.Child_PropertyChanged which seems to be there?
+
+    MyBase.Child_PropertyChanged(Me, e)
 
   End Sub
 

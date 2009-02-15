@@ -24,14 +24,14 @@
       <Code Language="CSharp">
   <![CDATA[#region Factory Methods
 
-    public static void NewTestObject(EventHandler<DataPortalResult<$ClassName$>> callback)
+    public static void New$ClassName$(EventHandler<DataPortalResult<$ClassName$>> callback)
     {
       var dp = new DataPortal<$ClassName$>();
       dp.CreateCompleted += callback;
       dp.BeginCreate();
     }
 
-    public static void GetTestObject($IdType$ id, EventHandler<DataPortalResult<$ClassName$>> callback)
+    public static void Get$ClassName$($IdType$ id, EventHandler<DataPortalResult<$ClassName$>> callback)
     {
       var dp = new DataPortal<$ClassName$>();
       dp.FetchCompleted += callback;

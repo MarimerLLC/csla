@@ -1156,8 +1156,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="pp2">Parameter value.</param>
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Protected Sub LoadPropertyAsync(Of R, P1, P2)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2), ByVal pp1 As P1, ByVal pp2 As P2)
-    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2)
-    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+    Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+    Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+    Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, pp1, pp2)
+    Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+    LoadManager.BeginLoad(loader, actionLoadComplete)
   End Sub
 
   ''' <summary>
@@ -1174,8 +1177,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="pp3">Parameter value.</param>
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Protected Sub LoadPropertyAsync(Of R, P1, P2, P3)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3)
-    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2,pp3)
-    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+    Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+    Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+    Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, pp1, pp2, pp3)
+    Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+    LoadManager.BeginLoad(loader, actionLoadComplete)
   End Sub
 
   ''' <summary>
@@ -1194,8 +1200,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="pp4">Parameter value.</param>
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4)
-    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2,pp3,pp4)
-    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+    Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+    Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+    Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, pp1, pp2, pp3, pp4)
+    Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+    LoadManager.BeginLoad(loader, actionLoadComplete)
   End Sub
 
   ''' <summary>
@@ -1216,8 +1225,11 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <param name="pp5">Parameter value.</param>
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Protected Sub LoadPropertyAsync(Of R, P1, P2, P3, P4, P5)(ByVal [property] As PropertyInfo(Of R), ByVal factory As AsyncFactoryDelegate(Of R, P1, P2, P3, P4, P5), ByVal pp1 As P1, ByVal pp2 As P2, ByVal pp3 As P3, ByVal pp4 As P4, ByVal pp5 As P5)
-    'TODO: Dim loader As AsyncLoader = New AsyncLoader([property], factory, OnPropertyChanged, pp1,pp2,pp3,pp4,pp5)
-    'TODO: LoadManager.BeginLoad(loader, CType(loader.LoadComplete, EventHandler(Of DataPortalResult(Of R))))
+    Dim actionLoadProperty As Action(Of IPropertyInfo, Object) = AddressOf LoadProperty
+    Dim actionOnPropertyChanged As Action(Of String) = AddressOf OnPropertyChanged
+    Dim loader As AsyncLoader = New AsyncLoader([property], factory, actionLoadProperty, actionOnPropertyChanged, pp1, pp2, pp3, pp4, pp5)
+    Dim actionLoadComplete As Action(Of Object, DataPortalResult(Of R)) = AddressOf loader.LoadComplete(Of R)
+    LoadManager.BeginLoad(loader, actionLoadComplete)
   End Sub
 
 #End Region

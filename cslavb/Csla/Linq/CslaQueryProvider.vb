@@ -1,4 +1,7 @@
-﻿Imports System.Linq.Expressions
+﻿Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Imports System.Linq.Expressions
 Imports System.Reflection
 Imports Csla.Core
 
@@ -87,9 +90,6 @@ Namespace Linq
 
     End Function
 
-
-
-
 #Region "IQueryProvider Members"
 
     Public Function CreateQuery(Of TElement)(ByVal expression As Expression) As IQueryable(Of TElement) Implements IQueryProvider.CreateQuery
@@ -117,8 +117,6 @@ Namespace Linq
         Else
           'handle non identity projections here
           Select Case mex.Method.Name
-            'select is a royal pain in the ass where the parameter passed to CreateQuery isn't actually the one that goes in the call
-            'requiring this workaround.  Not sure how straight Linq to Objects does it.
             Case "Select"
 
               Dim selectHolder As UnaryExpression = TryCast(mex.Arguments(1), UnaryExpression)
@@ -127,11 +125,12 @@ Namespace Linq
               Dim selectorLambda As Expression(Of Func(Of C, TElement)) = Expressions.Expression.Lambda(Of Func(Of C, TElement))(theSelect.Body, theSelect.Parameters)
               Dim selector As Func(Of C, TElement) = selectorLambda.Compile()
 
-              'If _filter Is Nothing Then
-              '  Return _parent.Select(Of C, TElement)(selector).AsQueryable(Of TElement)()
-              'Else
-              '  Return _filter.Select(Of C, TElement)(selector).AsQueryable(Of TElement)()
-              'End If              
+              If _filter Is Nothing Then
+                'Return _parent.Select(Of C, TElement)(selector).AsQueryable()
+                Return _parent.Select(selector).AsQueryable() 'TODO: This is a good translation but please check
+              Else
+                Return _filter.Select(selector).AsQueryable() 'TODO: This is a good translation but please check
+              End If
             Case "Concat"
 
               'at this point, no more filtering, just move it to a concatenated list of items, which we turn to queryable so that the method considers it ok
@@ -143,9 +142,9 @@ Namespace Linq
             Case Else
               Dim listFrom As List(Of C)
               If _filter Is Nothing Then
-                'TODO: listFrom = _parent.ToList(Of C)()                
+                listFrom = _parent.ToList()
               Else
-                'TODO: listFrom = _filter.ToList(Of C)()
+                listFrom = _filter.ToList()
               End If
               Dim listType As Type = GetType(Enumerable)
               Dim listMethods() As MethodInfo = listType.GetMethods()
@@ -172,13 +171,12 @@ Namespace Linq
                   Dim genericArguments() As Type = mex.Method.GetGenericArguments()
                   Dim genericMethodInfo As MethodInfo = method.MakeGenericMethod(genericArguments)
                   Dim testObject = genericMethodInfo.Invoke(Nothing, paramList.ToArray())
-                  Dim testObjectQ As IQueryable(Of TElement) 'TODO: = (CType(testObject, IEnumerable(Of TElement))).AsQueryable(Of TElement)()
+                  Dim testObjectQ As IQueryable(Of TElement) = (CType(testObject, IEnumerable(Of TElement))).AsQueryable()
                   Return testObjectQ
                 End If
               Next method
               Return Nothing
           End Select
-
         End If
       Catch tie As System.Reflection.TargetInvocationException
         Throw tie.InnerException
@@ -186,17 +184,20 @@ Namespace Linq
     End Function
 
     Public Function CreateQuery(ByVal expression As Expression) As IQueryable Implements IQueryProvider.CreateQuery
+      Dim methodName As String = ""
+
       'handles OfType call
       Dim elementType As Type = TypeSystem.GetElementType(expression.Type)
       If TypeOf expression Is MethodCallExpression Then
         Dim mex As MethodCallExpression = TryCast(expression, MethodCallExpression)
-        If mex.Method.Name = "OfType" Or mex.Method.Name = "Cast" Then
+        methodName = mex.Method.Name
+        If mex.Method.Name = "OfType" OrElse mex.Method.Name = "Cast" Then
           Dim listType As Type = GetType(Enumerable)
-          Dim listFrom As List(Of C) 'TODO: = _parent.ToList(Of C)()
-          Dim paramList As List(Of Object) 'TODO: = New List(Of Object)()
+          Dim listFrom As List(Of C) = _parent.ToList()
+          Dim paramList As List(Of Object) = New List(Of Object)()
           paramList.Add(listFrom)
           For Each method As MethodInfo In listType.GetMethods()
-            If method.Name = mex.Method.Name Then
+            If method.Name = methodName Then
               Dim genericArguments() As Type = {mex.Method.GetGenericArguments().First()}
               Dim genericMethodInfo As MethodInfo = method.MakeGenericMethod(genericArguments)
               Dim thingWeGotBack As System.Collections.IEnumerable = CType(genericMethodInfo.Invoke(Nothing, paramList.ToArray()), System.Collections.IEnumerable)
@@ -239,9 +240,9 @@ Namespace Linq
 
       Dim listFrom As List(Of C)
       If _filter IsNot Nothing Then
-        'TODO: listFrom = _filter.ToList(Of C)()
+        listFrom = _filter.ToList()
       Else
-        'TODO: listFrom = _parent.ToList(Of C)()
+        listFrom = _parent.ToList()
       End If
       'we are going to call the Enumerable equivalent so we can use it's provider rather than
       '  re-doing all that work on our own

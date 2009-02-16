@@ -76,9 +76,11 @@ Namespace Linq
 
     Public Function ItemsEqualTo(ByVal pivot As Object) As System.Collections.Generic.IEnumerable(Of T) Implements IBalancedSearch(Of T).ItemsEqualTo
       Dim result As List(Of T) = Nothing
-      Dim list As List(Of T) = New List(Of T)
-      'TO-DO, this is the last To-do here: _internalWrapper.Find(CType(pivot, K), result)
-      _internalWrapper.FindMax()
+      Dim list As List(Of T) = New List(Of T)      
+      Dim handler As TreeDictionary(Of K, List(Of T)).FindKeyByVal = _internalWrapper.GetFindByValMethod()
+
+      handler.Invoke(CType(pivot, K), result)
+
       If result IsNot Nothing Then
         For Each item As T In result
           list.Add(item)

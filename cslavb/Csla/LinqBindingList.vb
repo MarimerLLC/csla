@@ -531,7 +531,7 @@ Public Class LinqBindingList(Of T)
   End Sub
 
   Private Shared Function SelectAll() As Expression(Of Func(Of T, Boolean))
-    Return Function(T) True 'TODO: Is this equivilent to c# return (T) => true;?
+    Return Function(T) True
   End Function
 
   Private Sub SetFilterByExpression(ByVal expression As Expression)
@@ -748,40 +748,13 @@ Public Class LinqBindingList(Of T)
       whereBody = SelectAll()
     ElseIf whereExpression.Arguments(1) Is Nothing Then
       whereBody = SelectAll()
-    Else
-      'TODO: Pain cast - whereBody = (Expression(Of Func(Of T, Boolean)(CType(whereExpression.Arguments(1), UnaryExpression).Operand))
+    Else      
+      whereBody = CType((CType((whereExpression.Arguments(1)), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
     End If
 
     Return whereBody
 
   End Function
-
-#Region "IEnumerable<T> Members"
-
-  'TODO: getting dip signature and it's late.
-  '''' <summary>
-  '''' Gets an enumerator object.
-  '''' </summary>
-  '''' <returns></returns>
-  'Public Function GetEnumerator() As IEnumerator(Of T) Implements System.Collections.Generic.IEnumerable(Of T).GetEnumerator
-  '  Dim returnEnumerable As List(Of T) = New List(Of T)()
-  '  If TypeOf _list Is Linq.IIndexSearchable(Of T) AndAlso TypeOf _list Is Core.IPositionMappable(Of T) Then
-  '    ' Find the call to Where() and get the lambda expression predicate.
-  '    Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
-  '    Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
-  '    Dim whereBody As Expression(Of Func(Of T, Boolean)) = CType((CType(whereExpression.Arguments(1), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
-
-  '    For Each item As T In (TryCast(_list, Linq.IIndexSearchable(Of T))).SearchByExpression(whereBody)
-  '      returnEnumerable.Add(item)
-  '    Next item
-  '  Else
-  '    For Each item As T In _list
-
-  '      returnEnumerable.Add(item)
-  '    Next item
-  '  End If
-  '  Return CType(returnEnumerable.GetEnumerator, Global.System.Collections.Generic.IEnumerator(Of T))
-  'End Function
 
   Friend Function ToList(Of TResult)() As List(Of T)
     Dim newList = New List(Of T)(Me.Count)
@@ -790,8 +763,6 @@ Public Class LinqBindingList(Of T)
     Next
     Return newList
   End Function
-
-#End Region
 
 #Region " IEnumerable<T> Members "
 
@@ -802,6 +773,7 @@ Public Class LinqBindingList(Of T)
   Public Function GetEnumerator() As IEnumerator(Of T) Implements IEnumerable(Of T).GetEnumerator
     Dim isList = DirectCast(_list, Linq.IIndexSearchable(Of T))
     Dim isMappable = DirectCast(_list, Core.IPositionMappable(Of T))
+    Dim itemList As New List(Of T)
 
     If isList IsNot Nothing AndAlso isMappable IsNot Nothing Then
       'Find the call to Where() and get the lambda expression predicate.
@@ -812,11 +784,19 @@ Public Class LinqBindingList(Of T)
       Dim subset = DirectCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
       If _sortExpression IsNot Nothing AndAlso TypeOf (_sortExpression) Is MethodCallExpression Then
         subset = BuildSortedSubset(subset, DirectCast(_sortExpression, MethodCallExpression))
-
-        'TODO: Need yield equivilent here
       End If
+
+      For Each item As T In subset
+        itemList.Add(item)
+      Next
+      Return itemList.GetEnumerator()
+
     Else
-      'TODO: Need yield equivilent here
+      For Each item As T In _list
+        itemList.Add(item)
+      Next
+      Return itemList.GetEnumerator()
+
     End If
 
   End Function
@@ -829,14 +809,18 @@ Public Class LinqBindingList(Of T)
     Dim genArgs = lambda.Type.GetGenericArguments()
 
     'get the sort method out via reflection
-    'TODO: ugly lambda needed here
+    Dim sortMethod As Object = GetType(Queryable).GetMethods.Where( _
+        Function(m) ( _
+          m.Name = sortExpression.Method.Name AndAlso _
+          m.GetParameters().Count() = 2 _
+          )).First()
 
-    'make a generic method using the generic arguments
-    'Dim genericSortMethod = sortMethod.MakeGenericMethod(genArgs)  'TODO Uncomment when above todo is fixed
+    'make a generic method using the generic arguments    
+    Dim genericSortMethod As MethodInfo = CType(sortMethod, MethodInfo).MakeGenericMethod(genArgs)
 
     'replace the subset with the sorted subset
-
-    'TODO subset = (IEnumerable<T>)genericSortMethod.Invoke(null, new object[] { subset.AsQueryable<T>(), lambda });
+    'To-Do: why is subset not exposing AsQueryable as AsQueryable(Of T)???
+    subset = CType(genericSortMethod.Invoke(Nothing, New Object() {subset.AsQueryable(), lambda}), IEnumerable(Of T))
 
     Return subset
 

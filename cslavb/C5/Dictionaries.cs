@@ -459,6 +459,12 @@ namespace C5
       return pairs.ContainsAll(new LiftedEnumerable<H>(keys));
     }
 
+    public delegate bool FindKeyByVal(K key, out V value);
+    public FindKeyByVal GetFindByValMethod()
+    {
+        return new FindKeyByVal(Find);
+    }
+
     /// <summary>
     /// Check if there is an entry with a specified key and report the corresponding
     /// value if found. This can be seen as a safe form of "val = this[key]".
@@ -470,6 +476,12 @@ namespace C5
     public virtual bool Find(K key, out V value)
     {
       return Find(ref key, out value);
+    }
+
+    public delegate bool FindKeyByRef(ref K key, out V value);
+    public FindKeyByRef GetFindByRefMethod()
+    {
+        return new FindKeyByRef(Find);
     }
     /// <summary>
     /// Check if there is an entry with a specified key and report the corresponding

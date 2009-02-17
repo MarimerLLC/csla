@@ -55,7 +55,8 @@ namespace Csla.Server.Hosts.Silverlight
       this.Message = ex.Message;
       this.StackTrace = ex.StackTrace;
       this.Source = ex.Source;
-      this.TargetSiteName = ex.TargetSite.Name;
+      if (ex.TargetSite != null)
+        this.TargetSiteName = ex.TargetSite.Name;
       if (ex.InnerException != null)
         this.InnerError = new WcfErrorInfo(ex.InnerException);
     }

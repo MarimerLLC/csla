@@ -49,6 +49,7 @@ Namespace Core
     ''' <summary>
     ''' Returns the current edit level of the object.
     ''' </summary>
+    <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected ReadOnly Property EditLevel() As Integer Implements IUndoableObject.EditLevel
       Get
         Return _stateStack.Count
@@ -119,18 +120,22 @@ Namespace Core
           If GetType(Csla.Core.IUndoableObject).IsAssignableFrom(h.MemberType) Then
 
             'make sure the variable has a value
-            If value IsNot Nothing Then
+            If value Is Nothing Then
               'variable has no value - store that fact
               state.Add(h.MemberName, Nothing)
             Else
               'this is a child object, cascade the call
               DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1, BindingEdit)
             End If
+          Else
+            ' this is a normal field, simply trap the value
+            ' state.Add(h.MemberFullName, value);
+            state.Add(h.MemberName, value)
           End If
         Next
 
         currentType = currentType.BaseType
-      Loop Until currentType IsNot GetType(UndoableBase)
+      Loop While currentType IsNot GetType(UndoableBase)
 
       ' serialize the state and stack it
       Using buffer As New MemoryStream
@@ -179,7 +184,7 @@ Namespace Core
       ' undo below the level where we stacked states,
       ' so just do nothing in that case
       If EditLevel > 0 Then
-        If Me.EditLevel - 1 < parentEditLevel Then
+        If Me.EditLevel - 1 <> parentEditLevel Then
           Throw New UndoException( _
             String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))
         End If
@@ -215,12 +220,12 @@ Namespace Core
                 'make sure the variable has a value
                 If value IsNot Nothing Then
                   'this is a child object, cascade the call.
-                  DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1, BindingEdit)
+                  DirectCast(value, IUndoableObject).UndoChanges(Me.EditLevel, BindingEdit)
                 End If
               End If
             Else
               'this is a regular field, restore its value
-              h.DynamicMemberSet.Invoke(Me, state(h.MemberName)) 'TODO: Is this correct
+              h.DynamicMemberSet.Invoke(Me, state(h.MemberName)) 'TODO: Is this correct              
             End If
           Next
           currentType = currentType.BaseType
@@ -262,7 +267,7 @@ Namespace Core
 
       AcceptingChanges()
 
-      If Me.EditLevel - 1 < parentEditLevel Then
+      If Me.EditLevel - 1 <> parentEditLevel Then
         Throw New UndoException( _
           String.Format(My.Resources.EditLevelMismatchException, "AcceptChanges"))
       End If
@@ -320,7 +325,7 @@ Namespace Core
     Friend Shared Sub ResetChildEditLevel(ByVal child As IUndoableObject, ByVal parentEditLevel As Integer, ByVal bindingEdit As Boolean)
 
       Dim targetLevel As Integer = parentEditLevel
-      If bindingEdit AndAlso targetLevel > 0 AndAlso Not TypeOf child Is FieldManager.FieldDataManager Then _
+      If bindingEdit AndAlso targetLevel > 0 AndAlso Not (child Is GetType(FieldManager.FieldDataManager)) Then _
         targetLevel -= 1
 
       ' if item's edit level is too high,

@@ -70,7 +70,11 @@ Namespace Server
       If _authorizer Is Nothing Then
         Dim authProvider = ConfigurationManager.AppSettings(cslaAuthorizationProviderAppSettingName)
 
-        Return CType(IIf(String.IsNullOrEmpty(authProvider), GetType(NullAuthorizer), Type.GetType(authProvider, True)), Type)
+        If String.IsNullOrEmpty(authProvider) Then
+          Return GetType(NullAuthorizer)
+        Else
+          Return Type.GetType(authProvider, True)
+        End If
       Else
         Return _authorizer.GetType()
       End If

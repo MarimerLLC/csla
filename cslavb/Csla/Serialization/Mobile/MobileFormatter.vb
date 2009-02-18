@@ -73,7 +73,7 @@ Namespace Serialization.Mobile
       _serializationReferences.Clear()
       SerializeObject(graph)
       Dim serialized As List(Of SerializationInfo) = _serializationReferences.Values.ToList()
-      Dim dc As DataContractSerializer = New DataContractSerializer(GetType(List(Of SerializationInfo)), New Type() {GetType(List(Of Integer)), GetType(Byte())})
+      Dim dc As DataContractSerializer = GetDataContractSerializer()
       dc.WriteObject(writer, serialized)
     End Sub
 
@@ -107,7 +107,7 @@ Namespace Serialization.Mobile
           Throw New InvalidOperationException(String.Format(My.Resources.MustImplementIMobileObject, thisType.Name))
         End If
 
-        If _serializationReferences.TryGetValue(mobile, info) Then
+        If Not _serializationReferences.TryGetValue(mobile, info) Then
           info = New SerializationInfo(_serializationReferences.Count + 1)
           _serializationReferences.Add(mobile, info)
           info.TypeName = thisType.AssemblyQualifiedName
@@ -171,7 +171,7 @@ Namespace Serialization.Mobile
     ''' </param>
     ''' <returns></returns>
     Public Function Deserialize(ByVal reader As XmlReader) As Object
-      Dim dc As DataContractSerializer = New DataContractSerializer(GetType(List(Of SerializationInfo)), New Type() {GetType(List(Of Integer)), GetType(Byte())})
+      Dim dc As DataContractSerializer = GetDataContractSerializer()
       Dim deserialized As List(Of SerializationInfo) = CType(dc.ReadObject(reader), List(Of SerializationInfo))
 
       _deserializationReferences = New Dictionary(Of Integer, IMobileObject)
@@ -200,10 +200,14 @@ Namespace Serialization.Mobile
       Next
 
       For Each info In deserialized
-        Dim notifiable As ISerializationNotification = CType(_deserializationReferences(info.ReferenceId), ISerializationNotification)
-
-        If notifiable IsNot Nothing Then
-          notifiable.Deserialized()
+        'To-Do: REVISIT
+        'von: VB cannot cast like this -> Dim notifiable As ISerializationNotification = CType(_deserializationReferences(info.ReferenceId), ISerializationNotification)
+        'So let us instead check the type of _deserializationReferences([index]) first, then convert and deserialize the item.                
+        If _deserializationReferences(info.ReferenceId) Is GetType(ISerializationNotification) Then
+          Dim notifiable As ISerializationNotification = CType(_deserializationReferences(info.ReferenceId), ISerializationNotification)
+          If notifiable IsNot Nothing Then
+            notifiable.Deserialized()
+          End If
         End If
       Next
 

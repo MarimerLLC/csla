@@ -233,16 +233,19 @@ Namespace Server
           End If
         Else
           Dim methodName As String
-          Dim bbase = DirectCast(obj, Core.BusinessBase)
+          'Casting does not work in VB so let's check the type instead. Dim bbase = CType(obj, Core.BusinessBase)
 
-          If bbase IsNot Nothing Then
-            If bbase.IsDeleted Then
-              methodName = "DataPortal_DeleteSelf"
-            Else
-              If bbase.IsNew Then
-                methodName = "DataPortal_Insert"
+          If obj Is GetType(Core.BusinessBase) Then
+            Dim bbase = CType(obj, Core.BusinessBase)
+            If bbase IsNot Nothing Then
+              If bbase.IsDeleted Then
+                methodName = "DataPortal_DeleteSelf"
               Else
-                methodName = "DataPortal_Update"
+                If bbase.IsNew Then
+                  methodName = "DataPortal_Insert"
+                Else
+                  methodName = "DataPortal_Update"
+                End If
               End If
             End If
           ElseIf TypeOf obj Is CommandBase Then
@@ -252,8 +255,8 @@ Namespace Server
           End If
 
           method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName)
-          
-        End If
+
+          End If
 
         context.TransactionalType = method.TransactionalType
         Select Case method.TransactionalType
@@ -385,31 +388,20 @@ Namespace Server
           Dim ex As System.Security.SecurityException = New System.Security.SecurityException(My.Resources.NoPrincipalAllowedException)
           ex.Action = System.Security.Permissions.SecurityAction.Deny
           Throw ex
-
-        Else
-          'Set .NET to use integrated security
-          AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal)
         End If
+
+        'Set .NET to use integrated security
+        AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal)
+
       Else
-        ' We expect the Principal to be of the type BusinessPrincipal
-        If context.Principal IsNot Nothing Then
-          If TypeOf context.Principal Is Security.BusinessPrincipalBase Then
-            ApplicationContext.User = context.Principal
-
-          Else
-            Dim ex As New System.Security.SecurityException( _
-              My.Resources.BusinessPrincipalException & " " & _
-              CType(context.Principal, Object).ToString())
-            ex.Action = System.Security.Permissions.SecurityAction.Deny
-            Throw ex
-          End If
-
-        Else
+        ' We expect the some Principal 
+        If context.Principal Is Nothing Then
           Dim ex As New System.Security.SecurityException( _
-            My.Resources.BusinessPrincipalException & " Nothing")
+              My.Resources.BusinessPrincipalException & " Nothing")
           ex.Action = System.Security.Permissions.SecurityAction.Deny
           Throw ex
         End If
+        ApplicationContext.User = context.Principal
       End If
 
     End Sub

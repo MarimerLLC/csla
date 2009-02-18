@@ -587,9 +587,9 @@ Public Class DataPortal(Of T)
       If result IsNot Nothing Then
         _globalContext = result.GlobalContext
         If result.Result IsNot Nothing Then
-          OnExecuteCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), Nothing, result.UserState)) 'TODO: Should Nothing be e.error?
+          OnExecuteCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), e.Error, result.UserState))
         Else
-          OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState)) 'TODO: Should Nothing be e.error?
+          OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, result.UserState))
         End If
       End If
     End If

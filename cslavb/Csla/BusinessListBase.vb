@@ -508,7 +508,7 @@ Public MustInherit Class BusinessListBase( _
     If Not _completelyRemoveChild Then
       ' the child shouldn't be completely removed,
       ' so copy it to the deleted list
-      CopyToDeletedList(child)
+      DeleteChild(child) '<-this is the C# code 'CopyToDeletedList(child) 
     End If
     If RaiseListChangedEvents Then
       OnListChanged(New ListChangedEventArgs(ListChangedType.ItemDeleted, index))
@@ -794,7 +794,7 @@ Public MustInherit Class BusinessListBase( _
         listOf.Add(item)
       Next
 
-      Return CType(listOf, IEnumerable(Of C))
+      Return listOf  ''Return CType(listOf, IEnumerable(Of C))
     Else
       Dim sourceEnum As IEnumerable(Of C) = Me.AsEnumerable()
       Dim result = sourceEnum.Where(expr.Compile())
@@ -802,7 +802,7 @@ Public MustInherit Class BusinessListBase( _
       For Each item As C In result
         listOf.Add(item)
       Next
-      Return CType(listOf, IEnumerable(Of C))
+      Return listOf ''Return CType(listOf, IEnumerable(Of C))
     End If
   End Function
 

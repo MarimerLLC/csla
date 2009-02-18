@@ -163,32 +163,36 @@ Public Module Utilities
         If value Is Nothing Then _
           value = String.Empty
         Dim tmp = DirectCast(oldValue, SmartDate)
-        tmp.Text = value.ToString
+        If valueType.Equals(GetType(DateTime)) Then
+          tmp.Date = CType(value, DateTime)
+        Else
+          tmp.Text = value.ToString
+        End If
         Return tmp
       End If
 
-      If (desiredType.IsPrimitive OrElse desiredType.Equals(GetType(Decimal))) _
-          AndAlso valueType.Equals(GetType(String)) _
-          AndAlso String.IsNullOrEmpty(CStr(value)) Then
-        value = 0
+        If (desiredType.IsPrimitive OrElse desiredType.Equals(GetType(Decimal))) _
+            AndAlso valueType.Equals(GetType(String)) _
+            AndAlso String.IsNullOrEmpty(CStr(value)) Then
+          value = 0
+        End If
+
+        Try
+          If desiredType.Equals(GetType(String)) AndAlso value IsNot Nothing Then
+            Return value.ToString()
+          Else
+            Return Convert.ChangeType(value, desiredType)
+          End If
+        Catch
+          Dim cnv As TypeConverter = TypeDescriptor.GetConverter(desiredType)
+          If cnv IsNot Nothing AndAlso cnv.CanConvertFrom(valueType) Then
+            Return cnv.ConvertFrom(value)
+
+          Else
+            Throw
+          End If
+        End Try
       End If
-
-      Try
-        If desiredType.Equals(GetType(String)) AndAlso value IsNot Nothing Then
-          Return value.ToString()
-        Else
-          Return Convert.ChangeType(value, desiredType)
-        End If
-      Catch
-        Dim cnv As TypeConverter = TypeDescriptor.GetConverter(desiredType)
-        If cnv IsNot Nothing AndAlso cnv.CanConvertFrom(valueType) Then
-          Return cnv.ConvertFrom(value)
-
-        Else
-          Throw
-        End If
-      End Try
-    End If
 
   End Function
 

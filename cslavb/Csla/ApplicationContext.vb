@@ -65,14 +65,14 @@ Public Module ApplicationContext
       If HttpContext.Current IsNot Nothing Then
         HttpContext.Current.User = value
       ElseIf System.Windows.Application.Current IsNot Nothing Then
-        _principal = value
-        Thread.CurrentPrincipal = value
+        _principal = value        
       End If
+      Thread.CurrentPrincipal = value
 #Else
       If System.Windows.Application.Current IsNot Nothing Then
-        _principal = value
-        Thread.CurrentPrincipal = value
+        _principal = value        
       End If
+      Thread.CurrentPrincipal = value
 #End If
     End Set
   End Property

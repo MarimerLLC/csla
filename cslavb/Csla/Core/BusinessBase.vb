@@ -813,7 +813,7 @@ Namespace Core
     ''' This value will be Nothing for root objects.
     ''' </remarks>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
-    Protected ReadOnly Property Parent() As Core.IParent
+    Protected Friend ReadOnly Property Parent() As Core.IParent
       Get
         Return _parent
       End Get
@@ -2516,14 +2516,22 @@ Namespace Core
       End If
 
       If valuesDiffer Then
-        Dim old As IBusinessObject = DirectCast(oldValue, IBusinessObject)
-        If old IsNot Nothing Then
-          RemoveEventHooks(old)
+        'von: VB cannot explicitly convert Value Types to IBusinessObject.
+        'So let us check the Type of P first then do the conversion later.
+        If GetType(P) Is GetType(IBusinessObject) Then
+          Dim old As IBusinessObject = DirectCast(oldValue, IBusinessObject)
+          If old IsNot Nothing Then
+            RemoveEventHooks(old)
+          End If
         End If
 
-        Dim [new] As IBusinessObject = DirectCast(newValue, IBusinessObject)
-        If [new] IsNot Nothing Then
-          AddEventHooks([new])
+        'von: VB cannot explicitly convert Value Types to IBusinessObject.
+        'So let us check the Type of P first then do the conversion later.
+        If GetType(P) Is GetType(IBusinessObject) Then
+          Dim [new] As IBusinessObject = DirectCast(newValue, IBusinessObject)
+          If [new] IsNot Nothing Then
+            AddEventHooks([new])
+          End If
         End If
 
         If GetType(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type) Then

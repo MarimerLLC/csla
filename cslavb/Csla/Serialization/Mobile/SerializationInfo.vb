@@ -196,8 +196,12 @@ Namespace Serialization.Mobile
     ''' <remarks></remarks>
     Public Function GetValue(Of T)(ByVal name As String) As T
       Dim value = _values(name).Value
-      Return CType(IIf(value Is Nothing, Utilities.CoerceValue(Of T)(value.GetType(), Nothing, value), CType(value, T)), T)
-
+      
+      If value IsNot Nothing Then
+        Return Utilities.CoerceValue(Of T)(value.GetType(), Nothing, value)
+      Else
+        Return CType(value, T)
+      End If
     End Function
 
     ''' <summary>

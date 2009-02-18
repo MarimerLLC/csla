@@ -313,8 +313,10 @@ Namespace Wpf
 
       Dim undo As Csla.Core.ISupportUndo = TryCast(Me.Data, Csla.Core.ISupportUndo)
       If Not undo Is Nothing AndAlso _manageLifetime Then
+        IsBusy = True
         undo.CancelEdit()
         undo.BeginEdit()
+        IsBusy = False
       End If
 
     End Sub
@@ -348,18 +350,20 @@ Namespace Wpf
         Dim result As Object = savable
         Dim exceptionResult As Exception = Nothing
         Try
+          IsBusy = True
+
+          'This does not exists in CslaCS -> 'If Not Csla.ApplicationContext.AutoCloneOnUpdate Then
+          ' clone the object if possible
+          Dim clonable As ICloneable = TryCast(savable, ICloneable)
+          If Not clonable Is Nothing Then
+            savable = CType(clonable.Clone(), Csla.Core.ISavable)
+          End If
+          ''End If
+
           ' apply edits in memory
           Dim undo As Csla.Core.ISupportUndo = TryCast(savable, Csla.Core.ISupportUndo)
           If Not undo Is Nothing AndAlso _manageLifetime Then
             undo.ApplyEdit()
-          End If
-
-          If Not Csla.ApplicationContext.AutoCloneOnUpdate Then
-            ' clone the object if possible
-            Dim clonable As ICloneable = TryCast(savable, ICloneable)
-            If Not clonable Is Nothing Then
-              savable = CType(clonable.Clone(), Csla.Core.ISavable)
-            End If
           End If
 
           ' save the clone
@@ -416,11 +420,20 @@ Namespace Wpf
 
       ' only do something if the object implements
       ' IBindingList
-      Dim list As IBindingList = TryCast(Me.Data, IBindingList)
+      ''Dim list As IBindingList = TryCast(Me.Data, IBindingList)
+      ''If list IsNot Nothing AndAlso list.AllowRemove Then
+      ''  list.Remove(item)
+      ''End If
+      Dim list As IBindingList
+      Dim bb As Csla.Core.BusinessBase = CType(item, Csla.Core.BusinessBase)
+      If bb IsNot Nothing Then
+        list = CType(bb.Parent, IBindingList)
+      Else
+        list = CType(Me.Data, IBindingList)
+      End If
       If list IsNot Nothing AndAlso list.AllowRemove Then
         list.Remove(item)
       End If
-
     End Sub
 
 #End Region

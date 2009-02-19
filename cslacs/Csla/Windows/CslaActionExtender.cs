@@ -302,7 +302,7 @@ namespace Csla.Windows
     [Category("Csla")]
     [Description("If True, then the dirtiness of the underlying business object will cause this button to enable or disable.")]
     [Bindable(true)]
-    [DefaultValue(true)]
+    [DefaultValue(false)]
     public bool GetDisableWhenClean(Control ctl)
     {
       if (_Sources.ContainsKey(ctl))

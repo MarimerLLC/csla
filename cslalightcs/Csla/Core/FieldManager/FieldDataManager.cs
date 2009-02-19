@@ -584,7 +584,8 @@ namespace Csla.Core.FieldManager
           SerializationInfo.FieldData value = info.Values[property.Name];
 
           IFieldData data = GetOrCreateFieldData(property);
-          if (mode == StateMode.Undo &&
+          if (value.Value != null &&
+            mode == StateMode.Undo &&
             typeof(IMobileObject).IsAssignableFrom(property.Type) &&
             !typeof(IUndoableObject).IsAssignableFrom(property.Type))
           {

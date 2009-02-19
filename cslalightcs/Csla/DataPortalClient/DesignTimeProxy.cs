@@ -17,10 +17,9 @@ namespace Csla.DataPortalClient
     public void BeginCreate()
     {
       var obj = Activator.CreateInstance<T>();
-      T data = default(T);
-      data = (T)MethodCaller.CallMethodIfImplemented(obj, "DesignTime_Create");
+      MethodCaller.CallMethodIfImplemented(obj, "DesignTime_Create");
       if (CreateCompleted != null)
-        CreateCompleted(this, new DataPortalResult<T>(data, null, null));
+        CreateCompleted(this, new DataPortalResult<T>(obj, null, null));
     }
 
     public void BeginCreate(object criteria)
@@ -48,10 +47,9 @@ namespace Csla.DataPortalClient
     public void BeginFetch(object criteria, object userState)
     {
       var obj = Activator.CreateInstance<T>();
-      T data = default(T);
-      data = (T)MethodCaller.CallMethodIfImplemented(obj, "DesignTime_Create");
+      MethodCaller.CallMethodIfImplemented(obj, "DesignTime_Create");
       if (FetchCompleted != null)
-        FetchCompleted(this, new DataPortalResult<T>(data, null, null));
+        FetchCompleted(this, new DataPortalResult<T>(obj, null, null));
     }
 
     public event EventHandler<DataPortalResult<T>> FetchCompleted;

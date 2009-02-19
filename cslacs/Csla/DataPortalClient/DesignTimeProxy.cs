@@ -86,9 +86,8 @@ namespace Csla.DataPortalClient
     private Csla.Server.DataPortalResult CreateDesignTimeObject(Type objectType, object criteria, Csla.Server.DataPortalContext context)
     {
       var obj = Activator.CreateInstance(objectType, true);
-      object returnValue = null;
-      returnValue = MethodCaller.CallMethodIfImplemented(obj, "DesignTime_Create");
-      return new Csla.Server.DataPortalResult(returnValue);
+      MethodCaller.CallMethodIfImplemented(obj, "DesignTime_Create");
+      return new Csla.Server.DataPortalResult(obj);
     }
 
     #endregion

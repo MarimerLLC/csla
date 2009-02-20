@@ -21,7 +21,7 @@ namespace Csla.Core
   /// </remarks>
   [Serializable]
   public abstract class ReadOnlyBindingList<C> :
-    Core.ExtendedBindingList<C>, Core.IBusinessObject
+    Core.ExtendedBindingList<C>, Core.IBusinessObject, Core.IReadOnlyBindingList
   {
     private bool _isReadOnly;
 
@@ -43,6 +43,12 @@ namespace Csla.Core
     {
       get { return _isReadOnly; }
       set { _isReadOnly = value; }
+    }
+
+    bool Core.IReadOnlyBindingList.IsReadOnly
+    {
+      get { return IsReadOnly; }
+      set { IsReadOnly = value; }
     }
 
     /// <summary>

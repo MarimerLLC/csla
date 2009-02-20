@@ -113,6 +113,9 @@
     <Compile Include="..\..\cslacs\Csla\Core\INotifyUnhandledAsyncException.cs">
       <Link>Core\INotifyUnhandledAsyncException.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IReadOnlyBindingList.cs">
+      <Link>Core\IReadOnlyBindingList.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\ITrackStatus.cs">
       <Link>Core\ITrackStatus.cs</Link>
     </Compile>

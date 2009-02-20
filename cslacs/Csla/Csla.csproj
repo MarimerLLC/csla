@@ -161,6 +161,7 @@
     <Compile Include="Core\FieldManager\PropertyInfoList.cs" />
     <Compile Include="Core\INotifyChildChanged.cs" />
     <Compile Include="Core\INotifyUnhandledAsyncException.cs" />
+    <Compile Include="Core\IReadOnlyBindingList.cs" />
     <Compile Include="Core\LoadManager\AsyncLoader.cs" />
     <Compile Include="Core\LoadManager\AsyncLoadManager.cs" />
     <Compile Include="Core\BindableBase.cs" />

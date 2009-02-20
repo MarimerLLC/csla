@@ -14,6 +14,19 @@ namespace Csla.Server
   public abstract class ObjectFactory
   {
     /// <summary>
+    /// Sets the IsReadOnly property on the specified
+    /// object, if possible.
+    /// </summary>
+    /// <param name="obj">Object on which to operate.</param>
+    /// <param name="value">New value for IsReadOnly.</param>
+    protected void SetIsReadOnly(object obj, bool value)
+    {
+      var list = obj as Csla.Core.IReadOnlyBindingList;
+      if (list != null)
+        list.IsReadOnly = value;
+    }
+
+    /// <summary>
     /// Calls the ValidationRules.CheckRules() method 
     /// on the specified object, if possible.
     /// </summary>

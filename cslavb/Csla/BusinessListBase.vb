@@ -2,7 +2,6 @@ Imports System
 Imports System.ComponentModel
 Imports System.Collections.Generic
 Imports System.Runtime.Serialization
-Imports Csla.Properties
 Imports System.Linq
 Imports System.Linq.Expressions
 Imports Csla.Core
@@ -596,7 +595,7 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Protected Overrides Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-    If (_deserialized AndAlso RaiseListChangedEvents AndAlso e IsNot Nothing) Then
+    If _deserialized AndAlso RaiseListChangedEvents AndAlso e IsNot Nothing Then
       DeferredLoadIndexIfNotLoaded()
       If _indexSet.HasIndexFor(e.PropertyName) Then
         ReIndexItem(DirectCast(sender, C), e.PropertyName)
@@ -611,10 +610,9 @@ Public MustInherit Class BusinessListBase( _
             End If
           End If
         Next
-
-        MyBase.Child_PropertyChanged(sender, e)
       End If
     End If
+    MyBase.Child_PropertyChanged(sender, e)
   End Sub
 
   Private Shared _propertyDescriptors As PropertyDescriptorCollection

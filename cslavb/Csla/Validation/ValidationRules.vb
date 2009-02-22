@@ -1103,7 +1103,7 @@ Namespace Validation
           ' we're not short-circuited, so check rule
           Dim ruleResult As Boolean
 
-          Dim asyncRule As IAsyncRuleMethod = CType(rule, IAsyncRuleMethod)
+          Dim asyncRule As IAsyncRuleMethod = TryCast(rule, IAsyncRuleMethod)
 
           If asyncRule IsNot Nothing Then
             SyncLock (SyncRoot)

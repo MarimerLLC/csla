@@ -1,5 +1,4 @@
 Imports System
-Imports Csla.Properties
 Imports Csla.Serialization.Mobile
 
 ''' <summary>

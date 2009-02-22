@@ -1555,27 +1555,27 @@ Namespace Core
     ''' <param name="child">Child object.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Overridable Sub OnAddEventHooks(ByVal child As IBusinessObject)
-      Dim busy As INotifyBusy = DirectCast(child, INotifyBusy)
+      Dim busy As INotifyBusy = TryCast(child, INotifyBusy)
       If busy IsNot Nothing Then
         AddHandler busy.BusyChanged, AddressOf Child_BusyChanged
       End If
 
-      Dim unhandled As INotifyUnhandledAsyncException = DirectCast(child, INotifyUnhandledAsyncException)
+      Dim unhandled As INotifyUnhandledAsyncException = TryCast(child, INotifyUnhandledAsyncException)
       If unhandled IsNot Nothing Then
         AddHandler unhandled.UnhandledAsyncException, AddressOf Child_UnhandledAsyncException
       End If
 
-      Dim pc As INotifyPropertyChanged = DirectCast(child, INotifyPropertyChanged)
+      Dim pc As INotifyPropertyChanged = TryCast(child, INotifyPropertyChanged)
       If pc IsNot Nothing Then
         AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
       End If
 
-      Dim bl As IBindingList = DirectCast(child, IBindingList)
+      Dim bl As IBindingList = TryCast(child, IBindingList)
       If bl IsNot Nothing Then
         AddHandler bl.ListChanged, AddressOf Child_ListChanged
       End If
 
-      Dim cc As INotifyChildChanged = DirectCast(child, INotifyChildChanged)
+      Dim cc As INotifyChildChanged = TryCast(child, INotifyChildChanged)
       If cc IsNot Nothing Then
         AddHandler cc.ChildChanged, AddressOf Child_Changed
       End If

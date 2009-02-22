@@ -89,7 +89,7 @@ Namespace Serialization.Mobile
     ''' <param name="obj">Object to be serialized.</param>
     ''' <returns></returns>
     Public Function SerializeObject(ByVal obj As Object) As SerializationInfo
-      Dim info As SerializationInfo
+      Dim info As SerializationInfo = Nothing
 
       If obj Is Nothing Then
         info = New SerializationInfo(_serializationReferences.Count + 1)
@@ -101,7 +101,7 @@ Namespace Serialization.Mobile
           Throw New InvalidOperationException(String.Format(My.Resources.ObjectNotSerializableFormatted, thisType.FullName))
         End If
 
-        Dim mobile = CType(obj, IMobileObject)
+        Dim mobile = TryCast(obj, IMobileObject)
 
         If mobile Is Nothing Then
           Throw New InvalidOperationException(String.Format(My.Resources.MustImplementIMobileObject, thisType.Name))
@@ -211,7 +211,11 @@ Namespace Serialization.Mobile
         End If
       Next
 
-      Return IIf(_deserializationReferences.Count > 0, _deserializationReferences(1), Nothing)
+      If _deserializationReferences.Count > 0 Then
+        Return _deserializationReferences(1)
+      Else
+        Return Nothing
+      End If
 
     End Function
 

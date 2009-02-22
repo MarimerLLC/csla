@@ -161,7 +161,7 @@ Namespace Core.FieldManager
     Public ReadOnly Property IsBusy() As Boolean Implements INotifyBusy.IsBusy
       Get
         Dim tmpIsBusy As Boolean = False
-        Dim status As ITrackStatus = CType(_data, ITrackStatus)
+        Dim status As ITrackStatus = TryCast(_data, ITrackStatus)
         If status IsNot Nothing Then tmpIsBusy = status.IsBusy
 
         Return tmpIsBusy

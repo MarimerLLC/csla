@@ -77,9 +77,8 @@ Namespace Validation
     ''' <param name="handler">The address of the method implementing the rule.</param>
     ''' <param name="args">A RuleArgs object.</param>
     ''' <param name="severity">Severity of the rule.</param>
-    ''' <remarks></remarks>
     Public Sub New(ByVal handler As AsyncRuleHandler, ByVal args As AsyncRuleArgs, ByVal severity As RuleSeverity)
-      handler = handler
+      _handler = handler
       _args = args
       _severity = severity
       _ruleName = String.Format("rule://{0}/{1}/{2}", _

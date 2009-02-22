@@ -60,6 +60,11 @@ Namespace Data
 
       If isDatabaseName Then
 
+        Dim connection = ConfigurationManager.ConnectionStrings(database)
+        If connection Is Nothing Then
+          Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
+        End If
+
         Dim conn = ConfigurationManager.ConnectionStrings(database).ConnectionString
         If String.IsNullOrEmpty(conn) Then Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
 

@@ -450,15 +450,8 @@ namespace Csla.Silverlight
     private void QueryCompleted(object sender, EventArgs e)
     {
       IDataPortalResult eventArgs = e as IDataPortalResult;
-      if (_manageObjectLifetime && eventArgs.Object != null && eventArgs.Error == null)
-      {
-        this.ObjectInstance = eventArgs.Object;
-        this.Error = eventArgs.Error;
-      }
-      else if (eventArgs.Error != null)
-      {
-        this.Error = eventArgs.Error;
-      }
+      this.Error = eventArgs.Error;
+      this.ObjectInstance = eventArgs.Object;
       RefreshCanOperationsValues();
       this.IsBusy = false;
     }

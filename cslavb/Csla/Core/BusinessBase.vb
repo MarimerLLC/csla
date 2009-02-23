@@ -1228,7 +1228,7 @@ Namespace Core
       ElseIf e.Action = NotifyCollectionChangedAction.Add Then
         For Each rule As IAsyncRuleMethod In e.NewItems
           For Each [property] As IPropertyInfo In rule.AsyncRuleArgs.Properties
-            OnBusyChanged(New BusyChangedEventArgs([property].Name, False))
+            OnBusyChanged(New BusyChangedEventArgs([property].Name, True))
           Next
         Next
       End If

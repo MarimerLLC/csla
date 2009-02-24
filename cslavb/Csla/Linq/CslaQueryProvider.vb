@@ -93,8 +93,6 @@ Namespace Linq
 #Region "IQueryProvider Members"
 
     Public Function CreateQuery(Of TElement)(ByVal expression As Expression) As IQueryable(Of TElement) Implements IQueryProvider.CreateQuery
-
-      Dim elementType As Type = TypeSystem.GetElementType(expression.Type)
       Try
         Dim mex As MethodCallExpression = TryCast(expression, MethodCallExpression)
         If GetType(TElement) Is GetType(C) AndAlso mex.Method.Name = "Where" AndAlso _filter Is Nothing Then
@@ -105,7 +103,6 @@ Namespace Linq
         ElseIf GetType(TElement) Is GetType(C) AndAlso mex.Method.Name.StartsWith("OrderBy") AndAlso _filter Is Nothing Then
           'raw sort without previous where
           _filter = New LinqBindingList(Of C)(_parent, Me, Nothing)
-          _filter.BuildFilterIndex()
           _filter.SortByExpression(expression)
           Return CType(_filter, IQueryable(Of TElement))
 
@@ -114,6 +111,10 @@ Namespace Linq
           _filter.SortByExpression(expression)
           Return CType(_filter, IQueryable(Of TElement))
 
+        ElseIf GetType(TElement) Is GetType(C) AndAlso mex.Method.Name.StartsWith("ThenBy") Then
+          'sort of previous where
+          _filter.ThenByExpression(expression)
+          Return CType(_filter, IQueryable(Of TElement))
         Else
           'handle non identity projections here
           Select Case mex.Method.Name
@@ -137,7 +138,7 @@ Namespace Linq
               'have to eval on the method to make it not a ParameterExpression, but the actual Enumerable inside
               Return (Queryable.Concat(Of TElement)((TryCast(_filter, IQueryable(Of TElement))).ToList().AsQueryable(), TryCast(Eval(mex.Arguments(1)), IEnumerable(Of TElement))))
 
-            Case "Where"
+              'Case "Where" ' TODO: Since there is nothing in this one I'm commenting it out since c# version works differently
 
             Case Else
               Dim listFrom As List(Of C)

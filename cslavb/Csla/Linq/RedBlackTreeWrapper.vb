@@ -6,7 +6,7 @@ Imports System.Reflection
 Imports C5
 
 Namespace Linq
-  Friend Class RedBlackTreeWrapper(Of K As IComparable(Of T), T)
+  Friend Class RedBlackTreeWrapper(Of K As IComparable, T)
     Implements IBalancedSearch(Of T), System.Collections.Generic.ICollection(Of T)
 
     Private _internalWrapper As TreeDictionary(Of K, List(Of T))
@@ -17,13 +17,13 @@ Namespace Linq
     End Sub
 
     Public Sub New(ByVal propInfo As PropertyInfo)
-      _propInfo = propInfo      
+      _propInfo = propInfo
       _internalWrapper = New TreeDictionary(Of K, List(Of T))()
     End Sub
 
 #Region "IBalancedSearch<T> Members"
 
-    Public Function ItemsLessThan(ByVal pivot As Object) As System.Collections.Generic.IEnumerable(Of T) Implements IBalancedSearch(Of T).ItemsLessThan      
+    Public Function ItemsLessThan(ByVal pivot As Object) As System.Collections.Generic.IEnumerable(Of T) Implements IBalancedSearch(Of T).ItemsLessThan
       Dim list As List(Of T) = New List(Of T)
       For Each pair In _internalWrapper.RangeTo(CType(pivot, K))
         For Each item In pair.Value
@@ -76,7 +76,7 @@ Namespace Linq
 
     Public Function ItemsEqualTo(ByVal pivot As Object) As System.Collections.Generic.IEnumerable(Of T) Implements IBalancedSearch(Of T).ItemsEqualTo
       Dim result As List(Of T) = Nothing
-      Dim list As List(Of T) = New List(Of T)      
+      Dim list As List(Of T) = New List(Of T)
       Dim handler As TreeDictionary(Of K, List(Of T)).FindKeyByVal = _internalWrapper.GetFindByValMethod()
 
       handler.Invoke(CType(pivot, K), result)

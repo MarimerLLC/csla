@@ -502,6 +502,8 @@ Public Class LinqBindingList(Of T)
   Private _provider As FilterProvider = Nothing
   Private _filterIndex As List(Of ListItem) = New List(Of ListItem)()
 
+  Private _thenByExpressions As New List(Of Expression)
+
   ''' <summary>
   ''' Creates a new view based on the provided IList object.
   ''' </summary>
@@ -712,11 +714,16 @@ Public Class LinqBindingList(Of T)
     BuildFilterIndex()
   End Sub
 
+  Friend Sub ThenByExpression(ByVal expression As Expression)
+    _thenByExpressions.Add(expression)
+    BuildFilterIndex()
+  End Sub
+
   Friend Sub BuildFilterIndex()
     ' Find the call to Where() and get the lambda expression predicate.
     Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
     Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
-    Dim whereBody As Expression(Of Func(Of T, Boolean)) = CType((CType(whereExpression.Arguments(1), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
+    Dim whereBody As Expression(Of Func(Of T, Boolean)) = GetWhereBodyFromExpression(whereExpression)
 
     Dim subset = DirectCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
 

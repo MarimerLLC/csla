@@ -273,22 +273,22 @@ Namespace Core
     ''' <param name="item">Reference to child object.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Overridable Sub OnRemoveEventHooks(ByVal item As T)
-      Dim busy As INotifyBusy = CType(item, INotifyBusy)
+      Dim busy As INotifyBusy = TryCast(item, INotifyBusy)
       If busy IsNot Nothing Then
         RemoveHandler busy.BusyChanged, AddressOf busy_BusyChanged
       End If
 
-      Dim unhandled As INotifyUnhandledAsyncException = CType(item, INotifyUnhandledAsyncException)
+      Dim unhandled As INotifyUnhandledAsyncException = TryCast(item, INotifyUnhandledAsyncException)
       If unhandled IsNot Nothing Then
         RemoveHandler unhandled.UnhandledAsyncException, AddressOf unhandled_UnhandledAsyncException
       End If
 
-      Dim c As INotifyPropertyChanged = CType(item, INotifyPropertyChanged)
+      Dim c As INotifyPropertyChanged = TryCast(item, INotifyPropertyChanged)
       If c IsNot Nothing Then
         RemoveHandler c.PropertyChanged, AddressOf Child_PropertyChanged
       End If
 
-      Dim child As INotifyChildChanged = CType(item, INotifyChildChanged)
+      Dim child As INotifyChildChanged = TryCast(item, INotifyChildChanged)
       If child IsNot Nothing Then
         RemoveHandler child.ChildChanged, AddressOf Child_Changed
       End If

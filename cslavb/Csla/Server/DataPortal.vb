@@ -163,24 +163,25 @@ Namespace Server
 
         Dim result As DataPortalResult
 
-        Dim method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria)
+        Dim method As DataPortalMethodInfo = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria)
+        Dim portal As IDataPortalServer
 
         Select Case method.TransactionalType
           Case TransactionalTypes.EnterpriseServices
-            Dim portal As New ServicedDataPortal
+            portal = New ServicedDataPortal
             Try
               result = portal.Fetch(objectType, criteria, context)
 
             Finally
-              portal.Dispose()
+              DirectCast(portal, ServicedDataPortal).Dispose()
             End Try
 
           Case TransactionalTypes.TransactionScope
-            Dim portal As New TransactionalDataPortal
+            portal = New TransactionalDataPortal
             result = portal.Fetch(objectType, criteria, context)
 
           Case Else
-            Dim portal As New SimpleDataPortal
+            portal = New DataPortalSelector
             result = portal.Fetch(objectType, criteria, context)
         End Select
 

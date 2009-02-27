@@ -1198,7 +1198,7 @@ Namespace Core
       As Validation.ValidationRules
       Get
         If _validationRules Is Nothing Then
-          _validationRules = New Validation.ValidationRules(Me)
+          _validationRules = New Csla.Validation.ValidationRules(Me)
           AddHandler _validationRules.ValidatingRules.CollectionChanged, AddressOf ValidatingRules_CollectionChanged
         ElseIf _validationRules.Target Is Nothing Then
           _validationRules.SetTarget(Me)

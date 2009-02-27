@@ -602,7 +602,7 @@ Public MustInherit Class BusinessListBase( _
         ReIndexItem(DirectCast(sender, C), e.PropertyName)
       End If
 
-      For index As Integer = 0 To Count
+      For index As Integer = 0 To Count - 1
         If ReferenceEquals(Me(index), sender) Then
           Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
           If descriptor IsNot Nothing Then

@@ -176,7 +176,7 @@ Namespace Serialization.Mobile
 
       _deserializationReferences = New Dictionary(Of Integer, IMobileObject)
 
-      For Each info In deserialized
+      For Each info As SerializationInfo In deserialized
         Dim type As Type = System.Type.GetType(info.TypeName)
 
         If type Is Nothing Then
@@ -194,20 +194,15 @@ Namespace Serialization.Mobile
 
       Next
 
-      For Each info In deserialized
+      For Each info As SerializationInfo In deserialized
         Dim mobile As IMobileObject = _deserializationReferences(info.ReferenceId)
         mobile.SetChildren(info, Me)
       Next
 
-      For Each info In deserialized
-        'To-Do: REVISIT
-        'von: VB cannot cast like this -> Dim notifiable As ISerializationNotification = CType(_deserializationReferences(info.ReferenceId), ISerializationNotification)
-        'So let us instead check the type of _deserializationReferences([index]) first, then convert and deserialize the item.                
-        If _deserializationReferences(info.ReferenceId) Is GetType(ISerializationNotification) Then
-          Dim notifiable As ISerializationNotification = CType(_deserializationReferences(info.ReferenceId), ISerializationNotification)
-          If notifiable IsNot Nothing Then
-            notifiable.Deserialized()
-          End If
+      For Each info In deserialized        
+        Dim notifiable As ISerializationNotification = TryCast(_deserializationReferences(info.ReferenceId), ISerializationNotification)
+        If notifiable IsNot Nothing Then
+          notifiable.Deserialized()
         End If
       Next
 

@@ -525,7 +525,7 @@ Namespace Core.FieldManager
       info.AddValue("_businessObjectType", _businessObjectType)
       For Each data As IFieldData In _fieldData
         If data IsNot Nothing Then
-          Dim mobile As IMobileObject = TryCast(data, IMobileObject)
+          Dim mobile As IMobileObject = TryCast(data.Value, IMobileObject)
           If mobile Is Nothing Then
             info.AddValue(data.Name, data.Value, data.IsDirty)
           End If
@@ -537,7 +537,7 @@ Namespace Core.FieldManager
     Public Sub IMobileObject_GetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter) Implements Serialization.Mobile.IMobileObject.GetChildren
       For Each data As IFieldData In _fieldData
         If data IsNot Nothing Then
-          Dim mobile As IMobileObject = TryCast(data, IMobileObject)
+          Dim mobile As IMobileObject = TryCast(data.Value , IMobileObject)
           If mobile IsNot Nothing Then
             Dim childInfo As SerializationInfo = formatter.SerializeObject(mobile)
             info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty)

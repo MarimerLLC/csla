@@ -2516,23 +2516,17 @@ Namespace Core
       End If
 
       If valuesDiffer Then
-        'von: VB cannot explicitly convert Value Types to IBusinessObject.
-        'So let us check the Type of P first then do the conversion later.
-        If GetType(P) Is GetType(IBusinessObject) Then
-          Dim old As IBusinessObject = DirectCast(oldValue, IBusinessObject)
-          If old IsNot Nothing Then
-            RemoveEventHooks(old)
-          End If
+        
+        Dim old As IBusinessObject = TryCast(oldValue, IBusinessObject)
+        If old IsNot Nothing Then
+          RemoveEventHooks(old)
         End If
 
-        'von: VB cannot explicitly convert Value Types to IBusinessObject.
-        'So let us check the Type of P first then do the conversion later.
-        If GetType(P) Is GetType(IBusinessObject) Then
-          Dim [new] As IBusinessObject = DirectCast(newValue, IBusinessObject)
-          If [new] IsNot Nothing Then
-            AddEventHooks([new])
-          End If
+        Dim [new] As IBusinessObject = TryCast(newValue, IBusinessObject)
+        If [new] IsNot Nothing Then
+          AddEventHooks([new])
         End If
+
 
         If GetType(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type) Then
           '' remove old event hook

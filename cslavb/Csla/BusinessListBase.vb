@@ -597,20 +597,22 @@ Public MustInherit Class BusinessListBase( _
   Protected Overrides Sub Child_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
     If _deserialized AndAlso RaiseListChangedEvents AndAlso e IsNot Nothing Then
       DeferredLoadIndexIfNotLoaded()
+
       If _indexSet.HasIndexFor(e.PropertyName) Then
         ReIndexItem(DirectCast(sender, C), e.PropertyName)
-
-        For index As Integer = 1 To Count
-          If ReferenceEquals(Me(index), sender) Then
-            Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
-            If descriptor IsNot Nothing Then
-              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index, descriptor))
-            Else
-              OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
-            End If
-          End If
-        Next
       End If
+
+      For index As Integer = 0 To Count
+        If ReferenceEquals(Me(index), sender) Then
+          Dim descriptor As PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)
+          If descriptor IsNot Nothing Then
+            OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index, descriptor))
+          Else
+            OnListChanged(New ListChangedEventArgs(ListChangedType.ItemChanged, index))
+          End If
+        End If
+      Next
+
     End If
     MyBase.Child_PropertyChanged(sender, e)
   End Sub

@@ -9,6 +9,7 @@ Imports System.Runtime.Serialization
 Imports Csla.Core
 
 Namespace Security
+  <Serializable()> _
   Partial Public MustInherit Class CslaIdentity
     Inherits ReadOnlyBase(Of CslaIdentity)
     Implements ICheckRoles, IIdentity

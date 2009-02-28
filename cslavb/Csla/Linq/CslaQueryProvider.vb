@@ -274,8 +274,8 @@ Namespace Linq
         'MethodsEquivalent goes through the nastiness of seeing whether a given MethodCAllExpression maps to a given MethodInfo.  
         If MethodsEquivalent(mex, method) Then
           'the Enumerable call is a generic method call, so deal with that
-          Dim genericArguments() As Type = {mex.Method.GetGenericArguments().First()}
-          Dim genericMethodInfo As MethodInfo = method.MakeGenericMethod(genericArguments)
+          Dim genericArguments = mex.Method.GetGenericArguments().Take(method.GetGenericArguments().Length)
+          Dim genericMethodInfo As MethodInfo = method.MakeGenericMethod(genericArguments.ToArray())
           Try
             'pray.  If something is going to break, it will do so here
             Return genericMethodInfo.Invoke(Nothing, paramList.ToArray())

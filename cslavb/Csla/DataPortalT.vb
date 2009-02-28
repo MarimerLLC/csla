@@ -226,6 +226,7 @@ Public Class DataPortal(Of T)
         Else
           OnCreateCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
         End If
+        Return
       End If
     End If
     

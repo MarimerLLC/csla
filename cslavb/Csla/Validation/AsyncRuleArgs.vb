@@ -42,7 +42,7 @@ Namespace Validation
         Throw New ArgumentNullException("primaryProperty")
       End If
 
-      Dim length As Integer = 1
+      Dim length As Integer = 0
       If additionalProperties IsNot Nothing Then
         length += additionalProperties.Length
       End If

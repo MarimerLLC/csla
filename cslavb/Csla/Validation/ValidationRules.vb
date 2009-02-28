@@ -1028,8 +1028,8 @@ Namespace Validation
           If dependencies IsNot Nothing Then
             For i As Integer = 0 To dependencies.Count - 1
               Dim dependentProperty As String = dependencies(i)
-              CheckRules(rules, dependentProperty)
               result.Add(dependentProperty)
+              CheckRules(rules, dependentProperty)
             Next
           End If
         End If

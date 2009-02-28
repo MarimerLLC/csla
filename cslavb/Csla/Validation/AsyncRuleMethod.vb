@@ -47,8 +47,7 @@ Namespace Validation
     ''' which shouldn't really ever happen.
     ''' </summary>
     Public ReadOnly Property RuleArgs() As RuleArgs Implements IRuleMethod.RuleArgs      
-      Get
-        Throw New NotSupportedException()
+      Get        
         Return New RuleArgs(_args.Properties(0).Name)
       End Get
     End Property
@@ -103,7 +102,8 @@ Namespace Validation
       Dim propertyValues As Dictionary(Of String, Object) = GetPropertyValues(target, _args.Properties)
       'TODO: _handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), Function(r) result(Me, r)))
 
-      '_handler.Invoke (New AsyncValidationRuleContext (propertyValues, _args, New AsyncRuleResult(Me), Function(r)  result (Me, r))      
+      _handler.Invoke (New AsyncValidationRuleContext (propertyValues, _args, New AsyncRuleResult(Me),    Function(r)    result (Me,r ))      
+      ''Function(r) supposed to return --> Csla.Validation.AsyncRuleResultHandler()
     End Sub
 
 #Region "IComparable"
@@ -121,7 +121,7 @@ Namespace Validation
 
       For Each p As IPropertyInfo In properties
         propertyValues.Add(p.Name, Microsoft.VisualBasic.Interaction.CallByName(target, p.Name, CallType.Get))
-      Next      
+      Next
       Return propertyValues
 
     End Function

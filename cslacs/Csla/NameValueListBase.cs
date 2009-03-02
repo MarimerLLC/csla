@@ -157,6 +157,8 @@ namespace Csla
       private K _key;
       private V _value;
 
+      private NameValuePair() { }
+
       /// <summary>
       /// The Key or Name value.
       /// </summary>

@@ -29,7 +29,7 @@
         </Literal>
       </Declarations>
       <Code Language="CSharp" Kind="method decl">
-        <![CDATA[private static PropertyInfo<SmartDate> $PropertyName$Property = RegisterProperty(new PropertyInfo<SmartDate>("$PropertyName$", "$FriendlyName$", new SmartDate()));
+        <![CDATA[private static PropertyInfo<SmartDate> $PropertyName$Property = RegisterProperty<SmartDate>(o=>o.$PropertyName$, "$FriendlyName$", new SmartDate());
 public string $PropertyName$
 {
   get { return GetPropertyConvert<SmartDate, string>($PropertyName$Property); }

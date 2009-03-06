@@ -9,7 +9,7 @@ Namespace Validation
   ''' Stores details about a specific broken business rule.
   ''' </summary>
   <Serializable()> _
-  Public Class BrokenRule
+  Partial Public Class BrokenRule
     Inherits MobileObject
 
     Private _ruleName As String
@@ -80,6 +80,8 @@ Namespace Validation
       End Get
     End Property
 
+#Region " MobileObject overrides "
+
     ''' <summary>
     ''' Override this method to insert your field values
     ''' into the MobileFormatter serialzation stream.
@@ -115,6 +117,8 @@ Namespace Validation
       _severity = info.GetValue(Of RuleSeverity)("_severity")
       MyBase.OnSetState(info, mode)
     End Sub
+
+#End Region
 
   End Class
 

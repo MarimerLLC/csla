@@ -47,7 +47,7 @@ Namespace Validation
     ''' which shouldn't really ever happen.
     ''' </summary>
     Public ReadOnly Property RuleArgs() As RuleArgs Implements IRuleMethod.RuleArgs      
-      Get        
+      Get
         Return New RuleArgs(_args.Properties(0).Name)
       End Get
     End Property
@@ -100,10 +100,7 @@ Namespace Validation
     ''' <see langword="false"/>if the data is invalid.
     Public Sub Invoke(ByVal target As Object, ByVal result As AsyncRuleCompleteHandler) Implements IAsyncRuleMethod.Invoke
       Dim propertyValues As Dictionary(Of String, Object) = GetPropertyValues(target, _args.Properties)
-      'TODO: _handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), Function(r) result(Me, r)))
-
-      _handler.Invoke (New AsyncValidationRuleContext (propertyValues, _args, New AsyncRuleResult(Me),    Function(r)    result (Me,r ))      
-      ''Function(r) supposed to return --> Csla.Validation.AsyncRuleResultHandler()
+      '_handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), AddressOf (Function(r As AsyncRuleResult) result(Me, r))))
     End Sub
 
 #Region "IComparable"
@@ -120,7 +117,7 @@ Namespace Validation
       Dim propertyValues As Dictionary(Of String, Object) = New Dictionary(Of String, Object)
 
       For Each p As IPropertyInfo In properties
-        propertyValues.Add(p.Name, Microsoft.VisualBasic.Interaction.CallByName(target, p.Name, CallType.Get))
+        propertyValues.Add(p.Name, Utilities.CallByName(target, p.Name, CallType.Get))
       Next
       Return propertyValues
 

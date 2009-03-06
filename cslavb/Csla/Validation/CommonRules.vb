@@ -1,5 +1,4 @@
 Imports System
-Imports Csla.Properties
 Imports System.Text.RegularExpressions
 Imports System.Reflection
 Imports Csla.Core

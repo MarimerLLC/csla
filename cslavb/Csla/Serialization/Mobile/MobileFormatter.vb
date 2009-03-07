@@ -6,7 +6,6 @@ Imports System.Xml.Linq
 Imports System.Linq
 Imports System.Runtime.Serialization
 Imports Csla.Validation
-Imports Csla.Properties
 
 Namespace Serialization.Mobile
 

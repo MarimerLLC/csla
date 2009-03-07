@@ -21,8 +21,8 @@ Namespace Validation
 
       Dim uri As Uri = New Uri(ruleString)
 
-      _scheme = uri.Scheme + uri.SchemeDelimiter
-      _typeName = uri.UnescapeDataString(uri.Host)
+      _scheme = uri.Scheme + System.Uri.SchemeDelimiter
+      _typeName = System.Uri.UnescapeDataString(uri.Host)
 
       Dim parts = uri.LocalPath.Split("/"c)
       _methodName = parts(1)

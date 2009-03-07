@@ -36,7 +36,7 @@ Namespace Validation
 
     End Sub
 
-#If SILVERLIGHT Then
+#If Not Silverlight Then
     ''' <summary>
     ''' Creates an instance of the object for serialization.
     ''' </summary>

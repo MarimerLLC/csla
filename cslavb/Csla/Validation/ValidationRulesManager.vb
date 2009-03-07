@@ -45,7 +45,7 @@ Namespace Validation
 
 #Region " Adding Rules "
 
-    Public Sub AddRule(ByRef handler As AsyncRuleHandler, ByVal severity As RuleSeverity, ByRef args As AsyncRuleArgs)
+    Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal severity As RuleSeverity, ByVal args As AsyncRuleArgs)
       'get the list of rules for the primary property
       Dim list As List(Of IRuleMethod) = GetRulesForProperty(args.Properties(0).Name, True).GetList(False)
 

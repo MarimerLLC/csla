@@ -1,7 +1,6 @@
 ﻿Imports System
 Imports System.Reflection
 Imports System.Reflection.Emit
-Imports Csla.Properties
 
 Namespace Reflection
   ''' <summary> 

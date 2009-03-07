@@ -2,7 +2,6 @@
 Imports System.Collections.Generic
 Imports System.Linq
 Imports System.Text
-Imports Csla.Properties
 
 Namespace Windows
 

@@ -15,6 +15,7 @@ Namespace Validation
     Private _ruleName As String = String.Empty
     Private _severity As RuleSeverity
     Private Const _priority As Integer = 0
+    Private _invokeCallback As AsyncRuleCompleteHandler
 
     ''' <summary>
     ''' Returns the name of the method implementing the rule
@@ -100,7 +101,12 @@ Namespace Validation
     ''' <see langword="false"/>if the data is invalid.
     Public Sub Invoke(ByVal target As Object, ByVal result As AsyncRuleCompleteHandler) Implements IAsyncRuleMethod.Invoke
       Dim propertyValues As Dictionary(Of String, Object) = GetPropertyValues(target, _args.Properties)
-      '_handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), AddressOf (Function(r As AsyncRuleResult) result(Me, r))))
+      _invokeCallback = result
+      _handler.Invoke(New AsyncValidationRuleContext(propertyValues, _args, New AsyncRuleResult(Me), AddressOf InvokeHandler))
+    End Sub
+
+    Private Sub InvokeHandler(ByVal result As AsyncRuleResult)
+      _invokeCallback(Me, result)
     End Sub
 
 #Region "IComparable"

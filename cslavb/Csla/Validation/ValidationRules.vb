@@ -148,11 +148,11 @@ Namespace Validation
           Dim list As List(Of IRuleMethod) = de.Value.GetList(False)
           For i As Integer = 0 To list.Count - 1
             Dim rule As IRuleMethod = list(i)
-            result.Add(CObj(rule).ToString)
+            result.Add(rule.ToString())
           Next
         Next
       End If
-      Return result.ToArray
+      Return result.ToArray()
 
     End Function
 
@@ -399,10 +399,33 @@ Namespace Validation
 
 #Region " Adding Shared Rules "
 
+    ''' <summary>
+    ''' Adds an async rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <param name="handler">
+    ''' The method that implements the rule.
+    ''' </param>
+    ''' <param name="primaryProperty">
+    ''' The primary property checked by this rule.
+    ''' </param>
+    ''' <param name="additionalProperties">
+    ''' A list of other property values required by
+    ''' this rule method.
+    ''' </param>
     Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal primaryProperty As IPropertyInfo, ByVal ParamArray additionalProperties() As IPropertyInfo)
       AddRule(handler, New AsyncRuleArgs(primaryProperty, additionalProperties))
     End Sub
 
+    ''' <summary>
+    ''' Adds an async rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <param name="handler">
+    ''' The method that implements the rule.
+    ''' </param>
+    ''' <param name="args">
+    ''' An AsyncRuleArgs object specifying the property name and other arguments
+    ''' passed to the rule method
+    ''' </param>
     Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal args As AsyncRuleArgs)
       ValidateHandler(handler)
       GetTypeRules(True).AddRule(handler, RuleSeverity.Error, args)

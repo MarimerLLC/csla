@@ -11,11 +11,9 @@ Namespace Core
         Return exp
       End If
       Select Case exp.NodeType
-        Case ExpressionType.Negate, ExpressionType.NegateChecked, ExpressionType.Not, ExpressionType.Convert, ExpressionType.ConvertChecked, ExpressionType.ArrayLength, ExpressionType.Quote
-        Case ExpressionType.TypeAs
+        Case ExpressionType.Negate, ExpressionType.NegateChecked, ExpressionType.Not, ExpressionType.Convert, ExpressionType.ConvertChecked, ExpressionType.ArrayLength, ExpressionType.Quote, ExpressionType.TypeAs
           Return Me.VisitUnary(CType(exp, UnaryExpression))
-        Case ExpressionType.Add, ExpressionType.AddChecked, ExpressionType.Subtract, ExpressionType.SubtractChecked, ExpressionType.Multiply, ExpressionType.MultiplyChecked, ExpressionType.Divide, ExpressionType.Modulo, ExpressionType.And, ExpressionType.AndAlso, ExpressionType.Or, ExpressionType.OrElse, ExpressionType.LessThan, ExpressionType.LessThanOrEqual, ExpressionType.GreaterThan, ExpressionType.GreaterThanOrEqual, ExpressionType.Equal, ExpressionType.NotEqual, ExpressionType.Coalesce, ExpressionType.ArrayIndex, ExpressionType.RightShift, ExpressionType.LeftShift
-        Case ExpressionType.ExclusiveOr
+        Case ExpressionType.Add, ExpressionType.AddChecked, ExpressionType.Subtract, ExpressionType.SubtractChecked, ExpressionType.Multiply, ExpressionType.MultiplyChecked, ExpressionType.Divide, ExpressionType.Modulo, ExpressionType.And, ExpressionType.AndAlso, ExpressionType.Or, ExpressionType.OrElse, ExpressionType.LessThan, ExpressionType.LessThanOrEqual, ExpressionType.GreaterThan, ExpressionType.GreaterThanOrEqual, ExpressionType.Equal, ExpressionType.NotEqual, ExpressionType.Coalesce, ExpressionType.ArrayIndex, ExpressionType.RightShift, ExpressionType.LeftShift, ExpressionType.ExclusiveOr
           Return Me.VisitBinary(CType(exp, BinaryExpression))
         Case ExpressionType.TypeIs
           Return Me.VisitTypeIs(CType(exp, TypeBinaryExpression))
@@ -33,8 +31,7 @@ Namespace Core
           Return Me.VisitLambda(CType(exp, LambdaExpression))
         Case ExpressionType.New
           Return Me.VisitNew(CType(exp, NewExpression))
-        Case ExpressionType.NewArrayInit
-        Case ExpressionType.NewArrayBounds
+        Case ExpressionType.NewArrayInit, ExpressionType.NewArrayBounds
           Return Me.VisitNewArray(CType(exp, NewArrayExpression))
         Case ExpressionType.Invoke
           Return Me.VisitInvocation(CType(exp, InvocationExpression))
@@ -43,7 +40,7 @@ Namespace Core
         Case ExpressionType.ListInit
           Return Me.VisitListInit(CType(exp, ListInitExpression))
         Case Else
-          Throw New Exception(String.Format("Unhandled expression type: '{0}'", exp.NodeType))
+          Throw New Exception(String.Format(My.Resources.UnhandledExpressionType, exp.NodeType))
       End Select
     End Function
 

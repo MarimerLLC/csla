@@ -4,7 +4,6 @@ Imports System.Linq
 Imports System.Text
 Imports System.Reflection
 Imports System.Collections
-Imports Csla.Properties
 
 Namespace Linq
   Friend Class BalancedTreeIndex(Of T)

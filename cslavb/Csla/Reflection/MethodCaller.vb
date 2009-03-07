@@ -2,7 +2,6 @@ Imports System
 Imports System.Collections.Generic
 Imports System.Reflection
 Imports System.ComponentModel
-Imports Csla.Properties
 Imports Csla.Server
 Imports Csla
 

@@ -241,7 +241,7 @@ Namespace Linq
 
       Dim listFrom As List(Of C)
       If _filter IsNot Nothing Then
-        listFrom = _filter.ToList()
+        listFrom = _filter.ToList(Of C)()
       Else
         listFrom = _parent.ToList()
       End If

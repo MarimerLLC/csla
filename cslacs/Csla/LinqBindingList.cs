@@ -767,10 +767,17 @@ namespace Csla
       InnermostWhereFinder whereFinder = new InnermostWhereFinder();
       MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
       Expression<Func<T, bool>> whereBody = GetWhereBodyFromExpression(whereExpression);
-
+      //dynamic query behavior patch - it bundles the order by into the then by, need to
+      //tease it out here
+      if (_thenByExpressions.Count > 0 && _sortExpression == null)
+        _sortExpression = (new InnermostOrderByFinder()).GetInnermostOrderBy(_thenByExpressions[0]);
+      
       var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
       if (_sortExpression != null && _sortExpression is MethodCallExpression)
         subset = BuildSortedSubset(subset, (MethodCallExpression)_sortExpression);
+      
+
+      
 
       foreach (var expression in _thenByExpressions)
         if (expression is MethodCallExpression)
@@ -873,7 +880,15 @@ namespace Csla
 
     Expression IQueryable.Expression
     {
-      get { return _expression; }
+      get { 
+        //return the most recently added expression
+        //last ThenBy, Sort, then where
+        if (_thenByExpressions != null && _thenByExpressions.Count > 0)
+          return _thenByExpressions.Last();
+        if (_sortExpression != null)
+          return _sortExpression;
+        return _expression; 
+      }
     }
 
     IQueryProvider IQueryable.Provider

@@ -828,6 +828,38 @@ namespace Csla.Test.CslaQueryProvider
     }
 
     [TestMethod]
+    public void LinqBindingList_is_generated_by_thenby_with_where()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+      random.Add(new RandomThing(5) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(5) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(5) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(3) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 101, YetAnotherVal = 1000 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 100, YetAnotherVal = 1001 });
+      random.Add(new RandomThing(1) { SomeOtherVal = 100, YetAnotherVal = 1000 });
+
+      var r1 = (LinqBindingList<RandomThing>)random
+          .Where(x => true);
+
+      var r2 = r1.OrderBy(x => x.SomeVal);
+      var r3 = r2.ThenBy(y => y.SomeOtherVal);
+      var r4 = r3.ThenBy(y => y.YetAnotherVal);
+      
+      
+      var result =
+        (LinqBindingList<RandomThing>)random
+          .Where(x => true)
+          .OrderBy(x => x.SomeVal)
+          .ThenBy(y => y.SomeOtherVal)
+          .ThenBy(y => y.YetAnotherVal);
+
+      Assert.AreEqual(result.GetType(), typeof(LinqBindingList<RandomThing>));
+    }
+
+    [TestMethod]
     public void LinqBindingList_generated_by_orderby_removal_by_item_reflects_to_source()
     {
       CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
@@ -1114,5 +1146,8 @@ namespace Csla.Test.CslaQueryProvider
       Assert.AreEqual(differentFilteredCountPreRemoval - 1, differentFilteredCountPostRemoval);
       Assert.AreEqual(originalCountPreRemoval - 1, originalCountPostRemoval);
     }
+      
   }
+
+
 }

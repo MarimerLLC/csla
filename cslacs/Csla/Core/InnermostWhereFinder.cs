@@ -27,4 +27,29 @@ namespace Csla.Core
       return expression;
     }
   }
+
+  internal class InnermostOrderByFinder : ExpressionVisitor
+  {
+    private MethodCallExpression innermostOrderByExpression;
+
+    public MethodCallExpression GetInnermostOrderBy(Expression expression)
+    {
+      Visit(expression);
+      return innermostOrderByExpression;
+    }
+
+    protected override Expression VisitMethodCall(MethodCallExpression expression)
+    {
+      if (expression.Method.Name.StartsWith("OrderBy"))
+        innermostOrderByExpression = expression;
+      //{
+      //  innermostWhereExpression = expression;
+      //  return expression;
+      //}
+
+      Visit(expression.Arguments[0]);
+
+      return expression;
+    }
+  }
 }

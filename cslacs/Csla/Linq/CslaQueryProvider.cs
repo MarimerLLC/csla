@@ -110,19 +110,26 @@ namespace Csla.Linq
           //raw sort without previous where
           _filter = new LinqBindingList<C>(_parent, this, null);
           _filter.SortByExpression(expression);
-          return (IQueryable<TElement>)_filter;
+          return (IOrderedQueryable<TElement>)_filter;
         }
         else if (typeof(TElement) == typeof(C) && mex.Method.Name.StartsWith("OrderBy"))
         {
           //sort of previous where
           _filter.SortByExpression(expression);
-          return (IQueryable<TElement>)_filter;
+          return (IOrderedQueryable<TElement>)_filter;
+        }
+        else if (typeof(TElement) == typeof(C) && mex.Method.Name.StartsWith("ThenBy") && _filter == null)
+        {
+          //raw sort without previous where
+          _filter = new LinqBindingList<C>(_parent, this, null);
+          _filter.ThenByExpression(expression);
+          return (IOrderedQueryable<TElement>)_filter;
         }
         else if (typeof(TElement) == typeof(C) && mex.Method.Name.StartsWith("ThenBy"))
         {
           //sort of previous where
           _filter.ThenByExpression(expression);
-          return (IQueryable<TElement>)_filter;
+          return (IOrderedQueryable<TElement>)_filter;
         }
         else
         {
@@ -240,6 +247,13 @@ namespace Csla.Linq
           //sort of previous where
           _filter.SortByExpression(expression);
           return (IQueryable)_filter;
+        }
+        else if (elementType == typeof(C) && mex.Method.Name.StartsWith("ThenBy") && _filter == null)
+        {
+          //raw sort without previous where
+          _filter = new LinqBindingList<C>(_parent, this, null);
+          _filter.ThenByExpression(expression);
+          return (IQueryable) _filter;
         }
         //JF end change
         else if (elementType == typeof(C) && mex.Method.Name.StartsWith("ThenBy"))

@@ -149,6 +149,8 @@
     <Compile Include="CslaDataProvider\Customer.cs" />
     <Compile Include="CslaDataProvider\ProviderList.cs" />
     <Compile Include="CslaQueryProvider\CslaQueryProviderTests.cs" />
+    <Compile Include="CslaQueryProvider\DynamicQueryTests.cs" />
+    <Compile Include="CslaQueryProvider\MSDynamicQuery.cs" />
     <Compile Include="DataMapper\DataMapperTests.cs" />
     <Compile Include="DataPortalChild\Child.cs" />
     <Compile Include="DataPortalChild\ChildList.cs" />

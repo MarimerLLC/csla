@@ -9,9 +9,9 @@ using System.Windows;
 [assembly: AssemblyTitle("CSLA .NET for Windows")]
 [assembly: AssemblyDescription("CSLA .NET Framework")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Rockford Lhotka")]
+[assembly: AssemblyCompany("Marimer, LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2008 Rockford Lhotka")]
+[assembly: AssemblyCopyright("Copyright © 2009 Marimer, LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("CustomInstallActions")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Magenic")]
+[assembly: AssemblyCompany("Marimer, LLC")]
 [assembly: AssemblyProduct("CustomInstallActions")]
-[assembly: AssemblyCopyright("Copyright © Magenic 2008")]
+[assembly: AssemblyCopyright("Copyright © 2009 Marimer, LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

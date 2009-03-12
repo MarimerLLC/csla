@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("cslalighttest")]
 [assembly: AssemblyDescription("CSLA .NET for Silverlight tests")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Rockford Lhotka")]
+[assembly: AssemblyCompany("Marimer, LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2008 Rockford Lhotka")]
+[assembly: AssemblyCopyright("Copyright © 2009 Marimer, LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("CSLA .NET")> 
-<Assembly: AssemblyDescription("CSLA .NET Framework")> 
-<Assembly: AssemblyCompany("Rockford Lhotka")> 
+<Assembly: AssemblyDescription("CSLA .NET VB for Windows")> 
+<Assembly: AssemblyCompany("Marimer, LLC")> 
 <Assembly: AssemblyProduct("CSLA .NET")> 
-<Assembly: AssemblyCopyright("Copyright © 2007 Rockford Lhotka")> 
+<Assembly: AssemblyCopyright("Copyright © 2009 Marimer, LLC")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: CLSCompliant(True)> 

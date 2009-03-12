@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Csla.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Marimer, LLC")]
 [assembly: AssemblyProduct("Csla.Test")]
-[assembly: AssemblyCopyright("Copyright ©  2005 Rockford Lhotka")]
+[assembly: AssemblyCopyright("Copyright ©  2009 Marimer, LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

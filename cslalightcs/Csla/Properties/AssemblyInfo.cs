@@ -9,9 +9,9 @@ using System.Diagnostics;
 [assembly: AssemblyTitle("CSLA .NET for Silverlight")]
 [assembly: AssemblyDescription("CSLA .NET for Silverlight")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Rockford Lhotka")]
+[assembly: AssemblyCompany("Marimer, LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2008 Rockford Lhotka")]
+[assembly: AssemblyCopyright("Copyright © 2009 Marimer, LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

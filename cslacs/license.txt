@@ -1,6 +1,6 @@
 LICENSE AND WARRANTY
 
-The CSLA .NET framework is Copyright 2008 by Rockford Lhotka. 
+The CSLA .NET framework is Copyright 2009 by Marimer, LLC. 
 
 You can use this Software for any noncommercial purpose, including 
 distributing derivative works. You can use this Software for any commercial 
@@ -17,7 +17,7 @@ This Software License Agreement ("Agreement") is effective
 upon your use of CSLA .NET ("Software").
 
 1. Ownership.
-The CSLA .NET framework is Copyright 2008 by Rockford Lhotka, 
+The CSLA .NET framework is Copyright 2009 by Marimer, LLC, 
 Eden Prairie, MN, USA. 
 
 2. Copyright Notice.
@@ -52,7 +52,7 @@ not discoverable. Also, you must pass this disclaimer on whenever you
 distribute the Software. 
 
 8. Liability.
-Neither Rockford Lhotka nor any contributor to the Software will be liable 
+Neither Marimer, LLC nor any contributor to the Software will be liable 
 for any of those types of damages known as indirect, special, consequential, 
 incidental, punitive or exemplary related to the Software or this License, to 
 the maximum extent the law permits, no matter what legal theory it’s based 
@@ -70,7 +70,7 @@ not to any derivative works you make.
 10. Termination.
 Your rights under this License end automatically if you breach it in any way.
 
-Rockford Lhotka reserves the right to release the Software under different 
+Marimer, LLC reserves the right to release the Software under different 
 license terms or to stop distributing the Software at any time. Such an 
 election will not serve to withdraw this Agreement, and this Agreement will 
 continue in full force and effect unless terminated as stated above.

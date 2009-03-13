@@ -145,7 +145,7 @@ Namespace Linq
               If _filter Is Nothing Then
                 listFrom = _parent.ToList()
               Else
-                listFrom = _filter.ToList()
+                listFrom = _filter.ToList(Of C)()
               End If
               Dim listType As Type = GetType(Enumerable)
               Dim listMethods() As MethodInfo = listType.GetMethods()

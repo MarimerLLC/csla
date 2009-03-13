@@ -575,7 +575,7 @@ Public Class LinqBindingList(Of T)
     Dim whereBody As Expression(Of Func(Of T, Boolean)) = _
       CType((CType(whereExpression.Arguments(1), UnaryExpression)).Operand, Expression(Of Func(Of T, Boolean)))
 
-    Dim searchable = CType(_list, Linq.IIndexSearchable(Of T))
+    Dim searchable = TryCast(_list, Linq.IIndexSearchable(Of T))
 
     If searchable Is Nothing Then
       Return False
@@ -725,11 +725,17 @@ Public Class LinqBindingList(Of T)
     Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
     Dim whereBody As Expression(Of Func(Of T, Boolean)) = GetWhereBodyFromExpression(whereExpression)
 
-    Dim subset = DirectCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
+    Dim subset = TryCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
 
     If _sortExpression IsNot Nothing AndAlso TypeOf (_sortExpression) Is MethodCallExpression Then
       subset = BuildSortedSubset(subset, DirectCast(_sortExpression, MethodCallExpression))
     End If
+
+    For Each expression As Expression In _thenByExpressions
+      If TypeOf (expression) Is MethodCallExpression Then
+        subset = BuildSortedSubset(subset, CType(expression, MethodCallExpression))
+      End If
+    Next
 
     _filterIndex.Clear()
     Dim searchable = TryCast(_list, Linq.IIndexSearchable(Of T))
@@ -788,10 +794,16 @@ Public Class LinqBindingList(Of T)
       Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
       Dim whereBody As Expression(Of Func(Of T, Boolean)) = GetWhereBodyFromExpression(whereExpression)
 
-      Dim subset = DirectCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
+      Dim subset = TryCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
       If _sortExpression IsNot Nothing AndAlso TypeOf (_sortExpression) Is MethodCallExpression Then
         subset = BuildSortedSubset(subset, DirectCast(_sortExpression, MethodCallExpression))
       End If
+
+      For Each expression As Expression In _thenByExpressions
+        If TypeOf (expression) Is MethodCallExpression Then
+          subset = BuildSortedSubset(subset, CType(expression, MethodCallExpression))
+        End If
+      Next
 
       For Each item As T In subset
         itemList.Add(item)

@@ -64,6 +64,20 @@ namespace Csla.Core
       DetermineTypes();
     }
 
+    #if !SILVERLIGHT
+    /// <summary>
+    /// Creates an instance of the object for serialization.
+    /// </summary>
+    /// <param name="context">Serialization context.</param>
+    /// <param name="info">Serialization info.</param>
+    protected MobileDictionary(System.Runtime.Serialization.SerializationInfo info,
+        System.Runtime.Serialization.StreamingContext context)
+      : base(info, context)
+    {
+
+    }
+#endif
+
     private void DetermineTypes()
     {
       _keyIsMobile = typeof(Csla.Serialization.Mobile.IMobileObject).IsAssignableFrom(typeof(K));

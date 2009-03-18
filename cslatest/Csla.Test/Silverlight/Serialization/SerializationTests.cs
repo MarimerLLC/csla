@@ -348,6 +348,40 @@ namespace cslalighttest.Serialization
       context.Complete();
     }
 
+#if !SILVERLIGHT
+    [TestMethod]
+    public void MobileDictionary_PrimitiveKey_PrimitiveValue_BF()
+    {
+      UnitTestContext context = GetContext();
+      var d = new MobileDictionary<string, int>();
+      d.Add("a", 12343);
+      d.Add("z", 943204);
+      d.Add("b", 77878);
+      d.Add("x", 42343);
+      d.Add("r", 45345);
+
+      var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+      var buffer = new System.IO.MemoryStream();
+      formatter.Serialize(buffer, d);
+      buffer.Position = 0;
+      var r = (MobileDictionary<string, int>)formatter.Deserialize(buffer);
+
+      context.Assert.IsTrue(r.ContainsKey("a"));
+      context.Assert.IsTrue(r.ContainsKey("z"));
+      context.Assert.IsTrue(r.ContainsKey("b"));
+      context.Assert.IsTrue(r.ContainsKey("x"));
+      context.Assert.IsTrue(r.ContainsKey("r"));
+
+      context.Assert.AreEqual(d["a"], r["a"]);
+      context.Assert.AreEqual(d["z"], r["z"]);
+      context.Assert.AreEqual(d["b"], r["b"]);
+      context.Assert.AreEqual(d["x"], r["x"]);
+      context.Assert.AreEqual(d["r"], r["r"]);
+      context.Assert.Success();
+      context.Complete();
+    }
+#endif
+
     [TestMethod]
     public void MobileDictionary_PrimitiveKey_MobileValue()
     {

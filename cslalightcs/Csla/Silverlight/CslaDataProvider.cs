@@ -357,7 +357,7 @@ namespace Csla.Silverlight
         _dataChangedHandler = value;
         var dialog = value as ErrorDialog;
         if (dialog != null)
-          dialog.Source = this;
+          dialog.Register(this);
         OnPropertyChanged(new PropertyChangedEventArgs("DataChangedHandler"));
       }
     }

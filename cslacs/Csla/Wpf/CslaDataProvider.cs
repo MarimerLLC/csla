@@ -122,7 +122,7 @@ namespace Csla.Wpf
         _dataChangedHandler = value;
         var dialog = value as ErrorDialog;
         if (dialog != null)
-          dialog.DataContext = this;
+          dialog.Register(this);
         OnPropertyChanged(new PropertyChangedEventArgs("DataChangedHandler"));
       }
     }

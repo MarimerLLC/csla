@@ -17,6 +17,9 @@ namespace Csla.Silverlight
   /// </summary>
   public class ErrorDialog : Control
   {
+    /// <summary>
+    /// Creates an instance of the control.
+    /// </summary>
     public ErrorDialog()
     {
       this.DialogTitle = "Error";
@@ -113,6 +116,11 @@ namespace Csla.Silverlight
     {
       get { return (bool)GetValue(ShowExceptionDetailProperty); }
       set { SetValue(ShowExceptionDetailProperty, value); }
+    }
+
+    internal void Register(object source)
+    {
+      AttachSource(source);
     }
 
     private void AttachSource(object source)

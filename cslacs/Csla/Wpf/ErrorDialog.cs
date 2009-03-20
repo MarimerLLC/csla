@@ -110,6 +110,11 @@ namespace Csla.Wpf
       set { SetValue(DialogIconProperty, value); }
     }
 
+    internal void Register(object source)
+    {
+      AttachSource(source);
+    }
+
     private void AttachSource(object source)
     {
       var dp = source as System.Windows.Data.DataSourceProvider;
@@ -142,8 +147,8 @@ namespace Csla.Wpf
           output = string.Format("{0}{1}{2}", this.DialogFirstLine, Environment.NewLine, error);
 
         MessageBox.Show(
-          output, 
-          this.DialogTitle, 
+          output,
+          this.DialogTitle,
           MessageBoxButton.OK, 
           this.DialogIcon);
       }

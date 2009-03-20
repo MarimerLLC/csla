@@ -334,6 +334,34 @@ namespace Csla.Silverlight
         OnDataChanged();
       }
     }
+
+    private object _dataChangedHandler;
+
+    /// <summary>
+    /// Gets or sets a reference to an object that
+    /// will handle the DataChanged event raised
+    /// by this data provider.
+    /// </summary>
+    /// <remarks>
+    /// This property is designed to 
+    /// reference an ErrorDialog control.
+    /// </remarks>
+    public object DataChangedHandler
+    {
+      get
+      {
+        return _dataChangedHandler;
+      }
+      set
+      {
+        _dataChangedHandler = value;
+        var dialog = value as ErrorDialog;
+        if (dialog != null)
+          dialog.Source = this;
+        OnPropertyChanged(new PropertyChangedEventArgs("DataChangedHandler"));
+      }
+    }
+
     #endregion
 
     #region Operations

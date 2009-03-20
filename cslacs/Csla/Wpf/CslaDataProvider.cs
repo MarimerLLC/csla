@@ -103,11 +103,14 @@ namespace Csla.Wpf
     private object _dataChangedHandler;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the
-    /// data control should manage the lifetime of
-    /// the business object, including using n-level
-    /// undo.
+    /// Gets or sets a reference to an object that
+    /// will handle the DataChanged event raised
+    /// by this data provider.
     /// </summary>
+    /// <remarks>
+    /// This property is designed to 
+    /// reference an ErrorDialog control.
+    /// </remarks>
     public object DataChangedHandler
     {
       get

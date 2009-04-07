@@ -251,7 +251,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       If IsDirty Then
         MarkBusy()
         DataPortal.BeginUpdate(Of T)( _
-        Me, AddressOf BeginUpdateComplete, New SaveState(userState, handler))
+          Me, AddressOf BeginUpdateComplete, New SaveState(userState, handler))
       Else
         OnSaved(CType(Me, T), Nothing, userState)
         If handler IsNot Nothing Then
@@ -271,7 +271,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
     OnSaved(result, e.Error, args.UserState)
     If handler IsNot Nothing Then
       handler( _
-        result, New Core.SavedEventArgs(result, e.Error, e.UserState))
+        result, New Core.SavedEventArgs(result, e.Error, args.UserState))
     End If
     MarkIdle()
 

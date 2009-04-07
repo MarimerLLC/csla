@@ -228,6 +228,7 @@ Public Class DataPortal(Of T)
         End If
         Return
       End If
+      Return
     End If
     
     OnCreateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
@@ -340,6 +341,7 @@ Public Class DataPortal(Of T)
           OnFetchCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
         End If
       End If
+      Return
     End If
     
     OnFetchCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
@@ -442,6 +444,7 @@ Public Class DataPortal(Of T)
           OnUpdateCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
         End If
       End If
+      Return
     End If
     
     OnUpdateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
@@ -536,6 +539,7 @@ Public Class DataPortal(Of T)
         _globalContext = result.GlobalContext
         OnDeleteCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
       End If
+      Return
     End If
     
     OnDeleteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
@@ -593,6 +597,7 @@ Public Class DataPortal(Of T)
           OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, result.UserState))
         End If
       End If
+      Return
     End If
     
     OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))

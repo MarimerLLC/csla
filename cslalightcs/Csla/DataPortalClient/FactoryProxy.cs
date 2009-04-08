@@ -68,12 +68,6 @@ namespace Csla.DataPortalClient
 
     private void OnCreateCompleted(T result, Exception ex)
     {
-      if (result != null)
-      {
-        var target = result as IDataPortalTarget;
-        if (target != null)
-          target.MarkNew();
-      }
       if (CreateCompleted != null)
         CreateCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
@@ -107,12 +101,6 @@ namespace Csla.DataPortalClient
 
     private void OnFetchCompleted(T result, Exception ex)
     {
-      if (result != null)
-      {
-        var target = result as IDataPortalTarget;
-        if (target != null)
-          target.MarkOld();
-      }
       if (FetchCompleted != null)
         FetchCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
@@ -159,25 +147,6 @@ namespace Csla.DataPortalClient
 
     private void OnUpdateCompleted(T result, Exception ex)
     {
-      if (result != null)
-      {
-        var target = result as IDataPortalTarget;
-        if (target != null)
-        {
-          var busObj = result as Core.BusinessBase;
-          if (busObj != null)
-          {
-            if (busObj.IsDeleted)
-              target.MarkNew();
-            else
-              target.MarkOld();
-          }
-          else
-          {
-            target.MarkOld();
-          }
-        }
-      }
       if (UpdateCompleted != null)
         UpdateCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
@@ -190,12 +159,6 @@ namespace Csla.DataPortalClient
 
     private void OnDeleteCompleted(T result, Exception ex)
     {
-      if (result != null)
-      {
-        var target = result as IDataPortalTarget;
-        if (target != null)
-          target.MarkNew();
-      }
       if (DeleteCompleted != null)
         DeleteCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }

@@ -211,7 +211,28 @@ namespace Csla.Wpf
 
     #region Query
 
-    private bool _firstRun = true;
+    private bool _init = true;
+    private bool _endInitCompete = false;
+    private bool _endInitError = false;
+
+    /// <summary>
+    /// Indicates that the control is about to initialize.
+    /// </summary>
+    protected override void BeginInit()
+    {
+      _init = true;
+      base.BeginInit();
+    }
+
+    /// <summary>
+    /// Indicates that the control has initialized.
+    /// </summary>
+    protected override void EndInit()
+    {
+      _init = false;
+      base.EndInit();
+      _endInitCompete = true;
+    }
 
     /// <summary>
     /// Overridden. Starts to create the requested object, 
@@ -220,15 +241,22 @@ namespace Csla.Wpf
     /// </summary>
     protected override void BeginQuery()
     {
-      if (this.IsRefreshDeferred)
+      if (_init)
         return;
 
-      if (_firstRun)
+      if (_endInitError)
       {
-        _firstRun = false;
-        if (!IsInitialLoadEnabled)
-          return;
+        // this handles a case where the WPF form initilizer
+        // invokes the data provider twice when an exception
+        // occurs - we really don't want to try the query twice
+        // or report the error twice
+        _endInitError = false;
+        base.OnQueryFinished(null);
+        return;
       }
+
+      if (this.IsRefreshDeferred)
+        return;
 
       QueryRequest request = new QueryRequest();
       request.ObjectType = _objectType;
@@ -241,10 +269,7 @@ namespace Csla.Wpf
       if (IsAsynchronous)
         System.Threading.ThreadPool.QueueUserWorkItem(DoQuery, request);
       else
-      {
         DoQuery(request);
-        IsBusy = false;
-      }
     }
 
     private void DoQuery(object state)
@@ -323,13 +348,16 @@ namespace Csla.Wpf
           undo.BeginEdit();
       }
 
-      if (!System.Windows.Application.Current.Dispatcher.CheckAccess())
-        System.Windows.Application.Current.Dispatcher.Invoke(
-          new Action(() => { IsBusy = false; }), 
-          new object[] { });
+      //if (!System.Windows.Application.Current.Dispatcher.CheckAccess())
+      //  System.Windows.Application.Current.Dispatcher.Invoke(
+      //    new Action(() => { IsBusy = false; }), 
+      //    new object[] { });
+
+      if (!_endInitCompete && exceptionResult != null)
+        _endInitError = true;
 
       // return result to base class
-      base.OnQueryFinished(result, exceptionResult, null, null);
+      base.OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
     }
 
     #region QueryRequest Class

@@ -134,54 +134,7 @@ namespace Csla.Silverlight
       }
       set
       {
-        //hook up event handlers for notificaiton propagation
-        if (_dataObject != null && _dataObject is INotifyPropertyChanged)
-          ((INotifyPropertyChanged)_dataObject).PropertyChanged -= new PropertyChangedEventHandler(dataObject_PropertyChanged);
-        if (_dataObject != null && _dataObject is INotifyChildChanged)
-          ((INotifyChildChanged)_dataObject).ChildChanged -= new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
-        if (_dataObject != null && _dataObject is INotifyBusy)
-          ((INotifyBusy)_dataObject).BusyChanged -= new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
-
-        _dataObject = value;
-        if (_manageObjectLifetime)
-        {
-          var undoable = _dataObject as Csla.Core.ISupportUndo;
-          if (undoable != null)
-            undoable.BeginEdit();
-        }
-
-        if (_dataObject != null && _dataObject is INotifyPropertyChanged)
-          ((INotifyPropertyChanged)_dataObject).PropertyChanged += new PropertyChangedEventHandler(dataObject_PropertyChanged);
-        if (_dataObject != null && _dataObject is INotifyChildChanged)
-          ((INotifyChildChanged)_dataObject).ChildChanged += new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
-
-        if (_dataObject != null && _dataObject is INotifyBusy)
-          ((INotifyBusy)_dataObject).BusyChanged += new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
-
-        try
-        {
-          OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
-        }
-        catch (Exception ex)
-        {
-          // Silverlight seems to throw a meaningless null ref exception
-          // and during page load there are possible timing issues
-          // where these events may cause non-useful exceptions
-          // and this is a workaround to ignore the issues
-          var o = ex;
-        }
-        try
-        {
-          OnPropertyChanged(new PropertyChangedEventArgs("Data"));
-        }
-        catch (Exception ex)
-        {
-          // Silverlight seems to throw a meaningless null ref exception
-          // and during page load there are possible timing issues
-          // where these events may cause non-useful exceptions
-          // and this is a workaround to ignore the issues
-          var o = ex;
-        }
+        SetObjectInstance(value);
         try
         {
           OnDataChanged();
@@ -194,6 +147,58 @@ namespace Csla.Silverlight
           // and this is a workaround to ignore the issues
           var o = ex;
         }
+      }
+    }
+
+    private void SetObjectInstance(object value)
+    {
+      //hook up event handlers for notificaiton propagation
+      if (_dataObject != null && _dataObject is INotifyPropertyChanged)
+        ((INotifyPropertyChanged)_dataObject).PropertyChanged -= new PropertyChangedEventHandler(dataObject_PropertyChanged);
+      if (_dataObject != null && _dataObject is INotifyChildChanged)
+        ((INotifyChildChanged)_dataObject).ChildChanged -= new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
+      if (_dataObject != null && _dataObject is INotifyBusy)
+        ((INotifyBusy)_dataObject).BusyChanged -= new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
+
+      _dataObject = value;
+      if (_manageObjectLifetime)
+      {
+        var undoable = _dataObject as Csla.Core.ISupportUndo;
+        if (undoable != null)
+          undoable.BeginEdit();
+      }
+
+      if (_dataObject != null && _dataObject is INotifyPropertyChanged)
+        ((INotifyPropertyChanged)_dataObject).PropertyChanged += new PropertyChangedEventHandler(dataObject_PropertyChanged);
+      if (_dataObject != null && _dataObject is INotifyChildChanged)
+        ((INotifyChildChanged)_dataObject).ChildChanged += new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
+
+      if (_dataObject != null && _dataObject is INotifyBusy)
+        ((INotifyBusy)_dataObject).BusyChanged += new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
+
+      try
+      {
+        OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
+      }
+      catch (Exception ex)
+      {
+        // Silverlight seems to throw a meaningless null ref exception
+        // and during page load there are possible timing issues
+        // where these events may cause non-useful exceptions
+        // and this is a workaround to ignore the issues
+        var o = ex;
+      }
+      try
+      {
+        OnPropertyChanged(new PropertyChangedEventArgs("Data"));
+      }
+      catch (Exception ex)
+      {
+        // Silverlight seems to throw a meaningless null ref exception
+        // and during page load there are possible timing issues
+        // where these events may cause non-useful exceptions
+        // and this is a workaround to ignore the issues
+        var o = ex;
       }
     }
 
@@ -328,11 +333,16 @@ namespace Csla.Silverlight
       get { return _error; }
       private set
       {
-        _error = value;
-        IsBusy = false;
-        OnPropertyChanged(new PropertyChangedEventArgs("Error"));
+        SetError(value);
         OnDataChanged();
       }
+    }
+
+    private void SetError(Exception value)
+    {
+      _error = value;
+      IsBusy = false;
+      OnPropertyChanged(new PropertyChangedEventArgs("Error"));
     }
 
     private object _dataChangedHandler;
@@ -478,8 +488,20 @@ namespace Csla.Silverlight
     private void QueryCompleted(object sender, EventArgs e)
     {
       IDataPortalResult eventArgs = e as IDataPortalResult;
-      this.Error = eventArgs.Error;
-      this.ObjectInstance = eventArgs.Object;
+      SetError(eventArgs.Error);
+      SetObjectInstance(eventArgs.Object);
+      try
+      {
+        OnDataChanged();
+      }
+      catch (Exception ex)
+      {
+        // Silverlight seems to throw a meaningless null ref exception
+        // and during page load there are possible timing issues
+        // where these events may cause non-useful exceptions
+        // and this is a workaround to ignore the issues
+        var o = ex;
+      }
       RefreshCanOperationsValues();
       this.IsBusy = false;
     }

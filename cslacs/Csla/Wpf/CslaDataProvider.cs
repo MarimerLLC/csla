@@ -211,6 +211,7 @@ namespace Csla.Wpf
 
     #region Query
 
+    private bool _firstRun = true;
     private bool _init = true;
     private bool _endInitCompete = false;
     private bool _endInitError = false;
@@ -243,6 +244,13 @@ namespace Csla.Wpf
     {
       if (_init)
         return;
+
+      if (_firstRun)
+      {
+        _firstRun = false;
+        if (!IsInitialLoadEnabled)
+          return;
+      }
 
       if (_endInitError)
       {

@@ -23,7 +23,7 @@ namespace Csla.Test.ObjectFactory
     public void Create()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
-      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       try
       {
         Csla.Server.FactoryDataPortal.FactoryLoader =
@@ -36,7 +36,7 @@ namespace Csla.Test.ObjectFactory
       }
       finally
       {
-        ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
+        Csla.ApplicationContext.DataPortalProxy = "Local";
         Csla.ApplicationContext.User = new System.Security.Principal.GenericPrincipal(
           new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
       }
@@ -45,7 +45,7 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void CreateLocal()
     {
-      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       try
       {
         Csla.Server.FactoryDataPortal.FactoryLoader =
@@ -58,7 +58,8 @@ namespace Csla.Test.ObjectFactory
       }
       finally
       {
-        ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
+        Csla.ApplicationContext.DataPortalProxy = "Local";
+        Csla.DataPortal.ResetProxyType();
       }
     }
 
@@ -66,7 +67,7 @@ namespace Csla.Test.ObjectFactory
     public void CreateMissing()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
-      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       try
       {
         Csla.Server.FactoryDataPortal.FactoryLoader =
@@ -79,7 +80,8 @@ namespace Csla.Test.ObjectFactory
       }
       finally
       {
-        ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
+        Csla.ApplicationContext.DataPortalProxy = "Local";
+        Csla.DataPortal.ResetProxyType();
         Csla.ApplicationContext.User = new System.Security.Principal.GenericPrincipal(
           new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
       }
@@ -124,15 +126,25 @@ namespace Csla.Test.ObjectFactory
     [TestMethod]
     public void UpdateEnterpriseServices()
     {
-      Csla.Server.FactoryDataPortal.FactoryLoader =
-        new ObjectFactoryLoader(2);
-      var root = new Root();
-      root.Data = "abc";
-      root = Csla.DataPortal.Update<Root>(root);
-      Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-      Assert.AreEqual("Update", root.Data, "Data should match");
-      Assert.IsFalse(root.IsNew, "Should not be new");
-      Assert.IsFalse(root.IsDirty, "Should not be dirty");
+      try
+      {
+        Csla.Server.FactoryDataPortal.FactoryLoader =
+          new ObjectFactoryLoader(2);
+        var root = new Root();
+        root.Data = "abc";
+        root = Csla.DataPortal.Update<Root>(root);
+        Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
+        Assert.AreEqual("Update", root.Data, "Data should match");
+        Assert.IsFalse(root.IsNew, "Should not be new");
+        Assert.IsFalse(root.IsDirty, "Should not be dirty");
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        if (ex.InnerException.GetType().FullName == "System.EnterpriseServices.RegistrationException")
+          Assert.Ignore("COM+ not accessible");
+        else
+          throw;
+      }
     }
 
     [TestMethod]

@@ -130,8 +130,8 @@ namespace Csla.Core
             if (value == null)
             {
               // variable has no value - store that fact
-              //state.Add(h.MemberFullName, null);
-              state.Add(h.MemberName, null);
+              state.Add(h.MemberFullName, null);
+              //state.Add(h.MemberName, null);
             }
             else
             {
@@ -142,8 +142,8 @@ namespace Csla.Core
           else
           {
             // this is a normal field, simply trap the value
-            //state.Add(h.MemberFullName, value);
-            state.Add(h.MemberName, value);
+            state.Add(h.MemberFullName, value);
+            //state.Add(h.MemberName, value);
           }
         }
 
@@ -226,8 +226,8 @@ namespace Csla.Core
             {
               // this is a child object
               // see if the previous value was empty
-              //if (state.Contains(h.MemberFullName))
-              if (state.Contains(h.MemberName))
+              //if (state.Contains(h.MemberName))
+              if (state.Contains(h.MemberFullName))
               {
                 // previous value was empty - restore to empty
                 h.DynamicMemberSet(this, null);
@@ -246,8 +246,8 @@ namespace Csla.Core
             else
             {
               // this is a regular field, restore its value
-              //h.DynamicMemberSet(this, state[h.MemberFullName]);
-              h.DynamicMemberSet(this, state[h.MemberName]);
+              h.DynamicMemberSet(this, state[h.MemberFullName]);
+              //h.DynamicMemberSet(this, state[h.MemberName]);
             }
           }
 

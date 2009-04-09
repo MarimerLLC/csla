@@ -6,34 +6,39 @@ using System.Reflection;
 
 namespace Csla.Reflection
 {
-    internal class DynamicMemberHandle
+  internal class DynamicMemberHandle
+  {
+    public string MemberName { get; private set; }
+    public Type MemberType { get; private set; }
+    public DynamicMemberGetDelegate DynamicMemberGet { get; private set; }
+    public DynamicMemberSetDelegate DynamicMemberSet { get; private set; }
+
+    public string MemberFullName
     {
-        public string MemberName { get; private set; }
-        public Type MemberType { get; private set; }
-        public DynamicMemberGetDelegate DynamicMemberGet { get; private set; }
-        public DynamicMemberSetDelegate DynamicMemberSet { get; private set; }
-
-        public DynamicMemberHandle(string memberName, Type memberType, DynamicMemberGetDelegate dynamicMemberGet, DynamicMemberSetDelegate dynamicMemberSet)
-        {
-            MemberName = memberName;
-            MemberType = memberType;
-            DynamicMemberGet = dynamicMemberGet;
-            DynamicMemberSet = dynamicMemberSet;
-        }
-
-        public DynamicMemberHandle(PropertyInfo info) :
-            this(
-                info.Name, 
-                info.PropertyType, 
-                DynamicMethodHandlerFactory.CreatePropertyGetter(info), 
-                DynamicMethodHandlerFactory.CreatePropertySetter(info))
-        { }
-        public DynamicMemberHandle(FieldInfo info) :
-            this(
-                info.Name,
-                info.FieldType,
-                DynamicMethodHandlerFactory.CreateFieldGetter(info),
-                DynamicMethodHandlerFactory.CreateFieldSetter(info))
-        { }
+      get { return MemberType + "." + MemberName; }
     }
+
+    public DynamicMemberHandle(string memberName, Type memberType, DynamicMemberGetDelegate dynamicMemberGet, DynamicMemberSetDelegate dynamicMemberSet)
+    {
+      MemberName = memberName;
+      MemberType = memberType;
+      DynamicMemberGet = dynamicMemberGet;
+      DynamicMemberSet = dynamicMemberSet;
+    }
+
+    public DynamicMemberHandle(PropertyInfo info) :
+      this(
+            info.Name,
+            info.PropertyType,
+            DynamicMethodHandlerFactory.CreatePropertyGetter(info),
+            DynamicMethodHandlerFactory.CreatePropertySetter(info))
+    { }
+    public DynamicMemberHandle(FieldInfo info) :
+      this(
+            info.Name,
+            info.FieldType,
+            DynamicMethodHandlerFactory.CreateFieldGetter(info),
+            DynamicMethodHandlerFactory.CreateFieldSetter(info))
+    { }
+  }
 }

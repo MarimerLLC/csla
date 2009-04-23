@@ -227,7 +227,7 @@ namespace Csla
       }
       else if (!IsValid && !IsDeleted)
       {
-        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveInvalidException);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
         OnSaved(null, error, userState);

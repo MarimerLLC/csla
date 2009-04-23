@@ -144,7 +144,7 @@ namespace Csla
     /// </remarks>
     public static object CoerceValue(Type desiredType, Type valueType, object oldValue, object value)
     {
-      if (desiredType.Equals(valueType))
+      if (desiredType.IsAssignableFrom(valueType))
       {
         // types match, just return value
         return value;

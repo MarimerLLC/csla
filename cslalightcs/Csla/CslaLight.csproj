@@ -218,6 +218,12 @@
     <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\MobileFormatter.cs">
       <Link>Serialization\Mobile\MobileFormatter.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\NullPlaceholder.cs">
+      <Link>Serialization\Mobile\NullPlaceholder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\ReferenceComparer.cs">
+      <Link>Serialization\Mobile\ReferenceComparer.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\SerializationInfo.cs">
       <Link>Serialization\Mobile\SerializationInfo.cs</Link>
     </Compile>
@@ -381,8 +387,6 @@
     <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\MembershipIdentity.partial.cs" />
     <Compile Include="Security\PrincipalCache.cs" />
-    <Compile Include="Serialization\Mobile\NullPlaceholder.cs" />
-    <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>
     </Compile>

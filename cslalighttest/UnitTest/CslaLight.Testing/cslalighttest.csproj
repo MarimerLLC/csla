@@ -208,6 +208,15 @@
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Serialization\BindingListTests.cs">
       <Link>Serialization\BindingListTests.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Serialization\Customer.cs">
+      <Link>Serialization\Customer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Serialization\CustomerContact.cs">
+      <Link>Serialization\CustomerContact.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Serialization\CustomerWithEnum.cs">
+      <Link>Serialization\CustomerWithEnum.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\Silverlight\Serialization\CustomMobileList.cs">
       <Link>Serialization\CustomMobileList.cs</Link>
     </Compile>

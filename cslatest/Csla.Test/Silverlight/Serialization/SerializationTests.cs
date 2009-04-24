@@ -450,5 +450,106 @@ namespace cslalighttest.Serialization
       context.Assert.Success();
       context.Complete();
     }
+
+    /// <summary>
+    /// Verifies that serializing an object graph with sibling complex objects that
+    /// implement Equals and are logically identical, produces an identical object graph upon
+    /// deserialization (eg. the two siblings are separate instances post-deserialization).
+    /// It should also be noted that the tested objects implement custom serialization methods.
+    /// </summary>
+    [TestMethod]
+    public void LogicallyIdenticalChildObjects()
+    {
+      UnitTestContext context = GetContext();
+
+      // Setup the customer w/ logically identical contacts
+      Customer customer = new Customer();
+
+      customer.Name = "Test Customer";
+      customer.PrimaryContact.FirstName = "John";
+      customer.PrimaryContact.LastName = "Smith";
+      customer.AccountsPayableContact.FirstName = "John";
+      customer.AccountsPayableContact.LastName = "Smith";
+
+      // Serialize and deserialize the customer
+      var buffer = MobileFormatter.Serialize(customer);
+      var deserializedCustomer = (Customer)MobileFormatter.Deserialize(buffer);
+
+      // Verify the deserialized customer is identical to the original object
+      context.Assert.AreEqual(customer.Name, deserializedCustomer.Name);
+      context.Assert.AreEqual(customer.PrimaryContact.FirstName, deserializedCustomer.PrimaryContact.FirstName);
+      context.Assert.AreEqual(customer.PrimaryContact.LastName, deserializedCustomer.PrimaryContact.LastName);
+      context.Assert.AreEqual(customer.AccountsPayableContact.FirstName, deserializedCustomer.AccountsPayableContact.FirstName);
+      context.Assert.AreEqual(customer.AccountsPayableContact.LastName, deserializedCustomer.AccountsPayableContact.LastName);
+
+      //
+      // The two CustomerContact objects (PrimaryContact and AccountsPayableContact) should not
+      // point to the same CustomerContact instance after deserialization, even though they
+      // are logically identical. They start as different objects prior to serialization and 
+      // they should end as different objects after.
+      //
+      context.Assert.IsFalse(Object.ReferenceEquals(deserializedCustomer.PrimaryContact, deserializedCustomer.AccountsPayableContact));
+
+      context.Assert.Success();
+      context.Complete();
+    }
+
+    /// <summary>
+    /// Verifies that serializing/deserializing an object graph with null references of a
+    /// type that is complex (eg. is a separate child object) works. It should also be noted
+    /// that the tested objects implement custom serialization methods.
+    /// </summary>
+    [TestMethod]
+    public void NullChildObject()
+    {
+      UnitTestContext context = GetContext();
+
+      // Setup the customer w/ a null child object
+      Customer customer = new Customer();
+
+      customer.Name = "Test Customer";
+      customer.PrimaryContact.FirstName = "John";
+      customer.PrimaryContact.LastName = "Smith";
+      customer.AccountsPayableContact = null;
+
+      // Serialize and deserialize the customer
+      var buffer = MobileFormatter.Serialize(customer);
+      var deserializedCustomer = (Customer)MobileFormatter.Deserialize(buffer);
+
+      // Verify the deserialized customer is identical to the original object
+      context.Assert.AreEqual(customer.Name, deserializedCustomer.Name);
+      context.Assert.AreEqual(customer.PrimaryContact.FirstName, deserializedCustomer.PrimaryContact.FirstName);
+      context.Assert.AreEqual(customer.PrimaryContact.LastName, deserializedCustomer.PrimaryContact.LastName);
+      context.Assert.IsNull(deserializedCustomer.AccountsPayableContact);
+
+      context.Assert.Success();
+      context.Complete();
+    }
+
+    /// <summary>
+    /// Verifies that serialization/deserialization works for business objects that have
+    /// an property storing an enum.
+    /// </summary>
+    [TestMethod]
+    public void BusinessObjectWithEnum()
+    {
+      UnitTestContext context = GetContext();
+
+      // Setup the customer w/ logically identical contacts
+      CustomerWithEnum customer = new CustomerWithEnum();
+
+      customer.Name = "Test Customer";
+      customer.Quality = CustomerQuality.Good;
+
+      // Serialize and deserialize the customer
+      var buffer = MobileFormatter.Serialize(customer);
+      var deserializedCustomer = (CustomerWithEnum)MobileFormatter.Deserialize(buffer);
+
+      // Verify the deserialized customer is identical to the original object
+      context.Assert.AreEqual(customer.Name, deserializedCustomer.Name);
+      context.Assert.AreEqual(customer.Quality, deserializedCustomer.Quality);
+      context.Assert.Success();
+      context.Complete();
+    }
   }
 }

@@ -29,6 +29,15 @@ namespace Csla.Serialization.Mobile
       /// </summary>
       [DataMember]
       public object Value { get; set; }
+
+      /// <summary>
+      /// If non-null, indicates that the value is a integer value representing the
+      /// specified enum type. Upon deserialization, the integer will be converted back
+      /// to the enum type.
+      /// </summary>
+      [DataMember]
+      public string EnumTypeName { get; set; }
+
       /// <summary>
       /// Indicates whether the field is dirty.
       /// </summary>

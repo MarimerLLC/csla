@@ -216,6 +216,8 @@
     <Compile Include="Security\UnauthenticatedIdentity.cs" />
     <Compile Include="Security\UnauthenticatedPrincipal.cs" />
     <Compile Include="Security\UsernameCriteria.cs" />
+    <Compile Include="Serialization\Mobile\NullPlaceholder.cs" />
+    <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
     <Compile Include="Server\FactoryDataPortal.cs" />
     <Compile Include="Server\IAuthorizeDataPortal.cs" />

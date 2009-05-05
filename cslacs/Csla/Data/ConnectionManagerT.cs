@@ -27,6 +27,7 @@ namespace Csla.Data
     private static object _lock = new object();
     private C _connection;
     private string _connectionString;
+    private string _label;
 
     /// <summary>
     /// Gets the ConnectionManager object for the 
@@ -45,6 +46,19 @@ namespace Csla.Data
     /// specified database.
     /// </summary>
     /// <param name="database">
+    /// Database name as shown in the config file.
+    /// </param>
+    /// <param name="label">Label for this connection.</param>
+    public static ConnectionManager<C> GetManager(string database, string label)
+    {
+      return GetManager(database, true, label);
+    }
+
+        /// <summary>
+    /// Gets the ConnectionManager object for the 
+    /// specified database.
+    /// </summary>
+    /// <param name="database">
     /// The database name or connection string.
     /// </param>
     /// <param name="isDatabaseName">
@@ -53,8 +67,29 @@ namespace Csla.Data
     /// False, the database parameter is directly 
     /// used as a connection string.
     /// </param>
+    /// <param name="label">Label for this connection.</param>
     /// <returns>ConnectionManager object for the name.</returns>
     public static ConnectionManager<C> GetManager(string database, bool isDatabaseName)
+    {
+      return GetManager(database, isDatabaseName, "default");
+    }
+
+    /// <summary>
+    /// Gets the ConnectionManager object for the 
+    /// specified database.
+    /// </summary>
+    /// <param name="database">
+    /// The database name or connection string.
+    /// </param>
+    /// <param name="isDatabaseName">
+    /// True to indicate that the connection string
+    /// should be retrieved from the config file. If
+    /// False, the database parameter is directly 
+    /// used as a connection string.
+    /// </param>
+    /// <param name="label">Label for this connection.</param>
+    /// <returns>ConnectionManager object for the name.</returns>
+    public static ConnectionManager<C> GetManager(string database, bool isDatabaseName, string label)
     {
       if (isDatabaseName)
       {
@@ -70,25 +105,26 @@ namespace Csla.Data
 
       lock (_lock)
       {
+        var ctxName = GetContextName(database, label);
         ConnectionManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains("__db:" + database))
+        if (ApplicationContext.LocalContext.Contains(ctxName))
         {
-          mgr = (ConnectionManager<C>)(ApplicationContext.LocalContext["__db:" + database]);
+          mgr = (ConnectionManager<C>)(ApplicationContext.LocalContext[ctxName]);
 
         }
         else
         {
-          mgr = new ConnectionManager<C>(database);
-          ApplicationContext.LocalContext["__db:" + database] = mgr;
+          mgr = new ConnectionManager<C>(database, label);
+          ApplicationContext.LocalContext[ctxName] = mgr;
         }
         mgr.AddRef();
         return mgr;
       }
     }
 
-    private ConnectionManager(string connectionString)
+    private ConnectionManager(string connectionString, string label)
     {
-
+      _label = label;
       _connectionString = connectionString;
 
       // open connection
@@ -96,6 +132,11 @@ namespace Csla.Data
       _connection.ConnectionString = connectionString;
       _connection.Open();
 
+    }
+
+    private static string GetContextName(string connectionString, string label)
+    {
+      return "__db:" + label + "-" + connectionString;
     }
 
     /// <summary>
@@ -127,7 +168,7 @@ namespace Csla.Data
         if (mRefCount == 0)
         {
           _connection.Dispose();
-          ApplicationContext.LocalContext.Remove("__db:" + _connectionString);
+          ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
         }
       }
 

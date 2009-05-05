@@ -33,6 +33,7 @@ namespace Csla.Data
     private static object _lock = new object();
     private C _context;
     private string _connectionString;
+    private string _label;
 
     /// <summary>
     /// Gets the ObjectContextManager object for the 
@@ -51,6 +52,19 @@ namespace Csla.Data
     /// specified database.
     /// </summary>
     /// <param name="database">
+    /// Database name as shown in the config file.
+    /// </param>
+    /// <param name="label">Label for this context.</param>
+    public static ObjectContextManager<C> GetManager(string database, string label)
+    {
+      return GetManager(database, true, label);
+    }
+
+    /// <summary>
+    /// Gets the ObjectContextManager object for the 
+    /// specified database.
+    /// </summary>
+    /// <param name="database">
     /// The database name or connection string.
     /// </param>
     /// <param name="isDatabaseName">
@@ -61,6 +75,26 @@ namespace Csla.Data
     /// </param>
     /// <returns>ContextManager object for the name.</returns>
     public static ObjectContextManager<C> GetManager(string database, bool isDatabaseName)
+    {
+      return GetManager(database, isDatabaseName, "default");
+    }
+
+    /// <summary>
+    /// Gets the ObjectContextManager object for the 
+    /// specified database.
+    /// </summary>
+    /// <param name="database">
+    /// The database name or connection string.
+    /// </param>
+    /// <param name="isDatabaseName">
+    /// True to indicate that the connection string
+    /// should be retrieved from the config file. If
+    /// False, the database parameter is directly 
+    /// used as a connection string.
+    /// </param>
+    /// <param name="label">Label for this context.</param>
+    /// <returns>ContextManager object for the name.</returns>
+    public static ObjectContextManager<C> GetManager(string database, bool isDatabaseName, string label)
     {
       if (isDatabaseName)
       {
@@ -75,30 +109,37 @@ namespace Csla.Data
 
       lock (_lock)
       {
+        var contextLabel = GetContextName(database, label);
         ObjectContextManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains("__octx:" + database))
+        if (ApplicationContext.LocalContext.Contains(contextLabel))
         {
-          mgr = (ObjectContextManager<C>)(ApplicationContext.LocalContext["__octx:" + database]);
+          mgr = (ObjectContextManager<C>)(ApplicationContext.LocalContext[contextLabel]);
 
         }
         else
         {
-          mgr = new ObjectContextManager<C>(database);
-          ApplicationContext.LocalContext["__octx:" + database] = mgr;
+          mgr = new ObjectContextManager<C>(database, label);
+          ApplicationContext.LocalContext[contextLabel] = mgr;
         }
         mgr.AddRef();
         return mgr;
       }
     }
 
-    private ObjectContextManager(string connectionString)
+    private ObjectContextManager(string connectionString, string label)
     {
-
+      _label = label;
       _connectionString = connectionString;
 
       _context = (C)(Activator.CreateInstance(typeof(C), connectionString));
 
     }
+
+    private static string GetContextName(string connectionString, string label)
+    {
+      return "__octx:" + label + "-" + connectionString;
+    }
+
 
     /// <summary>
     /// Gets the EF object context object.
@@ -129,7 +170,7 @@ namespace Csla.Data
         if (mRefCount == 0)
         {
           _context.Dispose();
-          ApplicationContext.LocalContext.Remove("__octx:" + _connectionString);
+          ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
         }
       }
 

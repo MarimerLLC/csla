@@ -39,15 +39,16 @@ namespace Csla.Data
 
       lock (_lock)
       {
+        var contextLabel = GetContextName(path.ToString());
         DataServiceContextManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains("__ctx:" + path.ToString()))
+        if (ApplicationContext.LocalContext.Contains(contextLabel))
         {
-          mgr = (DataServiceContextManager<C>)(ApplicationContext.LocalContext["__ctx:" + path.ToString()]);
+          mgr = (DataServiceContextManager<C>)(ApplicationContext.LocalContext[contextLabel]);
         }
         else
         {
           mgr = new DataServiceContextManager<C>(path);
-          ApplicationContext.LocalContext["__ctx:" + path.ToString()] = mgr;
+          ApplicationContext.LocalContext[contextLabel] = mgr;
         }
         return mgr;
       }
@@ -67,6 +68,11 @@ namespace Csla.Data
       {
         return _context;
       }
+    }
+
+    private static string GetContextName(string path)
+    {
+      return "__ctx:" + path;
     }
 
     /// <summary>

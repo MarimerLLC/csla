@@ -34,6 +34,7 @@ namespace Csla.Data
     private C _connection;
     private T _transaction;
     private string _connectionString;
+    private string _label;
 
     /// <summary>
     /// Gets the TransactionManager object for the 
@@ -52,6 +53,19 @@ namespace Csla.Data
     /// specified database.
     /// </summary>
     /// <param name="database">
+    /// Database name as shown in the config file.
+    /// </param>
+    /// <param name="label">Label for this transaction.</param>
+    public static TransactionManager<C, T> GetManager(string database, string label)
+    {
+      return GetManager(database, true, label);
+    }
+
+    /// <summary>
+    /// Gets the TransactionManager object for the 
+    /// specified database.
+    /// </summary>
+    /// <param name="database">
     /// The database name or connection string.
     /// </param>
     /// <param name="isDatabaseName">
@@ -62,6 +76,26 @@ namespace Csla.Data
     /// </param>
     /// <returns>TransactionManager object for the name.</returns>
     public static TransactionManager<C, T> GetManager(string database, bool isDatabaseName)
+    {
+      return GetManager(database, isDatabaseName, "default");
+    }
+
+    /// <summary>
+    /// Gets the TransactionManager object for the 
+    /// specified database.
+    /// </summary>
+    /// <param name="database">
+    /// The database name or connection string.
+    /// </param>
+    /// <param name="isDatabaseName">
+    /// True to indicate that the Transaction string
+    /// should be retrieved from the config file. If
+    /// False, the database parameter is directly 
+    /// used as a Transaction string.
+    /// </param>
+    /// <param name="label">Label for this transaction.</param>
+    /// <returns>TransactionManager object for the name.</returns>
+    public static TransactionManager<C, T> GetManager(string database, bool isDatabaseName, string label)
     {
       if (isDatabaseName)
       {
@@ -77,25 +111,26 @@ namespace Csla.Data
 
       lock (_lock)
       {
+        var contextLabel = GetContextName(database, label);
         TransactionManager<C, T> mgr = null;
-        if (ApplicationContext.LocalContext.Contains("__transaction:" + database))
+        if (ApplicationContext.LocalContext.Contains(contextLabel))
         {
-          mgr = (TransactionManager<C, T>)(ApplicationContext.LocalContext["__transaction:" + database]);
+          mgr = (TransactionManager<C, T>)(ApplicationContext.LocalContext[contextLabel]);
 
         }
         else
         {
-          mgr = new TransactionManager<C, T>(database);
-          ApplicationContext.LocalContext["__transaction:" + database] = mgr;
+          mgr = new TransactionManager<C, T>(database, label);
+          ApplicationContext.LocalContext[contextLabel] = mgr;
         }
         mgr.AddRef();
         return mgr;
       }
     }
 
-    private TransactionManager(string connectionString)
+    private TransactionManager(string connectionString, string label)
     {
-
+      _label = label;
       _connectionString = connectionString;
 
       // create and open connection
@@ -105,6 +140,11 @@ namespace Csla.Data
       //start transaction
       _transaction = (T)_connection.BeginTransaction();
 
+    }
+
+    private static string GetContextName(string connectionString, string label)
+    {
+      return "__transaction:" + label + "-" + connectionString;
     }
 
     /// <summary>
@@ -151,7 +191,7 @@ namespace Csla.Data
         {
           _transaction.Dispose();
           _connection.Dispose();
-          ApplicationContext.LocalContext.Remove("__transaction:" + _connectionString);
+          ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
         }
       }
 

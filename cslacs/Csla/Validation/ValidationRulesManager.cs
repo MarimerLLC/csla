@@ -41,13 +41,13 @@ namespace Csla.Validation
 
     #region Adding Rules
 
-    public void AddRule(AsyncRuleHandler handler, RuleSeverity severity, AsyncRuleArgs args)
+    public void AddRule(AsyncRuleHandler handler, AsyncRuleArgs args, int priority)
     {
       // get the list of rules for the primary property
       List<IRuleMethod> list = GetRulesForProperty(args.Properties[0].Name, true).GetList(false);
 
       // we have the list, add our new rule
-      list.Add(new AsyncRuleMethod(handler, args, severity));
+      list.Add(new AsyncRuleMethod(handler, args, priority));
     }
 
     public void AddRule(RuleHandler handler, RuleArgs args, int priority)

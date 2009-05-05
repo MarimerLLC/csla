@@ -399,6 +399,21 @@ namespace Csla.Validation
     /// <param name="handler">
     /// The method that implements the rule.
     /// </param>
+    /// <param name="primaryProperty">
+    /// The primary property checked by this rule.
+    /// </param>
+    /// <param name="priority">Priority for the rule</param>
+    public void AddRule(AsyncRuleHandler handler, IPropertyInfo primaryProperty, int priority)
+    {
+      AddRule(handler, new AsyncRuleArgs(primaryProperty, null), priority);
+    }
+
+    /// <summary>
+    /// Adds an async rule to the list of rules to be enforced.
+    /// </summary>
+    /// <param name="handler">
+    /// The method that implements the rule.
+    /// </param>
     /// <param name="args">
     /// An AsyncRuleArgs object specifying the property name and other arguments
     /// passed to the rule method
@@ -406,7 +421,24 @@ namespace Csla.Validation
     public void AddRule(AsyncRuleHandler handler, AsyncRuleArgs args)
     {
       ValidateHandler(handler);
-      GetTypeRules(true).AddRule(handler, RuleSeverity.Error, args);
+      GetTypeRules(true).AddRule(handler, args, 0);
+    }
+
+    /// <summary>
+    /// Adds an async rule to the list of rules to be enforced.
+    /// </summary>
+    /// <param name="handler">
+    /// The method that implements the rule.
+    /// </param>
+    /// <param name="args">
+    /// An AsyncRuleArgs object specifying the property name and other arguments
+    /// passed to the rule method
+    /// </param>
+    /// <param name="priority">Priority for the rule</param>
+    public void AddRule(AsyncRuleHandler handler, AsyncRuleArgs args, int priority)
+    {
+      ValidateHandler(handler);
+      GetTypeRules(true).AddRule(handler, args, priority);
     }
 
     /// <summary>

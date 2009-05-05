@@ -15,8 +15,8 @@ namespace Csla.Validation
     private AsyncRuleHandler _handler;
     private AsyncRuleArgs _args;
     private string _ruleName = String.Empty;
-    private RuleSeverity _severity;
-    private const int _priority = 0;
+    private RuleSeverity _severity = RuleSeverity.Error;
+    private int _priority = 0;
 
     /// <summary>
     /// Returns the name of the method implementing the rule
@@ -79,6 +79,23 @@ namespace Csla.Validation
       _ruleName = string.Format(@"rule://{0}/{1}/{2}",
         Uri.EscapeDataString(_handler.Method.DeclaringType.FullName), 
         _handler.Method.Name, 
+        _args.Properties[0].Name);
+    }
+
+    /// <summary>
+    /// Creates and initializes the rule.
+    /// </summary>
+    /// <param name="handler">The address of the method implementing the rule.</param>
+    /// <param name="args">A RuleArgs object.</param>
+    /// <param name="priority">Priority of the rule.</param>
+    public AsyncRuleMethod(AsyncRuleHandler handler, AsyncRuleArgs args, int priority)
+    {
+      _handler = handler;
+      _args = args;
+      _priority = priority;
+      _ruleName = string.Format(@"rule://{0}/{1}/{2}",
+        Uri.EscapeDataString(_handler.Method.DeclaringType.FullName),
+        _handler.Method.Name,
         _args.Properties[0].Name);
     }
 

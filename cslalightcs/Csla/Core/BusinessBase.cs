@@ -2949,7 +2949,8 @@ namespace Csla.Core
     /// loosely-typed criteria parameter.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void Child_Create()
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void Child_Create()
     {
       ValidationRules.CheckRules();
     }

@@ -3,48 +3,78 @@
 namespace Csla
 {
   /// <summary>
-  /// Object containing the results of an
-  /// asynchronous data portal call.
+  /// IDataPortalResult defines the results of DataPortal operation
   /// </summary>
-  /// <typeparam name="T">
-  /// Type of business object.
-  /// </typeparam>
-  public class DataPortalResult<T> : EventArgs
+  public interface IDataPortalResult
   {
     /// <summary>
-    /// The business object returned from
-    /// the data portal.
+    /// Gets the resulting object.
+    /// </summary>
+    object Object { get; }
+    /// <summary>
+    /// Gets any resulting error information.
+    /// </summary>
+    Exception Error { get; }
+  }
+
+  /// <summary>
+  /// DataPortalResult defines the results of DataPortal operation.
+  /// It contains object that was received from the server, 
+  /// an error (if occurred) and userState - user defined information
+  /// that was passed into data portal on initial request
+  /// </summary>
+  /// <typeparam name="T">Type of object that DataPortal received</typeparam>
+  public class DataPortalResult<T> : EventArgs, IDataPortalResult
+  {
+    /// <summary>
+    /// Object that DataPortal received as a result of current operation
     /// </summary>
     public T Object { get; private set; }
     /// <summary>
-    /// Any Exception object returned from
-    /// the data portal. If this is not null,
-    /// then an exception occurred and should
-    /// be processed.
+    /// Error that occurred during the DataPotal call.
+    /// This will be null if no errors occurred.
     /// </summary>
     public Exception Error { get; private set; }
 
     /// <summary>
-    /// Gets the user state value.
+    /// User defined information
+    /// that was passed into data portal on initial request
     /// </summary>
     public object UserState { get; private set; }
 
     /// <summary>
-    /// Creates and populates an instance of 
-    /// the object.
+    /// Create new instance of data portal result
     /// </summary>
     /// <param name="obj">
-    /// The business object to return.
+    /// Object that DataPortal received as a result of current operation
     /// </param>
     /// <param name="ex">
-    /// The Exception (if any) to return.
+    /// Error that occurred during the DataPotal call.
+    /// This will be null if no errors occurred.
     /// </param>
-    /// <param name="userState">User state object.</param>
-    internal DataPortalResult(T obj, Exception ex, object userState)
+    /// <param name="userState">
+    /// User defined information
+    /// that was passed into data portal on initial request
+    /// </param>
+    public DataPortalResult(T obj, Exception ex, object userState)
     {
       this.Object = obj;
       this.Error = ex;
       this.UserState = userState;
     }
+
+    #region IDataPortalResult Members
+
+    object IDataPortalResult.Object
+    {
+      get { return this.Object; }
+    }
+
+    Exception IDataPortalResult.Error
+    {
+      get { return this.Error; }
+    }
+
+    #endregion
   }
 }

@@ -462,6 +462,7 @@ namespace Csla.Test.CslaQueryProvider
     }
 
     [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
     public void TestQueryProviderFirst()
     {
       CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
@@ -476,21 +477,10 @@ namespace Csla.Test.CslaQueryProvider
       var fCrit = a.First(r => r.SomeVal >= 5);
       var fSing = a.First();
 
-      try
-      {
-        var fNull = a.First(r => r.SomeVal >= 1000);
-      }
-      catch (InvalidOperationException invalidOp)
-      {
-
-      }
-      catch
-      {
-        Assert.Fail("Should have thrown InvalidOperationException");
-      }
-
       Assert.IsTrue(fCrit.SomeVal == 5);
       Assert.IsTrue(fSing.SomeVal == 1);
+
+      var fNull = a.First(r => r.SomeVal >= 1000);
     }
 
     [TestMethod]
@@ -630,6 +620,7 @@ namespace Csla.Test.CslaQueryProvider
     }
 
     [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
     public void TestQueryProviderLast()
     {
       CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
@@ -644,21 +635,10 @@ namespace Csla.Test.CslaQueryProvider
       var lCrit = a.Last(r => r.SomeVal <= 1);
       var lSing = a.Last();
 
-      try
-      {
-        var lNull = a.Last(r => r.SomeVal >= 1000);
-      }
-      catch (InvalidOperationException invalidOp)
-      {
-
-      }
-      catch
-      {
-        Assert.Fail("Should have thrown InvalidOperationException");
-      }
-
       Assert.IsTrue(lCrit.SomeVal == 1);
       Assert.IsTrue(lSing.SomeVal == 5);
+      var lNull = a.Last(r => r.SomeVal >= 1000);
+
     }
 
     [TestMethod]
@@ -1007,6 +987,7 @@ namespace Csla.Test.CslaQueryProvider
     }
 
     [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
     public void TestQueryProviderSingle()
     {
       var random = new CollectionExtendingIQueryable<RandomThing>();
@@ -1015,17 +996,9 @@ namespace Csla.Test.CslaQueryProvider
       random.Add(new RandomThing(2));
       var shouldBeTrue2 = random.Single(x => x.SomeVal == 1) is RandomThing;
       bool madeException = false;
-      try
-      {
-        var shouldThrowException = random.Single();
-      }
-      catch (InvalidOperationException ex)
-      {
-        madeException = true;
-      }
       Assert.IsTrue(shouldBeTrue1);
       Assert.IsTrue(shouldBeTrue2);
-      Assert.IsTrue(madeException);
+      var shouldThrowException = random.Single();
     }
 
     [TestMethod]

@@ -1981,8 +1981,8 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
-      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
-        throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
+      //if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
+      //  throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
       P result = default(P);
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
@@ -2009,8 +2009,8 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected object ReadProperty(IPropertyInfo propertyInfo)
     {
-      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
-        throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
+      //if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
+      //  throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
       var info = FieldManager.GetFieldData(propertyInfo);
       if (info != null)
@@ -2541,18 +2541,7 @@ namespace Csla.Core
           {
             FieldManager.LoadFieldData<P>(propertyInfo, newValue);
           }
-          IEditableBusinessObject child = (IEditableBusinessObject)newValue;
-          if (child != null)
-          {
-            child.SetParent(this);
-            // set child edit level
-            UndoableBase.ResetChildEditLevel(child, this.EditLevel, this.BindingEdit);
-            // reset EditLevelAdded 
-            child.EditLevelAdded = this.EditLevel;
-            // hook child event
-            //INotifyPropertyChanged pc = (INotifyPropertyChanged)newValue;
-            //pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
-          }
+          ResetChildEditLevel(newValue);
         }
         else if (typeof(IEditableCollection).IsAssignableFrom(propertyInfo.Type))
         {
@@ -2572,19 +2561,7 @@ namespace Csla.Core
           {
             FieldManager.LoadFieldData<P>(propertyInfo, newValue);
           }
-          IEditableCollection child = (IEditableCollection)newValue;
-          if (child != null)
-          {
-            child.SetParent(this);
-            IUndoableObject undoChild = child as IUndoableObject;
-            if (undoChild != null)
-            {
-              // set child edit level
-              UndoableBase.ResetChildEditLevel(undoChild, this.EditLevel, this.BindingEdit);
-            }
-            //IBindingList pc = (IBindingList)newValue;
-            //pc.ListChanged += new ListChangedEventHandler(Child_ListChanged);
-          }
+          ResetChildEditLevel(newValue);
         }
         else
         {
@@ -2619,7 +2596,40 @@ namespace Csla.Core
     /// </remarks>
     protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
+      ResetChildEditLevel(newValue);
       FieldManager.LoadFieldData(propertyInfo, newValue);
+    }
+
+    /// <summary>
+    /// Makes sure that a child object is set up properly
+    /// to be a child of this object.
+    /// </summary>
+    /// <param name="newValue">Potential child object</param>
+    private void ResetChildEditLevel(object newValue)
+    {
+      IEditableBusinessObject child = (IEditableBusinessObject)newValue;
+      if (child != null)
+      {
+        child.SetParent(this);
+        // set child edit level
+        UndoableBase.ResetChildEditLevel(child, this.EditLevel, this.BindingEdit);
+        // reset EditLevelAdded 
+        child.EditLevelAdded = this.EditLevel;
+      }
+      else
+      {
+        IEditableCollection col = (IEditableCollection)newValue;
+        if (col != null)
+        {
+          col.SetParent(this);
+          IUndoableObject undo = col as IUndoableObject;
+          if (undo != null)
+          {
+            // set child edit level
+            UndoableBase.ResetChildEditLevel(undo, this.EditLevel, this.BindingEdit);
+          }
+        }
+      }
     }
 
     //private AsyncLoadManager

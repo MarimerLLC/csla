@@ -17,12 +17,12 @@ namespace Csla
   /// in the original list.</typeparam>
   public class LinqBindingList<T> :
     IList<T>, IBindingList, IEnumerable<T>,
-    ICancelAddNew, IQueryable<T>,IOrderedQueryable<T>
+    ICancelAddNew, IQueryable<T>, IOrderedQueryable<T>
   {
 
     #region ListItem class
 
-    private class ListItem 
+    private class ListItem
     {
       private object _key;
       private int _baseIndex;
@@ -252,12 +252,12 @@ namespace Csla
     /// </summary>
     public ListSortDirection SortDirection
     {
-      get 
+      get
       {
         if (SupportsSorting)
           return _bindingList.SortDirection;
         else
-          return ListSortDirection.Ascending; 
+          return ListSortDirection.Ascending;
       }
     }
 
@@ -266,12 +266,12 @@ namespace Csla
     /// </summary>
     public PropertyDescriptor SortProperty
     {
-      get 
+      get
       {
         if (SupportsSorting)
           return _bindingList.SortProperty;
         else
-          return null; 
+          return null;
       }
     }
 
@@ -303,12 +303,12 @@ namespace Csla
     /// </summary>
     public bool SupportsSorting
     {
-      get 
+      get
       {
         if (_supportsBinding)
           return _bindingList.SupportsSorting;
         else
-          return false; 
+          return false;
       }
     }
 
@@ -340,7 +340,7 @@ namespace Csla
     /// </summary>
     public int Count
     {
-      get 
+      get
       {
         return _filterIndex.Count;
       }
@@ -355,7 +355,7 @@ namespace Csla
     {
       get { return _list; }
     }
-    
+
     IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
       return (this as IEnumerable<T>).GetEnumerator();
@@ -500,8 +500,6 @@ namespace Csla
     {
       get
       {
-        
-        
         int src = OriginalIndex(index);
         return _list[src];
       }
@@ -539,8 +537,7 @@ namespace Csla
     //you can have many 
     private List<Expression> _thenByExpressions = new List<Expression>();
 
-    private List<ListItem> _filterIndex = 
-      new List<ListItem>();
+    private List<ListItem> _filterIndex = new List<ListItem>();
 
     /// <summary>
     /// Creates a new view based on the provided IList object.
@@ -554,8 +551,7 @@ namespace Csla
       {
         _supportsBinding = true;
         _bindingList = (IBindingList)_list;
-        _bindingList.ListChanged += 
-          new ListChangedEventHandler(SourceChanged);
+        _bindingList.ListChanged += new ListChangedEventHandler(SourceChanged);
       }
     }
 
@@ -609,9 +605,8 @@ namespace Csla
       else
         return searchable.SearchByExpression(whereBody).Contains(item);
     }
-    
-    private void SourceChanged(
-      object sender, ListChangedEventArgs e)
+
+    private void SourceChanged(object sender, ListChangedEventArgs e)
     {
       int listIndex;
       int filteredIndex = -1;
@@ -651,8 +646,7 @@ namespace Csla
             else
               newKey = newItem;
             if (ItemShouldBeInList(newItem))
-              _filterIndex[filteredIndex] =
-                new ListItem(newKey, listIndex);
+              _filterIndex[filteredIndex] = new ListItem(newKey, listIndex);
           }
           // raise event if appropriate
           if (filteredIndex > -1)
@@ -742,11 +736,18 @@ namespace Csla
     public T[] ToArray()
     {
       List<T> result = new List<T>();
-      foreach (T item in this)
-        result.Add(item);
+
+      //foreach (T item in this)
+      //  result.Add(item);
+      //return result.ToArray();
+      
+      //JF - 3/11/09 use the sorted filter index
+      foreach (ListItem listItem in _filterIndex)
+        result.Add(_list[listItem.BaseIndex]);        
+            
       return result.ToArray();
     }
-
+    
     #endregion
 
     internal void SortByExpression(Expression expression)
@@ -760,29 +761,12 @@ namespace Csla
       _thenByExpressions.Add(expression);
       BuildFilterIndex();
     }
-    
+
     internal void BuildFilterIndex()
     {
-      // Find the call to Where() and get the lambda expression predicate.
-      InnermostWhereFinder whereFinder = new InnermostWhereFinder();
-      MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
-      Expression<Func<T, bool>> whereBody = GetWhereBodyFromExpression(whereExpression);
-      //dynamic query behavior patch - it bundles the order by into the then by, need to
-      //tease it out here
-      if (_thenByExpressions.Count > 0 && _sortExpression == null)
-        _sortExpression = (new InnermostOrderByFinder()).GetInnermostOrderBy(_thenByExpressions[0]);
-      
-      var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
-      if (_sortExpression != null && _sortExpression is MethodCallExpression)
-        subset = BuildSortedSubset(subset, (MethodCallExpression)_sortExpression);
-      
-
-      
-
-      foreach (var expression in _thenByExpressions)
-        if (expression is MethodCallExpression)
-          subset = BuildSortedSubset(subset, (MethodCallExpression)expression);
-
+      //JF - 3/11/09 centralize the code to create the subset.  
+      var subset = GetSubset();
+          
       _filterIndex.Clear();
       if (_list is Linq.IIndexSearchable<T>)
         //before we can start, we do have to go through the whole thing once to make our filterindex.  
@@ -811,11 +795,21 @@ namespace Csla
       return whereBody;
     }
 
-    internal List<T> ToList<TResult>()
+    /// <summary>
+    /// Gets a List object.
+    /// </summary>
+    /// <returns></returns>
+    public List<T> ToList<TResult>()
     {
       var newList = new List<T>(this.Count);
-      foreach (T item in this)
-        newList.Add(item);
+           
+      //foreach (T item in this)
+      //  newList.Add(item);
+
+      //JF - 3/11/09 use the sorted filter index
+      foreach (ListItem listItem in _filterIndex)
+        newList.Add(_list[listItem.BaseIndex]);  
+      
       return newList;
     }
 
@@ -829,17 +823,9 @@ namespace Csla
     {
       if (_list is Linq.IIndexSearchable<T> && _list is Core.IPositionMappable<T>)
       {
-        // Find the call to Where() and get the lambda expression predicate.
-        InnermostWhereFinder whereFinder = new InnermostWhereFinder();
-        MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
-        Expression<Func<T, bool>> whereBody = GetWhereBodyFromExpression(whereExpression);
+        //JF - 3/11/09 centralize the code to create the subset.
+       var subset = GetSubset();
 
-        var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
-        if (_sortExpression != null && _sortExpression is MethodCallExpression)
-          subset = BuildSortedSubset(subset, (MethodCallExpression) _sortExpression);
-        foreach (var expression in _thenByExpressions)
-          if (expression is MethodCallExpression)
-            subset = BuildSortedSubset(subset, (MethodCallExpression)expression);
         foreach (T item in subset)
           yield return item;
       }
@@ -850,6 +836,51 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Called from GetEnumerator and BuildFilterIndex.
+    /// </summary>
+    /// <returns>IEnumerable</returns>
+    private IEnumerable<T> GetSubset()
+    //JF - 3/11/09 centralize the code to create the subset.  
+    {
+      // Find the call to Where() and get the lambda expression predicate.
+      InnermostWhereFinder whereFinder = new InnermostWhereFinder();
+      MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);
+      Expression<Func<T, bool>> whereBody = GetWhereBodyFromExpression(whereExpression);
+
+      //dynamic query behavior patch - it bundles the order by into the then by, need to tease it out here
+      if (_thenByExpressions.Count > 0 && _sortExpression == null)
+        _sortExpression = (new InnermostOrderByFinder()).GetInnermostOrderBy(_thenByExpressions[0]);
+
+      var subset = (_list as Linq.IIndexSearchable<T>).SearchByExpression(whereBody);
+      if (_sortExpression != null && _sortExpression is MethodCallExpression)
+        subset = BuildSortedSubset(subset, (MethodCallExpression)_sortExpression);
+
+      //JF 3/19/09 - see if we need to fix the list of ThenBy expressions.
+      if (_thenByExpressions.Count == 1)
+        GetThenByExpressions(_thenByExpressions[0]);
+      
+       foreach (var expression in _thenByExpressions)
+        if (expression is MethodCallExpression)
+          subset = BuildSortedSubset(subset, (MethodCallExpression)expression);
+      
+      return subset;
+    }
+
+     //JF 3/19/09 - If there is only a single ThenBy then it is possible that a MS Dynamic Query passed in a multi-value ThenBy.
+    //e.g. Sorting on 3 or more columns will have multiple ThenBy values in the expression.
+    //Parse them out into separate Then By expressions so the rest of 
+    //the code works the same for standard LINQ queries and MS Dynamic Queries.
+    //Is there a way to avoid this call if there is only a single ThenBy? How can you tell that case?
+    private void GetThenByExpressions(Expression expression)
+    {    
+      MethodCallExpression mex = (MethodCallExpression)expression;
+      if (mex.Method.Name.StartsWith("ThenBy"))
+      {      
+          _thenByExpressions = (new ThenByBuilder()).GetThenByExpressions(expression);          
+      }
+    }
+   
     private static IEnumerable<T> BuildSortedSubset(IEnumerable<T> subset, MethodCallExpression sortExpression)
     {
       //get the lambda buried in the second argument
@@ -880,14 +911,15 @@ namespace Csla
 
     Expression IQueryable.Expression
     {
-      get { 
+      get
+      {
         //return the most recently added expression
         //last ThenBy, Sort, then where
         if (_thenByExpressions != null && _thenByExpressions.Count > 0)
           return _thenByExpressions.Last();
         if (_sortExpression != null)
           return _sortExpression;
-        return _expression; 
+        return _expression;
       }
     }
 

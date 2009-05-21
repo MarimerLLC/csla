@@ -17,13 +17,13 @@ namespace Csla.Linq
     {
       _parent = parent;
     }
-    
+
     private BusinessListBase<T, C> _parent;
     private LinqBindingList<C> _filter;
 
     private object Eval(Expression ex)
     {
-      if (ex is ConstantExpression) return ((ConstantExpression) ex).Value;
+      if (ex is ConstantExpression) return ((ConstantExpression)ex).Value;
       LambdaExpression lambdax = Expression.Lambda(ex);
       return lambdax.Compile().DynamicInvoke();
     }
@@ -98,12 +98,12 @@ namespace Csla.Linq
     {
       try
       {
-        MethodCallExpression mex = (MethodCallExpression) expression;
+        MethodCallExpression mex = (MethodCallExpression)expression;
         if (typeof(TElement) == typeof(C) && mex.Method.Name == "Where" && _filter == null)
         {
-           _filter = new LinqBindingList<C>(_parent, this, expression);
-           _filter.BuildFilterIndex();
-           return (IQueryable<TElement>)_filter;
+          _filter = new LinqBindingList<C>(_parent, this, expression);
+          _filter.BuildFilterIndex();
+          return (IQueryable<TElement>)_filter;
         }
         else if (typeof(TElement) == typeof(C) && mex.Method.Name.StartsWith("OrderBy") && _filter == null)
         {
@@ -138,8 +138,8 @@ namespace Csla.Linq
           {
             case "Select":
 
-              UnaryExpression selectHolder = (UnaryExpression) mex.Arguments[1];
-              LambdaExpression theSelect = (LambdaExpression) selectHolder.Operand;
+              UnaryExpression selectHolder = (UnaryExpression)mex.Arguments[1];
+              LambdaExpression theSelect = (LambdaExpression)selectHolder.Operand;
 
               Expression<Func<C, TElement>> selectorLambda
                   = Expression.Lambda<Func<C, TElement>>(theSelect.Body, theSelect.Parameters);
@@ -152,10 +152,10 @@ namespace Csla.Linq
 
               return (
                 Queryable.Concat<TElement>(
-                  //at this point, no more filtering, just move it to a concatenated list of items, which we turn to queryable so that the method considers it ok
-                  ((IQueryable<TElement>) _filter).ToList<TElement>().AsQueryable<TElement>(),
-                  //have to eval on the method to make it not a ParameterExpression, but the actual Enumerable inside
-                  (IEnumerable<TElement>) Eval(mex.Arguments[1]))
+                //at this point, no more filtering, just move it to a concatenated list of items, which we turn to queryable so that the method considers it ok
+                  ((IQueryable<TElement>)_filter).ToList<TElement>().AsQueryable<TElement>(),
+                //have to eval on the method to make it not a ParameterExpression, but the actual Enumerable inside
+                  (IEnumerable<TElement>)Eval(mex.Arguments[1]))
                 );
 
             case "Where":
@@ -176,14 +176,14 @@ namespace Csla.Linq
 
                 if (i > 0)
                   if (arg is Expression)
-                    paramList.Add(Compile((Expression) arg));
+                    paramList.Add(Compile((Expression)arg));
                   else
                     paramList.Add(arg);
                 i++;
               }
 
               foreach (MethodInfo method in listMethods)
-                if (MethodsEquivalent(mex,method))
+                if (MethodsEquivalent(mex, method))
                 {
                   Type[] genericArguments = mex.Method.GetGenericArguments();
                   MethodInfo genericMethodInfo = method.MakeGenericMethod(genericArguments);
@@ -193,7 +193,7 @@ namespace Csla.Linq
                 }
               return null;
           }
-          
+
         }
       }
       catch (System.Reflection.TargetInvocationException tie)
@@ -253,7 +253,7 @@ namespace Csla.Linq
           //raw sort without previous where
           _filter = new LinqBindingList<C>(_parent, this, null);
           _filter.ThenByExpression(expression);
-          return (IQueryable) _filter;
+          return (IQueryable)_filter;
         }
         //JF end change
         else if (elementType == typeof(C) && mex.Method.Name.StartsWith("ThenBy"))
@@ -275,12 +275,12 @@ namespace Csla.Linq
 
     public object Execute(Expression expression)
     {
-     
-      MethodCallExpression mex = (MethodCallExpression) expression;
+
+      MethodCallExpression mex = (MethodCallExpression)expression;
 
       //convert the enumerated collection to a list
       List<C> listFrom;
-      
+
       if (_filter != null)
         listFrom = _filter.ToList<C>();
       else
@@ -301,8 +301,8 @@ namespace Csla.Linq
         if (i > 0)
           if (arg is Expression)
             //expressions have to be compiled in order to work with the method call on straight Enumerable
-            paramList.Add(Compile((Expression) arg));
-          else 
+            paramList.Add(Compile((Expression)arg));
+          else
             paramList.Add(arg);
         i++;
       }
@@ -323,7 +323,7 @@ namespace Csla.Linq
           {
             throw tie.InnerException;
           }
-          
+
         }
       return null;
 

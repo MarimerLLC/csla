@@ -67,8 +67,18 @@ namespace Csla.Linq
                 var genArgsLevel2 = genArgs[0].GetGenericArguments();
                 var parmsArgsLevel2 = parms[i].ParameterType.GetGenericArguments();
                 for (int j = 0; j < genArgsLevel2.Length; j++)
-                  if (genArgsLevel2[j].Name != parmsArgsLevel2[j].Name && !parmsArgsLevel2[j].IsGenericParameter)
-                    return false;
+                  if (mex.Method.Name == "GroupJoin")
+                  {
+                    //Matching on GroupJoin is a complex case where there are only two possibilities for a method match, and its by parameter
+                    //count - so we can optimize here
+                    if (genArgsLevel2[j].Name != parmsArgsLevel2[j].Name && !parmsArgsLevel2[j].IsGenericParameter)
+                      return false;
+                  }
+                  else
+                  {
+                    if (genArgsLevel2[j] != parmsArgsLevel2[j] && !parmsArgsLevel2[j].IsGenericParameter)
+                      return false;
+                  }
               }
               continue;
             }

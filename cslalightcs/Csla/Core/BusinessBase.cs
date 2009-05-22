@@ -1864,7 +1864,7 @@ namespace Csla.Core
     /// <param name="newValue">Potential child object</param>
     private void ResetChildEditLevel(object newValue)
     {
-      IEditableBusinessObject child = (IEditableBusinessObject)newValue;
+      IEditableBusinessObject child = newValue as IEditableBusinessObject;
       if (child != null)
       {
         child.SetParent(this);
@@ -1875,7 +1875,7 @@ namespace Csla.Core
       }
       else
       {
-        IEditableCollection col = (IEditableCollection)newValue;
+        IEditableCollection col = newValue as IEditableCollection;
         if (col != null)
         {
           col.SetParent(this);
@@ -3188,6 +3188,11 @@ namespace Csla.Core
     object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
     {
       return ReadProperty(propertyInfo);
+    }
+
+    P IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    {
+      return ReadProperty<P>(propertyInfo);
     }
 
     void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue)

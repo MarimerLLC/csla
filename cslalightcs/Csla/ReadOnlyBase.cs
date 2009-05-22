@@ -1205,6 +1205,11 @@ namespace Csla
       return ReadProperty(propertyInfo);
     }
 
+    P IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    {
+      return ReadProperty<P>(propertyInfo);
+    }
+
     void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue)
     {
       throw new NotImplementedException("IManageProperties.SetProperty");

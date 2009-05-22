@@ -34,6 +34,11 @@ namespace Csla.Test.CslaQueryProvider
       get { return new DateTime((long)SomeVal); }
     }
 
+    public DateTime? SomeDateTimeNullable
+    {
+      get { return (DateTime?) SomeDateTime; }
+    }
+
     public RandomThing(int x)
     {
       MarkAsChild();
@@ -689,6 +694,23 @@ namespace Csla.Test.CslaQueryProvider
       var a = from r in random where r.SomeVal >= 0 select r;
 
       Assert.IsTrue(a.Max(r => r.SomeVal) == 5);
+    }
+
+    [TestMethod]
+    public void TestQueryProviderMaxDateTimeNullable()
+    {
+      CollectionExtendingIQueryable<RandomThing> random = new CollectionExtendingIQueryable<RandomThing>();
+
+      random.Add(new RandomThing(1));
+      random.Add(new RandomThing(2));
+      random.Add(new RandomThing(3));
+      random.Add(new RandomThing(4));
+      random.Add(new RandomThing(5));
+
+      var a = from r in random where r.SomeVal >= 0 select r;
+      DateTime? maxDateTime = random.Max(r => r.SomeDateTimeNullable);
+
+      Assert.IsTrue(a.Max(r => r.SomeDateTimeNullable).Value  == new DateTime(5));
     }
 
     [TestMethod]

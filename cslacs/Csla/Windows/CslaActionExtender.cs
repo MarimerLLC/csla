@@ -535,16 +535,18 @@ namespace Csla.Windows
 
       if (rootSource != null)
       {
-        if (objectToBind is INotifyPropertyChanged)
+        INotifyPropertyChanged propChangedObjParent = objectToBind as INotifyPropertyChanged;
+        if (propChangedObjParent != null)
         {
-          INotifyPropertyChanged propChangedObj = objectToBind as INotifyPropertyChanged;
-          propChangedObj.PropertyChanged += new PropertyChangedEventHandler(propChangedObj_PropertyChanged);
+          propChangedObjParent.PropertyChanged -= propChangedObj_PropertyChanged;
+          propChangedObjParent.PropertyChanged += propChangedObj_PropertyChanged;
         }
 
-        if (objectToBind is INotifyChildChanged)
+        INotifyChildChanged propChangedObjChild = objectToBind as INotifyChildChanged;
+        if (propChangedObjChild != null)
         {
-            INotifyChildChanged propChangedObj = objectToBind as INotifyChildChanged;
-            propChangedObj.ChildChanged += new EventHandler<ChildChangedEventArgs>(propChangedObj_ChildChanged);
+          propChangedObjChild.ChildChanged -= propChangedObj_ChildChanged;
+          propChangedObjChild.ChildChanged += propChangedObj_ChildChanged;
         }
       }
 

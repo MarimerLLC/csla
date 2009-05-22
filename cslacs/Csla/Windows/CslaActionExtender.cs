@@ -535,13 +535,32 @@ namespace Csla.Windows
 
       if (rootSource != null)
       {
-        rootSource.CurrentItemChanged -= BusinessObject_PropertyChanged;
-        rootSource.CurrentItemChanged += BusinessObject_PropertyChanged;
+        if (objectToBind is INotifyPropertyChanged)
+        {
+          INotifyPropertyChanged propChangedObj = objectToBind as INotifyPropertyChanged;
+          propChangedObj.PropertyChanged += new PropertyChangedEventHandler(propChangedObj_PropertyChanged);
+        }
+
+        if (objectToBind is INotifyChildChanged)
+        {
+            INotifyChildChanged propChangedObj = objectToBind as INotifyChildChanged;
+            propChangedObj.ChildChanged += new EventHandler<ChildChangedEventArgs>(propChangedObj_ChildChanged);
+        }
       }
 
       _bindingSourceTree = BindingSourceHelper.InitializeBindingSourceTree(_container, rootSource);
       _bindingSourceTree.Bind(objectToBind);
 
+    }
+
+    void propChangedObj_ChildChanged(object sender, ChildChangedEventArgs e)
+    {
+      ResetControls();
+    }
+
+    void propChangedObj_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      ResetControls();
     }
 
     #endregion
@@ -738,16 +757,25 @@ namespace Csla.Windows
 
             if (raiseClicked)
             {
-              if (props.ActionType == CslaFormAction.Save && source != null && props.RebindAfterSave)
+              if (props.ActionType == CslaFormAction.Save && source != null)
               {
-                // For some strange reason, this has to be done down here.
-                // Putting it in the Select Case AfterSave... does not work.
-                _bindingSourceTree.ResetBindings(false);
-                InitializeControls(true);
+                if (props.RebindAfterSave)
+                {
+                    // For some strange reason, this has to be done down here.
+                    // Putting it in the Select Case AfterSave... does not work.
+                    _bindingSourceTree.ResetBindings(false);
+                    InitializeControls(true);
+                }
+              }
+              else
+              {
+                if (props.ActionType == CslaFormAction.Cancel)
+                  InitializeControls(true);
               }
 
               OnClicked(new CslaActionEventArgs(props.CommandName));
             }
+
           }
 
           if (_closeForm)

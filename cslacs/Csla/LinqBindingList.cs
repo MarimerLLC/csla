@@ -803,12 +803,11 @@ namespace Csla
     {
       var newList = new List<T>(this.Count);
            
-      //foreach (T item in this)
-      //  newList.Add(item);
-
-      //JF - 3/11/09 use the sorted filter index
-      foreach (ListItem listItem in _filterIndex)
-        newList.Add(_list[listItem.BaseIndex]);  
+      //AE: ToList here on an LBL always means *go through the default enumerator* - which respects whatever sorts and
+      //  filters are applied.  If you don't do this, and go through the filter instead, it will likely ignore anything
+      //  added since the first application of the filter.
+      foreach (T item in this)
+        newList.Add(item);
       
       return newList;
     }

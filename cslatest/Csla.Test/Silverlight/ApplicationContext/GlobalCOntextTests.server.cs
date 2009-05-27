@@ -25,7 +25,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
 
       Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
 
-      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
 
       var verifier = new GlobalContextBOVerifier(true);
 
@@ -49,7 +49,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
       var context = GetContext();
       Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
 
-      ConfigurationManager.AppSettings["CslaDataPortalProxy"] = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
 
       var verifier = new GlobalContextBOVerifier(false);
 

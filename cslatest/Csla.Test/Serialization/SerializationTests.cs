@@ -451,7 +451,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void CommandOverDataPortal()
     {
-      System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       try
       {
         var cmd = new TestCommand();
@@ -459,6 +459,7 @@ namespace Csla.Test.Serialization
 
         var result = Csla.DataPortal.Execute<TestCommand>(cmd);
 
+        Assert.IsFalse(ReferenceEquals(cmd, result), "References should not match");
         Assert.AreEqual(cmd.Name + " server", result.Name);
       }
       finally

@@ -132,7 +132,7 @@ namespace Csla.Data
       _connectionString = connectionString;
 
       _context = (C)(Activator.CreateInstance(typeof(C), connectionString));
-
+      _context.Connection.Open();
     }
 
     private static string GetContextName(string connectionString, string label)
@@ -169,6 +169,7 @@ namespace Csla.Data
         mRefCount -= 1;
         if (mRefCount == 0)
         {
+          _context.Connection.Close();
           _context.Dispose();
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
         }

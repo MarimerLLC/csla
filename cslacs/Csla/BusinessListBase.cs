@@ -561,7 +561,12 @@ namespace Csla
         item.EditLevelAdded = this.EditLevel;
         // update the indexes
         ReIndexItem(item);
-        RemoveFromMap(item);
+
+        //handle mapping
+        //for mapping purposes, you are removing the thing at the index
+        //var itemWeAreReplacing = this[index];
+        //RemoveFromMap(itemWeAreReplacing);
+        //RemoveFromMap(item);
         // add to list
         base.SetItem(index, item);
         InsertIntoMap(item, index);

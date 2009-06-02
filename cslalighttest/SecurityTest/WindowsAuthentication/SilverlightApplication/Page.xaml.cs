@@ -19,7 +19,6 @@ namespace SilverlightApplication
     public Page()
     {
       InitializeComponent();
-      Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";
       Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:4769/WcfPortal.svc";
     }
 

@@ -24,6 +24,7 @@
           </StartWorkingDirectory>
           <EnableENC>False</EnableENC>
           <AlwaysStartWebServerOnDebug>True</AlwaysStartWebServerOnDebug>
+          <EnableWcfTestClientForSVC>False</EnableWcfTestClientForSVC>
           <ProjectOutputReferences>
             <Ref Project="{208DBCD8-DD7B-46DD-B6F7-D85CD37EDEC7}" Folder="ClientBin">SilverlightApplication.xap</Ref>
           </ProjectOutputReferences>

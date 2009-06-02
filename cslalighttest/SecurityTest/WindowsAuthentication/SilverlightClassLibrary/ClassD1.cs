@@ -30,9 +30,9 @@ namespace ClassLibrary
 
     protected static void AddObjectAuthorizationRules()
     {
-      AuthorizationRules.AllowCreate(typeof(ClassA), "invalid");
-      AuthorizationRules.AllowEdit(typeof(ClassA), "invalid");
-      AuthorizationRules.AllowDelete(typeof(ClassA), "invalid");
+      AuthorizationRules.AllowCreate(typeof(ClassD1), "invalid");
+      AuthorizationRules.AllowEdit(typeof(ClassD1), "invalid");
+      AuthorizationRules.AllowDelete(typeof(ClassD1), "invalid");
     }
   }
 }

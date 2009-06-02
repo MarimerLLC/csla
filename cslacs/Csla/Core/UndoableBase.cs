@@ -118,6 +118,7 @@ namespace Csla.Core
 
       do
       {
+        var currentTypeName = currentType.FullName;
         // get the list of fields in this type
         List<DynamicMemberHandle> handlers = 
           UndoableHandler.GetCachedFieldHandlers(currentType);
@@ -130,8 +131,7 @@ namespace Csla.Core
             if (value == null)
             {
               // variable has no value - store that fact
-              state.Add(h.MemberFullName, null);
-              //state.Add(h.MemberName, null);
+              state.Add(GetFieldName(currentTypeName, h.MemberName), null);
             }
             else
             {
@@ -142,8 +142,7 @@ namespace Csla.Core
           else
           {
             // this is a normal field, simply trap the value
-            state.Add(h.MemberFullName, value);
-            //state.Add(h.MemberName, value);
+            state.Add(GetFieldName(currentTypeName, h.MemberName), value);
           }
         }
 
@@ -215,6 +214,8 @@ namespace Csla.Core
 
         do
         {
+          var currentTypeName = currentType.FullName;
+
           // get the list of fields in this type
           List<DynamicMemberHandle> handlers = UndoableHandler.GetCachedFieldHandlers(currentType);
           foreach (var h in handlers)
@@ -227,7 +228,7 @@ namespace Csla.Core
               // this is a child object
               // see if the previous value was empty
               //if (state.Contains(h.MemberName))
-              if (state.Contains(h.MemberFullName))
+              if (state.Contains(GetFieldName(currentTypeName, h.MemberName)))
               {
                 // previous value was empty - restore to empty
                 h.DynamicMemberSet(this, null);
@@ -246,7 +247,7 @@ namespace Csla.Core
             else
             {
               // this is a regular field, restore its value
-              h.DynamicMemberSet(this, state[h.MemberFullName]);
+              h.DynamicMemberSet(this, state[GetFieldName(currentTypeName, h.MemberName)]);
               //h.DynamicMemberSet(this, state[h.MemberName]);
             }
           }
@@ -321,6 +322,18 @@ namespace Csla.Core
       }
       AcceptChangesComplete();
     }
+
+    /// <summary>
+    /// Returns the full name of a field, including
+    /// the containing type name.
+    /// </summary>
+    /// <param name="typeName">Name of the containing type.</param>
+    /// <param name="memberName">Name of the member (field).</param>
+    private static string GetFieldName(string typeName, string memberName)
+    {
+      return typeName + "." + memberName;
+    }
+
 
     #region Helper Functions
 

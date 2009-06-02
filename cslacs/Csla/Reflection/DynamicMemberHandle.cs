@@ -13,10 +13,10 @@ namespace Csla.Reflection
     public DynamicMemberGetDelegate DynamicMemberGet { get; private set; }
     public DynamicMemberSetDelegate DynamicMemberSet { get; private set; }
 
-    public string MemberFullName
-    {
-      get { return MemberType + "." + MemberName; }
-    }
+    //public string MemberFullName
+    //{
+    //  get { return MemberType + "." + MemberName; }
+    //}
 
     public DynamicMemberHandle(string memberName, Type memberType, DynamicMemberGetDelegate dynamicMemberGet, DynamicMemberSetDelegate dynamicMemberSet)
     {

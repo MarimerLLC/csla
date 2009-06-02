@@ -83,6 +83,23 @@ namespace Csla.Test.Basic
         }
 
         [TestMethod]
+        public void InheritanceUndo()
+        {
+          Csla.ApplicationContext.GlobalContext.Clear();
+          GenRoot root;
+          root = GenRoot.NewRoot();
+          root.BeginEdit();
+          root.Data = "abc";
+          root.CancelEdit();
+
+          Csla.ApplicationContext.GlobalContext.Clear();
+          root = GenRoot.NewRoot();
+          root.BeginEdit();
+          root.Data = "abc";
+          root.ApplyEdit();
+        }
+
+        [TestMethod]
         public void CreateRoot()
         {
             Csla.ApplicationContext.GlobalContext.Clear();

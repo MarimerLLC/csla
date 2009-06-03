@@ -93,6 +93,15 @@ namespace Csla.Silverlight.Security
 
     private static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(new PropertyInfo<MobileList<string>>("Roles"));
     /// <summary>
+    /// Gets or sets the list of roles for this user.
+    /// </summary>
+    protected MobileList<string> Roles
+    {
+      get { return ReadProperty(RolesProperty); }
+      set { LoadProperty(RolesProperty, value); }
+    }
+
+    /// <summary>
     /// Returns a value indicating whether the current user
     /// is in the specified role.
     /// </summary>

@@ -18,6 +18,14 @@ namespace Csla.Security
   public partial class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity
   {
     /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    protected MembershipIdentity()
+    {
+      _forceInit = _forceInit + 0;
+    }
+
+    /// <summary>
     /// Authenticates the user's credentials against the ASP.NET
     /// membership provider.
     /// </summary>

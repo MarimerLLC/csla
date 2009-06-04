@@ -22,14 +22,6 @@ namespace Csla.Security
 
     private static int _forceInit = 0;
 
-    /// <summary>
-    /// Creates an instance of the class.
-    /// </summary>
-    protected MembershipIdentity() 
-    { 
-      _forceInit = _forceInit + 0;
-    }
-
     #endregion
 
     #region  IsInRole

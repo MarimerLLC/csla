@@ -52,5 +52,16 @@ namespace Csla.Security
       this.Username = username;
       this.Password = password;
     }
+
+    /// <summary>
+    /// Creates a new instance of the object.
+    /// </summary>
+#if SILVERLIGHT
+    public UsernameCriteria()
+    { }
+#else
+    protected UsernameCriteria()
+    { }
+#endif
   }
 }

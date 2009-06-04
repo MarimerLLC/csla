@@ -41,12 +41,14 @@ namespace Csla
       public T Result { get; set; }
       public Csla.Core.ContextDictionary GlobalContext { get; set; }
       public object UserState { get; set; }
+      public Exception Error { get; set; }
 
-      public DataPortalAsyncResult(T result, Csla.Core.ContextDictionary globalContext, object userState)
+      public DataPortalAsyncResult(T result, Csla.Core.ContextDictionary globalContext, Exception error, object userState)
       {
         this.Result = result;
         this.GlobalContext = globalContext;
         this.UserState = userState;
+        this.Error = error;
       }
     }
 
@@ -170,10 +172,10 @@ namespace Csla
         if (result != null)
         {
           _globalContext = result.GlobalContext;
+          T obj = default(T);
           if (result.Result != null)
-            OnCreateCompleted(new DataPortalResult<T>((T)result.Result, null, result.UserState));
-          else
-            OnCreateCompleted(new DataPortalResult<T>(default(T), null, result.UserState));
+            obj = (T)result.Result;
+          OnCreateCompleted(new DataPortalResult<T>(obj, result.Error, result.UserState));
           return;
         }
       }
@@ -184,14 +186,20 @@ namespace Csla
     {
       var request = e.Argument as DataPortalAsyncRequest;
       SetThreadContext(request);
-
-      object state = request.Argument;
       T result = default(T);
-      if (state is int)
-        result = (T)Csla.DataPortal.Create<T>();
-      else
-        result = (T)Csla.DataPortal.Create<T>(state);
-      e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, request.UserState);
+      try
+      {
+        object state = request.Argument;
+        if (state is int)
+          result = (T)Csla.DataPortal.Create<T>();
+        else
+          result = (T)Csla.DataPortal.Create<T>(state);
+        e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
     }
 
     #endregion
@@ -289,10 +297,10 @@ namespace Csla
         if (result != null)
         {
           _globalContext = result.GlobalContext;
+          T obj = default(T);
           if (result.Result != null)
-            OnFetchCompleted(new DataPortalResult<T>((T)result.Result, null, result.UserState));
-          else
-            OnFetchCompleted(new DataPortalResult<T>(default(T), null, result.UserState));
+            obj = (T)result.Result;
+          OnFetchCompleted(new DataPortalResult<T>(obj, result.Error, result.UserState));
           return;
         }
       }
@@ -303,14 +311,20 @@ namespace Csla
     {
       var request = e.Argument as DataPortalAsyncRequest;
       SetThreadContext(request);
-
-      object state = request.Argument;
       T result = default(T);
-      if (state is int)
-        result = (T)Csla.DataPortal.Fetch<T>();
-      else
-        result = (T)Csla.DataPortal.Fetch<T>(state);
-      e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, request.UserState);
+      try
+      {
+        object state = request.Argument;
+        if (state is int)
+          result = (T)Csla.DataPortal.Fetch<T>();
+        else
+          result = (T)Csla.DataPortal.Fetch<T>(state);
+        e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
     }
 
     #endregion
@@ -396,10 +410,10 @@ namespace Csla
         if (result != null)
         {
           _globalContext = result.GlobalContext;
+          T obj = default(T);
           if (result.Result != null)
-            OnUpdateCompleted(new DataPortalResult<T>((T)result.Result, null, result.UserState));
-          else
-            OnUpdateCompleted(new DataPortalResult<T>(default(T), null, result.UserState));
+            obj = (T)result.Result;
+          OnUpdateCompleted(new DataPortalResult<T>(obj, result.Error, result.UserState));
           return;
         }
       }
@@ -410,11 +424,17 @@ namespace Csla
     {
       var request = e.Argument as DataPortalAsyncRequest;
       SetThreadContext(request);
-
-      object state = request.Argument;
       T result = default(T);
-      result = (T)Csla.DataPortal.Update<T>((T)state);
-      e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, request.UserState);
+      try
+      {
+        object state = request.Argument;
+        result = (T)Csla.DataPortal.Update<T>((T)state);
+        e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
     }
 
     #endregion
@@ -500,7 +520,7 @@ namespace Csla
         if (result != null)
         {
           _globalContext = result.GlobalContext;
-          OnDeleteCompleted(new DataPortalResult<T>(default(T), null, result.UserState));
+          OnDeleteCompleted(new DataPortalResult<T>(default(T), result.Error, result.UserState));
           return;
         }
       }
@@ -511,10 +531,16 @@ namespace Csla
     {
       var request = e.Argument as DataPortalAsyncRequest;
       SetThreadContext(request);
-
-      object state = request.Argument;
-      Csla.DataPortal.Delete<T>(state);
-      e.Result = new DataPortalAsyncResult(default(T), Csla.ApplicationContext.GlobalContext, request.UserState);
+      try
+      {
+        object state = request.Argument;
+        Csla.DataPortal.Delete<T>(state);
+        e.Result = new DataPortalAsyncResult(default(T), Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        e.Result = new DataPortalAsyncResult(default(T), Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
     }
 
     #endregion
@@ -558,10 +584,10 @@ namespace Csla
         if (result != null)
         {
           _globalContext = result.GlobalContext;
+          T obj = default(T);
           if (result.Result != null)
-            OnExecuteCompleted(new DataPortalResult<T>((T)result.Result, e.Error, result.UserState));
-          else
-            OnExecuteCompleted(new DataPortalResult<T>(default(T), e.Error, result.UserState));
+            obj = (T)result.Result;
+          OnExecuteCompleted(new DataPortalResult<T>(obj, result.Error, result.UserState));
           return;
         }
       }
@@ -572,11 +598,17 @@ namespace Csla
     {
       var request = e.Argument as DataPortalAsyncRequest;
       SetThreadContext(request);
-
-      object state = request.Argument;
       T result = default(T);
-      result = Csla.DataPortal.Execute<T>((T)state);
-      e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, request.UserState);
+      try
+      {
+        object state = request.Argument;
+        result = Csla.DataPortal.Execute<T>((T)state);
+        e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
     }
 
     /// <summary>

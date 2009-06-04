@@ -103,6 +103,7 @@ namespace Csla.Test.DataPortal
         (o, e) =>
         {
           context.Assert.IsNotNull(e.Error);
+          context.Assert.AreEqual("state", (string)e.UserState);
           context.Assert.Success();
         }, userState);
       context.Complete();
@@ -158,8 +159,9 @@ namespace Csla.Test.DataPortal
         {
           context.Assert.IsNotNull(e.Error);
           context.Assert.AreEqual("DataPortal.Fetch failed (Bad data)", e.Error.Message);
+          context.Assert.AreEqual("state", (string)e.UserState);
           context.Assert.Success();
-        });
+        }, "state");
       context.Complete();
     }
 

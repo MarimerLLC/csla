@@ -1141,7 +1141,25 @@ namespace Csla.Test.CslaQueryProvider
       Assert.AreEqual(differentFilteredCountPreRemoval - 1, differentFilteredCountPostRemoval);
       Assert.AreEqual(originalCountPreRemoval - 1, originalCountPostRemoval);
     }
-      
+    [TestMethod]
+    public void TestLinqBindingListDisposal()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      Random rnd = new Random();
+      random.Add(new RandomThing(42)); //first one has to be under 100 to run our removal tests correctly
+      for (int i = 0; i < 99; i++)
+        random.Add(new RandomThing(rnd.Next(300)));
+
+      for (int i = 0; i < 10000; i++)
+      {
+        using (var subset = (LinqBindingList<RandomThing>) from item in random where item.SomeVal < 1000 select item)
+        {
+          //at this point, we are merely testing that we are still "alive"
+          Assert.IsTrue(true);
+        }
+      }
+    }
+
   }
 
 

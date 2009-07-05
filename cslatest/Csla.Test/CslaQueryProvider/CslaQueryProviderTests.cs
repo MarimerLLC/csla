@@ -29,6 +29,12 @@ namespace Csla.Test.CslaQueryProvider
       get { return new Nullable<int>(SomeVal); }
     }
 
+    [Indexable(IndexModeEnum.IndexModeAlways)]
+    public Nullable<Guid> ANullableGuid
+    {
+      get { return new Nullable<Guid>(Id); }
+    }
+
     public DateTime SomeDateTime
     {
       get { return new DateTime((long)SomeVal); }
@@ -1141,6 +1147,17 @@ namespace Csla.Test.CslaQueryProvider
       Assert.AreEqual(differentFilteredCountPreRemoval - 1, differentFilteredCountPostRemoval);
       Assert.AreEqual(originalCountPreRemoval - 1, originalCountPostRemoval);
     }
+
+    [TestMethod]
+    public void TestLastWithNullableGuid()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      Random rnd = new Random();
+      for (int i = 0; i < 99; i++)
+        random.Add(new RandomThing(rnd.Next(300)));
+      var lastItem = random.Last().ANullableGuid;
+    }
+
     [TestMethod]
     public void TestLinqBindingListDisposal()
     {

@@ -17,7 +17,7 @@ namespace Csla
   /// in the original list.</typeparam>
   public class LinqBindingList<T> :
     IList<T>, IBindingList, IEnumerable<T>,
-    ICancelAddNew, IQueryable<T>, IOrderedQueryable<T>
+    ICancelAddNew, IQueryable<T>, IOrderedQueryable<T>, IDisposable
   {
 
     #region ListItem class
@@ -929,5 +929,15 @@ namespace Csla
 
     #endregion
 
+
+    #region IDisposable Members
+
+    public void Dispose()
+    {
+      //AE: Added removal of event handler in the disposal
+      _bindingList = null;
+    }
+
+    #endregion
   }
 }

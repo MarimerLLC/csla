@@ -212,7 +212,7 @@ namespace Csla.Wpf
     #region Query
 
     private bool _firstRun = true;
-    private bool _init = true;
+    private bool _init = false;
     private bool _endInitCompete = false;
     private bool _endInitError = false;
 

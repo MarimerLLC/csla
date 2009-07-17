@@ -32,7 +32,7 @@ namespace Csla.Silverlight
     protected void OnDataChanged()
     {
       RefreshCanOperationsValues();
-      RefreshCanOpertaionsOnObjectLevel();
+      RefreshCanOperationsOnObjectLevel();
       if (DataChanged != null)
         DataChanged(this, EventArgs.Empty);
     }
@@ -939,7 +939,7 @@ namespace Csla.Silverlight
       }
     }
 
-    private void RefreshCanOpertaionsOnObjectLevel()
+    private void RefreshCanOperationsOnObjectLevel()
     {
       if (Data != null)
       {

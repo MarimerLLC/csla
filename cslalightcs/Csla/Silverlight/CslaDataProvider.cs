@@ -161,6 +161,8 @@ namespace Csla.Silverlight
         ((INotifyBusy)_dataObject).BusyChanged -= new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
 
       _dataObject = value;
+      _error = null;
+
       if (_manageObjectLifetime)
       {
         var undoable = _dataObject as Csla.Core.ISupportUndo;

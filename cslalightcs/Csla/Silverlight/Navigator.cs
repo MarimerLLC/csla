@@ -43,9 +43,7 @@ namespace Csla.Silverlight
 
     #region Constructor
     private Navigator()
-    {
-      //_bookmarks = new Dictionary<int, BoomarkInformation>();
-    }
+    { }
     #endregion
 
     #region Properties

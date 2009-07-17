@@ -5,7 +5,7 @@ namespace Csla.Silverlight
   /// <summary>
   /// This class is used to keep track of bookmarks within Navigator.
   /// </summary>
-  public class BoomarkInformation
+  public class BookmarkInformation
   {
     private string _controlTypeName;
     private string _parameters;
@@ -24,7 +24,7 @@ namespace Csla.Silverlight
     /// <param name="title">
     /// Title of the bookmark.
     /// </param>
-    public BoomarkInformation(string controlTypeName, string parameters, string title)
+    public BookmarkInformation(string controlTypeName, string parameters, string title)
     {
       _controlTypeName = controlTypeName;
       _parameters = parameters;

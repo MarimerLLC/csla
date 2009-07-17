@@ -12,7 +12,7 @@ namespace Csla.Silverlight
     private string _parameters;
     private bool _cancel = false;
     private bool _isInitiatedByBrowserButton = false;
-    private BoomarkInformation _redirectToOnCancel;
+    private BookmarkInformation _redirectToOnCancel;
 
     /// <summary>
     /// New instance of NavigationEventArgs.
@@ -63,7 +63,7 @@ namespace Csla.Silverlight
     /// If navigation is cancelled, optionaly redirect to the
     /// control specified in this property.
     /// </summary>
-    public BoomarkInformation RedirectToOnCancel
+    public BookmarkInformation RedirectToOnCancel
     {
       get { return _redirectToOnCancel; }
       set { _redirectToOnCancel = value; }

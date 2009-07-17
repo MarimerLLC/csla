@@ -1688,8 +1688,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Loads a property's managed field with the 
-    /// supplied value calling PropertyHasChanged 
-    /// if the value does change.
+    /// supplied value.
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
@@ -1731,8 +1730,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Loads a property's managed field with the 
-    /// supplied value calling PropertyHasChanged 
-    /// if the value does change.
+    /// supplied value.
     /// </summary>
     /// <typeparam name="P">
     /// Type of the property.
@@ -1838,8 +1836,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Loads a property's managed field with the 
-    /// supplied value calling PropertyHasChanged 
-    /// if the value does change.
+    /// supplied value.
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>

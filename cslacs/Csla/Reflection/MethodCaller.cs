@@ -309,23 +309,38 @@ namespace Csla.Reflection
 
       if (methodHandle.HasFinalArrayParam)
       {
-        var pCount = methodHandle.MethodParamsLength;
         // last param is a param array or only param is an array
-        var extras = inParams.Length - (pCount - 1);
+        var pCount = methodHandle.MethodParamsLength;
+        var inCount = inParams.Length;
+        if (inCount == pCount - 1)
+        {
+          // no paramter was supplied for the param array
+          // copy items into new array with last entry null
+          object[] paramList = new object[pCount];
+          for (var pos = 0; pos <= pCount - 2; pos++)
+            paramList[pos] = parameters[pos];
+          paramList[paramList.Length - 1] = null;
 
-        // 1 or more params go in the param array
-        // copy extras into an array
-        object[] extraArray = GetExtrasArray(extras, methodHandle.FinalArrayElementType);
-        Array.Copy(inParams, extraArray, extras);
+          // use new array
+          inParams = paramList;
+        }
+        else if ((inCount == pCount && !inParams[inCount - 1].GetType().IsArray) || inCount > pCount)
+        {
+          // 1 or more params go in the param array
+          // copy extras into an array
+          var extras = inParams.Length - (pCount - 1);
+          object[] extraArray = GetExtrasArray(extras, methodHandle.FinalArrayElementType);
+          Array.Copy(inParams, pCount - 1, extraArray, 0, extras);
 
-        // copy items into new array
-        object[] paramList = new object[pCount];
-        for (var pos = 0; pos <= pCount - 2; pos++)
-          paramList[pos] = parameters[pos];
-        paramList[paramList.Length - 1] = extraArray;
+          // copy items into new array
+          object[] paramList = new object[pCount];
+          for (var pos = 0; pos <= pCount - 2; pos++)
+            paramList[pos] = parameters[pos];
+          paramList[paramList.Length - 1] = extraArray;
 
-        // use new array
-        inParams = paramList;
+          // use new array
+          inParams = paramList;
+        }
       }
       try
       {
@@ -415,16 +430,27 @@ namespace Csla.Reflection
           {
             var infoParams = m.GetParameters();
             var pCount = infoParams.Length;
-            if (pCount > 0 &&
-               ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
-               (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
+            if (pCount > 0)
             {
-              // last param is a param array or only param is an array
-              if (parameterCount >= pCount - 1)
+              if (pCount == 1 && infoParams[0].ParameterType.IsArray)
               {
-                // got a match so use it
-                result = m;
-                break;
+                // only param is an array
+                if (parameters.GetType().Equals(infoParams[0].ParameterType))
+                {
+                  // got a match so use it
+                  result = m;
+                  break;
+                }
+              }
+              if (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)
+              {
+                // last param is a param array
+                if (parameterCount == pCount && parameters[pCount - 1].GetType().Equals(infoParams[pCount - 1].ParameterType))
+                {
+                  // got a match so use it
+                  result = m;
+                  break;
+                }
               }
             }
           }

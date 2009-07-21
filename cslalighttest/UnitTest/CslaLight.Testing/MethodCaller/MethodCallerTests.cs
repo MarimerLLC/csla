@@ -81,13 +81,28 @@ namespace cslalighttest.MethodCaller
 
       object[] rows = new object[2] { 1, 2 };
 
-      var returnValue1 = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", list);
-      context.Assert.AreEqual(returnValue1, 1);
-      var returnValue2 = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", 10, rows);
-      context.Assert.AreEqual(returnValue2, 2);
-      returnValue2 = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", rows);
-      returnValue2 = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", 10);
-      context.Assert.AreEqual(returnValue2, 4);
+      var returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", list);
+      context.Assert.AreEqual(returnValue, 1);
+      returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", 10, rows);
+      context.Assert.AreEqual(returnValue, 2);
+      returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", rows);
+      context.Assert.AreEqual(returnValue, 3);
+      returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", 10);
+      context.Assert.AreEqual(returnValue, 4);
+      context.Assert.Success();
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void CallSuccessParams()
+    {
+      var context = GetContext();
+      var returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams", new object[] { 1, 2 });
+      context.Assert.AreEqual(returnValue, 1);
+      returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams", new object[] { 123 });
+      context.Assert.AreEqual(returnValue, 1);
+      returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams");
+      context.Assert.AreEqual(returnValue, 1);
       context.Assert.Success();
       context.Complete();
     }
@@ -154,6 +169,11 @@ namespace cslalighttest.MethodCaller
     public int GetData(int anumber)
     {
       return 4;
+    }
+
+    public int MethodWithParams(params object[] e)
+    {
+      return 1;
     }
   }
 }

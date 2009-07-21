@@ -125,6 +125,16 @@ namespace Csla.Reflection
     #endregion
 
     /// <summary>
+    /// Uses reflection to determine whether a method
+    /// is implemented on the target object.
+    /// </summary>
+    public static bool IsMethodImplemented(object obj, string method, params object[] parameters)
+    {
+      MethodInfo info = GetMethod(obj.GetType(), method, parameters);
+      return info != null;
+    }
+
+    /// <summary>
     /// Uses reflection to dynamically invoke a method
     /// if that method is implemented on the target object.
     /// </summary>

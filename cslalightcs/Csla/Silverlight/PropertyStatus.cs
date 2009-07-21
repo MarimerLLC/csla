@@ -437,20 +437,26 @@ namespace Csla.Silverlight
           bool canWrite = b.CanWriteProperty(Property);
           if (canWrite && !_isReadOnly)
           {
-            MethodCaller.CallMethodIfImplemented(_target, "set_IsReadOnly", false);
-            MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", true);
+            if (MethodCaller.IsMethodImplemented(_target, "set_IsReadOnly", false))
+              MethodCaller.CallMethod(_target, "set_IsReadOnly", false);
+            else
+              MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", true);
           }
           else
           {
-            MethodCaller.CallMethodIfImplemented(_target, "set_IsReadOnly", true);
-            MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", false);
+            if (MethodCaller.IsMethodImplemented(_target, "set_IsReadOnly", true))
+              MethodCaller.CallMethod(_target, "set_IsReadOnly", true);
+            else
+              MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", false);
           }
 
           bool canRead = b.CanReadProperty(Property);
           if (!canRead)
           {
-            MethodCaller.CallMethodIfImplemented(_target, "set_Content", null);
-            MethodCaller.CallMethodIfImplemented(_target, "set_Text", "");
+            if (MethodCaller.IsMethodImplemented(_target, "set_Content", null))
+              MethodCaller.CallMethod(_target, "set_Content", null);
+            else
+              MethodCaller.CallMethodIfImplemented(_target, "set_Text", "");
           }
         }
       }

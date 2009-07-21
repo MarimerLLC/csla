@@ -24,6 +24,7 @@ namespace Csla.Test.LogicalExecutionLocation
 
       LocationBusinessBase item = LocationBusinessBase.GetLocationBusinessBase();
       Assert.AreEqual(item.Data,Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), "Should be server");
+      Assert.AreEqual(item.NestedData, Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), "Nested should be server");
 
       Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Client, Csla.ApplicationContext.LogicalExecutionLocation, "Should be client");
 

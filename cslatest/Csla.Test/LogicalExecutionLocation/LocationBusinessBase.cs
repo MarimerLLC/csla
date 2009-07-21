@@ -17,6 +17,13 @@ namespace Csla.Test.LogicalExecutionLocation
       set { SetProperty(DataProperty, value); }
     }
 
+    private static PropertyInfo<string> NestedDataProperty = RegisterProperty<string>(c => c.NestedData);
+    public string NestedData
+    {
+      get { return GetProperty(NestedDataProperty); }
+      set { SetProperty(NestedDataProperty, value); }
+    }
+
     protected static PropertyInfo<string> RuleProperty = RegisterProperty<string>(new PropertyInfo<string>("Rule"));
     public string Rule
     {
@@ -54,6 +61,13 @@ namespace Csla.Test.LogicalExecutionLocation
     }
 
     protected void DataPortal_Fetch()
+    {
+      SetProperty(DataProperty, Csla.ApplicationContext.LogicalExecutionLocation.ToString());
+      var nested = Csla.DataPortal.Fetch<LocationBusinessBase>(new SingleCriteria<LocationBusinessBase, int>(123));
+      NestedData = nested.Data;
+    }
+
+    protected override void DataPortal_Fetch(object criteria)
     {
       SetProperty(DataProperty, Csla.ApplicationContext.LogicalExecutionLocation.ToString());
     }

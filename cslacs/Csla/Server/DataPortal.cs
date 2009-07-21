@@ -363,8 +363,11 @@ namespace Csla.Server
 
     #region Context
 
-    private static void SetContext(DataPortalContext context)
+    ApplicationContext.LogicalExecutionLocations _oldLocation;
+
+    private void SetContext(DataPortalContext context)
     {
+      _oldLocation = Csla.ApplicationContext.LogicalExecutionLocation;
       ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
 
       // if the dataportal is not remote then
@@ -413,9 +416,9 @@ namespace Csla.Server
       }
     }
 
-    private static void ClearContext(DataPortalContext context)
+    private void ClearContext(DataPortalContext context)
     {
-      ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+      ApplicationContext.SetLogicalExecutionLocation(_oldLocation);
       // if the dataportal is not remote then
       // do nothing
       if (!context.IsRemotePortal) return;

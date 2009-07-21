@@ -630,21 +630,24 @@ namespace Csla
       Server
     }
     
-    private static LogicalExecutionLocations _logicalExecutionLocation =
-     LogicalExecutionLocations.Client;
-
     /// <summary>
     /// Gets a value indicating the logical execution location
     /// of the currently executing code.
     /// </summary>
     public static LogicalExecutionLocations LogicalExecutionLocation
     {
-      get { return _logicalExecutionLocation; }
+      get 
+      {
+        if (LocalContext.Contains("__logicalExecutionLocation"))
+          return (LogicalExecutionLocations)LocalContext["__logicalExecutionLocation"];
+        else
+          return LogicalExecutionLocations.Client;
+      }
     }
     
     internal static void SetLogicalExecutionLocation(LogicalExecutionLocations location)
     {
-      _logicalExecutionLocation = location;
+      LocalContext["__logicalExecutionLocation"] = location;
     }
 
     #endregion

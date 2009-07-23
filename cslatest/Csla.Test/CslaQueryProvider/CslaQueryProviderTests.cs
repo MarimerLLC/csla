@@ -165,10 +165,45 @@ namespace Csla.Test.CslaQueryProvider
 
     #endregion
   }
+
+  class InnerCollectionItem : BusinessBase<InnerCollectionItem>
+  {
+    public string TestProp { get; set; }
+  }
+
+  class InnerCollection : BusinessListBase<InnerCollection, InnerCollectionItem>
+  {
+  }
+
+  class OuterCollectionItem : BusinessBase<OuterCollectionItem>
+  {
+    public InnerCollection TestInnerCollection { get; set; }
+  }
+
+  class OuterCollection : BusinessListBase<OuterCollection, OuterCollectionItem>
+  {
+  }
   
   [TestClass]
   public class CslaQueryProviderTests
   {
+    [TestMethod]
+    public void nested_collections_return_valid_results()
+    {
+      var item = new InnerCollectionItem() { TestProp = "42" };
+      var innerCollection = new InnerCollection();
+      innerCollection.Add(item);
+      var outerItem = new OuterCollectionItem() { TestInnerCollection = innerCollection };
+      var outerCollection = new OuterCollection();
+      outerCollection.Add(outerItem);
+
+      var get42back =  from outer in outerCollection
+                       from inner in outerItem.TestInnerCollection
+                       select inner;
+      Assert.IsTrue(get42back.First().TestProp == "42");
+      
+    }
+    
     [TestMethod]
     public void TestQueryProviderCount()
     {

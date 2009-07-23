@@ -56,6 +56,8 @@ namespace Csla.Linq
             continue;
           if (parms[i].ParameterType.IsGenericParameter)
             continue;
+          if (info.Name == "SelectMany" && (parms[i].ParameterType.Name.StartsWith("IEnumerable")))
+            continue;
           if (arguments[i].GetType().IsGenericType && parms[i].ParameterType.Name.StartsWith("Func"))
           {
             Type[] genArgs = arguments[i].GetType().GetGenericArguments();
@@ -67,9 +69,9 @@ namespace Csla.Linq
                 var genArgsLevel2 = genArgs[0].GetGenericArguments();
                 var parmsArgsLevel2 = parms[i].ParameterType.GetGenericArguments();
                 for (int j = 0; j < genArgsLevel2.Length; j++)
-                  if (mex.Method.Name == "GroupJoin")
+                  if (mex.Method.Name == "GroupJoin" || mex.Method.Name == "SelectMany")
                   {
-                    //Matching on GroupJoin is a complex case where there are only two possibilities for a method match, and its by parameter
+                    //Matching on GroupJoin and SelectMany are complex cases where there are only two possibilities for a method match, and its by parameter
                     //count - so we can optimize here
                     if (genArgsLevel2[j].Name != parmsArgsLevel2[j].Name && !parmsArgsLevel2[j].IsGenericParameter)
                       return false;

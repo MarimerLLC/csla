@@ -67,6 +67,21 @@ Namespace Reflection
     ''' <summary>
     ''' Gets the property represented by the lambda expression.
     ''' </summary>
+    ''' <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
+    ''' <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a property access.</exception>
+    Public Shared Function GetProperty(ByVal [property] As Expression(Of Func(Of TTarget, Object))) As PropertyInfo
+      Dim info As PropertyInfo = CType(GetMemberInfo([property]), PropertyInfo)
+
+      If info Is Nothing Then
+        Throw New ArgumentException("Member is not a property")
+      End If
+
+      Return info
+    End Function
+
+    ''' <summary>
+    ''' Gets the property represented by the lambda expression.
+    ''' </summary>
     ''' <typeparam name="P">Type assigned to the property</typeparam>
     ''' <param name="property">Property Expression</param>
     ''' <returns></returns>
